@@ -41,6 +41,7 @@ class TestQgsDateTimeEdit: public QObject
     std::unique_ptr<QgsDateTimeEditWrapper> widget4; // For field 3
     std::unique_ptr<QgsDateTimeEditWrapper> widget5; // For field 4
     std::unique_ptr<QgsDateTimeEditWrapper> widget6; // For field 5
+    std::unique_ptr<QgsDateTimeEditWrapper> widget7; // For field 6
     std::unique_ptr<QgsVectorLayer> vl;
 
 };
@@ -68,6 +69,7 @@ void TestQgsDateTimeEdit::init()
   fields.append( QgsField( "time", QVariant::Time ) );
   fields.append( QgsField( "datetime1", QVariant::DateTime ) );
   fields.append( QgsField( "datetime2", QVariant::DateTime ) );
+  fields.append( QgsField( "text", QVariant::String ) );
   vl->dataProvider()->addAttributes( fields );
   vl->updateFields();
   QVERIFY( vl.get() );
@@ -79,12 +81,14 @@ void TestQgsDateTimeEdit::init()
   widget4 = std::make_unique<QgsDateTimeEditWrapper>( vl.get(), 3, nullptr, nullptr );
   widget5 = std::make_unique<QgsDateTimeEditWrapper>( vl.get(), 4, nullptr, nullptr );
   widget6 = std::make_unique<QgsDateTimeEditWrapper>( vl.get(), 5, nullptr, nullptr );
+  widget7 = std::make_unique<QgsDateTimeEditWrapper>( vl.get(), 6, nullptr, nullptr );
   QVERIFY( widget1.get() );
   QVERIFY( widget2.get() );
   QVERIFY( widget3.get() );
   QVERIFY( widget4.get() );
   QVERIFY( widget5.get() );
   QVERIFY( widget6.get() );
+  QVERIFY( widget7.get() );
 }
 
 void TestQgsDateTimeEdit::cleanup()
@@ -319,6 +323,18 @@ void TestQgsDateTimeEdit::testDateTime()
   widget6->setValue( QDate( 1, 1, 1 ) );
   const QDate value6 { widget6->value().toDate() };
   QCOMPARE( value6, QDate( 1, 1, 1 ) );
+
+  // Test for issue GH #46542
+  widget7->setConfig( cfg );
+  QgsDateTimeEdit *dateedit7 = qobject_cast<QgsDateTimeEdit *>( widget7->createWidget( &w ) );
+  QVERIFY( dateedit7 );
+  widget7->initWidget( dateedit7 );
+  QgsFeature f { vl->fields() };
+  f.setAttribute( QStringLiteral( "text" ), QgsExpression{ QStringLiteral( "now()" ) }.evaluate() );
+  widget7->setFeature( f );
+  const QDate value7 { widget7->value().toDate() };
+  QCOMPARE( value7, QDate::currentDate() );
+
 }
 
 QGSTEST_MAIN( TestQgsDateTimeEdit )
