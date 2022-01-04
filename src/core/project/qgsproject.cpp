@@ -1640,6 +1640,10 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   mMainAnnotationLayer->readLayerXml( doc->documentElement().firstChildElement( QStringLiteral( "main-annotation-layer" ) ), context );
   mMainAnnotationLayer->setTransformContext( mTransformContext );
 
+  // load embedded groups and layers
+  profile.switchTask( tr( "Loading embedded layers" ) );
+  loadEmbeddedNodes( mRootGroup, flags );
+
   // Resolve references to other layers
   // Needs to be done here once all dependent layers are loaded
   profile.switchTask( tr( "Resolving layer references" ) );
@@ -1650,10 +1654,6 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
 
   mLayerTreeRegistryBridge->setEnabled( true );
-
-  // load embedded groups and layers
-  profile.switchTask( tr( "Loading embedded layers" ) );
-  loadEmbeddedNodes( mRootGroup, flags );
 
   // now that layers are loaded, we can resolve layer tree's references to the layers
   profile.switchTask( tr( "Resolving references" ) );
