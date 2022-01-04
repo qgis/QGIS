@@ -84,13 +84,19 @@ class SERVER_EXPORT QgsServerRequest
       X_QGIS_WCS_SERVICE_URL,
       // The QGIS WMTS service URL
       X_QGIS_WMTS_SERVICE_URL,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
+      ACCEPT,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
+      USER_AGENT,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
+      AUTHORIZATION,
     };
     Q_ENUM( RequestHeader )
 
     /**
      * Constructor
      */
-    QgsServerRequest();
+    QgsServerRequest() = default;
 
     /**
      * Constructor
@@ -260,13 +266,6 @@ class SERVER_EXPORT QgsServerRequest
     void setBaseUrl( const QUrl &url );
 
   private:
-
-    /**
-     * Initialize the map used to convert the header enumeration value
-     * into header name.
-     */
-    void init();
-
     // Url as seen by QGIS server after web server rewrite
     QUrl       mUrl;
     // Unrewritten url as seen by the web server
@@ -277,7 +276,6 @@ class SERVER_EXPORT QgsServerRequest
     // to support lazy initialization
     mutable Headers mHeaders;
     QgsServerParameters mParams;
-    QMap<RequestHeader, QString> mRequestHeaderConv;
 };
 
 #endif
