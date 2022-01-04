@@ -355,7 +355,7 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   QString proto;
   QString host;
 
-  QString  forwarded = request.header( QgsServerRequest::FORWARDED );
+  QString forwarded = request.header( QgsServerRequest::FORWARDED );
   if ( ! forwarded.isEmpty() )
   {
     forwarded = forwarded.split( QLatin1Char( ',' ) )[0];

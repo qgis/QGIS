@@ -21,6 +21,7 @@
 #include "qgsfcgiserverrequest.h"
 #include "qgsserverlogger.h"
 #include "qgsmessagelog.h"
+#include "qgsstringutils.h"
 #include <fcgi_stdio.h>
 #include <QDebug>
 
@@ -107,27 +108,13 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   setMethod( method );
 
   // Fill the headers dictionary
-  const QStringList headers
+  for ( const auto &headerKey : qgsEnumMap<QgsServerRequest::RequestHeader>().values() )
   {
-    QStringLiteral( "Accept" ),
-    QStringLiteral( "User-Agent" ),
-    QStringLiteral( "Proxy" ),
-    QStringLiteral( "Authorization" ),
-    QStringLiteral( "X-Qgis-Service-Url" ),
-    QStringLiteral( "X-Qgis-WMS-Service-Url" ),
-    QStringLiteral( "X-Qgis-WFS-Service-Url" ),
-    QStringLiteral( "X-Qgis-WCS-Service-Url" ),
-    QStringLiteral( "X-Qgis-WMTS-Service-Url" ),
-    QStringLiteral( "Forwarded" ),
-    QStringLiteral( "X-Forwarded-Host" ),
-    QStringLiteral( "X-Forwarded-Proto" ),
-    QStringLiteral( "Host" )
-  };
-  for ( const auto &headerName : headers )
-  {
-    const char *result = qgetenv( QStringLiteral( "HTTP_%1" ).arg(
-                                    headerName.toUpper().replace( QLatin1Char( '-' ), QLatin1Char( '_' ) ) ).toStdString().c_str() );
-    if ( result )
+    const QString headerName = QgsStringUtils::capitalize(
+                                 QString( headerKey ).replace( QLatin1Char( '_' ), QLatin1Char( ' ' ) ), Qgis::Capitalization::TitleCase
+                               ).replace( QLatin1Char( ' ' ), QLatin1Char( '-' ) );
+    const char *result = getenv( QStringLiteral( "HTTP_%1" ).arg( headerKey ).toStdString().c_str() );
+    if ( result && strlen( result ) > 0 )
     {
       setHeader( headerName, result );
     }
@@ -243,6 +230,7 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
     QStringLiteral( "CONTENT_TYPE" ),
     QStringLiteral( "REQUEST_METHOD" ),
     QStringLiteral( "AUTH_TYPE" ),
+    QStringLiteral( "HTTP_PROXY" ),
     QStringLiteral( "NO_PROXY" ),
     QStringLiteral( "QGIS_PROJECT_FILE" ),
     QStringLiteral( "QGIS_SERVER_IGNORE_BAD_LAYERS" ),
@@ -268,7 +256,6 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
 
   QgsMessageLog::logMessage( QStringLiteral( "Headers:" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   QgsMessageLog::logMessage( QStringLiteral( "------------------------------------------------" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-
   for ( const auto &headerName : headers().keys() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( headerName ).arg( headers().value( headerName ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
