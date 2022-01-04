@@ -1605,6 +1605,23 @@ QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPoint &p, const Q
   return line;
 }
 
+void QgsGeometryUtils::perpendicularCenterSegment( double pointx, double pointy, double segmentPoint1x, double segmentPoint1y, double segmentPoint2x, double segmentPoint2y, double &perpendicularSegmentPoint1x, double &perpendicularSegmentPoint1y, double &perpendicularSegmentPoint2x, double &perpendicularSegmentPoint2y, double desiredSegmentLength )
+{
+  QgsVector segmentVector =  QgsVector( segmentPoint2x - segmentPoint1x, segmentPoint2y - segmentPoint1y );
+  QgsVector perpendicularVector = segmentVector.perpVector();
+  if ( desiredSegmentLength )
+  {
+    if ( desiredSegmentLength != 0 )
+    {
+      perpendicularVector = perpendicularVector.normalized() * ( desiredSegmentLength ) / 2;
+    }
+  }
+  perpendicularSegmentPoint1x = pointx - perpendicularVector.x();
+  perpendicularSegmentPoint1y = pointy - perpendicularVector.y();
+  perpendicularSegmentPoint2x = pointx + perpendicularVector.x();
+  perpendicularSegmentPoint2y = pointy + perpendicularVector.y();
+}
+
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
 {
   const double at = std::atan2( y2 - y1, x2 - x1 );
