@@ -21,6 +21,8 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dviewsmanager.h"
 
+#include <QMessageBox>
+
 Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
@@ -32,11 +34,17 @@ Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFla
   m3DViewsListView->setEditTriggers( QAbstractItemView::NoEditTriggers );
   m3DViewsListView->setSelectionMode( QAbstractItemView::SingleSelection );
 
-  connect( mOpenButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::openClicked );
-  connect( mCloseButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::closeClicked );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+
+  connect( mShowButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::showClicked );
+  connect( mHideButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::hideClicked );
   connect( mDuplicateButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::duplicateClicked );
   connect( mRemoveButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::removeClicked );
   connect( mRenameButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::renameClicked );
+  mShowButton->setEnabled( false );
+  mHideButton->setEnabled( false );
+
+  connect( m3DViewsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &Qgs3DViewsManagerDialog::showHideButtonStateChanged );
 
   connect( QgsProject::instance()->views3DManager(), &Qgs3DViewsManager::viewsListChanged, this, &Qgs3DViewsManagerDialog::onViewsListChanged );
 }
@@ -46,38 +54,42 @@ void Qgs3DViewsManagerDialog::onViewsListChanged()
   reload();
 }
 
-void Qgs3DViewsManagerDialog::openClicked()
+void Qgs3DViewsManagerDialog::showClicked()
 {
   if ( m3DViewsListView->selectionModel()->selectedRows().isEmpty() )
     return;
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
-  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "ViewObject" ) );
+  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "DockObject" ) );
+
   if ( !widget )
   {
     widget = QgisApp::instance()->open3DMapView( viewName );
   }
+
   if ( widget )
   {
     widget->show();
-    widget->activateWindow();
-    widget->raise();
+    QgsProject::instance()->setDirty();
   }
+
 }
 
-void Qgs3DViewsManagerDialog::closeClicked()
+void Qgs3DViewsManagerDialog::hideClicked()
 {
   if ( m3DViewsListView->selectionModel()->selectedRows().isEmpty() )
     return;
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
-  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "ViewObject" ) );
+  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "DockObject" ) );
   if ( widget )
   {
     widget->close();
   }
+
+  QgsProject::instance()->setDirty();
 }
 
 void Qgs3DViewsManagerDialog::duplicateClicked()
@@ -89,6 +101,8 @@ void Qgs3DViewsManagerDialog::duplicateClicked()
   QString newViewName = askUserForATitle( existingViewName, tr( "Duplicate" ), false );
 
   QgisApp::instance()->duplicate3DMapView( existingViewName, newViewName );
+
+  QgsProject::instance()->setDirty();
 }
 
 void Qgs3DViewsManagerDialog::removeClicked()
@@ -96,11 +110,19 @@ void Qgs3DViewsManagerDialog::removeClicked()
   if ( m3DViewsListView->selectionModel()->selectedRows().isEmpty() )
     return;
 
+  QString warningTitle = tr( "Remove 3D View" );
+  QString warningMessage = tr( "Do you really want to remove selected 3D view?" );
+
+  if ( QMessageBox::warning( this, warningTitle, warningMessage, QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+    return;
+
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
   QgsProject::instance()->views3DManager()->remove3DView( viewName );
-  if ( Qgs3DMapCanvasDockWidget *w = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "ViewObject" ) ) )
+  if ( Qgs3DMapCanvasDockWidget *w = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "DockObject" ) ) )
     w->close();
+
+  QgsProject::instance()->setDirty();
 }
 
 void Qgs3DViewsManagerDialog::renameClicked()
@@ -116,11 +138,29 @@ void Qgs3DViewsManagerDialog::renameClicked()
 
   QgsProject::instance()->views3DManager()->rename3DView( oldTitle, newTitle );
 
-  if ( Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( oldTitle + QStringLiteral( "ViewObject" ) ) )
+  if ( Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( oldTitle + QStringLiteral( "DockObject" ) ) )
   {
     widget->setWindowTitle( newTitle );
+    widget->setObjectName( newTitle + QStringLiteral( "DockObject" ) );
     widget->mapCanvas3D()->setObjectName( newTitle );
   }
+
+  QgsProject::instance()->setDirty();
+}
+
+void Qgs3DViewsManagerDialog::showHideButtonStateChanged( const QModelIndex &current, const QModelIndex &previous )
+{
+  if ( !current.isValid() )
+  {
+    mShowButton->setEnabled( false );
+    mHideButton->setEnabled( false );
+    return;
+  }
+
+  QString viewName = current.data( Qt::DisplayRole ).toString();
+  bool isOpen = QgsProject::instance()->views3DManager()->get3DViewSettings( viewName ).attribute( QStringLiteral( "isOpen" ), QStringLiteral( "0" ) ).toInt() == 1;
+  mShowButton->setEnabled( !isOpen );
+  mHideButton->setEnabled( isOpen );
 }
 
 void Qgs3DViewsManagerDialog::reload()

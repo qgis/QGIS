@@ -87,7 +87,7 @@ class CORE_EXPORT Qgs3DViewsManager : public QObject
     void viewOpened( const QString &name );
 
     //! Sets the configuration of the 3D view named \a name to being closed
-    void viewClosed( const QString &name );
+    void viewClosed( const QString &name, const QDomElement &dom );
 
   signals:
     //! Emitted when the views list has changed (whenever a 3D view was removed, added, renamed..)

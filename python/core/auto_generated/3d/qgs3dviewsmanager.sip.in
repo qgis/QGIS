@@ -88,7 +88,7 @@ Renames the 3D view named ``oldTitle`` to ``newTitle``
 Sets the configuration of the 3D view named ``name`` to being opened
 %End
 
-    void viewClosed( const QString &name );
+    void viewClosed( const QString &name, const QDomElement &dom );
 %Docstring
 Sets the configuration of the 3D view named ``name`` to being closed
 %End

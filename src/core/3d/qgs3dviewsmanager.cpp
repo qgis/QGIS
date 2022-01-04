@@ -96,10 +96,13 @@ void Qgs3DViewsManager::rename3DView( const QString &oldTitle, const QString &ne
   emit viewsListChanged();
 }
 
-void Qgs3DViewsManager::viewClosed( const QString &name )
+void Qgs3DViewsManager::viewClosed( const QString &name, const QDomElement &dom )
 {
   if ( m3DMapViewsDom.contains( name ) )
+  {
+    m3DMapViewsDom[ name ] = dom;
     m3DMapViewsDom[ name ].setAttribute( "isOpen", 0 );
+  }
 }
 
 void Qgs3DViewsManager::viewOpened( const QString &name )

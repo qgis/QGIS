@@ -34,11 +34,13 @@ class Qgs3DViewsManagerDialog : public QDialog, private Ui::Qgs3DViewsManagerDia
     void reload();
 
   private slots:
-    void openClicked();
-    void closeClicked();
+    void showClicked();
+    void hideClicked();
     void duplicateClicked();
     void removeClicked();
     void renameClicked();
+
+    void showHideButtonStateChanged( const QModelIndex &current, const QModelIndex &previous );
 
     void onViewsListChanged();
   private:
