@@ -76,6 +76,9 @@ QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::Applic
       }
       m3DMapViewsManagerDialog->show();
       m3DMapViewsManagerDialog->reload();
+      m3DMapViewsManagerDialog->raise();
+      m3DMapViewsManagerDialog->setWindowState( m3DMapViewsManagerDialog->windowState() & ~Qt::WindowMinimized );
+      m3DMapViewsManagerDialog->activateWindow();
       return m3DMapViewsManagerDialog;
 #endif
     }
