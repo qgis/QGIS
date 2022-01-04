@@ -207,12 +207,6 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      */
     bool willHandleKeyEvent( QKeyEvent *event );
 
-    /**
-     * Sets the depth buffer image used by the camera controller to calculate world position from a pixel's coordinates and depth
-     * \since QGIS 3.24
-     */
-    void setDepthBufferImage( const QImage &depthImage );
-
   public slots:
 
     /**
@@ -220,6 +214,12 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      * \since QGIS 3.18
      */
     void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
+
+    /**
+     * Sets the depth buffer image used by the camera controller to calculate world position from a pixel's coordinates and depth
+     * \since QGIS 3.24
+     */
+    void depthBufferCaptured( const QImage &depthImage );
 
   private:
     void rotateCamera( float diffPitch, float diffYaw );
@@ -304,16 +304,16 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     double mRotationDistanceFromCenter;
     double mRotationPitch = 0;
     double mRotationYaw = 0;
-    Qt3DRender::QCamera *mCameraBeforeRotation = nullptr;
+    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeRotation;
 
     QPoint mDragButtonClickPos;
-    Qt3DRender::QCamera *mCameraBeforeDrag = nullptr;
+    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeDrag;
     bool mDragPointCalculated = false;
     QVector3D mDragPoint;
     double mDragDepth;
 
     bool mIsInZoomInState = false;
-    Qt3DRender::QCamera *mCameraBeforeZoom = nullptr;
+    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeZoom;
     bool mZoomPointCalculated = false;
     QVector3D mZoomPoint;
 

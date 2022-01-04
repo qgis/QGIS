@@ -150,8 +150,6 @@ class Qgs3DMapCanvas : public QWidget
     QgsTemporalController *mTemporalController = nullptr;
 
     QSplitter *mSplitter = nullptr;
-
-    QImage mDepthBufferImage;
 };
 
 #endif // QGS3DMAPCANVAS_H

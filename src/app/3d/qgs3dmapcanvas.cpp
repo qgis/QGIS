@@ -52,13 +52,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
     emit savedAsImage( mCaptureFileName );
   } );
 
-  connect( mEngine, &QgsAbstract3DEngine::depthBufferCaptured, [ = ]( const QImage & image )
-  {
-    mDepthBufferImage = image;
-    cameraController()->setDepthBufferImage( image );
-  } );
-
-
   mSplitter = new QSplitter( this );
 
   mContainer = QWidget::createWindowContainer( mEngine->window() );
@@ -158,6 +151,8 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, this, &Qgs3DMapCanvas::cameraNavigationSpeedChanged );
   connect( cameraController(), &QgsCameraController::navigationModeHotKeyPressed, this, &Qgs3DMapCanvas::onNavigationModeHotKeyPressed );
   connect( cameraController(), &QgsCameraController::requestDepthBufferCapture, this, &Qgs3DMapCanvas::captureDepthBuffer );
+
+  connect( mEngine, &QgsAbstract3DEngine::depthBufferCaptured, cameraController(), &QgsCameraController::depthBufferCaptured );
 
   emit mapSettingsChanged();
 }
