@@ -520,6 +520,77 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.dump(), dump );
     }
 
+    void  represent_attributes()
+    {
+
+      QgsVectorLayer layer { QStringLiteral( "Point?field=col1:integer&field=col2:string" ), QStringLiteral( "test_represent_attributes" ), QStringLiteral( "memory" ) };
+      QVERIFY( layer.isValid() );
+      QgsFeature f1( layer.dataProvider()->fields(), 1 );
+      f1.setAttribute( QStringLiteral( "col1" ), 1 );
+      f1.setAttribute( QStringLiteral( "col2" ), "test1" );
+      QgsFeature f2( layer.dataProvider()->fields(), 2 );
+      f2.setAttribute( QStringLiteral( "col1" ), 2 );
+      f2.setAttribute( QStringLiteral( "col2" ), "test2" );
+      layer.dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 );
+
+      QVariantMap config;
+      QVariantMap map;
+      map.insert( QStringLiteral( "one" ), QStringLiteral( "1" ) );
+      map.insert( QStringLiteral( "two" ), QStringLiteral( "2" ) );
+
+      config.insert( QStringLiteral( "map" ), map );
+      layer.setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config ) );
+
+      QgsExpressionContext context( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      context.setFeature( f2 );
+      QgsExpression expression( "represent_attributes()" );
+
+      if ( expression.hasParserError() )
+        qDebug() << expression.parserErrorString();
+      QVERIFY( !expression.hasParserError() );
+
+      expression.prepare( &context );
+
+      QVariantMap result { expression.evaluate( &context ).toMap() };
+
+      QCOMPARE( result.value( QStringLiteral( "col1" ) ).toString(), QStringLiteral( "two" ) );
+      QCOMPARE( result.value( QStringLiteral( "col2" ) ).toString(), QStringLiteral( "test2" ) );
+
+      QgsExpressionContext context2( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      context2.setFeature( f2 );
+      expression = QgsExpression( "represent_attributes($currentfeature)" );
+
+      result = expression.evaluate( &context2 ).toMap();
+
+      QVERIFY( !expression.hasEvalError() );
+
+      QCOMPARE( result.value( QStringLiteral( "col1" ) ).toString(), QStringLiteral( "two" ) );
+      QCOMPARE( result.value( QStringLiteral( "col2" ) ).toString(), QStringLiteral( "test2" ) );
+
+      QgsProject::instance()->addMapLayer( &layer, false, false );
+      QgsExpressionContext context3;
+      context3.setFeature( f2 );
+      expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
+
+      result = expression.evaluate( &context3 ).toMap();
+
+      QVERIFY( !expression.hasEvalError() );
+
+      QCOMPARE( result.value( QStringLiteral( "col1" ) ).toString(), QStringLiteral( "two" ) );
+      QCOMPARE( result.value( QStringLiteral( "col2" ) ).toString(), QStringLiteral( "test2" ) );
+
+      // Test the cached value
+      QCOMPARE( context3.cachedValue( QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer.id(), QStringLiteral( "col1" ), QStringLiteral( "2" ) ) ).toString(),  QStringLiteral( "two" ) );
+
+      // Test errors
+      QgsProject::instance()->removeMapLayer( layer.id() );
+      expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
+      QgsExpressionContext context4;
+      result = expression.evaluate( &context4 ).toMap();
+      QVERIFY( expression.hasEvalError() );
+
+    };
+
     void represent_value()
     {
       QVariantMap config;

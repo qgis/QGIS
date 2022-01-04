@@ -1729,6 +1729,88 @@ static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionCo
   return result;
 }
 
+static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsVectorLayer *layer = nullptr;
+  QgsFeature feature;
+
+  if ( values.isEmpty() )
+  {
+    feature = context->feature();
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+  }
+  else if ( values.size() == 1 )
+  {
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
+  }
+  else if ( values.size() == 2 )
+  {
+    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `represent_attributes` requires no more than two parameters. %1 given." ).arg( values.length() ) );
+    return QVariant();
+  }
+
+  if ( !layer )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: layer could not be resolved." ) );
+    return QVariant();
+  }
+
+  if ( !feature.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: feature could not be resolved." ) );
+    return QVariant();
+  }
+
+  const QgsFields fields = feature.fields();
+  QVariantMap result;
+  for ( int fieldIndex = 0; fieldIndex < fields.count(); ++fieldIndex )
+  {
+    const QString fieldName { fields.at( fieldIndex ).name() };
+    const QVariant attributeVal = feature.attribute( fieldIndex );
+    const QString cacheValueKey = QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer->id(), fieldName, attributeVal.toString() );
+    if ( context && context->hasCachedValue( cacheValueKey ) )
+    {
+      result.insert( fieldName, context->cachedValue( cacheValueKey ) );
+    }
+    else
+    {
+      const QgsEditorWidgetSetup setup = layer->editorWidgetSetup( fieldIndex );
+      QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      QVariant cache;
+      if ( context )
+      {
+        const QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer->id(), fieldName );
+
+        if ( !context->hasCachedValue( cacheKey ) )
+        {
+          cache = fieldFormatter->createCache( layer, fieldIndex, setup.config() );
+          context->setCachedValue( cacheKey, cache );
+        }
+        else
+        {
+          cache = context->cachedValue( cacheKey );
+        }
+      }
+      QString value( fieldFormatter->representValue( layer, fieldIndex, setup.config(), cache, attributeVal ) );
+
+      result.insert( fields.at( fieldIndex ).name(), value );
+
+      if ( context )
+      {
+        context->setCachedValue( cacheValueKey, value );
+      }
+
+    }
+  }
+  return result;
+}
+
 static QVariant fcnCoreFeatureMaptipDisplay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const bool isMaptip )
 {
   QgsVectorLayer *layer = nullptr;
@@ -7809,6 +7891,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         fcnAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     attributesFunc->setIsStatic( false );
     functions << attributesFunc;
+    QgsStaticExpressionFunction *representAttributesFunc = new QgsStaticExpressionFunction( QStringLiteral( "represent_attributes" ), -1,
+        fcnRepresentAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    representAttributesFunc->setIsStatic( false );
+    functions << representAttributesFunc;
 
     QgsStaticExpressionFunction *maptipFunc = new QgsStaticExpressionFunction(
       QStringLiteral( "maptip" ),
