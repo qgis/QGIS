@@ -6649,7 +6649,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
   // Sixth parameter (for intersects only) is the min overlap (area or length)
   // Seventh parameter (for intersects only) is the min inscribed circle radius
-  // Eight parameter (for intersects only) is the return_measure
+  // Eighth parameter (for intersects only) is the return_measure
   // Ninth parameter (for intersects only) is the sort_by_intersection_size flag
   double minOverlap { -1 };
   double minInscribedCircleRadius { -1 };
