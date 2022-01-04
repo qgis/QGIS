@@ -65,7 +65,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
       StraightSegments, //!< Default capture mode - capture occurs with straight line segments
       CircularString, //!< Capture in circular strings
       Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves). Since QGIS 3.20.
+      Shape, //!< Digitize shapes. Since QGIS 3.24.
     };
+    Q_ENUM( CaptureTechnique )
 
     //! Specific capabilities of the tool
     enum Capability
@@ -153,14 +155,25 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QgsRubberBand *takeRubberBand() SIP_FACTORY;
 
   public slots:
-    //! Enable the digitizing with curve
-    void setCircularDigitizingEnabled( bool enable );
+
+    /**
+     * Enable the digitizing with curve
+     * \deprecated since QGIS 3.24 use setCurrentCaptureTechnique() instead
+     */
+    Q_DECL_DEPRECATED void setCircularDigitizingEnabled( bool enable ) SIP_DEPRECATED;
 
     /**
      * Toggles the stream digitizing mode.
      * \since QGIS 3.20
+    * \deprecated since QGIS 3.24 use setCurrentCaptureTechnique() instead
      */
-    void setStreamDigitizingEnabled( bool enable );
+    Q_DECL_DEPRECATED void setStreamDigitizingEnabled( bool enable ) SIP_DEPRECATED;
+
+    /**
+     * Sets the current capture if it is supported by the map tool
+     * \since QGIS 3.24
+     */
+    void setCurrentCaptureTechnique( CaptureTechnique technique );
 
   private slots:
     void addError( const QgsGeometry::Error &error );
@@ -388,9 +401,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QgsPointXY mTracingStartPoint;
 
     //! Used to store the state of digitizing type (linear or circular)
-    QgsWkbTypes::Type mDigitizingType = QgsWkbTypes::LineString;
+    QgsWkbTypes::Type mLineDigitizingType = QgsWkbTypes::LineString;
 
-    bool mStreamingEnabled = false;
+    CaptureTechnique mCurrentCaptureTechnique = CaptureTechnique::StraightSegments;
+
     bool mAllowAddingStreamingPoints = false;
     int mStreamingToleranceInPixels = 1;
 

@@ -3629,6 +3629,30 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Manage 3D Map Views</string>
    </property>
   </action>
+  <action name="mActionDigitizeWithSegment">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeWithSegment.svg</normaloff>:/images/themes/default/mActionDigitizeWithSegment.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize with Segment</string>
+   </property>
+  </action>
+  <action name="mActionDigitizeShape">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeShape.svg</normaloff>:/images/themes/default/mActionDigitizeShape.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize Shape</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>

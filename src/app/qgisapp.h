@@ -2039,16 +2039,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void toggleEventTracing();
 
     /**
-     * Enables or disables digitizing with curve for map tool that support this capabilities
-     * \since QGIS 3.16
+     * Sets the capture technique of the current map tool
+     * \since QGIS 3.24
      */
-    void enableDigitizeWithCurve( bool enable );
+    void setCaptureTechnique( QAction *captureTechniqueActionTriggered );
 
-    /**
-     * Enables or disables stream digitizing
-     * \since QGIS 3.20
-     */
-    void enableStreamDigitizing( bool enable );
 
     /**
      * Enables the action that toggles digitizing with curve

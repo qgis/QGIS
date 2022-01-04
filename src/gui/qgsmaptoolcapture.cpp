@@ -95,10 +95,11 @@ bool QgsMapToolCapture::supportsTechnique( QgsMapToolCapture::CaptureTechnique t
 {
   switch ( technique )
   {
-    case StraightSegments:
+    case CaptureTechnique::StraightSegments:
       return true;
-    case CircularString:
-    case Streaming:
+    case CaptureTechnique::CircularString:
+    case CaptureTechnique::Streaming:
+    case CaptureTechnique::Shape:
       return false;
   }
 }
@@ -352,19 +353,46 @@ QgsRubberBand *QgsMapToolCapture::takeRubberBand()
 
 void QgsMapToolCapture::setCircularDigitizingEnabled( bool enable )
 {
-  mDigitizingType = enable ? QgsWkbTypes::CircularString : QgsWkbTypes::LineString;
-  if ( mTempRubberBand )
-    mTempRubberBand->setStringType( mDigitizingType );
+  if ( enable )
+    setCurrentCaptureTechnique( CaptureTechnique::CircularString );
+  else
+    setCurrentCaptureTechnique( CaptureTechnique::StraightSegments );
 }
 
 void QgsMapToolCapture::setStreamDigitizingEnabled( bool enable )
 {
-  mStreamingEnabled = enable;
-  mStartNewCurve = true;
   if ( enable )
+    setCurrentCaptureTechnique( CaptureTechnique::Streaming );
+  else
+    setCurrentCaptureTechnique( CaptureTechnique::StraightSegments );
+}
+
+void QgsMapToolCapture::setCurrentCaptureTechnique( CaptureTechnique technique )
+{
+  mStartNewCurve = true;
+
+  switch ( technique )
   {
-    mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.value();
+    case QgsMapToolCapture::CaptureTechnique::StraightSegments:
+      mLineDigitizingType = QgsWkbTypes::LineString;
+      break;
+    case QgsMapToolCapture::CaptureTechnique::CircularString:
+      mLineDigitizingType = QgsWkbTypes::CircularString;
+      break;
+    case QgsMapToolCapture::CaptureTechnique::Streaming:
+      mLineDigitizingType = QgsWkbTypes::LineString;
+      mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.value();
+      break;
+    case QgsMapToolCapture::CaptureTechnique::Shape:
+      mLineDigitizingType = QgsWkbTypes::LineString;
+      break;
+
   }
+
+  if ( mTempRubberBand )
+    mTempRubberBand->setStringType( mLineDigitizingType );
+
+  mCurrentCaptureTechnique = technique;
 }
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
@@ -380,7 +408,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     bool hasTrace = false;
 
-    if ( mStreamingEnabled )
+    if ( mCurrentCaptureTechnique == CaptureTechnique::Streaming )
     {
       if ( !mCaptureCurve.isEmpty() )
       {
@@ -398,11 +426,11 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       // Store the intermediate point for circular string to retrieve after tracing mouse move if
       // the digitizing type is circular and the temp rubber band is effectivly circular and if this point is existing
       // Store an empty point if the digitizing type is linear ot the point is not existing (curve not complete)
-      if ( mDigitizingType == QgsWkbTypes::CircularString &&
+      if ( mLineDigitizingType == QgsWkbTypes::CircularString &&
            mTempRubberBand->stringType() == QgsWkbTypes::CircularString &&
            mTempRubberBand->curveIsComplete() )
         mCircularItermediatePoint = mTempRubberBand->pointFromEnd( 1 );
-      else if ( mDigitizingType == QgsWkbTypes::LineString ||
+      else if ( mLineDigitizingType == QgsWkbTypes::LineString ||
                 !mTempRubberBand->curveIsComplete() )
         mCircularItermediatePoint = QgsPoint();
 
@@ -411,7 +439,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       if ( !hasTrace )
       {
         // Restore the temp rubber band
-        mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, mCaptureFirstPoint );
+        mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mLineDigitizingType, mCaptureFirstPoint );
         mTempRubberBand->addPoint( mCaptureLastPoint );
         if ( !mCircularItermediatePoint.isEmpty() )
         {
@@ -421,7 +449,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       }
     }
 
-    if ( !mStreamingEnabled && !hasTrace )
+    if ( mCurrentCaptureTechnique != CaptureTechnique::Streaming && !hasTrace )
     {
       if ( mCaptureCurve.numPoints() > 0 )
       {
@@ -562,7 +590,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     return 2;
   }
 
-  if ( mCapturing && mStreamingEnabled && !mAllowAddingStreamingPoints )
+  if ( mCapturing && mCurrentCaptureTechnique == CaptureTechnique::Streaming && !mAllowAddingStreamingPoints )
     return 0;
 
   QgsPoint layerPoint;
@@ -598,8 +626,8 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     if ( !mTempRubberBand )
     {
       mTempRubberBand.reset( createCurveRubberBand() );
-      mTempRubberBand->setStringType( mDigitizingType );
-      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, mapPoint );
+      mTempRubberBand->setStringType( mLineDigitizingType );
+      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mLineDigitizingType, mapPoint );
     }
 
     bool traceCreated = false;
@@ -637,7 +665,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
           }
         }
         mCaptureLastPoint = mapPoint;
-        mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, mCaptureFirstPoint );
+        mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mLineDigitizingType, mCaptureFirstPoint );
       }
       else if ( mTempRubberBand->pointsCount() == 0 )
       {
@@ -657,7 +685,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     }
     else
     {
-      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, mCaptureFirstPoint );
+      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mLineDigitizingType, mCaptureFirstPoint );
       mTempRubberBand->addPoint( mCaptureLastPoint );
     }
   }
@@ -682,7 +710,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
 
   if ( mTempRubberBand )
   {
-    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, mCaptureFirstPoint );
+    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mLineDigitizingType, mCaptureFirstPoint );
     const QgsPoint endPt = c->endPoint();
     mTempRubberBand->addPoint( endPt ); //add last point of c
   }
@@ -785,7 +813,7 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
 
     resetRubberBand();
 
-    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, mCaptureFirstPoint );
+    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mLineDigitizingType, mCaptureFirstPoint );
 
     if ( mCaptureCurve.numPoints() > 0 )
     {

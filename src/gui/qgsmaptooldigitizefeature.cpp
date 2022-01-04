@@ -52,10 +52,11 @@ bool QgsMapToolDigitizeFeature::supportsTechnique( QgsMapToolCapture::CaptureTec
 {
   switch ( technique )
   {
-    case QgsMapToolCapture::StraightSegments:
+    case QgsMapToolCapture::CaptureTechnique::StraightSegments:
       return true;
-    case QgsMapToolCapture::CircularString:
-    case QgsMapToolCapture::Streaming:
+    case QgsMapToolCapture::CaptureTechnique::CircularString:
+    case QgsMapToolCapture::CaptureTechnique::Streaming:
+    case QgsMapToolCapture::CaptureTechnique::Shape:
       return mode() != QgsMapToolCapture::CapturePoint;
   }
   return false;

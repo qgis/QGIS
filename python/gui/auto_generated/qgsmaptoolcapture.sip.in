@@ -33,6 +33,7 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
       StraightSegments,
       CircularString,
       Streaming,
+      Shape,
     };
 
     enum Capability
@@ -133,16 +134,30 @@ transfers ownership to the caller.
 %End
 
   public slots:
-    void setCircularDigitizingEnabled( bool enable );
+
+ void setCircularDigitizingEnabled( bool enable ) /Deprecated/;
 %Docstring
 Enable the digitizing with curve
+
+.. deprecated:: QGIS 3.24
+   use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead
 %End
 
-    void setStreamDigitizingEnabled( bool enable );
+ void setStreamDigitizingEnabled( bool enable ) /Deprecated/;
 %Docstring
 Toggles the stream digitizing mode.
 
 .. versionadded:: 3.20
+
+.. deprecated:: QGIS 3.24
+   use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead
+%End
+
+    void setCurrentCaptureTechnique( CaptureTechnique technique );
+%Docstring
+Sets the current capture if it is supported by the map tool
+
+.. versionadded:: 3.24
 %End
 
   protected:
