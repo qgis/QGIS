@@ -1956,6 +1956,10 @@ class CORE_EXPORT QgsGeometry
      * - single geometries will be upgraded to multi geometries
      * - z or m values will be added or dropped as required.
      *
+     * Since QGIS 3.24, the parameters \a defaultZ and \a defaultM control the dimension value added when promoting geometries
+     * to Z, M or ZM versions.
+     * By default 0.0 is used for Z and M.
+     *
      * \note This method is much stricter than convertToType(), as it considers the exact WKB type
      * of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
      * to coerce geometries to the desired \a type. It also correctly maintains curves and z/m values
@@ -1963,7 +1967,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.14
      */
-    QVector< QgsGeometry > coerceToType( QgsWkbTypes::Type type ) const;
+    QVector< QgsGeometry > coerceToType( QgsWkbTypes::Type type, double defaultZ = 0, double defaultM = 0 ) const;
 
     /**
      * Try to convert the geometry to the requested type
