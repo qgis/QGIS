@@ -258,10 +258,10 @@ void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeat
   QgsAttributeEditorContext ctx { mEditorContext };
   ctx.setParentFormFeature( mFeatureList.first() );
   mDualView->init( layer, mEditorContext.mapCanvas(), request, ctx, true, mShowFirstFeature );
-  mFeatureSelectionMgr = new QgsFilteredSelectionManager( layer, request, mDualView );
-  mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
+  mFeatureSelectionMgr.reset( new QgsFilteredSelectionManager( layer, request, mDualView ) );
+  mDualView->setFeatureSelectionManager( mFeatureSelectionMgr.data() );
 
-  connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
+  connect( mFeatureSelectionMgr.data(), &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
 
   QIcon icon;
   QString text;
@@ -875,7 +875,7 @@ void QgsRelationEditorWidget::afterSetRelations()
 
 QgsIFeatureSelectionManager *QgsRelationEditorWidget::featureSelectionManager()
 {
-  return mFeatureSelectionMgr;
+  return mFeatureSelectionMgr.data();
 }
 
 void QgsRelationEditorWidget::unlinkSelectedFeatures()
