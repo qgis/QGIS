@@ -310,6 +310,16 @@ Close an open polygon
 Stop capturing
 %End
 
+  private:
+    virtual void geometryCaptured( const QgsGeometry &geometry );
+%Docstring
+Called when the geometry is captured
+
+.. versionadded:: 3.24
+%End
+  public:
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
+
 };
 
 QFlags<QgsMapToolCapture::Capability> operator|(QgsMapToolCapture::Capability f1, QFlags<QgsMapToolCapture::Capability> f2);

@@ -93,7 +93,14 @@ QgsMapToolCapture::Capabilities QgsMapToolCapture::capabilities() const
 
 bool QgsMapToolCapture::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
 {
-  return technique == StraightSegments;
+  switch ( technique )
+  {
+    case StraightSegments:
+      return true;
+    case CircularString:
+    case Streaming:
+      return false;
+  }
 }
 
 void QgsMapToolCapture::activate()
@@ -1073,3 +1080,181 @@ void QgsMapToolCapture::updateExtraSnapLayer()
   }
 }
 
+
+
+void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
+
+  // POINT CAPTURING
+  if ( mode() == CapturePoint )
+  {
+    if ( e->button() != Qt::LeftButton )
+      return;
+
+    QgsPoint savePoint; //point in layer coordinates
+    bool isMatchPointZ = false;
+    bool isMatchPointM = false;
+    try
+    {
+      QgsPoint fetchPoint;
+      int res = fetchLayerPoint( e->mapPointMatch(), fetchPoint );
+      isMatchPointZ = QgsWkbTypes::hasZ( fetchPoint.wkbType() );
+      isMatchPointM = QgsWkbTypes::hasM( fetchPoint.wkbType() );
+
+      if ( res == 0 )
+      {
+        QgsWkbTypes::Type geomType = QgsWkbTypes::Type::Point;
+        if ( isMatchPointM && isMatchPointZ )
+        {
+          geomType = QgsWkbTypes::Type::PointZM;
+        }
+        else if ( isMatchPointM )
+        {
+          geomType = QgsWkbTypes::Type::PointM;
+        }
+        else if ( isMatchPointZ )
+        {
+          geomType = QgsWkbTypes::Type::PointZ;
+        }
+        savePoint = QgsPoint( geomType, fetchPoint.x(), fetchPoint.y(), fetchPoint.z(), fetchPoint.m() );
+      }
+      else
+      {
+        QgsPointXY point = mCanvas->mapSettings().mapToLayerCoordinates( layer(), e->mapPoint() );
+
+        savePoint = QgsPoint( point.x(), point.y(), fetchPoint.z(), fetchPoint.m() );
+      }
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse )
+      emit messageEmitted( tr( "Cannot transform the point to the layer's coordinate system" ), Qgis::MessageLevel::Warning );
+      return;
+    }
+
+    QgsGeometry g( std::make_unique<QgsPoint>( savePoint ) );
+
+    // The snapping result needs to be added so it's available in the @snapping_results variable of default value etc. expression contexts
+    addVertex( e->mapPoint(), e->mapPointMatch() );
+
+    geometryCaptured( g );
+
+    stopCapturing();
+
+    // we are done with digitizing for now so instruct advanced digitizing dock to reset its CAD points
+    cadDockWidget()->clearPoints();
+  }
+
+  // LINE AND POLYGON CAPTURING
+  else if ( mode() == CaptureLine || mode() == CapturePolygon )
+  {
+    //add point to list and to rubber band
+    if ( e->button() == Qt::LeftButton )
+    {
+      const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+      if ( error == 2 )
+      {
+        //problem with coordinate transformation
+        emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
+        return;
+      }
+
+      startCapturing();
+    }
+    else if ( e->button() == Qt::RightButton )
+    {
+      // End of string
+      deleteTempRubberBand();
+
+      //lines: bail out if there are not at least two vertices
+      if ( mode() == CaptureLine && size() < 2 )
+      {
+        stopCapturing();
+        return;
+      }
+
+      //polygons: bail out if there are not at least two vertices
+      if ( mode() == CapturePolygon && size() < 3 )
+      {
+        stopCapturing();
+        return;
+      }
+
+      if ( mode() == CapturePolygon || e->modifiers() == Qt::ShiftModifier )
+      {
+        closePolygon();
+      }
+
+      QgsGeometry g;
+
+      //does compoundcurve contain circular strings?
+      //does provider support circular strings?
+      const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+      const bool providerSupportsCurvedSegments = vlayer && ( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries );
+
+      QList<QgsPointLocator::Match> snappingMatchesList;
+      QgsCurve *curveToAdd = nullptr;
+      if ( hasCurvedSegments && providerSupportsCurvedSegments )
+      {
+        curveToAdd = captureCurve()->clone();
+      }
+      else
+      {
+        curveToAdd = captureCurve()->curveToLine();
+        snappingMatchesList = snappingMatches();
+      }
+
+      if ( mode() == CaptureLine )
+      {
+        g = QgsGeometry( curveToAdd );
+      }
+      else
+      {
+        QgsCurvePolygon *poly = nullptr;
+        if ( hasCurvedSegments && providerSupportsCurvedSegments )
+        {
+          poly = new QgsCurvePolygon();
+        }
+        else
+        {
+          poly = new QgsPolygon();
+        }
+        poly->setExteriorRing( curveToAdd );
+        g = QgsGeometry( poly );
+
+        QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+        switch ( QgsProject::instance()->avoidIntersectionsMode() )
+        {
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+            if ( vlayer )
+              avoidIntersectionsLayers.append( vlayer );
+            break;
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+            avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+            break;
+          case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+            break;
+        }
+        if ( avoidIntersectionsLayers.size() > 0 )
+        {
+          const int avoidIntersectionsReturn = g.avoidIntersections( avoidIntersectionsLayers );
+          if ( avoidIntersectionsReturn == 3 )
+          {
+            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
+          }
+          if ( g.isEmpty() ) //avoid intersection might have removed the whole geometry
+          {
+            emit messageEmitted( tr( "The feature cannot be added because its geometry collapsed due to intersection avoidance" ), Qgis::MessageLevel::Critical );
+            stopCapturing();
+            return;
+          }
+        }
+      }
+
+      emit geometryCaptured( g );
+
+      stopCapturing();
+    }
+  }
+}

@@ -46,6 +46,7 @@ QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mo
   mToolName = tr( "Add feature" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddFeature::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddFeature::stopCapturing );
+  connect( this, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsMapToolAddFeature::featureDigitized );
 }
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal )
@@ -61,7 +62,7 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature 
   return res;
 }
 
-void QgsMapToolAddFeature::digitized( const QgsFeature &f )
+void QgsMapToolAddFeature::featureDigitized( const QgsFeature &f )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
   const bool res = addFeature( vlayer, f, false );

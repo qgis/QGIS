@@ -320,6 +320,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void stopCapturing();
 
   private:
+
+    /**
+     * Called when the geometry is captured
+     * \since QGIS 3.24
+     */
+    virtual void geometryCaptured( const QgsGeometry &geometry ) {Q_UNUSED( geometry )} SIP_FORCE
+
     //! whether tracing has been requested by the user
     bool tracingEnabled();
     //! first point that will be used as a start of the trace
@@ -335,7 +342,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! Reset the
     void resetRubberBand();
 
-  private:
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
@@ -394,6 +400,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     friend class TestQgsMapToolCapture;
 
+
+    // QgsMapToolAdvancedDigitizing interface
+  public:
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )

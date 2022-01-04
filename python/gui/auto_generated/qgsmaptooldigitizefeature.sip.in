@@ -61,7 +61,7 @@ Emitted whenever the digitizing has been successfully completed
 :param feature: the new digitized feature
 %End
 
-    void digitizingFinished( );
+    void digitizingFinished();
 %Docstring
 Emitted whenever the digitizing has been ended without digitizing
 any feature
@@ -82,6 +82,7 @@ Check if CaptureMode matches layer type. Default is ``True``.
 
 .. versionadded:: 3.0
 %End
+
 
 };
 

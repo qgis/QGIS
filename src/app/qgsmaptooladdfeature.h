@@ -24,11 +24,13 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
     //! \since QGIS 2.12
     QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode );
 
+  private slots:
+
+    void featureDigitized( const QgsFeature &f );
+
   private:
 
     bool addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal = true );
-
-    void digitized( const QgsFeature &f ) override;
 
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
