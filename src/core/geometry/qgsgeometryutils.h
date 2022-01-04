@@ -686,7 +686,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param segmentPoint1x: x-coordinate of segmentPoint1, the segment's start point
      * \param segmentPoint1y: y-coordinate of segmentPoint1, the segment's start point
      * \param segmentPoint2x: x-coordinate of segmentPoint2, the segment's end point
-     * \param y2: y-coordinate of segmentPoint2, the segment's end point
+     * \param segmentPoint2y: y-coordinate of segmentPoint2, the segment's end point
      * \param perpendicularSegmentPoint1x: x-coordinate of the perpendicularCenterSegment's start point
      * \param perpendicularSegmentPoint1y: y-coordinate of the perpendicularCenterSegment's start point
      * \param perpendicularSegmentPoint2x: x-coordinate of the perpendicularCenterSegment's end point
@@ -694,8 +694,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param segmentLength (optional) Trims to given length. A segmentLength value of 0 refers to the default length which is double the length of the input segment. Set to 1 for a normalized length.
      *
      *
-     * \since QGIS 3.17?
-     *
+     * \since QGIS 3.24
      */
 
     static void perpendicularCenterSegment( double centerPointx, double centerPointy,
