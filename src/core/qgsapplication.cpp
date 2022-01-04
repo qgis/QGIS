@@ -805,7 +805,7 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
   if ( ! icon.isNull( ) )
   {
     // Apply scaling
-    float scale = Qgis::UI_SCALE_FACTOR * app->fontMetrics().height() / 32.0;
+    float scale = Qgis::UI_SCALE_FACTOR * QgsApplication::fontMetrics().height() / 32.0;
     cursorIcon = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )

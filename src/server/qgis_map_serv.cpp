@@ -97,7 +97,7 @@ int main( int argc, char *argv[] )
       response.sendError( 400, "Bad request" );
     }
   }
-  app.exitQgis();
+  QgsApplication::exitQgis();
   return 0;
 }
 

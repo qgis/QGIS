@@ -609,7 +609,7 @@ void QgsSymbolSelectorWidget::addLayer()
                              ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth()
                              : QgsProperty() );
 
-  QgsSymbolLayer *newLayer = QgsApplication::symbolLayerRegistry()->defaultSymbolLayer( parentSymbol->type() );
+  QgsSymbolLayer *newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
   if ( insertIdx == -1 )
     parentSymbol->appendSymbolLayer( newLayer );
   else

@@ -175,7 +175,7 @@ bool QgsMeshEditor::faceCanBeAdded( const QgsMeshFace &face )
     return false;
 
   // Check if there is topological error with the mesh
-  QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
+  QgsTopologicalMesh::TopologicalFaces topologicalFaces = QgsTopologicalMesh::createNewTopologicalFaces( facesToAdd, true, error );
   error = mTopologicalMesh.facesCanBeAdded( topologicalFaces );
 
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
@@ -519,7 +519,7 @@ QVector<QgsMeshFace> QgsMeshEditor::prepareFaces( const QVector<QgsMeshFace> &fa
       break;
     }
 
-    error = mTopologicalMesh.counterClockwiseFaces( face, mMesh );
+    error = QgsTopologicalMesh::counterClockwiseFaces( face, mMesh );
     if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
       break;
   }
@@ -535,7 +535,7 @@ QgsMeshEditingError QgsMeshEditor::addFaces( const QVector<QVector<int> > &faces
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return error;
 
-  QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
+  QgsTopologicalMesh::TopologicalFaces topologicalFaces = QgsTopologicalMesh::createNewTopologicalFaces( facesToAdd, true, error );
 
   error = mTopologicalMesh.facesCanBeAdded( topologicalFaces );
 

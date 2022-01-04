@@ -39,10 +39,8 @@ bool QgsMapToolFillRing::supportsTechnique( QgsMapToolCapture::CaptureTechnique 
   {
     case QgsMapToolCapture::StraightSegments:
     case QgsMapToolCapture::Streaming:
-      return true;
-
     case QgsMapToolCapture::CircularString:
-      return false;
+      return true;
   }
   return false;
 }

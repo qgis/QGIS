@@ -239,7 +239,7 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
     updateListWidget( item );
     lblSchemePath->setText( item->path() );
     lblCollectionInfo->setText( QStringLiteral( "%1 (%2)" ).arg( item->info() ).arg( item->leafCount() ) );
-    updateCopyingInfo( mArchive->copyingInfo( mArchive->copyingFileName( item->path() ) ) );
+    updateCopyingInfo( QgsCptCityArchive::copyingInfo( mArchive->copyingFileName( item->path() ) ) );
   }
   else if ( item->type() == QgsCptCityDataItem::Selection )
   {

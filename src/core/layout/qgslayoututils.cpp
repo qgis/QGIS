@@ -416,7 +416,8 @@ double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem 
 
 double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style, QPainter *painter )
 {
-  return style->levelOfDetailFromTransform( painter->worldTransform() );
+  Q_UNUSED( style );
+  return QStyleOptionGraphicsItem::levelOfDetailFromTransform( painter->worldTransform() );
 }
 
 QgsMapLayer *QgsLayoutUtils::mapLayerFromString( const QString &string, QgsProject *project )

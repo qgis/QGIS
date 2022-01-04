@@ -70,7 +70,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       const auto constProxyFactories = nam->proxyFactories();
       for ( QNetworkProxyFactory *f : constProxyFactories )
       {
-        QList<QNetworkProxy> systemproxies = f->systemProxyForQuery( query );
+        QList<QNetworkProxy> systemproxies = QNetworkProxyFactory::systemProxyForQuery( query );
         if ( !systemproxies.isEmpty() )
           return systemproxies;
 

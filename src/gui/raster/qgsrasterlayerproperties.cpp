@@ -234,6 +234,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     return;
   }
 
+  mBackupCrs = mRasterLayer->crs();
+
   // Handles window modality raising canvas
   if ( mMapCanvas && mRasterTransparencyWidget->pixelSelectorTool() )
   {
@@ -883,6 +885,7 @@ void QgsRasterLayerProperties::apply()
     mRasterLayer->setRenderer( rendererWidget->renderer() );
   }
 
+  mBackupCrs = mRasterLayer->crs();
   mMetadataWidget->acceptMetadata();
   mMetadataFilled = false;
 
@@ -1798,6 +1801,8 @@ void QgsRasterLayerProperties::onCancel()
     mRasterLayer->importNamedStyle( doc, myMessage );
     syncToLayer();
   }
+  if ( mBackupCrs != mRasterLayer->crs() )
+    mRasterLayer->setCrs( mBackupCrs );
 }
 
 void QgsRasterLayerProperties::showHelp()

@@ -235,9 +235,9 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::dataDefinedMaterial() const
 
   //Load shader programs
   const QUrl urlVert( QStringLiteral( "qrc:/shaders/phongDataDefined.vert" ) );
-  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, shaderProgram->loadSource( urlVert ) );
+  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
   const QUrl urlFrag( QStringLiteral( "qrc:/shaders/phongDataDefined.frag" ) );
-  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, shaderProgram->loadSource( urlFrag ) );
+  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
 
   renderPass->setShaderProgram( shaderProgram );
   technique->addRenderPass( renderPass );

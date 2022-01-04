@@ -95,7 +95,7 @@ void QgsStatusBar::clearMessage()
 void QgsStatusBar::setParentStatusBar( QStatusBar *statusBar )
 {
   if ( mParentStatusBar )
-    mParentStatusBar->disconnect( mShowMessageConnection );
+    QStatusBar::disconnect( mShowMessageConnection );
 
   mParentStatusBar = statusBar;
 

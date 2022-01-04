@@ -120,5 +120,5 @@ int main( int argc, char *argv[] )
   canvas->resize( 800, 600 );
   canvas->show();
 
-  return app.exec();
+  return QApplication::exec();
 }

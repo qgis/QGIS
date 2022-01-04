@@ -90,6 +90,8 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void aboutToShowStyleMenu();
     //! Reloads temporal properties from the provider
     void reloadTemporalProperties();
+    //! \brief Called when cancel button is pressed
+    void onCancel();
 
     void onTimeReferenceChange();
 
@@ -128,6 +130,8 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     friend class TestQgsMeshLayerPropertiesDialog;
 
     void showHelp();
+
+    QgsCoordinateReferenceSystem mBackupCrs;
 };
 
 

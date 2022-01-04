@@ -904,7 +904,7 @@ void QgsModelDesignerDialog::validate()
   }
   else
   {
-    QgsMessageBarItem *messageWidget = mMessageBar->createMessage( QString(), tr( "Model is invalid!" ) );
+    QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( QString(), tr( "Model is invalid!" ) );
     QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
     connect( detailsButton, &QPushButton::clicked, detailsButton, [ = ]
     {

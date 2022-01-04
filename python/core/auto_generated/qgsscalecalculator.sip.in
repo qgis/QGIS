@@ -67,6 +67,18 @@ Calculate the scale denominator
 :return: scale denominator of current map view, e.g. 1000.0 for a 1:1000 map.
 %End
 
+    QSizeF calculateImageSize( const QgsRectangle &mapExtent, double scale ) const;
+%Docstring
+Calculate the image size in pixel (physical) units
+
+:param mapExtent: :py:class:`QgsRectangle` containing the current map extent
+:param scale: Scale denominator, e.g. 1000.0 for a 1:1000 map
+
+:return: image size
+
+.. versionadded:: 3.24
+%End
+
     double calculateGeographicDistance( const QgsRectangle &mapExtent ) const;
 %Docstring
 Calculate the distance between two points in geographic coordinates.

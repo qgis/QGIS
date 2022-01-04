@@ -294,5 +294,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsExpressionContext mContext;
 
     friend class QgsAppScreenShots;
+
+    QgsCoordinateReferenceSystem mBackupCrs;
 };
 #endif

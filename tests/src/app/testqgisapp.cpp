@@ -42,6 +42,7 @@ class TestQgisApp : public QObject
     void addVectorLayerGeopackageSingleLayer();
     void addVectorLayerGeopackageSingleLayerAlreadyLayername();
     void addVectorLayerInvalid();
+    void addEmbeddedGroup();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -136,6 +137,23 @@ void TestQgisApp::addVectorLayerInvalid()
   layer = mQgisApp->addVectorLayer( "/vsimem/test.gpkg|layername=invalid_layer_name", "test", QStringLiteral( "ogr" ) );
   QVERIFY( !layer );
 }
+
+void TestQgisApp::addEmbeddedGroup()
+{
+  const QString projectPath = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/joins1.qgs" );
+
+  QCOMPARE( QgsProject::instance()->layers<QgsVectorLayer *>().count(), 0 );
+
+  mQgisApp->addEmbeddedItems( projectPath, QStringList() << QStringLiteral( "GROUP" ), QStringList() );
+
+  QgsVectorLayer *vl = QgsProject::instance()->mapLayer<QgsVectorLayer *>( QStringLiteral( "polys_with_id_32002f94_eebe_40a5_a182_44198ba1bc5a" ) );
+  QCOMPARE( vl->fields().count(), 5 );
+
+  // cleanup
+  QgsProject::instance()->clear();
+}
+
+
 
 QGSTEST_MAIN( TestQgisApp )
 #include "testqgisapp.moc"

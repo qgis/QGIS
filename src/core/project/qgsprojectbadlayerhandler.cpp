@@ -22,11 +22,11 @@
 
 void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
-  QgsApplication::messageLog()->logMessage( QObject::tr( "%1 unavailable layers found:" ).arg( layers.size() ) );
+  QgsMessageLog::logMessage( QObject::tr( "%1 unavailable layers found:" ).arg( layers.size() ) );
   const auto constLayers = layers;
   for ( const QDomNode &layer : constLayers )
   {
-    QgsApplication::messageLog()->logMessage( QObject::tr( " * %1" ).arg( dataSource( layer ) ) );
+    QgsMessageLog::logMessage( QObject::tr( " * %1" ).arg( dataSource( layer ) ) );
   }
 }
 

@@ -180,11 +180,11 @@ void QgsMesh3dMaterial::configure()
 
   //Load shader programs
   const QUrl urlVert( QStringLiteral( "qrc:/shaders/mesh/mesh.vert" ) );
-  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, shaderProgram->loadSource( urlVert ) );
+  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
   const QUrl urlGeom( QStringLiteral( "qrc:/shaders/mesh/mesh.geom" ) );
-  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Geometry, shaderProgram->loadSource( urlGeom ) );
+  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Geometry, Qt3DRender::QShaderProgram::loadSource( urlGeom ) );
   const QUrl urlFrag( QStringLiteral( "qrc:/shaders/mesh/mesh.frag" ) );
-  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, shaderProgram->loadSource( urlFrag ) );
+  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
 
   renderPass->setShaderProgram( shaderProgram );
   mTechnique->addRenderPass( renderPass );
