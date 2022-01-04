@@ -6851,6 +6851,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
                 }
               }
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
               // Check min inscribed circle radius for intersection (if set)
               if ( minInscribedCircleRadius != -1 || requireMeasures )
               {
@@ -6863,6 +6864,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
                 testResult = radiusValue >= minInscribedCircleRadius;
                 radiusValues.append( radiusValues );
               }
+#endif
             }
 
             // Get the max values

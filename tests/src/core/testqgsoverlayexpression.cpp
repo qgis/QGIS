@@ -248,8 +248,6 @@ void TestQgsOverlayExpression::testOverlayMeasure()
   QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
   const QVariant result = exp.evaluate( &context );
 
-  qDebug() << "RES:" << result;
-  qDebug() << "EXP:" << expectedResult;
   QCOMPARE( result, expectedResult );
 
 }
@@ -265,13 +263,16 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   expected3.insert( QStringLiteral( "id" ), 3LL );
   expected3.insert( QStringLiteral( "result" ), 3LL );
   expected3.insert( QStringLiteral( "overlap" ), 1.4033836999701634 );
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   expected3 .insert( QStringLiteral( "radius" ), 0.5344336346973622 );
+#endif
   QVariantMap expected1;
   expected1.insert( QStringLiteral( "id" ), 1LL );
   expected1.insert( QStringLiteral( "result" ), 1LL );
   expected1.insert( QStringLiteral( "overlap" ), 1.2281139270096446 );
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   expected1.insert( QStringLiteral( "radius" ),  0.46454276882989376 );
-
+#endif
   QTest::newRow( "intersects min_overlap multi match return measure" ) << "overlay_intersects('polys', expression:=$id, min_overlap:=1.34, return_measure:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected3 ) ;
 
   QTest::newRow( "intersects multi match return measure" ) << "overlay_intersects('polys', expression:=$id, return_measure:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected1 << expected3 ) ;
