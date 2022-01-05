@@ -103,6 +103,9 @@ void Qgs3DViewsManagerDialog::duplicateClicked()
   QString existingViewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
   QString newViewName = askUserForATitle( existingViewName, tr( "Duplicate" ), false );
 
+  if ( newViewName.isEmpty() )
+    return;
+
   QgisApp::instance()->duplicate3DMapView( existingViewName, newViewName );
 
   QgsProject::instance()->setDirty();
