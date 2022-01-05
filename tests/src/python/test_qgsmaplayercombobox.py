@@ -286,5 +286,6 @@ class TestQgsMapLayerComboBox(unittest.TestCase):
 
         QgsProject.instance().clear()
 
+
 if __name__ == '__main__':
     unittest.main()
