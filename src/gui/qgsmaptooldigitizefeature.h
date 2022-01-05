@@ -85,19 +85,25 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
     void setCheckGeometryType( bool checkGeometryType );
     // TODO QGIS 4: remove if GRASS plugin is dropped
 
-    /**
-     * individual layer per digitizing session
-     * \since QGIS 3.0
-    */
-    QgsMapLayer *mLayer = nullptr;
-
   private:
 
     /**
      * Called when the feature has been digitized.
      * \param geometry the digitized geometry
      */
-    virtual void geometryCaptured( const QgsGeometry &geometry ) override;
+    void geometryCaptured( const QgsGeometry &geometry ) override FINAL;
+
+    /**
+     * Called when the feature has been digitized
+     * \since QGIS 3.24
+     */
+    virtual void featureDigitized( const QgsFeature &feature )  {Q_UNUSED( feature )} SIP_FORCE
+
+    /**
+     * individual layer per digitizing session
+     * \since QGIS 3.0
+    */
+    QgsMapLayer *mLayer = nullptr;
 
     /**
      * layer used before digitizing session

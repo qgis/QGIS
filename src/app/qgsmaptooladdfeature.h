@@ -26,7 +26,7 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
 
   private slots:
 
-    void featureDigitized( const QgsFeature &f );
+    void featureDigitized( const QgsFeature &feature ) override;
 
   private:
 

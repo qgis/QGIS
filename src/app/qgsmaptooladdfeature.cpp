@@ -46,7 +46,6 @@ QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mo
   mToolName = tr( "Add feature" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddFeature::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddFeature::stopCapturing );
-  connect( this, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsMapToolAddFeature::featureDigitized );
 }
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal )
@@ -62,10 +61,10 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature 
   return res;
 }
 
-void QgsMapToolAddFeature::featureDigitized( const QgsFeature &f )
+void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  const bool res = addFeature( vlayer, f, false );
+  const bool res = addFeature( vlayer, feature, false );
 
   if ( res )
   {
@@ -87,7 +86,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &f )
           //can only add topological points if background layer is editable...
           if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
           {
-            vl->addTopologicalPoints( f.geometry() );
+            vl->addTopologicalPoints( feature.geometry() );
           }
         }
       }
@@ -99,10 +98,10 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &f )
       {
         if ( sm.at( i ).layer() )
         {
-          sm.at( i ).layer()->addTopologicalPoints( f.geometry().vertexAt( i ) );
+          sm.at( i ).layer()->addTopologicalPoints( feature.geometry().vertexAt( i ) );
         }
       }
-      vlayer->addTopologicalPoints( f.geometry() );
+      vlayer->addTopologicalPoints( feature.geometry() );
     }
   }
 }

@@ -91,10 +91,11 @@ void QgsMapToolDigitizeFeature::geometryCaptured( const QgsGeometry &geometry )
   {
     layerGeometry = geometry;
   }
-  std::unique_ptr< QgsFeature > f( new QgsFeature( vlayer->fields(), 0 ) );
-  f->setGeometry( layerGeometry );
-  f->setValid( true );
-  emit digitizingCompleted( *f );
+  QgsFeature f( vlayer->fields(), 0 );
+  f.setGeometry( layerGeometry );
+  f.setValid( true );
+  emit digitizingCompleted( f );
+  featureDigitized( f );
 }
 
 void QgsMapToolDigitizeFeature::activate()
