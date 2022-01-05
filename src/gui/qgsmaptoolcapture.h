@@ -34,6 +34,7 @@ class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
 class QgsMapToolCaptureRubberBand;
+class QgsCurvePolygon;
 
 
 /**
@@ -339,6 +340,24 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * \since QGIS 3.24
      */
     virtual void geometryCaptured( const QgsGeometry &geometry ) {Q_UNUSED( geometry )} SIP_FORCE
+
+    /**
+     * Called when a point is captured
+     * \since QGIS 3.24
+     */
+    virtual void pointCaptured( const QgsPoint &point ) {Q_UNUSED( point )} SIP_FORCE
+
+    /**
+     * Called when a line is captured
+     * \since QGIS 3.24
+     */
+    virtual void lineCaptured( QgsCurve *line ) {Q_UNUSED( line )} SIP_FORCE
+
+    /**
+     * Called when a polygon is captured
+     * \since QGIS 3.24
+     */
+    virtual void polygonCaptured( QgsCurvePolygon *polygon ) {Q_UNUSED( polygon )} SIP_FORCE
 
     //! whether tracing has been requested by the user
     bool tracingEnabled();

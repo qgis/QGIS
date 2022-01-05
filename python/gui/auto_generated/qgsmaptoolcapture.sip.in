@@ -332,6 +332,24 @@ Called when the geometry is captured
 
 .. versionadded:: 3.24
 %End
+    virtual void pointCaptured( const QgsPoint &point );
+%Docstring
+Called when a point is captured
+
+.. versionadded:: 3.24
+%End
+    virtual void lineCaptured( QgsCurve *line );
+%Docstring
+Called when a line is captured
+
+.. versionadded:: 3.24
+%End
+    virtual void polygonCaptured( QgsCurvePolygon *polygon );
+%Docstring
+Called when a polygon is captured
+
+.. versionadded:: 3.24
+%End
   public:
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
 

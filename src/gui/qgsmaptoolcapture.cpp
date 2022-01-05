@@ -1167,6 +1167,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     addVertex( e->mapPoint(), e->mapPointMatch() );
 
     geometryCaptured( g );
+    pointCaptured( savePoint );
 
     stopCapturing();
 
@@ -1223,6 +1224,8 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       QList<QgsPointLocator::Match> snappingMatchesList;
       QgsCurve *curveToAdd = nullptr;
+      QgsCurvePolygon *poly = nullptr;
+
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
         curveToAdd = captureCurve()->clone();
@@ -1239,7 +1242,6 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else
       {
-        QgsCurvePolygon *poly = nullptr;
         if ( hasCurvedSegments && providerSupportsCurvedSegments )
         {
           poly = new QgsCurvePolygon();
@@ -1281,6 +1283,14 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
 
       emit geometryCaptured( g );
+      if ( mode() == CaptureLine )
+      {
+        lineCaptured( curveToAdd );
+      }
+      else
+      {
+        polygonCaptured( poly );
+      }
 
       stopCapturing();
     }
