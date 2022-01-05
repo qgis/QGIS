@@ -255,7 +255,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QTreeWidget *mMultiEditTreeWidget = nullptr;
     QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
-    std::unique_ptr<QgsVectorLayerSelectionManager>mFeatureSelectionMgr = nullptr;
+    QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
 
     Buttons mButtonsVisibility = Button::AllButtons;
     bool mShowFirstFeature = true;

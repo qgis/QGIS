@@ -116,6 +116,9 @@ QgsDualView::~QgsDualView()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/qgis/attributeTable/splitterState" ), mConditionalSplitter->saveState() );
+
+  if ( mFeatureSelectionManager && mFeatureSelectionManager->parent() == this )
+    delete mFeatureSelectionManager;
 }
 
 void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request,
