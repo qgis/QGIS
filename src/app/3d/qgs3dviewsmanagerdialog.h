@@ -40,7 +40,7 @@ class Qgs3DViewsManagerDialog : public QDialog, private Ui::Qgs3DViewsManagerDia
     void removeClicked();
     void renameClicked();
 
-    void showHideButtonStateChanged( const QModelIndex &current, const QModelIndex &previous );
+    void currentChanged( const QModelIndex &current, const QModelIndex &previous );
 
     void onViewsListChanged();
   private:

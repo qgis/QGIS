@@ -44,9 +44,11 @@ Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFla
   mShowButton->setEnabled( false );
   mHideButton->setEnabled( false );
 
-  connect( m3DViewsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &Qgs3DViewsManagerDialog::showHideButtonStateChanged );
+  connect( m3DViewsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &Qgs3DViewsManagerDialog::currentChanged );
 
   connect( QgsProject::instance()->views3DManager(), &Qgs3DViewsManager::viewsListChanged, this, &Qgs3DViewsManagerDialog::onViewsListChanged );
+  m3DViewsListView->selectionModel()->setCurrentIndex( m3DViewsListView->model()->index( 0, 0 ), QItemSelectionModel::Select );
+  currentChanged( m3DViewsListView->selectionModel()->currentIndex(), m3DViewsListView->selectionModel()->currentIndex() );
 }
 
 void Qgs3DViewsManagerDialog::onViewsListChanged()
@@ -73,7 +75,7 @@ void Qgs3DViewsManagerDialog::showClicked()
     widget->show();
     QgsProject::instance()->setDirty();
   }
-
+  currentChanged( m3DViewsListView->selectionModel()->currentIndex(), m3DViewsListView->selectionModel()->currentIndex() );
 }
 
 void Qgs3DViewsManagerDialog::hideClicked()
@@ -90,6 +92,7 @@ void Qgs3DViewsManagerDialog::hideClicked()
   }
 
   QgsProject::instance()->setDirty();
+  currentChanged( m3DViewsListView->selectionModel()->currentIndex(), m3DViewsListView->selectionModel()->currentIndex() );
 }
 
 void Qgs3DViewsManagerDialog::duplicateClicked()
@@ -148,9 +151,13 @@ void Qgs3DViewsManagerDialog::renameClicked()
   QgsProject::instance()->setDirty();
 }
 
-void Qgs3DViewsManagerDialog::showHideButtonStateChanged( const QModelIndex &current, const QModelIndex &previous )
+void Qgs3DViewsManagerDialog::currentChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous );
+
+  mRenameButton->setEnabled( current.isValid() );
+  mRemoveButton->setEnabled( current.isValid() );
+  mDuplicateButton->setEnabled( current.isValid() );
   if ( !current.isValid() )
   {
     mShowButton->setEnabled( false );
