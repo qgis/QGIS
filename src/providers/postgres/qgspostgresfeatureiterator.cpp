@@ -1000,7 +1000,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
       }
       else //geometry
       {
-        v = QgsPostgresProvider::convertValue(fld.type(), fld.subType(), queryResult.PQgetvalue(row, col), fld.typeName(), mConn);
+        v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName(), mConn );
       }
       break;
     }

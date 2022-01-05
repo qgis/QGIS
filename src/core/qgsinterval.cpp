@@ -212,10 +212,10 @@ QgsInterval QgsInterval::fromString( const QString &string )
 {
   double seconds = 0;
   const thread_local QRegularExpression rx( "([-+]?\\d*\\.?\\d+\\s+\\S+)", QRegularExpression::CaseInsensitiveOption );
-  const thread_local QRegularExpression rxtime(".*(\\d{1,2}:){2}\\d{1,2}.*", QRegularExpression::CaseInsensitiveOption);
+  const thread_local QRegularExpression rxtime( ".*( \\d{1,2}:){2}\\d{1,2}.*", QRegularExpression::CaseInsensitiveOption );
 
-  QRegularExpressionMatch matchtime = rxtime.match(string);
-  QString modedString = QString(string);
+  QRegularExpressionMatch matchtime = rxtime.match( string );
+  QString modedString = QString( string );
   if (matchtime.hasMatch() && std::count(modedString.begin(), modedString.end(), ':') == 2 ) //some part of the string contains 00:00:00 style duration
   {
     // Get the first occurrence
@@ -227,12 +227,12 @@ QgsInterval QgsInterval::fromString( const QString &string )
   }
   QStringList list;
   int pos = 0;
-  QRegularExpressionMatch match = rx.match(modedString);
+  QRegularExpressionMatch match = rx.match( modedString );
   while ( match.hasMatch() )
   {
     list << match.captured( 1 );
     pos = match.capturedStart() + match.capturedLength();
-    match = rx.match(modedString, pos );
+    match = rx.match( modedString, pos );
   }
 
   QMap<int, QStringList> map;
@@ -241,7 +241,7 @@ QgsInterval QgsInterval::fromString( const QString &string )
   map.insert( 0 + HOUR, QStringList() << QStringLiteral( "hour" ) << QStringLiteral( "hours" ) << QObject::tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( '|' ) );
   map.insert( 0 + DAY, QStringList() << QStringLiteral( "day" ) << QStringLiteral( "days" ) << QObject::tr( "day|days", "list of words separated by | which reference days" ).split( '|' ) );
   map.insert( 0 + WEEKS, QStringList() << QStringLiteral( "week" ) << QStringLiteral( "weeks" ) << QObject::tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( '|' ) );
-  map.insert(0 + MONTHS, QStringList() << QStringLiteral("month") << QStringLiteral("months") << QStringLiteral("mon") << QObject::tr("month|months|mon", "list of words separated by | which reference months").split('|'));
+  map.insert( 0 + MONTHS, QStringList() << QStringLiteral( "month" ) << QStringLiteral( "months" ) << QStringLiteral( "mon" ) << QObject::tr( "month|months|mon", "list of words separated by | which reference months" ).split( '|' ) );
   map.insert( 0 + YEARS, QStringList() << QStringLiteral( "year" ) << QStringLiteral( "years" ) << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( '|' ) );
 
   const auto constList = list;
