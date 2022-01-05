@@ -144,7 +144,7 @@ json QgsMultiPolygon::asJsonObject( int precision ) const
 
 bool QgsMultiPolygon::addGeometry( QgsAbstractGeometry *g )
 {
-  if ( !qgsgeometry_cast<QgsPolygon *>( g ) )
+  if ( !qgsgeometry_cast<QgsCurvePolygon *>( g ) )
   {
     delete g;
     return false;
