@@ -39,6 +39,12 @@ void QgsMapLayerComboBox::setExcludedProviders( const QStringList &providers )
   mProxyModel->setExcludedProviders( providers );
 }
 
+void  QgsMapLayerComboBox::setProject( QgsProject *project )
+{
+  mProxyModel->setProject( project );
+}
+
+
 QStringList QgsMapLayerComboBox::excludedProviders() const
 {
   return mProxyModel->excludedProviders();

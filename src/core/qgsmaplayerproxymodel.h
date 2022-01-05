@@ -24,6 +24,7 @@
 
 class QgsMapLayerModel;
 class QgsMapLayer;
+class QgsProject;
 
 /**
  * \ingroup core
@@ -87,6 +88,13 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * \since QGIS 2.3
      */
     const Filters &filters() const { return mFilters; }
+
+    /**
+     * Sets the QgsProject from which map layers are shown
+     *
+     * \since QGIS 3.24
+     */
+    void setProject( QgsProject *project );
 
     /**
      * Returns if the \a layer matches the given \a filters
