@@ -278,10 +278,10 @@ class TestQgsMapLayerComboBox(unittest.TestCase):
 
         self.assertEqual(cb.currentLayer(), lA)
 
-        m.setProject(projectB)
+        cb.setProject(projectB)
         self.assertEqual(cb.currentLayer(), lB)
 
-        m.setProject(projectA)
+        cb.setProject(projectA)
         self.assertEqual(cb.currentLayer(), lA)
 
         QgsProject.instance().clear()
