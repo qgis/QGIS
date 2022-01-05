@@ -87,7 +87,7 @@ QgsRubberBand *QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geome
   return rb;
 }
 
-QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
+QgsVectorLayer *QgsMapToolEdit::currentVectorLayer() const
 {
   return mCanvas ? qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) : nullptr;
 }
@@ -162,12 +162,12 @@ QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
   return rb;
 }
 
-void QgsMapToolEdit::notifyNotVectorLayer()
+void QgsMapToolEdit::notifyNotVectorLayer() const
 {
   emit messageEmitted( tr( "No active vector layer" ) );
 }
 
-void QgsMapToolEdit::notifyNotEditableLayer()
+void QgsMapToolEdit::notifyNotEditableLayer() const
 {
   emit messageEmitted( tr( "Layer not editable" ) );
 }

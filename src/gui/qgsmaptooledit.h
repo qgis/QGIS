@@ -83,7 +83,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const SIP_FACTORY;
 
     //! Returns the current vector layer of the map canvas or 0
-    QgsVectorLayer *currentVectorLayer();
+    QgsVectorLayer *currentVectorLayer() const;
 
     //! Result of addTopologicalPoints
     enum TopologicalResult
@@ -108,9 +108,9 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     TopologicalResult addTopologicalPoints( const QVector<QgsPoint> &vertices );
 
     //! Display a timed message bar noting the active layer is not vector.
-    void notifyNotVectorLayer();
+    void notifyNotVectorLayer() const;
     //! Display a timed message bar noting the active vector layer is not editable.
-    void notifyNotEditableLayer();
+    void notifyNotEditableLayer() const;
 
   private:
     //! Returns a list of layers filtered to just editable spatial vector layers

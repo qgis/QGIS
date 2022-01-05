@@ -64,7 +64,7 @@ returned object
 
     QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const /Factory/;
 
-    QgsVectorLayer *currentVectorLayer();
+    QgsVectorLayer *currentVectorLayer() const;
 %Docstring
 Returns the current vector layer of the map canvas or 0
 %End
@@ -93,11 +93,11 @@ The ``vertices`` list specifies a set of topological points to add, in the layer
 .. versionadded:: 3.10
 %End
 
-    void notifyNotVectorLayer();
+    void notifyNotVectorLayer() const;
 %Docstring
 Display a timed message bar noting the active layer is not vector.
 %End
-    void notifyNotEditableLayer();
+    void notifyNotEditableLayer() const;
 %Docstring
 Display a timed message bar noting the active vector layer is not editable.
 %End
