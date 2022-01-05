@@ -2332,15 +2332,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Reads 3D view settings from DOM element
-     * \since QGIS 3.24
      * \sa write3DMapViewSettings()
+     * \since QGIS 3.24
      */
     void read3DMapViewSettings( Qgs3DMapCanvasDockWidget *widget, QDomElement &elem3DMap );
 
     /**
      * Writes 3D view settings into DOM element
-     * \since QGIS 3.24
      * \sa read3DMapViewSettings()
+     * \since QGIS 3.24
      */
     void write3DMapViewSettings( Qgs3DMapCanvasDockWidget *widget, QDomDocument &doc, QDomElement &elem3DMap );
 #endif
