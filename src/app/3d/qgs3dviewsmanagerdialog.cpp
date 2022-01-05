@@ -150,6 +150,7 @@ void Qgs3DViewsManagerDialog::renameClicked()
 
 void Qgs3DViewsManagerDialog::showHideButtonStateChanged( const QModelIndex &current, const QModelIndex &previous )
 {
+  Q_UNUSED( previous );
   if ( !current.isValid() )
   {
     mShowButton->setEnabled( false );
