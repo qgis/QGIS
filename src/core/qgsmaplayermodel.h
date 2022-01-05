@@ -77,7 +77,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setItemsCheckable( bool checkable );
 
     /**
-     * Sets tje QgsProject from which map layers are shown
+     * Sets the QgsProject from which map layers are shown
      *
      * \since QGIS 3.24
      */
