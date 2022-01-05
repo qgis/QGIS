@@ -37,6 +37,7 @@
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 
+#include <QtMath>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QRenderSettings>
 
@@ -63,6 +64,51 @@ QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene
   };
 
   const QMetaObject::Connection conn1 = QObject::connect( &engine, &QgsAbstract3DEngine::imageCaptured, saveImageFcn );
+  QMetaObject::Connection conn2;
+
+  if ( scene->sceneState() == Qgs3DMapScene::Ready )
+  {
+    requestImageFcn();
+  }
+  else
+  {
+    // first wait until scene is loaded
+    conn2 = QObject::connect( scene, &Qgs3DMapScene::sceneStateChanged, requestImageFcn );
+  }
+
+  evLoop.exec();
+
+  QObject::disconnect( conn1 );
+  if ( conn2 )
+    QObject::disconnect( conn2 );
+
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
+  return resImage;
+}
+
+QImage Qgs3DUtils::captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
+{
+  QImage resImage;
+  QEventLoop evLoop;
+
+  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
+
+  auto requestImageFcn = [&engine, scene]
+  {
+    if ( scene->sceneState() == Qgs3DMapScene::Ready )
+    {
+      engine.requestCaptureImage();
+    }
+  };
+
+  auto saveImageFcn = [&evLoop, &resImage]( const QImage & img )
+  {
+    resImage = img;
+    evLoop.quit();
+  };
+
+  QMetaObject::Connection conn1 = QObject::connect( &engine, &QgsAbstract3DEngine::imageCaptured, saveImageFcn );
   QMetaObject::Connection conn2;
 
   if ( scene->sceneState() == Qgs3DMapScene::Ready )
@@ -595,4 +641,40 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
   rayDirWorld = rayDirWorld.normalized();
 
   return QgsRay3D( QVector3D( rayOriginWorld ), rayDirWorld );
+}
+
+QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
+{
+  double near = camera->nearPlane();
+  double far = camera->farPlane();
+  double distance = ( 2.0 * near * far ) / ( far + near - ( depth * 2 - 1 ) * ( far - near ) );
+
+  QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, screenSize, camera );
+  double dot = QVector3D::dotProduct( ray.direction(), camera->viewVector().normalized() );
+  distance /= dot;
+
+  return ray.origin() + distance * ray.direction();
+}
+
+void Qgs3DUtils::pitchAndYawFromViewVector( QVector3D vect, double &pitch, double &yaw )
+{
+  vect.normalize();
+
+  pitch = qRadiansToDegrees( qAcos( vect.y() ) );
+  yaw = qRadiansToDegrees( qAtan2( -vect.z(), vect.x() ) ) + 90;
+}
+
+QVector2D Qgs3DUtils::screenToTextureCoordinates( QVector2D screenXY, QSize winSize )
+{
+  return QVector2D( screenXY.x() / winSize.width(), 1 - screenXY.y() / winSize.width() );
+}
+
+QVector2D Qgs3DUtils::textureToScreenCoordinates( QVector2D textureXY, QSize winSize )
+{
+  return QVector2D( textureXY.x() * winSize.width(), ( 1 - textureXY.y() ) * winSize.height() );
+}
+
+double Qgs3DUtils::decodeDepth( const QColor &pixel )
+{
+  return pixel.redF() / 255.0 / 255.0 + pixel.greenF() / 255.0 + pixel.blueF();
 }
