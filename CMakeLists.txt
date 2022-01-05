@@ -156,6 +156,7 @@ if(WITH_CORE)
   set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 
   set (NATIVE_CRSSYNC_BIN "" CACHE PATH "Path to a natively compiled synccrsdb binary. If set, crssync will not build but use provided bin instead.")
+  mark_as_advanced (NATIVE_CRSSYNC_BIN)
 
   # try to configure and build python bindings by default
   set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
