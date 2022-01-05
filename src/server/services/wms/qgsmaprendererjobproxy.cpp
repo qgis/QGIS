@@ -56,17 +56,20 @@ namespace QgsWms
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       renderJob.setFeatureFilterProvider( mFeatureFilterProvider );
 #endif
-      renderJob.start();
 
       // Allows the main thread to manage blocking call coming from rendering
       // threads (see discussion in https://github.com/qgis/QGIS/issues/26819).
       QEventLoop loop;
       QObject::connect( &renderJob, &QgsMapRendererParallelJob::finished, &loop, &QEventLoop::quit );
-      loop.exec();
+      renderJob.start();
+      if ( renderJob.isActive() )
+      {
+        loop.exec();
 
-      renderJob.waitForFinished();
-      *image = renderJob.renderedImage();
-      mPainter.reset( new QPainter( image ) );
+        renderJob.waitForFinished();
+        *image = renderJob.renderedImage();
+        mPainter.reset( new QPainter( image ) );
+      }
 
       mErrors = renderJob.errors();
     }
