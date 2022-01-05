@@ -16,6 +16,8 @@
 #include "qgsmaptoolcapture.h"
 #include "qgis_app.h"
 
+class QgsCurvePolygon;
+
 //! A map tool that adds new parts to multipart features
 class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
 {
@@ -32,6 +34,16 @@ class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
     void activate() override;
 
   private:
-    //! Check if there is any feature selected and the layer supports adding the part
-    bool checkSelection();
+
+    /**
+     * Check if there is any feature selected and the layer supports adding the part
+     * Returns a nullptr otherwise
+     */
+    QgsVectorLayer *getLayerAndCheckSelection();
+
+    void pointCaptured( const QgsPoint &point ) override;
+    void lineCaptured( QgsCurve *line ) override;
+    void polygonCaptured( QgsCurvePolygon *polygon ) override;
+
+    void finalizeEditCommand( QgsVectorLayer *layer, Qgis::GeometryOperationResult errorCode );
 };
