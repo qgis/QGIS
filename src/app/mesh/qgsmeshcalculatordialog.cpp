@@ -372,6 +372,10 @@ void QgsMeshCalculatorDialog::onOutputFormatChange()
     filter.append( QStringLiteral( " (*.%1)" ).arg( suffix ) );
     mOutputDatasetFileWidget->setFilter( filter );
   }
+  else
+  {
+    mOutputDatasetFileWidget->setFilter( tr( "All Files (*)" ) );
+  }
 }
 
 QString QgsMeshCalculatorDialog::datasetGroupName( const QModelIndex &index ) const
