@@ -71,6 +71,13 @@ Returns the filter flags which affect how layers are filtered within the model.
 .. versionadded:: 2.3
 %End
 
+    void setProject( QgsProject *project );
+%Docstring
+Sets the :py:class:`QgsProject` from which map layers are shown
+
+.. versionadded:: 3.24
+%End
+
     static bool layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters );
 %Docstring
 Returns if the ``layer`` matches the given ``filters``

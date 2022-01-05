@@ -264,6 +264,22 @@ class TestQgsMapLayerComboBox(unittest.TestCase):
         self.assertEqual(m.itemText(3), 'a')
         self.assertEqual(m.itemText(4), 'b')
 
+    def testProject(self):
+        QgsProject.instance().clear()
+        lA = create_layer('lA')
+        lB = create_layer('lB')
+        QgsProject.instance().addMapLayer(lA)
+        projectB = QgsProject()
+        projectB.addMapLayer(lB)
+        cb = QgsMapLayerComboBox()
+        self.assertEqual(cb.currentLayer(), lA)
+
+        m.setProject(projectB)
+        self.assertEqual(cb.currentLayer(), lB)
+
+        m.setProject(projectA)
+        self.assertEqual(cb.currentLayer(), lA)
+
 
 if __name__ == '__main__':
     unittest.main()

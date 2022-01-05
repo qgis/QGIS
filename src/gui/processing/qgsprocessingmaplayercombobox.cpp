@@ -373,6 +373,7 @@ QVariant QgsProcessingMapLayerComboBox::value() const
 void QgsProcessingMapLayerComboBox::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
 {
   mBrowserModel = context.browserModel();
+  mCombo->setProject( context.project() );
 }
 
 void QgsProcessingMapLayerComboBox::setEditable( bool editable )

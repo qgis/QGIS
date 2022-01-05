@@ -74,6 +74,14 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     QStringList excludedProviders() const;
 
     /**
+     * Sets the QgsProject from which map layers are shown
+     *
+     * \since QGIS 3.24
+     */
+    void setProject( QgsProject *project );
+
+
+    /**
      * Sets whether an optional empty layer ("not set") option is shown in the combo box.
      *
      * Since QGIS 3.20, the optional \a text and \a icon arguments allows the text and icon for the empty layer item to be set.
