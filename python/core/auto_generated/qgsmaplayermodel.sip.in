@@ -58,7 +58,7 @@ setItemsCheckable defines if layers should be selectable in the widget
 
     void setProject( QgsProject *project );
 %Docstring
-Sets tje :py:class:`QgsProject` from which map layers are shown
+Sets the :py:class:`QgsProject` from which map layers are shown
 
 .. versionadded:: 3.24
 %End
