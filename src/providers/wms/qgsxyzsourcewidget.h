@@ -21,6 +21,8 @@
 #include "ui_qgsxyzsourcewidgetbase.h"
 #include <QVariantMap>
 
+class QgsWMSEncodingSchemeWidget;
+
 class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSourceWidgetBase
 {
     Q_OBJECT
@@ -54,6 +56,9 @@ class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSou
     void setTilePixelRatio( int ratio );
     int tilePixelRatio() const;
 
+    void setEncodingScheme( const QString &encodingSchemeKey );
+    QString encodingScheme() const;
+
   private slots:
 
     void validate();
@@ -62,6 +67,8 @@ class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSou
 
     QVariantMap mSourceParts;
     bool mIsValid = false;
+
+    QgsWMSEncodingSchemeWidget *mEncodingSchemeWidget = nullptr;
 };
 
 #endif // QGGXYZSOURCEWIDGET_H

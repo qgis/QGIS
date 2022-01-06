@@ -99,6 +99,41 @@ class QgsCachedImageFetcher: public QgsImageFetcher
     }
 };
 
+//! Abstract class to convert color to float value following encoding scheme
+class QgsWmsConverter
+{
+  public:
+    virtual ~QgsWmsConverter() = default;
+
+    //! Convert the \a color to a value pointed by float
+    virtual void convert( const QRgb &color, float *converted ) const = 0;
+
+    //! Returns the output datatype of this converter
+    virtual Qgis::DataType dataType() const;
+
+    //! Returns statistics related to converted values
+    virtual QgsRasterBandStats statistics() const = 0;
+
+    //! Returns the histogram related to converted values
+    virtual QgsRasterHistogram histogram() const = 0;
+
+    //! Creates a converter instance corresponding to the \a key
+    static QgsWmsConverter *createConverter( const QString &key );
+};
+
+
+//! Abstract class to convert color to float value following the mapTiler terrain RGB encoding scheme
+class QgsWmsConverterMapTilerTerrainRGB : public QgsWmsConverter
+{
+  public:
+    void convert( const QRgb &color, float *converted ) const override;
+
+    QgsRasterBandStats statistics() const override;
+    QgsRasterHistogram histogram() const override;
+
+    static QString displayName() {return QObject::tr( "MapTiler Terrain RGB" );}
+    static QString encodingSchemeKey() {return QStringLiteral( "maptilerterrain" );}
+};
 
 /**
  *
@@ -218,6 +253,21 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
     QList< double > nativeResolutions() const override;
     QgsLayerMetadata layerMetadata() const override;
+
+    //! Statitics could be available if the provider has a converter from colors to other value type, the returned statistics depend on the converter
+    QgsRasterBandStats bandStatistics( int bandNo,
+                                       int stats = QgsRasterBandStats::All,
+                                       const QgsRectangle &extent = QgsRectangle(),
+                                       int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
+
+    virtual QgsRasterHistogram histogram( int bandNo,
+                                          int binCount = 0,
+                                          double minimum = std::numeric_limits<double>::quiet_NaN(),
+                                          double maximum = std::numeric_limits<double>::quiet_NaN(),
+                                          const QgsRectangle &extent = QgsRectangle(),
+                                          int sampleSize = 0,
+                                          bool includeOutOfRange = false,
+                                          QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
@@ -491,6 +541,8 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     QgsDateTimeRange mRange;
 
     QList< double > mNativeResolutions;
+
+    std::unique_ptr<QgsWmsConverter> mConverter;
 
     friend class TestQgsWmsProvider;
 

@@ -143,6 +143,9 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     tabLayers->layout()->removeWidget( gbCRS );
   }
 
+  mEncodingSchemeWidget = new QgsWMSEncodingSchemeWidget( this );
+  mEncodingSchemeLayout->addWidget( mEncodingSchemeWidget );
+
   clear();
 
   // set up the WMS connections we already know about
@@ -284,6 +287,8 @@ void QgsWMSSourceSelect::clear()
   }
 
   mFeatureCount->setEnabled( false );
+
+  mEncodingSchemeWidget->setEncodingScheme( QString() );
 }
 
 bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabilities )
@@ -598,6 +603,9 @@ void QgsWMSSourceSelect::addButtonClicked()
   {
     uri.setParam( QStringLiteral( "featureCount" ), mFeatureCount->text() );
   }
+
+  if ( tabTilesets->isEnabled() && !mEncodingSchemeWidget->encodingScheme().isEmpty() )
+    uri.setParam( QStringLiteral( "encodingScheme" ), mEncodingSchemeWidget->encodingScheme() );
 
   uri.setParam( QStringLiteral( "contextualWMSLegend" ), mContextualLegendCheckbox->isChecked() ? "1" : "0" );
 
@@ -1307,4 +1315,55 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList &newLayerList, c
 void QgsWMSSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
+}
+
+QgsWMSEncodingSchemeWidget::QgsWMSEncodingSchemeWidget( QWidget *parent ): QWidget( parent )
+{
+  QHBoxLayout *lay = new QHBoxLayout( this );
+  lay->setContentsMargins( 0, 0, 0, 0 );
+  setLayout( lay );
+  mCheckBox = new QCheckBox( this );
+  mCheckBox->setText( tr( "Convert to single band raster" ) );
+  mCheckBox->setChecked( false );
+  layout()->addWidget( mCheckBox );
+
+  mCombo = new QComboBox( this );
+  mCombo->setEnabled( false );
+  layout()->addWidget( mCombo );
+
+  connect( mCheckBox, &QAbstractButton::toggled, mCombo, &QComboBox::setEnabled );
+
+  populateEncodingScheme();
+}
+
+void QgsWMSEncodingSchemeWidget::populateEncodingScheme()
+{
+  mCombo->addItem( QgsWmsConverterMapTilerTerrainRGB::displayName(), QgsWmsConverterMapTilerTerrainRGB::encodingSchemeKey() );
+}
+
+void QgsWMSEncodingSchemeWidget::setEncodingScheme( const QString &encodingSchemeKey )
+{
+  bool checked = false;
+  if ( ! encodingSchemeKey.isEmpty() )
+  {
+    int index = mCombo->findData( encodingSchemeKey );
+    if ( index != -1 )
+    {
+      checked = true;
+      mCombo->setCurrentIndex( index );
+    }
+    else
+      checked = false;
+  }
+
+  mCheckBox->setChecked( checked );
+  mCombo->setEnabled( checked );
+}
+
+QString QgsWMSEncodingSchemeWidget::encodingScheme() const
+{
+  if ( mCheckBox->isChecked() )
+    return mCombo->currentData().toString();
+
+  return QString();
 }
