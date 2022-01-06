@@ -681,8 +681,8 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * The result is a line (segment) centered in point p and perpendicular to segment [segmentPoint1, segmentPoint2].
      *
-     * \param centerPointx x-coordinate of the point where the center of the perpendicular should be located
-     * \param centerPointy y-coordinate of the point where the center of the perpendicular should be located
+     * \param centerPointX x-coordinate of the point where the center of the perpendicular should be located
+     * \param centerPointY y-coordinate of the point where the center of the perpendicular should be located
      * \param segmentPoint1x: x-coordinate of segmentPoint1, the segment's start point
      * \param segmentPoint1y: y-coordinate of segmentPoint1, the segment's start point
      * \param segmentPoint2x: x-coordinate of segmentPoint2, the segment's end point
@@ -697,7 +697,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 3.24
      */
 
-    static void perpendicularCenterSegment( double centerPointx, double centerPointy,
+    static void perpendicularCenterSegment( double centerPointX, double centerPointY,
                                             double segmentPoint1x, double segmentPoint1y,
                                             double segmentPoint2x, double segmentPoint2y,
                                             double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
