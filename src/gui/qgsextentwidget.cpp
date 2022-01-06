@@ -83,12 +83,8 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   mMenu->addAction( mDrawOnCanvasAction );
   mMenu->addAction( mUseCurrentExtentAction );
 
-  mCondensedToolButton->setToolTip( tr( "Set to current map canvas extent" ) );
-  mCondensedToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
-  connect( mCondensedToolButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromCurrent );
-
   mCondensedToolButton->setMenu( mMenu );
-  mCondensedToolButton->setPopupMode( QToolButton::MenuButtonPopup );
+  mCondensedToolButton->setPopupMode( QToolButton::InstantPopup );
 
   mXMinLineEdit->setValidator( new QgsDoubleValidator( this ) );
   mXMaxLineEdit->setValidator( new QgsDoubleValidator( this ) );
@@ -539,6 +535,11 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
     mUseCanvasExtentAction->setVisible( true );
     if ( drawOnCanvasOption )
       mDrawOnCanvasAction->setVisible( true );
+
+    mCondensedToolButton->setToolTip( tr( "Set to current map canvas extent" ) );
+    mCondensedToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+    connect( mCondensedToolButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromCurrent );
+    mCondensedToolButton->setPopupMode( QToolButton::MenuButtonPopup );
   }
   else
   {
@@ -546,6 +547,11 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
     mCurrentExtentButton->setVisible( false );
     mUseCanvasExtentAction->setVisible( false );
     mUseCanvasExtentAction->setVisible( false );
+
+    mCondensedToolButton->setToolTip( QString() );
+    mCondensedToolButton->setIcon( QIcon() );
+    disconnect( mCondensedToolButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromCurrent );
+    mCondensedToolButton->setPopupMode( QToolButton::InstantPopup );
   }
 }
 
