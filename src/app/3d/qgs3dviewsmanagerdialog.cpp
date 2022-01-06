@@ -19,7 +19,7 @@
 #include "qgs3dmapcanvasdockwidget.h"
 #include "qgsnewnamedialog.h"
 #include "qgs3dmapcanvas.h"
-#include "qgs3dviewsmanager.h"
+#include "qgsmapviewsmanager.h"
 
 #include <QMessageBox>
 
@@ -46,7 +46,7 @@ Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFla
 
   connect( m3DViewsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &Qgs3DViewsManagerDialog::currentChanged );
 
-  connect( QgsProject::instance()->views3DManager(), &Qgs3DViewsManager::viewsListChanged, this, &Qgs3DViewsManagerDialog::onViewsListChanged );
+  connect( QgsProject::instance()->get3DViewsManager(), &QgsMapViewsManager::viewsListChanged, this, &Qgs3DViewsManagerDialog::onViewsListChanged );
   m3DViewsListView->selectionModel()->setCurrentIndex( m3DViewsListView->model()->index( 0, 0 ), QItemSelectionModel::Select );
   currentChanged( m3DViewsListView->selectionModel()->currentIndex(), m3DViewsListView->selectionModel()->currentIndex() );
 }
@@ -63,18 +63,11 @@ void Qgs3DViewsManagerDialog::showClicked()
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
-  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "DockObject" ) );
+  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->open3DMapView( viewName );
+  QgsProject::instance()->setDirty();
+  widget->show();
 
-  if ( !widget )
-  {
-    widget = QgisApp::instance()->open3DMapView( viewName );
-  }
-
-  if ( widget )
-  {
-    widget->show();
-    QgsProject::instance()->setDirty();
-  }
+  m3DViewsListView->selectionModel()->setCurrentIndex( m3DViewsListView->selectionModel()->currentIndex(), QItemSelectionModel::Select );
   currentChanged( m3DViewsListView->selectionModel()->currentIndex(), m3DViewsListView->selectionModel()->currentIndex() );
 }
 
@@ -85,13 +78,12 @@ void Qgs3DViewsManagerDialog::hideClicked()
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
-  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "DockObject" ) );
-  if ( widget )
-  {
-    widget->close();
-  }
+  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->get3DMapViewDock( viewName );
+  widget->close();
 
   QgsProject::instance()->setDirty();
+
+  m3DViewsListView->selectionModel()->setCurrentIndex( m3DViewsListView->selectionModel()->currentIndex(), QItemSelectionModel::Select );
   currentChanged( m3DViewsListView->selectionModel()->currentIndex(), m3DViewsListView->selectionModel()->currentIndex() );
 }
 
@@ -124,11 +116,12 @@ void Qgs3DViewsManagerDialog::removeClicked()
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
-  QgsProject::instance()->views3DManager()->remove3DView( viewName );
-  if ( Qgs3DMapCanvasDockWidget *w = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "DockObject" ) ) )
+  QgsProject::instance()->get3DViewsManager()->removeView( viewName );
+  if ( Qgs3DMapCanvasDockWidget *w = QgisApp::instance()->get3DMapViewDock( viewName ) )
+  {
     w->close();
-
-  QgsProject::instance()->setDirty();
+    QgsProject::instance()->setDirty();
+  }
 }
 
 void Qgs3DViewsManagerDialog::renameClicked()
@@ -142,12 +135,11 @@ void Qgs3DViewsManagerDialog::renameClicked()
   if ( newTitle.isEmpty() )
     return;
 
-  QgsProject::instance()->views3DManager()->rename3DView( oldTitle, newTitle );
+  QgsProject::instance()->get3DViewsManager()->renameView( oldTitle, newTitle );
 
-  if ( Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( oldTitle + QStringLiteral( "DockObject" ) ) )
+  if ( Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->get3DMapViewDock( oldTitle ) )
   {
     widget->setWindowTitle( newTitle );
-    widget->setObjectName( newTitle + QStringLiteral( "DockObject" ) );
     widget->mapCanvas3D()->setObjectName( newTitle );
   }
 
@@ -169,14 +161,15 @@ void Qgs3DViewsManagerDialog::currentChanged( const QModelIndex &current, const 
   }
 
   QString viewName = current.data( Qt::DisplayRole ).toString();
-  bool isOpen = QgsProject::instance()->views3DManager()->get3DViewSettings( viewName ).attribute( QStringLiteral( "isOpen" ), QStringLiteral( "0" ) ).toInt() == 1;
+  bool isOpen = QgsProject::instance()->get3DViewsManager()->isViewOpen( viewName );
   mShowButton->setEnabled( !isOpen );
   mHideButton->setEnabled( isOpen );
 }
 
 void Qgs3DViewsManagerDialog::reload()
 {
-  QStringList names = QgsProject::instance()->views3DManager()->get3DViewsNames();
+  QStringList names = QgsProject::instance()->get3DViewsManager()->getViewsNames();
+  qDebug() << __PRETTY_FUNCTION__ << " " << names;
   mListModel->setStringList( names );
 }
 
