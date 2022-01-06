@@ -1282,7 +1282,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         }
       }
 
-      emit geometryCaptured( g );
+      geometryCaptured( g );
       if ( mode() == CaptureLine )
       {
         lineCaptured( curveToAdd );

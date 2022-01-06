@@ -39,7 +39,10 @@ class QgsCurvePolygon;
 
 /**
  * \ingroup gui
- * \class QgsMapToolCapture
+ * QgsMapToolCapture is a base class capable of capturing point, lines and polygons.
+ * The tool supports different techniques: straight segments, curves, streaming and shapes
+ * Once the the geometry is captured the virtual private handler geometryCaptured is called
+ * as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptured)
  */
 class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 {
@@ -337,24 +340,28 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /**
      * Called when the geometry is captured
+     * A more specific handler is also called afterwards (pointCaptured, lineCaptured or polygonCaptured)
      * \since QGIS 3.24
      */
     virtual void geometryCaptured( const QgsGeometry &geometry ) {Q_UNUSED( geometry )} SIP_FORCE
 
     /**
      * Called when a point is captured
+     * geometryCaptured is called just before
      * \since QGIS 3.24
      */
     virtual void pointCaptured( const QgsPoint &point ) {Q_UNUSED( point )} SIP_FORCE
 
     /**
      * Called when a line is captured
+     * geometryCaptured is called just before
      * \since QGIS 3.24
      */
     virtual void lineCaptured( QgsCurve *line ) {Q_UNUSED( line )} SIP_FORCE
 
     /**
      * Called when a polygon is captured
+     * geometryCaptured is called just before
      * \since QGIS 3.24
      */
     virtual void polygonCaptured( QgsCurvePolygon *polygon ) {Q_UNUSED( polygon )} SIP_FORCE
