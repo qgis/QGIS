@@ -180,6 +180,16 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': -5,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Buffer(geometry, -5.0) AS geometry,* FROM """polys2"""" ' +
+                 '-f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
                                         'DISTANCE': 5,
                                         'DISSOLVE': True,
                                         'OUTPUT': outdir + '/check.shp'}, context, feedback),
