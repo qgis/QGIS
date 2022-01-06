@@ -6653,7 +6653,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   // Ninth parameter (for intersects only) is the sort_by_intersection_size flag
   double minOverlap { -1 };
   double minInscribedCircleRadius { -1 };
-  bool returnDetails = false;
+  bool returnDetails = false;  //#spellok
   bool sortByMeasure = false;
   bool sortAscending = false;
   bool requireMeasures = false;
@@ -6680,13 +6680,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 #endif
     node = QgsExpressionUtils::getNode( values.at( 7 ), parent );
     // Return measures is only effective when an expression is set
-    returnDetails = !testOnly && node->eval( parent, context ).toBool();
+    returnDetails = !testOnly && node->eval( parent, context ).toBool();  //#spellok
     node = QgsExpressionUtils::getNode( values.at( 8 ), parent );
     // Sort by measures is only effective when an expression is set
     const QString sorting { node->eval( parent, context ).toString().toLower() };
     sortByMeasure = !testOnly && ( sorting.startsWith( "asc" ) || sorting.startsWith( "des" ) );
     sortAscending = sorting.startsWith( "asc" );
-    requireMeasures = sortByMeasure || returnDetails;
+    requireMeasures = sortByMeasure || returnDetails;  //#spellok
     overlapOrRadiusFilter = minInscribedCircleRadius != -1 || minOverlap != -1;
   }
 
@@ -7042,7 +7042,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
         results.erase( results.begin() + limit );
       }
 
-      if ( ! returnDetails )
+      if ( ! returnDetails )  //#spellok
       {
         QVariantList expResults;
         for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
