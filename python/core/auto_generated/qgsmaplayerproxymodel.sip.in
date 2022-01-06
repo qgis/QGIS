@@ -37,7 +37,8 @@ The :py:class:`QgsMapLayerProxyModel` class provides an easy to use model to dis
       VectorTileLayer,
       PointCloudLayer,
       AnnotationLayer,
-      All
+      All,
+      SpatialLayer
     };
     typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;
 

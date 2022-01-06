@@ -54,7 +54,8 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
       VectorTileLayer = 256, //!< QgsVectorTileLayer \since QGIS 3.14
       PointCloudLayer = 512, //!< QgsPointCloudLayer \since QGIS 3.18
       AnnotationLayer = 1024, //!< QgsAnnotationLayer \since QGIS 3.22
-      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer
+      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer,
+      SpatialLayer = RasterLayer | HasGeometry | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer //!< \since QGIS 3.24
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )
