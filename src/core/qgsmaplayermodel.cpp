@@ -51,7 +51,7 @@ void QgsMapLayerModel::setProject( QgsProject *project )
     disconnect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   }
 
-  mProject = project;
+  mProject = project ? project : QgsProject::instance();
 
   connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
   connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
