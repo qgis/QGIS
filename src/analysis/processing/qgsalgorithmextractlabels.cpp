@@ -129,15 +129,15 @@ class ExtractLabelSink : public QgsLabelSink
 
     void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) override
     {
-      processLabel( layerId, context, label, settings );
+      processLabel( layerId, context, label, settings, false );
     }
 
     void drawUnplacedLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) override
     {
-      processLabel( layerId, context, label, settings );
+      processLabel( layerId, context, label, settings, true );
     }
 
-    void processLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings )
+    void processLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings, bool unplacedLabel )
     {
       if ( mFeedback->isCanceled() )
       {
@@ -255,7 +255,7 @@ class ExtractLabelSink : public QgsLabelSink
 
       QgsAttributes attributes;
       attributes << mMapLayerNames.value( layerId ) << fid
-                 << labelText << label->getWidth() << label->getHeight() << labelRotation << label->conflictsWithObstacle()
+                 << labelText << label->getWidth() << label->getHeight() << labelRotation << unplacedLabel
                  << fontFamily << fontSize << fontItalic << fontBold << fontUnderline << fontStyle << fontLetterSpacing << fontWordSpacing
                  << labelAlignment << formatLineHeight << formatColor << formatOpacity;
 
