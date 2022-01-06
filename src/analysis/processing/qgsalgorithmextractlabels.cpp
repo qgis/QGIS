@@ -235,21 +235,29 @@ class ExtractLabelSink : public QgsLabelSink
       const double fontLetterSpacing = font.letterSpacing();
       const double fontWordSpacing = font.wordSpacing();
 
+      QgsTextFormat format = labelSettings.format();
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::Color ) )
+      {
+        format.setColor( dataDefinedValues.value( QgsPalLayerSettings::Color ).value<QColor>() );
+      }
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::FontOpacity ) )
+      {
+        format.setOpacity( dataDefinedValues.value( QgsPalLayerSettings::FontOpacity ).toDouble() / 100.0 );
+      }
       if ( dataDefinedValues.contains( QgsPalLayerSettings::MultiLineHeight ) )
       {
-        QgsTextFormat format = labelSettings.format();
         format.setLineHeight( dataDefinedValues.value( QgsPalLayerSettings::MultiLineHeight ).toDouble() );
-        labelSettings.setFormat( format );
       }
 
-      QgsTextFormat format = labelSettings.format();
-      double formatLineHeight = format.lineHeight();
+      const QString formatColor = format.color().name();
+      const double formatOpacity = format.opacity() * 100;
+      const double formatLineHeight = format.lineHeight();
 
       QgsAttributes attributes;
       attributes << mMapLayerNames.value( layerId ) << fid
                  << labelText << label->getWidth() << label->getHeight() << labelRotation << label->conflictsWithObstacle()
                  << fontFamily << fontSize << fontItalic << fontBold << fontUnderline << fontStyle << fontLetterSpacing << fontWordSpacing
-                 << labelAlignment << formatLineHeight;
+                 << labelAlignment << formatLineHeight << formatColor << formatOpacity;
 
       double x = label->getX();
       double y = label->getY();
@@ -308,6 +316,8 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   fields.append( QgsField( QStringLiteral( "FontWordSpacing" ), QVariant::Double, QString(), 20, 4 ) );
   fields.append( QgsField( QStringLiteral( "MultiLineAlignment" ), QVariant::String, QString(), 0, 0 ) );
   fields.append( QgsField( QStringLiteral( "MultiLineHeight" ), QVariant::Double, QString(), 20, 2 ) );
+  fields.append( QgsField( QStringLiteral( "Color" ), QVariant::String, QString(), 7, 0 ) );
+  fields.append( QgsField( QStringLiteral( "FontOpacity" ), QVariant::Double, QString(), 20, 1 ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, QgsWkbTypes::Point, mCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
@@ -379,7 +389,8 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
     textFormat.setColor( QColor( 0, 0, 0 ) );
     settings.setFormat( textFormat );
 
-    settingsProperties.setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "if(\"LabelUnplaced\",'255,0,0','0,0,0')" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "if(\"LabelUnplaced\",'255,0,0',\"Color\")" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::FontOpacity, QgsProperty::fromExpression( QStringLiteral( "\"FontOpacity\"" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::Family, QgsProperty::fromExpression( QStringLiteral( "\"Family\"" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::Italic, QgsProperty::fromExpression( QStringLiteral( "\"Italic\"" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::Bold, QgsProperty::fromExpression( QStringLiteral( "\"Bold\"" ) ) );
