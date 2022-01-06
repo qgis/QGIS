@@ -231,6 +231,7 @@ class ExtractLabelSink : public QgsLabelSink
       const double fontSize = static_cast<double>( font.pixelSize() ) * 72 / context.painter()->device()->logicalDpiX();
       const bool fontItalic = font.italic();
       const bool fontBold = font.bold();
+      const bool fontUnderline = font.underline();
       const double fontLetterSpacing = font.letterSpacing();
       const double fontWordSpacing = font.wordSpacing();
 
@@ -247,7 +248,7 @@ class ExtractLabelSink : public QgsLabelSink
       QgsAttributes attributes;
       attributes << mMapLayerNames.value( layerId ) << fid
                  << labelText << label->getWidth() << label->getHeight() << labelRotation << label->conflictsWithObstacle()
-                 << fontFamily << fontSize << fontItalic << fontBold << fontStyle << fontLetterSpacing << fontWordSpacing
+                 << fontFamily << fontSize << fontItalic << fontBold << fontUnderline << fontStyle << fontLetterSpacing << fontWordSpacing
                  << labelAlignment << formatLineHeight;
 
       double x = label->getX();
@@ -301,6 +302,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   fields.append( QgsField( QStringLiteral( "Size" ), QVariant::Double, QString(), 20, 4 ) );
   fields.append( QgsField( QStringLiteral( "Italic" ), QVariant::Bool, QString(), 1, 0 ) );
   fields.append( QgsField( QStringLiteral( "Bold" ), QVariant::Bool, QString(), 1, 0 ) );
+  fields.append( QgsField( QStringLiteral( "Underline" ), QVariant::Bool, QString(), 1, 0 ) );
   fields.append( QgsField( QStringLiteral( "FontStyle" ), QVariant::String, QString(), 0, 0 ) );
   fields.append( QgsField( QStringLiteral( "FontLetterSpacing" ), QVariant::Double, QString(), 20, 4 ) );
   fields.append( QgsField( QStringLiteral( "FontWordSpacing" ), QVariant::Double, QString(), 20, 4 ) );
@@ -381,6 +383,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
     settingsProperties.setProperty( QgsPalLayerSettings::Family, QgsProperty::fromExpression( QStringLiteral( "\"Family\"" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::Italic, QgsProperty::fromExpression( QStringLiteral( "\"Italic\"" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::Bold, QgsProperty::fromExpression( QStringLiteral( "\"Bold\"" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::Underline, QgsProperty::fromExpression( QStringLiteral( "\"Underline\"" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::Size, QgsProperty::fromExpression( QStringLiteral( "\"Size\"" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::FontLetterSpacing, QgsProperty::fromExpression( QStringLiteral( "\"FontLetterSpacing\"" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::FontWordSpacing, QgsProperty::fromExpression( QStringLiteral( "\"FontWordSpacing\"" ) ) );
