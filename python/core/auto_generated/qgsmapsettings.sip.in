@@ -911,7 +911,26 @@ Sets the ``range`` of z-values which will be visible in the map.
 .. versionadded:: 3.18
 %End
 
+    Qgis::RendererUsage rendererUsage() const;
+%Docstring
+Returns the rendering usage
+
+.. seealso:: :py:func:`setRendererUsage`
+
+.. versionadded:: 3.24
+%End
+
+    void setRendererUsage( const Qgis::RendererUsage &rendererUsage );
+%Docstring
+Sets the rendering usage
+
+.. seealso:: :py:func:`rendererUsage`
+
+.. versionadded:: 3.24
+%End
+
   protected:
+
 
 
 

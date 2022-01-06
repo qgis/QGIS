@@ -765,6 +765,13 @@ The development version
       CounterClockwise,
     };
 
+    enum class RendererUsage
+    {
+      View,
+      Export,
+      Unknown,
+    };
+
     enum class HistoryProviderBackend
     {
       LocalProfile,

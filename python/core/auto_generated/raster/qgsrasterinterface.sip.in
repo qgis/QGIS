@@ -82,6 +82,24 @@ Returns a list of any errors encountered while retrieving the raster block.
 .. versionadded:: 3.8.0
 %End
 
+    Qgis::RendererUsage rendererUsage() const;
+%Docstring
+Returns the renderer usage of the associated block reading reading
+
+.. seealso:: :py:func:`setRendererUsage`
+
+.. versionadded:: 3.24.0
+%End
+
+    void setRendererUsage( const Qgis::RendererUsage &rendererUsage );
+%Docstring
+Sets the renderer usage of the associated block reading reading
+
+.. seealso:: :py:func:`rendererUsage`
+
+.. versionadded:: 3.24.0
+%End
+
 };
 
 
