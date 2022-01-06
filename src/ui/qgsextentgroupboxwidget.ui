@@ -179,6 +179,23 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="mButtonCalcFromBookmark">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Bookmark</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="1" colspan="7">
+          <layout class="QHBoxLayout" name="horizontalLayout2">
+           <item>
             <widget class="QPushButton" name="mOriginalExtentButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">

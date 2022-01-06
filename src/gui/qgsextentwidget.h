@@ -30,6 +30,7 @@
 #include <memory>
 #include <QRegularExpression>
 
+class QgsBookmarkManagerProxyModel;
 class QgsCoordinateReferenceSystem;
 class QgsMapLayerModel;
 class QgsMapLayer;
@@ -245,6 +246,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
 
     void layerMenuAboutToShow();
     void layoutMenuAboutToShow();
+    void bookmarkMenuAboutToShow();
 
     void extentDrawn( const QgsRectangle &extent );
     void mapToolDeactivated();
@@ -265,9 +267,14 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     QgsCoordinateReferenceSystem mOriginalCrs;
 
     QMenu *mMenu = nullptr;
+
     QMenu *mLayerMenu = nullptr;
     QMenu *mLayoutMenu = nullptr;
+    QMenu *mBookmarkMenu = nullptr;
+
     QgsMapLayerModel *mMapLayerModel = nullptr;
+    QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;
+
     QList< QAction * > mLayerMenuActions;
     QAction *mUseCanvasExtentAction = nullptr;
     QAction *mUseCurrentExtentAction = nullptr;

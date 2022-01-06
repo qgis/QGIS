@@ -26,6 +26,8 @@
 #include "qgslayoutmanager.h"
 #include "qgslayoutitemmap.h"
 #include "qgsprintlayout.h"
+#include "qgsbookmarkmodel.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QMenu>
 #include <QAction>
@@ -55,6 +57,10 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   mButtonCalcFromLayout->setMenu( mLayoutMenu );
   connect( mLayoutMenu, &QMenu::aboutToShow, this, &QgsExtentWidget::layoutMenuAboutToShow );
 
+  mBookmarkMenu = new QMenu( tr( "Calculate from Bookmark" ), this );
+  mButtonCalcFromBookmark->setMenu( mBookmarkMenu );
+  connect( mBookmarkMenu, &QMenu::aboutToShow, this, &QgsExtentWidget::bookmarkMenuAboutToShow );
+
   mMenu = new QMenu( this );
   mUseCanvasExtentAction = new QAction( tr( "Use Current Map Canvas Extent" ), this );
   mUseCanvasExtentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
@@ -71,6 +77,7 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
 
   mMenu->addMenu( mLayerMenu );
   mMenu->addMenu( mLayoutMenu );
+  mMenu->addMenu( mBookmarkMenu );
   mMenu->addSeparator();
   mMenu->addAction( mUseCanvasExtentAction );
   mMenu->addAction( mDrawOnCanvasAction );
@@ -382,6 +389,44 @@ void QgsExtentWidget::layoutMenuAboutToShow()
       }
       mLayoutMenu->addMenu( layoutMenu );
     }
+  }
+}
+
+void QgsExtentWidget::bookmarkMenuAboutToShow()
+{
+  mBookmarkMenu->clear();
+
+  if ( !mBookmarkModel )
+    mBookmarkModel = new QgsBookmarkManagerProxyModel( QgsApplication::bookmarkManager(), QgsProject::instance()->bookmarkManager(), this );
+
+  QMap< QString, QMenu * > groupMenus;
+  for ( int i = 0; i < mBookmarkModel->rowCount(); ++i )
+  {
+    const QString group = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), QgsBookmarkManagerModel::RoleGroup ).toString();
+    QMenu *destMenu = mBookmarkMenu;
+    if ( !group.isEmpty() )
+    {
+      destMenu = groupMenus.value( group );
+      if ( !destMenu )
+      {
+        destMenu = new QMenu( group, mBookmarkMenu );
+        groupMenus[ group ] = destMenu;
+      }
+    }
+    QAction *action = new QAction( mBookmarkModel->data( mBookmarkModel->index( i, 0 ), QgsBookmarkManagerModel::RoleName ).toString(), mBookmarkMenu );
+    const QgsReferencedRectangle extent = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), QgsBookmarkManagerModel::RoleExtent ).value< QgsReferencedRectangle >();
+    connect( action, &QAction::triggered, this, [ = ] { setOutputExtentFromUser( extent, extent.crs() ); } );
+    destMenu->addAction( action );
+  }
+
+  QStringList groupKeys = groupMenus.keys();
+  groupKeys.sort( Qt::CaseInsensitive );
+  for ( int i = 0; i < groupKeys.count(); ++i )
+  {
+    if ( mBookmarkMenu->actions().value( i ) )
+      mBookmarkMenu->insertMenu( mBookmarkMenu->actions().at( i ), groupMenus.value( groupKeys.at( i ) ) );
+    else
+      mBookmarkMenu->addMenu( groupMenus.value( groupKeys.at( i ) ) );
   }
 }
 
