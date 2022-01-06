@@ -204,21 +204,21 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 };
 
 /*!
- * \brief  Widget that embeds a check box and a combo box to select an encoding scheme to convert image to a single band raster
+ * \brief  Widget that embeds a checkbox and a combobox to select an encoding scheme to convert image to a single band raster
  */
 class QgsWMSEncodingSchemeWidget : public QWidget
 {
   public:
-    //! Contructor
+    //! Constructor
     QgsWMSEncodingSchemeWidget( QWidget *parent = nullptr );
 
     /**
      * Sets the current encoding scheme from its key \a encodingSchemeKey,
-     * leading to checked the check box if the encoding scheme exists or unchecked if the key is empty or the scheme does not exist
+     * leading to checked the checkbox if the encoding scheme exists or unchecked if the key is empty or the scheme does not exist
      */
     void setEncodingScheme( const QString &encodingSchemeKey );
 
-    //! Returns the key of the current selected scheme, returns empty string if the check box is unchecked
+    //! Returns the key of the current selected scheme, returns empty string if the checkbox is unchecked
     QString encodingScheme() const;
 
   private:
