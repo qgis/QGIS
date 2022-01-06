@@ -15,6 +15,7 @@
 
 #include "qgsextentwidget.h"
 
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
@@ -59,8 +60,12 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
 
   mMenu->addMenu( mLayerMenu );
 
+  mCondensedToolButton->setToolTip( tr( "Set to current map canvas extent" ) );
+  mCondensedToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+  connect( mCondensedToolButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromCurrent );
+
   mCondensedToolButton->setMenu( mMenu );
-  mCondensedToolButton->setPopupMode( QToolButton::InstantPopup );
+  mCondensedToolButton->setPopupMode( QToolButton::MenuButtonPopup );
 
   mXMinLineEdit->setValidator( new QgsDoubleValidator( this ) );
   mXMaxLineEdit->setValidator( new QgsDoubleValidator( this ) );
