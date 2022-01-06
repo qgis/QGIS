@@ -157,7 +157,14 @@ void QgsWriteVectorTilesMbtilesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterString( QStringLiteral( "META_DESCRIPTION" ), QObject::tr( "Metadata: Description" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "META_ATTRIBUTION" ), QObject::tr( "Metadata: Attribution" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "META_VERSION" ), QObject::tr( "Metadata: Version" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_TYPE" ), QObject::tr( "Metadata: Type" ), QVariant(), false, true ) );
+  std::unique_ptr< QgsProcessingParameterString > metaTypeParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "META_TYPE" ), QObject::tr( "Metadata: Type" ), QVariant(), false, true );
+  metaTypeParam->setMetadata( {{
+      QStringLiteral( "widget_wrapper" ), QVariantMap(
+      {{QStringLiteral( "value_hints" ), QStringList() << QStringLiteral( "overlay" ) << QStringLiteral( "baselayer" ) }}
+      )
+    }
+  } );
+  addParameter( metaTypeParam.release() );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "META_CENTER" ), QObject::tr( "Metadata: Center" ), QVariant(), false, true ) );
 }
 
