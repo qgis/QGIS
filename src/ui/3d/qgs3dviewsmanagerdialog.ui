@@ -33,7 +33,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>&amp;Show...</string>
+      <string>&amp;Show</string>
      </property>
     </widget>
    </item>
@@ -69,7 +69,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>&amp;Hide...</string>
+      <string>&amp;Hide</string>
      </property>
     </widget>
    </item>

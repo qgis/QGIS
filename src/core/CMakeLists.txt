@@ -634,6 +634,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectutils.cpp
   project/qgsprojectversion.cpp
   project/qgsprojectviewsettings.cpp
+  project/qgsmapviewsmanager.cpp
 
   raster/qgscliptominmaxenhancement.cpp
   raster/qgscolorrampshader.cpp
@@ -779,7 +780,7 @@ set(QGIS_CORE_SRCS
   3d/qgs3dsymbolregistry.cpp
   3d/qgsabstract3dsymbol.cpp
   3d/qgsabstract3drenderer.cpp
-  3d/qgs3dviewsmanager.cpp
+
 
   fieldformatter/qgscheckboxfieldformatter.cpp
   fieldformatter/qgsrangefieldformatter.cpp
@@ -1166,7 +1167,6 @@ set(QGIS_CORE_HDRS
   3d/qgs3dsymbolregistry.h
   3d/qgsabstract3dsymbol.h
   3d/qgsabstract3drenderer.h
-  3d/qgs3dviewsmanager.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationitem.h
@@ -1575,6 +1575,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectutils.h
   project/qgsprojectversion.h
   project/qgsprojectviewsettings.h
+  project/qgsmapviewsmanager.h
 
   providers/qgsabstractdbtablemodel.h
   providers/qgsabstractdatabaseproviderconnection.h

@@ -66,7 +66,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsgrouplayer.h"
-#include "qgs3dviewsmanager.h"
+#include "qgsmapviewsmanager.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -370,7 +370,7 @@ QgsProject::QgsProject( QObject *parent )
   , mRelationManager( new QgsRelationManager( this ) )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
-  , m3DViewsManager( new Qgs3DViewsManager( this ) )
+  , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
   , mTimeSettings( new QgsProjectTimeSettings( this ) )
@@ -3172,12 +3172,12 @@ QgsLayoutManager *QgsProject::layoutManager()
   return mLayoutManager.get();
 }
 
-const Qgs3DViewsManager *QgsProject::views3DManager() const
+const QgsMapViewsManager *QgsProject::get3DViewsManager() const
 {
   return m3DViewsManager.get();
 }
 
-Qgs3DViewsManager *QgsProject::views3DManager()
+QgsMapViewsManager *QgsProject::get3DViewsManager()
 {
   return m3DViewsManager.get();
 }

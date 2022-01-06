@@ -208,7 +208,6 @@
 %Include auto_generated/./3d/qgs3dsymbolregistry.sip
 %Include auto_generated/./3d/qgsabstract3dsymbol.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
-%Include auto_generated/./3d/qgs3dviewsmanager.sip
 %Include auto_generated/annotations/qgsannotation.sip
 %Include auto_generated/annotations/qgsannotationitem.sip
 %Include auto_generated/annotations/qgsannotationitemeditoperation.sip
@@ -533,6 +532,7 @@
 %Include auto_generated/project/qgsprojectutils.sip
 %Include auto_generated/project/qgsprojectversion.sip
 %Include auto_generated/project/qgsprojectviewsettings.sip
+%Include auto_generated/project/qgsmapviewsmanager.sip
 %Include auto_generated/providers/qgsabstractdbtablemodel.sip
 %Include auto_generated/providers/qgsabstractdatabaseproviderconnection.sip
 %Include auto_generated/providers/qgsabstractproviderconnection.sip

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgs3dviewsmanager.cpp
+    qgsmapviewsmanager.cpp
     ------------------
     Date                 : December 2021
     Copyright            : (C) 2021 Belgacem Nedjima
@@ -13,17 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgs3dviewsmanager.h"
+#include "qgsmapviewsmanager.h"
 #include "qgsproject.h"
-#include "qgsstyleentityvisitor.h"
 
-Qgs3DViewsManager::Qgs3DViewsManager( QgsProject *project )
+QgsMapViewsManager::QgsMapViewsManager( QgsProject *project )
   : QObject( project )
 {
 
 }
 
-bool Qgs3DViewsManager::readXml( const QDomElement &element, const QDomDocument &doc )
+bool QgsMapViewsManager::readXml( const QDomElement &element, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   clear();
@@ -37,7 +36,7 @@ bool Qgs3DViewsManager::readXml( const QDomElement &element, const QDomDocument 
     while ( !elem3DMap.isNull() )
     {
       QString mapName = elem3DMap.attribute( QStringLiteral( "name" ) );
-      m3DMapViewsDom.insert( mapName, elem3DMap );
+      mMapViewsDom.insert( mapName, elem3DMap );
 
       elem3DMap = elem3DMap.nextSiblingElement( QStringLiteral( "view" ) );
     }
@@ -46,67 +45,65 @@ bool Qgs3DViewsManager::readXml( const QDomElement &element, const QDomDocument 
   return true;
 }
 
-QDomElement Qgs3DViewsManager::writeXml( QDomDocument &doc ) const
+QDomElement QgsMapViewsManager::writeXml( QDomDocument &doc ) const
 {
   QDomElement dom = doc.createElement( "mapViewDocks3D" );
-  for ( QDomElement d : m3DMapViewsDom.values() )
+  for ( QDomElement d : mMapViewsDom.values() )
     dom.appendChild( d );
   return dom;
 }
 
-void Qgs3DViewsManager::clear()
+void QgsMapViewsManager::clear()
 {
-  m3DMapViewsDom.clear();
+  mMapViewsDom.clear();
   emit viewsListChanged();
 }
 
-QDomElement Qgs3DViewsManager::get3DViewSettings( const QString &name ) const
+QDomElement QgsMapViewsManager::getViewSettings( const QString &name ) const
 {
-  return m3DMapViewsDom.value( name, QDomElement() );
+  return mMapViewsDom.value( name, QDomElement() );
 }
 
-QList<QDomElement> Qgs3DViewsManager::get3DViews() const
+QList<QDomElement> QgsMapViewsManager::getViews() const
 {
-  return m3DMapViewsDom.values();
+  return mMapViewsDom.values();
 }
 
-void Qgs3DViewsManager::register3DViewSettings( const QString &name, const QDomElement &dom )
+void QgsMapViewsManager::registerViewSettings( const QString &name, const QDomElement &dom )
 {
-  m3DMapViewsDom.insert( name, dom );
+  mMapViewsDom.insert( name, dom );
   emit viewsListChanged();
 }
 
-QStringList Qgs3DViewsManager::get3DViewsNames() const
+QStringList QgsMapViewsManager::getViewsNames() const
 {
-  return m3DMapViewsDom.keys();
+  return mMapViewsDom.keys();
 }
 
-void Qgs3DViewsManager::remove3DView( const QString &name )
+void QgsMapViewsManager::removeView( const QString &name )
 {
-  m3DMapViewsDom.remove( name );
+  mMapViewsDom.remove( name );
   emit viewsListChanged();
 }
 
-void Qgs3DViewsManager::rename3DView( const QString &oldTitle, const QString &newTitle )
+void QgsMapViewsManager::renameView( const QString &oldTitle, const QString &newTitle )
 {
-  QDomElement elem = m3DMapViewsDom.value( oldTitle );
-  m3DMapViewsDom.remove( oldTitle );
-  m3DMapViewsDom[ newTitle ] = elem;
-  m3DMapViewsDom[ newTitle ].setAttribute( QStringLiteral( "name" ), newTitle );
+  QDomElement elem = mMapViewsDom.value( oldTitle );
+  mMapViewsDom.remove( oldTitle );
+  mMapViewsDom[ newTitle ] = elem;
+  mMapViewsDom[ newTitle ].setAttribute( QStringLiteral( "name" ), newTitle );
   emit viewsListChanged();
 }
 
-void Qgs3DViewsManager::viewClosed( const QString &name, const QDomElement &dom )
+void QgsMapViewsManager::setViewInitiallyVisible( const QString &name, bool visible )
 {
-  if ( m3DMapViewsDom.contains( name ) )
+  if ( mMapViewsDom.contains( name ) )
   {
-    m3DMapViewsDom[ name ] = dom;
-    m3DMapViewsDom[ name ].setAttribute( "isOpen", 0 );
+    mMapViewsDom[ name ].setAttribute( QStringLiteral( "isOpen" ), visible );
   }
 }
 
-void Qgs3DViewsManager::viewOpened( const QString &name )
+bool QgsMapViewsManager::isViewOpen( const QString &name )
 {
-  if ( m3DMapViewsDom.contains( name ) )
-    m3DMapViewsDom[ name ].setAttribute( "isOpen", 1 );
+  return mMapViewsDom.value( name, QDomElement() ).attribute( QStringLiteral( "isOpen" ), QStringLiteral( "1" ) ).toInt() == 1;
 }

@@ -82,7 +82,7 @@ class QgsProjectTimeSettings;
 class QgsAnnotationLayer;
 class QgsAttributeEditorContainer;
 class QgsPropertyCollection;
-class Qgs3DViewsManager;
+class QgsMapViewsManager;
 
 /**
  * \ingroup core
@@ -762,14 +762,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note not available in Python bindings
      * \since QGIS 3.24
      */
-    const Qgs3DViewsManager *views3DManager() const SIP_SKIP;
+    const QgsMapViewsManager *get3DViewsManager() const SIP_SKIP;
 
     /**
      * Returns the project's 3D views manager, which manages 3D views
      * in the project.
      * \since QGIS 3.24
      */
-    Qgs3DViewsManager *views3DManager();
+    QgsMapViewsManager *get3DViewsManager();
 
     /**
      * Returns the project's bookmark manager, which manages bookmarks within
@@ -2058,7 +2058,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
-    std::unique_ptr<Qgs3DViewsManager> m3DViewsManager;
+    std::unique_ptr<QgsMapViewsManager> m3DViewsManager;
 
     QgsBookmarkManager *mBookmarkManager = nullptr;
 
