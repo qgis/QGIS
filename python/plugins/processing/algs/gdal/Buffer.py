@@ -57,7 +57,6 @@ class Buffer(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
                                                          self.tr('Buffer distance'),
                                                          parentParameterName=self.INPUT,
-                                                         minValue=0.0,
                                                          defaultValue=10.0))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Dissolve by attribute'),
