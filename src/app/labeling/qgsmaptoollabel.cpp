@@ -675,7 +675,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
         if ( pointAsVariant.canConvert<QgsGeometry>() )
         {
           const  QgsGeometry geometry = pointAsVariant.value<QgsGeometry>();
-          if ( const QgsPoint *point  = ( geometry.constGet() ? qgsgeometry_cast<QgsPoint *>( geometry.constGet()->simplifiedTypeRef() ) : nullptr ) )
+          if ( const QgsPoint *point  = ( geometry.constGet() ? qgsgeometry_cast<const QgsPoint *>( geometry.constGet()->simplifiedTypeRef() ) : nullptr ) )
           {
             x = point->x();
             y = point->y();
@@ -880,7 +880,7 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   {
     QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer );
     pointCol = vlayer->fields().lookupField( pointColName );
-    if ( pointCol > 0 )
+    if ( pointCol >= 0 )
       return true;
   }
 
@@ -891,7 +891,7 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
     QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
     xCol = vlayer->fields().lookupField( xColName );
     yCol = vlayer->fields().lookupField( yColName );
-    if ( xCol > 0 || yCol > 0 )
+    if ( xCol >= 0 || yCol >= 0 )
       return true;
   }
 
