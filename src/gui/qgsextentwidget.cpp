@@ -23,6 +23,9 @@
 #include "qgsexception.h"
 #include "qgsproject.h"
 #include "qgsdoublevalidator.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutitemmap.h"
+#include "qgsprintlayout.h"
 
 #include <QMenu>
 #include <QAction>
@@ -48,17 +51,30 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   connect( mLayerMenu, &QMenu::aboutToShow, this, &QgsExtentWidget::layerMenuAboutToShow );
   mMapLayerModel = new QgsMapLayerModel( this );
 
+  mLayoutMenu = new QMenu( tr( "Calculate from Layout Map" ), this );
+  mButtonCalcFromLayout->setMenu( mLayoutMenu );
+  connect( mLayoutMenu, &QMenu::aboutToShow, this, &QgsExtentWidget::layoutMenuAboutToShow );
+
   mMenu = new QMenu( this );
-  mUseCanvasExtentAction = new QAction( tr( "Use Map Canvas Extent" ), this );
+  mUseCanvasExtentAction = new QAction( tr( "Use Current Map Canvas Extent" ), this );
+  mUseCanvasExtentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+  mUseCanvasExtentAction->setVisible( false );
   connect( mUseCanvasExtentAction, &QAction::triggered, this, &QgsExtentWidget::setOutputExtentFromCurrent );
 
-  mUseCurrentExtentAction = new QAction( tr( "Use Current Layer Extent" ), this );
+  mUseCurrentExtentAction = new QAction( tr( "Use Current Layer/Default Extent" ), this );
+  mUseCurrentExtentAction->setVisible( false );
   connect( mUseCurrentExtentAction, &QAction::triggered, this, &QgsExtentWidget::setOutputExtentFromCurrent );
 
-  mDrawOnCanvasAction = new QAction( tr( "Draw on Canvas" ), this );
+  mDrawOnCanvasAction = new QAction( tr( "Draw on Map Canvas" ), this );
+  mDrawOnCanvasAction->setVisible( false );
   connect( mDrawOnCanvasAction, &QAction::triggered, this, &QgsExtentWidget::setOutputExtentFromDrawOnCanvas );
 
   mMenu->addMenu( mLayerMenu );
+  mMenu->addMenu( mLayoutMenu );
+  mMenu->addSeparator();
+  mMenu->addAction( mUseCanvasExtentAction );
+  mMenu->addAction( mDrawOnCanvasAction );
+  mMenu->addAction( mUseCurrentExtentAction );
 
   mCondensedToolButton->setToolTip( tr( "Set to current map canvas extent" ) );
   mCondensedToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
@@ -120,7 +136,7 @@ void QgsExtentWidget::setCurrentExtent( const QgsRectangle &currentExtent, const
   mCurrentCrs = currentCrs;
 
   mCurrentExtentButton->setVisible( true );
-  mMenu->addAction( mUseCurrentExtentAction );
+  mUseCurrentExtentAction->setVisible( true );
 }
 
 void QgsExtentWidget::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs )
@@ -341,6 +357,34 @@ void QgsExtentWidget::layerMenuAboutToShow()
   }
 }
 
+void QgsExtentWidget::layoutMenuAboutToShow()
+{
+  mLayoutMenu->clear();
+
+  if ( QgsLayoutManager *manager = QgsProject::instance()->layoutManager() )
+  {
+    const QList<QgsPrintLayout *> layouts = manager->printLayouts();
+    for ( const QgsPrintLayout *layout : layouts )
+    {
+      QList< QgsLayoutItemMap * > maps;
+      layout->layoutItems( maps );
+      if ( maps.empty() )
+        continue;
+
+      QMenu *layoutMenu = new QMenu( layout->name(), mMenu );
+      for ( const QgsLayoutItemMap *map : std::as_const( maps ) )
+      {
+        QgsRectangle extent = map->extent();
+        QgsCoordinateReferenceSystem crs = map->crs();
+        QAction *mapExtentAction = new QAction( tr( "%1" ).arg( map->displayName() ), mLayoutMenu );
+        connect( mapExtentAction, &QAction::triggered, this, [this, extent, crs] { setOutputExtentFromUser( extent, crs ); } );
+        layoutMenu->addAction( mapExtentAction );
+      }
+      mLayoutMenu->addMenu( layoutMenu );
+    }
+  }
+}
+
 void QgsExtentWidget::setExtentToLayerExtent( const QString &layerId )
 {
   QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
@@ -447,16 +491,16 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
     mButtonDrawOnCanvas->setVisible( drawOnCanvasOption );
     mCurrentExtentButton->setVisible( true );
 
-    mMenu->addAction( mUseCanvasExtentAction );
+    mUseCanvasExtentAction->setVisible( true );
     if ( drawOnCanvasOption )
-      mMenu->addAction( mDrawOnCanvasAction );
+      mDrawOnCanvasAction->setVisible( true );
   }
   else
   {
     mButtonDrawOnCanvas->setVisible( false );
     mCurrentExtentButton->setVisible( false );
-    mMenu->removeAction( mUseCanvasExtentAction );
-    mMenu->removeAction( mDrawOnCanvasAction );
+    mUseCanvasExtentAction->setVisible( false );
+    mUseCanvasExtentAction->setVisible( false );
   }
 }
 

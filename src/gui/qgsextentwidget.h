@@ -244,6 +244,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
   private slots:
 
     void layerMenuAboutToShow();
+    void layoutMenuAboutToShow();
 
     void extentDrawn( const QgsRectangle &extent );
     void mapToolDeactivated();
@@ -265,6 +266,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
 
     QMenu *mMenu = nullptr;
     QMenu *mLayerMenu = nullptr;
+    QMenu *mLayoutMenu = nullptr;
     QgsMapLayerModel *mMapLayerModel = nullptr;
     QList< QAction * > mLayerMenuActions;
     QAction *mUseCanvasExtentAction = nullptr;
