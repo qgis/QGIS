@@ -74,7 +74,9 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     QStringList excludedProviders() const;
 
     /**
-     * Sets the QgsProject from which map layers are shown
+     * Sets the \a project from which map layers are shown.
+     *
+     * If \a project is NULLPTR then QgsProject::instance() will be used.     
      *
      * \since QGIS 3.24
      */
