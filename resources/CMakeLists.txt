@@ -32,8 +32,10 @@ endif()
 if (WITH_SERVER)
   file(GLOB_RECURSE SERVER_RESOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} server/*)
   set(RESOURCES_FILES ${RESOURCES_FILES} ${SERVER_RESOURCE_FILES})
+endif()
 
-  # Landingpage
+# Server landingpage webapp
+if (WITH_SERVER_LANDINGPAGE_WEBAPP)
   file(GLOB_RECURSE LANDINGPAGE_SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} server/src/landingpage/*)
   set(LANDINGPAGE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/output/data/resources/server/src/landingpage)
 
@@ -49,7 +51,6 @@ if (WITH_SERVER)
     COMMAND ${CMAKE_COMMAND} -E touch ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
     COMMAND cd ${LANDINGPAGE_OUTPUT_PATH} && yarn install --frozen-lockfile && yarn build
   )
-
 endif()
 
 # Apple specific handling

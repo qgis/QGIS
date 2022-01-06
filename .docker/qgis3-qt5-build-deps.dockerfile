@@ -102,7 +102,7 @@ RUN  apt-get update \
     hdbcli \
   && apt-get clean
 
-# Node.js and Yarn for server landingpage
+# Node.js and Yarn for server landingpage webapp
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
 RUN apt-get install -y nodejs
 RUN corepack enable
