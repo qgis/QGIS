@@ -73,7 +73,9 @@ Returns the filter flags which affect how layers are filtered within the model.
 
     void setProject( QgsProject *project );
 %Docstring
-Sets the :py:class:`QgsProject` from which map layers are shown
+Sets the ``project`` from which map layers are shown.
+
+If ``project`` is ``None`` then :py:func:`QgsProject.instance()` will be used.
 
 .. versionadded:: 3.24
 %End
