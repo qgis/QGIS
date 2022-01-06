@@ -3,7 +3,6 @@
 uniform sampler2D previewTexture;
 uniform bool isDepth;
 
-in vec3 position;
 in vec2 texCoord;
 
 out vec4 fragColor;

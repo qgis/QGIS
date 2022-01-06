@@ -331,6 +331,7 @@ void QgsMapRendererCustomPainterJob::doRender()
     emit layerRendered( job.layerId );
   }
 
+  emit renderingLayersFinished();
   QgsDebugMsgLevel( QStringLiteral( "Done rendering map layers" ), 5 );
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
