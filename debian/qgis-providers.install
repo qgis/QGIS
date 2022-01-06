@@ -6,6 +6,7 @@ usr/lib/qgis/plugins/libauthmethod_identcert.so
 usr/lib/qgis/plugins/libauthmethod_pkcs12.so
 usr/lib/qgis/plugins/libauthmethod_pkipaths.so
 usr/lib/qgis/plugins/libauthmethod_apiheader.so
+usr/lib/qgis/plugins/libauthmethod_maptilerhmacsha256.so
 usr/lib/qgis/plugins/libprovider_arcgisfeatureserver.so
 usr/lib/qgis/plugins/libprovider_arcgismapserver.so
 usr/lib/qgis/plugins/libprovider_db2.so
