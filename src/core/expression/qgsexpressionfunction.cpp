@@ -6649,12 +6649,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
   // Sixth parameter (for intersects only) is the min overlap (area or length)
   // Seventh parameter (for intersects only) is the min inscribed circle radius
-  // Eighth parameter (for intersects only) is the return_measure
+  // Eighth parameter (for intersects only) is the return_details
   // Ninth parameter (for intersects only) is the sort_by_intersection_size flag
   double minOverlap { -1 };
   double minInscribedCircleRadius { -1 };
-  bool returnMeasures = false;
+  bool returnDetails = false;
   bool sortByMeasure = false;
+  bool sortAscending = false;
   bool requireMeasures = false;
   bool overlapOrRadiusFilter = false;
   if ( isIntersectsFunc )
@@ -6679,11 +6680,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 #endif
     node = QgsExpressionUtils::getNode( values.at( 7 ), parent );
     // Return measures is only effective when an expression is set
-    returnMeasures = !testOnly && node->eval( parent, context ).toBool();
+    returnDetails = !testOnly && node->eval( parent, context ).toBool();
     node = QgsExpressionUtils::getNode( values.at( 8 ), parent );
     // Sort by measures is only effective when an expression is set
-    sortByMeasure = !testOnly && node->eval( parent, context ).toBool();
-    requireMeasures = sortByMeasure || returnMeasures;
+    const QString sorting { node->eval( parent, context ).toString().toLower() };
+    sortByMeasure = !testOnly && ( sorting.startsWith( "asc" ) || sorting.startsWith( "des" ) );
+    sortAscending = sorting.startsWith( "asc" );
+    requireMeasures = sortByMeasure || returnDetails;
     overlapOrRadiusFilter = minInscribedCircleRadius != -1 || minOverlap != -1;
   }
 
@@ -7026,9 +7029,11 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     {
       if ( sortByMeasure )
       {
-        std::sort( results.begin(), results.end(), [ ]( const QVariant & recordA, const QVariant & recordB ) -> bool
+        std::sort( results.begin(), results.end(), [ sortAscending ]( const QVariant & recordA, const QVariant & recordB ) -> bool
         {
-          return recordA.toMap().value( QStringLiteral( "overlap" ) ).toDouble() > recordB.toMap().value( QStringLiteral( "overlap" ) ).toDouble();
+          return sortAscending ?
+          recordB.toMap().value( QStringLiteral( "overlap" ) ).toDouble() > recordA.toMap().value( QStringLiteral( "overlap" ) ).toDouble()
+          : recordA.toMap().value( QStringLiteral( "overlap" ) ).toDouble() > recordB.toMap().value( QStringLiteral( "overlap" ) ).toDouble();
         } );
       }
       // Resize
@@ -7037,7 +7042,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
         results.erase( results.begin() + limit );
       }
 
-      if ( ! returnMeasures )
+      if ( ! returnDetails )
       {
         QVariantList expResults;
         for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
@@ -7521,8 +7526,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           << QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false )
           << QgsExpressionFunction::Parameter( QStringLiteral( "min_overlap" ), true, QVariant( -1 ), false )
           << QgsExpressionFunction::Parameter( QStringLiteral( "min_inscribed_circle_radius" ), true, QVariant( -1 ), false )
-          << QgsExpressionFunction::Parameter( QStringLiteral( "return_measure" ), true, false, false )
-          << QgsExpressionFunction::Parameter( QStringLiteral( "sort_by_intersection_size" ), true, false, false ),
+          << QgsExpressionFunction::Parameter( QStringLiteral( "return_details" ), true, false, false )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "sort_by_intersection_size" ), true, QString(), false ),
           i.value(), QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
 
       // The current feature is accessed for the geometry, so this should not be cached

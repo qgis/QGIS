@@ -40,13 +40,13 @@
       "optional": true
     },
     {
-      "arg": "return_measure",
-      "description": "only valid when used with an expression, set this to true to return a list of maps containing the feature id, the expression result and the overlap value, the radius of the maximum inscribed circle is also returned when the target layer is a polygon.",
+      "arg": "return_details",
+      "description": "only valid when used with an expression, set this to true to return a list of maps containing (key names in quotes) the feature 'id', the expression 'result' and the 'overlap' value, the 'radius' of the maximum inscribed circle is also returned when the target layer is a polygon.",
       "optional": true
     },
     {
       "arg": "sort_by_intersection_size",
-      "description": "only valid when used with an expression, set this to true to return the results ordered by the overlap value in descending order.",
+      "description": "only valid when used with an expression, set this to 'des' to return the results ordered by the overlap value in descending order or set this to 'asc' for ascending order.",
       "optional": true
     }
   ],
@@ -84,7 +84,7 @@
       "returns": "true if the current feature spatially intersects a region and the intersection area maximum inscribed circle's radius (of at least one of the parts in case of multipart) is greater or equal to the 0.54"
     },
     {
-      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), return_measure:=true)",
+      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), return_details:=true)",
       "returns": "an array of maps with the feature id, the expression value, the overlap value and the radius of the maximum inscribed circle"
     },
     {

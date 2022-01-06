@@ -273,23 +273,23 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   expected1.insert( QStringLiteral( "radius" ),  0.46454276882989376 );
 #endif
-  QTest::newRow( "intersects min_overlap multi match return measure" ) << "overlay_intersects('polys', expression:=$id, min_overlap:=1.34, return_measure:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected3 ) ;
+  QTest::newRow( "intersects min_overlap multi match return measure" ) << "overlay_intersects('polys', expression:=$id, min_overlap:=1.34, return_details:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected3 ) ;
 
-  QTest::newRow( "intersects multi match return measure" ) << "overlay_intersects('polys', expression:=$id, return_measure:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected1 << expected3 ) ;
+  QTest::newRow( "intersects multi match return measure" ) << "overlay_intersects('polys', expression:=$id, return_details:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected1 << expected3 ) ;
 
-  QTest::newRow( "intersects multi match return sorted measure" ) << "overlay_intersects('polys', expression:=$id, sort_by_intersection_size:=true, return_measure:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected3 << expected1 ) ;
+  QTest::newRow( "intersects multi match return sorted measure" ) << "overlay_intersects('polys', expression:=$id, sort_by_intersection_size:='des', return_details:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected3 << expected1 ) ;
 
-  QTest::newRow( "intersects multi match return sorted" ) << "overlay_intersects('polys', expression:=$id, sort_by_intersection_size:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << 3LL << 1LL ) ;
+  QTest::newRow( "intersects multi match return sorted" ) << "overlay_intersects('polys', expression:=$id, sort_by_intersection_size:='des')" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << 3LL << 1LL ) ;
 
   QTest::newRow( "intersects multi match return unsorted" ) << "overlay_intersects('polys', expression:=$id)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << 1LL << 3LL ) ;
 
   QTest::newRow( "intersects multi match return unsorted limit " ) << "overlay_intersects('polys', limit:=1, expression:=$id)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << 1LL ) ;
 
-  QTest::newRow( "intersects multi match return sorted limit " ) << "overlay_intersects('polys', sort_by_intersection_size:=true, limit:=1, expression:=$id)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << 3LL ) ;
+  QTest::newRow( "intersects multi match return sorted limit " ) << "overlay_intersects('polys', sort_by_intersection_size:='des', limit:=1, expression:=$id)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << 3LL ) ;
 
   QTest::newRow( "intersects multi match points" ) << "overlay_intersects('polys', expression:=$id)" << "MULTIPOINT((-107.37 33.75), (-102.8 36.97))" << ( QVariantList() << 1LL << 3LL ) ;
 
-  QTest::newRow( "intersects multi match points sorted" ) << "overlay_intersects('polys', sort_by_intersection_size:=true, expression:=$id)" << "MULTIPOINT((-107.37 33.75), (-102.8 36.97))" << ( QVariantList() << 3LL << 1LL );
+  QTest::newRow( "intersects multi match points sorted" ) << "overlay_intersects('polys', sort_by_intersection_size:='des', expression:=$id)" << "MULTIPOINT((-107.37 33.75), (-102.8 36.97))" << ( QVariantList() << 3LL << 1LL );
 
   {
     // Check returned values from point intersection
@@ -302,7 +302,7 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
     expected1.insert( QStringLiteral( "result" ), 1 );
     expected1.insert( QStringLiteral( "overlap" ), 18.569843123334977 );
 
-    QTest::newRow( "intersects multi match points return sorted" ) << "overlay_intersects('polys', sort_by_intersection_size:=true, return_measure:=true, expression:=$id)" << "MULTIPOINT((-107.37 33.75), (-102.8 36.97))" << ( QVariantList() << expected3 << expected1 ) ;
+    QTest::newRow( "intersects multi match points return sorted" ) << "overlay_intersects('polys', sort_by_intersection_size:='des', return_details:=true, expression:=$id)" << "MULTIPOINT((-107.37 33.75), (-102.8 36.97))" << ( QVariantList() << expected3 << expected1 ) ;
 
   }
 
@@ -319,20 +319,24 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
 
   QTest::newRow( "intersects linestring multi match" ) << "overlay_intersects('polys', expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << 1LL << 3LL );
 
-  QTest::newRow( "intersects linestring multi match sorted" ) << "overlay_intersects('polys', sort_by_intersection_size:=true, expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << 3LL << 1LL );
+  QTest::newRow( "intersects linestring multi match sorted" ) << "overlay_intersects('polys', sort_by_intersection_size:='des', expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << 3LL << 1LL );
 
-  QTest::newRow( "intersects linestring multi match sorted limit" ) << "overlay_intersects('polys', limit:=1, sort_by_intersection_size:=true, expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << 3LL );
+  QTest::newRow( "intersects linestring multi match sorted limit" ) << "overlay_intersects('polys', limit:=1, sort_by_intersection_size:='des', expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << 3LL );
 
-  QTest::newRow( "intersects linestring multi match measure sorted" ) << "overlay_intersects('polys',  sort_by_intersection_size:=true, expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << 3LL << 1LL );
+  QTest::newRow( "intersects linestring multi match measure sorted" ) << "overlay_intersects('polys',  sort_by_intersection_size:='des', expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << 3LL << 1LL );
+
+  QTest::newRow( "intersects linestring multi match measure sorted asc" ) << "overlay_intersects('polys',  sort_by_intersection_size:='asc', expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << 1LL << 3LL );
 
   // Return measure
-  QTest::newRow( "intersects linestring multi match" ) << "overlay_intersects('polys', return_measure:=true, expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << expectedLine1 << expectedLine3 );
+  QTest::newRow( "intersects linestring multi match" ) << "overlay_intersects('polys', return_details:=true, expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << expectedLine1 << expectedLine3 );
 
-  QTest::newRow( "intersects linestring multi match sorted" ) << "overlay_intersects('polys', return_measure:=true, sort_by_intersection_size:=true, expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << expectedLine3 << expectedLine1 );
+  QTest::newRow( "intersects linestring multi match sorted" ) << "overlay_intersects('polys', return_details:=true, sort_by_intersection_size:='des', expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << expectedLine3 << expectedLine1 );
 
-  QTest::newRow( "intersects linestring multi match sorted limit" ) << "overlay_intersects('polys', return_measure:=true, limit:=1, sort_by_intersection_size:=true, expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << expectedLine3 );
+  QTest::newRow( "intersects linestring multi match sorted asc" ) << "overlay_intersects('polys', return_details:=true, sort_by_intersection_size:='asc', expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << expectedLine1 << expectedLine3 );
 
-  QTest::newRow( "intersects linestring multi match measure sorted" ) << "overlay_intersects('polys', return_measure:=true, sort_by_intersection_size:=true, expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << expectedLine3 << expectedLine1 );
+  QTest::newRow( "intersects linestring multi match sorted limit" ) << "overlay_intersects('polys', return_details:=true, limit:=1, sort_by_intersection_size:='des', expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << expectedLine3 );
+
+  QTest::newRow( "intersects linestring multi match measure sorted" ) << "overlay_intersects('polys', return_details:=true, sort_by_intersection_size:='des', expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << expectedLine3 << expectedLine1 );
 
 
   // Test linestring intersections
@@ -346,19 +350,19 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
     expectedLine2.insert( QStringLiteral( "result" ), 2 );
     expectedLine2.insert( QStringLiteral( "overlap" ), 0 );
 
-    QTest::newRow( "intersects linestring single match" ) << "overlay_intersects('linestrings', return_measure:=true, expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1)" << ( QVariantList() << expectedLine1 );
-    QTest::newRow( "intersects linestring single match fail overlap" ) << "overlay_intersects('linestrings', min_overlap:=0.5, return_measure:=true, expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1)" << ( QVariantList() );
-    QTest::newRow( "intersects linestring no match" ) << "overlay_intersects('linestrings', return_measure:=true, expression:=$id)" << "LINESTRING(1.5 2, 1.5 1)" << ( QVariantList() );
-    QTest::newRow( "intersects linestring multi match" ) << "overlay_intersects('linestrings', return_measure:=true, expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1, 4 -1, 4 1)" << ( QVariantList() << expectedLine1 << expectedLine2 );
+    QTest::newRow( "intersects linestring single match" ) << "overlay_intersects('linestrings', return_details:=true, expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1)" << ( QVariantList() << expectedLine1 );
+    QTest::newRow( "intersects linestring single match fail overlap" ) << "overlay_intersects('linestrings', min_overlap:=0.5, return_details:=true, expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1)" << ( QVariantList() );
+    QTest::newRow( "intersects linestring no match" ) << "overlay_intersects('linestrings', return_details:=true, expression:=$id)" << "LINESTRING(1.5 2, 1.5 1)" << ( QVariantList() );
+    QTest::newRow( "intersects linestring multi match" ) << "overlay_intersects('linestrings', return_details:=true, expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1, 4 -1, 4 1)" << ( QVariantList() << expectedLine1 << expectedLine2 );
     expectedLine2[QStringLiteral( "overlap" )] = 0.5;
-    QTest::newRow( "intersects linestring multi match sorted" ) << "overlay_intersects('linestrings', return_measure:=true, sort_by_intersection_size:=true, expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1, 4 -1, 4 0, 4.5 0)" << ( QVariantList() << expectedLine2 << expectedLine1 );
+    QTest::newRow( "intersects linestring multi match sorted" ) << "overlay_intersects('linestrings', return_details:=true, sort_by_intersection_size:='des', expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1, 4 -1, 4 0, 4.5 0)" << ( QVariantList() << expectedLine2 << expectedLine1 );
 
     // Full length of targets is expected
     expectedLine2[QStringLiteral( "overlap" )] = 2.0;
     expectedLine1[QStringLiteral( "overlap" )] = 1.0;
 
-    QTest::newRow( "intersects linestring multi match points" ) << "overlay_intersects('linestrings', return_measure:=true, expression:=$id)" << "MULTIPOINT((1.5 0), (3.5 0))" << ( QVariantList() << expectedLine1 << expectedLine2 );
-    QTest::newRow( "intersects linestring multi match points sorted" ) << "overlay_intersects('linestrings', sort_by_intersection_size:=true, return_measure:=true, expression:=$id)" << "MULTIPOINT((1.5 0), (3.5 0))" << ( QVariantList() << expectedLine2 << expectedLine1 );
+    QTest::newRow( "intersects linestring multi match points" ) << "overlay_intersects('linestrings', return_details:=true, expression:=$id)" << "MULTIPOINT((1.5 0), (3.5 0))" << ( QVariantList() << expectedLine1 << expectedLine2 );
+    QTest::newRow( "intersects linestring multi match points sorted" ) << "overlay_intersects('linestrings', sort_by_intersection_size:='des', return_details:=true, expression:=$id)" << "MULTIPOINT((1.5 0), (3.5 0))" << ( QVariantList() << expectedLine2 << expectedLine1 );
 
   }
 
@@ -373,8 +377,8 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
     expectedPoint2.insert( QStringLiteral( "result" ), 2 );
     expectedPoint2.insert( QStringLiteral( "overlap" ), 0 );
 
-    QTest::newRow( "intersects points single match" ) << "overlay_intersects('points', return_measure:=true, expression:=$id)" << "POLYGON((0 -1, 1.5 -1, 1.5 1, 0 1, 0 -1))" << ( QVariantList() << expectedPoint1 );
-    QTest::newRow( "intersects points multi match" ) << "overlay_intersects('points', return_measure:=true, expression:=$id)" << "POLYGON((0 -1, 3.5 -1, 3.5 1, 0 1, 0 -1))" << ( QVariantList() << expectedPoint1 << expectedPoint2 );
+    QTest::newRow( "intersects points single match" ) << "overlay_intersects('points', return_details:=true, expression:=$id)" << "POLYGON((0 -1, 1.5 -1, 1.5 1, 0 1, 0 -1))" << ( QVariantList() << expectedPoint1 );
+    QTest::newRow( "intersects points multi match" ) << "overlay_intersects('points', return_details:=true, expression:=$id)" << "POLYGON((0 -1, 3.5 -1, 3.5 1, 0 1, 0 -1))" << ( QVariantList() << expectedPoint1 << expectedPoint2 );
   }
 
 }
