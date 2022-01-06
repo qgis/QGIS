@@ -102,7 +102,7 @@ void QgsScaleWidget::menuAboutToShow()
 
   double scale = mCanvas->scale();
   QAction *canvasScaleAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ),
-      tr( "Current Canvas Scale (1:%1)" ).arg( qgsDoubleToString( scale, 0 ) ), mMenu );
+      tr( "Use Current Map Canvas Scale (1:%1)" ).arg( qgsDoubleToString( scale, 0 ) ), mMenu );
   connect( canvasScaleAction, &QAction::triggered, this, [this, scale] { setScale( scale ); } );
   mMenu->addAction( canvasScaleAction );
 
