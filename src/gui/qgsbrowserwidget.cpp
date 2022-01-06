@@ -176,7 +176,7 @@ void QgsBrowserWidget::itemDoubleClicked( const QModelIndex &index )
 
   QgsDataItemGuiContext context = createContext();
 
-  const QList< QgsDataItemGuiProvider * > providers = QgsGui::instance()->dataItemGuiProviderRegistry()->providers();
+  const QList< QgsDataItemGuiProvider * > providers = QgsGui::dataItemGuiProviderRegistry()->providers();
   for ( QgsDataItemGuiProvider *provider : providers )
   {
     if ( provider->handleDoubleClick( item, context ) )
@@ -258,7 +258,7 @@ void QgsBrowserWidget::showContextMenu( QPoint pt )
 
   QgsDataItemGuiContext context = createContext();
 
-  QList< QgsDataItemGuiProvider * > providers = QgsGui::instance()->dataItemGuiProviderRegistry()->providers();
+  QList< QgsDataItemGuiProvider * > providers = QgsGui::dataItemGuiProviderRegistry()->providers();
   std::sort( providers.begin(), providers.end(), []( QgsDataItemGuiProvider * a, QgsDataItemGuiProvider * b )
   {
     return a->precedenceWhenPopulatingMenus() < b->precedenceWhenPopulatingMenus();

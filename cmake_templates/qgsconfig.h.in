@@ -112,5 +112,7 @@
 #cmakedefine HAS_KDE_QT5_SMALL_CAPS_FIX
 #cmakedefine HAS_KDE_QT5_FONT_STRETCH_FIX
 
+#cmakedefine HAVE_CRASH_HANDLER
+
 #endif
 

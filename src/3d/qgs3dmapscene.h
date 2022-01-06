@@ -175,6 +175,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );
     void addCameraViewCenterEntity( Qt3DRender::QCamera *camera );
+    void addCameraRotationCenterEntity( QgsCameraController *controller );
     void setSceneState( SceneState state );
     void updateSceneState();
     void updateScene();
@@ -204,6 +205,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QList<Qt3DCore::QEntity *> mLightOriginEntities;
     QList<QgsMapLayer *> mModelVectorLayers;
     QgsSkyboxEntity *mSkybox = nullptr;
+    //! Entity that shows rotation center = useful for debugging camera issues
+    Qt3DCore::QEntity *mEntityRotationCenter = nullptr;
 };
 
 #endif // QGS3DMAPSCENE_H

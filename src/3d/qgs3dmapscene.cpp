@@ -118,6 +118,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   mCameraController->resetView( 1000 );
 
   addCameraViewCenterEntity( mEngine->camera() );
+  addCameraRotationCenterEntity( mCameraController );
   updateLights();
 
   // create terrain entity
@@ -145,7 +146,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
 
-  connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
+  connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
     const QList<QgsMapLayer *> modelVectorLayers = mModelVectorLayers;
     for ( QgsMapLayer *layer : modelVectorLayers )
@@ -409,6 +410,7 @@ static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const
                    ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
 
       QVector4D pc = viewMatrix * p;
+
 
       float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
       fnear = std::min( fnear, dst );
@@ -1143,4 +1145,32 @@ QgsRectangle Qgs3DMapScene::sceneExtent()
   }
 
   return extent;
+}
+
+void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controller )
+{
+  mEntityRotationCenter = new Qt3DCore::QEntity;
+
+  Qt3DCore::QTransform *trCameraViewCenter = new Qt3DCore::QTransform;
+  mEntityRotationCenter->addComponent( trCameraViewCenter );
+  Qt3DExtras::QPhongMaterial *materialCameraViewCenter = new Qt3DExtras::QPhongMaterial;
+  materialCameraViewCenter->setAmbient( Qt::blue );
+  mEntityRotationCenter->addComponent( materialCameraViewCenter );
+  Qt3DExtras::QSphereMesh *rendererCameraViewCenter = new Qt3DExtras::QSphereMesh;
+  rendererCameraViewCenter->setRadius( 10 );
+  mEntityRotationCenter->addComponent( rendererCameraViewCenter );
+  mEntityRotationCenter->setEnabled( true );
+  mEntityRotationCenter->setParent( this );
+
+  connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trCameraViewCenter]( QVector3D center )
+  {
+    trCameraViewCenter->setTranslation( center );
+  } );
+
+  mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
+
+  connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this]
+  {
+    mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
+  } );
 }

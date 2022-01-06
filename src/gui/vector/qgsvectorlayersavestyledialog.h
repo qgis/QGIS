@@ -27,9 +27,11 @@
 class QgsVectorLayer;
 class QgsMapLayerStyleCategoriesModel;
 
-
 /**
- * The QgsVectorLayerSaveStyleDialog class provides the UI to save the current style
+ * \ingroup gui
+ * \class QgsVectorLayerSaveStyleDialog
+ *
+ * \brief The QgsVectorLayerSaveStyleDialog class provides the UI to save the current style
  * or multiple styles into different storage containers (QML, SLD and DB).
  * The user can select what categories must be saved.
  */

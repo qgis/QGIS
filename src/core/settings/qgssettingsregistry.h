@@ -26,7 +26,7 @@
 /**
  * \ingroup core
  * \class QgsSettingsRegistry
- * QgsSettingsRegistry is used for settings introspection and collects a
+ * \brief QgsSettingsRegistry is used for settings introspection and collects a
  * list of child QgsSettingsRegistry and a list of child QgsSettingsRegistry
  *
  * \since QGIS 3.20

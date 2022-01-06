@@ -1,0 +1,52 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryprovider.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAbstractHistoryProvider
+{
+%Docstring(signature="appended")
+Abstract base class for objects which track user history (i.e. operations performed through the GUI).
+
+:py:class:`QgsAbstractHistoryProvider` subclasses are accessible through the :py:class:`QgsHistoryProviderRegistry` class.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgshistoryprovider.h"
+%End
+  public:
+
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
+      sipType = sipType_QgsProcessingHistoryProvider;
+    else
+      sipType = nullptr;
+%End
+
+    virtual ~QgsAbstractHistoryProvider();
+
+    virtual QString id() const = 0;
+%Docstring
+Returns the provider's unique id, which is used to associate existing history entries with the provider.
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryprovider.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -66,9 +66,12 @@ void QgsMapRendererSequentialJob::startPrivate()
   mPainter = new QPainter( &mImage );
 
   mInternalJob = new QgsMapRendererCustomPainterJob( mSettings, mPainter );
+  mInternalJob->setLabelSink( labelSink() );
   mInternalJob->setCache( mCache );
 
   connect( mInternalJob, &QgsMapRendererJob::finished, this, &QgsMapRendererSequentialJob::internalFinished );
+  connect( mInternalJob, &QgsMapRendererJob::layerRendered, this, &QgsMapRendererSequentialJob::layerRendered );
+  connect( mInternalJob, &QgsMapRendererJob::layerRenderingStarted, this, &QgsMapRendererSequentialJob::layerRenderingStarted );
 
   mInternalJob->start();
 }

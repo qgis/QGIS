@@ -112,9 +112,9 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
                 self.listConnections.clear()
                 return
 
-            for csw in doc.findall('csw'):
+            for catalog in doc.findall('csw'):
                 item = QListWidgetItem(self.listConnections)
-                item.setText(csw.attrib.get('name'))
+                item.setText(catalog.attrib.get('name'))
 
     def save(self, connections):
         """save connections ops"""
@@ -124,9 +124,11 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
 
         for conn in connections:
             url = self.settings.value('/MetaSearch/%s/url' % conn)
+            type_ = self.settings.value('/MetaSearch/%s/catalog-type' % conn)
             if url is not None:
                 connection = etree.SubElement(doc, 'csw')
                 connection.attrib['name'] = conn
+                connection.attrib['type'] = type_ or 'OGC CSW 2.0.2'
                 connection.attrib['url'] = url
 
         # write to disk
@@ -145,8 +147,8 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
 
         exml = etree.parse(self.filename).getroot()
 
-        for csw in exml.findall('csw'):
-            conn_name = csw.attrib.get('name')
+        for catalog in exml.findall('csw'):
+            conn_name = catalog.attrib.get('name')
 
             # process only selected connections
             if conn_name not in items:
@@ -164,7 +166,8 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
 
             # no dups detected or overwrite is allowed
             url = '/MetaSearch/%s/url' % conn_name
-            self.settings.setValue(url, csw.attrib.get('url'))
+            self.settings.setValue(url, catalog.attrib.get('url'))
+            self.settings.setValue(url, catalog.attrib.get('catalog-type', 'OGC CSW 2.0.2'))
 
     def accept(self):
         """accept connections"""

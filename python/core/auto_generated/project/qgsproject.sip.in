@@ -1282,6 +1282,11 @@ Attaches a file to the project
 
 :return: The path to the file where the contents can be written to.
 
+.. note::
+
+   If the attachment file is used as a source for a project layer, the attachment will be removed
+   automatically when the layer is deleted.
+
 .. versionadded:: 3.22
 %End
 

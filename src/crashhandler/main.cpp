@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include <memory>
 #include <iostream>
+#include <QFile>
 
 #define _NO_CVCONST_H
 #define _CRT_STDIO_ISO_WIDE_SPECIFIERS
@@ -37,7 +38,7 @@ int main( int argc, char *argv[] )
   }
 
   QApplication app( argc, argv );
-  app.setQuitOnLastWindowClosed( true );
+  QApplication::setQuitOnLastWindowClosed( true );
   QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setApplicationName( "QGIS3" );
 
@@ -49,6 +50,7 @@ int main( int argc, char *argv[] )
   QString threadIdString;
   QString exceptionPointersString;
   QString symbolPaths;
+  QString pythonCrashLogFile;
   QString reloadArgs;
   QStringList versionInfo;
 
@@ -58,6 +60,7 @@ int main( int argc, char *argv[] )
     threadIdString = file.readLine();
     exceptionPointersString = file.readLine();
     symbolPaths = file.readLine();
+    pythonCrashLogFile = file.readLine().trimmed();
     reloadArgs = file.readLine();
     // The version info is the last stuff to be in the file until the end
     // bit gross but :)
@@ -65,6 +68,7 @@ int main( int argc, char *argv[] )
     versionInfo = info.split( "\n" );
   }
 
+#ifdef MSVC
   DWORD processId;
   DWORD threadId;
   LPEXCEPTION_POINTERS exception;
@@ -78,26 +82,33 @@ int main( int argc, char *argv[] )
   std::cout << "Symbol Path :" << symbolPaths.toUtf8().constData() << std::endl;
 
   std::unique_ptr<QgsStackTrace> stackTrace( QgsStackTrace::trace( processId, threadId, exception, symbolPaths ) );
+#endif
 
   QgsCrashReport report;
   report.setVersionInfo( versionInfo );
+#ifdef MSVC
   report.setStackTrace( stackTrace.get() );
+#endif
+  report.setPythonCrashLogFilePath( pythonCrashLogFile );
   report.exportToCrashFolder();
 
   QgsCrashDialog dlg;
   dlg.setReloadArgs( reloadArgs );
+  dlg.setPythonFault( report.pythonFault() );
   dlg.setBugReport( report.toHtml() );
   dlg.setModal( true );
   dlg.show();
-  app.exec();
+  QApplication::exec();
 
 
+#ifdef MSVC
   for ( HANDLE threadHandle : stackTrace->threads )
   {
     ResumeThread( threadHandle );
     CloseHandle( threadHandle );
   }
   CloseHandle( stackTrace->process );
+#endif
 
   return 0;
 }

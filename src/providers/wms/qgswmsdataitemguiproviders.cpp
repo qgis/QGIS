@@ -49,11 +49,11 @@ void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
     menu->addSeparator();
 
-    QAction *actionEdit = new QAction( tr( "Edit…" ), menu );
+    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Delete" ), menu );
+    QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
     connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
     menu->addAction( actionDelete );
   }
@@ -92,7 +92,7 @@ void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 
 void QgsWmsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  if ( QMessageBox::question( nullptr, tr( "Delete Connection" ), tr( "Are you sure you want to delete the connection “%1”?" ).arg( item->name() ),
+  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
@@ -144,11 +144,11 @@ void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 {
   if ( QgsXyzLayerItem *layerItem = qobject_cast< QgsXyzLayerItem * >( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit…" ), this );
+    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
     connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Delete" ), this );
+    QAction *actionDelete = new QAction( tr( "Remove Connection" ), this );
     connect( actionDelete, &QAction::triggered, this, [layerItem] { deleteConnection( layerItem ); } );
     menu->addAction( actionDelete );
   }
@@ -189,7 +189,7 @@ void QgsXyzDataItemGuiProvider::editConnection( QgsDataItem *item )
 
 void QgsXyzDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  if ( QMessageBox::question( nullptr, tr( "Delete Connection" ), tr( "Are you sure you want to delete the connection “%1”?" ).arg( item->name() ),
+  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 

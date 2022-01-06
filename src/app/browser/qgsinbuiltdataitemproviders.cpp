@@ -298,12 +298,12 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   } );
   menu->addAction( openFolder );
 
-  if ( QgsGui::instance()->nativePlatformInterface()->capabilities() & QgsNative::NativeOpenTerminalAtPath )
+  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeOpenTerminalAtPath )
   {
     QAction *openTerminal = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ), tr( "Open in Terminal…" ), menu );
     connect( openTerminal, &QAction::triggered, this, [ = ]
     {
-      QgsGui::instance()->nativePlatformInterface()->openTerminalAtPath( directoryItem->dirPath() );
+      QgsGui::nativePlatformInterface()->openTerminalAtPath( directoryItem->dirPath() );
     } );
     menu->addAction( openTerminal );
     menu->addSeparator();
@@ -361,14 +361,14 @@ void QgsAppDirectoryItemGuiProvider::changeDirectoryColor( QgsDirectoryItem *ite
     return;
 
   // store new color for directory
-  item->setCustomColor( item->dirPath(), color );
+  QgsDirectoryItem::setCustomColor( item->dirPath(), color );
   // and update item's color immediately
   item->setIconColor( color );
 }
 
 void QgsAppDirectoryItemGuiProvider::clearDirectoryColor( QgsDirectoryItem *item )
 {
-  item->setCustomColor( item->dirPath(), QColor() );
+  QgsDirectoryItem::setCustomColor( item->dirPath(), QColor() );
   // and update item's color immediately
   item->setIconColor( QColor() );
 }

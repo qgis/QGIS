@@ -39,11 +39,6 @@ Default constructor of field formatter for a date time field.
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
 
-    static void applyLocaleChange();
-%Docstring
-Adjusts the date time formats according to locale.
-%End
-
     static QString defaultFormat( QVariant::Type type );
 %Docstring
 Gets the default format in function of the type.
@@ -53,6 +48,7 @@ The type is expected to be one of
 - QVariant.Date
 - QVariant.Time
 %End
+
 };
 
 /************************************************************************

@@ -31,7 +31,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   , mLayer( layer )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
   setWindowTitle( tr( "Database Styles Manager" ) );
 
   mDeleteButton = mButtonBox->button( QDialogButtonBox::StandardButton::Close );

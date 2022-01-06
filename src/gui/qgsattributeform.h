@@ -348,6 +348,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues );
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
+    void onRelatedFeaturesChanged();
     void onUpdatedFields();
     void onConstraintStatusChanged( const QString &constraint,
                                     const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
@@ -387,6 +388,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateFieldDependencies();
     void updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapper *eww );
     void updateFieldDependenciesVirtualFields( QgsEditorWidgetWrapper *eww );
+    void updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrapper *eww = nullptr );
 
     void setMultiEditFeatureIdsRelations( const QgsFeatureIds &fids );
 
@@ -417,10 +419,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! Save single feature or add feature edits
     bool saveEdits( QString *error );
 
+    QgsFeature getUpdatedFeature() const;
+
     //! update the default values and virtual fields in the fields after a referenced field changed
     void updateValuesDependencies( const int originIdx );
     void updateValuesDependenciesDefaultValues( const int originIdx );
     void updateValuesDependenciesVirtualFields( const int originIdx );
+    void updateRelatedLayerFields();
 
     void clearMultiEditMessages();
     void pushSelectedFeaturesMessage();
@@ -437,7 +442,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
     void updateLabels();
     bool currentFormValuesFeature( QgsFeature &feature );
-    bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
+    bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions ) const;
+    bool currentFormValidHardConstraints( QStringList &invalidFields, QStringList &descriptions ) const;
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
 
     Q_DECL_DEPRECATED QgsRelationWidgetWrapper *setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context ) SIP_DEPRECATED;
@@ -533,6 +539,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Attribute indexes will be added multiple times if more than one widget depends on them.
      */
     QMap<int, QgsWidgetWrapper *> mVirtualFieldsDependencies;
+
+    /**
+     * Dependency list for values depending on related layers.
+     */
+    QSet<QgsEditorWidgetWrapper *> mRelatedLayerFieldsDependencies;
 
     //! List of updated fields to avoid recursion on the setting of defaultValues
     QList<int> mAlreadyUpdatedFields;

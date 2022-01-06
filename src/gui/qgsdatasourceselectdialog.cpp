@@ -174,7 +174,7 @@ void QgsDataSourceSelectWidget::setDescription( const QString &description )
         const QUrl url( link );
         const QFileInfo file( url.toLocalFile() );
         if ( file.exists() && !file.isDir() )
-          QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+          QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
         else
           QDesktopServices::openUrl( url );
       } );

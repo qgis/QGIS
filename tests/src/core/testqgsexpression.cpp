@@ -130,20 +130,24 @@ class TestQgsExpression: public QObject
       QgsProject::instance()->addMapLayer( mMeshLayer );
 
       // test memory layer for get_feature tests
-      mMemoryLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      mMemoryLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
       QVERIFY( mMemoryLayer->isValid() );
       QgsFeature f1( mMemoryLayer->dataProvider()->fields(), 1 );
       f1.setAttribute( QStringLiteral( "col1" ), 10 );
       f1.setAttribute( QStringLiteral( "col2" ), "test1" );
+      f1.setAttribute( QStringLiteral( "datef" ), QDate( 2021, 9, 23 ) );
       QgsFeature f2( mMemoryLayer->dataProvider()->fields(), 2 );
       f2.setAttribute( QStringLiteral( "col1" ), 11 );
       f2.setAttribute( QStringLiteral( "col2" ), "test2" );
+      f2.setAttribute( QStringLiteral( "datef" ), QDate( 2022, 9, 23 ) );
       QgsFeature f3( mMemoryLayer->dataProvider()->fields(), 3 );
       f3.setAttribute( QStringLiteral( "col1" ), 3 );
       f3.setAttribute( QStringLiteral( "col2" ), "test3" );
+      f3.setAttribute( QStringLiteral( "datef" ), QDate( 2021, 9, 23 ) );
       QgsFeature f4( mMemoryLayer->dataProvider()->fields(), 4 );
       f4.setAttribute( QStringLiteral( "col1" ), 41 );
       f4.setAttribute( QStringLiteral( "col2" ), "test4" );
+      f4.setAttribute( QStringLiteral( "datef" ), QDate( 2022, 9, 23 ) );
       mMemoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
       QgsProject::instance()->addMapLayer( mMemoryLayer );
 
@@ -515,6 +519,77 @@ class TestQgsExpression: public QObject
       QCOMPARE( res, result );
       QCOMPARE( exp.dump(), dump );
     }
+
+    void  represent_attributes()
+    {
+
+      QgsVectorLayer layer { QStringLiteral( "Point?field=col1:integer&field=col2:string" ), QStringLiteral( "test_represent_attributes" ), QStringLiteral( "memory" ) };
+      QVERIFY( layer.isValid() );
+      QgsFeature f1( layer.dataProvider()->fields(), 1 );
+      f1.setAttribute( QStringLiteral( "col1" ), 1 );
+      f1.setAttribute( QStringLiteral( "col2" ), "test1" );
+      QgsFeature f2( layer.dataProvider()->fields(), 2 );
+      f2.setAttribute( QStringLiteral( "col1" ), 2 );
+      f2.setAttribute( QStringLiteral( "col2" ), "test2" );
+      layer.dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 );
+
+      QVariantMap config;
+      QVariantMap map;
+      map.insert( QStringLiteral( "one" ), QStringLiteral( "1" ) );
+      map.insert( QStringLiteral( "two" ), QStringLiteral( "2" ) );
+
+      config.insert( QStringLiteral( "map" ), map );
+      layer.setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config ) );
+
+      QgsExpressionContext context( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      context.setFeature( f2 );
+      QgsExpression expression( "represent_attributes()" );
+
+      if ( expression.hasParserError() )
+        qDebug() << expression.parserErrorString();
+      QVERIFY( !expression.hasParserError() );
+
+      expression.prepare( &context );
+
+      QVariantMap result { expression.evaluate( &context ).toMap() };
+
+      QCOMPARE( result.value( QStringLiteral( "col1" ) ).toString(), QStringLiteral( "two" ) );
+      QCOMPARE( result.value( QStringLiteral( "col2" ) ).toString(), QStringLiteral( "test2" ) );
+
+      QgsExpressionContext context2( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      context2.setFeature( f2 );
+      expression = QgsExpression( "represent_attributes($currentfeature)" );
+
+      result = expression.evaluate( &context2 ).toMap();
+
+      QVERIFY( !expression.hasEvalError() );
+
+      QCOMPARE( result.value( QStringLiteral( "col1" ) ).toString(), QStringLiteral( "two" ) );
+      QCOMPARE( result.value( QStringLiteral( "col2" ) ).toString(), QStringLiteral( "test2" ) );
+
+      QgsProject::instance()->addMapLayer( &layer, false, false );
+      QgsExpressionContext context3;
+      context3.setFeature( f2 );
+      expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
+
+      result = expression.evaluate( &context3 ).toMap();
+
+      QVERIFY( !expression.hasEvalError() );
+
+      QCOMPARE( result.value( QStringLiteral( "col1" ) ).toString(), QStringLiteral( "two" ) );
+      QCOMPARE( result.value( QStringLiteral( "col2" ) ).toString(), QStringLiteral( "test2" ) );
+
+      // Test the cached value
+      QCOMPARE( context3.cachedValue( QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer.id(), QStringLiteral( "col1" ), QStringLiteral( "2" ) ) ).toString(),  QStringLiteral( "two" ) );
+
+      // Test errors
+      QgsProject::instance()->removeMapLayer( layer.id() );
+      expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
+      QgsExpressionContext context4;
+      result = expression.evaluate( &context4 ).toMap();
+      QVERIFY( expression.hasEvalError() );
+
+    };
 
     void represent_value()
     {
@@ -924,6 +999,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "geom_to_wkb not geom" ) << "geom_to_wkt(geom_from_wkb(geom_to_wkb('a')))" << true << QVariant();
       QTest::newRow( "geom_from_wkb not geom" ) << "geom_to_wkt(geom_from_wkb(make_point(4,5)))" << true << QVariant();
       QTest::newRow( "geom_from_wkb null" ) << "geom_to_wkt(geom_from_wkb(NULL))" << false << QVariant();
+      QTest::newRow( "geometry_type not geom" ) << "geometry_type('g')" << true << QVariant();
+      QTest::newRow( "geometry_type null" ) << "geometry_type(NULL)" << false << QVariant();
+      QTest::newRow( "geometry_type point" ) << "geometry_type(geom_from_wkt('POINT(1 2)'))" << false << QVariant( QStringLiteral( "Point" ) );
+      QTest::newRow( "geometry_type polygon" ) << "geometry_type(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant( QStringLiteral( "Polygon" ) );
+      QTest::newRow( "geometry_type line" ) << "geometry_type(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'))" << false << QVariant( QStringLiteral( "Line" ) );
+      QTest::newRow( "geometry_type multipoint" ) << "geometry_type(geom_from_wkt('MULTIPOINT((0 1),(0 0))'))" << false << QVariant( QStringLiteral( "Point" ) );
       QTest::newRow( "num_points" ) << "num_points(geom_from_wkt('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 0),POINT(6 5))'))" << false << QVariant( 3 );
       QTest::newRow( "num_interior_rings not geom" ) << "num_interior_rings('g')" << true << QVariant();
       QTest::newRow( "num_interior_rings null" ) << "num_interior_rings(NULL)" << false << QVariant();
@@ -1980,6 +2061,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "exif bad file path" ) << QStringLiteral( "exif('bad path','Exif.Image.DateTime')" ) << false << QVariant();
       QTest::newRow( "exif_geotag" ) << QStringLiteral( "geom_to_wkt(exif_geotag('%1photos/0997.JPG'))" ).arg( testDataDir ) << false << QVariant( "PointZ (149.27516667 -37.2305 422.19101124)" );
       QTest::newRow( "exif_geotag bad file path" ) << QStringLiteral( "geom_to_wkt(exif_geotag('bad path'))" ).arg( testDataDir ) << false << QVariant( "Point EMPTY" );
+
+      // Form encoding tests
+      QTest::newRow( "url_encode" ) << QStringLiteral( "url_encode(map())" ).arg( testDataDir ) << false << QVariant( "" );
+      QTest::newRow( "url_encode" ) << QStringLiteral( "url_encode(map('a b', 'a b', 'c &% d', 'c &% d'))" ).arg( testDataDir ) << false << QVariant( "a%20b=a%20b&c%20%26%25%20d=c%20%26%25%20d" );
+      QTest::newRow( "url_encode" ) << QStringLiteral( "url_encode(map('a&+b', 'a and plus b', 'a=b', 'a equals b'))" ).arg( testDataDir ) << false << QVariant( "a%26+b=a%20and%20plus%20b&a%3Db=a%20equals%20b" );
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
@@ -2241,6 +2327,17 @@ class TestQgsExpression: public QObject
 
       // get_feature_by_id
       QTest::newRow( "get_feature_by_id" ) << "get_feature_by_id('test', 1)" << true << 1;
+
+      // multi-param
+      QTest::newRow( "get_feature multi1" ) << "get_feature('test',map('col1','11','col2','test2'))" << true << 2;
+      QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1',3,'col2','test3'))" << true << 3;
+      QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1','41','datef',to_date('2022-09-23')))" << true << 4;
+
+      // multi-param no match
+      QTest::newRow( "get_feature no match-multi1" ) << "get_feature('test',map('col1','col2'),'no match!')" << false << -1;
+      QTest::newRow( "get_feature no match-multi2" ) << "get_feature('test',map('col2','10','col4','test3'))" << false << -1;
+      QTest::newRow( "get_feature no match-multi2" ) << "get_feature('test',map('col1',10,'datef',to_date('2021-09-24')))" << false << -1;
+
     }
 
     void eval_get_feature()

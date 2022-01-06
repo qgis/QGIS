@@ -33,6 +33,7 @@ This element will load a relation editor onto the form.
       ZoomToChildFeature,
       AllButtons
     };
+
     typedef QFlags<QgsAttributeEditorRelation::Button> Buttons;
 
 

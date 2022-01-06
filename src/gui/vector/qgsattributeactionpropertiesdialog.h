@@ -28,6 +28,10 @@
 
 #include <QDialog>
 
+/**
+ * \ingroup gui
+ * \class QgsAttributeActionPropertiesDialog
+ */
 class GUI_EXPORT QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttributeActionPropertiesDialogBase, public QgsExpressionContextGenerator
 {
     Q_OBJECT

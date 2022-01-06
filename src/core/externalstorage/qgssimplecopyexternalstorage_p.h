@@ -97,5 +97,5 @@ class QgsSimpleCopyExternalStorageFetchedContent : public QgsExternalStorageFetc
     QString mResultFilePath;
 };
 
-
+///@endcond
 #endif // QGSSIMPLECOPYEXTERNALSTORAGE_H

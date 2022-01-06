@@ -61,12 +61,19 @@
             <l-map
               :ref="'mapid-' + project.id"
               @ready="loadMap(project, $event)"
+              :options="{attributionControl: false}"
             >
+              <l-control-attribution
+                position="bottomright"
+                :options="{prefix: false}"
+              ></l-control-attribution>
               <l-tile-layer
                 url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                 v-if="
                   project.capabilities.wmsOutputCrsList.includes('EPSG:3857')
                 "
+                attribution="&copy; &lt;a href='https://www.openstreetmap.org/copyright'&gt;OpenStreetMap&lt;/a&gt; contributors"
+                :options="{maxZoom: 19}"
               ></l-tile-layer>
             </l-map>
             <v-card-title>{{ project.title }}</v-card-title>
@@ -123,7 +130,7 @@
 </template>
 
 <script>
-import { LMap, LTileLayer } from "vue2-leaflet";
+import { LMap, LControlAttribution, LTileLayer } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { latLng, Polygon } from "leaflet";
 import WMS from "leaflet-wms/leaflet.wms.js";
@@ -135,6 +142,7 @@ export default {
   name: "Catalog",
   components: {
     LMap,
+    LControlAttribution,
     LTileLayer,
     Metadata,
     Error,
@@ -182,6 +190,7 @@ export default {
         layers: Utils.getAllLayers(project),
         transparent: true,
         format: "image/png",
+        maxZoom: 19
       }).addTo(map);
     },
   },

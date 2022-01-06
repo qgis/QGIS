@@ -35,7 +35,10 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMetadataWidget;
 
 /**
- * Property sheet for a mesh map layer.
+ * \ingroup gui
+ * \class QgsMeshLayerProperties
+ *
+ * \brief Property sheet for a mesh map layer.
  * Contains information, source and style tabs
  *
  * \since QGIS 3.16 in the GUI API
@@ -49,6 +52,9 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     /**
      * \brief Constructor
      * \param lyr Mesh map layer for which properties will be displayed
+     * \param canvas The map canvas
+     * \param parent The parent widget
+     * \param fl Window flags
      */
     QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
@@ -84,6 +90,8 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void aboutToShowStyleMenu();
     //! Reloads temporal properties from the provider
     void reloadTemporalProperties();
+    //! \brief Called when cancel button is pressed
+    void onCancel();
 
     void onTimeReferenceChange();
 
@@ -122,6 +130,8 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     friend class TestQgsMeshLayerPropertiesDialog;
 
     void showHelp();
+
+    QgsCoordinateReferenceSystem mBackupCrs;
 };
 
 

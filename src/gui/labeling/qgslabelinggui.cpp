@@ -466,7 +466,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   }
   else
   {
-    std::unique_ptr< QgsCallout > defaultCallout( QgsApplication::calloutRegistry()->defaultCallout() );
+    std::unique_ptr< QgsCallout > defaultCallout( QgsCalloutRegistry::defaultCallout() );
     whileBlocking( mCalloutStyleComboBox )->setCurrentIndex( mCalloutStyleComboBox->findData( defaultCallout->type() ) );
     whileBlocking( mCalloutsDrawCheckBox )->setChecked( false );
     updateCalloutWidget( defaultCallout.get() );

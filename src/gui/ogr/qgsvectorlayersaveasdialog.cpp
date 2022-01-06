@@ -485,6 +485,12 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
                            sFormat == QLatin1String( "FileGDB" ) ||
                            sFormat == QLatin1String( "SQLite" ) ||
                            sFormat == QLatin1String( "SpatiaLite" ) );
+
+  if ( sFormat == QLatin1String( "XLSX" ) )
+    leLayername->setMaxLength( 31 );
+  else if ( leLayername->isEnabled() )
+    leLayername->setMaxLength( 32767 ); // default length
+
   if ( !leLayername->isEnabled() )
     leLayername->setText( QString() );
   else if ( leLayername->text().isEmpty() &&

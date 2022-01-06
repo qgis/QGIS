@@ -98,6 +98,8 @@ class GUI_EXPORT QgsExpressionItem : public QStandardItem
     static const int SEARCH_TAGS_ROLE = Qt::UserRole + 3;
     //! Item name role
     static const int ITEM_NAME_ROLE = Qt::UserRole + 4;
+    //! Layer ID role \since QGIS 3.24
+    static const int LAYER_ID_ROLE = Qt::UserRole + 5;
 
   private:
     QString mExpressionText;
@@ -318,13 +320,13 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * \param tags tags to find function
      * \param name name of the item
      */
-    void registerItem( const QString &group, const QString &label, const QString &expressionText,
-                       const QString &helpText = QString(),
-                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
-                       bool highlightedItem = false, int sortOrder = 1,
-                       const QIcon &icon = QIcon(),
-                       const QStringList &tags = QStringList(),
-                       const QString &name = QString() );
+    QgsExpressionItem *registerItem( const QString &group, const QString &label, const QString &expressionText,
+                                     const QString &helpText = QString(),
+                                     QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
+                                     bool highlightedItem = false, int sortOrder = 1,
+                                     const QIcon &icon = QIcon(),
+                                     const QStringList &tags = QStringList(),
+                                     const QString &name = QString() );
 
     /**
      * Registers a node item for the expression builder, adding multiple items when the function exists in multiple groups
@@ -345,6 +347,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     void loadExpressionContext();
     void loadRelations();
     void loadLayers();
+    void loadLayerFields( QgsVectorLayer *layer, QgsExpressionItem *parentItem );
     void loadFieldNames();
 
     /**

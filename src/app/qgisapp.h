@@ -202,7 +202,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     Q_OBJECT
   public:
     //! Constructor
-    QgisApp( QSplashScreen *splash, bool restorePlugins = true,
+    QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipBadLayers = false,
              bool skipVersionCheck = false, const QString &rootProfileLocation = QString(),
              const QString &activeProfile = QString(),
              QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
@@ -213,6 +213,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgisApp( QgisApp const & ) = delete;
     QgisApp &operator=( QgisApp const & ) = delete;
+
 
     /**
      * Returns and adjusted uri for the layer based on current and available CRS as well as the last selected image format
@@ -1283,11 +1284,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setMapTipsDelay( int timerInterval );
 
+#ifdef HAVE_CRASH_HANDLER
+
     /**
      * Abort application triggering the crash handler
      * \since QGIS 3.4
      */
     void triggerCrashHandler();
+#endif
 
     //! Create a new file from a template project
     bool fileNewFromTemplate( const QString &fileName );
@@ -1590,7 +1594,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showMeshCalculator();
     //! Open dialog to align raster layers
     void showAlignRasterTool();
+
+    /**
+     * Called whenever user wants to embed layers
+     */
     void embedLayers();
+
+    /**
+     * Embed \a groups and \a layerIds items from \a projectFile
+     */
+    void addEmbeddedItems( const QString &projectFile, const QStringList &groups, const QStringList &layerIds );
 
     //! Creates a new map canvas view
     void newMapCanvas();
@@ -2107,6 +2120,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void activeLayerChanged( QgsMapLayer *layer );
 
   private:
+    //Flag to allow user to bypass badlayer checks.
+    bool mSkipBadLayers;
     void createPreviewImage( const QString &path, const QIcon &overlayIcon = QIcon() );
     void startProfile( const QString &name );
     void endProfile();
@@ -2789,6 +2804,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     friend class QgsCanvasRefreshBlocker;
 
     friend class TestQgisAppPython;
+    friend class TestQgisApp;
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;
 };

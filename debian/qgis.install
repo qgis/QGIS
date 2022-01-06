@@ -2,6 +2,7 @@ usr/lib/qgis/plugins/libplugin_geometrychecker.so
 usr/lib/qgis/plugins/libauthmethod_oauth2.so
 usr/lib/qgis/plugins/libplugin_offlineediting.so
 usr/lib/qgis/plugins/libplugin_topology.so
+usr/lib/qgis/qgiscrashhandler
 usr/share/applications/
 usr/share/metainfo/
 usr/share/mime/packages/

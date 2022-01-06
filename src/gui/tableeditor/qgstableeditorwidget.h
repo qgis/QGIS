@@ -429,8 +429,6 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
 
     /**
      * Sets whether the table includes a header row.
-     *
-     * \see includeTableHeader()
      */
     void setIncludeTableHeader( bool included );
 

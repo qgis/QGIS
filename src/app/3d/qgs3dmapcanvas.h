@@ -117,6 +117,8 @@ class Qgs3DMapCanvas : public QWidget
      * \since QGIS 3.18
      */
     void cameraNavigationSpeedChanged( double speed );
+  public slots:
+    void captureDepthBuffer();
 
   private slots:
     void updateTemporalRange( const QgsDateTimeRange &timeRange );

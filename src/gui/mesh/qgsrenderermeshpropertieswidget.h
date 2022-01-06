@@ -30,7 +30,10 @@ class QgsMeshLayer;
 class QgsMapCanvas;
 
 /**
- * Widget for renderer properties of the mesh, contours (scalars)
+ * \ingroup gui
+ * \class QgsRendererMeshPropertiesWidget
+ *
+ * \brief Widget for renderer properties of the mesh, contours (scalars)
  * and vectors data associated with the mesh layer
  */
 class GUI_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRendererMeshPropsWidgetBase

@@ -422,7 +422,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAuthSettings->setDataprovider( QStringLiteral( "proxy" ) );
   QString authcfg = mSettings->value( QStringLiteral( "proxy/authcfg" ) ).toString();
   mAuthSettings->setConfigId( authcfg );
-  mAuthSettings->setWarningText( mAuthSettings->formattedWarning( QgsAuthSettingsWidget::UserSettings ) );
+  mAuthSettings->setWarningText( QgsAuthSettingsWidget::formattedWarning( QgsAuthSettingsWidget::UserSettings ) );
 
   //Web proxy settings
   grpProxy->setChecked( mSettings->value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() );

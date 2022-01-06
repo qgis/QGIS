@@ -422,6 +422,7 @@ set(QGIS_CORE_SRCS
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmultirenderchecker.cpp
+  qgsnullpainterdevice.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
@@ -1065,6 +1066,7 @@ set(QGIS_CORE_HDRS
   qgsmessageoutput.h
   qgsmimedatautils.h
   qgsmultirenderchecker.h
+  qgsnullpainterdevice.h
   qgsobjectcustomproperties.h
   qgsofflineediting.h
   qgsogcutils.h
@@ -1333,6 +1335,7 @@ set(QGIS_CORE_HDRS
   labeling/qgslabelobstaclesettings.h
   labeling/qgslabelposition.h
   labeling/qgslabelsearchtree.h
+  labeling/qgslabelsink.h
   labeling/qgslabelthinningsettings.h
   labeling/qgspallabeling.h
   labeling/qgsrulebasedlabeling.h

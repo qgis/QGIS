@@ -44,7 +44,7 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   , mIsPinned( isPinned )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   // set defaults to layer defaults
   mLabelAllPartsCheckBox->setChecked( layerSettings.labelPerPart );

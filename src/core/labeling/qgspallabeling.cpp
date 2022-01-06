@@ -271,7 +271,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsPalLayerSettings::QgsPalLayerSettings()
   : predefinedPositionOrder( *DEFAULT_PLACEMENT_ORDER() )
-  , mCallout( QgsApplication::calloutRegistry()->defaultCallout() )
+  , mCallout( QgsCalloutRegistry::defaultCallout() )
 {
   initPropertyDefinitions();
 
@@ -1170,12 +1170,12 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   // TODO - replace with registry when multiple callout styles exist
   const QString calloutType = elem.attribute( QStringLiteral( "calloutType" ) );
   if ( calloutType.isEmpty() )
-    mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
+    mCallout.reset( QgsCalloutRegistry::defaultCallout() );
   else
   {
     mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, elem.firstChildElement( QStringLiteral( "callout" ) ), context ) );
     if ( !mCallout )
-      mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
+      mCallout.reset( QgsCalloutRegistry::defaultCallout() );
   }
 }
 

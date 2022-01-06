@@ -119,5 +119,5 @@ int main( int argc, char *argv[] )
     res = exec.run( args );
     QCoreApplication::exit( res );
   } );
-  return app.exec();
+  return QgsApplication::exec();
 }

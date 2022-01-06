@@ -242,6 +242,17 @@ Forward the signal to the embedded form
     virtual bool valid() const;
 
 
+  signals:
+
+    void relatedFeaturesChanged();
+%Docstring
+Emit this signal, whenever the related features changed.
+This happens for example when related features are added, removed,
+linked or unlinked.
+
+.. versionadded:: 3.22
+%End
+
   public slots:
     virtual void setFeature( const QgsFeature &feature );
 

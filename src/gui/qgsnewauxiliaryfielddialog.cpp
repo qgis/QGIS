@@ -29,7 +29,7 @@ QgsNewAuxiliaryFieldDialog::QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinit
   , mPropertyDefinition( def )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldText.svg" ), tr( "String" ), QgsPropertyDefinition::DataTypeString );
   mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" ), tr( "Real" ), QgsPropertyDefinition::DataTypeNumeric );

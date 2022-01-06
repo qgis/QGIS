@@ -520,7 +520,7 @@ void transform1800to1900( QgsProjectFileTransform *pft )
     // TODO: We have to use more data from project file to read the layer it correctly,
     // OTOH, we should not read it until it was converted
     rasterLayer.readLayerXml( layerNode.toElement(), context );
-    pft->convertRasterProperties( pft->dom(), layerNode, rasterPropertiesElem, &rasterLayer );
+    QgsProjectFileTransform::convertRasterProperties( pft->dom(), layerNode, rasterPropertiesElem, &rasterLayer );
   }
 
   //composer: replace mGridAnnotationPosition with mLeftGridAnnotationPosition & co.

@@ -57,7 +57,7 @@ QString QgsFixGeometriesAlgorithm::outputName() const
 
 QgsWkbTypes::Type QgsFixGeometriesAlgorithm::outputWkbType( QgsWkbTypes::Type type ) const
 {
-  return QgsWkbTypes::multiType( type );
+  return QgsWkbTypes::promoteNonPointTypesToMulti( type );
 }
 
 QString QgsFixGeometriesAlgorithm::shortHelpString() const

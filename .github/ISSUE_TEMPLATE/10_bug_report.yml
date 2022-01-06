@@ -61,7 +61,7 @@ body:
         Did you try with a new QGIS profile? Some issues or crashes might be related to plugins or user configuration.
         You must try with a new profile to check if the issue remains.
         Read this link how to create a new profile
-        https://docs.qgis.org/3.16/en/docs/user_manual/introduction/qgis_configuration.html#working-with-user-profiles
+        https://docs.qgis.org/latest/en/docs/user_manual/introduction/qgis_configuration.html#working-with-user-profiles
       options:
         - label: I tried with a new QGIS profile
 

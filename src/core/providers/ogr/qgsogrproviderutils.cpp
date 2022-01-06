@@ -1304,7 +1304,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   QStringList lines {subsetString.split( QChar( '\n' ) )};
   lines.erase( std::remove_if( lines.begin(), lines.end(), []( const QString & line )
   {
-    return line.startsWith( QStringLiteral( "--" ) );
+    return line.startsWith( QLatin1String( "--" ) );
   } ), lines.end() );
   for ( auto &line : lines )
   {
@@ -1317,7 +1317,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
         inLiteral = !inLiteral;
         literalChar = inLiteral ? line[i] : QChar( ' ' );
       }
-      if ( !inLiteral && line.mid( i ).startsWith( QStringLiteral( "--" ) ) )
+      if ( !inLiteral && line.mid( i ).startsWith( QLatin1String( "--" ) ) )
       {
         line = line.left( i );
         break;
@@ -2337,7 +2337,7 @@ void QgsOgrProviderUtils::release( QgsOgrLayer *&layer )
 }
 
 
-void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *&ds )
+void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *ds )
 {
   if ( !ds )
     return;
@@ -2345,7 +2345,6 @@ void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *&ds )
   QMutexLocker locker( sGlobalMutex() );
   releaseInternal( ds->mIdent, ds->mDs, true );
   delete ds;
-  ds = nullptr;
 }
 
 bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName )
@@ -2606,9 +2605,9 @@ bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &og
     if ( ok && ! connName.isEmpty() )
     {
       QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
-      QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      std::unique_ptr< QgsGeoPackageProviderConnection > providerConnection( qgis::down_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) ) );
       providerConnection->setUri( path );
-      providerMetadata->saveConnection( providerConnection, connName );
+      providerMetadata->saveConnection( providerConnection.get(), connName );
       return true;
     }
   }

@@ -657,6 +657,31 @@ class CORE_EXPORT QgsProcessingContext
      */
     void setLogLevel( LogLevel level );
 
+    /**
+     * Exports the context's settings to a variant map.
+     *
+     * \since QGIS 3.24
+     */
+    QVariantMap exportToMap() const;
+
+    /**
+     * Flags controlling the results given by asQgisProcessArguments().
+     *
+     * \since QGIS 3.24
+     */
+    enum class ProcessArgumentFlag : int
+    {
+      IncludeProjectPath = 1 << 0, //!< Include the associated project path argument
+    };
+    Q_DECLARE_FLAGS( ProcessArgumentFlags, ProcessArgumentFlag )
+
+    /**
+     * Returns list of the equivalent qgis_process arguments representing the settings from the context.
+     *
+     * \since QGIS 3.24
+     */
+    QStringList asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags = QgsProcessingContext::ProcessArgumentFlags() ) const;
+
   private:
 
     QgsProcessingContext::Flags mFlags = QgsProcessingContext::Flags();
@@ -694,6 +719,7 @@ class CORE_EXPORT QgsProcessingContext
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::ProcessArgumentFlags )
 
 
 /**

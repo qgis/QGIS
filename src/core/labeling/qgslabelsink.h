@@ -45,6 +45,23 @@ class QgsLabelSink
      * to another desired location.
      */
     virtual void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) = 0;
+
+    /**
+     * The drawLabel method is called for each unplaced label.
+     * \param layerId The layer ID associated to the label
+     * \param context The render context object
+     * \param label The label object
+     * \param settings The layer labeling settings
+     * \since QGIS 3.24
+     */
+    virtual void drawUnplacedLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings )
+    {
+      Q_UNUSED( layerId );
+      Q_UNUSED( context )
+      Q_UNUSED( label );
+      Q_UNUSED( settings );
+      return;
+    }
 };
 
 /**
@@ -61,6 +78,7 @@ class QgsLabelSinkProvider : public QgsVectorLayerLabelProvider
     explicit QgsLabelSinkProvider( QgsVectorLayer *layer, const QString &providerId, QgsLabelSink *sink, const QgsPalLayerSettings *settings );
 
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void drawUnplacedLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
   private:
     QgsLabelSink *mLabelSink = nullptr;
@@ -86,6 +104,7 @@ class QgsRuleBasedLabelSinkProvider : public QgsRuleBasedLabelProvider
     Q_DECL_DEPRECATED void reinit( QgsVectorLayer *layer );
 
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void drawUnplacedLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
     //! Creates a  QgsRuleBasedLabelSinkProvider
     QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;

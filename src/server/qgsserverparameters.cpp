@@ -454,7 +454,7 @@ QUrlQuery QgsServerParameters::urlQuery() const
     const auto constMap( toMap().toStdMap() );
     for ( const auto &param : constMap )
     {
-      const QString value = QString( param.second ).replace( '+', QLatin1String( "%2B" ) );
+      const QString value = QUrl::toPercentEncoding( QString( param.second ) );
       query.addQueryItem( param.first, value );
     }
   }

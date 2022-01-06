@@ -81,7 +81,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
  * \note This is not considered stable API and may change in future QGIS versions.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsProcessingParametersGenerator, private Ui::QgsProcessingDialogBase
+class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsProcessingParametersGenerator, public QgsProcessingContextGenerator, private Ui::QgsProcessingDialogBase
 {
     Q_OBJECT
 
@@ -98,9 +98,21 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     };
 
     /**
+     * Dialog modes.
+     *
+     * \since QGIS 3.24
+     */
+    enum class DialogMode : int
+    {
+      Single, //!< Single algorithm execution mode
+      Batch, //!< Batch processing mode
+    };
+    Q_ENUM( QgsProcessingAlgorithmDialogBase::DialogMode )
+
+    /**
      * Constructor for QgsProcessingAlgorithmDialogBase.
      */
-    QgsProcessingAlgorithmDialogBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsProcessingAlgorithmDialogBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(), QgsProcessingAlgorithmDialogBase::DialogMode mode = QgsProcessingAlgorithmDialogBase::DialogMode::Single );
     ~QgsProcessingAlgorithmDialogBase() override;
 
     /**
@@ -178,6 +190,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      * \since QGIS 3.20
      */
     void setLogLevel( QgsProcessingContext::LogLevel level );
+
+    /**
+     * Sets the parameter \a values to show in the dialog.
+     *
+     * \since QGIS 3.24
+     */
+    virtual void setParameters( const QVariantMap &values );
 
   public slots:
 
@@ -399,12 +418,18 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
 
   private:
 
+    DialogMode mMode = DialogMode::Single;
+
     QPushButton *mButtonRun = nullptr;
     QPushButton *mButtonClose = nullptr;
     QPushButton *mButtonChangeParameters = nullptr;
     QByteArray mSplitterState;
     QToolButton *mButtonCollapse = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
+    QPushButton *mAdvancedButton = nullptr;
+    QMenu *mAdvancedMenu = nullptr;
+    QAction *mCopyAsQgisProcessCommand = nullptr;
+    QAction *mPasteJsonAction = nullptr;
 
     bool mExecuted = false;
     bool mExecutedAnyResult = false;

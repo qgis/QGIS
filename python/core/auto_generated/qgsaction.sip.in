@@ -27,6 +27,8 @@ Utility class that encapsulates an action based on vector attributes.
       Windows,
       Unix,
       OpenUrl,
+      SubmitUrlEncoded,
+      SubmitUrlMultipart,
     };
 
     QgsAction();

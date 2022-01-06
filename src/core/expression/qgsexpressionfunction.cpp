@@ -69,6 +69,7 @@
 #include <QCryptographicHash>
 #include <QRegularExpression>
 #include <QUuid>
+#include <QUrlQuery>
 
 typedef QList<QgsExpressionFunction *> ExpressionFunctionList;
 
@@ -418,7 +419,7 @@ static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext 
   }
 
   // Return a random double in the range [min, max] (inclusive)
-  double f = static_cast< double >( generator() ) / static_cast< double >( generator.max() );
+  double f = static_cast< double >( generator() ) / static_cast< double >( std::mt19937_64::max() );
   return QVariant( min + f * ( max - min ) );
 }
 static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -1724,6 +1725,88 @@ static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionCo
   for ( int i = 0; i < fields.count(); ++i )
   {
     result.insert( fields.at( i ).name(), feature.attribute( i ) );
+  }
+  return result;
+}
+
+static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsVectorLayer *layer = nullptr;
+  QgsFeature feature;
+
+  if ( values.isEmpty() )
+  {
+    feature = context->feature();
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+  }
+  else if ( values.size() == 1 )
+  {
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
+  }
+  else if ( values.size() == 2 )
+  {
+    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `represent_attributes` requires no more than two parameters. %1 given." ).arg( values.length() ) );
+    return QVariant();
+  }
+
+  if ( !layer )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: layer could not be resolved." ) );
+    return QVariant();
+  }
+
+  if ( !feature.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: feature could not be resolved." ) );
+    return QVariant();
+  }
+
+  const QgsFields fields = feature.fields();
+  QVariantMap result;
+  for ( int fieldIndex = 0; fieldIndex < fields.count(); ++fieldIndex )
+  {
+    const QString fieldName { fields.at( fieldIndex ).name() };
+    const QVariant attributeVal = feature.attribute( fieldIndex );
+    const QString cacheValueKey = QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer->id(), fieldName, attributeVal.toString() );
+    if ( context && context->hasCachedValue( cacheValueKey ) )
+    {
+      result.insert( fieldName, context->cachedValue( cacheValueKey ) );
+    }
+    else
+    {
+      const QgsEditorWidgetSetup setup = layer->editorWidgetSetup( fieldIndex );
+      QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      QVariant cache;
+      if ( context )
+      {
+        const QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer->id(), fieldName );
+
+        if ( !context->hasCachedValue( cacheKey ) )
+        {
+          cache = fieldFormatter->createCache( layer, fieldIndex, setup.config() );
+          context->setCachedValue( cacheKey, cache );
+        }
+        else
+        {
+          cache = context->cachedValue( cacheKey );
+        }
+      }
+      QString value( fieldFormatter->representValue( layer, fieldIndex, setup.config(), cache, attributeVal ) );
+
+      result.insert( fields.at( fieldIndex ).name(), value );
+
+      if ( context )
+      {
+        context->setCachedValue( cacheValueKey, value );
+      }
+
+    }
   }
   return result;
 }
@@ -3739,6 +3822,15 @@ static QVariant fcnBoundsHeight( const QVariantList &values, const QgsExpression
   return QVariant::fromValue( geom.boundingBox().height() );
 }
 
+static QVariant fcnGeometryType( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  return QgsWkbTypes::geometryDisplayString( geom.type() );
+}
+
 static QVariant fcnXMin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -5474,25 +5566,48 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   {
     return QVariant();
   }
-
-  QString attribute = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  int attributeId = featureSource->fields().lookupField( attribute );
-  if ( attributeId == -1 )
-  {
-    return QVariant();
-  }
-
-  const QVariant &attVal = values.at( 2 );
-
-  const QString cacheValueKey = QStringLiteral( "getfeature:%1:%2:%3" ).arg( featureSource->id(), QString::number( attributeId ), attVal.toString() );
-  if ( context && context->hasCachedValue( cacheValueKey ) )
-  {
-    return context->cachedValue( cacheValueKey );
-  }
-
   QgsFeatureRequest req;
-  req.setFilterExpression( QStringLiteral( "%1=%2" ).arg( QgsExpression::quotedColumnRef( attribute ),
-                           QgsExpression::quotedString( attVal.toString() ) ) );
+  QString cacheValueKey;
+  if ( values.at( 1 ).type() == QVariant::Map )
+  {
+    QVariantMap attributeMap = QgsExpressionUtils::getMapValue( values.at( 1 ), parent );
+
+    QMap <QString, QVariant>::const_iterator i = attributeMap.constBegin();
+    QString filterString;
+    for ( ; i != attributeMap.constEnd(); ++i )
+    {
+      if ( !filterString.isEmpty() )
+      {
+        filterString.append( " AND " );
+      }
+      filterString.append( QgsExpression::createFieldEqualityExpression( i.key(), i.value() ) );
+    }
+    cacheValueKey = QStringLiteral( "getfeature:%1:%2" ).arg( featureSource->id(), filterString );
+    if ( context && context->hasCachedValue( cacheValueKey ) )
+    {
+      return context->cachedValue( cacheValueKey );
+    }
+    req.setFilterExpression( filterString );
+  }
+  else
+  {
+    QString attribute = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+    int attributeId = featureSource->fields().lookupField( attribute );
+    if ( attributeId == -1 )
+    {
+      return QVariant();
+    }
+
+    const QVariant &attVal = values.at( 2 );
+
+    cacheValueKey = QStringLiteral( "getfeature:%1:%2:%3" ).arg( featureSource->id(), QString::number( attributeId ), attVal.toString() );
+    if ( context && context->hasCachedValue( cacheValueKey ) )
+    {
+      return context->cachedValue( cacheValueKey );
+    }
+
+    req.setFilterExpression( QgsExpression::createFieldEqualityExpression( attribute, attVal ) );
+  }
   req.setLimit( 1 );
   req.setTimeout( 10000 );
   req.setRequestMayBeNested( true );
@@ -6536,6 +6651,17 @@ static QVariant fcnToBase64( const QVariantList &values, const QgsExpressionCont
   return QVariant( QString( input.toBase64() ) );
 }
 
+static QVariant fcnToFormUrlEncode( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
+  QUrlQuery query;
+  for ( auto it = map.cbegin(); it != map.cend(); it++ )
+  {
+    query.addQueryItem( it.key(), it.value().toString() );
+  }
+  return query.toString( QUrl::ComponentFormattingOption::FullyEncoded );
+}
+
 static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QString value = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -7423,6 +7549,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions << yAtFunc;
 
     functions
+        << new QgsStaticExpressionFunction( QStringLiteral( "geometry_type" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeometryType, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "x_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnXMin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "xmin" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "x_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnXMax, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "xmax" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "y_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnYMin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "ymin" ) )
@@ -7763,8 +7890,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     functions
         << new QgsStaticExpressionFunction( QStringLiteral( "get_feature" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "attribute" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "attribute(s)" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "value" ), true ),
                                             fcnGetFeature, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "QgsExpressionUtils::getFeature" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "get_feature_by_id" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "feature_id" ) ),
@@ -7774,6 +7901,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         fcnAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     attributesFunc->setIsStatic( false );
     functions << attributesFunc;
+    QgsStaticExpressionFunction *representAttributesFunc = new QgsStaticExpressionFunction( QStringLiteral( "represent_attributes" ), -1,
+        fcnRepresentAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    representAttributesFunc->setIsStatic( false );
+    functions << representAttributesFunc;
 
     QgsStaticExpressionFunction *maptipFunc = new QgsStaticExpressionFunction(
       QStringLiteral( "maptip" ),
@@ -8020,6 +8151,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "map_prefix_keys" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "prefix" ) ),
                                             fcnMapPrefixKeys, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "url_encode" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ),
+                                            fcnToFormUrlEncode, QStringLiteral( "Maps" ) )
 
         ;
 

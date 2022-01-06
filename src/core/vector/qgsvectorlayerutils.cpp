@@ -384,7 +384,7 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 
   QgsFields fields = layer->fields();
   QgsField field = fields.at( attributeIndex );
-  QVariant value = feature.attribute( attributeIndex );
+  const QVariant value = feature.attribute( attributeIndex );
   bool valid = true;
   errors.clear();
 
@@ -1146,7 +1146,8 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
                                   QStringLiteral( "desc" ),
                                   QStringLiteral( "nom" ),
                                   QStringLiteral( "street" ),
-                                  QStringLiteral( "road" ) };
+                                  QStringLiteral( "road" ),
+                                  QStringLiteral( "label" ) };
 
   // anti-names
   // this list of strings indicates parts of field names which make the name "less interesting".

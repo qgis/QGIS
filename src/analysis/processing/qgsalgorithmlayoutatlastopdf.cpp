@@ -220,13 +220,15 @@ QgsLayoutAtlasToPdfAlgorithm *QgsLayoutAtlasToPdfAlgorithm::createInstance() con
 QVariantMap QgsLayoutAtlasToPdfAlgorithm::exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings,
     const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  Q_UNUSED( exporter )
+
   const QString dest = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QString error;
   if ( atlas->updateFeatures() )
   {
     feedback->pushInfo( QObject::tr( "Exporting %n atlas feature(s)", "", atlas->count() ) );
-    switch ( exporter.exportToPdf( atlas, dest, settings, error, feedback ) )
+    switch ( QgsLayoutExporter::exportToPdf( atlas, dest, settings, error, feedback ) )
     {
       case QgsLayoutExporter::Success:
       {
@@ -309,6 +311,8 @@ QgsLayoutAtlasToMultiplePdfAlgorithm *QgsLayoutAtlasToMultiplePdfAlgorithm::crea
 QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings,
     const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  Q_UNUSED( exporter )
+
   QString error;
 
   const QString filename = parameterAsString( parameters, QStringLiteral( "OUTPUT_FILENAME" ), context );
@@ -334,7 +338,7 @@ QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::exportAtlas( QgsLayoutAtlas *a
       }
     }
 
-    result = exporter.exportToPdfs( atlas, dest, settings, error, feedback );
+    result = QgsLayoutExporter::exportToPdfs( atlas, dest, settings, error, feedback );
 
     switch ( result )
     {

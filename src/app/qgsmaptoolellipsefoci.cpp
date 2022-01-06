@@ -79,7 +79,7 @@ void QgsMapToolEllipseFoci::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       break;
       case 2:
       {
-        mEllipse = QgsEllipse().fromFoci( mPoints.at( 0 ), mPoints.at( 1 ), point );
+        mEllipse = QgsEllipse::fromFoci( mPoints.at( 0 ), mPoints.at( 1 ), point );
         mTempRubberBand->setGeometry( mEllipse.toPolygon() );
       }
       break;

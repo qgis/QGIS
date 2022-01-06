@@ -79,7 +79,7 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
   : QMainWindow( parent, fl )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
   setAcceptDrops( true );
 
   QWidget *centralWidget = this->centralWidget();

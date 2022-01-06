@@ -67,101 +67,101 @@ void TestQgsStringUtils::cleanup()
 void TestQgsStringUtils::levenshtein()
 {
   QCOMPARE( QgsStringUtils::levenshteinDistance( QString(), QString() ), 0 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( "abc", QString() ), 3 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QString(), "abc" ), 3 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( "abc", "abc" ), 0 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( "abc", "aBc", true ), 1 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( "abc", "xec" ), 2 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( "abc", "abd" ), 1 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( "abc", "ebg" ), 2 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( "kitten", "sitting" ), 3 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( "kItten", "sitting" ), 3 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( "kitten", "sitTing", true ), 4 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( "kitten", "xkitte" ), 2 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ), QString() ), 3 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QString(),  QStringLiteral( "abc" ) ), 3 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ),  QStringLiteral( "abc" ) ), 0 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ),  QStringLiteral( "aBc" ), true ), 1 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ),  QStringLiteral( "xec" ) ), 2 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ),  QStringLiteral( "abd" ) ), 1 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ),  QStringLiteral( "ebg" ) ), 2 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ),  QStringLiteral( "sitting" ) ), 3 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kItten" ),  QStringLiteral( "sitting" ) ), 3 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ),  QStringLiteral( "sitTing" ), true ), 4 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ),  QStringLiteral( "xkitte" ) ), 2 );
 }
 
 void TestQgsStringUtils::longestCommonSubstring()
 {
   QCOMPARE( QgsStringUtils::longestCommonSubstring( QString(), QString() ), QString() );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( "abc", QString() ), QString() );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( QString(), "abc" ), QString() );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( "abc", "def" ), QString() );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( "abc", "abd" ), QString( "ab" ) );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( "abc", "xbc" ), QString( "bc" ) );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( "abc", "xbd" ), QString( "b" ) );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( "longer test", "inger task" ), QString( "nger t" ) );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( "lonGer test", "inger task", true ), QString( "er t" ) );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ), QString() ), QString() );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QString(), QStringLiteral( "abc" ) ), QString() );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ),  QStringLiteral( "def" ) ), QString() );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ),  QStringLiteral( "abd" ) ), QStringLiteral( "ab" ) );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ),  QStringLiteral( "xbc" ) ), QStringLiteral( "bc" ) );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ),  QStringLiteral( "xbd" ) ), QStringLiteral( "b" ) );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "longer test" ),  QStringLiteral( "inger task" ) ), QStringLiteral( "nger t" ) );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "lonGer test" ),  QStringLiteral( "inger task" ), true ), QStringLiteral( "er t" ) );
 }
 
 void TestQgsStringUtils::hammingDistance()
 {
   QCOMPARE( QgsStringUtils::hammingDistance( QString(), QString() ), 0 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "abc", QString() ), -1 );
-  QCOMPARE( QgsStringUtils::hammingDistance( QString(), "abc" ), -1 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "abc", "abcd" ), -1 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "abcd", "abc" ), -1 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "abc", "abc" ), 0 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "abc", "aBc", true ), 1 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "abc", "xec" ), 2 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "abc", "abd" ), 1 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "abc", "ebg" ), 2 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "kitten", "sittin" ), 2 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "kItten", "sittin" ), 2 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "kitten", "sitTin", true ), 3 );
-  QCOMPARE( QgsStringUtils::hammingDistance( "kitten", "xkitte" ), 5 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "abc" ), QString() ), -1 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QString(), QStringLiteral( "abc" ) ), -1 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "abc" ), QStringLiteral( "abcd" ) ), -1 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "abcd" ), QStringLiteral( "abc" ) ), -1 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "abc" ), QStringLiteral( "abc" ) ), 0 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "abc" ), QStringLiteral( "aBc" ), true ), 1 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "abc" ), QStringLiteral( "xec" ) ), 2 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "abc" ), QStringLiteral( "abd" ) ), 1 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "abc" ), QStringLiteral( "ebg" ) ), 2 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "kitten" ), QStringLiteral( "sittin" ) ), 2 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "kItten" ), QStringLiteral( "sittin" ) ), 2 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "kitten" ), QStringLiteral( "sitTin" ), true ), 3 );
+  QCOMPARE( QgsStringUtils::hammingDistance( QStringLiteral( "kitten" ), QStringLiteral( "xkitte" ) ), 5 );
 }
 
 void TestQgsStringUtils::soundex()
 {
   QCOMPARE( QgsStringUtils::soundex( QString() ), QString() );
   //test data from jellyfish & fuzzycomp python libraries
-  QCOMPARE( QgsStringUtils::soundex( "Washington" ), QString( "W252" ) );
-  QCOMPARE( QgsStringUtils::soundex( "Lee" ), QString( "L000" ) );
-  QCOMPARE( QgsStringUtils::soundex( "Gutierrez" ), QString( "G362" ) );
-  QCOMPARE( QgsStringUtils::soundex( "Jackson" ), QString( "J250" ) );
-  QCOMPARE( QgsStringUtils::soundex( "a" ), QString( "A000" ) );
-  QCOMPARE( QgsStringUtils::soundex( "herman" ), QString( "H650" ) );
-  QCOMPARE( QgsStringUtils::soundex( "robert" ), QString( "R163" ) );
-  QCOMPARE( QgsStringUtils::soundex( "RuperT" ), QString( "R163" ) );
-  QCOMPARE( QgsStringUtils::soundex( "rubin" ), QString( "R150" ) );
-  QCOMPARE( QgsStringUtils::soundex( "ashcraft" ), QString( "A261" ) );
-  QCOMPARE( QgsStringUtils::soundex( "ashcroft" ), QString( "A261" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "Washington" ) ), QStringLiteral( "W252" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "Lee" ) ), QStringLiteral( "L000" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "Gutierrez" ) ), QStringLiteral( "G362" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "Jackson" ) ), QStringLiteral( "J250" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "a" ) ), QStringLiteral( "A000" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "herman" ) ), QStringLiteral( "H650" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "robert" ) ), QStringLiteral( "R163" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "RuperT" ) ), QStringLiteral( "R163" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "rubin" ) ), QStringLiteral( "R150" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "ashcraft" ) ), QStringLiteral( "A261" ) );
+  QCOMPARE( QgsStringUtils::soundex( QStringLiteral( "ashcroft" ) ), QStringLiteral( "A261" ) );
 }
 
 void TestQgsStringUtils::insertLinks()
 {
   QCOMPARE( QgsStringUtils::insertLinks( QString() ), QString() );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "not a link!" ) ), QString( "not a link!" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "not a link!" ) ), QStringLiteral( "not a link!" ) );
   bool found = true;
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "not a link!" ), &found ), QString( "not a link!" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "not a link!" ), &found ), QStringLiteral( "not a link!" ) );
   QVERIFY( !found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "this www.north-road.com is a link" ), &found ), QString( "this <a href=\"http://www.north-road.com\">www.north-road.com</a> is a link" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "this www.north-road.com is a link" ), &found ), QStringLiteral( "this <a href=\"http://www.north-road.com\">www.north-road.com</a> is a link" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "this www.north-road.com.au is a link" ), &found ), QString( "this <a href=\"http://www.north-road.com.au\">www.north-road.com.au</a> is a link" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "this www.north-road.com.au is a link" ), &found ), QStringLiteral( "this <a href=\"http://www.north-road.com.au\">www.north-road.com.au</a> is a link" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "this www.north-road.sucks is not a good link" ), &found ), QString( "this <a href=\"http://www.north-road.sucks\">www.north-road.sucks</a> is not a good link" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "this www.north-road.sucks is not a good link" ), &found ), QStringLiteral( "this <a href=\"http://www.north-road.sucks\">www.north-road.sucks</a> is not a good link" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "this http://www.north-road.com is a link" ), &found ), QString( "this <a href=\"http://www.north-road.com\">http://www.north-road.com</a> is a link" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "this http://www.north-road.com is a link" ), &found ), QStringLiteral( "this <a href=\"http://www.north-road.com\">http://www.north-road.com</a> is a link" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "this http://north-road.com is a link" ), &found ), QString( "this <a href=\"http://north-road.com\">http://north-road.com</a> is a link" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "this http://north-road.com is a link" ), &found ), QStringLiteral( "this <a href=\"http://north-road.com\">http://north-road.com</a> is a link" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "this http://north-road.com is a link, so is http://qgis.org, OK?" ), &found ), QString( "this <a href=\"http://north-road.com\">http://north-road.com</a> is a link, so is <a href=\"http://qgis.org\">http://qgis.org</a>, OK?" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "this http://north-road.com is a link, so is http://qgis.org, OK?" ), &found ), QStringLiteral( "this <a href=\"http://north-road.com\">http://north-road.com</a> is a link, so is <a href=\"http://qgis.org\">http://qgis.org</a>, OK?" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "this north-road.com might not be a link" ), &found ), QString( "this north-road.com might not be a link" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "this north-road.com might not be a link" ), &found ), QStringLiteral( "this north-road.com might not be a link" ) );
   QVERIFY( !found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "please ftp to ftp://droopbox.ru and submit stuff" ), &found ), QString( "please ftp to <a href=\"ftp://droopbox.ru\">ftp://droopbox.ru</a> and submit stuff" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "please ftp to ftp://droopbox.ru and submit stuff" ), &found ), QStringLiteral( "please ftp to <a href=\"ftp://droopbox.ru\">ftp://droopbox.ru</a> and submit stuff" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "please visit https://fsociety.org" ), &found ), QString( "please visit <a href=\"https://fsociety.org\">https://fsociety.org</a>" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "please visit https://fsociety.org" ), &found ), QStringLiteral( "please visit <a href=\"https://fsociety.org\">https://fsociety.org</a>" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "send your credit card number to qgis@qgis.org today!" ), &found ), QString( "send your credit card number to <a href=\"mailto:qgis@qgis.org\">qgis@qgis.org</a> today!" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "send your credit card number to qgis@qgis.org today!" ), &found ), QStringLiteral( "send your credit card number to <a href=\"mailto:qgis@qgis.org\">qgis@qgis.org</a> today!" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "send your credit card number to qgis@qgis.org.nz today!" ), &found ), QString( "send your credit card number to <a href=\"mailto:qgis@qgis.org.nz\">qgis@qgis.org.nz</a> today!" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "send your credit card number to qgis@qgis.org.nz today!" ), &found ), QStringLiteral( "send your credit card number to <a href=\"mailto:qgis@qgis.org.nz\">qgis@qgis.org.nz</a> today!" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "visit http://qgis.org or email qgis@qgis.org" ), &found ), QString( "visit <a href=\"http://qgis.org\">http://qgis.org</a> or email <a href=\"mailto:qgis@qgis.org\">qgis@qgis.org</a>" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "visit http://qgis.org or email qgis@qgis.org" ), &found ), QStringLiteral( "visit <a href=\"http://qgis.org\">http://qgis.org</a> or email <a href=\"mailto:qgis@qgis.org\">qgis@qgis.org</a>" ) );
   QVERIFY( found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "is a@a an email?" ), &found ), QString( "is a@a an email?" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "is a@a an email?" ), &found ), QStringLiteral( "is a@a an email?" ) );
   QVERIFY( !found );
-  QCOMPARE( QgsStringUtils::insertLinks( QString( "Load file:///this/is/path/to.file?query=1#anchor" ), &found ), QString( "Load <a href=\"file:///this/is/path/to.file?query=1#anchor\">file:///this/is/path/to.file?query=1#anchor</a>" ) );
+  QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "Load file:///this/is/path/to.file?query=1#anchor" ), &found ), QStringLiteral( "Load <a href=\"file:///this/is/path/to.file?query=1#anchor\">file:///this/is/path/to.file?query=1#anchor</a>" ) );
   QVERIFY( found );
 }
 
@@ -198,16 +198,19 @@ void TestQgsStringUtils::titleCase()
 void TestQgsStringUtils::camelCase()
 {
   QCOMPARE( QgsStringUtils::capitalize( QString(), Qgis::Capitalization::UpperCamelCase ), QString() );
-  QCOMPARE( QgsStringUtils::capitalize( QString( " abc def" ), Qgis::Capitalization::UpperCamelCase ), QString( "AbcDef" ) );
-  QCOMPARE( QgsStringUtils::capitalize( QString( "ABC DEF" ), Qgis::Capitalization::UpperCamelCase ), QString( "AbcDef" ) );
-  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc def" ), Qgis::Capitalization::UpperCamelCase ), QString( "ÀbcDef" ) );
-  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc dÉf" ), Qgis::Capitalization::UpperCamelCase ), QString( "ÀbcDéf" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QStringLiteral( " abc def" ), Qgis::Capitalization::UpperCamelCase ), QStringLiteral( "AbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QStringLiteral( "ABC DEF" ), Qgis::Capitalization::UpperCamelCase ), QStringLiteral( "AbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QStringLiteral( "àbc def" ), Qgis::Capitalization::UpperCamelCase ), QStringLiteral( "ÀbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QStringLiteral( "àbc dÉf" ), Qgis::Capitalization::UpperCamelCase ), QStringLiteral( "ÀbcDéf" ) );
 }
 
 void TestQgsStringUtils::htmlToMarkdown()
 {
-  QCOMPARE( QgsStringUtils::htmlToMarkdown( QString( "<b>Visit</b> <a href=\"http://qgis.org\">!</a>" ) ), QString( "**Visit** [!](http://qgis.org)" ) );
-  QCOMPARE( QgsStringUtils::htmlToMarkdown( QString( "<b>Visit</b><br><a href='http://qgis.org'>QGIS</a>" ) ), QString( "**Visit**\n[QGIS](http://qgis.org)" ) );
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QStringLiteral( "<b>Visit</b> <a href=\"http://qgis.org\">!</a>" ) ), QStringLiteral( "**Visit** [!](http://qgis.org)" ) );
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QStringLiteral( "<b>Visit</b><br><a href='http://qgis.org'>QGIS</a>" ) ), QStringLiteral( "**Visit**\n[QGIS](http://qgis.org)" ) );
+
+  // convert PRE
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QStringLiteral( "<b>My code</b><pre>a = 1\nb=2\nc=3</pre>" ) ), QStringLiteral( "**My code**\n```\na = 1\nb=2\nc=3```\n" ) );
 }
 
 void TestQgsStringUtils::ampersandEncode_data()
@@ -268,7 +271,7 @@ void TestQgsStringUtils::testIsUrl()
   QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "ftp://example.com" ) ) );
   QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "file:///path/to/file" ) ) );
   QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "file://C:\\path\\to\\file" ) ) );
-  QVERIFY( !QgsStringUtils::isUrl( QStringLiteral( "" ) ) );
+  QVERIFY( !QgsStringUtils::isUrl( QLatin1String( "" ) ) );
   QVERIFY( !QgsStringUtils::isUrl( QStringLiteral( "some:random/string" ) ) );
   QVERIFY( !QgsStringUtils::isUrl( QStringLiteral( "bla" ) ) );
 }

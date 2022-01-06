@@ -1134,14 +1134,14 @@ static QgsCircle __recMinimalEnclosingCircle( QgsMultiPointXY points, QgsMultiPo
         boundary.pop_back();
         QgsPointXY p2 = boundary.last();
         boundary.pop_back();
-        circ_mec = QgsCircle().from2Points( QgsPoint( p1 ), QgsPoint( p2 ) );
+        circ_mec = QgsCircle::from2Points( QgsPoint( p1 ), QgsPoint( p2 ) );
       }
       break;
       default:
         QgsPoint p1( boundary.at( 0 ) );
         QgsPoint p2( boundary.at( 1 ) );
         QgsPoint p3( boundary.at( 2 ) );
-        circ_mec = QgsCircle().minimalCircleFrom3Points( p1, p2, p3 );
+        circ_mec = QgsCircle::minimalCircleFrom3Points( p1, p2, p3 );
         break;
     }
     return circ_mec;
@@ -3096,8 +3096,6 @@ QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries )
 
 QgsGeometry QgsGeometry::polygonize( const QVector<QgsGeometry> &geometryList )
 {
-  QgsGeos geos( nullptr );
-
   QVector<const QgsAbstractGeometry *> geomV2List;
   for ( const QgsGeometry &g : geometryList )
   {
@@ -3108,7 +3106,7 @@ QgsGeometry QgsGeometry::polygonize( const QVector<QgsGeometry> &geometryList )
   }
 
   QString error;
-  QgsGeometry result = geos.polygonize( geomV2List, &error );
+  QgsGeometry result = QgsGeos::polygonize( geomV2List, &error );
   result.mLastError = error;
   return result;
 }

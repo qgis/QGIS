@@ -183,6 +183,17 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      */
     bool multiEditModeActive() const;
 
+  signals:
+
+    /**
+     * Emit this signal, whenever the related features changed.
+     * This happens for example when related features are added, removed,
+     * linked or unlinked.
+     *
+     * \since QGIS 3.22
+     */
+    void relatedFeaturesChanged();
+
   public slots:
 
     /**

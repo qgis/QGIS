@@ -295,6 +295,8 @@ void QgsMapRendererCustomPainterJob::doRender()
     if ( job.context()->renderingStopped() )
       break;
 
+    emit layerRenderingStarted( job.layerId );
+
     if ( ! hasSecondPass && job.context()->useAdvancedEffects() )
     {
       // Set the QPainter composition mode so that this layer is rendered using
@@ -326,8 +328,10 @@ void QgsMapRendererCustomPainterJob::doRender()
       mPainter->setOpacity( 1.0 );
     }
 
+    emit layerRendered( job.layerId );
   }
 
+  emit renderingLayersFinished();
   QgsDebugMsgLevel( QStringLiteral( "Done rendering map layers" ), 5 );
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) && !mLabelJob.context.renderingStopped() )

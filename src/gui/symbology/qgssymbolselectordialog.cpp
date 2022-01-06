@@ -609,7 +609,7 @@ void QgsSymbolSelectorWidget::addLayer()
                              ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth()
                              : QgsProperty() );
 
-  QgsSymbolLayer *newLayer = QgsApplication::symbolLayerRegistry()->defaultSymbolLayer( parentSymbol->type() );
+  QgsSymbolLayer *newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
   if ( insertIdx == -1 )
     parentSymbol->appendSymbolLayer( newLayer );
   else
@@ -785,7 +785,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
 
   mSelectorWidget->setMinimumSize( 460, 560 );
   setObjectName( QStringLiteral( "SymbolSelectorDialog" ) );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   // Can be embedded in renderer properties dialog
   if ( embedded )

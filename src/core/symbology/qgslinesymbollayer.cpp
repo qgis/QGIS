@@ -1090,7 +1090,7 @@ double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRende
     width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mWidth );
   }
 
-  width *= e.mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  width *= QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
   if ( mWidthUnit == QgsUnitTypes::RenderMapUnits )
   {
     e.clipValueToMapUnitScale( width, mWidthMapUnitScale, context.renderContext().scaleFactor() );
@@ -1135,7 +1135,6 @@ void QgsSimpleLineSymbolLayer::setTweakDashPatternOnCorners( bool enabled )
 
 double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
-  Q_UNUSED( e )
   double offset = mOffset;
 
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
@@ -1144,7 +1143,7 @@ double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRend
     offset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), mOffset );
   }
 
-  offset *= e.mapUnitScaleFactor( e.symbologyScale(), offsetUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  offset *= QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), offsetUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
   if ( mOffsetUnit == QgsUnitTypes::RenderMapUnits )
   {
     e.clipValueToMapUnitScale( offset, mOffsetMapUnitScale, context.renderContext().scaleFactor() );
@@ -1678,7 +1677,47 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
   if ( painterUnitInterval < 0 )
     return;
 
-  double painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+  double painterUnitOffsetAlongLine = 0;
+
+  // only calculated if we need it!
+  double totalLength = -1;
+
+  if ( !qgsDoubleNear( offsetAlongLine, 0 ) )
+  {
+    switch ( offsetAlongLineUnit() )
+    {
+      case QgsUnitTypes::RenderMillimeters:
+      case QgsUnitTypes::RenderMapUnits:
+      case QgsUnitTypes::RenderPixels:
+      case QgsUnitTypes::RenderPoints:
+      case QgsUnitTypes::RenderInches:
+      case QgsUnitTypes::RenderUnknownUnit:
+      case QgsUnitTypes::RenderMetersInMapUnits:
+        painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+        break;
+      case QgsUnitTypes::RenderPercentage:
+        totalLength = QgsSymbolLayerUtils::polylineLength( points );
+        painterUnitOffsetAlongLine = offsetAlongLine / 100 * totalLength;
+        break;
+    }
+
+    if ( points.isClosed() )
+    {
+      if ( painterUnitOffsetAlongLine > 0 )
+      {
+        if ( totalLength < 0 )
+          totalLength = QgsSymbolLayerUtils::polylineLength( points );
+        painterUnitOffsetAlongLine = std::fmod( painterUnitOffsetAlongLine, totalLength );
+      }
+      else if ( painterUnitOffsetAlongLine < 0 )
+      {
+        if ( totalLength < 0 )
+          totalLength = QgsSymbolLayerUtils::polylineLength( points );
+        painterUnitOffsetAlongLine = totalLength - std::fmod( -painterUnitOffsetAlongLine, totalLength );
+      }
+    }
+  }
+
   if ( offsetAlongLineUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- an offset in meters in map units can't be calculated, so treat the size as millimeters
@@ -1825,10 +1864,43 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     context.setOriginalValueVariable( mOffsetAlongLine );
     offsetAlongLine = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetAlongLine, context.renderContext().expressionContext(), mOffsetAlongLine );
   }
+
+  // only calculated if we need it!!
+  double totalLength = -1;
   if ( !qgsDoubleNear( offsetAlongLine, 0.0 ) )
   {
     //scale offset along line
-    offsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+    switch ( offsetAlongLineUnit() )
+    {
+      case QgsUnitTypes::RenderMillimeters:
+      case QgsUnitTypes::RenderMapUnits:
+      case QgsUnitTypes::RenderPixels:
+      case QgsUnitTypes::RenderPoints:
+      case QgsUnitTypes::RenderInches:
+      case QgsUnitTypes::RenderUnknownUnit:
+      case QgsUnitTypes::RenderMetersInMapUnits:
+        offsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+        break;
+      case QgsUnitTypes::RenderPercentage:
+        totalLength = QgsSymbolLayerUtils::polylineLength( points );
+        offsetAlongLine = offsetAlongLine / 100 * totalLength;
+        break;
+    }
+    if ( points.isClosed() )
+    {
+      if ( offsetAlongLine > 0 )
+      {
+        if ( totalLength < 0 )
+          totalLength = QgsSymbolLayerUtils::polylineLength( points );
+        offsetAlongLine = std::fmod( offsetAlongLine, totalLength );
+      }
+      else if ( offsetAlongLine < 0 )
+      {
+        if ( totalLength < 0 )
+          totalLength = QgsSymbolLayerUtils::polylineLength( points );
+        offsetAlongLine = totalLength - std::fmod( -offsetAlongLine, totalLength );
+      }
+    }
   }
 
   if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry()

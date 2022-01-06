@@ -33,6 +33,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterEnum,
+                       QgsProcessingParameterExtent,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
@@ -48,6 +49,7 @@ class ClipRasterByMask(GdalAlgorithm):
     MASK = 'MASK'
     SOURCE_CRS = 'SOURCE_CRS'
     TARGET_CRS = 'TARGET_CRS'
+    EXTENT = 'TARGET_EXTENT'
     NODATA = 'NODATA'
     ALPHA_BAND = 'ALPHA_BAND'
     CROP_TO_CUTLINE = 'CROP_TO_CUTLINE'
@@ -79,6 +81,9 @@ class ClipRasterByMask(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
                                                     self.tr('Target CRS'),
                                                     optional=True))
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Target extent'),
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
@@ -169,6 +174,9 @@ class ClipRasterByMask(GdalAlgorithm):
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
 
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        bboxCrs = self.parameterAsExtentCrs(parameters, self.EXTENT, context)
+
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
             nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         else:
@@ -186,6 +194,15 @@ class ClipRasterByMask(GdalAlgorithm):
         if targetCrs.isValid():
             arguments.append('-t_srs')
             arguments.append(GdalUtils.gdal_crs_string(targetCrs))
+
+        if not bbox.isNull():
+            arguments.append('-te')
+            arguments.append(str(bbox.xMinimum()))
+            arguments.append(str(bbox.yMinimum()))
+            arguments.append(str(bbox.xMaximum()))
+            arguments.append(str(bbox.yMaximum()))
+            arguments.append('-te_srs')
+            arguments.append(GdalUtils.gdal_crs_string(bboxCrs))
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
         if data_type:

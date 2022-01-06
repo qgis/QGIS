@@ -208,7 +208,7 @@ QgsBearingNumericFormatDialog::QgsBearingNumericFormatDialog( const QgsNumericFo
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 
   setObjectName( QStringLiteral( "QgsBearingNumericFormatDialog" ) );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 QgsBearingNumericFormat *QgsBearingNumericFormatDialog::format()

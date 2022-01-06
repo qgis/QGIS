@@ -77,6 +77,12 @@ QVariant QgsValueRelationWidgetWrapper::value() const
       }
     }
 
+    // If there is no selection and allow NULL is not checked return NULL.
+    if ( selection.isEmpty() && ! config( QStringLiteral( "AllowNull" ) ).toBool( ) )
+    {
+      return QVariant( QVariant::Type::List );
+    }
+
     QVariantList vl;
     //store as QVariantList because the field type supports data structure
     for ( const QString &s : std::as_const( selection ) )

@@ -77,7 +77,7 @@ void QgsFeatureSelectionDlg::showEvent( QShowEvent *event )
 {
 
   QWindow *mainWindow = nullptr;
-  for ( const auto &w : QgsApplication::instance()->topLevelWindows() )
+  for ( const auto &w : QgsApplication::topLevelWindows() )
   {
     if ( w->objectName() == QLatin1String( "QgisAppWindow" ) )
     {
