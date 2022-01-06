@@ -805,6 +805,22 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     void setZRange( const QgsDoubleRange &range );
 
+    /**
+     * Returns the rendering usage
+     *
+     * \see setRendererUsage()
+     * \since QGIS 3.24
+     */
+    Qgis::RendererUsage rendererUsage() const;
+
+    /**
+     * Sets the rendering usage
+     *
+     * \see rendererUsage()
+     * \since QGIS 3.24
+     */
+    void setRendererUsage( const Qgis::RendererUsage &rendererUsage );
+
   protected:
 
     double mDpi = 96.0;
@@ -863,6 +879,8 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QgsGeometry mLabelBoundaryGeometry;
 
     QgsVectorSimplifyMethod mSimplifyMethod;
+
+    Qgis::RendererUsage mRendererUsage = Qgis::RendererUsage::Unknown;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

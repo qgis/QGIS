@@ -282,6 +282,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   }
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
+
+  mFeedback->setRendererUsage( rendererContext.rendererUsage() );
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()

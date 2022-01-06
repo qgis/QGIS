@@ -93,6 +93,22 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
      */
     QStringList errors() const { return mErrors; }
 
+    /**
+     * Returns the renderer usage of the associated block reading reading
+     *
+     * \see setRendererUsage()
+     * \since QGIS 3.24.0
+     */
+    Qgis::RendererUsage rendererUsage() const;
+
+    /**
+     * Sets the renderer usage of the associated block reading reading
+     *
+     * \see rendererUsage()
+     * \since QGIS 3.24.0
+     */
+    void setRendererUsage( const Qgis::RendererUsage &rendererUsage );
+
   private:
 
     /**
@@ -106,6 +122,8 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 
     //! List of errors encountered while retrieving block
     QStringList mErrors;
+
+    Qgis::RendererUsage mRendererUsage = Qgis::RendererUsage::Unknown;
 };
 
 

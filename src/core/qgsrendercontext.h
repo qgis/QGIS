@@ -974,6 +974,22 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     QImage::Format imageFormat() const { return mImageFormat; }
 
+    /**
+    * Returns the renderer usage
+    *
+    * \see setRendererUsage()
+    * \since QGIS 3.24
+    */
+    Qgis::RendererUsage rendererUsage() const {return mRendererUsage;}
+
+    /**
+    * Sets the renderer usage
+    *
+    * \see rendererUsage()
+    * \since QGIS 3.24
+    */
+    void setRendererUsage( Qgis::RendererUsage usage ) {mRendererUsage = usage;}
+
   private:
 
     Qgis::RenderContextFlags mFlags;
@@ -1086,6 +1102,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QSize mSize;
     float mDevicePixelRatio = 1.0;
     QImage::Format mImageFormat = QImage::Format_ARGB32_Premultiplied;
+
+    Qgis::RendererUsage mRendererUsage = Qgis::RendererUsage::Unknown;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

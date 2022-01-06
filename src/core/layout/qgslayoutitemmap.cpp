@@ -1519,11 +1519,13 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     //if outputting layout, we disable optimisations like layer simplification by default, UNLESS the context specifically tells us to use them
     jobMapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, mLayout->renderContext().simplifyMethod().simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
     jobMapSettings.setSimplifyMethod( mLayout->renderContext().simplifyMethod() );
+    jobMapSettings.setRendererUsage( Qgis::RendererUsage::Export );
   }
   else
   {
     // preview render - always use optimization
     jobMapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, true );
+    jobMapSettings.setRendererUsage( Qgis::RendererUsage::View );
   }
 
   jobMapSettings.setExpressionContext( expressionContext );

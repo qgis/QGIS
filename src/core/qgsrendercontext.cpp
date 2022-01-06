@@ -78,6 +78,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mSize( rh.mSize )
   , mDevicePixelRatio( rh.mDevicePixelRatio )
   , mImageFormat( rh.mImageFormat )
+  , mRendererUsage( rh.mRendererUsage )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -123,6 +124,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mDevicePixelRatio = rh.mDevicePixelRatio;
   mImageFormat = rh.mImageFormat;
   setIsTemporal( rh.isTemporal() );
+  mRendererUsage = rh.mRendererUsage;
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
@@ -276,6 +278,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setImageFormat( mapSettings.outputImageFormat() );
 
   ctx.mClippingRegions = mapSettings.clippingRegions();
+
+  ctx.mRendererUsage = mapSettings.rendererUsage();
 
   return ctx;
 }

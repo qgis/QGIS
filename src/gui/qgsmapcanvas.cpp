@@ -209,6 +209,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
 
+  mSettings.setRendererUsage( Qgis::RendererUsage::View );
+
   setSceneRect( 0, 0, s.width(), s.height() );
   mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
 

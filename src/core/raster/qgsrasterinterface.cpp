@@ -643,3 +643,13 @@ QString QgsRasterInterface::displayBandName( int bandNumber ) const
   }
   return name;
 }
+
+Qgis::RendererUsage QgsRasterBlockFeedback::rendererUsage() const
+{
+    return mRendererUsage;
+}
+
+void QgsRasterBlockFeedback::setRendererUsage(const Qgis::RendererUsage &rendererUsage)
+{
+    mRendererUsage = rendererUsage;
+}
