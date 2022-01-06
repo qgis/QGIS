@@ -304,6 +304,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
         "dl dd { margin - bottom: 5px; }" ) );
     textShortHelp->setHtml( algHelp );
     connect( textShortHelp, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::linkClicked );
+    textShortHelp->show();
   }
 
   if ( algorithm->helpUrl().isEmpty() && algorithm->provider()->helpId().isEmpty() )
