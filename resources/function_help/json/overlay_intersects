@@ -88,7 +88,7 @@
       "returns": "an array of maps with the feature id, the expression value, the overlap value and the radius of the maximum inscribed circle"
     },
     {
-      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), sort_by_intersection_size:=true)",
+      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), sort_by_intersection_size:='des')",
       "returns": "an array of geometries (in WKT) ordered by the overlap value in descending order"
     }
   ]
