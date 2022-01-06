@@ -857,10 +857,10 @@ void QgsMapSettings::setZRange( const QgsDoubleRange &zRange )
 
 Qgis::RendererUsage QgsMapSettings::rendererUsage() const
 {
-    return mRendererUsage;
+  return mRendererUsage;
 }
 
-void QgsMapSettings::setRendererUsage(const Qgis::RendererUsage &rendererUsage)
+void QgsMapSettings::setRendererUsage( const Qgis::RendererUsage &rendererUsage )
 {
-    mRendererUsage = rendererUsage;
+  mRendererUsage = rendererUsage;
 }

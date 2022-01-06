@@ -646,10 +646,10 @@ QString QgsRasterInterface::displayBandName( int bandNumber ) const
 
 Qgis::RendererUsage QgsRasterBlockFeedback::rendererUsage() const
 {
-    return mRendererUsage;
+  return mRendererUsage;
 }
 
-void QgsRasterBlockFeedback::setRendererUsage(const Qgis::RendererUsage &rendererUsage)
+void QgsRasterBlockFeedback::setRendererUsage( const Qgis::RendererUsage &rendererUsage )
 {
-    mRendererUsage = rendererUsage;
+  mRendererUsage = rendererUsage;
 }
