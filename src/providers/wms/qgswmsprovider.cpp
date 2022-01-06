@@ -221,6 +221,9 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   // 2) http://xxx.xxx.xx/yyy/yyy?
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
 
+
+  mConverter.reset( QgsWmsConverter::createConverter( mSettings.mEncodingScheme ) );
+
   mValid = true;
   QgsDebugMsgLevel( QStringLiteral( "exiting constructor." ), 4 );
 }
@@ -884,7 +887,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
                     r.rect.width() / cr,
                     r.rect.height() / cr );
         // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
-        bool disableSmoothing = ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) );
+        bool disableSmoothing = ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) ) || mConverter ;
         tileImages << TileImage( dst, localImage, !disableSmoothing );
       }
       else
@@ -1018,7 +1021,25 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
   if ( ptr )
   {
     // If image is too large, ptr can be NULL
-    memcpy( block, ptr, myExpectedSize );
+    if ( mConverter && ( image->format() == QImage::Format_ARGB32 || image->format() == QImage::Format_RGB32 ) )
+    {
+      std::vector<float> data;
+      data.resize( myImageSize );
+      const QRgb *inputPtr = reinterpret_cast<const QRgb *>( image->constBits() );
+      float *outputPtr = data.data();
+      for ( int i = 0; i < pixelWidth * pixelHeight; ++i )
+      {
+        mConverter->convert( *inputPtr, outputPtr );
+        inputPtr++;
+        outputPtr++;
+      }
+
+      memcpy( block, data.data(), myExpectedSize );
+
+    }
+    else
+      memcpy( block, ptr, myExpectedSize );
+
     return true;
   }
   else
@@ -1600,7 +1621,10 @@ Qgis::DataType QgsWmsProvider::dataType( int bandNo ) const
 Qgis::DataType QgsWmsProvider::sourceDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo )
-  return Qgis::DataType::ARGB32;
+  if ( mConverter )
+    return mConverter->dataType();
+  else
+    return Qgis::DataType::ARGB32;
 }
 
 int QgsWmsProvider::bandCount() const
@@ -3673,6 +3697,22 @@ QgsLayerMetadata QgsWmsProvider::layerMetadata() const
   return mLayerMetadata;
 }
 
+QgsRasterBandStats QgsWmsProvider::bandStatistics( int, int, const QgsRectangle &, int, QgsRasterBlockFeedback * )
+{
+  if ( mConverter )
+    return mConverter->statistics();
+  else
+    return QgsRasterBandStats();
+}
+
+QgsRasterHistogram QgsWmsProvider::histogram( int, int, double, double, const QgsRectangle &, int, bool, QgsRasterBlockFeedback * )
+{
+  if ( mConverter )
+    return mConverter->histogram();
+  else
+    return QgsRasterHistogram();
+}
+
 QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
 {
   QVector<QgsWmsSupportedFormat> formats;
@@ -4787,3 +4827,39 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
   return new QgsWmsProviderMetadata();
 }
 #endif
+
+Qgis::DataType QgsWmsConverter::dataType() const
+{
+  return Qgis::DataType::Float32;
+}
+
+QgsWmsConverter *QgsWmsConverter::createConverter( const QString &key )
+{
+  if ( key == QgsWmsConverterMapTilerTerrainRGB::encodingSchemeKey() )
+    return new QgsWmsConverterMapTilerTerrainRGB();
+
+  return nullptr;
+}
+
+void QgsWmsConverterMapTilerTerrainRGB::convert( const QRgb &color, float *converted ) const
+{
+  int R = qRed( color );
+  int G = qGreen( color );
+  int B = qBlue( color );
+
+  *converted = -10000 + ( ( R * 256 * 256 + G * 256 + B ) ) * 0.1;
+}
+
+QgsRasterBandStats QgsWmsConverterMapTilerTerrainRGB::statistics() const
+{
+  QgsRasterBandStats stat;
+  stat.minimumValue = 0;
+  stat.maximumValue = 9000;
+  stat.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max;
+  return stat;
+}
+
+QgsRasterHistogram QgsWmsConverterMapTilerTerrainRGB::histogram() const
+{
+  return QgsRasterHistogram();
+}

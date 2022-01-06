@@ -33,6 +33,7 @@ class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 class QgsWmsCapabilities;
+class QgsWMSEncodingSchemeWidget;
 
 /*!
  * \brief   Dialog to create connections and add layers from WMS, etc.
@@ -128,7 +129,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     //! Map mime types to supported formats
     QMap<QString, int> mMimeMap;
 
-
     // Clear layers list, crs, encodings ...
     void clear();
 
@@ -193,6 +193,8 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     // save the current status of the layer true
     QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
 
+    QgsWMSEncodingSchemeWidget *mEncodingSchemeWidget = nullptr;
+
   private slots:
     void lstTilesets_itemClicked( QTableWidgetItem *item );
     void mLayerUpButton_clicked();
@@ -201,5 +203,29 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void showHelp();
 };
 
+/*!
+ * \brief  Widget that embeds a check box and a combo box to select an encoding scheme to convert image to a single band raster
+ */
+class QgsWMSEncodingSchemeWidget : public QWidget
+{
+  public:
+    //! Contructor
+    QgsWMSEncodingSchemeWidget( QWidget *parent = nullptr );
+
+    /**
+     * Sets the current encoding scheme from its key \a encodingSchemeKey,
+     * leading to checked the check box if the encoding scheme exists or unchecked if the key is empty or the scheme does not exist
+     */
+    void setEncodingScheme( const QString &encodingSchemeKey );
+
+    //! Returns the key of the current selected scheme, returns empty string if the check box is unchecked
+    QString encodingScheme() const;
+
+  private:
+    QCheckBox *mCheckBox = nullptr;
+    QComboBox *mCombo = nullptr;
+
+    void populateEncodingScheme();
+};
 
 #endif // QGSWMSSOURCESELECT_H

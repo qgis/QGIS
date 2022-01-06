@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsxyzsourcewidget.h"
-
+#include "qgswmssourceselect.h"
 #include "qgsproviderregistry.h"
 
+#include "qgswmsprovider.h"
 
 QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   : QgsProviderSourceWidget( parent )
@@ -31,6 +32,8 @@ QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   mSpinZMax->setClearValue( 18 );
 
   connect( mEditUrl, &QLineEdit::textChanged, this, &QgsXyzSourceWidget::validate );
+  mEncodingSchemeWidget = new QgsWMSEncodingSchemeWidget( this );
+  mEncodingSchemeLayout->addWidget( mEncodingSchemeWidget );
 }
 
 void QgsXyzSourceWidget::setSourceUri( const QString &uri )
@@ -54,6 +57,8 @@ void QgsXyzSourceWidget::setSourceUri( const QString &uri )
   mComboTileResolution->setCurrentIndex( index );
 
   mAuthSettings->setConfigId( mSourceParts.value( QStringLiteral( "authcfg" ) ).toString() );
+
+  setEncodingScheme( mSourceParts.value( QStringLiteral( "encodingScheme" ) ).toString() );
 
   mIsValid = true;
 }
@@ -95,6 +100,11 @@ QString QgsXyzSourceWidget::sourceUri() const
     parts.insert( QStringLiteral( "authcfg" ), mAuthSettings->configId() );
   else
     parts.remove( QStringLiteral( "authcfg" ) );
+
+  if ( !mEncodingSchemeWidget->encodingScheme().isEmpty() )
+    parts.insert( QStringLiteral( "encodingScheme" ), mEncodingSchemeWidget->encodingScheme() );
+  else
+    parts.remove( QStringLiteral( "encodingScheme" ) );
 
   return QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts );
 }
@@ -189,6 +199,16 @@ int QgsXyzSourceWidget::tilePixelRatio() const
     return 2.;  // high-res
   else
     return 0;  // unknown
+}
+
+void QgsXyzSourceWidget::setEncodingScheme( const QString &encodingSchemeKey )
+{
+  mEncodingSchemeWidget->setEncodingScheme( encodingSchemeKey );
+}
+
+QString QgsXyzSourceWidget::encodingScheme() const
+{
+  return mEncodingSchemeWidget->encodingScheme();
 }
 
 void QgsXyzSourceWidget::validate()
