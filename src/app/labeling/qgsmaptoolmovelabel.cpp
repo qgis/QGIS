@@ -187,7 +187,11 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
       {
         if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
-          mCurrentLabel.settings.dataDefinedProperties().property( QgsPalLayerSettings::PositionPoint ).setActive( false );
+        {
+          // Point position is defined as a read only expression (not pointing to a writable geometry column)
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The point position expression is not pointing to a writable geometry column" ) );
+          return;
+        }
 
         QgsPalIndexes indexes;
         if ( createAuxiliaryFields( indexes ) )
@@ -223,18 +227,21 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
       }
 
-      const bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
-                                 && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
-      if ( !usesAuxFields && !vlayer->isEditable() )
+      if ( xCol >= 0 && yCol >= 0 )
       {
-        if ( vlayer->startEditing() )
+        const bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
+                                   && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
+        if ( !usesAuxFields && !vlayer->isEditable() )
         {
-          QgisApp::instance()->messageBar()->pushInfo( tr( "Move Label" ), tr( "Layer “%1” was made editable" ).arg( vlayer->name() ) );
-        }
-        else
-        {
-          QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Cannot move “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, vlayer->name() ) );
-          return;
+          if ( vlayer->startEditing() )
+          {
+            QgisApp::instance()->messageBar()->pushInfo( tr( "Move Label" ), tr( "Layer “%1” was made editable" ).arg( vlayer->name() ) );
+          }
+          else
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Cannot move “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, vlayer->name() ) );
+            return;
+          }
         }
       }
 
