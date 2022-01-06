@@ -30,7 +30,7 @@ class QgsTextCharacterFormat;
  *
  * \note not part of public API
  */
-class QgsTextLabelFeature : public QgsLabelFeature
+class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
 {
   public:
     //! Construct text label feature
