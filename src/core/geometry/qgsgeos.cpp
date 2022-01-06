@@ -25,6 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslogger.h"
 #include "qgspolygon.h"
 #include "qgsgeometryeditutils.h"
+#include "qgsgeometryutils.h"
 #include <limits>
 #include <cstdio>
 
@@ -946,11 +947,25 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
       {
         QgsPoint currentPoint = line->pointN( j );
         newLine.addVertex( currentPoint );
+        // if point coincides with one of the line's vertices
         if ( currentPoint == *splitPoint )
         {
           lines.addGeometry( newLine.clone() );
           newLine = QgsLineString();
           newLine.addVertex( currentPoint );
+        }
+        else
+        {
+          //if point is on a segment between the line's vertices
+          QgsPoint previousPoint = line->pointN( j - 1 );
+          int pointIsOnLine = QgsGeometryUtils::segmentSide( previousPoint, currentPoint, *splitPoint ); // *splitPoint mit oder ohne Pointer???
+          if ( pointIsOnLine == 0 )
+          {
+            //use the point directly
+            lines.addGeometry( newLine.clone() );
+            newLine = QgsLineString();
+            newLine.addVertex( currentPoint );
+          }
         }
       }
       newLine.addVertex( line->pointN( nVertices - 1 ) );
