@@ -51,7 +51,7 @@ if (WITH_SERVER_LANDINGPAGE_WEBAPP)
     ${CMAKE_CURRENT_SOURCE_DIR}/server/src/landingpage/
     ${LANDINGPAGE_OUTPUT_PATH}/
     COMMAND ${CMAKE_COMMAND} -E touch ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
-    COMMAND cd ${LANDINGPAGE_OUTPUT_PATH} && yarn install --frozen-lockfile && yarn build
+    COMMAND cd ${LANDINGPAGE_OUTPUT_PATH} && ${YARN} install --frozen-lockfile && ${YARN} build
   )
 endif()
 
