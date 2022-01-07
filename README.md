@@ -52,7 +52,7 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
 ### 2. Beautiful cartography
 - Large variety of rendering options in 2D and 3D
 - Fine control over symbology, labeling, legends and additional graphical elements for beautifully rendered maps
-- Near-complete replication (and significant extension) of symbology options available in proprietary software by ESRI
+- Near-complete replication (and significant extension) of symbology options that are available in proprietary software by ESRI
 - Advanced styling using data-defined overrides, blending modes, and draw effects
 - 500+ built-in color ramps (cpt-city, ColorBrewer, etc.) 
 - Create and update maps with specified scale, extent, style, and decorations via saved layouts
