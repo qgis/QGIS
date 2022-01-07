@@ -146,12 +146,14 @@ class ExtractLabelSink : public QgsLabelSink
       }
 
       const QgsFeatureId fid = label->getFeaturePart()->featureId();
-      if ( ( settings.placement == QgsPalLayerSettings::Curved ||
-             settings.placement == QgsPalLayerSettings::PerimeterCurved )
-           && !mCurvedWarningPushed.contains( layerId ) )
+      if ( settings.placement == QgsPalLayerSettings::Curved ||
+           settings.placement == QgsPalLayerSettings::PerimeterCurved )
       {
-        mCurvedWarningPushed << layerId;
-        mFeedback->pushWarning( QObject::tr( "Curved placement not supported, skipping labels from layer %1" ).arg( mMapLayerNames.value( layerId ) ) );
+        if ( !mCurvedWarningPushed.contains( layerId ) )
+        {
+          mCurvedWarningPushed << layerId;
+          mFeedback->pushWarning( QObject::tr( "Curved placement not supported, skipping labels from layer %1" ).arg( mMapLayerNames.value( layerId ) ) );
+        }
         return;
       }
 
