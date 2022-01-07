@@ -106,12 +106,13 @@ QString QgsTransaction::connectionString( const QString &layerUri )
 }
 ///@endcond
 
-bool QgsTransaction::addLayer( QgsVectorLayer *layer )
+bool QgsTransaction::addLayer( QgsVectorLayer *layer, bool addLayersInEditMode )
 {
   if ( !layer )
     return false;
 
-  if ( layer->isEditable() )
+  if ( ! addLayersInEditMode
+       && layer->isEditable() )
     return false;
 
   //test if provider supports transactions

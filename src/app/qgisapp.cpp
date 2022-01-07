@@ -11305,52 +11305,43 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
 
   bool res = true;
 
-  QString connString = QgsTransaction::connectionString( vlayer->source() );
-  QString key = vlayer->providerType();
-
-  QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups = QgsProject::instance()->transactionGroups();
-  QMap< QPair< QString, QString>, QgsTransactionGroup *>::iterator tIt = transactionGroups .find( qMakePair( key, connString ) );
-  QgsTransactionGroup *tg = ( tIt != transactionGroups.end() ? tIt.value() : nullptr );
-
-  bool isModified = false;
-
   // Assume changes if: a) the layer reports modifications or b) its transaction group was modified
-  QString modifiedLayerNames;
-  bool hasSeveralModifiedLayers = false;
-  if ( tg && tg->layers().contains( vlayer ) && tg->modified() )
+  QList<QgsVectorLayer *> modifiedLayers;
+  switch ( QgsProject::instance()->transactionMode() )
   {
-    isModified = true;
-    std::vector<QString> vectModifiedLayerNames;
-    if ( vlayer->isModified() )
+    case Qgis::TransactionMode::Disabled:
     {
-      vectModifiedLayerNames.push_back( vlayer->name() );
+      if ( vlayer->isModified() )
+        modifiedLayers.append( vlayer );
     }
-    for ( QgsVectorLayer *iterLayer : tg->layers() )
+    break;
+    case Qgis::TransactionMode::AutomaticGroups:
     {
-      if ( iterLayer != vlayer && iterLayer->isModified() )
+      QString connString = QgsTransaction::connectionString( vlayer->source() );
+      QString key = vlayer->providerType();
+
+      QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups = QgsProject::instance()->transactionGroups();
+      QMap< QPair< QString, QString>, QgsTransactionGroup *>::iterator tIt = transactionGroups .find( qMakePair( key, connString ) );
+      QgsTransactionGroup *tg = ( tIt != transactionGroups.end() ? tIt.value() : nullptr );
+
+      if ( tg && tg->layers().contains( vlayer ) && tg->modified() )
       {
-        vectModifiedLayerNames.push_back( iterLayer->name() );
+        if ( vlayer->isModified() )
+          modifiedLayers.append( vlayer );
+        const QSet<QgsVectorLayer *> transactionGroupLayers = tg->layers();
+        for ( QgsVectorLayer *iterLayer : transactionGroupLayers )
+        {
+          if ( iterLayer != vlayer && iterLayer->isModified() )
+            modifiedLayers.append( iterLayer );
+        }
       }
     }
-    if ( vectModifiedLayerNames.size() == 1 )
-    {
-      modifiedLayerNames = vectModifiedLayerNames[0];
-    }
-    else if ( vectModifiedLayerNames.size() == 2 )
-    {
-      modifiedLayerNames = tr( "%1 and %2" ).arg( vectModifiedLayerNames[0] ).arg( vectModifiedLayerNames[1] );
-    }
-    else if ( vectModifiedLayerNames.size() > 2 )
-    {
-      modifiedLayerNames = tr( "%1, %2, …" ).arg( vectModifiedLayerNames[0] ).arg( vectModifiedLayerNames[1] );
-    }
-    hasSeveralModifiedLayers = vectModifiedLayerNames.size() > 1;
+    break;
+    case Qgis::TransactionMode::BufferedGroups:
+      modifiedLayers = QgsProject::instance()->editBufferGroup()->modifiedLayers();
+      break;
   }
-  else if ( vlayer->isModified() )
-  {
-    isModified  = true;
-    modifiedLayerNames = vlayer->name();
-  }
+
 
   if ( !vlayer->isEditable() && !vlayer->readOnly() )
   {
@@ -11364,7 +11355,7 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
       return false;
     }
 
-    vlayer->startEditing();
+    QgsProject::instance()->startEditing( vlayer );
 
     QString markerType = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle.value();
     bool markSelectedOnly = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected.value();
@@ -11376,15 +11367,23 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
       vlayer->triggerRepaint();
     }
   }
-  else if ( isModified )
+  else if ( modifiedLayers.size() > 0 )
   {
     QMessageBox::StandardButtons buttons = QMessageBox::Save | QMessageBox::Discard;
     if ( allowCancel )
       buttons |= QMessageBox::Cancel;
 
+    QString modifiedLayerNames;
+    if ( modifiedLayers.size() == 1 )
+      modifiedLayerNames = modifiedLayers[0]->name();
+    else if ( modifiedLayers.size() == 2 )
+      modifiedLayerNames = tr( "%1 and %2" ).arg( modifiedLayers[0]->name() ).arg( modifiedLayers[1]->name() );
+    else if ( modifiedLayers.size() > 2 )
+      modifiedLayerNames = tr( "%1, %2, …" ).arg( modifiedLayers[0]->name() ).arg( modifiedLayers[1]->name() );
+
     switch ( QMessageBox::question( nullptr,
                                     tr( "Stop Editing" ),
-                                    hasSeveralModifiedLayers ?
+                                    modifiedLayers.size() > 0 ?
                                     tr( "Do you want to save the changes to layers %1?" ).arg( modifiedLayerNames ) :
                                     tr( "Do you want to save the changes to layer %1?" ).arg( modifiedLayerNames ),
                                     buttons ) )
@@ -11396,7 +11395,7 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
       case QMessageBox::Save:
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
-        if ( !vlayer->commitChanges() )
+        if ( !QgsProject::instance()->commitChanges( true, vlayer ) )
         {
           commitError( vlayer );
           // Leave the in-memory editing state alone,
@@ -11415,7 +11414,8 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
         QgsCanvasRefreshBlocker refreshBlocker;
-        if ( !vlayer->rollBack() )
+
+        if ( QgsProject::instance()->rollBack( vlayer ) )
         {
           visibleMessageBar()->pushMessage( tr( "Error" ),
                                             tr( "Problems during roll back" ),
@@ -11436,7 +11436,9 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
   else //layer not modified
   {
     QgsCanvasRefreshBlocker refreshBlocker;
-    vlayer->rollBack();
+
+    QgsProject::instance()->rollBack( vlayer );
+
     res = true;
     vlayer->triggerRepaint();
   }

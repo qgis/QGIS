@@ -24,6 +24,7 @@
 #include "qgsgeometry.h"
 
 class QgsVectorLayer;
+class QgsVectorLayerEditBufferGroup;
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -198,6 +199,18 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      */
     void updateFields( QgsFields &fields ) SIP_SKIP;
 
+    /**
+     * Returns the parent edit buffer group for this edit buffer, or nullptr if not part of a group.
+     * \since QGIS 3.24
+     */
+    QgsVectorLayerEditBufferGroup *editBufferGroup();
+
+    /**
+     * Set the parent edit buffer group for this edit buffer.
+     * \since QGIS 3.24
+     */
+    void setEditBufferGroup( QgsVectorLayerEditBufferGroup *editBufferGroup );
+
     //QString dumpEditBuffer();
 
   protected slots:
@@ -315,7 +328,23 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     //! Changed geometries which are not committed.
     QgsGeometryMap mChangedGeometries;
 
+    QgsVectorLayerEditBufferGroup *mEditBufferGroup = nullptr;
+
     friend class QgsGrassProvider; //GRASS provider totally abuses the edit buffer
+
+  private:
+
+    friend class QgsVectorLayerEditBufferGroup;
+
+    bool commitChangesCheckGeometryTypeCompatibility( QStringList &commitErrors );
+    bool commitChangesUpdateGeometry( QStringList &commitErrors );
+    bool commitChangesDeleteAttributes( bool &attributesDeleted, QStringList &commitErrors );
+    bool commitChangesRenameAttributes( bool &attributesRenamed, QStringList &commitErrors );
+    bool commitChangesAddAttributes( bool &attributesAdded, QStringList &commitErrors );
+    bool commitChangesCheckAttributesModifications( const QgsFields oldFields, QStringList &commitErrors );
+    bool commitChangesChangeAttributes( QStringList &commitErrors );
+    bool commitChangesDeleteFeatures( QStringList &commitErrors );
+    bool commitChangesAddFeatures( QStringList &commitErrors );
 };
 
 #endif // QGSVECTORLAYEREDITBUFFER_H

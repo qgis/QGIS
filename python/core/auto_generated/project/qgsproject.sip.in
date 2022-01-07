@@ -907,6 +907,13 @@ Returns ``None`` if a matching transaction group is not available.
 .. versionadded:: 3.2
 %End
 
+    QgsVectorLayerEditBufferGroup *editBufferGroup();
+%Docstring
+Returns the edit buffer group
+
+.. versionadded:: 3.24
+%End
+
     bool evaluateDefaultValues() const;
 %Docstring
 Should default values be evaluated on provider side when requested and not when committed.
@@ -2011,6 +2018,66 @@ Returns the data defined properties used for overrides in user defined server
 parameters
 
 .. versionadded:: 3.14
+%End
+
+    bool startEditing( QgsVectorLayer *vectorLayer = 0 );
+%Docstring
+Makes the layer editable.
+
+This starts an edit session on vectorLayer. Changes made in this edit session will not
+be made persistent until :py:func:`~QgsProject.commitChanges` is called, and can be reverted by calling
+:py:func:`~QgsProject.rollBack`.
+
+:return: ``True`` if the layer was successfully made editable, or ``False`` if the operation
+         failed (e.g. due to an underlying read-only data source, or lack of edit support
+         by the backend data provider).
+
+.. seealso:: :py:func:`commitChanges`
+
+.. seealso:: :py:func:`rollBack`
+
+
+.. versionadded:: 3.24
+%End
+
+    bool commitChanges( bool stopEditing, QgsVectorLayer *vectorLayer = 0 );
+%Docstring
+Attempts to commit to the underlying data provider any buffered changes made since the
+last to call to :py:func:`~QgsProject.startEditing`.
+
+Returns the result of the attempt. If a commit fails (i.e. ``False`` is returned), the
+in-memory changes are left untouched and are not discarded. This allows editing to
+continue if the commit failed on e.g. a disallowed value in a Postgres
+database - the user can re-edit and try again.
+
+The commits occur in distinct stages,
+(add attributes, add features, change attribute values, change
+geometries, delete features, delete attributes)
+so if a stage fails, it can be difficult to roll back cleanly.
+Therefore any error message returned by :py:func:`~QgsProject.commitErrors` also includes which stage failed so
+that the user has some chance of repairing the damage cleanly.
+
+By setting ``stopEditing`` to ``False``, the layer will stay in editing mode.
+Otherwise the layer editing mode will be disabled if the commit is successful.
+
+.. seealso:: :py:func:`startEditing`
+
+.. seealso:: :py:func:`commitErrors`
+
+.. seealso:: :py:func:`rollBack`
+
+.. versionadded:: 3.24
+%End
+
+    bool rollBack( QgsVectorLayer *vectorLayer = 0 );
+%Docstring
+Stops a current editing operation on vectorLayer and discards any uncommitted edits.
+
+.. seealso:: :py:func:`startEditing`
+
+.. seealso:: :py:func:`commitChanges`
+
+.. versionadded:: 3.24
 %End
 
 };

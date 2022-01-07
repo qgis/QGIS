@@ -817,6 +817,7 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayercache.cpp
   vector/qgsvectorlayerdiagramprovider.cpp
   vector/qgsvectorlayereditbuffer.cpp
+  vector/qgsvectorlayereditbuffergroup.cpp
   vector/qgsvectorlayereditpassthrough.cpp
   vector/qgsvectorlayereditutils.cpp
   vector/qgsvectorlayerelevationproperties.cpp
@@ -1757,6 +1758,7 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayercache.h
   vector/qgsvectorlayerdiagramprovider.h
   vector/qgsvectorlayereditbuffer.h
+  vector/qgsvectorlayereditbuffergroup.h
   vector/qgsvectorlayereditpassthrough.h
   vector/qgsvectorlayereditutils.h
   vector/qgsvectorlayerelevationproperties.h

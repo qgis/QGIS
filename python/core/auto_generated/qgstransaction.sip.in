@@ -56,7 +56,7 @@ provider.
 
     ~QgsTransaction();
 
-    bool addLayer( QgsVectorLayer *layer );
+    bool addLayer( QgsVectorLayer *layer, bool addLayersInEditMode = false );
 %Docstring
 Add the ``layer`` to the transaction. The layer must not be
 in edit mode and the connection string must match.

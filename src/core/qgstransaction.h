@@ -78,7 +78,7 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
      * Add the \a layer to the transaction. The layer must not be
      * in edit mode and the connection string must match.
      */
-    bool addLayer( QgsVectorLayer *layer );
+    bool addLayer( QgsVectorLayer *layer, bool addLayersInEditMode = false );
 
     /**
      * Begin transaction

@@ -51,6 +51,7 @@
 #include "qgscolorscheme.h"
 #include "qgssettings.h"
 #include "qgspropertycollection.h"
+#include "qgsvectorlayereditbuffergroup.h"
 
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
@@ -942,6 +943,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.2
      */
     QgsTransactionGroup *transactionGroup( const QString &providerKey, const QString &connString );
+
+    /**
+     * Returns the edit buffer group
+     *
+     * \since QGIS 3.24
+     */
+    QgsVectorLayerEditBufferGroup *editBufferGroup();
 
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
@@ -1986,10 +1994,66 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsPropertyCollection dataDefinedServerProperties() const;
 
+    /**
+     * Makes the layer editable.
+     *
+     * This starts an edit session on vectorLayer. Changes made in this edit session will not
+     * be made persistent until commitChanges() is called, and can be reverted by calling
+     * rollBack().
+     *
+     * \returns TRUE if the layer was successfully made editable, or FALSE if the operation
+     * failed (e.g. due to an underlying read-only data source, or lack of edit support
+     * by the backend data provider).
+     *
+     * \see commitChanges()
+     * \see rollBack()
+     *
+     * \since QGIS 3.24
+     */
+    bool startEditing( QgsVectorLayer *vectorLayer = nullptr );
+
+    /**
+     * Attempts to commit to the underlying data provider any buffered changes made since the
+     * last to call to startEditing().
+     *
+     * Returns the result of the attempt. If a commit fails (i.e. FALSE is returned), the
+     * in-memory changes are left untouched and are not discarded. This allows editing to
+     * continue if the commit failed on e.g. a disallowed value in a Postgres
+     * database - the user can re-edit and try again.
+     *
+     * The commits occur in distinct stages,
+     * (add attributes, add features, change attribute values, change
+     * geometries, delete features, delete attributes)
+     * so if a stage fails, it can be difficult to roll back cleanly.
+     * Therefore any error message returned by commitErrors() also includes which stage failed so
+     * that the user has some chance of repairing the damage cleanly.
+     *
+     * By setting \a stopEditing to FALSE, the layer will stay in editing mode.
+     * Otherwise the layer editing mode will be disabled if the commit is successful.
+     *
+     * \see startEditing()
+     * \see commitErrors()
+     * \see rollBack()
+     *
+     * \since QGIS 3.24
+     */
+    bool commitChanges( bool stopEditing, QgsVectorLayer *vectorLayer = nullptr );
+
+    /**
+     * Stops a current editing operation on vectorLayer and discards any uncommitted edits.
+     *
+     * \see startEditing()
+     * \see commitChanges()
+     *
+     * \since QGIS 3.24
+     */
+    bool rollBack( QgsVectorLayer *vectorLayer = nullptr );
+
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
     void onMapLayersRemoved( const QList<QgsMapLayer *> &layers );
     void cleanTransactionGroups( bool force = false );
+    void updateTransactionGroups();
 
   private:
 
@@ -2096,6 +2160,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup *> mTransactionGroups;
+
+    QgsVectorLayerEditBufferGroup mEditBufferGroup;
 
     std::unique_ptr<QgsMapThemeCollection> mMapThemeCollection;
 

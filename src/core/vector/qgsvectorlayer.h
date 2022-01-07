@@ -2857,6 +2857,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns the minimum or maximum value
     void minimumOrMaximumValue( int index, QVariant *minimum, QVariant *maximum ) const;
 
+    void clearEditBuffer();
+
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
 
     //! Pointer to data provider derived from the abastract base class QgsDataProvider
@@ -2946,6 +2948,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! stores information about uncommitted changes to layer
     QgsVectorLayerEditBuffer *mEditBuffer = nullptr;
     friend class QgsVectorLayerEditBuffer;
+    friend class QgsVectorLayerEditBufferGroup;
     friend class QgsVectorLayerEditPassthrough;
 
     //stores information about joined layers

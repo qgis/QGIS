@@ -3493,7 +3493,13 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
     return false;
 
   mCommitChangesActive = true;
-  bool success = mEditBuffer->commitChanges( mCommitErrors );
+
+  bool success = false;
+  if ( mEditBuffer->editBufferGroup() )
+    success = mEditBuffer->editBufferGroup()->commitChanges( stopEditing, mCommitErrors );
+  else
+    success = mEditBuffer->commitChanges( mCommitErrors );
+
   mCommitChangesActive = false;
 
   if ( !mDeletedFids.empty() )
@@ -3506,8 +3512,7 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
   {
     if ( stopEditing )
     {
-      delete mEditBuffer;
-      mEditBuffer = nullptr;
+      clearEditBuffer();
     }
     undoStack()->clear();
     emit afterCommitChanges();
@@ -4475,6 +4480,12 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVaria
   }
 
   Q_ASSERT_X( false, "QgsVectorLayer::minimumOrMaximumValue()", "Unknown source of the field!" );
+}
+
+void QgsVectorLayer::clearEditBuffer()
+{
+  delete mEditBuffer;
+  mEditBuffer = nullptr;
 }
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
