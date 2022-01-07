@@ -380,6 +380,21 @@ void QgsVectorTileBasicLabelingWidget::addStyle( QgsWkbTypes::GeometryType geomT
 {
   QgsVectorTileBasicLabelingStyle style;
   style.setGeometryType( geomType );
+  switch ( geomType )
+  {
+    case QgsWkbTypes::PointGeometry:
+      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Point'" ) );
+      break;
+    case QgsWkbTypes::LineGeometry:
+      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Line'" ) );
+      break;
+    case QgsWkbTypes::PolygonGeometry:
+      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Polygon'" ) );
+      break;
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      break;
+  }
 
   const int rows = mModel->rowCount();
   mModel->insertStyle( rows, style );
