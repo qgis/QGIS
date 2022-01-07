@@ -214,12 +214,9 @@ namespace pal
           //! Placeholder list for active labels. Will contain label id for active labels, or -1 for empty positions in list
           std::vector< int > activeLabelIds;
 
-          double totalCost = 0;
-
           void init( std::size_t featureCount )
           {
             activeLabelIds.resize( featureCount, -1 );
-            totalCost = 0;
           }
       };
 
