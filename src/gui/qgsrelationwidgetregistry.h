@@ -15,13 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsabstractrelationeditorwidget.h"
-#include "qgis_gui.h"
-
-
 #ifndef QGSRELATIONWIDGETREGISTRY_H
 #define QGSRELATIONWIDGETREGISTRY_H
 
+#include "qgsabstractrelationeditorwidget.h"
+#include "qgis_gui.h"
 
 /**
  * Keeps track of the registered relations widgets. New widgets can be registered, old ones deleted.
