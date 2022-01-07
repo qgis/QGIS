@@ -340,8 +340,8 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   fields.append( QgsField( QStringLiteral( "Layer" ), QVariant::String, QString(), 0, 0 ) );
   fields.append( QgsField( QStringLiteral( "FeatureID" ), QVariant::LongLong, QString(), 20 ) );
   fields.append( QgsField( QStringLiteral( "LabelText" ), QVariant::String, QString(), 0, 0 ) );
-  fields.append( QgsField( QStringLiteral( "LabelWidth" ), QVariant::String, QString(), 20, 8 ) );
-  fields.append( QgsField( QStringLiteral( "LabelHeight" ), QVariant::String, QString(), 20, 8 ) );
+  fields.append( QgsField( QStringLiteral( "LabelWidth" ), QVariant::Double, QString(), 20, 8 ) );
+  fields.append( QgsField( QStringLiteral( "LabelHeight" ), QVariant::Double, QString(), 20, 8 ) );
   fields.append( QgsField( QStringLiteral( "LabelRotation" ), QVariant::Double, QString(), 20, 2 ) );
   fields.append( QgsField( QStringLiteral( "LabelUnplaced" ), QVariant::Bool, QString(), 1, 0 ) );
   fields.append( QgsField( QStringLiteral( "Family" ), QVariant::String, QString(), 0, 0 ) );
