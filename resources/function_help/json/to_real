@@ -3,7 +3,13 @@
   "type": "function",
   "groups": ["Conversions"],
   "description": "Converts a string to a real number. Nothing is returned if a value cannot be converted to real (e.g '123.56asd' is invalid).  Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.",
-  "arguments": [ {"arg":"string","description":"string to convert to real number"}],
-  "examples": [ { "expression":"to_real('123.45')", "returns":"123.45"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "string to convert to real number"
+  }],
+  "examples": [{
+    "expression": "to_real('123.45')",
+    "returns": "123.45"
+  }],
+  "tags": ["converts", "precision", "invalid", "rounded", "numbers", "changes", "real", "result", "converted", "saving", "conversion", "smaller"]
 }

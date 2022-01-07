@@ -3,21 +3,54 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the geometry after an affine transformation. Calculations are in the Spatial Reference System of this geometry. The operations are performed in a scale, rotation, translation order. If there is a Z or M offset but the coordinate is not present in the geometry, it will be added.",
-  "arguments": [
-    {"arg":"geometry","description":"a geometry"},
-    {"arg":"delta_x","description":"x-axis translation"},
-    {"arg":"delta_y","description":"y-axis translation"},
-    {"arg":"rotation_z","description":"rotation around z-axis in degrees counter-clockwise"},
-    {"arg":"scale_x","description":"x-axis scale factor"},
-    {"arg":"scale_y","description":"y-axis scale factor"},
-    {"arg":"delta_z","optional":true,"default":"0","description":"z-axis translation"},
-    {"arg":"delta_m","optional":true,"default":"0","description":"m-axis translation"},
-    {"arg":"scale_z","optional":true,"default":"1","description":"z-axis scale factor"},
-    {"arg":"scale_m","optional":true,"default":"1","description":"m-axis scale factor"}
-  ],
-  "examples": [
-    { "expression":"geom_to_wkt(affine_transform(geom_from_wkt('LINESTRING(1 1, 2 2)'), 2, 2, 0, 1, 1))", "returns":"'LineString (3 3, 4 4)'"},
-    { "expression":"geom_to_wkt(affine_transform(geom_from_wkt('POLYGON((0 0, 0 3, 2 2, 0 0))'), 0, 0, -90, 1, 2))", "returns":"'Polygon ((0 0, 6 0, 4 -2, 0 0))'"},
-    { "expression":"geom_to_wkt(affine_transform(geom_from_wkt('POINT(3 1)'), 0, 0, 0, 1, 1, 5, 0))", "returns":"'PointZ (3 1 5)'"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "delta_x",
+    "description": "x-axis translation"
+  }, {
+    "arg": "delta_y",
+    "description": "y-axis translation"
+  }, {
+    "arg": "rotation_z",
+    "description": "rotation around z-axis in degrees counter-clockwise"
+  }, {
+    "arg": "scale_x",
+    "description": "x-axis scale factor"
+  }, {
+    "arg": "scale_y",
+    "description": "y-axis scale factor"
+  }, {
+    "arg": "delta_z",
+    "optional": true,
+    "default": "0",
+    "description": "z-axis translation"
+  }, {
+    "arg": "delta_m",
+    "optional": true,
+    "default": "0",
+    "description": "m-axis translation"
+  }, {
+    "arg": "scale_z",
+    "optional": true,
+    "default": "1",
+    "description": "z-axis scale factor"
+  }, {
+    "arg": "scale_m",
+    "optional": true,
+    "default": "1",
+    "description": "m-axis scale factor"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(affine_transform(geom_from_wkt('LINESTRING(1 1, 2 2)'), 2, 2, 0, 1, 1))",
+    "returns": "'LineString (3 3, 4 4)'"
+  }, {
+    "expression": "geom_to_wkt(affine_transform(geom_from_wkt('POLYGON((0 0, 0 3, 2 2, 0 0))'), 0, 0, -90, 1, 2))",
+    "returns": "'Polygon ((0 0, 6 0, 4 -2, 0 0))'"
+  }, {
+    "expression": "geom_to_wkt(affine_transform(geom_from_wkt('POINT(3 1)'), 0, 0, 0, 1, 1, 5, 0))",
+    "returns": "'PointZ (3 1 5)'"
+  }],
+  "tags": ["affine", "coordinate", "operations", "spatial", "transformation", "reference", "offset", "system", "calculations", "translation", "rotation", "order", "added", "present", "scale"]
 }

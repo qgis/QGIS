@@ -2,14 +2,23 @@
   "name": "CASE",
   "type": "expression",
   "groups": ["Conditionals"],
-  "description": "CASE is used to evaluate a series of conditions and return a result for the first condition met. The conditions are evaluated sequentially, and if a condition is true, the evaluation stops, and the corresponding result is returned. If none of the conditions are true, the value in the ELSE clause is returned. Furthermore, if no ELSE clause is set and none of the conditions are met, NULL is returned.<br><pre>CASE<br>WHEN <i>condition</i> THEN <i>result</i><br>[ …n ]<br>[ ELSE <i>result</i> ]<br>END</pre>[ ] marks optional components<br>",
-  "arguments": [
-   {"arg":"WHEN condition","description":"A condition expression to evaluate"},
-   {"arg":"THEN result","description":"If <i>condition</i> evaluates to True then <i>result</i> is evaluated and returned."},
-   {"arg":"ELSE result","description":"If none of the above conditions evaluated to True then <i>result</i> is evaluated and returned."}
-  ],
-  "examples": [
-   { "expression":"CASE WHEN \"name\" IS NULL THEN 'None' END", "returns":"Returns the string 'None' if the \"name\" field is NULL"},
-   { "expression":"CASE WHEN $area > 10000 THEN 'Big property' WHEN $area > 5000 THEN 'Medium property' ELSE 'Small property' END", "returns":"Returns the string 'Big property' if the area is bigger than 10000, 'Medium property' if the area is between 5000 and 10000, and 'Small property' for others"}
-  ]
+  "description": "CASE is used to evaluate a series of conditions and return a result for the first condition met. The conditions are evaluated sequentially, and if a condition is true, the evaluation stops, and the corresponding result is returned. If none of the conditions are true, the value in the ELSE clause is returned. Furthermore, if no ELSE clause is set and none of the conditions are met, NULL is returned.<br><pre>CASE<br>WHEN <i>condition</i> THEN <i>result</i><br>[ \u2026n ]<br>[ ELSE <i>result</i> ]<br>END</pre>[ ] marks optional components<br>",
+  "arguments": [{
+    "arg": "WHEN condition",
+    "description": "A condition expression to evaluate"
+  }, {
+    "arg": "THEN result",
+    "description": "If <i>condition</i> evaluates to True then <i>result</i> is evaluated and returned."
+  }, {
+    "arg": "ELSE result",
+    "description": "If none of the above conditions evaluated to True then <i>result</i> is evaluated and returned."
+  }],
+  "examples": [{
+    "expression": "CASE WHEN \"name\" IS NULL THEN 'None' END",
+    "returns": "Returns the string 'None' if the \"name\" field is NULL"
+  }, {
+    "expression": "CASE WHEN $area > 10000 THEN 'Big property' WHEN $area > 5000 THEN 'Medium property' ELSE 'Small property' END",
+    "returns": "Returns the string 'Big property' if the area is bigger than 10000, 'Medium property' if the area is between 5000 and 10000, and 'Small property' for others"
+  }],
+  "tags": ["casewhen", "clause", "series", "met", "first", "corresponding", "end", "none", "evaluated", "components", "conditions", "optional", "marks", "return", "evaluation", "else", "case", "evaluate", "result", "stops", "condition", "set"]
 }

@@ -3,6 +3,9 @@
   "type": "function",
   "groups": ["Meshes"],
   "description": "Returns the X coordinate of the current mesh vertex.",
-  "examples": [ { "expression":"$vertex_x", "returns":"42.12"}
-  ]
+  "examples": [{
+    "expression": "$vertex_x",
+    "returns": "42.12"
+  }],
+  "tags": ["coordinate", "mesh", "vertex", "current"]
 }

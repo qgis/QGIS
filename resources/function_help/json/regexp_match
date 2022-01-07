@@ -3,8 +3,19 @@
   "type": "function",
   "groups": ["Conditionals", "String"],
   "description": "Return the first matching position matching a regular expression within an unicode string, or 0 if the substring is not found.",
-  "arguments": [ {"arg":"input_string","description":"the string to test against the regular expression"},
-  {"arg":"regex","description":"The regular expression to test against. Backslash characters must be double escaped (e.g., \"\\\\\\\\s\" to match a white space character or  \"\\\\\\\\b\" to match a word boundary)."}
-  ],
-  "examples": [ { "expression":"regexp_match('QGIS ROCKS','\\\\\\\\sROCKS')", "returns":"5"}, { "expression":"regexp_match('Budač','udač\\\\\\\\b')", "returns":"2"}]
+  "arguments": [{
+    "arg": "input_string",
+    "description": "the string to test against the regular expression"
+  }, {
+    "arg": "regex",
+    "description": "The regular expression to test against. Backslash characters must be double escaped (e.g., \"\\\\\\\\s\" to match a white space character or  \"\\\\\\\\b\" to match a word boundary)."
+  }],
+  "examples": [{
+    "expression": "regexp_match('QGIS ROCKS','\\\\\\\\sROCKS')",
+    "returns": "5"
+  }, {
+    "expression": "regexp_match('Buda\u010d','uda\u010d\\\\\\\\b')",
+    "returns": "2"
+  }],
+  "tags": ["return", "found", "matching", "unicode", "regular", "position", "substring", "first"]
 }

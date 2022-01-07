@@ -3,6 +3,9 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the y coordinate of the current point feature. If the feature is a multipoint feature, then the y-coordinate of the first point will be returned.",
-  "examples": [ { "expression":"$y", "returns":"42"}
-  ]
+  "examples": [{
+    "expression": "$y",
+    "returns": "42"
+  }],
+  "tags": ["first", "point", "coordinate", "current", "multipoint"]
 }

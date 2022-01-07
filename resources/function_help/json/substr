@@ -3,15 +3,35 @@
   "type": "function",
   "groups": ["String"],
   "description": "Returns a part of a string.",
-  "arguments": [ {"arg":"string","description":"the full input string"},
-  {"arg":"start","description":"integer representing start position to extract beginning with 1; if start is negative, the return string will begin at the end of the string minus the start value"},
-  {"arg":"length","optional":true,"description":"integer representing length of string to extract; if length is negative, the return string will omit the given length of characters from the end of the string"}
-  ],
-  "examples": [ { "expression":"substr('HELLO WORLD',3,5)", "returns":"'LLO W'"},
-                { "expression":"substr('HELLO WORLD',6)", "returns":"' WORLD'"},
-                { "expression":"substr('HELLO WORLD',-5)","returns":"'WORLD'"},
-                { "expression":"substr('HELLO',3,-1)", "returns":"'LL'"},
-                { "expression":"substr('HELLO WORLD',-5,2)","returns":"'WO'"},
-                { "expression":"substr('HELLO WORLD',-5,-1)","returns":"'WORL'"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "the full input string"
+  }, {
+    "arg": "start",
+    "description": "integer representing start position to extract beginning with 1; if start is negative, the return string will begin at the end of the string minus the start value"
+  }, {
+    "arg": "length",
+    "optional": true,
+    "description": "integer representing length of string to extract; if length is negative, the return string will omit the given length of characters from the end of the string"
+  }],
+  "examples": [{
+    "expression": "substr('HELLO WORLD',3,5)",
+    "returns": "'LLO W'"
+  }, {
+    "expression": "substr('HELLO WORLD',6)",
+    "returns": "' WORLD'"
+  }, {
+    "expression": "substr('HELLO WORLD',-5)",
+    "returns": "'WORLD'"
+  }, {
+    "expression": "substr('HELLO',3,-1)",
+    "returns": "'LL'"
+  }, {
+    "expression": "substr('HELLO WORLD',-5,2)",
+    "returns": "'WO'"
+  }, {
+    "expression": "substr('HELLO WORLD',-5,-1)",
+    "returns": "'WORL'"
+  }],
+  "tags": ["part"]
 }

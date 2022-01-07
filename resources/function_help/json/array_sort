@@ -3,7 +3,18 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the provided array with its elements sorted.",
-  "arguments": [ {"arg":"array","description":"an array"},
-                 {"arg":"ascending","optional":true,"default":"true","description":"set this parameter to false to sort the array in descending order"}],
-  "examples": [ { "expression":"array_sort(array(3,2,1))", "returns":"[ 1, 2, 3 ]"}]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "ascending",
+    "optional": true,
+    "default": "true",
+    "description": "set this parameter to false to sort the array in descending order"
+  }],
+  "examples": [{
+    "expression": "array_sort(array(3,2,1))",
+    "returns": "[ 1, 2, 3 ]"
+  }],
+  "tags": ["sorted", "array", "elements", "provided"]
 }

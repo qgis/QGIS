@@ -3,8 +3,19 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the portion of a line (or curve) geometry which falls between the specified start and end distances (measured from the beginning of the line). Z and M values are linearly interpolated from existing values.",
-  "arguments": [ {"arg":"geometry","description":"a linestring or curve geometry"},
-                 {"arg":"start_distance","description":"distance to start of substring"},
-                 {"arg":"end_distance","description":"distance to end of substring"}],
-  "examples": [ { "expression":"geom_to_wkt(line_substring(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_distance:=2,end_distance:=6))", "returns":"'LineString (2 0,6 0)'"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a linestring or curve geometry"
+  }, {
+    "arg": "start_distance",
+    "description": "distance to start of substring"
+  }, {
+    "arg": "end_distance",
+    "description": "distance to end of substring"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(line_substring(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_distance:=2,end_distance:=6))",
+    "returns": "'LineString (2 0,6 0)'"
+  }],
+  "tags": ["curve", "start", "specified", "measured", "falls", "existing", "interpolated", "beginning", "distances", "line", "end", "portion"]
 }

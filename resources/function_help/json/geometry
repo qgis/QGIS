@@ -3,9 +3,19 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a feature's geometry.",
-  "arguments": [ {"arg":"feature","description":"a feature object"}],
-  "examples": [ { "expression":" geometry( $currentfeature )", "returns":"the geometry of the current feature. Prefer using $geometry."},
-  { "expression":"geom_to_wkt( geometry( get_feature_by_id( 'streets', 1 ) ) )", "returns":"the geometry in WKT of the feature with the id 1 on the layer \"streets\", e.g. 'POINT(6 50)'"},
-  { "expression":"intersects( $geometry, geometry( get_feature( 'streets', 'name', 'Main St.' ) ) )", "returns":"true if the current feature spatially intersects the 'Main St.' named feature in the \"streets\" layer"}
-  ]
+  "arguments": [{
+    "arg": "feature",
+    "description": "a feature object"
+  }],
+  "examples": [{
+    "expression": " geometry( $currentfeature )",
+    "returns": "the geometry of the current feature. Prefer using $geometry."
+  }, {
+    "expression": "geom_to_wkt( geometry( get_feature_by_id( 'streets', 1 ) ) )",
+    "returns": "the geometry in WKT of the feature with the id 1 on the layer \"streets\", e.g. 'POINT(6 50)'"
+  }, {
+    "expression": "intersects( $geometry, geometry( get_feature( 'streets', 'name', 'Main St.' ) ) )",
+    "returns": "true if the current feature spatially intersects the 'Main St.' named feature in the \"streets\" layer"
+  }],
+  "tags": []
 }

@@ -3,14 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the shortest line joining geometry1 to geometry2. The resultant line will start at geometry1 and end at geometry2.",
-  "arguments": [
-    {"arg":"geometry1","description":"geometry to find shortest line from"},
-    {"arg":"geometry2","description":"geometry to find shortest line to"}
-  ],
-  "examples": [
-    {
-      "expression":"geom_to_wkt(shortest_line(geom_from_wkt('LINESTRING (20 80, 98 190, 110 180, 50 75 )'),geom_from_wkt('POINT(100 100)')))",
-      "returns":"'LineString(73.0769 115.384, 100 100)'"
-    }
-  ]
+  "arguments": [{
+    "arg": "geometry1",
+    "description": "geometry to find shortest line from"
+  }, {
+    "arg": "geometry2",
+    "description": "geometry to find shortest line to"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(shortest_line(geom_from_wkt('LINESTRING (20 80, 98 190, 110 180, 50 75 )'),geom_from_wkt('POINT(100 100)')))",
+    "returns": "'LineString(73.0769 115.384, 100 100)'"
+  }],
+  "tags": ["start", "resultant", "joining", "end", "shortest", "line"]
 }

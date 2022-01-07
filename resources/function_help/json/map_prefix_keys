@@ -3,6 +3,16 @@
   "type": "function",
   "groups": ["Maps"],
   "description": "Returns a map with all keys prefixed by a given string.",
-  "arguments": [ {"arg":"map","description":"a map"}, {"arg":"prefix","description":"a string"}],
-  "examples": [ { "expression":"map_prefix_keys(map('1','one','2','two'), 'prefix-')", "returns":"{ 'prefix-1': 'one', 'prefix-2': 'two' }"}]
+  "arguments": [{
+    "arg": "map",
+    "description": "a map"
+  }, {
+    "arg": "prefix",
+    "description": "a string"
+  }],
+  "examples": [{
+    "expression": "map_prefix_keys(map('1','one','2','two'), 'prefix-')",
+    "returns": "{ 'prefix-1': 'one', 'prefix-2': 'two' }"
+  }],
+  "tags": ["prefixed", "keys", "map"]
 }

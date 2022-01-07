@@ -2,6 +2,9 @@
   "name": "$page",
   "type": "function",
   "description": "Returns the current page number within a print layout.",
-  "examples": [ { "expression":"$page", "returns":"2"}
-  ]
+  "examples": [{
+    "expression": "$page",
+    "returns": "2"
+  }],
+  "tags": ["layout", "print", "page", "current"]
 }

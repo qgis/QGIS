@@ -3,10 +3,19 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns an array sorted using the ordering specified in another array. Values which are present in the first array but are missing from the second array will be added to the end of the result.",
-  "arguments": [
-    {"arg":"array", "description":"an array"},
-    {"arg":"array_prioritize", "description":"an array with values ordered by priority" }],
-  "examples": [ { "expression":"array_prioritize(array(1, 8, 2, 5), array(5, 4, 2, 1, 3, 8))", "returns":"[ 5, 2, 1, 8 ]"},
-  {"expression":"array_prioritize(array(5, 4, 2, 1, 3, 8), array(1, 8, 6, 5))", "returns":"[ 1, 8, 5, 4, 2, 3 ]"}
-  ]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "array_prioritize",
+    "description": "an array with values ordered by priority"
+  }],
+  "examples": [{
+    "expression": "array_prioritize(array(1, 8, 2, 5), array(5, 4, 2, 1, 3, 8))",
+    "returns": "[ 5, 2, 1, 8 ]"
+  }, {
+    "expression": "array_prioritize(array(5, 4, 2, 1, 3, 8), array(1, 8, 6, 5))",
+    "returns": "[ 1, 8, 5, 4, 2, 3 ]"
+  }],
+  "tags": ["sorted", "array", "first", "specified", "missing", "second", "ordering", "added", "present", "result", "end"]
 }

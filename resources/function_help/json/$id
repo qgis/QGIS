@@ -3,6 +3,9 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Returns the feature id of the current row.",
-  "examples": [ { "expression":"$id", "returns":"42"}
-  ]
+  "examples": [{
+    "expression": "$id",
+    "returns": "42"
+  }],
+  "tags": ["row", "current"]
 }

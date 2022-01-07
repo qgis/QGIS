@@ -3,11 +3,29 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a rotated version of a geometry. Calculations are in the Spatial Reference System of this geometry.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"},
-                 {"arg":"rotation","description":"clockwise rotation in degrees"},
-                 {"arg":"center", "optional":true,"default":"NULL", "description":"rotation center point. If not specified, the center of the geometry's bounding box is used."},
-                 {"arg":"per_part", "optional":true, "default":"false","description": "apply rotation per part. If true, then rotation will apply around the center of each part's bounding box when the input geometry is multipart and an explicit rotation center point is not specified."}
-               ],
-  "examples": [ { "expression":"rotate($geometry, 45, make_point(4, 5))", "returns":"geometry rotated 45 degrees clockwise around the (4, 5) point"},
-{ "expression":"rotate($geometry, 45)", "returns":"geometry rotated 45 degrees clockwise around the center of its bounding box"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "rotation",
+    "description": "clockwise rotation in degrees"
+  }, {
+    "arg": "center",
+    "optional": true,
+    "default": "NULL",
+    "description": "rotation center point. If not specified, the center of the geometry's bounding box is used."
+  }, {
+    "arg": "per_part",
+    "optional": true,
+    "default": "false",
+    "description": "apply rotation per part. If true, then rotation will apply around the center of each part's bounding box when the input geometry is multipart and an explicit rotation center point is not specified."
+  }],
+  "examples": [{
+    "expression": "rotate($geometry, 45, make_point(4, 5))",
+    "returns": "geometry rotated 45 degrees clockwise around the (4, 5) point"
+  }, {
+    "expression": "rotate($geometry, 45)",
+    "returns": "geometry rotated 45 degrees clockwise around the center of its bounding box"
+  }],
+  "tags": ["version", "spatial", "reference", "calculations", "rotated", "system"]
 }

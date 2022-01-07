@@ -3,8 +3,19 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the lowest index (0 for the first one) of a value within an array. Returns -1 if the value is not found.",
-  "arguments": [ {"arg":"array","description":"an array"},
-                 {"arg":"value","description":"the value to search"}],
-  "examples": [ { "expression":"array_find(array('a', 'b', 'c'), 'b')", "returns":"1"},
-                { "expression":"array_find(array('a', 'b', 'c', 'b'), 'b')", "returns":"1"}]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "value",
+    "description": "the value to search"
+  }],
+  "examples": [{
+    "expression": "array_find(array('a', 'b', 'c'), 'b')",
+    "returns": "1"
+  }, {
+    "expression": "array_find(array('a', 'b', 'c', 'b'), 'b')",
+    "returns": "1"
+  }],
+  "tags": ["array", "found", "first", "lowest", "index"]
 }

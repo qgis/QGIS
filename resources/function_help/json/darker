@@ -3,9 +3,16 @@
   "type": "function",
   "groups": ["Color"],
   "description": "Returns a darker (or lighter) color string",
-  "arguments": [
-               {"arg":"color", "description":"a color string"},
-	{"arg":"factor", "description":"an integer corresponding to the darkening factor:<ul><li>if the factor is greater than 100, this function returns a darker color (e.g., setting factor to 200 returns a color that is half the brightness);</li><li>if the factor is less than 100, the return color is lighter, but using the lighter() function for this purpose is recommended;</li><li>if the factor is 0 or negative, the return value is unspecified.</li></ul>"}
-	          ],
-  "examples": [ { "expression":"darker('200,10,30', 200)", "returns":"'100,5,15,255'"}]
+  "arguments": [{
+    "arg": "color",
+    "description": "a color string"
+  }, {
+    "arg": "factor",
+    "description": "an integer corresponding to the darkening factor:<ul><li>if the factor is greater than 100, this function returns a darker color (e.g., setting factor to 200 returns a color that is half the brightness);</li><li>if the factor is less than 100, the return color is lighter, but using the lighter() function for this purpose is recommended;</li><li>if the factor is 0 or negative, the return value is unspecified.</li></ul>"
+  }],
+  "examples": [{
+    "expression": "darker('200,10,30', 200)",
+    "returns": "'100,5,15,255'"
+  }],
+  "tags": ["darker", "color", "lighter"]
 }

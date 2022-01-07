@@ -3,10 +3,13 @@
   "type": "function",
   "groups": ["General"],
   "description": "Returns true if a specified layer is visible.",
-  "arguments": [
-	{"arg":"layer", "description":"a string, representing either a layer name or layer ID"}
-  ],
-  "examples": [
-	{ "expression":"is_layer_visible('baseraster')", "returns":"True"}
-  ]
+  "arguments": [{
+    "arg": "layer",
+    "description": "a string, representing either a layer name or layer ID"
+  }],
+  "examples": [{
+    "expression": "is_layer_visible('baseraster')",
+    "returns": "True"
+  }],
+  "tags": ["specified", "visible"]
 }

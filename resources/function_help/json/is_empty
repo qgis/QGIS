@@ -3,9 +3,22 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns true if a geometry is empty (without coordinates), false if the geometry is not empty and NULL if there is no geometry. See also is_empty_or_null.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"}],
-  "examples": [ { "expression":"is_empty(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'))", "returns":"false"},
-                { "expression":"is_empty(geom_from_wkt('LINESTRING EMPTY'))", "returns":"true"},
-                { "expression":"is_empty(geom_from_wkt('POINT(7 4)'))", "returns":"false"},
-                { "expression":"is_empty(geom_from_wkt('POINT EMPTY'))", "returns":"true"} ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "is_empty(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'))",
+    "returns": "false"
+  }, {
+    "expression": "is_empty(geom_from_wkt('LINESTRING EMPTY'))",
+    "returns": "true"
+  }, {
+    "expression": "is_empty(geom_from_wkt('POINT(7 4)'))",
+    "returns": "false"
+  }, {
+    "expression": "is_empty(geom_from_wkt('POINT EMPTY'))",
+    "returns": "true"
+  }],
+  "tags": ["empty", "is_empty_or_null", "see", "coordinates", "false"]
 }

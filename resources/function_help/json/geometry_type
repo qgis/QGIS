@@ -3,10 +3,22 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a string value describing the type of a geometry (Point, Line or Polygon)",
-  "arguments": [ {"arg":"geometry","description":"a geometry"}],
-  "examples": [ { "expression":"geometry_type( geom_from_wkt( 'LINESTRING(2 5, 3 6, 4 8)') )", "returns":"'Line'"},
-  { "expression":"geometry_type( geom_from_wkt( 'MULTILINESTRING((2 5, 3 6, 4 8), (1 1, 0 0))') )", "returns":"'Line'"},
-  { "expression":"geometry_type( geom_from_wkt( 'POINT(2 5)') )", "returns":"'Point'"},
-  { "expression":"geometry_type( geom_from_wkt( 'POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))') )", "returns":"'Polygon'"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "geometry_type( geom_from_wkt( 'LINESTRING(2 5, 3 6, 4 8)') )",
+    "returns": "'Line'"
+  }, {
+    "expression": "geometry_type( geom_from_wkt( 'MULTILINESTRING((2 5, 3 6, 4 8), (1 1, 0 0))') )",
+    "returns": "'Line'"
+  }, {
+    "expression": "geometry_type( geom_from_wkt( 'POINT(2 5)') )",
+    "returns": "'Point'"
+  }, {
+    "expression": "geometry_type( geom_from_wkt( 'POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))') )",
+    "returns": "'Polygon'"
+  }],
+  "tags": ["describing", "type", "point", "polygon", "line"]
 }

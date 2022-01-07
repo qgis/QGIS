@@ -3,16 +3,32 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Manage autoincrementing values in sqlite databases.<p>SQlite default values can only be applied on insert and not prefetched.</p><p>This makes it impossible to acquire an incremented primary key via AUTO_INCREMENT before creating the row in the database. Sidenote: with postgres, this works via the option <i>evaluate default values</i>.</p><p>When adding new features with relations, it is really nice to be able to already add children for a parent, while the parents form is still open and hence the parent feature uncommitted.</p><p>To get around this limitation, this function can be used to manage sequence values in a separate table on sqlite based formats like gpkg.</p><p>The sequence table will be filtered for a sequence id (filter_attribute and filter_value) and the current value of the id_field will be incremented by 1 and the incremented value returned.</p><p>If additional columns require values to be specified, the default_values map can be used for this purpose.</p><p><b>Note</b><br/>This function modifies the target sqlite table. It is intended for usage with default value configurations for attributes.</p><p>When the database parameter is a layer and the layer is in transaction mode, the value will only be retrieved once during the lifetime of a transaction and cached and incremented. This makes it unsafe to work on the same database from several processes in parallel.</p>",
-  "arguments": [
-	  {"arg":"database", "description":"Path to the sqlite file or geopackage layer"},
-    {"arg":"table", "description":"Name of the table that manages the sequences"},
-    {"arg":"id_field", "description":"Name of the field that contains the current value"},
-    {"arg":"filter_attribute", "description":"Name the field that contains a unique identifier for this sequence. Must have a UNIQUE index."},
-    {"arg":"filter_value", "description":"Name of the sequence to use."},
-    {"arg":"default_values", "description":"Map with default values for additional columns on the table. The values need to be fully quoted. Functions are allowed.", "optional": true}
-  ],
-  "examples": [
-    { "expression":"sqlite_fetch_and_increment(@layer, 'sequence_table', 'last_unique_id', 'sequence_id', 'global', map('last_change', 'date(''now'')', 'user', '''' || @user_account_name || ''''))", "returns":"0"},
-    { "expression":"sqlite_fetch_and_increment(layer_property(@layer, 'path'), 'sequence_table', 'last_unique_id', 'sequence_id', 'global', map('last_change', 'date(''now'')', 'user', '''' || @user_account_name || ''''))", "returns":"0"}
-  ]
+  "arguments": [{
+    "arg": "database",
+    "description": "Path to the sqlite file or geopackage layer"
+  }, {
+    "arg": "table",
+    "description": "Name of the table that manages the sequences"
+  }, {
+    "arg": "id_field",
+    "description": "Name of the field that contains the current value"
+  }, {
+    "arg": "filter_attribute",
+    "description": "Name the field that contains a unique identifier for this sequence. Must have a UNIQUE index."
+  }, {
+    "arg": "filter_value",
+    "description": "Name of the sequence to use."
+  }, {
+    "arg": "default_values",
+    "description": "Map with default values for additional columns on the table. The values need to be fully quoted. Functions are allowed.",
+    "optional": true
+  }],
+  "examples": [{
+    "expression": "sqlite_fetch_and_increment(@layer, 'sequence_table', 'last_unique_id', 'sequence_id', 'global', map('last_change', 'date(''now'')', 'user', '''' || @user_account_name || ''''))",
+    "returns": "0"
+  }, {
+    "expression": "sqlite_fetch_and_increment(layer_property(@layer, 'path'), 'sequence_table', 'last_unique_id', 'sequence_id', 'global', map('last_change', 'date(''now'')', 'user', '''' || @user_account_name || ''''))",
+    "returns": "0"
+  }],
+  "tags": ["attributes", "children", "applied", "uncommitted", "works", "relations", "prefetched", "intended", "creating", "several", "auto_increment", "form", "databases", "transaction", "parents", "filter_value", "mode", "open", "primary", "evaluate", "sidenote", "add", "require", "impossible", "default_values", "table", "insert", "nice", "formats", "current", "adding", "get", "target", "work", "specified", "usage", "columns", "retrieved", "autoincrementing", "new", "limitation", "gpkg", "parallel", "database", "additional", "makes", "postgres", "modifies", "sequence", "cached", "manage", "key", "same", "id_field", "acquire", "filtered", "default", "filter_attribute", "parent", "option", "unsafe", "sqlite", "separate", "parameter", "map", "row", "configurations", "lifetime", "processes", "incremented", "able", "features", "purpose"]
 }

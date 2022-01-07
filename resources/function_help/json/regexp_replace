@@ -3,12 +3,25 @@
   "type": "function",
   "groups": ["String"],
   "description": "Returns a string with the supplied regular expression replaced.",
-  "arguments": [ {"arg":"input_string","description":"the string to replace matches in"},
-  {"arg":"regex","description":"The regular expression to replace. Backslash characters must be double escaped (e.g., \"\\\\\\\\s\" to match a white space character)."},
-  {"arg":"replacement","description":"The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using \\\\\\\\1, \\\\\\\\2, etc."}
-  ],
-  "examples": [ { "expression":"regexp_replace('QGIS SHOULD ROCK','\\\\\\\\sSHOULD\\\\\\\\s',' DOES ')", "returns":"'QGIS DOES ROCK'"},
-                { "expression":"regexp_replace('ABC123','\\\\\\\\d+','')", "returns":"'ABC'"},
-                { "expression":"regexp_replace('my name is John','(.*) is (.*)','\\\\\\\\2 is \\\\\\\\1')", "returns":"'John is my name'"}
-              ]
+  "arguments": [{
+    "arg": "input_string",
+    "description": "the string to replace matches in"
+  }, {
+    "arg": "regex",
+    "description": "The regular expression to replace. Backslash characters must be double escaped (e.g., \"\\\\\\\\s\" to match a white space character)."
+  }, {
+    "arg": "replacement",
+    "description": "The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using \\\\\\\\1, \\\\\\\\2, etc."
+  }],
+  "examples": [{
+    "expression": "regexp_replace('QGIS SHOULD ROCK','\\\\\\\\sSHOULD\\\\\\\\s',' DOES ')",
+    "returns": "'QGIS DOES ROCK'"
+  }, {
+    "expression": "regexp_replace('ABC123','\\\\\\\\d+','')",
+    "returns": "'ABC'"
+  }, {
+    "expression": "regexp_replace('my name is John','(.*) is (.*)','\\\\\\\\2 is \\\\\\\\1')",
+    "returns": "'John is my name'"
+  }],
+  "tags": ["regular", "supplied", "replaced"]
 }

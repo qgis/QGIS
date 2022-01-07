@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Returns the feature with an id on a layer.",
-  "arguments": [ {"arg":"layer","description":"layer, layer name or layer id"},
-                 {"arg":"feature_id","description":"the id of the feature which should be returned"}],
-  "examples": [ { "expression":"get_feature_by_id('streets', 1)", "returns":"the feature with the id 1 on the layer \"streets\""}]
+  "arguments": [{
+    "arg": "layer",
+    "description": "layer, layer name or layer id"
+  }, {
+    "arg": "feature_id",
+    "description": "the id of the feature which should be returned"
+  }],
+  "examples": [{
+    "expression": "get_feature_by_id('streets', 1)",
+    "returns": "the feature with the id 1 on the layer \"streets\""
+  }],
+  "tags": []
 }

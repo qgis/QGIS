@@ -3,9 +3,19 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Tests whether a geometry contains another. Returns true if and only if no points of geometry2 lie in the exterior of geometry1, and at least one point of the interior of geometry2 lies in the interior of geometry1.",
-  "arguments": [ {"arg":"geometry1","description":"a geometry"},
-                 {"arg":"geometry2","description":"a geometry"}],
-  "examples": [ { "expression":"contains( geom_from_wkt( 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))' ), geom_from_wkt( 'POINT(0.5 0.5 )' ) )", "returns":"true"},
-  { "expression":"contains( geom_from_wkt( 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )", "returns":"false"}
-  ]
+  "arguments": [{
+    "arg": "geometry1",
+    "description": "a geometry"
+  }, {
+    "arg": "geometry2",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "contains( geom_from_wkt( 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))' ), geom_from_wkt( 'POINT(0.5 0.5 )' ) )",
+    "returns": "true"
+  }, {
+    "expression": "contains( geom_from_wkt( 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )",
+    "returns": "false"
+  }],
+  "tags": ["lie", "point", "lies", "tests", "interior", "exterior", "within", "points", "contains"]
 }

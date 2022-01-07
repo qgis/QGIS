@@ -3,10 +3,22 @@
   "type": "function",
   "groups": ["Maps"],
   "description": "Returns a map with an added key/value. If the key already exists, its value is overridden.",
-  "arguments": [ {"arg":"map","description":"a map"},
-                 {"arg":"key","description":"the key to add"},
-                 {"arg":"value","description":"the value to add"}],
-  "examples": [ { "expression":"map_insert(map('1','one'),'3','three')", "returns":"{ '1': 'one', '3': 'three' }"},
-                { "expression":"map_insert(map('1','one','2','overridden'),'2','two')", "returns":"{ '1': 'one', '2': 'two' }"}
-  ]
+  "arguments": [{
+    "arg": "map",
+    "description": "a map"
+  }, {
+    "arg": "key",
+    "description": "the key to add"
+  }, {
+    "arg": "value",
+    "description": "the value to add"
+  }],
+  "examples": [{
+    "expression": "map_insert(map('1','one'),'3','three')",
+    "returns": "{ '1': 'one', '3': 'three' }"
+  }, {
+    "expression": "map_insert(map('1','one','2','overridden'),'2','two')",
+    "returns": "{ '1': 'one', '2': 'two' }"
+  }],
+  "tags": ["map", "added", "exists", "key", "overridden"]
 }

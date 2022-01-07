@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the maximum value of an array.",
-  "arguments": [ {"arg":"array","description":"an array"} ],
-  "examples": [ { "expression":"array_max(array(0,42,4,2))", "returns":"42"}]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }],
+  "examples": [{
+    "expression": "array_max(array(0,42,4,2))",
+    "returns": "42"
+  }],
+  "tags": ["array", "maximum"]
 }

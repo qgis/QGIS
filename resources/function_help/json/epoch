@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Returns the interval in milliseconds between the unix epoch and a given date value.",
-  "arguments": [ {"arg":"date","description":"a date or datetime value"} ],
-  "examples": [ { "expression":"epoch(to_date('2017-01-01'))", "returns":"1483203600000"} ]
+  "arguments": [{
+    "arg": "date",
+    "description": "a date or datetime value"
+  }],
+  "examples": [{
+    "expression": "epoch(to_date('2017-01-01'))",
+    "returns": "1483203600000"
+  }],
+  "tags": ["interval", "date", "milliseconds", "epoch"]
 }

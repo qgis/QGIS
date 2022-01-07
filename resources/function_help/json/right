@@ -3,8 +3,16 @@
   "type": "function",
   "groups": ["String"],
   "description": "Returns a substring that contains the <i>n</i> rightmost characters of the string.",
-  "arguments": [ {"arg":"string","description":"a string"},
-                 {"arg":"length","description":"integer. The number of characters from the right of the string to return."}],
-  "examples": [ { "expression":"right('Hello World',5)", "returns":"'World'"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "a string"
+  }, {
+    "arg": "length",
+    "description": "integer. The number of characters from the right of the string to return."
+  }],
+  "examples": [{
+    "expression": "right('Hello World',5)",
+    "returns": "'World'"
+  }],
+  "tags": ["last", "substring", "rightmost", "characters", "contains"]
 }

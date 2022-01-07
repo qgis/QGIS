@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns true if the geometry is of Multi type.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"} ],
-  "examples": [ { "expression":"is_multipart(geom_from_wkt('MULTIPOINT ((0 0),(1 1),(2 2))'))", "returns":"true"},
-                { "expression":"is_multipart(geom_from_wkt('POINT (0 0)'))", "returns":"false"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "is_multipart(geom_from_wkt('MULTIPOINT ((0 0),(1 1),(2 2))'))",
+    "returns": "true"
+  }, {
+    "expression": "is_multipart(geom_from_wkt('POINT (0 0)'))",
+    "returns": "false"
+  }],
+  "tags": ["type", "multi"]
 }

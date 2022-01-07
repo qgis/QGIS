@@ -3,20 +3,46 @@
   "type": "function",
   "groups": ["String"],
   "description": "Returns a string with the supplied string, array, or map of strings replaced.",
-  "variants": [
-  { "variant": "String & array variant",
-      "variant_description": "Returns a string with the supplied string or array of strings replaced by a string or an array of strings.",
-      "arguments": [ {"arg":"string","description":"the input string"},
-                     {"arg":"before","description":"the string or array of strings to replace"},
-                     {"arg":"after","description":"the string or array of strings to use as a replacement"}],
-      "examples": [ { "expression":"replace('QGIS SHOULD ROCK','SHOULD','DOES')", "returns":"'QGIS DOES ROCK'"},
-                    { "expression":"replace('QGIS ABC',array('A','B','C'),array('X','Y','Z'))", "returns":"'QGIS XYZ'"},
-                    { "expression":"replace('QGIS',array('Q','S'),'')", "returns":"'GI'"} ] },
-  { "variant": "Map variant",
-      "variant_description": "Returns a string with the supplied map keys replaced by paired values. Longer map keys are evaluated first.",
-      "arguments": [ {"arg":"string","description":"the input string"},
-                     {"arg":"map","description":"the map containing keys and values"} ],
-      "examples": [ { "expression":"replace('APP SHOULD ROCK',map('APP','QGIS','SHOULD','DOES'))", "returns":"'QGIS DOES ROCK'"},
-                    { "expression":"replace('forty two',map('for','4','two','2','forty two','42'))", "returns":"'42'"} ]
-  }]
+  "variants": [{
+    "variant": "String & array variant",
+    "variant_description": "Returns a string with the supplied string or array of strings replaced by a string or an array of strings.",
+    "arguments": [{
+      "arg": "string",
+      "description": "the input string"
+    }, {
+      "arg": "before",
+      "description": "the string or array of strings to replace"
+    }, {
+      "arg": "after",
+      "description": "the string or array of strings to use as a replacement"
+    }],
+    "examples": [{
+      "expression": "replace('QGIS SHOULD ROCK','SHOULD','DOES')",
+      "returns": "'QGIS DOES ROCK'"
+    }, {
+      "expression": "replace('QGIS ABC',array('A','B','C'),array('X','Y','Z'))",
+      "returns": "'QGIS XYZ'"
+    }, {
+      "expression": "replace('QGIS',array('Q','S'),'')",
+      "returns": "'GI'"
+    }]
+  }, {
+    "variant": "Map variant",
+    "variant_description": "Returns a string with the supplied map keys replaced by paired values. Longer map keys are evaluated first.",
+    "arguments": [{
+      "arg": "string",
+      "description": "the input string"
+    }, {
+      "arg": "map",
+      "description": "the map containing keys and values"
+    }],
+    "examples": [{
+      "expression": "replace('APP SHOULD ROCK',map('APP','QGIS','SHOULD','DOES'))",
+      "returns": "'QGIS DOES ROCK'"
+    }, {
+      "expression": "replace('forty two',map('for','4','two','2','forty two','42'))",
+      "returns": "'42'"
+    }]
+  }],
+  "tags": ["array", "map", "strings", "supplied", "replaced"]
 }

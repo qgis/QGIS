@@ -3,6 +3,9 @@
   "type": "function",
   "groups": ["Meshes"],
   "description": "Returns the index of the current mesh vertex.",
-  "examples": [ { "expression":"$vertex_index", "returns":"9874"}
-  ]
+  "examples": [{
+    "expression": "$vertex_index",
+    "returns": "9874"
+  }],
+  "tags": ["index", "mesh", "vertex", "current"]
 }

@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the first value of an array.",
-  "arguments": [ {"arg":"array","description":"an array"} ],
-  "examples": [ { "expression":"array_first(array('a','b','c'))", "returns":"'a'"}]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }],
+  "examples": [{
+    "expression": "array_first(array('a','b','c'))",
+    "returns": "'a'"
+  }],
+  "tags": ["array", "first"]
 }
