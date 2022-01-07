@@ -28,7 +28,7 @@
 
 
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
-  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), CaptureNone )
+  : QgsMapToolCaptureLayerGeometry( canvas, QgisApp::instance()->cadDockWidget(), CaptureNone )
 {
   mToolName = tr( "Add part" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddPart::stopCapturing );
@@ -76,7 +76,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   QgsMapToolCapture::cadCanvasReleaseEvent( e );
 }
 
-void QgsMapToolAddPart::pointCaptured( const QgsPoint &point )
+void QgsMapToolAddPart::layerPointCaptured( const QgsPoint &point )
 {
   QgsVectorLayer *layer = getLayerAndCheckSelection();
   if ( !layer )
@@ -86,7 +86,7 @@ void QgsMapToolAddPart::pointCaptured( const QgsPoint &point )
   finalizeEditCommand( layer, errorCode );
 }
 
-void QgsMapToolAddPart::lineCaptured( const QgsCurve *line )
+void QgsMapToolAddPart::layerLineCaptured( const QgsCurve *line )
 {
   QgsVectorLayer *layer = getLayerAndCheckSelection();
   if ( !layer )
@@ -96,7 +96,7 @@ void QgsMapToolAddPart::lineCaptured( const QgsCurve *line )
   finalizeEditCommand( layer, errorCode );
 }
 
-void QgsMapToolAddPart::polygonCaptured( const QgsCurvePolygon *polygon )
+void QgsMapToolAddPart::layerPolygonCaptured( const QgsCurvePolygon *polygon )
 {
   QgsVectorLayer *layer = getLayerAndCheckSelection();
   if ( !layer )

@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolcapture.h"
+#include "qgsmaptoolcapturelayergeometry.h"
 #include "qgis_app.h"
 
 class QgsCurvePolygon;
 
 //! A map tool that adds new parts to multipart features
-class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
+class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCaptureLayerGeometry
 {
     Q_OBJECT
   public:
@@ -41,9 +41,9 @@ class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
      */
     QgsVectorLayer *getLayerAndCheckSelection();
 
-    void pointCaptured( const QgsPoint &point ) override;
-    void lineCaptured( const QgsCurve *line ) override;
-    void polygonCaptured( const QgsCurvePolygon *polygon ) override;
+    void layerPointCaptured( const QgsPoint &point ) override;
+    void layerLineCaptured( const QgsCurve *line ) override;
+    void layerPolygonCaptured( const QgsCurvePolygon *polygon ) override;
 
     void finalizeEditCommand( QgsVectorLayer *layer, Qgis::GeometryOperationResult errorCode );
 };

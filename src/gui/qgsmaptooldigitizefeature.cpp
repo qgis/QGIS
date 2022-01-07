@@ -35,7 +35,7 @@
 #include <QSettings>
 
 QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
-  : QgsMapToolCapture( canvas, cadDockWidget, mode )
+  : QgsMapToolCaptureLayerGeometry( canvas, cadDockWidget, mode )
   , mCheckGeometryType( true )
 {
   mToolName = tr( "Digitize feature" );
@@ -62,7 +62,7 @@ bool QgsMapToolDigitizeFeature::supportsTechnique( QgsMapToolCapture::CaptureTec
   return false;
 }
 
-void QgsMapToolDigitizeFeature::geometryCaptured( const QgsGeometry &geometry )
+void QgsMapToolDigitizeFeature::layerGeometryCaptured( const QgsGeometry &geometry )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !vlayer )
@@ -83,7 +83,7 @@ void QgsMapToolDigitizeFeature::geometryCaptured( const QgsGeometry &geometry )
 
     if ( layerGeometry.wkbType() != layerWKBType )
     {
-      emit messageEmitted( tr( "The digitized geometry type does not correspond to the layer geometry type." ), Qgis::MessageLevel::Warning );
+      emit messageEmitted( tr( "The digitized geometry type (%1) does not correspond to the layer geometry type (%2)." ).arg( QgsWkbTypes::displayString( layerGeometry.wkbType() ) ).arg( QgsWkbTypes::displayString( layerWKBType ) ), Qgis::MessageLevel::Warning );
       return;
     }
   }
@@ -106,7 +106,7 @@ void QgsMapToolDigitizeFeature::activate()
 
   if ( vlayer && vlayer->geometryType() == QgsWkbTypes::NullGeometry )
   {
-    geometryCaptured( QgsGeometry() );
+    layerGeometryCaptured( QgsGeometry() );
     return;
   }
 

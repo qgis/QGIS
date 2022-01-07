@@ -1239,6 +1239,8 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       if ( mode() == CaptureLine )
       {
         g = QgsGeometry( curveToAdd );
+        geometryCaptured( g );
+        lineCaptured( curveToAdd );
       }
       else
       {
@@ -1252,43 +1254,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         }
         poly->setExteriorRing( curveToAdd );
         g = QgsGeometry( poly );
-
-        QList<QgsVectorLayer *>  avoidIntersectionsLayers;
-        switch ( QgsProject::instance()->avoidIntersectionsMode() )
-        {
-          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
-            if ( vlayer )
-              avoidIntersectionsLayers.append( vlayer );
-            break;
-          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
-            avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
-            break;
-          case QgsProject::AvoidIntersectionsMode::AllowIntersections:
-            break;
-        }
-        if ( avoidIntersectionsLayers.size() > 0 )
-        {
-          const int avoidIntersectionsReturn = g.avoidIntersections( avoidIntersectionsLayers );
-          if ( avoidIntersectionsReturn == 3 )
-          {
-            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
-          }
-          if ( g.isEmpty() ) //avoid intersection might have removed the whole geometry
-          {
-            emit messageEmitted( tr( "The feature cannot be added because its geometry collapsed due to intersection avoidance" ), Qgis::MessageLevel::Critical );
-            stopCapturing();
-            return;
-          }
-        }
-      }
-
-      geometryCaptured( g );
-      if ( mode() == CaptureLine )
-      {
-        lineCaptured( curveToAdd );
-      }
-      else
-      {
+        geometryCaptured( g );
         polygonCaptured( poly );
       }
 

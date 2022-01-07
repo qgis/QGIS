@@ -354,6 +354,7 @@
 %Include auto_generated/layout/qgslayoutviewtooltemporarymousepan.sip
 %Include auto_generated/layout/qgslayoutviewtoolzoom.sip
 %Include auto_generated/locator/qgslocatorwidget.sip
+%Include auto_generated/maptools/qgsmaptoolcapturelayergeometry.sip
 %Include auto_generated/mesh/qgsmeshlayerproperties.sip
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip

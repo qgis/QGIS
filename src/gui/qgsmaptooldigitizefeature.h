@@ -16,7 +16,7 @@
 #ifndef QGSMAPTOOLDIGITIZEFEATURE_H
 #define QGSMAPTOOLDIGITIZEFEATURE_H
 
-#include "qgsmaptoolcapture.h"
+#include "qgsmaptoolcapturelayergeometry.h"
 #include "qgis_gui.h"
 
 class QgsFeature;
@@ -28,7 +28,7 @@ class QgsFeature;
  * A signal will then be emitted.
  * \since QGIS 3.10
  */
-class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
+class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeometry
 {
     Q_OBJECT
 
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
      * Called when the feature has been digitized.
      * \param geometry the digitized geometry
      */
-    void geometryCaptured( const QgsGeometry &geometry ) override FINAL;
+    void layerGeometryCaptured( const QgsGeometry &geometry ) override FINAL;
 
     /**
      * Called when the feature has been digitized
