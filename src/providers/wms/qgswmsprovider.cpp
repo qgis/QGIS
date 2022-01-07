@@ -222,7 +222,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
 
 
-  mConverter.reset( QgsWmsConverter::createConverter( mSettings.mEncodingScheme ) );
+  mConverter = QgsWmsConverter::createConverter( mSettings.mEncodingScheme );
 
   mValid = true;
   QgsDebugMsgLevel( QStringLiteral( "exiting constructor." ), 4 );
@@ -887,7 +887,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
                     r.rect.width() / cr,
                     r.rect.height() / cr );
         // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
-        bool disableSmoothing = ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) ) || mConverter ;
+        bool disableSmoothing = mConverter || ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) );
         tileImages << TileImage( dst, localImage, !disableSmoothing );
       }
       else
@@ -1038,7 +1038,9 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
 
     }
     else
+    {
       memcpy( block, ptr, myExpectedSize );
+    }
 
     return true;
   }
@@ -3697,18 +3699,31 @@ QgsLayerMetadata QgsWmsProvider::layerMetadata() const
   return mLayerMetadata;
 }
 
-QgsRasterBandStats QgsWmsProvider::bandStatistics( int, int, const QgsRectangle &, int, QgsRasterBlockFeedback * )
+QgsRasterBandStats QgsWmsProvider::bandStatistics(
+  int bandNo,
+  int stats,
+  const QgsRectangle &extent,
+  int sampleSize,
+  QgsRasterBlockFeedback *feedback )
 {
   if ( mConverter )
-    return mConverter->statistics();
+    return mConverter->statistics( bandNo, stats, extent, sampleSize, feedback );
   else
     return QgsRasterBandStats();
 }
 
-QgsRasterHistogram QgsWmsProvider::histogram( int, int, double, double, const QgsRectangle &, int, bool, QgsRasterBlockFeedback * )
+QgsRasterHistogram QgsWmsProvider::histogram(
+  int bandNo,
+  int binCount,
+  double minimum,
+  double maximum,
+  const QgsRectangle &extent,
+  int sampleSize,
+  bool includeOutOfRange,
+  QgsRasterBlockFeedback *feedback )
 {
   if ( mConverter )
-    return mConverter->histogram();
+    return mConverter->histogram( bandNo, binCount, minimum, maximum, extent, sampleSize, includeOutOfRange, feedback );
   else
     return QgsRasterHistogram();
 }
@@ -4833,10 +4848,10 @@ Qgis::DataType QgsWmsConverter::dataType() const
   return Qgis::DataType::Float32;
 }
 
-QgsWmsConverter *QgsWmsConverter::createConverter( const QString &key )
+std::unique_ptr<QgsWmsConverter> QgsWmsConverter::createConverter( const QString &key )
 {
   if ( key == QgsWmsConverterMapTilerTerrainRGB::encodingSchemeKey() )
-    return new QgsWmsConverterMapTilerTerrainRGB();
+    return std::make_unique<QgsWmsConverterMapTilerTerrainRGB>();
 
   return nullptr;
 }
@@ -4850,7 +4865,7 @@ void QgsWmsConverterMapTilerTerrainRGB::convert( const QRgb &color, float *conve
   *converted = -10000 + ( ( R * 256 * 256 + G * 256 + B ) ) * 0.1;
 }
 
-QgsRasterBandStats QgsWmsConverterMapTilerTerrainRGB::statistics() const
+QgsRasterBandStats QgsWmsConverterMapTilerTerrainRGB::statistics( int, int, const QgsRectangle &, int, QgsRasterBlockFeedback * ) const
 {
   QgsRasterBandStats stat;
   stat.minimumValue = 0;
@@ -4859,7 +4874,7 @@ QgsRasterBandStats QgsWmsConverterMapTilerTerrainRGB::statistics() const
   return stat;
 }
 
-QgsRasterHistogram QgsWmsConverterMapTilerTerrainRGB::histogram() const
+QgsRasterHistogram QgsWmsConverterMapTilerTerrainRGB::histogram( int, int, double, double, const QgsRectangle &, int, bool, QgsRasterBlockFeedback * ) const
 {
   return QgsRasterHistogram();
 }

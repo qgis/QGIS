@@ -112,13 +112,23 @@ class QgsWmsConverter
     virtual Qgis::DataType dataType() const;
 
     //! Returns statistics related to converted values
-    virtual QgsRasterBandStats statistics() const = 0;
+    virtual QgsRasterBandStats statistics( int bandNo,
+                                           int stats = QgsRasterBandStats::All,
+                                           const QgsRectangle &extent = QgsRectangle(),
+                                           int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const = 0;
 
     //! Returns the histogram related to converted values
-    virtual QgsRasterHistogram histogram() const = 0;
+    virtual QgsRasterHistogram histogram( int bandNo,
+                                          int binCount = 0,
+                                          double minimum = std::numeric_limits<double>::quiet_NaN(),
+                                          double maximum = std::numeric_limits<double>::quiet_NaN(),
+                                          const QgsRectangle &extent = QgsRectangle(),
+                                          int sampleSize = 0,
+                                          bool includeOutOfRange = false,
+                                          QgsRasterBlockFeedback *feedback = nullptr ) const = 0;
 
     //! Creates a converter instance corresponding to the \a key
-    static QgsWmsConverter *createConverter( const QString &key );
+    static std::unique_ptr<QgsWmsConverter> createConverter( const QString &key );
 };
 
 
@@ -128,8 +138,19 @@ class QgsWmsConverterMapTilerTerrainRGB : public QgsWmsConverter
   public:
     void convert( const QRgb &color, float *converted ) const override;
 
-    QgsRasterBandStats statistics() const override;
-    QgsRasterHistogram histogram() const override;
+    QgsRasterBandStats statistics( int bandNo,
+                                   int stats = QgsRasterBandStats::All,
+                                   const QgsRectangle &extent = QgsRectangle(),
+                                   int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const override;
+
+    QgsRasterHistogram histogram( int bandNo,
+                                  int binCount = 0,
+                                  double minimum = std::numeric_limits<double>::quiet_NaN(),
+                                  double maximum = std::numeric_limits<double>::quiet_NaN(),
+                                  const QgsRectangle &extent = QgsRectangle(),
+                                  int sampleSize = 0,
+                                  bool includeOutOfRange = false,
+                                  QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
     static QString displayName() {return QObject::tr( "MapTiler Terrain RGB" );}
     static QString encodingSchemeKey() {return QStringLiteral( "maptilerterrain" );}
@@ -260,14 +281,14 @@ class QgsWmsProvider final: public QgsRasterDataProvider
                                        const QgsRectangle &extent = QgsRectangle(),
                                        int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    virtual QgsRasterHistogram histogram( int bandNo,
-                                          int binCount = 0,
-                                          double minimum = std::numeric_limits<double>::quiet_NaN(),
-                                          double maximum = std::numeric_limits<double>::quiet_NaN(),
-                                          const QgsRectangle &extent = QgsRectangle(),
-                                          int sampleSize = 0,
-                                          bool includeOutOfRange = false,
-                                          QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterHistogram histogram( int bandNo,
+                                  int binCount = 0,
+                                  double minimum = std::numeric_limits<double>::quiet_NaN(),
+                                  double maximum = std::numeric_limits<double>::quiet_NaN(),
+                                  const QgsRectangle &extent = QgsRectangle(),
+                                  int sampleSize = 0,
+                                  bool includeOutOfRange = false,
+                                  QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
