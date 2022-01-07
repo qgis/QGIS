@@ -14,6 +14,16 @@ class QgsFieldCalculator: QDialog
 %Docstring(signature="appended")
 
 A dialog class that provides calculation of new fields using existing fields, values and a set of operators
+
+Sample usage of the :py:class:`QgsFieldCalculator` class:
+
+.. code-block:: python
+
+         uri = "point?crs=epsg:4326&field=id:integer"
+         layer = QgsVectorLayer(uri, "Scratch point layer",  "memory")
+         layer.startEditing()
+         dialog = QgsFieldCalculator(layer)
+         dialog.exec_()
 %End
 
 %TypeHeaderCode
@@ -23,16 +33,14 @@ A dialog class that provides calculation of new fields using existing fields, va
     QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = 0 );
 
     int changedAttributeId() const;
+%Docstring
+Returns the field index of the field for which new attribute values were calculated.
+@return The field index if attribute values were calculated or -1, e.g. in case of geometry changes.
+%End
 
   public slots:
     virtual void accept();
 
-
-    void mNewFieldGroupBox_toggled( bool on );
-    void mUpdateExistingGroupBox_toggled( bool on );
-    void mCreateVirtualFieldCheckbox_stateChanged( int state );
-    void mOutputFieldNameLineEdit_textChanged( const QString &text );
-    void mOutputFieldTypeComboBox_activated( int index );
 
 };
 
