@@ -21,7 +21,7 @@
 #include "ui_qgsxyzsourcewidgetbase.h"
 #include <QVariantMap>
 
-class QgsWMSEncodingSchemeWidget;
+class QgsWmsEncodingSchemeWidget;
 
 class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSourceWidgetBase
 {
@@ -68,7 +68,7 @@ class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSou
     QVariantMap mSourceParts;
     bool mIsValid = false;
 
-    QgsWMSEncodingSchemeWidget *mEncodingSchemeWidget = nullptr;
+    QgsWmsEncodingSchemeWidget *mEncodingSchemeWidget = nullptr;
 };
 
 #endif // QGGXYZSOURCEWIDGET_H

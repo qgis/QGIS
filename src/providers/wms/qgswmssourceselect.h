@@ -33,7 +33,7 @@ class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 class QgsWmsCapabilities;
-class QgsWMSEncodingSchemeWidget;
+class QgsWmsEncodingSchemeWidget;
 
 /*!
  * \brief   Dialog to create connections and add layers from WMS, etc.
@@ -193,7 +193,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     // save the current status of the layer true
     QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
 
-    QgsWMSEncodingSchemeWidget *mEncodingSchemeWidget = nullptr;
+    QgsWmsEncodingSchemeWidget *mEncodingSchemeWidget = nullptr;
 
   private slots:
     void lstTilesets_itemClicked( QTableWidgetItem *item );
@@ -206,11 +206,11 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 /*!
  * \brief  Widget that embeds a checkbox and a combobox to select an encoding scheme to convert image to a single band raster
  */
-class QgsWMSEncodingSchemeWidget : public QWidget
+class QgsWmsEncodingSchemeWidget : public QWidget
 {
   public:
     //! Constructor
-    QgsWMSEncodingSchemeWidget( QWidget *parent = nullptr );
+    QgsWmsEncodingSchemeWidget( QWidget *parent = nullptr );
 
     /**
      * Sets the current encoding scheme from its key \a encodingSchemeKey,

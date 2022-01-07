@@ -32,7 +32,7 @@ QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   mSpinZMax->setClearValue( 18 );
 
   connect( mEditUrl, &QLineEdit::textChanged, this, &QgsXyzSourceWidget::validate );
-  mEncodingSchemeWidget = new QgsWMSEncodingSchemeWidget( this );
+  mEncodingSchemeWidget = new QgsWmsEncodingSchemeWidget( this );
   mEncodingSchemeLayout->addWidget( mEncodingSchemeWidget );
 }
 
