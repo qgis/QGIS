@@ -237,6 +237,10 @@ class ExtractLabelSink : public QgsLabelSink
       const double fontWordSpacing = font.wordSpacing();
 
       QgsTextFormat format = labelSettings.format();
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::Size ) )
+      {
+        format.setSize( dataDefinedValues.value( QgsPalLayerSettings::Size ).toDouble() );
+      }
       if ( dataDefinedValues.contains( QgsPalLayerSettings::Color ) )
       {
         format.setColor( dataDefinedValues.value( QgsPalLayerSettings::Color ).value<QColor>() );
@@ -254,11 +258,44 @@ class ExtractLabelSink : public QgsLabelSink
       const double formatOpacity = format.opacity() * 100;
       const double formatLineHeight = format.lineHeight();
 
+      QgsTextBufferSettings buffer = format.buffer();
+      if ( dataDefinedValues.contains( QgsPalLayerSettings::BufferDraw ) )
+      {
+        buffer.setEnabled( dataDefinedValues.value( QgsPalLayerSettings::BufferDraw ).toBool() );
+      }
+      const bool bufferDraw = buffer.enabled();
+      double bufferSize = 0.0;
+      QString bufferColor;
+      double bufferOpacity = 0.0;
+      if ( bufferDraw )
+      {
+        if ( dataDefinedValues.contains( QgsPalLayerSettings::BufferSize ) )
+        {
+          buffer.setSize( dataDefinedValues.value( QgsPalLayerSettings::BufferSize ).toDouble() );
+        }
+        if ( dataDefinedValues.contains( QgsPalLayerSettings::BufferColor ) )
+        {
+          buffer.setColor( dataDefinedValues.value( QgsPalLayerSettings::BufferColor ).value<QColor>() );
+        }
+        if ( dataDefinedValues.contains( QgsPalLayerSettings::BufferOpacity ) )
+        {
+          buffer.setOpacity( dataDefinedValues.value( QgsPalLayerSettings::BufferOpacity ).toDouble() / 100.0 );
+        }
+
+        bufferSize =  buffer.sizeUnit() == QgsUnitTypes::RenderPercentage
+                      ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * buffer.size() / 100
+                      : context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
+        bufferSize = bufferSize * 72 / context.painter()->device()->logicalDpiX();
+        bufferColor = buffer.color().name();
+        bufferOpacity = buffer.opacity() * 100;
+      }
+
       QgsAttributes attributes;
       attributes << mMapLayerNames.value( layerId ) << fid
                  << labelText << label->getWidth() << label->getHeight() << labelRotation << unplacedLabel
                  << fontFamily << fontSize << fontItalic << fontBold << fontUnderline << fontStyle << fontLetterSpacing << fontWordSpacing
-                 << labelAlignment << formatLineHeight << formatColor << formatOpacity;
+                 << labelAlignment << formatLineHeight << formatColor << formatOpacity
+                 << bufferDraw << bufferSize << bufferColor << bufferOpacity;
 
       double x = label->getX();
       double y = label->getY();
@@ -319,6 +356,10 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   fields.append( QgsField( QStringLiteral( "MultiLineHeight" ), QVariant::Double, QString(), 20, 2 ) );
   fields.append( QgsField( QStringLiteral( "Color" ), QVariant::String, QString(), 7, 0 ) );
   fields.append( QgsField( QStringLiteral( "FontOpacity" ), QVariant::Double, QString(), 20, 1 ) );
+  fields.append( QgsField( QStringLiteral( "BufferDraw" ), QVariant::Bool, QString(), 1, 0 ) );
+  fields.append( QgsField( QStringLiteral( "BufferSize" ), QVariant::Double, QString(), 20, 4 ) );
+  fields.append( QgsField( QStringLiteral( "BufferColor" ), QVariant::String, QString(), 7, 0 ) );
+  fields.append( QgsField( QStringLiteral( "BufferOpacity" ), QVariant::Double, QString(), 20, 1 ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, QgsWkbTypes::Point, mCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
@@ -395,6 +436,11 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
     textFormat.setSize( 9 );
     textFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
     textFormat.setColor( QColor( 0, 0, 0 ) );
+
+    QgsTextBufferSettings buffer = textFormat.buffer();
+    buffer.setSizeUnit( QgsUnitTypes::RenderPoints );
+
+    textFormat.setBuffer( buffer );
     settings.setFormat( textFormat );
 
     settingsProperties.setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "if(\"LabelUnplaced\",'255,0,0',\"Color\")" ) ) );
@@ -409,6 +455,10 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
     settingsProperties.setProperty( QgsPalLayerSettings::MultiLineAlignment, QgsProperty::fromField( QStringLiteral( "MultiLineAlignment" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::MultiLineHeight, QgsProperty::fromField( QStringLiteral( "MultiLineHeight" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromField( QStringLiteral( "LabelRotation" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::BufferDraw, QgsProperty::fromField( QStringLiteral( "BufferDraw" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::BufferSize, QgsProperty::fromField( QStringLiteral( "BufferSize" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::BufferColor, QgsProperty::fromField( QStringLiteral( "BufferColor" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::BufferOpacity, QgsProperty::fromField( QStringLiteral( "BufferOpacity" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::Show, QgsProperty::fromExpression( QStringLiteral( "\"LabelUnplaced\"=false" ) ) );
     settings.setDataDefinedProperties( settingsProperties );
 
