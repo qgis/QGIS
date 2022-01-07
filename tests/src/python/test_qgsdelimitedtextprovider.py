@@ -1365,6 +1365,26 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         self.assertEqual(attrs, [[1.0, 0, 9.189304972279763e+18, '1.234', 'text'],
                                  [2.0, 1, NULL, '5.678', 'another text']])
 
+    def test_regression_gh46749(self):
+        """Test regression GH #46749"""
+
+        vl = self._make_test_file('\n'.join((
+            "integer,wkt,bool",
+            "1,POINT(0 0),1",
+            "2,POINT(1 1),0",
+            "3,POINT(2 2),1",
+        )), uri_options='geomType=Point&crs=EPSG:4326&wktField=wkt')
+
+        self.assertTrue(vl.isValid())
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'integer': (QVariant.Int, 'integer'),
+            'bool': (QVariant.Bool, 'bool'),
+        })
+
+        # This was crashing!
+        features = [f for f in vl.getFeatures()]
+
 
 if __name__ == '__main__':
     unittest.main()
