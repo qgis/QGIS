@@ -35,6 +35,7 @@ Sample usage of the :py:class:`QgsFieldCalculator` class:
     int changedAttributeId() const;
 %Docstring
 Returns the field index of the field for which new attribute values were calculated.
+
 @return The field index if attribute values were calculated or -1, e.g. in case of geometry changes.
 %End
 

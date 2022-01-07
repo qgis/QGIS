@@ -46,7 +46,8 @@ class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = nullptr );
 
     /**
-     * @brief Returns the field index of the field for which new attribute values were calculated.
+     * \brief Returns the field index of the field for which new attribute values were calculated.
+     *
      * @return The field index if attribute values were calculated or -1, e.g. in case of geometry changes.
      */
     int changedAttributeId() const { return mAttributeId; }
