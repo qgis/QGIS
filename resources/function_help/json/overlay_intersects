@@ -41,7 +41,7 @@
     },
     {
       "arg": "return_details",
-      "description": "only valid when used with an expression, set this to true to return a list of maps containing (key names in quotes) the feature 'id', the expression 'result' and the 'overlap' value, the 'radius' of the maximum inscribed circle is also returned when the target layer is a polygon.",
+      "description": "Set this to true to return a list of maps containing (key names in quotes) the feature 'id', the expression 'result' and the 'overlap' value. The 'radius' of the maximum inscribed circle is also returned when the target layer is a polygon. Only valid when used with the expression parameter",
       "optional": true
     },
     {
