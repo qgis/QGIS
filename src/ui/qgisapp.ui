@@ -177,7 +177,6 @@
      <addaction name="mActionNewMemoryLayer"/>
      <addaction name="mActionNewMeshLayer"/>
      <addaction name="mActionNewGpxLayer"/>
-     <addaction name="separator"/>
      <addaction name="mActionNewVirtualLayer"/>
     </widget>
     <widget class="QMenu" name="mAddLayerMenu">
@@ -748,9 +747,7 @@
    <addaction name="mActionNewSpatiaLiteLayer"/>
    <addaction name="mActionNewMemoryLayer"/>
    <addaction name="mActionNewMeshLayer"/>
-   <addaction name="separator"/>
    <addaction name="mActionNewVirtualLayer"/>
-   <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="mShapeDigitizeToolBar">
    <property name="windowTitle">
