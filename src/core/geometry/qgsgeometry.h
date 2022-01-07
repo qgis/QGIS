@@ -942,8 +942,8 @@ class CORE_EXPORT QgsGeometry
     Qgis::GeometryOperationResult rotate( double rotation, const QgsPointXY &center );
 
     /**
-     * Splits this geometry according to a given line.
-     * \param splitLine the line that splits the geometry
+     * Splits this geometry according to a given line or point.
+     * \param splitLine the line or point that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the split
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
@@ -954,8 +954,8 @@ class CORE_EXPORT QgsGeometry
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QVector<QgsPointXY> &topologyTestPoints SIP_OUT, bool splitFeature = true ) SIP_DEPRECATED;
 
     /**
-     * Splits this geometry according to a given line.
-     * \param splitLine the line that splits the geometry
+     * Splits this geometry according to a given line or point.
+     * \param splitLine the line or point that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
