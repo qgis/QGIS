@@ -143,7 +143,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     tabLayers->layout()->removeWidget( gbCRS );
   }
 
-  mEncodingSchemeWidget = new QgsWMSEncodingSchemeWidget( this );
+  mEncodingSchemeWidget = new QgsWmsEncodingSchemeWidget( this );
   mEncodingSchemeLayout->addWidget( mEncodingSchemeWidget );
 
   clear();
@@ -1317,7 +1317,7 @@ void QgsWMSSourceSelect::showHelp()
   QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
 }
 
-QgsWMSEncodingSchemeWidget::QgsWMSEncodingSchemeWidget( QWidget *parent ): QWidget( parent )
+QgsWmsEncodingSchemeWidget::QgsWmsEncodingSchemeWidget( QWidget *parent ): QWidget( parent )
 {
   QHBoxLayout *lay = new QHBoxLayout( this );
   lay->setContentsMargins( 0, 0, 0, 0 );
@@ -1336,12 +1336,12 @@ QgsWMSEncodingSchemeWidget::QgsWMSEncodingSchemeWidget( QWidget *parent ): QWidg
   populateEncodingScheme();
 }
 
-void QgsWMSEncodingSchemeWidget::populateEncodingScheme()
+void QgsWmsEncodingSchemeWidget::populateEncodingScheme()
 {
   mCombo->addItem( QgsWmsConverterMapTilerTerrainRGB::displayName(), QgsWmsConverterMapTilerTerrainRGB::encodingSchemeKey() );
 }
 
-void QgsWMSEncodingSchemeWidget::setEncodingScheme( const QString &encodingSchemeKey )
+void QgsWmsEncodingSchemeWidget::setEncodingScheme( const QString &encodingSchemeKey )
 {
   bool checked = false;
   if ( ! encodingSchemeKey.isEmpty() )
@@ -1360,7 +1360,7 @@ void QgsWMSEncodingSchemeWidget::setEncodingScheme( const QString &encodingSchem
   mCombo->setEnabled( checked );
 }
 
-QString QgsWMSEncodingSchemeWidget::encodingScheme() const
+QString QgsWmsEncodingSchemeWidget::encodingScheme() const
 {
   if ( mCheckBox->isChecked() )
     return mCombo->currentData().toString();

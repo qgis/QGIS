@@ -132,7 +132,7 @@ class QgsWmsConverter
 };
 
 
-//! Abstract class to convert color to float value following the mapTiler terrain RGB encoding scheme
+//! Class to convert color to float value following the mapTiler terrain RGB encoding scheme
 class QgsWmsConverterMapTilerTerrainRGB : public QgsWmsConverter
 {
   public:
@@ -275,7 +275,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     QList< double > nativeResolutions() const override;
     QgsLayerMetadata layerMetadata() const override;
 
-    //! Statitics could be available if the provider has a converter from colors to other value type, the returned statistics depend on the converter
+    // Statitics could be available if the provider has a converter from colors to other value type, the returned statistics depend on the converter
     QgsRasterBandStats bandStatistics( int bandNo,
                                        int stats = QgsRasterBandStats::All,
                                        const QgsRectangle &extent = QgsRectangle(),
