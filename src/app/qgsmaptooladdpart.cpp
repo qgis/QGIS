@@ -86,7 +86,7 @@ void QgsMapToolAddPart::pointCaptured( const QgsPoint &point )
   finalizeEditCommand( layer, errorCode );
 }
 
-void QgsMapToolAddPart::lineCaptured( QgsCurve *line )
+void QgsMapToolAddPart::lineCaptured( const QgsCurve *line )
 {
   QgsVectorLayer *layer = getLayerAndCheckSelection();
   if ( !layer )
@@ -96,7 +96,7 @@ void QgsMapToolAddPart::lineCaptured( QgsCurve *line )
   finalizeEditCommand( layer, errorCode );
 }
 
-void QgsMapToolAddPart::polygonCaptured( QgsCurvePolygon *polygon )
+void QgsMapToolAddPart::polygonCaptured( const QgsCurvePolygon *polygon )
 {
   QgsVectorLayer *layer = getLayerAndCheckSelection();
   if ( !layer )

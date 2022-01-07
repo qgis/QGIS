@@ -346,14 +346,14 @@ geometryCaptured is called just before
 
 .. versionadded:: 3.24
 %End
-    virtual void lineCaptured( QgsCurve *line );
+    virtual void lineCaptured( const QgsCurve *line );
 %Docstring
 Called when a line is captured
 geometryCaptured is called just before
 
 .. versionadded:: 3.24
 %End
-    virtual void polygonCaptured( QgsCurvePolygon *polygon );
+    virtual void polygonCaptured( const QgsCurvePolygon *polygon );
 %Docstring
 Called when a polygon is captured
 geometryCaptured is called just before

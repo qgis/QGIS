@@ -357,14 +357,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * geometryCaptured is called just before
      * \since QGIS 3.24
      */
-    virtual void lineCaptured( QgsCurve *line ) {Q_UNUSED( line )} SIP_FORCE
+    virtual void lineCaptured( const QgsCurve *line ) {Q_UNUSED( line )} SIP_FORCE
 
     /**
      * Called when a polygon is captured
      * geometryCaptured is called just before
      * \since QGIS 3.24
      */
-    virtual void polygonCaptured( QgsCurvePolygon *polygon ) {Q_UNUSED( polygon )} SIP_FORCE
+    virtual void polygonCaptured( const QgsCurvePolygon *polygon ) {Q_UNUSED( polygon )} SIP_FORCE
 
     //! whether tracing has been requested by the user
     bool tracingEnabled();

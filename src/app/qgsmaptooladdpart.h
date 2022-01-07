@@ -42,8 +42,8 @@ class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
     QgsVectorLayer *getLayerAndCheckSelection();
 
     void pointCaptured( const QgsPoint &point ) override;
-    void lineCaptured( QgsCurve *line ) override;
-    void polygonCaptured( QgsCurvePolygon *polygon ) override;
+    void lineCaptured( const QgsCurve *line ) override;
+    void polygonCaptured( const QgsCurvePolygon *polygon ) override;
 
     void finalizeEditCommand( QgsVectorLayer *layer, Qgis::GeometryOperationResult errorCode );
 };
