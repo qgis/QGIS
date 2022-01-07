@@ -3398,6 +3398,10 @@ void QgisApp::createToolBars()
   digitizeMenu->addAction( mActionDigitizeWithSegment );
   digitizeMenu->addAction( mActionDigitizeWithCurve );
   digitizeMenu->addAction( mActionStreamDigitize );
+  QActionGroup *actionGroup = new QActionGroup( digitizeMenu );
+  actionGroup->addAction( mActionDigitizeWithSegment );
+  actionGroup->addAction( mActionDigitizeWithCurve );
+  actionGroup->addAction( mActionStreamDigitize );
   mActionStreamDigitize->setShortcut( tr( "R", "Keyboard shortcut: toggle stream digitizing" ) );
 
   digitizeMenu->addSeparator();
