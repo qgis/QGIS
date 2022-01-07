@@ -430,6 +430,13 @@ class CORE_EXPORT QgsGeometryUtils
     static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     /**
+     * For a segment defined by points pt1 and pt3, find out if point pt3 is on that segment.
+     * \return TRUE if point pt2 lies on the segment between pt1 and pt2, FALSE - otherwise.
+     * \since 3.24
+     */
+    static bool pointOnSegment( const QgsPoint &segmentPoint1, const QgsPoint &segmentPoint2, const QgsPoint &point ) SIP_HOLDGIL;
+
+    /**
      * Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
      * \since 3.0
      */

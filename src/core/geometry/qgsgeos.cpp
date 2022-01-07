@@ -950,24 +950,23 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
         // if point coincides with one of the line's vertices
         if ( currentPoint == *splitPoint )
         {
-            lines.addGeometry( lineBeforeSplit.clone() ); // clone -> pointer
-            // lineAfterSplit = QgsLineString();
-            lineAfterSplit.addVertex( currentPoint );
+          lines.addGeometry( lineBeforeSplit.clone() ); // clone -> pointer
+          // lineAfterSplit = QgsLineString();
+          lineAfterSplit.addVertex( currentPoint );
         }
         else
         {
-            QgsPoint previousPoint = line->pointN( j-1 );
-            int pointSegmentSide=QgsGeometryUtils::segmentSide(previousPoint, currentPoint, *splitPoint ); // *splitPoint mit oder ohne Pointer???
+          QgsPoint previousPoint = line->pointN( j - 1 );
 
-            // if point is on a segment between the line's vertices
-            if ( pointSegmentSide == 0)
-            {
-              lineBeforeSplit.addVertex( *splitPoint );
+          // if point is on a segment between the line's vertices
+          if ( QgsGeometryUtils::pointOnSegment( previousPoint, currentPoint, *splitPoint ) )
+          {
+            lineBeforeSplit.addVertex( *splitPoint );
 
-              lines.addGeometry( lineBeforeSplit.clone() ); // clone -> pointer
-              // newLine = QgsLineString();
-              lineAfterSplit.addVertex( *splitPoint );
-            }
+            lines.addGeometry( lineBeforeSplit.clone() ); // clone -> pointer
+            // newLine = QgsLineString();
+            lineAfterSplit.addVertex( *splitPoint );
+          }
         }
       }
       lineAfterSplit.addVertex( line->pointN( nVertices - 1 ) );

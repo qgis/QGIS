@@ -1093,6 +1093,29 @@ int QgsGeometryUtils::segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, con
   }
 }
 
+bool QgsGeometryUtils::pointOnSegment( const QgsPoint &segmentPoint1, const QgsPoint &segmentPoint2, const QgsPoint &point )
+{
+  int pointSegmentSide = QgsGeometryUtils::segmentSide( segmentPoint1, segmentPoint2, point );
+  if ( pointSegmentSide == 0 )
+  {
+    if (
+      // point between segPoint1 and segPoint2 x-wise
+      ( ( segmentPoint1.x() < point.x() && point.x() < segmentPoint2.x() ) ||
+        ( segmentPoint2.x() < point.x() && point.x() < segmentPoint1.x() ) )
+      &&
+      // point between segPoint1 and segPoint2 y-wise
+      ( ( segmentPoint1.y() < point.y() && point.y() < segmentPoint2.y() ) ||
+        ( segmentPoint2.y() < point.y() && point.y() < segmentPoint1.y() ) )
+    )
+    {
+      return true;
+    }
+  }
+  else
+    return false;
+
+}
+
 double QgsGeometryUtils::interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 )
 {
   /* Counter-clockwise sweep */

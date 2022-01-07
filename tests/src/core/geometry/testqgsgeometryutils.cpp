@@ -73,6 +73,7 @@ class TestQgsGeometryUtils: public QObject
     void testInterpolatePointOnLine();
     void testInterpolatePointOnLineByValue();
     void testPointOnLineWithDistance();
+    void testPointOnSegment();
     void interpolatePointOnArc();
     void testSegmentizeArcHalfCircle();
     void testSegmentizeArcHalfCircleOtherDirection();
@@ -1282,6 +1283,31 @@ void TestQgsGeometryUtils::testPointOnLineWithDistance()
   QgsGeometryUtils::pointOnLineWithDistance( 0, 0, -10, -6, -10, x, y );
   QGSCOMPARENEAR( x, 8.57493, 0.0001 );
   QGSCOMPARENEAR( y, 5.14496, 0.0001 );
+
+}
+
+void TestQgsGeometryUtils::testPointOnSegment()
+{
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( 2, 2 ) ), true );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( 4, 4 ) ), true );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( -1, -1 ) ), false );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( 11, 11 ) ), false );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( 0, 2 ) ), false );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( 2, 0 ) ), false );
+
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 2, 0 ) ), true );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 4, 0 ) ), true );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( -1, 0 ) ), false );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 6, 0 ) ), false );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 0, 3 ) ), false );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 2, 3 ) ), false );
+
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 0, 1 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ) ), true );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 0, 1 ), QgsPoint( 0, 5 ), QgsPoint( 0, 4 ) ), true );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 0, 1 ), QgsPoint( 0, 5 ), QgsPoint( 0, -1 ) ), false );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 0, 1 ), QgsPoint( 0, 5 ), QgsPoint( 0, 6 ) ), false );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 0, 1 ), QgsPoint( 0, 5 ), QgsPoint( 3, 0 ) ), false );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 0, 1 ), QgsPoint( 0, 5 ), QgsPoint( 3, 2 ) ), false );
 
 }
 
