@@ -9,8 +9,6 @@
 
 
 
-
-
 class QgsRelationWidgetRegistry
 {
 %Docstring(signature="appended")
