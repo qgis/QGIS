@@ -1072,9 +1072,9 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   points.append( stringPoints );
 }
 
-int QgsGeometryUtils::segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 )
+int QgsGeometryUtils::segmentSide( const QgsPoint &linePoint1, const QgsPoint &linePoint2, const QgsPoint &point )
 {
-  const double side = ( ( pt2.x() - pt1.x() ) * ( pt3.y() - pt1.y() ) - ( pt3.x() - pt1.x() ) * ( pt2.y() - pt1.y() ) );
+  const double side = ( ( point.x() - linePoint1.x() ) * ( linePoint2.y() - linePoint1.y() ) - ( linePoint2.x() - linePoint1.x() ) * ( point.y() - linePoint1.y() ) );
   if ( side == 0.0 )
   {
     return 0;

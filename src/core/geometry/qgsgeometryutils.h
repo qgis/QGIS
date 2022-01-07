@@ -423,11 +423,11 @@ class CORE_EXPORT QgsGeometryUtils
                                    double pointSpacingAngleTolerance ) SIP_HOLDGIL;
 
     /**
-     * For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
-     * Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 lies on the line.
+     * For a line defined by points linePoint1 and linePoint2, find out on which side of the line is point.
+     * Returns -1 if the point on the left side, 1 if the point is on the right side or 0 if the point lies on the line.
      * \since 3.0
      */
-    static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 ) SIP_HOLDGIL;
+    static int segmentSide( const QgsPoint &linePoint1, const QgsPoint &linePoint2, const QgsPoint &point ) SIP_HOLDGIL;
 
     /**
      * For a segment defined by points pt1 and pt3, find out if point pt3 is on that segment.
