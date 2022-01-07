@@ -1118,6 +1118,22 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertNotEqual(f[0]['obj_id'], NULL, f[0].attributes())
         vl.deleteFeatures([f[0].id()])
 
+    def testClonePreservesFidMap(self):
+        vl = QgsVectorLayer(
+            '{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(
+                self.dbconn, 'bigint_pk'),
+            "bigint_pk", "postgres")
+
+        # Generate primary keys
+        f = next(vl.getFeatures('pk = 2'))  # 1
+        f = next(vl.getFeatures('pk = -1'))  # 2
+        fid_orig = f.id()
+
+        clone = vl.clone()
+        f = next(clone.getFeatures('pk = -1'))  # should still be 2
+        fid_copy = f.id()
+        self.assertEqual(fid_orig, fid_copy)
+
     def testNull(self):
         """
         Asserts that 0, '' and NULL are treated as different values on insert
