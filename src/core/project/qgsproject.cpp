@@ -3172,12 +3172,12 @@ QgsLayoutManager *QgsProject::layoutManager()
   return mLayoutManager.get();
 }
 
-const QgsMapViewsManager *QgsProject::get3DViewsManager() const
+const QgsMapViewsManager *QgsProject::getViewsManager() const
 {
   return m3DViewsManager.get();
 }
 
-QgsMapViewsManager *QgsProject::get3DViewsManager()
+QgsMapViewsManager *QgsProject::getViewsManager()
 {
   return m3DViewsManager.get();
 }

@@ -757,19 +757,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsLayoutManager *layoutManager();
 
     /**
-     * Returns the project's 3D views manager, which manages 3D views
+     * Returns the project's views manager, which manages map views (including 3d maps)
      * in the project.
      * \note not available in Python bindings
      * \since QGIS 3.24
      */
-    const QgsMapViewsManager *get3DViewsManager() const SIP_SKIP;
+    const QgsMapViewsManager *getViewsManager() const SIP_SKIP;
 
     /**
-     * Returns the project's 3D views manager, which manages 3D views
+     * Returns the project's views manager, which manages map views (including 3d maps)
      * in the project.
      * \since QGIS 3.24
      */
-    QgsMapViewsManager *get3DViewsManager();
+    QgsMapViewsManager *getViewsManager();
 
     /**
      * Returns the project's bookmark manager, which manages bookmarks within
