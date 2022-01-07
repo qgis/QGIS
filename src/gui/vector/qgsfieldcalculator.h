@@ -17,7 +17,7 @@
 #define QGSFIELDCALCULATOR_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
+// #define SIP_NO_FILE
 
 #include "ui_qgsfieldcalculatorbase.h"
 #include "qgshelp.h"
