@@ -275,7 +275,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     QList< double > nativeResolutions() const override;
     QgsLayerMetadata layerMetadata() const override;
 
-    // Statitics could be available if the provider has a converter from colors to other value type, the returned statistics depend on the converter
+    // Statistics could be available if the provider has a converter from colors to other value type, the returned statistics depend on the converter
     QgsRasterBandStats bandStatistics( int bandNo,
                                        int stats = QgsRasterBandStats::All,
                                        const QgsRectangle &extent = QgsRectangle(),
