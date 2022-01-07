@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmextractlabels.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsprocessingparameters.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaprenderercustompainterjob.h"
@@ -397,17 +398,17 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
     settings.setFormat( textFormat );
 
     settingsProperties.setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "if(\"LabelUnplaced\",'255,0,0',\"Color\")" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::FontOpacity, QgsProperty::fromExpression( QStringLiteral( "\"FontOpacity\"" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Family, QgsProperty::fromExpression( QStringLiteral( "\"Family\"" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Italic, QgsProperty::fromExpression( QStringLiteral( "\"Italic\"" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Bold, QgsProperty::fromExpression( QStringLiteral( "\"Bold\"" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Underline, QgsProperty::fromExpression( QStringLiteral( "\"Underline\"" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Size, QgsProperty::fromExpression( QStringLiteral( "\"Size\"" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::FontLetterSpacing, QgsProperty::fromExpression( QStringLiteral( "\"FontLetterSpacing\"" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::FontWordSpacing, QgsProperty::fromExpression( QStringLiteral( "\"FontWordSpacing\"" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::MultiLineAlignment, QgsProperty::fromExpression( QStringLiteral( "\"MultiLineAlignment\"" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::MultiLineHeight, QgsProperty::fromExpression( QStringLiteral( "\"MultiLineHeight\"" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "\"LabelRotation\"" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::FontOpacity, QgsProperty::fromField( QStringLiteral( "FontOpacity" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::Family, QgsProperty::fromField( QStringLiteral( "Family" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::Italic, QgsProperty::fromField( QStringLiteral( "Italic" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::Bold, QgsProperty::fromField( QStringLiteral( "Bold" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::Underline, QgsProperty::fromField( QStringLiteral( "Underline" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "Size" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::FontLetterSpacing, QgsProperty::fromField( QStringLiteral( "FontLetterSpacing" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::FontWordSpacing, QgsProperty::fromField( QStringLiteral( "FontWordSpacing" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::MultiLineAlignment, QgsProperty::fromField( QStringLiteral( "MultiLineAlignment" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::MultiLineHeight, QgsProperty::fromField( QStringLiteral( "MultiLineHeight" ) ) );
+    settingsProperties.setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromField( QStringLiteral( "LabelRotation" ) ) );
     settingsProperties.setProperty( QgsPalLayerSettings::Show, QgsProperty::fromExpression( QStringLiteral( "\"LabelUnplaced\"=false" ) ) );
     settings.setDataDefinedProperties( settingsProperties );
 
