@@ -247,6 +247,8 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
 
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
+
   private:
 
     /**
