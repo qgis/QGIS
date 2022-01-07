@@ -1009,7 +1009,8 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
   }
 
   QgsDebugMsgLevel( QStringLiteral( "image height = %1 bytesPerLine = %2" ).arg( image->height() ) . arg( image->bytesPerLine() ), 3 );
-  size_t myExpectedSize = pixelWidth * pixelHeight * 4;
+  size_t pixelsCount = pixelWidth * pixelHeight;
+  size_t myExpectedSize = pixelsCount * 4;
   size_t myImageSize = image->height() *  image->bytesPerLine();
   if ( myExpectedSize != myImageSize )   // should not happen
   {
@@ -1027,7 +1028,7 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
       data.resize( myImageSize );
       const QRgb *inputPtr = reinterpret_cast<const QRgb *>( image->constBits() );
       float *outputPtr = data.data();
-      for ( int i = 0; i < pixelWidth * pixelHeight; ++i )
+      for ( size_t i = 0; i < pixelsCount; ++i )
       {
         mConverter->convert( *inputPtr, outputPtr );
         inputPtr++;
