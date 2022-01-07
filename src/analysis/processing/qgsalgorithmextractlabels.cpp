@@ -336,6 +336,13 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   mapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
   mapSettings.setLabelingEngineSettings( mLabelSettings );
 
+  //build the expression context
+  QgsExpressionContext expressionContext;
+  expressionContext << QgsExpressionContextUtils::globalScope()
+                    << QgsExpressionContextUtils::projectScope( context.project() )
+                    << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
+  mapSettings.setExpressionContext( expressionContext );
+
   QgsNullPaintDevice nullPaintDevice;
   nullPaintDevice.setOutputSize( imageSize );
   nullPaintDevice.setOutputDpi( dpi );
