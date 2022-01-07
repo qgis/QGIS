@@ -745,9 +745,9 @@ the project.
 %End
 
 
-    QgsMapViewsManager *get3DViewsManager();
+    QgsMapViewsManager *getViewsManager();
 %Docstring
-Returns the project's 3D views manager, which manages 3D views
+Returns the project's views manager, which manages map views (including 3d maps)
 in the project.
 
 .. versionadded:: 3.24

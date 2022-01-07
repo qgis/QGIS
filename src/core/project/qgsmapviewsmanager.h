@@ -66,51 +66,51 @@ class CORE_EXPORT QgsMapViewsManager : public QObject
     void clear();
 
     /**
-     * Returns the DOM element representing the settings of the view named \a name
+     * Returns the DOM element representing the settings of the 3D view named \a name
      *
      * \note Not available in Python bindings
      */
-    QDomElement getViewSettings( const QString &name ) const SIP_SKIP;
+    QDomElement get3DViewSettings( const QString &name ) const SIP_SKIP;
 
     /**
-     * Adds a new view named \a name to the manager with the configuration DOM \a dom
+     * Adds a new 3D view named \a name to the manager with the configuration DOM \a dom
      *
      * \note Not available in Python bindings
      */
-    void registerViewSettings( const QString &name, const QDomElement &dom ) SIP_SKIP;
+    void register3DViewSettings( const QString &name, const QDomElement &dom ) SIP_SKIP;
 
     /**
-     * Returns the names of all views added to the manager
+     * Returns the names of all 3D views added to the manager
      *
      * \note Not available in Python bindings
      */
-    QStringList getViewsNames() const SIP_SKIP;
+    QStringList get3DViewsNames() const SIP_SKIP;
 
     /**
-     * Returns the list of configurations of views added to the manager
+     * Returns the list of configurations of 3D views added to the manager
      *
      * \note Not available in Python bindings
      */
-    QList<QDomElement> getViews() const SIP_SKIP;
+    QList<QDomElement> get3DViews() const SIP_SKIP;
 
-    //! Removes the configuration of the view named \a name
-    void removeView( const QString &name );
+    //! Removes the configuration of the 3D view named \a name
+    void remove3DView( const QString &name );
 
-    //! Renames the view named \a oldTitle to \a newTitle
-    void renameView( const QString &oldTitle, const QString &newTitle );
+    //! Renames the 3D view named \a oldTitle to \a newTitle
+    void rename3DView( const QString &oldTitle, const QString &newTitle );
 
-    //! Sets whether the view named \a name will be initially visible when the project is opened
-    void setViewInitiallyVisible( const QString &name, bool visible );
+    //! Sets whether the 3D view named \a name will be initially visible when the project is opened
+    void set3DViewInitiallyVisible( const QString &name, bool visible );
 
-    //! Returns whether the view named \a name will is opened
-    bool isViewOpen( const QString &name );
+    //! Returns whether the 3D view named \a name will is opened
+    bool is3DViewOpen( const QString &name );
 
   signals:
     //! Emitted when the views list has changed (whenever a view was removed, added, renamed..)
-    void viewsListChanged();
+    void views3DListChanged();
 
   private:
-    QMap<QString, QDomElement> mMapViewsDom;
+    QMap<QString, QDomElement> m3DMapViewsDom;
 };
 
 

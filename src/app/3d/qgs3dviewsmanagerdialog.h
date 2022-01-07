@@ -42,7 +42,7 @@ class Qgs3DViewsManagerDialog : public QDialog, private Ui::Qgs3DViewsManagerDia
 
     void currentChanged( const QModelIndex &current, const QModelIndex &previous );
 
-    void onViewsListChanged();
+    void on3DViewsListChanged();
   private:
     QStringListModel *mListModel = nullptr;
 
