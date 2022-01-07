@@ -52,7 +52,7 @@ class GUI_EXPORT QgsRelationWidgetRegistry
     /**
      * Returns a list of names of registered relation widgets
      */
-    QStringList relationWidgetNames();
+    QStringList relationWidgetNames() const;
 
     /**
      * Gets access to all registered factories
