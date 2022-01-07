@@ -645,9 +645,9 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
 
 QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
 {
-  double near = camera->nearPlane();
-  double far = camera->farPlane();
-  double distance = ( 2.0 * near * far ) / ( far + near - ( depth * 2 - 1 ) * ( far - near ) );
+  double dNear = camera->nearPlane();
+  double dFar = camera->farPlane();
+  double distance = ( 2.0 * dNear * dFar ) / ( dFar + dNear - ( depth * 2 - 1 ) * ( dFar - dNear ) );
 
   QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, screenSize, camera );
   double dot = QVector3D::dotProduct( ray.direction(), camera->viewVector().normalized() );
