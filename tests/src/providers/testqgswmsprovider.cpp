@@ -257,7 +257,7 @@ class TestQgsWmsProvider: public QObject
       QVERIFY( layer.isValid() );
       QVERIFY( layer.dataProvider()->dataType( 1 ) == Qgis::DataType::ARGB32 );
 
-      xyzConn.encodingScheme = QStringLiteral( "maptilerterrain" );
+      xyzConn.interpretation = QStringLiteral( "maptilerterrain" );
       QgsRasterLayer layer2( xyzConn.encodedUri(), "terrain", "wms" );
       QVERIFY( layer2.isValid() );
       QVERIFY( layer2.dataProvider()->dataType( 1 ) == Qgis::DataType::Float32 );
