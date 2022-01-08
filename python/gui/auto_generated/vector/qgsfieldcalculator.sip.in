@@ -1,0 +1,54 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/vector/qgsfieldcalculator.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsFieldCalculator: QDialog
+{
+%Docstring(signature="appended")
+
+A dialog class that provides calculation of new fields using existing fields, values and a set of operators
+
+Sample usage of the :py:class:`QgsFieldCalculator` class:
+
+.. code-block:: python
+
+         uri = "point?crs=epsg:4326&field=id:integer"
+         layer = QgsVectorLayer(uri, "Scratch point layer",  "memory")
+         layer.startEditing()
+         dialog = QgsFieldCalculator(layer)
+         dialog.exec_()
+%End
+
+%TypeHeaderCode
+#include "qgsfieldcalculator.h"
+%End
+  public:
+    QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = 0 );
+
+    int changedAttributeId() const;
+%Docstring
+Returns the field index of the field for which new attribute values were calculated.
+
+:return: The field index if attribute values were calculated or -1, e.g. in case of geometry changes.
+%End
+
+  public slots:
+    virtual void accept();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/vector/qgsfieldcalculator.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
