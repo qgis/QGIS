@@ -653,6 +653,7 @@ void Problem::chain_search()
 QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPosition *> *unlabeled )
 {
   QList<LabelPosition *> finalLabelPlacements;
+  finalLabelPlacements.reserve( mFeatureCount );
 
   // loop through all features to be labeled
   for ( std::size_t i = 0; i < mFeatureCount; i++ )
@@ -684,6 +685,7 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
   // unlabeled features also include those with no candidates
   if ( unlabeled )
   {
+    unlabeled->reserve( mPositionsWithNoCandidates.size() );
     for ( const std::unique_ptr< LabelPosition > &position : mPositionsWithNoCandidates )
       unlabeled->append( position.get() );
   }
