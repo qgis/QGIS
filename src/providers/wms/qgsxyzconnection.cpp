@@ -38,8 +38,8 @@ QString QgsXyzConnection::encodedUri() const
     uri.setParam( QStringLiteral( "referer" ), referer );
   if ( tilePixelRatio != 0 )
     uri.setParam( QStringLiteral( "tilePixelRatio" ), QString::number( tilePixelRatio ) );
-  if ( !encodingScheme.isEmpty() )
-    uri.setParam( QStringLiteral( "encodingScheme" ), encodingScheme );
+  if ( !interpretation.isEmpty() )
+    uri.setParam( QStringLiteral( "interpretation" ), interpretation );
   return uri.encodedUri();
 }
 
@@ -96,7 +96,7 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
   conn.referer = settings.value( QStringLiteral( "referer" ) ).toString();
   conn.tilePixelRatio = settings.value( QStringLiteral( "tilePixelRatio" ), 0 ).toDouble();
   conn.hidden = settings.value( QStringLiteral( "hidden" ) ).toBool();
-  conn.encodingScheme = settings.value( QStringLiteral( "encodingScheme" ), conn.encodingScheme ).toString();
+  conn.interpretation = settings.value( QStringLiteral( "interpretation" ), QString() ).toString();
   return conn;
 }
 
@@ -139,7 +139,7 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
   settings.setValue( QStringLiteral( "password" ), conn.password );
   settings.setValue( QStringLiteral( "referer" ), conn.referer );
   settings.setValue( QStringLiteral( "tilePixelRatio" ), conn.tilePixelRatio );
-  settings.setValue( QStringLiteral( "encodingScheme" ), conn.encodingScheme );
+  settings.setValue( QStringLiteral( "interpretation" ), conn.interpretation );
   if ( addHiddenProperty )
   {
     settings.setValue( QStringLiteral( "hidden" ), false );

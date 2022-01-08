@@ -52,7 +52,7 @@ void QgsXyzConnectionDialog::setConnection( const QgsXyzConnection &conn )
   mSourceWidget->setReferer( conn.referer );
   mSourceWidget->setTilePixelRatio( conn.tilePixelRatio );
   mSourceWidget->setAuthCfg( conn.authCfg );
-  mSourceWidget->setEncodingScheme( conn.encodingScheme );
+  mSourceWidget->setInterpretation( conn.interpretation );
 }
 
 QgsXyzConnection QgsXyzConnectionDialog::connection() const
@@ -67,7 +67,7 @@ QgsXyzConnection QgsXyzConnectionDialog::connection() const
   conn.referer = mSourceWidget->referer();
   conn.tilePixelRatio = mSourceWidget->tilePixelRatio();
   conn.authCfg = mSourceWidget->authcfg( );
-  conn.encodingScheme = mSourceWidget->encodingScheme();
+  conn.interpretation = mSourceWidget->interpretation();
   return conn;
 }
 

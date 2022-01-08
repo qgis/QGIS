@@ -222,7 +222,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
 
 
-  mConverter = QgsWmsConverter::createConverter( mSettings.mEncodingScheme );
+  mConverter = QgsWmsInterpretationConverter::createConverter( mSettings.mInterpretation );
 
   mValid = true;
   QgsDebugMsgLevel( QStringLiteral( "exiting constructor." ), 4 );
@@ -4844,20 +4844,20 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 }
 #endif
 
-Qgis::DataType QgsWmsConverter::dataType() const
+Qgis::DataType QgsWmsInterpretationConverter::dataType() const
 {
   return Qgis::DataType::Float32;
 }
 
-std::unique_ptr<QgsWmsConverter> QgsWmsConverter::createConverter( const QString &key )
+std::unique_ptr<QgsWmsInterpretationConverter> QgsWmsInterpretationConverter::createConverter( const QString &key )
 {
-  if ( key == QgsWmsConverterMapTilerTerrainRGB::encodingSchemeKey() )
-    return std::make_unique<QgsWmsConverterMapTilerTerrainRGB>();
+  if ( key == QgsWmsInterpretationConverterMapTilerTerrainRGB::interpretationKey() )
+    return std::make_unique<QgsWmsInterpretationConverterMapTilerTerrainRGB>();
 
   return nullptr;
 }
 
-void QgsWmsConverterMapTilerTerrainRGB::convert( const QRgb &color, float *converted ) const
+void QgsWmsInterpretationConverterMapTilerTerrainRGB::convert( const QRgb &color, float *converted ) const
 {
   int R = qRed( color );
   int G = qGreen( color );
@@ -4866,7 +4866,7 @@ void QgsWmsConverterMapTilerTerrainRGB::convert( const QRgb &color, float *conve
   *converted = -10000 + ( ( R * 256 * 256 + G * 256 + B ) ) * 0.1;
 }
 
-QgsRasterBandStats QgsWmsConverterMapTilerTerrainRGB::statistics( int, int, const QgsRectangle &, int, QgsRasterBlockFeedback * ) const
+QgsRasterBandStats QgsWmsInterpretationConverterMapTilerTerrainRGB::statistics( int, int, const QgsRectangle &, int, QgsRasterBlockFeedback * ) const
 {
   QgsRasterBandStats stat;
   stat.minimumValue = 0;
@@ -4875,7 +4875,7 @@ QgsRasterBandStats QgsWmsConverterMapTilerTerrainRGB::statistics( int, int, cons
   return stat;
 }
 
-QgsRasterHistogram QgsWmsConverterMapTilerTerrainRGB::histogram( int, int, double, double, const QgsRectangle &, int, bool, QgsRasterBlockFeedback * ) const
+QgsRasterHistogram QgsWmsInterpretationConverterMapTilerTerrainRGB::histogram( int, int, double, double, const QgsRectangle &, int, bool, QgsRasterBlockFeedback * ) const
 {
   return QgsRasterHistogram();
 }

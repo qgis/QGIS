@@ -99,11 +99,11 @@ class QgsCachedImageFetcher: public QgsImageFetcher
     }
 };
 
-//! Abstract class to convert color to float value following encoding scheme
-class QgsWmsConverter
+//! Abstract class to convert color to float value following an interpretation
+class QgsWmsInterpretationConverter
 {
   public:
-    virtual ~QgsWmsConverter() = default;
+    virtual ~QgsWmsInterpretationConverter() = default;
 
     //! Convert the \a color to a value pointed by float
     virtual void convert( const QRgb &color, float *converted ) const = 0;
@@ -128,12 +128,12 @@ class QgsWmsConverter
                                           QgsRasterBlockFeedback *feedback = nullptr ) const = 0;
 
     //! Creates a converter instance corresponding to the \a key
-    static std::unique_ptr<QgsWmsConverter> createConverter( const QString &key );
+    static std::unique_ptr<QgsWmsInterpretationConverter> createConverter( const QString &key );
 };
 
 
-//! Class to convert color to float value following the mapTiler terrain RGB encoding scheme
-class QgsWmsConverterMapTilerTerrainRGB : public QgsWmsConverter
+//! Class to convert color to float value following the mapTiler terrain RGB interpretation
+class QgsWmsInterpretationConverterMapTilerTerrainRGB : public QgsWmsInterpretationConverter
 {
   public:
     void convert( const QRgb &color, float *converted ) const override;
@@ -153,7 +153,7 @@ class QgsWmsConverterMapTilerTerrainRGB : public QgsWmsConverter
                                   QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
     static QString displayName() {return QObject::tr( "MapTiler Terrain RGB" );}
-    static QString encodingSchemeKey() {return QStringLiteral( "maptilerterrain" );}
+    static QString interpretationKey() {return QStringLiteral( "maptilerterrain" );}
 };
 
 /**
@@ -563,7 +563,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     QList< double > mNativeResolutions;
 
-    std::unique_ptr<QgsWmsConverter> mConverter;
+    std::unique_ptr<QgsWmsInterpretationConverter> mConverter;
 
     friend class TestQgsWmsProvider;
 

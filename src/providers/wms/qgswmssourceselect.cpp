@@ -143,8 +143,9 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     tabLayers->layout()->removeWidget( gbCRS );
   }
 
-  mEncodingSchemeWidget = new QgsWmsEncodingSchemeWidget( this );
-  mEncodingSchemeLayout->addWidget( mEncodingSchemeWidget );
+
+  mInterpretationCombo = new QgsWmsInterpretationComboBox( this );
+  mInterpretationLayout->addWidget( mInterpretationCombo );
 
   clear();
 
@@ -288,7 +289,7 @@ void QgsWMSSourceSelect::clear()
 
   mFeatureCount->setEnabled( false );
 
-  mEncodingSchemeWidget->setEncodingScheme( QString() );
+  mInterpretationCombo->setInterpretation( QString() );
 }
 
 bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabilities )
@@ -604,8 +605,8 @@ void QgsWMSSourceSelect::addButtonClicked()
     uri.setParam( QStringLiteral( "featureCount" ), mFeatureCount->text() );
   }
 
-  if ( tabTilesets->isEnabled() && !mEncodingSchemeWidget->encodingScheme().isEmpty() )
-    uri.setParam( QStringLiteral( "encodingScheme" ), mEncodingSchemeWidget->encodingScheme() );
+  if ( tabTilesets->isEnabled() && !mInterpretationCombo->interpretation().isEmpty() )
+    uri.setParam( QStringLiteral( "interpretation" ), mInterpretationCombo->interpretation() );
 
   uri.setParam( QStringLiteral( "contextualWMSLegend" ), mContextualLegendCheckbox->isChecked() ? "1" : "0" );
 
@@ -1317,53 +1318,25 @@ void QgsWMSSourceSelect::showHelp()
   QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
 }
 
-QgsWmsEncodingSchemeWidget::QgsWmsEncodingSchemeWidget( QWidget *parent ): QWidget( parent )
+QgsWmsInterpretationComboBox::QgsWmsInterpretationComboBox( QWidget *parent ): QComboBox( parent )
 {
-  QHBoxLayout *lay = new QHBoxLayout( this );
-  lay->setContentsMargins( 0, 0, 0, 0 );
-  setLayout( lay );
-  mCheckBox = new QCheckBox( this );
-  mCheckBox->setText( tr( "Convert to single band raster" ) );
-  mCheckBox->setChecked( false );
-  layout()->addWidget( mCheckBox );
-
-  mCombo = new QComboBox( this );
-  mCombo->setEnabled( false );
-  layout()->addWidget( mCombo );
-
-  connect( mCheckBox, &QAbstractButton::toggled, mCombo, &QComboBox::setEnabled );
-
-  populateEncodingScheme();
+  addItem( tr( "default" ), QString() );
+  addItem( QgsWmsInterpretationConverterMapTilerTerrainRGB::displayName(), QgsWmsInterpretationConverterMapTilerTerrainRGB::interpretationKey() );
 }
 
-void QgsWmsEncodingSchemeWidget::populateEncodingScheme()
+void QgsWmsInterpretationComboBox::setInterpretation( const QString &interpretationKey )
 {
-  mCombo->addItem( QgsWmsConverterMapTilerTerrainRGB::displayName(), QgsWmsConverterMapTilerTerrainRGB::encodingSchemeKey() );
-}
-
-void QgsWmsEncodingSchemeWidget::setEncodingScheme( const QString &encodingSchemeKey )
-{
-  bool checked = false;
-  if ( ! encodingSchemeKey.isEmpty() )
+  if ( ! interpretationKey.isEmpty() )
   {
-    int index = mCombo->findData( encodingSchemeKey );
-    if ( index != -1 )
-    {
-      checked = true;
-      mCombo->setCurrentIndex( index );
-    }
+    int index = findData( interpretationKey );
+    if ( index == -1 )
+      setCurrentIndex( 0 );
     else
-      checked = false;
+      setCurrentIndex( index );
   }
-
-  mCheckBox->setChecked( checked );
-  mCombo->setEnabled( checked );
 }
 
-QString QgsWmsEncodingSchemeWidget::encodingScheme() const
+QString QgsWmsInterpretationComboBox::interpretation() const
 {
-  if ( mCheckBox->isChecked() )
-    return mCombo->currentData().toString();
-
-  return QString();
+  return currentData().toString();
 }

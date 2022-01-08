@@ -32,8 +32,8 @@ QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   mSpinZMax->setClearValue( 18 );
 
   connect( mEditUrl, &QLineEdit::textChanged, this, &QgsXyzSourceWidget::validate );
-  mEncodingSchemeWidget = new QgsWmsEncodingSchemeWidget( this );
-  mEncodingSchemeLayout->addWidget( mEncodingSchemeWidget );
+  mInterpretationCombo = new QgsWmsInterpretationComboBox( this );
+  mInterpretationLayout->addWidget( mInterpretationCombo );
 }
 
 void QgsXyzSourceWidget::setSourceUri( const QString &uri )
@@ -58,7 +58,7 @@ void QgsXyzSourceWidget::setSourceUri( const QString &uri )
 
   mAuthSettings->setConfigId( mSourceParts.value( QStringLiteral( "authcfg" ) ).toString() );
 
-  setEncodingScheme( mSourceParts.value( QStringLiteral( "encodingScheme" ) ).toString() );
+  setInterpretation( mSourceParts.value( QStringLiteral( "interpretation" ) ).toString() );
 
   mIsValid = true;
 }
@@ -101,10 +101,10 @@ QString QgsXyzSourceWidget::sourceUri() const
   else
     parts.remove( QStringLiteral( "authcfg" ) );
 
-  if ( !mEncodingSchemeWidget->encodingScheme().isEmpty() )
-    parts.insert( QStringLiteral( "encodingScheme" ), mEncodingSchemeWidget->encodingScheme() );
+  if ( !mInterpretationCombo->interpretation().isEmpty() )
+    parts.insert( QStringLiteral( "interpretation" ), mInterpretationCombo->interpretation() );
   else
-    parts.remove( QStringLiteral( "encodingScheme" ) );
+    parts.remove( QStringLiteral( "interpretation" ) );
 
   return QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts );
 }
@@ -201,14 +201,14 @@ int QgsXyzSourceWidget::tilePixelRatio() const
     return 0;  // unknown
 }
 
-void QgsXyzSourceWidget::setEncodingScheme( const QString &encodingSchemeKey )
+void QgsXyzSourceWidget::setInterpretation( const QString &interpretation )
 {
-  mEncodingSchemeWidget->setEncodingScheme( encodingSchemeKey );
+  mInterpretationCombo->setInterpretation( interpretation );
 }
 
-QString QgsXyzSourceWidget::encodingScheme() const
+QString QgsXyzSourceWidget::interpretation() const
 {
-  return mEncodingSchemeWidget->encodingScheme();
+  return mInterpretationCombo->interpretation();
 }
 
 void QgsXyzSourceWidget::validate()

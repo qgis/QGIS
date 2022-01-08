@@ -33,7 +33,7 @@ class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 class QgsWmsCapabilities;
-class QgsWmsEncodingSchemeWidget;
+class QgsWmsInterpretationComboBox;
 
 /*!
  * \brief   Dialog to create connections and add layers from WMS, etc.
@@ -193,7 +193,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     // save the current status of the layer true
     QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
 
-    QgsWmsEncodingSchemeWidget *mEncodingSchemeWidget = nullptr;
+    QgsWmsInterpretationComboBox *mInterpretationCombo = nullptr;
 
   private slots:
     void lstTilesets_itemClicked( QTableWidgetItem *item );
@@ -204,28 +204,21 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 };
 
 /*!
- * \brief  Widget that embeds a checkbox and a combobox to select an encoding scheme to convert image to a single band raster
+ * \brief ComboBox to select interpretation to convert image to a single band raster
  */
-class QgsWmsEncodingSchemeWidget : public QWidget
+class QgsWmsInterpretationComboBox : public QComboBox
 {
   public:
     //! Constructor
-    QgsWmsEncodingSchemeWidget( QWidget *parent = nullptr );
+    QgsWmsInterpretationComboBox( QWidget *parent = nullptr );
 
     /**
-     * Sets the current encoding scheme from its key \a encodingSchemeKey,
-     * leading to checked the checkbox if the encoding scheme exists or unchecked if the key is empty or the scheme does not exist
+     * Sets the interpretation from its key \a interpretationKey, default if interpretationKey is empty
      */
-    void setEncodingScheme( const QString &encodingSchemeKey );
+    void setInterpretation( const QString &interpretationKey );
 
-    //! Returns the key of the current selected scheme, returns empty string if the checkbox is unchecked
-    QString encodingScheme() const;
-
-  private:
-    QCheckBox *mCheckBox = nullptr;
-    QComboBox *mCombo = nullptr;
-
-    void populateEncodingScheme();
+    //! Returns the key of the current selected interpretation, returns empty string if the current is default
+    QString interpretation() const;
 };
 
 #endif // QGSWMSSOURCESELECT_H
