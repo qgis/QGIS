@@ -1320,7 +1320,7 @@ void QgsWMSSourceSelect::showHelp()
 
 QgsWmsInterpretationComboBox::QgsWmsInterpretationComboBox( QWidget *parent ): QComboBox( parent )
 {
-  addItem( tr( "default" ), QString() );
+  addItem( tr( "Default" ), QString() );
   addItem( QgsWmsInterpretationConverterMapTilerTerrainRGB::displayName(), QgsWmsInterpretationConverterMapTilerTerrainRGB::interpretationKey() );
 }
 
