@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "leaflet": "^1.7.1",
-    "leaflet-wms": "^0.1.0",
+    "leaflet.wms": "^0.2.0",
     "reproject": "^1.2.6",
     "vue": "^2.6.14",
     "vue-router": "^3.5.3",
