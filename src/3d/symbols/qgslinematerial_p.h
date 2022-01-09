@@ -28,13 +28,9 @@
 //
 
 #include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QCamera>
 
 #define SIP_NO_FILE
-
-namespace Qt3DRender
-{
-  class QCamera;
-}
 
 /**
  * \ingroup 3d
