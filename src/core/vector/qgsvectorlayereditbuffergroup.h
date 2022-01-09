@@ -24,12 +24,14 @@
 class QgsVectorLayer;
 
 /**
- * \ingroup core
- * \class QgsVectorLayerEditBufferGroup
- *
  * The edit buffer group manages a group of edit buffers. Commands like commit and rollback are
  * managed by the group invokes individual addFeature(), deleteFeature(), ... in the correct order
  * across all contained edit buffers.
+ *
+ * \ingroup core
+ * \class QgsVectorLayerEditBufferGroup
+ *
+ * \since QGIS 3.24
  */
 class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
 {
@@ -57,8 +59,18 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
      */
     QList<QgsVectorLayer *> layers() const;
 
+    /**
+     * Gets the list of modified layers currently managed by this edit buffer group.
+     *
+     * \returns Layer list
+     */
     QList<QgsVectorLayer *> modifiedLayers() const;
 
+    /**
+     * Start editing
+     *
+     * \returns TRUE on success
+     */
     bool startEditing();
 
     /**
@@ -75,10 +87,16 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
      * so if a stage fails, it's difficult to roll back cleanly.
      * Therefore any error message also includes which stage failed so
      * that the user has some chance of repairing the damage cleanly.
+     *
+     * \returns TRUE on success
      */
     bool commitChanges( bool stopEditing, QStringList &commitErrors );
 
-    //! Stop editing and discard the edits
+    /**
+     * Stop editing and discard the edits
+     *
+     * \returns FALSE if errors occurred during rollback
+     */
     bool rollBack();
 
   private:

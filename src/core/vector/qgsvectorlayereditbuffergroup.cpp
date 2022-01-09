@@ -102,7 +102,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( bool stopEditing, QStringList
     QString errorMsg;
     if ( ! transaction->begin( errorMsg ) )
     {
-      commitErrors << tr( "ERROR: could not start a transaction on data provider '%1', detailled error: '%2'." ).arg( providerKey, errorMsg );
+      commitErrors << tr( "ERROR: could not start a transaction on data provider '%1', detailed error: '%2'." ).arg( providerKey, errorMsg );
       success = false;
       break;
     }
@@ -227,7 +227,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( bool stopEditing, QStringList
       if ( !( *openTransactionsIterator )->commit( errorMsg ) )
       {
         success = false;
-        commitErrors << tr( "ERROR: could not commit a transaction, detailled error: '%1'." ).arg( errorMsg );
+        commitErrors << tr( "ERROR: could not commit a transaction, detailed error: '%1'." ).arg( errorMsg );
         break;
       }
 
@@ -337,7 +337,7 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChild
         int index = orderedLayers.indexOf( referencedLayer );
         if ( index >= 0 )
         {
-          insertIndex = qMax( insertIndex, index + 1 );
+          insertIndex = std::max( insertIndex, index + 1 );
         }
         else
         {

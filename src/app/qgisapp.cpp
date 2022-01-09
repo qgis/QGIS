@@ -8558,25 +8558,29 @@ void QgisApp::labelingFontNotFound( QgsVectorLayer *vlayer, const QString &fontf
   messageBar()->pushItem( fontMsg );
 }
 
-void QgisApp::commitError( QgsVectorLayer *vlayer )
+void QgisApp::commitError( QgsVectorLayer *vlayer, const QStringList &commitErrorsList )
 {
-  const QStringList commitErrors = vlayer->commitErrors();
-  if ( !vlayer->allowCommit() && commitErrors.empty() )
+  QStringList commitErrors = commitErrorsList;
+  if ( vlayer && commitErrors.isEmpty() )
+    commitErrors = vlayer->commitErrors();
+
+  if ( vlayer && !vlayer->allowCommit() && commitErrors.empty() )
   {
     return;
   }
 
+  const QString messageText = vlayer ? tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
+                              : tr( "Could not commit changes" );
+
   QgsMessageViewer *mv = new QgsMessageViewer();
   mv->setWindowTitle( tr( "Commit Errors" ) );
-  mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
+  mv->setMessageAsPlainText( messageText
                              + "\n\n"
                              + tr( "Errors: %1\n" ).arg( commitErrors.join( QLatin1String( "\n  " ) ) )
                            );
 
   QToolButton *showMore = new QToolButton();
-  // store pointer to vlayer in data of QAction
   QAction *act = new QAction( showMore );
-  act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
   act->setText( tr( "Show more" ) );
   showMore->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
   showMore->setCursor( Qt::PointingHandCursor );
@@ -8589,7 +8593,7 @@ void QgisApp::commitError( QgsVectorLayer *vlayer )
   // no timeout set, since notice needs attention and is only shown first time layer is labeled
   QgsMessageBarItem *errorMsg = new QgsMessageBarItem(
     tr( "Commit errors" ),
-    tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ),
+    messageText,
     showMore,
     Qgis::MessageLevel::Warning,
     0,
@@ -11393,11 +11397,13 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
         break;
 
       case QMessageBox::Save:
+      {
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
-        if ( !QgsProject::instance()->commitChanges( true, vlayer ) )
+        QStringList commitErrors;
+        if ( !QgsProject::instance()->commitChanges( true, commitErrors, vlayer ) )
         {
-          commitError( vlayer );
+          commitError( vlayer, commitErrors );
           // Leave the in-memory editing state alone,
           // to give the user a chance to enter different values
           // and try the commit again later
@@ -11407,7 +11413,8 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
         vlayer->triggerRepaint();
 
         QApplication::restoreOverrideCursor();
-        break;
+      }
+      break;
 
       case QMessageBox::Discard:
       {

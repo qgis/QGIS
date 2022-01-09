@@ -2040,7 +2040,7 @@ be made persistent until :py:func:`~QgsProject.commitChanges` is called, and can
 .. versionadded:: 3.24
 %End
 
-    bool commitChanges( bool stopEditing, QgsVectorLayer *vectorLayer = 0 );
+    bool commitChanges( bool stopEditing, QStringList &commitErrors, QgsVectorLayer *vectorLayer = 0 );
 %Docstring
 Attempts to commit to the underlying data provider any buffered changes made since the
 last to call to :py:func:`~QgsProject.startEditing`.
@@ -2054,15 +2054,13 @@ The commits occur in distinct stages,
 (add attributes, add features, change attribute values, change
 geometries, delete features, delete attributes)
 so if a stage fails, it can be difficult to roll back cleanly.
-Therefore any error message returned by :py:func:`~QgsProject.commitErrors` also includes which stage failed so
+Therefore any error message returned by commitErrors also includes which stage failed so
 that the user has some chance of repairing the damage cleanly.
 
 By setting ``stopEditing`` to ``False``, the layer will stay in editing mode.
 Otherwise the layer editing mode will be disabled if the commit is successful.
 
 .. seealso:: :py:func:`startEditing`
-
-.. seealso:: :py:func:`commitErrors`
 
 .. seealso:: :py:func:`rollBack`
 

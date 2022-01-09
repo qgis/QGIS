@@ -80,7 +80,7 @@ void QgsVectorLayerEditBuffer::updateFields( QgsFields &fields )
   }
 }
 
-QgsVectorLayerEditBufferGroup *QgsVectorLayerEditBuffer::editBufferGroup()
+QgsVectorLayerEditBufferGroup *QgsVectorLayerEditBuffer::editBufferGroup() const
 {
   return mEditBufferGroup;
 }

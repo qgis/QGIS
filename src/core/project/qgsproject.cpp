@@ -648,7 +648,7 @@ bool QgsProject::startEditing( QgsVectorLayer *vectorLayer )
   return false;
 }
 
-bool QgsProject::commitChanges( bool stopEditing, QgsVectorLayer *vectorLayer )
+bool QgsProject::commitChanges( bool stopEditing, QStringList &commitErrors, QgsVectorLayer *vectorLayer )
 {
   switch ( mTransactionMode )
   {
@@ -657,15 +657,14 @@ bool QgsProject::commitChanges( bool stopEditing, QgsVectorLayer *vectorLayer )
     {
       if ( ! vectorLayer )
         return false;
-      return vectorLayer->commitChanges();
+      bool success = vectorLayer->commitChanges();
+      commitErrors = vectorLayer->commitErrors();
+      return success;
     }
     break;
     case Qgis::TransactionMode::BufferedGroups:
-    {
-      QStringList commitErrors;
       return mEditBufferGroup.commitChanges( stopEditing, commitErrors );
-    }
-    break;
+      break;
   }
 
   return false;

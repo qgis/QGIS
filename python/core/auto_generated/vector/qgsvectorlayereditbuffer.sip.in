@@ -215,7 +215,7 @@ Returns ``True`` if the specified feature ID has been deleted but not committed.
 %End
 
 
-    QgsVectorLayerEditBufferGroup *editBufferGroup();
+    QgsVectorLayerEditBufferGroup *editBufferGroup() const;
 %Docstring
 Returns the parent edit buffer group for this edit buffer, or None if not part of a group.
 

@@ -2025,19 +2025,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * (add attributes, add features, change attribute values, change
      * geometries, delete features, delete attributes)
      * so if a stage fails, it can be difficult to roll back cleanly.
-     * Therefore any error message returned by commitErrors() also includes which stage failed so
+     * Therefore any error message returned by commitErrors also includes which stage failed so
      * that the user has some chance of repairing the damage cleanly.
      *
      * By setting \a stopEditing to FALSE, the layer will stay in editing mode.
      * Otherwise the layer editing mode will be disabled if the commit is successful.
      *
      * \see startEditing()
-     * \see commitErrors()
      * \see rollBack()
      *
      * \since QGIS 3.24
      */
-    bool commitChanges( bool stopEditing, QgsVectorLayer *vectorLayer = nullptr );
+    bool commitChanges( bool stopEditing, QStringList &commitErrors, QgsVectorLayer *vectorLayer = nullptr );
 
     /**
      * Stops a current editing operation on vectorLayer and discards any uncommitted edits.

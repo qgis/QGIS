@@ -1472,7 +1472,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mTab_DataSources">
-          <layout class="QGridLayout" name="gridLayout_2">
+          <layout class="QGridLayout" name="mTab_DataSourcesGridLayout">
            <item row="1" column="0" colspan="3">
             <widget class="QCheckBox" name="mEvaluateDefaultValues">
              <property name="toolTip">
@@ -1484,7 +1484,7 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLabel" name="label_37">
+            <widget class="QLabel" name="mTransactionModeLabel">
              <property name="text">
               <string>Transaction mode</string>
              </property>

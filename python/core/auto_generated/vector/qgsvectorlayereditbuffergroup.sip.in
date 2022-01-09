@@ -13,10 +13,11 @@
 class QgsVectorLayerEditBufferGroup : QObject
 {
 %Docstring(signature="appended")
-
 The edit buffer group manages a group of edit buffers. Commands like commit and rollback are
 managed by the group invokes individual :py:func:`~addFeature`, :py:func:`~deleteFeature`, ... in the correct order
 across all contained edit buffers.
+
+.. versionadded:: 3.24
 %End
 
 %TypeHeaderCode
@@ -47,8 +48,18 @@ Gets the list of layers currently managed by this edit buffer group.
 %End
 
     QList<QgsVectorLayer *> modifiedLayers() const;
+%Docstring
+Gets the list of modified layers currently managed by this edit buffer group.
+
+:return: Layer list
+%End
 
     bool startEditing();
+%Docstring
+Start editing
+
+:return: ``True`` on success
+%End
 
     bool commitChanges( bool stopEditing, QStringList &commitErrors );
 %Docstring
@@ -65,11 +76,15 @@ geometries, delete features, delete attributes)
 so if a stage fails, it's difficult to roll back cleanly.
 Therefore any error message also includes which stage failed so
 that the user has some chance of repairing the damage cleanly.
+
+:return: ``True`` on success
 %End
 
     bool rollBack();
 %Docstring
 Stop editing and discard the edits
+
+:return: ``False`` if errors occurred during rollback
 %End
 
 };
