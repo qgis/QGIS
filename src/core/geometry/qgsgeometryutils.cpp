@@ -1074,6 +1074,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
 
 int QgsGeometryUtils::segmentSide( const QgsPoint &linePoint1, const QgsPoint &linePoint2, const QgsPoint &point )
 {
+  // Vector product calculation method
   const double side = ( ( point.x() - linePoint1.x() ) * ( linePoint2.y() - linePoint1.y() ) - ( linePoint2.x() - linePoint1.x() ) * ( point.y() - linePoint1.y() ) );
   if ( side == 0.0 )
   {
@@ -1100,12 +1101,12 @@ bool QgsGeometryUtils::pointOnSegment( const QgsPoint &segmentPoint1, const QgsP
   {
     if (
       // point between segPoint1 and segPoint2 x-wise
-      ( ( segmentPoint1.x() < point.x() && point.x() < segmentPoint2.x() ) ||
-        ( segmentPoint2.x() < point.x() && point.x() < segmentPoint1.x() ) )
+      ( ( segmentPoint1.x() <= point.x() && point.x() <= segmentPoint2.x() ) ||
+        ( segmentPoint2.x() <= point.x() && point.x() <= segmentPoint1.x() ) )
       &&
       // point between segPoint1 and segPoint2 y-wise
-      ( ( segmentPoint1.y() < point.y() && point.y() < segmentPoint2.y() ) ||
-        ( segmentPoint2.y() < point.y() && point.y() < segmentPoint1.y() ) )
+      ( ( segmentPoint1.y() <= point.y() && point.y() <= segmentPoint2.y() ) ||
+        ( segmentPoint2.y() <= point.y() && point.y() <= segmentPoint1.y() ) )
     )
     {
       return true;
