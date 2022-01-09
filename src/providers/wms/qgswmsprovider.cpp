@@ -4844,18 +4844,25 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 }
 #endif
 
-Qgis::DataType QgsWmsInterpretationConverter::dataType() const
-{
-  return Qgis::DataType::Float32;
-}
 
 std::unique_ptr<QgsWmsInterpretationConverter> QgsWmsInterpretationConverter::createConverter( const QString &key )
 {
   if ( key == QgsWmsInterpretationConverterMapTilerTerrainRGB::interpretationKey() )
     return std::make_unique<QgsWmsInterpretationConverterMapTilerTerrainRGB>();
+  else if ( key == QgsWmsInterpretationConverterTerrariumRGB::interpretationKey() )
+    return std::make_unique<QgsWmsInterpretationConverterTerrariumRGB>();
 
   return nullptr;
 }
+
+Qgis::DataType QgsWmsInterpretationConverter::dataType() const
+{
+  return Qgis::DataType::Float32;
+}
+
+//
+// QgsWmsInterpretationConverterMapTilerTerrainRGB
+//
 
 void QgsWmsInterpretationConverterMapTilerTerrainRGB::convert( const QRgb &color, float *converted ) const
 {
@@ -4876,6 +4883,39 @@ QgsRasterBandStats QgsWmsInterpretationConverterMapTilerTerrainRGB::statistics( 
 }
 
 QgsRasterHistogram QgsWmsInterpretationConverterMapTilerTerrainRGB::histogram( int, int, double, double, const QgsRectangle &, int, bool, QgsRasterBlockFeedback * ) const
+{
+  return QgsRasterHistogram();
+}
+
+//
+// QgsWmsInterpretationConverterTerrariumRGB
+//
+
+void QgsWmsInterpretationConverterTerrariumRGB::convert( const QRgb &color, float *converted ) const
+{
+  // for description of the "terrarium" format:
+  // https://github.com/tilezen/joerd/blob/master/docs/formats.md
+
+  if ( qAlpha( color ) == 255 )
+  {
+    *converted = qRed( color ) * 256 + qGreen( color ) + qBlue( color ) / 256.f - 32768;
+  }
+  else
+  {
+    *converted = std::numeric_limits<float>::quiet_NaN();
+  }
+}
+
+QgsRasterBandStats QgsWmsInterpretationConverterTerrariumRGB::statistics( int, int, const QgsRectangle &, int, QgsRasterBlockFeedback * ) const
+{
+  QgsRasterBandStats stat;
+  stat.minimumValue = -11000;
+  stat.maximumValue = 9000;
+  stat.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max;
+  return stat;
+}
+
+QgsRasterHistogram QgsWmsInterpretationConverterTerrariumRGB::histogram( int, int, double, double, const QgsRectangle &, int, bool, QgsRasterBlockFeedback * ) const
 {
   return QgsRasterHistogram();
 }

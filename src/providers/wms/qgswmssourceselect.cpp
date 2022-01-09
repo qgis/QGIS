@@ -1322,6 +1322,7 @@ QgsWmsInterpretationComboBox::QgsWmsInterpretationComboBox( QWidget *parent ): Q
 {
   addItem( tr( "Default" ), QString() );
   addItem( QgsWmsInterpretationConverterMapTilerTerrainRGB::displayName(), QgsWmsInterpretationConverterMapTilerTerrainRGB::interpretationKey() );
+  addItem( QgsWmsInterpretationConverterTerrariumRGB::displayName(), QgsWmsInterpretationConverterTerrariumRGB::interpretationKey() );
 }
 
 void QgsWmsInterpretationComboBox::setInterpretation( const QString &interpretationKey )
