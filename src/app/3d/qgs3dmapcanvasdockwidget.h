@@ -16,26 +16,21 @@
 #ifndef QGS3DMAPCANVASDOCKWIDGET_H
 #define QGS3DMAPCANVASDOCKWIDGET_H
 
-#include "qmenu.h"
-#include "qgsdockwidget.h"
 #include "qgis_app.h"
-#include "qtoolbutton.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
-
-class QLabel;
-class QProgressBar;
 
 class Qgs3DAnimationWidget;
 class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
-class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
 class QgsMapCanvas;
+class Qgs3DMapCanvasWidget;
+class QgsDockWidget;
 
-
-
-class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
+class APP_EXPORT Qgs3DMapCanvasDockWidget : public QDialog
 {
     Q_OBJECT
   public:
@@ -46,50 +41,19 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
 
     void setMainCanvas( QgsMapCanvas *canvas );
 
-    Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
-    Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
+    Qgs3DMapCanvas *mapCanvas3D();
+    Qgs3DAnimationWidget *animationWidget();
 
-    Qgs3DMapToolMeasureLine *measurementLineTool() { return  mMapToolMeasureLine; }
+    Qgs3DMapToolMeasureLine *measurementLineTool();
 
+    QgsDockWidget *dockWidget() { return mDock; }
   private slots:
-    void resetView();
-    void configure();
-    void saveAsImage();
-    void toggleAnimations();
-    void cameraControl();
-    void identify();
-    void measureLine();
-    void exportScene();
-    void toggleNavigationWidget( bool visibility );
-    void toggleFpsCounter( bool visibility );
-
-    void onMainCanvasLayersChanged();
-    void onMainCanvasColorChanged();
-    void onTotalPendingJobsCountChanged();
-    void updateFpsCount( float fpsCount );
-    void cameraNavigationSpeedChanged( double speed );
-    void mapThemeMenuAboutToShow();
-    //! Renames the active map theme called \a theme to \a newTheme
-    void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
+    void toggleDockMode( bool docked );
 
   private:
-    Qgs3DMapCanvas *mCanvas = nullptr;
-    Qgs3DAnimationWidget *mAnimationWidget = nullptr;
-    QgsMapCanvas *mMainCanvas = nullptr;
-    QProgressBar *mProgressPendingJobs = nullptr;
-    QLabel *mLabelPendingJobs = nullptr;
-    QLabel *mLabelFpsCounter = nullptr;
-    QLabel *mLabelNavigationSpeed = nullptr;
-    QTimer *mLabelNavSpeedHideTimeout = nullptr;
-    Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
-    Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
-    QMenu *mMapThemeMenu = nullptr;
-    QMenu *mOptionsMenu = nullptr;
-    QList<QAction *> mMapThemeMenuPresetActions;
-    QToolButton *mBtnMapThemes = nullptr;
-    QAction *mActionEnableShadows = nullptr;
-    QAction *mActionEnableEyeDome = nullptr;
-    QToolButton *mBtnOptions = nullptr;
+    Qgs3DMapCanvasWidget *mCanvasWidget = nullptr;
+    QgsDockWidget *mDock = nullptr;
+    QDialog *mDialog = nullptr;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H

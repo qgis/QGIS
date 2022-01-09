@@ -13814,7 +13814,7 @@ void QgisApp::new3DMapCanvas()
   Qgs3DMapCanvasDockWidget *dock = createNew3DMapCanvasDock( name );
   if ( dock )
   {
-    setupDockWidget( dock, true );
+    setupDockWidget( dock->dockWidget(), true );
 
     QgsSettings settings;
 
@@ -13881,8 +13881,9 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
   markDirty();
 
   Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
-  map3DWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
-  map3DWidget->setWindowTitle( name );
+  QgsDockWidget *dock = map3DWidget->dockWidget();
+  dock->setAllowedAreas( Qt::AllDockWidgetAreas );
+  dock->setWindowTitle( name );
   map3DWidget->mapCanvas3D()->setObjectName( name );
   map3DWidget->setMainCanvas( mMapCanvas );
   map3DWidget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
@@ -16534,7 +16535,7 @@ void QgisApp::writeProject( QDomDocument &doc )
     elem3DMap.appendChild( elemCamera );
     QDomElement elemAnimation = w->animationWidget()->animation().writeXml( doc );
     elem3DMap.appendChild( elemAnimation );
-    writeDockWidgetSettings( w, elem3DMap );
+    writeDockWidgetSettings( w->dockWidget(), elem3DMap );
     elem3DMaps.appendChild( elem3DMap );
   }
   qgisNode.appendChild( elem3DMaps );
@@ -16658,7 +16659,7 @@ void QgisApp::readProject( const QDomDocument &doc )
       QString mapName = elem3DMap.attribute( QStringLiteral( "name" ) );
 
       Qgs3DMapCanvasDockWidget *mapCanvasDock3D = createNew3DMapCanvasDock( mapName );
-      readDockWidgetSettings( mapCanvasDock3D, elem3DMap );
+      readDockWidgetSettings( mapCanvasDock3D->dockWidget(), elem3DMap );
 
       QDomElement elem3D = elem3DMap.firstChildElement( QStringLiteral( "qgis3d" ) );
       Qgs3DMapSettings *map = new Qgs3DMapSettings;
