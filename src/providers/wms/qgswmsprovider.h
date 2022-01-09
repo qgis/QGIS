@@ -156,6 +156,30 @@ class QgsWmsInterpretationConverterMapTilerTerrainRGB : public QgsWmsInterpretat
     static QString interpretationKey() {return QStringLiteral( "maptilerterrain" );}
 };
 
+//! Class to convert color to float value following the terrarium terrain RGB interpretation
+class QgsWmsInterpretationConverterTerrariumRGB : public QgsWmsInterpretationConverter
+{
+  public:
+    void convert( const QRgb &color, float *converted ) const override;
+
+    QgsRasterBandStats statistics( int bandNo,
+                                   int stats = QgsRasterBandStats::All,
+                                   const QgsRectangle &extent = QgsRectangle(),
+                                   int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const override;
+
+    QgsRasterHistogram histogram( int bandNo,
+                                  int binCount = 0,
+                                  double minimum = std::numeric_limits<double>::quiet_NaN(),
+                                  double maximum = std::numeric_limits<double>::quiet_NaN(),
+                                  const QgsRectangle &extent = QgsRectangle(),
+                                  int sampleSize = 0,
+                                  bool includeOutOfRange = false,
+                                  QgsRasterBlockFeedback *feedback = nullptr ) const override;
+
+    static QString displayName() {return QObject::tr( "Terrarium Terrain RGB" );}
+    static QString interpretationKey() {return QStringLiteral( "terrariumterrain" );}
+};
+
 /**
  *
  * \brief Data provider for OGC WMS layers.

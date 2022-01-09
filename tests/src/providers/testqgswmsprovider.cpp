@@ -26,6 +26,8 @@
 #include <qgssinglebandpseudocolorrenderer.h>
 #include <qgsrastershader.h>
 #include <qgsstyle.h>
+#include "qgssinglebandgrayrenderer.h"
+#include "qgsrasterlayer.h"
 
 /**
  * \ingroup UnitTests
@@ -269,6 +271,34 @@ class TestQgsWmsProvider: public QObject
       mapSettings.setOutputDpi( 96 );
       mapSettings.setDpiTarget( 48 );
       QVERIFY( imageCheck( "convert_value", mapSettings ) );
+    }
+
+    void testTerrariumInterpretation()
+    {
+      QString dataDir( TEST_DATA_DIR );
+
+      QgsXyzConnection xyzConn;
+      xyzConn.interpretation = QgsWmsInterpretationConverterTerrariumRGB::interpretationKey();
+      xyzConn.url = QUrl::fromLocalFile( dataDir + QStringLiteral( "/terrarium_terrain_rgb.png" ) ).toString();
+      QgsRasterLayer layer( xyzConn.encodedUri(), "terrain", "wms" );
+      QVERIFY( layer.isValid() );
+      QVERIFY( layer.dataProvider()->dataType( 1 ) == Qgis::DataType::Float32 );
+
+      QgsSingleBandGrayRenderer *renderer = new QgsSingleBandGrayRenderer( layer.dataProvider(), 1 );
+      QgsContrastEnhancement *e = new QgsContrastEnhancement( Qgis::DataType::Float32 );
+      e->setMinimumValue( -50 );
+      e->setMaximumValue( 50 );
+      e->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+      renderer->setContrastEnhancement( e );
+      layer.setRenderer( renderer );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setLayers( QList<QgsMapLayer *>() << &layer );
+      mapSettings.setExtent( layer.extent() );
+      mapSettings.setOutputSize( QSize( 400, 400 ) );
+      mapSettings.setOutputDpi( 96 );
+      mapSettings.setDpiTarget( 48 );
+      QVERIFY( imageCheck( "terrarium_terrain", mapSettings ) );
     }
 
     bool imageCheck( const QString &testType, QgsMapSettings &mapSettings )
