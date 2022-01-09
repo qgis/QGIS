@@ -505,14 +505,14 @@
               <item row="1" column="0">
                <widget class="QLabel" name="label_2">
                 <property name="text">
-                 <string>Maximal mesh resolution</string>
+                 <string>Minimum triangle size</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="2">
                <widget class="QgsSpinBox" name="mSimplifyMeshResolutionSpinBox">
                 <property name="suffix">
-                 <string> pixels/triangle</string>
+                 <string> pixels</string>
                 </property>
                 <property name="minimum">
                  <number>1</number>
@@ -890,6 +890,7 @@
   <tabstop>mTemporalProviderTimeUnitComboBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections>
