@@ -420,11 +420,11 @@ Returns -1 if the point on the left side, 1 if the point is on the right side or
 
     static bool pointOnSegment( const QgsPoint &segmentPoint1, const QgsPoint &segmentPoint2, const QgsPoint &point ) /HoldGIL/;
 %Docstring
-For a segment defined by points pt1 and pt3, find out if point pt3 is on that segment.
+For a segment defined by points segmentPoint1 and segmentPoint2, find out if point is on that segment.
 
-:return: ``True`` if point pt2 lies on the segment between pt1 and pt2, ``False`` - otherwise.
+:return: ``True`` if point lies on the segment between segmentPoint1 and segmentPoint2, ``False`` - otherwise.
 
-.. versionadded:: 3.24
+.. versionadded:: 3.25
 %End
 
     static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) /HoldGIL/;

@@ -430,9 +430,9 @@ class CORE_EXPORT QgsGeometryUtils
     static int segmentSide( const QgsPoint &linePoint1, const QgsPoint &linePoint2, const QgsPoint &point ) SIP_HOLDGIL;
 
     /**
-     * For a segment defined by points pt1 and pt3, find out if point pt3 is on that segment.
-     * \return TRUE if point pt2 lies on the segment between pt1 and pt2, FALSE - otherwise.
-     * \since 3.24
+     * For a segment defined by points segmentPoint1 and segmentPoint2, find out if point is on that segment.
+     * \return TRUE if point lies on the segment between segmentPoint1 and segmentPoint2, FALSE - otherwise.
+     * \since 3.25
      */
     static bool pointOnSegment( const QgsPoint &segmentPoint1, const QgsPoint &segmentPoint2, const QgsPoint &point ) SIP_HOLDGIL;
 

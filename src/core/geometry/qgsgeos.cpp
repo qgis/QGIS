@@ -945,46 +945,46 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
 
       QgsPointSequence vertexPoints;
       int nVertices = line->numPoints();
-      line->points(vertexPoints);
-      bool splittableOnVertex=vertexPoints.contains(*splitPoint);
+      line->points( vertexPoints );
+      bool splittableOnVertex = vertexPoints.contains( *splitPoint );
 
       // if point coincides with one of the line's vertices
-      if (splittableOnVertex)
+      if ( splittableOnVertex )
       {
-          for ( int j = 1; j < ( nVertices - 1 ); ++j )
+        for ( int j = 1; j < ( nVertices - 1 ); ++j )
+        {
+          QgsPoint currentPoint = line->pointN( j );
+          newLine.addVertex( currentPoint );
+          if ( currentPoint == *splitPoint )
           {
-            QgsPoint currentPoint = line->pointN( j );
+            lines.addGeometry( newLine.clone() );
+            // newLine now turns from a newLine before the split into a new newLine after the split
+            newLine = QgsLineString();
             newLine.addVertex( currentPoint );
-            if ( currentPoint == *splitPoint )
-                {
-                  lines.addGeometry( newLine.clone() );
-                  // newLine now turns from a newLine before the split into a new newLine after the split
-                  newLine = QgsLineString();
-                  newLine.addVertex( currentPoint );
-                }
           }
-          newLine.addVertex( line->pointN( nVertices - 1 ) );
-          lines.addGeometry( newLine.clone() );
+        }
+        newLine.addVertex( line->pointN( nVertices - 1 ) );
+        lines.addGeometry( newLine.clone() );
       }
       // if point is on a segment between the line's vertices
       else
       {
-          for ( int j = 1; j < ( nVertices - 1 ); ++j )
+        for ( int j = 1; j < ( nVertices - 1 ); ++j )
+        {
+          QgsPoint currentPoint = line->pointN( j );
+          QgsPoint previousPoint = line->pointN( j - 1 );
+          if ( QgsGeometryUtils::pointOnSegment( previousPoint, currentPoint, *splitPoint ) )
           {
-              QgsPoint currentPoint = line->pointN( j );
-              QgsPoint previousPoint = line->pointN( j - 1 );
-              if ( QgsGeometryUtils::pointOnSegment( previousPoint, currentPoint, *splitPoint ) )
-              {
-                newLine.addVertex( *splitPoint );
-                lines.addGeometry( newLine.clone() );
-                // newLine now turns from a newLine before the split into a new newLine after the split
-                newLine = QgsLineString();
-                newLine.addVertex( *splitPoint );
-              }
-              newLine.addVertex( currentPoint );
+            newLine.addVertex( *splitPoint );
+            lines.addGeometry( newLine.clone() );
+            // newLine now turns from a newLine before the split into a new newLine after the split
+            newLine = QgsLineString();
+            newLine.addVertex( *splitPoint );
           }
-          newLine.addVertex( line->pointN( nVertices - 1 ) );
-          lines.addGeometry( newLine.clone() );
+          newLine.addVertex( currentPoint );
+        }
+        newLine.addVertex( line->pointN( nVertices - 1 ) );
+        lines.addGeometry( newLine.clone() );
       }
     }
   }
