@@ -1899,6 +1899,11 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlProvider::connection() const
   return mTransaction ? mTransaction->conn() : QgsMssqlDatabase::connectDb( uri().connectionInfo(), false );
 }
 
+void QgsMssqlProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  mShared = qobject_cast<QgsMssqlProvider *>( source )->mShared;
+}
+
 QString QgsMssqlProvider::subsetString() const
 {
   return mSqlWhereClause;

@@ -335,6 +335,11 @@ const QString &QgsOapifProvider::clientSideFilterExpression() const
   return mShared->mClientSideFilterExpression;
 }
 
+void QgsOapifProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  mShared = qobject_cast<QgsOapifProvider *>( source )  ->mShared;
+}
+
 QString QgsOapifProvider::name() const
 {
   return OAPIF_PROVIDER_KEY;

@@ -1312,6 +1312,11 @@ bool QgsWFSProvider::empty() const
 #endif
   return !getFeatures( request ).nextFeature( f );
 
+}
+
+void QgsWFSProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  mShared = qobject_cast<QgsWFSProvider *>( source )->mShared;
 };
 
 bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, QgsWkbTypes::Type &geomType )
