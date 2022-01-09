@@ -90,13 +90,13 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( bool stopEditing, QStringList
   for ( QgsVectorLayer *modifiedLayer : constModifiedLayers )
     connectionStringsLayers[QgsTransaction::connectionString( modifiedLayer->source() )].append( modifiedLayer );
 
-  QList<QSharedPointer<QgsTransaction> > openTransactions;
+  QList<std::shared_ptr<QgsTransaction> > openTransactions;
   const QStringList connectionStrings = connectionStringsLayers.keys();
   for ( const QString &connectionString : connectionStrings )
   {
     const QString providerKey = connectionStringsLayers.value( connectionString ).first()->providerType();
 
-    QSharedPointer<QgsTransaction> transaction;
+    std::shared_ptr<QgsTransaction> transaction;
     transaction.reset( QgsTransaction::create( connectionString, providerKey ) );
 
     QString errorMsg;
@@ -220,7 +220,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( bool stopEditing, QStringList
   // if everything went well, commit
   if ( success )
   {
-    QList<QSharedPointer<QgsTransaction> >::iterator openTransactionsIterator = openTransactions.begin();
+    QList<std::shared_ptr<QgsTransaction> >::iterator openTransactionsIterator = openTransactions.begin();
     while ( openTransactionsIterator != openTransactions.end() )
     {
       QString errorMsg;
@@ -239,7 +239,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( bool stopEditing, QStringList
   if ( !success )
   {
     QString rollbackError;
-    for ( const QSharedPointer<QgsTransaction> &transaction : openTransactions )
+    for ( const std::shared_ptr<QgsTransaction> &transaction : openTransactions )
       transaction->rollback( rollbackError );
   }
 
@@ -382,7 +382,7 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChild
 
   // Layers without relations
   {
-    QSet<QgsVectorLayer *> layersWithoutRelations = layers.toSet() - referencedLayers;
+    QSet<QgsVectorLayer *> layersWithoutRelations = QSet<QgsVectorLayer *>( layers.begin(), layers.end() ) - referencedLayers;
     layersWithoutRelations -= referencingLayers;
     orderedLayers.append( layersWithoutRelations.values() );
   }
