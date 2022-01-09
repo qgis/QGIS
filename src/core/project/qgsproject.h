@@ -918,12 +918,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Set transaction mode
      *
-     * \warning Make sure that this is only called when all layers are not in edit mode.
+     * \returns TRUE if the transaction mode could be changed
      *
+     * \note Transaction mode can be changed only when all layers are not in edit mode.
      * \see Qgis::TransactionMode
      * \since QGIS 3.24
      */
-    void setTransactionMode( Qgis::TransactionMode transactionMode );
+    bool setTransactionMode( Qgis::TransactionMode transactionMode );
 
     /**
      * Map of transaction groups

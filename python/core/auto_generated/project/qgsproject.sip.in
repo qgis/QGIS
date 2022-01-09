@@ -884,13 +884,15 @@ Returns the transaction mode
 .. versionadded:: 3.24
 %End
 
-    void setTransactionMode( Qgis::TransactionMode transactionMode );
+    bool setTransactionMode( Qgis::TransactionMode transactionMode );
 %Docstring
 Set transaction mode
 
-.. warning::
+:return: ``True`` if the transaction mode could be changed
 
-   Make sure that this is only called when all layers are not in edit mode.
+.. note::
+
+   Transaction mode can be changed only when all layers are not in edit mode.
 
 .. seealso:: Qgis.TransactionMode
 

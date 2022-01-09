@@ -3438,14 +3438,25 @@ Qgis::TransactionMode QgsProject::transactionMode() const
   return mTransactionMode;
 }
 
-void QgsProject::setTransactionMode( Qgis::TransactionMode transactionMode )
+bool QgsProject::setTransactionMode( Qgis::TransactionMode transactionMode )
 {
   if ( transactionMode == mTransactionMode )
-    return;
+    return true;
+
+  // Check that all layer are not in edit mode
+  const auto constLayers = mapLayers().values();
+  for ( QgsMapLayer *layer : constLayers )
+  {
+    if ( layer->isEditable() )
+    {
+      QgsLogger::warning( tr( "Transaction mode can be changed only if all layers are not editable." ) );
+      return false;
+    }
+  }
 
   mTransactionMode = transactionMode;
-
   updateTransactionGroups();
+  return true;
 }
 
 QMap<QPair<QString, QString>, QgsTransactionGroup *> QgsProject::transactionGroups()
