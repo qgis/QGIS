@@ -570,7 +570,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setTerrainRenderingEnabled( bool terrainRenderingEnabled );
 
     /**
-     * Returns the rendering usage
+     * Returns the renderer usage
      *
      * \see rendererUsage()
      * \since QGIS 3.24
@@ -578,12 +578,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     Qgis::RendererUsage rendererUsage() const;
 
     /**
-     * Sets the rendering usage
+     * Sets the renderer usage
      *
      * \see rendererUsage()
      * \since QGIS 3.24
      */
-    void setRendererUsage( const Qgis::RendererUsage &renderingUsage );
+    void setRendererUsage( Qgis::RendererUsage rendererUsage );
 
   signals:
     //! Emitted when the background color has changed

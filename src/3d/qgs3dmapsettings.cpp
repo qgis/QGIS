@@ -801,7 +801,7 @@ Qgis::RendererUsage Qgs3DMapSettings::rendererUsage() const
   return mRendererUsage;
 }
 
-void Qgs3DMapSettings::setRendererUsage( const Qgis::RendererUsage &renderingUsage )
+void Qgs3DMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
 {
-  mRendererUsage = renderingUsage;
+  mRendererUsage = rendererUsage;
 }
