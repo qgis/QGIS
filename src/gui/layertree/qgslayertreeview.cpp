@@ -467,8 +467,10 @@ void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewInd
     connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [ = ]
     {
       update();
+      viewport()->repaint();
     } );
     update();
+    viewport()->repaint(); //update() does not automatically trigger a repaint()
   }
 }
 

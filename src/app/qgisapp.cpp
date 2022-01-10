@@ -4973,6 +4973,11 @@ void QgisApp::initLayerTreeView()
 
   connect( mMapCanvas, &QgsMapCanvas::mapCanvasRefreshed, this, &QgisApp::updateFilterLegend );
   connect( mMapCanvas, &QgsMapCanvas::renderErrorOccurred, badLayerIndicatorProvider, &QgsLayerTreeViewBadLayerIndicatorProvider::reportLayerError );
+  connect( mMapCanvas, &QgsMapCanvas::renderErrorOccurred, mInfoBar, [this]( const QString & error, QgsMapLayer * layer )
+  {
+    QString message = layer->name() + QStringLiteral( ": " ) + error;
+    mInfoBar->pushItem( new QgsMessageBarItem( message, Qgis::MessageLevel::Warning, 60 ) );
+  } );
 }
 
 void QgisApp::setupLayerTreeViewFromSettings()

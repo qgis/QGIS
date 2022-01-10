@@ -82,7 +82,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
       QgsMessageViewer *m = new QgsMessageViewer( QgisApp::instance() );
       m->setWindowTitle( tr( "Layer Error" ) );
       if ( thisLayerErrors.count() == 1 )
-        m->setMessageAsPlainText( thisLayerErrors.at( 0 ) );
+        m->setMessageAsHtml( thisLayerErrors.at( 0 ) );
       else
       {
         QString message = QStringLiteral( "<ul>" );

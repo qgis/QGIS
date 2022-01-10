@@ -130,6 +130,13 @@ void QgsVectorTileLoader::tileReplyFinished()
   }
   else
   {
+    if ( reply->error() == QNetworkReply::ContentAccessDenied )
+    {
+      mError = tr( "Access denied" );
+      if ( !reply->data().isEmpty() )
+        mError.append( QStringLiteral( ": " ) + reply->data() );
+    }
+
     QgsDebugMsg( QStringLiteral( "Tile download failed! " ) + reply->errorString() );
     mReplies.removeOne( reply );
     reply->deleteLater();
@@ -153,6 +160,11 @@ void QgsVectorTileLoader::canceled()
   // stop blocking download
   mEventLoop->quit();
 
+}
+
+QString QgsVectorTileLoader::error() const
+{
+  return mError;
 }
 
 //////
