@@ -1424,7 +1424,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     std::unique_ptr< QgsTemporaryCursorOverride > mTemporaryCursorOverride;
 
     /**
-     * This attribute maps error strings occured during rendering with time.
+     * This attribute maps error strings occurred during rendering with time.
      * The string contains the layerId with the error message ("layerId:error").
      * This is used to avoid propagatation of repeated error message from renderer
      * in a short time range (\see notifyRendererErrors())
