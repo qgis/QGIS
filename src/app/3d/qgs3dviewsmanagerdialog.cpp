@@ -64,7 +64,6 @@ void Qgs3DViewsManagerDialog::showClicked()
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
   Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->open3DMapView( viewName );
-  QgsProject::instance()->setDirty();
   widget->show();
 
   m3DViewsListView->selectionModel()->setCurrentIndex( m3DViewsListView->selectionModel()->currentIndex(), QItemSelectionModel::Select );
@@ -80,8 +79,6 @@ void Qgs3DViewsManagerDialog::hideClicked()
 
   Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->get3DMapViewDock( viewName );
   widget->close();
-
-  QgsProject::instance()->setDirty();
 
   m3DViewsListView->selectionModel()->setCurrentIndex( m3DViewsListView->selectionModel()->currentIndex(), QItemSelectionModel::Select );
   currentChanged( m3DViewsListView->selectionModel()->currentIndex(), m3DViewsListView->selectionModel()->currentIndex() );

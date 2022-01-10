@@ -604,6 +604,16 @@ Sets whether the 2D terrain surface will be rendered in.
 %End
 
   signals:
+
+    void settingsChanged();
+%Docstring
+Emitted when one of the configuration settings has changed
+
+.. seealso:: :py:func:`connectChangedSignalsToSettingsChanged`
+
+.. versionadded:: 3.24
+%End
+
     void backgroundColorChanged();
 %Docstring
 Emitted when the background color has changed
