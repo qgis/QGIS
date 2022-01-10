@@ -43,7 +43,7 @@ QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
   {
     for ( QgsVectorLayer *layer : layers )
     {
-      if ( !transaction->addLayer( layer ) )
+      if ( !transaction->addLayer( layer, false ) )
       {
         transaction.reset();
         break;

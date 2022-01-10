@@ -11401,7 +11401,7 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
         QStringList commitErrors;
-        if ( !QgsProject::instance()->commitChanges( true, commitErrors, vlayer ) )
+        if ( !QgsProject::instance()->commitChanges( commitErrors, true, vlayer ) )
         {
           commitError( vlayer, commitErrors );
           // Leave the in-memory editing state alone,
@@ -11422,7 +11422,7 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
 
         QgsCanvasRefreshBlocker refreshBlocker;
 
-        if ( QgsProject::instance()->rollBack( vlayer ) )
+        if ( ! QgsProject::instance()->rollBack( vlayer ) )
         {
           visibleMessageBar()->pushMessage( tr( "Error" ),
                                             tr( "Problems during roll back" ),
@@ -11616,10 +11616,12 @@ void QgisApp::saveVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
   if ( vlayer == activeLayer() )
     mSaveRollbackInProgress = true;
 
-  if ( !vlayer->commitChanges( !leaveEditable ) )
+
+  QStringList commitErrors;
+  if ( !QgsProject::instance()->commitChanges( commitErrors, !leaveEditable, vlayer ) )
   {
     mSaveRollbackInProgress = false;
-    commitError( vlayer );
+    commitError( vlayer, commitErrors );
   }
 
   if ( triggerRepaint )
@@ -11682,7 +11684,7 @@ void QgisApp::cancelVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bo
     mSaveRollbackInProgress = true;
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( !vlayer->rollBack( !leaveEditable ) )
+  if ( ! QgsProject::instance()->rollBack( !leaveEditable, vlayer ) )
   {
     mSaveRollbackInProgress = false;
     QMessageBox::warning( nullptr,

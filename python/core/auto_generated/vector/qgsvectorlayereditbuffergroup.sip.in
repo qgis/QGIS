@@ -61,7 +61,7 @@ Start editing
 :return: ``True`` on success
 %End
 
-    bool commitChanges( bool stopEditing, QStringList &commitErrors );
+    bool commitChanges( QStringList &commitErrors, bool stopEditing = true );
 %Docstring
 Attempts to commit any changes to disk.  Returns the result of the attempt.
 If a commit fails, the in-memory changes are left alone.
@@ -80,7 +80,7 @@ that the user has some chance of repairing the damage cleanly.
 :return: ``True`` on success
 %End
 
-    bool rollBack();
+    bool rollBack( bool stopEditing = true );
 %Docstring
 Stop editing and discard the edits
 

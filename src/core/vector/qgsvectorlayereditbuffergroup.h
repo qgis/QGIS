@@ -90,14 +90,14 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
      *
      * \returns TRUE on success
      */
-    bool commitChanges( bool stopEditing, QStringList &commitErrors );
+    bool commitChanges( QStringList &commitErrors, bool stopEditing = true );
 
     /**
      * Stop editing and discard the edits
      *
      * \returns FALSE if errors occurred during rollback
      */
-    bool rollBack();
+    bool rollBack( bool stopEditing = true );
 
   private:
 

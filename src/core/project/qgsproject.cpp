@@ -648,7 +648,7 @@ bool QgsProject::startEditing( QgsVectorLayer *vectorLayer )
   return false;
 }
 
-bool QgsProject::commitChanges( bool stopEditing, QStringList &commitErrors, QgsVectorLayer *vectorLayer )
+bool QgsProject::commitChanges( QStringList &commitErrors, bool stopEditing, QgsVectorLayer *vectorLayer )
 {
   switch ( mTransactionMode )
   {
@@ -663,14 +663,14 @@ bool QgsProject::commitChanges( bool stopEditing, QStringList &commitErrors, Qgs
     }
     break;
     case Qgis::TransactionMode::BufferedGroups:
-      return mEditBufferGroup.commitChanges( stopEditing, commitErrors );
+      return mEditBufferGroup.commitChanges( commitErrors, stopEditing );
       break;
   }
 
   return false;
 }
 
-bool QgsProject::rollBack( QgsVectorLayer *vectorLayer )
+bool QgsProject::rollBack( bool stopEditing, QgsVectorLayer *vectorLayer )
 {
   switch ( mTransactionMode )
   {
@@ -679,11 +679,11 @@ bool QgsProject::rollBack( QgsVectorLayer *vectorLayer )
     {
       if ( ! vectorLayer )
         return false;
-      return vectorLayer->rollBack();
+      return vectorLayer->rollBack( stopEditing );
     }
     break;
     case Qgis::TransactionMode::BufferedGroups:
-      return mEditBufferGroup.rollBack();
+      return mEditBufferGroup.rollBack( stopEditing );
       break;
   }
 

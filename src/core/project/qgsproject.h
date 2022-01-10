@@ -2037,7 +2037,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.24
      */
-    bool commitChanges( bool stopEditing, QStringList &commitErrors, QgsVectorLayer *vectorLayer = nullptr );
+    bool commitChanges( QStringList &commitErrors, bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
 
     /**
      * Stops a current editing operation on vectorLayer and discards any uncommitted edits.
@@ -2047,7 +2047,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.24
      */
-    bool rollBack( QgsVectorLayer *vectorLayer = nullptr );
+    bool rollBack( bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );

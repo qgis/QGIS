@@ -3496,7 +3496,7 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
 
   bool success = false;
   if ( mEditBuffer->editBufferGroup() )
-    success = mEditBuffer->editBufferGroup()->commitChanges( stopEditing, mCommitErrors );
+    success = mEditBuffer->editBufferGroup()->commitChanges( mCommitErrors, stopEditing );
   else
     success = mEditBuffer->commitChanges( mCommitErrors );
 

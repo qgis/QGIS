@@ -78,7 +78,7 @@ bool QgsVectorLayerEditBufferGroup::startEditing()
   return editingStarted;
 }
 
-bool QgsVectorLayerEditBufferGroup::commitChanges( bool stopEditing, QStringList &commitErrors )
+bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bool stopEditing )
 {
   bool success = true;
 
@@ -110,7 +110,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( bool stopEditing, QStringList
     const auto constLayers = connectionStringsLayers.value( connectionString );
     for ( QgsVectorLayer *layer : constLayers )
     {
-      if ( ! transaction->addLayer( layer ) )
+      if ( ! transaction->addLayer( layer, true ) )
       {
         commitErrors << tr( "ERROR: could not add layer '%1' to transaction on data provider '%2'." ).arg( layer->name(), providerKey );
         success = false;
@@ -119,6 +119,9 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( bool stopEditing, QStringList
     }
 
     openTransactions.append( transaction );
+
+    if ( !success )
+      break;
   }
 
   // Order layers childrens to parents
@@ -284,16 +287,52 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( bool stopEditing, QStringList
   return success;
 }
 
-bool QgsVectorLayerEditBufferGroup::rollBack()
+bool QgsVectorLayerEditBufferGroup::rollBack( bool stopEditing )
 {
   const QList<QgsVectorLayer *> constLayers = mLayers;
   for ( QgsVectorLayer *layer : constLayers )
-    layer->rollBack();
-//    if( layer->editBuffer() )
-//      layer->editBuffer()->rollBack();
+  {
+    if ( ! layer->editBuffer() )
+      continue;
 
+    if ( !layer->dataProvider() )
+      return false;
 
-  return false;
+    bool rollbackExtent = !layer->editBuffer()->deletedFeatureIds().isEmpty() ||
+                          !layer->editBuffer()->addedFeatures().isEmpty() ||
+                          !layer->editBuffer()->changedGeometries().isEmpty();
+
+    emit layer->beforeRollBack();
+
+    layer->editBuffer()->rollBack();
+
+    emit layer->afterRollBack();
+
+    if ( layer->isModified() )
+    {
+      // new undo stack roll back method
+      // old method of calling every undo could cause many canvas refreshes
+      layer->undoStack()->setIndex( 0 );
+    }
+
+    layer->updateFields();
+
+    if ( stopEditing )
+    {
+      layer->clearEditBuffer();
+      layer->undoStack()->clear();
+    }
+    emit layer->editingStopped();
+
+    if ( rollbackExtent )
+      layer->updateExtents();
+
+    layer->dataProvider()->leaveUpdateMode();
+
+    layer->triggerRepaint();
+  }
+
+  return true;
 }
 
 QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChildren( QList<QgsVectorLayer *> layers )
