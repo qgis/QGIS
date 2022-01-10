@@ -212,6 +212,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     */
     bool isPinned();
 
+    bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
+
     bool createAuxiliaryFields( QgsPalIndexes &palIndexes );
     bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes ) const;
     bool createAuxiliaryFields( QgsDiagramIndexes &diagIndexes );
