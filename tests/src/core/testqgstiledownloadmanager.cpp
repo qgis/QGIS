@@ -86,6 +86,7 @@ void TestQgsTileDownloadManager::testOneRequest()
   spy.wait();
   QCOMPARE( spy.count(), 1 );
   QVERIFY( !r->data().isEmpty() );
+  QVERIFY( r->error() == QNetworkReply::NoError );
 
   QVERIFY( !manager.hasPendingRequests() );
 
@@ -157,7 +158,9 @@ void TestQgsTileDownloadManager::testOneRequestTwice()
   QCOMPARE( spy1.count(), 1 );
   QCOMPARE( spy2.count(), 1 );
   QVERIFY( !r1->data().isEmpty() );
+  QVERIFY( r1->error() == QNetworkReply::NoError );
   QVERIFY( !r2->data().isEmpty() );
+  QVERIFY( r2->error() == QNetworkReply::NoError );
 
   QVERIFY( !manager.hasPendingRequests() );
 
@@ -194,6 +197,7 @@ void TestQgsTileDownloadManager::testOneRequestTwiceAndEarlyDelete()
   spy.wait();
   QCOMPARE( spy.count(), 1 );
   QVERIFY( !r2->data().isEmpty() );
+  QVERIFY( r2->error() == QNetworkReply::NoError );
 
   QVERIFY( !manager.hasPendingRequests() );
 
@@ -222,7 +226,7 @@ void TestQgsTileDownloadManager::testOneRequestFailure()
   QSignalSpy spy( r.get(), &QgsTileDownloadManagerReply::finished );
   spy.wait();
   QCOMPARE( spy.count(), 1 );
-  QVERIFY( r->data().isEmpty() );
+  QVERIFY( r->error() != QNetworkReply::NoError );
 
   QVERIFY( !manager.hasPendingRequests() );
 
@@ -260,7 +264,9 @@ void TestQgsTileDownloadManager::testTwoRequests()
   QCOMPARE( spy1.count(), 1 );
   QCOMPARE( spy2.count(), 1 );
   QVERIFY( !r1->data().isEmpty() );
+  QVERIFY( r1->error() == QNetworkReply::NoError );
   QVERIFY( !r2->data().isEmpty() );
+  QVERIFY( r2->error() == QNetworkReply::NoError );
 
   QVERIFY( !manager.hasPendingRequests() );
 
