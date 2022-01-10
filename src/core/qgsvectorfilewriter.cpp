@@ -2426,20 +2426,6 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
 
   gdal::ogr_feature_unique_ptr poFeature( OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) ) );
 
-  qint64 fid = FID_TO_NUMBER( feature.id() );
-  if ( fid > std::numeric_limits<int>::max() )
-  {
-    QgsDebugMsg( QStringLiteral( "feature id %1 too large." ).arg( fid ) );
-    OGRErr err = OGR_F_SetFID( poFeature.get(), static_cast<long>( fid ) );
-    if ( err != OGRERR_NONE )
-    {
-      QgsDebugMsg( QStringLiteral( "Failed to set feature id to %1: %2 (OGR error: %3)" )
-                   .arg( feature.id() )
-                   .arg( err ).arg( CPLGetLastErrorMsg() )
-                 );
-    }
-  }
-
   // attribute handling
   for ( QMap<int, int>::const_iterator it = mAttrIdxToOgrIdx.constBegin(); it != mAttrIdxToOgrIdx.constEnd(); ++it )
   {
