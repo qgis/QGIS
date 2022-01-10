@@ -570,7 +570,7 @@ inline Chain *Problem::chain( int seed )
 }
 
 
-void Problem::chainSearch( QgsRenderContext &context )
+void Problem::chainSearch( QgsRenderContext & )
 {
   if ( mFeatureCount == 0 )
     return;
