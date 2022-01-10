@@ -612,7 +612,7 @@ Returns the renderer usage
 .. versionadded:: 3.24
 %End
 
-    void setRendererUsage( Qgis::RendererUsage &rendererUsage );
+    void setRendererUsage( Qgis::RendererUsage rendererUsage );
 %Docstring
 Sets the renderer usage
 
