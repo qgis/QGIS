@@ -91,7 +91,7 @@ class QgsVectorTileLoader : public QObject
     //! Blocks the caller until all asynchronous requests are finished (with a success or a failure)
     void downloadBlocking();
 
-    //! Returns a eventual error that occured during loading, void if no error.
+    //! Returns a eventual error that occurred during loading, void if no error.
     QString error() const;
 
   private:
