@@ -1111,10 +1111,11 @@ bool QgsGeometryUtils::pointOnSegment( const QgsPoint &segmentPoint1, const QgsP
     {
       return true;
     }
+    else
+      return false;
   }
   else
     return false;
-
 }
 
 double QgsGeometryUtils::interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 )
