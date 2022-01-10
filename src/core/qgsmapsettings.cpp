@@ -860,7 +860,7 @@ Qgis::RendererUsage QgsMapSettings::rendererUsage() const
   return mRendererUsage;
 }
 
-void QgsMapSettings::setRendererUsage( const Qgis::RendererUsage &rendererUsage )
+void QgsMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
 {
   mRendererUsage = rendererUsage;
 }

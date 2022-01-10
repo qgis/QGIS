@@ -822,7 +822,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \see rendererUsage()
      * \since QGIS 3.24
      */
-    void setRendererUsage( const Qgis::RendererUsage &rendererUsage );
+    void setRendererUsage( Qgis::RendererUsage rendererUsage );
 
   protected:
 
