@@ -644,12 +644,12 @@ QString QgsRasterInterface::displayBandName( int bandNumber ) const
   return name;
 }
 
-Qgis::RendererUsage QgsRasterBlockFeedback::rendererUsage() const
+QgsRenderContext QgsRasterBlockFeedback::renderContext() const
 {
-  return mRendererUsage;
+  return mRenderContext;
 }
 
-void QgsRasterBlockFeedback::setRendererUsage( const Qgis::RendererUsage &rendererUsage )
+void QgsRasterBlockFeedback::setRenderContext( const QgsRenderContext &renderContext )
 {
-  mRendererUsage = rendererUsage;
+  mRenderContext = renderContext;
 }

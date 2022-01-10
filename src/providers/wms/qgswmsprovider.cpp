@@ -1399,7 +1399,7 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
 
     if ( turl.contains( QLatin1String( "{usage}" ) ) && feedback )
     {
-      switch ( feedback->rendererUsage() )
+      switch ( feedback->renderContext().rendererUsage() )
       {
         case Qgis::RendererUsage::View:
           turl.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
@@ -4248,6 +4248,8 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString 
 
     QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
     connect( reply, &QNetworkReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
+
+    QString reqString = r.url.url();
 
     mReplies << reply;
   }

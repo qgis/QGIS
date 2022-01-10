@@ -985,6 +985,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     /**
     * Sets the renderer usage
     *
+    * \note This usage not alter how the map gets rendered but the intention is that data provider
+    * knows the context of rendering and may report that to the backend.
+    *
     * \see rendererUsage()
     * \since QGIS 3.24
     */

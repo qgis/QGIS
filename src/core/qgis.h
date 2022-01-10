@@ -1253,9 +1253,6 @@ class CORE_EXPORT Qgis
     /**
      *  Usage of the renderer.
      *
-     *  \note This usage not alter how the map gets rendered but the intention is that data provider
-     *  know the context of rendering and may report that to the backend.
-     *
      * \since QGIS 3.24
      */
     enum class RendererUsage : int

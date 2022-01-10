@@ -924,6 +924,11 @@ Returns the rendering usage
 %Docstring
 Sets the rendering usage
 
+.. note::
+
+   This usage not alter how the map gets rendered but the intention is that data provider
+   knows the context of rendering and may report that to the backend.
+
 .. seealso:: :py:func:`rendererUsage`
 
 .. versionadded:: 3.24

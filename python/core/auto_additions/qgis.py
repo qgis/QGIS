@@ -1197,7 +1197,7 @@ Qgis.AngularDirection.baseClass = Qgis
 Qgis.RendererUsage.View.__doc__ = "Renderer used for displaying on screen"
 Qgis.RendererUsage.Export.__doc__ = "Renderer used for printing or exporting to a file"
 Qgis.RendererUsage.Unknown.__doc__ = "Renderer used for unknown usage"
-Qgis.RendererUsage.__doc__ = 'Usage of the renderer.\n\n.. note::\n\n   This usage not alter how the map gets rendered but the intention is that data provider\n   know the context of rendering and may report that to the backend.\n\n.. versionadded:: 3.24\n\n' + '* ``View``: ' + Qgis.RendererUsage.View.__doc__ + '\n' + '* ``Export``: ' + Qgis.RendererUsage.Export.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.RendererUsage.Unknown.__doc__
+Qgis.RendererUsage.__doc__ = 'Usage of the renderer.\n\n.. versionadded:: 3.24\n\n' + '* ``View``: ' + Qgis.RendererUsage.View.__doc__ + '\n' + '* ``Export``: ' + Qgis.RendererUsage.Export.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.RendererUsage.Unknown.__doc__
 # --
 Qgis.RendererUsage.baseClass = Qgis
 # monkey patching scoped based enum
