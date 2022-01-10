@@ -978,8 +978,20 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       cmp.center = viewExtent.center();
       std::sort( requestsFinal.begin(), requestsFinal.end(), cmp );
 
-      QgsWmsTiledImageDownloadHandler handler( dataSourceUri(), mSettings.authorization(), mTileReqNo, requestsFinal, image, viewExtent, mSettings.mSmoothPixmapTransform, feedback );
+      QgsWmsTiledImageDownloadHandler handler(
+        dataSourceUri(),
+        mSettings.authorization(),
+        mTileReqNo,
+        requestsFinal,
+        image,
+        viewExtent,
+        mSettings.mSmoothPixmapTransform,
+        feedback );
+
       handler.downloadBlocking();
+
+      if ( feedback )
+        feedback->appendError( handler.error() );
     }
 
     QgsDebugMsgLevel( QStringLiteral( "TILE CACHE total: %1 / %2" ).arg( QgsTileCache::totalCost() ).arg( QgsTileCache::maxCost() ), 3 );
@@ -4395,7 +4407,6 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     if ( !status.isNull() && status.toInt() >= 400 )
     {
       QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-
       QgsWmsProvider::showMessageBox( tr( "Tile request error" ), tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() ) );
 
       mReplies.removeOne( reply );
@@ -4511,10 +4522,14 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       {
         QgsWmsStatistics::Stat &stat = QgsWmsStatistics::statForUri( mProviderUri );
         stat.errors++;
-
         // if we reached timeout, let's try again (e.g. in case of slow connection or slow server)
-        if ( reply->error() == QNetworkReply::TimeoutError )
-          repeatTileRequest( reply->request() );
+        repeatTileRequest( reply->request() );
+
+        if ( reply->error() == QNetworkReply::ContentAccessDenied )
+        {
+          mError = tr( "Access denied: %1" ).
+                   arg( reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString() );
+        }
       }
     }
 
@@ -4589,6 +4604,11 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
   mReplies << reply;
   connect( reply, &QNetworkReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
+}
+
+QString QgsWmsTiledImageDownloadHandler::error() const
+{
+  return mError;
 }
 
 // Some servers like http://glogow.geoportal2.pl/map/wms/wms.php? do not BBOX

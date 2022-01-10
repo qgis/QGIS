@@ -634,6 +634,8 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
     void downloadBlocking();
 
+    QString error() const;
+
   protected slots:
     void tileReplyFinished();
     void canceled();
@@ -652,7 +654,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
 
     QString mProviderUri;
-
+    QString mBaseUrl;
     QgsWmsAuthorization mAuth;
 
     QImage *mImage = nullptr;
@@ -667,6 +669,8 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     QList<QNetworkReply *> mReplies;
 
     QgsRasterBlockFeedback *mFeedback = nullptr;
+
+    QString mError;
 };
 
 
