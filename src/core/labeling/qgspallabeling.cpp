@@ -56,7 +56,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgstextrendererutils.h"
 #include "qgstextfragment.h"
-
+#include "qgsmultisurface.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -3807,7 +3807,17 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
       return std::isfinite( point.x() ) && std::isfinite( point.y() );
     } );
     if ( QgsCurvePolygon *cp = qgsgeometry_cast< QgsCurvePolygon * >( geom.get() ) )
+    {
       cp->removeInvalidRings();
+    }
+    else if ( QgsMultiSurface *ms = qgsgeometry_cast< QgsMultiSurface * >( geom.get() ) )
+    {
+      for ( int i = 0; i < ms->numGeometries(); ++i )
+      {
+        if ( QgsCurvePolygon *cp = qgsgeometry_cast< QgsCurvePolygon * >( ms->geometryN( i ) ) )
+          cp->removeInvalidRings();
+      }
+    }
   }
 
   // Rotate the geometry if needed, before clipping
