@@ -132,6 +132,7 @@ bool LayerRenderJob::imageCanBeComposed() const
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings &settings )
   : mSettings( settings )
   , mRenderedItemResults( std::make_unique< QgsRenderedItemResults >( settings.extent() ) )
+  , mLabelingEngineFeedback( new QgsLabelingEngineFeedback( this ) )
 {}
 
 QgsMapRendererJob::~QgsMapRendererJob() = default;
@@ -171,6 +172,11 @@ QgsMapRendererJob::Errors QgsMapRendererJob::errors() const
 void QgsMapRendererJob::setCache( QgsMapRendererCache *cache )
 {
   mCache = cache;
+}
+
+QgsLabelingEngineFeedback *QgsMapRendererJob::labelingEngineFeedback()
+{
+  return mLabelingEngineFeedback;
 }
 
 QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
@@ -771,6 +777,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
   job.context = QgsRenderContext::fromMapSettings( mSettings );
   job.context.setPainter( painter );
   job.context.setLabelingEngine( labelingEngine2 );
+  job.context.setFeedback( mLabelingEngineFeedback );
 
   QgsRectangle r1 = mSettings.visibleExtent();
   r1.grow( mSettings.extentBuffer() );

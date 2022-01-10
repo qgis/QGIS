@@ -159,6 +159,7 @@ Does not take ownership of the object.
 
 
 
+
     int renderingTime() const;
 %Docstring
 Returns the total time it took to finish the job (in milliseconds).

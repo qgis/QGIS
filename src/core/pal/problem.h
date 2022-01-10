@@ -37,6 +37,7 @@
 #include <list>
 #include <QList>
 #include "palrtree.h"
+#include "qgsrendercontext.h"
 #include <memory>
 #include <vector>
 
@@ -117,7 +118,7 @@ namespace pal
       /**
        * \brief Test with very-large scale neighborhood
        */
-      void chain_search();
+      void chainSearch( QgsRenderContext &context );
 
       /**
        * Solves the labeling problem, selecting the best candidate locations for all labels and returns a list of these
