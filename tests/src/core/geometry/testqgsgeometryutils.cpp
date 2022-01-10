@@ -75,6 +75,7 @@ class TestQgsGeometryUtils: public QObject
     void testPointOnLineWithDistance();
     void testPointOnSegment();
     void interpolatePointOnArc();
+    void testSegmentSide();
     void testSegmentizeArcHalfCircle();
     void testSegmentizeArcHalfCircleOtherDirection();
     void testSegmentizeArcFullCircle();
@@ -1358,6 +1359,25 @@ void TestQgsGeometryUtils::interpolatePointOnArc()
   p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 8, 2 ), QgsPoint( 6, 0 ), 3.141592 * 3 );
   QGSCOMPARENEAR( p.x(), 8.0, 0.00001 );
   QGSCOMPARENEAR( p.y(), -2.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testSegmentSide()
+{
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( 0, 1 ), QgsPoint( 0, 5 ), QgsPoint( 3, 2 ) ), 1 );
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( 0, 1 ), QgsPoint( 0, 5 ), QgsPoint( 0, 0 ) ), 0 );
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( 0, 1 ), QgsPoint( 0, 5 ), QgsPoint( -1, 2 ) ), -1 );
+
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( -3, -2 ) ), 1 );
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 0, 0 ) ), 0 );
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 3, 2 ) ), -1 );
+
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( 0, 4 ) ), -1 );
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( 3, 3 ) ), 0 );
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( 4, 2 ) ), 1 );
+
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( -1, 1 ), QgsPoint( -5, 5 ), QgsPoint( -3, 2 ) ), -1 );
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( -1, 1 ), QgsPoint( -5, 5 ), QgsPoint( -4.4, 4.4 ) ), 0 );
+  QCOMPARE( QgsGeometryUtils::segmentSide( QgsPoint( -1, 1 ), QgsPoint( -5, 5 ), QgsPoint( 3, 2 ) ), 1 );
 }
 
 void TestQgsGeometryUtils::testSegmentizeArcHalfCircle()
