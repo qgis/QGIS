@@ -86,9 +86,15 @@ void Problem::reduce()
 
   while ( run )
   {
+    if ( pal->isCanceled() )
+      break;
+
     run = false;
     for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
     {
+      if ( pal->isCanceled() )
+        break;
+
       // ok[i] = true;
       for ( j = 0; j < mFeatNbLp[i]; j++ )  // for each candidate
       {
@@ -564,7 +570,7 @@ inline Chain *Problem::chain( int seed )
 }
 
 
-void Problem::chain_search()
+void Problem::chainSearch( QgsRenderContext &context )
 {
   if ( mFeatureCount == 0 )
     return;

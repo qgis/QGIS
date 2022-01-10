@@ -42,6 +42,8 @@
 #include "util.h"
 #include "palrtree.h"
 #include "qgssettings.h"
+#include "qgslabelingengine.h"
+#include "qgsrendercontext.h"
 #include <cfloat>
 #include <list>
 
@@ -89,8 +91,10 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
   return res;
 }
 
-std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
+std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary, QgsRenderContext &context )
 {
+  QgsLabelingEngineFeedback *feedback = qobject_cast< QgsLabelingEngineFeedback * >( context.feedback() );
+
   // expand out the incoming buffer by 1000x -- that's the visible map extent, yet we may be getting features which exceed this extent
   // (while 1000x may seem excessive here, this value is only used for scaling coordinates in the spatial indexes
   // and the consequence of inserting coordinates outside this extent is worse than the consequence of setting this value too large.)
@@ -128,8 +132,15 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   QStringList layersWithFeaturesInBBox;
 
   QMutexLocker palLocker( &mMutex );
+
+  double step = !mLayers.empty() ? 100.0 / mLayers.size() : 1;
+  int index = -1;
   for ( const auto &it : mLayers )
   {
+    index++;
+    if ( feedback )
+      feedback->setProgress( index * step );
+
     Layer *layer = it.second.get();
     if ( !layer )
     {
@@ -140,6 +151,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     // only select those who are active
     if ( !layer->active() )
       continue;
+
+    if ( feedback )
+      feedback->emit candidateCreationAboutToBegin( it.first );
 
     // check for connected features with the same label text and join them
     if ( layer->mergeConnectedLines() )
@@ -155,9 +169,15 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     QMutexLocker locker( &layer->mMutex );
 
+    const double featureStep = !layer->mFeatureParts.empty() ? step / layer->mFeatureParts.size() : 1;
+    std::size_t featureIndex = 0;
     // generate candidates for all features
     for ( const std::unique_ptr< FeaturePart > &featurePart : std::as_const( layer->mFeatureParts ) )
     {
+      if ( feedback )
+        feedback->setProgress( index * step + featureIndex * featureStep );
+      featureIndex++;
+
       if ( isCanceled() )
         break;
 
@@ -265,6 +285,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     }
     previousFeatureCount = features.size();
     previousObstacleCount = obstacleCount;
+
+    if ( feedback )
+      feedback->emit candidateCreationFinished( it.first );
   }
   palLocker.unlock();
 
@@ -282,9 +305,18 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   if ( !features.empty() )
   {
+    if ( feedback )
+      feedback->emit obstacleCostingAboutToBegin();
     // Filtering label positions against obstacles
+    index = -1;
+    step = !allObstacleParts.empty() ? 100.0 / allObstacleParts.size() : 1;
+
     for ( FeaturePart *obstaclePart : allObstacleParts )
     {
+      index++;
+      if ( feedback )
+        feedback->setProgress( step * index );
+
       if ( isCanceled() )
         break; // do not continue searching
 
@@ -307,14 +339,24 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       } );
     }
 
+    if ( feedback )
+      feedback->emit obstacleCostingFinished();
+
     if ( isCanceled() )
     {
       return nullptr;
     }
 
+    step = prob->mFeatureCount != 0 ? 100.0 / prob->mFeatureCount : 1;
+    if ( feedback )
+      feedback->emit calculatingConflictsAboutToBegin();
+
     int idlp = 0;
     for ( std::size_t i = 0; i < prob->mFeatureCount; i++ ) /* for each feature into prob */
     {
+      if ( feedback )
+        feedback->setProgress( i * step );
+
       std::unique_ptr< Feats > feat = std::move( features.front() );
       features.pop_front();
 
@@ -422,12 +464,25 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       features.emplace_back( std::move( feat ) );
     }
 
+    if ( feedback )
+      feedback->emit calculatingConflictsFinished();
+
     int nbOverlaps = 0;
 
     double amin[2];
     double amax[2];
+
+    if ( feedback )
+      feedback->emit finalizingCandidatesAboutToBegin();
+
+    index = -1;
+    step = !features.empty() ? 100.0 / features.size() : 1;
     while ( !features.empty() ) // for each feature
     {
+      index++;
+      if ( feedback )
+        feedback->setProgress( step * index );
+
       if ( isCanceled() )
         return nullptr;
 
@@ -466,6 +521,10 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
           return nullptr;
       }
     }
+
+    if ( feedback )
+      feedback->emit finalizingCandidatesFinished();
+
     nbOverlaps /= 2;
     prob->mAllNblp = prob->mTotalCandidates;
     prob->mNbOverlap = nbOverlaps;
@@ -480,26 +539,36 @@ void Pal::registerCancellationCallback( Pal::FnIsCanceled fnCanceled, void *cont
   fnIsCanceledContext = context;
 }
 
-std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
-{
-  return extract( extent, mapBoundary );
-}
 
-QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll, QList<LabelPosition *> *unlabeled )
+QList<LabelPosition *> Pal::solveProblem( Problem *prob, QgsRenderContext &context, bool displayAll, QList<LabelPosition *> *unlabeled )
 {
+  QgsLabelingEngineFeedback *feedback = qobject_cast< QgsLabelingEngineFeedback * >( context.feedback() );
+
   if ( !prob )
     return QList<LabelPosition *>();
 
+  if ( feedback )
+    feedback->emit reductionAboutToBegin();
+
   prob->reduce();
+
+  if ( feedback )
+    feedback->emit reductionFinished();
+
+  if ( feedback )
+    feedback->emit solvingPlacementAboutToBegin();
 
   try
   {
-    prob->chain_search();
+    prob->chainSearch( context );
   }
   catch ( InternalException::Empty & )
   {
     return QList<LabelPosition *>();
   }
+
+  if ( feedback )
+    feedback->emit solvingPlacementFinished();
 
   return prob->getSolution( displayAll, unlabeled );
 }

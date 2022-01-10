@@ -133,7 +133,7 @@ namespace pal
        * the rendered map. This may differ from \a extent in the case of rotated or non-rectangular
        * maps.
        */
-      std::unique_ptr< Problem > extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary );
+      std::unique_ptr< Problem > extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary, QgsRenderContext &context );
 
       /**
        * Solves the labeling problem, selecting the best candidate locations for all labels and returns a list of these
@@ -147,7 +147,7 @@ namespace pal
        *
        * Ownership of the returned labels is not transferred - it resides with the pal object.
        */
-      QList<LabelPosition *> solveProblem( Problem *prob, bool displayAll, QList<pal::LabelPosition *> *unlabeled = nullptr );
+      QList<LabelPosition *> solveProblem( Problem *prob, QgsRenderContext &context, bool displayAll, QList<pal::LabelPosition *> *unlabeled = nullptr );
 
       /**
        * Sets whether partial labels show be allowed.
@@ -285,13 +285,6 @@ namespace pal
       FnIsCanceled fnIsCanceled = nullptr;
       //! Application-specific context for the cancellation check function
       void *fnIsCanceledContext = nullptr;
-
-      /**
-       * Creates a Problem, by extracting labels and generating candidates from the given \a extent.
-       * The \a mapBoundary geometry specifies the actual visible region of the map, and is used
-       * for pruning candidates which fall outside the visible region.
-       */
-      std::unique_ptr< Problem > extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary );
 
       /**
        * \brief Choose the size of popmusic subpart's

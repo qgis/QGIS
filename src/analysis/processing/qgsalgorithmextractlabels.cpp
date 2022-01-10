@@ -25,6 +25,7 @@
 #include "qgsscalecalculator.h"
 #include "qgstextlabelfeature.h"
 #include "qgsnullsymbolrenderer.h"
+#include "qgsprocessingfeedback.h"
 
 #include "pal/feature.h"
 #include "pal/pointset.h"
@@ -122,11 +123,11 @@ QgsExtractLabelsAlgorithm *QgsExtractLabelsAlgorithm::createInstance() const
 class ExtractLabelSink : public QgsLabelSink
 {
   public:
-    ExtractLabelSink( QMap<QString, QString> mapLayerNames, QgsProcessingFeedback *feedback )
+    ExtractLabelSink( const QMap<QString, QString> &mapLayerNames, QgsProcessingFeedback *feedback )
       : mMapLayerNames( mapLayerNames )
       , mFeedback( feedback )
     {
-    };
+    }
 
     void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) override
     {
@@ -175,7 +176,7 @@ class ExtractLabelSink : public QgsLabelSink
       const QString labelText = QgsPalLabeling::splitToLines( labelFeature->text( -1 ),
                                 labelSettings.wrapChar,
                                 labelSettings.autoWrapLength,
-                                labelSettings.useMaxLineLengthForAutoWrap ).join( "\n" );
+                                labelSettings.useMaxLineLengthForAutoWrap ).join( '\n' );
 
       QString labelAlignment;
       if ( dataDefinedValues.contains( QgsPalLayerSettings::MultiLineAlignment ) )
@@ -307,7 +308,7 @@ class ExtractLabelSink : public QgsLabelSink
       feature.setAttributes( attributes );
       feature.setGeometry( geometry );
       features << feature;
-    };
+    }
 
     QList<QgsFeature> features;
 
@@ -389,7 +390,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
 
   QgsNullPaintDevice nullPaintDevice;
   nullPaintDevice.setOutputSize( imageSize );
-  nullPaintDevice.setOutputDpi( dpi );
+  nullPaintDevice.setOutputDpi( static_cast< int >( std::round( dpi ) ) );
   QPainter painter( &nullPaintDevice );
 
   QgsMapRendererCustomPainterJob renderJob( mapSettings, &painter );
@@ -398,10 +399,77 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
 
   feedback->pushInfo( QObject::tr( "Extracting labels" ) );
 
+  QgsProcessingMultiStepFeedback multiStepFeedback( 10, feedback );
+  multiStepFeedback.setCurrentStep( 0 );
+
   QEventLoop loop;
   QObject::connect( feedback, &QgsFeedback::canceled, &renderJob, &QgsMapRendererCustomPainterJob::cancel );
   QObject::connect( &renderJob, &QgsMapRendererJob::renderingLayersFinished, feedback, [feedback]() { feedback->pushInfo( QObject::tr( "Calculating label placement" ) ); } );
-  QObject::connect( &renderJob, &QgsMapRendererJob::layerRenderingStarted, feedback, [this, feedback]( const QString & layerId ) { feedback->pushInfo( QObject::tr( "Collecting labels for %1" ).arg( mMapLayerNames.value( layerId ) ) ); } );
+  int labelsCollectedFromLayers = 0;
+  QObject::connect( &renderJob, &QgsMapRendererJob::layerRenderingStarted, feedback, [this, &multiStepFeedback, &labelsCollectedFromLayers]( const QString & layerId )
+  {
+    multiStepFeedback.pushInfo( QObject::tr( "Collecting labelled features from %1" ).arg( mMapLayerNames.value( layerId ) ) );
+    multiStepFeedback.setProgress( 100.0 * static_cast< double >( labelsCollectedFromLayers ) / mMapLayers.size() );
+    labelsCollectedFromLayers++;
+  } );
+
+  QObject::connect( renderJob.labelingEngineFeedback(), &QgsLabelingEngineFeedback::labelRegistrationAboutToBegin, &multiStepFeedback, [&multiStepFeedback]()
+  {
+    multiStepFeedback.setCurrentStep( 1 );
+    multiStepFeedback.pushInfo( QObject::tr( "Registering labels" ) );
+  } );
+
+  QObject::connect( renderJob.labelingEngineFeedback(), &QgsLabelingEngineFeedback::providerRegistrationAboutToBegin, &multiStepFeedback, [this, &multiStepFeedback]( QgsAbstractLabelProvider * provider )
+  {
+    multiStepFeedback.setCurrentStep( 2 );
+    if ( !provider->layerId().isEmpty() )
+    {
+      multiStepFeedback.pushInfo( QObject::tr( "Adding labels from %1" ).arg( mMapLayerNames.value( provider->layerId() ) ) );
+    }
+  } );
+  QObject::connect( renderJob.labelingEngineFeedback(), &QgsLabelingEngineFeedback::candidateCreationAboutToBegin, &multiStepFeedback, [this, &multiStepFeedback]( QgsAbstractLabelProvider * provider )
+  {
+    multiStepFeedback.setCurrentStep( 3 );
+    if ( !provider->layerId().isEmpty() )
+    {
+      multiStepFeedback.pushInfo( QObject::tr( "Generating label placement candidates for %1" ).arg( mMapLayerNames.value( provider->layerId() ) ) );
+    }
+  } );
+  QObject::connect( renderJob.labelingEngineFeedback(), &QgsLabelingEngineFeedback::obstacleCostingAboutToBegin, &multiStepFeedback, [&multiStepFeedback]()
+  {
+    multiStepFeedback.setCurrentStep( 4 );
+    multiStepFeedback.setProgressText( QObject::tr( "Calculating obstacle costs" ) );
+  } );
+  QObject::connect( renderJob.labelingEngineFeedback(), &QgsLabelingEngineFeedback::calculatingConflictsAboutToBegin, &multiStepFeedback, [&multiStepFeedback]()
+  {
+    multiStepFeedback.setCurrentStep( 5 );
+    multiStepFeedback.setProgressText( QObject::tr( "Calculating label conflicts" ) );
+  } );
+  QObject::connect( renderJob.labelingEngineFeedback(), &QgsLabelingEngineFeedback::finalizingCandidatesAboutToBegin, &multiStepFeedback, [&multiStepFeedback]()
+  {
+    multiStepFeedback.setCurrentStep( 6 );
+    multiStepFeedback.setProgressText( QObject::tr( "Finalizing candidates" ) );
+  } );
+  QObject::connect( renderJob.labelingEngineFeedback(), &QgsLabelingEngineFeedback::reductionAboutToBegin, &multiStepFeedback, [&multiStepFeedback]()
+  {
+    multiStepFeedback.setCurrentStep( 7 );
+    multiStepFeedback.setProgressText( QObject::tr( "Reducing problem" ) );
+  } );
+  QObject::connect( renderJob.labelingEngineFeedback(), &QgsLabelingEngineFeedback::solvingPlacementAboutToBegin, &multiStepFeedback, [&multiStepFeedback]()
+  {
+    multiStepFeedback.setCurrentStep( 8 );
+    multiStepFeedback.setProgressText( QObject::tr( "Determining optimal label placements" ) );
+  } );
+  QObject::connect( renderJob.labelingEngineFeedback(), &QgsLabelingEngineFeedback::solvingPlacementFinished, &multiStepFeedback, [&multiStepFeedback]()
+  {
+    multiStepFeedback.setProgressText( QObject::tr( "Labeling complete" ) );
+  } );
+
+  QObject::connect( renderJob.labelingEngineFeedback(), &QgsLabelingEngineFeedback::progressChanged, &multiStepFeedback, [&multiStepFeedback]( double progress )
+  {
+    multiStepFeedback.setProgress( progress );
+  } );
+
   QObject::connect( &renderJob, &QgsMapRendererJob::finished, &loop, [&loop]() { loop.exit(); } );
   renderJob.start();
   loop.exec();
@@ -409,9 +477,14 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   qDeleteAll( mMapLayers );
   mMapLayers.clear();
 
+  multiStepFeedback.setCurrentStep( 9 );
   feedback->pushInfo( QObject::tr( "Writing %n label(s) to output layer", "", labelSink.features.count() ) );
+  const double step = !labelSink.features.empty() ? 100.0 / labelSink.features.count() : 1;
+  long long index = -1;
   for ( QgsFeature &feature : labelSink.features )
   {
+    index++;
+    multiStepFeedback.setProgress( step * index );
     if ( feedback->isCanceled() )
       break;
 
@@ -498,7 +571,9 @@ bool QgsExtractLabelsAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   {
     QList<QgsMapLayer *> layers;
     QgsLayerTree *root = context.project()->layerTreeRoot();
-    for ( QgsLayerTreeLayer *nodeLayer : root->findLayers() )
+    const QList<QgsLayerTreeLayer *> layerTreeLayers = root->findLayers();
+    layers.reserve( layerTreeLayers.size() );
+    for ( QgsLayerTreeLayer *nodeLayer : layerTreeLayers )
     {
       QgsMapLayer *layer = nodeLayer->layer();
       if ( nodeLayer->isVisible() && root->layerOrder().contains( layer ) )
