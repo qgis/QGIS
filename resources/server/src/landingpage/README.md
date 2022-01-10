@@ -17,7 +17,7 @@ yarn serve
 yarn build
 ```
 
-Built files needs to be moved from `dist` to `resources/server/api/ogc/static/landingpage`.
+Built files location: `../../api/ogc/static/landingpage/`
 
 ### Lints and fixes files
 ```

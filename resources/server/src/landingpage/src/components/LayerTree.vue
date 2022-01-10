@@ -51,7 +51,7 @@
 
 <script>
 import LayerTreeNode from "@/components/LayerTreeNode.vue";
-const uuidv4 = require("uuid/v4");
+import { v4 as uuidv4 } from 'uuid';
 export default {
   name: "LayerTree",
   props: {
