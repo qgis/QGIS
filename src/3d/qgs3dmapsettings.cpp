@@ -78,6 +78,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mDebugDepthMapCorner( other.mDebugDepthMapCorner )
   , mDebugDepthMapSize( other.mDebugDepthMapSize )
   , mTerrainRenderingEnabled( other.mTerrainRenderingEnabled )
+  , mRendererUsage( other.mRendererUsage )
 {
   for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
   {
@@ -793,4 +794,14 @@ void Qgs3DMapSettings::setTerrainRenderingEnabled( bool terrainRenderingEnabled 
     return;
   mTerrainRenderingEnabled = terrainRenderingEnabled;
   emit terrainGeneratorChanged();
+}
+
+Qgis::RendererUsage Qgs3DMapSettings::rendererUsage() const
+{
+  return mRendererUsage;
+}
+
+void Qgs3DMapSettings::setRendererUsage( const Qgis::RendererUsage &renderingUsage )
+{
+  mRendererUsage = renderingUsage;
 }

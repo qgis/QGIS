@@ -569,6 +569,22 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setTerrainRenderingEnabled( bool terrainRenderingEnabled );
 
+    /**
+     * Returns the rendering usage
+     *
+     * \see rendererUsage()
+     * \since QGIS 3.24
+     */
+    Qgis::RendererUsage rendererUsage() const;
+
+    /**
+     * Sets the rendering usage
+     *
+     * \see rendererUsage()
+     * \since QGIS 3.24
+     */
+    void setRendererUsage( const Qgis::RendererUsage &renderingUsage );
+
   signals:
     //! Emitted when the background color has changed
     void backgroundColorChanged();
@@ -786,6 +802,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double mDebugDepthMapSize = 0.2;
 
     bool mTerrainRenderingEnabled = true;
+
+    Qgis::RendererUsage mRendererUsage;
 };
 
 

@@ -159,7 +159,7 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   mapSettings.setFlag( Qgis::MapSettingsFlag::Render3DMap );
   mapSettings.setTransformContext( mMap.transformContext() );
   mapSettings.setPathResolver( mMap.pathResolver() );
-  mapSettings.setRendererUsage( Qgis::RendererUsage::View );
+  mapSettings.setRendererUsage( mMap.rendererUsage() );
 
   QgsMapThemeCollection *mapThemes = mMap.mapThemeCollection();
   QString mapThemeName = mMap.terrainMapTheme();
