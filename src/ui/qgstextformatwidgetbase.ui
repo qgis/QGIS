@@ -3934,8 +3934,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>488</width>
-                       <height>404</height>
+                       <width>159</width>
+                       <height>211</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -6950,6 +6950,9 @@ font-style: italic;</string>
   <tabstop>mGeometryGeneratorGroupBox</tabstop>
   <tabstop>mGeometryGeneratorExpressionButton</tabstop>
   <tabstop>mGeometryGeneratorType</tabstop>
+  <tabstop>mCoordXDDBtn</tabstop>
+  <tabstop>mCoordYDDBtn</tabstop>
+  <tabstop>mCoordPointDDBtn</tabstop>
   <tabstop>mCoordAlignmentHDDBtn</tabstop>
   <tabstop>mCoordAlignmentVDDBtn</tabstop>
   <tabstop>mCoordRotationDDBtn</tabstop>

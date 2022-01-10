@@ -243,18 +243,18 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
             return;
           }
         }
-      }
 
-      mStartPointMapCoords = e->mapPoint();
-      QgsPointXY referencePoint;
-      if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation() ) )
-      {
-        referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
-        referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
+        mStartPointMapCoords = e->mapPoint();
+        QgsPointXY referencePoint;
+        if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation() ) )
+        {
+          referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
+          referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
+        }
+        mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
+        mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
+        createRubberBands();
       }
-      mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
-      mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
-      createRubberBands();
     }
   }
   else
