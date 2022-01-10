@@ -85,6 +85,7 @@ class TestQgsLabelingEngine : public QObject
     void curvedOverrun();
     void parallelOverrun();
     void testDataDefinedLabelAllParts();
+    void testDataDefinedPlacementPositionPoint();
     void testVerticalOrientation();
     void testVerticalOrientationLetterLineSpacing();
     void testRotationBasedOrientationPoint();
@@ -2859,7 +2860,49 @@ void TestQgsLabelingEngine::testDataDefinedLabelAllParts()
 
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_datadefined_label_all_parts" ), img, 20 ) );
+}
 
+void TestQgsLabelingEngine::testDataDefinedPlacementPositionPoint()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+
+  // first render the map and labeling separately
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  setDefaultLabelParams( settings );
+
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionPoint, QgsProperty::fromExpression( QStringLiteral( "translate($geometry, 1, 0.5)" ) ) );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "label_datadefined_placement_position_point", img, 20 ) );
+
+  vl->setLabeling( nullptr );
 }
 
 void TestQgsLabelingEngine::testVerticalOrientation()

@@ -36,6 +36,7 @@
 #include "qgsstatusbar.h"
 #include "qgslabelingresults.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QMouseEvent>
 
@@ -630,7 +631,7 @@ QVariant QgsMapToolLabel::evaluateDataDefinedProperty( QgsPalLayerSettings::Prop
   return labelSettings.dataDefinedProperties().value( property, context, defaultValue );
 }
 
-bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol ) const
+bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol, int &pointCol ) const
 {
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
   QgsFeatureId featureId = mCurrentLabel.pos.featureId;
@@ -650,7 +651,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
       return false;
     }
   }
-  else if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+  else if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
   {
     return false;
   }
@@ -661,18 +662,37 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
     return false;
   }
 
-  if ( mCurrentLabel.pos.isUnplaced )
-  {
-    xSuccess = false;
-    ySuccess = false;
-  }
-  else
+  if ( !mCurrentLabel.pos.isUnplaced )
   {
     QgsAttributes attributes = f.attributes();
-    if ( !attributes.at( xCol ).isNull() )
-      x = attributes.at( xCol ).toDouble( &xSuccess );
-    if ( !attributes.at( yCol ).isNull() )
-      y = attributes.at( yCol ).toDouble( &ySuccess );
+
+    if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+    {
+      if ( pointCol >= 0
+           && !attributes.at( pointCol ).isNull() )
+      {
+        QVariant pointAsVariant = attributes.at( pointCol );
+        if ( pointAsVariant.canConvert<QgsGeometry>() )
+        {
+          const  QgsGeometry geometry = pointAsVariant.value<QgsGeometry>();
+          if ( const QgsPoint *point  = ( geometry.constGet() ? qgsgeometry_cast<const QgsPoint *>( geometry.constGet()->simplifiedTypeRef() ) : nullptr ) )
+          {
+            x = point->x();
+            y = point->y();
+
+            xSuccess = true;
+            ySuccess = true;
+          }
+        }
+      }
+    }
+    else
+    {
+      if ( !attributes.at( xCol ).isNull() )
+        x = attributes.at( xCol ).toDouble( &xSuccess );
+      if ( !attributes.at( yCol ).isNull() )
+        y = attributes.at( yCol ).toDouble( &ySuccess );
+    }
   }
 
   return true;
@@ -710,16 +730,41 @@ bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &r
   //test, if data defined x- and y- values are not null. Otherwise, the position is determined by PAL and the rotation cannot be fixed
   if ( !ignoreXY )
   {
-    int xCol, yCol;
+    int xCol, yCol, pointCol;
     double x, y;
     bool xSuccess, ySuccess;
-    if ( !currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
+    if ( !currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol, pointCol ) || !xSuccess || !ySuccess )
     {
       return false;
     }
   }
 
   rotation = f.attribute( rCol ).toDouble( &rotationSuccess );
+  return true;
+}
+
+bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, const QVariant &y )
+{
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+  {
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer );
+    int pointCol = mCurrentLabel.layer->fields().lookupField( pointColName );
+
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, pointCol, QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromPointXY( QgsPoint( x.toDouble(), y.toDouble() ) ), mCurrentLabel.layer->crs() ) ) ) )
+      return false;
+  }
+  else
+  {
+    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer );
+    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, mCurrentLabel.layer );
+    int xCol = mCurrentLabel.layer->fields().lookupField( xColName );
+    int yCol = mCurrentLabel.layer->fields().lookupField( yColName );
+
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, x )
+         || !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, y ) )
+      return false;
+  }
+
   return true;
 }
 
@@ -782,40 +827,6 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
   return false;
 }
 
-bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
-{
-  if ( !vlayer || !vlayer->isEditable() || !vlayer->labelsEnabled() )
-  {
-    return false;
-  }
-
-  const auto constSubProviders = vlayer->labeling()->subProviders();
-  for ( const QString &providerId : constSubProviders )
-  {
-    if ( labelMoveable( vlayer, vlayer->labeling()->settings( providerId ), xCol, yCol ) )
-      return true;
-  }
-
-  return false;
-}
-
-bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol ) const
-{
-  QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
-  QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
-  //return !xColName.isEmpty() && !yColName.isEmpty();
-  xCol = vlayer->fields().lookupField( xColName );
-  yCol = vlayer->fields().lookupField( yColName );
-  return ( xCol != -1 && yCol != -1 );
-}
-
-bool QgsMapToolLabel::layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
-{
-  // currently same as QgsMapToolLabel::labelMoveable, but may change
-  bool canPin = labelMoveable( vlayer, xCol, yCol );
-  return canPin;
-}
-
 bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
 {
   if ( !vlayer || !vlayer->isEditable() || !vlayer->labelsEnabled() )
@@ -848,15 +859,43 @@ bool QgsMapToolLabel::isPinned()
   {
     // for diagrams, the isPinned attribute is not set. So we check directly if
     // there's data defined.
-    int xCol, yCol;
+    int xCol, yCol, pointCol;
     double x, y;
     bool xSuccess, ySuccess;
 
-    if ( currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol ) && xSuccess && ySuccess )
+    if ( currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol, pointCol ) && xSuccess && ySuccess )
       rc = true;
   }
 
   return rc;
+}
+
+bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const
+{
+  xCol = -1;
+  yCol = -1;
+  pointCol = -1;
+
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+  {
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer );
+    pointCol = vlayer->fields().lookupField( pointColName );
+    if ( pointCol >= 0 )
+      return true;
+  }
+
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionX )
+       && settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionY ) )
+  {
+    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
+    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
+    xCol = vlayer->fields().lookupField( xColName );
+    yCol = vlayer->fields().lookupField( yColName );
+    if ( xCol >= 0 || yCol >= 0 )
+      return true;
+  }
+
+  return false;
 }
 
 bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const

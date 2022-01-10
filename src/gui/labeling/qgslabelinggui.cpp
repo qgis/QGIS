@@ -482,7 +482,6 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   // do this after other widgets are configured, so they can be enabled/disabled
   populateDataDefinedButtons();
 
-  enableDataDefinedAlignment( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() );
   updateUi(); // should come after data defined button setup
 }
 
