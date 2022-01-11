@@ -336,14 +336,71 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     friend class QgsVectorLayerEditBufferGroup;
 
+    /**
+     * Check geometry of added features for compatibility with data provider
+     * \param Error descriptions are appended to commitErrors
+     * \returns TRUE if compatible
+     */
     bool commitChangesCheckGeometryTypeCompatibility( QStringList &commitErrors );
+
+    /**
+     * Update geometries
+     * \param Error descriptions are appended to commitErrors
+     * \returns TRUE on success
+     */
     bool commitChangesUpdateGeometry( QStringList &commitErrors );
+
+    /**
+     * Delete attributes
+     * \param attributesDeleted is set if one or more attributes where deleted
+     * \param Error descriptions are appended to commitErrors
+     * \returns TRUE on success
+     */
     bool commitChangesDeleteAttributes( bool &attributesDeleted, QStringList &commitErrors );
+
+    /**
+     * Rename attributes
+     * \param attributesRenamed is set if one or more attributes where renamed
+     * \param Error descriptions are appended to commitErrors
+     * \returns TRUE on success
+     */
     bool commitChangesRenameAttributes( bool &attributesRenamed, QStringList &commitErrors );
+
+    /**
+     * Add new attributes
+     * \param attributesAdded is set if one or more attributes where added
+     * \param Error descriptions are appended to commitErrors
+     * \returns TRUE on success
+     */
     bool commitChangesAddAttributes( bool &attributesAdded, QStringList &commitErrors );
+
+    /**
+     * Check that delete/rename/add attributes operations where successfull
+     * \param oldFields are the fields before delete/rename/add operations
+     * \param Error descriptions are appended to commitErrors
+     * \returns TRUE on success
+     */
     bool commitChangesCheckAttributesModifications( const QgsFields oldFields, QStringList &commitErrors );
+
+    /**
+     * Change attributes
+     * \param Error descriptions are appended to commitErrors
+     * \returns TRUE on success
+     */
     bool commitChangesChangeAttributes( QStringList &commitErrors );
+
+    /**
+     * Delete features
+     * \param Error descriptions are appended to commitErrors
+     * \returns TRUE on success
+     */
     bool commitChangesDeleteFeatures( QStringList &commitErrors );
+
+    /**
+     * Add new features
+     * \param Error descriptions are appended to commitErrors
+     * \returns TRUE on success
+     */
     bool commitChangesAddFeatures( QStringList &commitErrors );
 };
 

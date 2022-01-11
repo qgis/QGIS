@@ -87,6 +87,11 @@ Stop editing and discard the edits
 :return: ``False`` if errors occurred during rollback
 %End
 
+    bool isEditing() const;
+%Docstring
+Returns ``True`` if the layers are in editing mode
+%End
+
 };
 
 /************************************************************************

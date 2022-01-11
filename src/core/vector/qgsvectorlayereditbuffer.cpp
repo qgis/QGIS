@@ -353,12 +353,6 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   if ( !mAddedFeatures.isEmpty() )
     success &= commitChangesCheckGeometryTypeCompatibility( commitErrors );
 
-  //
-  // update geometries
-  //
-  if ( success && !mChangedGeometries.isEmpty() )
-    success &= commitChangesUpdateGeometry( commitErrors );
-
   const QgsFields oldFields = L->fields();
 
   //
@@ -396,26 +390,29 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   if ( success && attributesChanged )
     success &= commitChangesCheckAttributesModifications( oldFields, commitErrors );
 
-  if ( success )
-  {
-    //
-    // change attributes
-    //
-    if ( !mChangedAttributeValues.isEmpty() && ( ( cap & QgsVectorDataProvider::ChangeFeatures ) == 0 || mChangedGeometries.isEmpty() ) )
-      success &= commitChangesChangeAttributes( commitErrors );
+  //
+  // change attributes
+  //
+  if ( success && !mChangedAttributeValues.isEmpty() && ( ( cap & QgsVectorDataProvider::ChangeFeatures ) == 0 || mChangedGeometries.isEmpty() ) )
+    success &= commitChangesChangeAttributes( commitErrors );
 
-    //
-    // delete features
-    //
-    if ( success && !mDeletedFeatureIds.isEmpty() )
-      success &= commitChangesDeleteFeatures( commitErrors );
+  //
+  // update geometries
+  //
+  if ( success && !mChangedGeometries.isEmpty() )
+    success &= commitChangesUpdateGeometry( commitErrors );
 
-    //
-    //  add features
-    //
-    if ( success && !mAddedFeatures.isEmpty() )
-      success &= commitChangesAddFeatures( commitErrors );
-  }
+  //
+  // delete features
+  //
+  if ( success && !mDeletedFeatureIds.isEmpty() )
+    success &= commitChangesDeleteFeatures( commitErrors );
+
+  //
+  //  add features
+  //
+  if ( success && !mAddedFeatures.isEmpty() )
+    success &= commitChangesAddFeatures( commitErrors );
 
   if ( !success && provider->hasErrors() )
   {

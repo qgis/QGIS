@@ -49,8 +49,7 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::modifiedLayers() const
 {
   QList<QgsVectorLayer *> modifiedLayers;
 
-  const QList<QgsVectorLayer *> constLayers = mLayers;
-  for ( QgsVectorLayer *layer : constLayers )
+  for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
     if ( layer->isModified() )
       modifiedLayers.append( layer );
 
@@ -59,23 +58,56 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::modifiedLayers() const
 
 bool QgsVectorLayerEditBufferGroup::startEditing()
 {
+  if ( mIsEditing )
+    return true;
+
   bool editingStarted = true;
   const QList<QgsVectorLayer *> constLayers = mLayers;
   for ( QgsVectorLayer *layer : constLayers )
   {
-    if ( layer->startEditing()
-         || layer->editBuffer() )
-    {
-      if ( layer->editBuffer() )
-        layer->editBuffer()->setEditBufferGroup( this );
-    }
-    else
+    if ( !layer->isValid() )
     {
       editingStarted = false;
+      QgsLogger::debug( tr( "Can't start editing invalid layer '%1'." ).arg( layer->name() ) );
+      break;
     }
+
+    if ( !layer->dataProvider() )
+    {
+      editingStarted = false;
+      QgsLogger::debug( tr( "Can't start editing layer '%1' with invalid data provider." ).arg( layer->name() ) );
+      break;
+    }
+
+    // allow editing if provider supports any of the capabilities
+    if ( !layer->supportsEditing() )
+    {
+      editingStarted = false;
+      QgsLogger::debug( tr( "Can't start editing. Layer '%1' doesn't support editing." ).arg( layer->name() ) );
+      break;
+    }
+
+    if ( layer->editBuffer() )
+    {
+      // editing already underway
+      layer->editBuffer()->setEditBufferGroup( this );
+      continue;
+    }
+
+
+    emit layer->beforeEditingStarted();
+    layer->dataProvider()->enterUpdateMode();
+    layer->createEditBuffer();
+    layer->editBuffer()->setEditBufferGroup( this );
+    layer->updateFields();
+    emit layer->editingStarted();
   }
 
-  return editingStarted;
+  if ( ! editingStarted )
+    rollBack( true );
+
+  mIsEditing = editingStarted;
+  return mIsEditing;
 }
 
 bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bool stopEditing )
@@ -139,17 +171,6 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
     }
   }
 
-  // Update geometries
-  if ( success )
-  {
-    for ( orderedLayersIterator = orderedLayers.constBegin(); orderedLayersIterator != orderedLayers.constEnd(); ++orderedLayersIterator )
-    {
-      success = ( *orderedLayersIterator )->editBuffer()->commitChangesUpdateGeometry( commitErrors );
-      if ( ! success )
-        break;
-    }
-  }
-
   // Change fields (add new fields, delete fields)
   if ( success )
   {
@@ -205,14 +226,19 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
     }
   }
 
-  // change all attributes in reverse dependency order (children first)
+  // change all attributes and geometries in reverse dependency order (children first)
   if ( success )
   {
     orderedLayersIterator = orderedLayers.constEnd();
     while ( orderedLayersIterator != orderedLayers.constBegin() )
     {
       --orderedLayersIterator;
+
       success = ( *orderedLayersIterator )->editBuffer()->commitChangesChangeAttributes( commitErrors );
+      if ( ! success )
+        break;
+
+      success = ( *orderedLayersIterator )->editBuffer()->commitChangesUpdateGeometry( commitErrors );
       if ( ! success )
         break;
     }
@@ -252,11 +278,11 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
     const QList<QgsVectorLayer *> constLayers = mLayers;
     for ( QgsVectorLayer *layer : constLayers )
     {
-//      if ( !mDeletedFids.empty() )
-//      {
-//        emit featuresDeleted( mDeletedFids );
-//        mDeletedFids.clear();
-//      }
+      if ( !layer->mDeletedFids.empty() )
+      {
+        emit layer->featuresDeleted( layer->mDeletedFids );
+        layer->mDeletedFids.clear();
+      }
 
       if ( stopEditing )
       {
@@ -269,19 +295,22 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
 
       layer->updateFields();
 
-//      mDataProvider->updateExtents();
-//      mDataProvider->leaveUpdateMode();
+      layer->dataProvider()->updateExtents();
+      layer->dataProvider()->leaveUpdateMode();
 
-//      // This second call is required because OGR provider with JSON
-//      // driver might have changed fields order after the call to
-//      // leaveUpdateMode
-//      if ( mFields.names() != mDataProvider->fields().names() )
-//      {
-//        updateFields();
-//      }
+      // This second call is required because OGR provider with JSON
+      // driver might have changed fields order after the call to
+      // leaveUpdateMode
+      if ( layer->fields().names() != layer->dataProvider()->fields().names() )
+      {
+        layer->updateFields();
+      }
 
       layer->triggerRepaint();
     }
+
+    if ( success && stopEditing )
+      mIsEditing = false;
   }
 
   return success;
@@ -332,7 +361,13 @@ bool QgsVectorLayerEditBufferGroup::rollBack( bool stopEditing )
     layer->triggerRepaint();
   }
 
+  mIsEditing = ! stopEditing;
   return true;
+}
+
+bool QgsVectorLayerEditBufferGroup::isEditing() const
+{
+  return mIsEditing;
 }
 
 QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChildren( QList<QgsVectorLayer *> layers )

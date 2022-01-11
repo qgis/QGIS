@@ -2857,6 +2857,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns the minimum or maximum value
     void minimumOrMaximumValue( int index, QVariant *minimum, QVariant *maximum ) const;
 
+    void createEditBuffer();
     void clearEditBuffer();
 
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;

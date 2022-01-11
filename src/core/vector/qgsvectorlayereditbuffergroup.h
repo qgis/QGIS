@@ -99,11 +99,18 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
      */
     bool rollBack( bool stopEditing = true );
 
+    /**
+     * Returns TRUE if the layers are in editing mode
+     */
+    bool isEditing() const;
+
   private:
 
     QList<QgsVectorLayer *> orderLayersParentsToChildren( QList<QgsVectorLayer *> layers );
 
     QList<QgsVectorLayer *> mLayers;
+
+    bool mIsEditing = false;
 };
 
 #endif // QGSVECTORLAYEREDITBUFFERGROUP_H
