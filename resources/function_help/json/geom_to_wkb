@@ -11,5 +11,5 @@
     "expression": "geom_to_wkb( $geometry )",
     "returns": "binary blob containing a geometry object"
   }],
-  "tags": ["wkb", "binary", "representation", "known"]
+  "tags": ["wkb", "binary", "representation", "known", "conversion"]
 }

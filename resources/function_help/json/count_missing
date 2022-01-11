@@ -19,5 +19,5 @@
     "expression": "count_missing(\"stations\",group_by:=\"state\")",
     "returns": "count of missing (NULL) station values, grouped by state field"
   }],
-  "tags": ["missing", "count"]
+  "tags": ["aggregate", "missing", "count"]
 }

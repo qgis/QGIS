@@ -38,5 +38,5 @@
     "expression": "array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),-2,-1)",
     "returns": "[ 'Chugiak', 'Brighton' ]"
   }],
-  "tags": ["array", "defined", "arguments", "start_pos", "slice", "portion"]
+  "tags": ["array", "defined", "arguments", "start", "position", "slice", "portion", "end", "index"]
 }

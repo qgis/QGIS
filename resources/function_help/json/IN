@@ -17,5 +17,5 @@
     "expression": "'A' IN ('C','B')",
     "returns": "0"
   }],
-  "tags": ["list", "found"]
+  "tags": ["list", "contained", "found"]
 }

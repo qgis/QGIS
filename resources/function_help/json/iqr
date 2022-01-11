@@ -19,5 +19,5 @@
     "expression": "iqr(\"population\",group_by:=\"state\")",
     "returns": "inter quartile range of population value, grouped by state field"
   }],
-  "tags": ["field", "quartile", "range", "inter", "calculated"]
+  "tags": ["field", "quartile", "range", "inter", "calculated", "statistics", "aggregates"]
 }

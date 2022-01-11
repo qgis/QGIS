@@ -7,5 +7,5 @@
     "expression": "$z",
     "returns": "123"
   }],
-  "tags": ["first", "point", "current", "multipoint"]
+  "tags": ["first", "point", "current", "multipoint", "altitude", "3D"]
 }

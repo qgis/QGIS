@@ -22,5 +22,5 @@
     "expression": "array(2,10)[0]",
     "returns": "2"
   }],
-  "tags": ["passed", "array", "parameter", "containing"]
+  "tags": ["list", "array", "parameter", "containing"]
 }

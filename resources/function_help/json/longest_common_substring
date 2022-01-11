@@ -20,5 +20,5 @@
     "expression": "longest_common_substring(upper('abcDeF'),upper('abcdex'))",
     "returns": "'ABCDE'"
   }],
-  "tags": ["babca", "longest", "common", "input", "sensitive", "case", "substring", "ababc", "strings"]
+  "tags": ["longest", "common", "input", "sensitive", "case", "substring", "strings"]
 }

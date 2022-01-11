@@ -19,5 +19,5 @@
     "expression": "count(\"stations\",group_by:=\"state\")",
     "returns": "count of stations, grouped by state field"
   }],
-  "tags": ["features", "matching", "count"]
+  "tags": ["aggregate", "features", "matching", "count"]
 }

@@ -19,5 +19,5 @@
     "expression": "map_concat(map('1','one', '2','overridden'),map('2','two', '3','three'))",
     "returns": "{ '1': 'one', '2': 'two', '3': 'three' }"
   }],
-  "tags": ["taken", "containing", "key", "second", "same", "contain", "entries", "maps", "map"]
+  "tags": ["containing", "key", "concatenate", "contain", "entries", "maps", "map"]
 }

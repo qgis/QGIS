@@ -35,5 +35,5 @@
       "returns": "first feature found in \"streets\" layer with \"main st\" value in the \"name\" field and  \"4\" value in the \"lane_num\" field"
     }]
   }],
-  "tags": ["attribute", "first", "matching"]
+  "tags": ["attribute", "first", "matching", "search", "find"]
 }

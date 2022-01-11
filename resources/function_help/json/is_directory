@@ -14,5 +14,5 @@
     "expression": "is_directory('/home/qgis/data/')",
     "returns": "true"
   }],
-  "tags": ["path", "directory", "corresponds"]
+  "tags": ["path", "directory", "folder"]
 }

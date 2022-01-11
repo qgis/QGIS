@@ -56,5 +56,5 @@
     "expression": "'ABCD' ILIKE '%B\\\\\\\\%'",
     "returns": "0"
   }],
-  "tags": ["numbers", "insensitive", "first", "match", "sensitive", "supplied", "parameter", "make", "works", "case", "matches", "pattern"]
+  "tags": ["compare", "numbers", "insensitive", "first", "match", "sensitive", "supplied", "parameter", "case", "matches", "pattern"]
 }

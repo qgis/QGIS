@@ -33,5 +33,5 @@
     "expression": "array_minority(array(0,1,42,42,43,42,42), 'real_minority')",
     "returns": "[ 43, 0, 1 ]"
   }],
-  "tags": ["common", "array"]
+  "tags": ["common", "array", "median"]
 }

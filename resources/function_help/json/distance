@@ -2,7 +2,7 @@
   "name": "distance",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns the minimum distance (based on spatial ref) between two geometries in projected units.",
+  "description": "Returns the minimum distance (based on spatial reference) between two geometries in projected units.",
   "arguments": [{
     "arg": "geometry1",
     "description": "a geometry"
@@ -14,5 +14,5 @@
     "expression": "distance( geom_from_wkt( 'POINT(4 4)' ), geom_from_wkt( 'POINT(4 8)' ) )",
     "returns": "4"
   }],
-  "tags": ["distance", "projected", "ref", "spatial", "minimum", "units"]
+  "tags": ["projected", "reference", "spatial", "minimum", "units"]
 }

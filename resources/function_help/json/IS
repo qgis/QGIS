@@ -29,5 +29,5 @@
     "expression": "$geometry IS NULL",
     "returns": "0, if your geometry is not NULL"
   }],
-  "tags": ["same"]
+  "tags": ["compare", "same", "equal", "identical"]
 }

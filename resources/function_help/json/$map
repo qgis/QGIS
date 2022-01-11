@@ -11,5 +11,5 @@
     "returns": "\"canvas\"",
     "description": "within the main QGIS main canvas"
   }],
-  "tags": ["layout", "item", "drawn", "current", "main", "print", "map", "window"]
+  "tags": ["layout", "item", "drawn", "current", "main", "print", "map", "window", "overview", "canvas"]
 }

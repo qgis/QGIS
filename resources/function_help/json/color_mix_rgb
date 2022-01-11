@@ -17,5 +17,5 @@
     "expression": "color_mix_rgb('0,0,0','255,255,255',0.5)",
     "returns": "'127,127,127,255'"
   }],
-  "tags": ["green", "blue", "red", "alpha", "mixing", "color", "colors", "provided", "ratio", "representing"]
+  "tags": ["green", "blue", "red", "alpha", "mixing", "color", "colors", "provided", "ratio"]
 }

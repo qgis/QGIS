@@ -11,5 +11,5 @@
     "expression": "acos(0.5)",
     "returns": "1.0471975511966"
   }],
-  "tags": ["cosine", "inverse", "radians"]
+  "tags": ["angle", "cosine", "inverse", "radians"]
 }

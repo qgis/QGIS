@@ -7,5 +7,5 @@
     "expression": "geom_to_wkt( $vertex_as_point )",
     "returns": "'POINT(800 1500 41)'"
   }],
-  "tags": ["point", "vertex", "current"]
+  "tags": ["point", "mesh", "vertex", "current"]
 }

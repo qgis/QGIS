@@ -45,5 +45,5 @@
       "returns": "The display expression of the given feature not evaluated."
     }]
   }],
-  "tags": ["evaluated", "arguments", "details", "display", "default", "see"]
+  "tags": ["evaluated", "arguments", "details", "display", "default"]
 }

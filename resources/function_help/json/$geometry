@@ -7,5 +7,5 @@
     "expression": "geom_to_wkt( $geometry )",
     "returns": "'POINT(6 50)'"
   }],
-  "tags": ["other", "current", "processing", "functions"]
+  "tags": ["current", "processing", "functions"]
 }

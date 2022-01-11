@@ -7,5 +7,5 @@
     "expression": "$face_area",
     "returns": "42"
   }],
-  "tags": ["planimetric", "mesh", "current", "area", "respects", "project", "settings", "face", "ellipsoid", "setting", "calculated", "set"]
+  "tags": ["planimetric", "mesh", "current", "area", "surface", "project", "settings", "face", "ellipsoid", "setting", "calculated", "set"]
 }

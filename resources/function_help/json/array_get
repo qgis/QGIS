@@ -17,5 +17,5 @@
     "expression": "array_get(array('a','b','c'),-1)",
     "returns": "'c'"
   }],
-  "tags": ["array", "last", "nth", "one", "first"]
+  "tags": ["array", "position", "index", "last", "nth", "one", "first"]
 }

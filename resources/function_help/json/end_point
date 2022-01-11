@@ -11,5 +11,5 @@
     "expression": "geom_to_wkt(end_point(geom_from_wkt('LINESTRING(4 0, 4 2, 0 2)')))",
     "returns": "'Point (0 2)'"
   }],
-  "tags": ["last", "node"]
+  "tags": ["last", "node", "vertex"]
 }

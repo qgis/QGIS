@@ -11,5 +11,5 @@
     "expression": "array_length(array(1,2,3))",
     "returns": "3"
   }],
-  "tags": ["elements", "array"]
+  "tags": ["elements", "array", "count"]
 }

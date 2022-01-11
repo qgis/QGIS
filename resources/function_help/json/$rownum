@@ -6,5 +6,5 @@
     "expression": "$rownum",
     "returns": "4711"
   }],
-  "tags": ["row", "current"]
+  "tags": ["row", "number", "current"]
 }

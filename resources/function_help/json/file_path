@@ -11,5 +11,5 @@
     "expression": "file_path('/home/qgis/data/country_boundaries.shp')",
     "returns": "'/home/qgis/data'"
   }],
-  "tags": ["path", "include", "directory", "name", "component", "file"]
+  "tags": ["path", "directory", "name", "folder", "file"]
 }

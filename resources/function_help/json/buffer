@@ -34,5 +34,5 @@
     "expression": "buffer($geometry, 10.5)",
     "returns": "polygon of the current feature's geometry buffered by 10.5 units"
   }],
-  "tags": ["distance", "equal", "spatial", "reference", "calculations", "system", "less", "represents", "points"]
+  "tags": ["distance", "equal", "spatial", "reference", "calculations", "system", "points", "segments", "miter", "join", "cap", "round"]
 }

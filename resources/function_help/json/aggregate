@@ -48,5 +48,5 @@
     "expression": "aggregate(layer:='rail_stations', aggregate:='collect', expression:=centroid($geometry), filter:=\"region_name\" = attribute(@parent,'name') )",
     "returns": "aggregates centroid geometries of the rail_stations of the same region as current feature"
   }],
-  "tags": ["aggregate", "combine", "features", "calculated", "merge"]
+  "tags": ["aggregate", "combine", "features", "calculated", "merge", "concatenate", "sum", "mean", "median", "count", "quartile", "minimum", "maximum", "minority", "majority", "standard", "deviation", "length", "unique"]
 }

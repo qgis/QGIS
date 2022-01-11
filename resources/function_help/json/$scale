@@ -7,5 +7,5 @@
     "expression": "$scale",
     "returns": "10000"
   }],
-  "tags": ["denominator", "contexts", "current", "scale", "canvas", "available", "map"]
+  "tags": ["denominator", "contexts", "current", "scale", "canvas", "map"]
 }

@@ -14,5 +14,5 @@
     "expression": "is_file('/home/qgis/data/')",
     "returns": "false"
   }],
-  "tags": ["path", "file", "corresponds"]
+  "tags": ["path", "file"]
 }

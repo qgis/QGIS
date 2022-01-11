@@ -11,5 +11,5 @@
     "expression": "atan(0.5)",
     "returns": "0.463647609000806"
   }],
-  "tags": ["tangent", "inverse", "radians"]
+  "tags": ["tangent", "inverse", "angle", "radians"]
 }

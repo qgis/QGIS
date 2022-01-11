@@ -11,5 +11,5 @@
     "expression": "asin(1.0)",
     "returns": "1.5707963267949"
   }],
-  "tags": ["sine", "inverse", "radians"]
+  "tags": ["sine", "inverse", "angle", "radians"]
 }

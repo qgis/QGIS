@@ -11,5 +11,5 @@
     "expression": "geom_from_wkb( geom_to_wkb( make_point(4,5) ) )",
     "returns": "a point geometry object"
   }],
-  "tags": ["created", "wkb", "binary", "known", "representation"]
+  "tags": ["created", "wkb", "binary", "known", "representation", "conversion"]
 }

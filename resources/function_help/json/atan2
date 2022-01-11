@@ -14,5 +14,5 @@
     "expression": "atan2(1.0, 1.732)",
     "returns": "0.523611477769969"
   }],
-  "tags": ["tangent", "arguments", "signs", "result", "inverse", "determine", "quadrant"]
+  "tags": ["tangent", "arguments", "signs", "angle", "inverse", "quadrant"]
 }

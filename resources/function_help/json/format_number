@@ -23,5 +23,5 @@
     "expression": "format_number(10000000.332,2,'fr')",
     "returns": "'10 000 000,33'"
   }],
-  "tags": ["formatted", "user", "supplied", "current", "truncates", "places", "separator", "decimal", "default", "thousands", "locale"]
+  "tags": ["formatted", "truncates", "places", "separator", "decimal", "default", "thousands", "locale", "language"]
 }

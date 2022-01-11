@@ -14,5 +14,5 @@
     "expression": "left('Hello World',5)",
     "returns": "'Hello'"
   }],
-  "tags": ["first", "substring", "leftmost", "characters", "contains"]
+  "tags": ["first", "substring", "leftmost", "characters", "contains", "extracts"]
 }

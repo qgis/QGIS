@@ -17,5 +17,5 @@
     "expression": "array_all(array(1,2,3),array(1,2,4))",
     "returns": "false"
   }],
-  "tags": ["array", "contains"]
+  "tags": ["array", "contains", "compare", "search"]
 }

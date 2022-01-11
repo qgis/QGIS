@@ -27,5 +27,5 @@
     "expression": "concatenate_unique(\"town_name\",group_by:=\"state\",concatenator:=',')",
     "returns": "comma separated list of unique town_names, grouped by state field"
   }],
-  "tags": ["unique", "field", "joined", "delimiter", "strings"]
+  "tags": ["aggregated", "unique", "field", "joined", "delimiter", "strings"]
 }

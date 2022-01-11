@@ -14,5 +14,5 @@
     "expression": "log10(100)",
     "returns": "2"
   }],
-  "tags": ["passed", "base", "logarithm"]
+  "tags": ["base", "logarithm"]
 }

@@ -23,5 +23,5 @@
     "expression": "inclination( make_point( 5, 10, 0 ), make_point( 5, 10, -5 ) )",
     "returns": "180.0"
   }],
-  "tags": ["zenith", "nadir", "inclination", "measured", "point_a", "point_b"]
+  "tags": ["zenith", "nadir", "inclination", "measured", "points"]
 }

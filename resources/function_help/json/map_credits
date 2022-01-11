@@ -24,5 +24,5 @@
     "expression": "array_to_string( map_credits( 'Main Map', include_layer_names := true, layer_name_separator := ': ' ) )",
     "returns": "comma separated list of layer names and their credits for layers shown in the 'Main Map' layout item, e.g. 'Railway lines: CC-BY-NC, Basemap: CC-BY-SA'"
   }],
-  "tags": ["list", "rights", "layers", "layout", "item", "shown", "usage", "credit", "strings", "map"]
+  "tags": ["list", "rights", "layers", "layout", "item", "usage", "credit", "strings", "map"]
 }

@@ -11,5 +11,5 @@
     "expression": "geom_to_wkt(flip_coordinates(make_point(1, 2)))",
     "returns": "'Point (2 1)'"
   }],
-  "tags": ["had", "latitude", "longitude", "reversed", "swapped", "coordinates", "repairing", "copy"]
+  "tags": ["latitude", "longitude", "reversed", "swapped", "coordinates", "repairing", "copy"]
 }

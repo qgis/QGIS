@@ -14,5 +14,5 @@
     "expression": "geom_to_wkt(boundary(geom_from_wkt('LineString(1 1,0 0,-1 1)')))",
     "returns": "'MultiPoint ((1 1),(-1 1))'"
   }],
-  "tags": ["polygon", "linestrings", "instance", "defined", "combinatorial", "topological", "points", "consisting", "collections", "types", "return", "ring", "boundary", "closure"]
+  "tags": ["polygon", "linestrings", "instance", "combinatorial", "topological", "points", "collections", "types", "ring", "boundary", "closure"]
 }

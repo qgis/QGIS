@@ -17,5 +17,5 @@
     "expression": "degrees( azimuth( make_point(75, 100), make_point(25,45) ) )",
     "returns": "222.273689"
   }],
-  "tags": ["measured", "clockwise", "point_a", "angle", "vertical", "north", "azimuth", "radians", "point_b"]
+  "tags": ["measured", "clockwise", "points", "angle", "vertical", "north", "azimuth", "radians"]
 }

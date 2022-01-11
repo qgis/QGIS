@@ -41,5 +41,5 @@
     "expression": "'1_' LIKE '1\\\\\\\\%'",
     "returns": "0"
   }],
-  "tags": ["numbers", "first", "works", "supplied", "parameter", "matches", "pattern"]
+  "tags": ["compare", "sensitive", "numbers", "first", "works", "supplied", "parameter", "matches", "pattern"]
 }

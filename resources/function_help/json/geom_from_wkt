@@ -11,5 +11,5 @@
     "expression": "geom_from_wkt( 'POINT(4 5)' )",
     "returns": "a geometry object"
   }],
-  "tags": ["created", "text", "known", "wkt", "representation"]
+  "tags": ["text", "known", "wkt", "representation", "conversion"]
 }

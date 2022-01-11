@@ -7,5 +7,5 @@
     "expression": "$perimeter",
     "returns": "42"
   }],
-  "tags": ["distance", "planimetric", "length", "perimeter", "current", "respects", "project", "settings", "ellipsoid", "setting", "calculated", "set"]
+  "tags": ["distance", "planimetric", "length", "perimeter", "current", "polygon", "project", "settings", "ellipsoid", "setting", "calculated"]
 }

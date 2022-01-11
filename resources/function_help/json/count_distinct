@@ -19,5 +19,5 @@
     "expression": "count_distinct(\"stations\",group_by:=\"state\")",
     "returns": "count of distinct stations values, grouped by state field"
   }],
-  "tags": ["distinct", "count"]
+  "tags": ["aggregate", "distinct", "count"]
 }

@@ -17,5 +17,5 @@
     "expression": "log(0.5, 32)",
     "returns": "-5"
   }],
-  "tags": ["passed", "base", "logarithm"]
+  "tags": ["base", "logarithm"]
 }

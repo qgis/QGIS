@@ -17,5 +17,5 @@
     "expression": "geom_to_wkt( combine( geom_from_wkt( 'LINESTRING(3 3, 4 4)' ), geom_from_wkt( 'LINESTRING(3 3, 6 6, 2 1)' ) ) )",
     "returns": "'LINESTRING(3 3, 4 4, 6 6, 2 1)'"
   }],
-  "tags": ["combination"]
+  "tags": ["combination", "union"]
 }

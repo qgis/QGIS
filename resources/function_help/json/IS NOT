@@ -20,5 +20,5 @@
     "expression": "4 IS NOT 2+2",
     "returns": "0"
   }],
-  "tags": ["same"]
+  "tags": ["compare", "same", "different"]
 }

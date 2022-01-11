@@ -26,5 +26,5 @@
       "returns": "4.0"
     }]
   }],
-  "tags": ["distance", "linestring", "length", "characters"]
+  "tags": ["distance", "linestring", "length", "count", "characters", "planimetric"]
 }

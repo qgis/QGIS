@@ -46,5 +46,5 @@
       "returns": "True if the feature with the id 1 on the \"streets\" layer is selected."
     }]
   }],
-  "tags": ["selected", "arguments", "details", "see"]
+  "tags": ["selected", "arguments", "details"]
 }

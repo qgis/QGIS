@@ -7,5 +7,5 @@
     "expression": "$length",
     "returns": "42.4711"
   }],
-  "tags": ["distance", "planimetric", "need", "polygon", "length", "perimeter", "current", "linestring", "respects", "project", "use", "settings", "ellipsoid", "border", "setting", "calculated", "set"]
+  "tags": ["distance", "planimetric", "length", "perimeter", "current", "linestring", "project", "settings", "ellipsoid", "border", "setting", "calculated"]
 }

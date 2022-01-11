@@ -28,5 +28,5 @@
     "expression": "coalesce(\"fieldA\", \"fallbackField\", 'ERROR')",
     "returns": "value of fieldA if it is non-NULL else the value of \"fallbackField\" or the string 'ERROR' if both are NULL"
   }],
-  "tags": ["list", "first", "arguments", "take"]
+  "tags": ["list", "first", "arguments", "null"]
 }
