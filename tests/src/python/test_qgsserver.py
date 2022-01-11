@@ -496,9 +496,6 @@ class TestQgsServer(QgsServerTestBase):
             item_found = False
             for item in str(r).split("\\n"):
                 if "OnlineResource" in item:
-                    print(item)
-                    print(header_name)
-                    print(header_value)
                     self.assertEqual(header_value in item, True)
                     item_found = True
             self.assertTrue(item_found)
