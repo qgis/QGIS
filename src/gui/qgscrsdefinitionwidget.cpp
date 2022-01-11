@@ -244,7 +244,7 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
     return;
   }
 
-  const QgsCoordinateTransform transform( target.toGeodeticCrs(), target, QgsCoordinateTransformContext() );
+  const QgsCoordinateTransform transform( target.toGeographicCrs(), target, QgsCoordinateTransformContext() );
   try
   {
     const QgsPointXY res = transform.transform( QgsPointXY( longitude, latitude ) );
