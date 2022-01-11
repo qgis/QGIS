@@ -908,15 +908,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     long saveAsUserCrs( const QString &name, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
 
     /**
-     * Returns the geodetic CRS associated with this CRS object.
+     * Returns the geographic CRS associated with this CRS object.
      *
-     * May return an invalid CRS if the geodetic CRS could not be determined.
+     * May return an invalid CRS if the geographic CRS could not be determined.
      *
-     * This method will always return a longitude, latitude ordered CRS.
+     * \note This method will always return a longitude, latitude ordered CRS.
      *
      * \since QGIS 3.24
      */
-    QgsCoordinateReferenceSystem toGeodeticCrs() const;
+    QgsCoordinateReferenceSystem toGeographicCrs() const;
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;

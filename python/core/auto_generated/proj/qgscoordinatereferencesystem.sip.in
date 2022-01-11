@@ -995,13 +995,15 @@ definition. FormatWkt is recommended as it is a lossless format.
    Since QGIS 3.18, internally this calls :py:func:`QgsCoordinateReferenceSystemRegistry.addUserCrs()`.
 %End
 
-    QgsCoordinateReferenceSystem toGeodeticCrs() const;
+    QgsCoordinateReferenceSystem toGeographicCrs() const;
 %Docstring
-Returns the geodetic CRS associated with this CRS object.
+Returns the geographic CRS associated with this CRS object.
 
-May return an invalid CRS if the geodetic CRS could not be determined.
+May return an invalid CRS if the geographic CRS could not be determined.
 
-This method will always return a longitude, latitude ordered CRS.
+.. note::
+
+   This method will always return a longitude, latitude ordered CRS.
 
 .. versionadded:: 3.24
 %End

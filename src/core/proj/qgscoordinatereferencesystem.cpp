@@ -2608,7 +2608,7 @@ const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::s
   return *sSrsIdCache();
 }
 
-QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toGeodeticCrs() const
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toGeographicCrs() const
 {
   if ( isGeographic() )
   {
