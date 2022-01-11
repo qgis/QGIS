@@ -1049,15 +1049,8 @@ void QgsMapCanvas::notifyRendererErrors( const QgsMapRendererJob::Errors &errors
 
     mRendererErrors[errorKey] = currentTime;
 
-    QString message = error.message;
-    const QRegularExpression regEx( QStringLiteral( "(https?:\\/\\/+[\\/\\{\\}\\?=a-zA-Z0-9_.~-]*)" ), QRegularExpression::CaseInsensitiveOption );
-    QRegularExpressionMatch match = regEx.match( message );
-    if ( match.hasMatch() )
-      message.replace( regEx, "<a href=\"\\1\">\\1</a>" );
-
-    QgsMapLayer *layer = QgsProject::instance()->mapLayer( error.layerID );
-    emit renderErrorOccurred( message, layer );
-    QgsMessageLog::logMessage( error.layerID + " :: " + message, tr( "Rendering" ) );
+    if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( error.layerID ) )
+      emit renderErrorOccurred( error.message, layer );
   }
 }
 

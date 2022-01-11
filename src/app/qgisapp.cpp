@@ -4975,8 +4975,7 @@ void QgisApp::initLayerTreeView()
   connect( mMapCanvas, &QgsMapCanvas::renderErrorOccurred, badLayerIndicatorProvider, &QgsLayerTreeViewBadLayerIndicatorProvider::reportLayerError );
   connect( mMapCanvas, &QgsMapCanvas::renderErrorOccurred, mInfoBar, [this]( const QString & error, QgsMapLayer * layer )
   {
-    QString message = layer->name() + QStringLiteral( ": " ) + error;
-    mInfoBar->pushItem( new QgsMessageBarItem( message, Qgis::MessageLevel::Warning, 60 ) );
+    mInfoBar->pushItem( new QgsMessageBarItem( layer->name(), QgsStringUtils::insertLinks( error ), Qgis::MessageLevel::Warning ) );
   } );
 }
 
