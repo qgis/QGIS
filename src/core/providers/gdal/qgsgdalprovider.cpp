@@ -3008,9 +3008,14 @@ void QgsGdalProvider::initBaseDataset()
     }
     else
     {
+      // Add alpha band to the output VRT dataset so that pixels in empty regions
+      // (e.g. when the raster is rotated) will be transparent
+      gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
+      psWarpOptions->nDstAlphaBand = GDALGetRasterCount( mGdalBaseDataset ) + 1;
+
       mGdalDataset =
         GDALAutoCreateWarpedVRT( mGdalBaseDataset, nullptr, nullptr,
-                                 GRA_NearestNeighbour, 0.2, nullptr );
+                                 GRA_NearestNeighbour, 0.2, psWarpOptions.get() );
     }
 
     if ( !mGdalDataset )
