@@ -254,11 +254,11 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
     }
   }
 
-  QgsMessageLog::logMessage( QStringLiteral( "Headers:" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-  QgsMessageLog::logMessage( QStringLiteral( "------------------------------------------------" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  qDebug() << "Headers:";
+  qDebug() << "------------------------------------------------";
   for ( const auto &headerName : headers().keys() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( headerName ).arg( headers().value( headerName ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+    qDebug() << headerName << ": " << headers().value( headerName );
   }
 }
 
