@@ -19,14 +19,16 @@ export QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES=/path/to/projectdirectory
 ./output/bin/qgis_mapserver -p /path/to/projectdirectory/test.qgz
 ```
 
-Then open the web browser on http://localhost:8000 (for default port `8000`).
+Then open http://localhost:8000 in a web browser (default port `8000`).
 
 
 ## Development
 
-Development could be done by modifying the source code and building and running the webapp as described above.
+Development is done by modifying the source code and building and running the webapp as described above.
 
-If you want to run `yarn install` manually, e.g. to update `yarn.lock` please make sure to remove the `node_modules` directory from your QGIS source tree before running cmake and building. The same accounts for removing the `landingpage` directory from `resources/server/api/ogc/static/` after running `yarn build` manually.
+#### update `yarn.lock`
+
+To update `yarn.lock` run `yarn install` manually and make sure to remove the `node_modules` directory from your QGIS source tree before running cmake and building.
 
 #### Lints and fixes files
 ```
