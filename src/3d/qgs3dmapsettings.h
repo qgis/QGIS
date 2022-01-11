@@ -574,7 +574,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Emitted when one of the configuration settings has changed
      *
-     * \see connectChangedSignalsToSettingsChanged() disconnectChangedSignalsToSettingsChanged()
      * \since QGIS 3.24
      */
     void settingsChanged();
@@ -745,8 +744,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
   private:
     //! Connects the various changed signals of this widget to the settingsChanged signal
     void connectChangedSignalsToSettingsChanged();
-    //! Disconnects the various changed signals of this widget to the settingsChanged signal
-    void disconnectChangedSignalsToSettingsChanged();
 
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
