@@ -56,8 +56,6 @@ qgis.kdev4
 qgis.supp
 qgis-test.ctest
 qtcreator-build/
-resources/server/api/ogc/static/landingpage
-resources/server/src/landingpage/node_modules
 resources/themes/*/style.qss.auto
 scripts/astyle.exe
 scripts/Debug
