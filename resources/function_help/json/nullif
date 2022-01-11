@@ -20,5 +20,5 @@
     "expression": "nullif(\"name\", '')",
     "returns": "NULL, if name is an empty string (or already NULL), the name in any other case."
   }],
-  "tags": ["substitute", "equals"]
+  "tags": ["substitute", "equals", "condition", "compare"]
 }

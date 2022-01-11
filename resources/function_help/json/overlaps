@@ -17,5 +17,5 @@
     "expression": "overlaps( geom_from_wkt( 'LINESTRING(0 0, 1 1)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )",
     "returns": "false"
   }],
-  "tags": ["share", "other", "tests", "contained", "overlaps", "same", "dimension", "space"]
+  "tags": ["share", "tests", "contained", "overlaps", "same", "dimension", "space"]
 }

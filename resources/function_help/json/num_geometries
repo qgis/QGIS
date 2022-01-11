@@ -11,5 +11,5 @@
     "expression": "num_geometries(geom_from_wkt('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))'))",
     "returns": "4"
   }],
-  "tags": ["collection", "input"]
+  "tags": ["collection", "multipart", "parts", "count"]
 }

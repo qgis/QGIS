@@ -17,5 +17,5 @@
     "expression": "map_get( item_variables('Map 0'), 'map_scale')",
     "returns": "scale of the item 'Map 0' (if it exists) in the current print layout"
   }],
-  "tags": ["map", "exist", "key"]
+  "tags": ["map", "exists", "key"]
 }

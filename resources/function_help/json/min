@@ -22,5 +22,5 @@
     "expression": "min(2,-10.3,NULL)",
     "returns": "-10.3"
   }],
-  "tags": ["least", "smallest", "set"]
+  "tags": ["least", "smallest", "minimum"]
 }

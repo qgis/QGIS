@@ -19,5 +19,5 @@
     "expression": "minimum(\"population\",group_by:=\"state\")",
     "returns": "minimum population value, grouped by state field"
   }],
-  "tags": ["field", "minimum", "aggregate"]
+  "tags": ["minimum", "aggregate"]
 }

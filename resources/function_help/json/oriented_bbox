@@ -11,5 +11,5 @@
     "expression": "geom_to_wkt( oriented_bbox( geom_from_wkt( 'MULTIPOINT(1 2, 3 4, 3 2)' ) ) )",
     "returns": "'Polygon ((3 2, 3 4, 1 4, 1 2, 3 2))'"
   }],
-  "tags": ["oriented", "box", "minimal", "input", "represents", "bounding"]
+  "tags": ["oriented", "box", "minimal", "represents", "bounding"]
 }

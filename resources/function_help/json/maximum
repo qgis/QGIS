@@ -19,5 +19,5 @@
     "expression": "maximum(\"population\",group_by:=\"state\")",
     "returns": "maximum population value, grouped by state field"
   }],
-  "tags": ["field", "maximum", "aggregate"]
+  "tags": ["maximum", "aggregate"]
 }

@@ -19,5 +19,5 @@
     "expression": "min_length(\"town_name\",group_by:=\"state\")",
     "returns": "minimum length of town_name, grouped by state field"
   }],
-  "tags": ["length", "field", "minimum", "strings"]
+  "tags": ["length", "characters", "count", "minimum", "strings"]
 }

@@ -19,5 +19,5 @@
     "expression": "max_length(\"town_name\",group_by:=\"state\")",
     "returns": "maximum length of town_name, grouped by state field"
   }],
-  "tags": ["length", "field", "maximum", "strings"]
+  "tags": ["length", "maximum", "strings", "characters", "count", "aggregate"]
 }

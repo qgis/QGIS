@@ -19,5 +19,5 @@
     "expression": "mean(\"population\",group_by:=\"state\")",
     "returns": "mean population value, grouped by state field"
   }],
-  "tags": ["field", "average", "aggregate", "mean"]
+  "tags": ["average", "aggregate", "mean"]
 }

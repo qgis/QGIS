@@ -19,5 +19,5 @@
     "expression": "geom_to_wkt( minimal_circle( geom_from_wkt( 'MULTIPOINT(1 2, 3 4, 3 2)' ), 4 ) )",
     "returns": "'Polygon ((3 4, 3 2, 1 2, 1 4, 3 4))'"
   }],
-  "tags": ["enclosing", "minimal", "minimum", "represents", "encloses", "circle", "set"]
+  "tags": ["enclosing", "minimal", "minimum", "represents", "encloses", "circle", "smallest"]
 }

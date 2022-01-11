@@ -11,5 +11,5 @@
     "expression": "point_on_surface($geometry)",
     "returns": "a point geometry"
   }],
-  "tags": ["point", "surface", "lie", "guaranteed"]
+  "tags": ["point", "surface", "lie", "centroid"]
 }

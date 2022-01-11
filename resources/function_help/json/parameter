@@ -11,5 +11,5 @@
     "expression": "parameter('BUFFER_SIZE')",
     "returns": "5.6"
   }],
-  "tags": ["algorithm", "parameter", "input", "processing"]
+  "tags": ["algorithm", "parameter", "processing"]
 }

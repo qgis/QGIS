@@ -14,5 +14,5 @@
     "expression": "geom_to_wkt(point_n(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'),2))",
     "returns": "'Point (4 0)'"
   }],
-  "tags": ["specific", "node"]
+  "tags": ["specific", "node", "vertex"]
 }

@@ -19,5 +19,5 @@
     "expression": "geom_to_wkt(nodes_to_points(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'),true))",
     "returns": "'MultiPoint ((-1 -1),(4 0),(4 2),(0 2))'"
   }],
-  "tags": ["consisting", "multipoint", "node", "input"]
+  "tags": ["vertex", "multipoint", "node", "input"]
 }

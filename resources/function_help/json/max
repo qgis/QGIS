@@ -22,5 +22,5 @@
     "expression": "max(20.5,NULL,6.2)",
     "returns": "20.5"
   }],
-  "tags": ["longest", "biggest", "most", "largest", "set"]
+  "tags": ["longest", "biggest", "most", "largest", "maximum"]
 }

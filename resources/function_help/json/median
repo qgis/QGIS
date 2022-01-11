@@ -19,5 +19,5 @@
     "expression": "median(\"population\",group_by:=\"state\")",
     "returns": "median population value, grouped by state field"
   }],
-  "tags": ["median", "field", "aggregate"]
+  "tags": ["median", "aggregate"]
 }

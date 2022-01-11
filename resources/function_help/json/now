@@ -7,5 +7,5 @@
     "expression": "now()",
     "returns": "2012-07-22T13:24:57"
   }],
-  "tags": ["static", "evaluating", "return", "consistent", "current", "prepared", "date", "time"]
+  "tags": ["static", "evaluating", "current", "date", "time"]
 }
