@@ -2213,7 +2213,7 @@ void QgsProject::updateTransactionGroups()
     switch ( mTransactionMode )
     {
       case Qgis::TransactionMode::Disabled:
-        assert( false );
+        Q_ASSERT( false );
         break;
       case Qgis::TransactionMode::AutomaticGroups:
       {

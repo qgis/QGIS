@@ -359,7 +359,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   if ( success && !mChangedGeometries.isEmpty() )
     success &= commitChangesUpdateGeometry( commitErrors );
 
-  QgsFields oldFields = L->fields();
+  const QgsFields oldFields = L->fields();
 
   //
   // delete attributes
