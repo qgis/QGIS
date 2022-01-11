@@ -293,7 +293,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
     {
       if ( wmsURLFormat.isEmpty() && wfsURLFormat.isEmpty() && wcsURLFormat.isEmpty() && xyzURLFormat.isEmpty() )
       {
-        bool success = requestBlocking( QStringLiteral( "/api/layers/" ) + layerStruct.id );
+        bool success = requestBlocking( QStringLiteral( "/api/layers/%1/" ).arg( layerStruct.id ) );
         if ( success )
         {
           const QJsonDocument resourceUriDocument = QJsonDocument::fromJson( this->lastResponse() );
