@@ -609,8 +609,6 @@ Sets whether the 2D terrain surface will be rendered in.
 %Docstring
 Emitted when one of the configuration settings has changed
 
-.. seealso:: :py:func:`connectChangedSignalsToSettingsChanged`
-
 .. versionadded:: 3.24
 %End
 
