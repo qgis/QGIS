@@ -21,7 +21,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
 #include <QMenu>
-
+#include "qgs3dmapcanvaswidget.h"
 
 float _normalizedAngle( float x )
 {
@@ -39,9 +39,9 @@ void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, Func1 slot )
     menu->clear();
     for ( auto dock : lst )
     {
-      QAction *a = menu->addAction( dock->mapCanvas3D()->objectName(), w, slot );
+      QAction *a = menu->addAction( dock->widget()->mapCanvas3D()->objectName(), w, slot );
       // need to use a custom property for identification because Qt likes to add "&" to the action text
-      a->setProperty( "name", dock->mapCanvas3D()->objectName() );
+      a->setProperty( "name", dock->widget()->mapCanvas3D()->objectName() );
     }
     if ( lst.isEmpty() )
     {
@@ -60,7 +60,7 @@ Qgs3DMapCanvasDockWidget *_dock3DViewFromSender( QObject *sender )
   const QList<Qgs3DMapCanvasDockWidget *> lst = QgisApp::instance()->findChildren<Qgs3DMapCanvasDockWidget *>();
   for ( auto dock : lst )
   {
-    QString objName = dock->mapCanvas3D()->objectName();
+    QString objName = dock->widget()->mapCanvas3D()->objectName();
     if ( objName == actionText )
     {
       return dock;
@@ -124,7 +124,7 @@ void QgsLayout3DMapWidget::copy3DMapSettings()
   if ( !dock )
     return;
 
-  Qgs3DMapSettings *settings = new Qgs3DMapSettings( *dock->mapCanvas3D()->map() );
+  Qgs3DMapSettings *settings = new Qgs3DMapSettings( *dock->widget()->mapCanvas3D()->map() );
 
   // first setting passed on
   if ( !mMap3D->mapSettings() )
@@ -133,7 +133,7 @@ void QgsLayout3DMapWidget::copy3DMapSettings()
     mMap3D->setBackgroundColor( settings->backgroundColor() );
 
     // copy camera position details
-    mMap3D->setCameraPose( dock->mapCanvas3D()->cameraController()->cameraPose() );
+    mMap3D->setCameraPose( dock->widget()->mapCanvas3D()->cameraController()->cameraPose() );
     updateCameraPoseWidgetsFromItem();
   }
 
@@ -145,7 +145,7 @@ void QgsLayout3DMapWidget::copeCameraPose()
   Qgs3DMapCanvasDockWidget *dock = _dock3DViewFromSender( sender() );
   if ( dock )
   {
-    mMap3D->setCameraPose( dock->mapCanvas3D()->cameraController()->cameraPose() );
+    mMap3D->setCameraPose( dock->widget()->mapCanvas3D()->cameraController()->cameraPose() );
     updateCameraPoseWidgetsFromItem();
   }
 }

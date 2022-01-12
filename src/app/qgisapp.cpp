@@ -136,6 +136,7 @@
 #include "qgs3dapputils.h"
 #include "qgs3doptions.h"
 #include "qgsmapviewsmanager.h"
+#include "qgs3dmapcanvaswidget.h"
 #endif
 
 #ifdef HAVE_GEOREFERENCER
@@ -9944,11 +9945,11 @@ Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingVi
   // settings from m3DMapViewsWidgets
   if ( Qgs3DMapCanvasDockWidget *w = get3DMapViewDock( existingViewName ) )
   {
-    Qgs3DMapSettings *map = new Qgs3DMapSettings( *w->mapCanvas3D()->map() );
-    mapCanvasDock3D->setMapSettings( map );
+    Qgs3DMapSettings *map = new Qgs3DMapSettings( *w->widget()->mapCanvas3D()->map() );
+    mapCanvasDock3D->widget()->setMapSettings( map );
 
-    mapCanvasDock3D->mapCanvas3D()->cameraController()->readXml( w->mapCanvas3D()->cameraController()->writeXml( doc ) );
-    mapCanvasDock3D->animationWidget()->setAnimation( w->animationWidget()->animation() );
+    mapCanvasDock3D->widget()->mapCanvas3D()->cameraController()->readXml( w->widget()->mapCanvas3D()->cameraController()->writeXml( doc ) );
+    mapCanvasDock3D->widget()->animationWidget()->setAnimation( w->widget()->animationWidget()->animation() );
 
     QMetaObject::Connection conn = connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
     {
@@ -13248,7 +13249,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     const QList< Qgs3DMapCanvasDockWidget * > canvases3D = findChildren< Qgs3DMapCanvasDockWidget * >();
     for ( Qgs3DMapCanvasDockWidget *canvas3D : canvases3D )
     {
-      canvas3D->measurementLineTool()->updateSettings();
+      canvas3D->widget()->measurementLineTool()->updateSettings();
     }
 #endif
 
@@ -13974,9 +13975,9 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
   Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
   mOpen3DDocks.insert( map3DWidget );
   map3DWidget->setWindowTitle( name );
-  map3DWidget->mapCanvas3D()->setObjectName( name );
-  map3DWidget->setMainCanvas( mMapCanvas );
-  map3DWidget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
+  map3DWidget->widget()->mapCanvas3D()->setObjectName( name );
+  map3DWidget->widget()->setMainCanvas( mMapCanvas );
+  map3DWidget->widget()->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
 
   connect( map3DWidget, &Qgs3DMapCanvasDockWidget::closed, [ = ]()
   {
@@ -13986,7 +13987,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
         QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
     QDomDocument doc( documentType );
 
-    QString viewName = map3DWidget->mapCanvas3D()->objectName();
+    QString viewName = map3DWidget->widget()->mapCanvas3D()->objectName();
     if ( !QgsProject::instance()->getViewsManager()->get3DViewSettings( viewName ).isNull() )
     {
       QDomElement elem3DMap;
@@ -14086,15 +14087,15 @@ void QgisApp::new3DMapCanvas()
       disconnect( conn );
     } );
 
-    dock->setMapSettings( map );
+    dock->widget()->setMapSettings( map );
 
     QgsRectangle extent = mMapCanvas->extent();
     float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
-    dock->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, static_cast< float >( mMapCanvas->rotation() ) );
+    dock->widget()->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, static_cast< float >( mMapCanvas->rotation() ) );
 
     const QgsCameraController::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), QgsCameraController::WhenDragging, QgsSettings::App );
-    if ( dock->mapCanvas3D()->cameraController() )
-      dock->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
+    if ( dock->widget()->mapCanvas3D()->cameraController() )
+      dock->widget()->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
 
     QDomImplementation DomImplementation;
     QDomDocumentType documentType =
@@ -16710,25 +16711,25 @@ void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomDocument 
 {
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
-  elem3DMap.setAttribute( QStringLiteral( "name" ), w->mapCanvas3D()->objectName() );
-  QDomElement elem3DMapSettings = w->mapCanvas3D()->map()->writeXml( doc, readWriteContext );
+  elem3DMap.setAttribute( QStringLiteral( "name" ), w->widget()->mapCanvas3D()->objectName() );
+  QDomElement elem3DMapSettings = w->widget()->mapCanvas3D()->map()->writeXml( doc, readWriteContext );
   elem3DMap.appendChild( elem3DMapSettings );
-  QDomElement elemCamera = w->mapCanvas3D()->cameraController()->writeXml( doc );
+  QDomElement elemCamera = w->widget()->mapCanvas3D()->cameraController()->writeXml( doc );
   elem3DMap.appendChild( elemCamera );
-  QDomElement elemAnimation = w->animationWidget()->animation().writeXml( doc );
+  QDomElement elemAnimation = w->widget()->animationWidget()->animation().writeXml( doc );
   elem3DMap.appendChild( elemAnimation );
+
+  elem3DMap.setAttribute( QStringLiteral( "isDocked" ), w->isDocked() );
 
   QgsDockWidget *dw = w->dockWidget();
   if ( dw )
   {
-    elem3DMap.setAttribute( QStringLiteral( "isDock" ), QStringLiteral( "1" ) );
     writeDockWidgetSettings( dw, elem3DMap );
   }
 
   QDialog *d = w->dialog();
   if ( d )
   {
-    elem3DMap.setAttribute( QStringLiteral( "isDialog" ), QStringLiteral( "1" ) );
     elem3DMap.setAttribute( QStringLiteral( "d_x" ), d->x() );
     elem3DMap.setAttribute( QStringLiteral( "d_y" ), d->y() );
     elem3DMap.setAttribute( QStringLiteral( "d_width" ), d->width() );
@@ -16769,12 +16770,12 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &e
   }
   map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
 
-  w->setMapSettings( map );
+  w->widget()->setMapSettings( map );
 
   QDomElement elemCamera = elem3DMap.firstChildElement( QStringLiteral( "camera" ) );
   if ( !elemCamera.isNull() )
   {
-    w->mapCanvas3D()->cameraController()->readXml( elemCamera );
+    w->widget()->mapCanvas3D()->cameraController()->readXml( elemCamera );
   }
 
   QDomElement elemAnimation = elem3DMap.firstChildElement( QStringLiteral( "animation3d" ) );
@@ -16782,7 +16783,7 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &e
   {
     Qgs3DAnimationSettings animationSettings;
     animationSettings.readXml( elemAnimation );
-    w->animationWidget()->setAnimation( animationSettings );
+    w->widget()->animationWidget()->setAnimation( animationSettings );
   }
 
   QgsDockWidget *dw = w->dockWidget();
@@ -16791,15 +16792,21 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &e
     readDockWidgetSettings( dw, elem3DMap );
   }
 
-//  QDialog *d = w->dialog();
-//  if ( d )
-//  {
-//    elem3DMap.setAttribute( QStringLiteral( "isDialog" ), QStringLiteral( "1" ) );
-//    elem3DMap.setAttribute( QStringLiteral( "d_x" ), d->x() );
-//    elem3DMap.setAttribute( QStringLiteral( "d_y" ), d->y() );
-//    elem3DMap.setAttribute( QStringLiteral( "d_width" ), d->width() );
-//    elem3DMap.setAttribute( QStringLiteral( "d_height" ), d->height() );
-//  }
+  QDialog *d = w->dialog();
+  if ( d )
+  {
+    int dx = elem3DMap.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
+    int dy = elem3DMap.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
+    int dw = elem3DMap.attribute( QStringLiteral( "d_width" ), "0" ).toInt();
+    int dh = elem3DMap.attribute( QStringLiteral( "d_height" ), "0" ).toInt();
+    d->setGeometry( dx, dy, dw, dh );
+  }
+
+  bool isDocked = elem3DMap.attribute( QStringLiteral( "isDocked" ), "1" ).toInt() == 1;
+  if ( !isDocked )
+  {
+    w->switchToWindowMode();
+  }
 }
 #endif
 
@@ -16845,7 +16852,7 @@ void QgisApp::writeProject( QDomDocument &doc )
 #ifdef HAVE_3D
   for ( Qgs3DMapCanvasDockWidget *widget : findChildren< Qgs3DMapCanvasDockWidget * >() )
   {
-    QString viewName = widget->mapCanvas3D()->objectName();
+    QString viewName = widget->widget()->mapCanvas3D()->objectName();
     QDomElement elem3DMap = doc.createElement( QStringLiteral( "view" ) );
     elem3DMap.setAttribute( QStringLiteral( "isOpen" ), 1 );
     write3DMapViewSettings( widget, doc, elem3DMap );

@@ -57,29 +57,14 @@ Qgs3DMapCanvasDockWidget::~Qgs3DMapCanvasDockWidget()
   delete mDialog;
 }
 
-void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
+Qgs3DMapCanvasWidget *Qgs3DMapCanvasDockWidget::widget()
 {
-  mCanvasWidget->setMapSettings( map );
+  return mCanvasWidget;
 }
 
-void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
+bool Qgs3DMapCanvasDockWidget::isDocked()
 {
-  mCanvasWidget->setMainCanvas( canvas );
-}
-
-Qgs3DMapCanvas *Qgs3DMapCanvasDockWidget::mapCanvas3D()
-{
-  return mCanvasWidget->mapCanvas3D();
-}
-
-Qgs3DAnimationWidget *Qgs3DMapCanvasDockWidget::animationWidget()
-{
-  return mCanvasWidget->animationWidget();
-}
-
-Qgs3DMapToolMeasureLine *Qgs3DMapCanvasDockWidget::measurementLineTool()
-{
-  return mCanvasWidget->measurementLineTool();
+  return mIsDocked;
 }
 
 void Qgs3DMapCanvasDockWidget::toggleDockMode( bool docked )
@@ -110,6 +95,12 @@ void Qgs3DMapCanvasDockWidget::switchToWindowMode()
 
   mDialog->show();
   mDock->setVisible( false );
+
+  // TODO: apply resizing in a better way
+  mDialog->resize( mDialog->size() + QSize( 1, 1 ) );
+  mDialog->resize( mDialog->size() - QSize( 1, 1 ) );
+
+  mCanvasWidget->setDocked( false );
 }
 
 void Qgs3DMapCanvasDockWidget::switchToDockMode()
@@ -128,5 +119,7 @@ void Qgs3DMapCanvasDockWidget::switchToDockMode()
   // TODO: apply resizing in a better way
   mDock->resize( mDock->size() + QSize( 1, 1 ) );
   mDock->resize( mDock->size() - QSize( 1, 1 ) );
+
+  mCanvasWidget->setDocked( true );
 }
 

@@ -40,19 +40,17 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QWidget
 
     ~Qgs3DMapCanvasDockWidget();
 
-    //! takes ownership
-    void setMapSettings( Qgs3DMapSettings *map );
-
-    void setMainCanvas( QgsMapCanvas *canvas );
-
-    Qgs3DMapCanvas *mapCanvas3D();
-    Qgs3DAnimationWidget *animationWidget();
-
-    Qgs3DMapToolMeasureLine *measurementLineTool();
+    Qgs3DMapCanvasWidget *widget();
 
     QgsDockWidget *dockWidget() { return mDock; }
 
     QDialog *dialog() { return mDialog; }
+
+    bool isDocked();
+
+    void switchToWindowMode();
+
+    void switchToDockMode();
 
   signals:
     void closed();
@@ -60,10 +58,6 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QWidget
   private slots:
     void toggleDockMode( bool docked );
 
-  private:
-    void switchToWindowMode();
-
-    void switchToDockMode();
 
   private:
     bool mIsDocked = true;

@@ -280,6 +280,11 @@ void Qgs3DMapCanvasWidget::measureLine()
   mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
 }
 
+void Qgs3DMapCanvasWidget::setDocked( bool docked )
+{
+  mDockUnDockBtn->setChecked( docked );
+}
+
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( bool visibility )
 {
   mCanvas->setOnScreenNavigationVisibility( visibility );

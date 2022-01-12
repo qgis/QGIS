@@ -20,6 +20,7 @@
 #include "qgsnewnamedialog.h"
 #include "qgs3dmapcanvas.h"
 #include "qgsmapviewsmanager.h"
+#include "qgs3dmapcanvaswidget.h"
 
 #include <QMessageBox>
 
@@ -137,7 +138,7 @@ void Qgs3DViewsManagerDialog::renameClicked()
   if ( Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->get3DMapViewDock( oldTitle ) )
   {
     widget->setWindowTitle( newTitle );
-    widget->mapCanvas3D()->setObjectName( newTitle );
+    widget->widget()->mapCanvas3D()->setObjectName( newTitle );
   }
 
   QgsProject::instance()->setDirty();

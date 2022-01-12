@@ -51,6 +51,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     Qgs3DMapToolMeasureLine *measurementLineTool() { return  mMapToolMeasureLine; }
 
+    void setDocked( bool docked );
+
   signals:
     void toggleDockMode( bool docked );
 
