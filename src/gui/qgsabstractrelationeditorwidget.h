@@ -153,8 +153,16 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Returns the widget's current feature
+     * If the widget is in multiedit mode only the first is returned
+     * \see features
      */
     QgsFeature feature() const;
+
+    /**
+     * Returns the widget's current features
+     * \since QGIS 3.24
+     */
+    QList<QgsFeature> features() const;
 
     /**
        * Determines the force suppress form popup status that is configured for this widget
