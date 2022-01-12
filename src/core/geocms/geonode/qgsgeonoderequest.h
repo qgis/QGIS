@@ -284,6 +284,7 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
 
     bool mIsAborted = false;
     bool mForceRefresh = false;
+    bool mParsingLayers = false;
 
     QList<QgsGeoNodeRequest::ServiceLayerDetail> parseLayers( const QByteArray &layerResponse );
     QgsGeoNodeStyle retrieveStyle( const QString &styleUrl );

@@ -54,18 +54,22 @@ void QgsGeoNodeRequest::abort()
 void QgsGeoNodeRequest::fetchLayers()
 {
   request( QStringLiteral( "/api/layers/" ) );
-  QObject *obj = new QObject( this );
 
+  QObject *obj = new QObject( this );
   connect( this, &QgsGeoNodeRequest::requestFinished, obj, [obj, this ]
   {
-    QList<QgsGeoNodeRequest::ServiceLayerDetail> layers;
-    if ( mError.isEmpty() )
+    if ( !mParsingLayers )
     {
-      layers = parseLayers( this->lastResponse() );
+      mParsingLayers = true;
+      QList<QgsGeoNodeRequest::ServiceLayerDetail> layers;
+      if ( mError.isEmpty() )
+      {
+        layers = parseLayers( lastResponse() );
+      }
+      emit layersFetched( layers );
+      mParsingLayers = false;
+      obj->deleteLater();
     }
-    emit layersFetched( layers );
-
-    obj->deleteLater();
   } );
 }
 
@@ -74,11 +78,11 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::fetchLayersBlock
   QList<QgsGeoNodeRequest::ServiceLayerDetail> layers;
 
   QEventLoop loop;
-  connect( this, &QgsGeoNodeRequest::requestFinished, &loop, &QEventLoop::quit );
   QObject *obj = new QObject( this );
   connect( this, &QgsGeoNodeRequest::layersFetched, obj, [&]( const QList<QgsGeoNodeRequest::ServiceLayerDetail> &fetched )
   {
     layers = fetched;
+    loop.exit();
   } );
   fetchLayers();
   loop.exec( QEventLoop::ExcludeUserInputEvents );
@@ -293,7 +297,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
     {
       if ( wmsURLFormat.isEmpty() && wfsURLFormat.isEmpty() && wcsURLFormat.isEmpty() && xyzURLFormat.isEmpty() )
       {
-        bool success = requestBlocking( QStringLiteral( "/api/layers/" ) + layerStruct.id );
+        bool success = requestBlocking( QStringLiteral( "/api/layers/%1/" ).arg( layerStruct.id ) );
         if ( success )
         {
           const QJsonDocument resourceUriDocument = QJsonDocument::fromJson( this->lastResponse() );
@@ -546,10 +550,10 @@ void QgsGeoNodeRequest::request( const QString &endPoint )
 
 bool QgsGeoNodeRequest::requestBlocking( const QString &endPoint )
 {
-  request( endPoint );
-
   QEventLoop loop;
   connect( this, &QgsGeoNodeRequest::requestFinished, &loop, &QEventLoop::quit );
+
+  request( endPoint );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   return mError.isEmpty();
