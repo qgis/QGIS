@@ -50,12 +50,19 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
     /**
      * Sets the current \a crs to display in the widget.
      *
+     * \see crs()
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Sets the current \a crs to display in the widget.
+     *
      * The \a nativeFormat argument specifies the format (e.g. WKT or PROJ) is natively associated
      * with the custom CRS.
      *
      * \see crs()
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, Qgis::CrsDefinitionFormat nativeFormat );
 
     /**
      * Returns the selected CRS format.

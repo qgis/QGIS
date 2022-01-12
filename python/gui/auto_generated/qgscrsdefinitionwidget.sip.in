@@ -36,7 +36,14 @@ An invalid CRS may be returned if no CRS is defined in the widget.
 .. seealso:: :py:func:`setCrs`
 %End
 
-    void setCrs( const QgsCoordinateReferenceSystem &crs, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the current ``crs`` to display in the widget.
+
+.. seealso:: :py:func:`crs`
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs, Qgis::CrsDefinitionFormat nativeFormat );
 %Docstring
 Sets the current ``crs`` to display in the widget.
 
