@@ -1265,6 +1265,18 @@ class CORE_EXPORT Qgis
     Q_FLAG( HistoryProviderBackends )
 
     /**
+     * CRS definition formats.
+     *
+     * \since QGIS 3.24
+     */
+    enum class CrsDefinitionFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateReferenceSystem, Format ) : int
+      {
+      Wkt SIP_MONKEYPATCH_COMPAT_NAME( FormatWkt ), //!< WKT format (always recommended over proj string format)
+      Proj SIP_MONKEYPATCH_COMPAT_NAME( FormatProj ), //!< Proj string format
+    };
+    Q_ENUM( CrsDefinitionFormat )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

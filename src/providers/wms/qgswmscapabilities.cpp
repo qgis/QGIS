@@ -55,6 +55,11 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
   mXyz = false;  // assume WMS / WMTS
 
+  if ( uri.hasParam( QStringLiteral( "interpretation" ) ) )
+  {
+    mInterpretation = uri.param( QStringLiteral( "interpretation" ) );
+  }
+
   if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) ||
        uri.param( QStringLiteral( "type" ) ) == QLatin1String( "mbtiles" ) )
   {
@@ -69,7 +74,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mBaseUrl = mHttpUri;
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
-    mSmoothPixmapTransform = true;
+    mSmoothPixmapTransform = mInterpretation.isEmpty();
     mDpiMode = DpiNone; // does not matter what we set here
     mActiveSubLayers = QStringList( QStringLiteral( "xyz" ) );  // just a placeholder to have one sub-layer
     mActiveSubStyles = QStringList( QStringLiteral( "xyz" ) );  // just a placeholder to have one sub-style

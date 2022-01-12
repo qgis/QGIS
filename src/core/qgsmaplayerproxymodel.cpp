@@ -107,6 +107,11 @@ void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer *> &ex
   invalidateFilter();
 }
 
+void  QgsMapLayerProxyModel::setProject( QgsProject *project )
+{
+  mModel->setProject( project );
+}
+
 void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList &ids )
 {
   mExceptList.clear();

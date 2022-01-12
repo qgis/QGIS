@@ -9,8 +9,6 @@
 
 
 
-
-
 class QgsRelationWidgetRegistry
 {
 %Docstring(signature="appended")
@@ -42,7 +40,7 @@ Adds a new registered relation ``widgetFactory``
 Removes a registered relation widget with given ``widgetType``
 %End
 
-    QStringList relationWidgetNames();
+    QStringList relationWidgetNames() const;
 %Docstring
 Returns a list of names of registered relation widgets
 %End

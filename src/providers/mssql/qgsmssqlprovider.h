@@ -166,6 +166,8 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     std::shared_ptr<QgsMssqlDatabase> connection() const;
 
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
+
   protected:
     //! Loads fields from input file to member attributeFields
     QVariant::Type DecodeSqlType( const QString &sqlTypeName );

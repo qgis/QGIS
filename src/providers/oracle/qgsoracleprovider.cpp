@@ -229,6 +229,11 @@ Qgis::VectorLayerTypeFlags QgsOracleProvider::vectorLayerTypeFlags() const
   return flags;
 }
 
+void QgsOracleProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  mShared = qobject_cast<QgsOracleProvider *>( source )->mShared;
+}
+
 void QgsOracleProvider::setWorkspace( const QString &workspace )
 {
   QgsDataSourceUri prevUri( mUri );

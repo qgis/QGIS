@@ -36,6 +36,9 @@ struct QgsXyzConnection
   double tilePixelRatio = 0;
   bool hidden = false;
 
+  // Interpretation key related to the converter from color to value, empty if none
+  QString interpretation;
+
   QString encodedUri() const;
 };
 

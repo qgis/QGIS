@@ -218,6 +218,7 @@ Contains settings for how a map layer will be labeled.
       // (data defined only)
       PositionX,
       PositionY,
+      PositionPoint,
       Hali,
       Vali,
       Rotation,

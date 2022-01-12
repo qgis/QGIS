@@ -258,6 +258,26 @@ class TestQgsMapLayerModel(unittest.TestCase):
 
         QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
 
+    def testProject(self):
+        lA = create_layer('lA')
+        lB = create_layer('lB')
+        projectA = QgsProject.instance()
+        projectB = QgsProject()
+
+        projectA.addMapLayer(lA)
+        projectB.addMapLayer(lB)
+
+        m = QgsMapLayerModel()
+        self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), lA.name())
+
+        m.setProject(projectB)
+        self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), lB.name())
+
+        m.setProject(projectA)
+        self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), lA.name())
+
+        QgsProject.instance().removeAllMapLayers()
+
     def testDisplayRole(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')

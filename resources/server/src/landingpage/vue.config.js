@@ -1,5 +1,8 @@
+const LicensePlugin = require('webpack-license-plugin')
+
 module.exports = {
   publicPath: './',
+  outputDir: '../../api/ogc/static/landingpage/',
   assetsDir: './',
   configureWebpack: {
     devtool: "source-map",
@@ -7,7 +10,10 @@ module.exports = {
       splitChunks: {
         chunks: "all",
       },
-    }
+    },
+    plugins: [
+      new LicensePlugin()
+    ]
   },
   runtimeCompiler: true,
   devServer: {

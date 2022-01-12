@@ -319,6 +319,11 @@ Qgis::VectorLayerTypeFlags QgsPostgresProvider::vectorLayerTypeFlags() const
   return flags;
 }
 
+void QgsPostgresProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  mShared = qobject_cast<QgsPostgresProvider *>( source )->mShared;
+}
+
 void QgsPostgresProvider::reloadProviderData()
 {
   mShared->setFeaturesCounted( -1 );

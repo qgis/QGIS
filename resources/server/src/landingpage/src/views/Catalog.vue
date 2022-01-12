@@ -133,7 +133,7 @@
 import { LMap, LControlAttribution, LTileLayer } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { latLng, Polygon } from "leaflet";
-import WMS from "leaflet-wms/leaflet.wms.js";
+import WMS from "leaflet.wms/dist/leaflet.wms.js";
 import Metadata from "@/components/Metadata.vue";
 import Error from "@/components/Error.vue";
 import Utils from "@/js/Utils.js";

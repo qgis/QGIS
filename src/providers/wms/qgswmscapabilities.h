@@ -858,6 +858,8 @@ class QgsWmsSettings
 
     bool mEnableContextualLegend;
 
+    QString mInterpretation;
+
     friend class QgsWmsProvider;
 };
 

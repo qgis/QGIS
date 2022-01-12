@@ -66,7 +66,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsgrouplayer.h"
-
+#include "qgsmapviewsmanager.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -370,6 +370,7 @@ QgsProject::QgsProject( QObject *parent )
   , mRelationManager( new QgsRelationManager( this ) )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
+  , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
   , mTimeSettings( new QgsProjectTimeSettings( this ) )
@@ -840,6 +841,7 @@ void QgsProject::clear()
   mRelationManager->clear();
   mAnnotationManager->clear();
   mLayoutManager->clear();
+  m3DViewsManager->clear();
   mBookmarkManager->clear();
   mViewSettings->reset();
   mTimeSettings->reset();
@@ -1719,6 +1721,13 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     profile.switchTask( tr( "Loading layouts" ) );
     mLayoutManager->readXml( doc->documentElement(), *doc );
   }
+
+  if ( !( flags & QgsProject::ReadFlag::FlagDontLoad3DViews ) )
+  {
+    profile.switchTask( tr( "Loading 3D Views" ) );
+    m3DViewsManager->readXml( doc->documentElement(), *doc );
+  }
+
   profile.switchTask( tr( "Loading bookmarks" ) );
   mBookmarkManager->readXml( doc->documentElement(), *doc );
 
@@ -2444,6 +2453,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
   const QDomElement layoutElem = mLayoutManager->writeXml( *doc );
   qgisNode.appendChild( layoutElem );
 
+  const QDomElement views3DElem = m3DViewsManager->writeXml( *doc );
+  qgisNode.appendChild( views3DElem );
+
   const QDomElement bookmarkElem = mBookmarkManager->writeXml( *doc );
   qgisNode.appendChild( bookmarkElem );
 
@@ -3158,6 +3170,16 @@ const QgsLayoutManager *QgsProject::layoutManager() const
 QgsLayoutManager *QgsProject::layoutManager()
 {
   return mLayoutManager.get();
+}
+
+const QgsMapViewsManager *QgsProject::getViewsManager() const
+{
+  return m3DViewsManager.get();
+}
+
+QgsMapViewsManager *QgsProject::getViewsManager()
+{
+  return m3DViewsManager.get();
 }
 
 const QgsBookmarkManager *QgsProject::bookmarkManager() const

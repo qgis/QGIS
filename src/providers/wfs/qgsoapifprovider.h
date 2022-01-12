@@ -89,6 +89,8 @@ class QgsOapifProvider final: public QgsVectorDataProvider
     //! For QgsWFSSourceSelect::buildQuery()
     const QString &clientSideFilterExpression() const;
 
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
+
   private slots:
 
     void pushErrorSlot( const QString &errorMsg );
