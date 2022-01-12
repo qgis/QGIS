@@ -5057,7 +5057,10 @@ QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type 
         result = QVariant( type );
       break;
     case QVariant::UserType:
-      result = fromEwkt( value, conn );
+      if ( typeName == QLatin1String( "geometry" ) )
+        result = fromEwkt( value, conn );
+      if ( typeName == QLatin1String( "interval" ) )
+        result = QgsInterval::fromString( value );
       break;
 
     default:

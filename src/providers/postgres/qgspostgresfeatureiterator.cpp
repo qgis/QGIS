@@ -992,16 +992,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
     }
     case QVariant::UserType:
     {
-      if ( fld.type() == QVariant::fromValue( QgsInterval() ).type() && fld.length() == 256 )
-      {
-        char *c = ::PQgetvalue( queryResult.result(), row, col );
-        QgsInterval i = QgsInterval::fromString( c );
-        v = i;
-      }
-      else //geometry
-      {
-        v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName(), mConn );
-      }
+      v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName(), mConn );
       break;
     }
     default:
