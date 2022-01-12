@@ -5059,8 +5059,10 @@ QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type 
     case QVariant::UserType:
       if ( typeName == QLatin1String( "geometry" ) )
         result = fromEwkt( value, conn );
-      if ( typeName == QLatin1String( "interval" ) )
+      else if ( typeName == QLatin1String( "interval" ) )
         result = QgsInterval::fromString( value );
+      else
+        qCritical() << "Unknown typeName " << typeName;
       break;
 
     default:
