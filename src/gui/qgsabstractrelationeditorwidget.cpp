@@ -189,7 +189,7 @@ QgsFeature QgsAbstractRelationEditorWidget::feature() const
 
 QList<QgsFeature> QgsAbstractRelationEditorWidget::features() const
 {
-
+  return mFeatureList;
 }
 
 void QgsAbstractRelationEditorWidget::toggleEditing( bool state )
