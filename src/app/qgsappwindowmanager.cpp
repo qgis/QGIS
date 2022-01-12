@@ -20,6 +20,10 @@
 #include "qgslayoutmanagerdialog.h"
 #include "qgsrasterlayer.h"
 
+#ifdef HAVE_3D
+#include "qgs3dviewsmanagerdialog.h"
+#endif
+
 QgsAppWindowManager::~QgsAppWindowManager()
 {
   if ( mStyleManagerDialog )
@@ -61,6 +65,22 @@ QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::Applic
       mLayoutManagerDialog->show();
       mLayoutManagerDialog->activate();
       return mLayoutManagerDialog;
+    }
+    case Dialog3DMapViewsManager:
+    {
+#ifdef HAVE_3D
+      if ( !m3DMapViewsManagerDialog )
+      {
+        m3DMapViewsManagerDialog = new Qgs3DViewsManagerDialog( QgisApp::instance(), Qt::Window );
+        m3DMapViewsManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
+      }
+      m3DMapViewsManagerDialog->show();
+      m3DMapViewsManagerDialog->reload();
+      m3DMapViewsManagerDialog->raise();
+      m3DMapViewsManagerDialog->setWindowState( m3DMapViewsManagerDialog->windowState() & ~Qt::WindowMinimized );
+      m3DMapViewsManagerDialog->activateWindow();
+      return m3DMapViewsManagerDialog;
+#endif
     }
   }
   return nullptr;

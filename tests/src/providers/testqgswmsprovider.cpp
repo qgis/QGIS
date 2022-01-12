@@ -22,6 +22,12 @@
 #include <qgsmultirenderchecker.h>
 #include <qgsrasterlayer.h>
 #include <qgsproviderregistry.h>
+#include <qgsxyzconnection.h>
+#include <qgssinglebandpseudocolorrenderer.h>
+#include <qgsrastershader.h>
+#include <qgsstyle.h>
+#include "qgssinglebandgrayrenderer.h"
+#include "qgsrasterlayer.h"
 
 /**
  * \ingroup UnitTests
@@ -241,6 +247,58 @@ class TestQgsWmsProvider: public QObject
       QCOMPARE( provider.layerMetadata().licenses().at( 0 ), QStringLiteral( "Open Data Commons Open Database License (ODbL)" ) );
       QCOMPARE( provider.layerMetadata().licenses().at( 1 ), QStringLiteral( "Creative Commons Attribution-ShareAlike (CC-BY-SA)" ) );
       QVERIFY( provider.layerMetadata().rights().at( 0 ).startsWith( "Base map and data from OpenStreetMap and OpenStreetMap Foundation" ) );
+    }
+
+    void testConvertToValue()
+    {
+      QString dataDir( TEST_DATA_DIR );
+
+      QgsXyzConnection xyzConn;
+      xyzConn.url = QUrl::fromLocalFile( dataDir + QStringLiteral( "/maptiler_terrain_rgb.png" ) ).toString();
+      QgsRasterLayer layer( xyzConn.encodedUri(), "terrain", "wms" );
+      QVERIFY( layer.isValid() );
+      QVERIFY( layer.dataProvider()->dataType( 1 ) == Qgis::DataType::ARGB32 );
+
+      xyzConn.interpretation = QStringLiteral( "maptilerterrain" );
+      QgsRasterLayer layer2( xyzConn.encodedUri(), "terrain", "wms" );
+      QVERIFY( layer2.isValid() );
+      QVERIFY( layer2.dataProvider()->dataType( 1 ) == Qgis::DataType::Float32 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setLayers( QList<QgsMapLayer *>() << &layer2 );
+      mapSettings.setExtent( layer2.extent() );
+      mapSettings.setOutputSize( QSize( 400, 400 ) );
+      mapSettings.setOutputDpi( 96 );
+      mapSettings.setDpiTarget( 48 );
+      QVERIFY( imageCheck( "convert_value", mapSettings ) );
+    }
+
+    void testTerrariumInterpretation()
+    {
+      QString dataDir( TEST_DATA_DIR );
+
+      QgsXyzConnection xyzConn;
+      xyzConn.interpretation = QgsWmsInterpretationConverterTerrariumRGB::interpretationKey();
+      xyzConn.url = QUrl::fromLocalFile( dataDir + QStringLiteral( "/terrarium_terrain_rgb.png" ) ).toString();
+      QgsRasterLayer layer( xyzConn.encodedUri(), "terrain", "wms" );
+      QVERIFY( layer.isValid() );
+      QVERIFY( layer.dataProvider()->dataType( 1 ) == Qgis::DataType::Float32 );
+
+      QgsSingleBandGrayRenderer *renderer = new QgsSingleBandGrayRenderer( layer.dataProvider(), 1 );
+      QgsContrastEnhancement *e = new QgsContrastEnhancement( Qgis::DataType::Float32 );
+      e->setMinimumValue( -50 );
+      e->setMaximumValue( 50 );
+      e->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+      renderer->setContrastEnhancement( e );
+      layer.setRenderer( renderer );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setLayers( QList<QgsMapLayer *>() << &layer );
+      mapSettings.setExtent( layer.extent() );
+      mapSettings.setOutputSize( QSize( 400, 400 ) );
+      mapSettings.setOutputDpi( 96 );
+      mapSettings.setDpiTarget( 48 );
+      QVERIFY( imageCheck( "terrarium_terrain", mapSettings ) );
     }
 
     bool imageCheck( const QString &testType, QgsMapSettings &mapSettings )

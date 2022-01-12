@@ -970,7 +970,7 @@ QString QgsRelationEditorWidgetFactory::type() const
 
 QString QgsRelationEditorWidgetFactory::name() const
 {
-  return QStringLiteral( "Relation Editor" );
+  return QObject::tr( "Relation Editor" );
 }
 
 QgsAbstractRelationEditorWidget *QgsRelationEditorWidgetFactory::create( const QVariantMap &config, QWidget *parent ) const

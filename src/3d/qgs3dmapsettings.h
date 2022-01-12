@@ -59,7 +59,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
   public:
 
     //! Constructor for Qgs3DMapSettings
-    Qgs3DMapSettings() = default;
+    Qgs3DMapSettings();
     //! Copy constructor
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings() override;
@@ -586,6 +586,14 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setRendererUsage( Qgis::RendererUsage rendererUsage );
 
   signals:
+
+    /**
+     * Emitted when one of the configuration settings has changed
+     *
+     * \since QGIS 3.24
+     */
+    void settingsChanged();
+
     //! Emitted when the background color has changed
     void backgroundColorChanged();
     //! Emitted when the selection color has changed
@@ -748,6 +756,10 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
 #endif
+
+  private:
+    //! Connects the various changed signals of this widget to the settingsChanged signal
+    void connectChangedSignalsToSettingsChanged();
 
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)

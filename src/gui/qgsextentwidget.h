@@ -32,7 +32,7 @@
 
 class QgsBookmarkManagerProxyModel;
 class QgsCoordinateReferenceSystem;
-class QgsMapLayerModel;
+class QgsMapLayerProxyModel;
 class QgsMapLayer;
 
 /**
@@ -272,7 +272,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     QMenu *mLayoutMenu = nullptr;
     QMenu *mBookmarkMenu = nullptr;
 
-    QgsMapLayerModel *mMapLayerModel = nullptr;
+    QgsMapLayerProxyModel *mMapLayerModel = nullptr;
     QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;
 
     QList< QAction * > mLayerMenuActions;

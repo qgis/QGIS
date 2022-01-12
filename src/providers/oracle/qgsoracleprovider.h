@@ -191,6 +191,8 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
 
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
+
   private:
     QString whereClause( QgsFeatureId featureId, QVariantList &args ) const;
     QString pkParamWhereClause() const;

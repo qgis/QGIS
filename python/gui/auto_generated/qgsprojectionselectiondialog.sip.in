@@ -10,6 +10,114 @@
 
 
 
+class QgsCrsSelectionWidget : QgsPanelWidget
+{
+%Docstring(signature="appended")
+A generic widget allowing users to pick a Coordinate Reference System (or define their own).
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsprojectionselectiondialog.h"
+%End
+  public:
+
+    QgsCrsSelectionWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCrsSelectionWidget, with the specified ``parent`` widget.
+%End
+
+    ~QgsCrsSelectionWidget();
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the CRS currently selected in the widget.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    void setMessage( const QString &message );
+%Docstring
+Sets a ``message`` to show in the dialog.
+%End
+
+    void setShowNoCrs( bool show );
+%Docstring
+Sets whether a "no/invalid" CRS option should be shown. If this
+option is selected, calling :py:func:`~QgsCrsSelectionWidget.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+
+.. seealso:: :py:func:`showNoCrs`
+%End
+
+    bool showNoCrs() const;
+%Docstring
+Returns whether the "no/invalid" CRS option is shown. If this
+option is selected, calling :py:func:`~QgsCrsSelectionWidget.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+
+.. seealso:: :py:func:`setShowNoCrs`
+%End
+
+    void setNotSetText( const QString &text, const QString &description = QString() );
+%Docstring
+Sets the text to show for the not set option. Note that this option is not shown
+by default and must be set visible by calling :py:func:`~QgsCrsSelectionWidget.setShowNoCrs`.
+
+The ``description`` argument can be used to specify a detailed description which
+is shown when the option is selected.
+%End
+
+    bool hasValidSelection() const;
+%Docstring
+Returns ``True`` if the widget has a valid CRS defined.
+%End
+
+  public slots:
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the ``crs`` to show within the widget.
+
+.. seealso:: :py:func:`crs`
+%End
+
+    void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
+%Docstring
+filters this dialog by the given CRSs
+
+Sets this dialog to filter the available CRSs to those listed
+by the given Coordinate Reference Systems.
+
+:param crsFilter: a list of OGC Coordinate Reference Systems to filter the
+                  list of CRS by. This is useful in (e.g.) WMS situations
+                  where you just want to offer what the WMS server can support.
+
+.. warning::
+
+   This function's behavior is undefined if it is called after the dialog is shown.
+%End
+
+  signals:
+
+    void crsChanged();
+%Docstring
+Emitted when the CRS defined in the widget is changed.
+%End
+
+    void crsDoubleClicked( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Emitted when a CRS entry in the widget is double-clicked.
+%End
+
+    void hasValidSelectionChanged( bool isValid );
+%Docstring
+Emitted when the widget has a valid selection or not.
+%End
+
+};
+
+
+
 class QgsProjectionSelectionDialog : QDialog
 {
 %Docstring(signature="appended")
@@ -43,8 +151,6 @@ the you probably want to look at :py:class:`QgsProjectionSelectionWidget` instea
 %Docstring
 Constructor for QgsProjectionSelectionDialog.
 %End
-
-    ~QgsProjectionSelectionDialog();
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
@@ -91,10 +197,13 @@ option is selected, calling :py:func:`~QgsProjectionSelectionDialog.crs` will re
 .. versionadded:: 3.0
 %End
 
-    void setNotSetText( const QString &text );
+    void setNotSetText( const QString &text, const QString &description = QString() );
 %Docstring
 Sets the text to show for the not set option. Note that this option is not shown
 by default and must be set visible by calling :py:func:`~QgsProjectionSelectionDialog.setShowNoProjection`.
+
+Since QGIS 3.24, the ``description`` argument can be used to specify a detailed description which
+is shown when the option is selected.
 
 .. versionadded:: 3.16
 %End
@@ -105,6 +214,13 @@ Sets the dialog to require a valid selection only, preventing users from accepti
 dialog if no selection is present.
 
 .. versionadded:: 3.18
+%End
+
+    bool hasValidSelection() const;
+%Docstring
+Returns ``True`` if the dialog has a valid CRS defined.
+
+.. versionadded:: 3.24
 %End
 
   public slots:

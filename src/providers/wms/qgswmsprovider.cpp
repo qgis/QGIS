@@ -221,6 +221,9 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   // 2) http://xxx.xxx.xx/yyy/yyy?
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
 
+
+  mConverter = QgsWmsInterpretationConverter::createConverter( mSettings.mInterpretation );
+
   mValid = true;
   QgsDebugMsgLevel( QStringLiteral( "exiting constructor." ), 4 );
 }
@@ -891,7 +894,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
                     r.rect.width() / cr,
                     r.rect.height() / cr );
         // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
-        bool disableSmoothing = ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) );
+        bool disableSmoothing = mConverter || ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) );
         tileImages << TileImage( dst, localImage, !disableSmoothing );
       }
       else
@@ -982,8 +985,20 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       cmp.center = viewExtent.center();
       std::sort( requestsFinal.begin(), requestsFinal.end(), cmp );
 
-      QgsWmsTiledImageDownloadHandler handler( dataSourceUri(), mSettings.authorization(), mTileReqNo, requestsFinal, image, viewExtent, mSettings.mSmoothPixmapTransform, feedback );
+      QgsWmsTiledImageDownloadHandler handler(
+        dataSourceUri(),
+        mSettings.authorization(),
+        mTileReqNo,
+        requestsFinal,
+        image,
+        viewExtent,
+        mSettings.mSmoothPixmapTransform,
+        feedback );
+
       handler.downloadBlocking();
+
+      if ( feedback )
+        feedback->appendError( handler.error() );
     }
 
     QgsDebugMsgLevel( QStringLiteral( "TILE CACHE total: %1 / %2" ).arg( QgsTileCache::totalCost() ).arg( QgsTileCache::maxCost() ), 3 );
@@ -1013,7 +1028,8 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
   }
 
   QgsDebugMsgLevel( QStringLiteral( "image height = %1 bytesPerLine = %2" ).arg( image->height() ) . arg( image->bytesPerLine() ), 3 );
-  size_t myExpectedSize = pixelWidth * pixelHeight * 4;
+  size_t pixelsCount = static_cast<size_t>( pixelWidth ) * pixelHeight;
+  size_t myExpectedSize = pixelsCount * 4;
   size_t myImageSize = image->height() *  image->bytesPerLine();
   if ( myExpectedSize != myImageSize )   // should not happen
   {
@@ -1025,7 +1041,27 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
   if ( ptr )
   {
     // If image is too large, ptr can be NULL
-    memcpy( block, ptr, myExpectedSize );
+    if ( mConverter && ( image->format() == QImage::Format_ARGB32 || image->format() == QImage::Format_RGB32 ) )
+    {
+      std::vector<float> data;
+      data.resize( myImageSize );
+      const QRgb *inputPtr = reinterpret_cast<const QRgb *>( image->constBits() );
+      float *outputPtr = data.data();
+      for ( size_t i = 0; i < pixelsCount; ++i )
+      {
+        mConverter->convert( *inputPtr, outputPtr );
+        inputPtr++;
+        outputPtr++;
+      }
+
+      memcpy( block, data.data(), myExpectedSize );
+
+    }
+    else
+    {
+      memcpy( block, ptr, myExpectedSize );
+    }
+
     return true;
   }
   else
@@ -1623,7 +1659,10 @@ Qgis::DataType QgsWmsProvider::dataType( int bandNo ) const
 Qgis::DataType QgsWmsProvider::sourceDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo )
-  return Qgis::DataType::ARGB32;
+  if ( mConverter )
+    return mConverter->dataType();
+  else
+    return Qgis::DataType::ARGB32;
 }
 
 int QgsWmsProvider::bandCount() const
@@ -3696,6 +3735,35 @@ QgsLayerMetadata QgsWmsProvider::layerMetadata() const
   return mLayerMetadata;
 }
 
+QgsRasterBandStats QgsWmsProvider::bandStatistics(
+  int bandNo,
+  int stats,
+  const QgsRectangle &extent,
+  int sampleSize,
+  QgsRasterBlockFeedback *feedback )
+{
+  if ( mConverter )
+    return mConverter->statistics( bandNo, stats, extent, sampleSize, feedback );
+  else
+    return QgsRasterBandStats();
+}
+
+QgsRasterHistogram QgsWmsProvider::histogram(
+  int bandNo,
+  int binCount,
+  double minimum,
+  double maximum,
+  const QgsRectangle &extent,
+  int sampleSize,
+  bool includeOutOfRange,
+  QgsRasterBlockFeedback *feedback )
+{
+  if ( mConverter )
+    return mConverter->histogram( bandNo, binCount, minimum, maximum, extent, sampleSize, includeOutOfRange, feedback );
+  else
+    return QgsRasterHistogram();
+}
+
 QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
 {
   QVector<QgsWmsSupportedFormat> formats;
@@ -4364,7 +4432,6 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     if ( !status.isNull() && status.toInt() >= 400 )
     {
       QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-
       QgsWmsProvider::showMessageBox( tr( "Tile request error" ), tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() ) );
 
       mReplies.removeOne( reply );
@@ -4480,10 +4547,14 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       {
         QgsWmsStatistics::Stat &stat = QgsWmsStatistics::statForUri( mProviderUri );
         stat.errors++;
-
         // if we reached timeout, let's try again (e.g. in case of slow connection or slow server)
-        if ( reply->error() == QNetworkReply::TimeoutError )
-          repeatTileRequest( reply->request() );
+        repeatTileRequest( reply->request() );
+
+        if ( reply->error() == QNetworkReply::ContentAccessDenied )
+        {
+          mError = tr( "Access denied: %1" ).
+                   arg( reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString() );
+        }
       }
     }
 
@@ -4558,6 +4629,11 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
   mReplies << reply;
   connect( reply, &QNetworkReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
+}
+
+QString QgsWmsTiledImageDownloadHandler::error() const
+{
+  return mError;
 }
 
 // Some servers like http://glogow.geoportal2.pl/map/wms/wms.php? do not BBOX
@@ -4812,3 +4888,79 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
   return new QgsWmsProviderMetadata();
 }
 #endif
+
+
+std::unique_ptr<QgsWmsInterpretationConverter> QgsWmsInterpretationConverter::createConverter( const QString &key )
+{
+  if ( key == QgsWmsInterpretationConverterMapTilerTerrainRGB::interpretationKey() )
+    return std::make_unique<QgsWmsInterpretationConverterMapTilerTerrainRGB>();
+  else if ( key == QgsWmsInterpretationConverterTerrariumRGB::interpretationKey() )
+    return std::make_unique<QgsWmsInterpretationConverterTerrariumRGB>();
+
+  return nullptr;
+}
+
+Qgis::DataType QgsWmsInterpretationConverter::dataType() const
+{
+  return Qgis::DataType::Float32;
+}
+
+//
+// QgsWmsInterpretationConverterMapTilerTerrainRGB
+//
+
+void QgsWmsInterpretationConverterMapTilerTerrainRGB::convert( const QRgb &color, float *converted ) const
+{
+  int R = qRed( color );
+  int G = qGreen( color );
+  int B = qBlue( color );
+
+  *converted = -10000 + ( ( R * 256 * 256 + G * 256 + B ) ) * 0.1;
+}
+
+QgsRasterBandStats QgsWmsInterpretationConverterMapTilerTerrainRGB::statistics( int, int, const QgsRectangle &, int, QgsRasterBlockFeedback * ) const
+{
+  QgsRasterBandStats stat;
+  stat.minimumValue = 0;
+  stat.maximumValue = 9000;
+  stat.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max;
+  return stat;
+}
+
+QgsRasterHistogram QgsWmsInterpretationConverterMapTilerTerrainRGB::histogram( int, int, double, double, const QgsRectangle &, int, bool, QgsRasterBlockFeedback * ) const
+{
+  return QgsRasterHistogram();
+}
+
+//
+// QgsWmsInterpretationConverterTerrariumRGB
+//
+
+void QgsWmsInterpretationConverterTerrariumRGB::convert( const QRgb &color, float *converted ) const
+{
+  // for description of the "terrarium" format:
+  // https://github.com/tilezen/joerd/blob/master/docs/formats.md
+
+  if ( qAlpha( color ) == 255 )
+  {
+    *converted = qRed( color ) * 256 + qGreen( color ) + qBlue( color ) / 256.f - 32768;
+  }
+  else
+  {
+    *converted = std::numeric_limits<float>::quiet_NaN();
+  }
+}
+
+QgsRasterBandStats QgsWmsInterpretationConverterTerrariumRGB::statistics( int, int, const QgsRectangle &, int, QgsRasterBlockFeedback * ) const
+{
+  QgsRasterBandStats stat;
+  stat.minimumValue = -11000;
+  stat.maximumValue = 9000;
+  stat.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max;
+  return stat;
+}
+
+QgsRasterHistogram QgsWmsInterpretationConverterTerrariumRGB::histogram( int, int, double, double, const QgsRectangle &, int, bool, QgsRasterBlockFeedback * ) const
+{
+  return QgsRasterHistogram();
+}

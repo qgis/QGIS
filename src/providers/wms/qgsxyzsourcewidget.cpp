@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsxyzsourcewidget.h"
-
+#include "qgswmssourceselect.h"
 #include "qgsproviderregistry.h"
 
+#include "qgswmsprovider.h"
 
 QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   : QgsProviderSourceWidget( parent )
@@ -31,6 +32,8 @@ QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   mSpinZMax->setClearValue( 18 );
 
   connect( mEditUrl, &QLineEdit::textChanged, this, &QgsXyzSourceWidget::validate );
+  mInterpretationCombo = new QgsWmsInterpretationComboBox( this );
+  mInterpretationLayout->addWidget( mInterpretationCombo );
 }
 
 void QgsXyzSourceWidget::setSourceUri( const QString &uri )
@@ -54,6 +57,8 @@ void QgsXyzSourceWidget::setSourceUri( const QString &uri )
   mComboTileResolution->setCurrentIndex( index );
 
   mAuthSettings->setConfigId( mSourceParts.value( QStringLiteral( "authcfg" ) ).toString() );
+
+  setInterpretation( mSourceParts.value( QStringLiteral( "interpretation" ) ).toString() );
 
   mIsValid = true;
 }
@@ -95,6 +100,11 @@ QString QgsXyzSourceWidget::sourceUri() const
     parts.insert( QStringLiteral( "authcfg" ), mAuthSettings->configId() );
   else
     parts.remove( QStringLiteral( "authcfg" ) );
+
+  if ( !mInterpretationCombo->interpretation().isEmpty() )
+    parts.insert( QStringLiteral( "interpretation" ), mInterpretationCombo->interpretation() );
+  else
+    parts.remove( QStringLiteral( "interpretation" ) );
 
   return QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts );
 }
@@ -189,6 +199,16 @@ int QgsXyzSourceWidget::tilePixelRatio() const
     return 2.;  // high-res
   else
     return 0;  // unknown
+}
+
+void QgsXyzSourceWidget::setInterpretation( const QString &interpretation )
+{
+  mInterpretationCombo->setInterpretation( interpretation );
+}
+
+QString QgsXyzSourceWidget::interpretation() const
+{
+  return mInterpretationCombo->interpretation();
 }
 
 void QgsXyzSourceWidget::validate()

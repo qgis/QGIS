@@ -727,14 +727,7 @@ void QgsMapCanvas::rendererJobFinished()
 
   mMapUpdateTimer.stop();
 
-  // TODO: would be better to show the errors in message bar
-  const auto constErrors = mJob->errors();
-  for ( const QgsMapRendererJob::Error &error : constErrors )
-  {
-    QgsMapLayer *layer = QgsProject::instance()->mapLayer( error.layerID );
-    emit renderErrorOccurred( error.message, layer );
-    QgsMessageLog::logMessage( error.layerID + " :: " + error.message, tr( "Rendering" ) );
-  }
+  notifyRendererErrors( mJob->errors() );
 
   if ( !mJobCanceled )
   {
@@ -1038,6 +1031,29 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
   emit contextMenuAboutToShow( &menu, event );
 
   menu.exec( event->globalPos() );
+}
+
+void QgsMapCanvas::notifyRendererErrors( const QgsMapRendererJob::Errors &errors )
+{
+  const QDateTime currentTime = QDateTime::currentDateTime();
+
+  // remove errors too old
+  for ( const QgsMapRendererJob::Error &error : errors )
+  {
+    const QString errorKey = error.layerID + ':' + error.message;
+    if ( mRendererErrors.contains( errorKey ) )
+    {
+      const QDateTime sameErrorTime = mRendererErrors.value( errorKey );
+
+      if ( sameErrorTime.secsTo( currentTime ) < 60 )
+        continue;
+    }
+
+    mRendererErrors[errorKey] = currentTime;
+
+    if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( error.layerID ) )
+      emit renderErrorOccurred( error.message, layer );
+  }
 }
 
 void QgsMapCanvas::updateDevicePixelFromScreen()

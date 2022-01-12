@@ -369,6 +369,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
 
     /**
+     * Returns the associated labeling engine feedback object.
+     *
+     * Callers can connect to the signals in this object to receive granular progress reports during the labeling steps.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.24
+     */
+    QgsLabelingEngineFeedback *labelingEngineFeedback() SIP_SKIP;
+
+    /**
      * Returns the total time it took to finish the job (in milliseconds).
      * \see perLayerRenderingTime()
      */
@@ -595,6 +605,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     virtual void startPrivate() = 0;
 
     QgsLabelSink *mLabelSink = nullptr;
+    QgsLabelingEngineFeedback *mLabelingEngineFeedback = nullptr;
 
 };
 

@@ -22,12 +22,13 @@
 #include <QLineEdit>
 #include <QToolButton>
 #include <QComboBox>
+#include <QPointer>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgis_gui.h"
 
-class QgsProjectionSelectionDialog;
 class QgsHighlightableComboBox;
+class QgsCrsSelectionWidget;
 class QLabel;
 
 /**
@@ -141,6 +142,20 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     QString sourceEnsemble() const;
 
+    /**
+     * Sets the \a title for the CRS selector dialog window.
+     * \see dialogTitle()
+     * \since QGIS 3.24
+     */
+    void setDialogTitle( const QString &title );
+
+    /**
+     * Returns the title for the CRS selector dialog window.
+     * \see setDialogTitle()
+     * \since QGIS 3.24
+     */
+    QString dialogTitle() const;
+
   signals:
 
     /**
@@ -188,7 +203,6 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsHighlightableComboBox *mCrsComboBox = nullptr;
     QToolButton *mButton = nullptr;
-    QgsProjectionSelectionDialog *mDialog = nullptr;
     QString mNotSetText;
     QString mMessage;
 
@@ -197,6 +211,11 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     QWidget *mWarningLabelContainer = nullptr;
     QLabel *mWarningLabel = nullptr;
+
+    QPointer< QgsCrsSelectionWidget > mActivePanel;
+    int mIgnorePanelSignals = 0;
+
+    QString mDialogTitle;
 
     void addNotSetOption();
     void addProjectCrsOption();

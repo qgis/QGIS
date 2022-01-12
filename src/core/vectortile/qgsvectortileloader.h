@@ -91,6 +91,9 @@ class QgsVectorTileLoader : public QObject
     //! Blocks the caller until all asynchronous requests are finished (with a success or a failure)
     void downloadBlocking();
 
+    //! Returns a eventual error that occurred during loading, void if no error.
+    QString error() const;
+
   private:
     void loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl );
 
@@ -113,6 +116,8 @@ class QgsVectorTileLoader : public QObject
 
     //! Running tile requests
     QList<QgsTileDownloadManagerReply *> mReplies;
+
+    QString mError;
 
 };
 

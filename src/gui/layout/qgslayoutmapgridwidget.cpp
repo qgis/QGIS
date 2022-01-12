@@ -115,6 +115,7 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
 
   mMapGridCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   mMapGridCrsSelector->setNotSetText( tr( "Use Map CRS" ) );
+  mMapGridCrsSelector->setDialogTitle( tr( "Grid CRS" ) );
 
   connect( mMapGridCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsLayoutMapGridWidget::mapGridCrsChanged );
 

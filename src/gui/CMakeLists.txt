@@ -438,6 +438,7 @@ set(QGIS_GUI_SRCS
   qgsconfigureshortcutsdialog.cpp
   qgscoordinateboundspreviewmapwidget.cpp
   qgscoordinateoperationwidget.cpp
+  qgscrsdefinitionwidget.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
   qgscustomprojectopenhandler.cpp
@@ -690,6 +691,7 @@ set(QGIS_GUI_HDRS
   qgscoordinateboundspreviewmapwidget.h
   qgscoordinateoperationwidget.h
   qgscredentialdialog.h
+  qgscrsdefinitionwidget.h
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
   qgscustomprojectopenhandler.h

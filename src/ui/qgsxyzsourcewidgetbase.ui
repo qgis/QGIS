@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>362</width>
-    <height>217</height>
+    <width>360</width>
+    <height>237</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,40 +33,6 @@
      </property>
      <property name="checked">
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="lblReferer">
-     <property name="text">
-      <string>Referer</string>
-     </property>
-     <property name="buddy">
-      <cstring>mEditReferer</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QLineEdit" name="mEditReferer">
-     <property name="toolTip">
-      <string>Optional custom referer</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Tile Resolution</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="mEditUrl">
-     <property name="toolTip">
-      <string>URL of the connection, {x}, {y}, and {z} will be replaced with actual values. Use {-y} for inverted y axis.</string>
-     </property>
-     <property name="placeholderText">
-      <string>http://example.com/{z}/{x}/{y}.png</string>
      </property>
     </widget>
    </item>
@@ -112,6 +78,50 @@
      </item>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QCheckBox" name="mCheckBoxZMin">
+     <property name="text">
+      <string>Min. Zoom Level</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="lblReferer">
+     <property name="text">
+      <string>Referer</string>
+     </property>
+     <property name="buddy">
+      <cstring>mEditReferer</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="mEditUrl">
+     <property name="toolTip">
+      <string>URL of the connection, {x}, {y}, and {z} will be replaced with actual values. Use {-y} for inverted y axis.</string>
+     </property>
+     <property name="placeholderText">
+      <string>http://example.com/{z}/{x}/{y}.png</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>URL</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Tile Resolution</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0" colspan="2">
     <widget class="QGroupBox" name="mAuthGroupBox">
      <property name="title">
@@ -136,20 +146,24 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QCheckBox" name="mCheckBoxZMin">
-     <property name="text">
-      <string>Min. Zoom Level</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="mEditReferer">
+     <property name="toolTip">
+      <string>Optional custom referer</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_2">
+   <item row="6" column="1">
+    <layout class="QHBoxLayout" name="mInterpretationLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+    </layout>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>URL</string>
+      <string>Interpretation</string>
      </property>
     </widget>
    </item>

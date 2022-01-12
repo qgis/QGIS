@@ -2047,7 +2047,7 @@ QString QgsCoordinateReferenceSystem::validationHint()
   return mValidationHint;
 }
 
-long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, Format nativeFormat )
+long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, Qgis::CrsDefinitionFormat nativeFormat )
 {
   return QgsApplication::coordinateReferenceSystemRegistry()->addUserCrs( *this, name, nativeFormat );
 }
@@ -2608,6 +2608,35 @@ const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::s
   return *sSrsIdCache();
 }
 
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toGeographicCrs() const
+{
+  if ( isGeographic() )
+  {
+    return *this;
+  }
+
+  if ( PJ *obj = d->threadLocalProjObject() )
+  {
+    PJ_CONTEXT *pjContext = QgsProjContext::get();
+    QgsProjUtils::proj_pj_unique_ptr geoCrs( proj_crs_get_geodetic_crs( pjContext, obj ) );
+    if ( !geoCrs )
+      return QgsCoordinateReferenceSystem();
+
+    if ( !testIsGeographic( geoCrs.get() ) )
+      return QgsCoordinateReferenceSystem();
+
+    QgsProjUtils::proj_pj_unique_ptr normalized( proj_normalize_for_visualization( pjContext, geoCrs.get() ) );
+    if ( !normalized )
+      return QgsCoordinateReferenceSystem();
+
+    return QgsCoordinateReferenceSystem::fromProjObject( normalized.get() );
+  }
+  else
+  {
+    return QgsCoordinateReferenceSystem();
+  }
+}
+
 QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 {
   if ( isGeographic() )
@@ -2628,6 +2657,72 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 PJ *QgsCoordinateReferenceSystem::projObject() const
 {
   return d->threadLocalProjObject();
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProjObject( PJ *object )
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromProjObject( object );
+  return crs;
+}
+
+bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
+{
+  d.detach();
+  d->mIsValid = false;
+  d->mProj4.clear();
+  d->mWktPreferred.clear();
+
+  if ( !object )
+  {
+    return false;
+  }
+
+  switch ( proj_get_type( object ) )
+  {
+    case PJ_TYPE_GEODETIC_CRS:
+    case PJ_TYPE_GEOCENTRIC_CRS:
+    case PJ_TYPE_GEOGRAPHIC_CRS:
+    case PJ_TYPE_GEOGRAPHIC_2D_CRS:
+    case PJ_TYPE_GEOGRAPHIC_3D_CRS:
+    case PJ_TYPE_VERTICAL_CRS:
+    case PJ_TYPE_PROJECTED_CRS:
+    case PJ_TYPE_COMPOUND_CRS:
+    case PJ_TYPE_TEMPORAL_CRS:
+    case PJ_TYPE_ENGINEERING_CRS:
+    case PJ_TYPE_BOUND_CRS:
+    case PJ_TYPE_OTHER_CRS:
+      break;
+
+    default:
+      return false;
+  }
+
+  d->setPj( QgsProjUtils::crsToSingleCrs( object ) );
+
+  if ( !d->hasPj() )
+  {
+    return d->mIsValid;
+  }
+  else
+  {
+    // maybe we can directly grab the auth name and code from the crs
+    const QString authName( proj_get_id_auth_name( d->threadLocalProjObject(), 0 ) );
+    const QString authCode( proj_get_id_code( d->threadLocalProjObject(), 0 ) );
+    if ( !authName.isEmpty() && !authCode.isEmpty() && loadFromAuthCode( authName, authCode ) )
+    {
+      return d->mIsValid;
+    }
+    else
+    {
+      // Still a valid CRS, just not a known one
+      d->mIsValid = true;
+      d->mDescription = QString( proj_get_name( d->threadLocalProjObject() ) );
+      setMapUnits();
+    }
+  }
+
+  return d->mIsValid;
 }
 
 QStringList QgsCoordinateReferenceSystem::recentProjections()

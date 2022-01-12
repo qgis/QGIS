@@ -622,6 +622,14 @@ Sets the renderer usage
 %End
 
   signals:
+
+    void settingsChanged();
+%Docstring
+Emitted when one of the configuration settings has changed
+
+.. versionadded:: 3.24
+%End
+
     void backgroundColorChanged();
 %Docstring
 Emitted when the background color has changed

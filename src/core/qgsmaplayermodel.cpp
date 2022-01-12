@@ -40,6 +40,25 @@ QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
   addLayers( mProject->mapLayers().values() );
 }
 
+void QgsMapLayerModel::setProject( QgsProject *project )
+{
+
+  // remove layers from previous project
+  if ( mProject )
+  {
+    removeLayers( mProject->mapLayers().keys() );
+    disconnect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
+    disconnect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  }
+
+  mProject = project ? project : QgsProject::instance();
+
+  connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
+  connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  addLayers( mProject->mapLayers().values() );
+}
+
+
 void QgsMapLayerModel::setItemsCheckable( bool checkable )
 {
   mItemCheckable = checkable;
