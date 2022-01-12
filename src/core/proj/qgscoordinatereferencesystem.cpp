@@ -124,6 +124,7 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long id, CrsTy
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs )  //NOLINT
   : d( srs.d )
   , mValidationHint( srs.mValidationHint )
+  , mNativeFormat( srs.mNativeFormat )
 {
 }
 
@@ -131,6 +132,7 @@ QgsCoordinateReferenceSystem &QgsCoordinateReferenceSystem::operator=( const Qgs
 {
   d = srs.d;
   mValidationHint = srs.mValidationHint;
+  mNativeFormat = srs.mNativeFormat;
   return *this;
 }
 
@@ -1860,6 +1862,8 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
     {
       d->mCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
     }
+
+    mNativeFormat = qgsEnumKeyToValue<Qgis::CrsDefinitionFormat>( srsNode.toElement().attribute( QStringLiteral( "nativeFormat" ) ), Qgis::CrsDefinitionFormat::Wkt );
   }
   else
   {
@@ -1874,6 +1878,8 @@ bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc )
 {
   QDomElement layerNode = node.toElement();
   QDomElement srsElement = doc.createElement( QStringLiteral( "spatialrefsys" ) );
+
+  srsElement.setAttribute( QStringLiteral( "nativeFormat" ), qgsEnumValueToKey<Qgis::CrsDefinitionFormat>( mNativeFormat ) );
 
   if ( std::isfinite( d->mCoordinateEpoch ) )
   {
@@ -2050,6 +2056,16 @@ QString QgsCoordinateReferenceSystem::validationHint()
 long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, Qgis::CrsDefinitionFormat nativeFormat )
 {
   return QgsApplication::coordinateReferenceSystemRegistry()->addUserCrs( *this, name, nativeFormat );
+}
+
+void QgsCoordinateReferenceSystem::setNativeFormat( Qgis::CrsDefinitionFormat format )
+{
+  mNativeFormat = format;
+}
+
+Qgis::CrsDefinitionFormat QgsCoordinateReferenceSystem::nativeFormat() const
+{
+  return mNativeFormat;
 }
 
 long QgsCoordinateReferenceSystem::getRecordCount()
