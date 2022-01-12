@@ -908,6 +908,28 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     long saveAsUserCrs( const QString &name, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
 
     /**
+     * Sets the native \a format for the CRS definition.
+     *
+     * \note This has no effect on the underlying definition of the CRS, rather it controls what format
+     * to use when displaying the CRS's definition to users.
+     *
+     * \see nativeFormat()
+     * \since QGIS 3.24
+     */
+    void setNativeFormat( Qgis::CrsDefinitionFormat format );
+
+    /**
+     * Returns the native format for the CRS definition.
+     *
+     * \note This has no effect on the underlying definition of the CRS, rather it controls what format
+     * to use when displaying the CRS's definition to users.
+     *
+     * \see setNativeFormat()
+     * \since QGIS 3.24
+     */
+    Qgis::CrsDefinitionFormat nativeFormat() const;
+
+    /**
      * Returns the geographic CRS associated with this CRS object.
      *
      * May return an invalid CRS if the geographic CRS could not be determined.
@@ -1091,6 +1113,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
     QString mValidationHint;
+
+    Qgis::CrsDefinitionFormat mNativeFormat = Qgis::CrsDefinitionFormat::Wkt;
 
     friend class QgsProjContext;
 
