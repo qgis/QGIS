@@ -504,6 +504,10 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     job.context()->setLabelSink( labelSink() );
     job.context()->setCoordinateTransform( ct );
     job.context()->setExtent( r1 );
+    if ( mSettings.magnificationFactor() != 1 )
+    {
+      job.context()->setDpiTarget( mSettings.outputDpi() / mSettings.magnificationFactor() );
+    }
     if ( !haveExtentInLayerCrs )
       job.context()->setFlag( Qgis::RenderContextFlag::ApplyClipAfterReprojection, true );
 
