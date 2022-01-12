@@ -35,5 +35,5 @@
     "expression": "relation_aggregate('my_relation','array_agg', \"id\")",
     "returns": "array of the id field from all matching child features using the 'my_relation' relation"
   }],
-  "tags": ["child", "matching", "aggregate", "features", "relation", "calculated"]
+  "tags": ["child", "matching", "aggregate", "features", "relation"]
 }

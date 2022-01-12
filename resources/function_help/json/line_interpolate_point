@@ -14,5 +14,5 @@
     "expression": "geom_to_wkt(line_interpolate_point(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),distance:=5))",
     "returns": "'Point (5 0)'"
   }],
-  "tags": ["distance", "interpolated", "linestring", "point", "specified"]
+  "tags": ["distance", "interpolated", "linestring", "point", "specified", "along"]
 }

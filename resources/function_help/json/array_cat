@@ -19,5 +19,5 @@
     "expression": "array_cat(array(1,2),array(2,3))",
     "returns": "[ 1, 2, 2, 3 ]"
   }],
-  "tags": ["array", "concatenated", "arrays", "containing"]
+  "tags": ["concatenated", "arrays", "containing"]
 }
