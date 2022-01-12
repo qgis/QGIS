@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   qgs3dmapcanvasdockwidget.cpp
   --------------------------------------
   Date                 : July 2017
@@ -39,8 +39,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   mDialog->hide();
 
   connect( mDock, &QgsDockWidget::closed, this, &Qgs3DMapCanvasDockWidget::closed );
-  connect( mDialog, &QDialog::finished, [ = ]()
-  {
+  connect( mDialog, &QDialog::finished, [=]() {
     emit this->closed();
   } );
 
@@ -126,7 +125,7 @@ void Qgs3DMapCanvasDockWidget::switchToDockMode()
   mDock->setVisible( true );
 
   // TODO: apply resizing in a better way
-  mDock->resize( mDock->size() + QSize( 1, 1 ) );
-  mDock->resize( mDock->size() - QSize( 1, 1 ) );
+  mDock->resize( mDock->size() + QSize(1, 1) );
+  mDock->resize( mDock->size() - QSize(1, 1) );
 }
 

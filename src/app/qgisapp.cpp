@@ -9913,7 +9913,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::open3DMapView( const QString &viewName )
     return nullptr;
 
   read3DMapViewSettings( mapCanvasDock3D, elem3DMap );
-  mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
+//  mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
 
   QgsProject::instance()->getViewsManager()->set3DViewInitiallyVisible( viewName, true );
 
@@ -9967,7 +9967,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingVi
     read3DMapViewSettings( mapCanvasDock3D, elem );
   }
 
-  setupDockWidget( mapCanvasDock3D, true );
+//  setupDockWidget( mapCanvasDock3D, true );
 
   QDomElement elem3DMap;
   elem3DMap = doc.createElement( QStringLiteral( "view" ) );
@@ -9976,7 +9976,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingVi
   QgsProject::instance()->getViewsManager()->register3DViewSettings( newViewName, elem3DMap );
   QgsProject::instance()->getViewsManager()->set3DViewInitiallyVisible( newViewName, true );
 
-  mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
+//  mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
 
   return mapCanvasDock3D;
 #else
@@ -13973,7 +13973,6 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
 
   Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
   mOpen3DDocks.insert( map3DWidget );
-  map3DWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
   map3DWidget->setWindowTitle( name );
   map3DWidget->mapCanvas3D()->setObjectName( name );
   map3DWidget->setMainCanvas( mMapCanvas );
@@ -14038,7 +14037,11 @@ void QgisApp::new3DMapCanvas()
   Qgs3DMapCanvasDockWidget *dock = createNew3DMapCanvasDock( name );
   if ( dock )
   {
-    setupDockWidget( dock->dockWidget(), true );
+    QgsDockWidget *dw = dock->dockWidget();
+    if ( dw )
+    {
+      setupDockWidget( dw, true );
+    }
 
     QgsProject *prj = QgsProject::instance();
     QgsRectangle fullExtent = mMapCanvas->projectExtent();
@@ -14107,7 +14110,7 @@ void QgisApp::new3DMapCanvas()
     QgsProject::instance()->getViewsManager()->register3DViewSettings( name, elem3DMap );
     QgsProject::instance()->getViewsManager()->set3DViewInitiallyVisible( name, true );
 
-    mPanelMenu->removeAction( dock->toggleViewAction() );
+//    mPanelMenu->removeAction( dock->toggleViewAction() );
   }
 #else
   Q_UNUSED( name )
@@ -16714,7 +16717,23 @@ void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomDocument 
   elem3DMap.appendChild( elemCamera );
   QDomElement elemAnimation = w->animationWidget()->animation().writeXml( doc );
   elem3DMap.appendChild( elemAnimation );
-  writeDockWidgetSettings( w, elem3DMap );
+
+  QgsDockWidget *dw = w->dockWidget();
+  if ( dw )
+  {
+    elem3DMap.setAttribute( QStringLiteral( "isDock" ), QStringLiteral( "1" ) );
+    writeDockWidgetSettings( dw, elem3DMap );
+  }
+
+  QDialog *d = w->dialog();
+  if ( d )
+  {
+    elem3DMap.setAttribute( QStringLiteral( "isDialog" ), QStringLiteral( "1" ) );
+    elem3DMap.setAttribute( QStringLiteral( "d_x" ), d->x() );
+    elem3DMap.setAttribute( QStringLiteral( "d_y" ), d->y() );
+    elem3DMap.setAttribute( QStringLiteral( "d_width" ), d->width() );
+    elem3DMap.setAttribute( QStringLiteral( "d_height" ), d->height() );
+  }
 }
 
 void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &elem3DMap )
@@ -16766,7 +16785,21 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &e
     w->animationWidget()->setAnimation( animationSettings );
   }
 
-  readDockWidgetSettings( w, elem3DMap );
+  QgsDockWidget *dw = w->dockWidget();
+  if ( dw )
+  {
+    readDockWidgetSettings( dw, elem3DMap );
+  }
+
+//  QDialog *d = w->dialog();
+//  if ( d )
+//  {
+//    elem3DMap.setAttribute( QStringLiteral( "isDialog" ), QStringLiteral( "1" ) );
+//    elem3DMap.setAttribute( QStringLiteral( "d_x" ), d->x() );
+//    elem3DMap.setAttribute( QStringLiteral( "d_y" ), d->y() );
+//    elem3DMap.setAttribute( QStringLiteral( "d_width" ), d->width() );
+//    elem3DMap.setAttribute( QStringLiteral( "d_height" ), d->height() );
+//  }
 }
 #endif
 
@@ -16936,7 +16969,7 @@ void QgisApp::readProject( const QDomDocument &doc )
     Qgs3DMapCanvasDockWidget *mapCanvasDock3D = createNew3DMapCanvasDock( viewName );
     read3DMapViewSettings( mapCanvasDock3D, viewConfig );
 
-    mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
+//    mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
   }
 #endif
 

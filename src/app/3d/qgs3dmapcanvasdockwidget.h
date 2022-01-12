@@ -17,8 +17,10 @@
 #define QGS3DMAPCANVASDOCKWIDGET_H
 
 #include "qgis_app.h"
+#include "qgsdockwidget.h"
 
 #include <QDialog>
+#include <QVBoxLayout>
 
 #define SIP_NO_FILE
 
@@ -30,11 +32,13 @@ class QgsMapCanvas;
 class Qgs3DMapCanvasWidget;
 class QgsDockWidget;
 
-class APP_EXPORT Qgs3DMapCanvasDockWidget : public QDialog
+class APP_EXPORT Qgs3DMapCanvasDockWidget : public QWidget
 {
     Q_OBJECT
   public:
     Qgs3DMapCanvasDockWidget( QWidget *parent = nullptr );
+
+    ~Qgs3DMapCanvasDockWidget();
 
     //! takes ownership
     void setMapSettings( Qgs3DMapSettings *map );
@@ -47,13 +51,28 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QDialog
     Qgs3DMapToolMeasureLine *measurementLineTool();
 
     QgsDockWidget *dockWidget() { return mDock; }
+
+    QDialog *dialog() { return mDialog; }
+
+  signals:
+    void closed();
+
   private slots:
     void toggleDockMode( bool docked );
 
   private:
+    void switchToWindowMode();
+
+    void switchToDockMode();
+
+  private:
+    bool mIsDocked = true;
     Qgs3DMapCanvasWidget *mCanvasWidget = nullptr;
+
     QgsDockWidget *mDock = nullptr;
+
     QDialog *mDialog = nullptr;
+    QVBoxLayout *mDialogLayout = nullptr;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H
