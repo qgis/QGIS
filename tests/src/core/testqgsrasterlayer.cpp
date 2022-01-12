@@ -100,6 +100,7 @@ class TestQgsRasterLayer : public QObject
     void testRefreshRendererIfNeeded();
     void sample();
     void testTemporalProperties();
+    void rotatedRaster();
 
 
   private:
@@ -1038,6 +1039,25 @@ void TestQgsRasterLayer::testTemporalProperties()
 
   QCOMPARE( temporalProperties->fixedTemporalRange().begin(), dateTimeRange.begin() );
   QCOMPARE( temporalProperties->fixedTemporalRange().end(), dateTimeRange.end() );
+}
+
+void TestQgsRasterLayer::rotatedRaster()
+{
+  mMapSettings->setExtent( QgsRectangle( 994, 922, 1174, 1102 ) );
+
+  std::unique_ptr< QgsRasterLayer> rgb = std::make_unique< QgsRasterLayer >( mTestDataDir + "raster/rotated_rgb.png",
+                                         QStringLiteral( "rgb" ) );
+  QVERIFY( rgb->isValid() );
+
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << rgb.get() );
+  QVERIFY( render( QStringLiteral( "raster_rotated_rgb" ) ) );
+
+  std::unique_ptr< QgsRasterLayer> rgba = std::make_unique< QgsRasterLayer >( mTestDataDir + "raster/rotated_rgba.png",
+                                          QStringLiteral( "rgba" ) );
+  QVERIFY( rgba->isValid() );
+
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << rgba.get() );
+  QVERIFY( render( QStringLiteral( "raster_rotated_rgba" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsRasterLayer )
