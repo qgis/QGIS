@@ -45,6 +45,7 @@ class QgsMessageBar;
 class QgsSubsetStringEditorProviderRegistry;
 class QgsProviderSourceWidgetProviderRegistry;
 class QgsRelationWidgetRegistry;
+class QgsMapToolShapeRegistry;
 class QgsHistoryProviderRegistry;
 
 /**
@@ -191,6 +192,11 @@ class GUI_EXPORT QgsGui : public QObject
      */
     static QgsRelationWidgetRegistry *relationWidgetRegistry() SIP_KEEPREFERENCE;
 
+    /**
+     * Returns the registry of shape map tools
+    * \since QGIS 3.24
+     */
+    static QgsMapToolShapeRegistry *mapToolShapeRegistry() SIP_SKIP;
 
     /**
      * Returns the global history provider registry, used for tracking history providers.
@@ -304,6 +310,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsSubsetStringEditorProviderRegistry *mSubsetStringEditorProviderRegistry = nullptr;
     QgsProviderSourceWidgetProviderRegistry *mProviderSourceWidgetProviderRegistry = nullptr;
     QgsRelationWidgetRegistry *mRelationEditorRegistry = nullptr;
+    QgsMapToolShapeRegistry *mShapeMapToolRegistry = nullptr;
     QgsHistoryProviderRegistry *mHistoryProviderRegistry = nullptr;
     std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
 

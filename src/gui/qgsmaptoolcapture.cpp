@@ -33,6 +33,9 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsproject.h"
 #include "qgsmaptoolcapturerubberband.h"
+#include "qgsmaptoolshapeabstract.h"
+#include "qgsmaptoolshaperegistry.h"
+#include "qgsgui.h"
 
 #include <QAction>
 #include <QCursor>
@@ -111,6 +114,9 @@ void QgsMapToolCapture::activate()
 
   mCanvas->snappingUtils()->addExtraSnapLayer( mExtraSnapLayer );
   QgsMapToolAdvancedDigitizing::activate();
+
+  if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
+    mCurrentShapeMapTool->activate( mCaptureLastPoint );
 }
 
 void QgsMapToolCapture::deactivate()
@@ -121,6 +127,10 @@ void QgsMapToolCapture::deactivate()
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
   mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
+
+  if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
+    mCurrentShapeMapTool->deactivate();
+
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
@@ -369,7 +379,16 @@ void QgsMapToolCapture::setStreamDigitizingEnabled( bool enable )
 
 void QgsMapToolCapture::setCurrentCaptureTechnique( CaptureTechnique technique )
 {
+  if ( mCurrentCaptureTechnique == technique )
+    return;
+
   mStartNewCurve = true;
+
+  if ( mCurrentCaptureTechnique == CaptureTechnique::Shape && mCurrentShapeMapTool )
+  {
+    mCurrentShapeMapTool->deactivate();
+    clean();
+  }
 
   switch ( technique )
   {
@@ -393,80 +412,131 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( CaptureTechnique technique )
     mTempRubberBand->setStringType( mLineDigitizingType );
 
   mCurrentCaptureTechnique = technique;
+
+  if ( technique == CaptureTechnique::Shape && mCurrentShapeMapTool && isActive() )
+  {
+    clean();
+    mCurrentShapeMapTool->activate( mCaptureLastPoint );
+  }
+}
+
+void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *shapeMapToolMetadata )
+{
+  if ( mCurrentShapeMapTool )
+  {
+    if ( shapeMapToolMetadata && mCurrentShapeMapTool->id() == shapeMapToolMetadata->id() )
+      return;
+    if ( mCurrentCaptureTechnique == CaptureTechnique::Shape )
+      mCurrentShapeMapTool->deactivate();
+    mCurrentShapeMapTool->deleteLater();
+  }
+
+  mCurrentShapeMapTool = shapeMapToolMetadata ? shapeMapToolMetadata->factory( this ) : nullptr;
+
+  if ( mCurrentCaptureTechnique == CaptureTechnique::Shape && isActive() )
+  {
+    clean();
+    mCurrentShapeMapTool->activate( mCaptureLastPoint );
+  }
 }
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
+
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
+
   const QgsPointXY point = e->mapPoint();
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
-  const QgsPoint mapPoint = QgsPoint( point );
-
-  if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
+  if ( mCurrentCaptureTechnique == Shape )
   {
-    bool hasTrace = false;
-
-    if ( mCurrentCaptureTechnique == CaptureTechnique::Streaming )
+    if ( !mCurrentShapeMapTool )
     {
-      if ( !mCaptureCurve.isEmpty() )
+      emit messageEmitted( tr( "Cannot capture a shape without a shape tool defined" ), Qgis::MessageLevel::Warning );
+    }
+    else
+    {
+      if ( !mTempRubberBand )
       {
-        const QgsPoint prevPoint = mCaptureCurve.curveAt( mCaptureCurve.nCurves() - 1 )->endPoint();
-        if ( QgsPointXY( toCanvasCoordinates( toMapCoordinates( layer(), prevPoint ) ) ).distance( toCanvasCoordinates( point ) ) < mStreamingToleranceInPixels )
-          return;
+        mTempRubberBand.reset( createCurveRubberBand() );
+        mTempRubberBand->setStringType( mLineDigitizingType );
+        mTempRubberBand->setRubberBandGeometryType( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
       }
 
-      mAllowAddingStreamingPoints = true;
-      addVertex( mapPoint );
-      mAllowAddingStreamingPoints = false;
+      mCurrentShapeMapTool->cadCanvasMoveEvent( e, vlayer );
+      return;
     }
-    else if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
+  }
+  else
+  {
+    const QgsPoint mapPoint = QgsPoint( point );
+
+    if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
     {
-      // Store the intermediate point for circular string to retrieve after tracing mouse move if
-      // the digitizing type is circular and the temp rubber band is effectivly circular and if this point is existing
-      // Store an empty point if the digitizing type is linear ot the point is not existing (curve not complete)
-      if ( mLineDigitizingType == QgsWkbTypes::CircularString &&
-           mTempRubberBand->stringType() == QgsWkbTypes::CircularString &&
-           mTempRubberBand->curveIsComplete() )
-        mCircularItermediatePoint = mTempRubberBand->pointFromEnd( 1 );
-      else if ( mLineDigitizingType == QgsWkbTypes::LineString ||
-                !mTempRubberBand->curveIsComplete() )
-        mCircularItermediatePoint = QgsPoint();
+      bool hasTrace = false;
 
-      hasTrace = tracingMouseMove( e );
-
-      if ( !hasTrace )
+      if ( mCurrentCaptureTechnique == CaptureTechnique::Streaming )
       {
-        // Restore the temp rubber band
-        mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mLineDigitizingType, mCaptureFirstPoint );
-        mTempRubberBand->addPoint( mCaptureLastPoint );
-        if ( !mCircularItermediatePoint.isEmpty() )
+        if ( !mCaptureCurve.isEmpty() )
         {
-          mTempRubberBand->movePoint( mCircularItermediatePoint );
-          mTempRubberBand->addPoint( mCircularItermediatePoint );
+          const QgsPoint prevPoint = mCaptureCurve.curveAt( mCaptureCurve.nCurves() - 1 )->endPoint();
+          if ( QgsPointXY( toCanvasCoordinates( toMapCoordinates( layer(), prevPoint ) ) ).distance( toCanvasCoordinates( point ) ) < mStreamingToleranceInPixels )
+            return;
+        }
+
+        mAllowAddingStreamingPoints = true;
+        addVertex( mapPoint );
+        mAllowAddingStreamingPoints = false;
+      }
+      else if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
+      {
+        // Store the intermediate point for circular string to retrieve after tracing mouse move if
+        // the digitizing type is circular and the temp rubber band is effectivly circular and if this point is existing
+        // Store an empty point if the digitizing type is linear ot the point is not existing (curve not complete)
+        if ( mLineDigitizingType == QgsWkbTypes::CircularString &&
+             mTempRubberBand->stringType() == QgsWkbTypes::CircularString &&
+             mTempRubberBand->curveIsComplete() )
+          mCircularItermediatePoint = mTempRubberBand->pointFromEnd( 1 );
+        else if ( mLineDigitizingType == QgsWkbTypes::LineString ||
+                  !mTempRubberBand->curveIsComplete() )
+          mCircularItermediatePoint = QgsPoint();
+
+        hasTrace = tracingMouseMove( e );
+
+        if ( !hasTrace )
+        {
+          // Restore the temp rubber band
+          mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mLineDigitizingType, mCaptureFirstPoint );
+          mTempRubberBand->addPoint( mCaptureLastPoint );
+          if ( !mCircularItermediatePoint.isEmpty() )
+          {
+            mTempRubberBand->movePoint( mCircularItermediatePoint );
+            mTempRubberBand->addPoint( mCircularItermediatePoint );
+          }
         }
       }
-    }
 
-    if ( mCurrentCaptureTechnique != CaptureTechnique::Streaming && !hasTrace )
-    {
-      if ( mCaptureCurve.numPoints() > 0 )
+      if ( mCurrentCaptureTechnique != CaptureTechnique::Streaming && !hasTrace )
       {
-        const QgsPoint mapPt = mCaptureLastPoint;
-
-        if ( mTempRubberBand )
+        if ( mCaptureCurve.numPoints() > 0 )
         {
+          const QgsPoint mapPt = mCaptureLastPoint;
+
+          if ( mTempRubberBand )
+          {
+            mTempRubberBand->movePoint( mapPoint );
+            mTempRubberBand->movePoint( 0, mapPt );
+          }
+
+          // fix existing rubber band after tracing - the last point may have been moved if using offset
+          if ( mRubberBand->numberOfVertices() )
+            mRubberBand->movePoint( mapPt );
+        }
+        else if ( mTempRubberBand )
           mTempRubberBand->movePoint( mapPoint );
-          mTempRubberBand->movePoint( 0, mapPt );
-        }
-
-        // fix existing rubber band after tracing - the last point may have been moved if using offset
-        if ( mRubberBand->numberOfVertices() )
-          mRubberBand->movePoint( mapPt );
       }
-      else if ( mTempRubberBand )
-        mTempRubberBand->movePoint( mapPoint );
     }
   }
 } // mouseMoveEvent
@@ -830,15 +900,42 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
 
 void QgsMapToolCapture::keyPressEvent( QKeyEvent *e )
 {
+  if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
+  {
+    mCurrentShapeMapTool->keyPressEvent( e );
+    if ( e->isAccepted() )
+      return;
+  }
+
+  // this is backwards, but we can't change now without breaking api because
+  // forever QgsMapTools have had to explicitly mark events as ignored in order to
+  // indicate that they've consumed the event and that the default behavior should not
+  // be applied..!
+  // see QgsMapCanvas::keyPressEvent
+  e->accept();
+
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
-    undo( e->isAutoRepeat() );
+    if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
+    {
+      if ( !e->isAutoRepeat() )
+      {
+        mCurrentShapeMapTool->undo();
+      }
+    }
+    else
+    {
+      undo( e->isAutoRepeat() );
+    }
 
     // Override default shortcut management in MapCanvas
     e->ignore();
   }
   else if ( e->key() == Qt::Key_Escape )
   {
+    if ( mCurrentShapeMapTool )
+      mCurrentShapeMapTool->clean();
+
     stopCapturing();
 
     // Override default shortcut management in MapCanvas
@@ -1109,7 +1206,6 @@ void QgsMapToolCapture::updateExtraSnapLayer()
 }
 
 
-
 void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
@@ -1178,43 +1274,74 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   // LINE AND POLYGON CAPTURING
   else if ( mode() == CaptureLine || mode() == CapturePolygon )
   {
-    //add point to list and to rubber band
-    if ( e->button() == Qt::LeftButton )
+    bool digitizingFinished = false;
+
+    if ( mCurrentCaptureTechnique == Shape )
     {
-      const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
-      if ( error == 2 )
+      if ( !mCurrentShapeMapTool )
       {
-        //problem with coordinate transformation
-        emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
+        emit messageEmitted( tr( "Cannot capture a shape without a shape tool defined" ), Qgis::MessageLevel::Warning );
         return;
       }
+      else
+      {
+        if ( !mTempRubberBand )
+        {
+          mTempRubberBand.reset( createCurveRubberBand() );
+          mTempRubberBand->setStringType( mLineDigitizingType );
+          mTempRubberBand->setRubberBandGeometryType( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+        }
 
-      startCapturing();
+        digitizingFinished = mCurrentShapeMapTool->cadCanvasReleaseEvent( e, vlayer );
+        if ( digitizingFinished )
+          mCurrentShapeMapTool->clean();
+      }
     }
-    else if ( e->button() == Qt::RightButton )
+    else // i.e. not shape
     {
-      // End of string
-      deleteTempRubberBand();
-
-      //lines: bail out if there are not at least two vertices
-      if ( mode() == CaptureLine && size() < 2 )
+      //add point to list and to rubber band
+      if ( e->button() == Qt::LeftButton )
       {
-        stopCapturing();
-        return;
-      }
+        const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+        if ( error == 2 )
+        {
+          //problem with coordinate transformation
+          emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
+          return;
+        }
 
-      //polygons: bail out if there are not at least two vertices
-      if ( mode() == CapturePolygon && size() < 3 )
+        startCapturing();
+      }
+      else if ( e->button() == Qt::RightButton )
       {
-        stopCapturing();
-        return;
-      }
+        // End of string
+        deleteTempRubberBand();
 
-      if ( mode() == CapturePolygon || e->modifiers() == Qt::ShiftModifier )
-      {
-        closePolygon();
-      }
+        //lines: bail out if there are not at least two vertices
+        if ( mode() == CaptureLine && size() < 2 )
+        {
+          stopCapturing();
+          return;
+        }
 
+        //polygons: bail out if there are not at least two vertices
+        if ( mode() == CapturePolygon && size() < 3 )
+        {
+          stopCapturing();
+          return;
+        }
+
+        if ( mode() == CapturePolygon || e->modifiers() == Qt::ShiftModifier )
+        {
+          closePolygon();
+        }
+
+        digitizingFinished = true;
+      }
+    }
+
+    if ( digitizingFinished )
+    {
       QgsGeometry g;
 
       //does compoundcurve contain circular strings?

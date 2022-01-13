@@ -35,7 +35,8 @@ class QgsMapLayer;
 class QgsGeometryValidator;
 class QgsMapToolCaptureRubberBand;
 class QgsCurvePolygon;
-
+class QgsMapToolShapeAbstract;
+class QgsMapToolShapeMetadata;
 
 /**
  * \ingroup gui
@@ -100,6 +101,19 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     virtual bool supportsTechnique( CaptureTechnique technique ) const;
 
+    /**
+     * Sets the current capture if it is supported by the map tool
+     * \since QGIS 3.24
+     */
+    void setCurrentCaptureTechnique( CaptureTechnique technique );
+
+    /**
+     * Sets the current shape tool
+     * \see QgsMapToolShapeRegistry
+     * \since QGIS 3.24
+     */
+    void setCurrentShapeMapTool( const QgsMapToolShapeMetadata *shapeMapToolMetadata ) SIP_SKIP;
+
     void activate() override;
     void deactivate() override;
 
@@ -135,6 +149,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QList<QgsPointLocator::Match> snappingMatches() const;
 
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     /**
      * Intercept key events like Esc or Del to delete the last point
@@ -158,6 +173,33 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QgsRubberBand *takeRubberBand() SIP_FACTORY;
 
+    /**
+     * Creates a QgsPoint with ZM support if necessary (according to the
+     * WkbType of the current layer). If the point is snapped, then the Z
+     * value is took from the snapped point.
+     *
+     * \param e A mouse event
+     *
+     * \returns a point with ZM support if necessary
+     *
+     * \since QGIS 3.0
+     */
+    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
+
+    /**
+     * Creates a QgsPoint with ZM support if necessary (according to the
+     * WkbType of the current layer).
+     *
+     * \param point A point in 2D
+     *
+     * \returns a point with ZM support if necessary
+     *
+     * \since QGIS 3.0
+     */
+    QgsPoint mapPoint( const QgsPointXY &point ) const;
+
+    // TODO QGIS 4.0 returns an enum instead of a magic constant
+
   public slots:
 
     /**
@@ -172,12 +214,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     * \deprecated since QGIS 3.24 use setCurrentCaptureTechnique() instead
      */
     Q_DECL_DEPRECATED void setStreamDigitizingEnabled( bool enable ) SIP_DEPRECATED;
-
-    /**
-     * Sets the current capture if it is supported by the map tool
-     * \since QGIS 3.24
-     */
-    void setCurrentCaptureTechnique( CaptureTechnique technique );
 
   private slots:
     void addError( const QgsGeometry::Error &error );
@@ -223,33 +259,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * \since QGIS 2.14
      */
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
-
-    /**
-     * Creates a QgsPoint with ZM support if necessary (according to the
-     * WkbType of the current layer). If the point is snapped, then the Z
-     * value is took from the snapped point.
-     *
-     * \param e A mouse event
-     *
-     * \returns a point with ZM support if necessary
-     *
-     * \since QGIS 3.0
-     */
-    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
-
-    /**
-     * Creates a QgsPoint with ZM support if necessary (according to the
-     * WkbType of the current layer).
-     *
-     * \param point A point in 2D
-     *
-     * \returns a point with ZM support if necessary
-     *
-     * \since QGIS 3.0
-     */
-    QgsPoint mapPoint( const QgsPointXY &point ) const;
-
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
 
     /**
      * Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
@@ -431,6 +440,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     CaptureTechnique mCurrentCaptureTechnique = CaptureTechnique::StraightSegments;
 
+    QgsMapToolShapeAbstract *mCurrentShapeMapTool = nullptr;
+
     bool mAllowAddingStreamingPoints = false;
     int mStreamingToleranceInPixels = 1;
 
@@ -441,9 +452,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     friend class TestQgsMapToolCapture;
 
 
-    // QgsMapToolAdvancedDigitizing interface
-  public:
-    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )
