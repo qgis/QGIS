@@ -38,6 +38,9 @@ QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( Qg
   mTechniqueActions.insert( QgsMapToolCapture::CaptureTechnique::CircularString, QgisApp::instance()->mActionDigitizeWithCurve );
   mTechniqueActions.insert( QgsMapToolCapture::CaptureTechnique::Streaming, QgisApp::instance()->mActionStreamDigitize );
   mTechniqueActions.insert( QgsMapToolCapture::CaptureTechnique::Shape, QgisApp::instance()->mActionDigitizeShape );
+
+  mDigitizeModeToolButton = new QToolButton();
+  mDigitizeModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
 }
 
 void QgsMapToolsDigitizingTechniqueManager::setupCanvasTools()
@@ -52,10 +55,6 @@ void QgsMapToolsDigitizingTechniqueManager::setupCanvasTools()
 void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
 {
   // digitize mode button
-
-  mDigitizeModeToolButton = new QToolButton();
-  mDigitizeModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-
   QMenu *digitizeMenu = new QMenu( mDigitizeModeToolButton );
   QActionGroup *actionGroup = new QActionGroup( digitizeMenu );
 
