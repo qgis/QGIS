@@ -79,6 +79,8 @@ bool QgsMapToolShapeRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e,
 
 void QgsMapToolShapeRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
 {
+  Q_UNUSED( layer )
+
   const QgsPoint point = mParentTool->mapPoint( *e );
 
   if ( mTempRubberBand )
