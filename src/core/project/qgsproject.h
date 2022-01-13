@@ -762,14 +762,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note not available in Python bindings
      * \since QGIS 3.24
      */
-    const QgsMapViewsManager *getViewsManager() const SIP_SKIP;
+    const QgsMapViewsManager *viewsManager() const SIP_SKIP;
 
     /**
      * Returns the project's views manager, which manages map views (including 3d maps)
      * in the project.
      * \since QGIS 3.24
      */
-    QgsMapViewsManager *getViewsManager();
+    QgsMapViewsManager *viewsManager();
 
     /**
      * Returns the project's bookmark manager, which manages bookmarks within

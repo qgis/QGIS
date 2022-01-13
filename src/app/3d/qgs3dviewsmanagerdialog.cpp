@@ -46,7 +46,7 @@ Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFla
 
   connect( m3DViewsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &Qgs3DViewsManagerDialog::currentChanged );
 
-  connect( QgsProject::instance()->getViewsManager(), &QgsMapViewsManager::views3DListChanged, this, &Qgs3DViewsManagerDialog::on3DViewsListChanged );
+  connect( QgsProject::instance()->viewsManager(), &QgsMapViewsManager::views3DListChanged, this, &Qgs3DViewsManagerDialog::on3DViewsListChanged );
   m3DViewsListView->selectionModel()->setCurrentIndex( m3DViewsListView->model()->index( 0, 0 ), QItemSelectionModel::Select );
   currentChanged( m3DViewsListView->selectionModel()->currentIndex(), m3DViewsListView->selectionModel()->currentIndex() );
 }
@@ -113,7 +113,7 @@ void Qgs3DViewsManagerDialog::removeClicked()
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
-  QgsProject::instance()->getViewsManager()->remove3DView( viewName );
+  QgsProject::instance()->viewsManager()->remove3DView( viewName );
   if ( Qgs3DMapCanvasDockWidget *w = QgisApp::instance()->get3DMapViewDock( viewName ) )
   {
     w->close();
@@ -132,7 +132,7 @@ void Qgs3DViewsManagerDialog::renameClicked()
   if ( newTitle.isEmpty() )
     return;
 
-  QgsProject::instance()->getViewsManager()->rename3DView( oldTitle, newTitle );
+  QgsProject::instance()->viewsManager()->rename3DView( oldTitle, newTitle );
 
   if ( Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->get3DMapViewDock( oldTitle ) )
   {
@@ -158,14 +158,14 @@ void Qgs3DViewsManagerDialog::currentChanged( const QModelIndex &current, const 
   }
 
   QString viewName = current.data( Qt::DisplayRole ).toString();
-  bool isOpen = QgsProject::instance()->getViewsManager()->is3DViewOpen( viewName );
+  bool isOpen = QgsProject::instance()->viewsManager()->is3DViewOpen( viewName );
   mShowButton->setEnabled( !isOpen );
   mHideButton->setEnabled( isOpen );
 }
 
 void Qgs3DViewsManagerDialog::reload()
 {
-  QStringList names = QgsProject::instance()->getViewsManager()->get3DViewsNames();
+  QStringList names = QgsProject::instance()->viewsManager()->get3DViewsNames();
   mListModel->setStringList( names );
 }
 
