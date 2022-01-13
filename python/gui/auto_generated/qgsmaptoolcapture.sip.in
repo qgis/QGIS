@@ -11,7 +11,6 @@
 
 
 
-
 class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 {
 %Docstring(signature="appended")
@@ -71,6 +70,14 @@ Returns ``True`` if the tool supports the specified capture ``technique``.
 .. versionadded:: 3.20
 %End
 
+    void setCurrentCaptureTechnique( CaptureTechnique technique );
+%Docstring
+Sets the current capture if it is supported by the map tool
+
+.. versionadded:: 3.24
+%End
+
+
     virtual void activate();
 
     virtual void deactivate();
@@ -111,6 +118,8 @@ Returns a list of matches for each point on the captureCurve.
 
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
+
 
     virtual void keyPressEvent( QKeyEvent *e );
 
@@ -139,6 +148,34 @@ transfers ownership to the caller.
 .. versionadded:: 3.8
 %End
 
+    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
+%Docstring
+Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
+WkbType of the current layer). If the point is snapped, then the Z
+value is took from the snapped point.
+
+:param e: A mouse event
+
+:return: a point with ZM support if necessary
+
+
+.. versionadded:: 3.0
+%End
+
+    QgsPoint mapPoint( const QgsPointXY &point ) const;
+%Docstring
+Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
+WkbType of the current layer).
+
+:param point: A point in 2D
+
+:return: a point with ZM support if necessary
+
+
+.. versionadded:: 3.0
+%End
+
+
   public slots:
 
  void setCircularDigitizingEnabled( bool enable ) /Deprecated/;
@@ -157,13 +194,6 @@ Toggles the stream digitizing mode.
 
 .. deprecated:: QGIS 3.24
    use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead
-%End
-
-    void setCurrentCaptureTechnique( CaptureTechnique technique );
-%Docstring
-Sets the current capture if it is supported by the map tool
-
-.. versionadded:: 3.24
 %End
 
   protected:
@@ -207,34 +237,6 @@ CRS as the current layer.
 
 .. versionadded:: 2.14
 %End
-
-    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
-%Docstring
-Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
-WkbType of the current layer). If the point is snapped, then the Z
-value is took from the snapped point.
-
-:param e: A mouse event
-
-:return: a point with ZM support if necessary
-
-
-.. versionadded:: 3.0
-%End
-
-    QgsPoint mapPoint( const QgsPointXY &point ) const;
-%Docstring
-Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
-WkbType of the current layer).
-
-:param point: A point in 2D
-
-:return: a point with ZM support if necessary
-
-
-.. versionadded:: 3.0
-%End
-
 
     int addVertex( const QgsPointXY &point );
 %Docstring
@@ -360,9 +362,6 @@ geometryCaptured is called just before
 
 .. versionadded:: 3.24
 %End
-  public:
-    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
-
 };
 
 QFlags<QgsMapToolCapture::Capability> operator|(QgsMapToolCapture::Capability f1, QFlags<QgsMapToolCapture::Capability> f2);
