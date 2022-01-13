@@ -61,6 +61,7 @@ bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg, 
 {
   if ( !mConn )
   {
+    errorMsg = tr( "Connection to the database not available" );
     return false;
   }
 
