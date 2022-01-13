@@ -721,22 +721,6 @@ QAction *QgisAppInterface::actionMapTips() { return qgis->actionMapTips(); }
 QAction *QgisAppInterface::actionNewBookmark() { return qgis->actionNewBookmark(); }
 QAction *QgisAppInterface::actionShowBookmarks() { return qgis->actionShowBookmarks(); }
 QAction *QgisAppInterface::actionDraw() { return qgis->actionDraw(); }
-QAction *QgisAppInterface::actionCircle2Points() {  return qgis->actionCircle2Points();}
-QAction *QgisAppInterface::actionCircle3Points() {  return qgis->actionCircle3Points();}
-QAction *QgisAppInterface::actionCircle3Tangents() {  return qgis->actionCircle3Tangents();}
-QAction *QgisAppInterface::actionCircle2TangentsPoint() {  return qgis->actionCircle2TangentsPoint();}
-QAction *QgisAppInterface::actionCircleCenterPoint() {  return qgis->actionCircleCenterPoint();}
-QAction *QgisAppInterface::actionEllipseCenter2Points() {  return qgis->actionEllipseCenter2Points();}
-QAction *QgisAppInterface::actionEllipseCenterPoint() {  return qgis->actionEllipseCenterPoint();}
-QAction *QgisAppInterface::actionEllipseExtent() {  return qgis->actionEllipseExtent();}
-QAction *QgisAppInterface::actionEllipseFoci() {  return qgis->actionEllipseFoci();}
-QAction *QgisAppInterface::actionRectangleCenterPoint() {  return qgis->actionRectangleCenterPoint();}
-QAction *QgisAppInterface::actionRectangleExtent() {  return qgis->actionRectangleExtent();}
-QAction *QgisAppInterface::actionRectangle3PointsDistance() {  return qgis->actionRectangle3PointsDistance();}
-QAction *QgisAppInterface::actionRectangle3PointsProjected() {  return qgis->actionRectangle3PointsProjected();}
-QAction *QgisAppInterface::actionRegularPolygon2Points() {  return qgis->actionRegularPolygon2Points();}
-QAction *QgisAppInterface::actionRegularPolygonCenterPoint() {  return qgis->actionRegularPolygonCenterPoint();}
-QAction *QgisAppInterface::actionRegularPolygonCenterCorner() {  return qgis->actionRegularPolygonCenterCorner();}
 //! Layer menu actions
 QAction *QgisAppInterface::actionNewVectorLayer() { return qgis->actionNewVectorLayer(); }
 QAction *QgisAppInterface::actionAddOgrLayer() { return qgis->actionAddOgrLayer(); }
