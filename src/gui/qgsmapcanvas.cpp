@@ -1061,12 +1061,16 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
   if ( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() )
   {
     if ( window()->windowHandle() )
+    {
       mSettings.setOutputDpi( window()->windowHandle()->screen()->physicalDotsPerInch() );
+      mSettings.setDpiTarget( window()->windowHandle()->screen()->physicalDotsPerInch() );
+    }
   }
   else
   {
     // Fallback: compatibility with QGIS <= 3.20; always assume low dpi screens
     mSettings.setOutputDpi( window()->windowHandle()->screen()->logicalDotsPerInch() );
+    mSettings.setDpiTarget( window()->windowHandle()->screen()->logicalDotsPerInch() );
   }
 }
 
