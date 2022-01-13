@@ -37,7 +37,8 @@ The :py:class:`QgsMapLayerProxyModel` class provides an easy to use model to dis
       VectorTileLayer,
       PointCloudLayer,
       AnnotationLayer,
-      All
+      All,
+      SpatialLayer
     };
     typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;
 
@@ -69,6 +70,15 @@ Returns the filter flags which affect how layers are filtered within the model.
 .. seealso:: :py:func:`setFilters`
 
 .. versionadded:: 2.3
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` from which map layers are shown.
+
+If ``project`` is ``None`` then :py:func:`QgsProject.instance()` will be used.
+
+.. versionadded:: 3.24
 %End
 
     static bool layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters );

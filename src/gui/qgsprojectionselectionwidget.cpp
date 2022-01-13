@@ -26,7 +26,9 @@
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   : QWidget( parent )
+  , mDialogTitle( tr( "Select CRS" ) )
 {
+
   mCrsComboBox = new QgsHighlightableComboBox( this );
   mCrsComboBox->addItem( tr( "invalid projection" ), QgsProjectionSelectionWidget::CurrentCrs );
   mCrsComboBox->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
@@ -197,33 +199,75 @@ bool QgsProjectionSelectionWidget::optionVisible( QgsProjectionSelectionWidget::
 
 void QgsProjectionSelectionWidget::selectCrs()
 {
-  //find out crs id of current proj4 string
-  QgsProjectionSelectionDialog dlg( this );
-  if ( !mMessage.isEmpty() )
-    dlg.setMessage( mMessage );
-  dlg.setCrs( mCrs );
-
-  if ( !mNotSetText.isEmpty() )
-    dlg.setNotSetText( mNotSetText );
-
-  if ( optionVisible( QgsProjectionSelectionWidget::CrsOption::CrsNotSet ) )
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
   {
-    dlg.setShowNoProjection( true );
-  }
-  dlg.setRequireValidSelection();
+    mActivePanel = new QgsCrsSelectionWidget( this );
+    if ( !mMessage.isEmpty() )
+      mActivePanel->setMessage( mMessage );
+    mActivePanel->setCrs( mCrs );
 
-  if ( dlg.exec() )
-  {
-    mCrsComboBox->blockSignals( true );
-    mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
-    mCrsComboBox->blockSignals( false );
-    const QgsCoordinateReferenceSystem crs = dlg.crs();
-    setCrs( crs );
-    emit crsChanged( crs );
+    if ( !mNotSetText.isEmpty() )
+      mActivePanel->setNotSetText( mNotSetText );
+
+    mActivePanel->setPanelTitle( mDialogTitle );
+
+    if ( optionVisible( QgsProjectionSelectionWidget::CrsOption::CrsNotSet ) )
+    {
+      mActivePanel->setShowNoCrs( true );
+    }
+
+    connect( mActivePanel, &QgsCrsSelectionWidget::crsChanged, this, [ this ]
+    {
+      if ( mIgnorePanelSignals )
+        return;
+
+      if ( !mActivePanel->hasValidSelection() )
+        return;
+
+      mCrsComboBox->blockSignals( true );
+      mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
+      mCrsComboBox->blockSignals( false );
+      const QgsCoordinateReferenceSystem crs = mActivePanel->crs();
+
+      mIgnorePanelSignals++;
+      setCrs( crs );
+      mIgnorePanelSignals--;
+
+      emit crsChanged( crs );
+    } );
+    panel->openPanel( mActivePanel );
   }
   else
   {
-    QApplication::restoreOverrideCursor();
+    QgsProjectionSelectionDialog dlg( this );
+    if ( !mMessage.isEmpty() )
+      dlg.setMessage( mMessage );
+    dlg.setCrs( mCrs );
+    dlg.setWindowTitle( mDialogTitle );
+
+    if ( !mNotSetText.isEmpty() )
+      dlg.setNotSetText( mNotSetText );
+
+    if ( optionVisible( QgsProjectionSelectionWidget::CrsOption::CrsNotSet ) )
+    {
+      dlg.setShowNoProjection( true );
+    }
+    dlg.setRequireValidSelection();
+
+    if ( dlg.exec() )
+    {
+      mCrsComboBox->blockSignals( true );
+      mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
+      mCrsComboBox->blockSignals( false );
+      const QgsCoordinateReferenceSystem crs = dlg.crs();
+      setCrs( crs );
+      emit crsChanged( crs );
+    }
+    else
+    {
+      QApplication::restoreOverrideCursor();
+    }
   }
 }
 
@@ -292,6 +336,16 @@ void QgsProjectionSelectionWidget::dropEvent( QDropEvent *event )
 QString QgsProjectionSelectionWidget::sourceEnsemble() const
 {
   return mSourceEnsemble;
+}
+
+void QgsProjectionSelectionWidget::setDialogTitle( const QString &title )
+{
+  mDialogTitle = title;
+}
+
+QString QgsProjectionSelectionWidget::dialogTitle() const
+{
+  return mDialogTitle;
 }
 
 void QgsProjectionSelectionWidget::setSourceEnsemble( const QString &ensemble )
@@ -447,6 +501,12 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
       mCrsComboBox->setItemText( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ),
                                  crsOptionText( crs ) );
     }
+  }
+  if ( mActivePanel && !mIgnorePanelSignals )
+  {
+    mIgnorePanelSignals++;
+    mActivePanel->setCrs( crs );
+    mIgnorePanelSignals--;
   }
   if ( mCrs != crs )
   {

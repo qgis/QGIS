@@ -189,12 +189,6 @@ both flavors.
       EpsgCrsId
     };
 
-    enum Format
-    {
-      FormatWkt,
-      FormatProj,
-    };
-
     QgsCoordinateReferenceSystem();
 %Docstring
 Constructs an invalid CRS object
@@ -982,7 +976,7 @@ Update proj.4 parameters in our database from proj.4
    This is used internally and should not be necessary to call in client code
 %End
 
-    long saveAsUserCrs( const QString &name, Format nativeFormat = FormatWkt );
+    long saveAsUserCrs( const QString &name, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
 %Docstring
 Saves the CRS as a new custom ("USER") CRS.
 
@@ -999,6 +993,47 @@ definition. FormatWkt is recommended as it is a lossless format.
 .. note::
 
    Since QGIS 3.18, internally this calls :py:func:`QgsCoordinateReferenceSystemRegistry.addUserCrs()`.
+%End
+
+    void setNativeFormat( Qgis::CrsDefinitionFormat format );
+%Docstring
+Sets the native ``format`` for the CRS definition.
+
+.. note::
+
+   This has no effect on the underlying definition of the CRS, rather it controls what format
+   to use when displaying the CRS's definition to users.
+
+.. seealso:: :py:func:`nativeFormat`
+
+.. versionadded:: 3.24
+%End
+
+    Qgis::CrsDefinitionFormat nativeFormat() const;
+%Docstring
+Returns the native format for the CRS definition.
+
+.. note::
+
+   This has no effect on the underlying definition of the CRS, rather it controls what format
+   to use when displaying the CRS's definition to users.
+
+.. seealso:: :py:func:`setNativeFormat`
+
+.. versionadded:: 3.24
+%End
+
+    QgsCoordinateReferenceSystem toGeographicCrs() const;
+%Docstring
+Returns the geographic CRS associated with this CRS object.
+
+May return an invalid CRS if the geographic CRS could not be determined.
+
+.. note::
+
+   This method will always return a longitude, latitude ordered CRS.
+
+.. versionadded:: 3.24
 %End
 
     QString geographicCrsAuthId() const;

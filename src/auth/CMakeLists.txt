@@ -18,6 +18,7 @@ add_subdirectory(identcert)
 add_subdirectory(pkipaths)
 add_subdirectory(pkipkcs12)
 add_subdirectory(apiheader)
+add_subdirectory(maptiler_hmacsha256)
 
 if (WITH_OAUTH2_PLUGIN)
   add_subdirectory(oauth2)

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1277</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -91,6 +91,13 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <widget class="QMenu" name="m3DMapViewsMenu">
+     <property name="title">
+      <string>&amp;3D Map Views</string>
+     </property>
+     <addaction name="mActionNew3DMapCanvas"/>
+     <addaction name="mActionManage3DMapViews"/>
+    </widget>
     <widget class="QMenu" name="mMenuMeasure">
      <property name="title">
       <string>Measure</string>
@@ -136,7 +143,7 @@
      <addaction name="mActionHideDeselectedLayers"/>
     </widget>
     <addaction name="mActionNewMapCanvas"/>
-    <addaction name="mActionNew3DMapCanvas"/>
+    <addaction name="m3DMapViewsMenu"/>
     <addaction name="mActionPan"/>
     <addaction name="mActionPanToSelected"/>
     <addaction name="mActionZoomIn"/>
@@ -177,7 +184,6 @@
      <addaction name="mActionNewMemoryLayer"/>
      <addaction name="mActionNewMeshLayer"/>
      <addaction name="mActionNewGpxLayer"/>
-     <addaction name="separator"/>
      <addaction name="mActionNewVirtualLayer"/>
     </widget>
     <widget class="QMenu" name="mAddLayerMenu">
@@ -748,9 +754,7 @@
    <addaction name="mActionNewSpatiaLiteLayer"/>
    <addaction name="mActionNewMemoryLayer"/>
    <addaction name="mActionNewMeshLayer"/>
-   <addaction name="separator"/>
    <addaction name="mActionNewVirtualLayer"/>
-   <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="mShapeDigitizeToolBar">
    <property name="windowTitle">
@@ -3252,21 +3256,6 @@ Shift+click to snap rotation to 45 degree steps.</string>
     <string>Add Regular Polygon from Center and a Corner</string>
    </property>
   </action>
-  <action name="mActionNew3DMapCanvas">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNew3DMap.svg</normaloff>:/images/themes/default/mActionNew3DMap.svg</iconset>
-   </property>
-   <property name="text">
-    <string>New &amp;3D Map View</string>
-   </property>
-   <property name="toolTip">
-    <string>New 3D Map View</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt+M</string>
-   </property>
-  </action>
   <action name="mActionShowLayoutManager">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -3618,6 +3607,26 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   <action name="mMainAnnotationLayerProperties">
    <property name="text">
     <string>Main Annotation Layer Properties…</string>
+   </property>
+  </action>
+  <action name="mActionNew3DMapCanvas">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNew3DMap.svg</normaloff>:/images/themes/default/mActionNew3DMap.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New &amp;3D Map View</string>
+   </property>
+   <property name="toolTip">
+    <string>New 3D Map View</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+M</string>
+   </property>
+  </action>
+  <action name="mActionManage3DMapViews">
+   <property name="text">
+    <string>Manage 3D Map Views</string>
    </property>
   </action>
  </widget>

@@ -34,33 +34,19 @@
 #include <QLocale>
 #include <QRegularExpression>
 
-//proj includes
-#include "qgsprojutils.h"
-#include <proj.h>
-
-#include "qgsogrutils.h"
-#include <ogr_srs_api.h>
-
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  connect( pbnCalculate, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnCalculate_clicked );
   connect( pbnAdd, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnAdd_clicked );
   connect( pbnRemove, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnRemove_clicked );
-  connect( pbnCopyCRS, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnCopyCRS_clicked );
   connect( leNameList, &QTreeWidget::currentItemChanged, this, &QgsCustomProjectionDialog::leNameList_currentItemChanged );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsCustomProjectionDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsCustomProjectionDialog::showHelp );
-  connect( mButtonValidate, &QPushButton::clicked, this, &QgsCustomProjectionDialog::validateCurrent );
 
   leNameList->setSelectionMode( QAbstractItemView::ExtendedSelection );
-
-  mFormatComboBox->addItem( tr( "WKT (Recommended)" ), static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) );
-  mFormatComboBox->addItem( tr( "Proj String (Legacy — Not Recommended)" ), static_cast< int >( QgsCoordinateReferenceSystem::FormatProj ) );
-  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
 
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
@@ -81,15 +67,35 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
     newItem->setText( QgisCrsParametersColumn, QString() );
   }
   whileBlocking( leName )->setText( mDefinitions[0].name );
-  whileBlocking( teParameters )->setPlainText( mDefinitions[0].wkt.isEmpty() ? mDefinitions[0].proj : mDefinitions[0].wkt );
-  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[0].wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatProj : QgsCoordinateReferenceSystem::FormatWkt ) ) );
+
+  mBlockUpdates++;
+
+  QgsCoordinateReferenceSystem crs;
+  Qgis::CrsDefinitionFormat format;
+  if ( mDefinitions[0].wkt.isEmpty() )
+  {
+    crs.createFromProj( mDefinitions[0].proj );
+    format = Qgis::CrsDefinitionFormat::Proj;
+  }
+  else
+  {
+    crs.createFromWkt( mDefinitions[0].wkt );
+    format = Qgis::CrsDefinitionFormat::Wkt;
+  }
+  mCrsDefinitionWidget->setCrs( crs, format );
+
+  mBlockUpdates--;
+
   leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
 
   leNameList->hideColumn( QgisCrsIdColumn );
 
   connect( leName, &QLineEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
-  connect( teParameters, &QPlainTextEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
-  connect( mFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsCustomProjectionDialog::formatChanged );
+  connect( mCrsDefinitionWidget, &QgsCrsDefinitionWidget::crsChanged, this, [ = ]
+  {
+    if ( !mBlockUpdates )
+      updateListFromCurrentItem();
+  } );
 }
 
 void QgsCustomProjectionDialog::populateList()
@@ -130,7 +136,7 @@ void QgsCustomProjectionDialog::populateList()
   }
 }
 
-bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &existingId, bool newEntry, QgsCoordinateReferenceSystem::Format format )
+bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &existingId, bool newEntry, Qgis::CrsDefinitionFormat format )
 {
   QString id = existingId;
   if ( newEntry )
@@ -149,8 +155,8 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
     }
   }
 
-  mExistingCRSwkt[id] = format == QgsCoordinateReferenceSystem::FormatWkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) : QString();
-  mExistingCRSproj[id] = format == QgsCoordinateReferenceSystem::FormatProj ? crs.toProj() : QString();
+  mExistingCRSwkt[id] = format == Qgis::CrsDefinitionFormat::Wkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) : QString();
+  mExistingCRSproj[id] = format == Qgis::CrsDefinitionFormat::Proj ? crs.toProj() : QString();
   mExistingCRSnames[id] = name;
 
   return true;
@@ -174,7 +180,7 @@ void QgsCustomProjectionDialog::pbnAdd_clicked()
   leName->selectAll();
   leName->setFocus();
 
-  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( QgsCoordinateReferenceSystem::FormatWkt ) );
+  mCrsDefinitionWidget->setFormat( Qgis::CrsDefinitionFormat::Wkt );
 }
 
 void QgsCustomProjectionDialog::pbnRemove_clicked()
@@ -221,59 +227,43 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
     previousIndex = leNameList->indexOfTopLevelItem( previous );
 
     mDefinitions[previousIndex].name = leName->text();
-    switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
+    switch ( mCrsDefinitionWidget->format() )
     {
-      case QgsCoordinateReferenceSystem::FormatWkt:
-        mDefinitions[previousIndex].wkt = teParameters->toPlainText();
+      case Qgis::CrsDefinitionFormat::Wkt:
+        mDefinitions[previousIndex].wkt = mCrsDefinitionWidget->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
         mDefinitions[previousIndex].proj.clear();
         break;
 
-      case QgsCoordinateReferenceSystem::FormatProj:
-        mDefinitions[previousIndex].proj = teParameters->toPlainText();
+      case Qgis::CrsDefinitionFormat::Proj:
+        mDefinitions[previousIndex].proj = mCrsDefinitionWidget->crs().toProj();
         mDefinitions[previousIndex].wkt.clear();
         break;
     }
 
     previous->setText( QgisCrsNameColumn, leName->text() );
-    previous->setText( QgisCrsParametersColumn, multiLineWktToSingleLine( teParameters->toPlainText() ) );
-    previous->setData( 0, FormattedWktRole, teParameters->toPlainText() );
+    previous->setText( QgisCrsParametersColumn, multiLineWktToSingleLine( mCrsDefinitionWidget->definitionString() ) );
+    previous->setData( 0, FormattedWktRole,  mCrsDefinitionWidget->definitionString() );
   }
 
   if ( current )
   {
     currentIndex = leNameList->indexOfTopLevelItem( current );
     whileBlocking( leName )->setText( mDefinitions[currentIndex].name );
-    whileBlocking( teParameters )->setPlainText( !mDefinitions[currentIndex].wkt.isEmpty() ? current->data( 0, FormattedWktRole ).toString() : mDefinitions[currentIndex].proj );
-    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[currentIndex].wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatProj : QgsCoordinateReferenceSystem::FormatWkt ) ) );
+
+    mBlockUpdates++;
+    mCrsDefinitionWidget->setDefinitionString( !mDefinitions[currentIndex].wkt.isEmpty() ? current->data( 0, FormattedWktRole ).toString() : mDefinitions[currentIndex].proj );
+    mCrsDefinitionWidget->setFormat( mDefinitions[currentIndex].wkt.isEmpty() ? Qgis::CrsDefinitionFormat::Proj : Qgis::CrsDefinitionFormat::Wkt );
+    mBlockUpdates--;
   }
   else
   {
     //Can happen that current is null, for example if we just deleted the last element
     leName->clear();
-    teParameters->clear();
-    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
+    mBlockUpdates++;
+    mCrsDefinitionWidget->setDefinitionString( QString() );
+    mCrsDefinitionWidget->setFormat( Qgis::CrsDefinitionFormat::Wkt );
+    mBlockUpdates--;
     return;
-  }
-}
-
-void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
-{
-  std::unique_ptr< QgsProjectionSelectionDialog > selector = std::make_unique< QgsProjectionSelectionDialog >( this );
-  if ( selector->exec() )
-  {
-    QgsCoordinateReferenceSystem srs = selector->crs();
-    if ( leNameList->topLevelItemCount() == 0 )
-    {
-      pbnAdd_clicked();
-    }
-
-    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
-    teParameters->setPlainText( srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
-    mDefinitions[leNameList->currentIndex().row()].wkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false );
-    mDefinitions[leNameList->currentIndex().row()].proj.clear();
-
-    leNameList->currentItem()->setText( QgisCrsParametersColumn, srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) );
-    leNameList->currentItem()->setData( 0, FormattedWktRole, srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
   }
 }
 
@@ -360,7 +350,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     //Test if we just added this CRS (if it has no existing ID)
     if ( def.id.isEmpty() )
     {
-      saveSuccess &= saveCrs( crs, def.name, QString(), true, !def.wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatWkt : QgsCoordinateReferenceSystem::FormatProj );
+      saveSuccess &= saveCrs( crs, def.name, QString(), true, !def.wkt.isEmpty() ? Qgis::CrsDefinitionFormat::Wkt : Qgis::CrsDefinitionFormat::Proj );
     }
     else
     {
@@ -369,7 +359,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
            || ( !def.proj.isEmpty() && mExistingCRSproj[def.id] != def.proj )
          )
       {
-        saveSuccess &= saveCrs( crs, def.name, def.id, false, !def.wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatWkt : QgsCoordinateReferenceSystem::FormatProj );
+        saveSuccess &= saveCrs( crs, def.name, def.id, false, !def.wkt.isEmpty() ? Qgis::CrsDefinitionFormat::Wkt : Qgis::CrsDefinitionFormat::Proj );
       }
     }
     if ( ! saveSuccess )
@@ -403,194 +393,22 @@ void QgsCustomProjectionDialog::updateListFromCurrentItem()
     return;
 
   mDefinitions[currentIndex].name = leName->text();
-  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
+  switch ( mCrsDefinitionWidget->format() )
   {
-    case QgsCoordinateReferenceSystem::FormatWkt:
-      mDefinitions[currentIndex].wkt = teParameters->toPlainText();
+    case Qgis::CrsDefinitionFormat::Wkt:
+      mDefinitions[currentIndex].wkt = mCrsDefinitionWidget->definitionString();
       mDefinitions[currentIndex].proj.clear();
       break;
 
-    case QgsCoordinateReferenceSystem::FormatProj:
-      mDefinitions[currentIndex].proj = teParameters->toPlainText();
+    case Qgis::CrsDefinitionFormat::Proj:
+      mDefinitions[currentIndex].proj = mCrsDefinitionWidget->definitionString();
       mDefinitions[currentIndex].wkt.clear();
       break;
   }
 
   item->setText( QgisCrsNameColumn, leName->text() );
-  item->setText( QgisCrsParametersColumn, multiLineWktToSingleLine( teParameters->toPlainText() ) );
-  item->setData( 0, FormattedWktRole, teParameters->toPlainText() );
-}
-
-static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
-{
-  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
-  QString messageString( message );
-  messageString.replace( QLatin1String( "internal_proj_create: " ), QString() );
-  dest->append( messageString );
-}
-
-void QgsCustomProjectionDialog::validateCurrent()
-{
-  const QString projDef = teParameters->toPlainText();
-
-  PJ_CONTEXT *context = proj_context_create();
-
-  QStringList projErrors;
-  proj_log_func( context, &projErrors, proj_collecting_logger );
-  QgsProjUtils::proj_pj_unique_ptr crs;
-
-  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
-  {
-    case QgsCoordinateReferenceSystem::FormatWkt:
-    {
-      PROJ_STRING_LIST warnings = nullptr;
-      PROJ_STRING_LIST grammerErrors = nullptr;
-      crs.reset( proj_create_from_wkt( context, projDef.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
-      QStringList warningStrings;
-      QStringList grammerStrings;
-      for ( auto iter = warnings; iter && *iter; ++iter )
-        warningStrings << QString( *iter );
-      for ( auto iter = grammerErrors; iter && *iter; ++iter )
-        grammerStrings << QString( *iter );
-      proj_string_list_destroy( warnings );
-      proj_string_list_destroy( grammerErrors );
-
-      if ( crs )
-      {
-        QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
-                                  tr( "This WKT projection definition is valid." ) );
-      }
-      else
-      {
-        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                              tr( "This WKT projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + warningStrings.join( '\n' ) + grammerStrings.join( '\n' ) );
-      }
-      break;
-    }
-
-    case QgsCoordinateReferenceSystem::FormatProj:
-    {
-      const QString projCrsString = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
-      crs.reset( proj_create( context, projCrsString.toLatin1().constData() ) );
-      if ( crs )
-      {
-        QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
-                                  tr( "This proj projection definition is valid." ) );
-      }
-      else
-      {
-        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                              tr( "This proj projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + projErrors.join( '\n' ) );
-      }
-      break;
-    }
-  }
-
-  // reset logger to terminal output
-  proj_log_func( context, nullptr, nullptr );
-  proj_context_destroy( context );
-  context = nullptr;
-}
-
-void QgsCustomProjectionDialog::formatChanged()
-{
-  QgsCoordinateReferenceSystem crs;
-  QString newFormatString;
-  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
-  {
-    case QgsCoordinateReferenceSystem::FormatProj:
-    {
-      crs.createFromWkt( multiLineWktToSingleLine( teParameters->toPlainText() ) );
-      if ( crs.isValid() )
-        newFormatString = crs.toProj();
-      break;
-    }
-
-    case QgsCoordinateReferenceSystem::FormatWkt:
-    {
-      PJ_CONTEXT *pjContext = QgsProjContext::get();
-      QString proj = teParameters->toPlainText();
-      proj.replace( QLatin1String( "+type=crs" ), QString() );
-      proj += QLatin1String( " +type=crs" );
-      QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj.toLatin1().constData() ) );
-      if ( crs )
-      {
-        const QByteArray multiLineOption = QStringLiteral( "MULTILINE=YES" ).toLocal8Bit();
-        const char *const options[] = {multiLineOption.constData(), nullptr};
-        newFormatString = QString( proj_as_wkt( pjContext, crs.get(), PJ_WKT2_2019, options ) );
-      }
-      break;
-    }
-  }
-  if ( !newFormatString.isEmpty() )
-    teParameters->setPlainText( newFormatString );
-}
-
-void QgsCustomProjectionDialog::pbnCalculate_clicked()
-{
-  // We must check the prj def is valid!
-  PJ_CONTEXT *pContext = QgsProjContext::get();
-  QString projDef = teParameters->toPlainText();
-  QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( projDef ), 3 );
-
-  // Get the WGS84 coordinates
-  bool okN, okE;
-  double latitude = northWGS84->text().toDouble( &okN );
-  double longitude = eastWGS84->text().toDouble( &okE );
-
-  if ( !okN || !okE )
-  {
-    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                          tr( "Northing and Easting must be in decimal form." ) );
-    projectedX->clear();
-    projectedY->clear();
-    return;
-  }
-
-  if ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) == QgsCoordinateReferenceSystem::FormatProj )
-    projDef = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
-  QgsProjUtils::proj_pj_unique_ptr res( proj_create_crs_to_crs( pContext, "EPSG:4326", projDef.toUtf8(), nullptr ) );
-  if ( !res )
-  {
-    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                          tr( "This CRS projection definition is not valid." ) );
-    projectedX->clear();
-    projectedY->clear();
-    return;
-  }
-
-  // careful -- proj 6 respects CRS axis, so we've got latitude/longitude flowing in, and ....?? coming out?
-  proj_trans_generic( res.get(), PJ_FWD,
-                      &latitude, sizeof( double ), 1,
-                      &longitude, sizeof( double ), 1,
-                      nullptr, sizeof( double ), 0,
-                      nullptr, sizeof( double ), 0 );
-  int projResult = proj_errno( res.get() );
-
-  if ( projResult != 0 )
-  {
-    projectedX->setText( tr( "Error" ) );
-    projectedY->setText( tr( "Error" ) );
-    QgsDebugMsg( proj_errno_string( projResult ) );
-  }
-  else
-  {
-    QString tmp;
-
-    int precision = 4;
-    bool isLatLong = false;
-
-    isLatLong = QgsProjUtils::usesAngularUnit( projDef );
-    if ( isLatLong )
-    {
-      precision = 7;
-    }
-
-    tmp = QLocale().toString( longitude, 'f', precision );
-    projectedX->setText( tmp );
-    tmp = QLocale().toString( latitude, 'f', precision );
-    projectedY->setText( tmp );
-  }
+  item->setText( QgisCrsParametersColumn, multiLineWktToSingleLine( mCrsDefinitionWidget->definitionString() ) );
+  item->setData( 0, FormattedWktRole, mCrsDefinitionWidget->definitionString() );
 }
 
 void QgsCustomProjectionDialog::showHelp()

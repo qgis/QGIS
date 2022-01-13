@@ -65,4 +65,3 @@ QgsReferencedGeometry QgsReferencedGeometry::fromReferencedRect( const QgsRefere
 {
   return QgsReferencedGeometry( QgsGeometry::fromRect( rectangle ), rectangle.crs() );
 }
-

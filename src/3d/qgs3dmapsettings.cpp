@@ -30,6 +30,16 @@
 #include "qgssymbollayerutils.h"
 #include "qgsrasterlayer.h"
 
+Qgs3DMapSettings::Qgs3DMapSettings()
+  : QObject( nullptr )
+{
+  connect( this, &Qgs3DMapSettings::settingsChanged, [&]()
+  {
+    QgsProject::instance()->setDirty();
+  } );
+  connectChangedSignalsToSettingsChanged();
+}
+
 Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   : QObject( nullptr )
   , QgsTemporalRangeObject( other )
@@ -78,11 +88,18 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mDebugDepthMapCorner( other.mDebugDepthMapCorner )
   , mDebugDepthMapSize( other.mDebugDepthMapSize )
   , mTerrainRenderingEnabled( other.mTerrainRenderingEnabled )
+  , mRendererUsage( other.mRendererUsage )
 {
   for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
   {
     mRenderers << renderer->clone();
   }
+
+  connect( this, &Qgs3DMapSettings::settingsChanged, [&]()
+  {
+    QgsProject::instance()->setDirty();
+  } );
+  connectChangedSignalsToSettingsChanged();
 }
 
 Qgs3DMapSettings::~Qgs3DMapSettings()
@@ -92,6 +109,7 @@ Qgs3DMapSettings::~Qgs3DMapSettings()
 
 void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  QgsProjectDirtyBlocker blocker( QgsProject::instance() );
   QDomElement elemOrigin = elem.firstChildElement( QStringLiteral( "origin" ) );
   mOrigin = QgsVector3D(
               elemOrigin.attribute( QStringLiteral( "x" ) ).toDouble(),
@@ -793,4 +811,48 @@ void Qgs3DMapSettings::setTerrainRenderingEnabled( bool terrainRenderingEnabled 
     return;
   mTerrainRenderingEnabled = terrainRenderingEnabled;
   emit terrainGeneratorChanged();
+}
+
+Qgis::RendererUsage Qgs3DMapSettings::rendererUsage() const
+{
+  return mRendererUsage;
+}
+
+void Qgs3DMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
+{
+  mRendererUsage = rendererUsage;
+}
+
+void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
+{
+  connect( this, &Qgs3DMapSettings::selectionColorChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::terrainGeneratorChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::mapTileResolutionChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::maxTerrainScreenErrorChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::terrainMapThemeChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::showCameraViewCenterChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::directionalLightsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
 }

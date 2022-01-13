@@ -5424,12 +5424,92 @@ font-style: italic;</string>
                          <property name="rightMargin">
                           <number>8</number>
                          </property>
-                         <item row="1" column="0">
-                          <widget class="QLabel" name="mCoordAlignmentLabel">
-                           <property name="text">
-                            <string>Alignment</string>
-                           </property>
-                          </widget>
+                         <item row="3" column="1">
+                          <layout class="QHBoxLayout" name="horizontalLayout_25">
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mCoordRotationDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QComboBox" name="mCoordRotationUnitComboBox"/>
+                           </item>
+                           <item>
+                            <widget class="QCheckBox" name="chkPreserveRotation">
+                             <property name="toolTip">
+                              <string>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</string>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">margin-left: 12px; margin-top: 3px;</string>
+                             </property>
+                             <property name="text">
+                              <string>Preserve data rotation values</string>
+                             </property>
+                             <property name="checked">
+                              <bool>true</bool>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </item>
+                         <item row="0" column="1">
+                          <layout class="QHBoxLayout" name="horizontalLayout_22">
+                           <item>
+                            <widget class="QLabel" name="mCoordXLabel">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="text">
+                              <string>X</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mCoordXDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="mCoordYLabel">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="text">
+                              <string>Y</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mCoordYDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="horizontalSpacer_6">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>40</width>
+                               <height>20</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
                          </item>
                          <item row="0" column="0">
                           <widget class="QLabel" name="mCoordLabel">
@@ -5438,14 +5518,7 @@ font-style: italic;</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="2" column="0">
-                          <widget class="QLabel" name="mCoordRotationLabel">
-                           <property name="text">
-                            <string>Rotation</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="1">
+                         <item row="2" column="1">
                           <widget class="QFrame" name="mCoordAlignmentFrame">
                            <layout class="QHBoxLayout" name="horizontalLayout_27">
                             <property name="leftMargin">
@@ -5516,43 +5589,17 @@ font-style: italic;</string>
                            </layout>
                           </widget>
                          </item>
-                         <item row="0" column="1">
-                          <layout class="QHBoxLayout" name="horizontalLayout_22">
+                         <item row="3" column="0">
+                          <widget class="QLabel" name="mCoordRotationLabel">
+                           <property name="text">
+                            <string>Rotation</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1">
+                          <layout class="QHBoxLayout" name="horizontalLayout_15">
                            <item>
-                            <widget class="QLabel" name="mCoordXLabel">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>X</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QgsPropertyOverrideButton" name="mCoordXDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLabel" name="mCoordYLabel">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>Y</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QgsPropertyOverrideButton" name="mCoordYDDBtn">
+                            <widget class="QgsPropertyOverrideButton" name="mCoordPointDDBtn">
                              <property name="text">
                               <string>…</string>
                              </property>
@@ -5573,35 +5620,19 @@ font-style: italic;</string>
                            </item>
                           </layout>
                          </item>
-                         <item row="2" column="1">
-                          <layout class="QHBoxLayout" name="horizontalLayout_25">
-                           <item>
-                            <widget class="QgsPropertyOverrideButton" name="mCoordRotationDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QComboBox" name="mCoordRotationUnitComboBox"/>
-                           </item>
-                           <item>
-                            <widget class="QCheckBox" name="chkPreserveRotation">
-                             <property name="toolTip">
-                              <string>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</string>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">margin-left: 12px; margin-top: 3px;</string>
-                             </property>
-                             <property name="text">
-                              <string>Preserve data rotation values</string>
-                             </property>
-                             <property name="checked">
-                              <bool>true</bool>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
+                         <item row="2" column="0">
+                          <widget class="QLabel" name="mCoordAlignmentLabel">
+                           <property name="text">
+                            <string>Alignment</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="label_44">
+                           <property name="text">
+                            <string>Point</string>
+                           </property>
+                          </widget>
                          </item>
                         </layout>
                        </widget>
@@ -6921,6 +6952,7 @@ font-style: italic;</string>
   <tabstop>mGeometryGeneratorType</tabstop>
   <tabstop>mCoordXDDBtn</tabstop>
   <tabstop>mCoordYDDBtn</tabstop>
+  <tabstop>mCoordPointDDBtn</tabstop>
   <tabstop>mCoordAlignmentHDDBtn</tabstop>
   <tabstop>mCoordAlignmentVDDBtn</tabstop>
   <tabstop>mCoordRotationDDBtn</tabstop>

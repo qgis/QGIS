@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayerproxymodel.h"
 #include "qgsmaplayermodel.h"
 #include "qgsexception.h"
 #include "qgsproject.h"
@@ -51,7 +52,8 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   mLayerMenu = new QMenu( tr( "Calculate from Layer" ), this );
   mButtonCalcFromLayer->setMenu( mLayerMenu );
   connect( mLayerMenu, &QMenu::aboutToShow, this, &QgsExtentWidget::layerMenuAboutToShow );
-  mMapLayerModel = new QgsMapLayerModel( this );
+  mMapLayerModel = new QgsMapLayerProxyModel( this );
+  mMapLayerModel->setFilters( QgsMapLayerProxyModel::Filter::SpatialLayer );
 
   mLayoutMenu = new QMenu( tr( "Calculate from Layout Map" ), this );
   mButtonCalcFromLayout->setMenu( mLayoutMenu );

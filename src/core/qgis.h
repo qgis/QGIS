@@ -1251,6 +1251,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( AngularDirection )
 
     /**
+     *  Usage of the renderer.
+     *
+     * \since QGIS 3.24
+     */
+    enum class RendererUsage : int
+    {
+      View, //!< Renderer used for displaying on screen
+      Export, //!< Renderer used for printing or exporting to a file
+      Unknown, //!< Renderer used for unknown usage
+    };
+    Q_ENUM( RendererUsage )
+
+    /**
      * History provider backends.
      *
      * \since QGIS 3.24
@@ -1263,6 +1276,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( HistoryProviderBackend )
     Q_DECLARE_FLAGS( HistoryProviderBackends, HistoryProviderBackend )
     Q_FLAG( HistoryProviderBackends )
+
+    /**
+     * CRS definition formats.
+     *
+     * \since QGIS 3.24
+     */
+    enum class CrsDefinitionFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateReferenceSystem, Format ) : int
+      {
+      Wkt SIP_MONKEYPATCH_COMPAT_NAME( FormatWkt ), //!< WKT format (always recommended over proj string format)
+      Proj SIP_MONKEYPATCH_COMPAT_NAME( FormatProj ), //!< Proj string format
+    };
+    Q_ENUM( CrsDefinitionFormat )
 
     /**
      * Identify search radius in mm

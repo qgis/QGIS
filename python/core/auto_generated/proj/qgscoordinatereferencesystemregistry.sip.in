@@ -64,7 +64,7 @@ Returns a list containing the details of all registered
 custom (user-defined) CRSes.
 %End
 
-    long addUserCrs( const QgsCoordinateReferenceSystem &crs, const QString &name, QgsCoordinateReferenceSystem::Format nativeFormat = QgsCoordinateReferenceSystem::FormatWkt );
+    long addUserCrs( const QgsCoordinateReferenceSystem &crs, const QString &name, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
 %Docstring
 Adds a new ``crs`` definition as a custom ("USER") CRS.
 
@@ -83,7 +83,7 @@ definition. FormatWkt is recommended as it is a lossless format.
 .. seealso:: :py:func:`userCrsAdded`
 %End
 
-    bool updateUserCrs( long id, const QgsCoordinateReferenceSystem &crs, const QString &name, QgsCoordinateReferenceSystem::Format nativeFormat = QgsCoordinateReferenceSystem::FormatWkt );
+    bool updateUserCrs( long id, const QgsCoordinateReferenceSystem &crs, const QString &name, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
 %Docstring
 Updates the definition of the existing user CRS with matching ``id``.
 

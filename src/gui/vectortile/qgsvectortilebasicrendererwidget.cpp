@@ -383,6 +383,22 @@ void QgsVectorTileBasicRendererWidget::addStyle( QgsWkbTypes::GeometryType geomT
   QgsVectorTileBasicRendererStyle style( QString(), QString(), geomType );
   style.setSymbol( QgsSymbol::defaultSymbol( geomType ) );
 
+  switch ( geomType )
+  {
+    case QgsWkbTypes::PointGeometry:
+      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Point'" ) );
+      break;
+    case QgsWkbTypes::LineGeometry:
+      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Line'" ) );
+      break;
+    case QgsWkbTypes::PolygonGeometry:
+      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Polygon'" ) );
+      break;
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      break;
+  }
+
   const int rows = mModel->rowCount();
   mModel->insertStyle( rows, style );
   viewStyles->selectionModel()->setCurrentIndex( mProxyModel->mapFromSource( mModel->index( rows, 0 ) ), QItemSelectionModel::ClearAndSelect );

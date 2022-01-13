@@ -20,6 +20,7 @@
 
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
+#include "qgsversion.h"
 #include "qgsserver.h"
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
@@ -306,6 +307,8 @@ bool QgsServer::init()
 
   // Configure locale
   initLocale();
+
+  QgsMessageLog::logMessage( QStringLiteral( "QGIS Server Starting : %1 (%2)" ).arg( _QGIS_VERSION, QGSVERSION ), "Server", Qgis::MessageLevel::Info );
 
   // log settings currently used
   sSettings()->logSummary();

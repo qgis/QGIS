@@ -1194,9 +1194,27 @@ Qgis.AngularDirection.__doc__ = 'Angular directions.\n\n.. versionadded:: 3.24\n
 # --
 Qgis.AngularDirection.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.RendererUsage.View.__doc__ = "Renderer used for displaying on screen"
+Qgis.RendererUsage.Export.__doc__ = "Renderer used for printing or exporting to a file"
+Qgis.RendererUsage.Unknown.__doc__ = "Renderer used for unknown usage"
+Qgis.RendererUsage.__doc__ = 'Usage of the renderer.\n\n.. versionadded:: 3.24\n\n' + '* ``View``: ' + Qgis.RendererUsage.View.__doc__ + '\n' + '* ``Export``: ' + Qgis.RendererUsage.Export.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.RendererUsage.Unknown.__doc__
+# --
+Qgis.RendererUsage.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.HistoryProviderBackend.LocalProfile.__doc__ = "Local profile"
 Qgis.HistoryProviderBackend.__doc__ = 'History provider backends.\n\n.. versionadded:: 3.24\n\n' + '* ``LocalProfile``: ' + Qgis.HistoryProviderBackend.LocalProfile.__doc__
 # --
 Qgis.HistoryProviderBackend.baseClass = Qgis
 Qgis.HistoryProviderBackends.baseClass = Qgis
 HistoryProviderBackends = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsCoordinateReferenceSystem.Format = Qgis.CrsDefinitionFormat
+# monkey patching scoped based enum
+QgsCoordinateReferenceSystem.FormatWkt = Qgis.CrsDefinitionFormat.Wkt
+QgsCoordinateReferenceSystem.FormatWkt.is_monkey_patched = True
+QgsCoordinateReferenceSystem.FormatWkt.__doc__ = "WKT format (always recommended over proj string format)"
+QgsCoordinateReferenceSystem.FormatProj = Qgis.CrsDefinitionFormat.Proj
+QgsCoordinateReferenceSystem.FormatProj.is_monkey_patched = True
+QgsCoordinateReferenceSystem.FormatProj.__doc__ = "Proj string format"
+Qgis.CrsDefinitionFormat.__doc__ = 'CRS definition formats.\n\n.. versionadded:: 3.24\n\n' + '* ``FormatWkt``: ' + Qgis.CrsDefinitionFormat.Wkt.__doc__ + '\n' + '* ``FormatProj``: ' + Qgis.CrsDefinitionFormat.Proj.__doc__
+# --
+Qgis.CrsDefinitionFormat.baseClass = Qgis

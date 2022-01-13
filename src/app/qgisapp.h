@@ -321,6 +321,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Populates a menu with actions for opening layout designers
     void populateLayoutsMenu( QMenu *menu );
 
+    //! Populates a menu with actions for 3D views
+    void populate3DMapviewsMenu( QMenu *menu );
+
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
     //! Returns a pointer to the internal clipboard
@@ -424,6 +427,29 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * If a designer already exists for this layout then it will be activated.
      */
     QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
+
+    /**
+     * Opens a 3D view canvas for a 3D map view called \a name.
+     * If the 3D view named \a name was not already created in the project, nullptr will be returned
+     *
+     * \since QGIS 3.24
+     */
+    Qgs3DMapCanvasDockWidget *open3DMapView( const QString &name );
+
+    /**
+     * Duplicates the 3D map view named \a existingViewName and adds it to the current project.
+     * The new 3D map view will be named \a newViewName
+     *
+     * \since QGIS 3.24
+     */
+    Qgs3DMapCanvasDockWidget *duplicate3DMapView( const QString &existingViewName, const QString &newViewName );
+
+    /**
+     * Returns the 3D map canvas dock widget named \a viewName
+     *
+     * \since QGIS 3.24
+     */
+    Qgs3DMapCanvasDockWidget *get3DMapViewDock( const QString &viewName );
 
     /**
      * Duplicates a \a layout and adds it to the current project.
@@ -1247,6 +1273,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void showLayoutManager();
 
+    /**
+     * Shows the 3D map views manager dialog.
+     * \since QGIS 3.24
+     */
+    void show3DMapViewsManager();
+
     //! shows the snapping Options
     void snappingOptions();
 
@@ -1603,6 +1635,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Slot to handle display of layouts menu, e.g. sorting
     void layoutsMenuAboutToShow();
+
+    //! Slot to handle display of 3D views menu
+    void views3DMenuAboutToShow();
 
     //! Add all loaded layers into the overview - overrides qgisappbase method
     void addAllToOverview();
@@ -2304,6 +2339,23 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &elem );
 
+#ifdef HAVE_3D
+
+    /**
+     * Reads 3D view settings from DOM element
+     * \sa write3DMapViewSettings()
+     * \since QGIS 3.24
+     */
+    void read3DMapViewSettings( Qgs3DMapCanvasDockWidget *widget, QDomElement &elem3DMap );
+
+    /**
+     * Writes 3D view settings into DOM element
+     * \sa read3DMapViewSettings()
+     * \since QGIS 3.24
+     */
+    void write3DMapViewSettings( Qgs3DMapCanvasDockWidget *widget, QDomDocument &doc, QDomElement &elem3DMap );
+#endif
+
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 
     //! Attempts to choose a reasonable default icon size based on the window's screen DPI
@@ -2704,6 +2756,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
     QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
+
+#ifdef HAVE_3D
+    QSet<Qgs3DMapCanvasDockWidget *> mOpen3DDocks;
+#endif
 
     class QgsCanvasRefreshBlocker
     {

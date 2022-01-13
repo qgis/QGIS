@@ -438,6 +438,7 @@ set(QGIS_GUI_SRCS
   qgsconfigureshortcutsdialog.cpp
   qgscoordinateboundspreviewmapwidget.cpp
   qgscoordinateoperationwidget.cpp
+  qgscrsdefinitionwidget.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
   qgscustomprojectopenhandler.cpp
@@ -690,6 +691,7 @@ set(QGIS_GUI_HDRS
   qgscoordinateboundspreviewmapwidget.h
   qgscoordinateoperationwidget.h
   qgscredentialdialog.h
+  qgscrsdefinitionwidget.h
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
   qgscustomprojectopenhandler.h
@@ -1352,6 +1354,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthsslimporterrors.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthtrustedcasdialog.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscrsdefinitionwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionstoredialogbase.h

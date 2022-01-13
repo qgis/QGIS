@@ -358,6 +358,11 @@ QString QgsAfsProvider::providerKey()
   return AFS_PROVIDER_KEY;
 }
 
+void QgsAfsProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  mSharedData = qobject_cast<QgsAfsProvider *>( source )->mSharedData;
+}
+
 QString QgsAfsProvider::description() const
 {
   return AFS_PROVIDER_DESCRIPTION;
