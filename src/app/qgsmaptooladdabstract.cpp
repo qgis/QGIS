@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptooladdabstract.cpp  -  abstract class for map tools of the 'add' kind
+    qgsmaptoolshapecircleabstract.cpp  -  abstract class for map tools of the 'add' kind
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptooladdabstract.h"
+#include "qgsmaptoolshapecircleabstract.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
 #include "qgsmapcanvas.h"

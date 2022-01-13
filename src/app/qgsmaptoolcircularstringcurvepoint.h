@@ -17,10 +17,10 @@
 #ifndef QGSMAPTOOLCIRCULARSTRINGCURVEPOINT_H
 #define QGSMAPTOOLCIRCULARSTRINGCURVEPOINT_H
 
-#include "qgsmaptooladdcircularstring.h"
+#include "qgsmaptoolshapecircularstringabstract.h"
 #include "qgis_app.h"
 
-class APP_EXPORT QgsMapToolCircularStringCurvePoint: public QgsMapToolAddCircularString
+class APP_EXPORT QgsMapToolCircularStringCurvePoint: public QgsMapToolShapeCircularStringAbstract
 {
     Q_OBJECT
 

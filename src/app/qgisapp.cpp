@@ -452,16 +452,16 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolshapecircle3tangents.h"
 #include "qgsmaptoolshapecircle2tangentspoint.h"
 #include "qgsmaptoolshapecirclecenterpoint.h"
-//#include "qgsmaptoolshapeellipsecenter2points.h"
-//#include "qgsmaptoolshapeellipsecenterpoint.h"
-//#include "qgsmaptoolshapeellipseextent.h"
-//#include "qgsmaptoolshapeellipsefoci.h"
-//#include "qgsmaptoolshaperectanglecenter.h"
-//#include "qgsmaptoolshaperectangleextent.h"
-//#include "qgsmaptoolshaperectangle3points.h"
-//#include "qgsmaptoolshaperegularpolygon2points.h"
-//#include "qgsmaptoolshaperegularpolygoncenterpoint.h"
-//#include "qgsmaptoolshaperegularpolygoncentercorner.h"
+#include "qgsmaptoolshapeellipsecenter2points.h"
+#include "qgsmaptoolshapeellipsecenterpoint.h"
+#include "qgsmaptoolshapeellipseextent.h"
+#include "qgsmaptoolshapeellipsefoci.h"
+#include "qgsmaptoolshaperectanglecenter.h"
+#include "qgsmaptoolshaperectangleextent.h"
+#include "qgsmaptoolshaperectangle3points.h"
+#include "qgsmaptoolshaperegularpolygon2points.h"
+#include "qgsmaptoolshaperegularpolygoncenterpoint.h"
+#include "qgsmaptoolshaperegularpolygoncentercorner.h"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -1201,17 +1201,17 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircle3TangentsMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircle2TangentsPointMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircleCenterPointMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseCenterPointMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseExtentMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseFociMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRectangleCenterMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRectangleExtentMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRectangle3PointsMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRectangle3PointsMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygon2PointsMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterPointMetadata() );
-//  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterCornerMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseCenterPointMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseExtentMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseFociMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRectangleCenterMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRectangleExtentMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRectangle3PointsMetadata( QgsMapToolShapeRectangle3PointsMetadata::CreateMode::Distance ) );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRectangle3PointsMetadata( QgsMapToolShapeRectangle3PointsMetadata::CreateMode::Projected ) );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygon2PointsMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterPointMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterCornerMetadata() );
 
 
   functionProfile( &QgisApp::createToolBars, this, QStringLiteral( "Toolbars" ) );

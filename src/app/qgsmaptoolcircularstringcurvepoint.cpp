@@ -24,7 +24,7 @@
 
 QgsMapToolCircularStringCurvePoint::QgsMapToolCircularStringCurvePoint( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
-  : QgsMapToolAddCircularString( parentTool, canvas, mode )
+  : QgsMapToolShapeCircularStringAbstract( parentTool, canvas, mode )
 {
   mToolName = tr( "Add circular string curve point" );
 }
