@@ -34,7 +34,7 @@ class QKeyEvent;
 
 /**
  * \ingroup gui
- * QgsMapToolShapeAbstract is a base class for shape map tools to be use in QgsMapToolCapture
+ * \brief QgsMapToolShapeAbstract is a base class for shape map tools to be use in QgsMapToolCapture
  * \since QGIS 3.24
  */
 class GUI_EXPORT QgsMapToolShapeAbstract
@@ -63,6 +63,7 @@ class GUI_EXPORT QgsMapToolShapeAbstract
 
     virtual ~QgsMapToolShapeAbstract() = default;
 
+    //! Returns the id of the shape tool (equivalent to the one from the metadata)
     QString id() const {return mId;}
 
     /**

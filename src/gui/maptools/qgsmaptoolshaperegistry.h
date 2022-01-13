@@ -29,7 +29,7 @@ class QgsMapToolCapture;
 
 /**
  * \ingroup gui
- * Keeps track of the registered shape map tools
+ * \brief Keeps track of the registered shape map tools
  * \since QGIS 3.24
  */
 class GUI_EXPORT QgsMapToolShapeRegistry
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsMapToolShapeRegistry
 
 /**
  * \ingroup gui
- * QgsMapToolShapeMetadata is a base class for shape map tools metadata to be used in QgsMapToolShapeRegistry
+ * \brief QgsMapToolShapeMetadata is a base class for shape map tools metadata to be used in QgsMapToolShapeRegistry
  * \since QGIS 3.24
  */
 class GUI_EXPORT QgsMapToolShapeMetadata
@@ -93,6 +93,7 @@ class GUI_EXPORT QgsMapToolShapeMetadata
     //! Icon to be displayed in the toolbar
     virtual QIcon icon() const = 0;
 
+    //! Returns the shape category of the tool
     virtual QgsMapToolShapeAbstract::ShapeCategory category() const = 0;
 
     //! Creates the shape map tool for the given \a parentTool

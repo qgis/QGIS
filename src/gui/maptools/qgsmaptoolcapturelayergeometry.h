@@ -23,7 +23,7 @@ class QgsMapCanvas;
 
 /**
  * \ingroup gui
- * QgsMapToolCaptureLayerGeometry is a base class for map tools digitizing layer geometries
+ * \brief QgsMapToolCaptureLayerGeometry is a base class for map tools digitizing layer geometries
  * It will implement avoid intersections
  * \since QGIS 3.24
  */
