@@ -19,7 +19,6 @@
 #include <QList>
 #include <QHash>
 #include <QPointer>
-#include <QWidgetAction>
 
 
 class QgsMapTool;
@@ -27,21 +26,6 @@ class QgsMapToolCapture;
 
 class QgsMapCanvas;
 class QgsAdvancedDigitizingDockWidget;
-class QgsSpinBox;
-
-class QgsStreamDigitizingSettingsAction: public QWidgetAction
-{
-    Q_OBJECT
-
-  public:
-
-    QgsStreamDigitizingSettingsAction( QWidget *parent = nullptr );
-    ~QgsStreamDigitizingSettingsAction() override;
-
-  private:
-    QgsSpinBox *mStreamToleranceSpinBox = nullptr;
-};
-
 
 class QgsAppMapTools
 {
@@ -58,24 +42,6 @@ class QgsAppMapTools
       MeasureAngle,
       MeasureBearing,
       AddFeature,
-      CircularStringCurvePoint,
-      CircularStringRadius,
-      Circle2Points,
-      Circle3Points,
-      Circle3Tangents,
-      Circle2TangentsPoint,
-      CircleCenterPoint,
-      EllipseCenter2Points,
-      EllipseCenterPoint,
-      EllipseExtent,
-      EllipseFoci,
-      RectangleCenterPoint,
-      RectangleExtent,
-      Rectangle3PointsDistance,
-      Rectangle3PointsProjected,
-      RegularPolygon2Points,
-      RegularPolygonCenterPoint,
-      RegularPolygonCenterCorner,
       MoveFeature,
       MoveFeatureCopy,
       OffsetCurve,
@@ -139,15 +105,9 @@ class QgsAppMapTools
      */
     QList< QgsMapToolCapture * > captureTools() const;
 
-    /**
-     * Returns the stream digitizing settings action;
-     */
-    QWidgetAction *streamDigitizingSettingsAction();
-
   private:
 
     QHash< Tool, QPointer< QgsMapTool > > mTools;
-    QgsStreamDigitizingSettingsAction *mStreamDigitizingSettingsAction = nullptr;
 
     // Disable copying as we have pointer members.
     QgsAppMapTools( const QgsAppMapTools & ) = delete;
