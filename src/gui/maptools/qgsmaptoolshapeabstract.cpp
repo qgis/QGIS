@@ -21,12 +21,12 @@
 #include <QKeyEvent>
 
 
-void QgsMapToolShapeAbstract::keyPressEvent(QKeyEvent *e)
+void QgsMapToolShapeAbstract::keyPressEvent( QKeyEvent *e )
 {
   e->ignore();
 }
 
-void QgsMapToolShapeAbstract::keyReleaseEvent(QKeyEvent *e)
+void QgsMapToolShapeAbstract::keyReleaseEvent( QKeyEvent *e )
 {
   e->ignore();
 }
@@ -36,14 +36,14 @@ void QgsMapToolShapeAbstract::clean()
   if ( mTempRubberBand )
   {
     delete mTempRubberBand;
-      mTempRubberBand = nullptr;
-    }
+    mTempRubberBand = nullptr;
+  }
 
-    mPoints.clear();
+  mPoints.clear();
 }
 
 void QgsMapToolShapeAbstract::undo()
 {
-  if (mPoints.count() > 1)
+  if ( mPoints.count() > 1 )
     mPoints.removeLast();
 }
