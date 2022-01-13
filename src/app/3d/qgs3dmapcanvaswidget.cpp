@@ -180,6 +180,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( QWidget *parent )
 
   connect( mCanvas, &Qgs3DMapCanvas::fpsCountChanged, this, &Qgs3DMapCanvasWidget::updateFpsCount );
   connect( mCanvas, &Qgs3DMapCanvas::fpsCounterEnabledChanged, this, &Qgs3DMapCanvasWidget::toggleFpsCounter );
+  connect( mCanvas, &Qgs3DMapCanvas::cameraNavigationSpeedChanged, this, &Qgs3DMapCanvasWidget::cameraNavigationSpeedChanged );
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 
@@ -311,7 +312,6 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mBtnMapThemes->setDisabled( !mCanvas->map()->terrainGenerator() || mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
 
-  connect( mCanvas, &Qgs3DMapCanvas::cameraNavigationSpeedChanged, this, &Qgs3DMapCanvasWidget::cameraNavigationSpeedChanged );
 }
 
 void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )

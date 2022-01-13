@@ -138,7 +138,8 @@ void Qgs3DViewsManagerDialog::renameClicked()
   if ( Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->get3DMapViewDock( oldTitle ) )
   {
     widget->setWindowTitle( newTitle );
-    widget->widget()->mapCanvas3D()->setObjectName( newTitle );
+    Qgs3DMapCanvasWidget *canvasWidget = dynamic_cast< Qgs3DMapCanvasWidget * >( widget->widget() );
+    canvasWidget->mapCanvas3D()->setObjectName( newTitle );
   }
 
   QgsProject::instance()->setDirty();

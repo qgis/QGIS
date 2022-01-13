@@ -38,19 +38,22 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QWidget
   public:
     Qgs3DMapCanvasDockWidget( QWidget *parent = nullptr );
 
-    ~Qgs3DMapCanvasDockWidget();
-
-    Qgs3DMapCanvasWidget *widget();
+    QWidget *widget();
 
     QgsDockWidget *dockWidget() { return mDock; }
 
     QDialog *dialog() { return mDialog; }
 
-    bool isDocked();
+    bool isDocked() const;
 
     void switchToWindowMode();
 
     void switchToDockMode();
+
+    void setWindowTitle( const QString &title );
+
+  protected:
+    void closeEvent( QCloseEvent * ) override;
 
   signals:
     void closed();
@@ -66,6 +69,7 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QWidget
     QgsDockWidget *mDock = nullptr;
 
     QDialog *mDialog = nullptr;
+
     QVBoxLayout *mDialogLayout = nullptr;
 };
 

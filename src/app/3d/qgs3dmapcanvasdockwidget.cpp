@@ -24,24 +24,32 @@
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QWidget( parent )
 {
-  mCanvasWidget = new Qgs3DMapCanvasWidget;
+  this->setAttribute( Qt::WA_DeleteOnClose );
 
-  mDock = new QgsDockWidget( QgisApp::instance() );
+  mCanvasWidget = new Qgs3DMapCanvasWidget( this );
+
+  mDock = new QgsDockWidget( this );
+  mDock->setAttribute( Qt::WA_DeleteOnClose );
+
   mDock->setWidget( nullptr );
   mDock->setAllowedAreas( Qt::AllDockWidgetAreas );
 
   mDock->setVisible( false );
 
-  mDialog = new QDialog( QgisApp::instance(), Qt::Window );
+  mDialog = new QDialog( this, Qt::Window );
+  mDialog->setAttribute( Qt::WA_DeleteOnClose );
   QVBoxLayout *vl = new QVBoxLayout();
   vl->setContentsMargins( 0, 0, 0, 0 );
   mDialog->setLayout( vl );
   mDialog->hide();
 
-  connect( mDock, &QgsDockWidget::closed, this, &Qgs3DMapCanvasDockWidget::closed );
+  connect( mDock, &QgsDockWidget::closed, [ = ]()
+  {
+    this->close();
+  } );
   connect( mDialog, &QDialog::finished, [ = ]()
   {
-    emit this->closed();
+    this->close();
   } );
 
   connect( mCanvasWidget, &Qgs3DMapCanvasWidget::toggleDockMode, this, &Qgs3DMapCanvasDockWidget::toggleDockMode );
@@ -50,26 +58,18 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   switchToDockMode();
 }
 
-Qgs3DMapCanvasDockWidget::~Qgs3DMapCanvasDockWidget()
-{
-  delete mCanvasWidget;
-  delete mDock;
-  delete mDialog;
-}
-
-Qgs3DMapCanvasWidget *Qgs3DMapCanvasDockWidget::widget()
+QWidget *Qgs3DMapCanvasDockWidget::widget()
 {
   return mCanvasWidget;
 }
 
-bool Qgs3DMapCanvasDockWidget::isDocked()
+bool Qgs3DMapCanvasDockWidget::isDocked() const
 {
   return mIsDocked;
 }
 
 void Qgs3DMapCanvasDockWidget::toggleDockMode( bool docked )
 {
-  // TODO: handle window/dock widget sizes and window titles
   if ( docked )
   {
     // going from window -> dock
@@ -81,7 +81,6 @@ void Qgs3DMapCanvasDockWidget::toggleDockMode( bool docked )
     switchToWindowMode();
   }
 }
-
 
 void Qgs3DMapCanvasDockWidget::switchToWindowMode()
 {
@@ -121,5 +120,22 @@ void Qgs3DMapCanvasDockWidget::switchToDockMode()
   mDock->resize( mDock->size() - QSize( 1, 1 ) );
 
   mCanvasWidget->setDocked( true );
+}
+
+void Qgs3DMapCanvasDockWidget::setWindowTitle( const QString &title )
+{
+  this->QWidget::setWindowTitle( title );
+  mDialog->setWindowTitle( title );
+  mDock->setWindowTitle( title );
+}
+
+void Qgs3DMapCanvasDockWidget::closeEvent( QCloseEvent *e )
+{
+  mDialog->layout()->removeWidget( mCanvasWidget );
+  mDock->setWidget( nullptr );
+  mCanvasWidget->setParent( this );
+
+  emit closed();
+  QWidget::closeEvent( e );
 }
 
