@@ -990,7 +990,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 
       handler.downloadBlocking();
 
-      if ( feedback )
+      if ( feedback && !handler.error().isEmpty() )
         feedback->appendError( handler.error() );
     }
 
