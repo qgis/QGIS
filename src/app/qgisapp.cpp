@@ -14110,9 +14110,6 @@ void QgisApp::new3DMapCanvas()
 
 //    mPanelMenu->removeAction( dock->toggleViewAction() );
   }
-#else
-  Q_UNUSED( name )
-  return nullptr;
 #endif
 }
 
