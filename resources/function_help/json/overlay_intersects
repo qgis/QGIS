@@ -38,6 +38,16 @@
       "arg": "min_inscribed_circle_radius",
       "description": "defines an optional exclusion filter (for polygons only): minimum radius in current feature units for the maximum inscribed circle of the intersection (if the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has a radius for the maximum inscribed circle greater or equal to the value).<br>Read more on the underlying GEOS predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_MaximumInscribedCircle.html'>ST_MaximumInscribedCircle</a> function.<br>This argument requires GEOS >= 3.9.",
       "optional": true
+    },
+    {
+      "arg": "return_details",
+      "description": "Set this to true to return a list of maps containing (key names in quotes) the feature 'id', the expression 'result' and the 'overlap' value. The 'radius' of the maximum inscribed circle is also returned when the target layer is a polygon. Only valid when used with the expression parameter",
+      "optional": true
+    },
+    {
+      "arg": "sort_by_intersection_size",
+      "description": "only valid when used with an expression, set this to 'des' to return the results ordered by the overlap value in descending order or set this to 'asc' for ascending order.",
+      "optional": true
     }
   ],
   "examples": [
@@ -72,6 +82,14 @@
     {
       "expression": "overlay_intersects(layer:='regions', min_inscribed_circle_radius:=0.54)",
       "returns": "true if the current feature spatially intersects a region and the intersection area maximum inscribed circle's radius (of at least one of the parts in case of multipart) is greater or equal to the 0.54"
+    },
+    {
+      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), return_details:=true)",
+      "returns": "an array of maps containing 'id', 'result', 'overlap' and 'radius'"
+    },
+    {
+      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), sort_by_intersection_size:='des')",
+      "returns": "an array of geometries (in WKT) ordered by the overlap value in descending order"
     }
   ]
 }
