@@ -190,7 +190,7 @@ bool QgsPointCloudLayerRenderer::render()
       nodesDrawn += renderNodesSorted( nodes, pc, context, request, canceled, mRenderer->drawOrder2d() );
       break;
     }
-    case QgsPointCloudRenderer::DrawOrder::Unchanged:
+    case QgsPointCloudRenderer::DrawOrder::Default:
     {
       if ( pc->accessType() == QgsPointCloudIndex::AccessType::Local )
       {

@@ -101,7 +101,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mPointSizeSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
-  mDrawOrderComboBox->addItem( tr( "Default" ), QgsPointCloudRenderer::DrawOrder::Unchanged );
+  mDrawOrderComboBox->addItem( tr( "Default" ), QgsPointCloudRenderer::DrawOrder::Default );
   mDrawOrderComboBox->addItem( tr( "Bottom to top" ), QgsPointCloudRenderer::DrawOrder::BottomToTop );
   mDrawOrderComboBox->addItem( tr( "Top to bottom" ), QgsPointCloudRenderer::DrawOrder::TopToBottom );
 
