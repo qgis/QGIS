@@ -82,6 +82,24 @@ Returns a list of any errors encountered while retrieving the raster block.
 .. versionadded:: 3.8.0
 %End
 
+    QgsRenderContext renderContext() const;
+%Docstring
+Returns the render context of the associated block reading
+
+.. seealso:: :py:func:`setRenderContext`
+
+.. versionadded:: 3.24.0
+%End
+
+    void setRenderContext( const QgsRenderContext &renderContext );
+%Docstring
+Sets the render context of the associated block reading
+
+.. seealso:: :py:func:`renderContext`
+
+.. versionadded:: 3.24.0
+%End
+
 };
 
 

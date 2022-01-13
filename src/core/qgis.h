@@ -1251,6 +1251,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( AngularDirection )
 
     /**
+     *  Usage of the renderer.
+     *
+     * \since QGIS 3.24
+     */
+    enum class RendererUsage : int
+    {
+      View, //!< Renderer used for displaying on screen
+      Export, //!< Renderer used for printing or exporting to a file
+      Unknown, //!< Renderer used for unknown usage
+    };
+    Q_ENUM( RendererUsage )
+
+    /**
      * History provider backends.
      *
      * \since QGIS 3.24

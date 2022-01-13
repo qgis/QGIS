@@ -805,6 +805,25 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     void setZRange( const QgsDoubleRange &range );
 
+    /**
+     * Returns the rendering usage
+     *
+     * \see setRendererUsage()
+     * \since QGIS 3.24
+     */
+    Qgis::RendererUsage rendererUsage() const;
+
+    /**
+     * Sets the rendering usage
+     *
+     * \note This usage not alter how the map gets rendered but the intention is that data provider
+     * knows the context of rendering and may report that to the backend.
+     *
+     * \see rendererUsage()
+     * \since QGIS 3.24
+     */
+    void setRendererUsage( Qgis::RendererUsage rendererUsage );
+
   protected:
 
     double mDpi = 96.0;
@@ -863,6 +882,8 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QgsGeometry mLabelBoundaryGeometry;
 
     QgsVectorSimplifyMethod mSimplifyMethod;
+
+    Qgis::RendererUsage mRendererUsage = Qgis::RendererUsage::Unknown;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

@@ -14072,6 +14072,7 @@ void QgisApp::new3DMapCanvas()
     // new scenes default to a single directional light
     map->setDirectionalLights( QList<QgsDirectionalLightSettings>() << QgsDirectionalLightSettings() );
     map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
+    map->setRendererUsage( Qgis::RendererUsage::View );
 
     QMetaObject::Connection conn = connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
     {

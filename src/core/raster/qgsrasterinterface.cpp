@@ -643,3 +643,13 @@ QString QgsRasterInterface::displayBandName( int bandNumber ) const
   }
   return name;
 }
+
+QgsRenderContext QgsRasterBlockFeedback::renderContext() const
+{
+  return mRenderContext;
+}
+
+void QgsRasterBlockFeedback::setRenderContext( const QgsRenderContext &renderContext )
+{
+  mRenderContext = renderContext;
+}
