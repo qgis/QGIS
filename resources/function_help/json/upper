@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["String"],
   "description": "Converts a string to upper case letters.",
-  "arguments": [ {"arg":"string","description":"the string to convert to upper case"}],
-  "examples": [ { "expression":"upper('hello WOrld')", "returns":"'HELLO WORLD'"}]
+  "arguments": [{
+    "arg": "string",
+    "description": "the string to convert to upper case"
+  }],
+  "examples": [{
+    "expression": "upper('hello WOrld')",
+    "returns": "'HELLO WORLD'"
+  }],
+  "tags": ["converts", "upper", "letters", "case"]
 }

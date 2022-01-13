@@ -3,11 +3,23 @@
   "type": "function",
   "groups": ["Map Layers"],
   "description": "Takes a layer and decodes the uri of the underlying data provider. It depends on the dataprovider, which data is available.",
-  "arguments": [ {"arg":"layer","description":"The layer for which the uri should be decoded."},
-                 {"arg":"part","description":"The part of the uri to return. If unspecified, a map with all uri parts will be returned.","optional":true} ],
-  "examples": [ { "expression":"decode_uri(@layer)", "returns":"{'layerId': '0', 'layerName': '', 'path': '/home/qgis/shapefile.shp'}"},
-                { "expression":"decode_uri(@layer)", "returns":"{'layerId': NULL, 'layerName': 'layer', 'path': '/home/qgis/geopackage.gpkg'}"},
-                { "expression":"decode_uri(@layer, 'path')", "returns":"'C:\\\\my_data\\\\qgis\\\\shape.shp'"}
-              ]
+  "arguments": [{
+    "arg": "layer",
+    "description": "The layer for which the uri should be decoded."
+  }, {
+    "arg": "part",
+    "description": "The part of the uri to return. If unspecified, a map with all uri parts will be returned.",
+    "optional": true
+  }],
+  "examples": [{
+    "expression": "decode_uri(@layer)",
+    "returns": "{'layerId': '0', 'layerName': '', 'path': '/home/qgis/shapefile.shp'}"
+  }, {
+    "expression": "decode_uri(@layer)",
+    "returns": "{'layerId': NULL, 'layerName': 'layer', 'path': '/home/qgis/geopackage.gpkg'}"
+  }, {
+    "expression": "decode_uri(@layer, 'path')",
+    "returns": "'C:\\\\my_data\\\\qgis\\\\shape.shp'"
+  }],
+  "tags": ["depends", "layer", "data", "dataprovider", "provider", "uri", "underlying", "decodes", "available"]
 }
-

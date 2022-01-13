@@ -3,22 +3,37 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Tests the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the relationship between two geometries.",
-  "variants": [
-  { "variant": "Relationship variant",
-      "variant_description": "Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the relationship between two geometries.",
-      "arguments": [
-    	{"arg":"geometry","description":"a geometry"},
-    	{"arg":"geometry","description":"a geometry"}
-      ],
-      "examples": [ { "expression":"relate( geom_from_wkt( 'LINESTRING(40 40,120 120)' ), geom_from_wkt( 'LINESTRING(40 40,60 120)' ) )", "returns":"'FF1F00102'" } ] },
-      {
-      "variant": "Pattern match variant",
-      "variant_description": "Tests whether the DE-9IM relationship between two geometries matches a specified pattern.",
-      "arguments": [
-	    {"arg":"geometry","description":"a geometry"},
-     	{"arg":"geometry","description":"a geometry"},
-     	{"arg":"pattern","description":"DE-9IM pattern to match"}
-      ],
-      "examples": [ { "expression":"relate( geom_from_wkt( 'LINESTRING(40 40,120 120)' ), geom_from_wkt( 'LINESTRING(40 40,60 120)' ), '**1F001**' )", "returns":true}]
-  }]
+  "variants": [{
+    "variant": "Relationship variant",
+    "variant_description": "Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the relationship between two geometries.",
+    "arguments": [{
+      "arg": "geometry",
+      "description": "a geometry"
+    }, {
+      "arg": "geometry",
+      "description": "a geometry"
+    }],
+    "examples": [{
+      "expression": "relate( geom_from_wkt( 'LINESTRING(40 40,120 120)' ), geom_from_wkt( 'LINESTRING(40 40,60 120)' ) )",
+      "returns": "'FF1F00102'"
+    }]
+  }, {
+    "variant": "Pattern match variant",
+    "variant_description": "Tests whether the DE-9IM relationship between two geometries matches a specified pattern.",
+    "arguments": [{
+      "arg": "geometry",
+      "description": "a geometry"
+    }, {
+      "arg": "geometry",
+      "description": "a geometry"
+    }, {
+      "arg": "pattern",
+      "description": "DE-9IM pattern to match"
+    }],
+    "examples": [{
+      "expression": "relate( geom_from_wkt( 'LINESTRING(40 40,120 120)' ), geom_from_wkt( 'LINESTRING(40 40,60 120)' ), '**1F001**' )",
+      "returns": true
+    }]
+  }],
+  "tags": ["dimensional", "relationship", "extended", "intersection", "representation", "model", "tests"]
 }

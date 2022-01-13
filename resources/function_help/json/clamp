@@ -3,12 +3,28 @@
   "type": "function",
   "groups": ["Math"],
   "description": "Restricts an input value to a specified range.",
-  "arguments": [ {"arg":"minimum","description":"the smallest value <i>input</i> is allowed to take."},
-                 {"arg":"input","description":"a value which will be restricted to the range specified by <i>minimum</i> and <i>maximum</i>"},
-                 {"arg":"maximum","description":"the largest value <i>input</i> is allowed to take"}],
-  "examples": [ { "expression":"clamp(1,5,10)", "returns":"5", "note":"<i>input</i> is between 1 and 10 so is returned unchanged"},
-                { "expression":"clamp(1,0,10)", "returns":"1", "note":"<i>input</i> is less than minimum value of 1, so function returns 1"},
-                { "expression":"clamp(1,11,10)", "returns":"10", "note":"<i>input</i> is greater than maximum value of 10, so function returns 10"}]
+  "arguments": [{
+    "arg": "minimum",
+    "description": "the smallest value <i>input</i> is allowed to take."
+  }, {
+    "arg": "input",
+    "description": "a value which will be restricted to the range specified by <i>minimum</i> and <i>maximum</i>"
+  }, {
+    "arg": "maximum",
+    "description": "the largest value <i>input</i> is allowed to take"
+  }],
+  "examples": [{
+    "expression": "clamp(1,5,10)",
+    "returns": "5",
+    "note": "<i>input</i> is between 1 and 10 so is returned unchanged"
+  }, {
+    "expression": "clamp(1,0,10)",
+    "returns": "1",
+    "note": "<i>input</i> is less than minimum value of 1, so function returns 1"
+  }, {
+    "expression": "clamp(1,11,10)",
+    "returns": "10",
+    "note": "<i>input</i> is greater than maximum value of 10, so function returns 10"
+  }],
+  "tags": ["specified", "restricts", "input", "range"]
 }
-     
-     

@@ -3,10 +3,13 @@
   "type": "function",
   "groups": ["Conversions"],
   "description": "Converts a degree, minute, second coordinate to its decimal equivalent.",
-  "arguments": [
-    {"arg":"value","description":"A degree, minute, second string."}
-  ],
-    "examples": [
-    { "expression":"to_decimal('6°21\\'16.445')", "returns":"6.3545680555"}
-  ]
+  "arguments": [{
+    "arg": "value",
+    "description": "A degree, minute, second string."
+  }],
+  "examples": [{
+    "expression": "to_decimal('6\u00b021\\'16.445')",
+    "returns": "6.3545680555"
+  }],
+  "tags": ["converts", "minute", "degree", "equivalent", "second", "coordinate", "decimal"]
 }

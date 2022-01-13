@@ -3,9 +3,16 @@
   "type": "function",
   "groups": ["General"],
   "description": "Evaluates an expression which is passed in a string. Useful to expand dynamic parameters passed as context variables or fields.",
-  "arguments": [ {"arg":"expression","description":"an expression string"}],
-  "examples": [
-    { "expression":"eval('\\'nice\\'')", "returns":"'nice'"},
-    { "expression":"eval(@expression_var)", "returns":"[whatever the result of evaluating @expression_var might be…]"}
-  ]
+  "arguments": [{
+    "arg": "expression",
+    "description": "an expression string"
+  }],
+  "examples": [{
+    "expression": "eval('\\'nice\\'')",
+    "returns": "'nice'"
+  }, {
+    "expression": "eval(@expression_var)",
+    "returns": "[whatever the result of evaluating @expression_var might be\u2026]"
+  }],
+  "tags": ["dynamic", "fields", "parameters", "expression", "expand", "context", "passed", "variables", "evaluates"]
 }

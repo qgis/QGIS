@@ -3,16 +3,33 @@
   "type": "function",
   "groups": ["Math"],
   "description": "Transforms a given value from an input domain to an output range using linear interpolation.",
-  "arguments": [
-	{"arg":"value", "description":"A value in the input domain. The function will return a corresponding scaled value in the output range."},
-	{"arg":"domain_min", "description":"Specifies the minimum value in the input domain, the smallest value the input value should take."},
-	{"arg":"domain_max", "description":"Specifies the maximum value in the input domain, the largest value the input value should take."},
-	{"arg":"range_min", "description":"Specifies the minimum value in the output range, the smallest value which should be output by the function."},
-	{"arg":"range_max", "description":"Specifies the maximum value in the output range, the largest value which should be output by the function."}
-  ],
-  "examples": [
-	{ "expression":"scale_linear(5,0,10,0,100)", "returns":"50"},
-	{ "expression":"scale_linear(0.2,0,1,0,360)", "returns":"72", "note": "scaling a value between 0 and 1 to an angle between 0 and 360"},
-	{ "expression":"scale_linear(1500,1000,10000,9,20)", "returns":"9.6111111", "note": "scaling a population which varies between 1000 and 10000 to a font size between 9 and 20"}
-  ]
+  "arguments": [{
+    "arg": "value",
+    "description": "A value in the input domain. The function will return a corresponding scaled value in the output range."
+  }, {
+    "arg": "domain_min",
+    "description": "Specifies the minimum value in the input domain, the smallest value the input value should take."
+  }, {
+    "arg": "domain_max",
+    "description": "Specifies the maximum value in the input domain, the largest value the input value should take."
+  }, {
+    "arg": "range_min",
+    "description": "Specifies the minimum value in the output range, the smallest value which should be output by the function."
+  }, {
+    "arg": "range_max",
+    "description": "Specifies the maximum value in the output range, the largest value which should be output by the function."
+  }],
+  "examples": [{
+    "expression": "scale_linear(5,0,10,0,100)",
+    "returns": "50"
+  }, {
+    "expression": "scale_linear(0.2,0,1,0,360)",
+    "returns": "72",
+    "note": "scaling a value between 0 and 1 to an angle between 0 and 360"
+  }, {
+    "expression": "scale_linear(1500,1000,10000,9,20)",
+    "returns": "9.6111111",
+    "note": "scaling a population which varies between 1000 and 10000 to a font size between 9 and 20"
+  }],
+  "tags": ["transforms", "linear", "output", "given", "input", "domain", "range", "interpolation"]
 }

@@ -3,10 +3,16 @@
   "type": "function",
   "groups": ["Maps"],
   "description": "Create a JSON formatted string from a map, array or other value.",
-  "arguments": [
-    {"arg":"value", "description":"The input value"}],
-  "examples": [
-    { "expression":"to_json(map('qgis','rocks'))", "returns":"{\"qgis\":\"rocks\"}"},
-    { "expression":"to_json(array(1,2,3))", "returns":"[1,2,3]"}
-  ]
+  "arguments": [{
+    "arg": "value",
+    "description": "The input value"
+  }],
+  "examples": [{
+    "expression": "to_json(map('qgis','rocks'))",
+    "returns": "{\"qgis\":\"rocks\"}"
+  }, {
+    "expression": "to_json(array(1,2,3))",
+    "returns": "[1,2,3]"
+  }],
+  "tags": ["formatted", "json", "array", "create", "other", "map"]
 }
