@@ -47,7 +47,7 @@ class CORE_EXPORT QgsMapViewsManager : public QObject
      * Constructor for QgsMapViewsManager. The project will become the parent object for this
      * manager.
      */
-    explicit QgsMapViewsManager( QgsProject *project );
+    explicit QgsMapViewsManager( QgsProject *project SIP_TRANSFERTHIS );
 
     /**
      * Reads the manager's state from a DOM element, restoring all views
