@@ -984,6 +984,9 @@ void QgsMapToolCapture::deleteTempRubberBand()
 void QgsMapToolCapture::clean()
 {
   stopCapturing();
+  if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
+    mCurrentShapeMapTool->clean();
+
   clearCurve();
 }
 

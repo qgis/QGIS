@@ -44,6 +44,6 @@ void QgsMapToolShapeAbstract::clean()
 
 void QgsMapToolShapeAbstract::undo()
 {
-  if ( mPoints.count() > 1 )
+  if ( mPoints.count() > 0 )
     mPoints.removeLast();
 }
