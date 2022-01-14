@@ -114,6 +114,7 @@
 
 #include "options/qgscodeeditoroptions.h"
 #include "options/qgsgpsdeviceoptions.h"
+#include "options/qgscustomprojectionoptions.h"
 
 #ifdef HAVE_3D
 #include "qgs3d.h"
@@ -215,7 +216,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgscustomprojectopenhandler.h"
 #include "qgscustomization.h"
 #include "qgscustomlayerorderwidget.h"
-#include "qgscustomprojectiondialog.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsdatasourceuri.h"
@@ -1817,6 +1817,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   mCodeEditorWidgetFactory.reset( std::make_unique< QgsCodeEditorOptionsFactory >() );
   mBabelGpsDevicesWidgetFactory.reset( std::make_unique< QgsGpsDeviceOptionsFactory >() );
+  mCustomProjectionsWidgetFactory.reset( std::make_unique< QgsCustomProjectionOptionsFactory >() );
 
 #ifdef HAVE_3D
   m3DOptionsWidgetFactory.reset( std::make_unique< Qgs3DOptionsFactory >() );
@@ -16584,11 +16585,7 @@ void QgisApp::mapCanvas_keyPressed( QKeyEvent *e )
 
 void QgisApp::customProjection()
 {
-  // Create an instance of the Custom Projection Designer modeless dialog.
-  // Autodelete the dialog when closing since a pointer is not retained.
-  QgsCustomProjectionDialog *myDialog = new QgsCustomProjectionDialog( this );
-  myDialog->setAttribute( Qt::WA_DeleteOnClose );
-  myDialog->show();
+  showOptionsDialog( this, QStringLiteral( "QgsCustomProjectionOptionsWidget" ) );
 }
 
 void QgisApp::newBookmark( bool inProject )

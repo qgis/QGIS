@@ -2753,6 +2753,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScopedOptionsWidgetFactory mCodeEditorWidgetFactory;
     QgsScopedOptionsWidgetFactory mBabelGpsDevicesWidgetFactory;
     QgsScopedOptionsWidgetFactory m3DOptionsWidgetFactory;
+    QgsScopedOptionsWidgetFactory mCustomProjectionsWidgetFactory;
 
     QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
     QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
