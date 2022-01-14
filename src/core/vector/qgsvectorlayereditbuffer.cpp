@@ -394,25 +394,37 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   // change attributes
   //
   if ( success && !mChangedAttributeValues.isEmpty() && ( ( cap & QgsVectorDataProvider::ChangeFeatures ) == 0 || mChangedGeometries.isEmpty() ) )
-    success &= commitChangesChangeAttributes( commitErrors );
+  {
+    bool attributesCanged;
+    success &= commitChangesChangeAttributes( attributesCanged, commitErrors );
+  }
 
   //
   // update geometries
   //
   if ( success && !mChangedGeometries.isEmpty() )
-    success &= commitChangesUpdateGeometry( commitErrors );
+  {
+    bool geometryChanged;
+    success &= commitChangesUpdateGeometry( geometryChanged, commitErrors );
+  }
 
   //
   // delete features
   //
   if ( success && !mDeletedFeatureIds.isEmpty() )
-    success &= commitChangesDeleteFeatures( commitErrors );
+  {
+    bool featuresDeleted;
+    success &= commitChangesDeleteFeatures( featuresDeleted, commitErrors );
+  }
 
   //
   //  add features
   //
   if ( success && !mAddedFeatures.isEmpty() )
-    success &= commitChangesAddFeatures( commitErrors );
+  {
+    bool featuresAdded;
+    success &= commitChangesAddFeatures( featuresAdded, commitErrors );
+  }
 
   if ( !success && provider->hasErrors() )
   {
@@ -597,14 +609,16 @@ bool QgsVectorLayerEditBuffer::commitChangesCheckGeometryTypeCompatibility( QStr
   return true;
 }
 
-bool QgsVectorLayerEditBuffer::commitChangesUpdateGeometry( QStringList &commitErrors )
+bool QgsVectorLayerEditBuffer::commitChangesUpdateGeometry( bool &geometryChanged, QStringList &commitErrors )
 {
+  geometryChanged = false;
+
   if ( !mChangedGeometries.isEmpty() && ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeFeatures ) == 0 || mChangedAttributeValues.isEmpty() ) )
   {
     if ( L->dataProvider()->changeGeometryValues( mChangedGeometries ) )
     {
       commitErrors << tr( "SUCCESS: %n geometries were changed.", "changed geometries count", mChangedGeometries.size() );
-
+      geometryChanged = true;
       emit committedGeometriesChanges( L->id(), mChangedGeometries );
       mChangedGeometries.clear();
     }
@@ -751,14 +765,16 @@ bool QgsVectorLayerEditBuffer::commitChangesCheckAttributesModifications( const 
   return true;
 }
 
-bool QgsVectorLayerEditBuffer::commitChangesChangeAttributes( QStringList &commitErrors )
+bool QgsVectorLayerEditBuffer::commitChangesChangeAttributes( bool &attributesChanged, QStringList &commitErrors )
 {
+  attributesChanged = false;
+
   if ( !mChangedAttributeValues.isEmpty() && ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeFeatures ) == 0 || mChangedGeometries.isEmpty() ) )
   {
     if ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && L->dataProvider()->changeAttributeValues( mChangedAttributeValues ) )
     {
       commitErrors << tr( "SUCCESS: %n attribute value(s) changed.", "changed attribute values count", mChangedAttributeValues.size() );
-
+      attributesChanged = true;
       emit committedAttributeValuesChanges( L->id(), mChangedAttributeValues );
       mChangedAttributeValues.clear();
     }
@@ -787,14 +803,17 @@ bool QgsVectorLayerEditBuffer::commitChangesChangeAttributes( QStringList &commi
   return true;
 }
 
-bool QgsVectorLayerEditBuffer::commitChangesDeleteFeatures( QStringList &commitErrors )
+bool QgsVectorLayerEditBuffer::commitChangesDeleteFeatures( bool &featuresDeleted, QStringList &commitErrors )
 {
+  featuresDeleted = false;
+
   if ( mDeletedFeatureIds.isEmpty() )
     return true;
 
   if ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && L->dataProvider()->deleteFeatures( mDeletedFeatureIds ) )
   {
     commitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
+    featuresDeleted = true;
     // TODO[MD]: we should not need this here
     for ( QgsFeatureId id : std::as_const( mDeletedFeatureIds ) )
     {
@@ -824,8 +843,10 @@ bool QgsVectorLayerEditBuffer::commitChangesDeleteFeatures( QStringList &commitE
   return true;
 }
 
-bool QgsVectorLayerEditBuffer::commitChangesAddFeatures( QStringList &commitErrors )
+bool QgsVectorLayerEditBuffer::commitChangesAddFeatures( bool &featuresAdded, QStringList &commitErrors )
 {
+  featuresAdded = false;
+
   if ( mAddedFeatures.isEmpty() )
     return true;
 
@@ -847,7 +868,7 @@ bool QgsVectorLayerEditBuffer::commitChangesAddFeatures( QStringList &commitErro
     if ( L->dataProvider()->addFeatures( featuresToAdd, QgsFeatureSink::Flag::RollBackOnErrors ) )
     {
       commitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", featuresToAdd.size() );
-
+      featuresAdded = true;
       emit committedFeaturesAdded( L->id(), featuresToAdd );
 
       // notify everyone that the features with temporary ids were updated with permanent ids

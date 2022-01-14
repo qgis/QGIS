@@ -345,10 +345,11 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /**
      * Update geometries
+     * \param geometryChanged is set if one or more geometries where changed
      * \param Error descriptions are appended to commitErrors
      * \returns TRUE on success
      */
-    bool commitChangesUpdateGeometry( QStringList &commitErrors );
+    bool commitChangesUpdateGeometry( bool &geometryChanged, QStringList &commitErrors );
 
     /**
      * Delete attributes
@@ -375,7 +376,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     bool commitChangesAddAttributes( bool &attributesAdded, QStringList &commitErrors );
 
     /**
-     * Check that delete/rename/add attributes operations where successfull
+     * Check that delete/rename/add attributes operations where successful
      * \param oldFields are the fields before delete/rename/add operations
      * \param Error descriptions are appended to commitErrors
      * \returns TRUE on success
@@ -384,24 +385,27 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /**
      * Change attributes
+     * \param attributesChanged is set if one or more attributes where changed
      * \param Error descriptions are appended to commitErrors
      * \returns TRUE on success
      */
-    bool commitChangesChangeAttributes( QStringList &commitErrors );
+    bool commitChangesChangeAttributes( bool &attributesChanged, QStringList &commitErrors );
 
     /**
      * Delete features
+     * \param featuresDeleted is set if one or more features where deleted
      * \param Error descriptions are appended to commitErrors
      * \returns TRUE on success
      */
-    bool commitChangesDeleteFeatures( QStringList &commitErrors );
+    bool commitChangesDeleteFeatures( bool &featuresDeleted, QStringList &commitErrors );
 
     /**
      * Add new features
+     * \param featuresAdded is set if one or more features where deleted
      * \param Error descriptions are appended to commitErrors
      * \returns TRUE on success
      */
-    bool commitChangesAddFeatures( QStringList &commitErrors );
+    bool commitChangesAddFeatures( bool &featuresAdded, QStringList &commitErrors );
 };
 
 #endif // QGSVECTORLAYEREDITBUFFER_H

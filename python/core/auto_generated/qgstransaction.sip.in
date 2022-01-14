@@ -56,6 +56,13 @@ provider.
 
     ~QgsTransaction();
 
+    QString connectionString() const;
+%Docstring
+Returns the connection string of the transaction
+
+.. versionadded:: 3.24
+%End
+
     bool addLayer( QgsVectorLayer *layer, bool addLayersInEditMode = false );
 %Docstring
 Add the ``layer`` to the transaction. The layer must not be

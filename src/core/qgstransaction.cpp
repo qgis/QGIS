@@ -66,6 +66,11 @@ QgsTransaction::~QgsTransaction()
   setLayerTransactionIds( nullptr );
 }
 
+QString QgsTransaction::connectionString() const
+{
+  return mConnString;
+}
+
 // For the needs of the OGR provider with GeoPackage datasources, remove
 // any reference to layers in the connection string
 QString QgsTransaction::removeLayerIdOrName( const QString &str )

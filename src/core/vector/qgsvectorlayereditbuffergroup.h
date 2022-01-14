@@ -107,6 +107,7 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
   private:
 
     QList<QgsVectorLayer *> orderLayersParentsToChildren( QList<QgsVectorLayer *> layers );
+    void editingFinished( bool stopEditing );
 
     QList<QgsVectorLayer *> mLayers;
 

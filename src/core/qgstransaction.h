@@ -75,6 +75,12 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     ~QgsTransaction() override;
 
     /**
+     * Returns the connection string of the transaction
+     * \since QGIS 3.24
+     */
+    QString connectionString() const;
+
+    /**
      * Add the \a layer to the transaction. The layer must not be
      * in edit mode and the connection string must match.
      */
