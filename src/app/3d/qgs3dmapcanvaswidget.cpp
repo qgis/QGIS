@@ -140,7 +140,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( QWidget *parent )
   mDockUnDockBtn->setCheckable( true );
   mDockUnDockBtn->setChecked( true );
   mDockUnDockBtn->setEnabled( true );
-  connect( mDockUnDockBtn, &QToolButton::toggled, this, &Qgs3DMapCanvasWidget::toggleDockMode );
+  connect( mDockUnDockBtn, &QToolButton::toggled, this, &Qgs3DMapCanvasWidget::toggleDockModeRequested );
 
   toolBar->addWidget( mDockUnDockBtn );
 

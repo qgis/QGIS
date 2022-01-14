@@ -52,7 +52,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setDocked( bool docked );
 
   signals:
-    void toggleDockMode( bool docked );
+    void toggleDockModeRequested( bool docked );
 
   private slots:
     void resetView();

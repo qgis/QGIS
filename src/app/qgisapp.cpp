@@ -13986,7 +13986,7 @@ QgsDockableWidget *QgisApp::createNew3DMapCanvasDock( const QString &name )
   QgsDockableWidget *map3DWidget = new QgsDockableWidget( this );
   Qgs3DMapCanvasWidget *widget = new Qgs3DMapCanvasWidget( map3DWidget );
   map3DWidget->setWidget( widget );
-  connect( widget, &Qgs3DMapCanvasWidget::toggleDockMode, map3DWidget, &QgsDockableWidget::toggleDockMode );
+  connect( widget, &Qgs3DMapCanvasWidget::toggleDockModeRequested, map3DWidget, &QgsDockableWidget::toggleDockMode );
 
   mOpen3DDocks.insert( map3DWidget );
   map3DWidget->setWindowTitle( name );
