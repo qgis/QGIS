@@ -835,6 +835,14 @@ void QgsRasterLayerProperties::apply()
   if ( !mRasterLayer->isValid() )
     return;
 
+  // apply all plugin dialogs
+  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
+  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
+  {
+    page->apply();
+  }
+
+
   /*
    * Legend Tab
    */
