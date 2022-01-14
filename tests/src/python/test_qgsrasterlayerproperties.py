@@ -88,8 +88,8 @@ class TestQgsRasterLayerProperties(unittest.TestCase):
 
         # this should trigger
         dialog.accept()
-        self.assertEqual(MyFactory.COUNT, 1, msg=f'Custom QgsMapLayerConfigWidget::createWidget(...) not called')
-        self.assertEqual(MyWidget.COUNT, 1, msg=f'Custom QgsMapLayerConfigWidget::apply() not called')
+        self.assertEqual(MyFactory.COUNT, 1, msg='Custom QgsMapLayerConfigWidget::createWidget(...) not called')
+        self.assertEqual(MyWidget.COUNT, 1, msg='Custom QgsMapLayerConfigWidget::apply() not called')
 
 
 if __name__ == '__main__':
