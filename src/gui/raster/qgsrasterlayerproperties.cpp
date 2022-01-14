@@ -833,7 +833,7 @@ void QgsRasterLayerProperties::apply()
     return;
 
   // apply all plugin dialogs
-  for ( QgsMapLayerConfigWidget *page : std::as_const(mLayerPropertiesPages) )
+  for ( QgsMapLayerConfigWidget *page : std::as_const( mLayerPropertiesPages ) )
   {
     page->apply();
   }
