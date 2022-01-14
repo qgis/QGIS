@@ -1,9 +1,9 @@
 /***************************************************************************
   qgsdockablewidget.cpp
   --------------------------------------
-  Date                 : July 2017
-  Copyright            : (C) 2017 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
+  Date                 : January 2022
+  Copyright            : (C) 2022 by Belgacem Nedjima
+  Email                : belgacem dot nedjima at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

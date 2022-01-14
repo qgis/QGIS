@@ -21,8 +21,6 @@
 #include "qgis_app.h"
 #include "qtoolbutton.h"
 
-#include <QDialog>
-
 #define SIP_NO_FILE
 
 class QLabel;

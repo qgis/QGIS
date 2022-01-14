@@ -57,9 +57,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( QWidget *parent )
   const QgsSettings setting;
   setAttribute( Qt::WA_DeleteOnClose );  // removes the dock widget from main window when
 
-  QWidget *contentsWidget = this;//new QWidget( this );
 
-  QToolBar *toolBar = new QToolBar( contentsWidget );
+  QToolBar *toolBar = new QToolBar( this );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
 
   QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ),
@@ -137,7 +136,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( QWidget *parent )
 
   mDockUnDockBtn = new QToolButton;
   mDockUnDockBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mDockify.svg" ) ) );
-  mDockUnDockBtn->setToolTip( QStringLiteral( "Dock 3D Map View" ) );
+  mDockUnDockBtn->setToolTip( tr( "Dock 3D Map View" ) );
   mDockUnDockBtn->setCheckable( true );
   mDockUnDockBtn->setChecked( true );
   mDockUnDockBtn->setEnabled( true );
@@ -170,7 +169,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( QWidget *parent )
   connect( configureAction, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configure );
   mOptionsMenu->addAction( configureAction );
 
-  mCanvas = new Qgs3DMapCanvas( contentsWidget );
+  mCanvas = new Qgs3DMapCanvas( this );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
   mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
@@ -222,9 +221,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( QWidget *parent )
   layout->addWidget( mCanvas );
   layout->addWidget( mAnimationWidget );
 
-  contentsWidget->setLayout( layout );
-
-//  setWidget( contentsWidget );
+  this->setLayout( layout );
 
   onTotalPendingJobsCountChanged();
 }
