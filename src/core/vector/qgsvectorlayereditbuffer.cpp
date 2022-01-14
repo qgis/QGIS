@@ -756,7 +756,8 @@ bool QgsVectorLayerEditBuffer::commitChangesChangeAttributes( bool &attributesCh
       return false;
     }
   }
-  else if ( !mChangedGeometries.isEmpty() && ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeFeatures ) == 0 ) )
+
+  if ( !mChangedGeometries.isEmpty() && ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeFeatures ) == 0 ) )
   {
     if ( L->dataProvider()->changeGeometryValues( mChangedGeometries ) )
     {
@@ -771,7 +772,8 @@ bool QgsVectorLayerEditBuffer::commitChangesChangeAttributes( bool &attributesCh
       return false;
     }
   }
-  else if ( !mChangedAttributeValues.isEmpty() && ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeFeatures ) == 0 ) )
+
+  if ( !mChangedAttributeValues.isEmpty() && ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeFeatures ) == 0 ) )
   {
     if ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && L->dataProvider()->changeAttributeValues( mChangedAttributeValues ) )
     {
