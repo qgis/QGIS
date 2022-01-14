@@ -442,8 +442,6 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
-
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
 
   const QgsPointXY point = e->mapPoint();

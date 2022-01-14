@@ -51,7 +51,6 @@ QgsMapToolShapeAbstract *QgsMapToolShapeCircle2PointsMetadata::factory( QgsMapTo
 
 bool QgsMapToolShapeCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-
   if ( e->button() == Qt::LeftButton )
   {
     if ( mPoints.isEmpty() )
@@ -76,7 +75,7 @@ bool QgsMapToolShapeCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, Q
 
 void QgsMapToolShapeCircle2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-
+  Q_UNUSED( mode )
   if ( !mTempRubberBand )
     return;
 

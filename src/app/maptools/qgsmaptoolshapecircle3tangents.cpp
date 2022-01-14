@@ -70,6 +70,7 @@ static QgsPoint getFirstPointOnParallels( const QgsPoint p1_line1, const QgsPoin
 
 bool QgsMapToolShapeCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
+  Q_UNUSED( mode )
 
   const QgsPoint point = mParentTool->mapPoint( *e );
 
