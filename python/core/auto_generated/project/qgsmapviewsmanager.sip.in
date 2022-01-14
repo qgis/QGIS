@@ -67,15 +67,7 @@ Removes the configuration of the 3D view named ``name``
 Renames the 3D view named ``oldTitle`` to ``newTitle``
 %End
 
-    void set3DViewInitiallyVisible( const QString &name, bool visible );
-%Docstring
-Sets whether the 3D view named ``name`` will be initially visible when the project is opened
-%End
 
-    bool is3DViewOpen( const QString &name );
-%Docstring
-Returns whether the 3D view named ``name`` will is opened
-%End
 
   signals:
     void views3DListChanged();
