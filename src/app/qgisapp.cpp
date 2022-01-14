@@ -9958,17 +9958,16 @@ QgsDockableWidget *QgisApp::duplicate3DMapView( const QString &existingViewName,
       map->setTransformContext( QgsProject::instance()->transformContext() );
     } );
 
+    if ( QgsDockWidget *dw = mapCanvasDock3D->dockWidget() )
+    {
+      setupDockWidget( dw, true );
+    }
   }
   else
   {
     QDomElement elem = QgsProject::instance()->viewsManager()->get3DViewSettings( existingViewName );
     elem.setAttribute( QStringLiteral( "name" ), newViewName );
     read3DMapViewSettings( mapCanvasDock3D, elem );
-  }
-
-  if ( QgsDockWidget *dw = mapCanvasDock3D->dockWidget() )
-  {
-    setupDockWidget( dw, true );
   }
 
   QDomElement elem3DMap;
@@ -16788,13 +16787,7 @@ void QgisApp::read3DMapViewSettings( QgsDockableWidget *w, QDomElement &elem3DMa
     widget->animationWidget()->setAnimation( animationSettings );
   }
 
-  if ( QgsDockWidget *dw = w->dockWidget() )
-  {
-    readDockWidgetSettings( dw, elem3DMap );
-  }
-
-  QDialog *d = w->dialog();
-  if ( d )
+  if ( QDialog *d = w->dialog() )
   {
     int dx = elem3DMap.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
     int dy = elem3DMap.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
@@ -16805,6 +16798,11 @@ void QgisApp::read3DMapViewSettings( QgsDockableWidget *w, QDomElement &elem3DMa
 
   bool isDocked = elem3DMap.attribute( QStringLiteral( "isDocked" ), "1" ).toInt() == 1;
   dynamic_cast< Qgs3DMapCanvasWidget * >( w->widget() )->setDocked( isDocked );
+
+  if ( QgsDockWidget *dw = w->dockWidget() )
+  {
+    readDockWidgetSettings( dw, elem3DMap );
+  }
 }
 #endif
 

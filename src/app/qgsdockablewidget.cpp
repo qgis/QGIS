@@ -81,7 +81,6 @@ void QgsDockableWidget::toggleDockMode( bool docked )
     // TODO: apply resizing in a better way
     mDock->resize( mDock->size() + QSize( 1, 1 ) );
     mDock->resize( mDock->size() - QSize( 1, 1 ) );
-
   }
   else
   {
@@ -91,13 +90,13 @@ void QgsDockableWidget::toggleDockMode( bool docked )
     mDialog->layout()->addWidget( mWidget );
     mDock->setWidget( nullptr );
 
+    mDialog->raise();
     mDialog->show();
     mDock->setVisible( false );
 
     // TODO: apply resizing in a better way
     mDialog->resize( mDialog->size() + QSize( 1, 1 ) );
     mDialog->resize( mDialog->size() - QSize( 1, 1 ) );
-
   }
 }
 

@@ -137,6 +137,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( QWidget *parent )
 
   mDockUnDockBtn = new QToolButton;
   mDockUnDockBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mDockify.svg" ) ) );
+  mDockUnDockBtn->setToolTip( QStringLiteral( "Dock 3D Map View" ) );
   mDockUnDockBtn->setCheckable( true );
   mDockUnDockBtn->setChecked( true );
   mDockUnDockBtn->setEnabled( true );
