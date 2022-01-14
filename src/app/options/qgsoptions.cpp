@@ -175,7 +175,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
     {
       if ( !widget->isValid() )
+      {
+        setCurrentPage( widget->objectName() );
         return;
+      }
     }
     accept();
   } );
@@ -1547,7 +1550,10 @@ void QgsOptions::saveOptions()
   for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
   {
     if ( !widget->isValid() )
+    {
+      setCurrentPage( widget->objectName() );
       return;
+    }
   }
 
   QgsSettings settings;
