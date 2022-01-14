@@ -69,7 +69,7 @@ class TestQgsRasterLayerProperties(unittest.TestCase):
                              layer: QgsMapLayer,
                              canvas: QgsMapCanvas,
                              dockWidget: bool = ..., parent:
-                    typing.Optional[QWidget] = ...) -> QgsMapLayerConfigWidget:
+                             typing.Optional[QWidget] = ...) -> QgsMapLayerConfigWidget:
                 MyFactory.COUNT += 1
                 w = MyWidget(layer, canvas, parent=parent)
                 return w
