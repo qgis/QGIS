@@ -1194,6 +1194,13 @@ Qgis.AngularDirection.__doc__ = 'Angular directions.\n\n.. versionadded:: 3.24\n
 # --
 Qgis.AngularDirection.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.RendererUsage.View.__doc__ = "Renderer used for displaying on screen"
+Qgis.RendererUsage.Export.__doc__ = "Renderer used for printing or exporting to a file"
+Qgis.RendererUsage.Unknown.__doc__ = "Renderer used for unknown usage"
+Qgis.RendererUsage.__doc__ = 'Usage of the renderer.\n\n.. versionadded:: 3.24\n\n' + '* ``View``: ' + Qgis.RendererUsage.View.__doc__ + '\n' + '* ``Export``: ' + Qgis.RendererUsage.Export.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.RendererUsage.Unknown.__doc__
+# --
+Qgis.RendererUsage.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.HistoryProviderBackend.LocalProfile.__doc__ = "Local profile"
 Qgis.HistoryProviderBackend.__doc__ = 'History provider backends.\n\n.. versionadded:: 3.24\n\n' + '* ``LocalProfile``: ' + Qgis.HistoryProviderBackend.LocalProfile.__doc__
 # --

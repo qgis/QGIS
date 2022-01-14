@@ -41,15 +41,25 @@ QgsCrsDefinitionWidget::QgsCrsDefinitionWidget( QWidget *parent )
 
 QgsCoordinateReferenceSystem QgsCrsDefinitionWidget::crs() const
 {
+  QgsCoordinateReferenceSystem crs;
   switch ( static_cast< Qgis::CrsDefinitionFormat >( mFormatComboBox->currentData().toInt() ) )
   {
     case Qgis::CrsDefinitionFormat::Wkt:
-      return QgsCoordinateReferenceSystem::fromWkt( mTextEditParameters->toPlainText() );
+      crs = QgsCoordinateReferenceSystem::fromWkt( mTextEditParameters->toPlainText() );
+      break;
 
     case Qgis::CrsDefinitionFormat::Proj:
-      return QgsCoordinateReferenceSystem::fromProj( mTextEditParameters->toPlainText() );
+      crs = QgsCoordinateReferenceSystem::fromProj( mTextEditParameters->toPlainText() );
+      break;
   }
-  BUILTIN_UNREACHABLE
+
+  crs.setNativeFormat( format() );
+  return crs;
+}
+
+void QgsCrsDefinitionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  setCrs( crs, crs.nativeFormat() );
 }
 
 void QgsCrsDefinitionWidget::setCrs( const QgsCoordinateReferenceSystem &crs, Qgis::CrsDefinitionFormat nativeFormat )

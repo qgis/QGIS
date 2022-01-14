@@ -209,6 +209,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
 
+  mSettings.setRendererUsage( Qgis::RendererUsage::View );
+
   setSceneRect( 0, 0, s.width(), s.height() );
   mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
 
@@ -1061,12 +1063,16 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
   if ( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() )
   {
     if ( window()->windowHandle() )
+    {
       mSettings.setOutputDpi( window()->windowHandle()->screen()->physicalDotsPerInch() );
+      mSettings.setDpiTarget( window()->windowHandle()->screen()->physicalDotsPerInch() );
+    }
   }
   else
   {
     // Fallback: compatibility with QGIS <= 3.20; always assume low dpi screens
     mSettings.setOutputDpi( window()->windowHandle()->screen()->logicalDotsPerInch() );
+    mSettings.setDpiTarget( window()->windowHandle()->screen()->logicalDotsPerInch() );
   }
 }
 

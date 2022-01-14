@@ -854,3 +854,13 @@ void QgsMapSettings::setZRange( const QgsDoubleRange &zRange )
 {
   mZRange = zRange;
 }
+
+Qgis::RendererUsage QgsMapSettings::rendererUsage() const
+{
+  return mRendererUsage;
+}
+
+void QgsMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
+{
+  mRendererUsage = rendererUsage;
+}

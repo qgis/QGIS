@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsCustomProjectionDialogBase</class>
- <widget class="QDialog" name="QgsCustomProjectionDialogBase">
+ <class>QgsCustomProjectionWidgetBase</class>
+ <widget class="QWidget" name="QgsCustomProjectionWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -19,24 +19,17 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <property name="leftMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
-   <item row="2" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="focusPolicy">
@@ -53,11 +46,20 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>536</width>
-        <height>611</height>
+        <width>542</width>
+        <height>650</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item row="2" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
@@ -194,22 +196,5 @@
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsCustomProjectionDialogBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>270</x>
-     <y>590</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>270</x>
-     <y>306</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

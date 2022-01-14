@@ -587,7 +587,14 @@ static bool _fuzzyContainsRect( const QRectF &r1, const QRectF &r2 )
   return r1.contains( r2.adjusted( epsilon, epsilon, -epsilon, -epsilon ) );
 }
 
-void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle &viewExtent, int imageWidth, QList<QRectF> &missingRects, double tres, int resOffset, QList<TileImage> &otherResTiles )
+void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode,
+    const QgsRectangle &viewExtent,
+    int imageWidth,
+    QList<QRectF> &missingRects,
+    double tres,
+    int resOffset,
+    QList<TileImage> &otherResTiles,
+    QgsRasterBlockFeedback *feedback )
 {
   if ( !mTileMatrixSet )
     return;  // there is no tile matrix set defined for ordinary WMS (with user-specified tile size)
@@ -626,7 +633,7 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
       break;
 
     case XYZ:
-      createTileRequestsXYZ( tmOther, tiles, requests );
+      createTileRequestsXYZ( tmOther, tiles, requests, feedback );
       break;
   }
 
@@ -842,7 +849,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
         break;
 
       case XYZ:
-        createTileRequestsXYZ( tm, tiles, requests );
+        createTileRequestsXYZ( tm, tiles, requests, feedback );
         break;
 
       default:
@@ -990,7 +997,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 
       handler.downloadBlocking();
 
-      if ( feedback )
+      if ( feedback && !handler.error().isEmpty() )
         feedback->appendError( handler.error() );
     }
 
@@ -1400,7 +1407,7 @@ static QString _tile2quadkey( int tileX, int tileY, int z )
 }
 
 
-void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests )
+void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests, QgsRasterBlockFeedback *feedback )
 {
   int z = tm->identifier.toInt();
   QString url = mSettings.mBaseUrl;
@@ -1425,6 +1432,22 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
       turl.replace( QLatin1String( "{y}" ), QString::number( tile.row ), Qt::CaseInsensitive );
     }
     turl.replace( QLatin1String( "{z}" ), QString::number( z ), Qt::CaseInsensitive );
+
+    if ( turl.contains( QLatin1String( "{usage}" ) ) && feedback )
+    {
+      switch ( feedback->renderContext().rendererUsage() )
+      {
+        case Qgis::RendererUsage::View:
+          turl.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
+          break;
+        case Qgis::RendererUsage::Export:
+          turl.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
+          break;
+        case Qgis::RendererUsage::Unknown:
+          turl.replace( QLatin1String( "{usage}" ), QLatin1String( "unknown" ) );
+          break;
+      }
+    }
 
     QgsDebugMsgLevel( QStringLiteral( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ), 2 );
     requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i );
@@ -4293,6 +4316,8 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString 
 
     QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
     connect( reply, &QNetworkReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
+
+    QString reqString = r.url.url();
 
     mReplies << reply;
   }

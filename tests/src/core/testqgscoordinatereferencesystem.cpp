@@ -74,6 +74,8 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void noEquality();
     void equalityInvalid();
     void readWriteXml();
+    void readWriteXmlNativeFormatWkt();
+    void readWriteXmlNativeFormatProj();
     void setCustomSrsValidation();
     void customSrsValidation();
     void postgisSrid();
@@ -1306,6 +1308,40 @@ void TestQgsCoordinateReferenceSystem::readWriteXml()
   QVERIFY( myCrs21c.toWkt( QgsCoordinateReferenceSystem::WKT2_2019 ).contains( QLatin1String( R"""(PARAMETER["Easting at projection centre",750,)""" ) ) );
   QVERIFY( myCrs21c.toWkt( QgsCoordinateReferenceSystem::WKT2_2019 ).contains( QLatin1String( R"""(PARAMETER["Northing at projection centre",250,)""" ) ) );
   QCOMPARE( myCrs21c.description(), QStringLiteral( "a new CRS C" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::readWriteXmlNativeFormatWkt()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=ortho +lat_0=-11 +lon_0=34 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs +type=crs" ) );
+  crs.setNativeFormat( Qgis::CrsDefinitionFormat::Wkt );
+
+  QDomDocument document( QStringLiteral( "test" ) );
+  QDomElement node = document.createElement( QStringLiteral( "crs" ) );
+  document.appendChild( node );
+
+  QVERIFY( crs.writeXml( node, document ) );
+
+  QgsCoordinateReferenceSystem crs2;
+  QVERIFY( crs2.readXml( node ) );
+  QVERIFY( crs == crs2 );
+  QCOMPARE( crs2.nativeFormat(), Qgis::CrsDefinitionFormat::Wkt );
+}
+
+void TestQgsCoordinateReferenceSystem::readWriteXmlNativeFormatProj()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=ortho +lat_0=-11.6 +lon_0=34 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs +type=crs" ) );
+  crs.setNativeFormat( Qgis::CrsDefinitionFormat::Proj );
+
+  QDomDocument document( QStringLiteral( "test" ) );
+  QDomElement node = document.createElement( QStringLiteral( "crs" ) );
+  document.appendChild( node );
+
+  QVERIFY( crs.writeXml( node, document ) );
+
+  QgsCoordinateReferenceSystem crs2;
+  QVERIFY( crs2.readXml( node ) );
+  QVERIFY( crs == crs2 );
+  QCOMPARE( crs2.nativeFormat(), Qgis::CrsDefinitionFormat::Proj );
 }
 
 void TestQgsCoordinateReferenceSystem::setCustomSrsValidation()

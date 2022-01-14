@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgscustomprojectiondialog.cpp
+                          qgscustomprojectionoptions.cpp
 
                              -------------------
     begin                : 2005
@@ -16,43 +16,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscustomprojectiondialog.h"
-
-//qgis includes
-#include "qgis.h" //<--magick numbers
-#include "qgisapp.h" //<--theme icons
+#include "qgscustomprojectionoptions.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
 #include "qgscoordinatereferencesystemregistry.h"
 
-//qt includes
-#include <QFileInfo>
 #include <QMessageBox>
 #include <QLocale>
 #include <QRegularExpression>
+#include <QFileInfo>
 
-QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WindowFlags fl )
-  : QDialog( parent, fl )
+QgsCustomProjectionOptionsWidget::QgsCustomProjectionOptionsWidget( QWidget *parent )
+  : QgsOptionsPageWidget( parent )
 {
   setupUi( this );
-  QgsGui::enableAutoGeometryRestore( this );
+  setObjectName( QStringLiteral( "QgsCustomProjectionOptionsWidget" ) );
 
-  connect( pbnAdd, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnAdd_clicked );
-  connect( pbnRemove, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnRemove_clicked );
-  connect( leNameList, &QTreeWidget::currentItemChanged, this, &QgsCustomProjectionDialog::leNameList_currentItemChanged );
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsCustomProjectionDialog::buttonBox_accepted );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsCustomProjectionDialog::showHelp );
+  connect( pbnAdd, &QPushButton::clicked, this, &QgsCustomProjectionOptionsWidget::pbnAdd_clicked );
+  connect( pbnRemove, &QPushButton::clicked, this, &QgsCustomProjectionOptionsWidget::pbnRemove_clicked );
+  connect( leNameList, &QTreeWidget::currentItemChanged, this, &QgsCustomProjectionOptionsWidget::leNameList_currentItemChanged );
 
   leNameList->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
-  QFileInfo fileInfo;
-  fileInfo.setFile( QgsApplication::qgisSettingsDirPath() );
-  if ( !fileInfo.exists() )
+  if ( !QFileInfo::exists( QgsApplication::qgisSettingsDirPath() ) )
   {
     QgsDebugMsg( QStringLiteral( "The qgis.db does not exist" ) );
   }
@@ -72,7 +59,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 
   QgsCoordinateReferenceSystem crs;
   Qgis::CrsDefinitionFormat format;
-  if ( mDefinitions[0].wkt.isEmpty() )
+  if ( mDefinitions.at( 0 ).wkt.isEmpty() )
   {
     crs.createFromProj( mDefinitions[0].proj );
     format = Qgis::CrsDefinitionFormat::Proj;
@@ -90,7 +77,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 
   leNameList->hideColumn( QgisCrsIdColumn );
 
-  connect( leName, &QLineEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
+  connect( leName, &QLineEdit::textChanged, this, &QgsCustomProjectionOptionsWidget::updateListFromCurrentItem );
   connect( mCrsDefinitionWidget, &QgsCrsDefinitionWidget::crsChanged, this, [ = ]
   {
     if ( !mBlockUpdates )
@@ -98,7 +85,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   } );
 }
 
-void QgsCustomProjectionDialog::populateList()
+void QgsCustomProjectionOptionsWidget::populateList()
 {
   const QList< QgsCoordinateReferenceSystemRegistry::UserCrsDetails > userCrsList = QgsApplication::coordinateReferenceSystemRegistry()->userCrsList();
 
@@ -136,7 +123,7 @@ void QgsCustomProjectionDialog::populateList()
   }
 }
 
-bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &existingId, bool newEntry, Qgis::CrsDefinitionFormat format )
+bool QgsCustomProjectionOptionsWidget::saveCrs( const QgsCoordinateReferenceSystem &crs, const QString &name, const QString &existingId, bool newEntry, Qgis::CrsDefinitionFormat format )
 {
   QString id = existingId;
   if ( newEntry )
@@ -162,7 +149,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
   return true;
 }
 
-void QgsCustomProjectionDialog::pbnAdd_clicked()
+void QgsCustomProjectionOptionsWidget::pbnAdd_clicked()
 {
   QString name = tr( "new CRS" );
 
@@ -183,7 +170,7 @@ void QgsCustomProjectionDialog::pbnAdd_clicked()
   mCrsDefinitionWidget->setFormat( Qgis::CrsDefinitionFormat::Wkt );
 }
 
-void QgsCustomProjectionDialog::pbnRemove_clicked()
+void QgsCustomProjectionOptionsWidget::pbnRemove_clicked()
 {
   const QModelIndexList selection = leNameList->selectionModel()->selectedRows();
   if ( selection.empty() )
@@ -218,7 +205,7 @@ void QgsCustomProjectionDialog::pbnRemove_clicked()
   }
 }
 
-void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
+void QgsCustomProjectionOptionsWidget::leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
   //Store the modifications made to the current element before moving on
   int currentIndex, previousIndex;
@@ -252,7 +239,7 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
 
     mBlockUpdates++;
     mCrsDefinitionWidget->setDefinitionString( !mDefinitions[currentIndex].wkt.isEmpty() ? current->data( 0, FormattedWktRole ).toString() : mDefinitions[currentIndex].proj );
-    mCrsDefinitionWidget->setFormat( mDefinitions[currentIndex].wkt.isEmpty() ? Qgis::CrsDefinitionFormat::Proj : Qgis::CrsDefinitionFormat::Wkt );
+    mCrsDefinitionWidget->setFormat( mDefinitions.at( currentIndex ).wkt.isEmpty() ? Qgis::CrsDefinitionFormat::Proj : Qgis::CrsDefinitionFormat::Wkt );
     mBlockUpdates--;
   }
   else
@@ -267,11 +254,9 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
   }
 }
 
-void QgsCustomProjectionDialog::buttonBox_accepted()
+bool QgsCustomProjectionOptionsWidget::isValid()
 {
   updateListFromCurrentItem();
-
-  QgsDebugMsgLevel( QStringLiteral( "We save the modified CRS." ), 4 );
 
   //Check if all CRS are valid:
   QgsCoordinateReferenceSystem crs;
@@ -296,7 +281,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
 
       QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
                             tr( "The definition of '%1' is not valid." ).arg( def.name ) );
-      return;
+      return false;
     }
     else if ( !crs.authid().isEmpty() && !crs.authid().startsWith( QLatin1String( "USER" ), Qt::CaseInsensitive ) )
     {
@@ -334,12 +319,19 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
                                 tr( "Cannot save '%1' — the definition is equivalent to %2." ).arg( def.name, crs.authid() ) );
         }
       }
-      return;
+      return false;
     }
   }
+  return true;
+}
+
+void QgsCustomProjectionOptionsWidget::apply()
+{
+  // note that isValid() will have already been called prior to this, so we don't need to re-validate!
 
   //Modify the CRS changed:
   bool saveSuccess = true;
+  QgsCoordinateReferenceSystem crs;
   for ( const Definition &def : std::as_const( mDefinitions ) )
   {
     if ( !def.wkt.isEmpty() )
@@ -373,16 +365,12 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     saveSuccess &= QgsApplication::coordinateReferenceSystemRegistry()->removeUserCrs( mDeletedCRSs[i].toLong() );
     if ( ! saveSuccess )
     {
-      QgsDebugMsg( QStringLiteral( "Error deleting CRS for '%1'" ).arg( mDefinitions[i].name ) );
+      QgsDebugMsg( QStringLiteral( "Error deleting CRS for '%1'" ).arg( mDefinitions.at( i ).name ) );
     }
-  }
-  if ( saveSuccess )
-  {
-    accept();
   }
 }
 
-void QgsCustomProjectionDialog::updateListFromCurrentItem()
+void QgsCustomProjectionOptionsWidget::updateListFromCurrentItem()
 {
   QTreeWidgetItem *item = leNameList->currentItem();
   if ( !item )
@@ -411,17 +399,42 @@ void QgsCustomProjectionDialog::updateListFromCurrentItem()
   item->setData( 0, FormattedWktRole, mCrsDefinitionWidget->definitionString() );
 }
 
-void QgsCustomProjectionDialog::showHelp()
-{
-  QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
-}
-
-QString QgsCustomProjectionDialog::multiLineWktToSingleLine( const QString &wkt )
+QString QgsCustomProjectionOptionsWidget::multiLineWktToSingleLine( const QString &wkt )
 {
   QString res = wkt;
   QRegularExpression re( QStringLiteral( "\\s*\\n\\s*" ) );
   re.setPatternOptions( QRegularExpression::MultilineOption );
   res.replace( re, QString() );
   return res;
+}
+
+QString QgsCustomProjectionOptionsWidget::helpKey() const
+{
+  return QStringLiteral( "working_with_projections/working_with_projections.html" );
+}
+
+
+//
+// QgsCustomProjectionOptionsFactory
+//
+QgsCustomProjectionOptionsFactory::QgsCustomProjectionOptionsFactory()
+  : QgsOptionsWidgetFactory( tr( "User Defined CRS" ), QIcon() )
+{
+
+}
+
+QIcon QgsCustomProjectionOptionsFactory::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mActionCustomProjection.svg" ) );
+}
+
+QgsOptionsPageWidget *QgsCustomProjectionOptionsFactory::createWidget( QWidget *parent ) const
+{
+  return new QgsCustomProjectionOptionsWidget( parent );
+}
+
+QStringList QgsCustomProjectionOptionsFactory::path() const
+{
+  return {QStringLiteral( "crs_and_transforms" ) };
 }
 

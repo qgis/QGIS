@@ -47,7 +47,7 @@ class CORE_EXPORT QgsMapViewsManager : public QObject
      * Constructor for QgsMapViewsManager. The project will become the parent object for this
      * manager.
      */
-    explicit QgsMapViewsManager( QgsProject *project );
+    explicit QgsMapViewsManager( QgsProject *project SIP_TRANSFERTHIS );
 
     /**
      * Reads the manager's state from a DOM element, restoring all views
@@ -99,11 +99,19 @@ class CORE_EXPORT QgsMapViewsManager : public QObject
     //! Renames the 3D view named \a oldTitle to \a newTitle
     void rename3DView( const QString &oldTitle, const QString &newTitle );
 
-    //! Sets whether the 3D view named \a name will be initially visible when the project is opened
-    void set3DViewInitiallyVisible( const QString &name, bool visible );
+    /**
+     * Sets whether the 3D view named \a name will be initially visible when the project is opened.
+     *
+     * \note Not available in Python bindings
+     */
+    void set3DViewInitiallyVisible( const QString &name, bool visible ) SIP_SKIP;
 
-    //! Returns whether the 3D view named \a name will is opened
-    bool is3DViewOpen( const QString &name );
+    /**
+     * Returns whether the 3D view named \a name will is opened.
+     *
+     * \note Not available in Python bindings.
+     */
+    bool is3DViewOpen( const QString &name ) SIP_SKIP;
 
   signals:
     //! Emitted when the views list has changed (whenever a view was removed, added, renamed..)

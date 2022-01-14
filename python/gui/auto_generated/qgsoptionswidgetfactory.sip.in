@@ -39,7 +39,16 @@ help will be retrieved.
 %End
 
 
+    virtual bool isValid();
+%Docstring
+Validates the current state of the widget.
 
+Subclasses should return ``True`` if the widget state is currently valid and acceptable to :py:func:`~QgsOptionsPageWidget.apply`.
+
+The default implementation returns ``True``.
+
+.. versionadded:: 3.24
+%End
 
   public slots:
 
