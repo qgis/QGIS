@@ -27,7 +27,7 @@ accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.get3DViewsMan
 %End
   public:
 
-    explicit QgsMapViewsManager( QgsProject *project );
+    explicit QgsMapViewsManager( QgsProject *project /TransferThis/ );
 %Docstring
 Constructor for QgsMapViewsManager. The project will become the parent object for this
 manager.
