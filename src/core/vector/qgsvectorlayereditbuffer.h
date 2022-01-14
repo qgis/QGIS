@@ -344,14 +344,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     bool commitChangesCheckGeometryTypeCompatibility( QStringList &commitErrors );
 
     /**
-     * Update geometries
-     * \param geometryChanged is set if one or more geometries where changed
-     * \param commitErrors will be extended in case of error
-     * \returns TRUE on success
-     */
-    bool commitChangesUpdateGeometry( bool &geometryChanged, QStringList &commitErrors );
-
-    /**
      * Delete attributes
      * \param attributesDeleted is set if one or more attributes where deleted
      * \param commitErrors will be extended in case of error

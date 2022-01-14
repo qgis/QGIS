@@ -261,14 +261,6 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
 
       if ( attributesChanged && transactionLayers.contains( ( *orderedLayersIterator ) ) )
         modifiedLayersOnProviderSide.insert( ( *orderedLayersIterator ) );
-
-      bool geometryChanged;
-      success = ( *orderedLayersIterator )->editBuffer()->commitChangesUpdateGeometry( geometryChanged, commitErrors );
-      if ( ! success )
-        break;
-
-      if ( geometryChanged && transactionLayers.contains( ( *orderedLayersIterator ) ) )
-        modifiedLayersOnProviderSide.insert( ( *orderedLayersIterator ) );
     }
   }
 
