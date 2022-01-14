@@ -38,7 +38,7 @@
 QgsMapToolCaptureAnnotationItem::QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolCapture( canvas, cadDockWidget, mode )
 {
-
+  mToolName = tr( "Annotation tool" );
 }
 
 QgsCreateAnnotationItemMapToolHandler *QgsMapToolCaptureAnnotationItem::handler()
@@ -63,9 +63,17 @@ QgsMapToolCapture::Capabilities QgsMapToolCaptureAnnotationItem::capabilities() 
   return SupportsCurves;
 }
 
-bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique ) const
+bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique technique ) const
 {
-  return true;
+  switch ( technique )
+  {
+    case CaptureTechnique::StraightSegments:
+    case CaptureTechnique::CircularString:
+    case CaptureTechnique::Streaming:
+      return true;
+    case CaptureTechnique::Shape:
+      return false;
+  }
 }
 
 
