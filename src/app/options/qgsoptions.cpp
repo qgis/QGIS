@@ -110,6 +110,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "System" ), QCoreApplication::translate( "QgsOptionsBase", "System" ), QStringLiteral( "propertyicons/system.svg" ) ) );
 
   QStandardItem *crsGroup = new QStandardItem( QCoreApplication::translate( "QgsOptionsBase", "CRS and Transforms" ) );
+  crsGroup->setData( QStringLiteral( "crs_and_transforms" ) );
   crsGroup->setToolTip( tr( "CRS and Transforms" ) );
   crsGroup->setSelectable( false );
   crsGroup->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "CRS" ), QCoreApplication::translate( "QgsOptionsBase", "CRS" ), QStringLiteral( "propertyicons/CRS.svg" ) ) );
