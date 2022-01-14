@@ -21,11 +21,11 @@
 
 #include "qgis_gui.h"
 #include "qgsabstractgeometry.h"
+#include "qgsmaptoolcapture.h"
 
 #include <QString>
 #include <QIcon>
 
-class QgsMapToolCapture;
 class QgsMapMouseEvent;
 class QgsVectorLayer;
 class QgsGeometryRubberBand;
@@ -70,10 +70,10 @@ class GUI_EXPORT QgsMapToolShapeAbstract
      * Called for a mouse release event
      * Must return true if the digitization has ended and the geometry is correctly set
      */
-    virtual bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) = 0;
+    virtual bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) = 0;
 
     //! Called for a mouse move event
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) = 0;
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) = 0;
 
     /**
      * Eventually filters a key press event
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     virtual void keyReleaseEvent( QKeyEvent *e );
 
     //! Activates the map tool with the last captured map point
-    virtual void activate( const QgsPoint &lastCapturedMapPoint ) {Q_UNUSED( lastCapturedMapPoint )}
+    virtual void activate( QgsMapToolCapture::CaptureMode mode, const QgsPoint &lastCapturedMapPoint ) {Q_UNUSED( mode ); Q_UNUSED( lastCapturedMapPoint )}
 
     //! Deactivates the map tool
     virtual void deactivate() {clean();}

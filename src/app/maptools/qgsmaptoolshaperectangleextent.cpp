@@ -52,7 +52,7 @@ QgsMapToolShapeAbstract *QgsMapToolShapeRectangleExtentMetadata::factory( QgsMap
   return new QgsMapToolShapeRectangleExtent( parentTool );
 }
 
-bool QgsMapToolShapeRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+bool QgsMapToolShapeRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
   const QgsPoint point = mParentTool->mapPoint( *e );
 
@@ -63,7 +63,8 @@ bool QgsMapToolShapeRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e,
 
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true );
+      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
   }
@@ -77,9 +78,9 @@ bool QgsMapToolShapeRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e,
   return false;
 }
 
-void QgsMapToolShapeRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+void QgsMapToolShapeRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
+  Q_UNUSED( mode )
 
   const QgsPoint point = mParentTool->mapPoint( *e );
 

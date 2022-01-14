@@ -57,7 +57,7 @@ QgsMapToolShapeEllipseExtent::QgsMapToolShapeEllipseExtent( QgsMapToolCapture *p
 {
 }
 
-bool QgsMapToolShapeEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+bool QgsMapToolShapeEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
   const QgsPoint point = mParentTool->mapPoint( *e );
 
@@ -68,7 +68,8 @@ bool QgsMapToolShapeEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e, c
 
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true );
+      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
   }
@@ -81,9 +82,9 @@ bool QgsMapToolShapeEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e, c
   return false;
 }
 
-void QgsMapToolShapeEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+void QgsMapToolShapeEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
+  Q_UNUSED( mode )
 
   const QgsPoint point = mParentTool->mapPoint( *e );
 

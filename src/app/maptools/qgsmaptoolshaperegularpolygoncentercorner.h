@@ -47,8 +47,8 @@ class APP_EXPORT QgsMapToolShapeRegularPolygonCenterCorner: public QgsMapToolSha
     {}
     ~QgsMapToolShapeRegularPolygonCenterCorner() override;
 
-    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
-    void cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
+    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
 };
 
 #endif // QGSMAPTOOLSHAPEREGULARPOLYGONCENTERCORNER_H

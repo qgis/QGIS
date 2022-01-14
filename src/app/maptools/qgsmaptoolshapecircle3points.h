@@ -44,8 +44,8 @@ class APP_EXPORT QgsMapToolShapeCircle3Points: public QgsMapToolShapeCircleAbstr
   public:
     QgsMapToolShapeCircle3Points( QgsMapToolCapture *parentTool ) : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle3PointsMetadata::TOOL_ID, parentTool ) {}
 
-    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
-    void cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
+    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
 };
 
 #endif // QGSMAPTOOLSHAPECIRCLE3POINTS_H

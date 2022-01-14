@@ -32,7 +32,7 @@ class APP_EXPORT QgsMapToolShapeCircularStringAbstract: public QgsMapToolShapeAb
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;
 
-    void activate( const QgsPoint &lastCapturedMapPoint ) override;
+    void activate( QgsMapToolCapture::CaptureMode mode, const QgsPoint &lastCapturedMapPoint ) override;
 
     void clean() override;
 

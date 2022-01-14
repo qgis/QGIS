@@ -80,7 +80,7 @@ QgsMapToolShapeRectangle3Points::QgsMapToolShapeRectangle3Points( const QString 
 }
 
 
-bool QgsMapToolShapeRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+bool QgsMapToolShapeRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
   QgsPoint point = mParentTool->mapPoint( *e );
 
@@ -99,15 +99,17 @@ bool QgsMapToolShapeRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e
       mPoints.append( point );
     }
 
+    QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true );
+      mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
     if ( mPoints.size() == 3 )
     {
       delete mTempRubberBand;
-      mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true ); // recreate rubberband for polygon
+      mTempRubberBand = mParentTool->createGeometryRubberBand( type, true ); // recreate rubberband for polygon
     }
   }
   else if ( e->button() == Qt::RightButton )
@@ -119,9 +121,9 @@ bool QgsMapToolShapeRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e
   return false;
 }
 
-void QgsMapToolShapeRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+void QgsMapToolShapeRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
+  Q_UNUSED( mode )
 
   QgsPoint point = mParentTool->mapPoint( *e );
 

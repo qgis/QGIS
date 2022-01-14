@@ -97,16 +97,15 @@ void QgsMapToolShapeCircularStringAbstract::keyReleaseEvent( QKeyEvent *e )
   }
 }
 
-void QgsMapToolShapeCircularStringAbstract::activate( const QgsPoint &lastCapturedMapPoint )
+void QgsMapToolShapeCircularStringAbstract::activate( QgsMapToolCapture::CaptureMode mode, const QgsPoint &lastCapturedMapPoint )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mParentTool->layer() );
-
   if ( mPoints.isEmpty() && !lastCapturedMapPoint.isEmpty() )
   {
     mPoints.append( lastCapturedMapPoint );
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = mParentTool->createGeometryRubberBand( vlayer->geometryType(), true );
+      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
     QgsCircularString *c = new QgsCircularString();

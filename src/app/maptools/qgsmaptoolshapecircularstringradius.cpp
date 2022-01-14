@@ -62,9 +62,9 @@ void QgsMapToolShapeCircularStringRadius::deactivate()
   clean();
 }
 
-bool QgsMapToolShapeCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+bool QgsMapToolShapeCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
+  mCaptureMode = mode;
 
   const QgsPoint point = mParentTool->mapPoint( *e );
 
@@ -115,9 +115,9 @@ bool QgsMapToolShapeCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEven
   return false;
 }
 
-void QgsMapToolShapeCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+void QgsMapToolShapeCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
+  mCaptureMode = mode;
 
   if ( !mPoints.isEmpty() )
   {
@@ -134,8 +134,8 @@ void QgsMapToolShapeCircularStringRadius::recalculateRubberBand()
     const int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
     cString->setPoints( mPoints.mid( 0, rubberBandSize ) );
     delete mRubberBand;
-    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mParentTool->layer() );
-    mRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType() );
+    QgsWkbTypes::GeometryType type = mCaptureMode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+    mRubberBand = mParentTool->createGeometryRubberBand( type );
     mRubberBand->setGeometry( cString );
     mRubberBand->show();
   }
@@ -166,8 +166,8 @@ void QgsMapToolShapeCircularStringRadius::recalculateTempRubberBand( const QgsPo
   QgsCircularString *cString = new QgsCircularString();
   cString->setPoints( rubberBandPoints );
   delete mTempRubberBand;
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mParentTool->layer() );
-  mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true );
+  QgsWkbTypes::GeometryType type = mCaptureMode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+  mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
   mTempRubberBand->setGeometry( cString );
   mTempRubberBand->show();
 }

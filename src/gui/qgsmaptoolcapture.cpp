@@ -116,7 +116,7 @@ void QgsMapToolCapture::activate()
   QgsMapToolAdvancedDigitizing::activate();
 
   if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
-    mCurrentShapeMapTool->activate( mCaptureLastPoint );
+    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
 }
 
 void QgsMapToolCapture::deactivate()
@@ -416,7 +416,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( CaptureTechnique technique )
   if ( technique == CaptureTechnique::Shape && mCurrentShapeMapTool && isActive() )
   {
     clean();
-    mCurrentShapeMapTool->activate( mCaptureLastPoint );
+    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
   }
 }
 
@@ -436,7 +436,7 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
   if ( mCurrentCaptureTechnique == CaptureTechnique::Shape && isActive() )
   {
     clean();
-    mCurrentShapeMapTool->activate( mCaptureLastPoint );
+    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
   }
 }
 
@@ -465,7 +465,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         mTempRubberBand->setRubberBandGeometryType( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
       }
 
-      mCurrentShapeMapTool->cadCanvasMoveEvent( e, vlayer );
+      mCurrentShapeMapTool->cadCanvasMoveEvent( e, mCaptureMode );
       return;
     }
   }
@@ -1292,7 +1292,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           mTempRubberBand->setRubberBandGeometryType( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
         }
 
-        digitizingFinished = mCurrentShapeMapTool->cadCanvasReleaseEvent( e, vlayer );
+        digitizingFinished = mCurrentShapeMapTool->cadCanvasReleaseEvent( e, mCaptureMode );
         if ( digitizingFinished )
           mCurrentShapeMapTool->clean();
       }

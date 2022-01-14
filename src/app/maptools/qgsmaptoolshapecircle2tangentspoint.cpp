@@ -64,9 +64,9 @@ QgsMapToolShapeCircle2TangentsPoint::~QgsMapToolShapeCircle2TangentsPoint()
   deleteRadiusSpinBox();
 }
 
-bool QgsMapToolShapeCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+bool QgsMapToolShapeCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
+  Q_UNUSED( mode )
 
   EdgesOnlyFilter filter;
   const QgsPointLocator::Match match = mParentTool->canvas()->snappingUtils()->snapToMap( mParentTool->mapPoint( *e ), &filter );
@@ -109,7 +109,7 @@ bool QgsMapToolShapeCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEven
   return false;
 }
 
-void QgsMapToolShapeCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+void QgsMapToolShapeCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
   const QgsPoint mapPoint( e->mapPoint() );
 
@@ -120,7 +120,8 @@ void QgsMapToolShapeCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *
   {
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true );
+      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
     else

@@ -51,7 +51,7 @@ QgsMapToolShapeAbstract *QgsMapToolShapeEllipseCenter2PointsMetadata::factory( Q
   return new QgsMapToolShapeEllipseCenter2Points( parentTool );
 }
 
-bool QgsMapToolShapeEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+bool QgsMapToolShapeEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
   const QgsPoint point = mParentTool->mapPoint( *e );
   if ( e->button() == Qt::LeftButton )
@@ -62,7 +62,8 @@ bool QgsMapToolShapeEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEven
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true );
+      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
   }
@@ -75,9 +76,9 @@ bool QgsMapToolShapeEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEven
   return false;
 }
 
-void QgsMapToolShapeEllipseCenter2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+void QgsMapToolShapeEllipseCenter2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
+  Q_UNUSED( mode )
 
   const QgsPoint point = mParentTool->mapPoint( *e );
 

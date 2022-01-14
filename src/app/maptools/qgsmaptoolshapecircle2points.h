@@ -45,8 +45,8 @@ class APP_EXPORT QgsMapToolShapeCircle2Points : public QgsMapToolShapeCircleAbst
       : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle2PointsMetadata::TOOL_ID, parentTool )
     {}
 
-    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
-    void cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
+    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
 };
 
 #endif // QGSMAPTOOLSHAPECIRCLE2POINTS_H

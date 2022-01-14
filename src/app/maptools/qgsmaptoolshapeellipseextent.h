@@ -44,8 +44,8 @@ class APP_EXPORT QgsMapToolShapeEllipseExtent: public QgsMapToolShapeEllipseAbst
   public:
     QgsMapToolShapeEllipseExtent( QgsMapToolCapture *parentTool );
 
-    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
-    void cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
+    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
 };
 
 #endif // QGSMAPTOOLSHAPEELLIPSEEXTENT_H

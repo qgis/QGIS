@@ -50,8 +50,8 @@ class APP_EXPORT QgsMapToolShapeCircularStringRadius: public QgsMapToolShapeCirc
       , mRadius( 0.0 )
     {}
 
-    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
-    void cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
+    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
     void deactivate() override;
 
   private slots:
@@ -61,6 +61,7 @@ class APP_EXPORT QgsMapToolShapeCircularStringRadius: public QgsMapToolShapeCirc
     QgsPoint mTemporaryEndPoint;
     double mRadius;
     QDoubleSpinBox *mRadiusSpinBox = nullptr;
+    QgsMapToolCapture::CaptureMode mCaptureMode = QgsMapToolCapture::CaptureMode::CaptureLine;
 
     //! recalculate the rubberband
     void recalculateRubberBand();

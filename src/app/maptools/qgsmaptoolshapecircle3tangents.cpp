@@ -68,9 +68,8 @@ static QgsPoint getFirstPointOnParallels( const QgsPoint p1_line1, const QgsPoin
   return QgsPoint();
 }
 
-bool QgsMapToolShapeCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+bool QgsMapToolShapeCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
 
   const QgsPoint point = mParentTool->mapPoint( *e );
 
@@ -115,7 +114,7 @@ bool QgsMapToolShapeCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e,
   return false;
 }
 
-void QgsMapToolShapeCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+void QgsMapToolShapeCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
   const QgsPoint point = mParentTool->mapPoint( *e );
 
@@ -124,7 +123,8 @@ void QgsMapToolShapeCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e, co
 
   if ( !mTempRubberBand )
   {
-    mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true );
+    QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+    mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
     mTempRubberBand->show();
   }
   else

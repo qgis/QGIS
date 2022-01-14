@@ -49,8 +49,9 @@ QgsMapToolShapeAbstract *QgsMapToolShapeCircle2PointsMetadata::factory( QgsMapTo
 }
 
 
-bool QgsMapToolShapeCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+bool QgsMapToolShapeCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
+
   if ( e->button() == Qt::LeftButton )
   {
     if ( mPoints.isEmpty() )
@@ -58,7 +59,8 @@ bool QgsMapToolShapeCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, c
 
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true );
+      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
   }
@@ -72,9 +74,8 @@ bool QgsMapToolShapeCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, c
   return false;
 }
 
-void QgsMapToolShapeCircle2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+void QgsMapToolShapeCircle2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
 
   if ( !mTempRubberBand )
     return;

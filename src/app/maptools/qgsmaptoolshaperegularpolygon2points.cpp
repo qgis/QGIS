@@ -58,7 +58,7 @@ QgsMapToolShapeRegularPolygon2Points::~QgsMapToolShapeRegularPolygon2Points()
   }
 }
 
-bool QgsMapToolShapeRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+bool QgsMapToolShapeRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
   const QgsPoint point = mParentTool->mapPoint( *e );
 
@@ -69,7 +69,8 @@ bool QgsMapToolShapeRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEve
 
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true );
+      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
 
       createNumberSidesSpinBox();
@@ -85,9 +86,9 @@ bool QgsMapToolShapeRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEve
   return false;
 }
 
-void QgsMapToolShapeRegularPolygon2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+void QgsMapToolShapeRegularPolygon2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
+  Q_UNUSED( mode )
 
   const QgsPoint point =  mParentTool->mapPoint( *e );
 

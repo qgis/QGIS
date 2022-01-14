@@ -47,8 +47,8 @@ class APP_EXPORT QgsMapToolShapeRegularPolygonCenterPoint: public QgsMapToolShap
     {}
     ~QgsMapToolShapeRegularPolygonCenterPoint() override;
 
-    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
-    void cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer ) override;
+    bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
 };
 
 #endif // QGSMAPTOOLSHAPEREGULARPOLYGONCENTERPOINT_H

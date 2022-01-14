@@ -50,7 +50,7 @@ QgsMapToolShapeAbstract *QgsMapToolShapeCircle3PointsMetadata::factory( QgsMapTo
   return new QgsMapToolShapeCircle3Points( parentTool );
 }
 
-bool QgsMapToolShapeCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+bool QgsMapToolShapeCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
   if ( e->button() == Qt::LeftButton )
   {
@@ -58,7 +58,8 @@ bool QgsMapToolShapeCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, c
       mPoints.append( mParentTool->mapPoint( *e ) );
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      mTempRubberBand = mParentTool->createGeometryRubberBand( layer->geometryType(), true );
+      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
   }
@@ -72,9 +73,9 @@ bool QgsMapToolShapeCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, c
   return false;
 }
 
-void QgsMapToolShapeCircle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, const QgsVectorLayer *layer )
+void QgsMapToolShapeCircle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-  Q_UNUSED( layer )
+  Q_UNUSED( mode )
 
   if ( !mTempRubberBand )
     return;
