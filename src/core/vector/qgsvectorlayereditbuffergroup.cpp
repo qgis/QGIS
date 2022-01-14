@@ -294,7 +294,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
   // Otherwise rollback
   if ( !success )
   {
-    // Append additional informations about layer which can't be rollbacked
+    // Append additional information about layer which can't be rollbacked
     if ( ! modifiedLayersOnProviderSide.isEmpty() )
     {
       if ( modifiedLayersOnProviderSide.size() == 1 )

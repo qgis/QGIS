@@ -338,7 +338,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /**
      * Check geometry of added features for compatibility with data provider
-     * \param Error descriptions are appended to commitErrors
+     * \param commitErrors will be extended in case of error
      * \returns TRUE if compatible
      */
     bool commitChangesCheckGeometryTypeCompatibility( QStringList &commitErrors );
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /**
      * Update geometries
      * \param geometryChanged is set if one or more geometries where changed
-     * \param Error descriptions are appended to commitErrors
+     * \param commitErrors will be extended in case of error
      * \returns TRUE on success
      */
     bool commitChangesUpdateGeometry( bool &geometryChanged, QStringList &commitErrors );
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /**
      * Delete attributes
      * \param attributesDeleted is set if one or more attributes where deleted
-     * \param Error descriptions are appended to commitErrors
+     * \param commitErrors will be extended in case of error
      * \returns TRUE on success
      */
     bool commitChangesDeleteAttributes( bool &attributesDeleted, QStringList &commitErrors );
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /**
      * Rename attributes
      * \param attributesRenamed is set if one or more attributes where renamed
-     * \param Error descriptions are appended to commitErrors
+     * \param commitErrors will be extended in case of error
      * \returns TRUE on success
      */
     bool commitChangesRenameAttributes( bool &attributesRenamed, QStringList &commitErrors );
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /**
      * Add new attributes
      * \param attributesAdded is set if one or more attributes where added
-     * \param Error descriptions are appended to commitErrors
+     * \param commitErrors will be extended in case of error
      * \returns TRUE on success
      */
     bool commitChangesAddAttributes( bool &attributesAdded, QStringList &commitErrors );
@@ -378,7 +378,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /**
      * Check that delete/rename/add attributes operations where successful
      * \param oldFields are the fields before delete/rename/add operations
-     * \param Error descriptions are appended to commitErrors
+     * \param commitErrors will be extended in case of error
      * \returns TRUE on success
      */
     bool commitChangesCheckAttributesModifications( const QgsFields oldFields, QStringList &commitErrors );
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /**
      * Change attributes
      * \param attributesChanged is set if one or more attributes where changed
-     * \param Error descriptions are appended to commitErrors
+     * \param commitErrors will be extended in case of error
      * \returns TRUE on success
      */
     bool commitChangesChangeAttributes( bool &attributesChanged, QStringList &commitErrors );
@@ -394,7 +394,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /**
      * Delete features
      * \param featuresDeleted is set if one or more features where deleted
-     * \param Error descriptions are appended to commitErrors
+     * \param commitErrors will be extended in case of error
      * \returns TRUE on success
      */
     bool commitChangesDeleteFeatures( bool &featuresDeleted, QStringList &commitErrors );
@@ -402,7 +402,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /**
      * Add new features
      * \param featuresAdded is set if one or more features where deleted
-     * \param Error descriptions are appended to commitErrors
+     * \param commitErrors will be extended in case of error
      * \returns TRUE on success
      */
     bool commitChangesAddFeatures( bool &featuresAdded, QStringList &commitErrors );
