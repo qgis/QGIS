@@ -63,7 +63,7 @@ QString QgsServerRequest::header( const QgsServerRequest::RequestHeader &headerE
 {
   const QString headerKey = QString( qgsEnumValueToKey<QgsServerRequest::RequestHeader>( headerEnum ) );
   const QString headerName = QgsStringUtils::capitalize(
-                               QString( headerKey ).replace( QLatin1Char( '_' ), QLatin1Char( ' ' ) ), Qgis::Capitalization::TitleCase
+                               QString( headerKey ).replace( QLatin1Char( '_' ), QLatin1Char( ' ' ) ), QgsStringUtils::Capitalization::TitleCase
                              ).replace( QLatin1Char( ' ' ), QLatin1Char( '-' ) );
   return header( headerName );
 }
