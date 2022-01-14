@@ -527,6 +527,7 @@ void MDAL::DriverCF::setProjection( MDAL::Mesh *mesh )
       }
       else
       {
+        wkt = MDAL::replace( wkt, "\n", "" );
         mesh->setSourceCrsFromWKT( wkt );
       }
     }
