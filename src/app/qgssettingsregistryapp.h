@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
 
+
 class APP_EXPORT QgsSettingsRegistryApp : public QgsSettingsRegistry
 {
   public:

@@ -38,6 +38,7 @@ class QgsCurvePolygon;
 class QgsMapToolShapeAbstract;
 class QgsMapToolShapeMetadata;
 
+
 /**
  * \ingroup gui
  * QgsMapToolCapture is a base class capable of capturing point, lines and polygons.
