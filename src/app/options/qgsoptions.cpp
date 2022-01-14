@@ -114,7 +114,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   crsGroup->setToolTip( tr( "CRS and Transforms" ) );
   crsGroup->setSelectable( false );
   crsGroup->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "CRS Handling" ), QCoreApplication::translate( "QgsOptionsBase", "General CRS handling" ), QStringLiteral( "propertyicons/CRS.svg" ) ) );
-  crsGroup->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Transformations" ), QCoreApplication::translate( "QgsOptionsBase", "Coordinate transformations and operations" ), QStringLiteral( "transformation.svg" ) ) );
+  crsGroup->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Coordinate Transforms" ), QCoreApplication::translate( "QgsOptionsBase", "Coordinate transformations and operations" ), QStringLiteral( "transformation.svg" ) ) );
   mTreeModel->appendRow( crsGroup );
 
   QStandardItem *dataSources = createItem( QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), QCoreApplication::translate( "QgsOptionsBase", "Data sources" ), QStringLiteral( "propertyicons/attributes.svg" ) );
