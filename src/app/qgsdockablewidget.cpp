@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmapcanvasdockwidget.cpp
+  qgsdockablewidget.cpp
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgs3dmapcanvasdockwidget.h"
+#include "qgsdockablewidget.h"
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvaswidget.h"
@@ -21,12 +21,10 @@
 
 #include <QWidget>
 
-Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
+QgsDockableWidget::QgsDockableWidget( QWidget *parent )
   : QWidget( parent )
 {
   this->setAttribute( Qt::WA_DeleteOnClose );
-
-  mCanvasWidget = new Qgs3DMapCanvasWidget( this );
 
   mDock = new QgsDockWidget( this );
   mDock->setAttribute( Qt::WA_DeleteOnClose );
@@ -52,88 +50,69 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
     this->close();
   } );
 
-  connect( mCanvasWidget, &Qgs3DMapCanvasWidget::toggleDockMode, this, &Qgs3DMapCanvasDockWidget::toggleDockMode );
-
-  mIsDocked = false;
-  switchToDockMode();
+  toggleDockMode( true );
 }
 
-QWidget *Qgs3DMapCanvasDockWidget::widget()
+void QgsDockableWidget::setWidget( QWidget *widget )
 {
-  return mCanvasWidget;
+  mWidget = widget;
+  mWidget->setParent( this );
+  toggleDockMode( mIsDocked );
 }
 
-bool Qgs3DMapCanvasDockWidget::isDocked() const
+bool QgsDockableWidget::isDocked() const
 {
   return mIsDocked;
 }
 
-void Qgs3DMapCanvasDockWidget::toggleDockMode( bool docked )
+void QgsDockableWidget::toggleDockMode( bool docked )
 {
   if ( docked )
   {
     // going from window -> dock
-    switchToDockMode();
+    mIsDocked = true;
+
+    mDialog->layout()->removeWidget( mWidget );
+    mDock->setWidget( mWidget );
+
+    mDialog->hide();
+    mDock->setVisible( true );
+
+    // TODO: apply resizing in a better way
+    mDock->resize( mDock->size() + QSize( 1, 1 ) );
+    mDock->resize( mDock->size() - QSize( 1, 1 ) );
+
   }
   else
   {
     // going from dock -> window
-    switchToWindowMode();
+    mIsDocked = false;
+
+    mDialog->layout()->addWidget( mWidget );
+    mDock->setWidget( nullptr );
+
+    mDialog->show();
+    mDock->setVisible( false );
+
+    // TODO: apply resizing in a better way
+    mDialog->resize( mDialog->size() + QSize( 1, 1 ) );
+    mDialog->resize( mDialog->size() - QSize( 1, 1 ) );
+
   }
 }
 
-void Qgs3DMapCanvasDockWidget::switchToWindowMode()
-{
-  if ( !mIsDocked )
-    return;
-
-  mIsDocked = false;
-
-  mDialog->layout()->addWidget( mCanvasWidget );
-  mDock->setWidget( nullptr );
-
-  mDialog->show();
-  mDock->setVisible( false );
-
-  // TODO: apply resizing in a better way
-  mDialog->resize( mDialog->size() + QSize( 1, 1 ) );
-  mDialog->resize( mDialog->size() - QSize( 1, 1 ) );
-
-  mCanvasWidget->setDocked( false );
-}
-
-void Qgs3DMapCanvasDockWidget::switchToDockMode()
-{
-  if ( mIsDocked )
-    return;
-
-  mIsDocked = true;
-
-  mDialog->layout()->removeWidget( mCanvasWidget );
-  mDock->setWidget( mCanvasWidget );
-
-  mDialog->hide();
-  mDock->setVisible( true );
-
-  // TODO: apply resizing in a better way
-  mDock->resize( mDock->size() + QSize( 1, 1 ) );
-  mDock->resize( mDock->size() - QSize( 1, 1 ) );
-
-  mCanvasWidget->setDocked( true );
-}
-
-void Qgs3DMapCanvasDockWidget::setWindowTitle( const QString &title )
+void QgsDockableWidget::setWindowTitle( const QString &title )
 {
   this->QWidget::setWindowTitle( title );
   mDialog->setWindowTitle( title );
   mDock->setWindowTitle( title );
 }
 
-void Qgs3DMapCanvasDockWidget::closeEvent( QCloseEvent *e )
+void QgsDockableWidget::closeEvent( QCloseEvent *e )
 {
-  mDialog->layout()->removeWidget( mCanvasWidget );
+  mDialog->layout()->removeWidget( mWidget );
   mDock->setWidget( nullptr );
-  mCanvasWidget->setParent( this );
+  mWidget->setParent( this );
 
   emit closed();
   QWidget::closeEvent( e );

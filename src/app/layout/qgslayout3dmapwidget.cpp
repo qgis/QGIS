@@ -17,11 +17,11 @@
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
-#include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
 #include <QMenu>
 #include "qgs3dmapcanvaswidget.h"
+#include "qgsdockablewidget.h"
 
 float _normalizedAngle( float x )
 {
@@ -35,7 +35,7 @@ void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, Func1 slot )
 {
   QObject::connect( menu, &QMenu::aboutToShow, w, [menu, w, slot]
   {
-    const QList<Qgs3DMapCanvasDockWidget *> lst = QgisApp::instance()->findChildren<Qgs3DMapCanvasDockWidget *>();
+    const QList<QgsDockableWidget *> lst = QgisApp::instance()->get3DMapViews();
     menu->clear();
     for ( auto dock : lst )
     {
@@ -51,14 +51,14 @@ void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, Func1 slot )
   } );
 }
 
-Qgs3DMapCanvasDockWidget *_dock3DViewFromSender( QObject *sender )
+QgsDockableWidget *_dock3DViewFromSender( QObject *sender )
 {
   QAction *action = qobject_cast<QAction *>( sender );
   if ( !action )
     return nullptr;
 
   QString actionText = action->property( "name" ).toString();
-  const QList<Qgs3DMapCanvasDockWidget *> lst = QgisApp::instance()->findChildren<Qgs3DMapCanvasDockWidget *>();
+  const QList<QgsDockableWidget *> lst = QgisApp::instance()->get3DMapViews();
   for ( auto dock : lst )
   {
     Qgs3DMapCanvasWidget *widget = dynamic_cast< Qgs3DMapCanvasWidget * >( dock->widget() );
@@ -122,7 +122,7 @@ void QgsLayout3DMapWidget::updateCameraPoseWidgetsFromItem()
 
 void QgsLayout3DMapWidget::copy3DMapSettings()
 {
-  Qgs3DMapCanvasDockWidget *dock = _dock3DViewFromSender( sender() );
+  QgsDockableWidget *dock = _dock3DViewFromSender( sender() );
   if ( !dock )
     return;
   Qgs3DMapCanvasWidget *widget = dynamic_cast< Qgs3DMapCanvasWidget * >( dock->widget() );
@@ -144,7 +144,7 @@ void QgsLayout3DMapWidget::copy3DMapSettings()
 
 void QgsLayout3DMapWidget::copeCameraPose()
 {
-  Qgs3DMapCanvasDockWidget *dock = _dock3DViewFromSender( sender() );
+  QgsDockableWidget *dock = _dock3DViewFromSender( sender() );
   if ( dock )
   {
     Qgs3DMapCanvasWidget *widget = dynamic_cast< Qgs3DMapCanvasWidget * >( dock->widget() );

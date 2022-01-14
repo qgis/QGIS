@@ -108,6 +108,7 @@
 #include "annotations/qgsannotationitempropertieswidget.h"
 #include "qgsmaptoolmodifyannotation.h"
 #include "qgsannotationlayer.h"
+#include "qgsdockablewidget.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -119,7 +120,6 @@
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
-#include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
@@ -4794,8 +4794,8 @@ void QgisApp::closeAdditionalMapCanvases()
 void QgisApp::closeAdditional3DMapCanvases()
 {
 #ifdef HAVE_3D
-  const QList< Qgs3DMapCanvasDockWidget * > canvases = findChildren< Qgs3DMapCanvasDockWidget * >();
-  for ( Qgs3DMapCanvasDockWidget *w : canvases )
+  QSet<QgsDockableWidget *> openDocks = mOpen3DDocks;
+  for ( QgsDockableWidget *w : openDocks )
   {
     w->close();
     delete w;
@@ -9898,7 +9898,7 @@ void QgisApp::setupLayoutManagerConnections()
   } );
 }
 
-Qgs3DMapCanvasDockWidget *QgisApp::open3DMapView( const QString &viewName )
+QgsDockableWidget *QgisApp::open3DMapView( const QString &viewName )
 {
 #ifdef HAVE_3D
   QgsReadWriteContext readWriteContext;
@@ -9909,7 +9909,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::open3DMapView( const QString &viewName )
   if ( elem3DMap.isNull() )
     return nullptr;
 
-  Qgs3DMapCanvasDockWidget *mapCanvasDock3D = createNew3DMapCanvasDock( viewName );
+  QgsDockableWidget *mapCanvasDock3D = createNew3DMapCanvasDock( viewName );
   if ( !mapCanvasDock3D )
     return nullptr;
 
@@ -9925,13 +9925,13 @@ Qgs3DMapCanvasDockWidget *QgisApp::open3DMapView( const QString &viewName )
 #endif
 }
 
-Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingViewName, const QString &newViewName )
+QgsDockableWidget *QgisApp::duplicate3DMapView( const QString &existingViewName, const QString &newViewName )
 {
 #ifdef HAVE_3D
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
 
-  Qgs3DMapCanvasDockWidget *mapCanvasDock3D = createNew3DMapCanvasDock( newViewName );
+  QgsDockableWidget *mapCanvasDock3D = createNew3DMapCanvasDock( newViewName );
   if ( !mapCanvasDock3D )
     return nullptr;
 
@@ -9943,7 +9943,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingVi
 
   // If the 3D view is open, copy its configuration to the duplicate widget, otherwise just use the recorded
   // settings from m3DMapViewsWidgets
-  if ( Qgs3DMapCanvasDockWidget *w = get3DMapViewDock( existingViewName ) )
+  if ( QgsDockableWidget *w = get3DMapViewDock( existingViewName ) )
   {
     Qgs3DMapCanvasWidget *widget = dynamic_cast< Qgs3DMapCanvasWidget * >( w->widget() );
     Qgs3DMapSettings *map = new Qgs3DMapSettings( *widget->mapCanvas3D()->map() );
@@ -9987,10 +9987,10 @@ Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingVi
 #endif
 }
 
-Qgs3DMapCanvasDockWidget *QgisApp::get3DMapViewDock( const QString &viewName )
+QgsDockableWidget *QgisApp::get3DMapViewDock( const QString &viewName )
 {
 #ifdef HAVE_3D
-  for ( Qgs3DMapCanvasDockWidget *w : mOpen3DDocks )
+  for ( QgsDockableWidget *w : mOpen3DDocks )
   {
     if ( w->windowTitle() == viewName )
       return w;
@@ -9999,6 +9999,16 @@ Qgs3DMapCanvasDockWidget *QgisApp::get3DMapViewDock( const QString &viewName )
   Q_UNUSED( viewName )
 #endif
   return nullptr;
+}
+
+QList<QgsDockableWidget *> QgisApp::get3DMapViews()
+{
+#ifdef HAVE_3D
+  return QList<QgsDockableWidget *>( mOpen3DDocks.begin(), mOpen3DDocks.end() );
+#else
+  Q_UNUSED( viewName )
+#endif
+  return QList<QgsDockableWidget *>();
 }
 
 void QgisApp::setupDuplicateFeaturesAction()
@@ -10110,7 +10120,7 @@ void QgisApp::populate3DMapviewsMenu( QMenu *menu )
       }
       else
       {
-        if ( Qgs3DMapCanvasDockWidget *w = QgisApp::instance()->get3DMapViewDock( viewName ) )
+        if ( QgsDockableWidget *w = QgisApp::instance()->get3DMapViewDock( viewName ) )
         {
           w->close();
         }
@@ -13246,8 +13256,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     mMapTools->mapTool< QgsMapToolMeasureBearing >( QgsAppMapTools::MeasureBearing )->updateSettings();
 
 #ifdef HAVE_3D
-    const QList< Qgs3DMapCanvasDockWidget * > canvases3D = findChildren< Qgs3DMapCanvasDockWidget * >();
-    for ( Qgs3DMapCanvasDockWidget *canvas3D : canvases3D )
+    QSet<QgsDockableWidget *> open3DDocks = mOpen3DDocks;
+    for ( QgsDockableWidget *canvas3D : open3DDocks )
     {
       Qgs3DMapCanvasWidget *widget = dynamic_cast< Qgs3DMapCanvasWidget * >( canvas3D->widget() );
       widget->measurementLineTool()->updateSettings();
@@ -13958,7 +13968,7 @@ void QgisApp::initLayouts()
   registerCustomLayoutDropHandler( mLayoutImageDropHandler );
 }
 
-Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name )
+QgsDockableWidget *QgisApp::createNew3DMapCanvasDock( const QString &name )
 {
 #ifdef HAVE_3D
   const QList<Qgs3DMapCanvas *> mapCanvases = findChildren<Qgs3DMapCanvas *>();
@@ -13973,15 +13983,18 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
 
   markDirty();
 
-  Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
-  Qgs3DMapCanvasWidget *widget = dynamic_cast< Qgs3DMapCanvasWidget * >( map3DWidget->widget() );
+  QgsDockableWidget *map3DWidget = new QgsDockableWidget( this );
+  Qgs3DMapCanvasWidget *widget = new Qgs3DMapCanvasWidget( map3DWidget );
+  map3DWidget->setWidget( widget );
+  connect( widget, &Qgs3DMapCanvasWidget::toggleDockMode, map3DWidget, &QgsDockableWidget::toggleDockMode );
+
   mOpen3DDocks.insert( map3DWidget );
   map3DWidget->setWindowTitle( name );
   widget->mapCanvas3D()->setObjectName( name );
   widget->setMainCanvas( mMapCanvas );
   widget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
 
-  connect( map3DWidget, &Qgs3DMapCanvasDockWidget::closed, [ = ]()
+  connect( map3DWidget, &QgsDockableWidget::closed, [ = ]()
   {
     QDomImplementation DomImplementation;
     QDomDocumentType documentType =
@@ -14037,7 +14050,7 @@ void QgisApp::new3DMapCanvas()
     name = tr( "3D Map %1" ).arg( ++i );
   }
 
-  Qgs3DMapCanvasDockWidget *dock = createNew3DMapCanvasDock( name );
+  QgsDockableWidget *dock = createNew3DMapCanvasDock( name );
   if ( dock )
   {
     if ( QgsDockWidget *dw = dock->dockWidget() )
@@ -16701,7 +16714,7 @@ void QgisApp::projectChanged( const QDomDocument &doc )
 }
 
 #ifdef HAVE_3D
-void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomDocument &doc, QDomElement &elem3DMap )
+void QgisApp::write3DMapViewSettings( QgsDockableWidget *w, QDomDocument &doc, QDomElement &elem3DMap )
 {
   Qgs3DMapCanvasWidget *widget = dynamic_cast<Qgs3DMapCanvasWidget *>( w->widget() );
   QgsReadWriteContext readWriteContext;
@@ -16731,7 +16744,7 @@ void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomDocument 
   }
 }
 
-void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &elem3DMap )
+void QgisApp::read3DMapViewSettings( QgsDockableWidget *w, QDomElement &elem3DMap )
 {
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
@@ -16793,10 +16806,7 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &e
   }
 
   bool isDocked = elem3DMap.attribute( QStringLiteral( "isDocked" ), "1" ).toInt() == 1;
-  if ( !isDocked )
-  {
-    w->switchToWindowMode();
-  }
+  dynamic_cast< Qgs3DMapCanvasWidget * >( w->widget() )->setDocked( isDocked );
 }
 #endif
 
@@ -16840,7 +16850,8 @@ void QgisApp::writeProject( QDomDocument &doc )
   qgisNode.appendChild( mapViewNode );
 
 #ifdef HAVE_3D
-  for ( Qgs3DMapCanvasDockWidget *w : findChildren< Qgs3DMapCanvasDockWidget * >() )
+  QSet<QgsDockableWidget *> openDocks = mOpen3DDocks;
+  for ( QgsDockableWidget *w : openDocks )
   {
     Qgs3DMapCanvasWidget *widget = dynamic_cast< Qgs3DMapCanvasWidget * >( w->widget() );
     QString viewName = widget->mapCanvas3D()->objectName();
@@ -16964,7 +16975,7 @@ void QgisApp::readProject( const QDomDocument &doc )
     bool isOpen = viewConfig.attribute( QStringLiteral( "isOpen" ), QStringLiteral( "1" ) ).toInt() == 1;
     if ( !isOpen )
       continue;
-    Qgs3DMapCanvasDockWidget *mapCanvasDock3D = createNew3DMapCanvasDock( viewName );
+    QgsDockableWidget *mapCanvasDock3D = createNew3DMapCanvasDock( viewName );
     read3DMapViewSettings( mapCanvasDock3D, viewConfig );
 
 //    mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );

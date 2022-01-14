@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmapcanvasdockwidget.h
+  qgsdockablewidget.h
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS3DMAPCANVASDOCKWIDGET_H
-#define QGS3DMAPCANVASDOCKWIDGET_H
+#ifndef QGSDOCKABLEWIDGET_H
+#define QGSDOCKABLEWIDGET_H
 
 #include "qgis_app.h"
 #include "qgsdockwidget.h"
@@ -32,23 +32,21 @@ class QgsMapCanvas;
 class Qgs3DMapCanvasWidget;
 class QgsDockWidget;
 
-class APP_EXPORT Qgs3DMapCanvasDockWidget : public QWidget
+class APP_EXPORT QgsDockableWidget : public QWidget
 {
     Q_OBJECT
   public:
-    Qgs3DMapCanvasDockWidget( QWidget *parent = nullptr );
+    QgsDockableWidget( QWidget *parent = nullptr );
 
-    QWidget *widget();
+    void setWidget( QWidget *widget );
+
+    QWidget *widget() { return mWidget; }
 
     QgsDockWidget *dockWidget() { return mDock; }
 
     QDialog *dialog() { return mDialog; }
 
     bool isDocked() const;
-
-    void switchToWindowMode();
-
-    void switchToDockMode();
 
     void setWindowTitle( const QString &title );
 
@@ -58,13 +56,12 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QWidget
   signals:
     void closed();
 
-  private slots:
+  public slots:
     void toggleDockMode( bool docked );
-
 
   private:
     bool mIsDocked = true;
-    Qgs3DMapCanvasWidget *mCanvasWidget = nullptr;
+    QWidget *mWidget = nullptr;
 
     QgsDockWidget *mDock = nullptr;
 
@@ -73,4 +70,4 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QWidget
     QVBoxLayout *mDialogLayout = nullptr;
 };
 
-#endif // QGS3DMAPCANVASDOCKWIDGET_H
+#endif // QGSDOCKABLEWIDGET_H
