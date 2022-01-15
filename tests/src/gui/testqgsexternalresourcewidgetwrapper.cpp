@@ -1258,7 +1258,9 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded()
 
   // content still null, fetching in progress...
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
+#ifdef WITH_QTWEBKIT
   QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
+#endif
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
