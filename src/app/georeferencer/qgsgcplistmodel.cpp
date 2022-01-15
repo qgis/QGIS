@@ -43,7 +43,8 @@ class QgsStandardItem : public QStandardItem
     {
       setData( QVariant( value ), Qt::UserRole );
       //show the full precision when editing points
-      setData( QVariant( value ), Qt::EditRole );
+      int prec = abs( value ) < 360 ? 8 : 2;
+      setData( QVariant( QString::number( value, 'f', prec ) ), Qt::EditRole );
       setData( QVariant( value ), Qt::ToolTipRole );
       setTextAlignment( Qt::AlignRight );
     }
