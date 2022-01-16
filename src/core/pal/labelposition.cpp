@@ -649,21 +649,20 @@ double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
 
 double LabelPosition::angleDifferential()
 {
-  double angleDiff = 0.0, angleLast = 0.0, diff;
-  double sinAvg = 0, cosAvg = 0;
+  double angleDiff = 0.0;
+  double angleLast = 0.0;
   LabelPosition *tmp = this;
   while ( tmp )
   {
     if ( tmp != this ) // not first?
     {
-      diff = std::fabs( tmp->getAlpha() - angleLast );
-      if ( diff > 2 * M_PI ) diff -= 2 * M_PI;
+      double diff = std::fabs( tmp->getAlpha() - angleLast );
+      if ( diff > 2 * M_PI )
+        diff -= 2 * M_PI;
       diff = std::min( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
       angleDiff += diff;
     }
 
-    sinAvg += std::sin( tmp->getAlpha() );
-    cosAvg += std::cos( tmp->getAlpha() );
     angleLast = tmp->getAlpha();
     tmp = tmp->nextPart();
   }
