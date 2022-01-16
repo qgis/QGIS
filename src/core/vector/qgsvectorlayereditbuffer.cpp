@@ -757,8 +757,17 @@ bool QgsVectorLayerEditBuffer::commitChangesChangeAttributes( bool &attributesCh
     }
   }
 
-  if ( !mChangedGeometries.isEmpty() && ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeFeatures ) == 0 ) )
+  if ( !mChangedGeometries.isEmpty() )
   {
+    if ( ! L->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::ChangeFeatures )
+         && ! L->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::ChangeGeometries ) )
+    {
+      commitErrors << tr( "ERROR: %1 geometries not changed. Data provider '%2' does not have ChangeFeatures or ChangeGeometries capabilities", "not changed geometries count" )
+                   .arg( mChangedGeometries.size() )
+                   .arg( L->dataProvider()->name() );
+      return false;
+    }
+
     if ( L->dataProvider()->changeGeometryValues( mChangedGeometries ) )
     {
       commitErrors << tr( "SUCCESS: %n geometries were changed.", "changed geometries count", mChangedGeometries.size() );
@@ -773,9 +782,18 @@ bool QgsVectorLayerEditBuffer::commitChangesChangeAttributes( bool &attributesCh
     }
   }
 
-  if ( !mChangedAttributeValues.isEmpty() && ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeFeatures ) == 0 ) )
+  if ( !mChangedAttributeValues.isEmpty() )
   {
-    if ( ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && L->dataProvider()->changeAttributeValues( mChangedAttributeValues ) )
+    if ( ! L->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::ChangeFeatures )
+         && ! L->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::ChangeAttributeValues ) )
+    {
+      commitErrors << tr( "ERROR: %1 attribute value change(s) not applied. Data provider '%2' does not have ChangeFeatures or ChangeAttributeValues capabilities", "not changed attribute values count" )
+                   .arg( mChangedAttributeValues.size() )
+                   .arg( L->dataProvider()->name() );
+      return false;
+    }
+
+    if ( L->dataProvider()->changeAttributeValues( mChangedAttributeValues ) )
     {
       commitErrors << tr( "SUCCESS: %n attribute value(s) changed.", "changed attribute values count", mChangedAttributeValues.size() );
       attributesChanged = true;
