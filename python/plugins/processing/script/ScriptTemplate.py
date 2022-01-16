@@ -190,7 +190,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
                 'MITER_LIMIT': 2,
                 'DISSOLVE': False,
                 'OUTPUT': 'memory:'
-            }, context=context, feedback=feedback)['OUTPUT']
+            }, context=context, feedback=feedback, is_child_algorithm=True)['OUTPUT']
 
         # Return the results of the algorithm. In this case our only result is
         # the feature sink which contains the processed features, but some
