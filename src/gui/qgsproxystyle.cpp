@@ -19,6 +19,7 @@
 #include <QStyle>
 #include <QStyleOption>
 #include <QApplication>
+#include <QWindow>
 
 QgsProxyStyle::QgsProxyStyle( QWidget *parent )
   : QProxyStyle( nullptr ) // no base style yet - it transfers ownership, so we need a NEW QStyle object for the base style
@@ -83,6 +84,27 @@ QPixmap QgsAppStyle::generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &p
 
   }
   return QProxyStyle::generatedIconPixmap( iconMode, pixmap, opt );
+}
+
+void QgsAppStyle::polish( QWidget *widget )
+{
+  QProxyStyle::polish( widget );
+
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
+  // fix broken inactive window coloring applying to unfocused docks or list/tree widgets
+  // see eg https://github.com/FedoraQt/adwaita-qt/issues/126
+  // the detection used by themes to determine if a widget belongs to an activated window is fragile, which
+  // results in unfocused list/tree views or widget children being shown in the "deactivated window" palette coloring.
+  // Gnome (adwaita) defaults to a coloring which makes widgets looks disabled in this inactive state.
+  // So the best we can do here is force disable the inactive palette coloring to prevent this unwanted behavior.
+  QPalette pal = widget->palette();
+  pal.setColor( QPalette::Inactive, QPalette::Text, pal.color( QPalette::Active, QPalette::Text ) );
+  pal.setColor( QPalette::Inactive, QPalette::Window, pal.color( QPalette::Active, QPalette::Window ) );
+  pal.setColor( QPalette::Inactive, QPalette::WindowText, pal.color( QPalette::Active, QPalette::WindowText ) );
+  pal.setColor( QPalette::Inactive, QPalette::Button, pal.color( QPalette::Active, QPalette::Button ) );
+  pal.setColor( QPalette::Inactive, QPalette::ButtonText, pal.color( QPalette::Active, QPalette::ButtonText ) );
+  widget->setPalette( pal );
+#endif
 }
 
 QProxyStyle *QgsAppStyle::clone()
