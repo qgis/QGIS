@@ -192,6 +192,8 @@ bool QgsPointCloudLayerRenderer::render()
   QgsDebugMsgLevel( QStringLiteral( "totals: %1 nodes | %2 points | %3ms" ).arg( nodesDrawn )
                     .arg( context.pointsRendered() )
                     .arg( t.elapsed() ), 2 );
+#else
+  ( void )nodesDrawn;
 #endif
 
   mRenderer->stopRender( context );
