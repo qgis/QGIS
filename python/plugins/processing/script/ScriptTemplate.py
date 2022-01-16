@@ -181,7 +181,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         # to the executed algorithm, and that the executed algorithm can send feedback
         # reports to the user (and correctly handle cancellation and progress reports!)
         if False:
-            buffered_layer = processing.run("native:buffer", {
+            buffered = processing.run("native:buffer", {
                 'INPUT': dest_id,
                 'DISTANCE': 1.5,
                 'SEGMENTS': 5,
@@ -191,6 +191,14 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
                 'DISSOLVE': False,
                 'OUTPUT': 'memory:'
             }, context=context, feedback=feedback, is_child_algorithm=True)['OUTPUT']
+            
+            # For child algorithms, we disable to default post-processing step where
+            # layer ownership is transferred from the context to the caller. In this
+            # case, we NEED the ownership to remain with the context, so that further
+            # steps in the algorithm have guaranteed access to the layer.
+            # To hand ownership over to the context, use:
+            
+            buffered_layer = context.takeResultLayer(buffered['OUTPUT'])
 
         # Return the results of the algorithm. In this case our only result is
         # the feature sink which contains the processed features, but some
