@@ -98,7 +98,6 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
   QVector<QgsDataItem *> children;
   QHash<QgsDataItem *, QString> serviceItems; // service/provider key
 
-  int layerCount = 0;
   // Try to open with service provider
   bool skipProvider = false;
 
@@ -146,7 +145,6 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
     {
       item->populate( true ); // populate in foreground - this is already run in a thread
 
-      layerCount += item->rowCount();
       if ( item->rowCount() > 0 )
       {
         serviceItems.insert( item, key );
