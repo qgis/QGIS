@@ -62,7 +62,7 @@ static QColor _interpolateHsv( const QColor &c1, const QColor &c2, const double 
 
   qreal hue1 = c1.hsvHueF();
   qreal hue2 = c2.hsvHueF();
-  qreal hue;
+  qreal hue = 0;
   if ( hue1 == -1 )
     hue = hue2;
   else if ( hue2 == -1 )
@@ -119,7 +119,7 @@ static QColor _interpolateHsl( const QColor &c1, const QColor &c2, const double 
 
   qreal hue1 = c1.hslHueF();
   qreal hue2 = c2.hslHueF();
-  qreal hue;
+  qreal hue = 0;
   if ( hue1 == -1 )
     hue = hue2;
   else if ( hue2 == -1 )
