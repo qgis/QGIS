@@ -3200,7 +3200,6 @@ static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int 
   if ( const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
   {
     partIndex = 0;
-    int offset = 0;
     for ( int i = 0; i < geomCollection->numGeometries(); ++i )
     {
       const QgsAbstractGeometry *part = geomCollection->geometryN( i );
@@ -3216,7 +3215,6 @@ static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int 
         return vertexIndexInfo( part, vertexIndex, nothing, ringIndex, vertex ); // set ring_index + index
       }
       vertexIndex -= numPoints;
-      offset += numPoints;
       partIndex++;
     }
   }
