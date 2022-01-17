@@ -49,10 +49,12 @@
 #include "qgsmap3dexportwidget.h"
 #include "qgs3dmapexportsettings.h"
 
+#include "qgsdockablewidgethelper.h"
+
 #include <QWidget>
 
-Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( QWidget *parent )
-  : QWidget( parent )
+Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( bool isDocked )
+  : QWidget( nullptr )
 {
   const QgsSettings setting;
   setAttribute( Qt::WA_DeleteOnClose );  // removes the dock widget from main window when
@@ -224,6 +226,15 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( QWidget *parent )
   this->setLayout( layout );
 
   onTotalPendingJobsCountChanged();
+
+  mDockableWidget = new QgsDockableWidgetHelper( isDocked, this );
+  connect( this, &Qgs3DMapCanvasWidget::toggleDockModeRequested, mDockableWidget, &QgsDockableWidgetHelper::toggleDockMode );
+}
+
+Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
+{
+  this->setParent( QgisApp::instance() );
+  delete mDockableWidget;
 }
 
 void Qgs3DMapCanvasWidget::saveAsImage()
@@ -309,7 +320,6 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   // Disable button for switching the map theme if the terrain generator is a mesh, or if there is no terrain
   mBtnMapThemes->setDisabled( !mCanvas->map()->terrainGenerator() || mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
-
 }
 
 void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )

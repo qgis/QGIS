@@ -32,12 +32,14 @@ class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
 class QgsMapCanvas;
+class QgsDockableWidgetHelper;
 
 class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 {
     Q_OBJECT
   public:
-    Qgs3DMapCanvasWidget( QWidget *parent = nullptr );
+    Qgs3DMapCanvasWidget( bool isDocked );
+    ~Qgs3DMapCanvasWidget();
 
     //! takes ownership
     void setMapSettings( Qgs3DMapSettings *map );
@@ -45,9 +47,12 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setMainCanvas( QgsMapCanvas *canvas );
 
     Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
+
     Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
 
-    Qgs3DMapToolMeasureLine *measurementLineTool() { return  mMapToolMeasureLine; }
+    Qgs3DMapToolMeasureLine *measurementLineTool() { return mMapToolMeasureLine; }
+
+    QgsDockableWidgetHelper *dockableWidget() { return mDockableWidget; }
 
     void setDocked( bool docked );
 
@@ -94,6 +99,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionEnableEyeDome = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QToolButton *mDockUnDockBtn = nullptr;
+    QgsDockableWidgetHelper *mDockableWidget = nullptr;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

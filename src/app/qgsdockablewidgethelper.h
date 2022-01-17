@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdockablewidget.h
+  qgsdockablewidgethelper.h
   --------------------------------------
   Date                 : January 2022
   Copyright            : (C) 2022 by Belgacem Nedjima
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSDOCKABLEWIDGET_H
-#define QGSDOCKABLEWIDGET_H
+#ifndef QGSDOCKABLEWIDGETHELPER_H
+#define QGSDOCKABLEWIDGETHELPER_H
 
 #include "qgis_app.h"
 #include "qgsdockwidget.h"
@@ -24,19 +24,14 @@
 
 #define SIP_NO_FILE
 
-class Qgs3DAnimationWidget;
-class Qgs3DMapCanvas;
-class Qgs3DMapSettings;
-class Qgs3DMapToolMeasureLine;
-class QgsMapCanvas;
-class Qgs3DMapCanvasWidget;
 class QgsDockWidget;
 
-class APP_EXPORT QgsDockableWidget : public QWidget
+class APP_EXPORT QgsDockableWidgetHelper : public QWidget
 {
     Q_OBJECT
   public:
-    QgsDockableWidget( QWidget *parent = nullptr );
+    QgsDockableWidgetHelper( bool isDocked, QWidget *widget );
+    ~QgsDockableWidgetHelper();
 
     void setWidget( QWidget *widget );
 
@@ -50,6 +45,14 @@ class APP_EXPORT QgsDockableWidget : public QWidget
 
     void setWindowTitle( const QString &title );
 
+    void setDialogGeometry( const QRect &geom );
+    void setDockGeometry( const QRect &geom, bool isFloating, Qt::DockWidgetArea area );
+
+    QRect dialogGeometry() const;
+    QRect dockGeometry() const;
+    bool isDockFloating() const;
+    Qt::DockWidgetArea dockFloatingArea() const;
+
   protected:
     void closeEvent( QCloseEvent * ) override;
 
@@ -60,12 +63,18 @@ class APP_EXPORT QgsDockableWidget : public QWidget
     void toggleDockMode( bool docked );
 
   private:
+    void setupDockWidget();
+
     bool mIsDocked = true;
     QWidget *mWidget = nullptr;
 
-    QgsDockWidget *mDock = nullptr;
-
     QDialog *mDialog = nullptr;
+    QRect mDialogGeometry;
+
+    QgsDockWidget *mDock = nullptr;
+    QRect mDockGeometry;
+    bool mIsDockFloating;
+    Qt::DockWidgetArea mDockArea;
 };
 
-#endif // QGSDOCKABLEWIDGET_H
+#endif // QGSDOCKABLEWIDGETHELPER_H

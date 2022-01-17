@@ -73,7 +73,7 @@ set(QGIS_APP_SRCS
   qgsrecentprojectsitemsmodel.cpp
   qgsvectorlayerdigitizingproperties.cpp
   qgswelcomepage.cpp
-  qgsdockablewidget.cpp
+  qgsdockablewidgethelper.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp

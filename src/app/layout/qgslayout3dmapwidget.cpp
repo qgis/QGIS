@@ -21,7 +21,7 @@
 #include "qgscameracontroller.h"
 #include <QMenu>
 #include "qgs3dmapcanvaswidget.h"
-#include "qgsdockablewidget.h"
+#include "qgsdockablewidgethelper.h"
 
 float _normalizedAngle( float x )
 {
@@ -35,11 +35,10 @@ void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, Func1 slot )
 {
   QObject::connect( menu, &QMenu::aboutToShow, w, [menu, w, slot]
   {
-    const QList<QgsDockableWidget *> lst = QgisApp::instance()->get3DMapViews();
+    const QList<Qgs3DMapCanvasWidget *> lst = QgisApp::instance()->get3DMapViews();
     menu->clear();
-    for ( auto dock : lst )
+    for ( auto widget : lst )
     {
-      Qgs3DMapCanvasWidget *widget = qobject_cast< Qgs3DMapCanvasWidget * >( dock->widget() );
       QAction *a = menu->addAction( widget->mapCanvas3D()->objectName(), w, slot );
       // need to use a custom property for identification because Qt likes to add "&" to the action text
       a->setProperty( "name", widget->mapCanvas3D()->objectName() );
@@ -51,21 +50,20 @@ void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, Func1 slot )
   } );
 }
 
-QgsDockableWidget *_dock3DViewFromSender( QObject *sender )
+Qgs3DMapCanvasWidget *_dock3DViewFromSender( QObject *sender )
 {
   QAction *action = qobject_cast<QAction *>( sender );
   if ( !action )
     return nullptr;
 
   QString actionText = action->property( "name" ).toString();
-  const QList<QgsDockableWidget *> lst = QgisApp::instance()->get3DMapViews();
-  for ( auto dock : lst )
+  const QList<Qgs3DMapCanvasWidget *> lst = QgisApp::instance()->get3DMapViews();
+  for ( auto widget : lst )
   {
-    Qgs3DMapCanvasWidget *widget = qobject_cast< Qgs3DMapCanvasWidget * >( dock->widget() );
     QString objName = widget->mapCanvas3D()->objectName();
     if ( objName == actionText )
     {
-      return dock;
+      return widget;
     }
   }
   return nullptr;
@@ -122,10 +120,9 @@ void QgsLayout3DMapWidget::updateCameraPoseWidgetsFromItem()
 
 void QgsLayout3DMapWidget::copy3DMapSettings()
 {
-  QgsDockableWidget *dock = _dock3DViewFromSender( sender() );
-  if ( !dock )
+  Qgs3DMapCanvasWidget *widget = _dock3DViewFromSender( sender() );
+  if ( !widget )
     return;
-  Qgs3DMapCanvasWidget *widget = qobject_cast< Qgs3DMapCanvasWidget * >( dock->widget() );
   Qgs3DMapSettings *settings = new Qgs3DMapSettings( *widget->mapCanvas3D()->map() );
 
   // first setting passed on
@@ -144,10 +141,9 @@ void QgsLayout3DMapWidget::copy3DMapSettings()
 
 void QgsLayout3DMapWidget::copeCameraPose()
 {
-  QgsDockableWidget *dock = _dock3DViewFromSender( sender() );
-  if ( dock )
+  Qgs3DMapCanvasWidget *widget = _dock3DViewFromSender( sender() );
+  if ( widget )
   {
-    Qgs3DMapCanvasWidget *widget = qobject_cast< Qgs3DMapCanvasWidget * >( dock->widget() );
     mMap3D->setCameraPose( widget->mapCanvas3D()->cameraController()->cameraPose() );
     updateCameraPoseWidgetsFromItem();
   }
