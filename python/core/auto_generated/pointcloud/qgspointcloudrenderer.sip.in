@@ -197,7 +197,7 @@ Abstract base class for 2d point cloud renderers.
       Circle,
     };
 
-    enum DrawOrder
+    enum class DrawOrder
     {
       Default,
       BottomToTop,

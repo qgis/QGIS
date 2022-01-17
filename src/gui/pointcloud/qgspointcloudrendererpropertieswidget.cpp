@@ -101,9 +101,9 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mPointSizeSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
-  mDrawOrderComboBox->addItem( tr( "Default" ), QgsPointCloudRenderer::DrawOrder::Default );
-  mDrawOrderComboBox->addItem( tr( "Bottom to top" ), QgsPointCloudRenderer::DrawOrder::BottomToTop );
-  mDrawOrderComboBox->addItem( tr( "Top to bottom" ), QgsPointCloudRenderer::DrawOrder::TopToBottom );
+  mDrawOrderComboBox->addItem( tr( "Default" ), static_cast< int >( QgsPointCloudRenderer::DrawOrder::Default ) );
+  mDrawOrderComboBox->addItem( tr( "Bottom to Top" ), static_cast< int >( QgsPointCloudRenderer::DrawOrder::BottomToTop ) );
+  mDrawOrderComboBox->addItem( tr( "Top to Bottom" ), static_cast< int >( QgsPointCloudRenderer::DrawOrder::TopToBottom ) );
 
   mMaxErrorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
@@ -152,7 +152,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mPointSizeUnitWidget->setMapUnitScale( mLayer->renderer()->pointSizeMapUnitScale() );
 
     mPointStyleComboBox->setCurrentIndex( mPointStyleComboBox->findData( mLayer->renderer()->pointSymbol() ) );
-    mDrawOrderComboBox->setCurrentIndex( mDrawOrderComboBox->findData( mLayer->renderer()->drawOrder2d() ) );
+    mDrawOrderComboBox->setCurrentIndex( mDrawOrderComboBox->findData( static_cast< int >( mLayer->renderer()->drawOrder2d() ) ) );
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );

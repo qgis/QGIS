@@ -186,7 +186,7 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   element.setAttribute( QStringLiteral( "maximumScreenError" ), qgsDoubleToString( mMaximumScreenError ) );
   element.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
   element.setAttribute( QStringLiteral( "pointSymbol" ), QString::number( mPointSymbol ) );
-  element.setAttribute( QStringLiteral( "drawOrder2d" ), QString::number( mDrawOrder2d ) );
+  element.setAttribute( QStringLiteral( "drawOrder2d" ), QString::number( static_cast< int >( mDrawOrder2d ) ) );
 }
 
 QgsPointCloudRenderer::PointSymbol QgsPointCloudRenderer::pointSymbol() const

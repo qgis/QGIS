@@ -276,7 +276,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * Pointcloud rendering order for 2d views
      * /since QGIS 3.24
      */
-    enum DrawOrder
+    enum class DrawOrder : int
     {
       Default, //!< Draw points in the order they are stored
       BottomToTop, //!< Draw points with larger Z values last
