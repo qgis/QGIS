@@ -17,6 +17,7 @@ from qgis.core import (
     QgsPointCloudLayer,
     QgsPointCloudClassifiedRenderer,
     QgsPointCloudCategory,
+    QgsPointCloudRenderer,
     QgsReadWriteContext,
     QgsRenderContext,
     QgsPointCloudRenderContext,
@@ -231,6 +232,62 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('pointcloudrenderer')
         renderchecker.setControlName('expected_classified_zfilter')
         result = renderchecker.runTest('expected_classified_zfilter')
+        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderOrderedTopToBottom(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudClassifiedRenderer()
+        renderer.setAttribute('Classification')
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(6)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.TopToBottom)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_classified_top_to_bottom')
+        result = renderchecker.runTest('expected_classified_top_to_bottom')
+        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderOrderedBottomToTop(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudClassifiedRenderer()
+        renderer.setAttribute('Classification')
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(6)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.BottomToTop)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_classified_bottom_to_top')
+        result = renderchecker.runTest('expected_classified_bottom_to_top')
         TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
         self.assertTrue(result)
 
