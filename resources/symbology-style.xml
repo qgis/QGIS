@@ -4592,7 +4592,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo airport" alpha="1" tags="Topology" type="marker" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo airport" alpha="1" tags="Topography" type="marker" clip_to_extent="1">
       <layer enabled="1" class="SvgMarker" locked="0" pass="0">
         <prop k="angle" v="0"/>
         <prop k="color" v="0,0,0,255"/>
@@ -4646,7 +4646,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo building" alpha="1" tags="Topology" type="fill" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo building" alpha="1" tags="Topography" type="fill" clip_to_extent="1">
       <layer enabled="1" class="SimpleFill" locked="0" pass="0">
         <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
         <prop k="color" v="47,47,47,255"/>
@@ -4668,7 +4668,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo camp" alpha="1" tags="Topology" type="marker" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo camp" alpha="1" tags="Topography" type="marker" clip_to_extent="1">
       <layer enabled="1" class="SvgMarker" locked="0" pass="0">
         <prop k="angle" v="0"/>
         <prop k="color" v="255,255,255,255"/>
@@ -4722,7 +4722,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo foot" alpha="1" tags="Topology" type="line" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo foot" alpha="1" tags="Topography" type="line" clip_to_extent="1">
       <layer enabled="1" class="MarkerLine" locked="0" pass="0">
         <prop k="interval" v="2.2"/>
         <prop k="interval_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -4774,7 +4774,7 @@
         </symbol>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo forest" alpha="1" tags="Topology" type="fill" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo forest" alpha="1" tags="Topography" type="fill" clip_to_extent="1">
       <layer enabled="1" class="SimpleFill" locked="0" pass="0">
         <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
         <prop k="color" v="148,209,128,255"/>
@@ -4796,7 +4796,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol favorite="1" force_rhr="0" name="topo hospital" alpha="1" tags="Topology" type="marker" clip_to_extent="1">
+    <symbol favorite="1" force_rhr="0" name="topo hospital" alpha="1" tags="Topography" type="marker" clip_to_extent="1">
       <layer enabled="1" class="SimpleMarker" locked="0" pass="0">
         <prop k="angle" v="0"/>
         <prop k="color" v="255,255,255,255"/>
@@ -4852,7 +4852,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo hydrology" alpha="1" tags="Topology" type="line" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo hydrology" alpha="1" tags="Topography" type="line" clip_to_extent="1">
       <layer enabled="1" class="SimpleLine" locked="0" pass="0">
         <prop k="capstyle" v="round"/>
         <prop k="customdash" v="5;2"/>
@@ -4879,7 +4879,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol favorite="1" force_rhr="0" renderer_should_use_levels="1" name="topo main road" alpha="1" tags="Topology" type="line" clip_to_extent="1">
+    <symbol favorite="1" force_rhr="0" renderer_should_use_levels="1" name="topo main road" alpha="1" tags="Topography" type="line" clip_to_extent="1">
       <layer enabled="1" class="SimpleLine" locked="1" pass="0">
         <prop k="capstyle" v="round"/>
         <prop k="customdash" v="5;2"/>
@@ -4931,7 +4931,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo path" alpha="1" tags="Topology" type="line" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo path" alpha="1" tags="Topography" type="line" clip_to_extent="1">
       <layer enabled="1" class="SimpleLine" locked="0" pass="1">
         <prop k="capstyle" v="square"/>
         <prop k="customdash" v="3;2"/>
@@ -4958,7 +4958,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol favorite="1" force_rhr="0" name="topo pop capital" alpha="1" tags="Topology" type="marker" clip_to_extent="1">
+    <symbol favorite="1" force_rhr="0" name="topo pop capital" alpha="1" tags="Topography" type="marker" clip_to_extent="1">
       <layer enabled="1" class="SimpleMarker" locked="0" pass="0">
         <prop k="angle" v="0"/>
         <prop k="color" v="255,255,255,255"/>
@@ -5014,7 +5014,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo pop city" alpha="1" tags="Topology" type="marker" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo pop city" alpha="1" tags="Topography" type="marker" clip_to_extent="1">
       <layer enabled="1" class="SimpleMarker" locked="0" pass="0">
         <prop k="angle" v="0"/>
         <prop k="color" v="255,255,255,255"/>
@@ -5043,7 +5043,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo pop house" alpha="1" tags="Topology" type="marker" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo pop house" alpha="1" tags="Topography" type="marker" clip_to_extent="1">
       <layer enabled="1" class="SimpleMarker" locked="0" pass="0">
         <prop k="angle" v="0"/>
         <prop k="color" v="0,0,0,255"/>
@@ -5072,7 +5072,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo pop village" alpha="1" tags="Topology" type="marker" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo pop village" alpha="1" tags="Topography" type="marker" clip_to_extent="1">
       <layer enabled="1" class="SimpleMarker" locked="0" pass="0">
         <prop k="angle" v="0"/>
         <prop k="color" v="0,0,0,255"/>
@@ -5109,7 +5109,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol favorite="1" force_rhr="0" name="topo railway" alpha="1" tags="Topology" type="line" clip_to_extent="1">
+    <symbol favorite="1" force_rhr="0" name="topo railway" alpha="1" tags="Topography" type="line" clip_to_extent="1">
       <layer enabled="1" class="SimpleLine" locked="1" pass="0">
         <prop k="capstyle" v="round"/>
         <prop k="customdash" v="5;2"/>
@@ -5186,7 +5186,7 @@
         </symbol>
       </layer>
     </symbol>
-    <symbol favorite="1" force_rhr="0" renderer_should_use_levels="1" name="topo road" alpha="1" tags="Topology" type="line" clip_to_extent="1">
+    <symbol favorite="1" force_rhr="0" renderer_should_use_levels="1" name="topo road" alpha="1" tags="Topography" type="line" clip_to_extent="1">
       <layer enabled="1" class="SimpleLine" locked="1" pass="0">
         <prop k="capstyle" v="round"/>
         <prop k="customdash" v="5;2"/>
@@ -5238,7 +5238,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo steps" alpha="1" tags="Topology" type="line" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo steps" alpha="1" tags="Topography" type="line" clip_to_extent="1">
       <layer enabled="1" class="SimpleLine" locked="0" pass="0">
         <prop k="capstyle" v="square"/>
         <prop k="customdash" v="5;2"/>
@@ -5340,7 +5340,7 @@
         </symbol>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo swamp" alpha="1" tags="Topology,Showcase" type="fill" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo swamp" alpha="1" tags="Topography,Showcase" type="fill" clip_to_extent="1">
       <layer enabled="1" class="SimpleFill" locked="0" pass="0">
         <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
         <prop k="color" v="163,205,185,255"/>
@@ -5468,7 +5468,7 @@
         </symbol>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo urban" alpha="1" tags="Topology" type="fill" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo urban" alpha="1" tags="Topography" type="fill" clip_to_extent="1">
       <layer enabled="1" class="SimpleFill" locked="0" pass="0">
         <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
         <prop k="color" v="255,166,184,255"/>
@@ -5490,7 +5490,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol force_rhr="0" name="topo water" alpha="1" tags="Topology" type="fill" clip_to_extent="1">
+    <symbol force_rhr="0" name="topo water" alpha="1" tags="Topography" type="fill" clip_to_extent="1">
       <layer enabled="1" class="SimpleFill" locked="0" pass="0">
         <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
         <prop k="color" v="165,191,221,255"/>
