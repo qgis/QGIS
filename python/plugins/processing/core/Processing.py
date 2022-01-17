@@ -63,9 +63,6 @@ with QgsRuntimeProfiler.profile('Import GDAL Provider'):
 with QgsRuntimeProfiler.profile('Import Script Provider'):
     from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
 
-
-# from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
-
 # should be loaded last - ensures that all dependent algorithms are available when loading models
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
 from processing.modeler.ProjectProvider import ProjectProvider  # NOQA
