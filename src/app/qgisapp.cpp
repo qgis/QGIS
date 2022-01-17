@@ -9929,6 +9929,7 @@ Qgs3DMapCanvasWidget *QgisApp::open3DMapView( const QString &viewName )
 
 void QgisApp::close3DMapView( const QString &viewName )
 {
+#ifdef HAVE_3D
   Qgs3DMapCanvasWidget *widget = get3DMapView( viewName );
   if ( !widget )
     return;
@@ -9950,6 +9951,9 @@ void QgisApp::close3DMapView( const QString &viewName )
   }
   mOpen3DMapViews.remove( widget );
   delete widget;
+#else
+  Q_UNUSED( viewName );
+#endif
 }
 
 Qgs3DMapCanvasWidget *QgisApp::duplicate3DMapView( const QString &existingViewName, const QString &newViewName )
@@ -14008,7 +14012,8 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
 
   return widget;
 #else
-  Q_UNUSED( name )
+  Q_UNUSED( name );
+  Q_UNUSED( isDocked );
   return nullptr;
 #endif
 }
