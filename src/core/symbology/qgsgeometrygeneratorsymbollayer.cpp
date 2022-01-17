@@ -218,7 +218,7 @@ void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &c
     }
     if ( patchShapeGeometry.isEmpty() )
     {
-      Qgis::SymbolType originalSymbolType;
+      Qgis::SymbolType originalSymbolType = Qgis::SymbolType::Hybrid;
       switch ( context.originalGeometryType() )
       {
         case QgsWkbTypes::PointGeometry:
