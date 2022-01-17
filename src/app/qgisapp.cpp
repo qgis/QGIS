@@ -14002,10 +14002,9 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
   markDirty();
 
   Qgs3DMapCanvasWidget *widget = new Qgs3DMapCanvasWidget( isDocked );
-  QgsDockableWidgetHelper *dockableWidget = widget->dockableWidget();
 
   mOpen3DMapViews.insert( widget );
-  dockableWidget->setWindowTitle( name );
+  widget->setWindowTitle( name );
   widget->mapCanvas3D()->setObjectName( name );
   widget->setMainCanvas( mMapCanvas );
   widget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );

@@ -102,11 +102,11 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     mDialog = nullptr;
   }
 
+  mIsDocked = docked;
+
   if ( docked )
   {
     // going from window -> dock
-    mIsDocked = true;
-
     mDock = new QgsDockWidget( QgisApp::instance() );
     mDock->setWindowTitle( this->windowTitle() );
     mDock->setWidget( mWidget );
@@ -123,9 +123,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
   else
   {
     // going from dock -> window
-    mIsDocked = false;
-
-    mDialog = new QDialog( this, Qt::Window );
+    mDialog = new QDialog( QgisApp::instance(), Qt::Window );
 
     mDialog->setWindowTitle( this->windowTitle() );
     QVBoxLayout *vl = new QVBoxLayout();
@@ -148,7 +146,6 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
 void QgsDockableWidgetHelper::setWindowTitle( const QString &title )
 {
   QWidget::setWindowTitle( title );
-  mWidget->setWindowTitle( title );
   if ( mDialog )
   {
     mDialog->setWindowTitle( title );

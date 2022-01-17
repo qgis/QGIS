@@ -57,8 +57,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( bool isDocked )
   : QWidget( nullptr )
 {
   const QgsSettings setting;
-  setAttribute( Qt::WA_DeleteOnClose );  // removes the dock widget from main window when
-
 
   QToolBar *toolBar = new QToolBar( this );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
@@ -293,6 +291,12 @@ void Qgs3DMapCanvasWidget::measureLine()
 void Qgs3DMapCanvasWidget::setDocked( bool docked )
 {
   mDockUnDockBtn->setChecked( docked );
+}
+
+void Qgs3DMapCanvasWidget::setWindowTitle( const QString &title )
+{
+  QWidget::setWindowTitle( title );
+  mDockableWidget->setWindowTitle( title );
 }
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( bool visibility )

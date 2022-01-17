@@ -56,6 +56,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void setDocked( bool docked );
 
+    void setWindowTitle( const QString &title );
+
   signals:
     void toggleDockModeRequested( bool docked );
 
