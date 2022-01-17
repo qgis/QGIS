@@ -444,13 +444,21 @@ int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<IndexedPointClo
   if ( pointCount == 0 )
     return 0;
 
-  if ( order == QgsPointCloudRenderer::DrawOrder::BottomToTop )
-    std::sort( allPairs.begin(), allPairs.end(), []( QPair<int, double> a, QPair<int, double> b ) { return a.second < b.second; } );
-  else if ( order == QgsPointCloudRenderer::DrawOrder::TopToBottom )
-    std::sort( allPairs.begin(), allPairs.end(), []( QPair<int, double> a, QPair<int, double> b ) { return a.second > b.second; } );
+  switch ( order )
+  {
+    case QgsPointCloudRenderer::DrawOrder::BottomToTop:
+      std::sort( allPairs.begin(), allPairs.end(), []( QPair<int, double> a, QPair<int, double> b ) { return a.second < b.second; } );
+      break;
+    case QgsPointCloudRenderer::DrawOrder::TopToBottom:
+      std::sort( allPairs.begin(), allPairs.end(), []( QPair<int, double> a, QPair<int, double> b ) { return a.second > b.second; } );
+      break;
+    case QgsPointCloudRenderer::DrawOrder::Default:
+      break;
+  }
 
   // Now we can reconstruct a byte array sorted by Z value
   QByteArray sortedByteArray;
+  sortedByteArray.reserve( allPairs.size() );
   for ( QPair<int, double> pair : allPairs )
     sortedByteArray.append( allByteArrays.mid( pair.first * recordSize, recordSize ) );
 
