@@ -844,7 +844,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
       {
         // if is also escape and next character is quote, then
         // escape the quote..
-        if ( isEscape && buffer[cp] == quoteChar )
+        if ( isEscape && cp < buffer.length() && buffer[cp] == quoteChar )
         {
           field.append( quoteChar );
           cp++;
