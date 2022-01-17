@@ -1060,7 +1060,7 @@ bool QgsCptCityColorRamp::loadFile()
     return false;
   }
 
-  QgsDebugMsg( QStringLiteral( "filename= %1 loaded=%2" ).arg( filename ).arg( mFileLoaded ) );
+  QgsDebugMsgLevel( QStringLiteral( "filename= %1 loaded=%2" ).arg( filename ).arg( mFileLoaded ), 2 );
 
   // get color ramp from svg file
   QMap< double, QPair<QColor, QColor> > colorMap =
