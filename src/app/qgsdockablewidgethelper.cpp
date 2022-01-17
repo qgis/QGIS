@@ -28,8 +28,6 @@ QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, QWidget *widget
   , mIsDockFloating( true )
   , mDockArea( Qt::RightDockWidgetArea )
 {
-  mWidget->setParent( this );
-
   toggleDockMode( isDocked );
 }
 
@@ -59,6 +57,11 @@ QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
 
 void QgsDockableWidgetHelper::setWidget( QWidget *widget )
 {
+  // Make sure the old mWidget is not stuck as a child of mDialog or mDock
+  if ( mWidget )
+  {
+    mWidget->setParent( QgisApp::instance() );
+  }
   if ( mDialog )
   {
     mDialog->layout()->removeWidget( mWidget );
@@ -79,8 +82,13 @@ bool QgsDockableWidgetHelper::isDocked() const
 
 void QgsDockableWidgetHelper::toggleDockMode( bool docked )
 {
-  mWidget->setParent( this );
+  // Make sure the old mWidget is not stuck as a child of mDialog or mDock
+  if ( mWidget )
+  {
+    mWidget->setParent( QgisApp::instance() );
+  }
 
+  // Remove both the dialog and the dock widget first
   if ( mDock )
   {
     mDockGeometry = mDock->geometry();
@@ -103,6 +111,10 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
   }
 
   mIsDocked = docked;
+
+  // If there is no widget set, do not create a dock or a dialog
+  if ( mWidget == nullptr )
+    return;
 
   if ( docked )
   {
@@ -199,22 +211,6 @@ Qt::DockWidgetArea QgsDockableWidgetHelper::dockFloatingArea() const
   if ( mDock )
     return QgisApp::instance()->dockWidgetArea( mDock );
   return mDockArea;
-}
-
-void QgsDockableWidgetHelper::closeEvent( QCloseEvent *e )
-{
-  if ( mDialog )
-  {
-    mDialog->layout()->removeWidget( mWidget );
-  }
-  if ( mDock )
-  {
-    mDock->setWidget( nullptr );
-  }
-  mWidget->setParent( this );
-
-  emit closed();
-  QWidget::closeEvent( e );
 }
 
 void QgsDockableWidgetHelper::setupDockWidget()

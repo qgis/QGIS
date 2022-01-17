@@ -138,7 +138,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( bool isDocked )
   mDockUnDockBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mDockify.svg" ) ) );
   mDockUnDockBtn->setToolTip( tr( "Dock 3D Map View" ) );
   mDockUnDockBtn->setCheckable( true );
-  mDockUnDockBtn->setChecked( true );
+  mDockUnDockBtn->setChecked( isDocked );
   mDockUnDockBtn->setEnabled( true );
   connect( mDockUnDockBtn, &QToolButton::toggled, this, &Qgs3DMapCanvasWidget::toggleDockModeRequested );
 
@@ -232,6 +232,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( bool isDocked )
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
 {
   this->setParent( QgisApp::instance() );
+  mDockableWidget->setWidget( nullptr );
   delete mDockableWidget;
 }
 
@@ -286,11 +287,6 @@ void Qgs3DMapCanvasWidget::measureLine()
     return;
 
   mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
-}
-
-void Qgs3DMapCanvasWidget::setDocked( bool docked )
-{
-  mDockUnDockBtn->setChecked( docked );
 }
 
 void Qgs3DMapCanvasWidget::setWindowTitle( const QString &title )

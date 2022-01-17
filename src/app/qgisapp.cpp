@@ -4799,8 +4799,7 @@ void QgisApp::closeAdditional3DMapCanvases()
   QSet<Qgs3DMapCanvasWidget *> openDocks = mOpen3DMapViews;
   for ( Qgs3DMapCanvasWidget *w : openDocks )
   {
-    w->dockableWidget()->close();
-    delete w;
+    close3DMapView( w->windowTitle() );
   }
 #endif
 }
@@ -9933,6 +9932,7 @@ void QgisApp::close3DMapView( const QString &viewName )
   Qgs3DMapCanvasWidget *widget = get3DMapView( viewName );
   if ( !widget )
     return;
+  mOpen3DMapViews.remove( widget );
 
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
@@ -9949,7 +9949,6 @@ void QgisApp::close3DMapView( const QString &viewName )
     QgsProject::instance()->viewsManager()->register3DViewSettings( viewName, elem3DMap );
     QgsProject::instance()->viewsManager()->set3DViewInitiallyVisible( viewName, false );
   }
-  mOpen3DMapViews.remove( widget );
   delete widget;
 #else
   Q_UNUSED( viewName );
@@ -16700,7 +16699,6 @@ void QgisApp::projectChanged( const QDomDocument &doc )
 #ifdef HAVE_3D
 void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomDocument &doc, QDomElement &elem3DMap )
 {
-  QgsDockableWidgetHelper *w = widget->dockableWidget();
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
   elem3DMap.setAttribute( QStringLiteral( "name" ), widget->mapCanvas3D()->objectName() );
@@ -16711,6 +16709,7 @@ void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomDocument
   QDomElement elemAnimation = widget->animationWidget()->animation().writeXml( doc );
   elem3DMap.appendChild( elemAnimation );
 
+  QgsDockableWidgetHelper *w = widget->dockableWidget();
   elem3DMap.setAttribute( QStringLiteral( "isDocked" ), w->isDocked() );
 
   QRect dockGeom = w->dockGeometry();
@@ -16790,9 +16789,6 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
 
     widget->dockableWidget()->setDockGeometry( QRect( x, y, w, h ), floating, area );
   }
-
-  bool isDocked = elem3DMap.attribute( QStringLiteral( "isDocked" ), "1" ).toInt() == 1;
-  widget->setDocked( isDocked );
 }
 #endif
 

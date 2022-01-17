@@ -53,9 +53,6 @@ class APP_EXPORT QgsDockableWidgetHelper : public QWidget
     bool isDockFloating() const;
     Qt::DockWidgetArea dockFloatingArea() const;
 
-  protected:
-    void closeEvent( QCloseEvent * ) override;
-
   signals:
     void closed();
 

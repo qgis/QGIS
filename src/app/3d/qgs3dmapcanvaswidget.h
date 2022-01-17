@@ -54,8 +54,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     QgsDockableWidgetHelper *dockableWidget() { return mDockableWidget; }
 
-    void setDocked( bool docked );
-
     void setWindowTitle( const QString &title );
 
   signals:
