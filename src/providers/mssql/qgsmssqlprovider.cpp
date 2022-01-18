@@ -491,6 +491,7 @@ void QgsMssqlProvider::loadFields()
   if ( mPrimaryKeyAttrs.isEmpty() )
   {
     query.clear();
+    query.setForwardOnly( true );
     if ( !query.exec( QStringLiteral( "exec sp_pkeys @table_name = N%1, @table_owner = %2 " ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) ) )
     {
       QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
@@ -528,6 +529,7 @@ void QgsMssqlProvider::loadFields()
     for ( const QString &pk : constPkCandidates )
     {
       query.clear();
+      query.setForwardOnly( true );
       if ( !query.exec( QStringLiteral( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
                         .arg( pk, mSchemaName, mTableName ) ) )
       {
@@ -1869,6 +1871,7 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs() const
       query.finish();
     }
     query.clear();
+    query.setForwardOnly( true );
 
     // Look in the system reference table for the data if we can't find it yet
     execOk = query.exec( QStringLiteral( "SELECT well_known_text FROM sys.spatial_reference_systems WHERE spatial_reference_id=%1" ).arg( mSRId ) );
@@ -2484,6 +2487,7 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri,
     }
     query.finish();
     query.clear();
+    query.setForwardOnly( true );
   }
 
   QString uiFileColumn;
