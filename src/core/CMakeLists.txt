@@ -10,6 +10,9 @@ ADD_FLEX_BISON_DEPENDENCY(QgsSqlStatementLexer QgsSqlStatementParser)
 BISON_TARGET(QgsMeshCalcParser mesh/qgsmeshcalcparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalcparser.cpp COMPILE_FLAGS "-p mesh_")
 FLEX_TARGET(QgsMeshCalcLexer mesh/qgsmeshcalclexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalclexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
+BISON_TARGET(QgsPointcloudExpressionParser pointcloud/expression/qgspointcloudexpressionparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgspointcloudexpressionparser.cpp COMPILE_FLAGS "-p pointcloud_")
+FLEX_TARGET(QgsPointcloudExpressionLexer pointcloud/expression/qgspointcloudexpressionlexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgspointcloudexpressionlexer.cpp)
+ADD_FLEX_BISON_DEPENDENCY(QgsPointcloudExpressionLexer QgsPointcloudExpressionParser)
 
 set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
@@ -30,6 +33,8 @@ set(QGIS_CORE_SRCS
   ${BISON_QgsSqlStatementParser_OUTPUTS}
   ${FLEX_QgsMeshCalcLexer_OUTPUTS}
   ${BISON_QgsMeshCalcParser_OUTPUTS}
+  ${FLEX_QgsPointcloudExpressionLexer_OUTPUTS}
+  ${BISON_QgsPointcloudExpressionParser_OUTPUTS}
 
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
@@ -726,6 +731,10 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudrendererregistry.cpp
   pointcloud/qgspointcloudrgbrenderer.cpp
 
+  pointcloud/expression/qgspointcloudexpression.cpp
+  pointcloud/expression/qgspointcloudexpressionnode.cpp
+  pointcloud/expression/qgspointcloudexpressionnodeimpl.cpp
+
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
   labeling/qgslabelingenginesettings.cpp
@@ -903,6 +912,8 @@ if(NOT MSVC)
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
+    ${FLEX_QgsPointcloudExpressionLexer_OUTPUTS}
+    ${BISON_QgsPointcloudExpressionParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS -w)
 else()
   # -wd4702 unreachable code
@@ -919,6 +930,8 @@ else()
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
+    ${FLEX_QgsPointcloudExpressionLexer_OUTPUTS}
+    ${BISON_QgsPointcloudExpressionParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS /W0)
 endif()
 
@@ -1494,6 +1507,10 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudrendererregistry.h
   pointcloud/qgspointcloudrgbrenderer.h
 
+  pointcloud/expression/qgspointcloudexpression.h
+  pointcloud/expression/qgspointcloudexpressionnode.h
+  pointcloud/expression/qgspointcloudexpressionnodeimpl.h
+
   proj/qgscelestialbody.h
   proj/qgscoordinatereferencesystem.h
   proj/qgscoordinatereferencesystemregistry.h
@@ -2006,6 +2023,7 @@ target_include_directories(qgis_core PUBLIC
   numericformats
   pal
   pointcloud
+  pointcloud/expression
   processing
   processing/models
   proj
