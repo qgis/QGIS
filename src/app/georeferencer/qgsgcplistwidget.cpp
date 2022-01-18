@@ -49,13 +49,16 @@ QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
 
   // set delegates for items
   setItemDelegateForColumn( 1, mNonEditableDelegate ); // id
-  setItemDelegateForColumn( 2, mCoordDelegate ); // srcX
-  setItemDelegateForColumn( 3, mCoordDelegate ); // srcY
-  setItemDelegateForColumn( 4, mDmsAndDdDelegate ); // dstX
-  setItemDelegateForColumn( 5, mDmsAndDdDelegate ); // dstY
-  setItemDelegateForColumn( 6, mNonEditableDelegate ); // dX
-  setItemDelegateForColumn( 7, mNonEditableDelegate ); // dY
-  setItemDelegateForColumn( 8, mNonEditableDelegate ); // residual
+  setItemDelegateForColumn( 2, mNonEditableDelegate ); // crs
+  setItemDelegateForColumn( 3, mCoordDelegate ); // srcX
+  setItemDelegateForColumn( 4, mCoordDelegate ); // srcY
+  setItemDelegateForColumn( 5, mCoordDelegate ); // gcpX
+  setItemDelegateForColumn( 6, mCoordDelegate ); // gcpY
+  setItemDelegateForColumn( 7, mCoordDelegate ); // dstX
+  setItemDelegateForColumn( 8, mCoordDelegate ); // dstY
+  setItemDelegateForColumn( 9, mNonEditableDelegate ); // dX
+  setItemDelegateForColumn( 10, mNonEditableDelegate ); // dY
+  setItemDelegateForColumn( 11, mNonEditableDelegate ); // residual
 
   connect( this, &QAbstractItemView::doubleClicked,
            this, &QgsGCPListWidget::itemDoubleClicked );
@@ -213,32 +216,58 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
   QgsGeorefDataPoint *dataPoint = mGCPList->at( mPrevRow );
   if ( lineEdit )
   {
+    bool changeX = false;
     const double value = lineEdit->text().toDouble();
-    QgsPointXY newMapCoords( dataPoint->mapCoords() );
-    QgsPointXY newPixelCoords( dataPoint->pixelCoords() );
-    if ( mPrevColumn == 2 ) // srcX
-    {
-      newPixelCoords.setX( value );
-    }
-    else if ( mPrevColumn == 3 ) // srcY
-    {
-      newPixelCoords.setY( value );
-    }
-    else if ( mPrevColumn == 4 ) // dstX
-    {
-      newMapCoords.setX( value );
-    }
-    else if ( mPrevColumn == 5 ) // dstY
-    {
-      newMapCoords.setY( value );
-    }
-    else
-    {
-      return;
-    }
+    QgsPointXY tempPoint;
 
-    dataPoint->setPixelCoords( newPixelCoords );
-    dataPoint->setMapCoords( newMapCoords );
+    switch ( mPrevColumn )
+    {
+      case 2:
+        changeX = true;
+      case 3:
+        tempPoint( dataPoint->pixelCoords() );
+        if changeX:
+          tempPoint.setX( value );
+        else
+          tempPoint.setY( value );
+        dataPoint->setPixelCoords( tempPoint );
+        break;
+
+      case 4:
+        changeX = true;
+      case 5:
+        tempPoint( dataPoint->mapCoords() );
+        if changeX:
+          tempPoint.setX( value );
+        else
+          tempPoint.setY( value );
+        dataPoint->setMapCoords( tempPoint );
+        break;
+
+      case 6:
+        changeX = true;
+      case 7:
+        tempPoint( dataPoint->transCoords() );
+        if changeX:
+          tempPoint.setX( value );
+        else
+          tempPoint.setY( value );
+        try
+        {
+          tempPoint =  QgsCoordinateTransform( mGCPList->targetCRS(), dataPoint->crs(),
+                                                 QgsProject::instance() ).transform( tempPoint );
+        }
+        catch ( const QgsException &e )
+        {
+          Q_UNUSED( e );
+          return;
+        }
+        dataPoint->setMapCoords( tempPoint );
+        break;
+
+      default:
+        return;
+    }
   }
 
   dataPoint->updateCoords();

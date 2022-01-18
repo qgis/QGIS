@@ -2004,7 +2004,11 @@ bool QgsGeoreferencerMainWindow::updateGeorefTransform()
 {
   QVector<QgsPointXY> mapCoords, pixelCoords;
   if ( mGCPListWidget->gcpList() )
-    mGCPListWidget->gcpList()->createGCPVectors( mapCoords, pixelCoords, mProjection );
+  {
+    mGCPListWidget-­>gcpList()->setTargetCrs( mProjection );
+    mGCPListWidget->gcpList()->createGCPVectors( mapCoords, pixelCoords );
+  }
+
   else
     return false;
 

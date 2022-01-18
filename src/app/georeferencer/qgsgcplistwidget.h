@@ -36,6 +36,7 @@ class QgsGCPListWidget : public QTableView
 
     void setGCPList( QgsGCPList *theGCPList );
     void setGeorefTransform( QgsGeorefTransform *georefTransform );
+
     QgsGCPList *gcpList() { return mGCPList; }
     void updateGCPList();
     void closeEditors();
@@ -73,6 +74,8 @@ class QgsGCPListWidget : public QTableView
 
     int mPrevRow = 0;
     int mPrevColumn = 0;
+
+    QgsCoordinateReferenceSystem mTargerCRS;
 };
 
 #endif

@@ -84,8 +84,10 @@ void QgsGCPListModel::updateModel()
   bool mapUnitsPossible = false;
   QVector<QgsPointXY> mapCoords, pixelCoords;
 
-  mGCPList->createGCPVectors( mapCoords, pixelCoords,
-                              QgsCoordinateReferenceSystem( s.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString() ) );
+  QgsCoordinateReferenceSystem storedCrs( s.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString() );
+  if ( storedCrs != mGCPList->targetCRS() )
+    mGCPList->setTargetCrs( stored Crs );
+  mGCPList->createGCPVectors( mapCoords, pixelCoords );
 
   if ( mGeorefTransform )
   {
@@ -104,8 +106,11 @@ void QgsGCPListModel::updateModel()
 
   itemLabels << tr( "Visible" )
              << tr( "ID" )
+             << tr( ."Crs" )
              << tr( "Source X" )
              << tr( "Source Y" )
+             << tr( "GCP X" )
+             << tr( "GCP Y" )
              << tr( "Dest. X" )
              << tr( "Dest. Y" )
              << tr( "dX (%1)" ).arg( unitType )
@@ -134,9 +139,13 @@ void QgsGCPListModel::updateModel()
       si->setCheckState( Qt::Unchecked );
 
     setItem( i, j++, si );
+
     setItem( i, j++, new QgsStandardItem( i ) );
+    setItem( i, j++, new QgsStandardItem( p->crs().authid() ) );
     setItem( i, j++, new QgsStandardItem( p->pixelCoords().x() ) );
     setItem( i, j++, new QgsStandardItem( p->pixelCoords().y() ) );
+    setItem( i, j++, new QgsStandardItem( p->mapCoords().x() ) );
+    setItem( i, j++, new QgsStandardItem( p->mapCoords().y() ) );
     setItem( i, j++, new QgsStandardItem( p->transCoords().x() ) );
     setItem( i, j++, new QgsStandardItem( p->transCoords().y() ) );
 

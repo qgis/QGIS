@@ -33,7 +33,7 @@ QgsGCPList::QgsGCPList( const QgsGCPList &list )
   }
 }
 
-void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords, const QgsCoordinateReferenceSystem targetCrs )
+void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords )
 {
   mapCoords   = QVector<QgsPointXY>( size() );
   pixelCoords = QVector<QgsPointXY>( size() );
@@ -43,11 +43,11 @@ void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPo
     QgsGeorefDataPoint *pt = at( i );
     if ( pt->isEnabled() )
     {
-      if ( targetCrs.isValid() )
+      if ( mTargetCrs.isValid() )
       {
         try
         {
-          transCoords =  QgsCoordinateTransform( pt->crs(), targetCrs,
+          transCoords =  QgsCoordinateTransform( pt->crs(), mTargetCrs,
                                                  QgsProject::instance() ).transform( pt->mapCoords() );
           mapCoords[j] = transCoords;
           pt->setTransCoords( transCoords );
