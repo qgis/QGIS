@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgspointcloudexpressionnodeimpl.h"
-#include "qgsexpressionutils.h"
-#include "qgsexpression.h"
+#include "qgspointcloudexpressionutils.h"
+#include "qgspointcloudexpression.h"
 
 #include "qgsgeometry.h"
 #include "qgsfeaturerequest.h"

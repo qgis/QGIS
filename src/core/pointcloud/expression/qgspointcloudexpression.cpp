@@ -22,7 +22,7 @@
 #include "qgsgeometry.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsexpressionutils.h"
+#include "qgspointcloudexpressionutils.h"
 #include "qgspointcloudexpression_p.h"
 
 #include <QRegularExpression>
@@ -242,7 +242,6 @@ bool QgsPointcloudExpression::prepare( const QgsPointcloudExpressionContext *con
     return false;
   }
 
-  initGeomCalculator( context );
   d->mIsPrepared = true;
   return d->mRootNode->prepare( this, context );
 }
@@ -296,63 +295,6 @@ QString QgsPointcloudExpression::dump() const
     return QString();
 
   return d->mRootNode->dump();
-}
-
-QString QgsPointcloudExpression::replaceExpressionText( const QString &action, const QgsPointcloudExpressionContext *context, const QgsDistanceArea *distanceArea )
-{
-  QString expr_action;
-
-  int index = 0;
-  while ( index < action.size() )
-  {
-    static const QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
-
-    const QRegularExpressionMatch match = sRegEx.match( action, index );
-    if ( !match.hasMatch() )
-      break;
-
-    const int pos = action.indexOf( sRegEx, index );
-    const int start = index;
-    index = pos + match.capturedLength( 0 );
-    const QString toReplace = match.captured( 1 ).trimmed();
-    QgsDebugMsgLevel( "Found expression: " + toReplace, 3 );
-
-    QgsPointcloudExpression exp( toReplace );
-    if ( exp.hasParserError() )
-    {
-      QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      expr_action += action.midRef( start, index - start );
-#else
-      expr_action += QStringView {action}.mid( start, index - start );
-#endif
-      continue;
-    }
-
-    QVariant result = exp.evaluate( context );
-
-    if ( exp.hasEvalError() )
-    {
-      QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      expr_action += action.midRef( start, index - start );
-#else
-      expr_action += QStringView {action}.mid( start, index - start );
-#endif
-      continue;
-    }
-
-    QgsDebugMsgLevel( "Expression result is: " + result.toString(), 3 );
-    expr_action += action.mid( start, pos - start ) + result.toString();
-  }
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-  expr_action += action.midRef( index );
-#else
-  expr_action += QStringView {action}.mid( index ).toString();
-#endif
-
-  return expr_action;
 }
 
 QString QgsPointcloudExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType )
