@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsscrollarea.h"
+
 #include <QEvent>
 #include <QMouseEvent>
-#include "qgsscrollarea.h"
 #include <QScrollBar>
-#include "qgslogger.h"
 
 // milliseconds to swallow child wheel events for after a scroll occurs
 #define TIMEOUT 1000
