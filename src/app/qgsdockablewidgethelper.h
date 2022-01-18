@@ -26,11 +26,11 @@
 
 class QgsDockWidget;
 
-class APP_EXPORT QgsDockableWidgetHelper : public QWidget
+class APP_EXPORT QgsDockableWidgetHelper : public QObject
 {
     Q_OBJECT
   public:
-    QgsDockableWidgetHelper( bool isDocked, QWidget *widget );
+    QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget );
     ~QgsDockableWidgetHelper();
 
     void setWidget( QWidget *widget );
@@ -44,6 +44,7 @@ class APP_EXPORT QgsDockableWidgetHelper : public QWidget
     bool isDocked() const;
 
     void setWindowTitle( const QString &title );
+    QString windowTitle() const { return mWindowTitle; }
 
     void setDialogGeometry( const QRect &geom );
     void setDockGeometry( const QRect &geom, bool isFloating, Qt::DockWidgetArea area );
@@ -72,6 +73,8 @@ class APP_EXPORT QgsDockableWidgetHelper : public QWidget
     QRect mDockGeometry;
     bool mIsDockFloating;
     Qt::DockWidgetArea mDockArea;
+
+    QString mWindowTitle;
 };
 
 #endif // QGSDOCKABLEWIDGETHELPER_H

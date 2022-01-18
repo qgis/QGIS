@@ -39,9 +39,9 @@ void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, Func1 slot )
     menu->clear();
     for ( auto widget : lst )
     {
-      QAction *a = menu->addAction( widget->mapCanvas3D()->objectName(), w, slot );
+      QAction *a = menu->addAction( widget->canvasName(), w, slot );
       // need to use a custom property for identification because Qt likes to add "&" to the action text
-      a->setProperty( "name", widget->mapCanvas3D()->objectName() );
+      a->setProperty( "name", widget->objectName() );
     }
     if ( lst.isEmpty() )
     {
@@ -60,7 +60,7 @@ Qgs3DMapCanvasWidget *_dock3DViewFromSender( QObject *sender )
   const QList<Qgs3DMapCanvasWidget *> lst = QgisApp::instance()->get3DMapViews();
   for ( auto widget : lst )
   {
-    QString objName = widget->mapCanvas3D()->objectName();
+    QString objName = widget->canvasName();
     if ( objName == actionText )
     {
       return widget;

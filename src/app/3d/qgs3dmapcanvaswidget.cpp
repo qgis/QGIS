@@ -53,8 +53,9 @@
 
 #include <QWidget>
 
-Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( bool isDocked )
+Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
+  , mCanvasName( name )
 {
   const QgsSettings setting;
 
@@ -225,7 +226,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( bool isDocked )
 
   onTotalPendingJobsCountChanged();
 
-  mDockableWidget = new QgsDockableWidgetHelper( isDocked, this );
+  mDockableWidget = new QgsDockableWidgetHelper( isDocked, mCanvasName, this );
   connect( this, &Qgs3DMapCanvasWidget::toggleDockModeRequested, mDockableWidget, &QgsDockableWidgetHelper::toggleDockMode );
 }
 
@@ -289,10 +290,10 @@ void Qgs3DMapCanvasWidget::measureLine()
   mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
 }
 
-void Qgs3DMapCanvasWidget::setWindowTitle( const QString &title )
+void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )
 {
-  QWidget::setWindowTitle( title );
-  mDockableWidget->setWindowTitle( title );
+  mCanvasName = name;
+  mDockableWidget->setWindowTitle( name );
 }
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( bool visibility )

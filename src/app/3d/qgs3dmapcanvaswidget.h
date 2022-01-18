@@ -38,7 +38,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 {
     Q_OBJECT
   public:
-    Qgs3DMapCanvasWidget( bool isDocked );
+    Qgs3DMapCanvasWidget( const QString &name, bool isDocked );
     ~Qgs3DMapCanvasWidget();
 
     //! takes ownership
@@ -54,7 +54,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     QgsDockableWidgetHelper *dockableWidget() { return mDockableWidget; }
 
-    void setWindowTitle( const QString &title );
+    void setCanvasName( const QString &name );
+    QString canvasName() const { return mCanvasName; }
 
   signals:
     void toggleDockModeRequested( bool docked );
@@ -81,6 +82,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
 
   private:
+    QString mCanvasName;
     Qgs3DMapCanvas *mCanvas = nullptr;
     Qgs3DAnimationWidget *mAnimationWidget = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;

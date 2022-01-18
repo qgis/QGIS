@@ -20,12 +20,13 @@
 
 #include <QWidget>
 
-QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, QWidget *widget )
-  : QWidget( nullptr )
+QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget )
+  : QObject( nullptr )
   , mWidget( widget )
   , mDialogGeometry( 0, 0, 200, 200 )
   , mDockGeometry( QRect() )
   , mIsDockFloating( true )
+  , mWindowTitle( windowTitle )
   , mDockArea( Qt::RightDockWidgetArea )
 {
   toggleDockMode( isDocked );
@@ -120,7 +121,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
   {
     // going from window -> dock
     mDock = new QgsDockWidget( QgisApp::instance() );
-    mDock->setWindowTitle( this->windowTitle() );
+    mDock->setWindowTitle( mWindowTitle );
     mDock->setWidget( mWidget );
     setupDockWidget();
 
@@ -129,7 +130,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
       mDockGeometry = mDock->geometry();
       mIsDockFloating = mDock->isFloating();
       mDockArea = QgisApp::instance()->dockWidgetArea( mDock );
-      QgisApp::instance()->close3DMapView( this->windowTitle() );
+      QgisApp::instance()->close3DMapView( windowTitle() );
     } );
   }
   else
@@ -137,7 +138,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     // going from dock -> window
     mDialog = new QDialog( QgisApp::instance(), Qt::Window );
 
-    mDialog->setWindowTitle( this->windowTitle() );
+    mDialog->setWindowTitle( mWindowTitle );
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins( 0, 0, 0, 0 );
     vl->addWidget( mWidget );
@@ -148,7 +149,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     connect( mDialog, &QDialog::finished, [ = ]()
     {
       mDialogGeometry = mDialog->geometry();
-      QgisApp::instance()->close3DMapView( this->windowTitle() );
+      QgisApp::instance()->close3DMapView( windowTitle() );
     } );
 
     mDialog->setGeometry( mDialogGeometry );
@@ -157,7 +158,8 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
 
 void QgsDockableWidgetHelper::setWindowTitle( const QString &title )
 {
-  QWidget::setWindowTitle( title );
+  mWindowTitle = title;
+  qDebug() << __PRETTY_FUNCTION__ << title;
   if ( mDialog )
   {
     mDialog->setWindowTitle( title );
@@ -221,7 +223,7 @@ void QgsDockableWidgetHelper::setupDockWidget()
   if ( mDockGeometry.isEmpty() )
   {
     // try to guess a nice initial placement for view - about 3/4 along, half way down
-    mDock->setGeometry( QRect( static_cast< int >( rect().width() * 0.75 ), static_cast< int >( rect().height() * 0.5 ), 400, 400 ) );
+    mDock->setGeometry( QRect( static_cast< int >( mWidget->rect().width() * 0.75 ), static_cast< int >( mWidget->rect().height() * 0.5 ), 400, 400 ) );
     QgisApp::instance()->addDockWidget( mDockArea, mDock );
   }
   else
