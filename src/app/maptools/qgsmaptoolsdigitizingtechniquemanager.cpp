@@ -30,9 +30,8 @@
 #include <QToolButton>
 #include <QMenu>
 
-QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QgsAppMapTools *mapTools, QObject *parent )
+QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QObject *parent )
   : QObject( parent )
-  , mMapTools( mapTools )
 {
   mTechniqueActions.insert( QgsMapToolCapture::CaptureTechnique::StraightSegments, QgisApp::instance()->mActionDigitizeWithSegment );
   mTechniqueActions.insert( QgsMapToolCapture::CaptureTechnique::CircularString, QgisApp::instance()->mActionDigitizeWithCurve );
@@ -45,7 +44,7 @@ QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( Qg
 
 void QgsMapToolsDigitizingTechniqueManager::setupCanvasTools()
 {
-  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
+  const QList< QgsMapToolCapture * > captureTools = QgisApp::instance()->captureTools();
   for ( QgsMapToolCapture *tool : captureTools )
   {
     connect( tool->action(), &QAction::toggled, this, [this, tool]( bool checked ) {  enableDigitizingTechniqueActions( checked, tool->action() ); } );

@@ -27,7 +27,6 @@
 
 
 class QgsSpinBox;
-class QgsAppMapTools;
 
 class QAction;
 class QToolButton;
@@ -58,7 +57,7 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
     static const inline QgsSettingsEntryString settingMapToolShapeDefaultForShape = QgsSettingsEntryString( QStringLiteral( "shape-map-tools/%1/default" ), QgsSettings::App, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
     static const inline QgsSettingsEntryString settingMapToolShapeCurrent = QgsSettingsEntryString( QStringLiteral( "shape-map-tools/current" ), QgsSettings::App, QString(), QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
 
-    QgsMapToolsDigitizingTechniqueManager( QgsAppMapTools *mapTools, QObject *parent );
+    QgsMapToolsDigitizingTechniqueManager( QObject *parent );
     ~QgsMapToolsDigitizingTechniqueManager();
     void setupToolBars();
     void setupCanvasTools();
@@ -72,8 +71,6 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
     void setShapeTool( const QString &shapeToolId );
 
   private:
-    QgsAppMapTools *mMapTools = nullptr;
-
     QMap<QgsMapToolCapture::CaptureTechnique, QAction *> mTechniqueActions;
     QHash<QString, QAction *> mShapeActions;
     QMap<QgsMapToolShapeAbstract::ShapeCategory, QToolButton *> mShapeCategoryButtons;
