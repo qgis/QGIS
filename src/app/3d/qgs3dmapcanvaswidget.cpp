@@ -135,16 +135,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   toolBar->addWidget( mBtnOptions );
 
-  mDockUnDockBtn = new QToolButton;
-  mDockUnDockBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mDockify.svg" ) ) );
-  mDockUnDockBtn->setToolTip( tr( "Dock 3D Map View" ) );
-  mDockUnDockBtn->setCheckable( true );
-  mDockUnDockBtn->setChecked( isDocked );
-  mDockUnDockBtn->setEnabled( true );
-  connect( mDockUnDockBtn, &QToolButton::toggled, this, &Qgs3DMapCanvasWidget::toggleDockModeRequested );
-
-  toolBar->addWidget( mDockUnDockBtn );
-
   mActionEnableShadows = new QAction( tr( "Show Shadows" ), this );
   mActionEnableShadows->setCheckable( true );
   connect( mActionEnableShadows, &QAction::toggled, this, [ = ]( bool enabled )
@@ -222,17 +212,20 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   layout->addWidget( mCanvas );
   layout->addWidget( mAnimationWidget );
 
-  this->setLayout( layout );
+  setLayout( layout );
 
   onTotalPendingJobsCountChanged();
 
-  mDockableWidget = new QgsDockableWidgetHelper( isDocked, mCanvasName, this );
-  connect( this, &Qgs3DMapCanvasWidget::toggleDockModeRequested, mDockableWidget, &QgsDockableWidgetHelper::toggleDockMode );
+  mDockableWidget = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
+  toolBar->addWidget( mDockableWidget->toggleButton() );
+  connect( mDockableWidget, &QgsDockableWidgetHelper::closed, [ = ]()
+  {
+    QgisApp::instance()->close3DMapView( canvasName() );
+  } );
 }
 
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
 {
-  this->setParent( QgisApp::instance() );
   mDockableWidget->setWidget( nullptr );
   delete mDockableWidget;
 }

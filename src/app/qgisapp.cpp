@@ -9949,7 +9949,7 @@ void QgisApp::close3DMapView( const QString &viewName )
     QgsProject::instance()->viewsManager()->register3DViewSettings( viewName, elem3DMap );
     QgsProject::instance()->viewsManager()->set3DViewInitiallyVisible( viewName, false );
   }
-  delete widget;
+  widget->deleteLater();
 #else
   Q_UNUSED( viewName );
 #endif
@@ -16706,7 +16706,7 @@ void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomDocument
   QDomElement elemAnimation = widget->animationWidget()->animation().writeXml( doc );
   elem3DMap.appendChild( elemAnimation );
 
-  QgsDockableWidgetHelper *w = widget->dockableWidget();
+  QgsDockableWidgetHelper *w = widget->dockableWidgetHelper();
   elem3DMap.setAttribute( QStringLiteral( "isDocked" ), w->isDocked() );
 
   QRect dockGeom = w->dockGeometry();
@@ -16773,7 +16773,7 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
     int dy = elem3DMap.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
     int dw = elem3DMap.attribute( QStringLiteral( "d_width" ), "200" ).toInt();
     int dh = elem3DMap.attribute( QStringLiteral( "d_height" ), "200" ).toInt();
-    widget->dockableWidget()->setDialogGeometry( QRect( dx, dy, dw, dh ) );
+    widget->dockableWidgetHelper()->setDialogGeometry( QRect( dx, dy, dw, dh ) );
   }
 
   {
@@ -16784,7 +16784,7 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
     bool floating = elem3DMap.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
     Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elem3DMap.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
 
-    widget->dockableWidget()->setDockGeometry( QRect( x, y, w, h ), floating, area );
+    widget->dockableWidgetHelper()->setDockGeometry( QRect( x, y, w, h ), floating, area );
   }
 }
 #endif

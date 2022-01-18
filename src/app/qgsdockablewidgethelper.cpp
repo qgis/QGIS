@@ -15,21 +15,27 @@
 
 #include "qgsdockablewidgethelper.h"
 
-#include "qgisapp.h"
 #include "qgsdockwidget.h"
+#include "qgsapplication.h"
 
-#include <QWidget>
-
-QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget )
+QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow )
   : QObject( nullptr )
   , mWidget( widget )
   , mDialogGeometry( 0, 0, 200, 200 )
   , mDockGeometry( QRect() )
   , mIsDockFloating( true )
-  , mWindowTitle( windowTitle )
   , mDockArea( Qt::RightDockWidgetArea )
+  , mWindowTitle( windowTitle )
+  , mOwnerWindow( ownerWindow )
 {
   toggleDockMode( isDocked );
+  mToggleButton.setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mDockify.svg" ) ) );
+  mToggleButton.setToolTip( tr( "Dock 3D Map View" ) );
+  mToggleButton.setCheckable( true );
+  mToggleButton.setChecked( isDocked );
+  mToggleButton.setEnabled( true );
+
+  connect( &mToggleButton, &QToolButton::toggled, this, &QgsDockableWidgetHelper::toggleDockMode );
 }
 
 QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
@@ -38,11 +44,11 @@ QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
   {
     mDockGeometry = mDock->geometry();
     mIsDockFloating = mDock->isFloating();
-    mDockArea = QgisApp::instance()->dockWidgetArea( mDock );
+    mDockArea = mOwnerWindow->dockWidgetArea( mDock );
 
     mDock->setWidget( nullptr );
-    QgisApp::instance()->removeDockWidget( mDock );
-    delete mDock;
+    mOwnerWindow->removeDockWidget( mDock );
+    mDock->deleteLater();
     mDock = nullptr;
   }
 
@@ -51,7 +57,7 @@ QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
     mDialogGeometry = mDialog->geometry();
 
     mDialog->layout()->removeWidget( mWidget );
-    delete mDialog;
+    mDialog->deleteLater();
     mDialog = nullptr;
   }
 }
@@ -61,7 +67,7 @@ void QgsDockableWidgetHelper::setWidget( QWidget *widget )
   // Make sure the old mWidget is not stuck as a child of mDialog or mDock
   if ( mWidget )
   {
-    mWidget->setParent( QgisApp::instance() );
+    mWidget->setParent( mOwnerWindow );
   }
   if ( mDialog )
   {
@@ -86,7 +92,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
   // Make sure the old mWidget is not stuck as a child of mDialog or mDock
   if ( mWidget )
   {
-    mWidget->setParent( QgisApp::instance() );
+    mWidget->setParent( mOwnerWindow );
   }
 
   // Remove both the dialog and the dock widget first
@@ -94,10 +100,10 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
   {
     mDockGeometry = mDock->geometry();
     mIsDockFloating = mDock->isFloating();
-    mDockArea = QgisApp::instance()->dockWidgetArea( mDock );
+    mDockArea = mOwnerWindow->dockWidgetArea( mDock );
 
     mDock->setWidget( nullptr );
-    QgisApp::instance()->removeDockWidget( mDock );
+    mOwnerWindow->removeDockWidget( mDock );
     delete mDock;
     mDock = nullptr;
   }
@@ -120,7 +126,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
   if ( docked )
   {
     // going from window -> dock
-    mDock = new QgsDockWidget( QgisApp::instance() );
+    mDock = new QgsDockWidget( mOwnerWindow );
     mDock->setWindowTitle( mWindowTitle );
     mDock->setWidget( mWidget );
     setupDockWidget();
@@ -129,14 +135,14 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     {
       mDockGeometry = mDock->geometry();
       mIsDockFloating = mDock->isFloating();
-      mDockArea = QgisApp::instance()->dockWidgetArea( mDock );
-      QgisApp::instance()->close3DMapView( windowTitle() );
+      mDockArea = mOwnerWindow->dockWidgetArea( mDock );
+      emit closed();
     } );
   }
   else
   {
     // going from dock -> window
-    mDialog = new QDialog( QgisApp::instance(), Qt::Window );
+    mDialog = new QDialog( mOwnerWindow, Qt::Window );
 
     mDialog->setWindowTitle( mWindowTitle );
     QVBoxLayout *vl = new QVBoxLayout();
@@ -149,7 +155,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     connect( mDialog, &QDialog::finished, [ = ]()
     {
       mDialogGeometry = mDialog->geometry();
-      QgisApp::instance()->close3DMapView( windowTitle() );
+      emit closed();
     } );
 
     mDialog->setGeometry( mDialogGeometry );
@@ -159,7 +165,6 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
 void QgsDockableWidgetHelper::setWindowTitle( const QString &title )
 {
   mWindowTitle = title;
-  qDebug() << __PRETTY_FUNCTION__ << title;
   if ( mDialog )
   {
     mDialog->setWindowTitle( title );
@@ -211,7 +216,7 @@ bool QgsDockableWidgetHelper::isDockFloating() const
 Qt::DockWidgetArea QgsDockableWidgetHelper::dockFloatingArea() const
 {
   if ( mDock )
-    return QgisApp::instance()->dockWidgetArea( mDock );
+    return mOwnerWindow->dockWidgetArea( mDock );
   return mDockArea;
 }
 
@@ -224,7 +229,7 @@ void QgsDockableWidgetHelper::setupDockWidget()
   {
     // try to guess a nice initial placement for view - about 3/4 along, half way down
     mDock->setGeometry( QRect( static_cast< int >( mWidget->rect().width() * 0.75 ), static_cast< int >( mWidget->rect().height() * 0.5 ), 400, 400 ) );
-    QgisApp::instance()->addDockWidget( mDockArea, mDock );
+    mOwnerWindow->addDockWidget( mDockArea, mDock );
   }
   else
   {
@@ -232,15 +237,20 @@ void QgsDockableWidgetHelper::setupDockWidget()
     {
       // ugly hack, but only way to set dock size correctly for Qt < 5.6
       mDock->setFixedSize( mDockGeometry.size() );
-      QgisApp::instance()->addDockWidget( mDockArea, mDock );
+      mOwnerWindow->addDockWidget( mDockArea, mDock );
       mDock->resize( mDockGeometry.size() );
-//      QgsApplication::processEvents(); // required!
+      QgsApplication::processEvents(); // required!
       mDock->setFixedSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX );
     }
     else
     {
       mDock->setGeometry( mDockGeometry );
-      QgisApp::instance()->addDockWidget( mDockArea, mDock );
+      mOwnerWindow->addDockWidget( mDockArea, mDock );
     }
   }
+}
+
+QToolButton *QgsDockableWidgetHelper::toggleButton()
+{
+  return &mToggleButton;
 }

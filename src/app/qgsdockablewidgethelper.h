@@ -17,20 +17,27 @@
 #define QGSDOCKABLEWIDGETHELPER_H
 
 #include "qgis_app.h"
-#include "qgsdockwidget.h"
 
 #include <QDialog>
-#include <QVBoxLayout>
+#include <QToolButton>
+#include <QMainWindow>
 
 #define SIP_NO_FILE
 
 class QgsDockWidget;
 
+/**
+ * This class is responible of displaying a QWidget inside a dialog or a dock widget (only one of the 2 is alive at most).
+ * The widget is not owned by this class and its ownership is passed to the owner window before this class's object is deleted or
+ * another widget is set using setWidget() function
+ *
+ * \since QGIS 3.24
+ */
 class APP_EXPORT QgsDockableWidgetHelper : public QObject
 {
     Q_OBJECT
   public:
-    QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget );
+    QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow );
     ~QgsDockableWidgetHelper();
 
     void setWidget( QWidget *widget );
@@ -54,6 +61,8 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
     bool isDockFloating() const;
     Qt::DockWidgetArea dockFloatingArea() const;
 
+    QToolButton *toggleButton();
+
   signals:
     void closed();
 
@@ -75,6 +84,8 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
     Qt::DockWidgetArea mDockArea;
 
     QString mWindowTitle;
+    QToolButton mToggleButton;
+    QMainWindow *mOwnerWindow;
 };
 
 #endif // QGSDOCKABLEWIDGETHELPER_H
