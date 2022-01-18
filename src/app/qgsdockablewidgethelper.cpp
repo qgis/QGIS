@@ -241,7 +241,6 @@ QToolButton *QgsDockableWidgetHelper::createDockUndockToolButton()
 {
   QToolButton *toggleButton = new QToolButton;
   toggleButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mDockify.svg" ) ) );
-  toggleButton->setToolTip( tr( "Dock 3D Map View" ) );
   toggleButton->setCheckable( true );
   toggleButton->setChecked( mIsDocked );
   toggleButton->setEnabled( true );

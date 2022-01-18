@@ -217,7 +217,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   onTotalPendingJobsCountChanged();
 
   mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
-  toolBar->addWidget( mDockableWidgetHelper->createDockUndockToolButton() );
+  QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
+  toggleButton->setToolTip( tr( "Dock 3D Map View" ) );
+  toolBar->addWidget( toggleButton );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, [ = ]()
   {
     QgisApp::instance()->close3DMapView( canvasName() );
