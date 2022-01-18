@@ -821,6 +821,33 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(extent.toString(1),
                          QgsRectangle(0.0, 0.5, 5.5, 6.0).toString(1))
 
+    def test_insert_pk_escaping(self):
+        """
+        Test that inserting features works with complex pk name
+        see https://github.com/qgis/QGIS/issues/42290
+        """
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        conn = md.createConnection(self.dbconn, {})
+
+        conn.execSql('DROP TABLE IF EXISTS qgis_test.test_complex_pk_name')
+        conn.execSql('CREATE TABLE qgis_test.test_complex_pk_name ([test-field] int)')
+
+        uri = '{} table="qgis_test"."test_complex_pk_name" sql='.format(self.dbconn)
+        vl = QgsVectorLayer(uri, '', 'mssql')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.primaryKeyAttributes(), [0])
+
+        vl.startEditing()
+        f = QgsFeature(vl.fields())
+        f.setAttributes([1])
+        self.assertTrue(vl.addFeature(f))
+        self.assertTrue(vl.commitChanges())
+
+        vl = QgsVectorLayer(uri, '', 'mssql')
+        features = list(vl.getFeatures())
+        self.assertEqual([f['test-field'] for f in features], [1])
+
 
 if __name__ == '__main__':
     unittest.main()
