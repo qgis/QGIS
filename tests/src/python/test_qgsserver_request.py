@@ -215,6 +215,33 @@ class QgsServerRequestTest(QgsServerTestBase):
         self.assertEqual(request.parameter('FOOBAR'), 'foobar')
         self.assertEqual(request.parameter('UNKNOWN'), '')
 
+    def test_headers(self):
+        """Tests that the headers are working in Fcgi mode"""
+        for header, env, enum, value in (
+            ("Host", "HTTP_HOST", QgsServerRequest.HOST, "example.com"),
+            ("Forwarded", "HTTP_FORWARDED", QgsServerRequest.FORWARDED, "aaa"),
+            ("X-Forwarded-For", "HTTP_X_FORWARDED_FOR", QgsServerRequest.X_FORWARDED_FOR, "bbb"),
+            ("X-Forwarded-Host", "HTTP_X_FORWARDED_HOST", QgsServerRequest.X_FORWARDED_HOST, "ccc"),
+            ("X-Forwarded-Proto", "HTTP_X_FORWARDED_PROTO", QgsServerRequest.X_FORWARDED_PROTO, "ddd"),
+            ("X-Qgis-Service-Url", "HTTP_X_QGIS_SERVICE_URL", QgsServerRequest.X_QGIS_SERVICE_URL, "eee"),
+            ("X-Qgis-Wms-Service-Url", "HTTP_X_QGIS_WMS_SERVICE_URL", QgsServerRequest.X_QGIS_WMS_SERVICE_URL, "fff"),
+            ("X-Qgis-Wfs-Service-Url", "HTTP_X_QGIS_WFS_SERVICE_URL", QgsServerRequest.X_QGIS_WFS_SERVICE_URL, "ggg"),
+            ("X-Qgis-Wcs-Service-Url", "HTTP_X_QGIS_WCS_SERVICE_URL", QgsServerRequest.X_QGIS_WCS_SERVICE_URL, "hhh"),
+            ("X-Qgis-Wmts-Service-Url", "HTTP_X_QGIS_WMTS_SERVICE_URL", QgsServerRequest.X_QGIS_WMTS_SERVICE_URL, "iii"),
+            ("Accept", "HTTP_ACCEPT", QgsServerRequest.ACCEPT, "jjj"),
+            ("User-Agent", "HTTP_USER_AGENT", QgsServerRequest.USER_AGENT, "kkk"),
+            ("Authorization", "HTTP_AUTHORIZATION", QgsServerRequest.AUTHORIZATION, "lll"),
+        ):
+            try:
+                os.environ[env] = value
+                request = QgsFcgiServerRequest()
+                self.assertEquals(request.headers(), {header: value})
+                request = QgsServerRequest(request)
+                self.assertEquals(request.headers(), {header: value})
+                self.assertEquals(request.header(enum), value)
+            finally:
+                del os.environ[env]
+
 
 if __name__ == '__main__':
     unittest.main()
