@@ -92,6 +92,14 @@ jobs:
       - name: Def Window Title Test
         run: ./tests/code_layout/test_defwindowtitle.sh
 
+  qgsscrollarea_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run QgsScrollArea check
+        run: ./tests/code_layout/test_qgsscrollarea.sh
+
   qvariant_no_brace_init:
     runs-on: ubuntu-latest
     steps:
