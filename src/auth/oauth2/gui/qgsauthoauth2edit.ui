@@ -188,7 +188,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QScrollArea" name="scrollAreaConfigure">
+         <widget class="QgsScrollArea" name="scrollAreaConfigure">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -856,7 +856,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QScrollArea" name="scrollAreaAdvanced">
+        <widget class="QgsScrollArea" name="scrollAreaAdvanced">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -1009,15 +1009,21 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPasswordLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgspasswordlineedit.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

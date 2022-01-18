@@ -213,7 +213,7 @@ Use this function to add extra logic to your forms.</string>
        </item>
       </layout>
      </widget>
-     <widget class="QScrollArea" name="scrollArea_2">
+     <widget class="QgsScrollArea" name="scrollArea_2">
       <property name="minimumSize">
        <size>
         <width>600</width>
@@ -245,6 +245,14 @@ Use this function to add extra logic to your forms.</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mEditorLayoutComboBox</tabstop>
   <tabstop>mTbInitCode</tabstop>
