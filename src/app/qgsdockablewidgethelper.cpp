@@ -18,6 +18,8 @@
 #include "qgsdockwidget.h"
 #include "qgsapplication.h"
 
+#include <QLayout>
+
 QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow )
   : QObject( nullptr )
   , mWidget( widget )
