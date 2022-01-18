@@ -55,7 +55,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QScrollArea" name="scrollArea">
+        <widget class="QgsScrollArea" name="scrollArea">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -656,7 +656,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QScrollArea" name="scrollArea_2">
+        <widget class="QgsScrollArea" name="scrollArea_2">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -1059,7 +1059,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QScrollArea" name="panelDetails">
+          <widget class="QgsScrollArea" name="panelDetails">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -1486,15 +1486,21 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsExtentGroupBox</class>
