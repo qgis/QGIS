@@ -144,6 +144,9 @@ void ScrollAreaFilter::addChild( QObject *child )
 {
   if ( child && child->isWidgetType() )
   {
+    if ( qobject_cast< QScrollArea * >( child ) )
+      return;
+
     child->installEventFilter( this );
     if ( QWidget *w = qobject_cast< QWidget * >( child ) )
       w->setMouseTracking( true );
@@ -161,6 +164,9 @@ void ScrollAreaFilter::removeChild( QObject *child )
 {
   if ( child && child->isWidgetType() )
   {
+    if ( qobject_cast< QScrollArea * >( child ) )
+      return;
+
     child->removeEventFilter( this );
 
     // also remove filter on existing children
