@@ -18,6 +18,17 @@ if [[  ${FOUND} ]]; then
   RES=1
 fi
 
+FOUND=$(git grep "new QScrollArea" -- 'src' | grep --invert-match skip-keyword-check)
+
+if [[  ${FOUND} ]]; then
+  echo "Base QScrollArea class used in file!"
+  echo " -> Use QgsScrollArea class instead"
+  echo "    or mark with // skip-keyword-check"  echo
+  echo "${FOUND}"
+  echo
+  RES=1
+fi
+
 
 popd > /dev/null || exit
 
