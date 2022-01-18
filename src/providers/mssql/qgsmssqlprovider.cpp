@@ -1126,7 +1126,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             type = QStringLiteral( "%1(%2,%3)" ).arg( type ).arg( fld.length() ).arg( fld.precision() );
         }
 
-        statement += delim + QStringLiteral( "%1 %2" ).arg( fld.name(), type );
+        statement += delim + QStringLiteral( "[%1] %2" ).arg( fld.name(), type );
         delim = ",";
       }
 
@@ -1211,7 +1211,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( const auto idx : mPrimaryKeyAttrs )
       {
         const QgsField &fld = mAttributeFields.at( idx );
-        statement += delim + "inserted." + fld.name();
+        statement += delim + QStringLiteral( "inserted.[%1]" ).arg( fld.name() );
         delim = QStringLiteral( "," );
       }
 
