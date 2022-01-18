@@ -62,6 +62,13 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     bool hasScrolled() const;
 
     /**
+     * Resets the hasScrolled() flag.
+     *
+     * \since QGIS 3.24
+     */
+    void resetHasScrolled() SIP_SKIP;
+
+    /**
      * Sets whether the scroll area only applies vertical.
      *
      * If set to TRUE, then scroll area children will resize horizontally to match the width of
@@ -105,6 +112,8 @@ class ScrollAreaFilter : public QObject
   private:
     QgsScrollArea *mScrollAreaWidget = nullptr;
     QWidget *mViewPort = nullptr;
+    QPoint mPreviousViewportCursorPos;
+    int mMoveDistanceThreshold = 0;
 
     void addChild( QObject *child );
     void removeChild( QObject *child );
