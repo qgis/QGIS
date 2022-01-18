@@ -115,7 +115,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QScrollArea" name="scrollAreaAdvanced_2">
+          <widget class="QgsScrollArea" name="scrollAreaAdvanced_2">
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
@@ -262,6 +262,12 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>

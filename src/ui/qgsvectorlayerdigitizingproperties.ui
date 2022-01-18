@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QScrollArea" name="scrollArea_2">
+    <widget class="QgsScrollArea" name="scrollArea_2">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -139,6 +139,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
