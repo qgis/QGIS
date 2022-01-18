@@ -2956,21 +2956,21 @@ void TestProcessingGui::testFieldSelectionPanel()
   QgsProcessingFieldPanelWidget w( nullptr, &fieldParam );
   QSignalSpy spy( &w, &QgsProcessingFieldPanelWidget::changed );
 
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 fields selected" ) );
   w.setValue( QStringLiteral( "aa" ) );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "aa" ) );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "aa" ) );
 
   w.setValue( QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "bb,aa" ) );
 
   w.setValue( QVariant() );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( w.value().toList(), QVariantList() );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 fields selected" ) );
 
 }
 
@@ -4125,12 +4125,12 @@ void TestProcessingGui::testEnumSelectionPanel()
   w.setValue( 1 );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( w.value().toList(), QVariantList() << 1 );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "b" ) );
 
   w.setValue( QVariantList() << 2 << 0 );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( w.value().toList(), QVariantList() << 2 << 0 );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "c,a" ) );
 
   w.setValue( QVariant() );
   QCOMPARE( spy.count(), 3 );
@@ -4146,12 +4146,12 @@ void TestProcessingGui::testEnumSelectionPanel()
   w2.setValue( QStringLiteral( "a" ) );
   QCOMPARE( spy2.count(), 1 );
   QCOMPARE( w2.value().toList(), QVariantList() << QStringLiteral( "a" ) );
-  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "1 options selected" ) );
+  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "a" ) );
 
   w2.setValue( QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "a" ) );
   QCOMPARE( spy2.count(), 2 );
   QCOMPARE( w2.value().toList(), QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "a" ) );
-  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "2 options selected" ) );
+  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "c,a" ) );
 
   w2.setValue( QVariant() );
   QCOMPARE( spy2.count(), 3 );
