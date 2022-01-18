@@ -31,17 +31,11 @@ QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &
   , mOwnerWindow( ownerWindow )
 {
   toggleDockMode( isDocked );
-  mToggleButton.setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mDockify.svg" ) ) );
-  mToggleButton.setToolTip( tr( "Dock 3D Map View" ) );
-  mToggleButton.setCheckable( true );
-  mToggleButton.setChecked( isDocked );
-  mToggleButton.setEnabled( true );
-
-  connect( &mToggleButton, &QToolButton::toggled, this, &QgsDockableWidgetHelper::toggleDockMode );
 }
 
 QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
 {
+  setWidget( nullptr );
   if ( mDock )
   {
     mDockGeometry = mDock->geometry();
@@ -64,6 +58,47 @@ QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
   }
 }
 
+void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
+{
+  viewDom.setAttribute( QStringLiteral( "isDocked" ), mIsDocked );
+
+  viewDom.setAttribute( QStringLiteral( "x" ), mDockGeometry.x() );
+  viewDom.setAttribute( QStringLiteral( "y" ), mDockGeometry.y() );
+  viewDom.setAttribute( QStringLiteral( "width" ), mDockGeometry.width() );
+  viewDom.setAttribute( QStringLiteral( "height" ), mDockGeometry.height() );
+  viewDom.setAttribute( QStringLiteral( "floating" ), mIsDockFloating );
+  viewDom.setAttribute( QStringLiteral( "area" ), mDockArea );
+
+  viewDom.setAttribute( QStringLiteral( "d_x" ), mDialogGeometry.x() );
+  viewDom.setAttribute( QStringLiteral( "d_y" ), mDialogGeometry.y() );
+  viewDom.setAttribute( QStringLiteral( "d_width" ), mDialogGeometry.width() );
+  viewDom.setAttribute( QStringLiteral( "d_height" ), mDialogGeometry.height() );
+}
+
+void QgsDockableWidgetHelper::readXml( QDomElement &viewDom )
+{
+  {
+    int x = viewDom.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
+    int y = viewDom.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
+    int w = viewDom.attribute( QStringLiteral( "d_width" ), "200" ).toInt();
+    int h = viewDom.attribute( QStringLiteral( "d_height" ), "200" ).toInt();
+    mDialogGeometry = QRect( x, y, w, h );
+    if ( mDialog )
+      mDialog->setGeometry( mDialogGeometry );
+  }
+
+  {
+    int x = viewDom.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
+    int y = viewDom.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
+    int w = viewDom.attribute( QStringLiteral( "width" ), QStringLiteral( "200" ) ).toInt();
+    int h = viewDom.attribute( QStringLiteral( "height" ), QStringLiteral( "200" ) ).toInt();
+    mDockGeometry = QRect( x, y, w, h );
+    mIsDockFloating = viewDom.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
+    mDockArea = static_cast< Qt::DockWidgetArea >( viewDom.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
+    setupDockWidget();
+  }
+}
+
 void QgsDockableWidgetHelper::setWidget( QWidget *widget )
 {
   // Make sure the old mWidget is not stuck as a child of mDialog or mDock
@@ -82,11 +117,6 @@ void QgsDockableWidgetHelper::setWidget( QWidget *widget )
 
   mWidget = widget;
   toggleDockMode( mIsDocked );
-}
-
-bool QgsDockableWidgetHelper::isDocked() const
-{
-  return mIsDocked;
 }
 
 void QgsDockableWidgetHelper::toggleDockMode( bool docked )
@@ -177,51 +207,6 @@ void QgsDockableWidgetHelper::setWindowTitle( const QString &title )
   }
 }
 
-void QgsDockableWidgetHelper::setDialogGeometry( const QRect &geom )
-{
-  mDialogGeometry = geom;
-  if ( !mDialog )
-    return;
-  mDialog->setGeometry( geom );
-}
-
-void QgsDockableWidgetHelper::setDockGeometry( const QRect &geom, bool isFloating, Qt::DockWidgetArea area )
-{
-  mDockGeometry = geom;
-  mIsDockFloating = isFloating;
-  mDockArea = area;
-
-  setupDockWidget();
-}
-
-QRect QgsDockableWidgetHelper::dialogGeometry() const
-{
-  if ( mDialog )
-    return mDialog->geometry();
-  return mDialogGeometry;
-}
-
-QRect QgsDockableWidgetHelper::dockGeometry() const
-{
-  if ( mDock )
-    return mDock->geometry();
-  return mDockGeometry;
-}
-
-bool QgsDockableWidgetHelper::isDockFloating() const
-{
-  if ( mDock )
-    return mDock->isFloating();
-  return mIsDockFloating;
-}
-
-Qt::DockWidgetArea QgsDockableWidgetHelper::dockFloatingArea() const
-{
-  if ( mDock )
-    return mOwnerWindow->dockWidgetArea( mDock );
-  return mDockArea;
-}
-
 void QgsDockableWidgetHelper::setupDockWidget()
 {
   if ( !mDock )
@@ -252,7 +237,15 @@ void QgsDockableWidgetHelper::setupDockWidget()
   }
 }
 
-QToolButton *QgsDockableWidgetHelper::toggleButton()
+QToolButton *QgsDockableWidgetHelper::createDockUndockToolButton()
 {
-  return &mToggleButton;
+  QToolButton *toggleButton = new QToolButton;
+  toggleButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mDockify.svg" ) ) );
+  toggleButton->setToolTip( tr( "Dock 3D Map View" ) );
+  toggleButton->setCheckable( true );
+  toggleButton->setChecked( mIsDocked );
+  toggleButton->setEnabled( true );
+
+  connect( toggleButton, &QToolButton::toggled, this, &QgsDockableWidgetHelper::toggleDockMode );
+  return toggleButton;
 }

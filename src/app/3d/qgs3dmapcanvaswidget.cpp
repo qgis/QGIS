@@ -216,9 +216,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   onTotalPendingJobsCountChanged();
 
-  mDockableWidget = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
-  toolBar->addWidget( mDockableWidget->toggleButton() );
-  connect( mDockableWidget, &QgsDockableWidgetHelper::closed, [ = ]()
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
+  toolBar->addWidget( mDockableWidgetHelper->createDockUndockToolButton() );
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, [ = ]()
   {
     QgisApp::instance()->close3DMapView( canvasName() );
   } );
@@ -226,8 +226,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
 {
-  mDockableWidget->setWidget( nullptr );
-  delete mDockableWidget;
+  delete mDockableWidgetHelper;
 }
 
 void Qgs3DMapCanvasWidget::saveAsImage()
@@ -286,7 +285,7 @@ void Qgs3DMapCanvasWidget::measureLine()
 void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )
 {
   mCanvasName = name;
-  mDockableWidget->setWindowTitle( name );
+  mDockableWidgetHelper->setWindowTitle( name );
 }
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( bool visibility )

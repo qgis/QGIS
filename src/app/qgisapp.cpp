@@ -16706,22 +16706,7 @@ void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomDocument
   QDomElement elemAnimation = widget->animationWidget()->animation().writeXml( doc );
   elem3DMap.appendChild( elemAnimation );
 
-  QgsDockableWidgetHelper *w = widget->dockableWidgetHelper();
-  elem3DMap.setAttribute( QStringLiteral( "isDocked" ), w->isDocked() );
-
-  QRect dockGeom = w->dockGeometry();
-  elem3DMap.setAttribute( QStringLiteral( "x" ), dockGeom.x() );
-  elem3DMap.setAttribute( QStringLiteral( "y" ), dockGeom.y() );
-  elem3DMap.setAttribute( QStringLiteral( "width" ), dockGeom.width() );
-  elem3DMap.setAttribute( QStringLiteral( "height" ), dockGeom.height() );
-  elem3DMap.setAttribute( QStringLiteral( "floating" ), w->isDockFloating() );
-  elem3DMap.setAttribute( QStringLiteral( "area" ), w->dockFloatingArea() );
-
-  QRect dialogGeom = w->dialogGeometry();
-  elem3DMap.setAttribute( QStringLiteral( "d_x" ), dialogGeom.x() );
-  elem3DMap.setAttribute( QStringLiteral( "d_y" ), dialogGeom.y() );
-  elem3DMap.setAttribute( QStringLiteral( "d_width" ), dialogGeom.width() );
-  elem3DMap.setAttribute( QStringLiteral( "d_height" ), dialogGeom.height() );
+  widget->dockableWidgetHelper()->writeXml( elem3DMap );
 }
 
 void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &elem3DMap )
@@ -16768,24 +16753,7 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
     widget->animationWidget()->setAnimation( animationSettings );
   }
 
-  {
-    int dx = elem3DMap.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
-    int dy = elem3DMap.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
-    int dw = elem3DMap.attribute( QStringLiteral( "d_width" ), "200" ).toInt();
-    int dh = elem3DMap.attribute( QStringLiteral( "d_height" ), "200" ).toInt();
-    widget->dockableWidgetHelper()->setDialogGeometry( QRect( dx, dy, dw, dh ) );
-  }
-
-  {
-    int x = elem3DMap.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
-    int y = elem3DMap.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
-    int w = elem3DMap.attribute( QStringLiteral( "width" ), QStringLiteral( "200" ) ).toInt();
-    int h = elem3DMap.attribute( QStringLiteral( "height" ), QStringLiteral( "200" ) ).toInt();
-    bool floating = elem3DMap.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
-    Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elem3DMap.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
-
-    widget->dockableWidgetHelper()->setDockGeometry( QRect( x, y, w, h ), floating, area );
-  }
+  widget->dockableWidgetHelper()->readXml( elem3DMap );
 }
 #endif
 

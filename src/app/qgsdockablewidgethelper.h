@@ -21,6 +21,7 @@
 #include <QDialog>
 #include <QToolButton>
 #include <QMainWindow>
+#include <QDomElement>
 
 #define SIP_NO_FILE
 
@@ -40,6 +41,9 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
     QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow );
     ~QgsDockableWidgetHelper();
 
+    void writeXml( QDomElement &viewDom );
+    void readXml( QDomElement &viewDom );
+
     void setWidget( QWidget *widget );
 
     QWidget *widget() { return mWidget; }
@@ -48,20 +52,14 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
 
     QDialog *dialog() { return mDialog; }
 
-    bool isDocked() const;
-
     void setWindowTitle( const QString &title );
     QString windowTitle() const { return mWindowTitle; }
 
-    void setDialogGeometry( const QRect &geom );
-    void setDockGeometry( const QRect &geom, bool isFloating, Qt::DockWidgetArea area );
-
-    QRect dialogGeometry() const;
-    QRect dockGeometry() const;
-    bool isDockFloating() const;
-    Qt::DockWidgetArea dockFloatingArea() const;
-
-    QToolButton *toggleButton();
+    /**
+     * Create a tool button for docking/undocking the widget
+     * \note The ownership of the tool button is managed by the caller
+     */
+    QToolButton *createDockUndockToolButton();
 
   signals:
     void closed();
@@ -84,7 +82,6 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
     Qt::DockWidgetArea mDockArea;
 
     QString mWindowTitle;
-    QToolButton mToggleButton;
     QMainWindow *mOwnerWindow;
 };
 

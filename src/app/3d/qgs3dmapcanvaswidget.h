@@ -52,7 +52,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     Qgs3DMapToolMeasureLine *measurementLineTool() { return mMapToolMeasureLine; }
 
-    QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidget; }
+    QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
 
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
@@ -100,7 +100,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
     QToolButton *mBtnOptions = nullptr;
-    QgsDockableWidgetHelper *mDockableWidget = nullptr;
+    QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H
