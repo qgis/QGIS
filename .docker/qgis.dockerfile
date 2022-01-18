@@ -59,6 +59,9 @@ RUN SUCCESS=OK \
 # Additional run-time dependencies
 RUN pip3 install jinja2 pygments pexpect && apt install -y expect
 
+# Fix a Qt library bug that prevents Singularity containers from running
+RUN strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
+
 ################################################################################
 # Python testing environment setup
 
