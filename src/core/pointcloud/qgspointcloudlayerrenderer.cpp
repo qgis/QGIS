@@ -192,13 +192,18 @@ bool QgsPointCloudLayerRenderer::render()
     }
     case QgsPointCloudRenderer::DrawOrder::Default:
     {
-      if ( pc->accessType() == QgsPointCloudIndex::AccessType::Local )
+      switch ( pc->accessType() )
       {
-        nodesDrawn += renderNodesSync( nodes, pc, context, request, canceled );
-      }
-      else if ( pc->accessType() == QgsPointCloudIndex::AccessType::Remote )
-      {
-        nodesDrawn += renderNodesAsync( nodes, pc, context, request, canceled );
+        case QgsPointCloudIndex::AccessType::Local:
+        {
+          nodesDrawn += renderNodesSync( nodes, pc, context, request, canceled );
+          break;
+        }
+        case QgsPointCloudIndex::AccessType::Remote:
+        {
+          nodesDrawn += renderNodesAsync( nodes, pc, context, request, canceled );
+          break;
+        }
       }
     }
   }
