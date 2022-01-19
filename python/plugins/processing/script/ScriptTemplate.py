@@ -198,7 +198,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
             # steps in the algorithm have guaranteed access to the layer.
             # If we know for certain that no other parts of the algorithm (or models containing this algorithm) will require the layer, then we can take ownership directly by calling context.takeResultLayer. This causes the layer's ownership to be transferred to Python, so that the normal Python variable scope and garbage collection rules apply.
             
-            buffered_layer = context.takeResultLayer(buffered['OUTPUT'])
+            buffered_layer = context.takeResultLayer(buffered)
 
         # Return the results of the algorithm. In this case our only result is
         # the feature sink which contains the processed features, but some
