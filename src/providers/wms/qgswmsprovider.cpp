@@ -4921,7 +4921,7 @@ void QgsWmsInterpretationConverterMapTilerTerrainRGB::convert( const QRgb &color
 QgsRasterBandStats QgsWmsInterpretationConverterMapTilerTerrainRGB::statistics( int, int, const QgsRectangle &, int, QgsRasterBlockFeedback * ) const
 {
   QgsRasterBandStats stat;
-  stat.minimumValue = 0;
+  stat.minimumValue = -10000;
   stat.maximumValue = 9000;
   stat.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max;
   return stat;
