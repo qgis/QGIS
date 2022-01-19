@@ -192,7 +192,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
                 'OUTPUT': 'memory:'
             }, context=context, feedback=feedback, is_child_algorithm=True)['OUTPUT']
             
-            # For child algorithms, we disable to default post-processing step where
+            # For child algorithms, we disable the default post-processing step where
             # layer ownership is transferred from the context to the caller. In this
             # case, we NEED the ownership to remain with the context, so that further
             # steps in the algorithm have guaranteed access to the layer.
