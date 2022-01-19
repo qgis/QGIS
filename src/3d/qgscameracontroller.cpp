@@ -457,6 +457,14 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
       mDragPointCalculated = true;
     }
 
+    // Make sure we apply grab move when the cursor is inside the view port
+    if ( !mViewport.contains( mouse->x(), mouse->y() ) )
+      return;
+
+    // Make sure to restrict dragging so that the clicked object stays on screen
+    if ( mCamera->farPlane() > 2 * mCameraBeforeDrag->farPlane() )
+      return;
+
     QVector3D cameraBeforeDragPos = mCameraBeforeDrag->position();
 
     QVector3D moveToPosition = Qgs3DUtils::screenPointToWorldPos( mMousePos, mDragDepth, mViewport.size(), mCameraBeforeDrag.get() );
