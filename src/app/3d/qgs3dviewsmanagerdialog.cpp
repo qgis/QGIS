@@ -16,10 +16,11 @@
 #include "qgs3dviewsmanagerdialog.h"
 
 #include "qgisapp.h"
-#include "qgs3dmapcanvasdockwidget.h"
 #include "qgsnewnamedialog.h"
 #include "qgs3dmapcanvas.h"
 #include "qgsmapviewsmanager.h"
+#include "qgs3dmapcanvaswidget.h"
+#include "qgsdockablewidgethelper.h"
 
 #include <QMessageBox>
 
@@ -63,8 +64,7 @@ void Qgs3DViewsManagerDialog::showClicked()
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
-  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->open3DMapView( viewName );
-  widget->show();
+  QgisApp::instance()->open3DMapView( viewName );
 
   m3DViewsListView->selectionModel()->setCurrentIndex( m3DViewsListView->selectionModel()->currentIndex(), QItemSelectionModel::Select );
   currentChanged( m3DViewsListView->selectionModel()->currentIndex(), m3DViewsListView->selectionModel()->currentIndex() );
@@ -77,8 +77,7 @@ void Qgs3DViewsManagerDialog::hideClicked()
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
-  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->get3DMapViewDock( viewName );
-  widget->close();
+  QgisApp::instance()->close3DMapView( viewName );
 
   m3DViewsListView->selectionModel()->setCurrentIndex( m3DViewsListView->selectionModel()->currentIndex(), QItemSelectionModel::Select );
   currentChanged( m3DViewsListView->selectionModel()->currentIndex(), m3DViewsListView->selectionModel()->currentIndex() );
@@ -114,11 +113,8 @@ void Qgs3DViewsManagerDialog::removeClicked()
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
   QgsProject::instance()->viewsManager()->remove3DView( viewName );
-  if ( Qgs3DMapCanvasDockWidget *w = QgisApp::instance()->get3DMapViewDock( viewName ) )
-  {
-    w->close();
-    QgsProject::instance()->setDirty();
-  }
+  QgisApp::instance()->close3DMapView( viewName );
+  QgsProject::instance()->setDirty();
 }
 
 void Qgs3DViewsManagerDialog::renameClicked()
@@ -134,10 +130,9 @@ void Qgs3DViewsManagerDialog::renameClicked()
 
   QgsProject::instance()->viewsManager()->rename3DView( oldTitle, newTitle );
 
-  if ( Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->get3DMapViewDock( oldTitle ) )
+  if ( Qgs3DMapCanvasWidget *widget = QgisApp::instance()->get3DMapView( oldTitle ) )
   {
-    widget->setWindowTitle( newTitle );
-    widget->mapCanvas3D()->setObjectName( newTitle );
+    widget->setCanvasName( newTitle );
   }
 
   QgsProject::instance()->setDirty();
