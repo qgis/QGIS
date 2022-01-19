@@ -109,15 +109,19 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
   QgsDebugMsgLevel( QStringLiteral( "Tile download manager: internal reply finished: " ) + mRequest.url().toString(), 2 );
 
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
-  QByteArray data = reply->readAll();;
+  QByteArray data;
 
   if ( reply->error() == QNetworkReply::NoError )
   {
     ++mManager->mStats.networkRequestsOk;
+    data = reply->readAll();
   }
   else
   {
     ++mManager->mStats.networkRequestsFailed;
+    const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    if ( contentType.startsWith( QStringLiteral( "text/plain" ) ) )
+      data = reply->readAll();
   }
 
   emit finished( data, reply->error(), reply->errorString() );

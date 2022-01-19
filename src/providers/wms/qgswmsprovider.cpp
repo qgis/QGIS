@@ -4552,8 +4552,16 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 
         if ( reply->error() == QNetworkReply::ContentAccessDenied )
         {
+          const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+
+          QString errorMessage;
+          if ( contentType.startsWith( QStringLiteral( "text/plain" ) ) )
+            errorMessage = reply->readAll();
+          else
+            errorMessage = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString();
+
           mError = tr( "Access denied: %1" ).
-                   arg( reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString() );
+                   arg( errorMessage );
         }
       }
     }
