@@ -1444,7 +1444,7 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
           turl.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
           break;
         case Qgis::RendererUsage::Unknown:
-          turl.replace( QLatin1String( "{usage}" ), QLatin1String( "unknown" ) );
+          turl.replace( QLatin1String( "{usage}" ), QString() );
           break;
       }
     }

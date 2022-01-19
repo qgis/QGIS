@@ -118,7 +118,7 @@ bool QgsVectorTileLayerRenderer::render()
         mSourcePath.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
         break;
       case Qgis::RendererUsage::Unknown:
-        mSourcePath.replace( QLatin1String( "{usage}" ), QLatin1String( "unknown" ) );
+        mSourcePath.replace( QLatin1String( "{usage}" ), QString() );
         break;
     }
   }
