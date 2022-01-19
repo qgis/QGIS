@@ -39,7 +39,6 @@ class QgsField;
 class QgsFields;
 class QgsDistanceArea;
 class QDomElement;
-class QgsPointcloudExpressionContext;
 class QgsPointcloudExpressionPrivate;
 class QgsPointcloudExpressionFunction;
 
@@ -228,7 +227,7 @@ class CORE_EXPORT QgsPointcloudExpression
      * \param context context for preparing expression
      * \since QGIS 2.12
      */
-    bool prepare( const QgsPointcloudExpressionContext *context );
+    bool prepare();
 
     /**
      * Gets list of columns referenced by the expression.
@@ -304,14 +303,6 @@ class CORE_EXPORT QgsPointcloudExpression
      */
     QVariant evaluate();
 
-    /**
-     * Evaluate the expression against the specified context and return the result.
-     * \param context context for evaluating expression
-     * \note prepare() should be called before calling this method.
-     * \since QGIS 2.12
-     */
-    QVariant evaluate( const QgsPointcloudExpressionContext *context );
-
     //! Returns TRUE if an error occurred when evaluating last input
     bool hasEvalError() const;
     //! Returns evaluation error
@@ -327,7 +318,7 @@ class CORE_EXPORT QgsPointcloudExpression
      * \returns TRUE if string is a valid expression
      * \since QGIS 2.12
      */
-    static bool checkExpression( const QString &text, const QgsPointcloudExpressionContext *context, QString &errorMessage SIP_OUT );
+    static bool checkExpression( const QString &text, QString &errorMessage SIP_OUT );
 
     /**
      * Set the expression string, will reset the whole internal structure.

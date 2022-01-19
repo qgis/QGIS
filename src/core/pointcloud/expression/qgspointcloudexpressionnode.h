@@ -24,7 +24,6 @@
 #include "qgis.h"
 
 class QgsPointcloudExpression;
-class QgsPointcloudExpressionContext;
 
 /**
  * \ingroup core
@@ -43,6 +42,9 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
         break;
       case QgsPointcloudExpressionNode::ntBinaryOperator:
         sipType = sipType_QgsPointcloudExpressionNodeBinaryOperator;
+        break;
+      case QgsExpressionNode::ntInOperator:
+        sipType = sipType_QgsExpressionNodeInOperator;
         break;
       case QgsPointcloudExpressionNode::ntLiteral:
         sipType = sipType_QgsPointcloudExpressionNodeLiteral;
@@ -66,6 +68,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
     {
       ntUnaryOperator, //!< \see QgsPointcloudExpression::Node::NodeUnaryOperator
       ntBinaryOperator, //!< \see QgsPointcloudExpression::Node::NodeBinaryOperator
+      ntInOperator, //!< \see QgsExpression::Node::NodeInOperator
       ntLiteral, //!< \see QgsPointcloudExpression::Node::NodeLiteral
       ntColumnRef, //!< \see QgsPointcloudExpression::Node::NodeColumnRef
     };
@@ -188,7 +191,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 2.12
      */
-    QVariant eval( QgsPointcloudExpression *parent, const QgsPointcloudExpressionContext *context );
+    QVariant eval( QgsPointcloudExpression *parent );
 
     /**
      * Generate a clone of this node.
@@ -234,7 +237,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 3.0
      */
-    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointcloudExpressionContext *context ) const = 0;
+    virtual bool isStatic( QgsPointcloudExpression *parent ) const = 0;
 
     /**
      * Prepare this node for evaluation.
@@ -244,7 +247,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 2.12
      */
-    bool prepare( QgsPointcloudExpression *parent, const QgsPointcloudExpressionContext *context );
+    bool prepare( QgsPointcloudExpression *parent );
 
     /**
      * First line in the parser this node was found.
@@ -363,14 +366,14 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * Errors are reported to the parent
      * \since QGIS 3.0
      */
-    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointcloudExpressionContext *context ) = 0;
+    virtual bool prepareNode( QgsPointcloudExpression *parent ) = 0;
 
     /**
      * Abstract virtual eval method
      * Errors are reported to the parent
      * \since QGIS 3.0
      */
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, const QgsPointcloudExpressionContext *context ) = 0;
+    virtual QVariant evalNode( QgsPointcloudExpression *parent ) = 0;
 
 };
 

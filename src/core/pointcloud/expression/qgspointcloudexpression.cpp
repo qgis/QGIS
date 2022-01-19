@@ -18,10 +18,8 @@
 #include "qgsfeaturerequest.h"
 #include "qgscolorrampimpl.h"
 #include "qgslogger.h"
-#include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
 #include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgspointcloudexpressionutils.h"
 #include "qgspointcloudexpression_p.h"
 
@@ -30,10 +28,10 @@
 // from parser
 extern QgsPointcloudExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsPointcloudExpression::ParserError> &parserErrors );
 
-bool QgsPointcloudExpression::checkExpression( const QString &text, const QgsPointcloudExpressionContext *context, QString &errorMessage )
+bool QgsPointcloudExpression::checkExpression( const QString &text, QString &errorMessage )
 {
   QgsPointcloudExpression exp( text );
-  exp.prepare( context );
+  exp.prepare();
   errorMessage = exp.parserErrorString();
   return !exp.hasParserError();
 }
@@ -224,7 +222,7 @@ void QgsPointcloudExpression::detach()
   }
 }
 
-bool QgsPointcloudExpression::prepare( const QgsPointcloudExpressionContext *context )
+bool QgsPointcloudExpression::prepare()
 {
   detach();
   d->mEvalErrorString = QString();
@@ -243,7 +241,7 @@ bool QgsPointcloudExpression::prepare( const QgsPointcloudExpressionContext *con
   }
 
   d->mIsPrepared = true;
-  return d->mRootNode->prepare( this, context );
+  return d->mRootNode->prepare( this );
 }
 
 QVariant QgsPointcloudExpression::evaluate()
@@ -255,24 +253,24 @@ QVariant QgsPointcloudExpression::evaluate()
     return QVariant();
   }
 
-  return d->mRootNode->eval( this, static_cast<const QgsPointcloudExpressionContext *>( nullptr ) );
+  return d->mRootNode->eval( this );
 }
 
-QVariant QgsPointcloudExpression::evaluate( const QgsPointcloudExpressionContext *context )
-{
-  d->mEvalErrorString = QString();
-  if ( !d->mRootNode )
-  {
-    d->mEvalErrorString = tr( "No root node! Parsing failed?" );
-    return QVariant();
-  }
-
-  if ( ! d->mIsPrepared )
-  {
-    prepare( context );
-  }
-  return d->mRootNode->eval( this, context );
-}
+// QVariant QgsPointcloudExpression::evaluate()
+// {
+//   d->mEvalErrorString = QString();
+//   if ( !d->mRootNode )
+//   {
+//     d->mEvalErrorString = tr( "No root node! Parsing failed?" );
+//     return QVariant();
+//   }
+//
+//   if ( ! d->mIsPrepared )
+//   {
+//     prepare();
+//   }
+//   return d->mRootNode->eval( this );
+// }
 
 bool QgsPointcloudExpression::hasEvalError() const
 {
