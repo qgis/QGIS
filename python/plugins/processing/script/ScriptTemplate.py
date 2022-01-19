@@ -196,7 +196,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
             # layer ownership is transferred from the context to the caller. In this
             # case, we NEED the ownership to remain with the context, so that further
             # steps in the algorithm have guaranteed access to the layer.
-            # To hand ownership over to the context, use:
+            # If we know for certain that no other parts of the algorithm (or models containing this algorithm) will require the layer, then we can take ownership directly by calling context.takeResultLayer. This causes the layer's ownership to be transferred to Python, so that the normal Python variable scope and garbage collection rules apply.
             
             buffered_layer = context.takeResultLayer(buffered['OUTPUT'])
 
