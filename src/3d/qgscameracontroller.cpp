@@ -573,8 +573,6 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
   if ( !mZoomPointCalculated )
   {
     double depth = Qgs3DUtils::decodeDepth( mDepthBufferImage.pixelColor( mMousePos.x(), mMousePos.y() ) );
-    if ( depth >= 1 )
-      return;
 
     mZoomPoint = Qgs3DUtils::screenPointToWorldPos( mMousePos, depth, mViewport.size(), mCameraBeforeZoom.get() );
     mZoomPointCalculated = true;
