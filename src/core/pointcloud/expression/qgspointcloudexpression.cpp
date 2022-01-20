@@ -53,7 +53,7 @@ QString QgsPointcloudExpression::expression() const
     return dump();
 }
 
-QString QgsPointcloudExpression::quotedColumnRef( QString name )
+QString QgsPointcloudExpression::quotedAttributeRef( QString name )
 {
   return QStringLiteral( "\"%1\"" ).arg( name.replace( '\"', QLatin1String( "\"\"" ) ) );
 }
@@ -177,12 +177,12 @@ QList<QgsPointcloudExpression::ParserError> QgsPointcloudExpression::parserError
   return d->mParserErrors;
 }
 
-QSet<QString> QgsPointcloudExpression::referencedColumns() const
+QSet<QString> QgsPointcloudExpression::referencedAttributes() const
 {
   if ( !d->mRootNode )
     return QSet<QString>();
 
-  return d->mRootNode->referencedColumns();
+  return d->mRootNode->referencedAttributes();
 }
 
 QSet<int> QgsPointcloudExpression::referencedAttributeIndexes( const QgsFields &fields ) const
@@ -190,7 +190,7 @@ QSet<int> QgsPointcloudExpression::referencedAttributeIndexes( const QgsFields &
   if ( !d->mRootNode )
     return QSet<int>();
 
-  const QSet<QString> referencedFields = d->mRootNode->referencedColumns();
+  const QSet<QString> referencedFields = d->mRootNode->referencedAttributes();
   QSet<int> referencedIndexes;
 
   for ( const QString &fieldName : referencedFields )
@@ -300,11 +300,11 @@ QString QgsPointcloudExpression::createFieldEqualityExpression( const QString &f
   QString expr;
 
   if ( value.isNull() )
-    expr = QStringLiteral( "%1 IS NULL" ).arg( quotedColumnRef( fieldName ) );
+    expr = QStringLiteral( "%1 IS NULL" ).arg( quotedAttributeRef( fieldName ) );
   else if ( fieldType == QVariant::Type::Invalid )
-    expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value ) );
+    expr = QStringLiteral( "%1 = %2" ).arg( quotedAttributeRef( fieldName ), quotedValue( value ) );
   else
-    expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value, fieldType ) );
+    expr = QStringLiteral( "%1 = %2" ).arg( quotedAttributeRef( fieldName ), quotedValue( value, fieldType ) );
 
   return expr;
 }
@@ -320,11 +320,11 @@ bool QgsPointcloudExpression::isFieldEqualityExpression( const QString &expressi
   {
     if ( binOp->op() == QgsPointcloudExpressionNodeBinaryOperator::boEQ )
     {
-      const QgsPointcloudExpressionNodeColumnRef *columnRef = dynamic_cast<const QgsPointcloudExpressionNodeColumnRef *>( binOp->opLeft() );
+      const QgsPointcloudExpressionNodeAttributeRef *attributeRef = dynamic_cast<const QgsPointcloudExpressionNodeAttributeRef *>( binOp->opLeft() );
       const QgsPointcloudExpressionNodeLiteral *literal = dynamic_cast<const QgsPointcloudExpressionNodeLiteral *>( binOp->opRight() );
-      if ( columnRef && literal )
+      if ( attributeRef && literal )
       {
-        field = columnRef->name();
+        field = attributeRef->name();
         value = literal->value();
         return true;
       }
@@ -371,16 +371,16 @@ bool QgsPointcloudExpression::attemptReduceToInClause( const QStringList &expres
         if ( inOp->isNotIn() )
           return false;
 
-        const QgsPointcloudExpressionNodeColumnRef *columnRef = dynamic_cast<const QgsPointcloudExpressionNodeColumnRef *>( inOp->node() );
-        if ( !columnRef )
+        const QgsPointcloudExpressionNodeAttributeRef *attributeRef = dynamic_cast<const QgsPointcloudExpressionNodeAttributeRef *>( inOp->node() );
+        if ( !attributeRef )
           return false;
 
         if ( first )
         {
-          inField = columnRef->name();
+          inField = attributeRef->name();
           first = false;
         }
-        else if ( columnRef->name() != inField )
+        else if ( attributeRef->name() != inField )
         {
           return false;
         }
@@ -471,12 +471,12 @@ bool QgsPointcloudExpression::attemptReduceToInClause( const QStringList &expres
 
               if ( const QgsPointcloudExpressionNodeInOperator *inOpInner = dynamic_cast<const QgsPointcloudExpressionNodeInOperator *>( inExp.rootNode() ) )
               {
-                if ( inOpInner->node()->nodeType() != QgsPointcloudExpressionNode::NodeType::ntColumnRef || inOpInner->node()->referencedColumns().size() < 1 )
+                if ( inOpInner->node()->nodeType() != QgsPointcloudExpressionNode::NodeType::ntAttributeRef || inOpInner->node()->referencedAttributes().size() < 1 )
                 {
                   return false;
                 }
 
-                const QString innerInfield { inOpInner->node()->referencedColumns().values().first() };
+                const QString innerInfield { inOpInner->node()->referencedAttributes().values().first() };
 
                 if ( first )
                 {
@@ -520,7 +520,7 @@ bool QgsPointcloudExpression::attemptReduceToInClause( const QStringList &expres
       }
     }
   }
-  result = QStringLiteral( "%1 IN (%2)" ).arg( quotedColumnRef( inField ), values.join( ',' ) );
+  result = QStringLiteral( "%1 IN (%2)" ).arg( quotedAttributeRef( inField ), values.join( ',' ) );
   return true;
 }
 

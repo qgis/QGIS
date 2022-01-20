@@ -246,7 +246,7 @@ class CORE_EXPORT QgsPointcloudExpression
      *
      * \see referencedAttributeIndexes()
      */
-    QSet<QString> referencedColumns() const;
+    QSet<QString> referencedAttributes() const;
 
 #ifndef SIP_RUN
 
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsPointcloudExpression
      * \see quotedString()
      * \see quotedValue()
      */
-    static QString quotedColumnRef( QString name );
+    static QString quotedAttributeRef( QString name );
 
     /**
      * Returns a quoted version of a string (in single quotes)

@@ -136,12 +136,12 @@ QString QgsPointcloudExpressionNodeUnaryOperator::dump() const
     return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
 }
 
-QSet<QString> QgsPointcloudExpressionNodeUnaryOperator::referencedColumns() const
+QSet<QString> QgsPointcloudExpressionNodeUnaryOperator::referencedAttributes() const
 {
   if ( hasCachedStaticValue() )
     return QSet< QString >();
 
-  return mOperand->referencedColumns();
+  return mOperand->referencedAttributes();
 }
 
 QList<const QgsPointcloudExpressionNode *> QgsPointcloudExpressionNodeUnaryOperator::nodes() const
@@ -470,12 +470,12 @@ QString QgsPointcloudExpressionNodeBinaryOperator::dump() const
   return fmt.arg( mOpLeft->dump(), BINARY_OPERATOR_TEXT[mOp], rdump );
 }
 
-QSet<QString> QgsPointcloudExpressionNodeBinaryOperator::referencedColumns() const
+QSet<QString> QgsPointcloudExpressionNodeBinaryOperator::referencedAttributes() const
 {
   if ( hasCachedStaticValue() )
     return QSet< QString >();
 
-  return mOpLeft->referencedColumns() + mOpRight->referencedColumns();
+  return mOpLeft->referencedAttributes() + mOpRight->referencedAttributes();
 }
 
 QList<const QgsPointcloudExpressionNode *> QgsPointcloudExpressionNodeBinaryOperator::nodes() const
@@ -678,15 +678,15 @@ bool QgsPointcloudExpressionNodeInOperator::prepareNode( QgsPointcloudExpression
   return res;
 }
 
-QSet<QString> QgsPointcloudExpressionNodeInOperator::referencedColumns() const
+QSet<QString> QgsPointcloudExpressionNodeInOperator::referencedAttributes() const
 {
   if ( hasCachedStaticValue() )
     return QSet< QString >();
 
-  QSet<QString> lst( mNode->referencedColumns() );
+  QSet<QString> lst( mNode->referencedAttributes() );
   const QList< QgsPointcloudExpressionNode * > nodeList = mList->list();
   for ( const QgsPointcloudExpressionNode *n : nodeList )
-    lst.unite( n->referencedColumns() );
+    lst.unite( n->referencedAttributes() );
   return lst;
 }
 
@@ -774,7 +774,7 @@ QString QgsPointcloudExpressionNodeLiteral::dump() const
   return valueAsString();
 }
 
-QSet<QString> QgsPointcloudExpressionNodeLiteral::referencedColumns() const
+QSet<QString> QgsPointcloudExpressionNodeLiteral::referencedAttributes() const
 {
   return QSet<QString>();
 }
@@ -801,7 +801,7 @@ bool QgsPointcloudExpressionNodeLiteral::isStatic( QgsPointcloudExpression *pare
 
 //
 
-QVariant QgsPointcloudExpressionNodeColumnRef::evalNode( QgsPointcloudExpression *parent )
+QVariant QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpression *parent )
 {
   Q_UNUSED( parent )
   int index = mIndex;
@@ -836,12 +836,12 @@ QVariant QgsPointcloudExpressionNodeColumnRef::evalNode( QgsPointcloudExpression
   return QVariant();
 }
 
-QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeColumnRef::nodeType() const
+QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeAttributeRef::nodeType() const
 {
-  return ntColumnRef;
+  return ntAttributeRef;
 }
 
-bool QgsPointcloudExpressionNodeColumnRef::prepareNode( QgsPointcloudExpression *parent )
+bool QgsPointcloudExpressionNodeAttributeRef::prepareNode( QgsPointcloudExpression *parent )
 {
 //   if ( !context || !context->hasVariable( QgsPointcloudExpressionContext::EXPR_FIELDS ) )
 //     return false;
@@ -863,33 +863,33 @@ bool QgsPointcloudExpressionNodeColumnRef::prepareNode( QgsPointcloudExpression 
   return true;
 }
 
-QString QgsPointcloudExpressionNodeColumnRef::dump() const
+QString QgsPointcloudExpressionNodeAttributeRef::dump() const
 {
   const thread_local QRegularExpression re( QStringLiteral( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ) );
   const QRegularExpressionMatch match = re.match( mName );
-  return match.hasMatch() ? mName : QgsPointcloudExpression::quotedColumnRef( mName );
+  return match.hasMatch() ? mName : QgsPointcloudExpression::quotedAttributeRef( mName );
 }
 
-QSet<QString> QgsPointcloudExpressionNodeColumnRef::referencedColumns() const
+QSet<QString> QgsPointcloudExpressionNodeAttributeRef::referencedAttributes() const
 {
   return QSet<QString>() << mName;
 }
 
-QList<const QgsPointcloudExpressionNode *> QgsPointcloudExpressionNodeColumnRef::nodes() const
+QList<const QgsPointcloudExpressionNode *> QgsPointcloudExpressionNodeAttributeRef::nodes() const
 {
   QList<const QgsPointcloudExpressionNode *> result;
   result << this;
   return result;
 }
 
-QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeColumnRef::clone() const
+QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeAttributeRef::clone() const
 {
-  QgsPointcloudExpressionNodeColumnRef *copy = new QgsPointcloudExpressionNodeColumnRef( mName );
+  QgsPointcloudExpressionNodeAttributeRef *copy = new QgsPointcloudExpressionNodeAttributeRef( mName );
   cloneTo( copy );
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeColumnRef::isStatic( QgsPointcloudExpression *parent ) const
+bool QgsPointcloudExpressionNodeAttributeRef::isStatic( QgsPointcloudExpression *parent ) const
 {
   Q_UNUSED( parent )
   return false;

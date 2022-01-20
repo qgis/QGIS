@@ -49,8 +49,8 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
       case QgsPointcloudExpressionNode::ntLiteral:
         sipType = sipType_QgsPointcloudExpressionNodeLiteral;
         break;
-      case QgsPointcloudExpressionNode::ntColumnRef:
-        sipType = sipType_QgsPointcloudExpressionNodeColumnRef;
+      case QgsPointcloudExpressionNode::ntAttributeRef:
+        sipType = sipType_QgsPointcloudExpressionNodeAttributeRef;
         break;
       default:
         sipType = 0;
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
       ntBinaryOperator, //!< \see QgsPointcloudExpression::Node::NodeBinaryOperator
       ntInOperator, //!< \see QgsExpression::Node::NodeInOperator
       ntLiteral, //!< \see QgsPointcloudExpression::Node::NodeLiteral
-      ntColumnRef, //!< \see QgsPointcloudExpression::Node::NodeColumnRef
+      ntAttributeRef, //!< \see QgsPointcloudExpression::Node::NodeAttributeRef
     };
 
 
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \returns A list of columns required to evaluate this expression
      */
-    virtual QSet<QString> referencedColumns() const = 0;
+    virtual QSet<QString> referencedAttributes() const = 0;
 
     /**
      * Returns a list of all nodes which are used in this expression.

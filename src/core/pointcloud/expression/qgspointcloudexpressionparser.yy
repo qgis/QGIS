@@ -123,7 +123,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsPointcloudExpressionNode *node)
 %token NULLVALUE
 
 
-%token <text> STRING QUOTED_COLUMN_REF NAME SPECIAL_COL NAMED_NODE
+%token <text> STRING QUOTED_ATTRIBUTE_REF NAME SPECIAL_COL NAMED_NODE
 
 %token COMMA
 
@@ -202,8 +202,8 @@ expression:
     | MINUS expression %prec UMINUS { $$ = new QgsPointcloudExpressionNodeUnaryOperator( QgsPointcloudExpressionNodeUnaryOperator::uoMinus, $2); }
 
     // columns
-    | NAME                  { $$ = new QgsPointcloudExpressionNodeColumnRef( *$1 ); delete $1; }
-    | QUOTED_COLUMN_REF                  { $$ = new QgsPointcloudExpressionNodeColumnRef( *$1 ); delete $1; }
+    | NAME                  { $$ = new QgsPointcloudExpressionNodeAttributeRef( *$1 ); delete $1; }
+    | QUOTED_ATTRIBUTE_REF                  { $$ = new QgsPointcloudExpressionNodeAttributeRef( *$1 ); delete $1; }
 
     //  literals
     | NUMBER_FLOAT                { $$ = new QgsPointcloudExpressionNodeLiteral( QVariant($1) ); }

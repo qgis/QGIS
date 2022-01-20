@@ -70,7 +70,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeUnaryOperator : public QgsPointclou
     QVariant evalNode( QgsPointcloudExpression *parent ) override;
     QString dump() const override;
 
-    QSet<QString> referencedColumns() const override;
+    QSet<QString> referencedAttributes() const override;
     QList<const QgsPointcloudExpressionNode *> nodes() const override; SIP_SKIP
     QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
 
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeBinaryOperator : public QgsPointclo
     QVariant evalNode( QgsPointcloudExpression *parent ) override;
     QString dump() const override;
 
-    QSet<QString> referencedColumns() const override;
+    QSet<QString> referencedAttributes() const override;
     QList<const QgsPointcloudExpressionNode *> nodes( ) const override; SIP_SKIP
 
     QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeInOperator : public QgsPointcloudEx
     QVariant evalNode( QgsPointcloudExpression *parent ) override;
     QString dump() const override;
 
-    QSet<QString> referencedColumns() const override;
+    QSet<QString> referencedAttributes() const override;
     QList<const QgsPointcloudExpressionNode *> nodes() const override; SIP_SKIP
     QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsPointcloudExpression *parent ) const override;
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpre
     QVariant evalNode( QgsPointcloudExpression *parent ) override;
     QString dump() const override;
 
-    QSet<QString> referencedColumns() const override;
+    QSet<QString> referencedAttributes() const override;
 
     QList<const QgsPointcloudExpressionNode *> nodes() const override; SIP_SKIP
     QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpre
  * \brief An expression node which takes it value from a feature's field.
  * \ingroup core
  */
-class CORE_EXPORT QgsPointcloudExpressionNodeColumnRef : public QgsPointcloudExpressionNode
+class CORE_EXPORT QgsPointcloudExpressionNodeAttributeRef : public QgsPointcloudExpressionNode
 {
   public:
 
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeColumnRef : public QgsPointcloudExp
      * Constructor for QgsPointcloudExpressionNodeColumnRef, referencing the column
      * with the specified \a name.
      */
-    QgsPointcloudExpressionNodeColumnRef( const QString &name )
+    QgsPointcloudExpressionNodeAttributeRef( const QString &name )
       : mName( name )
       , mIndex( -1 )
     {}
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeColumnRef : public QgsPointcloudExp
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointcloudExpressionNodeColumnRef: \"%1\">" ).arg( sipCpp->name() );
+    QString str = QStringLiteral( "<QgsPointcloudExpressionNodeAttributeRef: \"%1\">" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeColumnRef : public QgsPointcloudExp
     QVariant evalNode( QgsPointcloudExpression *parent ) override;
     QString dump() const override;
 
-    QSet<QString> referencedColumns() const override;
+    QSet<QString> referencedAttributes() const override;
     QList<const QgsPointcloudExpressionNode *> nodes( ) const override; SIP_SKIP
 
     QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;

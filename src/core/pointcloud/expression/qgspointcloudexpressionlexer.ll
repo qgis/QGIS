@@ -102,7 +102,7 @@ static QString stripNamedText(QString text)
   return text.trimmed();
 }
 
-static QString stripColumnRef(QString text)
+static QString stripAttributeRef(QString text)
 {
   // strip double quotes on start,end
   text = text.mid( 1, text.length() - 2 );
@@ -208,7 +208,7 @@ string      "'"{str_char}*"'"
 
 {identifier}         { TEXT; return NAME; }
 
-{identifier_quoted}  { TEXT_FILTER(stripColumnRef); return QUOTED_COLUMN_REF; }
+{identifier_quoted}  { TEXT_FILTER(stripAttributeRef); return QUOTED_ATTRIBUTE_REF; }
 
 {white}    /* skip blanks and tabs */
 
