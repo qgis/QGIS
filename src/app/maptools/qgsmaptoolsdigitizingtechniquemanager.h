@@ -52,10 +52,10 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
 {
     Q_OBJECT
   public:
-    static const inline  QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique> settingsDigitizingTechnique = QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique>( QStringLiteral( "digitizingTechnique" ), QgsSettings::App, QgsMapToolCapture::CaptureTechnique::StraightSegments ) SIP_SKIP;
+    static const inline  QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique> settingsDigitizingTechnique = QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique>( QStringLiteral( "/qgis/digitizing/technique" ), QgsSettings::NoSection, QgsMapToolCapture::CaptureTechnique::StraightSegments ) SIP_SKIP;
 
-    static const inline QgsSettingsEntryString settingMapToolShapeDefaultForShape = QgsSettingsEntryString( QStringLiteral( "shape-map-tools/%1/default" ), QgsSettings::App, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
-    static const inline QgsSettingsEntryString settingMapToolShapeCurrent = QgsSettingsEntryString( QStringLiteral( "shape-map-tools/current" ), QgsSettings::App, QString(), QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
+    static const inline QgsSettingsEntryString settingMapToolShapeDefaultForShape = QgsSettingsEntryString( QStringLiteral( "/qgis/digitizing/shape-map-tools/%1/default" ), QgsSettings::NoSection, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
+    static const inline QgsSettingsEntryString settingMapToolShapeCurrent = QgsSettingsEntryString( QStringLiteral( "/qgis/digitizing/shape-map-tools/current" ), QgsSettings::NoSection, QString(), QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
 
     QgsMapToolsDigitizingTechniqueManager( QObject *parent );
     ~QgsMapToolsDigitizingTechniqueManager();
