@@ -1116,11 +1116,15 @@ Remove action from the Web menu
     virtual void addPluginToMeshMenu( const QString &name, QAction *action ) = 0;
 %Docstring
 Add action to the Mesh menu
+
+.. versionadded:: 3.24
 %End
 
     virtual void removePluginMeshMenu( const QString &name, QAction *action ) = 0;
 %Docstring
 Remove action from the Mesh menu
+
+.. versionadded:: 3.24
 %End
 
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
