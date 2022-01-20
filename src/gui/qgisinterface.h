@@ -947,10 +947,18 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Remove action from the Web menu
     virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
 
-    //! Add action to the Mesh menu
+    /**
+     * Add action to the Mesh menu
+     *
+     * \since QGIS 3.24
+     */
     virtual void addPluginToMeshMenu( const QString &name, QAction *action ) = 0;
 
-    //! Remove action from the Mesh menu
+    /**
+     * Remove action from the Mesh menu
+     *
+     * \since QGIS 3.24
+     */
     virtual void removePluginMeshMenu( const QString &name, QAction *action ) = 0;
 
     /**
