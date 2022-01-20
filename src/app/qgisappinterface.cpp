@@ -269,6 +269,16 @@ void QgisAppInterface::removePluginWebMenu( const QString &name, QAction *action
   qgis->removePluginWebMenu( name, action );
 }
 
+void QgisAppInterface::addPluginToMeshMenu( const QString &name, QAction *action )
+{
+  qgis->addPluginToMeshMenu( name, action );
+}
+
+void QgisAppInterface::removePluginMeshMenu( const QString &name, QAction *action )
+{
+  qgis->removePluginMeshMenu( name, action );
+}
+
 int QgisAppInterface::addToolBarIcon( QAction *qAction )
 {
   return qgis->addPluginToolBarIcon( qAction );
