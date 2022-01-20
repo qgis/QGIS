@@ -131,6 +131,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removePluginVectorMenu( const QString &name, QAction *action ) override;
     void addPluginToWebMenu( const QString &name, QAction *action ) override;
     void removePluginWebMenu( const QString &name, QAction *action ) override;
+    void addPluginToMeshMenu( const QString &name, QAction *action ) override;
+    void removePluginMeshMenu( const QString &name, QAction *action ) override;
     void insertAddLayerAction( QAction *action ) override;
     void removeAddLayerAction( QAction *action ) override;
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) override;

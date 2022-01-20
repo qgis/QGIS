@@ -1113,6 +1113,16 @@ Add action to the Web menu
 Remove action from the Web menu
 %End
 
+    virtual void addPluginToMeshMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the Mesh menu
+%End
+
+    virtual void removePluginMeshMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the Mesh menu
+%End
+
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
 %Docstring
 Adds a ``dock`` widget to the main window, in the specified dock ``area``.

@@ -947,6 +947,12 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Remove action from the Web menu
     virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
 
+    //! Add action to the Mesh menu
+    virtual void addPluginToMeshMenu( const QString &name, QAction *action ) = 0;
+
+    //! Remove action from the Mesh menu
+    virtual void removePluginMeshMenu( const QString &name, QAction *action ) = 0;
+
     /**
      * Adds a \a dock widget to the main window, in the specified dock \a area.
      *
