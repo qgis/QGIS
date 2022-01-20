@@ -14807,49 +14807,6 @@ void QgisApp::addPluginToMeshMenu( const QString &name, QAction *action )
 {
   QMenu *menu = getMeshMenu( name );
   menu->addAction( action );
-
-  // add the Mesh menu to the menuBar if not added yet
-  if ( mMeshMenu->actions().count() != 1 )
-    return;
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = menuBar()->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    // goes after Database menu, if present
-    if ( actions.at( i )->menu() == mDatabaseMenu )
-    {
-      before = actions.at( i += 1 );
-      // don't break here
-    }
-    // goes after Web menu, if present
-    if ( actions.at( i )->menu() == mWebMenu )
-    {
-      before = actions.at( i += 1 );
-      // don't break here
-    }
-
-    if ( actions.at( i )->menu() == mMeshMenu )
-      return;
-  }
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    // defaults to after Raster menu, which is already in qgisapp.ui
-    if ( actions.at( i )->menu() == mRasterMenu )
-    {
-      if ( !before )
-      {
-        before = actions.at( i += 1 );
-        break;
-      }
-    }
-  }
-
-  if ( before )
-    menuBar()->insertMenu( before, mMeshMenu );
-  else
-    // fallback insert
-    menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mMeshMenu );
 }
 
 void QgisApp::removePluginDatabaseMenu( const QString &name, QAction *action )
