@@ -208,6 +208,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         QgsRuleBasedRenderer.refineRuleCategories(self.r2, c)
         self.assertEqual(self.r2.children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(self.r2.children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(self.r2.children()[2].filterExpression(), '"id" IS NULL')
         self.assertEqual(self.r2.children()[0].label(), 'id 1')
         self.assertEqual(self.r2.children()[1].label(), '2')
         self.assertEqual(self.r2.children()[2].label(), '')
