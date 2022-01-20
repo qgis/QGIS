@@ -276,6 +276,7 @@ void QgsVirtualLayerSourceSelect::addLayer()
 
   QComboBox *providerCombo = new QComboBox();
   providerCombo->addItems( mProviderList );
+  providerCombo->setCurrentText( QStringLiteral( "ogr" ) );
   mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, 1, providerCombo );
 
   QComboBox *encodingCombo = new QComboBox();
