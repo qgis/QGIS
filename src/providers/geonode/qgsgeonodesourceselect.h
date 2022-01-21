@@ -67,7 +67,6 @@ class QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::Qg
     QgsGeonodeItemDelegate *mItemDelegate = nullptr;
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
-    QPushButton *mBuildQueryButton = nullptr;
     QModelIndex mSQLIndex;
 
     void updateButtonStateForAvailableConnections();

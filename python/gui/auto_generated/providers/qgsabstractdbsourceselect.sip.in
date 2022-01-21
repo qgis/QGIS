@@ -38,6 +38,7 @@ Sets the source model for the table and optionally a delegate
 Returns the proxy model used to filter the results
 %End
 
+
   protected slots:
     virtual void setSql( const QModelIndex &index ) = 0;
 %Docstring
