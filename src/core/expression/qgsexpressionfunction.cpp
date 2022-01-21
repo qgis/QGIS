@@ -6190,7 +6190,11 @@ static QVariant fcnArrayInsert( const QVariantList &values, const QgsExpressionC
 static QVariant fcnArrayRemoveAt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  list.removeAt( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) );
+  int position = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  if ( position < 0 && ( list.length() + position ) >= 0 )
+    position = position + list.length();
+  if ( position < list.length() )
+    list.removeAt( position );
   return convertToSameType( list, values.at( 0 ).type() );
 }
 
