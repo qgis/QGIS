@@ -83,6 +83,7 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mAvailableOpCount( other.mAvailableOpCount )
   , mIsValid( other.mIsValid )
   , mShortCircuit( other.mShortCircuit )
+  , mGeographicToWebMercator( other.mGeographicToWebMercator )
   , mSourceCRS( other.mSourceCRS )
   , mDestCRS( other.mDestCRS )
   , mSourceDatumTransform( other.mSourceDatumTransform )
@@ -157,6 +158,10 @@ bool QgsCoordinateTransformPrivate::initialize()
     mShortCircuit = true;
     return true;
   }
+
+  mGeographicToWebMercator =
+    mSourceCRS.authid() == QLatin1String( "EPSG:4326" ) &&
+    mDestCRS.authid() == QLatin1String( "EPSG:3857" );
 
   mSourceIsDynamic = mSourceCRS.isDynamic();
   mSourceCoordinateEpoch = mSourceCRS.coordinateEpoch();
