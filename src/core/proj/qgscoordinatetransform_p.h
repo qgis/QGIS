@@ -88,6 +88,9 @@ class QgsCoordinateTransformPrivate : public QSharedData
      */
     bool mShortCircuit = false;
 
+    //! Flag to indicate EPSG:4326 to EPSG:3857 reprojection
+    bool mGeographicToWebMercator = false;
+
     //! QgsCoordinateReferenceSystem of the source (layer) coordinate system
     QgsCoordinateReferenceSystem mSourceCRS;
 
