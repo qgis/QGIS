@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>688</width>
-    <height>491</height>
+    <width>837</width>
+    <height>554</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,1">
@@ -169,15 +169,6 @@
             </item>
             <item>
              <property name="text">
-              <string>Size</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/transparency.svg</normaloff>:/images/themes/default/propertyicons/transparency.svg</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string>Placement</string>
              </property>
              <property name="toolTip">
@@ -186,15 +177,6 @@
              <property name="icon">
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/propertyicons/labelplacement.svg</normaloff>:/images/themes/default/propertyicons/labelplacement.svg</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Options</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/action.svg</normaloff>:/images/themes/default/propertyicons/action.svg</iconset>
              </property>
             </item>
             <item>
@@ -275,198 +257,431 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>642</width>
-                   <height>421</height>
+                   <width>775</width>
+                   <height>499</height>
                   </rect>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_6">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>6</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>6</number>
-                  </property>
-                  <item>
-                   <layout class="QVBoxLayout" name="availAttributesLayout">
+                 <layout class="QGridLayout" name="gridLayout_9">
+                  <item row="0" column="0">
+                   <layout class="QVBoxLayout" name="verticalLayout_14">
                     <item>
-                     <widget class="QLabel" name="label">
-                      <property name="text">
-                       <string>Available attributes</string>
-                      </property>
-                     </widget>
+                     <layout class="QHBoxLayout" name="horizontalLayout_2">
+                      <item>
+                       <layout class="QVBoxLayout" name="availAttributesLayout">
+                        <item>
+                         <widget class="QLabel" name="label">
+                          <property name="text">
+                           <string>Available attributes</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QTreeWidget" name="mAttributesTreeWidget">
+                          <property name="selectionMode">
+                           <enum>QAbstractItemView::ExtendedSelection</enum>
+                          </property>
+                          <property name="indentation">
+                           <number>0</number>
+                          </property>
+                          <property name="rootIsDecorated">
+                           <bool>false</bool>
+                          </property>
+                          <property name="itemsExpandable">
+                           <bool>false</bool>
+                          </property>
+                          <property name="expandsOnDoubleClick">
+                           <bool>false</bool>
+                          </property>
+                          <property name="columnCount">
+                           <number>1</number>
+                          </property>
+                          <column>
+                           <property name="text">
+                            <string notr="true">Attribute</string>
+                           </property>
+                          </column>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="attributeButtonLayout">
+                        <item>
+                         <spacer name="verticalSpacer">
+                          <property name="orientation">
+                           <enum>Qt::Vertical</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>20</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="mAddAttributeExpression">
+                          <property name="enabled">
+                           <bool>true</bool>
+                          </property>
+                          <property name="toolTip">
+                           <string>Add expression</string>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="mAddCategoryPushButton">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="toolTip">
+                           <string>Add selected attributes</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="mRemoveCategoryPushButton">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="toolTip">
+                           <string>Remove selected attributes</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <spacer name="verticalSpacer_5">
+                          <property name="orientation">
+                           <enum>Qt::Vertical</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>20</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="assignedAttributesLayout">
+                        <item>
+                         <widget class="QLabel" name="Assigened">
+                          <property name="text">
+                           <string>Assigned attributes</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QTreeWidget" name="mDiagramAttributesTreeWidget">
+                          <property name="toolTip">
+                           <string>Drag and drop to reorder</string>
+                          </property>
+                          <property name="dragEnabled">
+                           <bool>true</bool>
+                          </property>
+                          <property name="dragDropMode">
+                           <enum>QAbstractItemView::InternalMove</enum>
+                          </property>
+                          <property name="defaultDropAction">
+                           <enum>Qt::TargetMoveAction</enum>
+                          </property>
+                          <property name="selectionMode">
+                           <enum>QAbstractItemView::ExtendedSelection</enum>
+                          </property>
+                          <property name="indentation">
+                           <number>0</number>
+                          </property>
+                          <property name="rootIsDecorated">
+                           <bool>false</bool>
+                          </property>
+                          <property name="itemsExpandable">
+                           <bool>false</bool>
+                          </property>
+                          <property name="columnCount">
+                           <number>3</number>
+                          </property>
+                          <column>
+                           <property name="text">
+                            <string>Attribute</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>Color</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>Legend</string>
+                           </property>
+                          </column>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
                     </item>
                     <item>
-                     <widget class="QTreeWidget" name="mAttributesTreeWidget">
-                      <property name="selectionMode">
-                       <enum>QAbstractItemView::ExtendedSelection</enum>
+                     <widget class="QgsCollapsibleGroupBox" name="mGroupBox_2">
+                      <property name="title">
+                       <string>Size</string>
                       </property>
-                      <property name="indentation">
-                       <number>0</number>
-                      </property>
-                      <property name="rootIsDecorated">
-                       <bool>false</bool>
-                      </property>
-                      <property name="itemsExpandable">
-                       <bool>false</bool>
-                      </property>
-                      <property name="expandsOnDoubleClick">
-                       <bool>false</bool>
-                      </property>
-                      <property name="columnCount">
-                       <number>1</number>
-                      </property>
-                      <column>
-                       <property name="text">
-                        <string notr="true">Attribute</string>
-                       </property>
-                      </column>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QVBoxLayout" name="attributeButtonLayout">
-                    <item>
-                     <spacer name="verticalSpacer">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="mAddAttributeExpression">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="toolTip">
-                       <string>Add expression</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="mAddCategoryPushButton">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="toolTip">
-                       <string>Add selected attributes</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="mRemoveCategoryPushButton">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="toolTip">
-                       <string>Remove selected attributes</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="verticalSpacer_5">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QVBoxLayout" name="assignedAttributesLayout">
-                    <item>
-                     <widget class="QLabel" name="Assigened">
-                      <property name="text">
-                       <string>Assigned attributes</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QTreeWidget" name="mDiagramAttributesTreeWidget">
-                      <property name="toolTip">
-                       <string>Drag and drop to reorder</string>
-                      </property>
-                      <property name="dragEnabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="dragDropMode">
-                       <enum>QAbstractItemView::InternalMove</enum>
-                      </property>
-                      <property name="defaultDropAction">
-                       <enum>Qt::TargetMoveAction</enum>
-                      </property>
-                      <property name="selectionMode">
-                       <enum>QAbstractItemView::ExtendedSelection</enum>
-                      </property>
-                      <property name="indentation">
-                       <number>0</number>
-                      </property>
-                      <property name="rootIsDecorated">
-                       <bool>false</bool>
-                      </property>
-                      <property name="itemsExpandable">
-                       <bool>false</bool>
-                      </property>
-                      <property name="columnCount">
-                       <number>3</number>
-                      </property>
-                      <column>
-                       <property name="text">
-                        <string>Attribute</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Color</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Legend</string>
-                       </property>
-                      </column>
+                      <layout class="QGridLayout" name="gridLayout_8">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="mDiagramUnitsLabel">
+                         <property name="text">
+                          <string>Size units</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QgsUnitSelectionWidget" name="mDiagramUnitComboBox" native="true">
+                         <property name="focusPolicy">
+                          <enum>Qt::StrongFocus</enum>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QRadioButton" name="mFixedSizeRadio">
+                         <property name="text">
+                          <string>Fixed size</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QgsDoubleSpinBox" name="mDiagramSizeSpinBox">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="decimals">
+                          <number>6</number>
+                         </property>
+                         <property name="maximum">
+                          <double>9999999.990000000223517</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.200000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QRadioButton" name="mAttributeBasedScalingRadio">
+                         <property name="text">
+                          <string>Scaled size</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QLabel" name="mLinearlyScalingLabel">
+                         <property name="text">
+                          <string>Scale linearly between 0 and the following attribute value / diagram size</string>
+                         </property>
+                         <property name="wordWrap">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="0" colspan="2">
+                        <widget class="QFrame" name="mLinearScaleFrame">
+                         <property name="frameShape">
+                          <enum>QFrame::NoFrame</enum>
+                         </property>
+                         <property name="frameShadow">
+                          <enum>QFrame::Plain</enum>
+                         </property>
+                         <layout class="QVBoxLayout" name="verticalLayout_2">
+                          <property name="leftMargin">
+                           <number>20</number>
+                          </property>
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <layout class="QGridLayout" name="gridLayout">
+                            <item row="3" column="0">
+                             <widget class="QLabel" name="mSizeLabel">
+                              <property name="text">
+                               <string>Size</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="3">
+                             <widget class="QLabel" name="mScaleDependencyLabel">
+                              <property name="text">
+                               <string>Scale</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="4">
+                             <widget class="QComboBox" name="mScaleDependencyComboBox"/>
+                            </item>
+                            <item row="4" column="0" colspan="5">
+                             <widget class="QFrame" name="mFrameIncreaseSize">
+                              <property name="frameShape">
+                               <enum>QFrame::NoFrame</enum>
+                              </property>
+                              <property name="frameShadow">
+                               <enum>QFrame::Raised</enum>
+                              </property>
+                              <layout class="QHBoxLayout" name="horizontalLayout">
+                               <property name="leftMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="rightMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
+                                <number>0</number>
+                               </property>
+                               <item>
+                                <widget class="QCheckBox" name="mIncreaseSmallDiagramsCheck">
+                                 <property name="text">
+                                  <string>Increase size of small diagrams</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLabel" name="mIncreaseMinimumSizeLabel">
+                                 <property name="text">
+                                  <string>Minimum size</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QgsDoubleSpinBox" name="mIncreaseMinimumSizeSpinBox">
+                                 <property name="sizePolicy">
+                                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                                   <horstretch>0</horstretch>
+                                   <verstretch>0</verstretch>
+                                  </sizepolicy>
+                                 </property>
+                                 <property name="decimals">
+                                  <number>6</number>
+                                 </property>
+                                 <property name="maximum">
+                                  <double>100000.000000000000000</double>
+                                 </property>
+                                 <property name="singleStep">
+                                  <double>0.200000000000000</double>
+                                 </property>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                            <item row="2" column="4">
+                             <widget class="QPushButton" name="mFindMaximumValueButton">
+                              <property name="text">
+                               <string>Find</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="1" rowspan="2" colspan="4">
+                             <widget class="QgsFieldExpressionWidget" name="mSizeFieldExpressionWidget" native="true">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="maximumSize">
+                               <size>
+                                <width>16777215</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="0" rowspan="2">
+                             <widget class="QLabel" name="mSizeAttributeLabel">
+                              <property name="text">
+                               <string>Attribute</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="0">
+                             <widget class="QLabel" name="label_4">
+                              <property name="text">
+                               <string>Maximum value</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="1" colspan="3">
+                             <widget class="QgsDoubleSpinBox" name="mMaxValueSpinBox">
+                              <property name="decimals">
+                               <number>6</number>
+                              </property>
+                              <property name="minimum">
+                               <double>-99999999.000000000000000</double>
+                              </property>
+                              <property name="maximum">
+                               <double>99999999.000000000000000</double>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="1" colspan="2">
+                             <widget class="QgsDoubleSpinBox" name="mSizeSpinBox">
+                              <property name="decimals">
+                               <number>6</number>
+                              </property>
+                              <property name="maximum">
+                               <double>9999999.000000000000000</double>
+                              </property>
+                              <property name="singleStep">
+                               <double>0.200000000000000</double>
+                              </property>
+                              <property name="value">
+                               <double>5.000000000000000</double>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                      </layout>
                      </widget>
                     </item>
                    </layout>
@@ -517,8 +732,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>535</height>
+                   <width>775</width>
+                   <height>669</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
@@ -853,148 +1068,148 @@
                     <property name="syncGroup" stdset="0">
                      <string notr="true">labelrenderinggroup</string>
                     </property>
-                      <layout class="QGridLayout" name="gridLayout_3">
-                       <item row="0" column="2">
-                        <widget class="QgsPropertyOverrideButton" name="mZOrderDDBtn">
-                         <property name="text">
-                          <string>…</string>
+                    <layout class="QGridLayout" name="gridLayout_3">
+                     <item row="0" column="2">
+                      <widget class="QgsPropertyOverrideButton" name="mZOrderDDBtn">
+                       <property name="text">
+                        <string>…</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QgsDoubleSpinBox" name="mZIndexSpinBox">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Controls how diagrams are drawn on top of each other. Diagrams with a higher z-index are drawn above diagrams and labels with a lower z-index.</string>
+                       </property>
+                       <property name="minimum">
+                        <double>-9999999.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>9999999.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_16">
+                       <property name="text">
+                        <string>Diagram z-index</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0" colspan="3">
+                      <layout class="QHBoxLayout" name="horizontalLayout_9">
+                       <item>
+                        <widget class="QLabel" name="mShowDiagramLabel">
+                         <property name="enabled">
+                          <bool>true</bool>
                          </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QgsDoubleSpinBox" name="mZIndexSpinBox">
                          <property name="sizePolicy">
-                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                            <horstretch>0</horstretch>
                            <verstretch>0</verstretch>
                           </sizepolicy>
                          </property>
                          <property name="toolTip">
-                          <string>Controls how diagrams are drawn on top of each other. Diagrams with a higher z-index are drawn above diagrams and labels with a lower z-index.</string>
+                          <string>Controls whether specific diagrams should be shown</string>
                          </property>
-                         <property name="minimum">
-                          <double>-9999999.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>9999999.000000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="label_16">
                          <property name="text">
-                          <string>Diagram z-index</string>
+                          <string>Show diagram</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="2" column="0" colspan="3">
-                        <layout class="QHBoxLayout" name="horizontalLayout_9">
-                         <item>
-                          <widget class="QLabel" name="mShowDiagramLabel">
-                           <property name="enabled">
-                            <bool>true</bool>
-                           </property>
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="toolTip">
-                            <string>Controls whether specific diagrams should be shown</string>
-                           </property>
-                           <property name="text">
-                            <string>Show diagram</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QgsPropertyOverrideButton" name="mShowDiagramDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="Line" name="line_4">
-                           <property name="orientation">
-                            <enum>Qt::Vertical</enum>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="mAlwaysShowLabel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="toolTip">
-                            <string>Controls whether specific diagrams should always be rendered, even when they overlap other diagrams or map labels</string>
-                           </property>
-                           <property name="text">
-                            <string>Always show</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QgsPropertyOverrideButton" name="mAlwaysShowDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_23">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>195</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </item>
-                       <item row="3" column="0" colspan="3">
-                        <widget class="QgsCollapsibleGroupBox" name="mScaleVisibilityGroupBox">
-                         <property name="title">
-                          <string>Scale dependent visibility</string>
+                       <item>
+                        <widget class="QgsPropertyOverrideButton" name="mShowDiagramDDBtn">
+                         <property name="text">
+                          <string>…</string>
                          </property>
-                         <property name="checkable">
-                          <bool>true</bool>
-                         </property>
-                         <layout class="QGridLayout" name="gridLayout_15">
-                          <property name="leftMargin">
-                           <number>9</number>
-                          </property>
-                          <property name="topMargin">
-                           <number>9</number>
-                          </property>
-                          <item row="0" column="0">
-                           <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true"/>
-                          </item>
-                         </layout>
                         </widget>
                        </item>
-                       <item row="1" column="0" colspan="3">
-                        <widget class="QCheckBox" name="mShowAllCheckBox">
+                       <item>
+                        <widget class="Line" name="line_4">
+                         <property name="orientation">
+                          <enum>Qt::Vertical</enum>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="mAlwaysShowLabel">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="toolTip">
-                          <string>Always show all diagrams, even when they overlap with each other or other map labels</string>
+                          <string>Controls whether specific diagrams should always be rendered, even when they overlap other diagrams or map labels</string>
                          </property>
                          <property name="text">
-                          <string>Show all diagrams</string>
-                         </property>
-                         <property name="checked">
-                          <bool>true</bool>
+                          <string>Always show</string>
                          </property>
                         </widget>
+                       </item>
+                       <item>
+                        <widget class="QgsPropertyOverrideButton" name="mAlwaysShowDDBtn">
+                         <property name="text">
+                          <string>…</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_23">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>195</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
                        </item>
                       </layout>
+                     </item>
+                     <item row="3" column="0" colspan="3">
+                      <widget class="QgsCollapsibleGroupBox" name="mScaleVisibilityGroupBox">
+                       <property name="title">
+                        <string>Scale dependent visibility</string>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_15">
+                        <property name="leftMargin">
+                         <number>9</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>9</number>
+                        </property>
+                        <item row="0" column="0">
+                         <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true"/>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item row="1" column="0" colspan="3">
+                      <widget class="QCheckBox" name="mShowAllCheckBox">
+                       <property name="toolTip">
+                        <string>Always show all diagrams, even when they overlap with each other or other map labels</string>
+                       </property>
+                       <property name="text">
+                        <string>Show all diagrams</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                   <item>
@@ -1009,307 +1224,6 @@
                      </size>
                     </property>
                    </spacer>
-                  </item>
-                 </layout>
-                </widget>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="mDiagramPage_Size">
-             <layout class="QVBoxLayout" name="verticalLayout_6">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_40">
-                <property name="styleSheet">
-                 <string notr="true">text-decoration: underline;</string>
-                </property>
-                <property name="text">
-                 <string>Size</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QgsScrollArea" name="scrollArea_5">
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="widgetResizable">
-                 <bool>true</bool>
-                </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_6">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>642</width>
-                   <height>421</height>
-                  </rect>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_11">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>6</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>0</number>
-                  </property>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="mDiagramUnitsLabel">
-                    <property name="text">
-                     <string>Size units</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QRadioButton" name="mFixedSizeRadio">
-                    <property name="text">
-                     <string>Fixed size</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QgsDoubleSpinBox" name="mDiagramSizeSpinBox">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="decimals">
-                     <number>6</number>
-                    </property>
-                    <property name="maximum">
-                     <double>9999999.990000000223517</double>
-                    </property>
-                    <property name="singleStep">
-                     <double>0.200000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QgsUnitSelectionWidget" name="mDiagramUnitComboBox" native="true">
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="0">
-                   <spacer name="verticalSpacer_3">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="3" column="0" colspan="2">
-                   <widget class="QFrame" name="mLinearScaleFrame">
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Plain</enum>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_2">
-                     <property name="leftMargin">
-                      <number>20</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="mLinearlyScalingLabel">
-                       <property name="text">
-                        <string>Scale linearly between 0 and the following attribute value / diagram size</string>
-                       </property>
-                       <property name="wordWrap">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <layout class="QGridLayout" name="gridLayout">
-                       <item row="3" column="0">
-                        <widget class="QLabel" name="mSizeLabel">
-                         <property name="text">
-                          <string>Size</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="3">
-                        <widget class="QLabel" name="mScaleDependencyLabel">
-                         <property name="text">
-                          <string>Scale</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="4">
-                        <widget class="QComboBox" name="mScaleDependencyComboBox"/>
-                       </item>
-                       <item row="4" column="0" colspan="5">
-                        <widget class="QFrame" name="mFrameIncreaseSize">
-                         <property name="frameShape">
-                          <enum>QFrame::NoFrame</enum>
-                         </property>
-                         <property name="frameShadow">
-                          <enum>QFrame::Raised</enum>
-                         </property>
-                         <layout class="QHBoxLayout" name="horizontalLayout">
-                          <property name="leftMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="topMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="rightMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="bottomMargin">
-                           <number>0</number>
-                          </property>
-                          <item>
-                           <widget class="QCheckBox" name="mIncreaseSmallDiagramsCheck">
-                            <property name="text">
-                             <string>Increase size of small diagrams</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="mIncreaseMinimumSizeLabel">
-                            <property name="text">
-                             <string>Minimum size</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QgsDoubleSpinBox" name="mIncreaseMinimumSizeSpinBox">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="decimals">
-                             <number>6</number>
-                            </property>
-                            <property name="maximum">
-                             <double>100000.000000000000000</double>
-                            </property>
-                            <property name="singleStep">
-                             <double>0.200000000000000</double>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
-                        </widget>
-                       </item>
-                       <item row="2" column="4">
-                        <widget class="QPushButton" name="mFindMaximumValueButton">
-                         <property name="text">
-                          <string>Find</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1" rowspan="2" colspan="4">
-                        <widget class="QgsFieldExpressionWidget" name="mSizeFieldExpressionWidget" native="true">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0" rowspan="2">
-                        <widget class="QLabel" name="mSizeAttributeLabel">
-                         <property name="text">
-                          <string>Attribute</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QLabel" name="label_4">
-                         <property name="text">
-                          <string>Maximum value</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1" colspan="3">
-                        <widget class="QgsDoubleSpinBox" name="mMaxValueSpinBox">
-                         <property name="decimals">
-                          <number>6</number>
-                         </property>
-                         <property name="minimum">
-                          <double>-99999999.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>99999999.000000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="1" colspan="2">
-                        <widget class="QgsDoubleSpinBox" name="mSizeSpinBox">
-                         <property name="decimals">
-                          <number>6</number>
-                         </property>
-                         <property name="maximum">
-                          <double>9999999.000000000000000</double>
-                         </property>
-                         <property name="singleStep">
-                          <double>0.200000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>5.000000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QRadioButton" name="mAttributeBasedScalingRadio">
-                    <property name="text">
-                     <string>Scaled size</string>
-                    </property>
-                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1337,7 +1251,7 @@
                  <string notr="true">text-decoration: underline;</string>
                 </property>
                 <property name="text">
-                 <string>Placement</string>
+                 <string>Placement &amp; orientation</string>
                 </property>
                </widget>
               </item>
@@ -1354,29 +1268,356 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>642</width>
-                   <height>421</height>
+                   <width>796</width>
+                   <height>487</height>
                   </rect>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_12">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>0</number>
-                  </property>
-                  <item row="4" column="0">
+                 <layout class="QVBoxLayout" name="verticalLayout_3">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_8">
+                    <item>
+                     <widget class="QStackedWidget" name="stackedPlacement">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::NoFrame</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Sunken</enum>
+                      </property>
+                      <property name="currentIndex">
+                       <number>2</number>
+                      </property>
+                      <widget class="QWidget" name="pagePoint">
+                       <layout class="QGridLayout" name="gridLayout_13" columnstretch="0,0,0">
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item row="0" column="0">
+                         <widget class="QRadioButton" name="radAroundPoint">
+                          <property name="toolTip">
+                           <string>Labels are placed in an equal radius circle around point features.</string>
+                          </property>
+                          <property name="text">
+                           <string>Around point</string>
+                          </property>
+                          <property name="checked">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="1">
+                         <widget class="QRadioButton" name="radOverPoint">
+                          <property name="toolTip">
+                           <string>Labels are placed at a fixed offset from the point.</string>
+                          </property>
+                          <property name="text">
+                           <string>Over point</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="2">
+                         <spacer name="horizontalSpacer_25">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </widget>
+                      <widget class="QWidget" name="pageLine">
+                       <layout class="QGridLayout" name="gridLayout_14">
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item row="0" column="1">
+                         <widget class="QRadioButton" name="radOverLine">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>Over Line</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="0">
+                         <widget class="QRadioButton" name="radAroundLine">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>Around Line</string>
+                          </property>
+                          <property name="checked">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="2">
+                         <spacer name="horizontalSpacer_15">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </widget>
+                      <widget class="QWidget" name="pagePolygon">
+                       <layout class="QGridLayout" name="gridLayout_18">
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item row="0" column="0">
+                         <widget class="QRadioButton" name="radAroundCentroid">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>Around Centroid</string>
+                          </property>
+                          <property name="checked">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QRadioButton" name="radOverCentroid">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>Over Centroid</string>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="2">
+                         <widget class="QRadioButton" name="radPolygonPerimeter">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>Using Perimeter</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="2">
+                         <widget class="QRadioButton" name="radInsidePolygon">
+                          <property name="text">
+                           <string>Inside Polygon</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="4">
+                         <spacer name="horizontalSpacer_26">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </widget>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="mPlacementFrame">
+                      <property name="frameShape">
+                       <enum>QFrame::NoFrame</enum>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_4">
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="mDiagramDistanceLabel">
+                         <property name="text">
+                          <string>Distance</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <layout class="QHBoxLayout" name="horizontalLayout_14">
+                         <item>
+                          <widget class="QgsDoubleSpinBox" name="mDiagramDistanceSpinBox">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QgsPropertyOverrideButton" name="mDistanceDDBtn">
+                           <property name="text">
+                            <string>…</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QFrame" name="mLinePlacementFrame">
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_2">
+                     <item row="0" column="0">
+                      <layout class="QHBoxLayout" name="horizontalLayout_6">
+                       <item>
+                        <layout class="QGridLayout" name="gridLayout_20">
+                         <item row="0" column="3">
+                          <widget class="QCheckBox" name="chkLineBelow">
+                           <property name="text">
+                            <string>Below line</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="2">
+                          <widget class="QCheckBox" name="chkLineOn">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>On line</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="1">
+                          <widget class="QCheckBox" name="chkLineAbove">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Above line</string>
+                           </property>
+                           <property name="checked">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1" colspan="3">
+                          <widget class="QCheckBox" name="chkLineOrientationDependent">
+                           <property name="text">
+                            <string>Line orientation dependent position</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_2">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>558</width>
+                           <height>58</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QgsCollapsibleGroupBox" name="mCoordinatesGrpBox">
                     <property name="title">
                      <string>Coordinates</string>
                     </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_22">
+                    <layout class="QHBoxLayout" name="horizontalLayout_7">
                      <item>
                       <widget class="QLabel" name="mCoordXLabel">
                        <property name="sizePolicy">
@@ -1433,91 +1674,7 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="9" column="0">
-                   <spacer name="verticalSpacer_4">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QFrame" name="mLinePlacementFrame">
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_2">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item row="0" column="0" colspan="3">
-                      <layout class="QGridLayout" name="gridLayout_20">
-                       <item row="0" column="1">
-                        <widget class="QCheckBox" name="chkLineAbove">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string>Above line</string>
-                         </property>
-                         <property name="checked">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="3">
-                        <widget class="QCheckBox" name="chkLineBelow">
-                         <property name="text">
-                          <string>Below line</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="2">
-                        <widget class="QCheckBox" name="chkLineOn">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string>On line</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1" colspan="3">
-                        <widget class="QCheckBox" name="chkLineOrientationDependent">
-                         <property name="text">
-                          <string>Line orientation dependent position</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="7" column="0">
+                  <item>
                    <widget class="QgsCollapsibleGroupBox" name="mPriorityGrpBox">
                     <property name="title">
                      <string>Priority</string>
@@ -1578,7 +1735,7 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="8" column="0">
+                  <item>
                    <widget class="QgsCollapsibleGroupBox" name="mObstaclesGrpBox">
                     <property name="title">
                      <string>Obstacles</string>
@@ -1596,7 +1753,7 @@
                      <item>
                       <widget class="QLabel" name="label_8">
                        <property name="text">
-                         <string>Discourage diagrams and labels from covering features</string>
+                        <string>Discourage diagrams and labels from covering features</string>
                        </property>
                       </widget>
                      </item>
@@ -1623,353 +1780,12 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QFrame" name="mPlacementFrame">
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_4">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="mDiagramDistanceLabel">
-                       <property name="text">
-                        <string>Distance</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <layout class="QHBoxLayout" name="horizontalLayout_14">
-                       <item>
-                        <widget class="QgsDoubleSpinBox" name="mDiagramDistanceSpinBox">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QgsPropertyOverrideButton" name="mDistanceDDBtn">
-                         <property name="text">
-                          <string>…</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QStackedWidget" name="stackedPlacement">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Sunken</enum>
-                    </property>
-                    <property name="currentIndex">
-                     <number>0</number>
-                    </property>
-                    <widget class="QWidget" name="pagePoint">
-                     <layout class="QGridLayout" name="gridLayout_13" columnstretch="0,0,0">
-                      <property name="leftMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                       <number>0</number>
-                      </property>
-                      <item row="0" column="0">
-                       <widget class="QRadioButton" name="radAroundPoint">
-                        <property name="toolTip">
-                         <string>Labels are placed in an equal radius circle around point features.</string>
-                        </property>
-                        <property name="text">
-                         <string>Around point</string>
-                        </property>
-                        <property name="checked">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="1">
-                       <widget class="QRadioButton" name="radOverPoint">
-                        <property name="toolTip">
-                         <string>Labels are placed at a fixed offset from the point.</string>
-                        </property>
-                        <property name="text">
-                         <string>Over point</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="2">
-                       <spacer name="horizontalSpacer_25">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                     </layout>
-                    </widget>
-                    <widget class="QWidget" name="pageLine">
-                     <layout class="QGridLayout" name="gridLayout_14">
-                      <property name="leftMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                       <number>0</number>
-                      </property>
-                      <item row="0" column="1">
-                       <widget class="QRadioButton" name="radOverLine">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="text">
-                         <string>Over Line</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="0">
-                       <widget class="QRadioButton" name="radAroundLine">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="text">
-                         <string>Around Line</string>
-                        </property>
-                        <property name="checked">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="2">
-                       <spacer name="horizontalSpacer_15">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                     </layout>
-                    </widget>
-                    <widget class="QWidget" name="pagePolygon">
-                     <layout class="QGridLayout" name="gridLayout_18">
-                      <property name="leftMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                       <number>0</number>
-                      </property>
-                      <item row="0" column="2">
-                       <widget class="QRadioButton" name="radInsidePolygon">
-                        <property name="text">
-                         <string>Inside Polygon</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="0">
-                       <widget class="QRadioButton" name="radAroundCentroid">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="text">
-                         <string>Around Centroid</string>
-                        </property>
-                        <property name="checked">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="4">
-                       <spacer name="horizontalSpacer_26">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item row="1" column="0">
-                       <widget class="QRadioButton" name="radOverCentroid">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="text">
-                         <string>Over Centroid</string>
-                        </property>
-                        <property name="checked">
-                         <bool>false</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="1" column="2">
-                       <widget class="QRadioButton" name="radPolygonPerimeter">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="text">
-                         <string>Using Perimeter</string>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="mDiagramPage_Options">
-             <layout class="QVBoxLayout" name="verticalLayout_10">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_42">
-                <property name="styleSheet">
-                 <string notr="true">text-decoration: underline;</string>
-                </property>
-                <property name="text">
-                 <string>Options</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QgsScrollArea" name="scrollArea_7">
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="widgetResizable">
-                 <bool>true</bool>
-                </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_8">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>642</width>
-                   <height>421</height>
-                  </rect>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_3">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>0</number>
-                  </property>
                   <item>
-                   <widget class="QFrame" name="mBarOptionsFrame">
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
+                   <widget class="QgsCollapsibleGroupBox" name="mBarOptionsFrame">
+                    <property name="title">
+                     <string>Bar Orientation</string>
                     </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Plain</enum>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_4">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_5">
-                       <property name="text">
-                        <string>Bar Orientation</string>
-                       </property>
-                      </widget>
-                     </item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_3">
                      <item>
                       <widget class="QRadioButton" name="mOrientationUpButton">
                        <property name="text">
@@ -1984,9 +1800,9 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QRadioButton" name="mOrientationDownButton">
+                      <widget class="QRadioButton" name="mOrientationLeftButton">
                        <property name="text">
-                        <string>Down</string>
+                        <string>Left</string>
                        </property>
                        <attribute name="buttonGroup">
                         <string notr="true">mOrientationButtonGroup</string>
@@ -2004,9 +1820,9 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QRadioButton" name="mOrientationLeftButton">
+                      <widget class="QRadioButton" name="mOrientationDownButton">
                        <property name="text">
-                        <string>Left</string>
+                        <string>Down</string>
                        </property>
                        <attribute name="buttonGroup">
                         <string notr="true">mOrientationButtonGroup</string>
@@ -2099,7 +1915,7 @@
                     <property name="sizeHint" stdset="0">
                      <size>
                       <width>20</width>
-                      <height>40</height>
+                      <height>67</height>
                      </size>
                     </property>
                    </spacer>
@@ -2144,8 +1960,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>341</width>
-                   <height>81</height>
+                   <width>796</width>
+                   <height>487</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2215,26 +2031,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2244,9 +2043,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
@@ -2255,15 +2054,20 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsOpacityWidget</class>
    <extends>QWidget</extends>
    <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFontButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScaleRangeWidget</class>
@@ -2274,6 +2078,18 @@
    <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
    <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsEffectStackCompactWidget</class>
@@ -2316,18 +2132,6 @@
   <tabstop>mShowDiagramDDBtn</tabstop>
   <tabstop>mAlwaysShowDDBtn</tabstop>
   <tabstop>mScaleVisibilityGroupBox</tabstop>
-  <tabstop>scrollArea_5</tabstop>
-  <tabstop>mDiagramUnitComboBox</tabstop>
-  <tabstop>mFixedSizeRadio</tabstop>
-  <tabstop>mDiagramSizeSpinBox</tabstop>
-  <tabstop>mAttributeBasedScalingRadio</tabstop>
-  <tabstop>mMaxValueSpinBox</tabstop>
-  <tabstop>mFindMaximumValueButton</tabstop>
-  <tabstop>mSizeSpinBox</tabstop>
-  <tabstop>mScaleDependencyComboBox</tabstop>
-  <tabstop>mIncreaseSmallDiagramsCheck</tabstop>
-  <tabstop>mIncreaseMinimumSizeSpinBox</tabstop>
-  <tabstop>scrollArea_6</tabstop>
   <tabstop>radAroundPoint</tabstop>
   <tabstop>radOverPoint</tabstop>
   <tabstop>radAroundLine</tabstop>
@@ -2347,16 +2151,12 @@
   <tabstop>mPrioritySlider</tabstop>
   <tabstop>mPriorityDDBtn</tabstop>
   <tabstop>mIsObstacleDDBtn</tabstop>
-  <tabstop>scrollArea_7</tabstop>
-  <tabstop>mOrientationUpButton</tabstop>
-  <tabstop>mOrientationDownButton</tabstop>
-  <tabstop>mOrientationRightButton</tabstop>
-  <tabstop>mOrientationLeftButton</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mCheckBoxAttributeLegend</tabstop>
   <tabstop>mButtonSizeLegendSettings</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
@@ -2373,70 +2173,6 @@
     <hint type="destinationlabel">
      <x>397</x>
      <y>297</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mFixedSizeRadio</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mDiagramSizeSpinBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>111</x>
-     <y>153</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>235</x>
-     <y>154</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mAttributeBasedScalingRadio</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mLinearScaleFrame</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>111</x>
-     <y>184</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>352</x>
-     <y>279</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mIncreaseSmallDiagramsCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mIncreaseMinimumSizeSpinBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>341</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>589</x>
-     <y>342</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mIncreaseSmallDiagramsCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mIncreaseMinimumSizeLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>341</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>476</x>
-     <y>342</y>
     </hint>
    </hints>
   </connection>
