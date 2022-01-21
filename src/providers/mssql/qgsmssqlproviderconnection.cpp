@@ -124,7 +124,7 @@ void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const 
   set @schema = N%3
 
   DECLARE @sql nvarchar(255)
-  WHILE EXISTS(select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where constraint_catalog = @database and table_name = @table AND table_schema = @schema )
+  WHILE EXISTS(select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_CATALOG = @database and TABLE_NAME = @table AND TABLE_SCHEMA = @schema )
   BEGIN
       select    @sql = 'ALTER TABLE ' + @table + ' DROP CONSTRAINT ' + CONSTRAINT_NAME
       from    INFORMATION_SCHEMA.TABLE_CONSTRAINTS
