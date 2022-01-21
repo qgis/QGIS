@@ -44,6 +44,8 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     //! Returns the proxy model used to filter the results
     QSortFilterProxyModel *proxyModel() {return mProxyModel;}
 
+    QPushButton *mBuildQueryButton = nullptr;
+
   protected slots:
     //! This is called to define the SQL query and must be re-implemented. The implementation should call QgsAbstractDbTableModel::setSql
     virtual void setSql( const QModelIndex &index ) = 0;
@@ -61,8 +63,6 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     QList<QAction *> mSearchColumnActions;
     QAction *mSearchModeWildCardAction = nullptr;
     QAction *mSearchModeRegexAction = nullptr;
-
-    QPushButton *mBuildQueryButton = nullptr;
 };
 
 #endif // QGSABSTRACTDBSOURCESELECT_H
