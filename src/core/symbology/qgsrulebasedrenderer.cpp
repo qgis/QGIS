@@ -1212,7 +1212,7 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule *ini
       value = QString::number( cat.value().toDouble(), 'f', 4 );
     else
       value = QgsExpression::quotedString( cat.value().toString() );
-    const QString filter = QStringLiteral( "%1 %2 %3" ).arg( attr, value == "NULL" ? "IS" : "=" , value );
+    const QString filter = QStringLiteral( "%1 %2 %3" ).arg( attr, value == "NULL" ? "IS" : "=", value );
     const QString label = !cat.label().isEmpty() ? cat.label() :
                           cat.value().isValid() ? value : QString();
     initialRule->appendChild( new Rule( cat.symbol()->clone(), 0, 0, filter, label ) );
