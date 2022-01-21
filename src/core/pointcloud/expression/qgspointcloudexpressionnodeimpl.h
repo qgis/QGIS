@@ -66,7 +66,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeUnaryOperator : public QgsPointclou
     QgsPointcloudExpressionNode *operand() const { return mOperand; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent ) override;
+    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
     QVariant evalNode( QgsPointcloudExpression *parent ) override;
     QString dump() const override;
 
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeBinaryOperator : public QgsPointclo
     QgsPointcloudExpressionNode *opRight() const { return mOpRight; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent ) override;
+    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
     QVariant evalNode( QgsPointcloudExpression *parent ) override;
     QString dump() const override;
 
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeInOperator : public QgsPointcloudEx
     QgsPointcloudExpressionNode::NodeList *list() const { return mList; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent ) override;
+    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
     QVariant evalNode( QgsPointcloudExpression *parent ) override;
     QString dump() const override;
 
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpre
     inline QVariant value() const { return mValue; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent ) override;
+    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
     QVariant evalNode( QgsPointcloudExpression *parent ) override;
     QString dump() const override;
 
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeAttributeRef : public QgsPointcloud
     QString name() const { return mName; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent ) override;
+    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
     QVariant evalNode( QgsPointcloudExpression *parent ) override;
     QString dump() const override;
 

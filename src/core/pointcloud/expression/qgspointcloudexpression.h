@@ -29,6 +29,7 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include "qgspointcloudexpressionnode.h"
+#include "qgspointcloudattribute.h"
 
 class QgsFeature;
 class QgsGeometry;
@@ -227,7 +228,7 @@ class CORE_EXPORT QgsPointcloudExpression
      * \param context context for preparing expression
      * \since QGIS 2.12
      */
-    bool prepare();
+    bool prepare( const QgsPointCloudAttributeCollection &attributes );
 
     /**
      * Gets list of columns referenced by the expression.
@@ -318,7 +319,7 @@ class CORE_EXPORT QgsPointcloudExpression
      * \returns TRUE if string is a valid expression
      * \since QGIS 2.12
      */
-    static bool checkExpression( const QString &text, QString &errorMessage SIP_OUT );
+    static bool checkExpression( const QString &text, const QgsPointCloudAttributeCollection &attributes, QString &errorMessage SIP_OUT );
 
     /**
      * Set the expression string, will reset the whole internal structure.

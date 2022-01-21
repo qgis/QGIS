@@ -34,7 +34,7 @@ QVariant QgsPointcloudExpressionNode::eval( QgsPointcloudExpression *parent )
   }
 }
 
-bool QgsPointcloudExpressionNode::prepare( QgsPointcloudExpression *parent )
+bool QgsPointcloudExpressionNode::prepare( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes )
 {
   mHasCachedValue = false;
   mCompiledSimplifiedNode.reset();
@@ -52,7 +52,7 @@ bool QgsPointcloudExpressionNode::prepare( QgsPointcloudExpression *parent )
   }
   else
   {
-    return prepareNode( parent );
+    return prepareNode( parent, attributes );
   }
 }
 

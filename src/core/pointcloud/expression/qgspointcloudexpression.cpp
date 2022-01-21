@@ -15,6 +15,7 @@
 
 #include "qgspointcloudexpression.h"
 #include "qgspointcloudexpressionnodeimpl.h"
+#include "qgspointcloudattribute.h"
 #include "qgsfeaturerequest.h"
 #include "qgscolorrampimpl.h"
 #include "qgslogger.h"
@@ -28,10 +29,10 @@
 // from parser
 extern QgsPointcloudExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsPointcloudExpression::ParserError> &parserErrors );
 
-bool QgsPointcloudExpression::checkExpression( const QString &text, QString &errorMessage )
+bool QgsPointcloudExpression::checkExpression( const QString &text, const QgsPointCloudAttributeCollection &attributes, QString &errorMessage )
 {
   QgsPointcloudExpression exp( text );
-  exp.prepare();
+  exp.prepare( attributes );
   errorMessage = exp.parserErrorString();
   return !exp.hasParserError();
 }
@@ -222,17 +223,10 @@ void QgsPointcloudExpression::detach()
   }
 }
 
-bool QgsPointcloudExpression::prepare()
+bool QgsPointcloudExpression::prepare( const QgsPointCloudAttributeCollection &attributes )
 {
   detach();
   d->mEvalErrorString = QString();
-  if ( !d->mRootNode )
-  {
-    //re-parse expression. Creation of QgsPointcloudExpressionContexts may have added extra
-    //known functions since this expression was created, so we have another try
-    //at re-parsing it now that the context must have been created
-    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString, d->mParserErrors );
-  }
 
   if ( !d->mRootNode )
   {
@@ -241,7 +235,7 @@ bool QgsPointcloudExpression::prepare()
   }
 
   d->mIsPrepared = true;
-  return d->mRootNode->prepare( this );
+  return d->mRootNode->prepare( this, attributes );
 }
 
 QVariant QgsPointcloudExpression::evaluate()

@@ -22,6 +22,7 @@
 #include <QCoreApplication>
 
 #include "qgis.h"
+#include "qgspointcloudattribute.h"
 
 class QgsPointcloudExpression;
 
@@ -247,7 +248,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 2.12
      */
-    bool prepare( QgsPointcloudExpression *parent );
+    bool prepare( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
 
     /**
      * First line in the parser this node was found.
@@ -366,7 +367,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * Errors are reported to the parent
      * \since QGIS 3.0
      */
-    virtual bool prepareNode( QgsPointcloudExpression *parent ) = 0;
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) = 0;
 
     /**
      * Abstract virtual eval method
