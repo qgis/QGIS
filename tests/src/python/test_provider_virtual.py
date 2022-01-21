@@ -1366,6 +1366,45 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(df.toString(), "1_layer_virtual", "virtual")
         self.assertTrue(vl.isValid())
 
+    def test_layer_using_joined_fields_from_another_layer(self):
+        """Test issue GH #46834"""
+
+        project = QgsProject.instance()
+        project.clear()
+        layer_1 = QgsVectorLayer('Point?crs=epsg:4326&field=fid:integer', 'layer_1', 'memory')
+        layer_2 = QgsVectorLayer('Point?crs=epsg:4326&field=fid:integer', 'layer_2', 'memory')
+
+        project.addMapLayers([layer_1])
+
+        # Add a join from 2 to 1
+        join_info = QgsVectorLayerJoinInfo()
+        join_info.setJoinLayer(layer_1)
+        join_info.setJoinFieldName('layer_1_fid')
+        join_info.setTargetFieldName('fid')
+        self.assertTrue(layer_2.addJoin(join_info))
+        self.assertIn('layer_1_fid', layer_2.fields().names())
+
+        project.addMapLayers([layer_2])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select fid, layer_1_fid from "layer_2"')
+        vl = QgsVectorLayer(df.toString(), "virtual", "virtual")
+        self.assertTrue(vl.isValid())
+
+        project.addMapLayers([vl])
+
+        tmp = QTemporaryDir()
+        path = tmp.path()
+        project.write(os.path.join(path, 'test_4683.qgs'))
+
+        project.clear()
+        project.read(os.path.join(path, 'test_4683.qgs'))
+
+        layer_2 = project.mapLayersByName('layer_2')[0]
+        vl = project.mapLayersByName('virtual')[0]
+
+        self.assertTrue(vl.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()
