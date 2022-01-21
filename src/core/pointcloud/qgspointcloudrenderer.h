@@ -184,12 +184,23 @@ class CORE_EXPORT QgsPointCloudRenderContext
     {
       switch ( type )
       {
+        case QgsPointCloudAttribute::UChar:
         case QgsPointCloudAttribute::Char:
           value = *( data + offset );
           return;
 
+        case QgsPointCloudAttribute::UInt32:
+          value = *reinterpret_cast< const quint32 * >( data + offset );
+          return;
         case QgsPointCloudAttribute::Int32:
           value = *reinterpret_cast< const qint32 * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::UInt64:
+          value = *reinterpret_cast< const quint64 * >( data + offset );
+          return;
+        case QgsPointCloudAttribute::Int64:
+          value = *reinterpret_cast< const qint64 * >( data + offset );
           return;
 
         case QgsPointCloudAttribute::Short:

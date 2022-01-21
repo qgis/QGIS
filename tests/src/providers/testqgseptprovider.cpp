@@ -445,34 +445,34 @@ void TestQgsEptProvider::testExtraBytesAttributes()
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/las/extrabytes-dataset.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
     QVector<QgsEptDecoder::ExtraBytesAttributeDetails> attributes = QgsEptDecoder::readExtraByteAttributes<std::ifstream>( file );
-    QVERIFY( attributes.size() == 4 );
+    QCOMPARE( attributes.size(), 4 );
 
-    QVERIFY( attributes[0].attribute == QStringLiteral( "ClassFlags" ) );
-    QVERIFY( attributes[1].attribute == QStringLiteral( "Amplitude" ) );
-    QVERIFY( attributes[2].attribute == QStringLiteral( "Reflectance" ) );
-    QVERIFY( attributes[3].attribute == QStringLiteral( "Deviation" ) );
+    QCOMPARE( attributes[3].attribute, QStringLiteral( "ClassFlags" ) );
+    QCOMPARE( attributes[2].attribute, QStringLiteral( "Amplitude" ) );
+    QCOMPARE( attributes[1].attribute, QStringLiteral( "Reflectance" ) );
+    QCOMPARE( attributes[0].attribute, QStringLiteral( "Deviation" ) );
 
-    QVERIFY( attributes[0].type == 0 );
-    QVERIFY( attributes[1].type == 5 );
-    QVERIFY( attributes[2].type == 5 );
-    QVERIFY( attributes[3].type == 1 );
+    QCOMPARE( attributes[3].type, QgsPointCloudAttribute::UChar );
+    QCOMPARE( attributes[2].type, QgsPointCloudAttribute::Double );
+    QCOMPARE( attributes[1].type, QgsPointCloudAttribute::Double );
+    QCOMPARE( attributes[0].type, QgsPointCloudAttribute::Short );
 
-    QVERIFY( attributes[0].size == 1 );
-    QVERIFY( attributes[1].size == 8 );
-    QVERIFY( attributes[2].size == 8 );
-    QVERIFY( attributes[3].size == 2 );
+    QCOMPARE( attributes[3].size, 1 );
+    QCOMPARE( attributes[2].size, 8 );
+    QCOMPARE( attributes[1].size, 8 );
+    QCOMPARE( attributes[0].size, 2 );
 
-    QVERIFY( attributes[0].offset == 0 );
-    QVERIFY( attributes[1].offset == 1 );
-    QVERIFY( attributes[2].offset == 9 );
-    QVERIFY( attributes[3].offset == 17 );
+    QCOMPARE( attributes[3].offset, 34 );
+    QCOMPARE( attributes[2].offset, 35 );
+    QCOMPARE( attributes[1].offset, 43 );
+    QCOMPARE( attributes[0].offset, 51 );
   }
 
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/las/no-extrabytes-dataset.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
     QVector<QgsEptDecoder::ExtraBytesAttributeDetails> attributes = QgsEptDecoder::readExtraByteAttributes<std::ifstream>( file );
-    QVERIFY( attributes.size() == 0 );
+    QCOMPARE( attributes.size(), 0 );
   }
 }
 
