@@ -54,6 +54,14 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
       return mTableCount;
     }
 
+    enum Columns
+    {
+      DbtmTable = 0,
+      DbtmType,
+      DbtmGeomCol,
+      DbtmSql,
+    };
+
     //! Sets the DB full path
     void setPath( const QString &path )
     {
