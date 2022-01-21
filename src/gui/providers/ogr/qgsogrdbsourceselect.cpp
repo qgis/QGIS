@@ -293,8 +293,8 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
   {
     mTablesTreeView->expand( proxyModel()->mapFromSource( mTableModel->indexFromItem( mTableModel->invisibleRootItem()->child( i ) ) ) );
   }
-  mTablesTreeView->resizeColumnToContents( 0 );
-  mTablesTreeView->resizeColumnToContents( 1 );
+  mTablesTreeView->resizeColumnToContents( QgsOgrDbTableModel::DbtmTable );
+  mTablesTreeView->resizeColumnToContents( QgsOgrDbTableModel::DbtmType );
 
   cbxAllowGeometrylessTables->setEnabled( true );
 
