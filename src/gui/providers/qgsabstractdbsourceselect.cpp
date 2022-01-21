@@ -55,7 +55,8 @@ void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDeleg
 {
   mProxyModel->setSourceModel( model );
   mTablesTreeView->setModel( mProxyModel );
-  mTablesTreeView->setItemDelegate( delegate );
+  if (delegate)
+    mTablesTreeView->setItemDelegate( delegate );
 
   // setting the search coluns in search settings menu using the model header data
   if ( mSearchSettingsMenu )
