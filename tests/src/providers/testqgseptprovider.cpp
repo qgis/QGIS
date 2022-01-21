@@ -22,6 +22,8 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
+#include <fstream>
+#include <QVector>
 
 //qgis includes...
 #include "qgis.h"
@@ -33,6 +35,7 @@
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsgeometry.h"
+#include "qgseptdecoder.h"
 
 /**
  * \ingroup UnitTests
@@ -62,6 +65,7 @@ class TestQgsEptProvider : public QObject
     void calculateZRange();
     void testIdentify_data();
     void testIdentify();
+    void testExtraBytesAttributes();
 
   private:
     QString mTestDataDir;
@@ -435,6 +439,42 @@ void TestQgsEptProvider::testIdentify()
   }
 }
 
+void TestQgsEptProvider::testExtraBytesAttributes()
+{
+  {
+    QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/las/extrabytes-dataset.laz" );
+    std::ifstream file( dataPath.toStdString(), std::ios::binary );
+    QVector<QgsEptDecoder::ExtraBytesAttributeDetails> attributes = QgsEptDecoder::readExtraByteAttributes<std::ifstream>( file );
+    QVERIFY( attributes.size() == 4 );
+
+    QVERIFY( attributes[0].attribute == QStringLiteral( "ClassFlags" ) );
+    QVERIFY( attributes[1].attribute == QStringLiteral( "Amplitude" ) );
+    QVERIFY( attributes[2].attribute == QStringLiteral( "Reflectance" ) );
+    QVERIFY( attributes[3].attribute == QStringLiteral( "Deviation" ) );
+
+    QVERIFY( attributes[0].type == 0 );
+    QVERIFY( attributes[1].type == 5 );
+    QVERIFY( attributes[2].type == 5 );
+    QVERIFY( attributes[3].type == 1 );
+
+    QVERIFY( attributes[0].size == 1 );
+    QVERIFY( attributes[1].size == 8 );
+    QVERIFY( attributes[2].size == 8 );
+    QVERIFY( attributes[3].size == 2 );
+
+    QVERIFY( attributes[0].offset == 0 );
+    QVERIFY( attributes[1].offset == 1 );
+    QVERIFY( attributes[2].offset == 9 );
+    QVERIFY( attributes[3].offset == 17 );
+  }
+
+  {
+    QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/las/no-extrabytes-dataset.laz" );
+    std::ifstream file( dataPath.toStdString(), std::ios::binary );
+    QVector<QgsEptDecoder::ExtraBytesAttributeDetails> attributes = QgsEptDecoder::readExtraByteAttributes<std::ifstream>( file );
+    QVERIFY( attributes.size() == 0 );
+  }
+}
 
 QGSTEST_MAIN( TestQgsEptProvider )
 #include "testqgseptprovider.moc"
