@@ -32,7 +32,7 @@
 #include "qgsbrowserwidget.h"
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
-  : QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl )
+  : QgsOptionsDialogBase( tr( "Data Source Manager" ), parent, fl )
   , ui( new Ui::QgsDataSourceManagerDialog )
   , mPreviousRow( -1 )
   , mMapCanvas( canvas )
@@ -78,7 +78,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
     addProviderDialog( dlg, provider->providerKey(), provider->text(), provider->icon( ), provider->toolTip( ) );
   }
 
-  restoreOptionsBaseUi( QStringLiteral( "Data Source Manager" ) );
+  restoreOptionsBaseUi( tr( "Data Source Manager" ) );
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
