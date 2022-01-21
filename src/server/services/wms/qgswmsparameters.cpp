@@ -323,6 +323,18 @@ namespace QgsWms
     const QgsWmsParameter pHighlightBufferSize( QgsWmsParameter::HIGHLIGHT_LABELBUFFERSIZE );
     save( pHighlightBufferSize );
 
+    const QgsWmsParameter pLabelRotation( QgsWmsParameter::HIGHLIGHT_LABELROTATION, QVariant::Double );
+    save( pLabelRotation );
+
+    const QgsWmsParameter pLabelDistance( QgsWmsParameter::HIGHLIGHT_LABELDISTANCE, QVariant::Double );
+    save( pLabelDistance );
+
+    const QgsWmsParameter pLabelHali( QgsWmsParameter::HIGHLIGHT_LABELHALI );
+    save( pLabelHali );
+
+    const QgsWmsParameter pLabelVali( QgsWmsParameter::HIGHLIGHT_LABELVALI );
+    save( pLabelVali );
+
     const QgsWmsParameter pCRS( QgsWmsParameter::CRS );
     save( pCRS );
 
@@ -1367,6 +1379,26 @@ namespace QgsWms
     return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABELBUFFERSIZE ].toDoubleList( ';' );
   }
 
+  QList<double> QgsWmsParameters::highlightLabelRotation() const
+  {
+    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABELROTATION ].toDoubleList( ';' );
+  }
+
+  QList<double> QgsWmsParameters::highlightLabelDistance() const
+  {
+    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABELDISTANCE ].toDoubleList( ';' );
+  }
+
+  QStringList QgsWmsParameters::highlightLabelHali() const
+  {
+    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABELHALI ].toStringList( ';' );
+  }
+
+  QStringList QgsWmsParameters::highlightLabelVali() const
+  {
+    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABELVALI ].toStringList( ';' );
+  }
+
   QString QgsWmsParameters::wmsPrecision() const
   {
     return mWmsParameters[ QgsWmsParameter::WMS_PRECISION ].toString();
@@ -1634,6 +1666,10 @@ namespace QgsWms
     QStringList fonts = highlightLabelFont();
     QList<QColor> bufferColors = highlightLabelBufferColorAsColor();
     QList<double> bufferSizes = highlightLabelBufferSizeAsFloat();
+    QList<double> rotation = highlightLabelRotation();
+    QList<double> distance = highlightLabelDistance();
+    QStringList hali = highlightLabelHali();
+    QStringList vali = highlightLabelVali();
 
     int nLayers = std::min( geoms.size(), slds.size() );
     for ( int i = 0; i < nLayers; i++ )
@@ -1663,6 +1699,20 @@ namespace QgsWms
 
       if ( i < bufferSizes.count() )
         param.mBufferSize = bufferSizes[i];
+
+      if ( i < rotation.count() )
+        param.mLabelRotation = rotation[i];
+
+      if ( i < distance.count() )
+        param.mLabelDistance = distance[i];
+
+      if ( i < hali.count() )
+        param.mHali = hali[i];
+
+      if ( i < vali.count() )
+        param.mVali = vali[i];
+
+
 
       params.append( param );
     }
