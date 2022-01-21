@@ -10495,8 +10495,8 @@ void QgisApp::mergeSelectedFeatures()
         tr( "Merge failed" ),
         tr( "Resulting geometry type (multipart) is incompatible with layer type (singlepart)." ),
         Qgis::MessageLevel::Critical );
+      return;
     }
-    return;
   }
 
   //merge the attributes together
