@@ -153,6 +153,15 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:3111'), p)
         self.assertEqual(transform.coordinateOperation(), 'proj')
 
+    def testTransformBoundingBoxFullWorldToWebMercator(self):
+        extent = QgsRectangle(-180, -90, 180, 90)
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance())
+        transformedExtent = transform.transformBoundingBox(extent)
+        self.assertAlmostEqual(transformedExtent.xMinimum(), -20037508.343, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.yMinimum(), -44927335.427, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.xMaximum(), 20037508.343, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.yMaximum(), 44927335.427, delta=1e-3)
+
 
 if __name__ == '__main__':
     unittest.main()
