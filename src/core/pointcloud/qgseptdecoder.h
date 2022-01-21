@@ -36,13 +36,6 @@ namespace QgsEptDecoder
 {
   struct ExtraBytesAttributeDetails
   {
-    ExtraBytesAttributeDetails( const QString &attribute, QgsPointCloudAttribute::DataType type, int size, int offset )
-      : attribute( attribute )
-      , type( type )
-      , size( size )
-      , offset( offset )
-    {}
-
     QString attribute;
     QgsPointCloudAttribute::DataType type;
     int size;
@@ -135,45 +128,61 @@ namespace QgsEptDecoder
     for ( ExtraByteDescriptor &eb : extraBytes )
     {
       int accOffset = extrabytesAttr.empty() ? 0 : extrabytesAttr.back().offset + extrabytesAttr.back().size;
-      // TODO: manage other data types
+      ExtraBytesAttributeDetails ebAtrr;
+      ebAtrr.attribute = QString::fromStdString( eb.name );
+      ebAtrr.offset = accOffset;
       switch ( eb.data_type )
       {
         case 0:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Char, eb.options, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::Char;
+          ebAtrr.size = eb.options;
           break;
         case 1:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Char, 1, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::Char;
+          ebAtrr.size = 1;
           break;
         case 2:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Char, 1, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::Char;
+          ebAtrr.size = 1;
           break;
         case 3:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::UShort, 2, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::UShort;
+          ebAtrr.size = 2;
           break;
         case 4:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Short, 2, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::Short;
+          ebAtrr.size = 2;
           break;
         case 5:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Int32, 4, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::Int32;
+          ebAtrr.size = 4;
           break;
         case 6:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Int32, 4, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::Int32;
+          ebAtrr.size = 4;
           break;
         case 7:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Int32, 8, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::Int32;
+          ebAtrr.size = 8;
           break;
         case 8:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Int32, 8, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::Int32;
+          ebAtrr.size = 8;
           break;
         case 9:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Float, 4, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::Float;
+          ebAtrr.size = 4;
           break;
         case 10:
-          extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Double, 8, accOffset ) );
+          ebAtrr.type = QgsPointCloudAttribute::Double;
+          ebAtrr.size = 8;
           break;
         default:
+          ebAtrr.type = QgsPointCloudAttribute::Char;
+          ebAtrr.size = eb.options;
           break;
       }
+      extrabytesAttr.push_back( ebAtrr );
     }
 
     file.seekg( pastFilePos );
