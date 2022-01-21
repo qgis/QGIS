@@ -238,7 +238,7 @@ bool QgsPointcloudExpression::prepare( const QgsPointCloudAttributeCollection &a
   return d->mRootNode->prepare( this, attributes );
 }
 
-QVariant QgsPointcloudExpression::evaluate()
+QVariant QgsPointcloudExpression::evaluate( QVariantMap &p )
 {
   d->mEvalErrorString = QString();
   if ( !d->mRootNode )
@@ -247,7 +247,7 @@ QVariant QgsPointcloudExpression::evaluate()
     return QVariant();
   }
 
-  return d->mRootNode->eval( this );
+  return d->mRootNode->eval( this, p );
 }
 
 // QVariant QgsPointcloudExpression::evaluate()

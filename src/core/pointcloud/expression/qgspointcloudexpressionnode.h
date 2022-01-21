@@ -192,7 +192,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 2.12
      */
-    QVariant eval( QgsPointcloudExpression *parent );
+    QVariant eval( QgsPointcloudExpression *parent, QVariantMap &p );
 
     /**
      * Generate a clone of this node.
@@ -374,7 +374,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * Errors are reported to the parent
      * \since QGIS 3.0
      */
-    virtual QVariant evalNode( QgsPointcloudExpression *parent ) = 0;
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) = 0;
 
 };
 

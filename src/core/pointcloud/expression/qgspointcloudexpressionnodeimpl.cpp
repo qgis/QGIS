@@ -93,9 +93,9 @@ QString QgsPointcloudExpressionNode::NodeList::cleanNamedNodeName( const QString
 
 //
 
-QVariant QgsPointcloudExpressionNodeUnaryOperator::evalNode( QgsPointcloudExpression *parent )
+QVariant QgsPointcloudExpressionNodeUnaryOperator::evalNode( QgsPointcloudExpression *parent, QVariantMap &p )
 {
-  QVariant val = mOperand->eval( parent );
+  QVariant val = mOperand->eval( parent, p );
   ENSURE_NO_EVAL_ERROR
 
   switch ( mOp )
@@ -171,9 +171,9 @@ QString QgsPointcloudExpressionNodeUnaryOperator::text() const
 
 //
 
-QVariant QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpression *parent )
+QVariant QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpression *parent, QVariantMap &p )
 {
-  QVariant vL = mOpLeft->eval( parent );
+  QVariant vL = mOpLeft->eval( parent, p );
   ENSURE_NO_EVAL_ERROR
 
   if ( mOp == boAnd || mOp == boOr )
@@ -186,7 +186,7 @@ QVariant QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpre
       return TVL_True;  // shortcut -- no need to evaluate right-hand side
   }
 
-  QVariant vR = mOpRight->eval( parent );
+  QVariant vR = mOpRight->eval( parent, p );
   ENSURE_NO_EVAL_ERROR
 
   switch ( mOp )
@@ -602,11 +602,11 @@ QString QgsPointcloudExpressionNodeBinaryOperator::text() const
 
 //
 
-QVariant QgsPointcloudExpressionNodeInOperator::evalNode( QgsPointcloudExpression *parent )
+QVariant QgsPointcloudExpressionNodeInOperator::evalNode( QgsPointcloudExpression *parent, QVariantMap &p )
 {
   if ( mList->count() == 0 )
     return mNotIn ? TVL_True : TVL_False;
-  QVariant v1 = mNode->eval( parent );
+  QVariant v1 = mNode->eval( parent, p );
   ENSURE_NO_EVAL_ERROR
   if ( QgsPointcloudExpressionUtils::isNull( v1 ) )
     return TVL_Unknown;
@@ -616,7 +616,7 @@ QVariant QgsPointcloudExpressionNodeInOperator::evalNode( QgsPointcloudExpressio
   const QList< QgsPointcloudExpressionNode * > nodeList = mList->list();
   for ( QgsPointcloudExpressionNode *n : nodeList )
   {
-    QVariant v2 = n->eval( parent );
+    QVariant v2 = n->eval( parent, p );
     ENSURE_NO_EVAL_ERROR
     if ( QgsPointcloudExpressionUtils::isNull( v2 ) )
       listHasNull = true;
@@ -729,7 +729,7 @@ bool QgsPointcloudExpressionNodeInOperator::isStatic( QgsPointcloudExpression *p
 
 //
 
-QVariant QgsPointcloudExpressionNodeLiteral::evalNode( QgsPointcloudExpression *parent )
+QVariant QgsPointcloudExpressionNodeLiteral::evalNode( QgsPointcloudExpression *parent, QVariantMap &p )
 {
   Q_UNUSED( parent )
   return mValue;
@@ -803,11 +803,21 @@ bool QgsPointcloudExpressionNodeLiteral::isStatic( QgsPointcloudExpression *pare
 
 //
 
-QVariant QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpression *parent )
+QVariant QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpression *parent, QVariantMap &p )
 {
   Q_UNUSED( parent )
   int index = mIndex;
 
+  if ( mName == "X" )
+    return p[ QStringLiteral( "X" ) ];
+  if ( mName == "Y" )
+    return p[ QStringLiteral( "Y" ) ];
+  if ( mName == "Z" )
+    return p[ QStringLiteral( "Z" ) ];
+  if ( mName == "Classification" )
+    return p[ QStringLiteral( "Classification" ) ];
+  if ( mName == "Intensity" )
+    return p[ QStringLiteral( "Intensity" ) ];
 //   if ( index < 0 )
 //   {
 //     // have not yet found field index - first check explicitly set fields collection

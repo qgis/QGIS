@@ -28,6 +28,7 @@
 #define SIP_NO_FILE
 
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudexpression.h"
 
 /**
  * \ingroup core
@@ -48,8 +49,12 @@ class CORE_EXPORT QgsPointCloudRequest
     //! Set attributes filter in the request
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 
+    QgsPointcloudExpression filterExpression() const;
+    void setFilterExpression( const QgsPointcloudExpression &expression );
+
   private:
     QgsPointCloudAttributeCollection mAttributes;
+    QgsPointcloudExpression mFilterExpression;
 };
 
 #endif // QGSPOINTCLOUDREQUEST_H

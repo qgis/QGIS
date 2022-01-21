@@ -315,9 +315,9 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, 
 
 
 template<typename FileType>
-QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset )
+QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, const QgsPointcloudExpression &expression )
 {
-  Q_UNUSED( attributes );
+  //Q_UNUSED( attributes );
   Q_UNUSED( _scale );
   Q_UNUSED( _offset );
 
@@ -473,12 +473,28 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     }
   }
 
+  int skippedPoints = 0;
+  QgsPointcloudExpression expr( expression );
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
     const laszip::formats::las::point10 p = laszip::formats::packers<laszip::formats::las::point10>::unpack( buf );
     const laszip::formats::las::gpstime gps = laszip::formats::packers<laszip::formats::las::gpstime>::unpack( buf + sizeof( laszip::formats::las::point10 ) );
     const laszip::formats::las::rgb rgb = laszip::formats::packers<laszip::formats::las::rgb>::unpack( buf + sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) );
+
+    if ( expr.isValid() )
+    {
+      QVariantMap map = QgsPointCloudAttribute::getAttributeMap( buf, requestedPointRecordSize, requestedAttributes );
+      map[ QStringLiteral( "X" ) ] = p.x * scale.x() + offset.x();
+      map[ QStringLiteral( "Y" ) ] = p.y * scale.y() + offset.y();
+      map[ QStringLiteral( "Z" ) ] = p.z * scale.z() + offset.z();
+      map[ QStringLiteral( "Classification" ) ] = p.classification;
+      if ( !expr.evaluate( map ).toBool() )
+      {
+        ++skippedPoints;
+        continue;
+      }
+    }
 
     for ( const RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
     {
@@ -586,7 +602,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t ), 2 );
 #endif
   QgsPointCloudBlock *block = new QgsPointCloudBlock(
-    count,
+    count - skippedPoints,
     requestedAttributes,
     data, scale, offset
   );
@@ -596,12 +612,13 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes,
-    const QgsVector3D &scale, const QgsVector3D &offset )
+    const QgsVector3D &scale, const QgsVector3D &offset,
+    const QgsPointcloudExpression &expression )
 {
   const QByteArray arr = filename.toUtf8();
   std::ifstream file( arr.constData(), std::ios::binary );
 
-  return __decompressLaz<std::ifstream>( file, attributes, requestedAttributes, scale, offset );
+  return __decompressLaz<std::ifstream>( file, attributes, requestedAttributes, scale, offset, expression );
 }
 
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayData,
@@ -610,7 +627,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayDat
     const QgsVector3D &scale, const QgsVector3D &offset )
 {
   std::istringstream file( byteArrayData.toStdString() );
-  return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes, scale, offset );
+  return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes, scale, offset, QgsPointcloudExpression() );
 }
 
 ///@endcond

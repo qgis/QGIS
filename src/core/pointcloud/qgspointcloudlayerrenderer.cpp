@@ -34,6 +34,7 @@
 #include "qgscircle.h"
 #include "qgsmapclippingutils.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudexpression.h"
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -122,10 +123,19 @@ bool QgsPointCloudLayerRenderer::render()
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
 
   // collect attributes required by renderer
-  QSet< QString > rendererAttributes = mRenderer->usedAttributes( context );
+  QSet< QString > requiredAttributes = mRenderer->usedAttributes( context );
 
 
-  for ( const QString &attribute : std::as_const( rendererAttributes ) )
+
+  QString expr = "Z > 250 and Classification in ('1','2','6')";
+  QString err;
+  QgsPointcloudExpression filterExpression = QgsPointcloudExpression( expr );
+  bool prep = filterExpression.prepare( mLayerAttributes );
+  QSet<QString> filterAttributes = filterExpression.referencedAttributes();
+  requiredAttributes.unite( filterAttributes );
+
+
+  for ( const QString &attribute : std::as_const( requiredAttributes ) )
   {
     if ( mAttributes.indexOf( attribute ) >= 0 )
       continue; // don't re-add attributes we are already going to fetch
@@ -186,6 +196,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   QgsPointCloudRequest request;
   request.setAttributes( mAttributes );
+  request.setFilterExpression( filterExpression );
 
   // drawing
   int nodesDrawn = 0;

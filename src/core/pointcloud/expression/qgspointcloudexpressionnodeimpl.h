@@ -67,7 +67,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeUnaryOperator : public QgsPointclou
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent ) override;
+    QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeBinaryOperator : public QgsPointclo
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent ) override;
+    QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeInOperator : public QgsPointcloudEx
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent ) override;
+    QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpre
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent ) override;
+    QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeAttributeRef : public QgsPointcloud
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent ) override;
+    QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
