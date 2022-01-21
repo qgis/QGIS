@@ -45,21 +45,23 @@ QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::Windo
   mBuildQueryButton->setDisabled( true );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
 
-  connect( mTablesTreeView, &QTreeView::clicked, this, [ = ](const QModelIndex &index){
+  connect( mTablesTreeView, &QTreeView::clicked, this, [ = ]( const QModelIndex & index )
+  {
     treeviewClicked( mProxyModel->mapToSource( index ) );
-  });
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [ = ](const QModelIndex &index){
+  } );
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [ = ]( const QModelIndex & index )
+  {
     treeviewDoubleClicked( mProxyModel->mapToSource( index ) );
-  });
+  } );
 
-  connect( mBuildQueryButton, &QAbstractButton::clicked, this, [ = ]() {setSql( mProxyModel->mapToSource(mTablesTreeView->currentIndex() ));} );
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, [ = ]() {setSql( mProxyModel->mapToSource( mTablesTreeView->currentIndex() ) );} );
 }
 
 void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDelegate *delegate )
 {
   mProxyModel->setSourceModel( model );
   mTablesTreeView->setModel( mProxyModel );
-  if (delegate)
+  if ( delegate )
     mTablesTreeView->setItemDelegate( delegate );
 
   // setting the search coluns in search settings menu using the model header data
