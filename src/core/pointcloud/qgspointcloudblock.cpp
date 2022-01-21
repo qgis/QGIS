@@ -35,7 +35,7 @@ QgsPointCloudBlock::QgsPointCloudBlock(
   QString expr = "Z > 15  and Classification = '3' and X < 4+3*2";
   QString err;
   QgsPointcloudExpression pce = QgsPointcloudExpression( expr );
-  bool prep = pce.prepare();
+  bool prep = pce.prepare( mAttributes );
   QVariant res = pce.evaluate();
   pce.setExpression( "1+1" );
   res = pce.evaluate();

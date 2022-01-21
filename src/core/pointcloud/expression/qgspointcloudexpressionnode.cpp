@@ -38,7 +38,7 @@ bool QgsPointcloudExpressionNode::prepare( QgsPointcloudExpression *parent, cons
 {
   mHasCachedValue = false;
   mCompiledSimplifiedNode.reset();
-  if ( isStatic( parent ) )
+  if ( isStatic( parent, attributes ) )
   {
     // some calls to isStatic already evaluate the node to a cached value, so if that's
     // happened then don't re-evaluate again

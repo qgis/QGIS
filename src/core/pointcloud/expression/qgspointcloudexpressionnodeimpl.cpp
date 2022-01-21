@@ -159,9 +159,9 @@ QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeUnaryOperator::clone() c
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeUnaryOperator::isStatic( QgsPointcloudExpression *parent ) const
+bool QgsPointcloudExpressionNodeUnaryOperator::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const
 {
-  return mOperand->isStatic( parent );
+  return mOperand->isStatic( parent, attributes );
 }
 
 QString QgsPointcloudExpressionNodeUnaryOperator::text() const
@@ -493,10 +493,10 @@ QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeBinaryOperator::clone() 
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpression *parent ) const
+bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const
 {
-  const bool leftStatic = mOpLeft->isStatic( parent );
-  const bool rightStatic = mOpRight->isStatic( parent );
+  const bool leftStatic = mOpLeft->isStatic( parent, attributes );
+  const bool rightStatic = mOpRight->isStatic( parent, attributes );
 
   if ( leftStatic && rightStatic )
     return true;
@@ -712,15 +712,15 @@ QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeInOperator::clone() cons
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeInOperator::isStatic( QgsPointcloudExpression *parent ) const
+bool QgsPointcloudExpressionNodeInOperator::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const
 {
-  if ( !mNode->isStatic( parent ) )
+  if ( !mNode->isStatic( parent, attributes ) )
     return false;
 
   const QList< QgsPointcloudExpressionNode * > nodeList = mList->list();
   for ( QgsPointcloudExpressionNode *n : nodeList )
   {
-    if ( !n->isStatic( parent ) )
+    if ( !n->isStatic( parent, attributes ) )
       return false;
   }
 
@@ -794,9 +794,10 @@ QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeLiteral::clone() const
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeLiteral::isStatic( QgsPointcloudExpression *parent ) const
+bool QgsPointcloudExpressionNodeLiteral::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const
 {
   Q_UNUSED( parent )
+  Q_UNUSED( attributes )
   return true;
 }
 
@@ -892,8 +893,9 @@ QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeAttributeRef::clone() co
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeAttributeRef::isStatic( QgsPointcloudExpression *parent ) const
+bool QgsPointcloudExpressionNodeAttributeRef::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const
 {
   Q_UNUSED( parent )
+  Q_UNUSED( attributes )
   return false;
 }

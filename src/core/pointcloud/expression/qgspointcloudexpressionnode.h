@@ -238,7 +238,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 3.0
      */
-    virtual bool isStatic( QgsPointcloudExpression *parent ) const = 0;
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const = 0;
 
     /**
      * Prepare this node for evaluation.
