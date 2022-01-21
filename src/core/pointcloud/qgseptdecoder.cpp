@@ -28,6 +28,7 @@
 #include <memory>
 #include <cstring>
 #include <QTemporaryFile>
+#include <string>
 
 #include <zstd.h>
 
@@ -268,6 +269,138 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, 
 
 /* *************************************************************************************** */
 
+struct ExtraBytesAttributeDetails
+{
+  ExtraBytesAttributeDetails( const QString &attribute, QgsPointCloudAttribute::DataType type, int size, int offset )
+    : attribute( attribute )
+    , type( type )
+    , size( size )
+    , offset( offset )
+  {}
+
+  QString attribute;
+  QgsPointCloudAttribute::DataType type;
+  int size;
+  int offset;
+};
+
+template<typename FileType>
+QVector<ExtraBytesAttributeDetails> readExtraByteAttributes( laszip::io::reader::basic_file<FileType> &f, FileType &file )
+{
+  auto pastFilePos = file.tellg();
+
+  // Read VLR stuff
+
+  struct VlrHeader
+  {
+    unsigned short reserved;
+    char user_id[16];
+    unsigned short record_id;
+    unsigned short record_length;
+    char desc[32];
+  };
+
+  struct ExtraByteDescriptor
+  {
+    unsigned char reserved[2]; // 2 bytes
+    unsigned char data_type; // 1 byte
+    unsigned char options; // 1 byte
+    char name[32]; // 32 bytes
+    unsigned char unused[4]; // 4 bytes
+    unsigned char no_data[8]; // 8 bytes
+    unsigned char deprecated1[16]; // 16 bytes
+    unsigned char min[8]; // 8 bytes
+    unsigned char deprecated2[16]; // 16 bytes
+    unsigned char max[8]; // 8 bytes
+    unsigned char deprecated3[16]; // 16 bytes
+    unsigned char scale[8]; // 8 bytes
+    unsigned char deprecated4[16]; // 16 bytes
+    double offset; // 8 bytes
+    unsigned char deprecated5[16]; // 16 bytes
+    char description[32]; // 32 bytes
+  };
+
+  QVector<ExtraByteDescriptor> extraBytes;
+  QVector<ExtraBytesAttributeDetails> extrabytesAttr;
+
+  VlrHeader extraBytesVlrHeader;
+  int extraBytesDescriptorsOffset = -1;
+
+  file.seekg( f.get_header().header_size );
+  for ( unsigned int i = 0; i < f.get_header().vlr_count && file.good() && !file.eof(); ++i )
+  {
+    VlrHeader vlrHeader;
+    file.read( ( char * )&vlrHeader, sizeof( VlrHeader ) );
+    file.seekg( vlrHeader.record_length, std::ios::cur );
+    if ( std::equal( vlrHeader.user_id, vlrHeader.user_id + 9, "LASF_Spec" ) && vlrHeader.record_id == 4 )
+    {
+      extraBytesVlrHeader = vlrHeader;
+      extraBytesDescriptorsOffset = f.get_header().header_size + sizeof( VlrHeader );
+    }
+  }
+
+  // Read VLR fields
+  if ( extraBytesDescriptorsOffset != -1 )
+  {
+    file.seekg( extraBytesDescriptorsOffset );
+    int n_descriptors = extraBytesVlrHeader.record_length / sizeof( ExtraByteDescriptor );
+    for ( int i = 0; i < n_descriptors; ++i )
+    {
+      ExtraByteDescriptor ebd;
+      file.read( ( char * )&ebd, sizeof( ExtraByteDescriptor ) );
+      extraBytes.push_back( ebd );
+    }
+  }
+
+  for ( ExtraByteDescriptor &eb : extraBytes )
+  {
+    int accOffset = extrabytesAttr.empty() ? 0 : extrabytesAttr.back().offset + extrabytesAttr.back().size;
+    // TODO: manage other data types
+    switch ( eb.data_type )
+    {
+      case 0:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Char, eb.options, accOffset ) );
+        break;
+      case 1:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Char, 1, accOffset ) );
+        break;
+      case 2:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Char, 1, accOffset ) );
+        break;
+      case 3:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::UShort, 2, accOffset ) );
+        break;
+      case 4:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Short, 2, accOffset ) );
+        break;
+      case 5:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Int32, 4, accOffset ) );
+        break;
+      case 6:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Int32, 4, accOffset ) );
+        break;
+      case 7:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Int32, 8, accOffset ) );
+        break;
+      case 8:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Int32, 8, accOffset ) );
+        break;
+      case 9:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Float, 4, accOffset ) );
+        break;
+      case 10:
+        extrabytesAttr.push_back( ExtraBytesAttributeDetails( QString::fromStdString( eb.name ), QgsPointCloudAttribute::Double, 8, accOffset ) );
+        break;
+      default:
+        break;
+    }
+  }
+
+  file.seekg( pastFilePos );
+
+  return extrabytesAttr;
+}
+
 template<typename FileType>
 QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset )
 {
@@ -318,21 +451,26 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     Red,
     Green,
     Blue,
+    ExtraBytes,
     MissingOrUnknown
   };
 
   struct RequestedAttributeDetails
   {
-    RequestedAttributeDetails( LazAttribute attribute, QgsPointCloudAttribute::DataType type, int size )
+    RequestedAttributeDetails( LazAttribute attribute, QgsPointCloudAttribute::DataType type, int size, int offset = -1 )
       : attribute( attribute )
       , type( type )
       , size( size )
+      , offset( offset )
     {}
 
     LazAttribute attribute;
     QgsPointCloudAttribute::DataType type;
     int size;
+    int offset; // Used in case the attribute is an extra byte attribute
   };
+
+  QVector<ExtraBytesAttributeDetails> extrabytesAttr = readExtraByteAttributes<FileType>( f, file );
 
   std::vector< RequestedAttributeDetails > requestedAttributeDetails;
   requestedAttributeDetails.reserve( requestedAttributesVector.size() );
@@ -404,8 +542,21 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     }
     else
     {
-      // this can possibly happen -- e.g. if a style built using a different point cloud format references an attribute which isn't available from the laz file
-      requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::MissingOrUnknown, requestedAttribute.type(), requestedAttribute.size() ) );
+      bool foundAttr = false;
+      for ( ExtraBytesAttributeDetails &eba : extrabytesAttr )
+      {
+        if ( requestedAttribute.name().compare( eba.attribute.trimmed() ) )
+        {
+          requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::ExtraBytes, requestedAttribute.type(), requestedAttribute.size(), eba.offset ) );
+          foundAttr = true;
+          break;
+        }
+      }
+      if ( !foundAttr )
+      {
+        // this can possibly happen -- e.g. if a style built using a different point cloud format references an attribute which isn't available from the laz file
+        requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::MissingOrUnknown, requestedAttribute.type(), requestedAttribute.size() ) );
+      }
     }
   }
 
@@ -416,6 +567,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     const laszip::formats::las::gpstime gps = laszip::formats::packers<laszip::formats::las::gpstime>::unpack( buf + sizeof( laszip::formats::las::point10 ) );
     const laszip::formats::las::rgb rgb = laszip::formats::packers<laszip::formats::las::rgb>::unpack( buf + sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) );
 
+    char *ebbuf = buf + sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) + sizeof( laszip::formats::las::rgb );
     for ( const RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
     {
       switch ( requestedAttribute.attribute )
@@ -470,6 +622,12 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
         case LazAttribute::Blue:
           _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.b );
           break;
+        case LazAttribute::ExtraBytes:
+        {
+          for ( int i = 0; i < requestedAttribute.size; ++i )
+            dataBuffer[outputOffset] = ebbuf[requestedAttribute.offset + i];
+        }
+        break;
         case LazAttribute::MissingOrUnknown:
           // just store 0 for unknown/missing attributes
           _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, 0 );
