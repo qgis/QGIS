@@ -61,6 +61,7 @@ namespace QgsEptDecoder
     file.seekg( 0 );
 
     laszip::io::reader::basic_file<FileType> f( file );
+    int point_record_length = f.get_header().point_record_length;
 
     // Read VLR stuff
 
@@ -125,12 +126,11 @@ namespace QgsEptDecoder
       }
     }
 
-    for ( ExtraByteDescriptor &eb : extraBytes )
+    for ( int i = ( int )extraBytes.size() - 1; i >= 0; --i )
     {
-      int accOffset = extrabytesAttr.empty() ? 0 : extrabytesAttr.back().offset + extrabytesAttr.back().size;
+      ExtraByteDescriptor eb = extraBytes[i];
       ExtraBytesAttributeDetails ebAtrr;
       ebAtrr.attribute = QString::fromStdString( eb.name );
-      ebAtrr.offset = accOffset;
       switch ( eb.data_type )
       {
         case 0:
@@ -138,7 +138,7 @@ namespace QgsEptDecoder
           ebAtrr.size = eb.options;
           break;
         case 1:
-          ebAtrr.type = QgsPointCloudAttribute::Char;
+          ebAtrr.type = QgsPointCloudAttribute::UChar;
           ebAtrr.size = 1;
           break;
         case 2:
@@ -154,7 +154,7 @@ namespace QgsEptDecoder
           ebAtrr.size = 2;
           break;
         case 5:
-          ebAtrr.type = QgsPointCloudAttribute::Int32;
+          ebAtrr.type = QgsPointCloudAttribute::UInt32;
           ebAtrr.size = 4;
           break;
         case 6:
@@ -162,11 +162,11 @@ namespace QgsEptDecoder
           ebAtrr.size = 4;
           break;
         case 7:
-          ebAtrr.type = QgsPointCloudAttribute::Int32;
+          ebAtrr.type = QgsPointCloudAttribute::UInt64;
           ebAtrr.size = 8;
           break;
         case 8:
-          ebAtrr.type = QgsPointCloudAttribute::Int32;
+          ebAtrr.type = QgsPointCloudAttribute::Int64;
           ebAtrr.size = 8;
           break;
         case 9:
@@ -182,6 +182,8 @@ namespace QgsEptDecoder
           ebAtrr.size = eb.options;
           break;
       }
+      int accOffset = ( extrabytesAttr.empty() ? point_record_length : extrabytesAttr.back().offset ) - ebAtrr.size;
+      ebAtrr.offset = accOffset;
       extrabytesAttr.push_back( ebAtrr );
     }
 

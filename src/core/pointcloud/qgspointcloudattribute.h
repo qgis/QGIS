@@ -43,9 +43,13 @@ class CORE_EXPORT QgsPointCloudAttribute
     enum DataType
     {
       Char, //!< Char 1 byte
+      UChar, //!< Unsigned char 1 byte
       Short, //!< Short int 2 bytes
       UShort, //!< Unsigned short int 2 bytes
       Int32, //!< Int32 4 bytes
+      UInt32, //!< Unsigned int32 4 bytes
+      Int64, //!< Int64 8 bytes
+      UInt64, //!< Unsigned int64 8 bytes
       Float, //!< Float 4 bytes
       Double, //!< Double 8 bytes
     };
