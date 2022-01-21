@@ -93,7 +93,8 @@ void QgsOgrDbSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 
 void QgsOgrDbSourceSelect::treeviewClicked( const QModelIndex &index )
 {
-  mBuildQueryButton->setEnabled( index.parent().isValid() && mTablesTreeView->currentIndex().data( Qt::UserRole + 2 ) != QLatin1String( "Raster" ) );
+  const QString layerType = mTableModel->itemFromIndex( index )->data( Qt::UserRole + 2 ).toString();
+  mBuildQueryButton->setEnabled( index.parent().isValid() && layerType != QLatin1String( "Raster" ) );
 }
 
 void QgsOgrDbSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
@@ -305,11 +306,10 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
 
 void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
 {
-  QModelIndex idx = proxyModel()->mapToSource( index );
-  QString tableName = mTableModel->itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
+  QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), 0 ) )->text();
 
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr<QgsVectorLayer> vlayer = std::make_unique<QgsVectorLayer>( layerURI( idx ), tableName, QStringLiteral( "ogr" ), options );
+  std::unique_ptr<QgsVectorLayer> vlayer = std::make_unique<QgsVectorLayer>( layerURI( index ), tableName, QStringLiteral( "ogr" ), options );
 
   if ( !vlayer->isValid() )
   {
