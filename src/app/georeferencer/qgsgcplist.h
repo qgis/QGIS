@@ -29,17 +29,17 @@ class QgsGCPList : public QList<QgsGeorefDataPoint *>
   public:
     QgsGCPList() = default;
     QgsGCPList( const QgsGCPList &list );
-    void setTargetCrs( QgsCoordinateReferenceSystem crs ){ mTargetCRS = crs; }
+    void setTargetCrs( QgsCoordinateReferenceSystem crs ){ mTargetCrs = crs; }
 
     void createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords );
     int size() const;
     int sizeAll() const;
 
     QgsGCPList &operator =( const QgsGCPList &list );
-    const QgsCoordinateReferenceSystem targerCRS(){ return mTargetCRS; }
+    const QgsCoordinateReferenceSystem targetCRS(){ return mTargetCrs; }
 
   private:
-    QgsCoordinateReferenceSystem mTargetCRS;
+    QgsCoordinateReferenceSystem mTargetCrs;
 };
 
 #endif

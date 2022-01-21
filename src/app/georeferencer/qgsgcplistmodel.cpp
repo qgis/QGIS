@@ -43,12 +43,12 @@ class QgsStandardItem : public QStandardItem
     {
       setData( QVariant( value ), Qt::UserRole );
       //show the full precision when editing points
-      if ( value > 1000000 )
-        setData( QVariant( QString::number( value, 'f', 2 ), Qt::EditRole );
-      else if ( value < 10 )
+      if ( abs( value ) > 1000000 )
+        setData( QVariant( QString::number( value, 'f', 2 ) ), Qt::EditRole );
+      else if ( abs( value ) < 1000 )
         setData( QVariant( QString::number( value, 'f', 7 ) ), Qt::EditRole );
       else
-        setData( QVariant( value ), Qt::EditRole );
+        setData( QVariant( QString::number( value, 'f', 4 ) ), Qt::EditRole );
       setData( QVariant( value ), Qt::ToolTipRole );
       setTextAlignment( Qt::AlignRight );
     }
@@ -91,7 +91,7 @@ void QgsGCPListModel::updateModel()
 
   QgsCoordinateReferenceSystem storedCrs( s.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString() );
   if ( storedCrs != mGCPList->targetCRS() )
-    mGCPList->setTargetCrs( stored Crs );
+    mGCPList->setTargetCrs( storedCrs );
   mGCPList->createGCPVectors( mapCoords, pixelCoords );
 
   if ( mGeorefTransform )
@@ -111,7 +111,7 @@ void QgsGCPListModel::updateModel()
 
   itemLabels << tr( "Visible" )
              << tr( "ID" )
-             << tr( ."Crs" )
+             << tr( "Crs" )
              << tr( "Source X" )
              << tr( "Source Y" )
              << tr( "GCP X" )

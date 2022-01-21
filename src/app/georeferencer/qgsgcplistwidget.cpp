@@ -20,6 +20,9 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 
+#include "qgsproject.h"
+#include "qgsexception.h"
+#include "qgscoordinatetransform.h"
 #include "qgsgeorefdelegates.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgcplist.h"
@@ -222,33 +225,33 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
 
     switch ( mPrevColumn )
     {
-      case 2:
-        changeX = true;
       case 3:
-        tempPoint( dataPoint->pixelCoords() );
-        if changeX:
+        changeX = true;
+      case 4:
+        tempPoint = dataPoint->pixelCoords();
+        if ( changeX )
           tempPoint.setX( value );
         else
           tempPoint.setY( value );
         dataPoint->setPixelCoords( tempPoint );
         break;
 
-      case 4:
-        changeX = true;
       case 5:
-        tempPoint( dataPoint->mapCoords() );
-        if changeX:
+        changeX = true;
+      case 6:
+        tempPoint = dataPoint->mapCoords();
+        if ( changeX )
           tempPoint.setX( value );
         else
           tempPoint.setY( value );
         dataPoint->setMapCoords( tempPoint );
         break;
 
-      case 6:
-        changeX = true;
       case 7:
-        tempPoint( dataPoint->transCoords() );
-        if changeX:
+        changeX = true;
+      case 8:
+        tempPoint = dataPoint->transCoords();
+        if ( changeX )
           tempPoint.setX( value );
         else
           tempPoint.setY( value );

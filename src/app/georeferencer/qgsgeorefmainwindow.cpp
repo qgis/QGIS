@@ -1761,8 +1761,9 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   gcpTable->setContentTextFormat( tableContentFormat );
   gcpTable->setHeaderMode( QgsLayoutTable::AllFrames );
   QgsLayoutTableColumns columns;
-  columns << QgsLayoutTableColumn( tr( "ID" ) )
-          << QgsLayoutTableColumn( tr( "Enabled" ) )
+  columns << QgsLayoutTableColumn( tr( "Enabled" ) )
+          << QgsLayoutTableColumn( tr( "ID" ) )
+          << QgsLayoutTableColumn( tr( "CRS" ) )
           << QgsLayoutTableColumn( tr( "Pixel X" ) )
           << QgsLayoutTableColumn( tr( "Pixel Y" ) )
           << QgsLayoutTableColumn( tr( "Map X" ) )
@@ -2005,7 +2006,7 @@ bool QgsGeoreferencerMainWindow::updateGeorefTransform()
   QVector<QgsPointXY> mapCoords, pixelCoords;
   if ( mGCPListWidget->gcpList() )
   {
-    mGCPListWidget-­>gcpList()->setTargetCrs( mProjection );
+    mGCPListWidget->gcpList()->setTargetCrs( mProjection );
     mGCPListWidget->gcpList()->createGCPVectors( mapCoords, pixelCoords );
   }
 
