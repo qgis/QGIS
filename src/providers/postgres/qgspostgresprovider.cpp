@@ -4883,7 +4883,7 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
     }
     i += match.captured( 1 ).length() + 2;
     jumpSpace( txt, i );
-    if ( !QStringView{txt}.mid( i ).startsWith( sep ) && i < txt.length() )
+    if ( !QStringView{txt} .mid( i ).startsWith( sep ) && i < txt.length() )
     {
       QgsMessageLog::logMessage( tr( "Cannot find separator: %1" ).arg( txt.mid( i ) ), tr( "PostGIS" ) );
       return QString();
@@ -4896,14 +4896,14 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
     int start = i;
     for ( ; i < txt.length(); i++ )
     {
-      if ( QStringView{txt}.mid( i ).startsWith( sep ) )
+      if ( QStringView{txt} .mid( i ).startsWith( sep ) )
       {
-        QStringView v( QStringView{txt}.mid( start, i - start ) );
+        QStringView v( QStringView{txt} .mid( start, i - start ) );
         i += sep.length();
         return v.trimmed().toString();
       }
     }
-    return QStringView{txt}.mid( start, i - start ).trimmed().toString();
+    return QStringView{txt} .mid( start, i - start ).trimmed().toString();
   }
 }
 
@@ -5317,6 +5317,61 @@ Qgis::VectorExportResult QgsPostgresProviderMetadata::createEmptyLayer(
          );
 }
 
+bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errorCause )
+{
+  errorCause.clear();
+
+  QgsDataSourceUri dsUri( uri );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  if ( !conn )
+  {
+    errorCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  {
+    return false;
+  }
+  else if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  {
+    return false;
+  }
+
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
+  const QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
+
+  const QString checkQuery = QString( "SELECT styleName"
+                                      " FROM layer_styles"
+                                      " WHERE f_table_catalog=%1"
+                                      " AND f_table_schema=%2"
+                                      " AND f_table_name=%3"
+                                      " AND f_geometry_column=%4"
+                                      " AND (type=%5 OR type IS NULL)"
+                                      " AND styleName=%6" )
+                             .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                             .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                             .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                             .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                             .arg( wkbTypeString )
+                             .arg( QgsPostgresConn::quotedValue( styleId.isEmpty() ? dsUri.table() : styleId ) );
+
+  QgsPostgresResult res( conn->PQexec( checkQuery ) );
+  if ( res.PQresultStatus() == PGRES_TUPLES_OK )
+  {
+    return res.PQntuples() > 0;
+  }
+  else
+  {
+    errorCause = res.PQresultErrorMessage();
+    return false;
+  }
+}
+
 bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &qmlStyleIn, const QString &sldStyleIn,
     const QString &styleName, const QString &styleDescription,
     const QString &uiFileContent, bool useAsDefault, QString &errCause )
@@ -5661,7 +5716,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
   return numberOfRelatedStyles;
 }
 
-bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, QString styleId, QString &errCause )
+bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   bool deleted;
@@ -5695,7 +5750,7 @@ bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, QString s
   return deleted;
 }
 
-QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, QString styleId, QString &errCause )
+QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
 
