@@ -626,7 +626,22 @@ int QgsProviderRegistry::listStyles( const QString &providerKey, const QString &
   return res;
 }
 
-QString QgsProviderRegistry::getStyleById( const QString &providerKey, const QString &uri, QString styleId, QString &errCause )
+bool QgsProviderRegistry::styleExists( const QString &providerKey, const QString &uri, const QString &styleId, QString &errorCause )
+{
+  errorCause.clear();
+
+  if ( QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey ) )
+  {
+    return meta->styleExists( uri, styleId, errorCause );
+  }
+  else
+  {
+    errorCause = QObject::tr( "Unable to load %1 provider" ).arg( providerKey );
+    return false;
+  }
+}
+
+QString QgsProviderRegistry::getStyleById( const QString &providerKey, const QString &uri, const QString &styleId, QString &errCause )
 {
   QString ret;
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
@@ -641,7 +656,7 @@ QString QgsProviderRegistry::getStyleById( const QString &providerKey, const QSt
   return ret;
 }
 
-bool QgsProviderRegistry::deleteStyleById( const QString &providerKey, const QString &uri, QString styleId, QString &errCause )
+bool QgsProviderRegistry::deleteStyleById( const QString &providerKey, const QString &uri, const QString &styleId, QString &errCause )
 {
   const bool ret( false );
 

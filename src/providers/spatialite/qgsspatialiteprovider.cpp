@@ -6040,6 +6040,59 @@ QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLaye
 
 // ---------------------------------------------------------------------------
 
+bool QgsSpatiaLiteProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errorCause )
+{
+  errorCause.clear();
+  QgsDataSourceUri dsUri( uri );
+  QString sqlitePath = dsUri.database();
+
+  // trying to open the SQLite DB
+  QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
+  if ( !handle )
+  {
+    errorCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  sqlite3 *sqliteHandle = handle->handle();
+
+  char **results = nullptr;
+
+  const QString checkQuery = QString( "SELECT styleName"
+                                      " FROM layer_styles"
+                                      " WHERE f_table_schema %1"
+                                      " AND f_table_name=%2"
+                                      " AND f_geometry_column=%3"
+                                      " AND styleName=%4" )
+                             .arg( QgsSpatiaLiteProvider::tableSchemaCondition( dsUri ) )
+                             .arg( QgsSqliteUtils::quotedString( dsUri.table() ) )
+                             .arg( QgsSqliteUtils::quotedString( dsUri.geometryColumn() ) )
+                             .arg( QgsSqliteUtils::quotedString( styleId.isEmpty() ? dsUri.table() : styleId ) );
+
+  int rows = 0;
+  int columns = 0;
+  char *errMsg = nullptr;
+  const int ret = sqlite3_get_table( sqliteHandle, checkQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+
+  QString sqlError;
+  if ( errMsg )
+  {
+    sqlError = errMsg;
+    sqlite3_free( errMsg );
+  }
+  QgsSqliteHandle::closeDb( handle );
+
+  if ( SQLITE_OK != ret )
+  {
+    errorCause = QObject::tr( "Error executing query: %1" ).arg( sqlError );
+    return false;
+  }
+  else
+  {
+    return rows > 0;
+  }
+}
+
 bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
     const QString &styleName, const QString &styleDescription,
     const QString &uiFileContent, bool useAsDefault, QString &errCause )
@@ -6220,7 +6273,6 @@ bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString
   return true;
 }
 
-
 QString QgsSpatiaLiteProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
@@ -6386,7 +6438,7 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
   return numberOfRelatedStyles;
 }
 
-QString QgsSpatiaLiteProviderMetadata::getStyleById( const QString &uri, QString styleId, QString &errCause )
+QString QgsSpatiaLiteProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();

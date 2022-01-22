@@ -268,6 +268,49 @@ static QgsOgrLayerUniquePtr LoadDataSourceAndLayer( const QString &uri, QString 
     return QgsOgrProviderUtils::getLayer( filePath, true, QStringList(), layerIndex, errCause, true );
   }
 }
+
+bool QgsOgrProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errorCause )
+{
+  errorCause.clear();
+
+  QgsOgrLayerUniquePtr userLayer = LoadDataSourceAndLayer( uri, errorCause );
+  if ( !userLayer )
+    return false;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QMutex *mutex = nullptr;
+#else
+  QRecursiveMutex *mutex = nullptr;
+#endif
+  OGRLayerH hUserLayer = userLayer->getHandleAndMutex( mutex );
+  GDALDatasetH hDS = userLayer->getDatasetHandleAndMutex( mutex );
+  QMutexLocker locker( mutex );
+
+  // check if layer_styles table exists
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
+  if ( !hLayer )
+    return false;
+
+  const QString realStyleId = styleId.isEmpty() ? QString( OGR_L_GetName( hUserLayer ) ) : styleId;
+
+  const QString checkQuery = QStringLiteral( "f_table_schema=''"
+                             " AND f_table_name=%1"
+                             " AND f_geometry_column=%2"
+                             " AND styleName=%3" )
+                             .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetName( hUserLayer ) ) ),
+                                   QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetGeometryColumn( hUserLayer ) ) ),
+                                   QgsOgrProviderUtils::quotedValue( realStyleId ) );
+  OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
+  OGR_L_ResetReading( hLayer );
+  gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+  OGR_L_ResetReading( hLayer );
+
+  if ( hFeature )
+    return true;
+
+  return false;
+}
+
 bool QgsOgrProviderMetadata::saveStyle(
   const QString &uri, const QString &qmlStyle, const QString &sldStyle,
   const QString &styleName, const QString &styleDescription,
@@ -484,7 +527,7 @@ bool QgsOgrProviderMetadata::saveStyle(
   return true;
 }
 
-bool QgsOgrProviderMetadata::deleteStyleById( const QString &uri, QString styleId, QString &errCause )
+bool QgsOgrProviderMetadata::deleteStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   bool deleted;
@@ -764,7 +807,7 @@ int QgsOgrProviderMetadata::listStyles(
   return numberOfRelatedStyles;
 }
 
-QString QgsOgrProviderMetadata::getStyleById( const QString &uri, QString styleId, QString &errCause )
+QString QgsOgrProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QgsOgrLayerUniquePtr layerStyles;
   QgsOgrLayerUniquePtr userLayer;

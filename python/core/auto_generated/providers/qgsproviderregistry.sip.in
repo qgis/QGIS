@@ -203,14 +203,32 @@ Lists stored layer styles in the provider defined by ``providerKey`` and ``uri``
 .. versionadded:: 3.10
 %End
 
-    QString getStyleById( const QString &providerKey,  const QString &uri, QString styleId, QString &errCause );
+    bool styleExists( const QString &providerKey, const QString &uri, const QString &styleId, QString &errorCause /Out/ );
 %Docstring
-Gets a layer style defined by ``styleId``
+Returns ``True`` if a layer style with the specified ``styleId`` exists in the provider defined by ``providerKey`` and ``uri``.
+
+:param providerKey: provider key
+:param uri: provider URI
+:param styleId: style ID to test for
+
+:return: - ``True`` if the layer style already exists
+         - errorCause: will be set to a descriptive error message, if an error occurs while checking if the style exists
+
+.. seealso:: :py:func:`getStyleById`
+
+.. versionadded:: 3.24
+%End
+
+    QString getStyleById( const QString &providerKey, const QString &uri, const QString &styleId, QString &errCause );
+%Docstring
+Gets a layer style defined by ``styleId``.
+
+.. seealso:: :py:func:`styleExists`
 
 .. versionadded:: 3.10
 %End
 
-    bool deleteStyleById( const QString &providerKey,  const QString &uri, QString styleId, QString &errCause );
+    bool deleteStyleById( const QString &providerKey, const QString &uri, const QString &styleId, QString &errCause );
 %Docstring
 Deletes a layer style defined by ``styleId``
 
