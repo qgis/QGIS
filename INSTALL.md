@@ -88,11 +88,15 @@ place for describing build procedures. Please do not remove this notice.
 QGIS, like a number of major projects (e.g., KDE 4.0),
 uses [CMake](https://www.cmake.org) for building from source.
 
-Following a summary of the required dependencies for building:
+We present the required and optional dependencies for building, using
+the upstream package names, rather than names within any particular
+packaging system.
 
 Required build tools:
 
+* C++ compiler supporting C++17
 * CMake >= 3.12.0
+* GNU make >= 4.3 (perhaps lower)
 * Flex >= 2.5.6
 * Bison >= 2.4
 * Python >= 3.7
