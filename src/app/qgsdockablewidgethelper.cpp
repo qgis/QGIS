@@ -62,12 +62,22 @@ void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
 {
   viewDom.setAttribute( QStringLiteral( "isDocked" ), mIsDocked );
 
+  if ( mDock )
+  {
+    mDockGeometry = mDock->geometry();
+    mIsDockFloating = mDock->isFloating();
+    mDockArea = mOwnerWindow->dockWidgetArea( mDock );
+  }
+
   viewDom.setAttribute( QStringLiteral( "x" ), mDockGeometry.x() );
   viewDom.setAttribute( QStringLiteral( "y" ), mDockGeometry.y() );
   viewDom.setAttribute( QStringLiteral( "width" ), mDockGeometry.width() );
   viewDom.setAttribute( QStringLiteral( "height" ), mDockGeometry.height() );
   viewDom.setAttribute( QStringLiteral( "floating" ), mIsDockFloating );
   viewDom.setAttribute( QStringLiteral( "area" ), mDockArea );
+
+  if ( mDialog )
+    mDialogGeometry = mDialog->geometry();
 
   viewDom.setAttribute( QStringLiteral( "d_x" ), mDialogGeometry.x() );
   viewDom.setAttribute( QStringLiteral( "d_y" ), mDialogGeometry.y() );
@@ -78,10 +88,10 @@ void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
 void QgsDockableWidgetHelper::readXml( QDomElement &viewDom )
 {
   {
-    int x = viewDom.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
-    int y = viewDom.attribute( QStringLiteral( "d_x" ), "0" ).toInt();
-    int w = viewDom.attribute( QStringLiteral( "d_width" ), "200" ).toInt();
-    int h = viewDom.attribute( QStringLiteral( "d_height" ), "200" ).toInt();
+    int x = viewDom.attribute( QStringLiteral( "d_x" ), QStringLiteral( "0" ) ).toInt();
+    int y = viewDom.attribute( QStringLiteral( "d_x" ), QStringLiteral( "0" ) ).toInt();
+    int w = viewDom.attribute( QStringLiteral( "d_width" ), QStringLiteral( "200" ) ).toInt();
+    int h = viewDom.attribute( QStringLiteral( "d_height" ), QStringLiteral( "200" ) ).toInt();
     mDialogGeometry = QRect( x, y, w, h );
     if ( mDialog )
       mDialog->setGeometry( mDialogGeometry );
@@ -180,6 +190,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins( 0, 0, 0, 0 );
     vl->addWidget( mWidget );
+    mDialog->setGeometry( mDialogGeometry );
     mDialog->setLayout( vl );
     mDialog->raise();
     mDialog->show();
@@ -189,8 +200,6 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
       mDialogGeometry = mDialog->geometry();
       emit closed();
     } );
-
-    mDialog->setGeometry( mDialogGeometry );
   }
 }
 
@@ -214,27 +223,11 @@ void QgsDockableWidgetHelper::setupDockWidget()
   mDock->setFloating( mIsDockFloating );
   if ( mDockGeometry.isEmpty() )
   {
-    // try to guess a nice initial placement for view - about 3/4 along, half way down
-    mDock->setGeometry( QRect( static_cast< int >( mWidget->rect().width() * 0.75 ), static_cast< int >( mWidget->rect().height() * 0.5 ), 400, 400 ) );
-    mOwnerWindow->addDockWidget( mDockArea, mDock );
+    mDockGeometry = QRect( static_cast< int >( mWidget->rect().width() * 0.75 ), static_cast< int >( mWidget->rect().height() * 0.5 ), 400, 400 );
   }
-  else
-  {
-    if ( !mIsDockFloating )
-    {
-      // ugly hack, but only way to set dock size correctly for Qt < 5.6
-      mDock->setFixedSize( mDockGeometry.size() );
-      mOwnerWindow->addDockWidget( mDockArea, mDock );
-      mDock->resize( mDockGeometry.size() );
-      QgsApplication::processEvents(); // required!
-      mDock->setFixedSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX );
-    }
-    else
-    {
-      mDock->setGeometry( mDockGeometry );
-      mOwnerWindow->addDockWidget( mDockArea, mDock );
-    }
-  }
+  mOwnerWindow->addDockWidget( mDockArea, mDock );
+  QgsApplication::processEvents(); // required to resize properly!
+  mDock->setGeometry( mDockGeometry );
 }
 
 QToolButton *QgsDockableWidgetHelper::createDockUndockToolButton()
