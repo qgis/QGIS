@@ -160,7 +160,7 @@ bool QgsCoordinateTransformPrivate::initialize()
   }
 
   mGeographicToWebMercator =
-    mSourceCRS.authid() == QLatin1String( "EPSG:4326" ) &&
+    mSourceCRS.isGeographic() &&
     mDestCRS.authid() == QLatin1String( "EPSG:3857" );
 
   mSourceIsDynamic = mSourceCRS.isDynamic();
