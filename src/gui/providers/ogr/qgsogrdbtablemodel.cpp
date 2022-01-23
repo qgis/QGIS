@@ -51,6 +51,7 @@ bool QgsOgrDbTableModel::searchableColumn( int column ) const
     case QgsOgrDbTableModel::DbtmSql:
       return true;
   }
+  BUILTIN_UNREACHABLE
 }
 
 void QgsOgrDbTableModel::addTableEntry( const Qgis::BrowserLayerType &layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql )
