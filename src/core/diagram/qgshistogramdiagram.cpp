@@ -21,6 +21,7 @@
 
 #include <QPainter>
 
+
 QgsHistogramDiagram::QgsHistogramDiagram()
 {
   mCategoryBrush.setStyle( Qt::SolidPattern );
@@ -35,6 +36,7 @@ QgsHistogramDiagram *QgsHistogramDiagram::clone() const
 
 QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
+  mFixedMode = false;
   QSizeF size;
   if ( feature.attributes().isEmpty() )
   {
@@ -42,7 +44,9 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
   }
 
   if ( qgsDoubleNear( is.upperValue, is.lowerValue ) )
+  {
     return size; // invalid value range => zero size
+  }
 
   double maxValue = 0;
 
@@ -91,7 +95,6 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
     size.setWidth( size.width() + 2 * maxBleed );
     size.setHeight( size.height() + 2 * maxBleed );
   }
-
   return size;
 }
 
@@ -119,19 +122,18 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
 {
   Q_UNUSED( c )
   QSizeF size;
+  mFixedMode = true;
 
   if ( attributes.isEmpty() )
   {
     return QSizeF(); //zero size if no attributes
   }
-
   double maxValue = attributes.at( 0 ).toDouble();
 
   for ( int i = 0; i < attributes.count(); ++i )
   {
     maxValue = std::max( attributes.at( i ).toDouble(), maxValue );
   }
-
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
   // a conversion factor to painter units...
   // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
@@ -160,7 +162,6 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
     size.setWidth( size.width() + 2 * maxBleed );
     size.setHeight( size.height() + 2 * maxBleed );
   }
-
   return size;
 }
 
@@ -189,7 +190,13 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
     maxValue = std::max( currentVal, maxValue );
   }
 
-  double scaledMaxVal = sizePainterUnits( maxValue * mScaleFactor, s, c );
+  double scaling;
+  if ( mFixedMode )
+    scaling = s.size.height() / maxValue;
+  else
+    scaling = mScaleFactor;
+
+  double scaledMaxVal = sizePainterUnits( maxValue * scaling, s, c );
 
   double currentOffset = 0;
   double scaledWidth = sizePainterUnits( s.barWidth, s, c );
@@ -217,7 +224,7 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
   QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
   for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
   {
-    double length = sizePainterUnits( *valIt * mScaleFactor, s, c );
+    double length = sizePainterUnits( *valIt * scaling, s, c );
 
     mCategoryBrush.setColor( *colIt );
     p->setBrush( mCategoryBrush );

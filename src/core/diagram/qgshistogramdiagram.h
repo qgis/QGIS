@@ -55,6 +55,7 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram SIP_NODEFAULTCTORS
     QBrush mCategoryBrush;
     QPen   mPen;
     double mScaleFactor;
+    bool mFixedMode;
 };
 
 
