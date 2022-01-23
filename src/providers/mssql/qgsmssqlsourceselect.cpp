@@ -721,6 +721,7 @@ void QgsMssqlSourceSelect::setConnectionListPosition()
     else
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
+  cmbConnections_activated( cmbConnections->currentIndex() );
 }
 
 void QgsMssqlSourceSelect::setSearchExpression( const QString &regexp )
