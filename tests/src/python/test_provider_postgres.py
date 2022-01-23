@@ -1882,7 +1882,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
         self.assertTrue(vl.dataProvider().isDeleteStyleFromDatabaseSupported())
 
-        # table layer_styles does not exit
+        # table layer_styles does not exist
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, -1)
         self.assertEqual(idlist, [])
