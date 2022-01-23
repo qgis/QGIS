@@ -32,7 +32,7 @@ from qgis.core import (QgsSettings,
                        QgsCoordinateReferenceSystem,
                        QgsDataProvider)
 
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 from providertestbase import ProviderTestCase
@@ -397,6 +397,109 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             result_geoms = [f.geometry().asWkt(14) for f in new_layer.getFeatures()]
             self.assertEqual(result_geoms, [t])
             self.execSQLCommand('DROP TABLE IF EXISTS [qgis_test].[new_table_curvegeom_{}]'.format(str(idx)))
+
+    def testStyle(self):
+        self.execSQLCommand('DROP TABLE IF EXISTS layer_styles')
+
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', 'not valid', '')
+        self.assertFalse(res)
+        self.assertTrue(err)
+
+        vl = self.getSource()
+        self.assertTrue(vl.isValid())
+        self.assertTrue(
+            vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+
+        # table layer_styles does not exist
+
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, -1)
+        self.assertEqual(idlist, [])
+        self.assertEqual(namelist, [])
+        self.assertEqual(desclist, [])
+        self.assertFalse(errmsg)
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
+
+        mFilePath = QDir.toNativeSeparators(
+            '%s/symbol_layer/%s.qml' % (unitTestDataPath(), "singleSymbol"))
+        status = vl.loadNamedStyle(mFilePath)
+        self.assertTrue(status)
+
+        # The style is saved as non-default
+        errorMsg = vl.saveStyleToDatabase(
+            "by day", "faded greens and elegant patterns", False, "")
+        self.assertFalse(errorMsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'by day')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        # the style id should be "1", not "by day"
+        qml, errmsg = vl.getStyleFromDatabase("by day")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertFalse(errmsg)
+        self.assertEqual(idlist, ["1"])
+        self.assertEqual(namelist, ["by day"])
+        self.assertEqual(desclist, ["faded greens and elegant patterns"])
+
+        qml, errmsg = vl.getStyleFromDatabase("100")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
+        self.assertFalse(errmsg)
+
+        # We save now the style again twice but with one as default
+        errorMsg = vl.saveStyleToDatabase(
+            "related style", "faded greens and elegant patterns", False, "")
+        self.assertFalse(errorMsg)
+        errorMsg = vl.saveStyleToDatabase(
+            "default style", "faded greens and elegant patterns", True, "")
+        self.assertFalse(errorMsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'default style')
+        self.assertTrue(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'related style')
+        self.assertTrue(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'by day')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 3)
+        self.assertFalse(errmsg)
+        self.assertCountEqual(idlist, ["1", "2", "3"])
+        self.assertCountEqual(namelist, ["default style", "related style", "by day"])
+        self.assertCountEqual(desclist, ["faded greens and elegant patterns"] * 3)
 
     def testInsertPolygonInMultiPolygon(self):
         layer = QgsVectorLayer("MultiPolygon?crs=epsg:4326&field=id:integer", "addfeat", "memory")
