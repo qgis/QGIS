@@ -54,7 +54,7 @@ bool QgsOgrDbTableModel::searchableColumn( int column ) const
   BUILTIN_UNREACHABLE
 }
 
-void QgsOgrDbTableModel::addTableEntry( const Qgis::BrowserLayerType &layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql )
+void QgsOgrDbTableModel::addTableEntry( Qgis::BrowserLayerType layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql )
 {
   //is there already a root item ?
   QStandardItem *dbItem = nullptr;
