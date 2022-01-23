@@ -9192,6 +9192,22 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 
             QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
 
+            QString errorMessage;
+            if ( QgsProviderRegistry::instance()->styleExists( vlayer->providerType(), vlayer->source(), dbSettings.name, errorMessage ) )
+            {
+              if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
+                                          QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
+                                          QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+              {
+                return;
+              }
+            }
+            else if ( !errorMessage.isEmpty() )
+            {
+              mInfoBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
+              return;
+            }
+
             vlayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
 
             if ( !msgError.isNull() )
