@@ -72,6 +72,7 @@
 #include "qgsvectorlayertemporalpropertieswidget.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsprovidersourcewidget.h"
+#include "qgsproviderregistry.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -1069,12 +1070,31 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
       case 0:
         return;
       case 2:
+      {
+        QString errorMessage;
+        if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), QString(), errorMessage ) )
+        {
+          if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
+                                      QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
+                                      QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+          {
+            return;
+          }
+        }
+        else if ( !errorMessage.isEmpty() )
+        {
+          QMessageBox::warning( nullptr, QObject::tr( "Save style in database" ),
+                                errorMessage );
+          return;
+        }
+
         mLayer->saveStyleToDatabase( QString(), QString(), true, QString(), errorMsg );
         if ( errorMsg.isNull() )
         {
           return;
         }
         break;
+      }
       default:
         break;
     }
@@ -1237,6 +1257,22 @@ void QgsVectorLayerProperties::saveStyleAs()
 
         QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
 
+        QString errorMessage;
+        if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), dbSettings.name, errorMessage ) )
+        {
+          if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
+                                      QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
+                                      QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+          {
+            return;
+          }
+        }
+        else if ( !errorMessage.isEmpty() )
+        {
+          mMessageBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
+          return;
+        }
+
         mLayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
 
         if ( !msgError.isNull() )
@@ -1350,6 +1386,23 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
                 i++;
               }
             }
+
+            QString errorMessage;
+            if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), dbSettings.name, errorMessage ) )
+            {
+              if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
+                                          QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
+                                          QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+              {
+                return;
+              }
+            }
+            else if ( !errorMessage.isEmpty() )
+            {
+              mMessageBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
+              return;
+            }
+
             mLayer->saveStyleToDatabase( name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
 
             if ( !msgError.isNull() )
