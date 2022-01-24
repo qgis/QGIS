@@ -80,13 +80,24 @@ void QgsLayoutPageCollection::endPageSizeChange()
 {
   for ( auto it = mPreviousItemPositions.constBegin(); it != mPreviousItemPositions.constEnd(); ++it )
   {
-    if ( QgsLayoutItem *item = mLayout->itemByUuid( it.key() ) )
+    const QString key { it.key() };
+    if ( QgsLayoutItem *item = mLayout->itemByUuid( key ) )
     {
       if ( !mBlockUndoCommands )
         item->beginCommand( QString() );
+
       item->attemptMove( it.value().second, true, false, it.value().first );
-      if ( !mBlockUndoCommands )
-        item->endCommand();
+
+      // Item might have been deleted
+      if ( mLayout->itemByUuid( key ) )
+      {
+        if ( !mBlockUndoCommands )
+          item->endCommand();
+      }
+      else
+      {
+        item->cancelCommand();
+      }
     }
   }
   mPreviousItemPositions.clear();
