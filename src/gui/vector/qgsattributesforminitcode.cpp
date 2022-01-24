@@ -16,12 +16,14 @@
 #include "qgsattributesforminitcode.h"
 #include "ui_qgsattributesforminitcode.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QFileDialog>
 
 QgsAttributesFormInitCode::QgsAttributesFormInitCode()
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   // Init function stuff
   mInitCodeSourceComboBox->addItem( QString() );
