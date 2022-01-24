@@ -368,6 +368,15 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         self.assertEqual(unit, QgsUnitTypes.RenderPixels)
         self.assertEqual(size, sld_size_px)
 
+        # test percent encoding  for QgsFontMarkerSymbolLayer
+        sld = 'symbol_layer/QgsFontMarkerSymbolLayerPercentEncoding.sld'
+        mFilePath = os.path.join(TEST_DATA_DIR, sld)
+        layer.loadSldStyle(mFilePath)
+
+        sl = layer.renderer().symbol().symbolLayers()[0]
+        self.assertTrue(isinstance(sl, QgsFontMarkerSymbolLayer))
+        self.assertEqual(sl.fontFamily(), 'MapInfo Miscellaneous')
+
     def testSymbolSizeAfterReload(self):
         # create a layer
         layer = createLayerWithOnePoint()
