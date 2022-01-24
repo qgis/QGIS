@@ -83,7 +83,8 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     /**
      * Add the \a layer to the transaction. The connection string
      * must match.
-     * \param addLayersInEditMode If set layers that are already
+     * \param layer that will be added to the transaction
+     * \param addLayersInEditMode if set layers that are already
      * in edit mode can be added to the transaction \since QGIS 3.26
      */
     bool addLayer( QgsVectorLayer *layer, bool addLayersInEditMode = false );

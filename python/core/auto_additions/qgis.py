@@ -1303,7 +1303,7 @@ QgsCoordinateReferenceSystem.FormatWkt.__doc__ = "WKT format (always recommended
 QgsCoordinateReferenceSystem.FormatProj = Qgis.CrsDefinitionFormat.Proj
 QgsCoordinateReferenceSystem.FormatProj.is_monkey_patched = True
 QgsCoordinateReferenceSystem.FormatProj.__doc__ = "Proj string format"
-Qgis.CrsDefinitionFormat.__doc__ = 'CRS definition formats.\n\n.. versionadded:: 3.26\n\n' + '* ``FormatWkt``: ' + Qgis.CrsDefinitionFormat.Wkt.__doc__ + '\n' + '* ``FormatProj``: ' + Qgis.CrsDefinitionFormat.Proj.__doc__
+Qgis.CrsDefinitionFormat.__doc__ = 'CRS definition formats.\n\n.. versionadded:: 3.24\n\n' + '* ``FormatWkt``: ' + Qgis.CrsDefinitionFormat.Wkt.__doc__ + '\n' + '* ``FormatProj``: ' + Qgis.CrsDefinitionFormat.Proj.__doc__
 # --
 Qgis.CrsDefinitionFormat.baseClass = Qgis
 # monkey patching scoped based enum
@@ -1331,7 +1331,7 @@ Qgis.FieldDomainType.baseClass = Qgis
 Qgis.TransactionMode.Disabled.__doc__ = "Edits are buffered locally and sent to the provider when toggling layer editing mode."
 Qgis.TransactionMode.AutomaticGroups.__doc__ = "Automatic transactional editing means that on supported datasources (postgres and geopackage databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction."
 Qgis.TransactionMode.BufferedGroups.__doc__ = "Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is executed within a single transaction on all layers (per provider)."
-Qgis.TransactionMode.__doc__ = 'Transaction mode.\n\n.. versionadded:: 3.24\n\n' + '* ``Disabled``: ' + Qgis.TransactionMode.Disabled.__doc__ + '\n' + '* ``AutomaticGroups``: ' + Qgis.TransactionMode.AutomaticGroups.__doc__ + '\n' + '* ``BufferedGroups``: ' + Qgis.TransactionMode.BufferedGroups.__doc__
+Qgis.TransactionMode.__doc__ = 'Transaction mode.\n\n.. versionadded:: 3.26\n\n' + '* ``Disabled``: ' + Qgis.TransactionMode.Disabled.__doc__ + '\n' + '* ``AutomaticGroups``: ' + Qgis.TransactionMode.AutomaticGroups.__doc__ + '\n' + '* ``BufferedGroups``: ' + Qgis.TransactionMode.BufferedGroups.__doc__
 # --
 Qgis.TransactionMode.baseClass = Qgis
 # monkey patching scoped based enum
