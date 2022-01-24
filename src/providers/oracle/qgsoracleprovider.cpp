@@ -3386,7 +3386,7 @@ bool QgsOracleProviderMetadata::styleExists( const QString &uri, const QString &
   QSqlQuery qry = QSqlQuery( *conn );
   if ( !qry.exec( "SELECT COUNT(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ) || !qry.next() )
   {
-    errCause = QObject::tr( "Unable to check layer style existence [%1]" ).arg( qry.lastError().text() );
+    errorCause = QObject::tr( "Unable to check layer style existence [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
     return false;
   }
