@@ -18,6 +18,7 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QScrollBar>
+#include <QAbstractItemView>
 
 // milliseconds to swallow child wheel events for after a scroll occurs
 #define TIMEOUT 1000
@@ -144,7 +145,7 @@ void ScrollAreaFilter::addChild( QObject *child )
 {
   if ( child && child->isWidgetType() )
   {
-    if ( qobject_cast< QScrollArea * >( child ) )
+    if ( qobject_cast< QScrollArea * >( child ) || qobject_cast< QAbstractItemView * >( child ) )
       return;
 
     child->installEventFilter( this );
@@ -164,7 +165,7 @@ void ScrollAreaFilter::removeChild( QObject *child )
 {
   if ( child && child->isWidgetType() )
   {
-    if ( qobject_cast< QScrollArea * >( child ) )
+    if ( qobject_cast< QScrollArea * >( child ) || qobject_cast< QAbstractItemView * >( child ) )
       return;
 
     child->removeEventFilter( this );
