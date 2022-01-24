@@ -3773,9 +3773,25 @@ long long QgsPostgresProvider::featureCount() const
     }
     else
     {
-      sql = QStringLiteral( "SELECT reltuples::bigint FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+      sql = QStringLiteral( R"sql(
+        SELECT (CASE WHEN c.reltuples < 0 THEN NULL       -- never vacuumed
+                     WHEN c.relpages = 0 THEN float8 '0'  -- empty table
+                     ELSE c.reltuples / c.relpages END
+              * (pg_relation_size(c.oid) / pg_catalog.current_setting('block_size')::int)
+               )::bigint
+        FROM   pg_class c
+        WHERE  c.oid = regclass(%1)::oid;      -- schema-qualified table here
+        )sql" ).arg( quotedValue( mQuery ) );
       QgsPostgresResult result( connectionRO()->PQexec( sql ) );
       num = result.PQgetvalue( 0, 0 ).toLongLong();
+
+      // We've got 0 but it might be a table with a very small set of features, go for for exact count here
+      if ( num == 0 )
+      {
+        sql = QStringLiteral( "SELECT count(*) FROM %1%2" ).arg( mQuery, filterWhereClause() );
+        result = connectionRO()->PQexec( sql );
+        num = result.PQgetvalue( 0, 0 ).toLongLong();
+      }
     }
   }
   else
