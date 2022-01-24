@@ -1413,7 +1413,7 @@ class CORE_EXPORT Qgis
     /*
      * Transaction mode.
      *
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     enum class TransactionMode : int
     {

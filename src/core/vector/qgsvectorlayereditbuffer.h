@@ -201,13 +201,13 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /**
      * Returns the parent edit buffer group for this edit buffer, or nullptr if not part of a group.
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     QgsVectorLayerEditBufferGroup *editBufferGroup() const;
 
     /**
      * Set the parent edit buffer group for this edit buffer.
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     void setEditBufferGroup( QgsVectorLayerEditBufferGroup *editBufferGroup );
 

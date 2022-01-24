@@ -891,7 +891,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * transaction.
      *
      * \since QGIS 2.16
-     * \deprecated QGIS 3.24 use transactionMode instead
+     * \deprecated QGIS 3.26 use transactionMode instead
      */
     Q_DECL_DEPRECATED bool autoTransaction() const SIP_DEPRECATED;
 
@@ -903,7 +903,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \warning Make sure that this is only called when all layers are not in edit mode.
      *
      * \since QGIS 2.16
-     * \deprecated QGIS 3.24 use setTransactionMode instead
+     * \deprecated QGIS 3.26 use setTransactionMode instead
      */
     Q_DECL_DEPRECATED void setAutoTransaction( bool autoTransaction ) SIP_DEPRECATED;
 
@@ -911,7 +911,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns the transaction mode
      *
      * \see Qgis::TransactionMode
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     Qgis::TransactionMode transactionMode() const;
 
@@ -922,7 +922,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \note Transaction mode can be changed only when all layers are not in edit mode.
      * \see Qgis::TransactionMode
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     bool setTransactionMode( Qgis::TransactionMode transactionMode );
 
@@ -948,7 +948,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns the edit buffer group
      *
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     QgsVectorLayerEditBufferGroup *editBufferGroup();
 
@@ -2009,7 +2009,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see commitChanges()
      * \see rollBack()
      *
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     bool startEditing( QgsVectorLayer *vectorLayer = nullptr );
 
@@ -2035,7 +2035,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see startEditing()
      * \see rollBack()
      *
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     bool commitChanges( QStringList &commitErrors, bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
 
@@ -2045,7 +2045,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see startEditing()
      * \see commitChanges()
      *
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     bool rollBack( bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
 

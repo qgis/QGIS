@@ -17,7 +17,7 @@ The edit buffer group manages a group of edit buffers. Commands like commit and 
 managed by the group invokes individual :py:func:`~addFeature`, :py:func:`~deleteFeature`, ... in the correct order
 across all contained edit buffers.
 
-.. versionadded:: 3.24
+.. versionadded:: 3.26
 %End
 
 %TypeHeaderCode

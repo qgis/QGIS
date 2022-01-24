@@ -1303,7 +1303,7 @@ QgsCoordinateReferenceSystem.FormatWkt.__doc__ = "WKT format (always recommended
 QgsCoordinateReferenceSystem.FormatProj = Qgis.CrsDefinitionFormat.Proj
 QgsCoordinateReferenceSystem.FormatProj.is_monkey_patched = True
 QgsCoordinateReferenceSystem.FormatProj.__doc__ = "Proj string format"
-Qgis.CrsDefinitionFormat.__doc__ = 'CRS definition formats.\n\n.. versionadded:: 3.24\n\n' + '* ``FormatWkt``: ' + Qgis.CrsDefinitionFormat.Wkt.__doc__ + '\n' + '* ``FormatProj``: ' + Qgis.CrsDefinitionFormat.Proj.__doc__
+Qgis.CrsDefinitionFormat.__doc__ = 'CRS definition formats.\n\n.. versionadded:: 3.26\n\n' + '* ``FormatWkt``: ' + Qgis.CrsDefinitionFormat.Wkt.__doc__ + '\n' + '* ``FormatProj``: ' + Qgis.CrsDefinitionFormat.Proj.__doc__
 # --
 Qgis.CrsDefinitionFormat.baseClass = Qgis
 # monkey patching scoped based enum

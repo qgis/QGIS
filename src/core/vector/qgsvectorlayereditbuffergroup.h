@@ -31,7 +31,7 @@ class QgsVectorLayer;
  * \ingroup core
  * \class QgsVectorLayerEditBufferGroup
  *
- * \since QGIS 3.24
+ * \since QGIS 3.26
  */
 class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
 {
