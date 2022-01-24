@@ -150,6 +150,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
       try
       {
         QgsCoordinateTransform ct( mRootTileMatrix.crs(), QgsCoordinateReferenceSystem( "EPSG:4326" ), mTransformContext );
+        ct.setBallparkTransformsAreAppropriate( true );
         QgsRectangle wgsExtent = ct.transform( outputExtent );
         QString boundsStr = QString( "%1,%2,%3,%4" )
                             .arg( wgsExtent.xMinimum() ).arg( wgsExtent.yMinimum() )
