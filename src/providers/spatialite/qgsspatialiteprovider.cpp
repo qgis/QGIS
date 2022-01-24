@@ -39,7 +39,6 @@ email                : a.furieri@lqt.it
 
 #include "qgsprovidermetadata.h"
 
-#include <QMessageBox>
 #include <QFileInfo>
 #include <QDir>
 #include <QRegularExpression>
@@ -6236,16 +6235,6 @@ bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString
   if ( 0 != rows )
   {
     sqlite3_free_table( results );
-    if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
-                                QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
-                                .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
-                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
-    {
-      QgsSqliteHandle::closeDb( handle );
-      errCause = QObject::tr( "Operation aborted" );
-      return false;
-    }
-
     sql = QString( "UPDATE layer_styles"
                    " SET useAsDefault=%1"
                    ",styleQML=%2"

@@ -25,7 +25,6 @@
 #include <QFileInfo>
 #include <QDataStream>
 #include <QStringList>
-#include <QMessageBox>
 #include <QSettings>
 #include <QRegularExpression>
 #include <QUrl>
@@ -2600,16 +2599,6 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri,
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toString() == styleName )
   {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
-                                QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
-                                .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
-                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
-    {
-      errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
-      QgsDebugMsg( QStringLiteral( "User selected not to overwrite styles" ) );
-      return false;
-    }
-
     QgsDebugMsgLevel( QStringLiteral( "Updating styles" ), 2 );
     sql = QString( "UPDATE layer_styles "
                    " SET useAsDefault=%1"

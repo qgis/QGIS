@@ -46,7 +46,6 @@
 #include "qgsprovidermetadata.h"
 #include "qgspostgresproviderconnection.h"
 
-#include <QMessageBox>
 #include <QRegularExpression>
 
 const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
@@ -5488,16 +5487,6 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   QgsPostgresResult res( conn->PQexec( checkQuery ) );
   if ( res.PQntuples() > 0 )
   {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
-                                QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
-                                .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
-                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
-    {
-      errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
-      conn->unref();
-      return false;
-    }
-
     sql = QString( "UPDATE layer_styles"
                    " SET useAsDefault=%1"
                    ",styleQML=XMLPARSE(DOCUMENT %12)"

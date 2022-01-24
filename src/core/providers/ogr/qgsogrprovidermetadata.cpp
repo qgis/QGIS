@@ -35,7 +35,6 @@ email                : nyall dot dawson at gmail dot com
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
-#include <QMessageBox>
 #include <QRegularExpression>
 #include <QDirIterator>
 
@@ -455,19 +454,6 @@ bool QgsOgrProviderMetadata::saveStyle(
 
   if ( hFeature )
   {
-    QgsSettings settings;
-    // Only used in tests. Do not define it for interactive implication
-    QVariant overwriteStyle = settings.value( QStringLiteral( "qgis/overwriteStyle" ) );
-    if ( ( !overwriteStyle.isNull() && !overwriteStyle.toBool() ) ||
-         ( overwriteStyle.isNull() &&
-           QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
-                                  QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
-                                  .arg( realStyleName ),
-                                  QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No ) )
-    {
-      errCause = QObject::tr( "Operation aborted" );
-      return false;
-    }
     bNew = false;
   }
   else
