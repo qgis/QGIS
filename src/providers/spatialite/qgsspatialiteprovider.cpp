@@ -3783,6 +3783,11 @@ bool QgsSpatiaLiteProvider::isValid() const
   return mValid;
 }
 
+bool QgsSpatiaLiteProvider::isSaveAndLoadStyleToDatabaseSupported() const
+{
+  return mValid;
+}
+
 QString QgsSpatiaLiteProvider::name() const
 {
   return SPATIALITE_KEY;
@@ -6058,6 +6063,26 @@ bool QgsSpatiaLiteProviderMetadata::styleExists( const QString &uri, const QStri
 
   char **results = nullptr;
 
+  // check if layer_styles table exists
+  QString countIfExist = QStringLiteral( "SELECT 1 FROM sqlite_master WHERE type='table' AND name='layer_styles';" );
+
+  int rows = 0;
+  int columns = 0;
+  char *errMsg = nullptr;
+  int ret = sqlite3_get_table( sqliteHandle, countIfExist.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( SQLITE_OK != ret )
+  {
+    QgsSqliteHandle::closeDb( handle );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( countIfExist ) );
+    errorCause = QObject::tr( "Error looking for style. The query was logged" );
+    return false;
+  }
+  if ( rows == 0 )
+  {
+    // layer_styles table does not exist
+    return false;
+  }
+
   const QString checkQuery = QString( "SELECT styleName"
                                       " FROM layer_styles"
                                       " WHERE f_table_schema %1"
@@ -6069,10 +6094,8 @@ bool QgsSpatiaLiteProviderMetadata::styleExists( const QString &uri, const QStri
                              .arg( QgsSqliteUtils::quotedString( dsUri.geometryColumn() ) )
                              .arg( QgsSqliteUtils::quotedString( styleId.isEmpty() ? dsUri.table() : styleId ) );
 
-  int rows = 0;
-  int columns = 0;
-  char *errMsg = nullptr;
-  const int ret = sqlite3_get_table( sqliteHandle, checkQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+
+  ret = sqlite3_get_table( sqliteHandle, checkQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
 
   QString sqlError;
   if ( errMsg )
