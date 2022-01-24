@@ -613,7 +613,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
     // srs is a reference and may be deleted before the queued slot is called.
     // We also can't do ANY gui related stuff here. Best we can do is log
     // a warning and move on...
-    QgsMessageLog::logMessage( tr( "Layer has unknown CRS" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer has unknown CRS" ) );
   }
   else
   {
