@@ -452,7 +452,8 @@ static QgsRectangle _tryReprojectExtent2D( const QgsRectangle &extent, const Qgs
   if ( crs1 != crs2 )
   {
     // reproject if necessary
-    const QgsCoordinateTransform ct( crs1, crs2, context );
+    QgsCoordinateTransform ct( crs1, crs2, context );
+    ct.setBallparkTransformsAreAppropriate( true );
     try
     {
       extentMapCrs = ct.transformBoundingBox( extentMapCrs );

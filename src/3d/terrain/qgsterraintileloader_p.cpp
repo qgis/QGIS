@@ -51,7 +51,9 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
 
   const QgsChunkNodeId nodeId = node->tileId();
   const QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId );
-  mExtentMapCrs = terrain->terrainToMapTransform().transformBoundingBox( extentTerrainCrs );
+  QgsCoordinateTransform transform = terrain->terrainToMapTransform();
+  transform.setBallparkTransformsAreAppropriate( true );
+  mExtentMapCrs = transform.transformBoundingBox( extentTerrainCrs );
   mTileDebugText = nodeId.text();
 }
 

@@ -1674,11 +1674,11 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QSt
   if ( !wgs.isValid() || !dst.isValid() )
     return false;
 
-  QgsCoordinateTransform xform( wgs, dst, transformContext() );
-
   QgsDebugMsgLevel( QStringLiteral( "transforming layer extent %1" ).arg( extent.toString( true ) ), 2 );
   try
   {
+    QgsCoordinateTransform xform( wgs, dst, transformContext() );
+    xform.setBallparkTransformsAreAppropriate( true );
     extent = xform.transformBoundingBox( extent );
   }
   catch ( QgsCsException &cse )
@@ -1913,12 +1913,12 @@ bool QgsWmsProvider::calculateExtent() const
         {
           QgsCoordinateReferenceSystem qgisSrsSource = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mTileLayer->boundingBoxes[i].crs );
 
-          QgsCoordinateTransform ct( qgisSrsSource, qgisSrsDest, transformContext() );
-
           QgsDebugMsgLevel( QStringLiteral( "ct: %1 => %2" ).arg( mTileLayer->boundingBoxes.at( i ).crs, mImageCrs ), 2 );
 
           try
           {
+            QgsCoordinateTransform ct( qgisSrsSource, qgisSrsDest, transformContext() );
+            ct.setBallparkTransformsAreAppropriate( true );
             QgsRectangle extent = ct.transformBoundingBox( mTileLayer->boundingBoxes.at( i ).box, Qgis::TransformDirection::Forward );
 
             //make sure extent does not contain 'inf' or 'nan'
@@ -3912,6 +3912,7 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
     try
     {
       QgsCoordinateTransform ct { mapSettings->destinationCrs(), crs(), mapSettings->transformContext() };
+      ct.setBallparkTransformsAreAppropriate( true );
       mapExtent = ct.transformBoundingBox( mapExtent );
     }
     catch ( QgsCsException & )

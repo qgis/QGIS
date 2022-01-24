@@ -217,6 +217,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     // reproject extent
     QgsCoordinateTransform ct( QgsProject::instance()->crs(),
                                QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
+    ct.setBallparkTransformsAreAppropriate( true );
 
     g = g.densifyByCount( 5 );
     try
@@ -2334,6 +2335,7 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
     // calculate top, left and scale based on CRS bounds
     QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
     QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), crs, QgsProject::instance() );
+    crsTransform.setBallparkTransformsAreAppropriate( true );
     try
     {
       // firstly transform CRS bounds expressed in WGS84 to CRS

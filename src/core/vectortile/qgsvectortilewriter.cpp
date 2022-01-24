@@ -235,6 +235,7 @@ QgsRectangle QgsVectorTileWriter::fullExtent() const
   {
     QgsVectorLayer *vl = layer.layer();
     QgsCoordinateTransform ct( vl->crs(), mRootTileMatrix.crs(), mTransformContext );
+    ct.setBallparkTransformsAreAppropriate( true );
     try
     {
       QgsRectangle r = ct.transformBoundingBox( vl->extent() );

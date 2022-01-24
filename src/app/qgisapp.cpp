@@ -7384,6 +7384,7 @@ void QgisApp::dxfExport()
       if ( d.exportMapExtent() )
       {
         QgsCoordinateTransform t( lMapCanvas->mapSettings().destinationCrs(), d.crs(), QgsProject::instance() );
+        t.setBallparkTransformsAreAppropriate( true );
         dxfExport.setExtent( t.transformBoundingBox( lMapCanvas->extent() ) );
       }
     }

@@ -149,7 +149,8 @@ void QgsExtentWidget::setOutputCrs( const QgsCoordinateReferenceSystem &outputCr
       case UserExtent:
         try
         {
-          const QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsProject::instance() );
+          QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsProject::instance() );
+          ct.setBallparkTransformsAreAppropriate( true );
           const QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
           mOutputCrs = outputCrs;
           setOutputExtentFromUser( extent, outputCrs );
@@ -185,7 +186,8 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
     {
       try
       {
-        const QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
+        QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
+        ct.setBallparkTransformsAreAppropriate( true );
         extent = ct.transformBoundingBox( r );
       }
       catch ( QgsCsException & )

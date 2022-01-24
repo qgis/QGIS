@@ -149,7 +149,8 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
     {
       if ( layer->crs() != mCrs )
       {
-        const QgsCoordinateTransform transform( layer->crs(), mCrs, context.transformContext() );
+        QgsCoordinateTransform transform( layer->crs(), mCrs, context.transformContext() );
+        transform.setBallparkTransformsAreAppropriate( true );
         try
         {
           rect = transform.transformBoundingBox( rect );
