@@ -1197,24 +1197,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
         self.assertFalse(errmsg)
 
-        # Try overwrite it but simulate answer no
-        settings = QgsSettings()
-        settings.setValue("/qgis/overwriteStyle", False)
-        errorMsg = vl.saveStyleToDatabase("name", "description_bis", False, "")
-        self.assertTrue(errorMsg)
-
-        res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), 'name')
-        self.assertTrue(res)
-        self.assertFalse(err)
-
-        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
-        self.assertEqual(related_count, 1)
-        self.assertFalse(errmsg)
-        self.assertEqual(idlist, ['1'])
-        self.assertEqual(namelist, ['name'])
-        self.assertEqual(desclist, ['description'])
-
-        # Try overwrite it and simulate answer yes
+        # overwrite existing style
         settings = QgsSettings()
         settings.setValue("/qgis/overwriteStyle", True)
         errorMsg = vl.saveStyleToDatabase("name", "description_bis", False, "")
