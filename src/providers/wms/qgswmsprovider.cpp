@@ -4924,7 +4924,14 @@ void QgsWmsInterpretationConverterMapTilerTerrainRGB::convert( const QRgb &color
   int G = qGreen( color );
   int B = qBlue( color );
 
-  *converted = -10000 + ( ( R * 256 * 256 + G * 256 + B ) ) * 0.1;
+  if ( qAlpha( color ) == 255 )
+  {
+    *converted = -10000 + ( ( R * 256 * 256 + G * 256 + B ) ) * 0.1;
+  }
+  else
+  {
+    *converted = std::numeric_limits<float>::quiet_NaN();
+  }
 }
 
 QgsRasterBandStats QgsWmsInterpretationConverterMapTilerTerrainRGB::statistics( int, int, const QgsRectangle &, int, QgsRasterBlockFeedback * ) const
