@@ -5637,12 +5637,18 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
 int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &ids, QStringList &names,
     QStringList &descriptions, QString &errCause )
 {
+  errCause.clear();
   QgsDataSourceUri dsUri( uri );
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
+    return -1;
+  }
+
+  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  {
     return -1;
   }
 
