@@ -3396,9 +3396,6 @@ bool QgsOracleProviderMetadata::styleExists( const QString &uri, const QString &
     return false;
   }
 
-  int id;
-  QString sql;
-
   if ( !qry.prepare( QStringLiteral( "SELECT id,stylename FROM layer_styles"
                                      " WHERE f_table_catalog=?"
                                      " AND f_table_schema=?"
