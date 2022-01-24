@@ -204,10 +204,12 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 {
   QgsVector3D extentMin3D( nodeBounds.xMin() * scale.x() + offset.x(), nodeBounds.yMin() * scale.y() + offset.y(), nodeBounds.zMin() * scale.z() + offset.z() + zValueOffset );
   QgsVector3D extentMax3D( nodeBounds.xMax() * scale.x() + offset.x(), nodeBounds.yMax() * scale.y() + offset.y(), nodeBounds.zMax() * scale.z() + offset.z() + zValueOffset );
+  QgsCoordinateTransform extentTransform = coordinateTransform;
+  extentTransform.setBallparkTransformsAreAppropriate( true );
   try
   {
-    extentMin3D = coordinateTransform.transform( extentMin3D );
-    extentMax3D = coordinateTransform.transform( extentMax3D );
+    extentMin3D = extentTransform.transform( extentMin3D );
+    extentMax3D = extentTransform.transform( extentMax3D );
   }
   catch ( QgsCsException & )
   {
