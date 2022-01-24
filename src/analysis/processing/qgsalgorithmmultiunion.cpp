@@ -105,7 +105,6 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
   const QgsCoordinateReferenceSystem crs = sourceA->sourceCrs();
   const QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
   std::unique_ptr< QgsFeatureSink > sink;
-  long count = 0;
   QVariantMap outputs;
   bool ok;
 
@@ -145,12 +144,14 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
       if ( !overlayLayer )
         continue;
 
-      count = 0;
       if ( i == 0 )
       {
         fields = QgsProcessingUtils::combineFields( sourceA->fields(), overlayLayer->fields(), overlayFieldsPrefix );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
         ok = makeUnion( *sourceA, *overlayLayer, *sink, context, &multiStepFeedback );
+
+        if ( !ok )
+          throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );
 
         unionLayer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( id, context ) );
       }
@@ -166,12 +167,16 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
 
         outputs.insert( QStringLiteral( "OUTPUT" ), dest );
         ok = makeUnion( *unionLayer, *overlayLayer, *sink, context, &multiStepFeedback );
+        if ( !ok )
+          throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );
       }
       else
       {
         fields = QgsProcessingUtils::combineFields( unionLayer->fields(), overlayLayer->fields(), overlayFieldsPrefix );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
         ok = makeUnion( *unionLayer, *overlayLayer, *sink, context, &multiStepFeedback );
+        if ( !ok )
+          throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );
 
         unionLayer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( id, context ) );
       }
