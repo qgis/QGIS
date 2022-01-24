@@ -44,7 +44,9 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
 
   try
   {
-    const QgsRectangle layerExtent = mTransform.transformBoundingBox( mapRect, Qgis::TransformDirection::Reverse );
+    QgsCoordinateTransform extentTransform = mTransform;
+    extentTransform.setBallparkTransformsAreAppropriate( true );
+    const QgsRectangle layerExtent = extentTransform.transformBoundingBox( mapRect, Qgis::TransformDirection::Reverse );
     const QgsPointXY layerPt = mTransform.transform( mPoint, Qgis::TransformDirection::Reverse );
 
     const double gridXMin = std::ceil( layerExtent.xMinimum() / mPrecision ) * mPrecision;

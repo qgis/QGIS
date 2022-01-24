@@ -153,13 +153,22 @@ bool QgsPointCloudLayerRenderer::render()
 
   const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent( root );
   QgsRectangle rootNodeExtentMapCoords;
-  try
+  if ( !context.renderContext().coordinateTransform().isShortCircuited() )
   {
-    rootNodeExtentMapCoords = context.renderContext().coordinateTransform().transformBoundingBox( rootNodeExtentLayerCoords );
+    try
+    {
+      QgsCoordinateTransform extentTransform = context.renderContext().coordinateTransform();
+      extentTransform.setBallparkTransformsAreAppropriate( true );
+      rootNodeExtentMapCoords = extentTransform.transformBoundingBox( rootNodeExtentLayerCoords );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
+      rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
+    }
   }
-  catch ( QgsCsException & )
+  else
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
     rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
   }
 
