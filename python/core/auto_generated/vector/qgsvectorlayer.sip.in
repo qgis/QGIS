@@ -941,6 +941,14 @@ Saves named and sld style of the layer to the style table in the db.
 :param description: A description of the style
 :param useAsDefault: Set to ``True`` if style should be used as the default style for the layer
 :param uiFileContent:
+
+.. note::
+
+   Prior to QGIS 3.24, this method would show a message box warning when a
+   style with the same ``styleName`` already existed to confirm replacing the style with the user.
+   Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
+   Use :py:func:`QgsProviderRegistry.styleExists()` to test in advance if a style already exists and handle this appropriately
+   in your client code.
 %End
 
     virtual int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/,
