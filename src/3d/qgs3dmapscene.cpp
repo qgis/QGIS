@@ -1137,6 +1137,7 @@ QgsRectangle Qgs3DMapScene::sceneExtent()
   {
     QgsRectangle terrainExtent = terrainGenerator->extent();
     QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
+    terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
     terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
     extent.combineExtentWith( terrainExtent );
   }

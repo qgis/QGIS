@@ -128,7 +128,8 @@ QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, i
   if ( destCrs != mOnlineDtm->crs() )
   {
     // if in different CRS - need to reproject extent and resolution
-    const QgsCoordinateTransform ct( destCrs, mOnlineDtm->crs(), context );
+    QgsCoordinateTransform ct( destCrs, mOnlineDtm->crs(), context );
+    ct.setBallparkTransformsAreAppropriate( true );
     extentTr = ct.transformBoundingBox( extentOrig );
   }
 

@@ -727,6 +727,7 @@ static QList<QgsMapToolIdentify::IdentifyResult> searchFeatureOnMap( QgsMapMouse
       {
         QgsRectangle rect( x - sr, y - sr, x + sr, y + sr );
         QgsCoordinateTransform transform = canvas->mapSettings().layerTransform( vectorLayer );
+        transform.setBallparkTransformsAreAppropriate( true );
 
         try
         {

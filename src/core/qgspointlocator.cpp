@@ -1022,11 +1022,13 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   if ( mExtent )
   {
     QgsRectangle rect = *mExtent;
-    if ( mTransform.isValid() )
+    if ( !mTransform.isShortCircuited() )
     {
+      QgsCoordinateTransform rectTransform = mTransform;
+      rectTransform.setBallparkTransformsAreAppropriate( true );
       try
       {
-        rect = mTransform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
+        rect = rectTransform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
       }
       catch ( const QgsException &e )
       {
