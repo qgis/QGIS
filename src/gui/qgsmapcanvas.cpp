@@ -1314,7 +1314,8 @@ bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
   if ( extent.crs() != mapSettings().destinationCrs() )
   {
     QgsCoordinateTransform ct( extent.crs(), mapSettings().destinationCrs(), QgsProject::instance() );
-    canvasExtent = ct.transform( extent );
+    ct.setBallparkTransformsAreAppropriate( true );
+    canvasExtent = ct.transformBoundingBox( extent );
 
     if ( canvasExtent.isEmpty() )
     {
