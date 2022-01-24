@@ -215,8 +215,8 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
           QString errorMessage;
           if ( QgsProviderRegistry::instance()->styleExists( layer->providerType(), layer->source(), QString(), errorMessage ) )
           {
-            if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
-                                        QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
+            if ( QMessageBox::question( nullptr, tr( "Save style in database" ),
+                                        tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
                                         QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
             {
               return;
@@ -224,7 +224,7 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
           }
           else if ( !errorMessage.isEmpty() )
           {
-            QMessageBox::warning( nullptr, QObject::tr( "Save style in database" ),
+            QMessageBox::warning( nullptr, tr( "Save style in database" ),
                                   errorMessage );
             return;
           }
