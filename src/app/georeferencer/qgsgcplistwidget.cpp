@@ -226,8 +226,12 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
     switch ( mPrevColumn )
     {
       case 3:
+      {
         changeX = true;
+        FALLTHROUGH
+      }
       case 4:
+      {
         tempPoint = dataPoint->pixelCoords();
         if ( changeX )
           tempPoint.setX( value );
@@ -235,10 +239,15 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
           tempPoint.setY( value );
         dataPoint->setPixelCoords( tempPoint );
         break;
+      }
 
       case 5:
+      {
         changeX = true;
+        FALLTHROUGH
+      }
       case 6:
+      {
         tempPoint = dataPoint->mapCoords();
         if ( changeX )
           tempPoint.setX( value );
@@ -246,10 +255,15 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
           tempPoint.setY( value );
         dataPoint->setMapCoords( tempPoint );
         break;
+      }
 
       case 7:
+      {
         changeX = true;
+        FALLTHROUGH
+      }
       case 8:
+      {
         tempPoint = dataPoint->transCoords();
         if ( changeX )
           tempPoint.setX( value );
@@ -258,7 +272,7 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
         try
         {
           tempPoint =  QgsCoordinateTransform( mGCPList->targetCRS(), dataPoint->crs(),
-                                                 QgsProject::instance() ).transform( tempPoint );
+                                               QgsProject::instance() ).transform( tempPoint );
         }
         catch ( const QgsException &e )
         {
@@ -267,6 +281,7 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
         }
         dataPoint->setMapCoords( tempPoint );
         break;
+      }
 
       default:
         return;

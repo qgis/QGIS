@@ -24,6 +24,7 @@
 QgsGCPList::QgsGCPList( const QgsGCPList &list )
   :  QList<QgsGeorefDataPoint *>()
 {
+  mTargetCrs = QgsCoordinateReferenceSystem();
   clear();
   QgsGCPList::const_iterator it = list.constBegin();
   for ( ; it != list.constEnd(); ++it )

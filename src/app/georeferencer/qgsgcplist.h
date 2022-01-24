@@ -29,14 +29,14 @@ class QgsGCPList : public QList<QgsGeorefDataPoint *>
   public:
     QgsGCPList() = default;
     QgsGCPList( const QgsGCPList &list );
-    void setTargetCrs( QgsCoordinateReferenceSystem crs ){ mTargetCrs = crs; }
+    void setTargetCrs( QgsCoordinateReferenceSystem crs ) { mTargetCrs = crs; }
 
     void createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords );
     int size() const;
     int sizeAll() const;
 
     QgsGCPList &operator =( const QgsGCPList &list );
-    const QgsCoordinateReferenceSystem targetCRS(){ return mTargetCrs; }
+    const QgsCoordinateReferenceSystem targetCRS() { return mTargetCrs; }
 
   private:
     QgsCoordinateReferenceSystem mTargetCrs;
