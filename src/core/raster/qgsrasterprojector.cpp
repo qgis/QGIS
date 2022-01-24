@@ -946,7 +946,10 @@ bool QgsRasterProjector::extentSize( const QgsCoordinateTransform &ct,
     return false;
   }
 
-  destExtent = ct.transformBoundingBox( srcExtent );
+  QgsCoordinateTransform extentTransform = ct;
+  extentTransform.setBallparkTransformsAreAppropriate( true );
+
+  destExtent = extentTransform.transformBoundingBox( srcExtent );
 
   // We reproject pixel rectangle from 9 points matrix of source extent, of course, it gives
   // bigger xRes,yRes than reprojected edges (envelope)
@@ -969,7 +972,7 @@ bool QgsRasterProjector::extentSize( const QgsCoordinateTransform &ct,
       const QgsRectangle srcRectangle( x - srcXRes / 2, y - srcYRes / 2, x + srcXRes / 2, y + srcYRes / 2 );
       try
       {
-        const QgsRectangle destRectangle = ct.transformBoundingBox( srcRectangle );
+        const QgsRectangle destRectangle = extentTransform.transformBoundingBox( srcRectangle );
         if ( destRectangle.width() > 0 )
         {
           destXRes = std::min( destXRes, destRectangle.width() );

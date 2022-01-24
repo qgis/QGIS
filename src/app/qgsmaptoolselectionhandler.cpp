@@ -265,6 +265,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
         {
           QgsRectangle rect( x - sr, y - sr, x + sr, y + sr );
           QgsCoordinateTransform transform = mCanvas->mapSettings().layerTransform( vectorLayer );
+          transform.setBallparkTransformsAreAppropriate( true );
 
           try
           {

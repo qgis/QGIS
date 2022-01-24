@@ -47,7 +47,9 @@ void QgsGeocoderLocatorFilter::handleGeocodeResult( const QgsGeocoderResult &res
     }
     else
     {
-      bounds = ct.transformBoundingBox( viewport );
+      QgsCoordinateTransform extentTransform = ct;
+      extentTransform.setBallparkTransformsAreAppropriate( true );
+      bounds = extentTransform.transformBoundingBox( viewport );
     }
     mCanvas->zoomToFeatureExtent( bounds );
 

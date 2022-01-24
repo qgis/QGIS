@@ -399,7 +399,8 @@ void QgsLayoutMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &crs 
   QgsRectangle newExtent;
   try
   {
-    const QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsProject::instance()->crs(), QgsProject::instance() );
+    QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsProject::instance()->crs(), QgsProject::instance() );
+    xForm.setBallparkTransformsAreAppropriate( true );
     const QgsRectangle prevExtent = mMapItem->extent();
     newExtent = xForm.transformBoundingBox( prevExtent );
     updateExtent = true;
@@ -492,7 +493,8 @@ void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
       {
         try
         {
-          const QgsCoordinateTransform xForm( extent.crs(), mMapItem->crs(), QgsProject::instance() );
+          QgsCoordinateTransform xForm( extent.crs(), mMapItem->crs(), QgsProject::instance() );
+          xForm.setBallparkTransformsAreAppropriate( true );
           newExtent = xForm.transformBoundingBox( newExtent );
         }
         catch ( QgsCsException & )
@@ -733,8 +735,9 @@ void QgsLayoutMapWidget::setToMapCanvasExtent()
   {
     try
     {
-      const QgsCoordinateTransform xForm( mMapCanvas->mapSettings().destinationCrs(),
-                                          mMapItem->crs(), QgsProject::instance() );
+      QgsCoordinateTransform xForm( mMapCanvas->mapSettings().destinationCrs(),
+                                    mMapItem->crs(), QgsProject::instance() );
+      xForm.setBallparkTransformsAreAppropriate( true );
       newExtent = xForm.transformBoundingBox( newExtent );
     }
     catch ( QgsCsException & )
