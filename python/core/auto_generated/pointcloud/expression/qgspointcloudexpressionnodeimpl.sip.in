@@ -1,0 +1,326 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/expression/qgspointcloudexpressionnodeimpl.h     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPointcloudExpressionNodeUnaryOperator : QgsPointcloudExpressionNode
+{
+%Docstring(signature="appended")
+A unary node is either negative as in boolean (not) or as in numbers (minus).
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudexpressionnodeimpl.h"
+%End
+  public:
+
+    enum UnaryOperator
+    {
+      uoNot,
+      uoMinus,
+    };
+
+    QgsPointcloudExpressionNodeUnaryOperator( QgsPointcloudExpressionNodeUnaryOperator::UnaryOperator op, QgsPointcloudExpressionNode *operand /Transfer/ );
+%Docstring
+A node unary operator is modifying the value of ``operand`` by negating it with ``op``.
+%End
+    ~QgsPointcloudExpressionNodeUnaryOperator();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsPointcloudExpressionNodeUnaryOperator: %1>" ).arg( sipCpp->text() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    QgsPointcloudExpressionNodeUnaryOperator::UnaryOperator op() const;
+%Docstring
+Returns the unary operator.
+%End
+
+    QgsPointcloudExpressionNode *operand() const;
+%Docstring
+Returns the node the operator will operate upon.
+%End
+
+    virtual QgsPointcloudExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedAttributes() const;
+
+
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const;
+
+
+    QString text() const;
+%Docstring
+Returns a the name of this operator without the operands.
+I.e. "NOT" or "-"
+%End
+
+};
+
+class QgsPointcloudExpressionNodeBinaryOperator : QgsPointcloudExpressionNode
+{
+%Docstring(signature="appended")
+A binary expression operator, which operates on two values.
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudexpressionnodeimpl.h"
+%End
+  public:
+
+    enum BinaryOperator
+    {
+      // logical
+      boOr,
+      boAnd,
+
+      // comparison
+      boEQ,
+      boNE,
+      boLE,
+      boGE,
+      boLT,
+      boGT,
+
+      // math
+      boPlus,
+      boMinus,
+      boMul,
+      boDiv,
+      boIntDiv,
+      boMod,
+      boPow,
+    };
+
+    QgsPointcloudExpressionNodeBinaryOperator( QgsPointcloudExpressionNodeBinaryOperator::BinaryOperator op, QgsPointcloudExpressionNode *opLeft /Transfer/, QgsPointcloudExpressionNode *opRight /Transfer/ );
+%Docstring
+Binary combination of the left and the right with op.
+%End
+    ~QgsPointcloudExpressionNodeBinaryOperator();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsPointcloudExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    QgsPointcloudExpressionNodeBinaryOperator::BinaryOperator op() const;
+%Docstring
+Returns the binary operator.
+%End
+
+    QgsPointcloudExpressionNode *opLeft() const;
+%Docstring
+Returns the node to the left of the operator.
+
+.. seealso:: :py:func:`opRight`
+%End
+
+    QgsPointcloudExpressionNode *opRight() const;
+%Docstring
+Returns the node to the right of the operator.
+
+.. seealso:: :py:func:`opLeft`
+%End
+
+    virtual QgsPointcloudExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedAttributes() const;
+
+    virtual QgsPointcloudExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const;
+
+
+    int precedence() const;
+%Docstring
+Returns the precedence index for the operator. Higher values have higher precedence.
+%End
+
+    bool leftAssociative() const;
+%Docstring
+Returns ``True`` if the operator is left-associative.
+%End
+
+    QString text() const;
+%Docstring
+Returns a the name of this operator without the operands.
+I.e. "AND", "OR", ...
+%End
+
+};
+
+class QgsPointcloudExpressionNodeInOperator : QgsPointcloudExpressionNode
+{
+%Docstring(signature="appended")
+An expression node for value IN or NOT IN clauses.
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsPointcloudExpressionNodeInOperator( QgsPointcloudExpressionNode *node /Transfer/, QgsPointcloudExpressionNode::NodeList *list /Transfer/, bool notin = false );
+%Docstring
+This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is ``False``.
+%End
+    ~QgsPointcloudExpressionNodeInOperator();
+
+    QgsPointcloudExpressionNode *node() const;
+%Docstring
+Returns the expression node.
+%End
+
+    bool isNotIn() const;
+%Docstring
+Returns ``True`` if this node is a "NOT IN" operator, or ``False`` if the node is a normal "IN" operator.
+%End
+
+    QgsPointcloudExpressionNode::NodeList *list() const;
+%Docstring
+Returns the list of nodes to search for matching values within.
+%End
+
+    virtual QgsPointcloudExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedAttributes() const;
+
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const;
+
+
+};
+
+class QgsPointcloudExpressionNodeLiteral : QgsPointcloudExpressionNode
+{
+%Docstring(signature="appended")
+An expression node for literal values.
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsPointcloudExpressionNodeLiteral( const QVariant &value );
+%Docstring
+Constructor for QgsPointcloudExpressionNodeLiteral, with the specified literal ``value``.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsPointcloudExpressionNodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    QVariant value() const;
+%Docstring
+The value of the literal.
+%End
+
+    virtual QgsPointcloudExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedAttributes() const;
+
+
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const;
+
+
+    QString valueAsString() const;
+%Docstring
+Returns a string representation of the node's literal value.
+
+.. versionadded:: 3.20
+%End
+
+};
+
+class QgsPointcloudExpressionNodeAttributeRef : QgsPointcloudExpressionNode
+{
+%Docstring(signature="appended")
+An expression node which takes it value from a feature's field.
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsPointcloudExpressionNodeAttributeRef( const QString &name );
+%Docstring
+Constructor for :py:class:`QgsPointcloudExpressionNodeColumnRef`, referencing the column
+with the specified ``name``.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsPointcloudExpressionNodeAttributeRef: \"%1\">" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    QString name() const;
+%Docstring
+The name of the column.
+%End
+
+    virtual QgsPointcloudExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedAttributes() const;
+
+    virtual QgsPointcloudExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/expression/qgspointcloudexpressionnodeimpl.h     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

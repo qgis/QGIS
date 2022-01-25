@@ -1,0 +1,281 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/expression/qgspointcloudexpressionnode.h         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPointcloudExpressionNode /Abstract/
+{
+%Docstring(signature="appended")
+
+Abstract base class for all nodes that can appear in an expression.
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudexpressionnode.h"
+%End
+%ConvertToSubClassCode
+    switch ( sipCpp->nodeType() )
+    {
+      case QgsPointcloudExpressionNode::ntUnaryOperator:
+        sipType = sipType_QgsPointcloudExpressionNodeUnaryOperator;
+        break;
+      case QgsPointcloudExpressionNode::ntBinaryOperator:
+        sipType = sipType_QgsPointcloudExpressionNodeBinaryOperator;
+        break;
+      case QgsExpressionNode::ntInOperator:
+        sipType = sipType_QgsExpressionNodeInOperator;
+        break;
+      case QgsPointcloudExpressionNode::ntLiteral:
+        sipType = sipType_QgsPointcloudExpressionNodeLiteral;
+        break;
+      case QgsPointcloudExpressionNode::ntAttributeRef:
+        sipType = sipType_QgsPointcloudExpressionNodeAttributeRef;
+        break;
+      default:
+        sipType = 0;
+        break;
+    }
+%End
+  public:
+
+    enum NodeType
+    {
+      ntUnaryOperator,
+      ntBinaryOperator,
+      ntInOperator,
+      ntLiteral,
+      ntAttributeRef,
+    };
+
+
+    struct NamedNode
+    {
+      public:
+
+        NamedNode( const QString &name, QgsPointcloudExpressionNode *node );
+%Docstring
+Constructor for NamedNode
+
+:param name: node name
+:param node: node
+%End
+
+        QString name;
+
+        QgsPointcloudExpressionNode *node;
+    };
+
+    class NodeList
+{
+%Docstring(signature="appended")
+A list of expression nodes.
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudexpressionnode.h"
+%End
+      public:
+        virtual ~NodeList();
+        void append( QgsPointcloudExpressionNode *node /Transfer/ );
+%Docstring
+Takes ownership of the provided node
+%End
+
+        void append( QgsPointcloudExpressionNode::NamedNode *node /Transfer/ );
+%Docstring
+Adds a named node. Takes ownership of the provided node.
+
+.. versionadded:: 2.16
+%End
+
+        int count() const;
+%Docstring
+Returns the number of nodes in the list.
+%End
+
+        bool hasNamedNodes() const;
+%Docstring
+Returns ``True`` if list contains any named nodes
+
+.. versionadded:: 2.16
+%End
+
+        QList<QgsPointcloudExpressionNode *> list();
+%Docstring
+Gets a list of all the nodes.
+%End
+
+        QgsPointcloudExpressionNode *at( int i );
+%Docstring
+Gets the node at position i in the list.
+
+.. versionadded:: 3.0
+%End
+
+        QStringList names() const;
+%Docstring
+Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
+
+.. versionadded:: 2.16
+%End
+
+        QgsPointcloudExpressionNode::NodeList *clone() const /Factory/;
+%Docstring
+Creates a deep copy of this list. Ownership is transferred to the caller
+%End
+
+        virtual QString dump() const;
+%Docstring
+Returns a string dump of the expression node.
+%End
+
+      public:
+    };
+
+    virtual ~QgsPointcloudExpressionNode();
+
+    virtual QgsPointcloudExpressionNode::NodeType nodeType() const = 0;
+%Docstring
+Gets the type of this node.
+
+:return: The type of this node
+%End
+
+    virtual QString dump() const = 0;
+%Docstring
+Dump this node into a serialized (part) of an expression.
+The returned expression does not necessarily literally match
+the original expression, it's just guaranteed to behave the same way.
+%End
+
+    QVariant eval( QgsPointcloudExpression *parent, QVariantMap &p );
+%Docstring
+Evaluate this node with the given context and parent.
+This will return a cached value if it has been determined to be static
+during the :py:func:`~QgsPointcloudExpressionNode.prepare` execution.
+
+.. versionadded:: 2.12
+%End
+
+    virtual QgsPointcloudExpressionNode *clone() const = 0;
+%Docstring
+Generate a clone of this node.
+Ownership is transferred to the caller.
+
+:return: a deep copy of this node.
+%End
+
+    virtual QSet<QString> referencedAttributes() const = 0;
+%Docstring
+Abstract virtual method which returns a list of columns required to
+evaluate this node.
+
+When reimplementing this, you need to return any column that is required to
+evaluate this node and in addition recursively collect all the columns required
+to evaluate child nodes.
+
+.. warning::
+
+   If the expression has been prepared via a call to :py:func:`QgsPointcloudExpression.prepare()`,
+   or a call to :py:func:`QgsPointcloudExpressionNode.prepare()` for a node has been made, then some nodes in
+   the expression may have been determined to evaluate to a static pre-calculatable value.
+   In this case the results will omit attribute indices which are used by these
+   pre-calculated nodes, regardless of their actual referenced columns.
+   If you are seeking to use these functions to introspect an expression you must
+   take care to do this with an unprepared expression node.
+
+:return: A list of columns required to evaluate this expression
+%End
+
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const = 0;
+%Docstring
+Returns ``True`` if this node can be evaluated for a static value. This is used during
+the :py:func:`~QgsPointcloudExpressionNode.prepare` step and in case it returns ``True``, the value of this node will already
+be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
+to :py:func:`~QgsPointcloudExpressionNode.eval`). In case this returns ``True``, :py:func:`~QgsPointcloudExpressionNode.prepareNode` will never be called.
+
+.. versionadded:: 3.0
+%End
+
+    bool prepare( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+%Docstring
+Prepare this node for evaluation.
+This will check if the node content is static and in this case cache the value.
+If it's not static it will call :py:func:`~QgsPointcloudExpressionNode.prepareNode` to allow the node to do initialization
+work like for example resolving a column name to an attribute index.
+
+.. versionadded:: 2.12
+%End
+
+    int parserFirstLine;
+
+    int parserFirstColumn;
+
+    int parserLastLine;
+
+    int parserLastColumn;
+
+    bool hasCachedStaticValue() const;
+%Docstring
+Returns ``True`` if the node can be replaced by a static cached value.
+
+.. seealso:: :py:func:`cachedStaticValue`
+
+.. versionadded:: 3.18
+%End
+
+    QVariant cachedStaticValue() const;
+%Docstring
+Returns the node's static cached value. Only valid if :py:func:`~QgsPointcloudExpressionNode.hasCachedStaticValue` is ``True``.
+
+.. seealso:: :py:func:`hasCachedStaticValue`
+
+.. versionadded:: 3.18
+%End
+
+    const QgsPointcloudExpressionNode *effectiveNode() const;
+%Docstring
+Returns a reference to the simplest node which represents this node,
+after any compilation optimizations have been applied.
+
+Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
+be replaced entirely by a :py:class:`QgsPointcloudExpressionNodeColumnRef` referencing the "some_field" field, as the
+CASE WHEN ... will ALWAYS evaluate to "some_field".
+
+Returns a reference to the current object if no optimizations were applied.
+
+.. versionadded:: 3.20
+%End
+
+  protected:
+
+    QgsPointcloudExpressionNode();
+%Docstring
+Constructor.
+%End
+
+    QgsPointcloudExpressionNode( const QgsPointcloudExpressionNode &other );
+%Docstring
+Copy constructor
+%End
+
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/expression/qgspointcloudexpressionnode.h         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
