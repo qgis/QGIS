@@ -1250,8 +1250,7 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
 
   const QImage image = getLegendGraphic();
 
-  // Assume legend images have 72 dpi resolution
-  double px2mm = 25.4 / 72;
+  double px2mm = 1000. / image.dotsPerMeterX();
   double mmWidth = image.width() * px2mm;
   double mmHeight = image.height() * px2mm;
 
