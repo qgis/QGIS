@@ -2069,7 +2069,7 @@ Otherwise the layer editing mode will be disabled if the commit is successful.
 .. versionadded:: 3.26
 %End
 
-    bool rollBack( bool stopEditing = true, QgsVectorLayer *vectorLayer = 0 );
+    bool rollBack( QStringList &rollbackErrors, bool stopEditing = true, QgsVectorLayer *vectorLayer = 0 );
 %Docstring
 Stops a current editing operation on vectorLayer and discards any uncommitted edits.
 

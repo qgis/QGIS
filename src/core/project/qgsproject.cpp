@@ -656,7 +656,10 @@ bool QgsProject::commitChanges( QStringList &commitErrors, bool stopEditing, Qgs
     case Qgis::TransactionMode::AutomaticGroups:
     {
       if ( ! vectorLayer )
+      {
+        commitErrors.append( tr( "Trying to commit changes without a layer specified. This only works if the transaction mode is buffered" ) );
         return false;
+      }
       bool success = vectorLayer->commitChanges();
       commitErrors = vectorLayer->commitErrors();
       return success;
@@ -670,7 +673,7 @@ bool QgsProject::commitChanges( QStringList &commitErrors, bool stopEditing, Qgs
   return false;
 }
 
-bool QgsProject::rollBack( bool stopEditing, QgsVectorLayer *vectorLayer )
+bool QgsProject::rollBack( QStringList &rollbackErrors, bool stopEditing, QgsVectorLayer *vectorLayer )
 {
   switch ( mTransactionMode )
   {
@@ -678,12 +681,17 @@ bool QgsProject::rollBack( bool stopEditing, QgsVectorLayer *vectorLayer )
     case Qgis::TransactionMode::AutomaticGroups:
     {
       if ( ! vectorLayer )
+      {
+        rollbackErrors.append( tr( "Trying to roll back changes without a layer specified. This only works if the transaction mode is buffered" ) );
         return false;
-      return vectorLayer->rollBack( stopEditing );
+      }
+      bool success = vectorLayer->rollBack( stopEditing );
+      rollbackErrors = vectorLayer->commitErrors();
+      return success;
     }
     break;
     case Qgis::TransactionMode::BufferedGroups:
-      return mEditBufferGroup.rollBack( stopEditing );
+      return mEditBufferGroup.rollBack( rollbackErrors, stopEditing );
       break;
   }
 

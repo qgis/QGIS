@@ -31,8 +31,7 @@ QgsVectorLayerEditBufferGroup::QgsVectorLayerEditBufferGroup( QObject *parent )
 
 void QgsVectorLayerEditBufferGroup::addLayer( QgsVectorLayer *layer )
 {
-  if ( ! mLayers.contains( layer ) )
-    mLayers.append( layer );
+  mLayers.insert( layer );
 }
 
 void QgsVectorLayerEditBufferGroup::clear()
@@ -40,18 +39,18 @@ void QgsVectorLayerEditBufferGroup::clear()
   mLayers.clear();
 }
 
-QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::layers() const
+QSet<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::layers() const
 {
   return mLayers;
 }
 
-QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::modifiedLayers() const
+QSet<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::modifiedLayers() const
 {
-  QList<QgsVectorLayer *> modifiedLayers;
+  QSet<QgsVectorLayer *> modifiedLayers;
 
   for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
     if ( layer->isModified() )
-      modifiedLayers.append( layer );
+      modifiedLayers.insert( layer );
 
   return modifiedLayers;
 }
@@ -103,7 +102,11 @@ bool QgsVectorLayerEditBufferGroup::startEditing()
   }
 
   if ( ! editingStarted )
-    rollBack( true );
+  {
+    QStringList rollbackErrors;
+    if ( ! rollBack( rollbackErrors, true ) )
+      QgsLogger::debug( tr( "Can't rollback after start editing failure. Roll back detailed errors: %1" ).arg( rollbackErrors.join( " / " ) ) );
+  }
 
   mIsEditing = editingStarted;
   return mIsEditing;
@@ -113,7 +116,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
 {
   bool success = true;
 
-  const QList<QgsVectorLayer *> constModifiedLayers = modifiedLayers();
+  const QSet<QgsVectorLayer *> constModifiedLayers = modifiedLayers();
   if ( constModifiedLayers.isEmpty() )
   {
     editingFinished( stopEditing );
@@ -314,7 +317,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
   return success;
 }
 
-bool QgsVectorLayerEditBufferGroup::rollBack( bool stopEditing )
+bool QgsVectorLayerEditBufferGroup::rollBack( QStringList &rollbackErrors, bool stopEditing )
 {
   for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
   {
@@ -322,7 +325,10 @@ bool QgsVectorLayerEditBufferGroup::rollBack( bool stopEditing )
       continue;
 
     if ( !layer->dataProvider() )
+    {
+      rollbackErrors << tr( "Layer '%1' doesn't have a valid data provider" ).arg( layer->name() );
       return false;
+    }
 
     bool rollbackExtent = !layer->editBuffer()->deletedFeatureIds().isEmpty() ||
                           !layer->editBuffer()->addedFeatures().isEmpty() ||
@@ -367,7 +373,7 @@ bool QgsVectorLayerEditBufferGroup::isEditing() const
   return mIsEditing;
 }
 
-QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChildren( QList<QgsVectorLayer *> layers )
+QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChildren( QSet<QgsVectorLayer *> layers )
 {
   QSet<QgsVectorLayer *> referencingLayers;
   QSet<QgsVectorLayer *> referencedLayers;

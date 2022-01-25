@@ -2047,7 +2047,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.26
      */
-    bool rollBack( bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
+    bool rollBack( QStringList &rollbackErrors, bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );

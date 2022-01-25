@@ -40,18 +40,18 @@ Add a layer to this edit buffer group.
 Remove all layers from this edit buffer group
 %End
 
-    QList<QgsVectorLayer *> layers() const;
+    QSet<QgsVectorLayer *> layers() const;
 %Docstring
-Gets the list of layers currently managed by this edit buffer group.
+Gets the set of layers currently managed by this edit buffer group.
 
-:return: Layer list
+:return: Layer set
 %End
 
-    QList<QgsVectorLayer *> modifiedLayers() const;
+    QSet<QgsVectorLayer *> modifiedLayers() const;
 %Docstring
-Gets the list of modified layers currently managed by this edit buffer group.
+Gets the set of modified layers currently managed by this edit buffer group.
 
-:return: Layer list
+:return: Layer set
 %End
 
     bool startEditing();
@@ -80,7 +80,7 @@ that the user has some chance of repairing the damage cleanly.
 :return: ``True`` on success
 %End
 
-    bool rollBack( bool stopEditing = true );
+    bool rollBack( QStringList &rollbackErrors, bool stopEditing = true );
 %Docstring
 Stop editing and discard the edits
 

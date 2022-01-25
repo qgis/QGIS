@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 
 #include <QObject>
+#include <QSet>
 
 class QgsVectorLayer;
 
@@ -53,18 +54,18 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
     void clear();
 
     /**
-     * Gets the list of layers currently managed by this edit buffer group.
+     * Gets the set of layers currently managed by this edit buffer group.
      *
-     * \returns Layer list
+     * \returns Layer set
      */
-    QList<QgsVectorLayer *> layers() const;
+    QSet<QgsVectorLayer *> layers() const;
 
     /**
-     * Gets the list of modified layers currently managed by this edit buffer group.
+     * Gets the set of modified layers currently managed by this edit buffer group.
      *
-     * \returns Layer list
+     * \returns Layer set
      */
-    QList<QgsVectorLayer *> modifiedLayers() const;
+    QSet<QgsVectorLayer *> modifiedLayers() const;
 
     /**
      * Start editing
@@ -97,7 +98,7 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
      *
      * \returns FALSE if errors occurred during rollback
      */
-    bool rollBack( bool stopEditing = true );
+    bool rollBack( QStringList &rollbackErrors, bool stopEditing = true );
 
     /**
      * Returns TRUE if the layers are in editing mode
@@ -106,10 +107,10 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
 
   private:
 
-    QList<QgsVectorLayer *> orderLayersParentsToChildren( QList<QgsVectorLayer *> layers );
+    QList<QgsVectorLayer *> orderLayersParentsToChildren( QSet<QgsVectorLayer *> layers );
     void editingFinished( bool stopEditing );
 
-    QList<QgsVectorLayer *> mLayers;
+    QSet<QgsVectorLayer *> mLayers;
 
     bool mIsEditing = false;
 };

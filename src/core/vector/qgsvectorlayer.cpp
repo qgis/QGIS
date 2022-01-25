@@ -1467,8 +1467,8 @@ void QgsVectorLayer::setLabeling( QgsAbstractVectorLayerLabeling *labeling )
 
 bool QgsVectorLayer::startEditing()
 {
-  if ( QgsProject::instance()->transactionMode() == Qgis::TransactionMode::BufferedGroups )
-    return QgsProject::instance()->startEditing( this );
+  if ( project() && project()->transactionMode() == Qgis::TransactionMode::BufferedGroups )
+    return project()->startEditing( this );
 
   if ( !isValid() || !mDataProvider )
   {
@@ -3451,8 +3451,8 @@ QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
 
 bool QgsVectorLayer::commitChanges( bool stopEditing )
 {
-  if ( QgsProject::instance()->transactionMode() == Qgis::TransactionMode::BufferedGroups )
-    return QgsProject::instance()->commitChanges( mCommitErrors, stopEditing, this );
+  if ( project() && project()->transactionMode() == Qgis::TransactionMode::BufferedGroups )
+    return project()->commitChanges( mCommitErrors, stopEditing, this );
 
   mCommitErrors.clear();
 
@@ -3530,8 +3530,8 @@ QStringList QgsVectorLayer::commitErrors() const
 
 bool QgsVectorLayer::rollBack( bool deleteBuffer )
 {
-  if ( QgsProject::instance()->transactionMode() == Qgis::TransactionMode::BufferedGroups )
-    return QgsProject::instance()->rollBack( deleteBuffer, this );
+  if ( project() && project()->transactionMode() == Qgis::TransactionMode::BufferedGroups )
+    return project()->rollBack( mCommitErrors, deleteBuffer, this );
 
   if ( !mEditBuffer )
   {

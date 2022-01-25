@@ -11310,13 +11310,13 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
   bool res = true;
 
   // Assume changes if: a) the layer reports modifications or b) its transaction group was modified
-  QList<QgsVectorLayer *> modifiedLayers;
+  QSet<QgsVectorLayer *> modifiedLayers;
   switch ( QgsProject::instance()->transactionMode() )
   {
     case Qgis::TransactionMode::Disabled:
     {
       if ( vlayer->isModified() )
-        modifiedLayers.append( vlayer );
+        modifiedLayers.insert( vlayer );
     }
     break;
     case Qgis::TransactionMode::AutomaticGroups:
@@ -11331,12 +11331,12 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
       if ( tg && tg->layers().contains( vlayer ) && tg->modified() )
       {
         if ( vlayer->isModified() )
-          modifiedLayers.append( vlayer );
+          modifiedLayers.insert( vlayer );
         const QSet<QgsVectorLayer *> transactionGroupLayers = tg->layers();
         for ( QgsVectorLayer *iterLayer : transactionGroupLayers )
         {
           if ( iterLayer != vlayer && iterLayer->isModified() )
-            modifiedLayers.append( iterLayer );
+            modifiedLayers.insert( iterLayer );
         }
       }
     }
@@ -11379,11 +11379,11 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
 
     QString modifiedLayerNames;
     if ( modifiedLayers.size() == 1 )
-      modifiedLayerNames = modifiedLayers[0]->name();
+      modifiedLayerNames = ( *modifiedLayers.constBegin() )->name();
     else if ( modifiedLayers.size() == 2 )
-      modifiedLayerNames = tr( "%1 and %2" ).arg( modifiedLayers[0]->name() ).arg( modifiedLayers[1]->name() );
+      modifiedLayerNames = tr( "%1 and %2" ).arg( ( *modifiedLayers.constBegin() )->name(), ( * ++modifiedLayers.constBegin() )->name() );
     else if ( modifiedLayers.size() > 2 )
-      modifiedLayerNames = tr( "%1, %2, …" ).arg( modifiedLayers[0]->name() ).arg( modifiedLayers[1]->name() );
+      modifiedLayerNames = tr( "%1, %2, …" ).arg( ( *modifiedLayers.constBegin() )->name(), ( * ++modifiedLayers.constBegin() )->name() );
 
     switch ( QMessageBox::question( nullptr,
                                     tr( "Stop Editing" ),
@@ -11422,10 +11422,11 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
 
         QgsCanvasRefreshBlocker refreshBlocker;
 
-        if ( ! QgsProject::instance()->rollBack( vlayer ) )
+        QStringList rollBackErrors;
+        if ( ! QgsProject::instance()->rollBack( rollBackErrors, true, vlayer ) )
         {
           visibleMessageBar()->pushMessage( tr( "Error" ),
-                                            tr( "Problems during roll back" ),
+                                            tr( "Problems during roll back: '%1'" ).arg( rollBackErrors.join( " / " ) ),
                                             Qgis::MessageLevel::Critical );
           res = false;
         }
@@ -11444,7 +11445,8 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
   {
     QgsCanvasRefreshBlocker refreshBlocker;
 
-    QgsProject::instance()->rollBack( vlayer );
+    QStringList rollBackErrors;
+    QgsProject::instance()->rollBack( rollBackErrors, true, vlayer );
 
     res = true;
     vlayer->triggerRepaint();
@@ -11684,7 +11686,8 @@ void QgisApp::cancelVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bo
     mSaveRollbackInProgress = true;
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( ! QgsProject::instance()->rollBack( !leaveEditable, vlayer ) )
+  QStringList rollbackErrors;
+  if ( ! QgsProject::instance()->rollBack( rollbackErrors, !leaveEditable, vlayer ) )
   {
     mSaveRollbackInProgress = false;
     QMessageBox::warning( nullptr,
@@ -11692,7 +11695,7 @@ void QgisApp::cancelVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bo
                           tr( "Could not %1 changes to layer %2\n\nErrors: %3\n" )
                           .arg( leaveEditable ? tr( "rollback" ) : tr( "cancel" ),
                                 vlayer->name(),
-                                vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
+                                rollbackErrors.join( QLatin1String( "\n  " ) ) ) );
   }
 
   if ( leaveEditable )
