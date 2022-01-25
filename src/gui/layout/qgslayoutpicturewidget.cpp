@@ -383,6 +383,7 @@ void QgsLayoutPictureWidget::updateSvgParamGui( bool resetValues )
     mFillColorButton->setColor( fill );
   }
   mFillColorButton->setEnabled( hasFillParam );
+  mFillColorDDBtn->setEnabled( hasFillParam );
   mFillColorButton->setAllowOpacity( hasFillOpacityParam );
   if ( resetValues )
   {
@@ -396,12 +397,14 @@ void QgsLayoutPictureWidget::updateSvgParamGui( bool resetValues )
     mStrokeColorButton->setColor( stroke );
   }
   mStrokeColorButton->setEnabled( hasStrokeParam );
+  mStrokeColorDDBtn->setEnabled( hasStrokeParam );
   mStrokeColorButton->setAllowOpacity( hasStrokeOpacityParam );
   if ( hasDefaultStrokeWidth && resetValues )
   {
     mStrokeWidthSpinBox->setValue( defaultStrokeWidth );
   }
   mStrokeWidthSpinBox->setEnabled( hasStrokeWidthParam );
+  mStrokeWidthDDBtn->setEnabled( hasStrokeWidthParam );
 }
 
 void QgsLayoutPictureWidget::mFillColorButton_colorChanged( const QColor &color )
