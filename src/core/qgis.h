@@ -1290,6 +1290,51 @@ class CORE_EXPORT Qgis
     Q_ENUM( CrsDefinitionFormat )
 
     /**
+     * Split policy for field domains.
+     *
+     * When a feature is split into multiple parts, defines how the value of attributes
+     * following the domain are computed.
+     *
+     * \since QGIS 3.26
+     */
+    enum class FieldDomainSplitPolicy : int
+    {
+      DefaultValue, //!< Use default field value
+      Duplicate, //!< Duplicate original value
+      GeometryRatio, //!< New values are computed by the ratio of their area/length compared to the area/length of the original feature
+    };
+    Q_ENUM( FieldDomainSplitPolicy )
+
+    /**
+     * Merge policy for field domains.
+     *
+     * When a feature is built by merging multiple features, defines how the value of
+     * attributes following the domain are computed.
+     *
+     * \since QGIS 3.26
+     */
+    enum class FieldDomainMergePolicy : int
+    {
+      DefaultValue, //!< Use default field value
+      Sum, //!< Sum of values
+      GeometryWeighted, //!< New values are computed as the weighted average of the source values
+    };
+    Q_ENUM( FieldDomainMergePolicy )
+
+    /**
+     * Types of field domain
+     *
+     * \since QGIS 3.26
+     */
+    enum class FieldDomainType : int
+    {
+      Coded, //!< Coded field domain
+      Range, //!< Numeric range field domain (min/max)
+      Glob, //!< Glob string pattern field domain
+    };
+    Q_ENUM( FieldDomainType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

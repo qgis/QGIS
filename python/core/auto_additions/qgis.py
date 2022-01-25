@@ -1218,3 +1218,24 @@ QgsCoordinateReferenceSystem.FormatProj.__doc__ = "Proj string format"
 Qgis.CrsDefinitionFormat.__doc__ = 'CRS definition formats.\n\n.. versionadded:: 3.24\n\n' + '* ``FormatWkt``: ' + Qgis.CrsDefinitionFormat.Wkt.__doc__ + '\n' + '* ``FormatProj``: ' + Qgis.CrsDefinitionFormat.Proj.__doc__
 # --
 Qgis.CrsDefinitionFormat.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.FieldDomainSplitPolicy.DefaultValue.__doc__ = "Use default field value"
+Qgis.FieldDomainSplitPolicy.Duplicate.__doc__ = "Duplicate original value"
+Qgis.FieldDomainSplitPolicy.GeometryRatio.__doc__ = "New values are computed by the ratio of their area/length compared to the area/length of the original feature"
+Qgis.FieldDomainSplitPolicy.__doc__ = 'Split policy for field domains.\n\nWhen a feature is split into multiple parts, defines how the value of attributes\nfollowing the domain are computed.\n\n.. versionadded:: 3.26\n\n' + '* ``DefaultValue``: ' + Qgis.FieldDomainSplitPolicy.DefaultValue.__doc__ + '\n' + '* ``Duplicate``: ' + Qgis.FieldDomainSplitPolicy.Duplicate.__doc__ + '\n' + '* ``GeometryRatio``: ' + Qgis.FieldDomainSplitPolicy.GeometryRatio.__doc__
+# --
+Qgis.FieldDomainSplitPolicy.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.FieldDomainMergePolicy.DefaultValue.__doc__ = "Use default field value"
+Qgis.FieldDomainMergePolicy.Sum.__doc__ = "Sum of values"
+Qgis.FieldDomainMergePolicy.GeometryWeighted.__doc__ = "New values are computed as the weighted average of the source values"
+Qgis.FieldDomainMergePolicy.__doc__ = 'Merge policy for field domains.\n\nWhen a feature is built by merging multiple features, defines how the value of\nattributes following the domain are computed.\n\n.. versionadded:: 3.26\n\n' + '* ``DefaultValue``: ' + Qgis.FieldDomainMergePolicy.DefaultValue.__doc__ + '\n' + '* ``Sum``: ' + Qgis.FieldDomainMergePolicy.Sum.__doc__ + '\n' + '* ``GeometryWeighted``: ' + Qgis.FieldDomainMergePolicy.GeometryWeighted.__doc__
+# --
+Qgis.FieldDomainMergePolicy.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.FieldDomainType.Coded.__doc__ = "Coded field domain"
+Qgis.FieldDomainType.Range.__doc__ = "Numeric range field domain (min/max)"
+Qgis.FieldDomainType.Glob.__doc__ = "Glob string pattern field domain"
+Qgis.FieldDomainType.__doc__ = 'Types of field domain\n\n.. versionadded:: 3.26\n\n' + '* ``Coded``: ' + Qgis.FieldDomainType.Coded.__doc__ + '\n' + '* ``Range``: ' + Qgis.FieldDomainType.Range.__doc__ + '\n' + '* ``Glob``: ' + Qgis.FieldDomainType.Glob.__doc__
+# --
+Qgis.FieldDomainType.baseClass = Qgis

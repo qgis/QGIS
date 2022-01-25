@@ -786,6 +786,27 @@ The development version
       Proj,
     };
 
+    enum class FieldDomainSplitPolicy
+    {
+      DefaultValue,
+      Duplicate,
+      GeometryRatio,
+    };
+
+    enum class FieldDomainMergePolicy
+    {
+      DefaultValue,
+      Sum,
+      GeometryWeighted,
+    };
+
+    enum class FieldDomainType
+    {
+      Coded,
+      Range,
+      Glob,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

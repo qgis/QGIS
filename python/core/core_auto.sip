@@ -663,6 +663,7 @@
 %Include auto_generated/validity/qgsabstractvaliditycheck.sip
 %Include auto_generated/validity/qgsvaliditycheckcontext.sip
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip
+%Include auto_generated/vector/qgsfielddomain.sip
 %Include auto_generated/vector/qgsvectordataprovider.sip
 %Include auto_generated/vector/qgsvectordataprovidertemporalcapabilities.sip
 %Include auto_generated/vector/qgsvectorlayer.sip
