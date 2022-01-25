@@ -2042,7 +2042,7 @@ be made persistent until :py:func:`~QgsProject.commitChanges` is called, and can
 .. versionadded:: 3.26
 %End
 
-    bool commitChanges( QStringList &commitErrors, bool stopEditing = true, QgsVectorLayer *vectorLayer = 0 );
+    bool commitChanges( QStringList &commitErrors /Out/, bool stopEditing = true, QgsVectorLayer *vectorLayer = 0 );
 %Docstring
 Attempts to commit to the underlying data provider any buffered changes made since the
 last to call to :py:func:`~QgsProject.startEditing`.
@@ -2069,7 +2069,7 @@ Otherwise the layer editing mode will be disabled if the commit is successful.
 .. versionadded:: 3.26
 %End
 
-    bool rollBack( QStringList &rollbackErrors, bool stopEditing = true, QgsVectorLayer *vectorLayer = 0 );
+    bool rollBack( QStringList &rollbackErrors /Out/, bool stopEditing = true, QgsVectorLayer *vectorLayer = 0 );
 %Docstring
 Stops a current editing operation on vectorLayer and discards any uncommitted edits.
 

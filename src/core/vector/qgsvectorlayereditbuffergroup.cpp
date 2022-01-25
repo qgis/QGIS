@@ -457,13 +457,9 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChild
     orderedLayers.append( onlyChildren.values() );
   }
 
-  // Layers without relations
+  // Layers without relations (all other layers)
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QSet<QgsVectorLayer *> layersWithoutRelations = QSet<QgsVectorLayer *>::fromList( layers ) - referencedLayers;
-#else
-    QSet<QgsVectorLayer *> layersWithoutRelations = QSet<QgsVectorLayer *>( layers.begin(), layers.end() ) - referencedLayers;
-#endif
+    QSet<QgsVectorLayer *> layersWithoutRelations = layers - referencedLayers;
     layersWithoutRelations -= referencingLayers;
     orderedLayers.append( layersWithoutRelations.values() );
   }
