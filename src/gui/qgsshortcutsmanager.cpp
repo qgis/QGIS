@@ -19,6 +19,7 @@
 
 #include <QShortcut>
 #include <QRegularExpression>
+#include <QWidgetAction>
 
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settingsRoot )
   : QObject( parent )
@@ -37,16 +38,15 @@ void QgsShortcutsManager::registerAllChildActions( QObject *object, bool recursi
   if ( recursive )
   {
     const QList< QAction * > actions = object->findChildren< QAction * >();
-    const auto constActions = actions;
-    for ( QAction *a : constActions )
+    for ( QAction *a : actions )
     {
       registerAction( a, a->shortcut().toString( QKeySequence::NativeText ) );
     }
   }
   else
   {
-    const auto constChildren = object->children();
-    for ( QObject *child : constChildren )
+    const QList< QObject *> children = object->children();
+    for ( QObject *child : children )
     {
       if ( QAction *a = qobject_cast<QAction *>( child ) )
       {
@@ -82,12 +82,20 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recur
 
 bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaultSequence )
 {
+  if ( qobject_cast< QWidgetAction * >( action ) )
+    return false;
+
   if ( mActions.contains( action ) )
     return false; // already registered
 
 #ifdef QGISDEBUG
-  // if using a debug build, warn on duplicate actions
-  if ( actionByName( action->text() ) || shortcutByName( action->text() ) )
+  // if using a debug build, warn on duplicate or non-compliant actions
+  if ( action->text().isEmpty() )
+  {
+    QgsLogger::warning( QStringLiteral( "Action has no text set: %1" ).arg( action->objectName() ) );
+    return false;
+  }
+  else if ( actionByName( action->text() ) || shortcutByName( action->text() ) )
     QgsLogger::warning( QStringLiteral( "Duplicate shortcut registered: %1" ).arg( action->text() ) );
 #endif
 
@@ -122,8 +130,10 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
 bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &defaultSequence )
 {
 #ifdef QGISDEBUG
-  // if using a debug build, warn on duplicate actions
-  if ( actionByName( shortcut->objectName() ) || shortcutByName( shortcut->objectName() ) )
+  // if using a debug build, warn on duplicate or non-compliant actions
+  if ( shortcut->objectName().isEmpty() )
+    QgsLogger::warning( QStringLiteral( "Shortcut has no object name set: %1" ).arg( shortcut->key().toString() ) );
+  else if ( actionByName( shortcut->objectName() ) || shortcutByName( shortcut->objectName() ) )
     QgsLogger::warning( QStringLiteral( "Duplicate shortcut registered: %1" ).arg( shortcut->objectName() ) );
 #endif
 
