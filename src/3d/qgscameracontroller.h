@@ -279,8 +279,6 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     // Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
     double sampleDepthBuffer( const QImage &buffer, int px, int py );
-    // Returns the average of depth values that are not 1 (void area)
-    double calculateAverageDepth( const QImage &buffer );
 
   private:
     //! Camera that is being controlled
