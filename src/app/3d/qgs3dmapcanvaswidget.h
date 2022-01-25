@@ -60,6 +60,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
   signals:
     void toggleDockModeRequested( bool docked );
 
+  protected:
+    void resizeEvent( QResizeEvent *event ) override;
+
   private slots:
     void resetView();
     void configure();
