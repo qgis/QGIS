@@ -38,6 +38,7 @@ class TestQgsRasterLayerSaveAsDialog : public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
     void outputLayerExists();
+    void filenameWhenNoExtension();
 
   private:
 
@@ -144,6 +145,24 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
   const QgsVectorLayer vl2( QStringLiteral( "%1|layername=test_vector_layer" ).arg( fileName ), "test_vector_layer", "ogr" );
   Q_ASSERT( vl2.isValid() );
   return tmpFile.fileName( );
+}
+
+void TestQgsRasterLayerSaveAsDialog::filenameWhenNoExtension()
+{
+  // Try to add a raster layer to the DB
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString rasterPath { dataDir + "/landsat.tif" };
+
+  QgsRasterLayer rl( rasterPath, QStringLiteral( "my_raster" ) );
+  QVERIFY( rl.isValid() );
+
+  QgsRasterLayerSaveAsDialog d( &rl, rl.dataProvider(), rl.extent(), rl.crs(), rl.crs() );
+  d.mFormatComboBox->setCurrentIndex( d.mFormatComboBox->findData( QStringLiteral( "ENVI" ) ) );
+  QCOMPARE( d.mFormatComboBox->currentData().toString(), QString( "ENVI" ) );
+
+  const QString filename = "filename_without_extension";
+  d.mFilename->setFilePath( filename );
+  QCOMPARE( d.outputFileName(), filename );
 }
 
 QGSTEST_MAIN( TestQgsRasterLayerSaveAsDialog )
