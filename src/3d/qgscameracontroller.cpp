@@ -27,7 +27,6 @@
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DInput>
-#include <QElapsedTimer>
 
 #include "qgslogger.h"
 
@@ -324,12 +323,12 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
       }
     }
   }
-  return depth;
-}
 
-double QgsCameraController::calculateAverageDepth( const QImage &buffer )
-{
-  double depth = 0;
+  if ( depth < 1 )
+    return depth;
+
+  // Returns the average of depth values that are not 1 (void area)
+  depth = 0;
   int samplesCount = 0;
   for ( int x = 0; x < mDepthBufferImage.width(); ++x )
   {
@@ -437,11 +436,6 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     {
       double depth = sampleDepthBuffer( mDepthBufferImage, mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y() );
 
-      if ( depth >= 1 )
-      {
-        depth = calculateAverageDepth( mDepthBufferImage );
-      }
-
       mRotationCenter = Qgs3DUtils::screenPointToWorldPos( mMiddleButtonClickPos, depth, mViewport.size(), mCameraBeforeRotation.get() );
 
       mRotationDistanceFromCenter = ( mRotationCenter - mCameraBeforeRotation->position() ).length();
@@ -498,10 +492,6 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     if ( !mDragPointCalculated )
     {
       double depth = sampleDepthBuffer( mDepthBufferImage, mDragButtonClickPos.x(), mDragButtonClickPos.y() );
-      if ( depth >= 1 )
-      {
-        depth = calculateAverageDepth( mDepthBufferImage );
-      }
 
       mDragDepth = depth;
 
@@ -547,10 +537,6 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     if ( !mDragPointCalculated )
     {
       double depth = sampleDepthBuffer( mDepthBufferImage, mDragButtonClickPos.x(), mDragButtonClickPos.y() );
-      if ( depth >= 1 )
-      {
-        depth = calculateAverageDepth( mDepthBufferImage );
-      }
 
       mDragPoint = Qgs3DUtils::screenPointToWorldPos( mDragButtonClickPos, depth, mViewport.size(), mCameraBeforeDrag.get() );
       mDragPointCalculated = true;
@@ -622,11 +608,6 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
   if ( !mZoomPointCalculated )
   {
     double depth = sampleDepthBuffer( mDepthBufferImage, mMousePos.x(), mMousePos.y() );
-
-    if ( depth >= 1 )
-    {
-      depth = calculateAverageDepth( mDepthBufferImage );
-    }
 
     mZoomPoint = Qgs3DUtils::screenPointToWorldPos( mMousePos, depth, mViewport.size(), mCameraBeforeZoom.get() );
     mZoomPointCalculated = true;
