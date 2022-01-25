@@ -945,6 +945,8 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     {
       filterPolygon = mLayout->reportContext().currentGeometry( mMap->crs() );
     }
+    else if ( mLegendFilterByMap )
+      filterPolygon = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
     mLegendModel->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
   }
   else
