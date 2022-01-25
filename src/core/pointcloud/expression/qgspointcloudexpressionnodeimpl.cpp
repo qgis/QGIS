@@ -808,16 +808,9 @@ QVariant QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpress
   Q_UNUSED( parent )
   int index = mIndex;
 
-  if ( mName == "X" )
-    return p[ QStringLiteral( "X" ) ];
-  if ( mName == "Y" )
-    return p[ QStringLiteral( "Y" ) ];
-  if ( mName == "Z" )
-    return p[ QStringLiteral( "Z" ) ];
-  if ( mName == "Classification" )
-    return p[ QStringLiteral( "Classification" ) ];
-  if ( mName == "Intensity" )
-    return p[ QStringLiteral( "Intensity" ) ];
+  if ( index >= 0 )
+    return p[ mName ];
+
 //   if ( index < 0 )
 //   {
 //     // have not yet found field index - first check explicitly set fields collection

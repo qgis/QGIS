@@ -317,7 +317,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, 
 template<typename FileType>
 QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, const QgsPointcloudExpression &expression )
 {
-  //Q_UNUSED( attributes );
+  Q_UNUSED( attributes );
   Q_UNUSED( _scale );
   Q_UNUSED( _offset );
 
@@ -484,11 +484,90 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
 
     if ( expr.isValid() )
     {
-      QVariantMap map = QgsPointCloudAttribute::getAttributeMap( buf, requestedPointRecordSize, requestedAttributes );
-      map[ QStringLiteral( "X" ) ] = p.x * scale.x() + offset.x();
-      map[ QStringLiteral( "Y" ) ] = p.y * scale.y() + offset.y();
-      map[ QStringLiteral( "Z" ) ] = p.z * scale.z() + offset.z();
-      map[ QStringLiteral( "Classification" ) ] = p.classification;
+      QVariantMap map;
+      for ( const QString &attribute : expr.referencedAttributes() )
+      {
+        if ( attribute.compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.x * scale.x() + offset.x();
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.y * scale.y() + offset.y();
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.z * scale.z() + offset.z();
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.classification;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.intensity;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "ReturnNumber" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.return_number;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "NumberOfReturns" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.number_of_returns_of_given_pulse;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "ScanDirectionFlag" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.scan_direction_flag;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "EdgeOfFlightLine" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.edge_of_flight_line;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "ScanAngleRank" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.scan_angle_rank;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "UserData" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.user_data;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "PointSourceId" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = p.point_source_ID;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = *reinterpret_cast<const double *>( reinterpret_cast<const void *>( &gps.value ) );
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "Red" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = rgb.r;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "Green" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = rgb.g;
+          continue;
+        }
+        else if ( attribute.compare( QLatin1String( "Blue" ), Qt::CaseInsensitive ) == 0 )
+        {
+          map[ attribute ] = rgb.b;
+          continue;
+        }
+      }
       if ( !expr.evaluate( map ).toBool() )
       {
         ++skippedPoints;
