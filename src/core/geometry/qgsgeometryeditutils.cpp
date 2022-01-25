@@ -168,7 +168,28 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
   }
   else
   {
-    added = geomCollection->addGeometry( part.release() );
+    if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiLineString
+         ||  QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiCurve )
+    {
+      std::unique_ptr<QgsGeometryCollection> parts( static_cast<QgsGeometryCollection *>( part.release() ) );
+
+      int i;
+      const int n = geomCollection->numGeometries();
+      for ( i = 0; i < parts->numGeometries() && geomCollection->addGeometry( parts->geometryN( i )->clone() ); i++ )
+        ;
+
+      added = i == parts->numGeometries();
+      if ( !added )
+      {
+        while ( geomCollection->numGeometries() > n )
+          geomCollection->removeGeometry( n );
+        return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+      }
+    }
+    else
+    {
+      added = geomCollection->addGeometry( part.release() );
+    }
   }
   return added ? Qgis::GeometryOperationResult::Success : Qgis::GeometryOperationResult::InvalidInputGeometryType;
 }
