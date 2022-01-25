@@ -1268,6 +1268,8 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
 
   if ( ctx && ctx->painter )
   {
+    QImage smoothImage = image.scaled( targetSize / px2mm, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+
     switch ( settings.symbolAlignment() )
     {
       case Qt::AlignLeft:
@@ -1276,8 +1278,8 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
                                          ctx->top,
                                          targetSize.width(),
                                          targetSize.height() ),
-                                 image,
-                                 QRectF( QPointF( 0, 0 ), image.size() ) );
+                                 smoothImage,
+                                 QRectF( QPointF( 0, 0 ), smoothImage.size() ) );
         break;
 
       case Qt::AlignRight:
@@ -1285,8 +1287,8 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
                                          ctx->top,
                                          targetSize.width(),
                                          targetSize.height() ),
-                                 image,
-                                 QRectF( QPointF( 0, 0 ), image.size() ) );
+                                 smoothImage,
+                                 QRectF( QPointF( 0, 0 ), smoothImage.size() ) );
         break;
     }
   }
