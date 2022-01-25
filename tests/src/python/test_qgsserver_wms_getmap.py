@@ -1270,9 +1270,9 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "HIGHLIGHT_LABELCOLOR": "%2300FF0000",
             "HIGHLIGHT_LABELBUFFERCOLOR": "%232300FF00",
             "HIGHLIGHT_LABELBUFFERSIZE": "1.2",
-            "HIGHLIGHT_LABELROTATION" : "45",
-            "HIGHLIGHT_LABELHALI" : "center",
-            "HIGHLIGHT_LABELVALI" : "half",
+            "HIGHLIGHT_LABELROTATION": "45",
+            "HIGHLIGHT_LABELHALI": "center",
+            "HIGHLIGHT_LABELVALI": "half",
             "STYLES": "",
             "FORMAT": "image/png",
             "BBOX": "-16817707,-4710778,5696513,14587125",
@@ -1283,8 +1283,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Highlight_Point_Label_Options")
 
-
     # TODO make Server Getmap work with SLD Highlight feature and enable test
+
     def test_wms_getmap_highlight_line(self):
         # checks SLD stroke-width works for Lines See issue 19795 comments
         qs = "?" + "&".join(["%s=%s" % i for i in list({
