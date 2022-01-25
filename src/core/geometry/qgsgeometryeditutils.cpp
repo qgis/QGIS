@@ -166,7 +166,8 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
       return Qgis::GeometryOperationResult::InvalidInputGeometryType;
     }
   }
-  else
+  else if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiLineString
+            || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiCurve )
   {
     if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiLineString
          ||  QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiCurve )
@@ -198,6 +199,10 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
       }
       added = geomCollection->addGeometry( curve );
     }
+  }
+  else
+  {
+    added = geomCollection->addGeometry( part.release() );
   }
   return added ? Qgis::GeometryOperationResult::Success : Qgis::GeometryOperationResult::InvalidInputGeometryType;
 }
