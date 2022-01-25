@@ -188,7 +188,15 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
     }
     else
     {
-      added = geomCollection->addGeometry( part.release() );
+      QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.release() );
+      if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiLineString && curve->hasCurvedSegments() )
+      {
+        //need to segmentize part as multilinestring does not support curves
+        QgsCurve *line = curve->segmentize();
+        delete curve;
+        curve = line;
+      }
+      added = geomCollection->addGeometry( curve );
     }
   }
   return added ? Qgis::GeometryOperationResult::Success : Qgis::GeometryOperationResult::InvalidInputGeometryType;
