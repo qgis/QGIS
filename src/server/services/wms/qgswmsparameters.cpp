@@ -1932,6 +1932,34 @@ namespace QgsWms
       bufferSizes = wmsParam.toDoubleList( ';' );
     }
 
+    QList<double> rotations;
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELROTATION, mapId );
+    if ( wmsParam.isValid() )
+    {
+      rotations = wmsParam.toDoubleList( ';' );
+    }
+
+    QList<double> distances;
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELDISTANCE, mapId );
+    if ( wmsParam.isValid() )
+    {
+      distances = wmsParam.toDoubleList( ';' );
+    }
+
+    QStringList halis;
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELHALI, mapId );
+    if ( wmsParam.isValid() )
+    {
+      halis = wmsParam.toStringList();
+    }
+
+    QStringList valis;
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELVALI, mapId );
+    if ( wmsParam.isValid() )
+    {
+      valis = wmsParam.toStringList();
+    }
+
     int nHLayers = std::min( geoms.size(), slds.size() );
     for ( int i = 0; i < nHLayers; i++ )
     {
@@ -1960,6 +1988,18 @@ namespace QgsWms
 
       if ( i < bufferSizes.count() )
         hParam.mBufferSize = bufferSizes[i];
+
+      if ( i < rotations.count() )
+        hParam.mLabelRotation = rotations[i];
+
+      if ( i < distances.count() )
+        hParam.mLabelDistance = distances[i];
+
+      if ( i < halis.count() )
+        hParam.mHali = halis[i];
+
+      if ( i < valis.count() )
+        hParam.mVali = valis[i];
 
       hParams.append( hParam );
     }
