@@ -39,12 +39,12 @@ QString QgsMapToolShapeRectangleExtentMetadata::name() const
 
 QIcon QgsMapToolShapeRectangleExtentMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircle2Points.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionRectangleExtent.svg" ) );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRectangleExtentMetadata::category() const
 {
-  return QgsMapToolShapeAbstract::ShapeCategory::Circle;
+  return QgsMapToolShapeAbstract::ShapeCategory::Rectangle;
 }
 
 QgsMapToolShapeAbstract *QgsMapToolShapeRectangleExtentMetadata::factory( QgsMapToolCapture *parentTool ) const
