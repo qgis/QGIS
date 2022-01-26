@@ -65,7 +65,8 @@ class TestQgsEptProvider : public QObject
     void calculateZRange();
     void testIdentify_data();
     void testIdentify();
-    void testExtraBytesAttributes();
+    void testExtraBytesAttributesExtraction();
+    void testExtraBytesAttributesValues();
 
   private:
     QString mTestDataDir;
@@ -439,40 +440,110 @@ void TestQgsEptProvider::testIdentify()
   }
 }
 
-void TestQgsEptProvider::testExtraBytesAttributes()
+void TestQgsEptProvider::testExtraBytesAttributesExtraction()
 {
   {
-    QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/las/extrabytes-dataset.laz" );
+    QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/ept/extrabytes-dataset/ept-data/0-0-0-0.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
     QVector<QgsEptDecoder::ExtraBytesAttributeDetails> attributes = QgsEptDecoder::readExtraByteAttributes<std::ifstream>( file );
     QCOMPARE( attributes.size(), 4 );
 
-    QCOMPARE( attributes[3].attribute, QStringLiteral( "ClassFlags" ) );
-    QCOMPARE( attributes[2].attribute, QStringLiteral( "Amplitude" ) );
+    QCOMPARE( attributes[0].attribute, QStringLiteral( "Amplitude" ) );
     QCOMPARE( attributes[1].attribute, QStringLiteral( "Reflectance" ) );
-    QCOMPARE( attributes[0].attribute, QStringLiteral( "Deviation" ) );
+    QCOMPARE( attributes[2].attribute, QStringLiteral( "ClassFlags" ) );
+    QCOMPARE( attributes[3].attribute, QStringLiteral( "Deviation" ) );
 
-    QCOMPARE( attributes[3].type, QgsPointCloudAttribute::UChar );
-    QCOMPARE( attributes[2].type, QgsPointCloudAttribute::Double );
-    QCOMPARE( attributes[1].type, QgsPointCloudAttribute::Double );
-    QCOMPARE( attributes[0].type, QgsPointCloudAttribute::Short );
+    QCOMPARE( attributes[0].type, QgsPointCloudAttribute::Float );
+    QCOMPARE( attributes[1].type, QgsPointCloudAttribute::Float );
+    QCOMPARE( attributes[2].type, QgsPointCloudAttribute::UChar );
+    QCOMPARE( attributes[3].type, QgsPointCloudAttribute::Float );
 
-    QCOMPARE( attributes[3].size, 1 );
-    QCOMPARE( attributes[2].size, 8 );
-    QCOMPARE( attributes[1].size, 8 );
-    QCOMPARE( attributes[0].size, 2 );
+    QCOMPARE( attributes[0].size, 4 );
+    QCOMPARE( attributes[1].size, 4 );
+    QCOMPARE( attributes[2].size, 1 );
+    QCOMPARE( attributes[3].size, 4 );
 
+    QCOMPARE( attributes[0].offset, 43 );
+    QCOMPARE( attributes[1].offset, 39 );
+    QCOMPARE( attributes[2].offset, 38 );
     QCOMPARE( attributes[3].offset, 34 );
-    QCOMPARE( attributes[2].offset, 35 );
-    QCOMPARE( attributes[1].offset, 43 );
-    QCOMPARE( attributes[0].offset, 51 );
   }
 
   {
-    QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/las/no-extrabytes-dataset.laz" );
+    QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/ept/no-extrabytes-dataset/ept-data/0-0-0-0.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
     QVector<QgsEptDecoder::ExtraBytesAttributeDetails> attributes = QgsEptDecoder::readExtraByteAttributes<std::ifstream>( file );
     QCOMPARE( attributes.size(), 0 );
+  }
+}
+
+void TestQgsEptProvider::testExtraBytesAttributesValues()
+{
+  QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/ept/extrabytes-dataset/ept.json" );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( dataPath, QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  QVERIFY( layer->isValid() );
+  {
+    const float maxErrorInMapCoords =  0.0015207174;
+    QPolygonF polygon;
+    polygon.push_back( QPointF( 527919.2459517354,   6210983.5918774214 ) );
+    polygon.push_back( QPointF( 527919.0742796324,   6210983.5918774214 ) );
+    polygon.push_back( QPointF( 527919.0742796324,   6210983.4383113598 ) );
+    polygon.push_back( QPointF( 527919.2459517354,   6210983.4383113598 ) );
+    polygon.push_back( QPointF( 527919.2459517354,   6210983.5918774214 ) );
+
+    const QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
+
+    QVector<QMap<QString, QVariant>> expectedPoints;
+    {
+      QMap<QString, QVariant> point;
+      point[ QStringLiteral( "Amplitude" ) ] =   "4.409999847412109"  ;
+      point[ QStringLiteral( "Blue" ) ] =   "0"  ;
+      point[ QStringLiteral( "ClassFlags" ) ] =   "0"  ;
+      point[ QStringLiteral( "Classification" ) ] =   "5"  ;
+      point[ QStringLiteral( "Deviation" ) ] =   "2"  ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
+      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235838"  ;
+      point[ QStringLiteral( "Green" ) ] =   "0"  ;
+      point[ QStringLiteral( "Intensity" ) ] =   "441"  ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
+      point[ QStringLiteral( "PointSourceId" ) ] =   "15017"  ;
+      point[ QStringLiteral( "Red" ) ] =   "0"  ;
+      point[ QStringLiteral( "Reflectance" ) ] =   "-17.829999923706055"  ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =   "2"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "-6"  ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
+      point[ QStringLiteral( "UserData" ) ] =   "0"  ;
+      point[ QStringLiteral( "X" ) ] =   "527919.18"  ;
+      point[ QStringLiteral( "Y" ) ] =   "6210983.47"  ;
+      point[ QStringLiteral( "Z" ) ] =   "149.341"  ;
+      expectedPoints.push_back( point );
+    }
+    {
+      QMap<QString, QVariant> point;
+      point[ QStringLiteral( "Amplitude" ) ] =   "14.170000076293945"  ;
+      point[ QStringLiteral( "Blue" ) ] =   "0"  ;
+      point[ QStringLiteral( "ClassFlags" ) ] =   "0"  ;
+      point[ QStringLiteral( "Classification" ) ] =   "2"  ;
+      point[ QStringLiteral( "Deviation" ) ] =   "0"  ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
+      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235839"  ;
+      point[ QStringLiteral( "Green" ) ] =   "0"  ;
+      point[ QStringLiteral( "Intensity" ) ] =   "1417"  ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
+      point[ QStringLiteral( "PointSourceId" ) ] =   "15017"  ;
+      point[ QStringLiteral( "Red" ) ] =   "0"  ;
+      point[ QStringLiteral( "Reflectance" ) ] =   "-8.050000190734863"  ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =   "3"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "-6"  ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
+      point[ QStringLiteral( "UserData" ) ] =   "0"  ;
+      point[ QStringLiteral( "X" ) ] =   "527919.11"  ;
+      point[ QStringLiteral( "Y" ) ] =   "6210983.55"  ;
+      point[ QStringLiteral( "Z" ) ] =   "147.111"  ;
+      expectedPoints.push_back( point );
+    }
+
+    QCOMPARE( identifiedPoints, expectedPoints );
   }
 }
 
