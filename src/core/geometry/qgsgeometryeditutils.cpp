@@ -141,7 +141,22 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
               || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Triangle
               || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::CurvePolygon )
     {
-      added = geomCollection->addGeometry( part.release() );
+      QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( part.release() );
+      if ( curvePolygon )
+      {
+        if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon && curvePolygon->hasCurvedSegments() )
+        {
+          //need to segmentize part as multipolygon does not support curves
+          QgsCurvePolygon *polygon = curvePolygon->toPolygon();
+          delete curvePolygon;
+          curvePolygon = polygon;
+        }
+        added = geomCollection->addGeometry( curvePolygon );
+      }
+      else
+      {
+        added = geomCollection->addGeometry( part.release() );
+      }
     }
     else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiPolygon
               ||  QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiSurface )
