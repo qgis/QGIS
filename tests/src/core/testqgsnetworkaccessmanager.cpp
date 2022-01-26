@@ -563,11 +563,18 @@ void TestQgsNetworkAccessManager::fetchPostMultiPart()
 {
   QFETCH( int, iContentType );
   QHttpMultiPart::ContentType contentType = static_cast< QHttpMultiPart::ContentType>( iContentType );
+  QHttpMultiPart *multipart = new QHttpMultiPart( contentType );
+  QHttpPart part;
+  part.setHeader( QNetworkRequest::ContentDispositionHeader,
+                  QStringLiteral( "form-data; name=\"param\"" ) );
+  part.setBody( QStringLiteral( "some data" ) .toUtf8() );
+  multipart->append( part );
   QUrl u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/post" ) );
   QNetworkRequest req( u );
 
   // MultiPart
-  QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( req, new QHttpMultiPart( contentType ) );
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( req, multipart );
+  multipart->setParent( reply );
 
   QEventLoop el;
   connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::finished, &el, &QEventLoop::quit );
