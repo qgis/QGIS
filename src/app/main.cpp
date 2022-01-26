@@ -1268,6 +1268,8 @@ int main( int argc, char *argv[] )
         if ( pos == -1 )
           continue;
         QString envVarApply = varStr.left( pos );
+        if ( envVarApply == QLatin1String( "skip" ) )
+          continue;
         QString varStrNameValue = varStr.mid( pos + 1 );
         pos = varStrNameValue.indexOf( QLatin1Char( '=' ) );
         if ( pos == -1 )

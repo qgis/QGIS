@@ -2185,6 +2185,7 @@ void QgsOptions::addCustomEnvVarRow( const QString &varName, const QString &varV
   varApplyCmbBx->addItem( tr( "Unset" ), QVariant( "unset" ) );
   varApplyCmbBx->addItem( tr( "Prepend" ), QVariant( "prepend" ) );
   varApplyCmbBx->addItem( tr( "Append" ), QVariant( "append" ) );
+  varApplyCmbBx->addItem( tr( "Skip" ), QVariant( "skip" ) );
   varApplyCmbBx->setCurrentIndex( varApply.isEmpty() ? 0 : varApplyCmbBx->findData( QVariant( varApply ) ) );
 
   QFont cbf = varApplyCmbBx->font();
