@@ -2316,8 +2316,8 @@ class TestQgsGeometry(unittest.TestCase):
             [QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 0), ],
             [QgsPointXY(3, 0), QgsPointXY(3, 1), QgsPointXY(5, 1), QgsPointXY(5, 0), QgsPointXY(6, 0), ]
         ]
-        polyline1 = QgsGeometry.fromPolylineXY(line_points[0])
-        polyline2 = QgsGeometry.fromPolylineXY(line_points[1])
+        polyline1_geom = QgsGeometry.fromPolylineXY(line_points[0])
+        polyline2_geom = QgsGeometry.fromPolylineXY(line_points[1])
 
         # 5-+-4 0-+-9
         # |   | |   |
@@ -2330,10 +2330,10 @@ class TestQgsGeometry(unittest.TestCase):
             [[QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(5, 2), QgsPointXY(3, 2), QgsPointXY(3, 1),
               QgsPointXY(4, 1), QgsPointXY(4, 0), ]]
         ]
-        polygon1 = QgsGeometry.fromPolygonXY(poly_points[0])
-        polygon2 = QgsGeometry.fromPolygonXY(poly_points[1])
-        multi_polygon1 = QgsGeometry.fromMultiPolygonXY(poly_points[:1])
-        multi_polygon2 = QgsGeometry.fromMultiPolygonXY(poly_points[1:])
+        polygon1_geom = QgsGeometry.fromPolygonXY(poly_points[0])
+        polygon2_geom = QgsGeometry.fromPolygonXY(poly_points[1])
+        multi_polygon1_geom = QgsGeometry.fromMultiPolygonXY(poly_points[:1])
+        multi_polygon2_geom = QgsGeometry.fromMultiPolygonXY(poly_points[1:])
 
         geoms = {}  # initial geometry
         parts = {}  # part to add
@@ -2352,63 +2352,63 @@ class TestQgsGeometry(unittest.TestCase):
         expec[T] = "MultiPointZ ((0 0 4), (1 0 3))"
 
         T = 'line_add_1_point_fails'
-        geoms[T] = polyline1
+        geoms[T] = polyline1_geom
         parts[T] = line_points[1][0:1]
         resul[T] = QgsGeometry.InvalidInputGeometryType
 
         T = 'line_add_2_point'
-        geoms[T] = polyline1
+        geoms[T] = polyline1_geom
         parts[T] = line_points[1][0:2]
         expec[T] = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1))"
 
         T = 'add_point_with_more_points'
-        geoms[T] = polyline1
+        geoms[T] = polyline1_geom
         parts[T] = line_points[1]
         expec[T] = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
 
         T = 'line_add_points_with_Z'
-        geoms[T] = polyline1
+        geoms[T] = polyline1_geom
         geoms[T].get().addZValue(4.0)
         parts[T] = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.PointZ) for p in line_points[1]]
         expec[T] = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
 
         T = 'polygon_add_ring_1_point'
-        geoms[T] = polygon1
+        geoms[T] = polygon1_geom
         parts[T] = poly_points[1][0][0:1]
         resul[T] = QgsGeometry.InvalidInputGeometryType
 
         T = 'polygon_add_ring_2_points'
-        geoms[T] = polygon1
+        geoms[T] = polygon1_geom
         parts[T] = poly_points[1][0][0:2]
         resul[T] = QgsGeometry.InvalidInputGeometryType
 
         T = 'polygon_add_ring_3_points'
-        geoms[T] = polygon1
+        geoms[T] = polygon1_geom
         parts[T] = poly_points[1][0][0:3]
         resul[T] = QgsGeometry.InvalidInputGeometryType
 
         T = 'polygon_add_ring_3_points_closed'
-        geoms[T] = polygon1
+        geoms[T] = polygon1_geom
         parts[T] = [QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(4, 0)]
         resul[T] = QgsGeometry.InvalidInputGeometryType
 
         T = 'polygon_add_polygon'
-        geoms[T] = polygon1
+        geoms[T] = polygon1_geom
         parts[T] = poly_points[1][0]
         expec[T] = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
 
         T = 'multipolygon_add_polygon'
-        geoms[T] = multi_polygon1
-        parts[T] = polygon2
-        expec[T] = multi_polygon1.asWkt()
+        geoms[T] = multi_polygon1_geom
+        parts[T] = polygon2_geom
+        expec[T] = multi_polygon1_geom.asWkt()
 
         T = 'multipolygon_add_multipolygon'
-        geoms[T] = multi_polygon1
-        parts[T] = multi_polygon2
-        expec[T] = multi_polygon1.asWkt()
+        geoms[T] = multi_polygon1_geom
+        parts[T] = multi_polygon2_geom
+        expec[T] = multi_polygon1_geom.asWkt()
 
         T = 'polygon_add_point_with_Z'
-        geoms[T] = polygon1
+        geoms[T] = polygon1_geom
         geoms[T].get().addZValue(4.0)
         parts[T] = [QgsPoint(pi[0], pi[1], 3.0, wkbType=QgsWkbTypes.PointZ) for pi in poly_points[1][0]]
         expec[T] = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
@@ -2450,6 +2450,7 @@ class TestQgsGeometry(unittest.TestCase):
         for t in parts.keys():
             with self.subTest(t=t):
                 expected_result = resul.get(t, Qgis.GeometryOperationResult.Success)
+                geom_type = types.get(t, QgsWkbTypes.UnknownGeometry)
                 message = '\n' + t
                 if expected_result != Qgis.Success:
                     message += ' unexpectedly succeeded'
@@ -2458,7 +2459,6 @@ class TestQgsGeometry(unittest.TestCase):
                 message_with_wkt = message + '\nOriginal geom: {}'.format(geoms[t].asWkt())
                 if type(parts[t]) is list:
                     if type(parts[t][0]) == QgsPointXY:
-                        geom_type = types.get(t, QgsWkbTypes.UnknownGeometry)
                         self.assertEqual(geoms[t].addPointsXY(parts[t], geom_type), expected_result, message_with_wkt)
                     elif type(parts[t][0]) == QgsPoint:
                         self.assertEqual(geoms[t].addPoints(parts[t]), expected_result, message_with_wkt)
@@ -2468,7 +2468,7 @@ class TestQgsGeometry(unittest.TestCase):
                     if type(parts[t]) == QgsGeometry:
                         self.assertEqual(geoms[t].addPartGeometry(parts[t]), expected_result, message)
                     else:
-                        self.assertEqual(geoms[t].addPart(parts[t].get().clone()), expected_result, message_with_wkt)
+                        self.assertEqual(geoms[t].addPart(parts[t].get().clone(), geom_type), expected_result, message_with_wkt)
 
                 if expected_result == Qgis.Success:
                     wkt = geoms[t].asWkt()
