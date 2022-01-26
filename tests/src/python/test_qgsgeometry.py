@@ -2316,8 +2316,8 @@ class TestQgsGeometry(unittest.TestCase):
             [QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 0), ],
             [QgsPointXY(3, 0), QgsPointXY(3, 1), QgsPointXY(5, 1), QgsPointXY(5, 0), QgsPointXY(6, 0), ]
         ]
-        def polyline1_geom(): return QgsGeometry.fromPolylineXY(line_points[0])
-        def polyline2_geom(): return QgsGeometry.fromPolylineXY(line_points[1])
+        def polyline1_geom(): return QgsGeometry.fromPolylineXY(line_points[0]) # noqa: E704,E261
+        def polyline2_geom(): return QgsGeometry.fromPolylineXY(line_points[1]) # noqa: E704,E261
 
         # 5-+-4 0-+-9
         # |   | |   |
@@ -2330,11 +2330,11 @@ class TestQgsGeometry(unittest.TestCase):
             [[QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(5, 2), QgsPointXY(3, 2), QgsPointXY(3, 1),
               QgsPointXY(4, 1), QgsPointXY(4, 0), ]]
         ]
-        def polygon1_geom(): return QgsGeometry.fromPolygonXY(poly_points[0])
-        def polygon2_geom(): return QgsGeometry.fromPolygonXY(poly_points[1])
-        def multi_polygon_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points)
-        def multi_polygon1_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points[:1])
-        def multi_polygon2_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points[1:])
+        def polygon1_geom(): return QgsGeometry.fromPolygonXY(poly_points[0]) # noqa: E704,E261
+        def polygon2_geom(): return QgsGeometry.fromPolygonXY(poly_points[1]) # noqa: E704,E261
+        def multi_polygon_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points) # noqa: E704,E261
+        def multi_polygon1_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points[:1]) # noqa: E704,E261
+        def multi_polygon2_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points[1:]) # noqa: E704,E261
 
         geoms = {}  # initial geometry
         parts = {}  # part to add
