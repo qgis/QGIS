@@ -674,8 +674,3 @@ QVector2D Qgs3DUtils::textureToScreenCoordinates( QVector2D textureXY, QSize win
 {
   return QVector2D( textureXY.x() * winSize.width(), ( 1 - textureXY.y() ) * winSize.height() );
 }
-
-double Qgs3DUtils::decodeDepth( const QRgb &pixel )
-{
-  return ( ( qRed( pixel ) / 255.0 + qGreen( pixel ) ) / 255.0 + qBlue( pixel ) ) / 255.0;
-}
