@@ -153,13 +153,22 @@ bool QgsPointCloudLayerRenderer::render()
 
   const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent( root );
   QgsRectangle rootNodeExtentMapCoords;
-  try
+  if ( !context.renderContext().coordinateTransform().isShortCircuited() )
   {
-    rootNodeExtentMapCoords = context.renderContext().coordinateTransform().transformBoundingBox( rootNodeExtentLayerCoords );
+    try
+    {
+      QgsCoordinateTransform extentTransform = context.renderContext().coordinateTransform();
+      extentTransform.setBallparkTransformsAreAppropriate( true );
+      rootNodeExtentMapCoords = extentTransform.transformBoundingBox( rootNodeExtentLayerCoords );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
+      rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
+    }
   }
-  catch ( QgsCsException & )
+  else
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
     rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
   }
 
@@ -229,7 +238,7 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloud
   {
     if ( context.renderContext().renderingStopped() )
     {
-      QgsDebugMsgLevel( "canceled", 2 );
+      QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
       canceled = true;
       break;
     }
@@ -309,7 +318,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
     // Wait for all point cloud nodes to finish loading
     loop.exec();
 
-    QgsDebugMsg( QStringLiteral( "Downloaded in : %1ms" ).arg( downloadTimer.elapsed() ) );
+    QgsDebugMsgLevel( QStringLiteral( "Downloaded in : %1ms" ).arg( downloadTimer.elapsed() ), 2 );
     if ( !context.feedback()->isCanceled() )
     {
       // Render all the point cloud blocks sequentially
@@ -317,7 +326,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
       {
         if ( context.renderContext().renderingStopped() )
         {
-          QgsDebugMsgLevel( "canceled", 2 );
+          QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
           canceled = true;
           break;
         }
@@ -372,7 +381,7 @@ int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<IndexedPointClo
   QgsVector3D blockScale;
   QgsVector3D blockOffset;
   QgsPointCloudAttributeCollection blockAttributes;
-  int recordSize;
+  int recordSize = 0;
 
   // We'll collect byte array data from all blocks
   QByteArray allByteArrays;
@@ -383,7 +392,7 @@ int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<IndexedPointClo
   {
     if ( context.renderContext().renderingStopped() )
     {
-      QgsDebugMsgLevel( "canceled", 2 );
+      QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
       canceled = true;
       break;
     }

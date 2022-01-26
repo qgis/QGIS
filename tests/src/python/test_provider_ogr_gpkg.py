@@ -572,22 +572,29 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         self.assertFalse(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
 
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', '/idont/exist.gpkg', '')
+        self.assertFalse(res)
+        self.assertTrue(err)
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', '/idont/exist.gpkg', 'a style')
+        self.assertFalse(res)
+        self.assertTrue(err)
+
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, -1)
         self.assertEqual(idlist, [])
         self.assertEqual(namelist, [])
         self.assertEqual(desclist, [])
-        self.assertNotEqual(errmsg, "")
+        self.assertTrue(errmsg)
 
         qml, errmsg = vl.getStyleFromDatabase("1")
-        self.assertEqual(qml, "")
-        self.assertNotEqual(errmsg, "")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
 
         qml, success = vl.loadNamedStyle('/idont/exist.gpkg')
         self.assertFalse(success)
 
         errorMsg = vl.saveStyleToDatabase("name", "description", False, "")
-        self.assertNotEqual(errorMsg, "")
+        self.assertTrue(errorMsg)
 
         # Now with valid URI
         tmpfile = os.path.join(self.basetestpath, 'testStyle.gpkg')
@@ -614,80 +621,99 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
 
+        # style tables don't exist yet
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', vl2.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, 0)
         self.assertEqual(idlist, [])
         self.assertEqual(namelist, [])
         self.assertEqual(desclist, [])
-        self.assertNotEqual(errmsg, "")
+        self.assertTrue(errmsg)
 
         qml, errmsg = vl.getStyleFromDatabase("not_existing")
-        self.assertEqual(qml, "")
-        self.assertNotEqual(errmsg, "")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
 
         qml, success = vl.loadNamedStyle('{}|layerid=0'.format(tmpfile))
         self.assertFalse(success)
 
         errorMsg = vl.saveStyleToDatabase("name", "description", False, "")
-        self.assertEqual(errorMsg, "")
+        self.assertFalse(errorMsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', vl.source(), 'name')
+        self.assertTrue(res)
+        self.assertFalse(err)
 
         qml, errmsg = vl.getStyleFromDatabase("not_existing")
-        self.assertEqual(qml, "")
-        self.assertNotEqual(errmsg, "")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
 
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, 1)
-        self.assertEqual(errmsg, "")
+        self.assertFalse(errmsg)
         self.assertEqual(idlist, ['1'])
         self.assertEqual(namelist, ['name'])
         self.assertEqual(desclist, ['description'])
 
         qml, errmsg = vl.getStyleFromDatabase("100")
-        self.assertEqual(qml, "")
-        self.assertNotEqual(errmsg, "")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
 
         qml, errmsg = vl.getStyleFromDatabase("1")
         self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
-        self.assertEqual(errmsg, "")
+        self.assertFalse(errmsg)
 
-        # Try overwrite it but simulate answer no
-        settings = QgsSettings()
-        settings.setValue("/qgis/overwriteStyle", False)
+        # Try overwriting an existing style
         errorMsg = vl.saveStyleToDatabase("name", "description_bis", False, "")
-        self.assertNotEqual(errorMsg, "")
+        self.assertFalse(errorMsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', vl.source(), 'name')
+        self.assertTrue(res)
+        self.assertFalse(err)
 
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, 1)
-        self.assertEqual(errmsg, "")
-        self.assertEqual(idlist, ['1'])
-        self.assertEqual(namelist, ['name'])
-        self.assertEqual(desclist, ['description'])
-
-        # Try overwrite it and simulate answer yes
-        settings = QgsSettings()
-        settings.setValue("/qgis/overwriteStyle", True)
-        errorMsg = vl.saveStyleToDatabase("name", "description_bis", False, "")
-        self.assertEqual(errorMsg, "")
-
-        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
-        self.assertEqual(related_count, 1)
-        self.assertEqual(errmsg, "")
+        self.assertFalse(errmsg)
         self.assertEqual(idlist, ['1'])
         self.assertEqual(namelist, ['name'])
         self.assertEqual(desclist, ['description_bis'])
 
         errorMsg = vl2.saveStyleToDatabase("name_test2", "description_test2", True, "")
-        self.assertEqual(errorMsg, "")
+        self.assertFalse(errorMsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', vl2.source(), 'name_test2')
+        self.assertTrue(res)
+        self.assertFalse(err)
 
         errorMsg = vl.saveStyleToDatabase("name2", "description2", True, "")
-        self.assertEqual(errorMsg, "")
+        self.assertFalse(errorMsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', vl.source(), 'name2')
+        self.assertTrue(res)
+        self.assertFalse(err)
 
         errorMsg = vl.saveStyleToDatabase("name3", "description3", True, "")
-        self.assertEqual(errorMsg, "")
+        self.assertFalse(errorMsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('ogr', vl.source(), 'name3')
+        self.assertTrue(res)
+        self.assertFalse(err)
 
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, 3)
-        self.assertEqual(errmsg, "")
+        self.assertFalse(errmsg)
         self.assertEqual(idlist, ['1', '3', '4', '2'])
         self.assertEqual(namelist, ['name', 'name2', 'name3', 'name_test2'])
         self.assertEqual(desclist, ['description_bis', 'description2', 'description3', 'description_test2'])

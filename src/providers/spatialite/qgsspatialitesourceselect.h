@@ -121,7 +121,6 @@ class QgsSpatiaLiteSourceSelect:  public QgsAbstractDbSourceSelect
     QgsSpatiaLiteTableModel *mTableModel;
 
     QString layerURI( const QModelIndex &index );
-    QPushButton *mBuildQueryButton = nullptr;
     QPushButton *mStatsButton = nullptr;
 };
 

@@ -31,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsapplication.h"
+#include "qgsproviderregistry.h"
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -210,12 +211,31 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
         case 0:
           return;
         case 2:
+        {
+          QString errorMessage;
+          if ( QgsProviderRegistry::instance()->styleExists( layer->providerType(), layer->source(), QString(), errorMessage ) )
+          {
+            if ( QMessageBox::question( nullptr, tr( "Save style in database" ),
+                                        tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
+                                        QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+            {
+              return;
+            }
+          }
+          else if ( !errorMessage.isEmpty() )
+          {
+            QMessageBox::warning( nullptr, tr( "Save style in database" ),
+                                  errorMessage );
+            return;
+          }
+
           layer->saveStyleToDatabase( QString(), QString(), true, QString(), errorMsg );
           if ( errorMsg.isNull() )
           {
             return;
           }
           break;
+        }
         default:
           break;
       }

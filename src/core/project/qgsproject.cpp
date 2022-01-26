@@ -39,6 +39,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsannotationmanager.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
 #include "qgsmapthemecollection.h"
 #include "qgslayerdefinition.h"
 #include "qgsunittypes.h"
@@ -1264,6 +1265,14 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   {
     emit readMapLayer( mapLayer.get(), layerElem );
     addMapLayers( newLayers );
+    // Try to resolve references here (this is necessary to set up joined fields that will be possibly used by
+    // virtual layers that point to this layer's joined field in their query otherwise they won't be valid ),
+    // a second attempt to resolve references will be done after all layers are loaded
+    // see https://github.com/qgis/QGIS/issues/46834
+    if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+    {
+      vLayer->joinBuffer()->resolveReferences( this );
+    }
   }
   else
   {

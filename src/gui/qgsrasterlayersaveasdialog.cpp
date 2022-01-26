@@ -417,7 +417,7 @@ QString QgsRasterLayerSaveAsDialog::outputFileName() const
 
     // ensure the user never omits the extension from the file name
     QFileInfo fi( fileName );
-    if ( !fileName.isEmpty() && fi.suffix().isEmpty() )
+    if ( !fileName.isEmpty() && fi.suffix().isEmpty() && !defaultExt.isEmpty() )
     {
       fileName += '.' + defaultExt;
     }

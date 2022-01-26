@@ -1196,6 +1196,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( nodeElement.attribute( QStringLiteral( "SRS" ) ) );
             QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
             QgsCoordinateTransform ct( src, dst, mCoordinateTransformContext );
+            ct.setBallparkTransformsAreAppropriate( true );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
           }
           catch ( QgsCsException &cse )

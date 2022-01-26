@@ -988,6 +988,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
      * \param uiFileContent
      * \param msgError will be set to a descriptive error message if any occurs
+     *
+     *
+     * \note Prior to QGIS 3.24, this method would show a message box warning when a
+     * style with the same \a styleName already existed to confirm replacing the style with the user.
+     * Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
+     * Use QgsProviderRegistry::styleExists() to test in advance if a style already exists and handle this appropriately
+     * in your client code.
      */
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
                                       bool useAsDefault, const QString &uiFileContent,

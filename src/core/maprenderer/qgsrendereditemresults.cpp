@@ -133,7 +133,8 @@ QList<const QgsRenderedAnnotationItemDetails *> QgsRenderedItemResults::rendered
 
 void QgsRenderedItemResults::appendResults( const QList<QgsRenderedItemDetails *> &results, const QgsRenderContext &context )
 {
-  const QgsCoordinateTransform layerToMapTransform = context.coordinateTransform();
+  QgsCoordinateTransform layerToMapTransform = context.coordinateTransform();
+  layerToMapTransform.setBallparkTransformsAreAppropriate( true );
   for ( QgsRenderedItemDetails *details : results )
   {
     try

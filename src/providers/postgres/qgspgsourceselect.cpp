@@ -530,10 +530,9 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  QModelIndex idx = proxyModel()->mapToSource( index );
-  QString tableName = mTableModel->itemFromIndex( idx.sibling( idx.row(), QgsPgTableModel::DbtmTable ) )->text();
+  QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), QgsPgTableModel::DbtmTable ) )->text();
 
-  QString uri = mTableModel->layerURI( idx, connectionInfo( false ), mUseEstimatedMetadata );
+  QString uri = mTableModel->layerURI( index, connectionInfo( false ), mUseEstimatedMetadata );
   if ( uri.isNull() )
   {
     QgsDebugMsg( QStringLiteral( "no uri" ) );

@@ -918,11 +918,22 @@ int Qgs3DMapScene::maximumTextureSize() const
   QSurface *surface = mEngine->surface();
   QOpenGLContext context;
   context.create();
-  context.makeCurrent( surface );
-  QOpenGLFunctions openglFunctions( &context );
-  GLint size;
-  openglFunctions.glGetIntegerv( GL_MAX_TEXTURE_SIZE, &size );
-  return int( size );
+  bool success =  context.makeCurrent( surface );
+
+  if ( success )
+  {
+    QOpenGLFunctions openglFunctions = QOpenGLFunctions( &context );
+
+    GLint size;
+    openglFunctions.initializeOpenGLFunctions();
+    openglFunctions.glGetIntegerv( GL_MAX_TEXTURE_SIZE, &size );
+    return int( size );
+  }
+  else
+  {
+    return 4096; //we can't have a context to defined the max texture size, we use this reasonable value
+  }
+
 }
 
 void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
@@ -1140,6 +1151,7 @@ QgsRectangle Qgs3DMapScene::sceneExtent()
   {
     QgsRectangle terrainExtent = terrainGenerator->extent();
     QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
+    terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
     terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
     extent.combineExtentWith( terrainExtent );
   }

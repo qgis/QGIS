@@ -2255,7 +2255,8 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
   }
   else if ( ! mExtent.isNull() )
   {
-    const QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), transformContext() };
+    QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), transformContext() };
+    transformer.setBallparkTransformsAreAppropriate( true );
     try
     {
       wgs84Extent = transformer.transformBoundingBox( mExtent );

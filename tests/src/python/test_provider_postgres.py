@@ -1882,17 +1882,25 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
         self.assertTrue(vl.dataProvider().isDeleteStyleFromDatabaseSupported())
 
-        # table layer_styles does not exit
+        # table layer_styles does not exist
+
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, -1)
         self.assertEqual(idlist, [])
         self.assertEqual(namelist, [])
         self.assertEqual(desclist, [])
-        self.assertNotEqual(errmsg, "")
+        self.assertFalse(errmsg)
 
         qml, errmsg = vl.getStyleFromDatabase("1")
-        self.assertEqual(qml, "")
-        self.assertNotEqual(errmsg, "")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
 
         mFilePath = QDir.toNativeSeparators(
             '%s/symbol_layer/%s.qml' % (unitTestDataPath(), "singleSymbol"))
@@ -1902,27 +1910,37 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # The style is saved as non-default
         errorMsg = vl.saveStyleToDatabase(
             "by day", "faded greens and elegant patterns", False, "")
-        self.assertEqual(errorMsg, "")
+        self.assertFalse(errorMsg)
 
         # the style id should be "1", not "by day"
         qml, errmsg = vl.getStyleFromDatabase("by day")
         self.assertEqual(qml, "")
         self.assertNotEqual(errmsg, "")
 
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), 'by day')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, 1)
-        self.assertEqual(errmsg, "")
+        self.assertFalse(errmsg)
         self.assertEqual(idlist, ["1"])
         self.assertEqual(namelist, ["by day"])
         self.assertEqual(desclist, ["faded greens and elegant patterns"])
 
         qml, errmsg = vl.getStyleFromDatabase("100")
-        self.assertEqual(qml, "")
-        self.assertNotEqual(errmsg, "")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
 
         qml, errmsg = vl.getStyleFromDatabase("1")
         self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
-        self.assertEqual(errmsg, "")
+        self.assertFalse(errmsg)
 
         res, errmsg = vl.deleteStyleFromDatabase("100")
         self.assertTrue(res)
@@ -1930,15 +1948,31 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         res, errmsg = vl.deleteStyleFromDatabase("1")
         self.assertTrue(res)
-        self.assertEqual(errmsg, "")
+        self.assertFalse(errmsg)
 
         # We save now the style again twice but with one as default
-        errorMsg = vl.saveStyleToDatabase(
+        errmsg = vl.saveStyleToDatabase(
             "related style", "faded greens and elegant patterns", False, "")
-        self.assertEqual(errorMsg, "")
-        errorMsg = vl.saveStyleToDatabase(
+        self.assertEqual(errmsg, "")
+        errmsg = vl.saveStyleToDatabase(
             "default style", "faded greens and elegant patterns", True, "")
-        self.assertEqual(errorMsg, "")
+        self.assertFalse(errmsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), 'default style')
+        self.assertTrue(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), 'related style')
+        self.assertTrue(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), 'by day')
+        self.assertFalse(res)
+        self.assertFalse(err)
 
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, 2)
@@ -1950,18 +1984,31 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # We remove these 2 styles
         res, errmsg = vl.deleteStyleFromDatabase("2")
         self.assertTrue(res)
-        self.assertEqual(errmsg, "")
+        self.assertFalse(errmsg)
         res, errmsg = vl.deleteStyleFromDatabase("3")
         self.assertTrue(res)
-        self.assertEqual(errmsg, "")
+        self.assertFalse(errmsg)
 
-        # table layer_styles does exit, but is now empty
+        # table layer_styles does exist, but is now empty
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, 0)
         self.assertEqual(idlist, [])
         self.assertEqual(namelist, [])
         self.assertEqual(desclist, [])
-        self.assertEqual(errmsg, "")
+        self.assertFalse(errmsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), 'default style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('postgres', vl.source(), 'related style')
+        self.assertFalse(res)
+        self.assertFalse(err)
 
     def testStyleWithGeometryType(self):
         """Test saving styles with the additional geometry type

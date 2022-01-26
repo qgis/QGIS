@@ -931,7 +931,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 
   auto addCoordinateFormat = [ &, this]( const QString identifier, const QgsCoordinateReferenceSystem & crs )
   {
-    QgsCoordinateTransform ct( mSettings.destinationCrs(), crs, mSettings.transformContext() );
+    const QgsCoordinateTransform ct( mSettings.destinationCrs(), crs, mSettings.transformContext() );
     try
     {
       const QgsPointXY transformedPoint = ct.transform( mapPoint );
@@ -940,7 +940,9 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
       int displayPrecision = 0;
       try
       {
-        QgsRectangle extentReproj = ct.transformBoundingBox( extent() );
+        QgsCoordinateTransform extentTransform = ct;
+        extentTransform.setBallparkTransformsAreAppropriate( true );
+        QgsRectangle extentReproj = extentTransform.transformBoundingBox( extent() );
         const double mapUnitsPerPixel = ( extentReproj.width() / width() + extentReproj.height() / height() ) * 0.5;
         if ( mapUnitsPerPixel > 10 )
           displayPrecision = 0;
@@ -1312,7 +1314,8 @@ bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
   if ( extent.crs() != mapSettings().destinationCrs() )
   {
     QgsCoordinateTransform ct( extent.crs(), mapSettings().destinationCrs(), QgsProject::instance() );
-    canvasExtent = ct.transform( extent );
+    ct.setBallparkTransformsAreAppropriate( true );
+    canvasExtent = ct.transformBoundingBox( extent );
 
     if ( canvasExtent.isEmpty() )
     {

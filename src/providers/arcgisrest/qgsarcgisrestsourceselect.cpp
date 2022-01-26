@@ -314,7 +314,9 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
   {
     try
     {
-      extent = QgsCoordinateTransform( canvasCrs, pCrs, QgsProject::instance()->transformContext() ).transform( extent );
+      QgsCoordinateTransform extentTransform = QgsCoordinateTransform( canvasCrs, pCrs, QgsProject::instance()->transformContext() );
+      extentTransform.setBallparkTransformsAreAppropriate( true );
+      extent = extentTransform.transformBoundingBox( extent );
       QgsDebugMsgLevel( QStringLiteral( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
                         .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ), 3 );
     }

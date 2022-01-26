@@ -1689,6 +1689,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   zoomInToolShortCut->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
 
   QShortcut *shortcutTracing = new QShortcut( QKeySequence( tr( "Ctrl+Shift+." ) ), this );
+  shortcutTracing->setObjectName( QStringLiteral( "ToggleTracing" ) );
   connect( shortcutTracing, &QShortcut::activated, this, &QgisApp::toggleEventTracing );
 
   if ( ! QTouchDevice::devices().isEmpty() )
@@ -2843,7 +2844,7 @@ void QgisApp::createActions()
   connect( mActionAddWmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wms" ) ); } );
   connect( mActionAddXyzLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "xyz" ) ); } );
   connect( mActionAddVectorTileLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "vectortile" ) ); } );
-  connect( mActionAddPointCloudLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "ept" ) ); } );
+  connect( mActionAddPointCloudLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "pointcloud" ) ); } );
   connect( mActionAddWcsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wcs" ) ); } );
 #ifdef HAVE_SPATIALITE
   connect( mActionAddWfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "WFS" ) ); } );
@@ -7410,6 +7411,7 @@ void QgisApp::dxfExport()
       if ( d.exportMapExtent() )
       {
         QgsCoordinateTransform t( lMapCanvas->mapSettings().destinationCrs(), d.crs(), QgsProject::instance() );
+        t.setBallparkTransformsAreAppropriate( true );
         dxfExport.setExtent( t.transformBoundingBox( lMapCanvas->extent() ) );
       }
     }
@@ -9187,10 +9189,26 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
           }
           case QgsVectorLayerProperties::DB:
           {
-            QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( vlayer->providerType() );
+            QString infoWindowTitle = tr( "Save style to DB (%1)" ).arg( vlayer->providerType() );
             QString msgError;
 
             QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
+
+            QString errorMessage;
+            if ( QgsProviderRegistry::instance()->styleExists( vlayer->providerType(), vlayer->source(), dbSettings.name, errorMessage ) )
+            {
+              if ( QMessageBox::question( nullptr, tr( "Save style in database" ),
+                                          tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
+                                          QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+              {
+                return;
+              }
+            }
+            else if ( !errorMessage.isEmpty() )
+            {
+              mInfoBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
+              return;
+            }
 
             vlayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
 
@@ -10495,8 +10513,8 @@ void QgisApp::mergeSelectedFeatures()
         tr( "Merge failed" ),
         tr( "Resulting geometry type (multipart) is incompatible with layer type (singlepart)." ),
         Qgis::MessageLevel::Critical );
+      return;
     }
-    return;
   }
 
   //merge the attributes together
@@ -13963,7 +13981,7 @@ void QgisApp::initLayouts()
   // 3D map item
 #ifdef HAVE_3D
   QgsApplication::layoutItemRegistry()->addLayoutItemType(
-    new QgsLayoutItemMetadata( QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QObject::tr( "3D Maps" ), QgsLayoutItem3DMap::create )
+    new QgsLayoutItemMetadata( QgsLayoutItemRegistry::Layout3DMap, tr( "3D Map" ), tr( "3D Maps" ), QgsLayoutItem3DMap::create )
   );
 
   auto createRubberBand = ( []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
@@ -13971,7 +13989,7 @@ void QgisApp::initLayouts()
     return new QgsLayoutViewRectangularRubberBand( view );
   } );
   std::unique_ptr< QgsLayoutItemGuiMetadata > map3dMetadata = std::make_unique< QgsLayoutItemGuiMetadata>(
-        QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
+        QgsLayoutItemRegistry::Layout3DMap, tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
         [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return new QgsLayout3DMapWidget( qobject_cast< QgsLayoutItem3DMap * >( item ) );
@@ -14652,6 +14670,50 @@ QMenu *QgisApp::getWebMenu( const QString &menuName )
   return menu;
 }
 
+QMenu *QgisApp::getMeshMenu( const QString &menuName )
+{
+  if ( menuName.isEmpty() )
+    return mMeshMenu;
+
+  QString cleanedMenuName = menuName;
+#ifdef Q_OS_MAC
+  // Mac doesn't have '&' keyboard shortcuts.
+  cleanedMenuName.remove( QChar( '&' ) );
+#endif
+  QString dst = cleanedMenuName;
+  dst.remove( QChar( '&' ) );
+
+  QAction *before = nullptr;
+  QList<QAction *> actions = mMeshMenu->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    QString src = actions.at( i )->text();
+    src.remove( QChar( '&' ) );
+
+    int comp = dst.localeAwareCompare( src );
+    if ( comp < 0 )
+    {
+      // Add item before this one
+      before = actions.at( i );
+      break;
+    }
+    else if ( comp == 0 )
+    {
+      // Plugin menu item already exists
+      return actions.at( i )->menu();
+    }
+  }
+  // It doesn't exist, so create
+  QMenu *menu = new QMenu( cleanedMenuName, this );
+  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
+  if ( before )
+    mMeshMenu->insertMenu( before, menu );
+  else
+    mMeshMenu->addMenu( menu );
+
+  return menu;
+}
+
 void QgisApp::insertAddLayerAction( QAction *action )
 {
   mAddLayerMenu->insertAction( mActionAddLayerSeparator, action );
@@ -14721,7 +14783,7 @@ void QgisApp::addPluginToWebMenu( const QString &name, QAction *action )
   QMenu *menu = getWebMenu( name );
   menu->addAction( action );
 
-  // add the Vector menu to the menuBar if not added yet
+  // add the Web menu to the menuBar if not added yet
   if ( mWebMenu->actions().count() != 1 )
     return;
 
@@ -14757,6 +14819,12 @@ void QgisApp::addPluginToWebMenu( const QString &name, QAction *action )
   else
     // fallback insert
     menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mWebMenu );
+}
+
+void QgisApp::addPluginToMeshMenu( const QString &name, QAction *action )
+{
+  QMenu *menu = getMeshMenu( name );
+  menu->addAction( action );
 }
 
 void QgisApp::removePluginDatabaseMenu( const QString &name, QAction *action )
@@ -14842,6 +14910,30 @@ void QgisApp::removePluginWebMenu( const QString &name, QAction *action )
   for ( int i = 0; i < actions.count(); i++ )
   {
     if ( actions.at( i )->menu() == mWebMenu )
+    {
+      menuBar()->removeAction( actions.at( i ) );
+      return;
+    }
+  }
+}
+
+void QgisApp::removePluginMeshMenu( const QString &name, QAction *action )
+{
+  QMenu *menu = getMeshMenu( name );
+  menu->removeAction( action );
+  if ( menu->actions().isEmpty() )
+  {
+    mMeshMenu->removeAction( menu->menuAction() );
+  }
+
+  // remove the Mesh menu from the menuBar if there are no more actions
+  if ( !mMeshMenu->actions().isEmpty() )
+    return;
+
+  QList<QAction *> actions = menuBar()->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    if ( actions.at( i )->menu() == mMeshMenu )
     {
       menuBar()->removeAction( actions.at( i ) );
       return;
@@ -14942,7 +15034,7 @@ void QgisApp::updateCrsStatusBar()
     if ( !projectCrs.authid().isEmpty() )
       mOnTheFlyProjectionStatusButton->setText( projectCrs.authid() );
     else
-      mOnTheFlyProjectionStatusButton->setText( QObject::tr( "Unknown CRS" ) );
+      mOnTheFlyProjectionStatusButton->setText( tr( "Unknown CRS" ) );
 
     mOnTheFlyProjectionStatusButton->setToolTip(
       tr( "Current CRS: %1" ).arg( projectCrs.userFriendlyIdentifier() ) );
