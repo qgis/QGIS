@@ -1471,12 +1471,13 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(layer_a.editBuffer())
         self.assertTrue(layer_b.editBuffer())
 
-        commitErrors = []
-        self.assertTrue(project.commitChanges(commitErrors, False))
+        success, commitErrors = project.commitChanges(False)
+        self.assertTrue(success)
         self.assertTrue(project.editBufferGroup().isEditing())
         self.assertTrue(layer_a.editBuffer())
         self.assertTrue(layer_b.editBuffer())
-        self.assertTrue(project.commitChanges(commitErrors, True, layer_b))
+        success, commitErrors = project.commitChanges(True, layer_b)
+        self.assertTrue(success)
         self.assertFalse(project.editBufferGroup().isEditing())
         self.assertFalse(layer_a.editBuffer())
         self.assertFalse(layer_b.editBuffer())
@@ -1495,7 +1496,8 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 0)
 
-        self.assertTrue(project.rollBack(False))
+        success, rollbackErrors = project.rollBack(False)
+        self.assertTrue(success)
         self.assertTrue(project.editBufferGroup().isEditing())
         self.assertEqual(layer_a.featureCount(), 0)
 
@@ -1503,7 +1505,8 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 0)
 
-        self.assertTrue(project.commitChanges(commitErrors, True))
+        success, commitErrors = project.commitChanges(True)
+        self.assertTrue(success)
         self.assertFalse(project.editBufferGroup().isEditing())
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 1)

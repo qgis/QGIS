@@ -102,7 +102,8 @@ class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 0)
 
-        self.assertTrue(editBufferGroup.rollBack(False))
+        rollbackErrors = []
+        self.assertTrue(editBufferGroup.rollBack(rollbackErrors, False))
         self.assertTrue(editBufferGroup.isEditing())
         self.assertEqual(layer_a.featureCount(), 0)
 
