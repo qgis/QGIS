@@ -2335,11 +2335,11 @@ class TestQgsGeometry(unittest.TestCase):
         multi_polygon1 = QgsGeometry.fromMultiPolygonXY(poly_points[:1])
         multi_polygon2 = QgsGeometry.fromMultiPolygonXY(poly_points[1:])
 
-        geoms = {} # initial geometry
-        parts = {} # part to add
-        expec = {} # expected WKT result
-        types = {} # optional geometry types for points added
-        resul = {} # expected GeometryOperationResult
+        geoms = {}  # initial geometry
+        parts = {}  # part to add
+        expec = {}  # expected WKT result
+        types = {}  # optional geometry types for points added
+        resul = {}  # expected GeometryOperationResult
 
         T = 'point_add_point'
         geoms[T] = QgsGeometry.fromPointXY(QgsPointXY(0, 0))
