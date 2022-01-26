@@ -736,6 +736,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         """Test filter by map handling of rotated map."""
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        layouttemplate = os.path.join( os.path.join( TEST_DATA_DIR, "layouts") , 'map_filter_test_layout.qpt')
 
         QgsProject.instance().clear()
         QgsProject.instance().addMapLayers([point_layer])
@@ -743,27 +744,11 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         s = QgsMapSettings()
         s.setLayers([point_layer])
         layout = QgsLayout(QgsProject.instance())
-        layout.initializeDefaults()
-        layout.setUnits(QgsUnitTypes.LayoutMillimeters)
-
-        map = QgsLayoutItemMap(layout)
-        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
-        map.setFrameEnabled(True)
-        layout.addLayoutItem(map)
-        map.setExtent(point_layer.extent())
-        legendf = QgsLayoutItemLegend(layout)
-        legendf.setTitle("Filtered Legend")
-        legendf.attemptSetSceneRect(QRectF(120, 40, 80, 80))
-        legendf.setFrameEnabled(True)
-        legendf.setFrameStrokeWidth(QgsLayoutMeasurement(2))
-        legendf.setBackgroundColor(QColor(200, 200, 200))
-        legendf.setTitle('filtered')
-        legendf.setLegendFilterByMapEnabled(True)
-        layout.addLayoutItem(legendf)
-        legendf.setLinkedMap(map)
-        map.setScale(6918946)
-        map.setExtent(QgsRectangle(-109.517, 29.424, -102.961, 48.969))
-        map.setMapRotation(60)
+        with open(layouttemplate) as f:
+            template_content = f.read()
+        doc = QDomDocument()
+        doc.setContent(template_content)
+        layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
 
         checker = QgsLayoutChecker(
             'composer_legend_rotated_map', layout)
