@@ -225,7 +225,7 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.24
      */
-    static inline double decodeDepth( const QColor &pixel );
+    static inline double decodeDepth( const QRgb &pixel );
 };
 
 #endif // QGS3DUTILS_H

@@ -334,7 +334,6 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
   {
     for ( int y = 0; y < mDepthBufferImage.height(); ++y )
     {
-      const QRgb &pixel = buffer.pixel( x, y );
       double d = Qgs3DUtils::decodeDepth( buffer.pixel( x, y ) );
       if ( d < 1 )
       {
