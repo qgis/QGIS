@@ -40,6 +40,7 @@ from qgis.core import (
     QgsProject,
     QgsVertexId,
     QgsAbstractGeometryTransformer,
+    QgsCircle,
     Qgis
 )
 from qgis.PyQt.QtCore import QDir, QPointF, QRectF
@@ -2336,6 +2337,29 @@ class TestQgsGeometry(unittest.TestCase):
         def multi_polygon1_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points[:1]) # noqa: E704,E261
         def multi_polygon2_geom(): return QgsGeometry.fromMultiPolygonXY(poly_points[1:]) # noqa: E704,E261
 
+        def multi_surface_geom():
+            ms = QgsMultiSurface()
+            p = polygon1_geom()
+            ms.addGeometry(p.constGet().clone())
+            return QgsGeometry(ms)
+
+        def curve():
+            cs = QgsCircularString()
+            cs.setPoints([QgsPoint(31, 32), QgsPoint(34, 36), QgsPoint(37, 39)])
+            return cs.toCurveType()
+
+        circle = QgsCircle(QgsPoint(10, 10), 5)
+
+        def circle_polygon():
+            p = QgsPolygon()
+            p.setExteriorRing(circle.toCircularString())
+            return p
+
+        def circle_curvepolygon():
+            p = QgsCurvePolygon()
+            p.setExteriorRing(circle.toCircularString())
+            return p
+
         geoms = {}  # initial geometry
         parts = {}  # part to add
         expec = {}  # expected WKT result
@@ -2372,6 +2396,11 @@ class TestQgsGeometry(unittest.TestCase):
         geoms[T].get().addZValue(4.0)
         parts[T] = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.PointZ) for p in line_points[1]]
         expec[T] = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
+
+        T = 'linestring_add_curve'
+        geoms[T] = polyline1_geom()
+        parts[T] = curve()
+        expec[T] = 'MultiLineString ({},{})'.format(polyline1_geom().asWkt().removeprefix('LineString '), curve().curveToLine().asWkt().removeprefix('LineString '))
 
         T = 'polygon_add_ring_1_point'
         geoms[T] = polygon1_geom()
@@ -2447,6 +2476,16 @@ class TestQgsGeometry(unittest.TestCase):
         parts[T] = poly_points[0][0]
         types[T] = QgsWkbTypes.PolygonGeometry
         expec[T] = 'MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))'
+
+        T = 'multipolygon_add_curvepolygon'
+        geoms[T] = multi_polygon1_geom()
+        parts[T] = circle_curvepolygon()
+        expec[T] = 'MultiPolygon ({},{})'.format(polygon1_geom().asWkt().removeprefix('Polygon '), circle_polygon().asWkt().removeprefix('Polygon '))
+
+        T = 'multisurface_add_curvepolygon'
+        geoms[T] = multi_surface_geom()
+        parts[T] = circle_curvepolygon()
+        expec[T] = 'MultiSurface (Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),CurvePolygon (CircularString (10 15, 15 10, 10 5, 5 10, 10 15)))'
 
         for t in parts.keys():
             with self.subTest(t=t):
