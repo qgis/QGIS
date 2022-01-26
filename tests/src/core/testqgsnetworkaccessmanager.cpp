@@ -587,12 +587,12 @@ void TestQgsNetworkAccessManager::fetchPostMultiPart()
 
 void TestQgsNetworkAccessManager::fetchPostMultiPart_data()
 {
-  QTest::addColumn<int>( "contentType" );
+  QTest::addColumn<int>( "iContentType" );
 
-  QTest::newRow( "MixedType" ) << QHttpMultiPart::MixedType;
-  QTest::newRow( "FormDataType" ) << QHttpMultiPart::FormDataType;
-  QTest::newRow( "RelatedType" ) << QHttpMultiPart::FormDataType;
-  QTest::newRow( "AlternativeType" ) << QHttpMultiPart::FormDataType;
+  QTest::newRow( "MixedType" ) << static_cast<int>( QHttpMultiPart::MixedType );
+  QTest::newRow( "FormDataType" ) << static_cast<int>( QHttpMultiPart::FormDataType );
+  QTest::newRow( "RelatedType" ) << static_cast<int>( QHttpMultiPart::FormDataType );
+  QTest::newRow( "AlternativeType" ) << static_cast<int>( QHttpMultiPart::FormDataType );
 }
 
 void TestQgsNetworkAccessManager::fetchBadSsl()
