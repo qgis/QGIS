@@ -157,6 +157,7 @@ class TestQgsNetworkAccessManager : public QObject
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
     void fetchPost();
     void fetchPostMultiPart();
+    void fetchPostMultiPart_data();
     void fetchBadSsl();
     void testSslErrorHandler();
     void testAuthRequestHandler();
@@ -560,11 +561,13 @@ void TestQgsNetworkAccessManager::fetchPost()
 
 void TestQgsNetworkAccessManager::fetchPostMultiPart()
 {
-  QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/post" ) );
+  QFETCH( int, iContentType );
+  QHttpMultiPart::ContentType contentType = static_cast< QHttpMultiPart::ContentType>( iContentType );
+  QUrl u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/post" ) );
   QNetworkRequest req( u );
 
   // MultiPart
-  QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( req, new QHttpMultiPart( QHttpMultiPart::MixedType ) );
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( req, new QHttpMultiPart( contentType ) );
 
   QEventLoop el;
   connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::finished, &el, &QEventLoop::quit );
@@ -573,6 +576,16 @@ void TestQgsNetworkAccessManager::fetchPostMultiPart()
   QCOMPARE( reply->error(), QNetworkReply::NoError );
   QVERIFY( reply->rawHeaderList().contains( "Content-Type" ) );
   QCOMPARE( reply->request().url(), u );
+}
+
+void TestQgsNetworkAccessManager::fetchPostMultiPart_data()
+{
+  QTest::addColumn<int>( "contentType" );
+
+  QTest::newRow( "MixedType" ) << QHttpMultiPart::MixedType;
+  QTest::newRow( "FormDataType" ) << QHttpMultiPart::FormDataType;
+  QTest::newRow( "RelatedType" ) << QHttpMultiPart::FormDataType;
+  QTest::newRow( "AlternativeType" ) << QHttpMultiPart::FormDataType;
 }
 
 void TestQgsNetworkAccessManager::fetchBadSsl()
