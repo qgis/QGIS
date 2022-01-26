@@ -277,7 +277,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     double cameraCenterElevation();
 
-    // Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
+    /**
+     * Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
+     * If the value is 1, the average depth of all non void pixels is returned instead.
+     */
     double sampleDepthBuffer( const QImage &buffer, int px, int py );
 
   private:

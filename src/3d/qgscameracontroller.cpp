@@ -319,7 +319,7 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
     {
       if ( buffer.valid( x, y ) )
       {
-        depth = std::min( depth, Qgs3DUtils::decodeDepth( buffer.pixelColor( x, y ) ) );
+        depth = std::min( depth, Qgs3DUtils::decodeDepth( buffer.pixel( x, y ) ) );
       }
     }
   }
@@ -335,7 +335,7 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
     for ( int y = 0; y < mDepthBufferImage.height(); ++y )
     {
       const QRgb &pixel = buffer.pixel( x, y );
-      double d = ( ( qRed( pixel ) / 255.0 + qGreen( pixel ) ) / 255.0 + qBlue( pixel ) ) / 255.0;
+      double d = Qgs3DUtils::decodeDepth( buffer.pixel( x, y ) );
       if ( d < 1 )
       {
         depth += d;
