@@ -26,6 +26,7 @@
 #include <QNetworkReply>
 #include <QAuthenticator>
 #include <QThread>
+#include <QHttpMultiPart>
 
 class BackgroundRequest : public QThread
 {
@@ -155,6 +156,7 @@ class TestQgsNetworkAccessManager : public QObject
     void fetchBadUrl(); //test fetching bad url
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
     void fetchPost();
+    void fetchPostMultiPart();
     void fetchBadSsl();
     void testSslErrorHandler();
     void testAuthRequestHandler();
@@ -554,6 +556,23 @@ void TestQgsNetworkAccessManager::fetchPost()
   blockingThread->exit();
   blockingThread->wait();
   blockingThread->deleteLater();
+}
+
+void TestQgsNetworkAccessManager::fetchPostMultiPart()
+{
+  QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/post" ) );
+  QNetworkRequest req( u );
+
+  // MultiPart
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( req, new QHttpMultiPart( QHttpMultiPart::MixedType ) );
+
+  QEventLoop el;
+  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::finished, &el, &QEventLoop::quit );
+  el.exec();
+
+  QCOMPARE( reply->error(), QNetworkReply::NoError );
+  QVERIFY( reply->rawHeaderList().contains( "Content-Type" ) );
+  QCOMPARE( reply->request().url(), u );
 }
 
 void TestQgsNetworkAccessManager::fetchBadSsl()
