@@ -210,7 +210,9 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   }
 
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { triggerRepaint(); } );
-  connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
+
+  if ( project() )
+    connect( project()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
   connect( this, &QgsVectorLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
   connect( this, &QgsVectorLayer::dataSourceChanged, this, &QgsVectorLayer::supportsEditingChanged );
@@ -1860,15 +1862,18 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
       QStringList stuff = match.capturedTexts();
       QString lName = stuff[1];
 
-      const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
-
-      QMap<QString, QgsMapLayer *>::const_iterator it;
-      for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )
-        ;
-
-      if ( it != layers.constEnd() && stuff.size() > 2 )
+      if ( project() )
       {
-        lName += '.' + stuff[2].mid( 2, stuff[2].length() - 3 );
+        const QMap<QString, QgsMapLayer *> &layers = project()->mapLayers();
+
+        QMap<QString, QgsMapLayer *>::const_iterator it;
+        for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )
+          ;
+
+        if ( it != layers.constEnd() && stuff.size() > 2 )
+        {
+          lName += '.' + stuff[2].mid( 2, stuff[2].length() - 3 );
+        }
       }
 
       if ( !lName.isEmpty() )
@@ -2709,12 +2714,15 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     QDomElement referencedLayersElement = doc.createElement( QStringLiteral( "referencedLayers" ) );
     node.appendChild( referencedLayersElement );
 
-    const auto constReferencingRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
-    for ( const auto &rel : constReferencingRelations )
+    if ( project() )
     {
-      if ( rel.type() == QgsRelation::Normal )
+      const auto constReferencingRelations { project()->relationManager()->referencingRelations( this ) };
+      for ( const auto &rel : constReferencingRelations )
       {
-        QgsWeakRelation::writeXml( this, QgsWeakRelation::Referencing, rel, referencedLayersElement, doc );
+        if ( rel.type() == QgsRelation::Normal )
+        {
+          QgsWeakRelation::writeXml( this, QgsWeakRelation::Referencing, rel, referencedLayersElement, doc );
+        }
       }
     }
 
@@ -2722,15 +2730,17 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     QDomElement referencingLayersElement = doc.createElement( QStringLiteral( "referencingLayers" ) );
     node.appendChild( referencedLayersElement );
 
-    const auto constReferencedRelations { QgsProject::instance()->relationManager()->referencedRelations( this ) };
-    for ( const auto &rel : constReferencedRelations )
+    if ( project() )
     {
-      if ( rel.type() == QgsRelation::Normal )
+      const auto constReferencedRelations { project()->relationManager()->referencedRelations( this ) };
+      for ( const auto &rel : constReferencedRelations )
       {
-        QgsWeakRelation::writeXml( this, QgsWeakRelation::Referenced, rel, referencingLayersElement, doc );
+        if ( rel.type() == QgsRelation::Normal )
+        {
+          QgsWeakRelation::writeXml( this, QgsWeakRelation::Referenced, rel, referencingLayersElement, doc );
+        }
       }
     }
-
   }
 
   // write field configurations
@@ -5338,7 +5348,10 @@ void QgsVectorLayer::onSymbolsCounted()
 
 QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 {
-  return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
+  if ( ! project() )
+    return QList<QgsRelation>();
+
+  return project()->relationManager()->referencingRelations( this, idx );
 }
 
 QList<QgsWeakRelation> QgsVectorLayer::weakRelations() const
@@ -5525,7 +5538,8 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   // disconnect layers that are not present in the list of dependencies anymore
   for ( const QgsMapLayerDependency &dep : std::as_const( mDependencies ) )
   {
-    QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( dep.layerId() ) );
+    QgsVectorLayer *lyr = project() ? static_cast<QgsVectorLayer *>( project()->mapLayer( dep.layerId() ) )
+                          : nullptr;
     if ( !lyr )
       continue;
     disconnect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::emitDataChanged );
@@ -5546,7 +5560,8 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   // connect to new layers
   for ( const QgsMapLayerDependency &dep : std::as_const( mDependencies ) )
   {
-    QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( dep.layerId() ) );
+    QgsVectorLayer *lyr = project() ? static_cast<QgsVectorLayer *>( project()->mapLayer( dep.layerId() ) )
+                          : nullptr;
     if ( !lyr )
       continue;
     connect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::emitDataChanged );
