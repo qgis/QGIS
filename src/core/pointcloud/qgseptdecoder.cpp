@@ -475,6 +475,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
 
   int skippedPoints = 0;
   QgsPointcloudExpression expr( expression );
+  const QSet< QString > referencedAttributes = expr.referencedAttributes();
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
@@ -485,7 +486,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     if ( expr.isValid() )
     {
       QVariantMap map;
-      for ( const QString &attribute : expr.referencedAttributes() )
+      for ( const QString &attribute : referencedAttributes )
       {
         if ( attribute.compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 )
         {
