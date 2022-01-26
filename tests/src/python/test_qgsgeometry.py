@@ -2400,7 +2400,7 @@ class TestQgsGeometry(unittest.TestCase):
         T = 'linestring_add_curve'
         geoms[T] = polyline1_geom()
         parts[T] = curve()
-        expec[T] = 'MultiLineString ({},{})'.format(polyline1_geom().asWkt().removeprefix('LineString '), curve().curveToLine().asWkt().removeprefix('LineString '))
+        expec[T] = 'MultiLineString ({},{})'.format(polyline1_geom().asWkt()[len('LineString '):], curve().curveToLine().asWkt()[len('LineString '):])
 
         T = 'polygon_add_ring_1_point'
         geoms[T] = polygon1_geom()
@@ -2480,7 +2480,7 @@ class TestQgsGeometry(unittest.TestCase):
         T = 'multipolygon_add_curvepolygon'
         geoms[T] = multi_polygon1_geom()
         parts[T] = circle_curvepolygon()
-        expec[T] = 'MultiPolygon ({},{})'.format(polygon1_geom().asWkt().removeprefix('Polygon '), circle_polygon().asWkt().removeprefix('Polygon '))
+        expec[T] = 'MultiPolygon ({},{})'.format(polygon1_geom().asWkt()[len('Polygon '):], circle_polygon().asWkt()[len('Polygon '):])
 
         T = 'multisurface_add_curvepolygon'
         geoms[T] = multi_surface_geom()
