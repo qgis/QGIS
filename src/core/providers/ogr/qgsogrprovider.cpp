@@ -18,7 +18,7 @@ email                : sherman at mrcc.com
 #include "qgsogrprovider.h"
 ///@cond PRIVATE
 
-#include "qgscplerrorhandler.h"
+#include "qgscplerrorhandler_p.h"
 #include "qgslogger.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsapplication.h"

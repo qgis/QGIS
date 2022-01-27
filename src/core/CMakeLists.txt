@@ -1776,20 +1776,32 @@ set(QGIS_CORE_HDRS
 )
 
 set(QGIS_CORE_PRIVATE_HDRS
+  qgsexpressionsorter_p.h
   qgsfeature_p.h
   qgsfield_p.h
   qgsfields_p.h
+  qgsmaplayerlistutils_p.h
+  qgspolymorphicrelation_p.h
   qgsproperty_p.h
   qgsrelation_p.h
   qgsspatialindexkdbush_p.h
 
+  dxf/qgsdxfexport_p.h
+
   editform/qgseditformconfig_p.h
+
+  expression/qgsexpression_p.h
+
   externalstorage/qgssimplecopyexternalstorage_p.h
   externalstorage/qgswebdavexternalstorage_p.h
 
   proj/qgscoordinatereferencesystem_p.h
   proj/qgscoordinatetransformcontext_p.h
   proj/qgscoordinatetransform_p.h
+  proj/qgscoordinatereferencesystem_legacy_p.h
+
+  providers/ogr/qgscplerrorhandler_p.h
+
   textrenderer/qgstextrenderer_p.h
 )
 

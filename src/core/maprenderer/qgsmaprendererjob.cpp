@@ -31,7 +31,7 @@
 #include "qgspallabeling.h"
 #include "qgsexception.h"
 #include "qgslabelingengine.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"

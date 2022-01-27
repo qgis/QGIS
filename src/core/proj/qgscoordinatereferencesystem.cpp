@@ -18,7 +18,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatereferencesystem_p.h"
 
-#include "qgscoordinatereferencesystem_legacy.h"
+#include "qgscoordinatereferencesystem_legacy_p.h"
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgsreadwritelocker.h"
 

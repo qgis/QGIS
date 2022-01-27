@@ -41,7 +41,7 @@
 #include "qgsogcutils.h"
 #include "qgsdistancearea.h"
 #include "qgsgeometryengine.h"
-#include "qgsexpressionsorter.h"
+#include "qgsexpressionsorter_p.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
 #include "qgsexception.h"
