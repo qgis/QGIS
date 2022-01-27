@@ -56,6 +56,7 @@
 #include "qgsqueryresultwidget.h"
 #include "qgsogrproviderutils.h"
 #include "qgsprojectutils.h"
+#include "qgsvariantutils.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1531,39 +1532,7 @@ QgsFieldDomainDetailsWidget::QgsFieldDomainDetailsWidget( QWidget *parent, const
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Type" ) + QStringLiteral( "</td><td>" ) + domain->typeName() + QStringLiteral( "</td></tr>\n" );
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Field type" ) + QStringLiteral( "</td><td>" );
-  switch ( domain->fieldType() )
-  {
-    case QVariant::Bool:
-      metadata += tr( "Boolean" );
-      break;
-    case QVariant::Int:
-      metadata +=  tr( "Integer" );
-      break;
-    case QVariant::LongLong:
-      metadata +=  tr( "Long integer" );
-      break;
-    case QVariant::Double:
-      metadata +=  tr( "Double" );
-      break;
-    case QVariant::List:
-    case QVariant::StringList:
-      metadata +=  tr( "List" );
-      break;
-    case QVariant::String:
-      metadata +=  tr( "String" );
-      break;
-    case QVariant::Date:
-      metadata +=  tr( "Date" );
-      break;
-    case QVariant::Time:
-      metadata +=  tr( "Time" );
-      break;
-    case QVariant::DateTime:
-      metadata +=  tr( "Date and time" );
-      break;
-    default:
-      break;
-  }
+  metadata += QgsVariantUtils::typeToDisplayString( domain->fieldType() );
   metadata += QStringLiteral( "</td></tr>\n" );
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Split policy" ) + QStringLiteral( "</td><td>" );
