@@ -205,6 +205,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag = QItemSelectionModel::Select;
     QMap< QModelIndex, QWidget * > mActionWidgets;
     QgsAttributeTableConfig mConfig;
+    QString mSortExpression;
 };
 
 #endif
