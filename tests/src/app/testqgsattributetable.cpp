@@ -42,9 +42,11 @@ class TestQgsAttributeTable : public QObject
     TestQgsAttributeTable();
 
   private slots:
+
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
+    void init();
+    // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void testRegression15974();
     void testFieldCalculation();
@@ -58,7 +60,7 @@ class TestQgsAttributeTable : public QObject
     void testFilteredFeatures();
     void testVisibleTemporal();
     void testCopySelectedRows();
-
+    void testSortNumbers();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -85,6 +87,11 @@ void TestQgsAttributeTable::initTestCase()
 void TestQgsAttributeTable::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+void TestQgsAttributeTable::init()
+{
+  QLocale::setDefault( QLocale::c() );
 }
 
 void TestQgsAttributeTable::testFieldCalculation()
@@ -409,6 +416,54 @@ void TestQgsAttributeTable::testSortByDisplayExpression()
   QCOMPARE( listModel->index( 0, 0 ).data( Qt::DisplayRole ), QVariant( 1.8 ) );
   QCOMPARE( listModel->index( 1, 0 ).data( Qt::DisplayRole ), QVariant( 3.2 ) );
   QCOMPARE( listModel->index( 2, 0 ).data( Qt::DisplayRole ), QVariant( 5.0 ) );
+}
+
+void TestQgsAttributeTable::testSortNumbers()
+{
+
+  QLocale::setDefault( QLocale::Italian );
+
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( 0, 1 );
+  f1.setAttribute( 1, 2.001 );
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( 0, 2 );
+  f2.setAttribute( 1, 1001 );
+  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( 0, 3 );
+  f3.setAttribute( 1, 10.0001 );
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+
+  QgsAttributeTableConfig cfg;
+  cfg.setSortExpression( QStringLiteral( R"("col1")" ) );
+  cfg.setSortOrder( Qt::SortOrder::DescendingOrder );
+  QgsAttributeTableConfig::ColumnConfig cfg1;
+  QgsAttributeTableConfig::ColumnConfig cfg2;
+  cfg1.name = QStringLiteral( "pk" );
+  cfg2.name = QStringLiteral( "col1" );
+  cfg.setColumns( {{ cfg1, cfg2 }} );
+
+  dlg->mMainView->setAttributeTableConfig( cfg );
+
+  auto model { dlg->mMainView->mFilterModel };
+
+  QCOMPARE( model->data( model->index( 2, 1 ), Qt::ItemDataRole::DisplayRole ).toString(), QString( "2,00100" ) );
+  QCOMPARE( model->data( model->index( 1, 1 ), Qt::ItemDataRole::DisplayRole ).toString(), QString( "10,00010" ) );
+  QCOMPARE( model->data( model->index( 0, 1 ), Qt::ItemDataRole::DisplayRole ).toString(), QString( "1.001,00000" ) );
+
+  QCOMPARE( model->data( model->index( 2, 2 ), QgsAttributeTableModel::Role::SortRole ).toDouble(), 2.001 );
+  QCOMPARE( model->data( model->index( 1, 2 ), QgsAttributeTableModel::Role::SortRole ).toDouble(), 10.0001 );
+  QCOMPARE( model->data( model->index( 0, 2 ), QgsAttributeTableModel::Role::SortRole ).toDouble(), 1001.0 );
+
+  QCOMPARE( dlg->mMainView->mTableView->horizontalHeader()->sortIndicatorSection(), 1 );
+  QCOMPARE( dlg->mMainView->mTableView->horizontalHeader()->sortIndicatorOrder(), Qt::SortOrder::DescendingOrder );
+  QVERIFY( dlg->mMainView->mTableView->horizontalHeader()->isSortIndicatorShown() );
+
 }
 
 void TestQgsAttributeTable::testRegression15974()
