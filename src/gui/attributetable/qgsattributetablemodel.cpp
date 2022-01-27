@@ -33,6 +33,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgssymbollayerutils.h"
 #include "qgsfieldformatterregistry.h"
+#include "qgsfallbackfieldformatter.h"
 #include "qgsgui.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayerjoininfo.h"
@@ -235,7 +236,13 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
         QgsFieldFormatter *fieldFormatter = mFieldFormatters.at( cache.sortFieldIndex );
         const QVariant &widgetCache = mAttributeWidgetCaches.at( cache.sortFieldIndex );
         const QVariantMap &widgetConfig = mWidgetConfigs.at( cache.sortFieldIndex );
-        const QVariant sortValue = fieldFormatter->representValue( mLayer, cache.sortFieldIndex, widgetConfig, widgetCache, mFeat.attribute( cache.sortFieldIndex ) );
+        // If using the default formatter use the raw value for sorting
+        // (keep the correct QVariant type and do not convert to a possibly localized string)
+        // See: https://github.com/qgis/QGIS/issues/34935
+        const bool isFallbackFormatter { fieldFormatter->id().isEmpty() };
+        const QVariant sortValue = isFallbackFormatter ?
+                                   mFeat.attribute( cache.sortFieldIndex ) :
+                                   fieldFormatter->representValue( mLayer, cache.sortFieldIndex, widgetConfig, widgetCache, mFeat.attribute( cache.sortFieldIndex ) );
         cache.sortCache.insert( mFeat.id(), sortValue );
       }
       else if ( cache.sortCacheExpression.isValid() )
