@@ -69,7 +69,10 @@ class TestQgsOgrUtils: public QObject
     void testOgrFieldTypeToQVariantType();
     void testOgrStringToVariant_data();
     void testOgrStringToVariant();
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
     void testConvertFieldDomain();
+#endif
 
   private:
 
@@ -902,6 +905,7 @@ void TestQgsOgrUtils::testOgrStringToVariant()
   QCOMPARE( res, expected );
 }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
 void TestQgsOgrUtils::testConvertFieldDomain()
 {
   OGRCodedValue v1;
@@ -988,6 +992,7 @@ void TestQgsOgrUtils::testConvertFieldDomain()
   QCOMPARE( globDomain->fieldType(), QVariant::String );
   OGR_FldDomain_Destroy( domain );
 }
+#endif
 
 QGSTEST_MAIN( TestQgsOgrUtils )
 #include "testqgsogrutils.moc"
