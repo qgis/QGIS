@@ -497,6 +497,7 @@ set(QGIS_CORE_SRCS
   qgstransaction.cpp
   qgstransactiongroup.cpp
   qgsunittypes.cpp
+  qgsvariantutils.cpp
   qgsvector.cpp
   qgsvector3d.cpp
   qgsvectorfilewriter.cpp
@@ -1149,6 +1150,7 @@ set(QGIS_CORE_HDRS
   qgsunittypes.h
   qgsuserprofile.h
   qgsuserprofilemanager.h
+  qgsvariantutils.h
   qgsvector.h
   qgsvector3d.h
   qgsvectorfilewriter.h

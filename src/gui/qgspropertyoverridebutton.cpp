@@ -163,8 +163,6 @@ void QgsPropertyOverrideButton::updateFieldLists()
     for ( const QgsField &f : fields )
     {
       bool fieldMatch = false;
-      QString fieldType;
-
       switch ( mDataTypes )
       {
         case QgsPropertyDefinition::DataTypeBoolean:
@@ -180,26 +178,6 @@ void QgsPropertyOverrideButton::updateFieldLists()
           break;
       }
 
-      switch ( f.type() )
-      {
-        case QVariant::String:
-          fieldType = tr( "string" );
-          break;
-        case QVariant::Int:
-          fieldType = tr( "integer" );
-          break;
-        case QVariant::LongLong:
-          fieldType = tr( "integer64" );
-          break;
-        case QVariant::Double:
-          fieldType = tr( "double" );
-          break;
-        case QVariant::Bool:
-          fieldType = tr( "boolean" );
-          break;
-        default:
-          fieldType = tr( "unknown type" );
-      }
       if ( fieldMatch )
       {
         mFieldNameList << f.name();

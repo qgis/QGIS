@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaddtablefield.h"
+#include "qgsvariantutils.h"
 
 ///@cond PRIVATE
 
@@ -75,10 +76,18 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Field type" ),
-                QStringList() << QObject::tr( "Integer" ) << QObject::tr( "Float" ) << QObject::tr( "String" )
-                << QObject::tr( "Boolean" ) << QObject::tr( "Date" ) << QObject::tr( "Time" )
-                << QObject::tr( "DateTime" ) << QObject::tr( "Binary" )
-                << QObject::tr( "StringList" ) << QObject::tr( "IntegerList" ) << QObject::tr( "DoubleList" ), false, 0 ) );
+                QStringList() << QgsVariantUtils::typeToDisplayString( QVariant::Int )
+                << QgsVariantUtils::typeToDisplayString( QVariant::Double )
+                << QgsVariantUtils::typeToDisplayString( QVariant::String )
+                << QgsVariantUtils::typeToDisplayString( QVariant::Bool )
+                << QgsVariantUtils::typeToDisplayString( QVariant::Date )
+                << QgsVariantUtils::typeToDisplayString( QVariant::Time )
+                << QgsVariantUtils::typeToDisplayString( QVariant::DateTime )
+                << QgsVariantUtils::typeToDisplayString( QVariant::ByteArray )
+                << QgsVariantUtils::typeToDisplayString( QVariant::StringList )
+                << QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int )
+                << QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ),
+                false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Field length" ),
                 QgsProcessingParameterNumber::Integer, 10, false, 1, 255 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Field precision" ),

@@ -19,6 +19,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 
 #include <QMessageBox>
 
@@ -31,8 +32,8 @@ QgsNewAuxiliaryFieldDialog::QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinit
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldText.svg" ), tr( "String" ), QgsPropertyDefinition::DataTypeString );
-  mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" ), tr( "Real" ), QgsPropertyDefinition::DataTypeNumeric );
+  mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldText.svg" ), QgsVariantUtils::typeToDisplayString( QVariant::String ), QgsPropertyDefinition::DataTypeString );
+  mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" ), QgsVariantUtils::typeToDisplayString( QVariant::Time ), QgsPropertyDefinition::DataTypeNumeric );
   mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" ), tr( "Integer" ), QgsPropertyDefinition::DataTypeBoolean );
 
   mType->setCurrentIndex( mType->findData( def.dataType() ) );

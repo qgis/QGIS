@@ -1,0 +1,40 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvariantutils.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsVariantUtils
+{
+%Docstring(signature="appended")
+
+Contains utility functions for working with QVariants and QVariant types.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsvariantutils.h"
+%End
+  public:
+
+    static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid );
+%Docstring
+Returns a user-friendly translated string representing a QVariant ``type``.
+
+The optional ``subType`` can be used to specify the type of variant list or map values.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvariantutils.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
