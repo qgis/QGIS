@@ -94,6 +94,7 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
 {
   int i = 0;
   const auto constColumns = config.columns();
+  QMap<QString, int> columns;
   for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
   {
     if ( columnConfig.hidden )
@@ -106,12 +107,29 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
     else
     {
       setColumnWidth( i, horizontalHeader()->defaultSectionSize() );
+      columns.insert( columnConfig.name, i );
     }
     i++;
   }
   mConfig = config;
   if ( config.sortExpression().isEmpty() )
+  {
     horizontalHeader()->setSortIndicatorShown( false );
+  }
+  else
+  {
+    if ( mSortExpression != config.sortExpression() )
+    {
+      const QgsExpression sortExp { config.sortExpression() };
+      if ( sortExp.isField() )
+      {
+        const QStringList refCols { sortExp.referencedColumns().values() };
+        horizontalHeader()->setSortIndicatorShown( true );
+        horizontalHeader()->setSortIndicator( columns.value( refCols.constFirst() ), config.sortOrder() );
+      }
+    }
+  }
+  mSortExpression = config.sortExpression();
 }
 
 QList<QgsFeatureId> QgsAttributeTableView::selectedFeaturesIds() const
