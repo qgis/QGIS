@@ -59,6 +59,11 @@ Qgis::FieldDomainType QgsCodedFieldDomain::type() const
   return Qgis::FieldDomainType::Coded;
 }
 
+QString QgsCodedFieldDomain::typeName() const
+{
+  return QObject::tr( "Coded Values" );
+}
+
 QgsCodedFieldDomain *QgsCodedFieldDomain::clone() const
 {
   std::unique_ptr< QgsCodedFieldDomain > res = std::make_unique< QgsCodedFieldDomain >( mName, mDescription, mFieldType, mValues );
@@ -86,6 +91,11 @@ Qgis::FieldDomainType QgsRangeFieldDomain::type() const
   return Qgis::FieldDomainType::Range;
 }
 
+QString QgsRangeFieldDomain::typeName() const
+{
+  return QObject::tr( "Range" );
+}
+
 QgsRangeFieldDomain *QgsRangeFieldDomain::clone() const
 {
   std::unique_ptr< QgsRangeFieldDomain > res = std::make_unique< QgsRangeFieldDomain >( mName, mDescription, mFieldType, mMin, mMinIsInclusive, mMax, mMaxIsInclusive );
@@ -109,6 +119,11 @@ QgsGlobFieldDomain::QgsGlobFieldDomain( const QString &name, const QString &desc
 Qgis::FieldDomainType QgsGlobFieldDomain::type() const
 {
   return Qgis::FieldDomainType::Glob;
+}
+
+QString QgsGlobFieldDomain::typeName() const
+{
+  return QObject::tr( "Glob" );
 }
 
 QgsGlobFieldDomain *QgsGlobFieldDomain::clone() const

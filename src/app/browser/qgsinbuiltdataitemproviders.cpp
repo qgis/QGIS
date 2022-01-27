@@ -50,6 +50,8 @@
 #include "qgslayeritem.h"
 #include "qgsprojectitem.h"
 #include "qgsfieldsitem.h"
+#include "qgsfielddomainsitem.h"
+#include "qgsfielddomain.h"
 #include "qgsconnectionsitem.h"
 #include "qgsqueryresultwidget.h"
 #include "qgsogrproviderutils.h"
@@ -1480,3 +1482,243 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 }
 
 
+//
+// QgsFieldDomainItemGuiProvider
+//
+
+QString QgsFieldDomainItemGuiProvider::name()
+{
+  return QStringLiteral( "field_domain_item" );
+}
+
+QWidget *QgsFieldDomainItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
+{
+  if ( QgsFieldDomainItem *fieldDomainItem = qobject_cast< QgsFieldDomainItem * >( item ) )
+  {
+    const QgsFieldDomain *domain = fieldDomainItem->fieldDomain();
+    return new QgsFieldDomainDetailsWidget( nullptr, domain );
+  }
+  else if ( QgsFieldDomainsItem *fieldDomainsItem = qobject_cast< QgsFieldDomainsItem * >( item ) )
+  {
+    return new QgsFieldDomainsDetailsWidget( nullptr, fieldDomainsItem->providerKey(), fieldDomainsItem->connectionUri() );
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+//
+// QgsFieldDomainDetailsWidget
+//
+
+QgsFieldDomainDetailsWidget::QgsFieldDomainDetailsWidget( QWidget *parent, const QgsFieldDomain *domain )
+  : QWidget( parent )
+{
+  setupUi( this );
+
+  mDomain.reset( domain->clone() );
+
+  const QString style = QgsApplication::reportStyleSheet();
+  mTextBrowser->document()->setDefaultStyleSheet( style );
+
+
+  QString metadata = QStringLiteral( "<html>\n<body>\n" );
+  metadata += QStringLiteral( "<h1>" ) + domain->name() + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Description" ) + QStringLiteral( "</td><td>" ) + domain->description() + QStringLiteral( "</td></tr>\n" );
+
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Type" ) + QStringLiteral( "</td><td>" ) + domain->typeName() + QStringLiteral( "</td></tr>\n" );
+
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Field type" ) + QStringLiteral( "</td><td>" );
+  switch ( domain->fieldType() )
+  {
+    case QVariant::Bool:
+      metadata += tr( "Boolean" );
+      break;
+    case QVariant::Int:
+      metadata +=  tr( "Integer" );
+      break;
+    case QVariant::LongLong:
+      metadata +=  tr( "Long integer" );
+      break;
+    case QVariant::Double:
+      metadata +=  tr( "Double" );
+      break;
+    case QVariant::List:
+    case QVariant::StringList:
+      metadata +=  tr( "List" );
+      break;
+    case QVariant::String:
+      metadata +=  tr( "String" );
+      break;
+    case QVariant::Date:
+      metadata +=  tr( "Date" );
+      break;
+    case QVariant::Time:
+      metadata +=  tr( "Time" );
+      break;
+    case QVariant::DateTime:
+      metadata +=  tr( "Date and time" );
+      break;
+    default:
+      break;
+  }
+  metadata += QStringLiteral( "</td></tr>\n" );
+
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Split policy" ) + QStringLiteral( "</td><td>" );
+  switch ( domain->splitPolicy() )
+  {
+    case Qgis::FieldDomainSplitPolicy::DefaultValue:
+      metadata += tr( "Use default field value" );
+      break;
+    case Qgis::FieldDomainSplitPolicy::Duplicate:
+      metadata +=  tr( "Duplicate field value" );
+      break;
+    case Qgis::FieldDomainSplitPolicy::GeometryRatio:
+      metadata +=  tr( "Use geometry ratio" );
+      break;
+  }
+  metadata += QStringLiteral( "</td></tr>\n" );
+
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Merge policy" ) + QStringLiteral( "</td><td>" );
+  switch ( domain->mergePolicy() )
+  {
+    case Qgis::FieldDomainMergePolicy::DefaultValue:
+      metadata +=  tr( "Use default field value" );
+      break;
+    case Qgis::FieldDomainMergePolicy::Sum:
+      metadata +=  tr( "Sum field values" );
+      break;
+    case Qgis::FieldDomainMergePolicy::GeometryWeighted:
+      metadata +=  tr( "Use geometry weighted value" );
+      break;
+  }
+
+  metadata += QLatin1String( "</table>\n<br><br>" );
+
+  switch ( domain->type() )
+  {
+    case Qgis::FieldDomainType::Coded:
+    {
+      metadata += QStringLiteral( "<h1>" ) + tr( "Coded values" ) + QStringLiteral( "</h1>\n<hr>\n" );
+      metadata += QLatin1String( "<table class=\"list-view\">\n" );
+
+      const QgsCodedFieldDomain *codedDomain = qgis::down_cast< QgsCodedFieldDomain *>( mDomain.get() );
+      const QList< QgsCodedValue > values = codedDomain->values();
+      for ( const QgsCodedValue &value : values )
+      {
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + value.code().toString() + QStringLiteral( "</td><td>" ) + value.value() + QStringLiteral( "</td></tr>\n" );
+      }
+      metadata += QLatin1String( "</table>\n<br><br>\n" );
+      break;
+    }
+
+    case Qgis::FieldDomainType::Range:
+    {
+      const QgsRangeFieldDomain *rangeDomain = qgis::down_cast< QgsRangeFieldDomain *>( mDomain.get() );
+
+      metadata += QStringLiteral( "<h1>" ) + tr( "Range" ) + QStringLiteral( "</h1>\n<hr>\n" );
+      metadata += QLatin1String( "<table class=\"list-view\">\n" );
+
+
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Minimum" ) + QStringLiteral( "</td><td>" )
+                  + QStringLiteral( "%1 %2" ).arg( rangeDomain->minimum().toString(),
+                      rangeDomain->minimumIsInclusive() ? tr( "(inclusive)" ) : tr( "(exclusive)" ) )
+                  + QStringLiteral( "</td></tr>\n" );
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Maximum" ) + QStringLiteral( "</td><td>" )
+                  + QStringLiteral( "%1 %2" ).arg( rangeDomain->maximum().toString(),
+                      rangeDomain->maximumIsInclusive() ? tr( "(inclusive)" ) : tr( "(exclusive)" ) )
+                  + QStringLiteral( "</td></tr>\n" );
+
+      metadata += QLatin1String( "</table>\n<br><br>\n" );
+      break;
+    }
+
+    case Qgis::FieldDomainType::Glob:
+    {
+      const QgsGlobFieldDomain *globDomain = qgis::down_cast< QgsGlobFieldDomain *>( mDomain.get() );
+
+      metadata += QStringLiteral( "<h1>" ) + tr( "Glob" ) + QStringLiteral( "</h1>\n<hr>\n" );
+      metadata += QLatin1String( "<table class=\"list-view\">\n" );
+
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Pattern" ) + QStringLiteral( "</td><td>" ) + globDomain->glob() + QStringLiteral( "</td></tr>\n" );
+
+      metadata += QLatin1String( "</table>\n<br><br>\n" );
+      break;
+    }
+
+  }
+
+  mTextBrowser->setHtml( metadata );
+}
+
+QgsFieldDomainDetailsWidget::~QgsFieldDomainDetailsWidget() = default;
+
+//
+// QgsFieldDomainsDetailsWidget
+//
+
+QgsFieldDomainsDetailsWidget::QgsFieldDomainsDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri )
+  : QWidget( parent )
+{
+  setupUi( this );
+
+  const QString style = QgsApplication::reportStyleSheet();
+  mTextBrowser->document()->setDefaultStyleSheet( style );
+
+  try
+  {
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+    if ( md )
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri, {} ) ) };
+      if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveFieldDomain ) )
+      {
+        QString domainError;
+        QStringList fieldDomains;
+        try
+        {
+          fieldDomains = conn->fieldDomainNames();
+        }
+        catch ( QgsProviderConnectionException &ex )
+        {
+          domainError = ex.what();
+        }
+
+        QString metadata = QStringLiteral( "<html>\n<body>\n" );
+        metadata += QStringLiteral( "<h1>" ) + tr( "Field Domains" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+
+        for ( const QString &name : std::as_const( fieldDomains ) )
+        {
+          try
+          {
+            std::unique_ptr< QgsFieldDomain > domain( conn->fieldDomain( name ) );
+            if ( domain )
+            {
+              metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + domain->name() + QStringLiteral( "</td><td>" ) + domain->typeName()
+                          + QStringLiteral( "</td><td>" ) + domain->description() + QStringLiteral( "</td></tr>\n" );
+            }
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            QgsMessageLog::logMessage( ex.what() );
+          }
+        }
+
+        if ( !domainError.isEmpty() )
+        {
+          mTextBrowser->setPlainText( domainError );
+        }
+        else
+        {
+          mTextBrowser->setHtml( metadata );
+        }
+      }
+    }
+  }
+  catch ( const QgsProviderConnectionException &ex )
+  {
+    mTextBrowser->setPlainText( ex.what() );
+  }
+}
