@@ -22,7 +22,7 @@
 
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsproject.h"
 #include "qgsxmlutils.h"
 #include "qgsexception.h"

@@ -26,7 +26,7 @@
 #include "qgsmapsettingsutils.h"
 #include "qgslayertree.h"
 #include "qgsmaplayerref.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontext.h"

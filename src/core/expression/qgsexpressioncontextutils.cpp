@@ -31,7 +31,7 @@
 #include "qgslayoutmultiframe.h"
 #include "qgsfeatureid.h"
 #include "qgslayoutitemmap.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsprojoperation.h"
 #include "qgsmarkersymbol.h"
 #include "qgstriangularmesh.h"

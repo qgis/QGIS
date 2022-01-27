@@ -17,7 +17,7 @@
 
 #include "qgssimplifymethod.h"
 #include "qgsexception.h"
-#include "qgsexpressionsorter.h"
+#include "qgsexpressionsorter_p.h"
 #include "qgsfeedback.h"
 #include "qgscoordinatetransform.h"
 

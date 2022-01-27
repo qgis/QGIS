@@ -18,7 +18,7 @@
 #include "qgsgrouplayer.h"
 #include "qgsmaplayerfactory.h"
 #include "qgspainting.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsgrouplayerrenderer.h"
 #include "qgsmaplayerref.h"
 #include "qgsvectorlayer.h"

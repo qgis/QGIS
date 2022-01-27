@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmapclippingregion.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include <algorithm>
 
 QgsGeometry QgsMapClippingRegion::geometry() const

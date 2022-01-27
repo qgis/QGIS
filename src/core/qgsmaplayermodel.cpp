@@ -20,7 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsiconutils.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include <QMimeData>
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent, QgsProject *project )
