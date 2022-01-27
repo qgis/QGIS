@@ -20,6 +20,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -503,14 +504,14 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   for ( int column = 0; column < tblSample->columnCount(); column++ )
   {
     QComboBox *typeCombo = new QComboBox( tblSample );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text" ), "text" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer)" ), "integer" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer - 64 bit)" ), "longlong" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number" ), "double" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) ), tr( "Time" ), "time" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::String ), "text" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Int ), "integer" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), "longlong" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), "double" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Bool ), "bool" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Date ), "date" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Time ), "time" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "datetime" );
     connect( typeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
     {
       mOverriddenFields.insert( column );

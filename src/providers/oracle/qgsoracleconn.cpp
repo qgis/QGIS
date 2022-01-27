@@ -24,6 +24,7 @@
 #include "qgsoracletablemodel.h"
 #include "qgssettings.h"
 #include "qgsoracleconnpool.h"
+#include "qgsvariantutils.h"
 
 #include <QSqlError>
 
@@ -968,14 +969,14 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleConn::nativeTypes()
 {
   return QList<QgsVectorDataProvider::NativeType>()
          // integer types
-         << QgsVectorDataProvider::NativeType( tr( "Whole number" ), "number(10,0)", QVariant::Int )
-         << QgsVectorDataProvider::NativeType( tr( "Whole big number" ), "number(20,0)", QVariant::LongLong )
-         << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), "number", QVariant::Double, 1, 38, 0, 38 )
-         << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), "double precision", QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Whole Number" ), "number(10,0)", QVariant::Int )
+         << QgsVectorDataProvider::NativeType( tr( "Whole Big Number" ), "number(20,0)", QVariant::LongLong )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (numeric)" ), "number", QVariant::Double, 1, 38, 0, 38 )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (decimal)" ), "double precision", QVariant::Double )
 
          // floating point
-         << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "binary_float", QVariant::Double )
-         << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "binary_double", QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (real)" ), "binary_float", QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (double)" ), "binary_double", QVariant::Double )
 
          // string types
          << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "CHAR", QVariant::String, 1, 255 )
@@ -983,8 +984,8 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleConn::nativeTypes()
          << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (long)" ), "LONG", QVariant::String )
 
          // date type
-         << QgsVectorDataProvider::NativeType( tr( "Date" ), "DATE", QVariant::Date, 38, 38, 0, 0 )
-         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "TIMESTAMP(6)", QVariant::DateTime, 38, 38, 6, 6 );
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), "DATE", QVariant::Date, 38, 38, 0, 0 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "TIMESTAMP(6)", QVariant::DateTime, 38, 38, 6, 6 );
 }
 
 QString QgsOracleConn::getSpatialIndexName( const QString &ownerName, const QString &tableName, const QString &geometryColumn, bool &isValid )

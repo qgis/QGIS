@@ -33,6 +33,7 @@
 #include "qgsgui.h"
 #include "qgsproviderconnectionmodel.h"
 #include "qgsiconutils.h"
+#include "qgsvariantutils.h"
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -102,14 +103,14 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mCrsSelector->setEnabled( false );
   mCrsSelector->setShowAccuracyWarnings( true );
 
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text Data" ), "text" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer)" ), "integer" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer 64 bit)" ), "integer64" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number (real)" ), "real" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), tr( "Binary (BLOB)" ), "binary" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::String ), "text" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Int ), "integer" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), "integer64" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), "real" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Date ), "date" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "datetime" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Bool ), "bool" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), "binary" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldJson.svg" ) ), tr( "JSON" ), "json" );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
