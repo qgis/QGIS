@@ -61,6 +61,11 @@ Clones the field domain.
 Returns the type of field domain.
 %End
 
+    virtual QString typeName() const = 0;
+%Docstring
+Returns a translated name of the field domain type.
+%End
+
     QString name() const;
 %Docstring
 Returns the name of the field domain.
@@ -213,6 +218,8 @@ appear only once, but it is the responsibility of the user to check this.
 
     virtual Qgis::FieldDomainType type() const;
 
+    virtual QString typeName() const;
+
     virtual QgsCodedFieldDomain *clone() const /Factory/;
 
 
@@ -270,6 +277,8 @@ Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if no minimu
 
 
     virtual Qgis::FieldDomainType type() const;
+
+    virtual QString typeName() const;
 
     virtual QgsRangeFieldDomain *clone() const /Factory/;
 
@@ -396,6 +405,8 @@ The ``glob`` argument specifies the content validation glob, e.g. "*[a-z][0-1]?"
 
 
     virtual Qgis::FieldDomainType type() const;
+
+    virtual QString typeName() const;
 
     virtual QgsGlobFieldDomain *clone() const /Factory/;
 

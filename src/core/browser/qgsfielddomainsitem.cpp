@@ -125,5 +125,10 @@ QIcon QgsFieldDomainItem::icon()
   BUILTIN_UNREACHABLE
 }
 
+const QgsFieldDomain *QgsFieldDomainItem::fieldDomain()
+{
+  return mDomain.get();
+}
+
 QgsFieldDomainItem::~QgsFieldDomainItem() = default;
 

@@ -93,6 +93,11 @@ Ownership of ``domain`` is transferred to the item.
     virtual QIcon icon();
 
 
+    const QgsFieldDomain *fieldDomain();
+%Docstring
+Returns the associated field domain.
+%End
+
 };
 
 

@@ -107,6 +107,11 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
 
     QIcon icon() override;
 
+    /**
+     * Returns the associated field domain.
+     */
+    const QgsFieldDomain *fieldDomain();
+
   private:
 
     std::unique_ptr< QgsFieldDomain > mDomain;

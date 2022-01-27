@@ -27,6 +27,7 @@ class QgsFavoriteItem;
 class QgsLayerItem;
 class QgsFieldsItem;
 class QgsFieldItem;
+class QgsFieldDomain;
 
 class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -160,6 +161,45 @@ class QgsFieldItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
+};
+
+
+#include "ui_qgsfielddomaindetailswidgetbase.h"
+
+class QgsFieldDomainDetailsWidget : public QWidget, private Ui_QgsFieldDomainDetailsWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldDomainDetailsWidget( QWidget *parent, const QgsFieldDomain *domain );
+    ~QgsFieldDomainDetailsWidget() override;
+
+  private:
+
+    std::unique_ptr< QgsFieldDomain > mDomain;
+};
+
+class QgsFieldDomainsDetailsWidget : public QWidget, private Ui_QgsFieldDomainDetailsWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldDomainsDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri );
+};
+
+
+class QgsFieldDomainItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldDomainItemGuiProvider() = default;
+
+    QString name() override;
+    QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) override;
 };
 
 

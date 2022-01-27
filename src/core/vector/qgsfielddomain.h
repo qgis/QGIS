@@ -76,6 +76,11 @@ class CORE_EXPORT QgsFieldDomain
     virtual Qgis::FieldDomainType type() const = 0;
 
     /**
+     * Returns a translated name of the field domain type.
+     */
+    virtual QString typeName() const = 0;
+
+    /**
      * Returns the name of the field domain.
      *
      * \see setName()
@@ -237,6 +242,7 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
     QgsCodedFieldDomain &operator= ( const QgsCodedFieldDomain & ) = delete;
 
     Qgis::FieldDomainType type() const override;
+    QString typeName() const override;
     QgsCodedFieldDomain *clone() const override SIP_FACTORY;
 
     /**
@@ -299,6 +305,7 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
     QgsRangeFieldDomain &operator= ( const QgsRangeFieldDomain & ) = delete;
 
     Qgis::FieldDomainType type() const override;
+    QString typeName() const override;
     QgsRangeFieldDomain *clone() const override SIP_FACTORY;
 
     /**
@@ -424,6 +431,7 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
     QgsGlobFieldDomain &operator= ( const QgsGlobFieldDomain & ) = delete;
 
     Qgis::FieldDomainType type() const override;
+    QString typeName() const override;
     QgsGlobFieldDomain *clone() const override SIP_FACTORY;
 
     /**
