@@ -28,6 +28,7 @@
 #include "cpl_string.h"
 
 class QgsCoordinateReferenceSystem;
+class QgsFieldDomain;
 
 class QTextCodec;
 
@@ -376,6 +377,19 @@ class CORE_EXPORT QgsOgrUtils
      */
     static QVariant stringToVariant( OGRFieldType type, OGRFieldSubType subType, const QString &string ) SIP_SKIP;
 
+#ifndef SIP_RUN
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+
+    /**
+     * Converts an OGR field domain definition to a QgsFieldDomain equivalent.
+     *
+     * \note Requires GDAL >= 3.3
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static std::unique_ptr< QgsFieldDomain > convertFieldDomain( OGRFieldDomainH domain );
+#endif
+#endif
 };
 
 #endif // QGSOGRUTILS_H

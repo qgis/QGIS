@@ -38,6 +38,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsfontutils.h"
 #include "qgssymbol.h"
+#include "qgsfielddomain.h"
 
 class TestQgsOgrUtils: public QObject
 {
@@ -68,6 +69,7 @@ class TestQgsOgrUtils: public QObject
     void testOgrFieldTypeToQVariantType();
     void testOgrStringToVariant_data();
     void testOgrStringToVariant();
+    void testConvertFieldDomain();
 
   private:
 
@@ -898,6 +900,93 @@ void TestQgsOgrUtils::testOgrStringToVariant()
                        static_cast<OGRFieldSubType>( ogrSubType ),
                        string );
   QCOMPARE( res, expected );
+}
+
+void TestQgsOgrUtils::testConvertFieldDomain()
+{
+  OGRCodedValue v1;
+  v1.pszCode = const_cast< char *>( "1" );
+  v1.pszValue = const_cast< char *>( "val1" );
+  OGRCodedValue v2;
+  v2.pszCode = const_cast< char *>( "2" );
+  v2.pszValue = const_cast< char *>( "val2" );
+  OGRCodedValue v3;
+  v3.pszCode = nullptr;
+  v3.pszValue = nullptr;
+  OGRCodedValue values[] =
+  {
+    v1,
+    v2,
+    v3
+  };
+  OGRFieldDomainH domain = OGR_CodedFldDomain_Create( "name", "desc", OFTInteger, OFSTNone, values );
+
+  std::unique_ptr< QgsFieldDomain > res = QgsOgrUtils::convertFieldDomain( domain );
+  QgsCodedFieldDomain *codedFieldDomain = dynamic_cast< QgsCodedFieldDomain *>( res.get() );
+  QVERIFY( codedFieldDomain );
+  QCOMPARE( codedFieldDomain->name(), QStringLiteral( "name" ) );
+  QCOMPARE( codedFieldDomain->description(), QStringLiteral( "desc" ) );
+  QCOMPARE( codedFieldDomain->fieldType(), QVariant::Int );
+  QCOMPARE( codedFieldDomain->values().size(), 2 );
+  QCOMPARE( codedFieldDomain->values().at( 0 ).code(), QVariant( 1 ) );
+  QCOMPARE( codedFieldDomain->values().at( 0 ).value(), QStringLiteral( "val1" ) );
+  QCOMPARE( codedFieldDomain->values().at( 1 ).code(), QVariant( 2 ) );
+  QCOMPARE( codedFieldDomain->values().at( 1 ).value(), QStringLiteral( "val2" ) );
+
+  OGR_FldDomain_SetSplitPolicy( domain, OFDSP_DEFAULT_VALUE );
+  OGR_FldDomain_SetMergePolicy( domain, OFDMP_DEFAULT_VALUE );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+
+  QCOMPARE( res->splitPolicy(), Qgis::FieldDomainSplitPolicy::DefaultValue );
+  QCOMPARE( res->mergePolicy(), Qgis::FieldDomainMergePolicy::DefaultValue );
+
+  OGR_FldDomain_SetSplitPolicy( domain, OFDSP_DUPLICATE );
+  OGR_FldDomain_SetMergePolicy( domain, OFDMP_SUM );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+
+  QCOMPARE( res->splitPolicy(), Qgis::FieldDomainSplitPolicy::Duplicate );
+  QCOMPARE( res->mergePolicy(), Qgis::FieldDomainMergePolicy::Sum );
+
+  OGR_FldDomain_SetSplitPolicy( domain, OFDSP_GEOMETRY_RATIO );
+  OGR_FldDomain_SetMergePolicy( domain, OFDMP_GEOMETRY_WEIGHTED );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+
+  QCOMPARE( res->splitPolicy(), Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  QCOMPARE( res->mergePolicy(), Qgis::FieldDomainMergePolicy::GeometryWeighted );
+
+  OGR_FldDomain_Destroy( domain );
+
+  OGRField min;
+  min.Integer = 5;
+  OGRField max;
+  max.Integer = 15;
+  domain = OGR_RangeFldDomain_Create( "name", "desc", OFTInteger, OFSTNone, &min, true, &max, false );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+  QgsRangeFieldDomain *rangeDomain = dynamic_cast< QgsRangeFieldDomain *>( res.get() );
+  QVERIFY( rangeDomain );
+  QCOMPARE( rangeDomain->name(), QStringLiteral( "name" ) );
+  QCOMPARE( rangeDomain->description(), QStringLiteral( "desc" ) );
+  QCOMPARE( rangeDomain->fieldType(), QVariant::Int );
+  QCOMPARE( rangeDomain->minimum(), QVariant( 5 ) );
+  QCOMPARE( rangeDomain->maximum(), QVariant( 15 ) );
+  QVERIFY( rangeDomain->minimumIsInclusive() );
+  QVERIFY( !rangeDomain->maximumIsInclusive() );
+  OGR_FldDomain_Destroy( domain );
+  domain = OGR_RangeFldDomain_Create( "name", "desc", OFTInteger, OFSTNone, &min, false, &max, true );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+  rangeDomain = dynamic_cast< QgsRangeFieldDomain *>( res.get() );
+  QVERIFY( !rangeDomain->minimumIsInclusive() );
+  QVERIFY( rangeDomain->maximumIsInclusive() );
+  OGR_FldDomain_Destroy( domain );
+
+  domain = OGR_GlobFldDomain_Create( "name", "desc", OFTString, OFSTNone, "*a*" );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+  QgsGlobFieldDomain *globDomain = dynamic_cast< QgsGlobFieldDomain *>( res.get() );
+  QVERIFY( globDomain );
+  QCOMPARE( globDomain->name(), QStringLiteral( "name" ) );
+  QCOMPARE( globDomain->description(), QStringLiteral( "desc" ) );
+  QCOMPARE( globDomain->fieldType(), QVariant::String );
+  OGR_FldDomain_Destroy( domain );
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )

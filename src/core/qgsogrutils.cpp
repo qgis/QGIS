@@ -35,6 +35,7 @@
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgsfielddomain.h"
 
 #include <QTextCodec>
 #include <QUuid>
@@ -1908,3 +1909,98 @@ QVariant QgsOgrUtils::stringToVariant( OGRFieldType type, OGRFieldSubType, const
   return ok ? res : QVariant();
 }
 
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+std::unique_ptr< QgsFieldDomain > QgsOgrUtils::convertFieldDomain( OGRFieldDomainH domain )
+{
+  if ( !domain )
+    return nullptr;
+
+  const QString name{ OGR_FldDomain_GetName( domain ) };
+  const QString description{ OGR_FldDomain_GetDescription( domain ) };
+
+  QVariant::Type fieldType = QVariant::Type::Invalid;
+  QVariant::Type fieldSubType = QVariant::Type::Invalid;
+  const OGRFieldType domainFieldType = OGR_FldDomain_GetFieldType( domain );
+  const OGRFieldSubType domainFieldSubType = OGR_FldDomain_GetFieldSubType( domain );
+  ogrFieldTypeToQVariantType( domainFieldType, domainFieldSubType, fieldType, fieldSubType );
+
+  std::unique_ptr< QgsFieldDomain > res;
+  switch ( OGR_FldDomain_GetDomainType( domain ) )
+  {
+    case OFDT_CODED:
+    {
+      QList< QgsCodedValue > values;
+      const OGRCodedValue *codedValue = OGR_CodedFldDomain_GetEnumeration( domain );
+      while ( codedValue && codedValue->pszCode )
+      {
+        const QString code( codedValue->pszCode );
+
+        // if pszValue is null then it indicates we are working with a set of acceptable values which aren't
+        // coded. In this case we copy the code as the value so that QGIS exposes the domain as a choice of
+        // the valid code values.
+        const QString value( codedValue->pszValue ? codedValue->pszValue : codedValue->pszCode );
+        values.append( QgsCodedValue( stringToVariant( domainFieldType, domainFieldSubType, code ), value ) );
+
+        codedValue++;
+      }
+
+      res = std::make_unique< QgsCodedFieldDomain >( name, description, fieldType, values );
+      break;
+    }
+
+    case OFDT_RANGE:
+    {
+      QVariant minValue;
+      bool minIsInclusive = false;
+      if ( const OGRField *min = OGR_RangeFldDomain_GetMin( domain, &minIsInclusive ) )
+      {
+        minValue = QgsOgrUtils::OGRFieldtoVariant( min, domainFieldType );
+      }
+      QVariant maxValue;
+      bool maxIsInclusive = false;
+      if ( const OGRField *max = OGR_RangeFldDomain_GetMax( domain, &maxIsInclusive ) )
+      {
+        maxValue = QgsOgrUtils::OGRFieldtoVariant( max, domainFieldType );
+      }
+
+      res = std::make_unique< QgsRangeFieldDomain >( name, description, fieldType,
+            minValue, minIsInclusive,
+            maxValue, maxIsInclusive );
+      break;
+    }
+
+    case OFDT_GLOB:
+      res = std::make_unique< QgsGlobFieldDomain >( name, description, fieldType,
+            QString( OGR_GlobFldDomain_GetGlob( domain ) ) );
+      break;
+  }
+
+  switch ( OGR_FldDomain_GetMergePolicy( domain ) )
+  {
+    case OFDMP_DEFAULT_VALUE:
+      res->setMergePolicy( Qgis::FieldDomainMergePolicy::DefaultValue );
+      break;
+    case OFDMP_SUM:
+      res->setMergePolicy( Qgis::FieldDomainMergePolicy::Sum );
+      break;
+    case OFDMP_GEOMETRY_WEIGHTED:
+      res->setMergePolicy( Qgis::FieldDomainMergePolicy::GeometryWeighted );
+      break;
+  }
+
+  switch ( OGR_FldDomain_GetSplitPolicy( domain ) )
+  {
+    case OFDSP_DEFAULT_VALUE:
+      res->setSplitPolicy( Qgis::FieldDomainSplitPolicy::DefaultValue );
+      break;
+    case OFDSP_DUPLICATE:
+      res->setSplitPolicy( Qgis::FieldDomainSplitPolicy::Duplicate );
+      break;
+    case OFDSP_GEOMETRY_RATIO:
+      res->setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+      break;
+  }
+  return res;
+}
+#endif
