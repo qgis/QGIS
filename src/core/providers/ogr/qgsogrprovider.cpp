@@ -820,78 +820,12 @@ void QgsOgrProvider::loadFields()
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
   {
     OGRFieldDefnH fldDef = fdef.GetFieldDefn( i );
-    OGRFieldType ogrType = OGR_Fld_GetType( fldDef );
-    OGRFieldSubType ogrSubType = OFSTNone;
+    const OGRFieldType ogrType = OGR_Fld_GetType( fldDef );
+    const OGRFieldSubType ogrSubType = OGR_Fld_GetSubType( fldDef );
 
-    QVariant::Type varType;
+    QVariant::Type varType = QVariant::Invalid;
     QVariant::Type varSubType = QVariant::Invalid;
-    switch ( ogrType )
-    {
-      case OFTInteger:
-        if ( OGR_Fld_GetSubType( fldDef ) == OFSTBoolean )
-        {
-          varType = QVariant::Bool;
-          ogrSubType = OFSTBoolean;
-        }
-        else
-          varType = QVariant::Int;
-        break;
-      case OFTInteger64:
-        varType = QVariant::LongLong;
-        break;
-      case OFTReal:
-        varType = QVariant::Double;
-        break;
-      case OFTDate:
-        varType = QVariant::Date;
-        break;
-      case OFTTime:
-        varType = QVariant::Time;
-        break;
-      case OFTDateTime:
-        varType = QVariant::DateTime;
-        break;
-
-      case OFTBinary:
-        varType = QVariant::ByteArray;
-        break;
-
-      case OFTString:
-        if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
-        {
-          ogrSubType = OFSTJSON;
-          varType = QVariant::Map;
-          varSubType = QVariant::String;
-        }
-        else
-        {
-          varType = QVariant::String;
-        }
-        break;
-
-      case OFTStringList:
-        varType = QVariant::StringList;
-        varSubType = QVariant::String;
-        break;
-
-      case OFTIntegerList:
-        varType = QVariant::List;
-        varSubType = QVariant::Int;
-        break;
-
-      case OFTRealList:
-        varType = QVariant::List;
-        varSubType = QVariant::Double;
-        break;
-
-      case OFTInteger64List:
-        varType = QVariant::List;
-        varSubType = QVariant::LongLong;
-        break;
-
-      default:
-        varType = QVariant::String; // other unsupported, leave it as a string
-    }
+    QgsOgrUtils::ogrFieldTypeToQVariantType( ogrType, ogrSubType, varType, varSubType );
 
     //TODO: fix this hack
 #ifdef ANDROID
