@@ -26,6 +26,8 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
+#include "qgsogrutils.h"
+#include "qgsfielddomain.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
@@ -379,6 +381,15 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::DropRasterTable,
     Capability::SqlLayers
   };
+
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+  mCapabilities |= Capability::RetrieveFieldDomain;
+#endif
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+  mCapabilities |= Capability::ListFieldDomains;
+#endif
+
   mGeometryColumnCapabilities =
   {
     GeometryColumnCapability::Z,
@@ -1183,6 +1194,55 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsGeoPackageProvid
     options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( decoded[ QStringLiteral( "layerName" ) ].toString() ) );
   }
   return options;
+}
+
+QStringList QgsGeoPackageProviderConnection::fieldDomainNames() const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  if ( hDS )
+  {
+    QStringList names;
+    if ( char **domainNames = GDALDatasetGetFieldDomainNames( hDS.get(), nullptr ) )
+    {
+      names = QgsOgrUtils::cStringListToQStringList( domainNames );
+      CSLDestroy( domainNames );
+    }
+    return names;
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening GPKG %1!" ).arg( uri() ) );
+  }
+#else
+  throw QgsProviderConnectionException( QObject::tr( "Listing field domains for GeoPackage requires GDAL 3.5 or later" ) );
+#endif
+}
+
+QgsFieldDomain *QgsGeoPackageProviderConnection::fieldDomain( const QString &name ) const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  if ( hDS )
+  {
+    if ( OGRFieldDomainH domain = GDALDatasetGetFieldDomain( hDS.get(), name.toUtf8().constData() ) )
+    {
+      std::unique_ptr< QgsFieldDomain > res = QgsOgrUtils::convertFieldDomain( domain );
+      if ( res )
+      {
+        return res.release();
+      }
+    }
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve field domain %1!" ).arg( name ) );
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening GPKG %1!" ).arg( uri() ) );
+  }
+#else
+  ( void )name;
+  throw QgsProviderConnectionException( QObject::tr( "Retrieving field domains for GeoPackage requires GDAL 3.3 or later" ) );
+#endif
 }
 
 QgsGeoPackageProviderResultIterator::QgsGeoPackageProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )

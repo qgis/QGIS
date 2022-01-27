@@ -83,6 +83,8 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     QgsFields fields( const QString &schema, const QString &table ) const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
+    QStringList fieldDomainNames() const override;
+    QgsFieldDomain *fieldDomain( const QString &name ) const override;
 
   private:
 
