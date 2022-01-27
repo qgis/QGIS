@@ -6134,9 +6134,12 @@ class TestQgsGeometry(unittest.TestCase):
     def testCoerce(self):
         """Test coerce function"""
 
-        def coerce_to_wkt(wkt, type):
+        def coerce_to_wkt(wkt, type, defaultZ=None, defaultM=None):
             geom = QgsGeometry.fromWkt(wkt)
-            return [g.asWkt(2) for g in geom.coerceToType(type)]
+            if defaultZ is not None or defaultM is not None:
+                return [g.asWkt(2) for g in geom.coerceToType(type, defaultZ or 0, defaultM or 0)]
+            else:
+                return [g.asWkt(2) for g in geom.coerceToType(type)]
 
         self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Point), ['Point (1 1)'])
         self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.LineString),
@@ -6158,6 +6161,11 @@ class TestQgsGeometry(unittest.TestCase):
 
         # Adding Z back
         self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZ), ['PointZ (1 1 0)'])
+
+        # Adding Z/M with defaults
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZ, defaultZ=222), ['PointZ (1 1 222)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointM, defaultM=333), ['PointM (1 1 333)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZM, defaultZ=222, defaultM=333), ['PointZM (1 1 222 333)'])
 
         # Adding M back
         self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointM), ['PointM (1 1 0)'])
