@@ -1783,3 +1783,77 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 
   return nullptr;
 }
+
+void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubType ogrSubType, QVariant::Type &variantType, QVariant::Type &variantSubType )
+{
+  variantType = QVariant::Type::Invalid;
+  variantSubType = QVariant::Type::Invalid;
+
+  switch ( ogrType )
+  {
+    case OFTInteger:
+      if ( ogrSubType == OFSTBoolean )
+      {
+        variantType = QVariant::Bool;
+        ogrSubType = OFSTBoolean;
+      }
+      else
+        variantType = QVariant::Int;
+      break;
+    case OFTInteger64:
+      variantType = QVariant::LongLong;
+      break;
+    case OFTReal:
+      variantType = QVariant::Double;
+      break;
+    case OFTDate:
+      variantType = QVariant::Date;
+      break;
+    case OFTTime:
+      variantType = QVariant::Time;
+      break;
+    case OFTDateTime:
+      variantType = QVariant::DateTime;
+      break;
+
+    case OFTBinary:
+      variantType = QVariant::ByteArray;
+      break;
+
+    case OFTString:
+    case OFTWideString:
+      if ( ogrSubType == OFSTJSON )
+      {
+        ogrSubType = OFSTJSON;
+        variantType = QVariant::Map;
+        variantSubType = QVariant::String;
+      }
+      else
+      {
+        variantType = QVariant::String;
+      }
+      break;
+
+    case OFTStringList:
+    case OFTWideStringList:
+      variantType = QVariant::StringList;
+      variantSubType = QVariant::String;
+      break;
+
+    case OFTIntegerList:
+      variantType = QVariant::List;
+      variantSubType = QVariant::Int;
+      break;
+
+    case OFTRealList:
+      variantType = QVariant::List;
+      variantSubType = QVariant::Double;
+      break;
+
+    case OFTInteger64List:
+      variantType = QVariant::List;
+      variantSubType = QVariant::LongLong;
+      break;
+  }
+}
+
