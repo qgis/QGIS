@@ -253,6 +253,14 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
      */
     void setValues( const QList< QgsCodedValue> &values ) { mValues = values; }
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsCodedFieldDomain: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
     QList< QgsCodedValue> mValues;
 
@@ -365,6 +373,18 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
      */
     void setMaximumIsInclusive( bool inclusive ) { mMaxIsInclusive = inclusive; }
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsRangeFieldDomain: %1 %2%3, %4%5>" ).arg( sipCpp->name(),
+                  sipCpp->minimumIsInclusive() ? QStringLiteral( "[" ) : QStringLiteral( "(" ),
+                  sipCpp->minimum().toString(),
+                  sipCpp->maximum().toString(),
+                  sipCpp->maximumIsInclusive() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
     QVariant mMin;
     QVariant mMax;
@@ -423,6 +443,14 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
      * \see glob()
      */
     void setGlob( const QString &glob ) { mGlob = glob; }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsGlobFieldDomain: %1 '%2'>" ).arg( sipCpp->name(), sipCpp->glob() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     QString mGlob;

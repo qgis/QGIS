@@ -43,6 +43,8 @@ class TestPyQgsFieldDomain(unittest.TestCase):
                                          QgsCodedValue(6, 'b')
                                      ])
 
+        self.assertEqual(str(domain), '<QgsCodedFieldDomain: name>')
+
         self.assertEqual(domain.type(), Qgis.FieldDomainType.Coded)
         self.assertEqual(domain.name(), 'name')
         domain.setName('n')
@@ -93,6 +95,8 @@ class TestPyQgsFieldDomain(unittest.TestCase):
                                      QVariant.Int,
                                      1, True, 5, True)
 
+        self.assertEqual(str(domain), '<QgsRangeFieldDomain: name [1, 5]>')
+
         self.assertEqual(domain.type(), Qgis.FieldDomainType.Range)
         self.assertEqual(domain.name(), 'name')
         domain.setName('n')
@@ -118,9 +122,13 @@ class TestPyQgsFieldDomain(unittest.TestCase):
         domain.setMinimumIsInclusive(False)
         self.assertFalse(domain.minimumIsInclusive())
 
+        self.assertEqual(str(domain), '<QgsRangeFieldDomain: n (-1, 55]>')
+
         self.assertTrue(domain.maximumIsInclusive())
         domain.setMaximumIsInclusive(False)
         self.assertFalse(domain.maximumIsInclusive())
+
+        self.assertEqual(str(domain), '<QgsRangeFieldDomain: n (-1, 55)>')
 
         domain.setSplitPolicy(Qgis.FieldDomainSplitPolicy.GeometryRatio)
         self.assertEqual(domain.splitPolicy(), Qgis.FieldDomainSplitPolicy.GeometryRatio)
@@ -144,6 +152,8 @@ class TestPyQgsFieldDomain(unittest.TestCase):
                                     'desc',
                                     QVariant.String,
                                     '*a*')
+
+        self.assertEqual(str(domain), "<QgsGlobFieldDomain: name '*a*'>")
 
         self.assertEqual(domain.type(), Qgis.FieldDomainType.Glob)
         self.assertEqual(domain.name(), 'name')
