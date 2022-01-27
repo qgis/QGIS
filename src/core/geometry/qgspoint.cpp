@@ -154,6 +154,14 @@ bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
   return true;
 }
 
+inline double stringToDouble( const QString& string )
+{
+    if (string.compare( QLatin1String("nan")))
+        return std::numeric_limits<double>::quiet_NaN();
+    else
+        return string.toDouble();
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -222,9 +230,9 @@ bool QgsPoint::fromWkt( const QString &wkt )
   mX = coordinates[idx++].toDouble();
   mY = coordinates[idx++].toDouble();
   if ( is3D() && coordinates.length() > 2 )
-    mZ = coordinates[idx++].toDouble();
+    mZ = stringToDouble( coordinates[idx++] );
   if ( isMeasure() && coordinates.length() > 2 + is3D() )
-    mM = coordinates[idx++].toDouble();
+    mM = stringToDouble( coordinates[idx++] );
 
   return true;
 }
