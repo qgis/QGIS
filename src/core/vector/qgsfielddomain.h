@@ -238,8 +238,12 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
                          QVariant::Type fieldType,
                          const QList<QgsCodedValue> &values );
 
+#ifndef SIP_RUN
+    //! QgsCodedFieldDomain cannot be copied - use clone() instead
     QgsCodedFieldDomain( const QgsCodedFieldDomain & ) = delete;
+    //! QgsCodedFieldDomain cannot be copied - use clone() instead
     QgsCodedFieldDomain &operator= ( const QgsCodedFieldDomain & ) = delete;
+#endif
 
     Qgis::FieldDomainType type() const override;
     QString typeName() const override;
@@ -300,9 +304,12 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
                          const QVariant &maximum,
                          bool maximumIsInclusive );
 
-
+#ifndef SIP_RUN
+    //! QgsRangeFieldDomain cannot be copied - use clone() instead
     QgsRangeFieldDomain( const QgsRangeFieldDomain & ) = delete;
+    //! QgsRangeFieldDomain cannot be copied - use clone() instead
     QgsRangeFieldDomain &operator= ( const QgsRangeFieldDomain & ) = delete;
+#endif
 
     Qgis::FieldDomainType type() const override;
     QString typeName() const override;
@@ -427,8 +434,12 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
                         QVariant::Type fieldType,
                         const QString &glob );
 
+#ifndef SIP_RUN
+    //! QgsGlobFieldDomain cannot be copied - use clone() instead
     QgsGlobFieldDomain( const QgsGlobFieldDomain & ) = delete;
+    //! QgsGlobFieldDomain cannot be copied - use clone() instead
     QgsGlobFieldDomain &operator= ( const QgsGlobFieldDomain & ) = delete;
+#endif
 
     Qgis::FieldDomainType type() const override;
     QString typeName() const override;
