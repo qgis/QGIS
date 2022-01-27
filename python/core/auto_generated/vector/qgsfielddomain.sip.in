@@ -275,7 +275,6 @@ Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if no minimu
 %End
 
 
-
     virtual Qgis::FieldDomainType type() const;
 
     virtual QString typeName() const;
