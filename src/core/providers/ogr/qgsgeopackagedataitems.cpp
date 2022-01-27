@@ -38,6 +38,7 @@
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsprovidermetadata.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsfielddomainsitem.h"
 
 QString QgsGeoPackageDataItemProvider::name()
 {
@@ -170,6 +171,30 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
     {
       const QgsGeoPackageProjectUri projectUri { true, mPath, projectName };
       children.append( new QgsProjectItem( this, projectName, QgsGeoPackageProjectStorage::encodeUri( projectUri ) ) );
+    }
+  }
+
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path, QVariantMap() ) ) );
+  if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains ) )
+  {
+    QString domainError;
+    QStringList fieldDomains;
+    try
+    {
+      fieldDomains = conn->fieldDomainNames();
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      domainError = ex.what();
+    }
+
+    if ( !fieldDomains.empty() || !domainError.isEmpty() )
+    {
+      std::unique_ptr< QgsFieldDomainsItem > domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", path, QStringLiteral( "ogr" ) );
+      // force this item to appear last by setting a maximum string value for the sort key
+      domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
+      children.append( domainsItem.release() );
     }
   }
 
