@@ -154,12 +154,12 @@ bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
   return true;
 }
 
-inline double stringToDouble( const QString& string )
+inline double stringToDouble( const QString &string )
 {
-    if (string.compare( QLatin1String("nan")))
-        return std::numeric_limits<double>::quiet_NaN();
-    else
-        return string.toDouble();
+  if ( string.compare( QLatin1String( "nan" ) ) )
+    return std::numeric_limits<double>::quiet_NaN();
+  else
+    return string.toDouble();
 }
 
 /***************************************************************************
