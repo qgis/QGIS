@@ -26,6 +26,7 @@
 #include <QObject>
 
 class QgsFeedback;
+class QgsFieldDomain;
 
 /**
  * \brief The QgsAbstractDatabaseProviderConnection class provides common functionality
@@ -498,6 +499,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       DeleteField = 1 << 19,                          //!< Can delete an existing field/column
       DeleteFieldCascade = 1 << 20,                   //!< Can delete an existing field/column with cascade
       AddField = 1 << 21,                             //!< Can add a new field/column
+      ListFieldDomains = 1 << 22,                     //!< Can return a list of field domain names (since QGIS 3.26)
+      RetrieveFieldDomain = 1 << 23,                  //!< Can retrieve field domain details from provider (since QGIS 3.26)
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -805,6 +808,32 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     * \since QGIS 3.22
     */
     virtual QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
+
+    /**
+     * Returns a list of field domain names present on the provider.
+     *
+     * This is supported on providers with the Capability::ListFieldDomains capability only.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     *
+     * \see fieldDomain()
+     * \since QGIS 3.26
+     */
+    virtual QStringList fieldDomainNames() const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns the field domain with the specified \a name from the provider.
+     *
+     * The caller takes ownership of the return object. Will return NULLPTR if no matching field domain is found.
+     *
+     * This is supported on providers with the Capability::RetrieveFieldDomain capability only.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     *
+     * \see fieldDomainNames()
+     * \since QGIS 3.26
+     */
+    virtual QgsFieldDomain *fieldDomain( const QString &name ) const SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
 
   protected:
 

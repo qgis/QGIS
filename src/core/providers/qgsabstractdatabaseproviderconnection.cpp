@@ -1259,6 +1259,18 @@ QgsFields QgsAbstractDatabaseProviderConnection::fields( const QString &schema, 
   }
 }
 
+QStringList QgsAbstractDatabaseProviderConnection::fieldDomainNames() const
+{
+  checkCapability( Capability::ListFieldDomains );
+  return QStringList();
+}
+
+QgsFieldDomain *QgsAbstractDatabaseProviderConnection::fieldDomain( const QString & ) const
+{
+  checkCapability( Capability::RetrieveFieldDomain );
+  return nullptr;
+}
+
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {
   QString n = mTableName;

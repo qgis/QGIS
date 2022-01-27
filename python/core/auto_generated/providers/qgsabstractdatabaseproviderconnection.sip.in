@@ -349,6 +349,8 @@ This information is calculated from the geometry columns types.
       DeleteField,
       DeleteFieldCascade,
       AddField,
+      ListFieldDomains,
+      RetrieveFieldDomain,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -691,6 +693,34 @@ The default implementation returns an list of common reserved words under the
 Subclasses should add provider- and/or connection- specific words.
 
 .. versionadded:: 3.22
+%End
+
+    virtual QStringList fieldDomainNames() const throw( QgsProviderConnectionException );
+%Docstring
+Returns a list of field domain names present on the provider.
+
+This is supported on providers with the Capability.ListFieldDomains capability only.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. seealso:: :py:func:`fieldDomain`
+
+.. versionadded:: 3.26
+%End
+
+    virtual QgsFieldDomain *fieldDomain( const QString &name ) const throw( QgsProviderConnectionException ) /Factory/;
+%Docstring
+Returns the field domain with the specified ``name`` from the provider.
+
+The caller takes ownership of the return object. Will return ``None`` if no matching field domain is found.
+
+This is supported on providers with the Capability.RetrieveFieldDomain capability only.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. seealso:: :py:func:`fieldDomainNames`
+
+.. versionadded:: 3.26
 %End
 
   protected:
