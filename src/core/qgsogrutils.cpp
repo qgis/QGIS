@@ -1857,3 +1857,54 @@ void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubT
   }
 }
 
+QVariant QgsOgrUtils::stringToVariant( OGRFieldType type, OGRFieldSubType, const QString &string )
+{
+  if ( string.isEmpty() )
+    return QVariant();
+
+  bool ok = false;
+  QVariant res;
+  switch ( type )
+  {
+    case OFTInteger:
+      res = string.toInt( &ok );
+      break;
+
+    case OFTInteger64:
+      res = string.toLongLong( &ok );
+      break;
+
+    case OFTReal:
+      res = string.toDouble( &ok );
+      break;
+
+    case OFTString:
+    case OFTWideString:
+      res = string;
+      ok = true;
+      break;
+
+    case OFTDate:
+      res = QDate::fromString( string, Qt::ISODate );
+      ok = res.isValid();
+      break;
+
+    case OFTTime:
+      res = QTime::fromString( string, Qt::ISODate );
+      ok = res.isValid();
+      break;
+
+    case OFTDateTime:
+      res = QDateTime::fromString( string, Qt::ISODate );
+      ok = res.isValid();
+      break;
+
+    default:
+      res = string;
+      ok = true;
+      break;
+  }
+
+  return ok ? res : QVariant();
+}
+

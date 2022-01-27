@@ -362,9 +362,19 @@ class CORE_EXPORT QgsOgrUtils
      * \param variantType will be set to matching QVariant type
      * \param variantSubType will be set to matching QVariant sub type, for list, map and other complex OGR field types.
      *
+     * \note Not available in Python bindings
      * \since QGIS 3.26
      */
     static void ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubType ogrSubType, QVariant::Type &variantType, QVariant::Type &variantSubType ) SIP_SKIP;
+
+    /**
+     * Converts a string to a variant, using the provider OGR field \a type and \a subType to determine the most appropriate
+     * variant type.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static QVariant stringToVariant( OGRFieldType type, OGRFieldSubType subType, const QString &string ) SIP_SKIP;
 
 };
 

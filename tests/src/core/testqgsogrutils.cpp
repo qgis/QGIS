@@ -17,6 +17,9 @@
 #include <QString>
 #include <QStringList>
 #include <QSettings>
+#include <QDate>
+#include <QTime>
+#include <QDateTime>
 
 #include <ogr_api.h>
 #include "cpl_conv.h"
@@ -63,6 +66,8 @@ class TestQgsOgrUtils: public QObject
     void ogrFieldToVariant();
     void testOgrFieldTypeToQVariantType_data();
     void testOgrFieldTypeToQVariantType();
+    void testOgrStringToVariant_data();
+    void testOgrStringToVariant();
 
   private:
 
@@ -847,6 +852,52 @@ void TestQgsOgrUtils::testOgrFieldTypeToQVariantType()
       variantType, variantSubType );
   QCOMPARE( static_cast< int >( variantType ), expectedType );
   QCOMPARE( static_cast< int >( variantSubType ), expectedSubType );
+}
+
+void TestQgsOgrUtils::testOgrStringToVariant_data()
+{
+  QTest::addColumn<int>( "ogrType" );
+  QTest::addColumn<int>( "ogrSubType" );
+  QTest::addColumn<QString>( "string" );
+  QTest::addColumn<QVariant>( "expected" );
+
+  QTest::newRow( "OFTInteger null" ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTNone ) << QString( "" ) << QVariant();
+  QTest::newRow( "OFTInteger 5" ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTNone ) << QStringLiteral( "5" ) << QVariant( 5 );
+
+  QTest::newRow( "OFTInteger64 null" ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTNone ) << QString( "" ) << QVariant();
+  QTest::newRow( "OFTInteger64 5" ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTNone ) << QStringLiteral( "5" ) << QVariant( 5LL );
+
+  QTest::newRow( "OFTReal null" ) << static_cast< int >( OFTReal ) << static_cast< int >( OFSTNone ) << QString( "" ) << QVariant();
+  QTest::newRow( "OFTReal 5.5" ) << static_cast< int >( OFTReal ) << static_cast< int >( OFSTNone ) << QStringLiteral( "5.5" ) << QVariant( 5.5 );
+  QTest::newRow( "OFTReal -5.5" ) << static_cast< int >( OFTReal ) << static_cast< int >( OFSTNone ) << QStringLiteral( "-5.5" ) << QVariant( -5.5 );
+
+  QTest::newRow( "OFTString null" ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTNone ) << QString( "" ) << QVariant();
+  QTest::newRow( "OFTString aaaa" ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTNone ) << QStringLiteral( "aaaa" ) << QVariant( QStringLiteral( "aaaa" ) );
+
+  QTest::newRow( "OFTWideString null" ) << static_cast< int >( OFTWideString ) << static_cast< int >( OFSTNone ) << QString( "" ) << QVariant();
+  QTest::newRow( "OFTWideString aaaa" ) << static_cast< int >( OFTWideString ) << static_cast< int >( OFSTNone ) << QStringLiteral( "aaaa" ) << QVariant( QStringLiteral( "aaaa" ) );
+
+  QTest::newRow( "OFTDate null" ) << static_cast< int >( OFTDate ) << static_cast< int >( OFSTNone ) << QString( "" ) << QVariant();
+  QTest::newRow( "OFTDate 2021-03-04" ) << static_cast< int >( OFTDate ) << static_cast< int >( OFSTNone ) << QStringLiteral( "2021-03-04" ) << QVariant( QDate( 2021, 3, 4 ) );
+
+  QTest::newRow( "OFTTime null" ) << static_cast< int >( OFTTime ) << static_cast< int >( OFSTNone ) << QString( "" ) << QVariant();
+  QTest::newRow( "OFTTime aaaa" ) << static_cast< int >( OFTTime ) << static_cast< int >( OFSTNone ) << QStringLiteral( "13:14:15" ) << QVariant( QTime( 13, 14, 15 ) );
+
+  QTest::newRow( "OFTDateTime null" ) << static_cast< int >( OFTDateTime ) << static_cast< int >( OFSTNone ) << QString( "" ) << QVariant();
+  QTest::newRow( "OFTDateTime aaaa" ) << static_cast< int >( OFTDateTime ) << static_cast< int >( OFSTNone ) << QStringLiteral( "2021-03-04 13:14:15" ) << QVariant( QDateTime( QDate( 2021, 3, 4 ), QTime( 13, 14, 15 ) ) );
+}
+
+void TestQgsOgrUtils::testOgrStringToVariant()
+{
+  QFETCH( int, ogrType );
+  QFETCH( int, ogrSubType );
+  QFETCH( QString, string );
+  QFETCH( QVariant, expected );
+
+  const QVariant res = QgsOgrUtils::stringToVariant( static_cast<OGRFieldType>( ogrType ),
+                       static_cast<OGRFieldSubType>( ogrSubType ),
+                       string );
+  QCOMPARE( res, expected );
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )
