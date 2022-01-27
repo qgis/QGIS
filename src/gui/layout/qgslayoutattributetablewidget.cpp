@@ -212,6 +212,7 @@ bool QgsLayoutAttributeTableWidget::setNewItem( QgsLayoutItem *item )
   }
 
   mTable = qobject_cast< QgsLayoutItemAttributeTable * >( multiFrame );
+  frame->setDataDefinedProperties( multiFrame->dataDefinedProperties() );
   mFrame = frame;
   mItemPropertiesWidget->setItem( frame );
 
