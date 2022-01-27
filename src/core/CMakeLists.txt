@@ -275,6 +275,7 @@ set(QGIS_CORE_SRCS
   providers/ogr/qgsgeopackagerasterwritertask.cpp
   providers/ogr/qgsgeopackageprojectstorage.cpp
   providers/ogr/qgsogrdbconnection.cpp
+  providers/ogr/qgsogrproviderconnection.cpp
   providers/ogr/qgsogrtransaction.cpp
 
   scalebar/qgsdoubleboxscalebarrenderer.cpp
@@ -1612,6 +1613,7 @@ set(QGIS_CORE_HDRS
   providers/ogr/qgsogrconnpool.h
   providers/ogr/qgsogrdbconnection.h
   providers/ogr/qgsogrprovider.h
+  providers/ogr/qgsogrproviderconnection.h
   providers/ogr/qgsogrprovidermetadata.h
   providers/ogr/qgsogrproviderutils.h
   providers/ogr/qgsogrtransaction.h

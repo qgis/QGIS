@@ -30,6 +30,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgszipitem.h"
 #include "qgsproviderutils.h"
 #include "qgsgdalutils.h"
+#include "qgsproviderregistry.h"
 
 #include <gdal.h>
 #include <QFileInfo>
@@ -1516,7 +1517,13 @@ QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const Q
 
 QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
 {
-  return new QgsGeoPackageProviderConnection( uri, configuration );
+  const QVariantMap parts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri );
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo fi( path );
+  if ( fi.suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+    return new QgsGeoPackageProviderConnection( uri, configuration );
+  else
+    return new QgsOgrProviderConnection( uri, configuration );
 }
 
 void QgsOgrProviderMetadata::deleteConnection( const QString &name )
