@@ -201,6 +201,8 @@ class TestQgsProcessingAlgs: public QObject
 
     void extractLabels();
 
+    void splitVectorLayer();
+
   private:
 
     bool imageCheck( const QString &testName, const QString &renderedImage );
@@ -7231,6 +7233,49 @@ void TestQgsProcessingAlgs::extractLabels()
   QCOMPARE( attributes[QStringLiteral( "FontWordSpacing" )], 0.0 );
   QCOMPARE( attributes[QStringLiteral( "MultiLineAlignment" )], QStringLiteral( "left" ) );
   QCOMPARE( attributes[QStringLiteral( "MultiLineHeight" )], 1.0 );
+}
+
+void TestQgsProcessingAlgs::splitVectorLayer()
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << QVariant() );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 0)" ) ) );
+  layer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 2 << QStringLiteral( "" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 1)" ) ) );
+  layer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 3 << QStringLiteral( "value" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 2)" ) ) );
+  layer->dataProvider()->addFeature( f );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:splitvectorlayer" ) ) );
+  QVERIFY( alg != nullptr );
+
+  //const QString outputDir = QDir::tempPath() + "/split_vector/";
+  QDir outputDir( QDir::tempPath() + "/split_vector/" );
+  if ( outputDir.exists() )
+    outputDir.removeRecursively();
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer ) );
+  parameters.insert( QStringLiteral( "FIELD" ), QStringLiteral( "col1" ) );
+  parameters.insert( QStringLiteral( "FILE_TYPE" ), QStringLiteral( "gpkg" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputDir.absolutePath() );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT_LAYERS" ) ).toList().count(), 3 );
+  QDir dataDir( outputDir );
+  QStringList entries = dataDir.entryList( QStringList(), QDir::Files | QDir::NoDotAndDotDot );
+  QCOMPARE( entries.count(), 3 );
 }
 
 bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )
