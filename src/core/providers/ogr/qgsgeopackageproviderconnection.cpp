@@ -37,9 +37,8 @@
 ///@cond PRIVATE
 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
-  : QgsAbstractDatabaseProviderConnection( name )
+  : QgsOgrProviderConnection( name )
 {
-  mProviderKey = QStringLiteral( "ogr" );
   setDefaultCapabilities();
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
@@ -49,16 +48,9 @@ QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString 
   setUri( settings.value( QStringLiteral( "path" ) ).toString() );
 }
 
-QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( uri, configuration )
+QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration )
+  : QgsOgrProviderConnection( uri, configuration )
 {
-  mProviderKey = QStringLiteral( "ogr" );
-  // Cleanup the URI in case it contains other information other than the file path
-  if ( uri.contains( '|' ) )
-  {
-    setUri( uri.left( uri.indexOf( '|' ) ).trimmed() );
-  }
-  setDefaultCapabilities();
 }
 
 void QgsGeoPackageProviderConnection::store( const QString &name ) const
@@ -89,59 +81,9 @@ QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const 
   }
   else
   {
-    return uri() + QStringLiteral( "|layername=%1" ).arg( name );
+    return QgsOgrProviderConnection::tableUri( schema, name );
   }
 }
-
-void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,
-    const QString &name,
-    const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
-    const QgsCoordinateReferenceSystem &srs,
-    bool overwrite,
-    const QMap<QString, QVariant> *options ) const
-{
-  checkCapability( Capability::CreateVectorTable );
-  if ( ! schema.isEmpty() )
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
-  }
-  QMap<QString, QVariant> opts { *options };
-  opts[ QStringLiteral( "layerName" ) ] = QVariant( name );
-  opts[ QStringLiteral( "update" ) ] = true;
-  QMap<int, int> map;
-  QString errCause;
-  Qgis::VectorExportResult errCode = QgsOgrProvider::createEmptyLayer(
-                                       uri(),
-                                       fields,
-                                       wkbType,
-                                       srs,
-                                       overwrite,
-                                       &map,
-                                       &errCause,
-                                       &opts
-                                     );
-  if ( errCode != Qgis::VectorExportResult::Success )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
-  }
-}
-
-void QgsGeoPackageProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
-{
-  checkCapability( Capability::DropVectorTable );
-  if ( ! schema.isEmpty() )
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
-  }
-  QString errCause;
-  const QString layerUri { QStringLiteral( "%1|layername=%2" ).arg( uri(), name ) };
-  if ( ! QgsOgrProviderUtils::deleteLayer( layerUri, errCause ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Error deleting vector/aspatial table %1: %2" ).arg( name, errCause ) );
-  }
-}
-
 
 void QgsGeoPackageProviderConnection::dropRasterTable( const QString &schema, const QString &name ) const
 {
@@ -657,24 +599,8 @@ void QgsGeoPackageProviderResultIterator::setPrimaryKeyColumnName( const QString
   mPrimaryKeyColumnName = primaryKeyColumnName;
 }
 
-QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::nativeTypes() const
-{
-  QgsVectorLayer::LayerOptions options { false, true };
-  options.skipCrsValidation = true;
-  const QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options };
-  if ( ! vl.isValid() || ! vl.dataProvider() )
-  {
-    const QString errorCause = vl.dataProvider() && vl.dataProvider()->hasErrors() ?
-                               vl.dataProvider()->errors().join( '\n' ) :
-                               QObject::tr( "unknown error" );
-    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri(), errorCause ) );
-  }
-  return vl.dataProvider()->nativeTypes();
-}
-
 QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const QString &table ) const
 {
-
   Q_UNUSED( schema )
 
   // Get fields from layer
@@ -1194,55 +1120,6 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsGeoPackageProvid
     options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( decoded[ QStringLiteral( "layerName" ) ].toString() ) );
   }
   return options;
-}
-
-QStringList QgsGeoPackageProviderConnection::fieldDomainNames() const
-{
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
-  if ( hDS )
-  {
-    QStringList names;
-    if ( char **domainNames = GDALDatasetGetFieldDomainNames( hDS.get(), nullptr ) )
-    {
-      names = QgsOgrUtils::cStringListToQStringList( domainNames );
-      CSLDestroy( domainNames );
-    }
-    return names;
-  }
-  else
-  {
-    throw QgsProviderConnectionException( QObject::tr( "There was an error opening GPKG %1!" ).arg( uri() ) );
-  }
-#else
-  throw QgsProviderConnectionException( QObject::tr( "Listing field domains for GeoPackage requires GDAL 3.5 or later" ) );
-#endif
-}
-
-QgsFieldDomain *QgsGeoPackageProviderConnection::fieldDomain( const QString &name ) const
-{
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
-  if ( hDS )
-  {
-    if ( OGRFieldDomainH domain = GDALDatasetGetFieldDomain( hDS.get(), name.toUtf8().constData() ) )
-    {
-      std::unique_ptr< QgsFieldDomain > res = QgsOgrUtils::convertFieldDomain( domain );
-      if ( res )
-      {
-        return res.release();
-      }
-    }
-    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve field domain %1!" ).arg( name ) );
-  }
-  else
-  {
-    throw QgsProviderConnectionException( QObject::tr( "There was an error opening GPKG %1!" ).arg( uri() ) );
-  }
-#else
-  ( void )name;
-  throw QgsProviderConnectionException( QObject::tr( "Retrieving field domains for GeoPackage requires GDAL 3.3 or later" ) );
-#endif
 }
 
 QgsGeoPackageProviderResultIterator::QgsGeoPackageProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
