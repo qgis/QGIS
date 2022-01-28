@@ -73,7 +73,11 @@ class TestAuthManager(unittest.TestCase):
         cls.auth_config.setConfig('certpath', cls.sslcert)
         cls.auth_config.setConfig('keypath', cls.sslkey)
         cls.auth_config.setName('test_pki_auth_config')
-        cls.username = 'docker'
+        cls.pg_user = 'docker'
+        cls.pg_pass = 'docker'
+        cls.pg_host = 'postgres'
+        cls.pg_port = '5432'
+        cls.pg_dbname = 'qgis_test'
         cls.sslrootcert = QSslCertificate.fromPath(cls.sslrootcert_path)
         assert cls.sslrootcert is not None
         authm.storeCertAuthorities(cls.sslrootcert)
@@ -113,7 +117,7 @@ class TestAuthManager(unittest.TestCase):
             layer_name = 'pg_' + type_name
         uri = QgsDataSourceUri()
         uri.setWkbType(QgsWkbTypes.Point)
-        uri.setConnection("postgres", '5432', 'qgis_test', "docker", "docker", QgsDataSourceUri.SslVerifyFull, authcfg)
+        uri.setConnection(cls.pg_host, cls.pg_port, cls.pg_dbname, cls.pg_user, cls.pg_pass, QgsDataSourceUri.SslVerifyFull, authcfg)
         uri.setKeyColumn('pk')
         uri.setSrid('EPSG:4326')
         uri.setDataSource('qgis_test', 'someData', "geom", "", "pk")
