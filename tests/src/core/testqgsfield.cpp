@@ -146,10 +146,12 @@ void TestQgsField::gettersSetters()
   QCOMPARE( field.defaultValueDefinition().expression(), QString( "1+2" ) );
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+  constraints.setDomainName( QStringLiteral( "domain" ) );
   field.setConstraints( constraints );
   QCOMPARE( field.constraints().constraints(), QgsFieldConstraints::ConstraintNotNull );
   QCOMPARE( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintNotNull ), QgsFieldConstraints::ConstraintOriginProvider );
   QCOMPARE( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintOriginNotSet );
+  QCOMPARE( field.constraints().domainName(), QStringLiteral( "domain" ) );
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginNotSet );
   field.setConstraints( constraints );
   QCOMPARE( field.constraints().constraints(), 0 );
@@ -318,6 +320,13 @@ void TestQgsField::equality()
   field1.setConstraints( constraints );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
+
+  QgsFieldConstraints constraints1;
+  QgsFieldConstraints constraints2;
+  constraints1.setDomainName( QStringLiteral( "d" ) );
+  QVERIFY( !( constraints1 == constraints2 ) );
+  constraints2.setDomainName( QStringLiteral( "d" ) );
+  QVERIFY( constraints1 == constraints2 );
 }
 
 void TestQgsField::asVariant()
