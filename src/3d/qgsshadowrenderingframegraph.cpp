@@ -90,7 +90,17 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardClearBuffers->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
   mForwardClearBuffers->setClearDepthValue( 1.0f );
 
-  mFrustumCulling = new Qt3DRender::QFrustumCulling( mForwardClearBuffers );
+  Qt3DRender::QRenderStateSet *forwaredRenderStateSet = new Qt3DRender::QRenderStateSet( mForwardClearBuffers );
+
+  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
+  forwaredRenderStateSet->addRenderState( depthTest );
+
+  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+  cullFace->setMode( Qt3DRender::QCullFace::CullingMode::Back );
+  forwaredRenderStateSet->addRenderState( cullFace );
+
+  mFrustumCulling = new Qt3DRender::QFrustumCulling( forwaredRenderStateSet );
 
   return mMainCameraSelector;
 }
@@ -133,7 +143,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   mShadowRenderStateSet->addRenderState( shadowDepthTest );
 
   Qt3DRender::QCullFace *shadowCullFace = new Qt3DRender::QCullFace;
-  shadowCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+  shadowCullFace->setMode( Qt3DRender::QCullFace::CullingMode::Front );
   mShadowRenderStateSet->addRenderState( shadowCullFace );
 
   return mLightCameraSelectorShadowPass;
@@ -142,7 +152,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessingPass()
 {
   mPostProcessingCameraSelector = new Qt3DRender::QCameraSelector;
-  mPostProcessingCameraSelector->setCamera( mMainCamera );
+  mPostProcessingCameraSelector->setCamera( mLightCamera );
 
   mPostprocessPassLayerFilter = new Qt3DRender::QLayerFilter( mPostProcessingCameraSelector );
   mPostprocessPassLayerFilter->addLayer( mPostprocessPassLayer );
@@ -419,7 +429,11 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
     QVector3D( 0.0f,  0.0f, depth ),
     QVector3D( 0.0f,  1.0f, depth ),
     QVector3D( 1.0f,  0.0f, depth ),
-    QVector3D( 1.0f,  1.0f, depth )
+    QVector3D( 1.0f,  1.0f, depth ),
+    QVector3D( 0.0f,  0.0f, 0 ),
+    QVector3D( 0.0f,  1.0f, 0 ),
+    QVector3D( 1.0f,  0.0f, 0 ),
+    QVector3D( 1.0f,  1.0f, 0 )
   };
   maxX = std::numeric_limits<float>::lowest();
   maxY = std::numeric_limits<float>::lowest();
