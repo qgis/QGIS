@@ -1271,6 +1271,16 @@ QgsFieldDomain *QgsAbstractDatabaseProviderConnection::fieldDomain( const QStrin
   return nullptr;
 }
 
+void QgsAbstractDatabaseProviderConnection::setFieldDomainName( const QString &, const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Capability::SetFieldDomain );
+}
+
+void QgsAbstractDatabaseProviderConnection::addFieldDomain( const QgsFieldDomain &, const QString & ) const
+{
+  checkCapability( Capability::AddFieldDomain );
+}
+
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {
   QString n = mTableName;

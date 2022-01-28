@@ -158,6 +158,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   {
     mCapabilities |= Capability::RetrieveFieldDomain;
     mCapabilities |= Capability::ListFieldDomains;
+    mCapabilities |= Capability::SetFieldDomain;
   }
 #endif
 }
@@ -223,6 +224,80 @@ QgsFieldDomain *QgsOgrProviderConnection::fieldDomain( const QString &name ) con
 #else
   ( void )name;
   throw QgsProviderConnectionException( QObject::tr( "Retrieving field domains for datasets requires GDAL 3.3 or later" ) );
+#endif
+}
+
+void QgsOgrProviderConnection::setFieldDomainName( const QString &fieldName, const QString &schema, const QString &tableName, const QString &domainName ) const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  QString errCause;
+  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(),
+                               true,
+                               QStringList(),
+                               tableName, errCause, true );
+  if ( !layer )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset: %1" ).arg( errCause ) );
+  }
+
+  //type does not matter, it will not be used
+  gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( fieldName.toUtf8().constData(), OFTReal ) );
+  OGR_Fld_SetDomainName( fld.get(), domainName.toUtf8().constData() );
+
+  const int fieldIndex = layer->GetLayerDefn().GetFieldIndex( fieldName.toUtf8().constData() );
+  if ( fieldIndex < 0 )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not set field domain for %1 - field does not exist" ).arg( fieldName ) );
+  }
+  if ( layer->AlterFieldDefn( fieldIndex, fld.get(), ALTER_DOMAIN_FLAG ) != OGRERR_NONE )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not set field domain: %1" ).arg( CPLGetLastErrorMsg() ) );
+  }
+#else
+  ( void )name;
+  throw QgsProviderConnectionException( QObject::tr( "Setting field domains for datasets requires GDAL 3.3 or later" ) );
+#endif
+}
+
+void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  if ( hDS )
+  {
+    if ( OGRFieldDomainH ogrDomain = QgsOgrUtils::convertFieldDomain( &domain ) )
+    {
+      char **failureReason = nullptr;
+      if ( !GDALDatasetAddFieldDomain( hDS.get(), ogrDomain, failureReason ) )
+      {
+        OGR_FldDomain_Destroy( ogrDomain );
+        QString error( failureReason ? *failureReason : nullptr );
+        throw QgsProviderConnectionException( QObject::tr( "Could not create field domain: %1" ).arg( error ) );
+      }
+      OGR_FldDomain_Destroy( ogrDomain );
+    }
+    else
+    {
+      throw QgsProviderConnectionException( QObject::tr( "Could not create field domain" ) );
+    }
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
+  }
+#else
+  ( void )name;
+  throw QgsProviderConnectionException( QObject::tr( "Creating field domains for datasets requires GDAL 3.3 or later" ) );
 #endif
 }
 

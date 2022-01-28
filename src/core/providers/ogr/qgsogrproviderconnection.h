@@ -48,6 +48,8 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QStringList fieldDomainNames() const override;
     QgsFieldDomain *fieldDomain( const QString &name ) const override;
+    void setFieldDomainName( const QString &fieldName, const QString &schema, const QString &tableName, const QString &domainName ) const override;
+    void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const override;
 
   protected:
 
