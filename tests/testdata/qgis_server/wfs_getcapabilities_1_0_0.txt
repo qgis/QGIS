@@ -7,6 +7,8 @@ Content-Type: text/xml; charset=utf-8
   <Title>QGIS TestProject</Title>
   <Abstract><![CDATA[Some UTF8 text èòù]]></Abstract>
   <OnlineResource/>
+  <Fees>conditions unknown</Fees>
+  <AccessConstraints>None</AccessConstraints>
  </Service>
  <Capability>
   <Request>
@@ -78,6 +80,15 @@ Content-Type: text/xml; charset=utf-8
     <Insert/>
     <Update/>
     <Delete/>
+   </Operations>
+  </FeatureType>
+  <FeatureType>
+   <Name>Testing_Layer_(copy)</Name>
+   <Title>Testing Layer (copy)</Title>
+   <SRS>EPSG:4326</SRS>
+   <LatLongBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
+   <Operations>
+    <Query/>
    </Operations>
   </FeatureType>
  </FeatureTypeList>

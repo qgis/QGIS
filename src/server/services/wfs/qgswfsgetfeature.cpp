@@ -561,7 +561,9 @@ namespace QgsWfs
         }
 
         // each Feature requested by FEATUREID can have each own property list
-        QString key = QStringLiteral( "%1(%2)" ).arg( typeName, propertyName );
+        // use colon that is replaced in typenames because typenames can be used
+        // as XML tag name
+        const QString key = QStringLiteral( "%1:%2" ).arg( typeName, propertyName );
         QStringList fids;
         if ( fidsMap.contains( key ) )
         {
@@ -582,13 +584,9 @@ namespace QgsWfs
         QString key = fidsMapIt.key();
 
         //Extract TypeName and PropertyName from key
-        QRegExp rx( "([^()]+)\\(([^()]+)\\)" );
-        if ( rx.indexIn( key, 0 ) == -1 )
-        {
-          throw QgsRequestNotWellFormedException( QStringLiteral( "Error getting properties for FEATUREID" ) );
-        }
-        QString typeName = rx.cap( 1 );
-        QString propertyName = rx.cap( 2 );
+        // separated by colon
+        const QString typeName = key.section( ':', 0, 0 );
+        const QString propertyName = key.section( ':', 1, 1 );
 
         getFeatureQuery query;
         query.typeName = typeName;
@@ -1623,6 +1621,3 @@ namespace QgsWfs
   } // namespace
 
 } // namespace QgsWfs
-
-
-
