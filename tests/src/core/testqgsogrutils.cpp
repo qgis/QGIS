@@ -75,6 +75,7 @@ class TestQgsOgrUtils: public QObject
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
     void testConvertFieldDomain();
+    void testConvertToFieldDomain();
 #endif
 
   private:
@@ -1052,6 +1053,83 @@ void TestQgsOgrUtils::testConvertFieldDomain()
   QCOMPARE( globDomain->description(), QStringLiteral( "desc" ) );
   QCOMPARE( globDomain->fieldType(), QVariant::String );
   OGR_FldDomain_Destroy( domain );
+}
+
+void TestQgsOgrUtils::testConvertToFieldDomain()
+{
+  // test converting QgsFieldDomain to OGR field domain
+  QgsGlobFieldDomain globDomain( QStringLiteral( "name" ), QStringLiteral( "desc" ), QVariant::String, QStringLiteral( "*a*" ) );
+  OGRFieldDomainH domain = QgsOgrUtils::convertFieldDomain( &globDomain );
+
+  std::unique_ptr< QgsFieldDomain > res = QgsOgrUtils::convertFieldDomain( domain );
+  QCOMPARE( res->name(), QStringLiteral( "name" ) );
+  QCOMPARE( res->description(), QStringLiteral( "desc" ) );
+  QCOMPARE( res->splitPolicy(), Qgis::FieldDomainSplitPolicy::DefaultValue );
+  QCOMPARE( res->mergePolicy(), Qgis::FieldDomainMergePolicy::DefaultValue );
+  QCOMPARE( dynamic_cast< QgsGlobFieldDomain * >( res.get() )->glob(), QStringLiteral( "*a*" ) );
+  OGR_FldDomain_Destroy( domain );
+
+  globDomain.setSplitPolicy( Qgis::FieldDomainSplitPolicy::Duplicate );
+  globDomain.setMergePolicy( Qgis::FieldDomainMergePolicy::Sum );
+  domain = QgsOgrUtils::convertFieldDomain( &globDomain );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+  OGR_FldDomain_Destroy( domain );
+  QCOMPARE( res->splitPolicy(), Qgis::FieldDomainSplitPolicy::Duplicate );
+  QCOMPARE( res->mergePolicy(), Qgis::FieldDomainMergePolicy::Sum );
+
+  globDomain.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  globDomain.setMergePolicy( Qgis::FieldDomainMergePolicy::GeometryWeighted );
+  domain = QgsOgrUtils::convertFieldDomain( &globDomain );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+  OGR_FldDomain_Destroy( domain );
+  QCOMPARE( res->splitPolicy(), Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  QCOMPARE( res->mergePolicy(), Qgis::FieldDomainMergePolicy::GeometryWeighted );
+
+  // range
+
+  QgsRangeFieldDomain rangeDomain( QStringLiteral( "name" ), QStringLiteral( "desc" ), QVariant::Int,
+                                   1, true, 5, false );
+  domain = QgsOgrUtils::convertFieldDomain( &rangeDomain );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+  OGR_FldDomain_Destroy( domain );
+  QCOMPARE( res->name(), QStringLiteral( "name" ) );
+  QCOMPARE( res->description(), QStringLiteral( "desc" ) );
+  QCOMPARE( dynamic_cast< QgsRangeFieldDomain * >( res.get() )->minimum(), QVariant( 1 ) );
+  QVERIFY( dynamic_cast< QgsRangeFieldDomain * >( res.get() )->minimumIsInclusive() );
+  QCOMPARE( dynamic_cast< QgsRangeFieldDomain * >( res.get() )->maximum(), QVariant( 5 ) );
+  QVERIFY( !dynamic_cast< QgsRangeFieldDomain * >( res.get() )->maximumIsInclusive() );
+
+  rangeDomain.setFieldType( QVariant::Double );
+  rangeDomain.setMinimum( 5.5 );
+  rangeDomain.setMaximum( 12.1 );
+  rangeDomain.setMinimumIsInclusive( false );
+  rangeDomain.setMaximumIsInclusive( true );
+  domain = QgsOgrUtils::convertFieldDomain( &rangeDomain );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+  OGR_FldDomain_Destroy( domain );
+  QCOMPARE( dynamic_cast< QgsRangeFieldDomain * >( res.get() )->minimum(), QVariant( 5.5 ) );
+  QVERIFY( !dynamic_cast< QgsRangeFieldDomain * >( res.get() )->minimumIsInclusive() );
+  QCOMPARE( dynamic_cast< QgsRangeFieldDomain * >( res.get() )->maximum(), QVariant( 12.1 ) );
+  QVERIFY( dynamic_cast< QgsRangeFieldDomain * >( res.get() )->maximumIsInclusive() );
+
+  // coded
+  QgsCodedFieldDomain codedDomain( QStringLiteral( "name" ), QStringLiteral( "desc" ), QVariant::String,
+  {
+    QgsCodedValue( "aa", "aaaa" ),
+    QgsCodedValue( "bb", "bbbb" ),
+  } );
+  domain = QgsOgrUtils::convertFieldDomain( &codedDomain );
+  res = QgsOgrUtils::convertFieldDomain( domain );
+  OGR_FldDomain_Destroy( domain );
+  QCOMPARE( res->name(), QStringLiteral( "name" ) );
+  QCOMPARE( res->description(), QStringLiteral( "desc" ) );
+  QList< QgsCodedValue > resValues = dynamic_cast< QgsCodedFieldDomain * >( res.get() )->values();
+  QCOMPARE( resValues.size(), 2 );
+  QCOMPARE( resValues.at( 0 ).code(), QVariant( "aa" ) );
+  QCOMPARE( resValues.at( 0 ).value(), QStringLiteral( "aaaa" ) );
+  QCOMPARE( resValues.at( 1 ).code(), QVariant( "bb" ) );
+  QCOMPARE( resValues.at( 1 ).value(), QStringLiteral( "bbbb" ) );
+
 }
 #endif
 

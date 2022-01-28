@@ -407,6 +407,15 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.26
      */
     static std::unique_ptr< QgsFieldDomain > convertFieldDomain( OGRFieldDomainH domain );
+
+    /**
+     * Converts a QGIS field domain definition to an OGR field domain equivalent.
+     *
+     * \note Requires GDAL >= 3.3
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static OGRFieldDomainH convertFieldDomain( const QgsFieldDomain *domain );
 #endif
 #endif
 };

@@ -2123,4 +2123,108 @@ std::unique_ptr< QgsFieldDomain > QgsOgrUtils::convertFieldDomain( OGRFieldDomai
   }
   return res;
 }
+
+OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
+{
+  if ( !domain )
+    return nullptr;
+
+  OGRFieldType domainFieldType = OFTInteger;
+  OGRFieldSubType domainFieldSubType = OFSTNone;
+  variantTypeToOgrFieldType( domain->fieldType(), domainFieldType, domainFieldSubType );
+
+  OGRFieldDomainH res = nullptr;
+  switch ( domain->type() )
+  {
+    case Qgis::FieldDomainType::Coded:
+    {
+      std::vector< OGRCodedValue > enumeration;
+      const QList< QgsCodedValue> values = qgis::down_cast< const QgsCodedFieldDomain * >( domain )->values();
+      enumeration.reserve( values.size() );
+      for ( const QgsCodedValue &value : values )
+      {
+        OGRCodedValue codedValue;
+        codedValue.pszCode = CPLStrdup( value.code().toString().toUtf8().constData() );
+        codedValue.pszValue = CPLStrdup( value.value().toUtf8().constData() );
+        enumeration.push_back( codedValue );
+      }
+      OGRCodedValue last;
+      last.pszCode = nullptr;
+      last.pszValue = nullptr;
+      enumeration.push_back( last );
+      res = OGR_CodedFldDomain_Create(
+              domain->name().toUtf8().constData(),
+              domain->description().toUtf8().constData(),
+              domainFieldType,
+              domainFieldSubType,
+              enumeration.data()
+            );
+
+      for ( const OGRCodedValue &value : std::as_const( enumeration ) )
+      {
+        CPLFree( value.pszCode );
+        CPLFree( value.pszValue );
+      }
+      break;
+    }
+
+    case Qgis::FieldDomainType::Range:
+    {
+      std::unique_ptr< OGRField > min = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->minimum() );
+      std::unique_ptr< OGRField > max = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->maximum() );
+      res = OGR_RangeFldDomain_Create(
+              domain->name().toUtf8().constData(),
+              domain->description().toUtf8().constData(),
+              domainFieldType,
+              domainFieldSubType,
+              min.get(),
+              qgis::down_cast< const QgsRangeFieldDomain * >( domain )->minimumIsInclusive(),
+              max.get(),
+              qgis::down_cast< const QgsRangeFieldDomain * >( domain )->maximumIsInclusive()
+            );
+      break;
+    }
+
+    case Qgis::FieldDomainType::Glob:
+    {
+      res = OGR_GlobFldDomain_Create(
+              domain->name().toUtf8().constData(),
+              domain->description().toUtf8().constData(),
+              domainFieldType,
+              domainFieldSubType,
+              qgis::down_cast< const QgsGlobFieldDomain * >( domain )->glob().toUtf8().constData()
+            );
+      break;
+    }
+  }
+
+  switch ( domain->mergePolicy() )
+  {
+    case Qgis::FieldDomainMergePolicy::DefaultValue:
+      OGR_FldDomain_SetMergePolicy( res, OFDMP_DEFAULT_VALUE );
+      break;
+    case Qgis::FieldDomainMergePolicy::GeometryWeighted:
+      OGR_FldDomain_SetMergePolicy( res, OFDMP_GEOMETRY_WEIGHTED );
+      break;
+    case Qgis::FieldDomainMergePolicy::Sum:
+      OGR_FldDomain_SetMergePolicy( res, OFDMP_SUM );
+      break;
+  }
+
+  switch ( domain->splitPolicy() )
+  {
+    case Qgis::FieldDomainSplitPolicy::DefaultValue:
+      OGR_FldDomain_SetSplitPolicy( res, OFDSP_DEFAULT_VALUE );
+      break;
+    case Qgis::FieldDomainSplitPolicy::GeometryRatio:
+      OGR_FldDomain_SetSplitPolicy( res, OFDSP_GEOMETRY_RATIO );
+      break;
+    case Qgis::FieldDomainSplitPolicy::Duplicate:
+      OGR_FldDomain_SetSplitPolicy( res, OFDSP_DUPLICATE );
+      break;
+  }
+
+  return res;
+}
+
 #endif
