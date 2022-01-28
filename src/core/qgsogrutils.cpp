@@ -184,6 +184,71 @@ QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType typ
   return QVariant();
 }
 
+std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &value )
+{
+  std::unique_ptr< OGRField > res = std::make_unique< OGRField >();
+
+  switch ( value.type() )
+  {
+    case QVariant::Invalid:
+      OGR_RawField_SetUnset( res.get() );
+      break;
+    case QVariant::Bool:
+      res->Integer = value.toBool() ? 1 : 0;
+      break;
+    case QVariant::Int:
+      res->Integer = value.toInt();
+      break;
+    case QVariant::LongLong:
+      res->Integer64 = value.toLongLong();
+      break;
+    case QVariant::Double:
+      res->Real = value.toDouble();
+      break;
+    case QVariant::Char:
+    case QVariant::String:
+      res->String = CPLStrdup( value.toString().toUtf8().constData() );
+      break;
+    case QVariant::Date:
+    {
+      const QDate date = value.toDate();
+      res->Date.Day = date.day();
+      res->Date.Month = date.month();
+      res->Date.Year = date.year();
+      res->Date.TZFlag = 0;
+      break;
+    }
+    case QVariant::Time:
+    {
+      const QTime time = value.toTime();
+      res->Date.Hour = time.hour();
+      res->Date.Minute = time.minute();
+      res->Date.Second = time.second() + static_cast< double >( time.msec() ) / 1000;
+      res->Date.TZFlag = 0;
+      break;
+    }
+    case QVariant::DateTime:
+    {
+      const QDateTime dateTime = value.toDateTime();
+      res->Date.Day = dateTime.date().day();
+      res->Date.Month = dateTime.date().month();
+      res->Date.Year = dateTime.date().year();
+      res->Date.Hour = dateTime.time().hour();
+      res->Date.Minute = dateTime.time().minute();
+      res->Date.Second = dateTime.time().second() + static_cast< double >( dateTime.time().msec() ) / 1000;
+      res->Date.TZFlag = 0;
+      break;
+    }
+
+    default:
+      QgsDebugMsg( "Unhandled variant type in variantToOGRField" );
+      OGR_RawField_SetUnset( res.get() );
+      break;
+  }
+
+  return res;
+}
+
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
 {
   QgsFeature feature;

@@ -174,6 +174,13 @@ class CORE_EXPORT QgsOgrUtils
     static QVariant OGRFieldtoVariant( const OGRField *value, OGRFieldType type );
 
     /**
+     * Converts a QVariant to an OGRField value.
+     *
+     * \since QGIS 3.26
+     */
+    static std::unique_ptr<OGRField> variantToOGRField( const QVariant &value );
+
+    /**
      * Reads an OGR feature and converts it to a QgsFeature.
      * \param ogrFet OGR feature handle
      * \param fields fields collection corresponding to feature
