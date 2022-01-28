@@ -159,6 +159,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
     mCapabilities |= Capability::RetrieveFieldDomain;
     mCapabilities |= Capability::ListFieldDomains;
     mCapabilities |= Capability::SetFieldDomain;
+    mCapabilities |= Capability::AddFieldDomain;
   }
 #endif
 }

@@ -1255,11 +1255,54 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     QgsFieldsItem *fieldsItem { static_cast<QgsFieldsItem *>( fieldItem->parent() ) };
     if ( fieldsItem )
     {
+      const QString connectionUri = fieldsItem->connectionUri();
+      const QString providerKey = fieldsItem->providerKey();
+      const QString schema = fieldsItem->schema();
+      const QString tableName = fieldsItem->tableName();
+      const QString fieldName = fieldItem->field().name();
+
       // Check if it is supported
-      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( fieldsItem->providerKey() ) };
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
       if ( md )
       {
-        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SetFieldDomain )
+             && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains ) )
+        {
+          const QStringList domains = conn->fieldDomainNames();
+          if ( !domains.isEmpty() )
+          {
+            QMenu *setFieldDomainMenu = new QMenu( tr( "Set Field Domain" ), menu );
+            menu->addMenu( setFieldDomainMenu );
+
+            for ( const QString &domain : domains )
+            {
+              QAction *setDomainAction = new QAction( domain, setFieldDomainMenu );
+              setFieldDomainMenu->addAction( setDomainAction );
+
+              connect( setDomainAction, &QAction::triggered, this, [connectionUri, providerKey, schema, tableName, fieldName, domain, context]
+              {
+                if ( QMessageBox::question( nullptr, tr( "Set Field Domain" ),
+                                            tr( "Set field domain for %1 to %2?" ).arg( fieldName, domain ),
+                                            QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+                {
+                  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+                  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+                  try
+                  {
+                    conn2->setFieldDomainName( fieldName, schema, tableName, domain );
+                  }
+                  catch ( const QgsProviderConnectionException &ex )
+                  {
+                    notify( tr( "Set Field Domain" ), ex.what(), context, Qgis::MessageLevel::Critical );
+                  }
+                }
+              } );
+            }
+          }
+        }
+
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteField ) )
         {
           QAction *deleteFieldAction = new QAction( tr( "Delete Field…" ), menu );
