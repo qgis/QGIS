@@ -1135,6 +1135,25 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         self.assertEqual(vl.attributeAliases(), expected_alias_map)
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0), "GDAL 3.3 required")
+    def testFieldDomainNames(self):
+        """
+        Test that field domain names are taken from OGR where available (requires GDAL 3.3 or later)
+        """
+        datasource = os.path.join(unitTestDataPath(), 'domains.gpkg')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+        self.assertEqual(fields.field('with_range_domain_int').constraints().domainName(), 'range_domain_int')
+        self.assertEqual(fields.field('with_glob_domain').constraints().domainName(), 'glob_domain')
+
+        datasource = os.path.join(unitTestDataPath(), 'gps_timestamp.gpkg')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        fields = vl.fields()
+        self.assertFalse(fields.field('stringf').constraints().domainName())
+
     def testGdbLayerMetadata(self):
         """
         Test that we translate GDB metadata to QGIS layer metadata on loading a GDB source
