@@ -16,4 +16,17 @@ Content-Type: text/xml; charset=utf-8
    </extension>
   </complexContent>
  </complexType>
+ <element type="qgs:Testing_Layer_(copy)Type" name="Testing_Layer_(copy)" substitutionGroup="gml:_Feature"/>
+ <complexType name="Testing_Layer_(copy)Type">
+  <complexContent>
+   <extension base="gml:AbstractFeatureType">
+    <sequence>
+     <element maxOccurs="1" type="gml:PointPropertyType" minOccurs="0" name="geometry"/>
+     <element type="long" nillable="true" name="id"/>
+     <element type="string" nillable="true" name="name"/>
+     <element type="string" nillable="true" name="utf8nameè"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
 </schema>
