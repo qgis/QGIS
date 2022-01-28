@@ -65,6 +65,7 @@ class TestQgsOgrUtils: public QObject
     void convertStyleString();
     void ogrCrsConversion();
     void ogrFieldToVariant();
+    void variantToOgrField();
     void testOgrFieldTypeToQVariantType_data();
     void testOgrFieldTypeToQVariantType();
     void testVariantTypeToOgrFieldType_data();
@@ -811,6 +812,31 @@ void TestQgsOgrUtils::ogrFieldToVariant()
 
   OGR_F_Destroy( oFeat );
   OGR_DS_Destroy( hDS );
+}
+
+void TestQgsOgrUtils::variantToOgrField()
+{
+  std::unique_ptr<OGRField> field( QgsOgrUtils::variantToOGRField( QVariant() ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant() );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( true ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant( 1 ) );
+  field = QgsOgrUtils::variantToOGRField( QVariant( false ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant( 0 ) );
+  field = QgsOgrUtils::variantToOGRField( QVariant( 11 ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant( 11 ) );
+  field = QgsOgrUtils::variantToOGRField( QVariant( 11LL ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger64 ), QVariant( 11LL ) );
+  field = QgsOgrUtils::variantToOGRField( QVariant( 5.5 ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTReal ), QVariant( 5.5 ) );
+  field = QgsOgrUtils::variantToOGRField( QVariant( QStringLiteral( "abc" ) ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTString ), QVariant( QStringLiteral( "abc" ) ) );
+  field = QgsOgrUtils::variantToOGRField( QVariant( QDate( 2021, 2, 3 ) ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTDate ), QVariant( QDate( 2021, 2, 3 ) ) );
+  field = QgsOgrUtils::variantToOGRField( QVariant( QTime( 12, 13, 14, 50 ) ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTTime ), QVariant( QTime( 12, 13, 14, 50 ) ) );
+  field = QgsOgrUtils::variantToOGRField( QVariant( QDateTime( QDate( 2021, 2, 3 ), QTime( 12, 13, 14, 50 ) ) ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTDateTime ), QVariant( QDateTime( QDate( 2021, 2, 3 ), QTime( 12, 13, 14, 50 ) ) ) );
 }
 
 void TestQgsOgrUtils::testOgrFieldTypeToQVariantType_data()
