@@ -65,6 +65,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QUrl>
+#include <memory>
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {
@@ -1224,6 +1225,18 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
   }
 }
 
+QWidget *QgsFieldsItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
+{
+  if ( QgsFieldsItem *fieldsItem = qobject_cast<QgsFieldsItem *>( item ) )
+  {
+    return new QgsFieldsDetailsWidget( nullptr, fieldsItem->providerKey(), fieldsItem->connectionUri(), fieldsItem->schema(), fieldsItem->tableName() );
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
 QString QgsFieldItemGuiProvider::name()
 {
   return QStringLiteral( "field_item" );
@@ -1299,6 +1312,19 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
       QgsDebugMsg( QStringLiteral( "Error getting parent fields for %1" ).arg( item->name() ) );
     }
   }
+}
+
+QWidget *QgsFieldItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
+{
+  if ( QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( item ) )
+  {
+    QgsFieldsItem *fieldsItem { static_cast<QgsFieldsItem *>( fieldItem->parent() ) };
+    if ( fieldsItem )
+    {
+      return new QgsFieldDetailsWidget( nullptr, fieldsItem->providerKey(), fieldsItem->connectionUri(), fieldsItem->schema(), fieldsItem->tableName(), fieldItem->field() );
+    }
+  }
+  return nullptr;
 }
 
 QString QgsDatabaseItemGuiProvider::name()
@@ -1525,7 +1551,18 @@ QgsFieldDomainDetailsWidget::QgsFieldDomainDetailsWidget( QWidget *parent, const
 
 
   QString metadata = QStringLiteral( "<html>\n<body>\n" );
-  metadata += QStringLiteral( "<h1>" ) + domain->name() + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+  metadata += htmlMetadata( mDomain.get(), mDomain->name() );
+
+  mTextBrowser->setHtml( metadata );
+}
+
+QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const QString &title )
+{
+  QString metadata;
+  metadata += QStringLiteral( "<h1>" ) + title + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+
+  if ( title != domain->name() )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + domain->name() + QStringLiteral( "</td></tr>\n" );
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Description" ) + QStringLiteral( "</td><td>" ) + domain->description() + QStringLiteral( "</td></tr>\n" );
 
@@ -1573,7 +1610,7 @@ QgsFieldDomainDetailsWidget::QgsFieldDomainDetailsWidget( QWidget *parent, const
       metadata += QStringLiteral( "<h1>" ) + tr( "Coded values" ) + QStringLiteral( "</h1>\n<hr>\n" );
       metadata += QLatin1String( "<table class=\"list-view\">\n" );
 
-      const QgsCodedFieldDomain *codedDomain = qgis::down_cast< QgsCodedFieldDomain *>( mDomain.get() );
+      const QgsCodedFieldDomain *codedDomain = qgis::down_cast< QgsCodedFieldDomain *>( domain );
       const QList< QgsCodedValue > values = codedDomain->values();
       for ( const QgsCodedValue &value : values )
       {
@@ -1585,7 +1622,7 @@ QgsFieldDomainDetailsWidget::QgsFieldDomainDetailsWidget( QWidget *parent, const
 
     case Qgis::FieldDomainType::Range:
     {
-      const QgsRangeFieldDomain *rangeDomain = qgis::down_cast< QgsRangeFieldDomain *>( mDomain.get() );
+      const QgsRangeFieldDomain *rangeDomain = qgis::down_cast< QgsRangeFieldDomain *>( domain );
 
       metadata += QStringLiteral( "<h1>" ) + tr( "Range" ) + QStringLiteral( "</h1>\n<hr>\n" );
       metadata += QLatin1String( "<table class=\"list-view\">\n" );
@@ -1606,7 +1643,7 @@ QgsFieldDomainDetailsWidget::QgsFieldDomainDetailsWidget( QWidget *parent, const
 
     case Qgis::FieldDomainType::Glob:
     {
-      const QgsGlobFieldDomain *globDomain = qgis::down_cast< QgsGlobFieldDomain *>( mDomain.get() );
+      const QgsGlobFieldDomain *globDomain = qgis::down_cast< QgsGlobFieldDomain *>( domain );
 
       metadata += QStringLiteral( "<h1>" ) + tr( "Glob" ) + QStringLiteral( "</h1>\n<hr>\n" );
       metadata += QLatin1String( "<table class=\"list-view\">\n" );
@@ -1618,8 +1655,7 @@ QgsFieldDomainDetailsWidget::QgsFieldDomainDetailsWidget( QWidget *parent, const
     }
 
   }
-
-  mTextBrowser->setHtml( metadata );
+  return metadata;
 }
 
 QgsFieldDomainDetailsWidget::~QgsFieldDomainDetailsWidget() = default;
@@ -1674,6 +1710,7 @@ QgsFieldDomainsDetailsWidget::QgsFieldDomainsDetailsWidget( QWidget *parent, con
             QgsMessageLog::logMessage( ex.what() );
           }
         }
+        metadata += QLatin1String( "</table>\n<br><br>\n" );
 
         if ( !domainError.isEmpty() )
         {
@@ -1689,5 +1726,117 @@ QgsFieldDomainsDetailsWidget::QgsFieldDomainsDetailsWidget( QWidget *parent, con
   catch ( const QgsProviderConnectionException &ex )
   {
     mTextBrowser->setPlainText( ex.what() );
+  }
+}
+
+//
+// QgsFieldsDetailsWidget
+//
+
+QgsFieldsDetailsWidget::QgsFieldsDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri, const QString &schema,
+    const QString &tableName )
+  : QWidget( parent )
+{
+  setupUi( this );
+
+  const QString style = QgsApplication::reportStyleSheet();
+  mTextBrowser->document()->setDefaultStyleSheet( style );
+
+  try
+  {
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+    if ( md )
+    {
+      QString metadata = QStringLiteral( "<html>\n<body>\n" );
+
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri, {} ) ) };
+      if ( conn )
+      {
+        const QgsFields fields = conn->fields( schema, tableName );
+        metadata += QStringLiteral( "<h1>" ) + tr( "Fields" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+
+        // count fields
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Count" ) + QStringLiteral( "</td><td>" ) + QString::number( fields.size() ) + QStringLiteral( "</td></tr>\n" );
+
+        metadata += QLatin1String( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" );
+        metadata += QLatin1String( "<tr><th>" ) + tr( "Field" ) + QLatin1String( "</th><th>" ) + tr( "Type" ) + QLatin1String( "</th><th>" ) + tr( "Length" ) + QLatin1String( "</th><th>" ) + tr( "Precision" ) + QLatin1String( "</th><th>" ) + tr( "Comment" ) + QLatin1String( "</th></tr>\n" );
+
+        for ( int i = 0; i < fields.size(); ++i )
+        {
+          QgsField myField = fields.at( i );
+          QString rowClass;
+          if ( i % 2 )
+            rowClass = QStringLiteral( "class=\"odd-row\"" );
+          metadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + myField.name() + QLatin1String( "</td><td>" ) + myField.typeName() + QLatin1String( "</td><td>" ) + QString::number( myField.length() ) + QLatin1String( "</td><td>" ) + QString::number( myField.precision() ) + QLatin1String( "</td><td>" ) + myField.comment() + QLatin1String( "</td></tr>\n" );
+        }
+        metadata += QLatin1String( "</table>\n<br><br>\n" );
+
+        mTextBrowser->setHtml( metadata );
+      }
+      else
+      {
+        mTextBrowser->setPlainText( tr( "Could not load layer fields" ) );
+      }
+    }
+  }
+  catch ( const QgsProviderConnectionException &ex )
+  {
+    mTextBrowser->setPlainText( ex.what() );
+  }
+}
+
+//
+// QgsFieldDetailsWidget
+//
+
+QgsFieldDetailsWidget::QgsFieldDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri, const QString &, const QString &, const QgsField &field )
+  : QWidget( parent )
+{
+  setupUi( this );
+
+  const QString style = QgsApplication::reportStyleSheet();
+  mTextBrowser->document()->setDefaultStyleSheet( style );
+
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+  if ( md )
+  {
+    QString metadata = QStringLiteral( "<html>\n<body>\n" );
+
+    metadata += QStringLiteral( "<h1>" ) + field.name() + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Alias" ) + QStringLiteral( "</td><td>" ) + field.alias() + QStringLiteral( "</td></tr>\n" );
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Type" ) + QStringLiteral( "</td><td>" ) + field.displayType() + QStringLiteral( "</td></tr>\n" );
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Comment" ) + QStringLiteral( "</td><td>" ) + field.comment() + QStringLiteral( "</td></tr>\n" );
+
+    metadata += QLatin1String( "</table>\n<br><br>\n" );
+    if ( !field.constraints().domainName().isEmpty() )
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri, {} ) ) };
+      bool foundDomainMetadata = false;
+      try
+      {
+        // try to retrieve full domain details if possible
+        std::unique_ptr< QgsFieldDomain > domain( conn->fieldDomain( field.constraints().domainName() ) );
+        if ( domain )
+        {
+          metadata += QgsFieldDomainDetailsWidget::htmlMetadata( domain.get(), tr( "Domain" ) );
+          foundDomainMetadata = true;
+        }
+      }
+      catch ( const QgsProviderConnectionException & )
+      {}
+
+      if ( !foundDomainMetadata )
+      {
+        metadata += QStringLiteral( "<h1>" ) + tr( "Domain" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + field.constraints().domainName() + QStringLiteral( "</td></tr>\n" );
+        metadata += QLatin1String( "</table>\n<br><br>\n" );
+      }
+    }
+    mTextBrowser->setHtml( metadata );
+  }
+  else
+  {
+    mTextBrowser->setPlainText( tr( "Could not load field" ) );
   }
 }

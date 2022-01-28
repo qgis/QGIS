@@ -28,6 +28,7 @@ class QgsLayerItem;
 class QgsFieldsItem;
 class QgsFieldItem;
 class QgsFieldDomain;
+class QgsField;
 
 class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -144,7 +145,7 @@ class QgsFieldsItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
-
+    QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) override;
 };
 
 
@@ -160,12 +161,29 @@ class QgsFieldItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) override;
 };
 
 
 #include "ui_qgsbrowseritemmetadatawidgetbase.h"
 
 
+class QgsFieldsDetailsWidget : public QWidget, private Ui_QgsBrowserItemMetadataWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldsDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri, const QString &schema, const QString &tableName );
+};
+
+class QgsFieldDetailsWidget : public QWidget, private Ui_QgsBrowserItemMetadataWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri, const QString &schema, const QString &tableName, const QgsField &field );
 };
 
 
@@ -178,6 +196,8 @@ class QgsFieldDomainDetailsWidget : public QWidget, private Ui_QgsBrowserItemMet
 
     QgsFieldDomainDetailsWidget( QWidget *parent, const QgsFieldDomain *domain );
     ~QgsFieldDomainDetailsWidget() override;
+
+    static QString htmlMetadata( QgsFieldDomain *domain, const QString &title );
 
   private:
 
