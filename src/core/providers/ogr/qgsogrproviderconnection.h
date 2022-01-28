@@ -29,7 +29,7 @@
  *
  * \brief Base class for provider connections handled by OGR.
  *
- * This class is specialised in format-specific subclasses such as QgsGeoPackageProviderConnection
+ * This class is specialized in format-specific subclasses such as QgsGeoPackageProviderConnection
  */
 class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
 {
