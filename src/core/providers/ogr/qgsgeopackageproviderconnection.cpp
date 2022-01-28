@@ -39,18 +39,19 @@
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
   : QgsOgrProviderConnection( name )
 {
-  setDefaultCapabilities();
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
   settings.beginGroup( QStringLiteral( "GPKG" ) );
   settings.beginGroup( QStringLiteral( "connections" ) );
   settings.beginGroup( name );
   setUri( settings.value( QStringLiteral( "path" ) ).toString() );
+  setDefaultCapabilities();
 }
 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration )
   : QgsOgrProviderConnection( uri, configuration )
 {
+  setDefaultCapabilities();
 }
 
 void QgsGeoPackageProviderConnection::store( const QString &name ) const
