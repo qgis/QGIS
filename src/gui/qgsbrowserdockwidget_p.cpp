@@ -182,12 +182,12 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   // find root item
   // we need to create a temporary layer to get metadata
   // we could use a provider but the metadata is not as complete and "pretty"  and this is easier
-  QgsDebugMsg( QStringLiteral( "creating temporary layer using path %1" ).arg( layerItem->path() ) );
+  QgsDebugMsgLevel( QStringLiteral( "creating temporary layer using path %1" ).arg( layerItem->path() ), 2 );
   switch ( type )
   {
     case QgsMapLayerType::RasterLayer:
     {
-      QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
+      QgsDebugMsgLevel( QStringLiteral( "creating raster layer" ), 2 );
       // should copy code from addLayer() to split uri ?
       QgsRasterLayer::LayerOptions options;
       options.skipCrsValidation = true;
@@ -197,7 +197,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
     case QgsMapLayerType::MeshLayer:
     {
-      QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
+      QgsDebugMsgLevel( QStringLiteral( "creating mesh layer" ), 2 );
       QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
       mLayer = std::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
@@ -206,7 +206,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
     case QgsMapLayerType::VectorLayer:
     {
-      QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
+      QgsDebugMsgLevel( QStringLiteral( "creating vector layer" ), 2 );
       QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
       mLayer = std::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
