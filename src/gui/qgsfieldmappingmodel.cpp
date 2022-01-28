@@ -416,7 +416,11 @@ const QList<QgsVectorDataProvider::NativeType> QgsFieldMappingModel::dataTypesV2
     << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time )
     << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime )
     << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "boolean" ), QVariant::Bool )
-    << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray );
+    << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray )
+    << QgsVectorDataProvider::NativeType( tr( "String list" ), QStringLiteral( "stringlist" ), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
+    << QgsVectorDataProvider::NativeType( tr( "Integer list" ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal (real) list" ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
+    << QgsVectorDataProvider::NativeType( tr( "Integer (64bit) list" ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
   return sDataTypes;
 }
 
