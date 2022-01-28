@@ -119,7 +119,27 @@ void QgsLayoutConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *
     return;
 
   const QgsLayoutObject::DataDefinedProperty key = static_cast< QgsLayoutObject::DataDefinedProperty >( button->propertyKey() );
-  whileBlocking( button )->setToProperty( mLayoutObject->dataDefinedProperties().property( key ) );
+  const bool propertyAssociatesWithMultiFrame = QgsLayoutObject::propertyAssociatesWithParentMultiframe( key );
+
+  //set the data defined property
+  if ( propertyAssociatesWithMultiFrame )
+  {
+    if ( QgsLayoutFrame *frame = dynamic_cast< QgsLayoutFrame * >( mLayoutObject.data() ) )
+    {
+      if ( QgsLayoutMultiFrame *multiFrame = frame->multiFrame() )
+      {
+        whileBlocking( button )->setToProperty( multiFrame->dataDefinedProperties().property( key ) );
+      }
+    }
+    else if ( QgsLayoutMultiFrame *multiFrame = dynamic_cast< QgsLayoutMultiFrame * >( mLayoutObject.data() ) )
+    {
+      whileBlocking( button )->setToProperty( multiFrame->dataDefinedProperties().property( key ) );
+    }
+  }
+  else if ( mLayoutObject )
+  {
+    whileBlocking( button )->setToProperty( mLayoutObject->dataDefinedProperties().property( key ) );
+  }
 
   // In case the button was initialized to a different config object, we need to reconnect to it here (see https://github.com/qgis/QGIS/issues/26582 )
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayoutConfigObject::updateDataDefinedProperty, Qt::UniqueConnection );
