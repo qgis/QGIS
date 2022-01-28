@@ -23,6 +23,7 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsfieldconstraints.h"
 #include "qgsproperty.h"
+#include "qgsvectordataprovider.h"
 #include "qgis_gui.h"
 
 
@@ -91,6 +92,9 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
 
     //! Returns a static map of supported data types
     static const QMap<QVariant::Type, QString> dataTypes();
+
+    //! Returns a static map of supported data types
+    static const QList<QgsVectorDataProvider::NativeType> dataTypesV2();
 
     //! Returns a list of source fields
     QgsFields sourceFields() const;
@@ -177,6 +181,10 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
 
 
     QgsFieldConstraints::Constraints fieldConstraints( const QgsField &field ) const;
+
+    const QString qgsFieldToTypeName( const QgsField &field );
+
+    void setFieldTypeFromName( QgsField &field, const QString &name );
 
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
 

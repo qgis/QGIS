@@ -71,6 +71,11 @@ Sets the destination fields editable state to ``editable``
 Returns a static map of supported data types
 %End
 
+    static const QList<QgsVectorDataProvider::NativeType> dataTypesV2();
+%Docstring
+Returns a static map of supported data types
+%End
+
     QgsFields sourceFields() const;
 %Docstring
 Returns a list of source fields
