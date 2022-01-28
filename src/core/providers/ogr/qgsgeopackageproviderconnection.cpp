@@ -328,6 +328,8 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
   mCapabilities |= Capability::RetrieveFieldDomain;
+  mCapabilities |= Capability::AddFieldDomain;
+  mCapabilities |= Capability::SetFieldDomain;
 #endif
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
   mCapabilities |= Capability::ListFieldDomains;
