@@ -15,6 +15,7 @@
 
 #include "qgswfsprovidergui.h"
 
+#include "qgsquerybuilder.h"
 #include "qgswfsprovider.h"
 #include "qgswfsdataitemguiprovider.h"
 #include "qgswfssourceselect.h"
@@ -57,7 +58,19 @@ class QgsWfsSubsetStringEditorProvider: public QgsSubsetStringEditorProvider
       QgsWFSProvider *wfsProvider = dynamic_cast<QgsWFSProvider *>( provider );
       if ( !wfsProvider )
         return nullptr;
-      return QgsWfsSubsetStringEditor::create( layer, wfsProvider, parent, fl );
+
+      // If we have an existing full SQL request, open the SQL editor
+      // Otherwise use the standard expression builder.
+      const QString subsetString = wfsProvider->subsetString();
+      if ( subsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) ||
+           subsetString.startsWith( QLatin1String( "SELECT\t" ), Qt::CaseInsensitive ) ||
+           subsetString.startsWith( QLatin1String( "SELECT\r" ), Qt::CaseInsensitive ) ||
+           subsetString.startsWith( QLatin1String( "SELECT\n" ), Qt::CaseInsensitive ) )
+      {
+        return QgsWfsSubsetStringEditor::create( layer, wfsProvider, parent, fl );
+      }
+
+      return new QgsQueryBuilder( layer, parent, fl );
     }
 };
 
