@@ -1858,6 +1858,61 @@ void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubT
   }
 }
 
+void QgsOgrUtils::variantTypeToOgrFieldType( QVariant::Type variantType, OGRFieldType &ogrType, OGRFieldSubType &ogrSubType )
+{
+  ogrSubType = OFSTNone;
+  switch ( variantType )
+  {
+    case QVariant::Bool:
+      ogrType = OFTInteger;
+      ogrSubType = OFSTBoolean;
+      break;
+
+    case QVariant::Int:
+      ogrType = OFTInteger;
+      break;
+
+    case QVariant::LongLong:
+      ogrType = OFTInteger64;
+      break;
+
+    case QVariant::Double:
+      ogrType = OFTReal;
+      break;
+
+    case QVariant::Char:
+      ogrType = OFTString;
+      break;
+
+    case QVariant::String:
+      ogrType = OFTString;
+      break;
+
+    case QVariant::StringList:
+      ogrType = OFTStringList;
+      break;
+
+    case QVariant::ByteArray:
+      ogrType = OFTBinary;
+      break;
+
+    case QVariant::Date:
+      ogrType = OFTDate;
+      break;
+
+    case QVariant::Time:
+      ogrType = OFTTime;
+      break;
+    case QVariant::DateTime:
+      ogrType = OFTDateTime;
+      break;
+
+    default:
+      ogrType = OFTString;
+      break;
+  }
+}
+
 QVariant QgsOgrUtils::stringToVariant( OGRFieldType type, OGRFieldSubType, const QString &string )
 {
   if ( string.isEmpty() )

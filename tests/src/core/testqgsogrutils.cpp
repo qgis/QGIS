@@ -67,6 +67,8 @@ class TestQgsOgrUtils: public QObject
     void ogrFieldToVariant();
     void testOgrFieldTypeToQVariantType_data();
     void testOgrFieldTypeToQVariantType();
+    void testVariantTypeToOgrFieldType_data();
+    void testVariantTypeToOgrFieldType();
     void testOgrStringToVariant_data();
     void testOgrStringToVariant();
 
@@ -857,6 +859,39 @@ void TestQgsOgrUtils::testOgrFieldTypeToQVariantType()
       variantType, variantSubType );
   QCOMPARE( static_cast< int >( variantType ), expectedType );
   QCOMPARE( static_cast< int >( variantSubType ), expectedSubType );
+}
+
+void TestQgsOgrUtils::testVariantTypeToOgrFieldType_data()
+{
+  QTest::addColumn<int>( "variantType" );
+  QTest::addColumn<int>( "expectedType" );
+  QTest::addColumn<int>( "expectedSubType" );
+
+  QTest::newRow( "Bool" ) << static_cast< int >( QVariant::Type::Bool ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTBoolean );
+  QTest::newRow( "Int" ) << static_cast< int >( QVariant::Type::Int ) << static_cast< int >( OFTInteger ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "LongLong" ) << static_cast< int >( QVariant::Type::LongLong ) << static_cast< int >( OFTInteger64 ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "Double" ) << static_cast< int >( QVariant::Type::Double ) << static_cast< int >( OFTReal ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "Char" ) << static_cast< int >( QVariant::Type::Char ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "String" ) << static_cast< int >( QVariant::Type::String ) << static_cast< int >( OFTString ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "StringList" ) << static_cast< int >( QVariant::Type::StringList ) << static_cast< int >( OFTStringList ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "ByteArray" ) << static_cast< int >( QVariant::Type::ByteArray ) << static_cast< int >( OFTBinary ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "Date" ) << static_cast< int >( QVariant::Type::Date ) << static_cast< int >( OFTDate ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "Time" ) << static_cast< int >( QVariant::Type::Time ) << static_cast< int >( OFTTime ) << static_cast< int >( OFSTNone );
+  QTest::newRow( "DateTime" ) << static_cast< int >( QVariant::Type::DateTime ) << static_cast< int >( OFTDateTime ) << static_cast< int >( OFSTNone );
+}
+
+void TestQgsOgrUtils::testVariantTypeToOgrFieldType()
+{
+  QFETCH( int, variantType );
+  QFETCH( int, expectedType );
+  QFETCH( int, expectedSubType );
+
+  OGRFieldType type;
+  OGRFieldSubType subType;
+  QgsOgrUtils::variantTypeToOgrFieldType( static_cast<QVariant::Type>( variantType ),
+                                          type, subType );
+  QCOMPARE( static_cast< int >( type ), expectedType );
+  QCOMPARE( static_cast< int >( subType ), expectedSubType );
 }
 
 void TestQgsOgrUtils::testOgrStringToVariant_data()
