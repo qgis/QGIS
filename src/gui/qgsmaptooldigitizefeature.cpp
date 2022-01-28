@@ -15,22 +15,24 @@
  ***************************************************************************/
 
 #include "qgsmaptooldigitizefeature.h"
+
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
 #include "qgsattributedialog.h"
-#include "qgsexception.h"
 #include "qgscurvepolygon.h"
+#include "qgsexception.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
-#include "qgsmultipoint.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmultipoint.h"
 #include "qgspolygon.h"
 #include "qgsproject.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
 
 #include <QSettings>
 
@@ -77,7 +79,9 @@ void QgsMapToolDigitizeFeature::layerGeometryCaptured( const QgsGeometry &geomet
 
   if ( mCheckGeometryType )
   {
-    QVector<QgsGeometry> layerGeometries = geometry.coerceToType( layerWKBType );
+    double defaultZ = QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value();
+    double defaultM = QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.value();
+    QVector<QgsGeometry> layerGeometries = geometry.coerceToType( layerWKBType, defaultZ, defaultM );
     if ( layerGeometries.count() > 0 )
       layerGeometry = layerGeometries.at( 0 );
 
