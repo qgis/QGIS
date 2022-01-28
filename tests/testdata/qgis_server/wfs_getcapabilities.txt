@@ -7,7 +7,7 @@ Content-Type: text/xml; charset=utf-8
   <ows:Abstract><![CDATA[Some UTF8 text èòù]]></ows:Abstract>
   <ows:ServiceType>WFS</ows:ServiceType>
   <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
-  <ows:Fees>None</ows:Fees>
+  <ows:Fees>conditions unknown</ows:Fees>
   <ows:AccessConstraints>None</ows:AccessConstraints>
  </ows:ServiceIdentification>
  <ows:ServiceProvider>
@@ -95,6 +95,19 @@ Content-Type: text/xml; charset=utf-8
     <Operation>Insert</Operation>
     <Operation>Update</Operation>
     <Operation>Delete</Operation>
+   </Operations>
+   <ows:WGS84BoundingBox dimensions="2">
+    <ows:LowerCorner>8.203459 44.901394</ows:LowerCorner>
+    <ows:UpperCorner>8.203547 44.901483</ows:UpperCorner>
+   </ows:WGS84BoundingBox>
+  </FeatureType>
+  <FeatureType>
+   <Name>Testing_Layer_(copy)</Name>
+   <Title>Testing Layer (copy)</Title>
+   <DefaultSRS>EPSG:4326</DefaultSRS>
+   <OtherSRS>EPSG:3857</OtherSRS>
+   <Operations>
+    <Operation>Query</Operation>
    </Operations>
    <ows:WGS84BoundingBox dimensions="2">
     <ows:LowerCorner>8.203459 44.901394</ows:LowerCorner>
