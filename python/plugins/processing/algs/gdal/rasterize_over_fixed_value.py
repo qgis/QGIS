@@ -26,6 +26,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingContext,
                        QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
@@ -122,3 +123,25 @@ class rasterize_over_fixed_value(GdalAlgorithm):
         arguments.append(inLayer.source())
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+
+    def postProcessAlgorithm(self, context, feedback):
+        fileName = self.output_values.get(self.OUTPUT)
+        if not fileName:
+            return {}
+
+        if context.project():
+            for l in context.project().mapLayers().values():
+                if l.source() != fileName:
+                    continue
+
+                l.dataProvider().reloadData()
+                l.triggerRepaint()
+
+        for l in context.temporaryLayerStore().mapLayers().values():
+            if l.source() != fileName:
+                continue
+
+            l.dataProvider().reloadData()
+            context.temporaryLayerStore().addMapLayer(l)
+
+        return {}
