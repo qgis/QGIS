@@ -193,6 +193,7 @@ set(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayerutils.cpp
  testqgsvectortilelayer.cpp
+ testqgsvectortileconnection.cpp
  testqgsvectortileutils.cpp
  testqgsvectortilewriter.cpp
  testqgstiles.cpp
