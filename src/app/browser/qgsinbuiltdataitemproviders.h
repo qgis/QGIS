@@ -160,13 +160,17 @@ class QgsFieldItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+};
+
+
+#include "ui_qgsbrowseritemmetadatawidgetbase.h"
+
 
 };
 
 
-#include "ui_qgsfielddomaindetailswidgetbase.h"
 
-class QgsFieldDomainDetailsWidget : public QWidget, private Ui_QgsFieldDomainDetailsWidgetBase
+class QgsFieldDomainDetailsWidget : public QWidget, private Ui_QgsBrowserItemMetadataWidgetBase
 {
     Q_OBJECT
 
@@ -180,7 +184,7 @@ class QgsFieldDomainDetailsWidget : public QWidget, private Ui_QgsFieldDomainDet
     std::unique_ptr< QgsFieldDomain > mDomain;
 };
 
-class QgsFieldDomainsDetailsWidget : public QWidget, private Ui_QgsFieldDomainDetailsWidgetBase
+class QgsFieldDomainsDetailsWidget : public QWidget, private Ui_QgsBrowserItemMetadataWidgetBase
 {
     Q_OBJECT
 
