@@ -75,7 +75,10 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Field type" ),
-                QStringList() << QObject::tr( "Integer" ) << QObject::tr( "Float" ) << QObject::tr( "String" ), false, 0 ) );
+                QStringList() << QObject::tr( "Integer" ) << QObject::tr( "Float" ) << QObject::tr( "String" )
+                << QObject::tr( "Boolean" ) << QObject::tr( "Date" ) << QObject::tr( "Time" )
+                << QObject::tr( "DateTime" ) << QObject::tr( "Binary" )
+                << QObject::tr( "StringList" ) << QObject::tr( "IntegerList" ) << QObject::tr( "DoubleList" ), false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Field length" ),
                 QgsProcessingParameterNumber::Integer, 10, false, 1, 255 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Field precision" ),
@@ -102,14 +105,41 @@ bool QgsAddTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
   switch ( type )
   {
-    case 0:
+    case 0: // Integer
       mField.setType( QVariant::Int );
       break;
-    case 1:
+    case 1: // Float
       mField.setType( QVariant::Double );
       break;
-    case 2:
+    case 2: // String
       mField.setType( QVariant::String );
+      break;
+    case 3: // Boolean
+      mField.setType( QVariant::Bool );
+      break;
+    case 4: // Date
+      mField.setType( QVariant::Date );
+      break;
+    case 5: // Time
+      mField.setType( QVariant::Time );
+      break;
+    case 6: // DateTime
+      mField.setType( QVariant::DateTime );
+      break;
+    case 7: // Binary
+      mField.setType( QVariant::ByteArray );
+      break;
+    case 8: // StringList
+      mField.setType( QVariant::StringList );
+      mField.setSubType( QVariant::String );
+      break;
+    case 9: // IntegerList
+      mField.setType( QVariant::List );
+      mField.setSubType( QVariant::Int );
+      break;
+    case 10: // DoubleList
+      mField.setType( QVariant::List );
+      mField.setSubType( QVariant::Double );
       break;
   }
 
