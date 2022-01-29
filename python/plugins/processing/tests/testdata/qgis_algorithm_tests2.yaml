@@ -1343,6 +1343,9 @@ tests:
       OUTPUT:
         name: expected/refactor_array.gml
         type: vector
+        compare:
+          fields:
+            gml_id: skip
 
   - algorithm: native:reprojectlayer
     name: reproject vector layer
