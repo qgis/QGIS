@@ -262,10 +262,12 @@ bool QgsCustomProjectionOptionsWidget::isValid()
   QgsCoordinateReferenceSystem crs;
   for ( const Definition &def : std::as_const( mDefinitions ) )
   {
-    if ( !def.wkt.isEmpty() )
+    if ( !def.wkt.trimmed().isEmpty() )
       crs.createFromWkt( def.wkt );
-    else
+    else if ( !def.proj.trimmed().isEmpty() )
       crs.createFromProj( def.proj );
+    else
+      continue;
 
     if ( !crs.isValid() )
     {
