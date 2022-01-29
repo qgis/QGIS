@@ -65,7 +65,10 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
 {
   Q_UNUSED( configuration );
 
-  const QStringList fieldTypes = QStringList( {QObject::tr( "Float" ), QObject::tr( "Integer" ), QObject::tr( "String" ), QObject::tr( "Date" ) } );
+  const QStringList fieldTypes =  QStringList() << QObject::tr( "Integer" ) << QObject::tr( "Float" ) << QObject::tr( "String" )
+                                  << QObject::tr( "Boolean" ) << QObject::tr( "Date" ) << QObject::tr( "Time" )
+                                  << QObject::tr( "DateTime" ) << QObject::tr( "Binary" )
+                                  << QObject::tr( "StringList" ) << QObject::tr( "IntegerList" ) << QObject::tr( "DoubleList" );
 
   std::unique_ptr< QgsProcessingParameterString > fieldName = std::make_unique< QgsProcessingParameterString > ( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
   std::unique_ptr< QgsProcessingParameterEnum > fieldType = std::make_unique< QgsProcessingParameterEnum > ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
@@ -108,15 +111,53 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QList<QVariant::Type> fieldTypes( {QVariant::Double, QVariant::Int, QVariant::String, QVariant::Date} );
-
   // prepare fields
   const int fieldTypeIdx = parameterAsInt( parameters, QStringLiteral( "FIELD_TYPE" ), context );
   const int fieldLength = parameterAsInt( parameters, QStringLiteral( "FIELD_LENGTH" ), context );
   const int fieldPrecision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
   const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
 
-  const QVariant::Type fieldType = fieldTypes[fieldTypeIdx];
+  QVariant::Type fieldType;
+  QVariant::Type fieldSubType;
+  switch ( fieldTypeIdx )
+  {
+    case 0: // Integer
+      fieldType = QVariant::Int;
+      break;
+    case 1: // Float
+      fieldType = QVariant::Double;
+      break;
+    case 2: // String
+      fieldType = QVariant::String;
+      break;
+    case 3: // Boolean
+      fieldType = QVariant::Bool;
+      break;
+    case 4: // Date
+      fieldType = QVariant::Date;
+      break;
+    case 5: // Time
+      fieldType = QVariant::Time;
+      break;
+    case 6: // DateTime
+      fieldType = QVariant::DateTime;
+      break;
+    case 7: // Binary
+      fieldType = QVariant::ByteArray;
+      break;
+    case 8: // StringList
+      fieldType = QVariant::StringList;
+      fieldSubType = QVariant::String;
+      break;
+    case 9: // IntegerList
+      fieldType = QVariant::List;
+      fieldSubType = QVariant::Int;
+      break;
+    case 10: // DoubleList
+      fieldType = QVariant::List;
+      fieldSubType = QVariant::Double;
+      break;
+  }
 
   if ( fieldName.isEmpty() )
     throw QgsProcessingException( QObject::tr( "Field name must not be an empty string" ) );
@@ -126,7 +167,9 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     fieldType,
     QString(),
     fieldLength,
-    fieldPrecision
+    fieldPrecision,
+    QString(),
+    fieldSubType
   );
 
   mFields = source->fields();
