@@ -550,6 +550,18 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
   }
 
+  if ( d->type == QVariant::String && ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName == QLatin1String( "jsonb" ) ) )
+  {
+    const QJsonDocument doc = QJsonDocument::fromVariant( v );
+    if ( !doc.isNull() )
+    {
+      v = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).constData() );
+      return true;
+    }
+    v = QVariant( d->type );
+    return false;
+  }
+
   if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );

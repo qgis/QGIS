@@ -740,6 +740,20 @@ void TestQgsField::convertCompatible()
   intField = QgsField( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "Integer" ), 10 );
   QVariant vZero = 0;
   QVERIFY( intField.convertCompatible( vZero ) );
+
+  // Test json field conversion
+  const QgsField jsonField( QStringLiteral( "json" ), QVariant::String, QStringLiteral( "json" ) );
+  QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
+  QVERIFY( jsonField.convertCompatible( jsonValue ) );
+  QCOMPARE( jsonValue.type(), QVariant::String );
+  QCOMPARE( jsonValue, QString( "[1,5,8]" ) );
+  QVariantMap variantMap;
+  variantMap.insert( QStringLiteral( "a" ), 1 );
+  variantMap.insert( QStringLiteral( "c" ), 3 );
+  jsonValue = QVariant::fromValue( variantMap );
+  QVERIFY( jsonField.convertCompatible( jsonValue ) );
+  QCOMPARE( jsonValue.type(), QVariant::String );
+  QCOMPARE( jsonValue, QString( "{\"a\":1,\"c\":3}" ) );
 }
 
 void TestQgsField::dataStream()
