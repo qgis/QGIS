@@ -683,6 +683,14 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
           case QVariant::StringList:
           {
+            // handle GPKG conversion to JSON
+            if ( mOgrDriverName == QLatin1String( "GPKG" ) )
+            {
+              ogrType = OFTString;
+              ogrSubType = OFSTJSON;
+              break;
+            }
+
             const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
             if ( pszDataTypes && strstr( pszDataTypes, "StringList" ) )
             {
@@ -2550,7 +2558,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           QString jsonString;
           if ( !doc.isNull() )
           {
-            jsonString = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).data() );
+            jsonString = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).constData() );
           }
           OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( jsonString.constData() ) );
           break;
