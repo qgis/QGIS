@@ -90,6 +90,10 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) ), tr( "Time" ), "time" );
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), tr( "Binary (BLOB)" ), "binary" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayString.svg" ) ), tr( "String List" ), "stringlist" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayInteger.svg" ) ), tr( "Integer List" ), "integerlist" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayFloat.svg" ) ), tr( "Decimal (real) list" ), "doublelist" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayInteger.svg" ) ), tr( "Integer (64bit) List" ), "integer64list" );
   mTypeBox_currentIndexChanged( 1 );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
@@ -192,6 +196,10 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int index )
       mPrecision->setEnabled( false );
       break;
     case 7: // Binary
+    case 8: // Stringlist
+    case 9: // Integerlist
+    case 10: // Doublelist
+    case 11: // Integer64list
       mWidth->clear();
       mWidth->setEnabled( false );
       mPrecision->clear();
@@ -241,6 +249,7 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
     const int width = ( *it )->text( 2 ).toInt();
     const int precision = ( *it )->text( 3 ).toInt();
     QVariant::Type fieldType = QVariant::Invalid;
+    QVariant::Type fieldSubType = QVariant::Invalid;
     if ( typeName == QLatin1String( "string" ) )
       fieldType = QVariant::String;
     else if ( typeName == QLatin1String( "integer" ) )
@@ -255,8 +264,30 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
       fieldType = QVariant::Time;
     else if ( typeName == QLatin1String( "datetime" ) )
       fieldType = QVariant::DateTime;
+    else if ( typeName == QLatin1String( "binary" ) )
+      fieldType = QVariant::ByteArray;
+    else if ( typeName == QLatin1String( "stringlist" ) )
+    {
+      fieldType = QVariant::StringList;
+      fieldSubType = QVariant::String;
+    }
+    else if ( typeName == QLatin1String( "integerlist" ) )
+    {
+      fieldType = QVariant::List;
+      fieldSubType = QVariant::Int;
+    }
+    else if ( typeName == QLatin1String( "doublelist" ) )
+    {
+      fieldType = QVariant::List;
+      fieldSubType = QVariant::Double;
+    }
+    else if ( typeName == QLatin1String( "integer64list" ) )
+    {
+      fieldType = QVariant::List;
+      fieldSubType = QVariant::LongLong;
+    }
 
-    const QgsField field = QgsField( name, fieldType, typeName, width, precision );
+    const QgsField field = QgsField( name, fieldType, typeName, width, precision, QString(), fieldSubType );
     fields.append( field );
     ++it;
   }

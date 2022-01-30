@@ -110,6 +110,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), tr( "Binary (BLOB)" ), "binary" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldJson.svg" ) ), tr( "JSON" ), "json" );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
@@ -455,8 +456,8 @@ bool QgsNewGeoPackageLayerDialog::apply()
     const QString fieldType( ( *it )->text( 1 ) );
     const QString fieldWidth( ( *it )->text( 2 ) );
 
-    bool isBool = false;
     OGRFieldType ogrType( OFTString );
+    OGRFieldSubType ogrSubType = OFSTNone;
     if ( fieldType == QLatin1String( "text" ) )
       ogrType = OFTString;
     else if ( fieldType == QLatin1String( "integer" ) )
@@ -472,18 +473,24 @@ bool QgsNewGeoPackageLayerDialog::apply()
     else if ( fieldType == QLatin1String( "bool" ) )
     {
       ogrType = OFTInteger;
-      isBool = true;
+      ogrSubType = OFSTBoolean;
     }
     else if ( fieldType == QLatin1String( "binary" ) )
       ogrType = OFTBinary;
+    else if ( fieldType == QLatin1String( "json" ) )
+    {
+      ogrType = OFTString;
+      ogrSubType = OFSTJSON;
+    }
 
     const int ogrWidth = fieldWidth.toInt();
 
     const gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( fieldName.toUtf8().constData(), ogrType ) );
+    if ( ogrSubType != OFSTNone )
+      OGR_Fld_SetSubType( fld.get(), ogrSubType );
+
     if ( ogrType != OFTBinary )
       OGR_Fld_SetWidth( fld.get(), ogrWidth );
-    if ( isBool )
-      OGR_Fld_SetSubType( fld.get(), OFSTBoolean );
 
     if ( OGR_L_CreateField( hLayer, fld.get(), true ) != OGRERR_NONE )
     {
