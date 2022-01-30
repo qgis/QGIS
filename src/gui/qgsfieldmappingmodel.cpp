@@ -405,7 +405,7 @@ const QMap<QVariant::Type, QString> QgsFieldMappingModel::dataTypes()
   return sDataTypes;
 }
 
-const QList<QgsVectorDataProvider::NativeType> QgsFieldMappingModel::dataTypesV2()
+const QList<QgsVectorDataProvider::NativeType> QgsFieldMappingModel::supportedDataTypes()
 {
   static const QList<QgsVectorDataProvider::NativeType> sDataTypes =
     QList<QgsVectorDataProvider::NativeType>() << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 32bit)" ), QStringLiteral( "integer" ), QVariant::Int )
@@ -426,12 +426,12 @@ const QList<QgsVectorDataProvider::NativeType> QgsFieldMappingModel::dataTypesV2
 
 const QString QgsFieldMappingModel::qgsFieldToTypeName( const QgsField &field )
 {
-  const QList<QgsVectorDataProvider::NativeType> types = dataTypesV2();
-  for ( int i = 0; i < types.size(); i++ )
+  const QList<QgsVectorDataProvider::NativeType> types = supportedDataTypes();
+  for ( const auto &type : types )
   {
-    if ( types[i].mType == field.type() && types[i].mSubType == field.subType() )
+    if ( type.mType == field.type() && type.mSubType == field.subType() )
     {
-      return types[i].mTypeName;
+      return type.mTypeName;
     }
   }
   return QString();
@@ -439,14 +439,15 @@ const QString QgsFieldMappingModel::qgsFieldToTypeName( const QgsField &field )
 
 void QgsFieldMappingModel::setFieldTypeFromName( QgsField &field, const QString &name )
 {
-  const QList<QgsVectorDataProvider::NativeType> types = dataTypesV2();
-  for ( int i = 0; i < types.size(); i++ )
+  const QList<QgsVectorDataProvider::NativeType> types = supportedDataTypes();
+  for ( const auto &type : types )
   {
-    if ( types[i].mTypeName == name )
+    if ( type.mTypeName == name )
     {
-      field.setType( types[i].mType );
-      field.setTypeName( types[i].mTypeName );
-      field.setSubType( types[i].mSubType );
+      field.setType( type.mType );
+      field.setTypeName( type.mTypeName );
+      field.setSubType( type.mSubType );
+      return;
     }
   }
 }
@@ -512,6 +513,7 @@ void QgsFieldMappingModel::appendField( const QgsField &field, const QString &ex
   beginInsertRows( QModelIndex(), lastRow, lastRow );
   Field f;
   f.field = field;
+  f.field.setTypeName( qgsFieldToTypeName( field ) );
   f.expression = expression;
   f.originalName = field.name();
   mMapping.push_back( f );

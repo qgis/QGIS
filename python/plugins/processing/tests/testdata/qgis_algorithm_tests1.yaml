@@ -290,7 +290,7 @@ tests:
         type: vector
         compare:
           fields:
-            geom_id: skip
+            gml_id: skip
           geometry:
             ignore_part_order: True
 

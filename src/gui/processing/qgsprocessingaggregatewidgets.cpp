@@ -302,6 +302,10 @@ void QgsAggregateMappingModel::setMapping( const QList<QgsAggregateMappingModel:
 {
   beginResetModel();
   mMapping = mapping;
+  for ( auto &agg : mMapping )
+  {
+    agg.field.setTypeName( QgsFieldMappingModel::qgsFieldToTypeName( agg.field ) );
+  }
   endResetModel();
 }
 
@@ -311,6 +315,7 @@ void QgsAggregateMappingModel::appendField( const QgsField &field, const QString
   beginInsertRows( QModelIndex(), lastRow, lastRow );
   Aggregate agg;
   agg.field = field;
+  agg.field.setTypeName( QgsFieldMappingModel::qgsFieldToTypeName( field ) );
   agg.source = source;
   agg.aggregate = aggregate;
   agg.delimiter = ',';
