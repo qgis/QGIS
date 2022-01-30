@@ -149,6 +149,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     void setDestinationFields( const QgsFields &destinationFields,
                                const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
+
     // QAbstractItemModel interface
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -182,9 +183,17 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
 
     QgsFieldConstraints::Constraints fieldConstraints( const QgsField &field ) const;
 
-    const QString qgsFieldToTypeName( const QgsField &field );
+    /**
+     * Returns the field type name matching the \a field settings.
+     * \since QGIS 3.14
+     */
+    static const QString qgsFieldToTypeName( const QgsField &field );
 
-    void setFieldTypeFromName( QgsField &field, const QString &name );
+    /**
+     * Sets the \a field type and subtype based on the type \a name provided.
+     * \since QGIS 3.14
+     */
+    static void setFieldTypeFromName( QgsField &field, const QString &name );
 
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
 
