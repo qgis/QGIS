@@ -555,7 +555,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     const QJsonDocument doc = QJsonDocument::fromVariant( v );
     if ( !doc.isNull() )
     {
-      v = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).data() );
+      v = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).constData() );
       return true;
     }
     v = QVariant( d->type );
