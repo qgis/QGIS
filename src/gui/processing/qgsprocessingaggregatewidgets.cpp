@@ -140,7 +140,7 @@ QVariant QgsAggregateMappingModel::data( const QModelIndex &index, int role ) co
           }
           case ColumnDataIndex::DestinationType:
           {
-            return static_cast<int>( agg.field.type() );
+            return agg.field.typeName();
           }
           case ColumnDataIndex::DestinationLength:
           {
@@ -201,7 +201,7 @@ bool QgsAggregateMappingModel::setData( const QModelIndex &index, const QVariant
         }
         case ColumnDataIndex::DestinationType:
         {
-          f.field.setType( static_cast<QVariant::Type>( value.toInt( ) ) );
+          QgsFieldMappingModel::setFieldTypeFromName( f.field, value.toString() );
           break;
         }
         case ColumnDataIndex::DestinationLength:
@@ -268,6 +268,7 @@ void QgsAggregateMappingModel::setSourceFields( const QgsFields &sourceFields )
   {
     Aggregate aggregate;
     aggregate.field = f;
+    aggregate.field.setTypeName( QgsFieldMappingModel::qgsFieldToTypeName( f ) );
     aggregate.source = QgsExpression::quotedColumnRef( f.name() );
 
     if ( f.isNumeric() )
@@ -301,6 +302,10 @@ void QgsAggregateMappingModel::setMapping( const QList<QgsAggregateMappingModel:
 {
   beginResetModel();
   mMapping = mapping;
+  for ( auto &agg : mMapping )
+  {
+    agg.field.setTypeName( QgsFieldMappingModel::qgsFieldToTypeName( agg.field ) );
+  }
   endResetModel();
 }
 
@@ -310,6 +315,7 @@ void QgsAggregateMappingModel::appendField( const QgsField &field, const QString
   beginInsertRows( QModelIndex(), lastRow, lastRow );
   Aggregate agg;
   agg.field = field;
+  agg.field.setTypeName( QgsFieldMappingModel::qgsFieldToTypeName( field ) );
   agg.source = source;
   agg.aggregate = aggregate;
   agg.delimiter = ',';

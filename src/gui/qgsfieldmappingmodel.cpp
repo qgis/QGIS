@@ -120,7 +120,7 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
           }
           case ColumnDataIndex::DestinationType:
           {
-            return static_cast<int>( f.field.type() );
+            return f.field.typeName();
           }
           case ColumnDataIndex::DestinationLength:
           {
@@ -207,7 +207,7 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
         }
         case ColumnDataIndex::DestinationType:
         {
-          f.field.setType( static_cast<QVariant::Type>( value.toInt( ) ) );
+          setFieldTypeFromName( f.field, value.toString() );
           break;
         }
         case ColumnDataIndex::DestinationLength:
@@ -354,6 +354,7 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
   {
     Field f;
     f.field = df;
+    f.field.setTypeName( qgsFieldToTypeName( df ) );
     f.originalName = df.name();
     if ( expressions.contains( f.field.name() ) )
     {
@@ -402,6 +403,53 @@ const QMap<QVariant::Type, QString> QgsFieldMappingModel::dataTypes()
     { QVariant::Type::ByteArray, tr( "Binary object (BLOB)" ) },
   };
   return sDataTypes;
+}
+
+const QList<QgsVectorDataProvider::NativeType> QgsFieldMappingModel::supportedDataTypes()
+{
+  static const QList<QgsVectorDataProvider::NativeType> sDataTypes =
+    QList<QgsVectorDataProvider::NativeType>() << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 32bit)" ), QStringLiteral( "integer" ), QVariant::Int )
+    << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64bit)" ), QStringLiteral( "int8" ), QVariant::LongLong )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double precision" ), QVariant::Double )
+    << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "text" ), QVariant::String )
+    << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date )
+    << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time )
+    << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime )
+    << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "boolean" ), QVariant::Bool )
+    << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray )
+    << QgsVectorDataProvider::NativeType( tr( "String list" ), QStringLiteral( "stringlist" ), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
+    << QgsVectorDataProvider::NativeType( tr( "Integer list" ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal (real) list" ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
+    << QgsVectorDataProvider::NativeType( tr( "Integer (64bit) list" ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+  return sDataTypes;
+}
+
+const QString QgsFieldMappingModel::qgsFieldToTypeName( const QgsField &field )
+{
+  const QList<QgsVectorDataProvider::NativeType> types = supportedDataTypes();
+  for ( const auto &type : types )
+  {
+    if ( type.mType == field.type() && type.mSubType == field.subType() )
+    {
+      return type.mTypeName;
+    }
+  }
+  return QString();
+}
+
+void QgsFieldMappingModel::setFieldTypeFromName( QgsField &field, const QString &name )
+{
+  const QList<QgsVectorDataProvider::NativeType> types = supportedDataTypes();
+  for ( const auto &type : types )
+  {
+    if ( type.mTypeName == name )
+    {
+      field.setType( type.mType );
+      field.setTypeName( type.mTypeName );
+      field.setSubType( type.mSubType );
+      return;
+    }
+  }
 }
 
 QList<QgsFieldMappingModel::Field> QgsFieldMappingModel::mapping() const
@@ -465,6 +513,7 @@ void QgsFieldMappingModel::appendField( const QgsField &field, const QString &ex
   beginInsertRows( QModelIndex(), lastRow, lastRow );
   Field f;
   f.field = field;
+  f.field.setTypeName( qgsFieldToTypeName( field ) );
   f.expression = expression;
   f.originalName = field.name();
   mMapping.push_back( f );
