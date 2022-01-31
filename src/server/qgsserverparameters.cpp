@@ -179,7 +179,7 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
     if ( posEnd == pos + 1 )
     {
       if ( ! isOgcFilter() )
-        filters.append( QStringLiteral() );
+        filters.append( QString() );
       pos = posEnd;
       continue;
     }
@@ -199,7 +199,7 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
 
   if ( filter.back() == ';' )
   {
-    filters.append( QStringLiteral() );
+    filters.append( QString() );
   }
 
   return filters;
