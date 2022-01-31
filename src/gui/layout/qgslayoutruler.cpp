@@ -699,6 +699,10 @@ void QgsLayoutRuler::mousePressEvent( QMouseEvent *event )
         createTemporaryGuideItem();
       }
     }
+    else
+    {
+      mDraggingGuideOldPosition = mDraggingGuide->layoutPosition();
+    }
     switch ( mOrientation )
     {
       case Qt::Horizontal:
@@ -802,8 +806,18 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
   }
   else if ( event->button() == Qt::RightButton )
   {
-    QMouseEvent leftReleaseEvent( event->type(), event->localPos(), Qt::LeftButton, event->buttons(), event->modifiers() );
-    mouseReleaseEvent( &leftReleaseEvent );
+    if ( mCreatingGuide || mDraggingGuide )
+    {
+      QApplication::restoreOverrideCursor();
+      delete mGuideItem;
+      mGuideItem = nullptr;
+      mCreatingGuide = false;
+      if ( mDraggingGuide )
+      {
+        mDraggingGuide->setLayoutPosition( mDraggingGuideOldPosition );
+      }
+      mDraggingGuide = nullptr;
+    }
     if ( mMenu )
       mMenu->popup( event->globalPos() );
   }
