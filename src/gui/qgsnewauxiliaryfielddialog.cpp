@@ -33,7 +33,7 @@ QgsNewAuxiliaryFieldDialog::QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinit
   QgsGui::enableAutoGeometryRestore( this );
 
   mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldText.svg" ), QgsVariantUtils::typeToDisplayString( QVariant::String ), QgsPropertyDefinition::DataTypeString );
-  mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" ), QgsVariantUtils::typeToDisplayString( QVariant::Time ), QgsPropertyDefinition::DataTypeNumeric );
+  mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), QgsPropertyDefinition::DataTypeNumeric );
   mType->addItem( QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" ), tr( "Integer" ), QgsPropertyDefinition::DataTypeBoolean );
 
   mType->setCurrentIndex( mType->findData( def.dataType() ) );
