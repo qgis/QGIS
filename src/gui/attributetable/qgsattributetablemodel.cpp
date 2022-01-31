@@ -33,7 +33,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgssymbollayerutils.h"
 #include "qgsfieldformatterregistry.h"
-#include "qgsfallbackfieldformatter.h"
 #include "qgsgui.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayerjoininfo.h"
