@@ -33,6 +33,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvariantutils.h"
+#include "qgsfields.h"
 
 
 // FTC = FieldTypeCombo
@@ -381,7 +382,7 @@ void QgsFieldCalculator::populateOutputFieldTypes()
   mOutputFieldTypeComboBox->clear();
   for ( int i = 0; i < typelist.size(); i++ )
   {
-    mOutputFieldTypeComboBox->addItem( typelist[i].mTypeDesc );
+    mOutputFieldTypeComboBox->addItem( QgsFields::iconForFieldType( typelist[i].mType ), typelist[i].mTypeDesc );
     mOutputFieldTypeComboBox->setItemData( i, static_cast<int>( typelist[i].mType ), Qt::UserRole + FTC_TYPE_ROLE_IDX );
     mOutputFieldTypeComboBox->setItemData( i, typelist[i].mTypeName, Qt::UserRole + FTC_TYPE_NAME_IDX );
     mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMinLen, Qt::UserRole + FTC_MINLEN_IDX );
