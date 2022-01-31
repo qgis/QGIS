@@ -82,7 +82,6 @@ QString QgsVariantUtils::typeToDisplayString( QVariant::Type type, QVariant::Typ
     case QVariant::Point:
     case QVariant::PointF:
       return QObject::tr( "Point" );
-    case QVariant::RegExp:
     case QVariant::RegularExpression:
       return QObject::tr( "Regular Expression" );
     case QVariant::Hash:
@@ -123,7 +122,6 @@ QString QgsVariantUtils::typeToDisplayString( QVariant::Type type, QVariant::Typ
       return QObject::tr( "Text Length" );
     case QVariant::TextFormat:
       return QObject::tr( "Text Format" );
-    case QVariant::Matrix:
     case QVariant::Matrix4x4:
       return QObject::tr( "Matrix" );
     case QVariant::Transform:
@@ -139,10 +137,7 @@ QString QgsVariantUtils::typeToDisplayString( QVariant::Type type, QVariant::Typ
     case QVariant::SizePolicy:
       return QObject::tr( "Size Policy" );
 
-    case QVariant::LastCoreType:
-    case QVariant::LastGuiType:
-    case QVariant::UserType:
-    case QVariant::LastType:
+    default:
       break;
   }
   return QString();
