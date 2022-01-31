@@ -118,6 +118,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QgsRuleBasedRendererModel::toggleSelectedSymbols, this, &QgsRuleBasedRendererWidget::toggleSelectedSymbols );
 
   currentRuleChanged();
   selectedRulesChanged();
@@ -711,6 +712,24 @@ void QgsRuleBasedRendererWidget::selectedRulesChanged()
   btnRemoveRule->setEnabled( enabled );
 }
 
+void QgsRuleBasedRendererWidget::toggleSelectedSymbols( const bool state )
+{
+  QModelIndexList selectedIndexes = viewRules->selectionModel()->selectedRows();
+  if ( !selectedIndexes.isEmpty() && mRenderer )
+  {
+    const auto constSelectedIndexes = selectedIndexes;
+    for ( const QModelIndex &idx : constSelectedIndexes )
+    {
+      if ( idx.isValid() )
+      {
+        mModel->ruleForIndex( idx )->setActive( state );
+        viewRules->update( idx );
+      }
+    }
+    emit widgetChanged();
+  }
+}
+
 ///////////
 
 QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent, const QgsSymbolWidgetContext &context )
@@ -1119,7 +1138,12 @@ bool QgsRuleBasedRendererModel::setData( const QModelIndex &index, const QVarian
 
   if ( role == Qt::CheckStateRole )
   {
-    rule->setActive( value.toInt() == Qt::Checked );
+    if ( QGuiApplication::keyboardModifiers() == Qt::ShiftModifier || QGuiApplication::keyboardModifiers() == Qt::ControlModifier )
+    {
+      toggleSelectedSymbols( value == Qt::Checked );
+    }
+    else
+      rule->setActive( value.toInt() == Qt::Checked );
     emit dataChanged( index, index );
     return true;
   }

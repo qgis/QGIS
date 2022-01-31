@@ -265,7 +265,12 @@ bool QgsCategorizedSymbolRendererModel::setData( const QModelIndex &index, const
 
   if ( index.column() == 0 && role == Qt::CheckStateRole )
   {
-    mRenderer->updateCategoryRenderState( index.row(), value == Qt::Checked );
+    if ( QGuiApplication::keyboardModifiers() == Qt::ShiftModifier || QGuiApplication::keyboardModifiers() == Qt::ControlModifier )
+    {
+      toggleSelectedSymbols( value == Qt::Checked );
+    }
+    else
+      mRenderer->updateCategoryRenderState( index.row(), value == Qt::Checked );
     emit dataChanged( index, index );
     return true;
   }
@@ -686,6 +691,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
   connect( mModel, &QgsCategorizedSymbolRendererModel::rowsMoved, this, &QgsCategorizedSymbolRendererWidget::rowsMoved );
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QgsCategorizedSymbolRendererModel::toggleSelectedSymbols, this, &QgsCategorizedSymbolRendererWidget::toggleSelectedSymbols );
 
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsCategorizedSymbolRendererWidget::categoryColumnChanged );
 
@@ -1518,4 +1524,24 @@ void QgsCategorizedSymbolRendererWidget::selectionChanged( const QItemSelection 
     whileBlocking( btnChangeCategorizedSymbol )->setSymbol( mRenderer->sourceSymbol()->clone() );
   }
   btnChangeCategorizedSymbol->setDialogTitle( selectedCats.size() == 1 ? mRenderer->categories().at( selectedCats.at( 0 ) ).label() : tr( "Symbol Settings" ) );
+}
+
+void QgsCategorizedSymbolRendererWidget::toggleSelectedSymbols( const bool state )
+{
+  //QItemSelectionModel *m = viewGraduated->selectionModel();
+  QModelIndexList selectedIndexes = viewCategories->selectionModel()->selectedRows(); // 1
+  if ( !selectedIndexes.isEmpty() && mRenderer )
+  {
+    const auto constSelectedIndexes = selectedIndexes;
+    for ( const QModelIndex &idx : constSelectedIndexes )
+    {
+      if ( idx.isValid() )
+      {
+        int categoryIdx = idx.row();
+        mRenderer->updateCategoryRenderState( categoryIdx, state );
+        viewCategories->update( idx );
+      }
+    }
+    emit widgetChanged();
+  }
 }

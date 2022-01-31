@@ -63,6 +63,13 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
   signals:
     void rowsMoved();
 
+    /**
+     * Signals emitted when a modified key is held and the state is toggled.
+     * 
+     * \since QGIS 3.28
+     */
+    void toggleSelectedSymbols( const bool state );
+
   private:
     QgsCategorizedSymbolRenderer *mRenderer = nullptr;
     QString mMimeFormat;
@@ -212,6 +219,13 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void showContextMenu( QPoint p );
 
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+
+    /**
+     * Slot used to change the state of all selected items.
+     * 
+     * \since QGIS 3.28
+     */
+    void toggleSelectedSymbols( const bool state );
 
   protected:
 

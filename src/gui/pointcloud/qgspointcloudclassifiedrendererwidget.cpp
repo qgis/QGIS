@@ -188,7 +188,12 @@ bool QgsPointCloudClassifiedRendererModel::setData( const QModelIndex &index, co
 
   if ( index.column() == 0 && role == Qt::CheckStateRole )
   {
-    mCategories[ index.row() ].setRenderState( value == Qt::Checked );
+    if ( QGuiApplication::keyboardModifiers() == Qt::ShiftModifier || QGuiApplication::keyboardModifiers() == Qt::ControlModifier )
+    {
+      toggleSelectedSymbols( value == Qt::Checked );
+    }
+    else
+      mCategories[ index.row() ].setRenderState( value == Qt::Checked );
     emit dataChanged( index, index );
     emit categoriesChanged();
     return true;
@@ -421,7 +426,7 @@ QgsPointCloudClassifiedRendererWidget::QgsPointCloudClassifiedRendererWidget( Qg
   connect( btnDeleteCategories, &QAbstractButton::clicked, this, &QgsPointCloudClassifiedRendererWidget::deleteCategories );
   connect( btnDeleteAllCategories, &QAbstractButton::clicked, this, &QgsPointCloudClassifiedRendererWidget::deleteAllCategories );
   connect( btnAddCategory, &QAbstractButton::clicked, this, &QgsPointCloudClassifiedRendererWidget::addCategory );
-
+  connect( mModel, &QgsPointCloudClassifiedRendererModel::toggleSelectedSymbols, this, &QgsPointCloudClassifiedRendererWidget::toggleSelectedSymbols );
 }
 
 QgsPointCloudRendererWidget *QgsPointCloudClassifiedRendererWidget::create( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer * )
@@ -668,4 +673,24 @@ void QgsPointCloudClassifiedRendererWidget::updateCategoriesPercentages()
   }
   mModel->updateCategoriesPercentages( percentages );
 }
+
+void QgsPointCloudClassifiedRendererWidget::toggleSelectedSymbols( const bool state )
+{
+  QModelIndexList selectedIndexes = viewCategories->selectionModel()->selectedRows();
+  if ( !selectedIndexes.isEmpty() && mModel )
+  {
+    const auto constSelectedIndexes = selectedIndexes;
+    for ( const QModelIndex &idx : constSelectedIndexes )
+    {
+      if ( idx.isValid() )
+      {
+        mModel->category( idx ).setRenderState( state );
+        viewCategories->update( idx );
+      }
+    }
+  emit widgetChanged();
+  }
+}
+
+
 ///@endcond

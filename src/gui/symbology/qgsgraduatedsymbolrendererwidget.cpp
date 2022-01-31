@@ -206,7 +206,12 @@ bool QgsGraduatedSymbolRendererModel::setData( const QModelIndex &index, const Q
 
   if ( index.column() == 0 && role == Qt::CheckStateRole )
   {
-    mRenderer->updateRangeRenderState( index.row(), value == Qt::Checked );
+    if ( QGuiApplication::keyboardModifiers() == Qt::ShiftModifier || QGuiApplication::keyboardModifiers() == Qt::ControlModifier )
+    {
+      toggleSelectedSymbols( value == Qt::Checked );
+    }
+    else
+      mRenderer->updateRangeRenderState( index.row(), value == Qt::Checked );
     emit dataChanged( index, index );
     return true;
   }
@@ -654,6 +659,8 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
 
   connect( mModel, &QgsGraduatedSymbolRendererModel::rowsMoved, this, &QgsGraduatedSymbolRendererWidget::rowsMoved );
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsGraduatedSymbolRendererWidget::modelDataChanged );
+  connect( mModel, &QgsGraduatedSymbolRendererModel::toggleSelectedSymbols, this, &QgsGraduatedSymbolRendererWidget::toggleSelectedSymbols );
+
 
   connect( mGroupBoxSymmetric, &QGroupBox::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
@@ -680,6 +687,8 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 
   disconnect( mModel, &QgsGraduatedSymbolRendererModel::rowsMoved, this, &QgsGraduatedSymbolRendererWidget::rowsMoved );
   disconnect( mModel, &QAbstractItemModel::dataChanged, this, &QgsGraduatedSymbolRendererWidget::modelDataChanged );
+  disconnect( mModel, &QgsGraduatedSymbolRendererModel::toggleSelectedSymbols, this, &QgsGraduatedSymbolRendererWidget::toggleSelectedSymbols );
+
 
   disconnect( mGroupBoxSymmetric, &QGroupBox::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
@@ -852,6 +861,26 @@ void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
       reapplySizes();
       break;
     }
+  }
+}
+
+void QgsGraduatedSymbolRendererWidget::toggleSelectedSymbols( const bool state )
+{
+  //QItemSelectionModel *m = viewGraduated->selectionModel();
+  QModelIndexList selectedIndexes = viewGraduated->selectionModel()->selectedRows(); // 1
+  if ( !selectedIndexes.isEmpty() && mRenderer )
+  {
+    const auto constSelectedIndexes = selectedIndexes;
+    for ( const QModelIndex &idx : constSelectedIndexes )
+    {
+      if ( idx.isValid() )
+      {
+        int rangeIdx = idx.row();
+        mRenderer->updateRangeRenderState( rangeIdx, state );
+        viewGraduated->update( idx );
+      }
+    }
+    emit widgetChanged();
   }
 }
 

@@ -109,6 +109,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBasedLabelingWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsRuleBasedLabelingWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBasedLabelingWidget::widgetChanged );
+  connect( mModel, &QgsRuleBasedLabelingModel::toggleSelectedSymbols, this, &QgsRuleBasedLabelingWidget::toggleSelectedSymbols );
 }
 
 QgsRuleBasedLabelingWidget::~QgsRuleBasedLabelingWidget()
@@ -235,6 +236,24 @@ void QgsRuleBasedLabelingWidget::paste()
   else
     index = indexlist.first();
   mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
+}
+
+void QgsRuleBasedLabelingWidget::toggleSelectedSymbols( const bool state )
+{
+  QModelIndexList selectedIndexes = viewRules->selectionModel()->selectedRows();
+  if ( !selectedIndexes.isEmpty() && mModel )
+  {
+    const auto constSelectedIndexes = selectedIndexes;
+    for ( const QModelIndex &idx : constSelectedIndexes )
+    {
+      if ( idx.isValid() )
+      {
+        mModel->ruleForIndex( idx )->setActive( state );
+        viewRules->update( idx );
+      }
+    }
+    emit widgetChanged();
+  }
 }
 
 QgsRuleBasedLabeling::Rule *QgsRuleBasedLabelingWidget::currentRule()
@@ -461,7 +480,12 @@ bool QgsRuleBasedLabelingModel::setData( const QModelIndex &index, const QVarian
 
   if ( role == Qt::CheckStateRole )
   {
-    rule->setActive( value.toInt() == Qt::Checked );
+    if ( QGuiApplication::keyboardModifiers() == Qt::ShiftModifier || QGuiApplication::keyboardModifiers() == Qt::ControlModifier )
+    {
+      toggleSelectedSymbols( value == Qt::Checked );
+    }
+    else
+      rule->setActive( value.toInt() == Qt::Checked );
     emit dataChanged( index, index );
     return true;
   }

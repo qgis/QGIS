@@ -100,6 +100,14 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     void setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> &countMap ) SIP_SKIP;
     void clearFeatureCounts();
 
+  signals:
+    /**
+     * Signals emitted when a modified key is held and the state is toggled.
+     * 
+     * \since QGIS 3.28
+     */
+    void toggleSelectedSymbols( const bool state );
+
   protected:
     QgsRuleBasedRenderer *mR = nullptr;
     QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> mFeatureCountMap;
@@ -186,6 +194,12 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     void ruleWidgetPanelAccepted( QgsPanelWidget *panel );
     void liveUpdateRuleFromPanel();
     void showContextMenu( QPoint p );
+    /**
+     * Slot used to change the state of all selected items.
+     * 
+     * \since QGIS 3.28
+     */
+    void toggleSelectedSymbols( const bool state );
 };
 
 ///////
