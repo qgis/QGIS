@@ -1118,10 +1118,9 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << groupItem->manager(), context.messageBar(), groupItem->group() );
     } );
     menu->addAction( exportBookmarks );
-    menu->addSeparator();
 
     // Add spatial bookmark
-    QAction *addBookmarkToGroup = new QAction( tr( "New Spatial Bookmark to Group" ), menu );
+    QAction *addBookmarkToGroup = new QAction( tr( "New Spatial Bookmark…" ), menu );
     const bool inProject = manager != QgsApplication::bookmarkManager();
     connect( addBookmarkToGroup, &QAction::triggered, this, [ = ]
     {
