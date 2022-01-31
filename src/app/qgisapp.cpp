@@ -2803,7 +2803,7 @@ void QgisApp::createActions()
   connect( mActionZoomNext, &QAction::triggered, this, &QgisApp::zoomToNext );
   connect( mActionZoomActualSize, &QAction::triggered, this, &QgisApp::zoomActualSize );
   connect( mActionMapTips, &QAction::toggled, this, &QgisApp::toggleMapTips );
-  connect( mActionNewBookmark, &QAction::triggered, this, &QgisApp::newBookmark );
+  connect( mActionNewBookmark, &QAction::triggered, this, [ = ] { newBookmark( true, QStringLiteral( "" ) );  } );
   connect( mActionDraw, &QAction::triggered, this, [this] { refreshMapCanvas( true ); } );
   connect( mActionTextAnnotation, &QAction::triggered, this, &QgisApp::addTextAnnotation );
   connect( mActionFormAnnotation, &QAction::triggered, this, &QgisApp::addFormAnnotation );
@@ -16676,10 +16676,11 @@ void QgisApp::customProjection()
   showOptionsDialog( this, QStringLiteral( "QgsCustomProjectionOptionsWidget" ) );
 }
 
-void QgisApp::newBookmark( bool inProject )
+void QgisApp::newBookmark( bool inProject, const QString &groupName )
 {
   QgsBookmark bookmark;
   bookmark.setName( tr( "New bookmark" ) );
+  bookmark.setGroup( groupName );
   bookmark.setExtent( QgsReferencedRectangle( mapCanvas()->extent(), mapCanvas()->mapSettings().destinationCrs() ) );
   QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, inProject, this, mapCanvas() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );

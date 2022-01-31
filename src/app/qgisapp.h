@@ -1318,7 +1318,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showBookmarks();
 
     //! Create a new spatial bookmark
-    void newBookmark( bool inProject = false );
+    void newBookmark( bool inProject = false, const QString &groupName = QString() );
 
     /**
      * Creates a default attribute editor context using the main map canvas and the main edit tools and message bar
