@@ -146,6 +146,11 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   shadowCullFace->setMode( Qt3DRender::QCullFace::CullingMode::Front );
   mShadowRenderStateSet->addRenderState( shadowCullFace );
 
+  Qt3DRender::QPolygonOffset *polygonOffset = new Qt3DRender::QPolygonOffset;
+  polygonOffset->setDepthSteps( 4.0 );
+  polygonOffset->setScaleFactor( 1.1 );
+  mShadowRenderStateSet->addRenderState( polygonOffset );
+
   return mLightCameraSelectorShadowPass;
 }
 
