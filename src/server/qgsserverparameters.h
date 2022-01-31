@@ -105,6 +105,17 @@ class SERVER_EXPORT QgsServerParameterDefinition
     QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',' ) const;
 
     /**
+     * Converts the parameter into a list of OGC filters or QGIS expressions.
+     * \param ogc TRUE to return OGC filters
+     * \param expression TRUE to return expressions
+     * \returns A list of strings
+     * \since QGIS 3.24
+     */
+    QStringList toOgcFilterList() const;
+
+    QStringList toExpressionList() const;
+
+    /**
      * Converts the parameter into a rectangle.
      * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \returns A rectangle
