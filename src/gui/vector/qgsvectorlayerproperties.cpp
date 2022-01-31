@@ -1373,7 +1373,6 @@ void QgsVectorLayerProperties::aboutToShowStyleMenu()
   QMenu *m = qobject_cast<QMenu *>( sender() );
 
   updateSaveStyleMenuActions( m );
-  QgsDebugMsg( "D " + m->actions().at( 1 )->text() );
   QgsMapLayerStyleGuiUtils::instance()->removesExtraMenuSeparators( m );
   // re-add style manager actions!
   m->addSeparator();
