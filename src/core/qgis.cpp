@@ -91,11 +91,18 @@ qlonglong qgsPermissiveToLongLong( QString string, bool &ok )
 
 void *qgsMalloc( size_t size )
 {
-  if ( size == 0 || long( size ) < 0 )
+  if ( size == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "Negative or zero size %1." ).arg( size ) );
+    QgsDebugMsg( QStringLiteral( "Zero size requested" ) );
     return nullptr;
   }
+
+  if ( ( size >> ( 8 * sizeof( size ) - 1 ) ) != 0 )
+  {
+    QgsDebugMsg( QStringLiteral( "qgsMalloc - bad size requested: %1" ).arg( size ) );
+    return nullptr;
+  }
+
   void *p = malloc( size );
   if ( !p )
   {
