@@ -336,9 +336,11 @@ Returns an icon corresponding to a field index, based on the field's type and so
     }
 %End
 
-    static QIcon iconForFieldType( const QVariant::Type &type ) /Factory/;
+    static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid );
 %Docstring
 Returns an icon corresponding to a field ``type``
+
+Since QGIS 3.24, the optional ``subType`` argument can be used to specify the type of variant list or map values.
 
 .. versionadded:: 3.16
 %End
