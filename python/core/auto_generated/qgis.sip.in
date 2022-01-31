@@ -869,7 +869,6 @@ QString qgsVsiPrefix( const QString &path );
 
 
 
-
 const long GEOSRID;
 
 const long GEOCRS_ID;
