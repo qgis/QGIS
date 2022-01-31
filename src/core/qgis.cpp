@@ -104,21 +104,6 @@ void *qgsMalloc( size_t size )
   return p;
 }
 
-void *qgsCalloc( size_t nmemb, size_t size )
-{
-  if ( nmemb == 0 || long( nmemb ) < 0 || size == 0 || long( size ) < 0 )
-  {
-    QgsDebugMsg( QStringLiteral( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
-    return nullptr;
-  }
-  void *p = qgsMalloc( nmemb * size );
-  if ( p )
-  {
-    memset( p, 0, nmemb * size );
-  }
-  return p;
-}
-
 void qgsFree( void *ptr )
 {
   free( ptr );
