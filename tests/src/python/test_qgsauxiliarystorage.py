@@ -429,6 +429,39 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         self.assertTrue(settings.dataDefinedProperties().property(key).isActive())
         self.assertEqual(settings.dataDefinedProperties().property(key).asExpression(), 'coalesce("auxiliary_storage_labeling_positiony",$y + 20)')
 
+        # with existing but invalid field name
+        key = QgsPalLayerSettings.PositionY
+        settings = QgsPalLayerSettings()
+        settings.dataDefinedProperties().setProperty(key, QgsProperty.fromField(''))
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        # even when asked to not overwrite existing, this is an invalid property and should be overwritten
+        index = QgsAuxiliaryLayer.createProperty(key, vl, False)
+        p = QgsPalLayerSettings.propertyDefinitions()[key]
+        afName = QgsAuxiliaryLayer.nameFromProperty(p, True)
+        afIndex = vl.fields().indexOf(afName)
+        self.assertEqual(index, afIndex)
+
+        settings = vl.labeling().settings()
+        self.assertTrue(settings.dataDefinedProperties().property(key).isActive())
+        self.assertEqual(settings.dataDefinedProperties().property(key).asExpression(), '"auxiliary_storage_labeling_positiony"')
+
+        # with existing valid field name
+        key = QgsPalLayerSettings.PositionY
+        settings = QgsPalLayerSettings()
+        settings.dataDefinedProperties().setProperty(key, QgsProperty.fromField('asd'))
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        index = QgsAuxiliaryLayer.createProperty(key, vl, False)
+        p = QgsPalLayerSettings.propertyDefinitions()[key]
+        afName = QgsAuxiliaryLayer.nameFromProperty(p, True)
+        afIndex = vl.fields().indexOf(afName)
+        self.assertEqual(index, afIndex)
+
+        settings = vl.labeling().settings()
+        self.assertTrue(settings.dataDefinedProperties().property(key).isActive())
+        self.assertEqual(settings.dataDefinedProperties().property(key).asExpression(), 'coalesce("auxiliary_storage_labeling_positiony","asd")')
+
         # with overwrite existing
         key = QgsPalLayerSettings.Show
         settings = QgsPalLayerSettings()

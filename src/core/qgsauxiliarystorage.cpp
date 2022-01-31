@@ -244,7 +244,10 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
 
         // is there an existing property?
         const QgsProperty existingProperty = c.property( property );
-        if ( existingProperty.propertyType() == QgsProperty::InvalidProperty || overwriteExisting )
+        if ( existingProperty.propertyType() == QgsProperty::InvalidProperty
+             || ( existingProperty.propertyType() == QgsProperty::FieldBasedProperty && existingProperty.field().isEmpty() )
+             || ( existingProperty.propertyType() == QgsProperty::ExpressionBasedProperty && existingProperty.expressionString().isEmpty() )
+             || overwriteExisting )
         {
           const QgsProperty prop = QgsProperty::fromField( fieldName );
           c.setProperty( property, prop );
