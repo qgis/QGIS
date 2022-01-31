@@ -376,7 +376,7 @@ class CORE_EXPORT QgsExpression
      * be an expression which consists only of a single field reference for that layer, this
      * method will return the quoted field.
      *
-     * \returns the \a expression if not a field or quotes are not required, otherwise requite a quoted field.
+     * \returns the \a expression if not a field or quotes are not required, otherwise returns a quoted field.
      *
      * \see expressionToLayerFieldIndex()
      * \since QGIS 3.24
