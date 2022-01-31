@@ -103,15 +103,15 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mCrsSelector->setEnabled( false );
   mCrsSelector->setShowAccuracyWarnings( true );
 
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::String ), "text" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Int ), "integer" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), "integer64" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), "real" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Date ), "date" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "datetime" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Bool ), "bool" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), "binary" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldJson.svg" ) ), tr( "JSON" ), "json" );
+  mFieldTypeBox->addItem( QgsFields::iconForFieldType( QVariant::String ), QgsVariantUtils::typeToDisplayString( QVariant::String ), "text" );
+  mFieldTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Int ), QgsVariantUtils::typeToDisplayString( QVariant::Int ), "integer" );
+  mFieldTypeBox->addItem( QgsFields::iconForFieldType( QVariant::LongLong ), QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), "integer64" );
+  mFieldTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), "real" );
+  mFieldTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Date ), QgsVariantUtils::typeToDisplayString( QVariant::Date ), "date" );
+  mFieldTypeBox->addItem( QgsFields::iconForFieldType( QVariant::DateTime ), QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "datetime" );
+  mFieldTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Bool ), QgsVariantUtils::typeToDisplayString( QVariant::Bool ), "bool" );
+  mFieldTypeBox->addItem( QgsFields::iconForFieldType( QVariant::ByteArray ), QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), "binary" );
+  mFieldTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Map ), tr( "JSON" ), "json" );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );

@@ -83,18 +83,18 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mCrsSelector->setEnabled( false );
   mCrsSelector->setShowAccuracyWarnings( true );
 
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::String ), "string" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Int ), "integer" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), "double" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Bool ), "bool" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Date ), "date" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::Time ), "time" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "datetime" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), "binary" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayString.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::StringList ), "stringlist" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayInteger.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), "integerlist" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayFloat.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), "doublelist" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayInteger.svg" ) ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), "integer64list" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::String ), QgsVariantUtils::typeToDisplayString( QVariant::String ), "string" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Int ), QgsVariantUtils::typeToDisplayString( QVariant::Int ), "integer" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), "double" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Bool ), QgsVariantUtils::typeToDisplayString( QVariant::Bool ), "bool" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Date ), QgsVariantUtils::typeToDisplayString( QVariant::Date ), "date" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Time ), QgsVariantUtils::typeToDisplayString( QVariant::Time ), "time" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::DateTime ), QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "datetime" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::ByteArray ), QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), "binary" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::StringList ), QgsVariantUtils::typeToDisplayString( QVariant::StringList ), "stringlist" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::Int ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), "integerlist" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), "doublelist" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::LongLong ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), "integer64list" );
   mTypeBox_currentIndexChanged( 1 );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
