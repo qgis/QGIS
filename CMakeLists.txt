@@ -119,9 +119,8 @@ set (WITH_CORE TRUE CACHE BOOL "Determines whether QGIS core should be built.")
 mark_as_advanced(WITH_CORE)
 
 if(WITH_CORE)
-  # Only GRASS 7 is currently supported but we keep dual version support in cmake for possible future switch to GRASS 8.
   # Try to configure and build GRASS plugin by default
-  foreach (GRASS_SEARCH_VERSION 7)
+  foreach (GRASS_SEARCH_VERSION 7 8)
     # Legacy note:
     # For GRASS 6 there were used cached variables without version suffix so that existing caches didn't have to be reconfigured.
     # Cached variables were: WITH_GRASS, WITH_GRASS7, GRASS_PREFIX, GRASS_PREFIX7, GRASS_INCLUDE_DIR, GRASS_INCLUDE_DIR7
