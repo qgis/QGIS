@@ -144,6 +144,5 @@ class rasterize_over(GdalAlgorithm):
                 continue
 
             l.dataProvider().reloadData()
-            context.temporaryLayerStore().addMapLayer(l)
 
         return {}
