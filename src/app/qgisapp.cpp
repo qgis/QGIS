@@ -2803,7 +2803,7 @@ void QgisApp::createActions()
   connect( mActionZoomNext, &QAction::triggered, this, &QgisApp::zoomToNext );
   connect( mActionZoomActualSize, &QAction::triggered, this, &QgisApp::zoomActualSize );
   connect( mActionMapTips, &QAction::toggled, this, &QgisApp::toggleMapTips );
-  connect( mActionNewBookmark, &QAction::triggered, this, [ = ] { newBookmark( true, QString( "" ) );  } );
+  connect( mActionNewBookmark, &QAction::triggered, this, [ = ] { newBookmark( true );  } );
   connect( mActionDraw, &QAction::triggered, this, [this] { refreshMapCanvas( true ); } );
   connect( mActionTextAnnotation, &QAction::triggered, this, &QgisApp::addTextAnnotation );
   connect( mActionFormAnnotation, &QAction::triggered, this, &QgisApp::addFormAnnotation );
