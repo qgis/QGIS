@@ -12482,7 +12482,7 @@ void QgisApp::removeLayer()
     {
       const int layerCount { hiddenLayerNames.count( ) };
       hiddenLayerNames = hiddenLayerNames.mid( 0, 10 );
-      hiddenLayerNames.push_back( tr( "(%n more hidden layers)",  "number of hidden layers not shown", layerCount - 10 ) );
+      hiddenLayerNames.push_back( tr( "(%n more hidden layer(s))",  "number of hidden layers not shown", layerCount - 10 ) );
     }
     message.append( tr( "The following hidden layers will be removed:\n%1" ).arg( hiddenLayerNames.join( '\n' ) ) );
   }
@@ -15353,7 +15353,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
     }
     else
     {
-      showStatusMessage( tr( "%n features selected on layer %1.", "number of selected features", selectedCount ).arg( vlayer->name() ) );
+      showStatusMessage( tr( "%n feature(s) selected on layer %1.", "number of selected features", selectedCount ).arg( vlayer->name() ) );
     }
   }
   if ( layer == activeLayer() )
