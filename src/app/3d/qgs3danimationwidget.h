@@ -31,7 +31,6 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
     Q_OBJECT
   public:
     explicit Qgs3DAnimationWidget( QWidget *parent = nullptr );
-    ~Qgs3DAnimationWidget() override;
 
     void setCameraController( QgsCameraController *cameraController );
 

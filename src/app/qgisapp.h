@@ -104,7 +104,6 @@ class QgsGeometryValidationDock;
 class QgsGeometryValidationModel;
 class QgsUserProfileManager;
 class QgsUserProfileManagerWidgetFactory;
-class Qgs3DMapCanvasDockWidget;
 class QgsHandleBadLayersHandler;
 class QgsNetworkAccessManager;
 class QgsGpsConnection;
@@ -112,6 +111,7 @@ class QgsApplicationExitBlockerInterface;
 class QgsAbstractMapToolHandler;
 class QgsAppMapTools;
 class QgsMapToolIdentifyAction;
+class Qgs3DMapCanvasWidget;
 
 class QDomDocument;
 class QNetworkReply;
@@ -434,7 +434,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * \since QGIS 3.24
      */
-    Qgs3DMapCanvasDockWidget *open3DMapView( const QString &name );
+    Qgs3DMapCanvasWidget *open3DMapView( const QString &name );
+
+    /**
+     * Close the 3D view canvas of 3D map view called \a name.
+     *
+     * \since QGIS 3.24
+     */
+    void close3DMapView( const QString &name );
 
     /**
      * Duplicates the 3D map view named \a existingViewName and adds it to the current project.
@@ -442,14 +449,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * \since QGIS 3.24
      */
-    Qgs3DMapCanvasDockWidget *duplicate3DMapView( const QString &existingViewName, const QString &newViewName );
+    Qgs3DMapCanvasWidget *duplicate3DMapView( const QString &existingViewName, const QString &newViewName );
 
     /**
      * Returns the 3D map canvas dock widget named \a viewName
      *
      * \since QGIS 3.24
      */
-    Qgs3DMapCanvasDockWidget *get3DMapViewDock( const QString &viewName );
+    Qgs3DMapCanvasWidget *get3DMapView( const QString &viewName );
+
+    /**
+     * Returns the list of 3D map canvas dockable widgets created
+     *
+     * \since QGIS 3.24
+     */
+    QList<Qgs3DMapCanvasWidget *> get3DMapViews();
 
     /**
      * Duplicates a \a layout and adds it to the current project.
@@ -664,6 +678,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *databaseMenu() { return mDatabaseMenu; }
     QMenu *rasterMenu() { return mRasterMenu; }
     QMenu *vectorMenu() { return mVectorMenu; }
+    QMenu *meshMenu() { return mMeshMenu; }
     QMenu *webMenu() { return mWebMenu; }
 #ifdef Q_OS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
@@ -1468,6 +1483,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addPluginToWebMenu( const QString &name, QAction *action );
     //! Remove the action to the submenu with the given name under the Web menu
     void removePluginWebMenu( const QString &name, QAction *action );
+    //! Find the QMenu with the given name within the Mesh menu (ie the user visible text on the menu item)
+    QMenu *getMeshMenu( const QString &menuName );
+    //! Add the action to the submenu with the given name under the Mesh menu
+    void addPluginToMeshMenu( const QString &name, QAction *action );
+    //! Remove the action to the submenu with the given name under the Mesh menu
+    void removePluginMeshMenu( const QString &name, QAction *action );
     //! Add "add layer" action to layer menu
     void insertAddLayerAction( QAction *action );
     //! Remove "add layer" action to layer menu
@@ -2281,7 +2302,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void initLayouts();
 
     //! Creates a new 3D map dock without initializing its position or contents
-    Qgs3DMapCanvasDockWidget *createNew3DMapCanvasDock( const QString &name );
+    Qgs3DMapCanvasWidget *createNew3DMapCanvasDock( const QString &name, bool isDocked );
 
     //! Closes any existing 3D map docks
     void closeAdditional3DMapCanvases();
@@ -2346,14 +2367,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \sa write3DMapViewSettings()
      * \since QGIS 3.24
      */
-    void read3DMapViewSettings( Qgs3DMapCanvasDockWidget *widget, QDomElement &elem3DMap );
+    void read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &elem3DMap );
 
     /**
      * Writes 3D view settings into DOM element
      * \sa read3DMapViewSettings()
      * \since QGIS 3.24
      */
-    void write3DMapViewSettings( Qgs3DMapCanvasDockWidget *widget, QDomDocument &doc, QDomElement &elem3DMap );
+    void write3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomDocument &doc, QDomElement &elem3DMap );
 #endif
 
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
@@ -2753,12 +2774,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScopedOptionsWidgetFactory mCodeEditorWidgetFactory;
     QgsScopedOptionsWidgetFactory mBabelGpsDevicesWidgetFactory;
     QgsScopedOptionsWidgetFactory m3DOptionsWidgetFactory;
+    QgsScopedOptionsWidgetFactory mCustomProjectionsWidgetFactory;
 
     QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
     QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
 
 #ifdef HAVE_3D
-    QSet<Qgs3DMapCanvasDockWidget *> mOpen3DDocks;
+    QSet<Qgs3DMapCanvasWidget *> mOpen3DMapViews;
 #endif
 
     class QgsCanvasRefreshBlocker

@@ -367,6 +367,8 @@ Construct a new color box widget.
 
     virtual void mousePressEvent( QMouseEvent *event );
 
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
 
 };
 
@@ -485,6 +487,8 @@ Emitted when the widget's color component value changes
     virtual void wheelEvent( QWheelEvent *event );
 
     virtual void mousePressEvent( QMouseEvent *event );
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
 
     virtual void keyPressEvent( QKeyEvent *event );
 

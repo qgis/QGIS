@@ -421,9 +421,12 @@ class CORE_EXPORT  QgsFields
 
     /**
      * Returns an icon corresponding to a field \a type
+     *
+     * Since QGIS 3.24, the optional ``subType`` argument can be used to specify the type of variant list or map values.
+     *
      * \since QGIS 3.16
      */
-    static QIcon iconForFieldType( const QVariant::Type &type ) SIP_FACTORY;
+    static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid );
 
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const

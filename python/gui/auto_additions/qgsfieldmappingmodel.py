@@ -2,7 +2,7 @@
 # monkey patching scoped based enum
 QgsFieldMappingModel.ColumnDataIndex.SourceExpression.__doc__ = "Expression"
 QgsFieldMappingModel.ColumnDataIndex.DestinationName.__doc__ = "Destination field name"
-QgsFieldMappingModel.ColumnDataIndex.DestinationType.__doc__ = "Destination field QVariant::Type casted to (int)"
+QgsFieldMappingModel.ColumnDataIndex.DestinationType.__doc__ = "Destination field type string"
 QgsFieldMappingModel.ColumnDataIndex.DestinationLength.__doc__ = "Destination field length"
 QgsFieldMappingModel.ColumnDataIndex.DestinationPrecision.__doc__ = "Destination field precision"
 QgsFieldMappingModel.ColumnDataIndex.DestinationConstraints.__doc__ = "Destination field constraints"

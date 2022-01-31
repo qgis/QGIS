@@ -109,7 +109,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * Defines the clear value as a custom value and will automatically set the clear value mode to CustomValue.
      * \param customValue defines the numerical value used as the clear value
      * \param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
-     * \see setClearValue()
+     * \see clearValue()
      */
     void setClearValue( double customValue, const QString &clearValueText = QString() );
 

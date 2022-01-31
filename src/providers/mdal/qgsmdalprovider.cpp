@@ -1079,7 +1079,7 @@ QVariantMap QgsMdalProviderMetadata::decodeUri( const QString &uri ) const
 {
   QVariantMap uriComponents;
 
-  const QRegularExpression layerRegex( QStringLiteral( "^([a-zA-Z0-9_]+?):\"(.*)\"(?::([a-zA-Z0-9_]+?$)|($))" ) );
+  const QRegularExpression layerRegex( QStringLiteral( "^([a-zA-Z0-9_]+?):\"(.*)\"(?::([a-zA-Z0-9_ ]+?$)|($))" ) );
   const QRegularExpressionMatch layerNameMatch = layerRegex.match( uri );
   if ( layerNameMatch.hasMatch() )
   {

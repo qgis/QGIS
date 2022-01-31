@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgs3dmapcanvasdockwidget.h
+  qgs3dmapcanvaswidget.h
   --------------------------------------
-  Date                 : July 2017
-  Copyright            : (C) 2017 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
+  Date                 : January 2022
+  Copyright            : (C) 2022 by Belgacem Nedjima
+  Email                : belgacem dot nedjima at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS3DMAPCANVASDOCKWIDGET_H
-#define QGS3DMAPCANVASDOCKWIDGET_H
+#ifndef QGS3DMAPCANVASWIDGET_H
+#define QGS3DMAPCANVASWIDGET_H
 
 #include "qmenu.h"
 #include "qgsdockwidget.h"
@@ -32,14 +32,14 @@ class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
 class QgsMapCanvas;
+class QgsDockableWidgetHelper;
 
-
-
-class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
+class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 {
     Q_OBJECT
   public:
-    Qgs3DMapCanvasDockWidget( QWidget *parent = nullptr );
+    Qgs3DMapCanvasWidget( const QString &name, bool isDocked );
+    ~Qgs3DMapCanvasWidget();
 
     //! takes ownership
     void setMapSettings( Qgs3DMapSettings *map );
@@ -47,9 +47,21 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void setMainCanvas( QgsMapCanvas *canvas );
 
     Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
+
     Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
 
-    Qgs3DMapToolMeasureLine *measurementLineTool() { return  mMapToolMeasureLine; }
+    Qgs3DMapToolMeasureLine *measurementLineTool() { return mMapToolMeasureLine; }
+
+    QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
+
+    void setCanvasName( const QString &name );
+    QString canvasName() const { return mCanvasName; }
+
+  signals:
+    void toggleDockModeRequested( bool docked );
+
+  protected:
+    void resizeEvent( QResizeEvent *event ) override;
 
   private slots:
     void resetView();
@@ -73,6 +85,7 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
 
   private:
+    QString mCanvasName;
     Qgs3DMapCanvas *mCanvas = nullptr;
     Qgs3DAnimationWidget *mAnimationWidget = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
@@ -90,6 +103,7 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
     QToolButton *mBtnOptions = nullptr;
+    QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
 };
 
-#endif // QGS3DMAPCANVASDOCKWIDGET_H
+#endif // QGS3DMAPCANVASWIDGET_H

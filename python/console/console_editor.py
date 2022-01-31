@@ -462,8 +462,8 @@ class Editor(QgsCodeEditorPython):
                 tmpFile = self.createTempFile()
                 filename = tmpFile
 
-            self.parent.pc.shell.runCommand("exec(open('{0}'.encode('{1}')).read())"
-                                            .format(filename.replace("\\", "/"), sys.getfilesystemencoding()))
+            self.parent.pc.shell.runCommand("exec(Path('{0}').read_text())"
+                                            .format(filename.replace("\\", "/")))
 
     def runSelectedCode(self):  # spellok
         cmd = self.selectedText()

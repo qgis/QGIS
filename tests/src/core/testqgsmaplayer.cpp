@@ -27,7 +27,7 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include "qgsvectorlayerref.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgsxmlutils.h"
 

@@ -101,6 +101,10 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mPointSizeSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
+  mDrawOrderComboBox->addItem( tr( "Default" ), static_cast< int >( QgsPointCloudRenderer::DrawOrder::Default ) );
+  mDrawOrderComboBox->addItem( tr( "Bottom to Top" ), static_cast< int >( QgsPointCloudRenderer::DrawOrder::BottomToTop ) );
+  mDrawOrderComboBox->addItem( tr( "Top to Bottom" ), static_cast< int >( QgsPointCloudRenderer::DrawOrder::TopToBottom ) );
+
   mMaxErrorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mMaxErrorSpinBox->setClearValue( 0.3 );
@@ -109,7 +113,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   connect( mPointStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-
+  connect( mDrawOrderComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   syncToLayer( layer );
 }
 
@@ -148,6 +152,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mPointSizeUnitWidget->setMapUnitScale( mLayer->renderer()->pointSizeMapUnitScale() );
 
     mPointStyleComboBox->setCurrentIndex( mPointStyleComboBox->findData( mLayer->renderer()->pointSymbol() ) );
+    mDrawOrderComboBox->setCurrentIndex( mDrawOrderComboBox->findData( static_cast< int >( mLayer->renderer()->drawOrder2d() ) ) );
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
@@ -184,6 +189,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
 
   mLayer->renderer()->setMaximumScreenError( mMaxErrorSpinBox->value() );
   mLayer->renderer()->setMaximumScreenErrorUnit( mMaxErrorUnitWidget->unit() );
+  mLayer->renderer()->setDrawOrder2d( static_cast< QgsPointCloudRenderer::DrawOrder >( mDrawOrderComboBox->currentData().toInt() ) );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()

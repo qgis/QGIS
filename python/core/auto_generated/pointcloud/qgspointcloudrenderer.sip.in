@@ -197,6 +197,13 @@ Abstract base class for 2d point cloud renderers.
       Circle,
     };
 
+    enum class DrawOrder
+    {
+      Default,
+      BottomToTop,
+      TopToBottom,
+    };
+
     QgsPointCloudRenderer();
 %Docstring
 Constructor for QgsPointCloudRenderer.
@@ -364,6 +371,24 @@ Returns the map unit scale used for the point size.
 .. seealso:: :py:func:`pointSizeUnit`
 
 .. seealso:: :py:func:`pointSize`
+%End
+
+    DrawOrder drawOrder2d() const;
+%Docstring
+Returns the drawing order used by the renderer for drawing points.
+
+.. seealso:: :py:func:`setDrawOrder2d`
+
+.. versionadded:: 3.24
+%End
+
+    void setDrawOrder2d( DrawOrder order );
+%Docstring
+Sets the drawing ``order`` used by the renderer for drawing points.
+
+.. seealso:: :py:func:`drawOrder2d`
+
+.. versionadded:: 3.24
 %End
 
     PointSymbol pointSymbol() const;

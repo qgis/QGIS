@@ -498,7 +498,8 @@ static QgsRectangle _tryReprojectExtent2D( const QgsRectangle &extent, const Qgs
   if ( crs1 != crs2 )
   {
     // reproject if necessary
-    const QgsCoordinateTransform ct( crs1, crs2, context );
+    QgsCoordinateTransform ct( crs1, crs2, context );
+    ct.setBallparkTransformsAreAppropriate( true );
     try
     {
       extentMapCrs = ct.transformBoundingBox( extentMapCrs );
@@ -672,9 +673,4 @@ QVector2D Qgs3DUtils::screenToTextureCoordinates( QVector2D screenXY, QSize winS
 QVector2D Qgs3DUtils::textureToScreenCoordinates( QVector2D textureXY, QSize winSize )
 {
   return QVector2D( textureXY.x() * winSize.width(), ( 1 - textureXY.y() ) * winSize.height() );
-}
-
-double Qgs3DUtils::decodeDepth( const QColor &pixel )
-{
-  return pixel.redF() / 255.0 / 255.0 + pixel.greenF() / 255.0 + pixel.blueF();
 }

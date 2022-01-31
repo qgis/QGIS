@@ -26,7 +26,6 @@ set(QGIS_APP_SRCS
   qgsbookmarkeditordialog.cpp
   qgsclipboard.cpp
   qgscustomization.cpp
-  qgscustomprojectiondialog.cpp
   qgsdatumtransformtablewidget.cpp
   qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
@@ -74,6 +73,7 @@ set(QGIS_APP_SRCS
   qgsrecentprojectsitemsmodel.cpp
   qgsvectorlayerdigitizingproperties.cpp
   qgswelcomepage.cpp
+  qgsdockablewidgethelper.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -228,6 +228,7 @@ set(QGIS_APP_SRCS
 
   options/qgsadvancedoptions.cpp
   options/qgscodeeditoroptions.cpp
+  options/qgscustomprojectionoptions.cpp
   options/qgsgpsdeviceoptions.cpp
   options/qgsoptions.cpp
   options/qgsoptionsutils.cpp
@@ -295,7 +296,6 @@ if (WITH_3D)
     3d/qgs3dapputils.cpp
     3d/qgs3dicongenerator.cpp
     3d/qgs3dmapcanvas.cpp
-    3d/qgs3dmapcanvasdockwidget.cpp
     3d/qgs3dmapconfigwidget.cpp
     3d/qgs3dmaptool.cpp
     3d/qgs3dmaptoolidentify.cpp
@@ -326,6 +326,7 @@ if (WITH_3D)
     3d/qgsshadowrenderingsettingswidget.cpp
     3d/qgspointcloud3dsymbolwidget.cpp
     3d/qgspointcloudlayer3drendererwidget.cpp
+    3d/qgs3dmapcanvaswidget.cpp
     3d/qgs3dviewsmanagerdialog.cpp
   )
 endif()

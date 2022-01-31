@@ -1340,7 +1340,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       expressionWidgetBox->layout()->addWidget( addExpressionButton );
       qmlCodeBox->layout()->addWidget( qmlCode );
       layout->addWidget( qmlCodeBox );
-      QScrollArea *qmlPreviewBox = new QScrollArea();
+      QScrollArea *qmlPreviewBox = new QgsScrollArea();
       qmlPreviewBox->setLayout( new QGridLayout );
       qmlPreviewBox->setMinimumWidth( 400 );
       qmlPreviewBox->layout()->addWidget( qmlWrapper->widget() );
@@ -1421,7 +1421,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       expressionWidgetBox->layout()->addWidget( expressionWidget );
       expressionWidgetBox->layout()->addWidget( addExpressionButton );
       layout->addWidget( htmlCode );
-      QScrollArea *htmlPreviewBox = new QScrollArea();
+      QScrollArea *htmlPreviewBox = new QgsScrollArea();
       htmlPreviewBox->setLayout( new QGridLayout );
       htmlPreviewBox->setMinimumWidth( 400 );
       htmlPreviewBox->layout()->addWidget( htmlWrapper->widget() );

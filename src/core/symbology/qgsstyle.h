@@ -1137,7 +1137,10 @@ class CORE_EXPORT QgsStyle : public QObject
 
     void clearCachedTags( StyleEntity type, const QString &name );
 
-
+    /**
+     * Returns TRUE if style metadata table did not exist and was newly created.
+     */
+    bool createStyleMetadataTableIfNeeded();
     void upgradeIfRequired();
 
     /**

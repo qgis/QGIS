@@ -1175,12 +1175,9 @@ void QgsTextFormatWidget::deactivateField( QgsPalLayerSettings::Property key )
   if ( mButtons.contains( key ) )
   {
     QgsPropertyOverrideButton *button = mButtons[ key ];
-    QgsProperty p = button->toProperty();
-    p.setField( QString() );
-    p.setActive( false );
     button->updateFieldLists();
-    button->setToProperty( p );
-    mDataDefinedProperties.setProperty( key, p );
+    button->setToProperty( QgsProperty() );
+    mDataDefinedProperties.setProperty( key, QgsProperty() );
   }
 }
 

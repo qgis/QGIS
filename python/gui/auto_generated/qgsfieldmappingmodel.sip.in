@@ -66,9 +66,19 @@ Returns ``True`` if the destination fields are editable
 Sets the destination fields editable state to ``editable``
 %End
 
-    static const QMap<QVariant::Type, QString> dataTypes();
+ static const QMap<QVariant::Type, QString> dataTypes();
 %Docstring
 Returns a static map of supported data types
+
+.. deprecated::
+   QGIS 3.24 use :py:func:`~QgsFieldMappingModel.supportedDataTypes` instead
+%End
+
+    static const QList<QgsVectorDataProvider::NativeType> supportedDataTypes();
+%Docstring
+Returns a static list of supported data types
+
+.. versionadded:: 3.24
 %End
 
     QgsFields sourceFields() const;
@@ -139,6 +149,7 @@ Set destination fields to ``destinationFields``, initial values for the expressi
 optionally specified through ``expressions`` which is a map from the original
 field name to the corresponding expression.
 %End
+
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 

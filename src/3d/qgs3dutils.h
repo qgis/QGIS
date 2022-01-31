@@ -225,7 +225,10 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.24
      */
-    static double decodeDepth( const QColor &pixel );
+    static double decodeDepth( const QRgb &pixel )
+    {
+      return ( ( qRed( pixel ) / 255.0 + qGreen( pixel ) ) / 255.0 + qBlue( pixel ) ) / 255.0;
+    }
 };
 
 #endif // QGS3DUTILS_H

@@ -46,7 +46,6 @@
 #include "qgsprovidermetadata.h"
 #include "qgspostgresproviderconnection.h"
 
-#include <QMessageBox>
 #include <QRegularExpression>
 
 const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
@@ -4903,7 +4902,7 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
         return v.trimmed().toString();
       }
     }
-    return QStringView{txt}.mid( start, i - start ).trimmed().toString();
+    return QStringView{txt} .mid( start, i - start ).trimmed().toString();
   }
 }
 
@@ -5317,6 +5316,61 @@ Qgis::VectorExportResult QgsPostgresProviderMetadata::createEmptyLayer(
          );
 }
 
+bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errorCause )
+{
+  errorCause.clear();
+
+  QgsDataSourceUri dsUri( uri );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  if ( !conn )
+  {
+    errorCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  {
+    return false;
+  }
+  else if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  {
+    return false;
+  }
+
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
+  const QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
+
+  const QString checkQuery = QString( "SELECT styleName"
+                                      " FROM layer_styles"
+                                      " WHERE f_table_catalog=%1"
+                                      " AND f_table_schema=%2"
+                                      " AND f_table_name=%3"
+                                      " AND f_geometry_column=%4"
+                                      " AND (type=%5 OR type IS NULL)"
+                                      " AND styleName=%6" )
+                             .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                             .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                             .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                             .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                             .arg( wkbTypeString )
+                             .arg( QgsPostgresConn::quotedValue( styleId.isEmpty() ? dsUri.table() : styleId ) );
+
+  QgsPostgresResult res( conn->PQexec( checkQuery ) );
+  if ( res.PQresultStatus() == PGRES_TUPLES_OK )
+  {
+    return res.PQntuples() > 0;
+  }
+  else
+  {
+    errorCause = res.PQresultErrorMessage();
+    return false;
+  }
+}
+
 bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &qmlStyleIn, const QString &sldStyleIn,
     const QString &styleName, const QString &styleDescription,
     const QString &uiFileContent, bool useAsDefault, QString &errCause )
@@ -5433,16 +5487,6 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   QgsPostgresResult res( conn->PQexec( checkQuery ) );
   if ( res.PQntuples() > 0 )
   {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
-                                QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
-                                .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
-                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
-    {
-      errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
-      conn->unref();
-      return false;
-    }
-
     sql = QString( "UPDATE layer_styles"
                    " SET useAsDefault=%1"
                    ",styleQML=XMLPARSE(DOCUMENT %12)"
@@ -5582,12 +5626,18 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
 int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &ids, QStringList &names,
     QStringList &descriptions, QString &errCause )
 {
+  errCause.clear();
   QgsDataSourceUri dsUri( uri );
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
+    return -1;
+  }
+
+  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  {
     return -1;
   }
 
@@ -5661,7 +5711,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
   return numberOfRelatedStyles;
 }
 
-bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, QString styleId, QString &errCause )
+bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   bool deleted;
@@ -5695,7 +5745,7 @@ bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, QString s
   return deleted;
 }
 
-QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, QString styleId, QString &errCause )
+QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
 

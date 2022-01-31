@@ -2242,10 +2242,8 @@ std::unique_ptr< QgsLineString > roundWavesAlongLine( const QgsLineString *line,
 
   int side = -1;
 
-  double xOutBuffer[4];
-  double yOutBuffer[4];
-  xOutBuffer[0] = prevX;
-  yOutBuffer[0] = prevY;
+  double xOutBuffer[4] { prevX, prevX, prevX, prevX };
+  double yOutBuffer[4] { prevY, prevY, prevY, prevY };
   bool isFirstPart = true;
 
   double distanceToNextPointFromStartOfSegment = wavelength / 8;
@@ -2369,10 +2367,8 @@ std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine( const QgsLineStr
 
   int side = -1;
 
-  double xOutBuffer[4];
-  double yOutBuffer[4];
-  xOutBuffer[0] = prevX;
-  yOutBuffer[0] = prevY;
+  double xOutBuffer[4] { prevX, prevX, prevX, prevX };
+  double yOutBuffer[4] { prevY, prevY, prevY, prevY };
   bool isFirstPart = true;
 
   double amplitude = uniformDist( mt ) * ( maximumAmplitude - minimumAmplitude ) + minimumAmplitude;

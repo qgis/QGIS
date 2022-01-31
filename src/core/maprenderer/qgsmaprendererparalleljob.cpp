@@ -21,7 +21,7 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgsproject.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>

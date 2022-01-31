@@ -28,7 +28,8 @@ QgsTerrainDownloader::QgsTerrainDownloader( const QgsCoordinateTransformContext 
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
   // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
-  const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext );
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext );
+  ct.setBallparkTransformsAreAppropriate( true );
   const QgsPointXY topLeftLonLat( -180, 180.0 / M_PI * std::atan( std::sinh( M_PI ) ) );
   const QgsPointXY bottomRightLonLat( 180, 180.0 / M_PI * std::atan( std::sinh( -M_PI ) ) );
   const QgsPointXY topLeft = ct.transform( topLeftLonLat );
@@ -128,7 +129,8 @@ QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, i
   if ( destCrs != mOnlineDtm->crs() )
   {
     // if in different CRS - need to reproject extent and resolution
-    const QgsCoordinateTransform ct( destCrs, mOnlineDtm->crs(), context );
+    QgsCoordinateTransform ct( destCrs, mOnlineDtm->crs(), context );
+    ct.setBallparkTransformsAreAppropriate( true );
     extentTr = ct.transformBoundingBox( extentOrig );
   }
 

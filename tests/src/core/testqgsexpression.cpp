@@ -3748,6 +3748,10 @@ class TestQgsExpression: public QObject
       QStringList removeAtExpected = array;
       removeAtExpected.removeAt( 0 );
       QCOMPARE( QgsExpression( "array_remove_at(\"strings\", 0)" ).evaluate( &context ), QVariant( removeAtExpected ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"strings\", -2)" ).evaluate( &context ), QVariant( removeAtExpected ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"strings\", -4)" ).evaluate( &context ), QVariant( array ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"strings\", 4)" ).evaluate( &context ), QVariant( array ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"strings\", -40)" ).evaluate( &context ), QVariant( array ) );
 
       QStringList removeAllExpected;
       removeAllExpected << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "d" );
@@ -3832,6 +3836,10 @@ class TestQgsExpression: public QObject
       QVariantList removeAtExpected = array;
       removeAtExpected.removeAt( 0 );
       QCOMPARE( QgsExpression( "array_remove_at(\"ints\", 0)" ).evaluate( &context ), QVariant( removeAtExpected ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"ints\", -2)" ).evaluate( &context ), QVariant( removeAtExpected ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"ints\", -5)" ).evaluate( &context ), QVariant( array ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"ints\", 5)" ).evaluate( &context ), QVariant( array ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"ints\", -50)" ).evaluate( &context ), QVariant( array ) );
 
       QVariantList removeAllExpected;
       removeAllExpected << 1 << 2 << 4;

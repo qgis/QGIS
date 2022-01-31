@@ -110,10 +110,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "System" ), QCoreApplication::translate( "QgsOptionsBase", "System" ), QStringLiteral( "propertyicons/system.svg" ) ) );
 
   QStandardItem *crsGroup = new QStandardItem( QCoreApplication::translate( "QgsOptionsBase", "CRS and Transforms" ) );
+  crsGroup->setData( QStringLiteral( "crs_and_transforms" ) );
   crsGroup->setToolTip( tr( "CRS and Transforms" ) );
   crsGroup->setSelectable( false );
-  crsGroup->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "CRS" ), QCoreApplication::translate( "QgsOptionsBase", "CRS" ), QStringLiteral( "propertyicons/CRS.svg" ) ) );
-  crsGroup->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Transformations" ), QCoreApplication::translate( "QgsOptionsBase", "Coordinate transformations and operations" ), QStringLiteral( "transformation.svg" ) ) );
+  crsGroup->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "CRS Handling" ), QCoreApplication::translate( "QgsOptionsBase", "General CRS handling" ), QStringLiteral( "propertyicons/CRS.svg" ) ) );
+  crsGroup->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Coordinate Transforms" ), QCoreApplication::translate( "QgsOptionsBase", "Coordinate transformations and operations" ), QStringLiteral( "transformation.svg" ) ) );
   mTreeModel->appendRow( crsGroup );
 
   QStandardItem *dataSources = createItem( QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), QCoreApplication::translate( "QgsOptionsBase", "Data sources" ), QStringLiteral( "propertyicons/attributes.svg" ) );
@@ -166,6 +167,21 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
+  // disconnect default connection setup by initOptionsBase for accepting dialog, and insert logic
+  // to validate widgets before allowing dialog to be closed
+  disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mOptButtonBox, &QDialogButtonBox::accepted, this, [ = ]
+  {
+    for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
+    {
+      if ( !widget->isValid() )
+      {
+        setCurrentPage( widget->objectName() );
+        return;
+      }
+    }
+    accept();
+  } );
 
   // stylesheet setup
   mStyleSheetBuilder = QgisApp::instance()->styleSheetBuilder();
@@ -1531,6 +1547,15 @@ void QgsOptions::selectProjectOnLaunch()
 
 void QgsOptions::saveOptions()
 {
+  for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
+  {
+    if ( !widget->isValid() )
+    {
+      setCurrentPage( widget->objectName() );
+      return;
+    }
+  }
+
   QgsSettings settings;
 
   mSettings->setValue( QStringLiteral( "UI/UITheme" ), cmbUITheme->currentText() );
@@ -1999,8 +2024,7 @@ void QgsOptions::saveOptions()
 
   mLocatorOptionsWidget->commitChanges();
 
-  const auto constMAdditionalOptionWidgets = mAdditionalOptionWidgets;
-  for ( QgsOptionsPageWidget *widget : constMAdditionalOptionWidgets )
+  for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
   {
     widget->apply();
   }

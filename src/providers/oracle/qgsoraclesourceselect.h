@@ -154,7 +154,6 @@ class QgsOracleSourceSelect : public QgsAbstractDbSourceSelect
     QgsOracleTableModel *mTableModel = nullptr;
     QgsOracleSourceSelectDelegate *mTablesTreeDelegate = nullptr;
 
-    QPushButton *mBuildQueryButton = nullptr;
     QPushButton *mAddButton = nullptr;
 
     void finishList();

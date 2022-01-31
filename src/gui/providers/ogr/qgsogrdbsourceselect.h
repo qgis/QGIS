@@ -103,7 +103,6 @@ class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
     void setConnectionListPosition();
     //! Model that acts as datasource for mTableTreeWidget
     QgsOgrDbTableModel *mTableModel = nullptr;
-    QPushButton *mBuildQueryButton = nullptr;
     QString mPath;
     QString mOgrDriverName;
     QString mName;

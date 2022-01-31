@@ -709,7 +709,7 @@ void QgsLayoutAttributeSelectionDialog::showHelp()
   QgsHelp::openHelp( QStringLiteral( "print_composer/composer_items/composer_attribute_table.html" ) );
 }
 
-void QgsLayoutAttributeSelectionDialog::mSortColumnUpPushButton_clicked()
+void QgsLayoutAttributeSelectionDialog::mSortColumnDownPushButton_clicked()
 {
   //move selected row down
   const QModelIndexList indexes =  mSortColumnTableView->selectionModel()->selectedRows();
@@ -719,7 +719,7 @@ void QgsLayoutAttributeSelectionDialog::mSortColumnUpPushButton_clicked()
     mSortColumnModel->moveRow( indexes.at( i - 1 ).row(), QgsLayoutTableSortModel::ShiftDown );
 }
 
-void QgsLayoutAttributeSelectionDialog::mSortColumnDownPushButton_clicked()
+void QgsLayoutAttributeSelectionDialog::mSortColumnUpPushButton_clicked()
 {
   //move selected row up
   const QModelIndexList indexes =  mSortColumnTableView->selectionModel()->selectedRows();

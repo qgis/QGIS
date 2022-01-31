@@ -180,12 +180,14 @@ std::vector<double> NetCDFFile::readDoubleArr( int arr_id,
   std::vector<double> arr_val( count_dim );
 
   nc_type typep;
-  if ( nc_inq_vartype( mNcid, arr_id, &typep ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+  if ( nc_inq_vartype( mNcid, arr_id, &typep ) != NC_NOERR )
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
 
   if ( typep == NC_FLOAT )
   {
     std::vector<float> arr_val_f( count_dim );
-    if ( nc_get_vars_float( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val_f.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+    if ( nc_get_vars_float( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val_f.data() ) != NC_NOERR )
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
     for ( size_t i = 0; i < count_dim; ++i )
     {
       const float val = arr_val_f[i];
@@ -195,9 +197,20 @@ std::vector<double> NetCDFFile::readDoubleArr( int arr_id,
         arr_val[i] = static_cast<double>( val );
     }
   }
+  else if ( typep == NC_INT )
+  {
+    std::vector<int> arr_val_int( count_dim );
+    if ( nc_get_vars_int( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val_int.data() ) != NC_NOERR )
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+    for ( size_t i = 0; i < count_dim; ++i )
+    {
+      arr_val[i] = static_cast<double>( arr_val_int[i] );
+    }
+  }
   else if ( typep == NC_DOUBLE )
   {
-    if ( nc_get_vars_double( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+    if ( nc_get_vars_double( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val.data() ) != NC_NOERR )
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
   }
   else
   {

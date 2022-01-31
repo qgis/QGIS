@@ -147,8 +147,8 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
                                     "    padding: %1px;"
                                     "}"
                                     "QListWidget#mOptionsListWidget::item::selected {"
-                                    "    color: black;"
-                                    "    background-color:palette(Window);"
+                                    "    color: palette(window-text);"
+                                    "    background-color:palette(window);"
                                     "    padding-right: 0px;"
                                     "}" ).arg( frameMargin );
 
@@ -164,8 +164,8 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
                              "    padding: %1px;"
                              "}"
                              "QTreeView#mOptionsTreeView::item::selected, QTreeView#mOptionsTreeView::branch::selected {"
-                             "    color: black;"
-                             "    background-color:palette(Window);"
+                             "    color: palette(window-text);"
+                             "    background-color:palette(window);"
                              "    padding-right: 0px;"
                              "}" ).arg( frameMargin );
 

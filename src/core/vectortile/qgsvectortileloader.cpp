@@ -132,7 +132,6 @@ void QgsVectorTileLoader::tileReplyFinished()
   {
     if ( reply->error() == QNetworkReply::ContentAccessDenied )
     {
-
       if ( reply->data().isEmpty() )
         mError = tr( "Access denied" );
       else

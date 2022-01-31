@@ -108,18 +108,19 @@
 #include "annotations/qgsannotationitempropertieswidget.h"
 #include "qgsmaptoolmodifyannotation.h"
 #include "qgsannotationlayer.h"
+#include "qgsdockablewidgethelper.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
 
 #include "options/qgscodeeditoroptions.h"
 #include "options/qgsgpsdeviceoptions.h"
+#include "options/qgscustomprojectionoptions.h"
 
 #ifdef HAVE_3D
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
-#include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
@@ -136,6 +137,8 @@
 #include "qgs3dapputils.h"
 #include "qgs3doptions.h"
 #include "qgsmapviewsmanager.h"
+#include "qgs3dmapcanvaswidget.h"
+#include "qgs3dviewsmanagerdialog.h"
 #endif
 
 #ifdef HAVE_GEOREFERENCER
@@ -215,7 +218,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgscustomprojectopenhandler.h"
 #include "qgscustomization.h"
 #include "qgscustomlayerorderwidget.h"
-#include "qgscustomprojectiondialog.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsdatasourceuri.h"
@@ -1687,6 +1689,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   zoomInToolShortCut->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
 
   QShortcut *shortcutTracing = new QShortcut( QKeySequence( tr( "Ctrl+Shift+." ) ), this );
+  shortcutTracing->setObjectName( QStringLiteral( "ToggleTracing" ) );
   connect( shortcutTracing, &QShortcut::activated, this, &QgisApp::toggleEventTracing );
 
   if ( ! QTouchDevice::devices().isEmpty() )
@@ -1746,7 +1749,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   setupLayoutManagerConnections();
 
 #ifdef HAVE_3D
-  connect( QgsProject::instance()->getViewsManager(), &QgsMapViewsManager::views3DListChanged, this, &QgisApp::views3DMenuAboutToShow );
+  connect( QgsProject::instance()->viewsManager(), &QgsMapViewsManager::views3DListChanged, this, &QgisApp::views3DMenuAboutToShow );
 #endif
 
   setupDuplicateFeaturesAction();
@@ -1817,6 +1820,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   mCodeEditorWidgetFactory.reset( std::make_unique< QgsCodeEditorOptionsFactory >() );
   mBabelGpsDevicesWidgetFactory.reset( std::make_unique< QgsGpsDeviceOptionsFactory >() );
+  mCustomProjectionsWidgetFactory.reset( std::make_unique< QgsCustomProjectionOptionsFactory >() );
 
 #ifdef HAVE_3D
   m3DOptionsWidgetFactory.reset( std::make_unique< Qgs3DOptionsFactory >() );
@@ -2840,7 +2844,7 @@ void QgisApp::createActions()
   connect( mActionAddWmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wms" ) ); } );
   connect( mActionAddXyzLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "xyz" ) ); } );
   connect( mActionAddVectorTileLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "vectortile" ) ); } );
-  connect( mActionAddPointCloudLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "ept" ) ); } );
+  connect( mActionAddPointCloudLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "pointcloud" ) ); } );
   connect( mActionAddWcsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wcs" ) ); } );
 #ifdef HAVE_SPATIALITE
   connect( mActionAddWfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "WFS" ) ); } );
@@ -4793,11 +4797,10 @@ void QgisApp::closeAdditionalMapCanvases()
 void QgisApp::closeAdditional3DMapCanvases()
 {
 #ifdef HAVE_3D
-  const QList< Qgs3DMapCanvasDockWidget * > canvases = findChildren< Qgs3DMapCanvasDockWidget * >();
-  for ( Qgs3DMapCanvasDockWidget *w : canvases )
+  QSet<Qgs3DMapCanvasWidget *> openDocks = mOpen3DMapViews;
+  for ( Qgs3DMapCanvasWidget *w : openDocks )
   {
-    w->close();
-    delete w;
+    close3DMapView( w->canvasName() );
   }
 #endif
 }
@@ -7408,6 +7411,7 @@ void QgisApp::dxfExport()
       if ( d.exportMapExtent() )
       {
         QgsCoordinateTransform t( lMapCanvas->mapSettings().destinationCrs(), d.crs(), QgsProject::instance() );
+        t.setBallparkTransformsAreAppropriate( true );
         dxfExport.setExtent( t.transformBoundingBox( lMapCanvas->extent() ) );
       }
     }
@@ -9185,10 +9189,26 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
           }
           case QgsVectorLayerProperties::DB:
           {
-            QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( vlayer->providerType() );
+            QString infoWindowTitle = tr( "Save style to DB (%1)" ).arg( vlayer->providerType() );
             QString msgError;
 
             QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
+
+            QString errorMessage;
+            if ( QgsProviderRegistry::instance()->styleExists( vlayer->providerType(), vlayer->source(), dbSettings.name, errorMessage ) )
+            {
+              if ( QMessageBox::question( nullptr, tr( "Save style in database" ),
+                                          tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
+                                          QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+              {
+                return;
+              }
+            }
+            else if ( !errorMessage.isEmpty() )
+            {
+              mInfoBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
+              return;
+            }
 
             vlayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
 
@@ -9897,41 +9917,72 @@ void QgisApp::setupLayoutManagerConnections()
   } );
 }
 
-Qgs3DMapCanvasDockWidget *QgisApp::open3DMapView( const QString &viewName )
+Qgs3DMapCanvasWidget *QgisApp::open3DMapView( const QString &viewName )
 {
 #ifdef HAVE_3D
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
 
-  QDomElement elem3DMap = QgsProject::instance()->getViewsManager()->get3DViewSettings( viewName );
+  QDomElement elem3DMap = QgsProject::instance()->viewsManager()->get3DViewSettings( viewName );
 
   if ( elem3DMap.isNull() )
     return nullptr;
 
-  Qgs3DMapCanvasDockWidget *mapCanvasDock3D = createNew3DMapCanvasDock( viewName );
-  if ( !mapCanvasDock3D )
+  bool isDocked = elem3DMap.attribute( QStringLiteral( "isDocked" ), "1" ).toInt() == 1;
+  Qgs3DMapCanvasWidget *mapCanvas3D = createNew3DMapCanvasDock( viewName, isDocked );
+  if ( !mapCanvas3D )
     return nullptr;
 
-  read3DMapViewSettings( mapCanvasDock3D, elem3DMap );
-  mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
+  read3DMapViewSettings( mapCanvas3D, elem3DMap );
 
-  QgsProject::instance()->getViewsManager()->set3DViewInitiallyVisible( viewName, true );
+  QgsProject::instance()->viewsManager()->set3DViewInitiallyVisible( viewName, true );
 
-  return mapCanvasDock3D;
+  return mapCanvas3D;
 #else
   Q_UNUSED( viewName );
   return nullptr;
 #endif
 }
 
-Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingViewName, const QString &newViewName )
+void QgisApp::close3DMapView( const QString &viewName )
+{
+#ifdef HAVE_3D
+  Qgs3DMapCanvasWidget *widget = get3DMapView( viewName );
+  if ( !widget )
+    return;
+  mOpen3DMapViews.remove( widget );
+
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  QDomDocument doc( documentType );
+
+  if ( !QgsProject::instance()->viewsManager()->get3DViewSettings( viewName ).isNull() )
+  {
+    QDomElement elem3DMap;
+    elem3DMap = doc.createElement( QStringLiteral( "view" ) );
+    write3DMapViewSettings( widget, doc, elem3DMap );
+
+    QgsProject::instance()->viewsManager()->register3DViewSettings( viewName, elem3DMap );
+    QgsProject::instance()->viewsManager()->set3DViewInitiallyVisible( viewName, false );
+  }
+  widget->deleteLater();
+#else
+  Q_UNUSED( viewName );
+#endif
+}
+
+Qgs3DMapCanvasWidget *QgisApp::duplicate3DMapView( const QString &existingViewName, const QString &newViewName )
 {
 #ifdef HAVE_3D
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
 
-  Qgs3DMapCanvasDockWidget *mapCanvasDock3D = createNew3DMapCanvasDock( newViewName );
-  if ( !mapCanvasDock3D )
+  QDomElement existingViewDom = QgsProject::instance()->viewsManager()->get3DViewSettings( existingViewName );
+  bool isDocked = existingViewDom.attribute( QStringLiteral( "isDocked" ), "1" ).toInt() == 1;
+  Qgs3DMapCanvasWidget *newCanvasWidget = createNew3DMapCanvasDock( newViewName, isDocked );
+  if ( !newCanvasWidget )
     return nullptr;
 
   QDomImplementation DomImplementation;
@@ -9942,43 +9993,33 @@ Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingVi
 
   // If the 3D view is open, copy its configuration to the duplicate widget, otherwise just use the recorded
   // settings from m3DMapViewsWidgets
-  if ( Qgs3DMapCanvasDockWidget *w = get3DMapViewDock( existingViewName ) )
+  if ( Qgs3DMapCanvasWidget *widget = get3DMapView( existingViewName ) )
   {
-    Qgs3DMapSettings *map = new Qgs3DMapSettings( *w->mapCanvas3D()->map() );
-    mapCanvasDock3D->setMapSettings( map );
+    Qgs3DMapSettings *map = new Qgs3DMapSettings( *widget->mapCanvas3D()->map() );
+    newCanvasWidget->setMapSettings( map );
 
-    mapCanvasDock3D->mapCanvas3D()->cameraController()->readXml( w->mapCanvas3D()->cameraController()->writeXml( doc ) );
-    mapCanvasDock3D->animationWidget()->setAnimation( w->animationWidget()->animation() );
+    newCanvasWidget->mapCanvas3D()->cameraController()->readXml( widget->mapCanvas3D()->cameraController()->writeXml( doc ) );
+    newCanvasWidget->animationWidget()->setAnimation( widget->animationWidget()->animation() );
 
-    QMetaObject::Connection conn = connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
+    connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
     {
       map->setTransformContext( QgsProject::instance()->transformContext() );
-    } );
-
-    connect( mapCanvasDock3D, &Qgs3DMapCanvasDockWidget::closed, [ = ]()
-    {
-      disconnect( conn );
     } );
   }
   else
   {
-    QDomElement elem = QgsProject::instance()->getViewsManager()->get3DViewSettings( existingViewName );
-    elem.setAttribute( QStringLiteral( "name" ), newViewName );
-    read3DMapViewSettings( mapCanvasDock3D, elem );
+    existingViewDom.setAttribute( QStringLiteral( "name" ), newViewName );
+    read3DMapViewSettings( newCanvasWidget, existingViewDom );
   }
-
-  setupDockWidget( mapCanvasDock3D, true );
 
   QDomElement elem3DMap;
   elem3DMap = doc.createElement( QStringLiteral( "view" ) );
-  write3DMapViewSettings( mapCanvasDock3D, doc, elem3DMap );
+  write3DMapViewSettings( newCanvasWidget, doc, elem3DMap );
 
-  QgsProject::instance()->getViewsManager()->register3DViewSettings( newViewName, elem3DMap );
-  QgsProject::instance()->getViewsManager()->set3DViewInitiallyVisible( newViewName, true );
+  QgsProject::instance()->viewsManager()->register3DViewSettings( newViewName, elem3DMap );
+  QgsProject::instance()->viewsManager()->set3DViewInitiallyVisible( newViewName, true );
 
-  mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
-
-  return mapCanvasDock3D;
+  return newCanvasWidget;
 #else
   Q_UNUSED( existingViewName )
   Q_UNUSED( newViewName )
@@ -9986,18 +10027,28 @@ Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingVi
 #endif
 }
 
-Qgs3DMapCanvasDockWidget *QgisApp::get3DMapViewDock( const QString &viewName )
+Qgs3DMapCanvasWidget *QgisApp::get3DMapView( const QString &viewName )
 {
 #ifdef HAVE_3D
-  for ( Qgs3DMapCanvasDockWidget *w : mOpen3DDocks )
+  for ( Qgs3DMapCanvasWidget *w : mOpen3DMapViews )
   {
-    if ( w->windowTitle() == viewName )
+    if ( w->canvasName() == viewName )
       return w;
   }
 #else
   Q_UNUSED( viewName )
 #endif
   return nullptr;
+}
+
+QList<Qgs3DMapCanvasWidget *> QgisApp::get3DMapViews()
+{
+  QList<Qgs3DMapCanvasWidget *> views;
+#ifdef HAVE_3D
+  for ( Qgs3DMapCanvasWidget *w : mOpen3DMapViews )
+    views.append( w );
+#endif
+  return views;
 }
 
 void QgisApp::setupDuplicateFeaturesAction()
@@ -10091,7 +10142,7 @@ void QgisApp::populate3DMapviewsMenu( QMenu *menu )
 #ifdef HAVE_3D
   menu->clear();
   QList<QAction *> acts;
-  QList< QDomElement > views = QgsProject::instance()->getViewsManager()->get3DViews();
+  QList< QDomElement > views = QgsProject::instance()->viewsManager()->get3DViews();
   acts.reserve( views.size() );
   for ( const QDomElement &viewConfig : views )
   {
@@ -10109,10 +10160,7 @@ void QgisApp::populate3DMapviewsMenu( QMenu *menu )
       }
       else
       {
-        if ( Qgs3DMapCanvasDockWidget *w = QgisApp::instance()->get3DMapViewDock( viewName ) )
-        {
-          w->close();
-        }
+        QgisApp::instance()->close3DMapView( viewName );
       }
     } );
     acts << a;
@@ -10465,8 +10513,8 @@ void QgisApp::mergeSelectedFeatures()
         tr( "Merge failed" ),
         tr( "Resulting geometry type (multipart) is incompatible with layer type (singlepart)." ),
         Qgis::MessageLevel::Critical );
+      return;
     }
-    return;
   }
 
   //merge the attributes together
@@ -13144,8 +13192,8 @@ QMap<QString, QString> QgisApp::optionsPagesMap()
   {
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "General" ), QStringLiteral( "mOptionsPageGeneral" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "System" ), QStringLiteral( "mOptionsPageSystem" ) );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "CRS" ), QStringLiteral( "mOptionsPageCRS" ) );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Transformations" ), QStringLiteral( "mOptionsPageTransformations" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "CRS Handling" ), QStringLiteral( "mOptionsPageCRS" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Coordinate Transforms" ), QStringLiteral( "mOptionsPageTransformations" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), QStringLiteral( "mOptionsPageDataSources" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QStringLiteral( "mOptionsPageGDAL" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "mOptionsPageRendering" ) );
@@ -13245,8 +13293,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     mMapTools->mapTool< QgsMapToolMeasureBearing >( QgsAppMapTools::MeasureBearing )->updateSettings();
 
 #ifdef HAVE_3D
-    const QList< Qgs3DMapCanvasDockWidget * > canvases3D = findChildren< Qgs3DMapCanvasDockWidget * >();
-    for ( Qgs3DMapCanvasDockWidget *canvas3D : canvases3D )
+    for ( Qgs3DMapCanvasWidget *canvas3D : mOpen3DMapViews )
     {
       canvas3D->measurementLineTool()->updateSettings();
     }
@@ -13934,7 +13981,7 @@ void QgisApp::initLayouts()
   // 3D map item
 #ifdef HAVE_3D
   QgsApplication::layoutItemRegistry()->addLayoutItemType(
-    new QgsLayoutItemMetadata( QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QObject::tr( "3D Maps" ), QgsLayoutItem3DMap::create )
+    new QgsLayoutItemMetadata( QgsLayoutItemRegistry::Layout3DMap, tr( "3D Map" ), tr( "3D Maps" ), QgsLayoutItem3DMap::create )
   );
 
   auto createRubberBand = ( []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
@@ -13942,7 +13989,7 @@ void QgisApp::initLayouts()
     return new QgsLayoutViewRectangularRubberBand( view );
   } );
   std::unique_ptr< QgsLayoutItemGuiMetadata > map3dMetadata = std::make_unique< QgsLayoutItemGuiMetadata>(
-        QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
+        QgsLayoutItemRegistry::Layout3DMap, tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
         [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return new QgsLayout3DMapWidget( qobject_cast< QgsLayoutItem3DMap * >( item ) );
@@ -13956,13 +14003,12 @@ void QgisApp::initLayouts()
   registerCustomLayoutDropHandler( mLayoutImageDropHandler );
 }
 
-Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name )
+Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bool isDocked )
 {
 #ifdef HAVE_3D
-  const QList<Qgs3DMapCanvas *> mapCanvases = findChildren<Qgs3DMapCanvas *>();
-  for ( Qgs3DMapCanvas *canvas : mapCanvases )
+  for ( Qgs3DMapCanvasWidget *canvas : mOpen3DMapViews )
   {
-    if ( canvas->objectName() == name )
+    if ( canvas->canvasName() == name )
     {
       QgsDebugMsg( QStringLiteral( "A map canvas with name '%1' already exists!" ).arg( name ) );
       return nullptr;
@@ -13971,38 +14017,16 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
 
   markDirty();
 
-  Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
-  mOpen3DDocks.insert( map3DWidget );
-  map3DWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
-  map3DWidget->setWindowTitle( name );
-  map3DWidget->mapCanvas3D()->setObjectName( name );
-  map3DWidget->setMainCanvas( mMapCanvas );
-  map3DWidget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
+  Qgs3DMapCanvasWidget *widget = new Qgs3DMapCanvasWidget( name, isDocked );
 
-  connect( map3DWidget, &Qgs3DMapCanvasDockWidget::closed, [ = ]()
-  {
-    QDomImplementation DomImplementation;
-    QDomDocumentType documentType =
-      DomImplementation.createDocumentType(
-        QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
-    QDomDocument doc( documentType );
+  mOpen3DMapViews.insert( widget );
+  widget->setMainCanvas( mMapCanvas );
+  widget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
 
-    QString viewName = map3DWidget->mapCanvas3D()->objectName();
-    if ( !QgsProject::instance()->getViewsManager()->get3DViewSettings( viewName ).isNull() )
-    {
-      QDomElement elem3DMap;
-      elem3DMap = doc.createElement( QStringLiteral( "view" ) );
-      write3DMapViewSettings( map3DWidget, doc, elem3DMap );
-
-      QgsProject::instance()->getViewsManager()->register3DViewSettings( viewName, elem3DMap );
-      QgsProject::instance()->getViewsManager()->set3DViewInitiallyVisible( viewName, false );
-    }
-    QgisApp::instance()->mOpen3DDocks.remove( map3DWidget );
-  } );
-
-  return map3DWidget;
+  return widget;
 #else
-  Q_UNUSED( name )
+  Q_UNUSED( name );
+  Q_UNUSED( isDocked );
   return nullptr;
 #endif
 }
@@ -14028,18 +14052,16 @@ void QgisApp::new3DMapCanvas()
   }
 
   int i = 1;
-  const QList< QString > usedCanvasNames = QgsProject::instance()->getViewsManager()->get3DViewsNames();
+  const QList< QString > usedCanvasNames = QgsProject::instance()->viewsManager()->get3DViewsNames();
   QString name = tr( "3D Map %1" ).arg( i );
   while ( usedCanvasNames.contains( name ) )
   {
     name = tr( "3D Map %1" ).arg( ++i );
   }
 
-  Qgs3DMapCanvasDockWidget *dock = createNew3DMapCanvasDock( name );
-  if ( dock )
+  Qgs3DMapCanvasWidget *canvasWidget = createNew3DMapCanvasDock( name, true );
+  if ( canvasWidget )
   {
-    setupDockWidget( dock, true );
-
     QgsProject *prj = QgsProject::instance();
     QgsRectangle fullExtent = mMapCanvas->projectExtent();
     QgsSettings settings;
@@ -14074,25 +14096,20 @@ void QgisApp::new3DMapCanvas()
     map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
     map->setRendererUsage( Qgis::RendererUsage::View );
 
-    QMetaObject::Connection conn = connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
+    connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
     {
       map->setTransformContext( QgsProject::instance()->transformContext() );
     } );
 
-    connect( dock, &Qgs3DMapCanvasDockWidget::closed, [ = ]()
-    {
-      disconnect( conn );
-    } );
-
-    dock->setMapSettings( map );
+    canvasWidget->setMapSettings( map );
 
     QgsRectangle extent = mMapCanvas->extent();
     float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
-    dock->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, static_cast< float >( mMapCanvas->rotation() ) );
+    canvasWidget->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, static_cast< float >( mMapCanvas->rotation() ) );
 
     const QgsCameraController::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), QgsCameraController::WhenDragging, QgsSettings::App );
-    if ( dock->mapCanvas3D()->cameraController() )
-      dock->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
+    if ( canvasWidget->mapCanvas3D()->cameraController() )
+      canvasWidget->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
 
     QDomImplementation DomImplementation;
     QDomDocumentType documentType =
@@ -14103,12 +14120,10 @@ void QgisApp::new3DMapCanvas()
     QDomElement elem3DMap = doc.createElement( QStringLiteral( "view" ) );
     elem3DMap.setAttribute( QStringLiteral( "isOpen" ), 1 );
 
-    write3DMapViewSettings( dock, doc, elem3DMap );
+    write3DMapViewSettings( canvasWidget, doc, elem3DMap );
 
-    QgsProject::instance()->getViewsManager()->register3DViewSettings( name, elem3DMap );
-    QgsProject::instance()->getViewsManager()->set3DViewInitiallyVisible( name, true );
-
-    mPanelMenu->removeAction( dock->toggleViewAction() );
+    QgsProject::instance()->viewsManager()->register3DViewSettings( name, elem3DMap );
+    QgsProject::instance()->viewsManager()->set3DViewInitiallyVisible( name, true );
   }
 #endif
 }
@@ -14655,6 +14670,50 @@ QMenu *QgisApp::getWebMenu( const QString &menuName )
   return menu;
 }
 
+QMenu *QgisApp::getMeshMenu( const QString &menuName )
+{
+  if ( menuName.isEmpty() )
+    return mMeshMenu;
+
+  QString cleanedMenuName = menuName;
+#ifdef Q_OS_MAC
+  // Mac doesn't have '&' keyboard shortcuts.
+  cleanedMenuName.remove( QChar( '&' ) );
+#endif
+  QString dst = cleanedMenuName;
+  dst.remove( QChar( '&' ) );
+
+  QAction *before = nullptr;
+  QList<QAction *> actions = mMeshMenu->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    QString src = actions.at( i )->text();
+    src.remove( QChar( '&' ) );
+
+    int comp = dst.localeAwareCompare( src );
+    if ( comp < 0 )
+    {
+      // Add item before this one
+      before = actions.at( i );
+      break;
+    }
+    else if ( comp == 0 )
+    {
+      // Plugin menu item already exists
+      return actions.at( i )->menu();
+    }
+  }
+  // It doesn't exist, so create
+  QMenu *menu = new QMenu( cleanedMenuName, this );
+  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
+  if ( before )
+    mMeshMenu->insertMenu( before, menu );
+  else
+    mMeshMenu->addMenu( menu );
+
+  return menu;
+}
+
 void QgisApp::insertAddLayerAction( QAction *action )
 {
   mAddLayerMenu->insertAction( mActionAddLayerSeparator, action );
@@ -14724,7 +14783,7 @@ void QgisApp::addPluginToWebMenu( const QString &name, QAction *action )
   QMenu *menu = getWebMenu( name );
   menu->addAction( action );
 
-  // add the Vector menu to the menuBar if not added yet
+  // add the Web menu to the menuBar if not added yet
   if ( mWebMenu->actions().count() != 1 )
     return;
 
@@ -14760,6 +14819,12 @@ void QgisApp::addPluginToWebMenu( const QString &name, QAction *action )
   else
     // fallback insert
     menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mWebMenu );
+}
+
+void QgisApp::addPluginToMeshMenu( const QString &name, QAction *action )
+{
+  QMenu *menu = getMeshMenu( name );
+  menu->addAction( action );
 }
 
 void QgisApp::removePluginDatabaseMenu( const QString &name, QAction *action )
@@ -14845,6 +14910,30 @@ void QgisApp::removePluginWebMenu( const QString &name, QAction *action )
   for ( int i = 0; i < actions.count(); i++ )
   {
     if ( actions.at( i )->menu() == mWebMenu )
+    {
+      menuBar()->removeAction( actions.at( i ) );
+      return;
+    }
+  }
+}
+
+void QgisApp::removePluginMeshMenu( const QString &name, QAction *action )
+{
+  QMenu *menu = getMeshMenu( name );
+  menu->removeAction( action );
+  if ( menu->actions().isEmpty() )
+  {
+    mMeshMenu->removeAction( menu->menuAction() );
+  }
+
+  // remove the Mesh menu from the menuBar if there are no more actions
+  if ( !mMeshMenu->actions().isEmpty() )
+    return;
+
+  QList<QAction *> actions = menuBar()->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    if ( actions.at( i )->menu() == mMeshMenu )
     {
       menuBar()->removeAction( actions.at( i ) );
       return;
@@ -14945,7 +15034,7 @@ void QgisApp::updateCrsStatusBar()
     if ( !projectCrs.authid().isEmpty() )
       mOnTheFlyProjectionStatusButton->setText( projectCrs.authid() );
     else
-      mOnTheFlyProjectionStatusButton->setText( QObject::tr( "Unknown CRS" ) );
+      mOnTheFlyProjectionStatusButton->setText( tr( "Unknown CRS" ) );
 
     mOnTheFlyProjectionStatusButton->setToolTip(
       tr( "Current CRS: %1" ).arg( projectCrs.userFriendlyIdentifier() ) );
@@ -16584,11 +16673,7 @@ void QgisApp::mapCanvas_keyPressed( QKeyEvent *e )
 
 void QgisApp::customProjection()
 {
-  // Create an instance of the Custom Projection Designer modeless dialog.
-  // Autodelete the dialog when closing since a pointer is not retained.
-  QgsCustomProjectionDialog *myDialog = new QgsCustomProjectionDialog( this );
-  myDialog->setAttribute( Qt::WA_DeleteOnClose );
-  myDialog->show();
+  showOptionsDialog( this, QStringLiteral( "QgsCustomProjectionOptionsWidget" ) );
 }
 
 void QgisApp::newBookmark( bool inProject )
@@ -16701,21 +16786,22 @@ void QgisApp::projectChanged( const QDomDocument &doc )
 }
 
 #ifdef HAVE_3D
-void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomDocument &doc, QDomElement &elem3DMap )
+void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomDocument &doc, QDomElement &elem3DMap )
 {
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
-  elem3DMap.setAttribute( QStringLiteral( "name" ), w->mapCanvas3D()->objectName() );
-  QDomElement elem3DMapSettings = w->mapCanvas3D()->map()->writeXml( doc, readWriteContext );
+  elem3DMap.setAttribute( QStringLiteral( "name" ), widget->canvasName() );
+  QDomElement elem3DMapSettings = widget->mapCanvas3D()->map()->writeXml( doc, readWriteContext );
   elem3DMap.appendChild( elem3DMapSettings );
-  QDomElement elemCamera = w->mapCanvas3D()->cameraController()->writeXml( doc );
+  QDomElement elemCamera = widget->mapCanvas3D()->cameraController()->writeXml( doc );
   elem3DMap.appendChild( elemCamera );
-  QDomElement elemAnimation = w->animationWidget()->animation().writeXml( doc );
+  QDomElement elemAnimation = widget->animationWidget()->animation().writeXml( doc );
   elem3DMap.appendChild( elemAnimation );
-  writeDockWidgetSettings( w, elem3DMap );
+
+  widget->dockableWidgetHelper()->writeXml( elem3DMap );
 }
 
-void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &elem3DMap )
+void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &elem3DMap )
 {
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
@@ -16728,14 +16814,9 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &e
   map->setTransformContext( QgsProject::instance()->transformContext() );
   map->setPathResolver( QgsProject::instance()->pathResolver() );
   map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
-  QMetaObject::Connection conn = connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
   {
     map->setTransformContext( QgsProject::instance()->transformContext() );
-  } );
-
-  connect( w, &Qgs3DMapCanvasDockWidget::closed, [ = ]()
-  {
-    disconnect( conn );
   } );
 
   // these things are not saved in project
@@ -16748,12 +16829,12 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &e
   }
   map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
 
-  w->setMapSettings( map );
+  widget->setMapSettings( map );
 
   QDomElement elemCamera = elem3DMap.firstChildElement( QStringLiteral( "camera" ) );
   if ( !elemCamera.isNull() )
   {
-    w->mapCanvas3D()->cameraController()->readXml( elemCamera );
+    widget->mapCanvas3D()->cameraController()->readXml( elemCamera );
   }
 
   QDomElement elemAnimation = elem3DMap.firstChildElement( QStringLiteral( "animation3d" ) );
@@ -16761,10 +16842,10 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &e
   {
     Qgs3DAnimationSettings animationSettings;
     animationSettings.readXml( elemAnimation );
-    w->animationWidget()->setAnimation( animationSettings );
+    widget->animationWidget()->setAnimation( animationSettings );
   }
 
-  readDockWidgetSettings( w, elem3DMap );
+  widget->dockableWidgetHelper()->readXml( elem3DMap );
 }
 #endif
 
@@ -16808,13 +16889,14 @@ void QgisApp::writeProject( QDomDocument &doc )
   qgisNode.appendChild( mapViewNode );
 
 #ifdef HAVE_3D
-  for ( Qgs3DMapCanvasDockWidget *widget : findChildren< Qgs3DMapCanvasDockWidget * >() )
+  QSet<Qgs3DMapCanvasWidget *> openDocks = mOpen3DMapViews;
+  for ( Qgs3DMapCanvasWidget *widget : openDocks )
   {
-    QString viewName = widget->mapCanvas3D()->objectName();
+    QString viewName = widget->canvasName();
     QDomElement elem3DMap = doc.createElement( QStringLiteral( "view" ) );
     elem3DMap.setAttribute( QStringLiteral( "isOpen" ), 1 );
     write3DMapViewSettings( widget, doc, elem3DMap );
-    QgsProject::instance()->getViewsManager()->register3DViewSettings( viewName, elem3DMap );
+    QgsProject::instance()->viewsManager()->register3DViewSettings( viewName, elem3DMap );
   }
 #endif
   projectChanged( doc );
@@ -16925,16 +17007,15 @@ void QgisApp::readProject( const QDomDocument &doc )
 
 #ifdef HAVE_3D
   // Open 3D Views that were already open
-  for ( QDomElement viewConfig : QgsProject::instance()->getViewsManager()->get3DViews() )
+  for ( QDomElement viewConfig : QgsProject::instance()->viewsManager()->get3DViews() )
   {
     QString viewName = viewConfig.attribute( QStringLiteral( "name" ) );
     bool isOpen = viewConfig.attribute( QStringLiteral( "isOpen" ), QStringLiteral( "1" ) ).toInt() == 1;
     if ( !isOpen )
       continue;
-    Qgs3DMapCanvasDockWidget *mapCanvasDock3D = createNew3DMapCanvasDock( viewName );
-    read3DMapViewSettings( mapCanvasDock3D, viewConfig );
-
-    mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
+    bool isDocked = viewConfig.attribute( QStringLiteral( "isDocked" ), "1" ).toInt() == 1;
+    Qgs3DMapCanvasWidget *mapCanvas3D = createNew3DMapCanvasDock( viewName, isDocked );
+    read3DMapViewSettings( mapCanvas3D, viewConfig );
   }
 #endif
 

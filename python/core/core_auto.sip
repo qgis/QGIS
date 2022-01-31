@@ -194,6 +194,7 @@
 %Include auto_generated/qgsunittypes.sip
 %Include auto_generated/qgsuserprofile.sip
 %Include auto_generated/qgsuserprofilemanager.sip
+%Include auto_generated/qgsvariantutils.sip
 %Include auto_generated/qgsvector.sip
 %Include auto_generated/qgsvector3d.sip
 %Include auto_generated/qgsvectorfilewriter.sip

@@ -2475,8 +2475,40 @@ void QgsProcessingEnumPanelWidget::showDialog()
 
 void QgsProcessingEnumPanelWidget::updateSummaryText()
 {
-  if ( mParam )
-    mLineEdit->setText( tr( "%1 options selected" ).arg( mValue.count() ) );
+  if ( !mParam )
+    return;
+
+  if ( mValue.empty() )
+  {
+    mLineEdit->setText( tr( "%1 options selected" ).arg( 0 ) );
+  }
+  else
+  {
+    QStringList values;
+    values.reserve( mValue.size() );
+    if ( mParam->usesStaticStrings() )
+    {
+      for ( const QVariant &val : std::as_const( mValue ) )
+      {
+        values << val.toString();
+      }
+    }
+    else
+    {
+      const QStringList options = mParam->options();
+      for ( const QVariant &val : std::as_const( mValue ) )
+      {
+        const int i = val.toInt();
+        values << ( options.size() > i ? options.at( i ) : QString() );
+      }
+    }
+
+    const QString concatenated = values.join( tr( "," ) );
+    if ( concatenated.length() < 100 )
+      mLineEdit->setText( concatenated );
+    else
+      mLineEdit->setText( tr( "%1 options selected" ).arg( mValue.count() ) );
+  }
 }
 
 
@@ -2680,12 +2712,15 @@ QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
         if ( expParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
           mComboBox->addItem( tr( "[Not selected]" ), QVariant() );
         const QStringList options = expParam->options();
+        const QVariantList iconList = expParam->metadata().value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "icons" ) ).toList();
         for ( int i = 0; i < options.count(); ++i )
         {
+          const QIcon icon = iconList.value( i ).value< QIcon >();
+
           if ( expParam->usesStaticStrings() )
-            mComboBox->addItem( options.at( i ), options.at( i ) );
+            mComboBox->addItem( icon, options.at( i ), options.at( i ) );
           else
-            mComboBox->addItem( options.at( i ), i );
+            mComboBox->addItem( icon, options.at( i ), i );
         }
 
         mComboBox->setToolTip( parameterDefinition()->toolTip() );
@@ -4058,7 +4093,7 @@ QgsProcessingFieldPanelWidget::QgsProcessingFieldPanelWidget( QWidget *parent, c
 
   if ( mParam )
   {
-    mLineEdit->setText( tr( "%1 options selected" ).arg( 0 ) );
+    mLineEdit->setText( tr( "%1 fields selected" ).arg( 0 ) );
   }
 
   connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingFieldPanelWidget::showDialog );
@@ -4125,8 +4160,28 @@ void QgsProcessingFieldPanelWidget::showDialog()
 
 void QgsProcessingFieldPanelWidget::updateSummaryText()
 {
-  if ( mParam )
-    mLineEdit->setText( tr( "%1 options selected" ).arg( mValue.count() ) );
+  if ( !mParam )
+    return;
+
+  if ( mValue.empty() )
+  {
+    mLineEdit->setText( tr( "%1 fields selected" ).arg( 0 ) );
+  }
+  else
+  {
+    QStringList values;
+    values.reserve( mValue.size() );
+    for ( const QVariant &val : std::as_const( mValue ) )
+    {
+      values << val.toString();
+    }
+
+    const QString concatenated = values.join( tr( "," ) );
+    if ( concatenated.length() < 100 )
+      mLineEdit->setText( concatenated );
+    else
+      mLineEdit->setText( tr( "%1 fields selected" ).arg( mValue.count() ) );
+  }
 }
 
 

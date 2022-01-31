@@ -187,6 +187,11 @@ QgsFeature QgsAbstractRelationEditorWidget::feature() const
   return QgsFeature();
 }
 
+QList<QgsFeature> QgsAbstractRelationEditorWidget::features() const
+{
+  return mFeatureList;
+}
+
 void QgsAbstractRelationEditorWidget::toggleEditing( bool state )
 {
   if ( state )

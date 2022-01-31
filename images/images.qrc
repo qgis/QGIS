@@ -503,10 +503,14 @@
         <file>themes/default/mIconExpressionPreview.svg</file>
         <file>themes/default/mIconExpressionSelect.svg</file>
         <file>themes/default/mIconFavorites.svg</file>
+        <file>themes/default/mIconFieldArrayString.svg</file>
+        <file>themes/default/mIconFieldArrayInteger.svg</file>
+        <file>themes/default/mIconFieldArrayFloat.svg</file>
         <file>themes/default/mIconFieldDate.svg</file>
         <file>themes/default/mIconFieldDateTime.svg</file>
         <file>themes/default/mIconFieldFloat.svg</file>
         <file>themes/default/mIconFieldInteger.svg</file>
+        <file>themes/default/mIconFieldJson.svg</file>
         <file>themes/default/mIconFieldText.svg</file>
         <file>themes/default/mIconFieldTime.svg</file>
         <file>themes/default/mIconFile.svg</file>

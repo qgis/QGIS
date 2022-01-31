@@ -287,11 +287,13 @@ QgsMeshVertex QgsTriangularMesh::triangularToNativeCoordinates( const QgsMeshVer
 QgsRectangle QgsTriangularMesh::nativeExtent()
 {
   QgsRectangle nativeExtent;
-  if ( mCoordinateTransform.isValid() )
+  if ( !mCoordinateTransform.isShortCircuited() )
   {
     try
     {
-      nativeExtent = mCoordinateTransform.transform( extent(), Qgis::TransformDirection::Reverse );
+      QgsCoordinateTransform extentTransform = mCoordinateTransform;
+      extentTransform.setBallparkTransformsAreAppropriate( true );
+      nativeExtent = extentTransform.transformBoundingBox( extent(), Qgis::TransformDirection::Reverse );
     }
     catch ( QgsCsException &cse )
     {

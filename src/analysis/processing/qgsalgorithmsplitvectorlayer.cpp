@@ -119,12 +119,25 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
     if ( feedback->isCanceled() )
       break;
 
-    QString fileName = QStringLiteral( "%1_%2.%3" ).arg( baseName ).arg( ( *it ).toString() ).arg( outputFormat );
+    QString fileName;
+    if ( ( *it ).isNull() )
+    {
+      fileName = QStringLiteral( "%1_NULL.%2" ).arg( baseName ).arg( outputFormat );
+    }
+    else if ( ( *it ).toString().isEmpty() )
+    {
+      fileName = QStringLiteral( "%1_EMPTY.%2" ).arg( baseName ).arg( outputFormat );
+    }
+    else
+    {
+      fileName = QStringLiteral( "%1_%2.%3" ).arg( baseName ).arg( ( *it ).toString() ).arg( outputFormat );
+    }
     feedback->pushInfo( QObject::tr( "Creating layer: %1" ).arg( fileName ) );
 
     sink.reset( QgsProcessingUtils::createFeatureSink( fileName, context, fields, geometryType, crs ) );
     const QString expr = QgsExpression::createFieldEqualityExpression( fieldName, *it );
     QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setFilterExpression( expr ) );
+    count = 0;
     while ( features.nextFeature( feat ) )
     {
       if ( feedback->isCanceled() )

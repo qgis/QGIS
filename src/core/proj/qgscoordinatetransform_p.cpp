@@ -83,6 +83,7 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mAvailableOpCount( other.mAvailableOpCount )
   , mIsValid( other.mIsValid )
   , mShortCircuit( other.mShortCircuit )
+  , mGeographicToWebMercator( other.mGeographicToWebMercator )
   , mSourceCRS( other.mSourceCRS )
   , mDestCRS( other.mDestCRS )
   , mSourceDatumTransform( other.mSourceDatumTransform )
@@ -157,6 +158,10 @@ bool QgsCoordinateTransformPrivate::initialize()
     mShortCircuit = true;
     return true;
   }
+
+  mGeographicToWebMercator =
+    mSourceCRS.isGeographic() &&
+    mDestCRS.authid() == QLatin1String( "EPSG:3857" );
 
   mSourceIsDynamic = mSourceCRS.isDynamic();
   mSourceCoordinateEpoch = mSourceCRS.coordinateEpoch();
@@ -288,7 +293,20 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   if ( !mProjCoordinateOperation.isEmpty() )
   {
     transform.reset( proj_create( context, mProjCoordinateOperation.toUtf8().constData() ) );
-    if ( !transform || !proj_coordoperation_is_instantiable( context, transform.get() ) )
+    // Only use proj_coordoperation_is_instantiable() if PROJ networking is enabled.
+    // The reason is that proj_coordoperation_is_instantiable() in PROJ < 9.0
+    // does not work properly when a coordinate operation refers to a PROJ < 7 grid name (gtx/gsb)
+    // but the user has installed PROJ >= 7 GeoTIFF grids.
+    // Cf https://github.com/OSGeo/PROJ/pull/3025.
+    // When networking is not enabled, proj_create() will check that all grids are
+    // present, so proj_coordoperation_is_instantiable() is not necessary.
+    if ( !transform
+#if PROJ_VERSION_MAJOR >= 7
+         || (
+           proj_context_is_network_enabled( context ) &&
+           !proj_coordoperation_is_instantiable( context, transform.get() ) )
+#endif
+       )
     {
       if ( sMissingGridUsedByContextHandler )
       {

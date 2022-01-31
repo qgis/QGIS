@@ -117,8 +117,9 @@ bool QgsVectorTileLayer::loadDataSource()
     QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mSourceMinZoom ).arg( mSourceMaxZoom ), 2 );
 
     QgsRectangle r = reader.extent();
-    const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
-                                     QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext() );
+    QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                               QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext() );
+    ct.setBallparkTransformsAreAppropriate( true );
     r = ct.transformBoundingBox( r );
     setExtent( r );
   }
