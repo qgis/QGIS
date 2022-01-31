@@ -750,7 +750,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             template_content = f.read()
         doc = QDomDocument()
         doc.setContent(template_content)
-        layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
+        layout.loadFromTemplate(doc, QgsReadWriteContext(), True)
 
         checker = QgsLayoutChecker(
             'composer_legend_rotated_map', layout)
