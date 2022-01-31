@@ -148,6 +148,13 @@ class TestQgsServerWFS(QgsServerTestBase):
         for id, req in tests:
             self.wfs_getfeature_compare(id, req)
 
+    def test_getfeature_exp_filter(self):
+        # multiple filters
+        exp_filter = "EXP_FILTER=\"name\"='one';\"name\"='two'"
+        req = f"SRSNAME=EPSG:4326&TYPENAME=testlayer,testlayer&{exp_filter}"
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', req, 'wfs_getFeature_exp_filter_2')
+
     def test_wfs_getcapabilities_100_url(self):
         """Check that URL in GetCapabilities response is complete"""
 
