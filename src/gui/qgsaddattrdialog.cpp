@@ -19,6 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
+#include "qgsfields.h"
 
 #include <QMessageBox>
 
@@ -37,14 +38,15 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   const QList< QgsVectorDataProvider::NativeType > &typelist = vlayer->dataProvider()->nativeTypes();
   for ( int i = 0; i < typelist.size(); i++ )
   {
-    QgsDebugMsg( QStringLiteral( "name:%1 type:%2 typeName:%3 length:%4-%5 prec:%6-%7" )
-                 .arg( typelist[i].mTypeDesc )
-                 .arg( typelist[i].mType )
-                 .arg( typelist[i].mTypeName )
-                 .arg( typelist[i].mMinLen ).arg( typelist[i].mMaxLen )
-                 .arg( typelist[i].mMinPrec ).arg( typelist[i].mMaxPrec ) );
+    QgsDebugMsgLevel( QStringLiteral( "name:%1 type:%2 typeName:%3 length:%4-%5 prec:%6-%7" )
+                      .arg( typelist[i].mTypeDesc )
+                      .arg( typelist[i].mType )
+                      .arg( typelist[i].mTypeName )
+                      .arg( typelist[i].mMinLen ).arg( typelist[i].mMaxLen )
+                      .arg( typelist[i].mMinPrec ).arg( typelist[i].mMaxPrec ), 2 );
 
-    whileBlocking( mTypeBox )->addItem( typelist[i].mTypeDesc );
+    whileBlocking( mTypeBox )->addItem( QgsFields::iconForFieldType( typelist[i].mType, typelist[i].mSubType ),
+                                        typelist[i].mTypeDesc );
     mTypeBox->setItemData( i, static_cast<int>( typelist[i].mType ), Qt::UserRole );
     mTypeBox->setItemData( i, typelist[i].mTypeName, Qt::UserRole + 1 );
     mTypeBox->setItemData( i, typelist[i].mMinLen, Qt::UserRole + 2 );
@@ -127,14 +129,14 @@ void QgsAddAttrDialog::accept()
 QgsField QgsAddAttrDialog::field() const
 {
 
-  QgsDebugMsg( QStringLiteral( "idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7" )
-               .arg( mTypeBox->currentIndex() )
-               .arg( mNameEdit->text() )
-               .arg( mTypeBox->currentData( Qt::UserRole ).toInt() )
-               .arg( mTypeBox->currentData( Qt::UserRole + 1 ).toString() )
-               .arg( mLength->value() )
-               .arg( mPrec->value() )
-               .arg( mCommentEdit->text() ) );
+  QgsDebugMsgLevel( QStringLiteral( "idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7" )
+                    .arg( mTypeBox->currentIndex() )
+                    .arg( mNameEdit->text() )
+                    .arg( mTypeBox->currentData( Qt::UserRole ).toInt() )
+                    .arg( mTypeBox->currentData( Qt::UserRole + 1 ).toString() )
+                    .arg( mLength->value() )
+                    .arg( mPrec->value() )
+                    .arg( mCommentEdit->text() ), 2 );
 
   return QgsField(
            mNameEdit->text(),
