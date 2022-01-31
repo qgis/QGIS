@@ -27,7 +27,7 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
+      QGIS_WORKSPACE: ${{ github.workspace }} # used in docker compose
       RUN_FLAKY_TESTS: ${{ contains( github.event.pull_request.labels.*.name, 'run flaky tests') }}
 
     runs-on: ubuntu-latest
@@ -280,7 +280,7 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
+      QGIS_WORKSPACE: ${{ github.workspace }} # used in docker compose
 
     runs-on: ubuntu-latest
 
