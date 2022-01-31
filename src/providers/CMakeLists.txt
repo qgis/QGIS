@@ -40,7 +40,7 @@ if (NOT FORCE_STATIC_LIBS)
     add_subdirectory(pdal)
   endif()
 
-  if (WITH_GRASS OR WITH_GRASS7)
+  if (WITH_GRASS OR WITH_GRASS7 OR WITH_GRASS8)
     add_subdirectory(grass)
   endif()
 endif()
