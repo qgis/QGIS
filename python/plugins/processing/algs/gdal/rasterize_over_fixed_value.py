@@ -142,6 +142,5 @@ class rasterize_over_fixed_value(GdalAlgorithm):
                 continue
 
             l.dataProvider().reloadData()
-            context.temporaryLayerStore().addMapLayer(l)
 
         return {}
