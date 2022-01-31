@@ -195,7 +195,7 @@ QIcon QgsFieldItem::icon()
         return QgsIconUtils::iconDefaultLayer();
     }
   }
-  const QIcon icon { QgsFields::iconForFieldType( mField.type() ) };
+  const QIcon icon { QgsFields::iconForFieldType( mField.type(), mField.subType() ) };
   // Try subtype if icon is null
   if ( icon.isNull() )
   {
