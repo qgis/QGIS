@@ -515,7 +515,7 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
           <property name="leftMargin">
            <number>0</number>
@@ -526,7 +526,7 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tell us something about when you got the crash.&lt;/p&gt;&lt;p&gt;Include as much information as you can as well as steps to reproduce the issue if possible.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tell us something about what you were doing when QGIS crashed.&lt;/p&gt;&lt;p&gt;Please include as much information as you can, as well as any steps we can follow to reproduce the issue, if possible.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -554,7 +554,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QLabel" name="label_3">
@@ -565,7 +565,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Report Details</string>
+             <string>Report details</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
