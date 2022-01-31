@@ -581,7 +581,7 @@ class TestQgsServerParameter(unittest.TestCase):
 
         # two empty expressions
         param = QgsServerParameterDefinition()
-        param.mValue = f";"
+        param.mValue = ";"
 
         self.assertEqual(len(param.toOgcFilterList()), 0)
         self.assertEqual(len(param.toExpressionList()), 2)
