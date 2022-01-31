@@ -29,17 +29,18 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   setupUi( this );
   setWindowTitle( tr( "Uh-oh!" ) );
 
-  mCrashHeaderMessage->setText( tr( "QGIS unexpectedly ended" ) );
+  mCrashHeaderMessage->setText( tr( "QGIS ended unexpectedly" ) );
   connect( mReloadQGISButton, &QPushButton::clicked, this, &QgsCrashDialog::reloadQGIS );
   connect( mCopyReportButton, &QPushButton::clicked, this, &QgsCrashDialog::createBugReport );
   mCopyReportButton->setEnabled( false );
 
-  mCrashMessage->setText( tr( "Sorry :( It looks something unexpected happened that we didn't handle and QGIS ended unexpectedly."
+  mCrashMessage->setText( tr( "Oh dear! Something unexpected happened and QGIS ended without being able to handle the error gracefully."
                               "<br><br>" )
-                          +  tr( "Keen to help us fix bugs? "
-                                 "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Follow the steps to help our developers</a>."
+                          +  tr( "Are you keen to help us fix bugs? QGIS relies on donations to pay developers to do funded bug fixing to improve the stability of the software. "
+                                 "We also have a team of enthusiastic volunteers who are all working hard to improve the quality of QGIS. To do that, we need your help. "
+                                 "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Find out how to help our developers</a>."
                                  "<br><br>"
-                                 "You can also send us a helpful bug report using the Copy Report button <br>and opening a ticket at "
+                                 "Send us a helpful bug report by using the 'Copy Report' button below, <br>then open a ticket on the "
                                  "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>." ) );
   mCrashMessage->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mCrashMessage->setOpenExternalLinks( true );
@@ -67,8 +68,8 @@ void QgsCrashDialog::setPythonFault( const QgsCrashReport::PythonFault &fault )
       break;
 
     case QgsCrashReport::LikelyPythonFaultCause::ProcessingScript:
-      mCrashHeaderMessage->setText( tr( "User script crashed QGIS" ).arg( fault.title ) );
-      mCrashMessage->setText( tr( "The user script <b>%1</b> caused QGIS to crash." ).arg( fault.filePath )
+      mCrashHeaderMessage->setText( tr( "A user script crashed QGIS" ).arg( fault.title ) );
+      mCrashMessage->setText( tr( "This user script <b>%1</b> caused QGIS to crash." ).arg( fault.filePath )
                               + "<br><br>"
                               +  tr( "This is a third party custom script, and this issue should be reported to the author of that script." ) );
       splitter->setSizes( { 0, splitter->width() } );
@@ -79,7 +80,7 @@ void QgsCrashDialog::setPythonFault( const QgsCrashReport::PythonFault &fault )
       mCrashHeaderMessage->setText( tr( "Plugin %1 crashed QGIS" ).arg( fault.title ) );
       mCrashMessage->setText( tr( "The plugin <b>%1</b> caused QGIS to crash." ).arg( fault.title )
                               + "<br><br>"
-                              +  tr( "Please report this issue to the author of that plugin." ) );
+                              +  tr( "Please report this issue to the author of this plugin." ) );
       splitter->setSizes( { 0, splitter->width() } );
       mCopyReportButton->setEnabled( true );
       break;
