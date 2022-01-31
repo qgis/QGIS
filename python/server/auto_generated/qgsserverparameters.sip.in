@@ -101,10 +101,7 @@ Converts the parameter into a list of geometries.
 
     QStringList toOgcFilterList() const;
 %Docstring
-Converts the parameter into a list of OGC filters or QGIS expressions.
-
-:param ogc: ``True`` to return OGC filters
-:param expression: ``True`` to return expressions
+Converts the parameter into a list of OGC filters.
 
 :return: A list of strings
 
@@ -112,6 +109,13 @@ Converts the parameter into a list of OGC filters or QGIS expressions.
 %End
 
     QStringList toExpressionList() const;
+%Docstring
+Converts the parameter into a list of QGIS expressions.
+
+:return: A list of strings
+
+.. versionadded:: 3.24
+%End
 
     QgsRectangle toRectangle( bool &ok ) const;
 %Docstring
