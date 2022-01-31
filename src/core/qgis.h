@@ -1579,15 +1579,6 @@ CORE_EXPORT QString qgsVsiPrefix( const QString &path );
 void CORE_EXPORT *qgsMalloc( size_t size ) SIP_SKIP;
 
 /**
- * Allocates  memory for an array of nmemb elements of size bytes each and returns
- * a pointer to the allocated memory. Works like C calloc() but prints debug message
- * by QgsLogger if allocation fails.
- * \param nmemb number of elements
- * \param size size of element in bytes
- */
-void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size ) SIP_SKIP;
-
-/**
  * Frees the memory space  pointed  to  by  ptr. Works like C free().
  * \param ptr pointer to memory space
  */
