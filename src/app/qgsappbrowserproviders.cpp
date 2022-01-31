@@ -1125,7 +1125,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     const bool inProject = manager != QgsApplication::bookmarkManager();
     connect( addBookmarkToGroup, &QAction::triggered, this, [ = ]
     {
-      QgisApp::instance()->newBookmark( inProject );
+      QgisApp::instance()->newBookmark( inProject, groupItem->group() );
     } );
     menu->addAction( addBookmarkToGroup );
     menu->addSeparator();
