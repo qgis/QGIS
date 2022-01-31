@@ -906,7 +906,7 @@ QgsMeshLayerUndoCommandAddFaces::QgsMeshLayerUndoCommandAddFaces( QgsMeshEditor 
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mFaces( faces )
 {
-  setText( QObject::tr( "Add %n faces", nullptr, faces.meshFaces().count() ) );
+  setText( QObject::tr( "Add %n face(s)", nullptr, faces.meshFaces().count() ) );
 }
 
 void QgsMeshLayerUndoCommandAddFaces::redo()
@@ -930,7 +930,7 @@ QgsMeshLayerUndoCommandRemoveFaces::QgsMeshLayerUndoCommandRemoveFaces( QgsMeshE
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mfacesToRemoveIndexes( facesToRemoveIndexes )
 {
-  setText( QObject::tr( "Remove %n faces", nullptr, facesToRemoveIndexes.count() ) );
+  setText( QObject::tr( "Remove %n face(s)", nullptr, facesToRemoveIndexes.count() ) );
 }
 
 void QgsMeshLayerUndoCommandRemoveFaces::redo()
@@ -1167,7 +1167,7 @@ QgsMeshLayerUndoCommandSplitFaces::QgsMeshLayerUndoCommandSplitFaces( QgsMeshEdi
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mFaceIndexes( faceIndexes )
 {
-  setText( QObject::tr( "Split %n faces", nullptr, faceIndexes.count() ) );
+  setText( QObject::tr( "Split %n face(s)", nullptr, faceIndexes.count() ) );
 }
 
 void QgsMeshLayerUndoCommandSplitFaces::redo()

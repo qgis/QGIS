@@ -161,7 +161,7 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
 
       j -= n - 1;
 
-      const QString msg = QObject::tr( "line %1 contains %n duplicate nodes starting at vertex %2", "number of duplicate nodes", n + 1 ).arg( i + 1 ).arg( duplicateVertex.vertex - n + 1 );
+      const QString msg = QObject::tr( "line %1 contains %n duplicate node(s) starting at vertex %2", "number of duplicate nodes", n + 1 ).arg( i + 1 ).arg( duplicateVertex.vertex - n + 1 );
       QgsDebugMsgLevel( msg, 2 );
       emit errorFound( QgsGeometry::Error( msg, duplicationLocation ) );
       mErrorCount++;

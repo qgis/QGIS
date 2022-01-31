@@ -1005,10 +1005,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 
 #if 0
     const QgsWmsStatistics::Stat &stat = QgsWmsStatistics::statForUri( dataSourceUri() );
-    emit statusChanged( tr( "%n tile requests in background", "tile request count", requests.count() )
-                        + tr( ", %n cache hits", "tile cache hits", stat.cacheHits )
+    emit statusChanged( tr( "%n tile request(s) in background", "tile request count", requests.count() )
+                        + tr( ", %n cache hit(s)", "tile cache hits", stat.cacheHits )
                         + tr( ", %n cache misses.", "tile cache missed", stat.cacheMisses )
-                        + tr( ", %n errors.", "errors", stat.errors )
+                        + tr( ", %n error(s).", "errors", stat.errors )
                       );
 #endif
   }
@@ -4576,10 +4576,10 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 
 #if 0
   const QgsWmsStatistics::Stat &stat = QgsWmsStatistics::statForUri( mProviderUri );
-  emit statusChanged( tr( "%n tile requests in background", "tile request count", mReplies.count() )
-                      + tr( ", %n cache hits", "tile cache hits", stat.cacheHits )
+  emit statusChanged( tr( "%n tile request(s) in background", "tile request count", mReplies.count() )
+                      + tr( ", %n cache hit(s)", "tile cache hits", stat.cacheHits )
                       + tr( ", %n cache misses.", "tile cache missed", stat.cacheMisses )
-                      + tr( ", %n errors.", "errors", stat.errors )
+                      + tr( ", %n error(s).", "errors", stat.errors )
                     );
 #endif
 }

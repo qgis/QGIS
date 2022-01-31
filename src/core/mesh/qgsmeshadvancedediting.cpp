@@ -611,7 +611,7 @@ bool QgsMeshEditRefineFaces::createNewBorderFaces( QgsMeshEditor *meshEditor,
 
 QString QgsMeshEditRefineFaces::text() const
 {
-  return QObject::tr( "Refine %n faces", nullptr, mInputFaces.count() );
+  return QObject::tr( "Refine %n face(s)", nullptr, mInputFaces.count() );
 }
 
 bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
