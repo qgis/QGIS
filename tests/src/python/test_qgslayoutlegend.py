@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 from qgis.PyQt.QtCore import QRectF, QDir
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsPrintLayout,
                        QgsLayoutItemLegend,
@@ -39,7 +40,8 @@ from qgis.core import (QgsPrintLayout,
                        QgsRendererCategory,
                        QgsFillSymbol,
                        QgsUnitTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsReadWriteContext)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -736,7 +738,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         """Test filter by map handling of rotated map."""
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        layouttemplate = os.path.join( os.path.join( TEST_DATA_DIR, "layouts") , 'map_filter_test_layout.qpt')
+        layouttemplate = os.path.join(os.path.join(TEST_DATA_DIR, "layouts"), 'map_filter_test_layout.qpt')
 
         QgsProject.instance().clear()
         QgsProject.instance().addMapLayers([point_layer])
