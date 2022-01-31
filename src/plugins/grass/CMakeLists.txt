@@ -251,7 +251,7 @@ if(NOT WIN32)
   install(DIRECTORY qtermwidget/color-schemes/ DESTINATION "${COLORSCHEMES_DIR}" FILES_MATCHING PATTERN "*.*schem*")
 endif()
 
-foreach(GRASS_BUILD_VERSION 6 7) # GRASS 6 and GRASS 7
+foreach(GRASS_BUILD_VERSION 6 7 8)
   if(GRASS_FOUND${GRASS_BUILD_VERSION})
     add_subdirectory(${GRASS_BUILD_VERSION})
   endif()
