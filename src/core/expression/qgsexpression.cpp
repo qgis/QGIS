@@ -1376,9 +1376,19 @@ int QgsExpression::expressionToLayerFieldIndex( const QString &expression, const
 
 QString QgsExpression::quoteFieldExpression( const QString &expression, const QgsVectorLayer *layer )
 {
-  if ( !expression.contains( '\"' ) && QgsExpression::expressionToLayerFieldIndex( expression, layer ) != -1 )
-    return QgsExpression::quotedColumnRef( expression );
-  return expression;
+  if ( !layer )
+    return expression;
+
+  const int fieldIndex = QgsExpression::expressionToLayerFieldIndex( expression, layer );
+  if ( !expression.contains( '\"' ) && fieldIndex != -1 )
+  {
+    // retrieve actual field name from layer, so that we correctly remove any unwanted leading/trailing whitespace
+    return QgsExpression::quotedColumnRef( layer->fields().at( fieldIndex ).name() );
+  }
+  else
+  {
+    return expression;
+  }
 }
 
 QList<const QgsExpressionNode *> QgsExpression::nodes() const
