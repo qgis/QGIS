@@ -473,9 +473,15 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     }
   }
 
+  QgsPointCloudBlock *block = new QgsPointCloudBlock(
+    count,
+    requestedAttributes,
+    data, scale, offset
+  );
+
   int skippedPoints = 0;
   QgsPointcloudExpression expr( expression );
-  const QSet< QString > referencedAttributes = expr.referencedAttributes();
+  bool prep = expr.prepare( block );
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
@@ -483,98 +489,6 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     const laszip::formats::las::gpstime gps = laszip::formats::packers<laszip::formats::las::gpstime>::unpack( buf + sizeof( laszip::formats::las::point10 ) );
     const laszip::formats::las::rgb rgb = laszip::formats::packers<laszip::formats::las::rgb>::unpack( buf + sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) );
 
-    if ( expr.isValid() )
-    {
-      QVariantMap map;
-      for ( const QString &attribute : referencedAttributes )
-      {
-        if ( attribute.compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.x * scale.x() + offset.x();
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.y * scale.y() + offset.y();
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.z * scale.z() + offset.z();
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.classification;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.intensity;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "ReturnNumber" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.return_number;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "NumberOfReturns" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.number_of_returns_of_given_pulse;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "ScanDirectionFlag" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.scan_direction_flag;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "EdgeOfFlightLine" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.edge_of_flight_line;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "ScanAngleRank" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.scan_angle_rank;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "UserData" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.user_data;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "PointSourceId" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = p.point_source_ID;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = *reinterpret_cast<const double *>( reinterpret_cast<const void *>( &gps.value ) );
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "Red" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = rgb.r;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "Green" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = rgb.g;
-          continue;
-        }
-        else if ( attribute.compare( QLatin1String( "Blue" ), Qt::CaseInsensitive ) == 0 )
-        {
-          map[ attribute ] = rgb.b;
-          continue;
-        }
-      }
-      if ( !expr.evaluate( map ).toBool() )
-      {
-        ++skippedPoints;
-        continue;
-      }
-    }
 
     for ( const RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
     {
@@ -675,17 +589,23 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
 
       outputOffset += requestedAttribute.size;
     }
+    if ( expr.isValid() )
+    {
+      // we're allways evaluating the last written point in the buffer
+      if ( !expr.evaluate( i - skippedPoints ).toBool() )
+      {
+        // if the point is filtered out, rewind the offset so the next point is written over it
+        outputOffset -= requestedPointRecordSize;
+        ++skippedPoints;
+      }
+    }
   }
 
 #ifdef QGISDEBUG
   const float t = common::since( start );
   QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t ), 2 );
 #endif
-  QgsPointCloudBlock *block = new QgsPointCloudBlock(
-    count - skippedPoints,
-    requestedAttributes,
-    data, scale, offset
-  );
+  block->setPointCount( count - skippedPoints );
   return block;
 }
 

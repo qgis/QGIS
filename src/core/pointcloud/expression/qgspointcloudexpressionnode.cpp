@@ -17,7 +17,7 @@
 #include "qgspointcloudexpression.h"
 
 
-QVariant QgsPointcloudExpressionNode::eval( QgsPointcloudExpression *parent, QVariantMap &p )
+QVariant QgsPointcloudExpressionNode::eval( QgsPointcloudExpression *parent, int p )
 {
   if ( mHasCachedValue )
   {
@@ -34,17 +34,17 @@ QVariant QgsPointcloudExpressionNode::eval( QgsPointcloudExpression *parent, QVa
   }
 }
 
-bool QgsPointcloudExpressionNode::prepare( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes )
+bool QgsPointcloudExpressionNode::prepare( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block )
 {
   mHasCachedValue = false;
   mCompiledSimplifiedNode.reset();
-  if ( isStatic( parent, attributes ) )
+  if ( isStatic( parent, block ) )
   {
     // some calls to isStatic already evaluate the node to a cached value, so if that's
     // happened then don't re-evaluate again
     if ( !mHasCachedValue )
     {
-      QVariantMap map;
+      int map;
       mCachedStaticValue = evalNode( parent, map );
       if ( !parent->hasEvalError() )
         mHasCachedValue = true;
@@ -53,7 +53,7 @@ bool QgsPointcloudExpressionNode::prepare( QgsPointcloudExpression *parent, cons
   }
   else
   {
-    return prepareNode( parent, attributes );
+    return prepareNode( parent, block );
   }
 }
 

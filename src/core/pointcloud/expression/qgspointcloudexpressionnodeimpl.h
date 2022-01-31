@@ -19,6 +19,7 @@
 
 #include "qgspointcloudexpressionnode.h"
 #include "qgsinterval.h"
+#include "qgspointcloudblock.h"
 
 /**
  * \ingroup core
@@ -66,15 +67,15 @@ class CORE_EXPORT QgsPointcloudExpressionNodeUnaryOperator : public QgsPointclou
     QgsPointcloudExpressionNode *operand() const { return mOperand; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) override;
+    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
+    QVariant evalNode( QgsPointcloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
     QList<const QgsPointcloudExpressionNode *> nodes() const override; SIP_SKIP
     QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
 
-    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const override;
+    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
     /**
      * Returns a the name of this operator without the operands.
@@ -161,15 +162,15 @@ class CORE_EXPORT QgsPointcloudExpressionNodeBinaryOperator : public QgsPointclo
     QgsPointcloudExpressionNode *opRight() const { return mOpRight; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) override;
+    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
+    QVariant evalNode( QgsPointcloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
     QList<const QgsPointcloudExpressionNode *> nodes( ) const override; SIP_SKIP
 
     QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
-    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const override;
+    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
     /**
      * Returns the precedence index for the operator. Higher values have higher precedence.
@@ -233,14 +234,14 @@ class CORE_EXPORT QgsPointcloudExpressionNodeInOperator : public QgsPointcloudEx
     QgsPointcloudExpressionNode::NodeList *list() const { return mList; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) override;
+    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
+    QVariant evalNode( QgsPointcloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
     QList<const QgsPointcloudExpressionNode *> nodes() const override; SIP_SKIP
     QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
-    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const override;
+    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
   private:
     QgsPointcloudExpressionNode *mNode = nullptr;
@@ -275,15 +276,15 @@ class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpre
     inline QVariant value() const { return mValue; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) override;
+    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
+    QVariant evalNode( QgsPointcloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
 
     QList<const QgsPointcloudExpressionNode *> nodes() const override; SIP_SKIP
     QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
-    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const override;
+    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
     /**
      * Returns a string representation of the node's literal value.
@@ -325,19 +326,20 @@ class CORE_EXPORT QgsPointcloudExpressionNodeAttributeRef : public QgsPointcloud
     QString name() const { return mName; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) override;
+    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
+    QVariant evalNode( QgsPointcloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
     QList<const QgsPointcloudExpressionNode *> nodes( ) const override; SIP_SKIP
 
     QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
-    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const override;
+    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
   private:
     QString mName;
     int mIndex;
+    const QgsPointCloudBlock *mBlock = nullptr;
 };
 
 

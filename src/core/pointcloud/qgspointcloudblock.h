@@ -59,6 +59,9 @@ class CORE_EXPORT QgsPointCloudBlock
 
     //! Returns the custom offset of the block.
     QgsVector3D offset() const;
+
+    //! Changes the number of points in the block.
+    void setPointCount( int size );
   private:
     int mPointCount;
     QgsPointCloudAttributeCollection mAttributes;

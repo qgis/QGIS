@@ -29,10 +29,10 @@
 // from parser
 extern QgsPointcloudExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsPointcloudExpression::ParserError> &parserErrors );
 
-bool QgsPointcloudExpression::checkExpression( const QString &text, const QgsPointCloudAttributeCollection &attributes, QString &errorMessage )
+bool QgsPointcloudExpression::checkExpression( const QString &text, const QgsPointCloudBlock *block, QString &errorMessage )
 {
   QgsPointcloudExpression exp( text );
-  exp.prepare( attributes );
+  exp.prepare( block );
   errorMessage = exp.parserErrorString();
   return !exp.hasParserError();
 }
@@ -223,7 +223,7 @@ void QgsPointcloudExpression::detach()
   }
 }
 
-bool QgsPointcloudExpression::prepare( const QgsPointCloudAttributeCollection &attributes )
+bool QgsPointcloudExpression::prepare( const QgsPointCloudBlock *block )
 {
   detach();
   d->mEvalErrorString = QString();
@@ -235,10 +235,10 @@ bool QgsPointcloudExpression::prepare( const QgsPointCloudAttributeCollection &a
   }
 
   d->mIsPrepared = true;
-  return d->mRootNode->prepare( this, attributes );
+  return d->mRootNode->prepare( this, block );
 }
 
-QVariant QgsPointcloudExpression::evaluate( QVariantMap &p )
+QVariant QgsPointcloudExpression::evaluate( int p )
 {
   d->mEvalErrorString = QString();
   if ( !d->mRootNode )

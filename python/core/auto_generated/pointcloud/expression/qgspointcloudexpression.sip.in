@@ -160,7 +160,7 @@ Returns the root node of the expression.
 The root node is ``None`` if parsing has failed.
 %End
 
-    bool prepare( const QgsPointCloudAttributeCollection &attributes );
+    bool prepare( const QgsPointCloudBlock *block );
 %Docstring
 Gets the expression ready for evaluation - find out column indexes.
 
@@ -212,7 +212,7 @@ Returns a list of field name indexes obtained from the provided fields.
 %End
 
 
-    QVariant evaluate( QVariantMap &p );
+    QVariant evaluate( int p );
 %Docstring
 Evaluate the feature and return the result.
 
@@ -236,7 +236,7 @@ Returns evaluation error
 Sets evaluation error (used internally by evaluation functions)
 %End
 
-    static bool checkExpression( const QString &text, const QgsPointCloudAttributeCollection &attributes, QString &errorMessage /Out/ );
+    static bool checkExpression( const QString &text, const QgsPointCloudBlock *block, QString &errorMessage /Out/ );
 %Docstring
 Tests whether a string is a valid expression.
 

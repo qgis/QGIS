@@ -23,6 +23,7 @@
 
 #include "qgis.h"
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudblock.h"
 
 class QgsPointcloudExpression;
 
@@ -192,7 +193,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 2.12
      */
-    QVariant eval( QgsPointcloudExpression *parent, QVariantMap &p );
+    QVariant eval( QgsPointcloudExpression *parent, int p );
 
     /**
      * Generate a clone of this node.
@@ -238,7 +239,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 3.0
      */
-    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const = 0;
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const = 0;
 
     /**
      * Prepare this node for evaluation.
@@ -248,7 +249,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 2.12
      */
-    bool prepare( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+    bool prepare( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
     /**
      * First line in the parser this node was found.
@@ -367,14 +368,14 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * Errors are reported to the parent
      * \since QGIS 3.0
      */
-    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) = 0;
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) = 0;
 
     /**
      * Abstract virtual eval method
      * Errors are reported to the parent
      * \since QGIS 3.0
      */
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p ) = 0;
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p ) = 0;
 
 };
 

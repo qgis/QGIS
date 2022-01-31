@@ -50,9 +50,9 @@ Returns the node the operator will operate upon.
 
     virtual QgsPointcloudExpressionNode::NodeType nodeType() const;
 
-    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p );
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p );
 
     virtual QString dump() const;
 
@@ -60,7 +60,7 @@ Returns the node the operator will operate upon.
     virtual QSet<QString> referencedAttributes() const;
 
 
-    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const;
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const;
 
 
     QString text() const;
@@ -139,9 +139,9 @@ Returns the node to the right of the operator.
 
     virtual QgsPointcloudExpressionNode::NodeType nodeType() const;
 
-    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p );
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p );
 
     virtual QString dump() const;
 
@@ -150,7 +150,7 @@ Returns the node to the right of the operator.
 
     virtual QgsPointcloudExpressionNode *clone() const /Factory/;
 
-    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const;
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const;
 
 
     int precedence() const;
@@ -205,16 +205,16 @@ Returns the list of nodes to search for matching values within.
 
     virtual QgsPointcloudExpressionNode::NodeType nodeType() const;
 
-    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p );
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p );
 
     virtual QString dump() const;
 
 
     virtual QSet<QString> referencedAttributes() const;
 
-    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const;
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const;
 
 
 };
@@ -248,9 +248,9 @@ The value of the literal.
 
     virtual QgsPointcloudExpressionNode::NodeType nodeType() const;
 
-    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p );
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p );
 
     virtual QString dump() const;
 
@@ -258,7 +258,7 @@ The value of the literal.
     virtual QSet<QString> referencedAttributes() const;
 
 
-    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const;
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const;
 
 
     QString valueAsString() const;
@@ -300,9 +300,9 @@ The name of the column.
 
     virtual QgsPointcloudExpressionNode::NodeType nodeType() const;
 
-    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, QVariantMap &p );
+    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p );
 
     virtual QString dump() const;
 
@@ -311,7 +311,7 @@ The name of the column.
 
     virtual QgsPointcloudExpressionNode *clone() const /Factory/;
 
-    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const;
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const;
 
 
 };

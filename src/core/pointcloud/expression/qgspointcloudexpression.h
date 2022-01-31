@@ -228,7 +228,7 @@ class CORE_EXPORT QgsPointcloudExpression
      * \param context context for preparing expression
      * \since QGIS 2.12
      */
-    bool prepare( const QgsPointCloudAttributeCollection &attributes );
+    bool prepare( const QgsPointCloudBlock *block );
 
     /**
      * Gets list of columns referenced by the expression.
@@ -302,7 +302,7 @@ class CORE_EXPORT QgsPointcloudExpression
      * \note this method does not expect that prepare() has been called on this instance
      * \since QGIS 2.12
      */
-    QVariant evaluate( QVariantMap &p );
+    QVariant evaluate( int p );
 
     //! Returns TRUE if an error occurred when evaluating last input
     bool hasEvalError() const;
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsPointcloudExpression
      * \returns TRUE if string is a valid expression
      * \since QGIS 2.12
      */
-    static bool checkExpression( const QString &text, const QgsPointCloudAttributeCollection &attributes, QString &errorMessage SIP_OUT );
+    static bool checkExpression( const QString &text, const QgsPointCloudBlock *block, QString &errorMessage SIP_OUT );
 
     /**
      * Set the expression string, will reset the whole internal structure.

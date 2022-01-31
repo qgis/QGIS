@@ -127,10 +127,10 @@ bool QgsPointCloudLayerRenderer::render()
 
 
 
-  QString expr = "Z > 250 and Classification in ('1','2','6')";
+  QString expr = "X != 0 and Y != 0 and Z > 250 and Classification in ('1','2','6')";
   QString err;
   QgsPointcloudExpression filterExpression = QgsPointcloudExpression( expr );
-  bool prep = filterExpression.prepare( mLayerAttributes );
+//  bool prep = filterExpression.prepare( mLayerAttributes );
   QSet<QString> filterAttributes = filterExpression.referencedAttributes();
   requiredAttributes.unite( filterAttributes );
 

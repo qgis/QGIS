@@ -93,7 +93,7 @@ QString QgsPointcloudExpressionNode::NodeList::cleanNamedNodeName( const QString
 
 //
 
-QVariant QgsPointcloudExpressionNodeUnaryOperator::evalNode( QgsPointcloudExpression *parent, QVariantMap &p )
+QVariant QgsPointcloudExpressionNodeUnaryOperator::evalNode( QgsPointcloudExpression *parent, int p )
 {
   QVariant val = mOperand->eval( parent, p );
   ENSURE_NO_EVAL_ERROR
@@ -123,9 +123,9 @@ QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeUnaryOperator::
   return ntUnaryOperator;
 }
 
-bool QgsPointcloudExpressionNodeUnaryOperator::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes )
+bool QgsPointcloudExpressionNodeUnaryOperator::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block )
 {
-  return mOperand->prepare( parent, attributes );
+  return mOperand->prepare( parent, block );
 }
 
 QString QgsPointcloudExpressionNodeUnaryOperator::dump() const
@@ -159,9 +159,9 @@ QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeUnaryOperator::clone() c
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeUnaryOperator::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const
+bool QgsPointcloudExpressionNodeUnaryOperator::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const
 {
-  return mOperand->isStatic( parent, attributes );
+  return mOperand->isStatic( parent, block );
 }
 
 QString QgsPointcloudExpressionNodeUnaryOperator::text() const
@@ -171,7 +171,7 @@ QString QgsPointcloudExpressionNodeUnaryOperator::text() const
 
 //
 
-QVariant QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpression *parent, QVariantMap &p )
+QVariant QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpression *parent, int p )
 {
   QVariant vL = mOpLeft->eval( parent, p );
   ENSURE_NO_EVAL_ERROR
@@ -374,10 +374,10 @@ QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeBinaryOperator:
   return ntBinaryOperator;
 }
 
-bool QgsPointcloudExpressionNodeBinaryOperator::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes )
+bool QgsPointcloudExpressionNodeBinaryOperator::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block )
 {
-  bool resL = mOpLeft->prepare( parent, attributes );
-  bool resR = mOpRight->prepare( parent, attributes );
+  bool resL = mOpLeft->prepare( parent, block );
+  bool resR = mOpRight->prepare( parent, block );
   return resL && resR;
 }
 
@@ -493,10 +493,10 @@ QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeBinaryOperator::clone() 
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const
+bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const
 {
-  const bool leftStatic = mOpLeft->isStatic( parent, attributes );
-  const bool rightStatic = mOpRight->isStatic( parent, attributes );
+  const bool leftStatic = mOpLeft->isStatic( parent, block );
+  const bool rightStatic = mOpRight->isStatic( parent, block );
 
   if ( leftStatic && rightStatic )
     return true;
@@ -510,7 +510,7 @@ bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpressio
       // of the value of the other node!
       if ( leftStatic )
       {
-        mOpLeft->prepare( parent, attributes );
+        mOpLeft->prepare( parent, block );
         if ( mOpLeft->hasCachedStaticValue() )
         {
           QgsPointcloudExpressionUtils::TVL tvl = QgsPointcloudExpressionUtils::getTVLValue( mOpLeft->cachedStaticValue(), parent );
@@ -524,7 +524,7 @@ bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpressio
       }
       else if ( rightStatic )
       {
-        mOpRight->prepare( parent, attributes );
+        mOpRight->prepare( parent, block );
         if ( mOpRight->hasCachedStaticValue() )
         {
           QgsPointcloudExpressionUtils::TVL tvl = QgsPointcloudExpressionUtils::getTVLValue( mOpRight->cachedStaticValue(), parent );
@@ -546,7 +546,7 @@ bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpressio
 
       if ( leftStatic )
       {
-        mOpLeft->prepare( parent, attributes );
+        mOpLeft->prepare( parent, block );
         if ( mOpLeft->hasCachedStaticValue() )
         {
           QgsPointcloudExpressionUtils::TVL tvl = QgsPointcloudExpressionUtils::getTVLValue( mOpLeft->cachedStaticValue(), parent );
@@ -560,7 +560,7 @@ bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpressio
       }
       else if ( rightStatic )
       {
-        mOpRight->prepare( parent, attributes );
+        mOpRight->prepare( parent, block );
         if ( mOpRight->hasCachedStaticValue() )
         {
           QgsPointcloudExpressionUtils::TVL tvl = QgsPointcloudExpressionUtils::getTVLValue( mOpRight->cachedStaticValue(), parent );
@@ -602,7 +602,7 @@ QString QgsPointcloudExpressionNodeBinaryOperator::text() const
 
 //
 
-QVariant QgsPointcloudExpressionNodeInOperator::evalNode( QgsPointcloudExpression *parent, QVariantMap &p )
+QVariant QgsPointcloudExpressionNodeInOperator::evalNode( QgsPointcloudExpression *parent, int p )
 {
   if ( mList->count() == 0 )
     return mNotIn ? TVL_True : TVL_False;
@@ -667,13 +667,13 @@ QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeInOperator::nod
   return ntInOperator;
 }
 
-bool QgsPointcloudExpressionNodeInOperator::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes )
+bool QgsPointcloudExpressionNodeInOperator::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block )
 {
-  bool res = mNode->prepare( parent, attributes );
+  bool res = mNode->prepare( parent, block );
   const QList< QgsPointcloudExpressionNode * > nodeList = mList->list();
   for ( QgsPointcloudExpressionNode *n : nodeList )
   {
-    res = res && n->prepare( parent, attributes );
+    res = res && n->prepare( parent, block );
   }
   return res;
 }
@@ -712,15 +712,15 @@ QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeInOperator::clone() cons
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeInOperator::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const
+bool QgsPointcloudExpressionNodeInOperator::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const
 {
-  if ( !mNode->isStatic( parent, attributes ) )
+  if ( !mNode->isStatic( parent, block ) )
     return false;
 
   const QList< QgsPointcloudExpressionNode * > nodeList = mList->list();
   for ( QgsPointcloudExpressionNode *n : nodeList )
   {
-    if ( !n->isStatic( parent, attributes ) )
+    if ( !n->isStatic( parent, block ) )
       return false;
   }
 
@@ -729,7 +729,7 @@ bool QgsPointcloudExpressionNodeInOperator::isStatic( QgsPointcloudExpression *p
 
 //
 
-QVariant QgsPointcloudExpressionNodeLiteral::evalNode( QgsPointcloudExpression *parent, QVariantMap &p )
+QVariant QgsPointcloudExpressionNodeLiteral::evalNode( QgsPointcloudExpression *parent, int p )
 {
   Q_UNUSED( parent )
   return mValue;
@@ -740,10 +740,10 @@ QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeLiteral::nodeTy
   return ntLiteral;
 }
 
-bool QgsPointcloudExpressionNodeLiteral::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes )
+bool QgsPointcloudExpressionNodeLiteral::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block )
 {
   Q_UNUSED( parent )
-  Q_UNUSED( attributes )
+  Q_UNUSED( block )
   return true;
 }
 
@@ -794,22 +794,71 @@ QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeLiteral::clone() const
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeLiteral::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const
+bool QgsPointcloudExpressionNodeLiteral::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const
 {
   Q_UNUSED( parent )
-  Q_UNUSED( attributes )
+  Q_UNUSED( block )
   return true;
 }
 
 //
 
-QVariant QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpression *parent, QVariantMap &p )
+QVariant QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpression *parent, int p )
 {
   Q_UNUSED( parent )
   int index = mIndex;
 
   if ( index >= 0 )
-    return p[ mName ];
+  {
+    const char *data = mBlock->data();
+    // const QgsPointCloudAttribute attr = mBlock->attributes().at( index );
+    // const QgsPointCloudAttribute::DataType type = attr.type();
+    // auto value = *reinterpret_cast< const qint32 * >( mBlock->data() + mBlock->attributes().pointRecordSize() * p + attr.size() );
+    int attributeOffset;
+    const QgsPointCloudAttribute *attribute = mBlock->attributes().find( mName, attributeOffset );
+    const QgsPointCloudAttribute::DataType type = attribute->type();
+    const int offset = mBlock->attributes().pointRecordSize() * p + attributeOffset;
+
+
+
+    QVariant val;
+    switch ( type )
+    {
+      case QgsPointCloudAttribute::Char:
+        val = *( data + offset );
+        break;
+
+      case QgsPointCloudAttribute::Int32:
+        val = *reinterpret_cast< const qint32 * >( data + offset );
+        break;
+
+      case QgsPointCloudAttribute::Short:
+        val = *reinterpret_cast< const short * >( data + offset );
+        break;
+
+      case QgsPointCloudAttribute::UShort:
+        val = *reinterpret_cast< const unsigned short * >( data + offset );
+        break;
+
+      case QgsPointCloudAttribute::Float:
+        val = *reinterpret_cast< const float * >( data + offset );
+        break;
+
+      case QgsPointCloudAttribute::Double:
+        val = *reinterpret_cast< const double * >( data + offset );
+        break;
+    }
+
+    if ( attribute->name().compare( QString( "X" ) ) == 0 )
+      return val.toDouble() * mBlock->scale().x() + mBlock->offset().x();
+    if ( attribute->name().compare( QString( "Y" ) ) == 0 )
+      return val.toDouble() * mBlock->scale().y() + mBlock->offset().y();
+    if ( attribute->name().compare( QString( "Z" ) ) == 0 )
+      return val.toDouble() * mBlock->scale().z() + mBlock->offset().z();
+
+
+    return val; // calculate the  p's point respective attribute
+  }
 
 //   if ( index < 0 )
 //   {
@@ -846,7 +895,7 @@ QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeAttributeRef::n
   return ntAttributeRef;
 }
 
-bool QgsPointcloudExpressionNodeAttributeRef::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes )
+bool QgsPointcloudExpressionNodeAttributeRef::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block )
 {
 //   if ( !context || !context->hasVariable( QgsPointcloudExpressionContext::EXPR_FIELDS ) )
 //     return false;
@@ -859,8 +908,8 @@ bool QgsPointcloudExpressionNodeAttributeRef::prepareNode( QgsPointcloudExpressi
 //   {
 //     mIndex = context->feature().fieldNameIndex( mName );
 //   }
-
-  mIndex = attributes.indexOf( mName );
+  mBlock = block;
+  mIndex = mBlock->attributes().indexOf( mName );
 
   if ( mIndex == -1 )
   {
@@ -896,9 +945,9 @@ QgsPointcloudExpressionNode *QgsPointcloudExpressionNodeAttributeRef::clone() co
   return copy;
 }
 
-bool QgsPointcloudExpressionNodeAttributeRef::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const
+bool QgsPointcloudExpressionNodeAttributeRef::isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const
 {
   Q_UNUSED( parent )
-  Q_UNUSED( attributes )
+  Q_UNUSED( block )
   return false;
 }

@@ -156,7 +156,7 @@ The returned expression does not necessarily literally match
 the original expression, it's just guaranteed to behave the same way.
 %End
 
-    QVariant eval( QgsPointcloudExpression *parent, QVariantMap &p );
+    QVariant eval( QgsPointcloudExpression *parent, int p );
 %Docstring
 Evaluate this node with the given context and parent.
 This will return a cached value if it has been determined to be static
@@ -195,7 +195,7 @@ to evaluate child nodes.
 :return: A list of columns required to evaluate this expression
 %End
 
-    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes ) const = 0;
+    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const = 0;
 %Docstring
 Returns ``True`` if this node can be evaluated for a static value. This is used during
 the :py:func:`~QgsPointcloudExpressionNode.prepare` step and in case it returns ``True``, the value of this node will already
@@ -205,7 +205,7 @@ to :py:func:`~QgsPointcloudExpressionNode.eval`). In case this returns ``True``,
 .. versionadded:: 3.0
 %End
 
-    bool prepare( QgsPointcloudExpression *parent, const QgsPointCloudAttributeCollection &attributes );
+    bool prepare( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 %Docstring
 Prepare this node for evaluation.
 This will check if the node content is static and in this case cache the value.
