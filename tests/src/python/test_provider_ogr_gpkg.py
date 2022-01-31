@@ -43,7 +43,7 @@ from qgis.core import (QgsFeature,
                        QgsVectorDataProvider,
                        QgsLayerMetadata,
                        NULL)
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt, QFileInfo
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
@@ -91,6 +91,7 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
         # Create the other layer for constraints check
         cls.check_constraint = QgsVectorLayer(
             cls.basetestfile + '|layername=check_constraint', 'check_constraint', 'ogr')
+        cls.check_constraint_editing_started = False
 
         # Create the other layer for unique and not null constraints check
         cls.unique_not_null_constraints = QgsVectorLayer(
@@ -120,8 +121,16 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
 
     def getEditableLayerWithCheckConstraint(self):
         """Returns the layer for attribute change CHECK constraint violation"""
-
+        if not self.check_constraint_editing_started:
+            self.assertFalse(self.check_constraint_editing_started)
+            self.check_constraint_editing_started = True
+            self.check_constraint.startEditing()
         return self.check_constraint
+
+    def stopEditableLayerWithCheckConstraint(self):
+        self.assertTrue(self.check_constraint_editing_started)
+        self.check_constraint_editing_started = False
+        self.check_constraint.commitChanges()
 
     def getEditableLayerWithUniqueNotNullConstraints(self):
         """Returns the layer for UNIQUE and NOT NULL constraints detection"""
@@ -697,6 +706,16 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(2, vl.dataProvider().subLayerCount())
         self.assertEqual(len(sublayers), 2, sublayers)
 
+    @staticmethod
+    def _getJournalMode(filename):
+        ds = ogr.Open(filename)
+        lyr = ds.ExecuteSQL('PRAGMA journal_mode')
+        f = lyr.GetNextFeature()
+        res = f.GetField(0)
+        ds.ReleaseResultSet(lyr)
+        ds = None
+        return res
+
     def testDisablewalForSqlite3(self):
         ''' Test disabling walForSqlite3 setting '''
         QgsSettings().setValue("/qgis/walForSqlite3", False)
@@ -715,13 +734,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl = QgsVectorLayer(u'{}'.format(tmpfile), u'test', u'ogr')
 
         # Test that we are using default delete mode and not WAL
-        ds = ogr.Open(tmpfile)
-        lyr = ds.ExecuteSQL('PRAGMA journal_mode')
-        f = lyr.GetNextFeature()
-        res = f.GetField(0)
-        ds.ReleaseResultSet(lyr)
-        ds = None
-        self.assertEqual(res, 'delete')
+        self.assertEqual(TestPyQgsOGRProviderGpkg._getJournalMode(tmpfile), 'delete')
 
         self.assertTrue(vl.startEditing())
         feature = next(vl.getFeatures())
@@ -735,6 +748,32 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl = None
 
         QgsSettings().setValue("/qgis/walForSqlite3", None)
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 4, 2), "GDAL 3.4.2 required")
+    def testNolock(self):
+        """ Test that with GDAL >= 3.4.2 opening a GPKG file doesn't turn on WAL journal_mode """
+
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        srcfile = os.path.join(srcpath, 'geopackage.gpkg')
+
+        last_modified = QFileInfo(srcfile).lastModified()
+        vl = QgsVectorLayer(u'{}'.format(srcfile) + "|layername=geopackage", u'test', u'ogr')
+        self.assertEqual(TestPyQgsOGRProviderGpkg._getJournalMode(srcfile), 'delete')
+        del vl
+        self.assertEqual(last_modified, QFileInfo(srcfile).lastModified())
+
+        shutil.copy(os.path.join(srcpath, 'geopackage.gpkg'), self.basetestpath)
+        tmpfile = os.path.join(self.basetestpath, 'geopackage.gpkg')
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=geopackage", u'test', u'ogr')
+
+        self.assertEqual(TestPyQgsOGRProviderGpkg._getJournalMode(tmpfile), 'delete')
+
+        vl.startEditing()
+        self.assertEqual(TestPyQgsOGRProviderGpkg._getJournalMode(tmpfile), 'wal')
+        vl.commitChanges()
+
+        self.assertEqual(TestPyQgsOGRProviderGpkg._getJournalMode(tmpfile), 'delete')
 
     def testSimulatedDBManagerImport(self):
         uri = 'point?field=f1:int'
@@ -831,6 +870,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
                                           QgsCoordinateReferenceSystem('EPSG:3111'), False, options)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
+        del exporter
         options['layerName'] = 'table2'
         exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3113'),
                                           False, options)
@@ -2162,7 +2202,9 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def _testVectorLayerExporterDeferredSpatialIndex(self, layerOptions, expectSpatialIndex):
         """ Internal method """
 
-        tmpfile = '/vsimem/_testVectorLayerExporterDeferredSpatialIndex.gpkg'
+        tmpfile = os.path.join(
+            self.basetestpath, 'testVectorLayerExporterDeferredSpatialIndex.gpkg')
+        gdal.Unlink(tmpfile)
         options = {}
         options['driverName'] = 'GPKG'
         options['layerName'] = 'table1'
