@@ -115,29 +115,29 @@ class FieldsPyculator(QgisAlgorithm):
         field_type = QVariant.Invalid
         field_sub_type = QVariant.Invalid
         field_type_parameter = self.parameterAsEnum(parameters, self.FIELD_TYPE, context)
-        if field_type_parameter == 0: # Integer
+        if field_type_parameter == 0:  # Integer
             field_type = QVariant.Int
-        elif field_type_parameter == 1: # Float
+        elif field_type_parameter == 1:  # Float
             field_type = QVariant.Double
-        elif field_type_parameter == 2: # String
+        elif field_type_parameter == 2:  # String
             field_type = QVariant.String
-        elif field_type_parameter == 3: # Boolean
+        elif field_type_parameter == 3:  # Boolean
             field_type = QVariant.Bool
-        elif field_type_parameter == 4: # Date
+        elif field_type_parameter == 4:  # Date
             field_type = QVariant.Date
-        elif field_type_parameter == 5: # Time
+        elif field_type_parameter == 5:  # Time
             field_type = QVariant.Time
-        elif field_type_parameter == 6: # DateTime
+        elif field_type_parameter == 6:  # DateTime
             field_type = QVariant.DateTime
-        elif field_type_parameter == 7: # Binary
+        elif field_type_parameter == 7:  # Binary
             field_type = QVariant.ByteArray
-        elif field_type_parameter == 8: # StringList
+        elif field_type_parameter == 8:  # StringList
             field_type = QVariant.StringList
             field_sub_type = QVariant.String
-        elif field_type_parameter == 9: # IntegerList
+        elif field_type_parameter == 9:  # IntegerList
             field_type = QVariant.List
             field_sub_type = QVariant.Int
-        elif field_type_parameter == 10: # DoubleList
+        elif field_type_parameter == 10:  # DoubleList
             field_type = QVariant.List
             field_sub_type = QVariant.Double
 
