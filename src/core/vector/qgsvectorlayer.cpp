@@ -1477,9 +1477,9 @@ bool QgsVectorLayer::startEditing()
     return false;
   }
 
-  emit beforeEditingStarted();
-
   mDataProvider->enterUpdateMode();
+
+  emit beforeEditingStarted();
 
   if ( mDataProvider->transaction() )
   {
