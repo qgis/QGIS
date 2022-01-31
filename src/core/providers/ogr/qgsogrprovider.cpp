@@ -3463,15 +3463,28 @@ void QgsOgrProvider::open( OpenMode mode )
   else if ( mode == OpenModeSameAsCurrent && !mWriteAccess )
     openReadOnly = true;
 
+  const bool bIsGpkg = QFileInfo( mFilePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
+
   // first try to open in update mode (unless specified otherwise)
   QString errCause;
   if ( !openReadOnly )
   {
     QStringList options( mOpenOptions );
-    if ( mode == OpenModeForceUpdateRepackOff || ( mDeferRepack && OpenModeSameAsCurrent ) )
+    if ( !bIsGpkg && ( mode == OpenModeForceUpdateRepackOff || ( mDeferRepack && OpenModeSameAsCurrent ) ) )
     {
       options << "AUTO_REPACK=OFF";
     }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+    if ( bIsGpkg && mode == OpenModeInitial )
+    {
+      // A hint to QgsOgrProviderUtils::GDALOpenWrapper() to not force WAL
+      // as in OpenModeInitial we are not going to do anything besides getting capabilities
+      // and re-opening in readonly mode.
+      options << "DO_NOT_ENABLE_WAL=ON";
+    }
+#endif
+
     // We get the layer which was requested by the uri. The layername
     // has precedence over the layerid if both are given.
     if ( !mLayerName.isNull() )
@@ -3585,10 +3598,16 @@ void QgsOgrProvider::open( OpenMode mode )
 
   // For shapefiles or MapInfo .tab, so as to allow concurrent opening between
   // QGIS and MapInfo, we go back to read-only mode for now.
+  // For GPKG too, so to open in read-only nolock mode for GDAL >= 3.4.2
   // We limit to those drivers as re-opening is relatively cheap (other drivers
   // like GeoJSON might do full content ingestion for example)
   if ( mValid && mode == OpenModeInitial && mWriteAccess &&
-       ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) || mGDALDriverName == QLatin1String( "MapInfo File" ) ) )
+       ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ||
+         mGDALDriverName == QLatin1String( "MapInfo File" )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+         || mGDALDriverName == QLatin1String( "GPKG" )
+#endif
+       ) )
   {
     mOgrSqlLayer.reset();
     mOgrOrigLayer.reset();
@@ -3606,7 +3625,7 @@ void QgsOgrProvider::open( OpenMode mode )
     // try to open read-only
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, mOpenOptions, mLayerName, errCause, true );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, mOpenOptions,  mLayerName, errCause, true );
     }
     else
     {
@@ -3645,6 +3664,9 @@ void QgsOgrProvider::open( OpenMode mode )
 
 void QgsOgrProvider::close()
 {
+  if ( mWriteAccess && mForceRecomputeExtent )
+    extent();
+
   mOgrSqlLayer.reset();
   mOgrOrigLayer.reset();
   mOgrLayer = nullptr;
