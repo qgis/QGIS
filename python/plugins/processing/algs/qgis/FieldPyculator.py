@@ -66,22 +66,22 @@ class FieldsPyculator(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
                                                        self.tr('Result field name'), defaultValue='NewField'))
 
-        types = [[QVariant.Int, QVariant.Invalid],
-                 [QVariant.Double, QVariant.Invalid],
-                 [QVariant.String, QVariant.Invalid],
-                 [QVariant.Bool, QVariant.Invalid],
-                 [QVariant.Date, QVariant.Invalid],
-                 [QVariant.Time, QVariant.Invalid],
-                 [QVariant.DateTime, QVariant.Invalid],
-                 [QVariant.ByteArray, QVariant.Invalid],
-                 [QVariant.StringList, QVariant.String],
-                 [QVariant.List, QVariant.Int],
-                 [QVariant.List, QVariant.Double]]
+        types = [(QVariant.Int, QVariant.Invalid),
+                 (QVariant.Double, QVariant.Invalid),
+                 (QVariant.String, QVariant.Invalid),
+                 (QVariant.Bool, QVariant.Invalid),
+                 (QVariant.Date, QVariant.Invalid),
+                 (QVariant.Time, QVariant.Invalid),
+                 (QVariant.DateTime, QVariant.Invalid),
+                 (QVariant.ByteArray, QVariant.Invalid),
+                 (QVariant.StringList, QVariant.String),
+                 (QVariant.List, QVariant.Int),
+                 (QVariant.List, QVariant.Double)]
         type_names = []
         type_icons = []
-        for t in types:
-            type_names.append(QgsVariantUtils.typeToDisplayString(t[0], t[1]))
-            type_icons.append(QgsFields.iconForFieldType(t[0], t[1]))
+        for type_name, subtype_name in types:
+            type_names.append(QgsVariantUtils.typeToDisplayString(type_name, subtype_name))
+            type_icons.append(QgsFields.iconForFieldType(type_name, subtype_name))
         param = QgsProcessingParameterEnum('FIELD_TYPE', 'Field type', options=type_names)
         param.setMetadata({'widget_wrapper': {'icons': type_icons}})
         self.addParameter(param)
