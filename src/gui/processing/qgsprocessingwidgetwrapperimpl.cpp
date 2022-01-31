@@ -2712,12 +2712,15 @@ QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
         if ( expParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
           mComboBox->addItem( tr( "[Not selected]" ), QVariant() );
         const QStringList options = expParam->options();
+        const QVariantList iconList = expParam->metadata().value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "icons" ) ).toList();
         for ( int i = 0; i < options.count(); ++i )
         {
+          const QIcon icon = iconList.value( i ).value< QIcon >();
+
           if ( expParam->usesStaticStrings() )
-            mComboBox->addItem( options.at( i ), options.at( i ) );
+            mComboBox->addItem( icon, options.at( i ), options.at( i ) );
           else
-            mComboBox->addItem( options.at( i ), i );
+            mComboBox->addItem( icon, options.at( i ), i );
         }
 
         mComboBox->setToolTip( parameterDefinition()->toolTip() );

@@ -2591,6 +2591,17 @@ class QgsProcessingParameterEnum : QgsProcessingParameterDefinition
 %Docstring(signature="appended")
 An enum based parameter for processing algorithms, allowing for selection from predefined values.
 
+Since QGIS 3.24 a list of icons corresponding to the enum values can be specified by setting the
+widget wrapper metadata "icons" option, as demonstrated below. The "icons" value should be
+set to a list of QIcon values.
+
+.. code-block:: python
+
+       param = QgsProcessingParameterEnum( 'FIELD_TYPE', 'Field type', ['Integer', 'String'])
+       param.setMetadata( {'widget_wrapper':
+         { 'icons': [QIcon('integer.svg'), QIcon('string.svg')] }
+       })
+
 .. versionadded:: 3.0
 %End
 

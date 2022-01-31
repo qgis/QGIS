@@ -66,20 +66,44 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
 {
   Q_UNUSED( configuration )
 
-  const QStringList fieldTypes =  QStringList() << QgsVariantUtils::typeToDisplayString( QVariant::Double )
-                                  << QgsVariantUtils::typeToDisplayString( QVariant::Int )
-                                  << QgsVariantUtils::typeToDisplayString( QVariant::String )
-                                  << QgsVariantUtils::typeToDisplayString( QVariant::Date )
-                                  << QgsVariantUtils::typeToDisplayString( QVariant::Time )
-                                  << QgsVariantUtils::typeToDisplayString( QVariant::DateTime )
-                                  << QgsVariantUtils::typeToDisplayString( QVariant::Bool )
-                                  << QgsVariantUtils::typeToDisplayString( QVariant::ByteArray )
-                                  << QgsVariantUtils::typeToDisplayString( QVariant::StringList )
-                                  << QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int )
-                                  << QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double );
+  QStringList fieldTypes;
+  QVariantList icons;
+  fieldTypes.reserve( 11 );
+  icons.reserve( 11 );
+  for ( const auto &type :
+        std::vector < std::pair< QVariant::Type, QVariant::Type > >
+{
+  {QVariant::Double, QVariant::Invalid },
+  {QVariant::Int, QVariant::Invalid },
+  {QVariant::String, QVariant::Invalid },
+  {QVariant::Date, QVariant::Invalid },
+  {QVariant::Time, QVariant::Invalid },
+  {QVariant::DateTime, QVariant::Invalid },
+  {QVariant::Bool, QVariant::Invalid },
+  {QVariant::ByteArray, QVariant::Invalid },
+  {QVariant::StringList, QVariant::Invalid },
+  {QVariant::List, QVariant::Int },
+  {QVariant::List, QVariant::Double }
+} )
+  {
+    fieldTypes << QgsVariantUtils::typeToDisplayString( type.first, type.second );
+    icons << QgsFields::iconForFieldType( type.first, type.second );
+  }
 
   std::unique_ptr< QgsProcessingParameterString > fieldName = std::make_unique< QgsProcessingParameterString > ( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
   std::unique_ptr< QgsProcessingParameterEnum > fieldType = std::make_unique< QgsProcessingParameterEnum > ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
+  fieldType->setMetadata(
+  {
+    QVariantMap( {{
+        QStringLiteral( "widget_wrapper" ),
+        QVariantMap(
+        { {
+            QStringLiteral( "icons" ), icons
+          }}
+        )
+      }} )
+  } );
+
   std::unique_ptr< QgsProcessingParameterNumber > fieldLength = std::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
   std::unique_ptr< QgsProcessingParameterNumber > fieldPrecision = std::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
   std::unique_ptr< QgsProcessingParameterExpression > expression = std::make_unique< QgsProcessingParameterExpression> ( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
