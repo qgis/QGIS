@@ -18,6 +18,7 @@
 
 #include "qgsalgorithmfieldcalculator.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvariantutils.h"
 
 ///@cond PRIVATE
 
@@ -63,12 +64,19 @@ QgsProcessingFeatureSource::Flag QgsFieldCalculatorAlgorithm::sourceFlags() cons
 
 void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configuration )
 {
-  Q_UNUSED( configuration );
+  Q_UNUSED( configuration )
 
-  const QStringList fieldTypes =  QStringList() << QObject::tr( "Float" ) << QObject::tr( "Integer" ) << QObject::tr( "String" )
-                                  << QObject::tr( "Date" ) << QObject::tr( "Time" ) << QObject::tr( "DateTime" )
-                                  << QObject::tr( "Boolean" ) << QObject::tr( "Binary" )
-                                  << QObject::tr( "StringList" ) << QObject::tr( "IntegerList" ) << QObject::tr( "DoubleList" );
+  const QStringList fieldTypes =  QStringList() << QgsVariantUtils::typeToDisplayString( QVariant::Double )
+                                  << QgsVariantUtils::typeToDisplayString( QVariant::Int )
+                                  << QgsVariantUtils::typeToDisplayString( QVariant::String )
+                                  << QgsVariantUtils::typeToDisplayString( QVariant::Date )
+                                  << QgsVariantUtils::typeToDisplayString( QVariant::Time )
+                                  << QgsVariantUtils::typeToDisplayString( QVariant::DateTime )
+                                  << QgsVariantUtils::typeToDisplayString( QVariant::Bool )
+                                  << QgsVariantUtils::typeToDisplayString( QVariant::ByteArray )
+                                  << QgsVariantUtils::typeToDisplayString( QVariant::StringList )
+                                  << QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int )
+                                  << QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double );
 
   std::unique_ptr< QgsProcessingParameterString > fieldName = std::make_unique< QgsProcessingParameterString > ( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
   std::unique_ptr< QgsProcessingParameterEnum > fieldType = std::make_unique< QgsProcessingParameterEnum > ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
