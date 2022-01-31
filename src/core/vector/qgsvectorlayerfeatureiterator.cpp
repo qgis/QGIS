@@ -128,19 +128,11 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
   }
-  try
-  {
-    mFilterRect = filterRectToSourceCrs( mTransform );
-  }
-  catch ( QgsCsException & )
-  {
-    // can't reproject mFilterRect
-    close();
-    return;
-  }
-
 
   // prepare spatial filter geometries for optimal speed
+  // since the mDistanceWithin* constraint member variables are all in the DESTINATION CRS,
+  // we set all these upfront before any transformation to the source CRS is done.
+
   switch ( mRequest.spatialFilterType() )
   {
     case Qgis::SpatialFilterType::NoFilter:
@@ -150,6 +142,10 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     case Qgis::SpatialFilterType::DistanceWithin:
       if ( !mRequest.referenceGeometry().isEmpty() )
       {
+        // Note that regardless of whether or not we'll ultimately be able to handoff this check to the underlying provider,
+        // we still need these reference geometry constraints in the vector layer iterator as we need them to check against
+        // the features from the vector layer's edit buffer! (In other words, we cannot completely hand off responsibility for
+        // these checks to the provider and ignore them locally)
         mDistanceWithinGeom = mRequest.referenceGeometry();
         mDistanceWithinEngine = mRequest.referenceGeometryEngine();
         mDistanceWithinEngine->prepareGeometry();
@@ -158,10 +154,29 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
       break;
   }
 
-  if ( !mFilterRect.isNull() )
+  bool canDelegateLimitToProvider = true;
+  try
   {
-    // update request to be the unprojected filter rect
-    mRequest.setFilterRect( mFilterRect );
+    switch ( updateRequestToSourceCrs( mRequest, mTransform ) )
+    {
+      case QgsAbstractFeatureIterator::RequestToSourceCrsResult::Success:
+        break;
+
+      case QgsAbstractFeatureIterator::RequestToSourceCrsResult::DistanceWithinMustBeCheckedManually:
+        // we have to disable any limit on the provider's request -- since that request may be returning features which are outside the
+        // distance tolerance, we'll have to fetch them all and then handle the limit check manually only after testing for the distance within constraint
+        canDelegateLimitToProvider = false;
+        break;
+    }
+
+    // mFilterRect is in the source CRS, so we set that now (after request transformation has been done)
+    mFilterRect = mRequest.filterRect();
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject request filters
+    close();
+    return;
   }
 
   // check whether the order by clause(s) can be delegated to the provider
@@ -216,6 +231,11 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   if ( !mDelegatedOrderByToProvider )
   {
     mProviderRequest.setOrderBy( QgsFeatureRequest::OrderBy() );
+  }
+
+  if ( !canDelegateLimitToProvider )
+  {
+    mProviderRequest.setLimit( -1 );
   }
 
   if ( mProviderRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
