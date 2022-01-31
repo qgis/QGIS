@@ -146,7 +146,7 @@ QStringList QgsServerParameterDefinition::toOgcFilterList() const
       filters.append( "" );
       pos += 2;
     }
-    else if ( filter[pos] == '<' )
+    else if ( filter[pos] == '<' && pos + 7 < filter.size() && filter.mid( pos + 1, 6 ).compare( QStringLiteral( "Filter" ) ) == 0 )
     {
       // Single OGC filter
       filters.append( filter.mid( pos ) );

@@ -550,7 +550,7 @@ class TestQgsServerParameter(unittest.TestCase):
 
         # multiple qgis expressions
         filter0 = "to_datetime('2017-09-29 12:00:00')"
-        filter1 = "\"name\"=concat('t', 'wo')"
+        filter1 = "Contours:\"elev\" <= 1200"
         filter2 = "\"name\"='three'"
 
         param = QgsServerParameterDefinition()
