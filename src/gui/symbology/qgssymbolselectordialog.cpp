@@ -213,12 +213,17 @@ class SymbolLayerItem : public QStandardItem
       }
       else if ( role == Qt::ForegroundRole && mIsLayer )
       {
-        QBrush brush( Qt::black, Qt::SolidPattern );
         if ( !mLayer->enabled() )
         {
-          brush.setColor( Qt::lightGray );
+          QPalette pal = qApp->palette();
+          QBrush brush = QStandardItem::data( role ).value< QBrush >();
+          brush.setColor( pal.color( QPalette::Disabled, QPalette::WindowText ) );
+          return brush;
         }
-        return brush;
+        else
+        {
+          return QVariant();
+        }
       }
 
 //      if ( role == Qt::SizeHintRole )
