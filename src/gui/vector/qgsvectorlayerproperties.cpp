@@ -140,7 +140,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mActionSaveStyle = new QAction( tr( "Save Current Style…" ), this );
   connect( mActionSaveStyle, &QAction::triggered, this, &QgsVectorLayerProperties::saveStyleAs );
 
-  mActionSaveMultipleStyles = new QAction( tr( "Save All Styles…" ), this );
+  mActionSaveMultipleStyles = new QAction( tr( "Save Multiple Styles…" ), this );
   connect( mActionSaveMultipleStyles, &QAction::triggered, this, &QgsVectorLayerProperties::saveMultipleStylesAs );
 
   mSourceGroupBox->hide();
