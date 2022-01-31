@@ -6191,7 +6191,7 @@ static QVariant fcnArrayRemoveAt( const QVariantList &values, const QgsExpressio
 {
   QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   int position = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
-  if ( position < 0 && ( list.length() + position ) >= 0 )
+  if ( position < 0 )
     position = position + list.length();
   if ( position >= 0 && position < list.length() )
     list.removeAt( position );
