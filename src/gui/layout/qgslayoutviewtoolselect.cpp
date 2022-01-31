@@ -69,7 +69,6 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
   {
     if ( mIsSelecting )
     {
-      // selection must be ended if a right button press happens, otherwise selection rubberband won't be suppress
       mIsSelecting = false;
       mRubberBand->finish();
     }
