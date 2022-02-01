@@ -101,12 +101,12 @@ double QgsPointcloudExpressionNodeUnaryOperator::evalNode( QgsPointcloudExpressi
   switch ( mOp )
   {
     case uoNot:
-      return qgsDoubleNear( p, 0. ) ? 1. : 0.;
+      return !qgsDoubleNear( p, 1. ) ? 0. : 1.;
 
     case uoMinus:
-      return - val;
+      return -val;
   }
-  return 1.;
+  return std::numeric_limits<double>::quiet_NaN();
 }
 
 QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeUnaryOperator::nodeType() const
@@ -169,10 +169,10 @@ double QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpress
 
   if ( mOp == boAnd || mOp == boOr )
   {
-    if ( mOp == boAnd && !qgsDoubleNear( vL, 0. ) )
-      return 1.;  // shortcut -- no need to evaluate right-hand side
-    if ( mOp == boOr && qgsDoubleNear( vL, 0. ) )
+    if ( mOp == boAnd && !qgsDoubleNear( vL, 1. ) )
       return 0.;  // shortcut -- no need to evaluate right-hand side
+    if ( mOp == boOr && qgsDoubleNear( vL, 1. ) )
+      return 1.;  // shortcut -- no need to evaluate right-hand side
   }
 
   double vR = mOpRight->eval( parent, p );
@@ -187,6 +187,8 @@ double QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpress
     case boMul:
       return vL * vR;
     case boDiv:
+      if ( qgsDoubleNear( vR, 0. ) )
+        return std::numeric_limits<double>::quiet_NaN();
       return vL / vR;
     case boMod:
       return std::fmod( vL, vR );
@@ -195,9 +197,11 @@ double QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpress
     case boPow:
       return std::pow( vL, vR );
     case boAnd:
-      return ( qgsDoubleNear( vL, 0. ) && qgsDoubleNear( vR, 0. ) ) ? 0. : 1.;
+      // vL is already checked and is 1.0
+      return qgsDoubleNear( vR, 1. ) ? 1. : 0.;
     case boOr:
-      return ( qgsDoubleNear( vL, 0. ) || qgsDoubleNear( vR, 0. ) ) ? 0. : 1.;
+      // vL is already checked and is not 1.0
+      return qgsDoubleNear( vR, 1. ) ? 1. : 0.;
 
     case boEQ:
     case boNE:
@@ -205,10 +209,10 @@ double QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpress
     case boGT:
     case boLE:
     case boGE:
-      return compare( vL - vR ) ? 0. : 1.;
+      return compare( vL - vR ) ? 1. : 0.;
   }
   Q_ASSERT( false );
-  return 1.;
+  return std::numeric_limits<double>::quiet_NaN();
 }
 
 bool QgsPointcloudExpressionNodeBinaryOperator::compare( double diff )
@@ -229,7 +233,7 @@ bool QgsPointcloudExpressionNodeBinaryOperator::compare( double diff )
       return diff >= 0;
     default:
       Q_ASSERT( false );
-      return false;
+      return std::numeric_limits<double>::quiet_NaN();
   }
 }
 
@@ -525,7 +529,7 @@ double QgsPointcloudExpressionNodeInOperator::evalNode( QgsPointcloudExpression 
       return mNotIn ? 1. : 0.;
   }
 
-  return mNotIn ? 0. : 1.;
+  return mNotIn ? 1. : 0.;
 }
 
 QgsPointcloudExpressionNodeInOperator::~QgsPointcloudExpressionNodeInOperator()
@@ -742,7 +746,7 @@ double QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpressio
 //   }
   if ( index < 0 )
     parent->setEvalErrorString( tr( "Attribute '%1' not found" ).arg( mName ) );
-  return 1.;
+  return std::numeric_limits<double>::quiet_NaN();
 }
 
 QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeAttributeRef::nodeType() const
