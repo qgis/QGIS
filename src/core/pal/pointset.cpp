@@ -1036,6 +1036,44 @@ void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px,
   }
 }
 
+geos::unique_ptr PointSet::interpolatePoint( double distance ) const
+{
+  const GEOSGeometry *thisGeos = geos();
+  if ( !thisGeos )
+    return nullptr;
+
+  try
+  {
+    geos::unique_ptr res( GEOSInterpolate_r( QgsGeos::getGEOSHandler(), thisGeos, distance ) );
+    return res;
+  }
+  catch ( GEOSException &e )
+  {
+    qWarning( "GEOS exception: %s", e.what() );
+    return nullptr;
+  }
+}
+
+double PointSet::lineLocatePoint( const GEOSGeometry *point ) const
+{
+  const GEOSGeometry *thisGeos = geos();
+  if ( !thisGeos )
+    return -1;
+
+  double distance = -1;
+  try
+  {
+    distance = GEOSProject_r( QgsGeos::getGEOSHandler(), thisGeos, point );
+  }
+  catch ( GEOSException &e )
+  {
+    qWarning( "GEOS exception: %s", e.what() );
+    return -1;
+  }
+
+  return distance;
+}
+
 const GEOSGeometry *PointSet::geos() const
 {
   if ( !mGeos )

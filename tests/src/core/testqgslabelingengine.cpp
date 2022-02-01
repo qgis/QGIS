@@ -3631,6 +3631,26 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
 
   img = job2.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "curved_anchor_end" ), img, 20 ) );
+
+  settings.lineSettings().setLineAnchorPercent( 0.3 );
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job3( mapSettings );
+  job3.start();
+  job3.waitForFinished();
+
+  img = job3.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_anchor_30_above" ), img, 20 ) );
+
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::BelowLine );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job4( mapSettings );
+  job4.start();
+  job4.waitForFinished();
+
+  img = job4.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_anchor_30_below" ), img, 20 ) );
+
 }
 
 void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
