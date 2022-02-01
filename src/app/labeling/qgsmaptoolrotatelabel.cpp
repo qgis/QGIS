@@ -114,29 +114,42 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
       bool hasRotationValue;
       int rotationCol;
 
-      if ( !labelIsRotatable( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) )
+      const PropertyStatus status = labelRotatableStatus( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol );
+      switch ( status )
       {
-        QgsPalIndexes indexes;
-        if ( createAuxiliaryFields( indexes ) )
-          return;
-
-        if ( !labelIsRotatable( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) )
-          return;
-      }
-      else
-      {
-        const bool usesAuxField = mCurrentLabel.layer->fields().fieldOrigin( rotationCol ) == QgsFields::OriginJoin;
-        if ( !usesAuxField && !mCurrentLabel.layer->isEditable() )
+        case PropertyStatus::DoesNotExist:
         {
-          if ( mCurrentLabel.layer->startEditing() )
-          {
-            QgisApp::instance()->messageBar()->pushInfo( tr( "Rotate Label" ), tr( "Layer “%1” was made editable" ).arg( mCurrentLabel.layer->name() ) );
-          }
-          else
-          {
-            QgisApp::instance()->messageBar()->pushWarning( tr( "Rotate Label" ), tr( "Cannot rotate “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, mCurrentLabel.layer->name() ) );
+          QgsPalIndexes indexes;
+          if ( createAuxiliaryFields( indexes ) )
             return;
+
+          if ( labelRotatableStatus( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) != PropertyStatus::Valid )
+            return;
+          break;
+        }
+
+        case PropertyStatus::Valid:
+        {
+          const bool usesAuxField = mCurrentLabel.layer->fields().fieldOrigin( rotationCol ) == QgsFields::OriginJoin;
+          if ( !usesAuxField && !mCurrentLabel.layer->isEditable() )
+          {
+            if ( mCurrentLabel.layer->startEditing() )
+            {
+              QgisApp::instance()->messageBar()->pushInfo( tr( "Rotate Label" ), tr( "Layer “%1” was made editable" ).arg( mCurrentLabel.layer->name() ) );
+            }
+            else
+            {
+              QgisApp::instance()->messageBar()->pushWarning( tr( "Rotate Label" ), tr( "Cannot rotate “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, mCurrentLabel.layer->name() ) );
+              return;
+            }
           }
+          break;
+        }
+
+        case PropertyStatus::CurrentExpressionInvalid:
+        {
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Rotate Label" ), tr( "Cannot rotate “%1” — the layer “%2” has an invalid expression set for label rotation" ).arg( mCurrentLabel.pos.labelText, mCurrentLabel.layer->name() ) );
+          return;
         }
       }
 
@@ -194,7 +207,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         }
 
         int rotationCol;
-        if ( !labelIsRotatable( vlayer, mCurrentLabel.settings, rotationCol ) )
+        if ( labelRotatableStatus( vlayer, mCurrentLabel.settings, rotationCol ) != PropertyStatus::Valid )
         {
           return;
         }
@@ -245,7 +258,7 @@ void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
         if ( vlayer )
         {
           int rotationCol;
-          if ( labelIsRotatable( vlayer, mCurrentLabel.settings, rotationCol ) )
+          if ( labelRotatableStatus( vlayer, mCurrentLabel.settings, rotationCol ) == PropertyStatus::Valid )
           {
             vlayer->beginEditCommand( tr( "Delete Label Rotation" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
             if ( !vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, QVariant() ) )

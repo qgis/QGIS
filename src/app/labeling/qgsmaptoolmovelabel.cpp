@@ -199,8 +199,9 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
         if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
         {
-          QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, vlayer );
-          QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, vlayer );
+          PropertyStatus status = PropertyStatus::DoesNotExist;
+          QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, vlayer, status );
+          QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, vlayer, status );
           if ( xCol < 0 && yCol < 0 )
             QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label X/Y columns “%1” and “%2” do not exist in the layer" ).arg( xColName, yColName ) );
           else if ( xCol < 0 )

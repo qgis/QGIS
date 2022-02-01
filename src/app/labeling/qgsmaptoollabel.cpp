@@ -549,8 +549,9 @@ bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::DataDefinedProp
 }
 #endif
 
-QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer ) const
+QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer, PropertyStatus &status ) const
 {
+  status = PropertyStatus::DoesNotExist;
   if ( !labelSettings.dataDefinedProperties().isActive( p ) )
     return QString();
 
@@ -559,14 +560,20 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
   switch ( property.propertyType() )
   {
     case QgsProperty::InvalidProperty:
+      break;
+
     case QgsProperty::StaticProperty:
+      status = PropertyStatus::Valid;
       break;
 
     case QgsProperty::FieldBasedProperty:
+      status = PropertyStatus::Valid;
       return property.field();
 
     case QgsProperty::ExpressionBasedProperty:
     {
+      status = PropertyStatus::Valid;
+
       // an expression based property may still be a effectively a single field reference in the map canvas context.
       // e.g. if it is a expression like '"some_field"', or 'case when @some_project_var = 'a' then "field_a" else "field_b" end'
 
@@ -608,6 +615,10 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
         }
 
       }
+      else
+      {
+        status = PropertyStatus::CurrentExpressionInvalid;
+      }
       break;
     }
   }
@@ -617,7 +628,8 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
 
 int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *vlayer ) const
 {
-  QString fieldname = dataDefinedColumnName( p, labelSettings, vlayer );
+  PropertyStatus status = PropertyStatus::DoesNotExist;
+  QString fieldname = dataDefinedColumnName( p, labelSettings, vlayer, status );
   if ( !fieldname.isEmpty() )
     return vlayer->fields().lookupField( fieldname );
   return -1;
@@ -698,11 +710,15 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
   return true;
 }
 
-bool QgsMapToolLabel::labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const
+QgsMapToolLabel::PropertyStatus QgsMapToolLabel::labelRotatableStatus( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const
 {
-  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::LabelRotation, settings, layer );
+  PropertyStatus status = PropertyStatus::DoesNotExist;
+  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::LabelRotation, settings, layer, status );
+  if ( status == PropertyStatus::CurrentExpressionInvalid )
+    return status;
+
   rotationCol = layer->fields().lookupField( rColName );
-  return rotationCol != -1;
+  return rotationCol != -1 ? PropertyStatus::Valid : PropertyStatus::DoesNotExist;
 }
 
 bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &rotationSuccess, int &rCol, bool ignoreXY ) const
@@ -716,7 +732,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &r
     return false;
   }
 
-  if ( !labelIsRotatable( vlayer, mCurrentLabel.settings, rCol ) )
+  if ( labelRotatableStatus( vlayer, mCurrentLabel.settings, rCol ) != PropertyStatus::Valid )
   {
     return false;
   }
@@ -747,7 +763,8 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, 
 {
   if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
   {
-    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer );
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer, status );
     int pointCol = mCurrentLabel.layer->fields().lookupField( pointColName );
 
     if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, pointCol, QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromPointXY( QgsPoint( x.toDouble(), y.toDouble() ) ), mCurrentLabel.layer->crs() ) ) ) )
@@ -755,8 +772,9 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, 
   }
   else
   {
-    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer );
-    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, mCurrentLabel.layer );
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, mCurrentLabel.layer, status );
     int xCol = mCurrentLabel.layer->fields().lookupField( xColName );
     int yCol = mCurrentLabel.layer->fields().lookupField( yColName );
 
@@ -835,10 +853,11 @@ bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) c
   }
 
   const auto constSubProviders = vlayer->labeling()->subProviders();
+  PropertyStatus status = PropertyStatus::DoesNotExist;
   for ( const QString &providerId : constSubProviders )
   {
     QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Show,
-                        vlayer->labeling()->settings( providerId ), vlayer );
+                        vlayer->labeling()->settings( providerId ), vlayer, status );
     showCol = vlayer->fields().lookupField( fieldname );
     if ( showCol != -1 )
       return true;
@@ -878,7 +897,8 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
 
   if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
   {
-    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer );
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer, status );
     pointCol = vlayer->fields().lookupField( pointColName );
     if ( pointCol >= 0 )
       return true;
@@ -887,8 +907,9 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionX )
        && settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionY ) )
   {
-    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
-    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer, status );
+    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer, status );
     xCol = vlayer->fields().lookupField( xColName );
     yCol = vlayer->fields().lookupField( yColName );
     if ( xCol >= 0 || yCol >= 0 )
