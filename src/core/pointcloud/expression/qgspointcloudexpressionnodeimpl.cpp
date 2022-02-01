@@ -526,7 +526,7 @@ double QgsPointcloudExpressionNodeInOperator::evalNode( QgsPointcloudExpression 
     // check whether they are equal
     equal = qgsDoubleNear( v1, v2 );
     if ( equal ) // we know the result
-      return mNotIn ? 1. : 0.;
+      return mNotIn ? 0. : 1.;
   }
 
   return mNotIn ? 1. : 0.;

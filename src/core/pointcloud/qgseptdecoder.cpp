@@ -592,7 +592,8 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     if ( expr.isValid() )
     {
       // we're allways evaluating the last written point in the buffer
-      if ( expr.evaluate( i - skippedPoints ) != 1. )
+      double eval = expr.evaluate( i - skippedPoints );
+      if ( eval != 1. )
       {
         // if the point is filtered out, rewind the offset so the next point is written over it
         outputOffset -= requestedPointRecordSize;
