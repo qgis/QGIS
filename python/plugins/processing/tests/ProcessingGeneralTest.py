@@ -107,6 +107,21 @@ class TestProcessingGeneral(unittest.TestCase):
         # Python should NOT have ownership
         self.assertFalse(sip.ispyowned(layer))
 
+    def testProviders(self):
+        """
+        When run from a standalone script (like this test), ensure that the providers from separate plugins are available
+        """
+        providers = [p.id() for p in QgsApplication.processingRegistry().providers()]
+        self.assertIn('qgis', providers)
+        self.assertIn('native', providers)
+        self.assertIn('gdal', providers)
+        self.assertIn('project', providers)
+        self.assertIn('script', providers)
+        self.assertIn('model', providers)
+        self.assertIn('grass7', providers)
+        self.assertIn('saga', providers)
+        self.assertIn('otb', providers)
+
 
 if __name__ == '__main__':
     nose2.main()
