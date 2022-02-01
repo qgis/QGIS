@@ -66,11 +66,18 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     */
     bool labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const;
 
+    enum class PropertyStatus
+    {
+      Valid,
+      DoesNotExist,
+      CurrentExpressionInvalid
+    };
+
     /**
      * Checks if labels in a layer can be rotated
      * \param rotationCol out: attribute column for data defined label rotation
     */
-    bool labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const;
+    PropertyStatus labelRotatableStatus( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const;
 
   protected:
     QgsRubberBand *mHoverRubberBand = nullptr;
@@ -146,7 +153,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     QFont currentLabelFont();
 
     //! Returns a data defined attribute column name for particular property or empty string if not defined
-    QString dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer ) const;
+    QString dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer, PropertyStatus &status ) const;
 
     /**
      * Returns a data defined attribute column index
