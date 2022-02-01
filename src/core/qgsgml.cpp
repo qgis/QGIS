@@ -383,8 +383,8 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
     {
       if ( alreadyFoundGeometry )
       {
-        QgsDebugMsg( QStringLiteral( "Will ignore geometry field %1 from typename %2" ).
-                     arg( mLayerProperties[i].mGeometryAttribute, mLayerProperties[i].mName ) );
+        QgsDebugMsgLevel( QStringLiteral( "Will ignore geometry field %1 from typename %2" ).
+                          arg( mLayerProperties[i].mGeometryAttribute, mLayerProperties[i].mName ), 2 );
         mLayerProperties[i].mGeometryAttribute.clear();
       }
       alreadyFoundGeometry = true;
@@ -879,7 +879,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "mEpsg = %1" ).arg( mEpsg ) );
+      QgsDebugMsgLevel( QStringLiteral( "mEpsg = %1" ).arg( mEpsg ), 2 );
     }
   }
 
