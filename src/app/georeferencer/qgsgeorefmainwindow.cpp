@@ -1103,9 +1103,8 @@ void QgsGeoreferencerMainWindow::createDockWidgets()
 
 QLabel *QgsGeoreferencerMainWindow::createBaseLabelStatus()
 {
-  QFont myFont( QStringLiteral( "Arial" ), 9 );
   QLabel *label = new QLabel( statusBar() );
-  label->setFont( myFont );
+  label->setFont( statusBarFont() );
   label->setMinimumWidth( 10 );
   label->setMaximumHeight( 20 );
   label->setMargin( 3 );
@@ -1114,8 +1113,24 @@ QLabel *QgsGeoreferencerMainWindow::createBaseLabelStatus()
   return label;
 }
 
+QFont QgsGeoreferencerMainWindow::statusBarFont()
+{
+  // Drop the font size in the status bar by a couple of points (match main window)
+  QFont barFont = font();
+  int fontSize = barFont.pointSize();
+#ifdef Q_OS_WIN
+  fontSize = std::max( fontSize - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
+#else
+  fontSize = std::max( fontSize - 2, 6 );
+#endif
+  barFont.setPointSize( fontSize );
+  return barFont;
+}
+
 void QgsGeoreferencerMainWindow::createStatusBar()
 {
+  statusBar()->setFont( statusBarFont() );
+
   // add a widget to show/set current rotation
   mRotationLabel = createBaseLabelStatus();
   mRotationLabel->setObjectName( QStringLiteral( "mRotationLabel" ) );
