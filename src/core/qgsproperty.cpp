@@ -375,7 +375,7 @@ void QgsProperty::setExpressionString( const QString &expression )
   d->expression = QgsExpression( expression );
   d->expressionPrepared = false;
   d->expressionIsInvalid = false;
-  if (d->expressionString.isEmpty())
+  if ( d->expressionString.isEmpty() )
     d->active = false;
 }
 
