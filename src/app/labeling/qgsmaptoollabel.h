@@ -141,7 +141,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     */
     QString currentLabelText( int trunc = 0 );
 
-    void currentAlignment( QString &hali, QString &vali );
+    QgsPalLayerSettings::QuadrantPosition currentAlignment();
 
     /**
      * Gets vector feature for current label pos
