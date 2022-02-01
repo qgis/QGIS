@@ -408,7 +408,7 @@ class QgsPluginInstaller(QObject):
             return
         if not quiet:
             warning = self.tr("Are you sure you want to uninstall the following plugin?") + "\n(" + plugin["name"] + ")"
-            if plugin["status"] == "orphan" and not plugin["error"]:
+            if plugin["status"] == "orphan" and plugin["status_exp"] == "orphan" and not plugin["error"]:
                 warning += "\n\n" + self.tr("Warning: this plugin isn't available in any accessible repository!")
             if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), warning, QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
                 return
