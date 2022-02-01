@@ -405,14 +405,10 @@ class GenericAlgorithmsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         start_app()
-        from processing.core.Processing import Processing
-        Processing.initialize()
         cls.cleanup_paths = []
 
     @classmethod
     def tearDownClass(cls):
-        from processing.core.Processing import Processing
-        Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 
