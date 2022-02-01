@@ -1325,6 +1325,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     expanded = mapShape->clone();
     expanded->extendLineByDistance( overrun, overrun, mLF->overrunSmoothDistance() );
     mapShape = expanded.get();
+    shapeLength += 2 * overrun;
   }
 
   QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
@@ -1364,6 +1365,9 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     }
   }
 
+  // calculate the anchor point for the original line shape as a GEOS point
+  const geos::unique_ptr originalPoint = mapShape->interpolatePoint( shapeLength * mLF->lineAnchorPercent() );
+
   std::vector< std::unique_ptr< LabelPosition >> positions;
   for ( PathOffset offset : { PositiveOffset, NoOffset, NegativeOffset } )
   {
@@ -1388,7 +1392,20 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     if ( qgsDoubleNear( totalDistance, 0.0 ) )
       continue;
 
-    const double lineAnchorPoint = totalDistance * mLF->lineAnchorPercent();
+    double lineAnchorPoint = 0;
+    if ( originalPoint && offset != NoOffset )
+    {
+      // the actual anchor point for the offset curves is the closest point on those offset curves
+      // to the anchor point on the original line. This avoids anchor points which differ greatly
+      // on the positive/negative offset lines due to line curvature.
+      lineAnchorPoint = currentMapShape->lineLocatePoint( originalPoint.get() );
+    }
+    else
+    {
+      lineAnchorPoint = totalDistance * mLF->lineAnchorPercent();
+      if ( offset == NegativeOffset )
+        lineAnchorPoint = totalDistance - lineAnchorPoint;
+    }
 
     if ( pal->isCanceled() )
       return 0;
@@ -1405,16 +1422,21 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
         break;
 
       case QgsLabelLineSettings::AnchorType::Strict:
-        distanceAlongLineToStartCandidate = std::min( lineAnchorPoint, totalDistance * 0.99 - getLabelWidth() );
+        distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint - getLabelWidth() / 2, 0.0, totalDistance * 0.99 - getLabelWidth() );
         singleCandidateOnly = true;
         break;
     }
 
+    bool hasTestedFirstPlacement = false;
     for ( ; distanceAlongLineToStartCandidate <= totalDistance; distanceAlongLineToStartCandidate += delta )
     {
+      if ( singleCandidateOnly && hasTestedFirstPlacement )
+        break;
+
       if ( pal->isCanceled() )
         return 0;
 
+      hasTestedFirstPlacement = true;
       // placements may need to be reversed if using map orientation and the line has right-to-left direction
       bool labeledLineSegmentIsRightToLeft = false;
       const QgsTextRendererUtils::LabelLineDirection direction = ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ? QgsTextRendererUtils::RespectPainterOrientation : QgsTextRendererUtils::FollowLineDirection;
@@ -1475,9 +1497,6 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
       if ( p )
         positions.emplace_back( std::move( p ) );
-
-      if ( singleCandidateOnly )
-        break;
     }
   }
 
