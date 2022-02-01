@@ -335,25 +335,84 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
   return QString();
 }
 
-void QgsMapToolLabel::currentAlignment( QString &hali, QString &vali )
+QgsPalLayerSettings::QuadrantPosition QgsMapToolLabel::currentAlignment()
 {
-  hali = QStringLiteral( "Left" );
-  vali = QStringLiteral( "Bottom" );
+  QgsPalLayerSettings::QuadrantPosition quadrantPosition = QgsPalLayerSettings::QuadrantAboveRight;
 
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
   if ( !vlayer )
   {
-    return;
+    return quadrantPosition;
   }
 
   QgsFeature f;
   if ( !currentFeature( f ) )
   {
-    return;
+    return quadrantPosition;
   }
 
-  hali = evaluateDataDefinedProperty( QgsPalLayerSettings::Hali, mCurrentLabel.settings, f, hali ).toString();
-  vali = evaluateDataDefinedProperty( QgsPalLayerSettings::Vali, mCurrentLabel.settings, f, vali ).toString();
+  // quadrant offest defined via buttons
+  if ( mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::OverPoint )
+    quadrantPosition = mCurrentLabel.settings.quadOffset;
+
+  // data defined quadrant offset
+  if ( mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::AroundPoint ||
+       mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::OverPoint )
+  {
+    if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::OffsetQuad ) )
+    {
+      QVariant exprVal = evaluateDataDefinedProperty( QgsPalLayerSettings::OffsetQuad, mCurrentLabel.settings, f, quadrantPosition );
+      if ( !exprVal.isNull() )
+      {
+        bool ok;
+        int quadInt = exprVal.toInt( &ok );
+        if ( ok && 0 <= quadInt && quadInt <= 8 )
+        {
+          quadrantPosition = static_cast< QgsPalLayerSettings::QuadrantPosition >( quadInt );
+        }
+      }
+    }
+  }
+
+  // quadrant defined by DD alignment
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Hali ) ||
+       mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Vali ) )
+  {
+    QString hali = QStringLiteral( "Left" );
+    QString vali = QStringLiteral( "Bottom" );
+    hali = evaluateDataDefinedProperty( QgsPalLayerSettings::Hali, mCurrentLabel.settings, f, hali ).toString();
+    vali = evaluateDataDefinedProperty( QgsPalLayerSettings::Vali, mCurrentLabel.settings, f, vali ).toString();
+
+    if ( hali.compare( QLatin1String( "Left" ), Qt::CaseInsensitive ) == 0 )
+    {
+      if ( vali.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 || vali.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
+        quadrantPosition = QgsPalLayerSettings::QuadrantBelowRight;
+      else if ( vali.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+        quadrantPosition = QgsPalLayerSettings::QuadrantRight;
+      else if ( vali.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 || vali.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) == 0 )
+        quadrantPosition = QgsPalLayerSettings::QuadrantAboveRight;
+    }
+    else if ( hali.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
+    {
+      if ( vali.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 || vali.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
+        quadrantPosition = QgsPalLayerSettings::QuadrantBelow;
+      else if ( vali.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+        quadrantPosition = QgsPalLayerSettings::QuadrantOver;
+      else if ( vali.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 || vali.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) == 0 )
+        quadrantPosition = QgsPalLayerSettings::QuadrantAbove;
+    }
+    else if ( hali.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
+    {
+      if ( vali.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 || vali.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
+        quadrantPosition = QgsPalLayerSettings::QuadrantBelowLeft;
+      else if ( vali.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+        quadrantPosition = QgsPalLayerSettings::QuadrantLeft;
+      else if ( vali.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 || vali.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) == 0 )
+        quadrantPosition = QgsPalLayerSettings::QuadrantAboveLeft;
+    }
+  }
+
+  return quadrantPosition;
 }
 
 bool QgsMapToolLabel::currentFeature( QgsFeature &f, bool fetchGeom )
@@ -471,8 +530,7 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   }
 
   //adapt pos depending on data defined alignment
-  QString haliString, valiString;
-  currentAlignment( haliString, valiString );
+  QgsPalLayerSettings::QuadrantPosition quadrantPosition = currentAlignment();
 
   QFontMetricsF labelFontMetrics( mCurrentLabel.pos.labelFont );
 
@@ -487,33 +545,47 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   double labelSizeX = std::sqrt( cp_0.sqrDist( cp_1 ) );
   double labelSizeY = std::sqrt( cp_0.sqrDist( cp_3 ) );
 
-  double xdiff = 0;
+  // X diff
+  double xdiff = 0.0;
+  switch ( quadrantPosition )
+  {
+    case QgsPalLayerSettings::QuadrantAboveLeft:
+    case QgsPalLayerSettings::QuadrantLeft:
+    case QgsPalLayerSettings::QuadrantBelowLeft:
+      xdiff = labelSizeX;
+      break;
+    case QgsPalLayerSettings::QuadrantAbove:
+    case QgsPalLayerSettings::QuadrantOver:
+    case QgsPalLayerSettings::QuadrantBelow:
+      xdiff = labelSizeX / 2.0;
+      break;
+    case QgsPalLayerSettings::QuadrantAboveRight:
+    case QgsPalLayerSettings::QuadrantRight:
+    case QgsPalLayerSettings::QuadrantBelowRight:
+      // Do nothing
+      break;
+  }
+
+  // Y diff
   double ydiff = 0;
-
-  if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
+  double descentRatio = 1.0 / labelFontMetrics.ascent() / labelFontMetrics.height();
+  switch ( quadrantPosition )
   {
-    xdiff = labelSizeX / 2.0;
-  }
-  else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
-  {
-    xdiff = labelSizeX;
-  }
-
-  if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 || valiString.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
-  {
-    ydiff = labelSizeY;
-  }
-  else
-  {
-    double descentRatio = 1 / labelFontMetrics.ascent() / labelFontMetrics.height();
-    if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
-    {
+    case QgsPalLayerSettings::QuadrantAboveLeft:
+    case QgsPalLayerSettings::QuadrantAbove:
+    case QgsPalLayerSettings::QuadrantAboveRight:
       ydiff = labelSizeY * descentRatio;
-    }
-    else if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
-    {
+      break;
+    case QgsPalLayerSettings::QuadrantLeft:
+    case QgsPalLayerSettings::QuadrantOver:
+    case QgsPalLayerSettings::QuadrantRight:
       ydiff = labelSizeY * 0.5 * ( 1 - descentRatio );
-    }
+      break;
+    case QgsPalLayerSettings::QuadrantBelowLeft:
+    case QgsPalLayerSettings::QuadrantBelow:
+    case QgsPalLayerSettings::QuadrantBelowRight:
+      ydiff = labelSizeY;
+      break;
   }
 
   double angle = mCurrentLabel.pos.rotation;
