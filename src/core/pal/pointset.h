@@ -42,6 +42,7 @@
 
 #include "qgis_core.h"
 #include "qgsrectangle.h"
+#include "qgsgeos.h"
 
 namespace pal
 {
@@ -184,6 +185,16 @@ namespace pal
        * \param py final y coord on line
       */
       void getPointByDistance( double *d, double *ad, double dl, double *px, double *py );
+
+      /**
+       * Returns a GEOS geometry representing the point interpolated on the shape by distance.
+       */
+      geos::unique_ptr interpolatePoint( double distance ) const;
+
+      /**
+       * Returns the distance along the geometry closest to the specified GEOS \a point.
+       */
+      double lineLocatePoint( const GEOSGeometry *point ) const;
 
       /**
        * Returns the point set's GEOS geometry.
