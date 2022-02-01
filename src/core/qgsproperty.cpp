@@ -383,7 +383,7 @@ void QgsProperty::setExpressionString( const QString &expression )
   else
   {
     d->type = ExpressionBasedProperty;
-  }  
+  }
 }
 
 QString QgsProperty::expressionString() const
