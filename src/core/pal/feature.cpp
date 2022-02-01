@@ -1337,12 +1337,16 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( hasAboveBelowLinePlacement && !qgsDoubleNear( offsetDistance, 0 ) )
   {
     // create offseted map shapes to be used for above and below line placements
-    mapShapeOffsetPositive = mapShape->clone();
-    mapShapeOffsetNegative = mapShape->clone();
-    if ( offsetDistance >= 0.0 )
+    if ( ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) || ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
+      mapShapeOffsetPositive = mapShape->clone();
+    if ( ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) || ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) )
+      mapShapeOffsetNegative = mapShape->clone();
+    if ( offsetDistance >= 0.0 || !( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) )
     {
-      mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance );
-      mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance * -1 );
+      if ( mapShapeOffsetPositive )
+        mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance );
+      if ( mapShapeOffsetNegative )
+        mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance * -1 );
     }
     else
     {
@@ -1359,8 +1363,10 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
         flags &= ~QgsLabeling::LinePlacementFlag::BelowLine;
         flags |= QgsLabeling::LinePlacementFlag::AboveLine;
       }
-      mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance * -1 );
-      mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance );
+      if ( mapShapeOffsetPositive )
+        mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance * -1 );
+      if ( mapShapeOffsetNegative )
+        mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance );
     }
   }
 
@@ -1422,10 +1428,13 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
       if ( !labelPosition )
         continue;
-      if ( ( offset != NoOffset ) && !labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
-        continue;
-      if ( ( offset != NoOffset ) && labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::BelowLine ) )
-        continue;
+      if ( flags & QgsLabeling::LinePlacementFlag::MapOrientation )
+      {
+        if ( ( offset != NoOffset ) && !labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
+          continue;
+        if ( ( offset != NoOffset ) && labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::BelowLine ) )
+          continue;
+      }
 
       // evaluate cost
       const double angleDiff = labelPosition->angleDifferential();
