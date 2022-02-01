@@ -49,8 +49,6 @@ class TestSagaAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
     @classmethod
     def setUpClass(cls):
         start_app()
-        from processing.core.Processing import Processing
-        Processing.initialize()
         cls.provider = SagaAlgorithmProvider()
         QgsApplication.processingRegistry().addProvider(cls.provider)
         cls.cleanup_paths = []
@@ -60,9 +58,7 @@ class TestSagaAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def tearDownClass(cls):
-        from processing.core.Processing import Processing
         QgsApplication.processingRegistry().removeProvider(cls.provider)
-        Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 
