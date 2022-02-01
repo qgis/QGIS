@@ -33,6 +33,7 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
 
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;
 
   protected:

@@ -245,6 +245,23 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
   }
 }
 
+void QgsMapToolRotateLabel::keyPressEvent( QKeyEvent *e )
+{
+  if ( mLabelRubberBand )
+  {
+    switch ( e->key() )
+    {
+      case Qt::Key_Delete:
+      {
+        e->ignore();  // Override default shortcut management
+        return;
+      }
+    }
+  }
+
+  QgsMapToolLabel::keyPressEvent( e );
+}
+
 void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
 {
   if ( mLabelRubberBand )
@@ -283,6 +300,7 @@ void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
             vlayer->triggerRepaint();
           }
         }
+        e->ignore();  // Override default shortcut management
         break;
       }
 
