@@ -40,8 +40,6 @@ class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.Algor
     @classmethod
     def setUpClass(cls):
         start_app()
-        from processing.core.Processing import Processing
-        Processing.initialize()
         cls.provider = Grass7AlgorithmProvider()
         QgsApplication.processingRegistry().addProvider(cls.provider)
         cls.cleanup_paths = []
@@ -50,9 +48,7 @@ class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.Algor
 
     @classmethod
     def tearDownClass(cls):
-        from processing.core.Processing import Processing
         QgsApplication.processingRegistry().removeProvider(cls.provider)
-        Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 
