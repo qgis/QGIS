@@ -2490,7 +2490,18 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
     }
     else
     {
-      mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
+      const QString contentType = mCapabilitiesReply->header( QNetworkRequest::ContentTypeHeader ).toString();
+
+      QString errorMessage;
+      if ( contentType.startsWith( QStringLiteral( "text/plain" ) ) )
+        errorMessage = mCapabilitiesReply->readAll();
+      else
+        errorMessage = mCapabilitiesReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString();
+
+      if ( errorMessage.isEmpty() )
+        errorMessage = mCapabilitiesReply->errorString();
+
+      mError = tr( "Download of capabilities failed: %1" ).arg( errorMessage );
       QgsMessageLog::logMessage( mError, tr( "WMS" ) );
       mHttpCapabilitiesResponse.clear();
     }

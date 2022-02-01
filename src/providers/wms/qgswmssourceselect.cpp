@@ -488,7 +488,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
     QMessageBox::warning(
       this,
       tr( "WMS Provider" ),
-      tr( "Failed to download capabilities:\n" ) + capDownload.lastError()
+      capDownload.lastError()
     );
     return;
   }
