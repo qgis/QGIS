@@ -19,7 +19,7 @@
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayerlabeling.h"
 
 #include <QtConcurrentRun>
@@ -331,6 +331,7 @@ void QgsMapRendererCustomPainterJob::doRender()
     emit layerRendered( job.layerId );
   }
 
+  emit renderingLayersFinished();
   QgsDebugMsgLevel( QStringLiteral( "Done rendering map layers" ), 5 );
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) && !mLabelJob.context.renderingStopped() )

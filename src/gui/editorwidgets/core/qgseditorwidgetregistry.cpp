@@ -223,7 +223,7 @@ QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget *editor, const QSt
     it = mFactoriesByType.constBegin();
     for ( ; it != mFactoriesByType.constEnd(); ++it )
     {
-      if ( editor->staticMetaObject.className() == it.key() )
+      if ( QWidget::staticMetaObject.className() == it.key() )
       {
         // if it's a perfect match: return it directly
         return it.value().second;

@@ -520,6 +520,77 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.dump(), dump );
     }
 
+    void  represent_attributes()
+    {
+
+      QgsVectorLayer layer { QStringLiteral( "Point?field=col1:integer&field=col2:string" ), QStringLiteral( "test_represent_attributes" ), QStringLiteral( "memory" ) };
+      QVERIFY( layer.isValid() );
+      QgsFeature f1( layer.dataProvider()->fields(), 1 );
+      f1.setAttribute( QStringLiteral( "col1" ), 1 );
+      f1.setAttribute( QStringLiteral( "col2" ), "test1" );
+      QgsFeature f2( layer.dataProvider()->fields(), 2 );
+      f2.setAttribute( QStringLiteral( "col1" ), 2 );
+      f2.setAttribute( QStringLiteral( "col2" ), "test2" );
+      layer.dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 );
+
+      QVariantMap config;
+      QVariantMap map;
+      map.insert( QStringLiteral( "one" ), QStringLiteral( "1" ) );
+      map.insert( QStringLiteral( "two" ), QStringLiteral( "2" ) );
+
+      config.insert( QStringLiteral( "map" ), map );
+      layer.setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config ) );
+
+      QgsExpressionContext context( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      context.setFeature( f2 );
+      QgsExpression expression( "represent_attributes()" );
+
+      if ( expression.hasParserError() )
+        qDebug() << expression.parserErrorString();
+      QVERIFY( !expression.hasParserError() );
+
+      expression.prepare( &context );
+
+      QVariantMap result { expression.evaluate( &context ).toMap() };
+
+      QCOMPARE( result.value( QStringLiteral( "col1" ) ).toString(), QStringLiteral( "two" ) );
+      QCOMPARE( result.value( QStringLiteral( "col2" ) ).toString(), QStringLiteral( "test2" ) );
+
+      QgsExpressionContext context2( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      context2.setFeature( f2 );
+      expression = QgsExpression( "represent_attributes($currentfeature)" );
+
+      result = expression.evaluate( &context2 ).toMap();
+
+      QVERIFY( !expression.hasEvalError() );
+
+      QCOMPARE( result.value( QStringLiteral( "col1" ) ).toString(), QStringLiteral( "two" ) );
+      QCOMPARE( result.value( QStringLiteral( "col2" ) ).toString(), QStringLiteral( "test2" ) );
+
+      QgsProject::instance()->addMapLayer( &layer, false, false );
+      QgsExpressionContext context3;
+      context3.setFeature( f2 );
+      expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
+
+      result = expression.evaluate( &context3 ).toMap();
+
+      QVERIFY( !expression.hasEvalError() );
+
+      QCOMPARE( result.value( QStringLiteral( "col1" ) ).toString(), QStringLiteral( "two" ) );
+      QCOMPARE( result.value( QStringLiteral( "col2" ) ).toString(), QStringLiteral( "test2" ) );
+
+      // Test the cached value
+      QCOMPARE( context3.cachedValue( QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer.id(), QStringLiteral( "col1" ), QStringLiteral( "2" ) ) ).toString(),  QStringLiteral( "two" ) );
+
+      // Test errors
+      QgsProject::instance()->removeMapLayer( layer.id() );
+      expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
+      QgsExpressionContext context4;
+      result = expression.evaluate( &context4 ).toMap();
+      QVERIFY( expression.hasEvalError() );
+
+    };
+
     void represent_value()
     {
       QVariantMap config;
@@ -928,6 +999,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "geom_to_wkb not geom" ) << "geom_to_wkt(geom_from_wkb(geom_to_wkb('a')))" << true << QVariant();
       QTest::newRow( "geom_from_wkb not geom" ) << "geom_to_wkt(geom_from_wkb(make_point(4,5)))" << true << QVariant();
       QTest::newRow( "geom_from_wkb null" ) << "geom_to_wkt(geom_from_wkb(NULL))" << false << QVariant();
+      QTest::newRow( "geometry_type not geom" ) << "geometry_type('g')" << true << QVariant();
+      QTest::newRow( "geometry_type null" ) << "geometry_type(NULL)" << false << QVariant();
+      QTest::newRow( "geometry_type point" ) << "geometry_type(geom_from_wkt('POINT(1 2)'))" << false << QVariant( QStringLiteral( "Point" ) );
+      QTest::newRow( "geometry_type polygon" ) << "geometry_type(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant( QStringLiteral( "Polygon" ) );
+      QTest::newRow( "geometry_type line" ) << "geometry_type(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'))" << false << QVariant( QStringLiteral( "Line" ) );
+      QTest::newRow( "geometry_type multipoint" ) << "geometry_type(geom_from_wkt('MULTIPOINT((0 1),(0 0))'))" << false << QVariant( QStringLiteral( "Point" ) );
       QTest::newRow( "num_points" ) << "num_points(geom_from_wkt('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 0),POINT(6 5))'))" << false << QVariant( 3 );
       QTest::newRow( "num_interior_rings not geom" ) << "num_interior_rings('g')" << true << QVariant();
       QTest::newRow( "num_interior_rings null" ) << "num_interior_rings(NULL)" << false << QVariant();
@@ -3671,6 +3748,10 @@ class TestQgsExpression: public QObject
       QStringList removeAtExpected = array;
       removeAtExpected.removeAt( 0 );
       QCOMPARE( QgsExpression( "array_remove_at(\"strings\", 0)" ).evaluate( &context ), QVariant( removeAtExpected ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"strings\", -2)" ).evaluate( &context ), QVariant( removeAtExpected ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"strings\", -4)" ).evaluate( &context ), QVariant( array ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"strings\", 4)" ).evaluate( &context ), QVariant( array ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"strings\", -40)" ).evaluate( &context ), QVariant( array ) );
 
       QStringList removeAllExpected;
       removeAllExpected << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "d" );
@@ -3755,6 +3836,10 @@ class TestQgsExpression: public QObject
       QVariantList removeAtExpected = array;
       removeAtExpected.removeAt( 0 );
       QCOMPARE( QgsExpression( "array_remove_at(\"ints\", 0)" ).evaluate( &context ), QVariant( removeAtExpected ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"ints\", -2)" ).evaluate( &context ), QVariant( removeAtExpected ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"ints\", -5)" ).evaluate( &context ), QVariant( array ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"ints\", 5)" ).evaluate( &context ), QVariant( array ) );
+      QCOMPARE( QgsExpression( "array_remove_at(\"ints\", -50)" ).evaluate( &context ), QVariant( array ) );
 
       QVariantList removeAllExpected;
       removeAllExpected << 1 << 2 << 4;
@@ -4016,6 +4101,34 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "\"another field\"", layer.get() ), 1 );
       QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "\"ANOTHER FIELD\"", layer.get() ), 1 );
       QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "  (  \"ANOTHER FIELD\"   )   ", layer.get() ), 1 );
+    }
+
+    void test_quoteFieldExpression()
+    {
+      std::unique_ptr layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      layer->dataProvider()->addAttributes( { QgsField( QStringLiteral( "field1" ), QVariant::String ),
+                                              QgsField( QStringLiteral( "another FIELD" ), QVariant::String ) } );
+      layer->updateFields();
+
+      QCOMPARE( QgsExpression::quoteFieldExpression( QString(), layer.get() ), QString() );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QString(), nullptr ), QString() );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "42" ), layer.get() ), QStringLiteral( "42" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "foo" ), layer.get() ), QStringLiteral( "foo" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "foo" ), nullptr ), QStringLiteral( "foo" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "\"foo bar\"" ), layer.get() ), QStringLiteral( "\"foo bar\"" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "sqrt(foo)" ), layer.get() ), QStringLiteral( "sqrt(foo)" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "foo + bar" ), layer.get() ), QStringLiteral( "foo + bar" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "field1" ), layer.get() ), QStringLiteral( "\"field1\"" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "FIELD1" ), layer.get() ), QStringLiteral( "\"field1\"" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "\"field1\"" ), layer.get() ), QStringLiteral( "\"field1\"" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "\"FIELD1\"" ), layer.get() ), QStringLiteral( "\"FIELD1\"" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "  (  \"field1\"   )   " ), layer.get() ), QStringLiteral( "  (  \"field1\"   )   " ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "another FIELD" ), layer.get() ), QStringLiteral( "\"another FIELD\"" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "ANOTHER field" ), layer.get() ), QStringLiteral( "\"another FIELD\"" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "  ANOTHER field  " ), layer.get() ), QStringLiteral( "\"another FIELD\"" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "\"another field\"" ), layer.get() ), QStringLiteral( "\"another field\"" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "\"ANOTHER FIELD\"" ), layer.get() ), QStringLiteral( "\"ANOTHER FIELD\"" ) );
+      QCOMPARE( QgsExpression::quoteFieldExpression( QStringLiteral( "  (  \"ANOTHER FIELD\"   )   " ), layer.get() ), QStringLiteral( "  (  \"ANOTHER FIELD\"   )   " ) );
     }
 
     void test_implicitSharing()

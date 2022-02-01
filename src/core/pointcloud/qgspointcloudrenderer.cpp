@@ -162,6 +162,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setMaximumScreenError( mMaximumScreenError );
   destination->setMaximumScreenErrorUnit( mMaximumScreenErrorUnit );
   destination->setPointSymbol( mPointSymbol );
+  destination->setDrawOrder2d( mDrawOrder2d );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
@@ -173,6 +174,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   mMaximumScreenError = element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "0.3" ) ).toDouble();
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) );
   mPointSymbol = static_cast< PointSymbol >( element.attribute( QStringLiteral( "pointSymbol" ), QStringLiteral( "0" ) ).toInt() );
+  mDrawOrder2d = static_cast< DrawOrder >( element.attribute( QStringLiteral( "drawOrder2d" ), QStringLiteral( "0" ) ).toInt() );
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
@@ -184,6 +186,7 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   element.setAttribute( QStringLiteral( "maximumScreenError" ), qgsDoubleToString( mMaximumScreenError ) );
   element.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
   element.setAttribute( QStringLiteral( "pointSymbol" ), QString::number( mPointSymbol ) );
+  element.setAttribute( QStringLiteral( "drawOrder2d" ), QString::number( static_cast< int >( mDrawOrder2d ) ) );
 }
 
 QgsPointCloudRenderer::PointSymbol QgsPointCloudRenderer::pointSymbol() const
@@ -194,6 +197,16 @@ QgsPointCloudRenderer::PointSymbol QgsPointCloudRenderer::pointSymbol() const
 void QgsPointCloudRenderer::setPointSymbol( PointSymbol symbol )
 {
   mPointSymbol = symbol;
+}
+
+QgsPointCloudRenderer::DrawOrder QgsPointCloudRenderer::drawOrder2d() const
+{
+  return mDrawOrder2d;
+}
+
+void QgsPointCloudRenderer::setDrawOrder2d( DrawOrder order )
+{
+  mDrawOrder2d = order;
 }
 
 QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer, const QgsRenderContext &renderContext, const QgsGeometry &geometry, double toleranceForPointIdentification )
@@ -207,13 +220,22 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
 
   const QgsRectangle rootNodeExtentLayerCoords = index->nodeMapExtent( root );
   QgsRectangle rootNodeExtentMapCoords;
-  try
+  if ( !renderContext.coordinateTransform().isShortCircuited() )
   {
-    rootNodeExtentMapCoords = renderContext.coordinateTransform().transformBoundingBox( rootNodeExtentLayerCoords );
+    try
+    {
+      QgsCoordinateTransform extentTransform = renderContext.coordinateTransform();
+      extentTransform.setBallparkTransformsAreAppropriate( true );
+      rootNodeExtentMapCoords = extentTransform.transformBoundingBox( rootNodeExtentLayerCoords );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
+      rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
+    }
   }
-  catch ( QgsCsException & )
+  else
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
     rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
   }
 

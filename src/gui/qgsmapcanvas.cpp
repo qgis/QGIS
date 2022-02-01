@@ -209,6 +209,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
 
+  mSettings.setRendererUsage( Qgis::RendererUsage::View );
+
   setSceneRect( 0, 0, s.width(), s.height() );
   mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
 
@@ -725,14 +727,7 @@ void QgsMapCanvas::rendererJobFinished()
 
   mMapUpdateTimer.stop();
 
-  // TODO: would be better to show the errors in message bar
-  const auto constErrors = mJob->errors();
-  for ( const QgsMapRendererJob::Error &error : constErrors )
-  {
-    QgsMapLayer *layer = QgsProject::instance()->mapLayer( error.layerID );
-    emit renderErrorOccurred( error.message, layer );
-    QgsMessageLog::logMessage( error.layerID + " :: " + error.message, tr( "Rendering" ) );
-  }
+  notifyRendererErrors( mJob->errors() );
 
   if ( !mJobCanceled )
   {
@@ -936,7 +931,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 
   auto addCoordinateFormat = [ &, this]( const QString identifier, const QgsCoordinateReferenceSystem & crs )
   {
-    QgsCoordinateTransform ct( mSettings.destinationCrs(), crs, mSettings.transformContext() );
+    const QgsCoordinateTransform ct( mSettings.destinationCrs(), crs, mSettings.transformContext() );
     try
     {
       const QgsPointXY transformedPoint = ct.transform( mapPoint );
@@ -945,7 +940,9 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
       int displayPrecision = 0;
       try
       {
-        QgsRectangle extentReproj = ct.transformBoundingBox( extent() );
+        QgsCoordinateTransform extentTransform = ct;
+        extentTransform.setBallparkTransformsAreAppropriate( true );
+        QgsRectangle extentReproj = extentTransform.transformBoundingBox( extent() );
         const double mapUnitsPerPixel = ( extentReproj.width() / width() + extentReproj.height() / height() ) * 0.5;
         if ( mapUnitsPerPixel > 10 )
           displayPrecision = 0;
@@ -1038,6 +1035,29 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
   menu.exec( event->globalPos() );
 }
 
+void QgsMapCanvas::notifyRendererErrors( const QgsMapRendererJob::Errors &errors )
+{
+  const QDateTime currentTime = QDateTime::currentDateTime();
+
+  // remove errors too old
+  for ( const QgsMapRendererJob::Error &error : errors )
+  {
+    const QString errorKey = error.layerID + ':' + error.message;
+    if ( mRendererErrors.contains( errorKey ) )
+    {
+      const QDateTime sameErrorTime = mRendererErrors.value( errorKey );
+
+      if ( sameErrorTime.secsTo( currentTime ) < 60 )
+        continue;
+    }
+
+    mRendererErrors[errorKey] = currentTime;
+
+    if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( error.layerID ) )
+      emit renderErrorOccurred( error.message, layer );
+  }
+}
+
 void QgsMapCanvas::updateDevicePixelFromScreen()
 {
   mSettings.setDevicePixelRatio( devicePixelRatio() );
@@ -1045,12 +1065,16 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
   if ( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() )
   {
     if ( window()->windowHandle() )
+    {
       mSettings.setOutputDpi( window()->windowHandle()->screen()->physicalDotsPerInch() );
+      mSettings.setDpiTarget( window()->windowHandle()->screen()->physicalDotsPerInch() );
+    }
   }
   else
   {
     // Fallback: compatibility with QGIS <= 3.20; always assume low dpi screens
     mSettings.setOutputDpi( window()->windowHandle()->screen()->logicalDotsPerInch() );
+    mSettings.setDpiTarget( window()->windowHandle()->screen()->logicalDotsPerInch() );
   }
 }
 
@@ -1290,7 +1314,8 @@ bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
   if ( extent.crs() != mapSettings().destinationCrs() )
   {
     QgsCoordinateTransform ct( extent.crs(), mapSettings().destinationCrs(), QgsProject::instance() );
-    canvasExtent = ct.transform( extent );
+    ct.setBallparkTransformsAreAppropriate( true );
+    canvasExtent = ct.transformBoundingBox( extent );
 
     if ( canvasExtent.isEmpty() )
     {

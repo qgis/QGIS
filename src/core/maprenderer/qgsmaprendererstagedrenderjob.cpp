@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsrendereditemresults.h"
 
 QgsMapRendererStagedRenderJob::QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags )

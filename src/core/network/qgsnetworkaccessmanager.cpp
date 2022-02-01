@@ -353,11 +353,6 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   {
     content = buffer->buffer();
   }
-  else if ( outgoingData )
-  {
-    content = outgoingData->readAll();
-    outgoingData->seek( 0 );
-  }
 
   emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req, requestId, content ) );
   Q_NOWARN_DEPRECATED_PUSH

@@ -26,13 +26,15 @@ import sys
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsProcessingException,
                        QgsField,
+                       QgsFields,
                        QgsFeatureSink,
                        QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsVariantUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -59,16 +61,31 @@ class FieldsPyculator(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.type_names = [self.tr('Integer'),
-                           self.tr('Float'),
-                           self.tr('String')]
-
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
                                                               types=[QgsProcessing.TypeVector]))
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
                                                        self.tr('Result field name'), defaultValue='NewField'))
-        self.addParameter(QgsProcessingParameterEnum(self.FIELD_TYPE,
-                                                     self.tr('Field type'), options=self.type_names))
+
+        types = [(QVariant.Int, QVariant.Invalid),
+                 (QVariant.Double, QVariant.Invalid),
+                 (QVariant.String, QVariant.Invalid),
+                 (QVariant.Bool, QVariant.Invalid),
+                 (QVariant.Date, QVariant.Invalid),
+                 (QVariant.Time, QVariant.Invalid),
+                 (QVariant.DateTime, QVariant.Invalid),
+                 (QVariant.ByteArray, QVariant.Invalid),
+                 (QVariant.StringList, QVariant.String),
+                 (QVariant.List, QVariant.Int),
+                 (QVariant.List, QVariant.Double)]
+        type_names = []
+        type_icons = []
+        for type_name, subtype_name in types:
+            type_names.append(QgsVariantUtils.typeToDisplayString(type_name, subtype_name))
+            type_icons.append(QgsFields.iconForFieldType(type_name, subtype_name))
+        param = QgsProcessingParameterEnum('FIELD_TYPE', 'Field type', options=type_names)
+        param.setMetadata({'widget_wrapper': {'icons': type_icons}})
+        self.addParameter(param)
+
         self.addParameter(QgsProcessingParameterNumber(self.FIELD_LENGTH,
                                                        self.tr('Field length'), minValue=0,
                                                        defaultValue=10))
@@ -94,14 +111,43 @@ class FieldsPyculator(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
-        field_type = self.TYPES[self.parameterAsEnum(parameters, self.FIELD_TYPE, context)]
+
+        field_type = QVariant.Invalid
+        field_sub_type = QVariant.Invalid
+        field_type_parameter = self.parameterAsEnum(parameters, self.FIELD_TYPE, context)
+        if field_type_parameter == 0:  # Integer
+            field_type = QVariant.Int
+        elif field_type_parameter == 1:  # Float
+            field_type = QVariant.Double
+        elif field_type_parameter == 2:  # String
+            field_type = QVariant.String
+        elif field_type_parameter == 3:  # Boolean
+            field_type = QVariant.Bool
+        elif field_type_parameter == 4:  # Date
+            field_type = QVariant.Date
+        elif field_type_parameter == 5:  # Time
+            field_type = QVariant.Time
+        elif field_type_parameter == 6:  # DateTime
+            field_type = QVariant.DateTime
+        elif field_type_parameter == 7:  # Binary
+            field_type = QVariant.ByteArray
+        elif field_type_parameter == 8:  # StringList
+            field_type = QVariant.StringList
+            field_sub_type = QVariant.String
+        elif field_type_parameter == 9:  # IntegerList
+            field_type = QVariant.List
+            field_sub_type = QVariant.Int
+        elif field_type_parameter == 10:  # DoubleList
+            field_type = QVariant.List
+            field_sub_type = QVariant.Double
+
         width = self.parameterAsInt(parameters, self.FIELD_LENGTH, context)
         precision = self.parameterAsInt(parameters, self.FIELD_PRECISION, context)
         code = self.parameterAsString(parameters, self.FORMULA, context)
         globalExpression = self.parameterAsString(parameters, self.GLOBAL, context)
 
         fields = source.fields()
-        field = QgsField(field_name, field_type, '', width, precision)
+        field = QgsField(field_name, field_type, '', width, precision, '', field_sub_type)
         fields.append(field)
         new_ns = {}
 

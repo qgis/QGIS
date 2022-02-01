@@ -51,7 +51,7 @@ void QgsRelationWidgetRegistry::removeRelationWidget( const QString &widgetType 
   mRelationWidgetFactories.remove( widgetType );
 }
 
-QStringList QgsRelationWidgetRegistry::relationWidgetNames()
+QStringList QgsRelationWidgetRegistry::relationWidgetNames() const
 {
   return mRelationWidgetFactories.keys();
 }

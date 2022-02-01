@@ -17,7 +17,6 @@
 
 #include "qgsapplication.h"
 #include "qgs3dmapcanvas.h"
-#include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
 #include "qgsterrainentity_p.h"

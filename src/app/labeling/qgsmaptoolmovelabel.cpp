@@ -182,19 +182,26 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      int xCol = -1, yCol = -1;
+      int xCol = -1, yCol = -1, pointCol = -1;
 
-      if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+      if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
       {
-        QgsPalIndexes indexes;
+        if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+        {
+          // Point position is defined as a read only expression (not pointing to a writable geometry column)
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The point position expression is not pointing to a writable geometry column" ) );
+          return;
+        }
 
+        QgsPalIndexes indexes;
         if ( createAuxiliaryFields( indexes ) )
           return;
 
-        if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+        if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
         {
-          QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, vlayer );
-          QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, vlayer );
+          PropertyStatus status = PropertyStatus::DoesNotExist;
+          QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, vlayer, status );
+          QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, vlayer, status );
           if ( xCol < 0 && yCol < 0 )
             QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label X/Y columns “%1” and “%2” do not exist in the layer" ).arg( xColName, yColName ) );
           else if ( xCol < 0 )
@@ -237,18 +244,18 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
             return;
           }
         }
-
-        mStartPointMapCoords = e->mapPoint();
-        QgsPointXY referencePoint;
-        if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation() ) )
-        {
-          referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
-          referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
-        }
-        mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
-        mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
-        createRubberBands();
       }
+
+      mStartPointMapCoords = e->mapPoint();
+      QgsPointXY referencePoint;
+      if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation() ) )
+      {
+        referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
+        referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
+      }
+      mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
+      mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
+      createRubberBands();
     }
   }
   else
@@ -286,13 +293,14 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         const double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
 
         int xCol = -1;
-        int  yCol = -1;
+        int yCol = -1;
+        int pointCol = -1;
         double xPosOrig = 0;
         double yPosOrig = 0;
         bool xSuccess = false;
         bool ySuccess = false;
 
-        if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+        if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
         {
           return;
         }
@@ -334,28 +342,35 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         else
           vlayer->beginEditCommand( tr( "Moved callout" ) );
 
-        // Try to convert to the destination field type
-        QVariant xNewPos( xPosNew );
-        QVariant yNewPos( yPosNew );
-
-        if ( xCol < vlayer->fields().count() )
+        bool success = false;
+        if ( !isCalloutMove
+             && mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
         {
-          if ( ! vlayer->fields().at( xCol ).convertCompatible( xNewPos ) )
-          {
-            xNewPos = xPosNew; // revert and hope for the best
-          }
+          success = changeCurrentLabelDataDefinedPosition( xPosNew, yPosNew );
         }
-
-        if ( yCol < vlayer->fields().count() )
+        else
         {
-          if ( ! vlayer->fields().at( yCol ).convertCompatible( yNewPos ) )
+          // Try to convert to the destination field type
+          QVariant xNewPos( xPosNew );
+          QVariant yNewPos( yPosNew );
+          if ( xCol < vlayer->fields().count() )
           {
-            yNewPos = yPosNew; // revert and hope for the best
+            if ( ! vlayer->fields().at( xCol ).convertCompatible( xNewPos ) )
+            {
+              xNewPos = xPosNew; // revert and hope for the best
+            }
           }
-        }
 
-        bool success = vlayer->changeAttributeValue( featureId, xCol, xNewPos );
-        success = vlayer->changeAttributeValue( featureId, yCol, yNewPos ) && success;
+          if ( yCol < vlayer->fields().count() )
+          {
+            if ( ! vlayer->fields().at( yCol ).convertCompatible( yNewPos ) )
+            {
+              yNewPos = yPosNew; // revert and hope for the best
+            }
+          }
+          success = vlayer->changeAttributeValue( featureId, xCol, xNewPos );
+          success = vlayer->changeAttributeValue( featureId, yCol, yNewPos ) && success;
+        }
 
         if ( !success )
         {
@@ -458,12 +473,13 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
         {
           int xCol = -1;
           int yCol = -1;
+          int pointCol = -1;
           double xPosOrig = 0;
           double yPosOrig = 0;
           bool xSuccess = false;
           bool ySuccess = false;
 
-          if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+          if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
           {
             break;
           }

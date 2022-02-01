@@ -265,6 +265,35 @@ tests:
           geometry:
             ignore_part_order: True
 
+  - name: Aggregate to array field
+    algorithm: qgis:aggregate
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      GROUP_BY: 'NULL'
+      AGGREGATES:
+        [{
+          input: 'fid',
+          aggregate: 'array_agg',
+          delimiter: '"'',''"',
+          name: 'fids',
+          type: 11,
+          type_name: 'stringlist',
+          length: 0,
+          precision: 0,
+          sub_type: 10
+        }]
+    results:
+      OUTPUT:
+        name: expected/aggregate_to_array.gml
+        type: vector
+        compare:
+          fields:
+            gml_id: skip
+          geometry:
+            ignore_part_order: True
+
   - name: Delete Holes
     algorithm: native:deleteholes
     params:

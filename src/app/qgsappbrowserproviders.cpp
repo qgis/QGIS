@@ -1118,6 +1118,15 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << groupItem->manager(), context.messageBar(), groupItem->group() );
     } );
     menu->addAction( exportBookmarks );
+
+    // Add spatial bookmark
+    QAction *addBookmarkToGroup = new QAction( tr( "New Spatial Bookmark…" ), menu );
+    const bool inProject = manager != QgsApplication::bookmarkManager();
+    connect( addBookmarkToGroup, &QAction::triggered, this, [ = ]
+    {
+      QgisApp::instance()->newBookmark( inProject, groupItem->group() );
+    } );
+    menu->addAction( addBookmarkToGroup );
     menu->addSeparator();
 
     QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Bookmark Group" ) : tr( "Delete Bookmark Groups" ), menu );

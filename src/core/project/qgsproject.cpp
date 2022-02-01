@@ -39,6 +39,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsannotationmanager.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
 #include "qgsmapthemecollection.h"
 #include "qgslayerdefinition.h"
 #include "qgsunittypes.h"
@@ -46,7 +47,7 @@
 #include "qgstransactiongroup.h"
 #include "qgsvectordataprovider.h"
 #include "qgsprojectbadlayerhandler.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsmeshlayer.h"
 #include "qgslayoutmanager.h"
 #include "qgsbookmarkmanager.h"
@@ -66,7 +67,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsgrouplayer.h"
-
+#include "qgsmapviewsmanager.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -370,6 +371,7 @@ QgsProject::QgsProject( QObject *parent )
   , mRelationManager( new QgsRelationManager( this ) )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
+  , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
   , mTimeSettings( new QgsProjectTimeSettings( this ) )
@@ -840,6 +842,7 @@ void QgsProject::clear()
   mRelationManager->clear();
   mAnnotationManager->clear();
   mLayoutManager->clear();
+  m3DViewsManager->clear();
   mBookmarkManager->clear();
   mViewSettings->reset();
   mTimeSettings->reset();
@@ -1262,6 +1265,14 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   {
     emit readMapLayer( mapLayer.get(), layerElem );
     addMapLayers( newLayers );
+    // Try to resolve references here (this is necessary to set up joined fields that will be possibly used by
+    // virtual layers that point to this layer's joined field in their query otherwise they won't be valid ),
+    // a second attempt to resolve references will be done after all layers are loaded
+    // see https://github.com/qgis/QGIS/issues/46834
+    if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+    {
+      vLayer->joinBuffer()->resolveReferences( this );
+    }
   }
   else
   {
@@ -1640,6 +1651,10 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   mMainAnnotationLayer->readLayerXml( doc->documentElement().firstChildElement( QStringLiteral( "main-annotation-layer" ) ), context );
   mMainAnnotationLayer->setTransformContext( mTransformContext );
 
+  // load embedded groups and layers
+  profile.switchTask( tr( "Loading embedded layers" ) );
+  loadEmbeddedNodes( mRootGroup, flags );
+
   // Resolve references to other layers
   // Needs to be done here once all dependent layers are loaded
   profile.switchTask( tr( "Resolving layer references" ) );
@@ -1650,10 +1665,6 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
 
   mLayerTreeRegistryBridge->setEnabled( true );
-
-  // load embedded groups and layers
-  profile.switchTask( tr( "Loading embedded layers" ) );
-  loadEmbeddedNodes( mRootGroup, flags );
 
   // now that layers are loaded, we can resolve layer tree's references to the layers
   profile.switchTask( tr( "Resolving references" ) );
@@ -1719,6 +1730,13 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     profile.switchTask( tr( "Loading layouts" ) );
     mLayoutManager->readXml( doc->documentElement(), *doc );
   }
+
+  if ( !( flags & QgsProject::ReadFlag::FlagDontLoad3DViews ) )
+  {
+    profile.switchTask( tr( "Loading 3D Views" ) );
+    m3DViewsManager->readXml( doc->documentElement(), *doc );
+  }
+
   profile.switchTask( tr( "Loading bookmarks" ) );
   mBookmarkManager->readXml( doc->documentElement(), *doc );
 
@@ -2444,6 +2462,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
   const QDomElement layoutElem = mLayoutManager->writeXml( *doc );
   qgisNode.appendChild( layoutElem );
 
+  const QDomElement views3DElem = m3DViewsManager->writeXml( *doc );
+  qgisNode.appendChild( views3DElem );
+
   const QDomElement bookmarkElem = mBookmarkManager->writeXml( *doc );
   qgisNode.appendChild( bookmarkElem );
 
@@ -3158,6 +3179,16 @@ const QgsLayoutManager *QgsProject::layoutManager() const
 QgsLayoutManager *QgsProject::layoutManager()
 {
   return mLayoutManager.get();
+}
+
+const QgsMapViewsManager *QgsProject::viewsManager() const
+{
+  return m3DViewsManager.get();
+}
+
+QgsMapViewsManager *QgsProject::viewsManager()
+{
+  return m3DViewsManager.get();
 }
 
 const QgsBookmarkManager *QgsProject::bookmarkManager() const

@@ -224,13 +224,19 @@ int QgsProviderMetadata::listStyles( const QString &, QStringList &, QStringList
   return -1;
 }
 
-QString QgsProviderMetadata::getStyleById( const QString &, QString, QString &errCause )
+bool QgsProviderMetadata::styleExists( const QString &, const QString &, QString &errorCause )
+{
+  errorCause.clear();
+  return false;
+}
+
+QString QgsProviderMetadata::getStyleById( const QString &, const QString &, QString &errCause )
 {
   errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "getStyleById" ) );
   return QString();
 }
 
-bool QgsProviderMetadata::deleteStyleById( const QString &, QString, QString &errCause )
+bool QgsProviderMetadata::deleteStyleById( const QString &, const QString &, QString &errCause )
 {
   errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "deleteStyleById" ) );
   return false;

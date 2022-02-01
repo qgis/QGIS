@@ -235,7 +235,7 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
         QgsFieldFormatter *fieldFormatter = mFieldFormatters.at( cache.sortFieldIndex );
         const QVariant &widgetCache = mAttributeWidgetCaches.at( cache.sortFieldIndex );
         const QVariantMap &widgetConfig = mWidgetConfigs.at( cache.sortFieldIndex );
-        const QVariant sortValue = fieldFormatter->representValue( mLayer, cache.sortFieldIndex, widgetConfig, widgetCache, mFeat.attribute( cache.sortFieldIndex ) );
+        const QVariant sortValue = fieldFormatter->sortValue( mLayer, cache.sortFieldIndex, widgetConfig, widgetCache, mFeat.attribute( cache.sortFieldIndex ) );
         cache.sortCache.insert( mFeat.id(), sortValue );
       }
       else if ( cache.sortCacheExpression.isValid() )

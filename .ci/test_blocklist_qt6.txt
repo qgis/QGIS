@@ -44,6 +44,7 @@ test_analysis_processingalgs
 test_analysis_zonalstatistics
 test_analysis_meshcontours
 test_geometry_checker_geometrychecks
+test_gui_queryresultwidget
 
 # block list
 PyQgsLocalServer

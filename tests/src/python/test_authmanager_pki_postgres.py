@@ -10,7 +10,11 @@ From build dir, run: ctest -R PyQgsAuthManagerPKIPostgresTest -V
 
 It uses a docker container as postgres/postgis server with certificates from tests/testdata/auth_system/certs_keys_2048
 
-Use docker-compose -f .ci/travis/linux/docker-compose.travis.yml up postgres to start the server.
+Use docker-compose -f .docker/docker-compose-testing-postgres.yml up postgres to start the server.
+
+TODO:
+    - Document how to restore the server data
+    - Document how to use docker inspect to find the IP of the docker postgres server and set a host alias (or some other smart idea to do the same)
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

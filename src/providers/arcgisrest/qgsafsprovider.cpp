@@ -119,7 +119,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   if ( mSharedData->mExtent.isEmpty() )
   {
     mSharedData->mExtent = originalExtent;
-    const QgsCoordinateTransform ct( extentCrs, mSharedData->mSourceCRS, options.transformContext );
+    QgsCoordinateTransform ct( extentCrs, mSharedData->mSourceCRS, options.transformContext );
+    ct.setBallparkTransformsAreAppropriate( true );
     try
     {
       mSharedData->mExtent = ct.transformBoundingBox( mSharedData->mExtent );
@@ -356,6 +357,11 @@ QString QgsAfsProvider::name() const
 QString QgsAfsProvider::providerKey()
 {
   return AFS_PROVIDER_KEY;
+}
+
+void QgsAfsProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  mSharedData = qobject_cast<QgsAfsProvider *>( source )->mSharedData;
 }
 
 QString QgsAfsProvider::description() const

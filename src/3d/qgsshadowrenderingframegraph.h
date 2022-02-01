@@ -90,6 +90,10 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     //! Returns the render capture object used to take an image of the scene
     Qt3DRender::QRenderCapture *renderCapture() { return mRenderCapture; }
 
+    //! Returns the render capture object used to take an image of the depth buffer of the scene
+    Qt3DRender::QRenderCapture *depthRenderCapture() { return mDepthRenderCapture; }
+
+
     //! Returns whether frustum culling is enabled
     bool frustumCullingEnabled() const { return mFrustumCullingEnabled; }
     //! Sets whether frustum culling is enabled
@@ -139,40 +143,58 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
-    Qt3DRender::QCameraSelector *mMainCameraSelector = nullptr;
-    Qt3DRender::QLayerFilter *mForwardRenderLayerFilter = nullptr;
-    Qt3DRender::QRenderTargetSelector *mForwardRenderTargetSelector = nullptr;
-    Qt3DRender::QRenderTarget *mForwardRenderTarget = nullptr;
-    Qt3DRender::QRenderTargetOutput *mForwardRenderTargetColorOutput = nullptr;
-    Qt3DRender::QRenderTargetOutput *mForwardRenderTargetDepthOutput = nullptr;
-    Qt3DRender::QTexture2D *mForwardColorTexture = nullptr;
-    Qt3DRender::QTexture2D *mForwardDepthTexture = nullptr;
-    Qt3DRender::QClearBuffers *mForwardClearBuffers = nullptr;
-    Qt3DRender::QFrustumCulling *mFrustumCulling = nullptr;
     bool mFrustumCullingEnabled = true;
 
     Qt3DRender::QCamera *mMainCamera = nullptr;
+    Qt3DRender::QCamera *mLightCamera = nullptr;
+
+    // Forward rendering pass branch nodes:
+    Qt3DRender::QCameraSelector *mMainCameraSelector = nullptr;
+    Qt3DRender::QLayerFilter *mForwardRenderLayerFilter = nullptr;
+    Qt3DRender::QRenderTargetSelector *mForwardRenderTargetSelector = nullptr;
+    Qt3DRender::QClearBuffers *mForwardClearBuffers = nullptr;
+    Qt3DRender::QFrustumCulling *mFrustumCulling = nullptr;
+    // Forward rendering pass texture related objects:
+    Qt3DRender::QTexture2D *mForwardColorTexture = nullptr;
+    Qt3DRender::QTexture2D *mForwardDepthTexture = nullptr;
+
+    // Shadow rendering pass branch nodes:
+    Qt3DRender::QCameraSelector *mLightCameraSelectorShadowPass = nullptr;
+    Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;
+    Qt3DRender::QRenderTargetSelector *mShadowRenderTargetSelector = nullptr;
+    Qt3DRender::QClearBuffers *mShadowClearBuffers = nullptr;
+    Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;
+    // Shadow rendering pass texture related objects:
+    Qt3DRender::QTexture2D *mShadowMapTexture = nullptr;
+
+    // - The depth buffer render pass is made to copy the depth buffer into
+    //    an RGB texture that can be captured into a QImage and sent to the CPU for
+    //    calculating real 3D points from mouse coordinates (for zoom, rotation, drag..)
+    // Depth buffer render pass branch nodes:
+    Qt3DRender::QCameraSelector *mDepthRenderCameraSelector = nullptr;
+    Qt3DRender::QRenderStateSet *mDepthRenderStateSet = nullptr;;
+    Qt3DRender::QLayerFilter *mDepthRenderLayerFilter = nullptr;
+    Qt3DRender::QRenderTargetSelector *mDepthRenderCaptureTargetSelector = nullptr;
+    Qt3DRender::QRenderCapture *mDepthRenderCapture = nullptr;
+    // Depth buffer processing pass texture related objects:
+    Qt3DRender::QTexture2D *mDepthRenderCaptureDepthTexture = nullptr;
+    Qt3DRender::QTexture2D *mDepthRenderCaptureColorTexture = nullptr;
+
+    // Post processing pass branch nodes:
+    Qt3DRender::QCameraSelector *mPostProcessingCameraSelector = nullptr;
     Qt3DRender::QLayerFilter *mPostprocessPassLayerFilter = nullptr;
     Qt3DRender::QClearBuffers *mPostprocessClearBuffers = nullptr;
+    Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
+    Qt3DRender::QRenderCapture *mRenderCapture = nullptr;
+    // Post processing pass texture related objects:
+    Qt3DRender::QTexture2D *mRenderCaptureColorTexture = nullptr;
+    Qt3DRender::QTexture2D *mRenderCaptureDepthTexture = nullptr;
 
-    // texture preview
+    // Texture preview:
     Qt3DRender::QLayerFilter *mPreviewLayerFilter = nullptr;
     Qt3DRender::QRenderStateSet *mPreviewRenderStateSet = nullptr;
     Qt3DRender::QDepthTest *mPreviewDepthTest = nullptr;
     Qt3DRender::QCullFace *mPreviewCullFace = nullptr;
-
-    // shadow rendering pass
-    Qt3DRender::QRenderTargetSelector *mShadowRenderTargetSelector = nullptr;
-    Qt3DRender::QRenderTarget *mShadowRenderTarget = nullptr;
-    Qt3DRender::QRenderTargetOutput *mShadowRenderTargetOutput = nullptr;
-    Qt3DRender::QTexture2D *mShadowMapTexture = nullptr;
-    Qt3DRender::QClearBuffers *mShadowClearBuffers = nullptr;
-    Qt3DRender::QCamera *mLightCamera = nullptr;
-    Qt3DRender::QCameraSelector *mLightCameraSelector = nullptr;
-
-    Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
-    Qt3DRender::QTexture2D *mRenderCaptureColorTexture = nullptr;
-    Qt3DRender::QTexture2D *mRenderCaptureDepthTexture = nullptr;
 
     bool mShadowRenderingEnabled = false;
     float mShadowBias = 0.00001f;
@@ -187,12 +209,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     QgsPreviewQuad *mDebugShadowMapPreviewQuad = nullptr;
     QgsPreviewQuad *mDebugDepthMapPreviewQuad = nullptr;
 
-    Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;
-    Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;
-    Qt3DRender::QCullFace *mShadowCullFace = nullptr;
-    Qt3DRender::QDepthTest *mShadowDepthTest = nullptr;
-
-    Qt3DRender::QRenderCapture *mRenderCapture = nullptr;
+    QEntity *mDepthRenderQuad = nullptr;
 
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 
@@ -202,6 +219,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QLayer *mPreviewLayer = nullptr;
     Qt3DRender::QLayer *mForwardRenderLayer = nullptr;
     Qt3DRender::QLayer *mCastShadowsLayer = nullptr;
+    Qt3DRender::QLayer *mDepthRenderPassLayer = nullptr;
 
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
 
@@ -211,6 +229,9 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QFrameGraphNode *constructForwardRenderPass();
     Qt3DRender::QFrameGraphNode *constructTexturesPreviewPass();
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
+    Qt3DRender::QFrameGraphNode *constructDepthRenderPass();
+
+    Qt3DCore::QEntity *constructDepthRenderQuad();
 
     bool mRenderCaptureEnabled = true;
 

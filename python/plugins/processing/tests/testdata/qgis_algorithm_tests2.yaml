@@ -1311,6 +1311,42 @@ tests:
         name: expected/refactor_fields_null.gml
         type: vector
 
+  - algorithm: qgis:refactorfields
+    name: Refactor fields, array
+    params:
+      FIELDS_MAPPING:
+        - expression: '"fid"'
+          length: 0
+          name: fid
+          precision: 0
+          type: 10
+        - expression: '"id"'
+          length: 0
+          name: id
+          precision: 0
+          type: 2
+        - expression: '"id2"'
+          length: 0
+          name: id2
+          precision: 0
+          type: 2
+        - expression: 'array(1,2,3)'
+          length: 0
+          name: array
+          precision: 0
+          type: 9
+          sub_type: 2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/refactor_array.gml
+        type: vector
+        compare:
+          fields:
+            gml_id: skip
+
   - algorithm: native:reprojectlayer
     name: reproject vector layer
     params:

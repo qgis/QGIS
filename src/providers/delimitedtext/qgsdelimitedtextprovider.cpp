@@ -44,6 +44,7 @@
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsvariantutils.h"
 
 #include "qgsdelimitedtextfeatureiterator.h"
 #include "qgsdelimitedtextfile.h"
@@ -66,16 +67,16 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
 
   // Add supported types to enable creating expression fields in field calculator
   setNativeTypes( QList< NativeType >()
-                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
-                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), QStringLiteral( "longlong" ), QVariant::LongLong )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double" ), QVariant::Double, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), QStringLiteral( "longlong" ), QVariant::LongLong )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Double ), QStringLiteral( "double" ), QVariant::Double, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Bool ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
 
                   // date type
-                  << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
                 );
 
   QgsDebugMsgLevel( "Delimited text file uri is " + uri, 2 );
@@ -786,12 +787,16 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
   QString csvtMessage;
   QgsDebugMsgLevel( QStringLiteral( "Reading CSVT: %1" ).arg( mFile->fileName() ), 2 );
   QStringList csvtTypes = readCsvtFieldTypes( mFile->fileName(), &csvtMessage );
+  int fieldIdxOffset { 0 };
 
   for ( int fieldIdx = 0; fieldIdx < fieldNames.size(); fieldIdx++ )
   {
     // Skip over WKT field ... don't want to display in attribute table
     if ( fieldIdx == mWktFieldIndex )
+    {
+      fieldIdxOffset++;
       continue;
+    }
 
     // Add the field index lookup for the column
     attributeColumns.append( fieldIdx );
@@ -862,7 +867,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
     if ( typeName == QLatin1String( "bool" ) )
     {
       fieldType = QVariant::Bool;
-      mFieldBooleanLiterals.insert( fieldIdx, boolCandidates[fieldIdx] );
+      mFieldBooleanLiterals.insert( fieldIdx - fieldIdxOffset, boolCandidates[fieldIdx] );
     }
     else if ( typeName == QLatin1String( "integer" ) )
     {

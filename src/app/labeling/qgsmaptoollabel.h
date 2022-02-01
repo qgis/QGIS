@@ -46,29 +46,12 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     void deactivate() override;
 
     /**
-     * Returns TRUE if label move can be applied to a layer
-     * \param xCol out: index of the attribute for data defined x coordinate
-     * \param yCol out: index of the attribute for data defined y coordinate
-     * \returns TRUE if labels of layer can be moved
-    */
-    bool labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
-    bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol ) const;
-
-    /**
      * Returns true if diagram move can be applied to a layer
      * \param xCol out: index of the attribute for data defined x coordinate
      * \param yCol out: index of the attribute for data defined y coordinate
      * \returns TRUE if labels of layer can be moved
     */
     bool diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
-
-    /**
-     * Returns TRUE if layer has attribute fields set up
-     * \param xCol out: index of the attribute for data defined x coordinate
-     * \param yCol out: index of the attribute for data defined y coordinate
-     * \returns TRUE if layer fields set up and exist
-    */
-    bool layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
 
     /**
      * Returns TRUE if layer has attribute field set up for diagrams
@@ -83,11 +66,18 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     */
     bool labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const;
 
+    enum class PropertyStatus
+    {
+      Valid,
+      DoesNotExist,
+      CurrentExpressionInvalid
+    };
+
     /**
      * Checks if labels in a layer can be rotated
      * \param rotationCol out: attribute column for data defined label rotation
     */
-    bool labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const;
+    PropertyStatus labelRotatableStatus( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const;
 
   protected:
     QgsRubberBand *mHoverRubberBand = nullptr;
@@ -163,7 +153,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     QFont currentLabelFont();
 
     //! Returns a data defined attribute column name for particular property or empty string if not defined
-    QString dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer ) const;
+    QString dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer, PropertyStatus &status ) const;
 
     /**
      * Returns a data defined attribute column index
@@ -187,9 +177,10 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * \param ySuccess out: FALSE if attribute value is NULL
      * \param xCol out: index of the x position column
      * \param yCol out: index of the y position column
+     * \param pointCol out: index of the point position column
      * \returns FALSE if layer does not have data defined label position enabled
     */
-    bool currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol ) const;
+    bool currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol, int &pointCol ) const;
 
     /**
      * Returns data defined rotation of current label
@@ -200,6 +191,15 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * \returns TRUE if data defined rotation is enabled on the layer
      */
     bool currentLabelDataDefinedRotation( double &rotation, bool &rotationSuccess, int &rCol, bool ignoreXY = false ) const;
+
+    /**
+     * Change the data defined position of current label
+     * \param rCol out: index of the rotation column
+     * \param x data defined x-coordinate
+     * \param y data defined y-coordinate
+     * \returns TRUE if data defined position could be changed
+     */
+    bool changeCurrentLabelDataDefinedPosition( const QVariant &x, const QVariant &y );
 
     /**
      * Returns data defined show/hide of a feature.
@@ -218,6 +218,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * \since QGIS 2.16
     */
     bool isPinned();
+
+    bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
 
     bool createAuxiliaryFields( QgsPalIndexes &palIndexes );
     bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes ) const;

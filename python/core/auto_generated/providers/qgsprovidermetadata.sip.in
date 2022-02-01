@@ -486,14 +486,31 @@ Lists stored layer styles in the provider defined by ``uri``
 .. versionadded:: 3.10
 %End
 
-    virtual QString getStyleById( const QString &uri, QString styleId, QString &errCause );
+    virtual bool styleExists( const QString &uri, const QString &styleId, QString &errorCause /Out/ );
+%Docstring
+Returns ``True`` if a layer style with the specified ``styleId`` exists in the provider defined by ``uri``.
+
+:param uri: provider URI
+:param styleId: style ID to test for
+
+:return: - ``True`` if the layer style already exists
+         - errorCause: will be set to a descriptive error message, if an error occurs while checking if the style exists
+
+.. seealso:: :py:func:`getStyleById`
+
+.. versionadded:: 3.24
+%End
+
+    virtual QString getStyleById( const QString &uri, const QString &styleId, QString &errCause );
 %Docstring
 Gets a layer style defined by ``uri``
+
+.. seealso:: :py:func:`styleExists`
 
 .. versionadded:: 3.10
 %End
 
-    virtual bool deleteStyleById( const QString &uri, QString styleId, QString &errCause );
+    virtual bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause );
 %Docstring
 Deletes a layer style defined by ``styleId``
 
@@ -504,7 +521,15 @@ Deletes a layer style defined by ``styleId``
                             const QString &styleName, const QString &styleDescription,
                             const QString &uiFileContent, bool useAsDefault, QString &errCause );
 %Docstring
-Saves a layer style to provider
+Saves a layer style to provider.
+
+.. note::
+
+   Prior to QGIS 3.24, this method would show a message box warning when a
+   style with the same ``styleName`` already existed to confirm replacing the style with the user.
+   Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
+   Use :py:func:`~QgsProviderMetadata.styleExists` to test in advance if a style already exists and handle this appropriately
+   in your client code.
 
 .. versionadded:: 3.10
 %End

@@ -536,19 +536,42 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
                             QStringList &descriptions, QString &errCause );
 
     /**
+     * Returns TRUE if a layer style with the specified \a styleId exists in the provider defined by \a uri.
+     *
+     * \param uri provider URI
+     * \param styleId style ID to test for
+     * \param errorCause will be set to a descriptive error message, if an error occurs while checking if the style exists
+     * \returns TRUE if the layer style already exists
+     *
+     * \see getStyleById()
+     * \since QGIS 3.24
+     */
+    virtual bool styleExists( const QString &uri, const QString &styleId, QString &errorCause SIP_OUT );
+
+    /**
      * Gets a layer style defined by \a uri
+     *
+     * \see styleExists()
+     *
      * \since QGIS 3.10
      */
-    virtual QString getStyleById( const QString &uri, QString styleId, QString &errCause );
+    virtual QString getStyleById( const QString &uri, const QString &styleId, QString &errCause );
 
     /**
      * Deletes a layer style defined by \a styleId
      * \since QGIS 3.10
      */
-    virtual bool deleteStyleById( const QString &uri, QString styleId, QString &errCause );
+    virtual bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause );
 
     /**
-     * Saves a layer style to provider
+     * Saves a layer style to provider.
+     *
+     * \note Prior to QGIS 3.24, this method would show a message box warning when a
+     * style with the same \a styleName already existed to confirm replacing the style with the user.
+     * Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
+     * Use styleExists() to test in advance if a style already exists and handle this appropriately
+     * in your client code.
+     *
      * \since QGIS 3.10
      */
     virtual bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,

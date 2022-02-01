@@ -59,6 +59,7 @@ class TestQgsProject : public QObject
     void testAttachmentsQgs();
     void testAttachmentsQgz();
     void testAttachmentIdentifier();
+    void testEmbeddedGroupWithJoins();
 };
 
 void TestQgsProject::init()
@@ -917,6 +918,19 @@ void TestQgsProject::testAttachmentIdentifier()
     p2.read( projFile.fileName() );
     QVERIFY( QFile( p2.resolveAttachmentIdentifier( attachmentId ) ).exists() );
   }
+}
+
+
+void TestQgsProject::testEmbeddedGroupWithJoins()
+{
+  const QString projectPath = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/joins2.qgz" );
+  QgsProject p;
+  p.read( projectPath );
+
+  QCOMPARE( p.layers<QgsVectorLayer *>().count(), 2 );
+
+  QgsVectorLayer *vl = p.mapLayer<QgsVectorLayer *>( QStringLiteral( "polys_with_id_32002f94_eebe_40a5_a182_44198ba1bc5a" ) );
+  QCOMPARE( vl->fields().count(), 5 );
 }
 
 

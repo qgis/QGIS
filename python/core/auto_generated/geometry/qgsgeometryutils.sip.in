@@ -644,6 +644,35 @@ Create a perpendicular line segment from p to segment [s1, s2]
 %End
 
 
+    static void perpendicularCenterSegment( double centerPointX, double centerPointY,
+                                            double segmentPoint1x, double segmentPoint1y,
+                                            double segmentPoint2x, double segmentPoint2y,
+                                            double &perpendicularSegmentPoint1x /Out/, double &perpendicularSegmentPoint1y /Out/,
+                                            double &perpendicularSegmentPoint2x /Out/, double &perpendicularSegmentPoint2y /Out/,
+                                            double segmentLength = 0
+                                          ) /HoldGIL/;
+%Docstring
+Create a perpendicular line segment to a given segment [``segmentPoint1``,``segmentPoint2``] with its center at ``centerPoint``.
+
+May be used to split geometries. Unless ``segmentLength`` is specified the new centered perpendicular line segment will have double the length of the input segment.
+
+The result is a line (segment) centered in point p and perpendicular to segment [segmentPoint1, segmentPoint2].
+
+:param centerPointX: x-coordinate of the point where the center of the perpendicular should be located
+:param centerPointY: y-coordinate of the point where the center of the perpendicular should be located
+:param segmentPoint1x: : x-coordinate of segmentPoint1, the segment's start point
+:param segmentPoint1y: : y-coordinate of segmentPoint1, the segment's start point
+:param segmentPoint2x: : x-coordinate of segmentPoint2, the segment's end point
+:param segmentPoint2y: : y-coordinate of segmentPoint2, the segment's end point
+:param perpendicularSegmentPoint1x: : x-coordinate of the perpendicularCenterSegment's start point
+:param perpendicularSegmentPoint1y: : y-coordinate of the perpendicularCenterSegment's start point
+:param perpendicularSegmentPoint2x: : x-coordinate of the perpendicularCenterSegment's end point
+:param perpendicularSegmentPoint2y: : y-coordinate of the perpendicularCenterSegment's end point
+:param segmentLength: (optional) Trims to given length. A segmentLength value of 0 refers to the default length which is double the length of the input segment. Set to 1 for a normalized length.
+
+.. versionadded:: 3.24
+%End
+
     static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
                                      const QgsVector3D &P2, const QgsVector3D &P22 ) /HoldGIL/;
 %Docstring

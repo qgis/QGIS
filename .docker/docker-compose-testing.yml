@@ -14,15 +14,15 @@ services:
   webdav:
     image: nginx
     volumes:
-      - ${GH_WORKSPACE}/.docker/webdav/nginx.conf:/etc/nginx/conf.d/default.conf
-      - ${GH_WORKSPACE}/.docker/webdav/passwords.list:/etc/nginx/.passwords.list
+      - ${QGIS_WORKSPACE}/.docker/webdav/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ${QGIS_WORKSPACE}/.docker/webdav/passwords.list:/etc/nginx/.passwords.list
       - /tmp/webdav_tests:/tmp/webdav_tests_root/webdav_tests
 
   qgis-deps:
     tty: true
     image: qgis3-build-deps-binary-image
     volumes:
-      - ${GH_WORKSPACE}:/root/QGIS
+      - ${QGIS_WORKSPACE}:/root/QGIS
     links:
     #  - mssql
       - webdav

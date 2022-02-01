@@ -594,6 +594,60 @@ tests:
         name: expected/add_field.gml
         type: vector
 
+  - algorithm: native:addfieldtoattributestable
+    name: add datetime field
+    params:
+      FIELD_LENGTH: 10
+      FIELD_NAME: field
+      FIELD_PRECISION: 2
+      FIELD_TYPE: '6'
+      INPUT:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_field_datetime.gml
+        type: vector
+        compare:
+          fields:
+            gml_id: skip
+
+  - algorithm: native:addfieldtoattributestable
+    name: add stringlist field
+    params:
+      FIELD_LENGTH: 10
+      FIELD_NAME: field
+      FIELD_PRECISION: 2
+      FIELD_TYPE: '8'
+      INPUT:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_field_stringlist.gml
+        type: vector
+        compare:
+          fields:
+            gml_id: skip
+
+  - algorithm: native:addfieldtoattributestable
+    name: add doublelist field
+    params:
+      FIELD_LENGTH: 10
+      FIELD_NAME: field
+      FIELD_PRECISION: 2
+      FIELD_TYPE: '10'
+      INPUT:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_field_doublelist.gml
+        type: vector
+        compare:
+          fields:
+            gml_id: skip
+
   - algorithm: native:orderbyexpression
     name: Order by expression
     params:

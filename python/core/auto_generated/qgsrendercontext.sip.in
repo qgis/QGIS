@@ -1030,6 +1030,29 @@ during rendering.
 .. versionadded:: 3.22
 %End
 
+    Qgis::RendererUsage rendererUsage() const;
+%Docstring
+Returns the renderer usage
+
+.. seealso:: :py:func:`setRendererUsage`
+
+.. versionadded:: 3.24
+%End
+
+    void setRendererUsage( Qgis::RendererUsage usage );
+%Docstring
+Sets the renderer usage
+
+.. note::
+
+   This usage not alter how the map gets rendered but the intention is that data provider
+   knows the context of rendering and may report that to the backend.
+
+.. seealso:: :py:func:`rendererUsage`
+
+.. versionadded:: 3.24
+%End
+
 };
 
 

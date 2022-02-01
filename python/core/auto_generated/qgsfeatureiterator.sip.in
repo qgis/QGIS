@@ -75,6 +75,12 @@ This indicates that there is something wrong with the expression compiler.
 .. versionadded:: 3.2
 %End
 
+    enum class RequestToSourceCrsResult
+    {
+      Success,
+      DistanceWithinMustBeCheckedManually,
+    };
+
   protected:
 
     virtual bool fetchFeature( QgsFeature &f ) = 0;
@@ -136,6 +142,21 @@ features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on
 Will throw a :py:class:`QgsCsException` if the rect cannot be transformed from the destination CRS.
 
 .. versionadded:: 3.0
+%End
+
+    RequestToSourceCrsResult updateRequestToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const throw( QgsCsException );
+%Docstring
+Update a :py:class:`QgsFeatureRequest` so that spatial filters are
+transformed to the source's coordinate reference system.
+Iterators should call this method against the request used for filtering
+features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on the request is respected.
+
+:return: result of operation. See QgsAbstractFeatureIterator.RequestToSourceCrsResult for interpretation.
+
+:raises QgsCsException: if the rect cannot be transformed from the destination CRS.
+
+
+.. versionadded:: 3.22
 %End
 
 

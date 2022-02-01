@@ -787,7 +787,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             connect = 'btnConnect_clicked'
         elif service_type == 'OGC:WFS':
             def addVectorLayer(path, name):
-                self.iface.mainWindow().addVectorLayer(path, name, 'WFS')
+                self.iface.addVectorLayer(path, name, 'WFS')
 
             ows_provider.addVectorLayer.connect(addVectorLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
@@ -802,7 +802,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             connect = 'connectToServer'
         elif service_type == 'ESRI:ArcGIS:FeatureServer':
             def addAfsLayer(path, name):
-                self.iface.mainWindow().addVectorLayer(path, name, 'afs')
+                self.iface.addVectorLayer(path, name, 'afs')
 
             ows_provider.addVectorLayer.connect(addAfsLayer)
             conn_cmb = ows_provider.findChild(QComboBox)

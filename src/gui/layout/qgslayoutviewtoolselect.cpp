@@ -67,6 +67,11 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 
   if ( event->button() != Qt::LeftButton )
   {
+    if ( mIsSelecting )
+    {
+      mIsSelecting = false;
+      mRubberBand->finish();
+    }
     event->ignore();
     return;
   }

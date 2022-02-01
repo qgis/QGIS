@@ -371,6 +371,17 @@ void QgsMeshCalculatorDialog::onOutputFormatChange()
     QString filter = mOutputFormatComboBox->currentText();
     filter.append( QStringLiteral( " (*.%1)" ).arg( suffix ) );
     mOutputDatasetFileWidget->setFilter( filter );
+
+    // if output filename is already defined we need to replace old suffix
+    QString fileName = mOutputDatasetFileWidget->filePath();
+    if ( !fileName.isEmpty() )
+    {
+      mOutputDatasetFileWidget->setFilePath( controlSuffix( fileName ) );
+    }
+  }
+  else
+  {
+    mOutputDatasetFileWidget->setFilter( tr( "All Files (*)" ) );
   }
 }
 

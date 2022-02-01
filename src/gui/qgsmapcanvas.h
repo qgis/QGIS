@@ -30,6 +30,7 @@
 #include "qgsmapcanvasinteractionblocker.h"
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
+#include "qgsmaprendererjob.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -1423,6 +1424,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     std::unique_ptr< QgsTemporaryCursorOverride > mTemporaryCursorOverride;
 
     /**
+     * This attribute maps error strings occurred during rendering with time.
+     * The string contains the layerId with the error message ("layerId:error").
+     * This is used to avoid propagatation of repeated error message from renderer
+     * in a short time range (\see notifyRendererErrors())
+     *
+     */
+    QMap <QString, QDateTime> mRendererErrors;
+
+    /**
      * Returns the last cursor position on the canvas in geographical coordinates
      * \since QGIS 3.4
      */
@@ -1491,6 +1501,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void clearElevationCache();
 
     void showContextMenu( QgsMapMouseEvent *event );
+
+    /**
+     * This private method is used to emit rendering error from map layer without throwing it for every render.
+     * It contains a mechanism that does not emit the error if the same error from the same layer was emitted less than 1 mn ago.
+     */
+    void notifyRendererErrors( const QgsMapRendererJob::Errors &errors );
 
     friend class TestQgsMapCanvas;
 

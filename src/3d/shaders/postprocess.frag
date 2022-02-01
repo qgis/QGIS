@@ -66,6 +66,9 @@ float CalcShadowFactor(vec4 LightSpacePos)
   UVCoords.y = 0.5 * ProjCoords.y + 0.5;
   float z = 0.5 * ProjCoords.z + 0.5;
 
+  if ( UVCoords.x < 0 || UVCoords.x > 1 || UVCoords.y < 0 || UVCoords.y > 1 )
+   return 1.0;
+
   // percentage close filtering of the shadow map
   float shadow = 0.0;
   int k = 1;
@@ -109,14 +112,17 @@ float edlFactor(vec2 coords)
 
 void main()
 {
-  vec3 worldPosition = WorldPosFromDepth(texture(depthTexture, texCoord).r);
+  float depth = texture(depthTexture, texCoord).r;
+  vec3 worldPosition = WorldPosFromDepth( depth );
   vec4 positionInLightSpace = projectionMatrix * viewMatrix * vec4(worldPosition, 1.0f);
   positionInLightSpace /= positionInLightSpace.w;
   vec3 color = texture(colorTexture, texCoord).rgb;
   // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
-  if (renderShadows == 0 || worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.z > shadowMaxZ || worldPosition.z < shadowMinZ) {
-    fragColor = vec4(color.rgb, 1.0f);
-  } else {
+  if (renderShadows == 0 || depth >= 1 || worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.z > shadowMaxZ || worldPosition.z < shadowMinZ)
+  {
+    fragColor = vec4(color, 1.0f);
+  } else
+  {
     float visibilityFactor = CalcShadowFactor(positionInLightSpace);
     fragColor = vec4(visibilityFactor * color, 1.0f);
   }

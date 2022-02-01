@@ -306,6 +306,21 @@ method will return the corresponding field index.
 .. versionadded:: 3.22
 %End
 
+    static QString quoteFieldExpression( const QString &expression, const QgsVectorLayer *layer );
+%Docstring
+Validate if the expression is a field in the ``layer`` and ensure it is quoted.
+
+Given a string which may either directly match a field name from a layer, OR may
+be an expression which consists only of a single field reference for that layer, this
+method will return the quoted field.
+
+:return: the ``expression`` if not a field or quotes are not required, otherwise returns a quoted field.
+
+.. seealso:: :py:func:`expressionToLayerFieldIndex`
+
+.. versionadded:: 3.24
+%End
+
     static bool checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage /Out/ );
 %Docstring
 Tests whether a string is a valid expression.

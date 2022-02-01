@@ -143,6 +143,10 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     tabLayers->layout()->removeWidget( gbCRS );
   }
 
+
+  mInterpretationCombo = new QgsWmsInterpretationComboBox( this );
+  mInterpretationLayout->addWidget( mInterpretationCombo );
+
   clear();
 
   // set up the WMS connections we already know about
@@ -284,6 +288,8 @@ void QgsWMSSourceSelect::clear()
   }
 
   mFeatureCount->setEnabled( false );
+
+  mInterpretationCombo->setInterpretation( QString() );
 }
 
 bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabilities )
@@ -482,7 +488,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
     QMessageBox::warning(
       this,
       tr( "WMS Provider" ),
-      tr( "Failed to download capabilities:\n" ) + capDownload.lastError()
+      capDownload.lastError()
     );
     return;
   }
@@ -598,6 +604,9 @@ void QgsWMSSourceSelect::addButtonClicked()
   {
     uri.setParam( QStringLiteral( "featureCount" ), mFeatureCount->text() );
   }
+
+  if ( tabTilesets->isEnabled() && !mInterpretationCombo->interpretation().isEmpty() )
+    uri.setParam( QStringLiteral( "interpretation" ), mInterpretationCombo->interpretation() );
 
   uri.setParam( QStringLiteral( "contextualWMSLegend" ), mContextualLegendCheckbox->isChecked() ? "1" : "0" );
 
@@ -1307,4 +1316,28 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList &newLayerList, c
 void QgsWMSSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
+}
+
+QgsWmsInterpretationComboBox::QgsWmsInterpretationComboBox( QWidget *parent ): QComboBox( parent )
+{
+  addItem( tr( "Default" ), QString() );
+  addItem( QgsWmsInterpretationConverterMapTilerTerrainRGB::displayName(), QgsWmsInterpretationConverterMapTilerTerrainRGB::interpretationKey() );
+  addItem( QgsWmsInterpretationConverterTerrariumRGB::displayName(), QgsWmsInterpretationConverterTerrariumRGB::interpretationKey() );
+}
+
+void QgsWmsInterpretationComboBox::setInterpretation( const QString &interpretationKey )
+{
+  if ( ! interpretationKey.isEmpty() )
+  {
+    int index = findData( interpretationKey );
+    if ( index == -1 )
+      setCurrentIndex( 0 );
+    else
+      setCurrentIndex( index );
+  }
+}
+
+QString QgsWmsInterpretationComboBox::interpretation() const
+{
+  return currentData().toString();
 }

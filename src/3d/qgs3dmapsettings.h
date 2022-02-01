@@ -59,7 +59,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
   public:
 
     //! Constructor for Qgs3DMapSettings
-    Qgs3DMapSettings() = default;
+    Qgs3DMapSettings();
     //! Copy constructor
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings() override;
@@ -332,6 +332,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool showCameraViewCenter() const { return mShowCameraViewCenter; }
 
     /**
+     * Sets whether to show camera's rotation center as a sphere (for debugging)
+     * \since QGIS 3.24
+     */
+    void setShowCameraRotationCenter( bool enabled );
+
+    /**
+     * Returns whether to show camera's rotation center as a sphere (for debugging)
+     * \since QGIS 3.24
+     */
+    bool showCameraRotationCenter() const { return mShowCameraRotationCenter; }
+
+    /**
      * Sets whether to show light source origins as a sphere (for debugging)
      * \since QGIS 3.16
      */
@@ -557,7 +569,31 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setTerrainRenderingEnabled( bool terrainRenderingEnabled );
 
+    /**
+     * Returns the renderer usage
+     *
+     * \see rendererUsage()
+     * \since QGIS 3.24
+     */
+    Qgis::RendererUsage rendererUsage() const;
+
+    /**
+     * Sets the renderer usage
+     *
+     * \see rendererUsage()
+     * \since QGIS 3.24
+     */
+    void setRendererUsage( Qgis::RendererUsage rendererUsage );
+
   signals:
+
+    /**
+     * Emitted when one of the configuration settings has changed
+     *
+     * \since QGIS 3.24
+     */
+    void settingsChanged();
+
     //! Emitted when the background color has changed
     void backgroundColorChanged();
     //! Emitted when the selection color has changed
@@ -616,6 +652,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.4
      */
     void showCameraViewCenterChanged();
+
+    /**
+     * Emitted when the flag whether camera's rotation center is shown has changed
+     * \since QGIS 3.24
+     */
+    void showCameraRotationCenterChanged();
 
     /**
      * Emitted when the flag whether light source origins are shown has changed.
@@ -716,6 +758,10 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 #endif
 
   private:
+    //! Connects the various changed signals of this widget to the settingsChanged signal
+    void connectChangedSignalsToSettingsChanged();
+
+  private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
     QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
@@ -733,6 +779,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowTerrainBoundingBoxes = false;  //!< Whether to show bounding boxes of entities - useful for debugging
     bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
     bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging
+    bool mShowCameraRotationCenter = false; //!< Whether to show camera rotation center as a sphere - useful for debugging
     bool mShowLightSources = false; //!< Whether to show the origin of light sources
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
@@ -767,6 +814,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double mDebugDepthMapSize = 0.2;
 
     bool mTerrainRenderingEnabled = true;
+
+    Qgis::RendererUsage mRendererUsage;
 };
 
 

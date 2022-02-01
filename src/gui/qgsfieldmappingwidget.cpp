@@ -19,6 +19,7 @@
 #include "qgsexpression.h"
 #include "qgsprocessingaggregatewidgets.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
 #include <QTableView>
 #include <QVBoxLayout>
@@ -307,13 +308,11 @@ QWidget *QgsFieldMappingWidget::TypeDelegate::createEditor( QWidget *parent, con
   Q_UNUSED( option )
   QComboBox *editor = new QComboBox( parent );
 
-  const QMap<QVariant::Type, QString> typeList { QgsFieldMappingModel::dataTypes() };
-  int i = 0;
-  for ( auto it = typeList.constBegin(); it != typeList.constEnd(); ++it )
+  const QList<QgsVectorDataProvider::NativeType> typeList = QgsFieldMappingModel::supportedDataTypes();
+  for ( int i = 0; i < typeList.size(); i++ )
   {
-    editor->addItem( typeList[ it.key() ] );
-    editor->setItemData( i, static_cast<int>( it.key() ), Qt::UserRole );
-    ++i;
+    editor->addItem( QgsFields::iconForFieldType( typeList[i].mType, typeList[i].mSubType ), typeList[i].mTypeDesc );
+    editor->setItemData( i, typeList[i].mTypeName, Qt::UserRole );
   }
 
   const QgsFieldMappingModel *model { qobject_cast<const QgsFieldMappingModel *>( index.model() ) };

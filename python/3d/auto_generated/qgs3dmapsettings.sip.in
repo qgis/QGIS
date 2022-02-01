@@ -350,6 +350,20 @@ Returns whether to show camera's view center as a sphere (for debugging)
 .. versionadded:: 3.4
 %End
 
+    void setShowCameraRotationCenter( bool enabled );
+%Docstring
+Sets whether to show camera's rotation center as a sphere (for debugging)
+
+.. versionadded:: 3.24
+%End
+
+    bool showCameraRotationCenter() const;
+%Docstring
+Returns whether to show camera's rotation center as a sphere (for debugging)
+
+.. versionadded:: 3.24
+%End
+
     void setShowLightSourceOrigins( bool enabled );
 %Docstring
 Sets whether to show light source origins as a sphere (for debugging)
@@ -589,7 +603,33 @@ Sets whether the 2D terrain surface will be rendered in.
 .. versionadded:: 3.22
 %End
 
+    Qgis::RendererUsage rendererUsage() const;
+%Docstring
+Returns the renderer usage
+
+.. seealso:: :py:func:`rendererUsage`
+
+.. versionadded:: 3.24
+%End
+
+    void setRendererUsage( Qgis::RendererUsage rendererUsage );
+%Docstring
+Sets the renderer usage
+
+.. seealso:: :py:func:`rendererUsage`
+
+.. versionadded:: 3.24
+%End
+
   signals:
+
+    void settingsChanged();
+%Docstring
+Emitted when one of the configuration settings has changed
+
+.. versionadded:: 3.24
+%End
+
     void backgroundColorChanged();
 %Docstring
 Emitted when the background color has changed
@@ -671,6 +711,13 @@ Emitted when the flag whether terrain's tile info is shown has changed
 Emitted when the flag whether camera's view center is shown has changed
 
 .. versionadded:: 3.4
+%End
+
+    void showCameraRotationCenterChanged();
+%Docstring
+Emitted when the flag whether camera's rotation center is shown has changed
+
+.. versionadded:: 3.24
 %End
 
     void showLightSourceOriginsChanged();

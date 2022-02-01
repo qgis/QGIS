@@ -1,6 +1,6 @@
 r.water.outlet
 Watershed basin creation program.
 Raster (r.*)
-QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
+QgsProcessingParameterRasterLayer|input|Drainage direction raster|None|False
 QgsProcessingParameterPoint|coordinates|Coordinates of outlet point|0.0,0.0|False
 QgsProcessingParameterRasterDestination|output|Basin

@@ -145,8 +145,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     //! Model that acts as datasource for mTableTreeWidget
     QgsMssqlTableModel *mTableModel = nullptr;
 
-    QPushButton *mBuildQueryButton = nullptr;
-
     void finishList();
 
     void showHelp();

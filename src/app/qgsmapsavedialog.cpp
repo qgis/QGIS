@@ -359,6 +359,8 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
                     << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
 
   mapSettings.setExpressionContext( expressionContext );
+
+  mapSettings.setRendererUsage( Qgis::RendererUsage::Export );
 }
 
 void QgsMapSaveDialog::lockChanged( const bool locked )

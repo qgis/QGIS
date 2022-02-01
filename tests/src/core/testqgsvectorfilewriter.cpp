@@ -92,6 +92,8 @@ class TestQgsVectorFileWriter: public QObject
     void prepareWriteAsVectorFormat();
     //! Test regression #21714 (Exported GeoPackages have wrong field definitions)
     void testTextFieldLength();
+    //! Test export of array fields to GeoPackages
+    void testExportArrayToGpkg();
     //! Test https://github.com/qgis/QGIS/issues/29819
     void testExportToGpxPoint();
     //! Test https://github.com/qgis/QGIS/issues/29819
@@ -533,6 +535,47 @@ void TestQgsVectorFileWriter::testTextFieldLength()
   QCOMPARE( vl2.fields().at( 1 ).length(), 1024 );
   QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toString(), QString( 1024, 'x' ) );
 
+}
+
+void TestQgsVectorFileWriter::testExportArrayToGpkg()
+{
+  QTemporaryFile tmpFile( QDir::tempPath() +  "/test_qgsvectorfilewriter3_XXXXXX.gpkg" );
+  tmpFile.open();
+  const QString fileName( tmpFile.fileName( ) );
+  QgsVectorLayer vl( "Point?field=arrayfield:integerlist&field=arrayfield2:stringlist", "test", "memory" );
+  QCOMPARE( vl.fields().at( 0 ).type(), QVariant::List );
+  QCOMPARE( vl.fields().at( 0 ).subType(), QVariant::Int );
+  QCOMPARE( vl.fields().at( 1 ).type(), QVariant::StringList );
+  QCOMPARE( vl.fields().at( 1 ).subType(), QVariant::String );
+  QgsFeature f { vl.fields() };
+  f.setAttribute( 0, QVariantList() << 1 << 2 << 3 );
+  f.setAttribute( 1, QStringList() << "a" << "b" << "c" );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "point(9 45)" ) ) );
+  QVERIFY( vl.startEditing() );
+  QVERIFY( vl.addFeature( f ) );
+  QgsVectorFileWriter::SaveVectorOptions options;
+  options.driverName = "GPKG";
+  options.layerName = "test";
+  QString newFilename;
+  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
+        &vl,
+        fileName,
+        vl.transformContext(),
+        options, nullptr,
+        &newFilename ) );
+  QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
+  QCOMPARE( newFilename, fileName );
+  const QgsVectorLayer vl2( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
+  QVERIFY( vl2.isValid() );
+  QCOMPARE( vl2.featureCount(), 1L );
+  QCOMPARE( vl2.fields().at( 1 ).type(), QVariant::Map );
+  QCOMPARE( vl2.fields().at( 1 ).subType(), QVariant::String );
+  QCOMPARE( vl2.fields().at( 1 ).typeName(), QStringLiteral( "JSON" ) );
+  QCOMPARE( vl2.fields().at( 2 ).type(), QVariant::Map );
+  QCOMPARE( vl2.fields().at( 2 ).subType(), QVariant::String );
+  QCOMPARE( vl2.fields().at( 2 ).typeName(), QStringLiteral( "JSON" ) );
+  QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toList(), QVariantList() << 1 << 2 << 3 );
+  QCOMPARE( vl2.getFeature( 1 ).attribute( 2 ).toStringList(), QStringList() << "a" << "b" << "c" );
 }
 
 void TestQgsVectorFileWriter::_testExportToGpx( const QString &geomTypeName,

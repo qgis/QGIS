@@ -2588,6 +2588,8 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
   try
   {
     const QgsCoordinateTransform tr( mMap->crs(), mCRS, mLayout->project() );
+    QgsCoordinateTransform extentTransform = tr;
+    extentTransform.setBallparkTransformsAreAppropriate( true );
     const QPolygonF mapPolygon = mMap->transformedMapPolygon();
     const QRectF mbr = mapPolygon.boundingRect();
     const QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );
@@ -2605,17 +2607,17 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
       if ( lowerLeft.x() > upperRight.x() )
       {
         //we've crossed the line
-        crsRect = tr.transformBoundingBox( mapBoundingRect, Qgis::TransformDirection::Forward, true );
+        crsRect = extentTransform.transformBoundingBox( mapBoundingRect, Qgis::TransformDirection::Forward, true );
       }
       else
       {
         //didn't cross the line
-        crsRect = tr.transformBoundingBox( mapBoundingRect );
+        crsRect = extentTransform.transformBoundingBox( mapBoundingRect );
       }
     }
     else
     {
-      crsRect = tr.transformBoundingBox( mapBoundingRect );
+      crsRect = extentTransform.transformBoundingBox( mapBoundingRect );
     }
 
     inverseTransform = QgsCoordinateTransform( mCRS, mMap->crs(), mLayout->project() );

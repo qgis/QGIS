@@ -163,8 +163,6 @@ void QgsPropertyOverrideButton::updateFieldLists()
     for ( const QgsField &f : fields )
     {
       bool fieldMatch = false;
-      QString fieldType;
-
       switch ( mDataTypes )
       {
         case QgsPropertyDefinition::DataTypeBoolean:
@@ -180,26 +178,6 @@ void QgsPropertyOverrideButton::updateFieldLists()
           break;
       }
 
-      switch ( f.type() )
-      {
-        case QVariant::String:
-          fieldType = tr( "string" );
-          break;
-        case QVariant::Int:
-          fieldType = tr( "integer" );
-          break;
-        case QVariant::LongLong:
-          fieldType = tr( "integer64" );
-          break;
-        case QVariant::Double:
-          fieldType = tr( "double" );
-          break;
-        case QVariant::Bool:
-          fieldType = tr( "boolean" );
-          break;
-        default:
-          fieldType = tr( "unknown type" );
-      }
       if ( fieldMatch )
       {
         mFieldNameList << f.name();
@@ -685,9 +663,12 @@ void QgsPropertyOverrideButton::showExpressionDialog()
   if ( d.exec() == QDialog::Accepted )
   {
     mExpressionString = d.expressionText().trimmed();
+    bool active = mProperty.isActive();
     mProperty.setExpressionString( mExpressionString );
     mProperty.setTransformer( nullptr );
-    setActivePrivate( !mExpressionString.isEmpty() );
+    mProperty.setActive( !mExpressionString.isEmpty() );
+    if ( mProperty.isActive() != active )
+      emit activated( mProperty.isActive() );
     updateSiblingWidgets( isActive() );
     updateGui();
     emit changed();
@@ -953,6 +934,7 @@ void QgsPropertyOverrideButton::setActive( bool active )
   if ( mProperty.isActive() != active )
   {
     mProperty.setActive( active );
+    updateGui();
     emit changed();
     emit activated( mProperty.isActive() );
   }

@@ -53,6 +53,7 @@ set(TESTS
  testqgsexpression.cpp
  testqgsexpressioncontext.cpp
  testqgsfeature.cpp
+ testqgsfeaturerequest.cpp
  testqgsfield.cpp
  testqgsfields.cpp
  testqgsfilledmarker.cpp
@@ -164,6 +165,7 @@ set(TESTS
  testqgssettingsregistry.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp
+ testqgssimplifymethod.cpp
  testqgssnappingutils.cpp
  testqgsspatialindex.cpp
  testqgsspatialindexkdbush.cpp
@@ -193,6 +195,7 @@ set(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayerutils.cpp
  testqgsvectortilelayer.cpp
+ testqgsvectortileconnection.cpp
  testqgsvectortileutils.cpp
  testqgsvectortilewriter.cpp
  testqgstiles.cpp

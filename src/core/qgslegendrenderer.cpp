@@ -488,7 +488,6 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   int currentColumn = 0;
   int currentColumnGroupCount = 0; // number of groups in current column
   double currentColumnHeight = 0;
-  double closedColumnsHeight = 0;
   int autoPlacedBreaks = 0;
 
   // Calculate the expected average space between items
@@ -540,7 +539,6 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
       if ( !group.placeColumnBreakBeforeGroup )
         autoPlacedBreaks++;
       currentColumnGroupCount = 0;
-      closedColumnsHeight += currentColumnHeight;
       currentColumnHeight = group.size.height();
     }
     else

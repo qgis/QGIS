@@ -192,6 +192,13 @@ See [debian-ubuntu](https://qgis.org/en/site/forusers/alldownloads.html#debian-u
 currently supported distributions (plain xenial's GDAL for instance is too old
 and we build with GDAL2 from ubuntugis).
 
+To build [QGIS server landing page/catalog webapp](https://docs.qgis.org/latest/en/docs/server_manual/services.html#qgis-server-catalog) additional dependencies are required:
+
+Node.js (current LTS recommended): https://nodejs.org/en/download/<br>
+Yarn Package Manager: https://yarnpkg.com/getting-started/install
+
+Additionally, the cmake flag `WITH_SERVER_LANDINGPAGE_WEBAPP` needs to be turned on.
+
 ## 3.4. Setup ccache (Optional, but recommended)
 
 You should also setup ccache to speed up compile times:
@@ -434,6 +441,14 @@ To build QGIS server additional dependencies are required:
 ```bash
 dnf install fcgi-devel
 ```
+
+And for building [QGIS server landing page/catalog webapp](https://docs.qgis.org/latest/en/docs/server_manual/services.html#qgis-server-catalog):
+
+```bash
+dnf install nodejs yarnpkg
+```
+
+Additionally, the cmake flag `WITH_SERVER_LANDINGPAGE_WEBAPP` needs to be turned on.
 
 Make sure that your build directory is completely empty when you enter the
 following command. Do never try to "re-use" an existing Qt5 build directory.

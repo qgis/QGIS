@@ -118,6 +118,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   mCameraController->resetView( 1000 );
 
   addCameraViewCenterEntity( mEngine->camera() );
+  addCameraRotationCenterEntity( mCameraController );
   updateLights();
 
   // create terrain entity
@@ -409,6 +410,7 @@ static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const
                    ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
 
       QVector4D pc = viewMatrix * p;
+
 
       float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
       fnear = std::min( fnear, dst );
@@ -916,11 +918,22 @@ int Qgs3DMapScene::maximumTextureSize() const
   QSurface *surface = mEngine->surface();
   QOpenGLContext context;
   context.create();
-  context.makeCurrent( surface );
-  QOpenGLFunctions openglFunctions( &context );
-  GLint size;
-  openglFunctions.glGetIntegerv( GL_MAX_TEXTURE_SIZE, &size );
-  return int( size );
+  bool success =  context.makeCurrent( surface );
+
+  if ( success )
+  {
+    QOpenGLFunctions openglFunctions = QOpenGLFunctions( &context );
+
+    GLint size;
+    openglFunctions.initializeOpenGLFunctions();
+    openglFunctions.glGetIntegerv( GL_MAX_TEXTURE_SIZE, &size );
+    return int( size );
+  }
+  else
+  {
+    return 4096; //we can't have a context to defined the max texture size, we use this reasonable value
+  }
+
 }
 
 void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
@@ -1138,9 +1151,38 @@ QgsRectangle Qgs3DMapScene::sceneExtent()
   {
     QgsRectangle terrainExtent = terrainGenerator->extent();
     QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
+    terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
     terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
     extent.combineExtentWith( terrainExtent );
   }
 
   return extent;
+}
+
+void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controller )
+{
+  mEntityRotationCenter = new Qt3DCore::QEntity;
+
+  Qt3DCore::QTransform *trCameraViewCenter = new Qt3DCore::QTransform;
+  mEntityRotationCenter->addComponent( trCameraViewCenter );
+  Qt3DExtras::QPhongMaterial *materialCameraViewCenter = new Qt3DExtras::QPhongMaterial;
+  materialCameraViewCenter->setAmbient( Qt::blue );
+  mEntityRotationCenter->addComponent( materialCameraViewCenter );
+  Qt3DExtras::QSphereMesh *rendererCameraViewCenter = new Qt3DExtras::QSphereMesh;
+  rendererCameraViewCenter->setRadius( 10 );
+  mEntityRotationCenter->addComponent( rendererCameraViewCenter );
+  mEntityRotationCenter->setEnabled( true );
+  mEntityRotationCenter->setParent( this );
+
+  connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trCameraViewCenter]( QVector3D center )
+  {
+    trCameraViewCenter->setTranslation( center );
+  } );
+
+  mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
+
+  connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this]
+  {
+    mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
+  } );
 }

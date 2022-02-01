@@ -194,6 +194,7 @@
 %Include auto_generated/qgsunittypes.sip
 %Include auto_generated/qgsuserprofile.sip
 %Include auto_generated/qgsuserprofilemanager.sip
+%Include auto_generated/qgsvariantutils.sip
 %Include auto_generated/qgsvector.sip
 %Include auto_generated/qgsvector3d.sip
 %Include auto_generated/qgsvectorfilewriter.sip
@@ -532,6 +533,7 @@
 %Include auto_generated/project/qgsprojectutils.sip
 %Include auto_generated/project/qgsprojectversion.sip
 %Include auto_generated/project/qgsprojectviewsettings.sip
+%Include auto_generated/project/qgsmapviewsmanager.sip
 %Include auto_generated/providers/qgsabstractdbtablemodel.sip
 %Include auto_generated/providers/qgsabstractdatabaseproviderconnection.sip
 %Include auto_generated/providers/qgsabstractproviderconnection.sip

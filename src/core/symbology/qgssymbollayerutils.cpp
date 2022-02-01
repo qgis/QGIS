@@ -3046,7 +3046,7 @@ bool QgsSymbolLayerUtils::onlineResourceFromSldElement( QDomElement &element, QS
   if ( onlineResourceElem.isNull() )
     return false;
 
-  path = onlineResourceElem.attributeNS( QStringLiteral( "http://www.w3.org/1999/xlink" ), QStringLiteral( "href" ) );
+  path = QUrl::fromPercentEncoding( onlineResourceElem.attributeNS( QStringLiteral( "http://www.w3.org/1999/xlink" ), QStringLiteral( "href" ) ).toUtf8() );
 
   const QDomElement formatElem = element.firstChildElement( QStringLiteral( "Format" ) );
   if ( formatElem.isNull() )

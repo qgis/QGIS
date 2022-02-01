@@ -68,6 +68,16 @@ Returns the list of data providers which are excluded from the combobox.
 .. versionadded:: 3.0
 %End
 
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` from which map layers are shown.
+
+If ``project`` is ``None`` then :py:func:`QgsProject.instance()` will be used.
+
+.. versionadded:: 3.24
+%End
+
+
     void setAllowEmptyLayer( bool allowEmpty, const QString &text = QString(), const QIcon &icon = QIcon() );
 %Docstring
 Sets whether an optional empty layer ("not set") option is shown in the combo box.

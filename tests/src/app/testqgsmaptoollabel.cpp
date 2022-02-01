@@ -402,9 +402,13 @@ class TestQgsMapToolLabel : public QObject
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
 
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QString() );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QString() );
+      QgsMapToolLabel::PropertyStatus status = QgsMapToolLabel::PropertyStatus::DoesNotExist;
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1, status ), QString() );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1, status ), QString() );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1, status ), QString() );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // using direct field references
       pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "label_x_2" ) ) );
@@ -413,9 +417,12 @@ class TestQgsMapToolLabel : public QObject
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
 
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "label_x_2" ) );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1, status ), QString() );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1, status ), QStringLiteral( "label_x_2" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_2" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // using expressions which are just field references, should still work
       pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "\"label_x_1\"" ) ) );
@@ -424,9 +431,12 @@ class TestQgsMapToolLabel : public QObject
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
 
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "label_x_1" ) );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_1" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1, status ), QString() );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1, status ), QStringLiteral( "label_x_1" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_1" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
 
       // using complex expressions which change field depending on a project level variable
@@ -436,15 +446,21 @@ class TestQgsMapToolLabel : public QObject
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
 
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "label_x_1" ) );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_1" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1, status ), QString() );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1, status ), QStringLiteral( "label_x_1" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_1" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "2" ) );
 
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "label_x_2" ) );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1, status ), QString() );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1, status ), QStringLiteral( "label_x_2" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_2" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // another smart situation -- an expression which uses coalesce to store per-feature overrides in a field, otherwise falling back to some complex expression
       pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "coalesce(\"override_x_field\", $x + 10)" ) ) );
@@ -454,15 +470,28 @@ class TestQgsMapToolLabel : public QObject
 
       QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "1" ) );
 
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "override_x_field" ) );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_1" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1, status ), QString() );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1, status ), QStringLiteral( "override_x_field" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_1" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "2" ) );
 
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "override_x_field" ) );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1, status ), QString() );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1, status ), QStringLiteral( "override_x_field" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_2" ) );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
+
+      // with an invalid expression set
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "\"this field does not exist\"" ) ) );
+      vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
+      vl1->setLabelsEnabled( true );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1, status ), QString() );
+      QCOMPARE( status, QgsMapToolLabel::PropertyStatus::CurrentExpressionInvalid );
     }
 
 

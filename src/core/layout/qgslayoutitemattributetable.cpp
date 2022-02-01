@@ -431,10 +431,12 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     visibleRegion = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
     selectionRect = visibleRegion.boundingBox();
     //transform back to layer CRS
-    QgsCoordinateTransform coordTransform( layer->crs(), mMap->crs(), mLayout->project() );
+    const QgsCoordinateTransform coordTransform( layer->crs(), mMap->crs(), mLayout->project() );
+    QgsCoordinateTransform extentTransform = coordTransform;
+    extentTransform.setBallparkTransformsAreAppropriate( true );
     try
     {
-      selectionRect = coordTransform.transformBoundingBox( selectionRect, Qgis::TransformDirection::Reverse );
+      selectionRect = extentTransform.transformBoundingBox( selectionRect, Qgis::TransformDirection::Reverse );
       visibleRegion.transform( coordTransform, Qgis::TransformDirection::Reverse );
     }
     catch ( QgsCsException &cse )

@@ -55,6 +55,11 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
   mXyz = false;  // assume WMS / WMTS
 
+  if ( uri.hasParam( QStringLiteral( "interpretation" ) ) )
+  {
+    mInterpretation = uri.param( QStringLiteral( "interpretation" ) );
+  }
+
   if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) ||
        uri.param( QStringLiteral( "type" ) ) == QLatin1String( "mbtiles" ) )
   {
@@ -69,7 +74,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mBaseUrl = mHttpUri;
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
-    mSmoothPixmapTransform = true;
+    mSmoothPixmapTransform = mInterpretation.isEmpty();
     mDpiMode = DpiNone; // does not matter what we set here
     mActiveSubLayers = QStringList( QStringLiteral( "xyz" ) );  // just a placeholder to have one sub-layer
     mActiveSubStyles = QStringList( QStringLiteral( "xyz" ) );  // just a placeholder to have one sub-style
@@ -1191,6 +1196,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( nodeElement.attribute( QStringLiteral( "SRS" ) ) );
             QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
             QgsCoordinateTransform ct( src, dst, mCoordinateTransformContext );
+            ct.setBallparkTransformsAreAppropriate( true );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
           }
           catch ( QgsCsException &cse )
@@ -2484,7 +2490,18 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
     }
     else
     {
-      mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
+      const QString contentType = mCapabilitiesReply->header( QNetworkRequest::ContentTypeHeader ).toString();
+
+      QString errorMessage;
+      if ( contentType.startsWith( QStringLiteral( "text/plain" ) ) )
+        errorMessage = mCapabilitiesReply->readAll();
+      else
+        errorMessage = mCapabilitiesReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString();
+
+      if ( errorMessage.isEmpty() )
+        errorMessage = mCapabilitiesReply->errorString();
+
+      mError = tr( "Download of capabilities failed: %1" ).arg( errorMessage );
       QgsMessageLog::logMessage( mError, tr( "WMS" ) );
       mHttpCapabilitiesResponse.clear();
     }

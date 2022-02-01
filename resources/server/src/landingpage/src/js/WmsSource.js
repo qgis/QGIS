@@ -2,7 +2,7 @@
  * Override leaflet WMS for custom get feature info
  */
 import L from "leaflet"
-import WMS from "leaflet-wms/leaflet.wms.js"
+import WMS from "leaflet.wms/dist/leaflet.wms.js"
 
 var WmsSource = WMS.Source.extend({
   identify: function(evt) {

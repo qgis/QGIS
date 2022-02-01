@@ -169,7 +169,14 @@
             <property name="rightMargin">
              <number>3</number>
             </property>
-            <item row="0" column="1" colspan="2">
+            <item row="1" column="0">
+             <widget class="QLabel" name="lblTransparency_2">
+              <property name="text">
+               <string>Maximum error</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" colspan="2">
              <widget class="QgsDoubleSpinBox" name="mMaxErrorSpinBox">
               <property name="decimals">
                <number>6</number>
@@ -183,30 +190,27 @@
              </widget>
             </item>
             <item row="2" column="1" colspan="3">
-             <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                <horstretch>4</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="lblBlend">
-              <property name="text">
-               <string>Blending mode</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" colspan="3">
              <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
+            <item row="2" column="0">
+             <widget class="QLabel" name="lblTransparency">
+              <property name="text">
+               <string>Opacity</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="lblBlend">
+              <property name="text">
+               <string>Blending mode</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
              <widget class="QgsUnitSelectionWidget" name="mMaxErrorUnitWidget" native="true">
               <property name="minimumSize">
                <size>
@@ -219,17 +223,30 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="lblTransparency">
-              <property name="text">
-               <string>Opacity</string>
+            <item row="3" column="1" colspan="3">
+             <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>4</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
              </widget>
             </item>
             <item row="0" column="0">
-             <widget class="QLabel" name="lblTransparency_2">
+             <widget class="QLabel" name="lblDrawOrder">
               <property name="text">
-               <string>Maximum error</string>
+               <string>Draw order</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" colspan="3">
+             <widget class="QComboBox" name="mDrawOrderComboBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>4</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
              </widget>
             </item>

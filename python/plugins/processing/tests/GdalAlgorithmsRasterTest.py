@@ -34,6 +34,7 @@ from qgis.core import (QgsProcessingContext,
                        QgsRasterLayer,
                        QgsProject,
                        QgsProjUtils,
+                       QgsPointXY,
                        QgsCoordinateReferenceSystem)
 
 from qgis.testing import (start_app,
@@ -166,7 +167,6 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
 
             rlayer = QgsRasterLayer(fake_dem, "Fake dem")
             self.assertTrue(rlayer.isValid())
-
             self.assertEqual(rlayer.crs().authid(), 'EPSG:4326')
 
             project = QgsProject()
@@ -673,6 +673,17 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
                  '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+
+            if GdalUtils.version() >= 3030000:
+                extent = QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4326'))
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT_A': source,
+                                            'BAND_A': 1,
+                                            'FORMULA': formula,
+                                            'PROJWIN': extent,
+                                            'OUTPUT': output}, context, feedback),
+                    ['gdal_calc.py',
+                     '--overwrite --calc "{}" --format JPEG --type Float32 --projwin 1.0 4.0 3.0 2.0 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
             # check that formula is not escaped and formula is returned as it is
             formula = 'A * 2'  # <--- add spaces in the formula
@@ -1708,6 +1719,75 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['gdal_rasterize',
                  '-l polys2 -burn 100.0 -i ' +
                  vector + ' ' + raster])
+
+    def testRasterizeOverRun(self):
+        # Check that rasterize over tools update QgsRasterLayer
+
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source_vector = os.path.join(testDataPath, 'rasterize_zones.gml')
+        source_raster = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            # fixed value
+            alg = rasterize_over_fixed_value()
+            alg.initAlgorithm()
+
+            test_dem = os.path.join(outdir, 'rasterize-fixed.tif')
+            shutil.copy(source_raster, test_dem)
+            self.assertTrue(os.path.exists(test_dem))
+
+            layer = QgsRasterLayer(test_dem, 'test')
+            self.assertTrue(layer.isValid())
+
+            val, ok = layer.dataProvider().sample(QgsPointXY(18.68704, 45.79568), 1)
+            self.assertEqual(val, 172.2267303466797)
+
+            project = QgsProject()
+            project.setFileName(os.path.join(outdir, 'rasterize-fixed.qgs'))
+            project.addMapLayer(layer)
+            self.assertEqual(project.count(), 1)
+
+            context.setProject(project)
+
+            alg.run({'INPUT': source_vector,
+                     'INPUT_RASTER': test_dem,
+                     'BURN': 200
+                     }, context, feedback)
+
+            val, ok = layer.dataProvider().sample(QgsPointXY(18.68704, 45.79568), 1)
+            self.assertTrue(ok)
+            self.assertEqual(val, 200.0)
+
+            # attribute value
+            alg = rasterize_over()
+            alg.initAlgorithm()
+
+            test_dem = os.path.join(outdir, 'rasterize-over.tif')
+            shutil.copy(source_raster, test_dem)
+            self.assertTrue(os.path.exists(test_dem))
+
+            layer = QgsRasterLayer(test_dem, 'test')
+            self.assertTrue(layer.isValid())
+
+            val, ok = layer.dataProvider().sample(QgsPointXY(18.68704, 45.79568), 1)
+            self.assertEqual(val, 172.2267303466797)
+
+            project = QgsProject()
+            project.setFileName(os.path.join(outdir, 'rasterize-over.qgs'))
+            project.addMapLayer(layer)
+            self.assertEqual(project.count(), 1)
+
+            context.setProject(project)
+
+            alg.run({'INPUT': source_vector,
+                     'INPUT_RASTER': test_dem,
+                     'FIELD': 'value'
+                     }, context, feedback)
+
+            val, ok = layer.dataProvider().sample(QgsPointXY(18.68704, 45.79568), 1)
+            self.assertTrue(ok)
+            self.assertEqual(val, 100.0)
 
     def testRetile(self):
         context = QgsProcessingContext()

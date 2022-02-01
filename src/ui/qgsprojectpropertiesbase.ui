@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>857</width>
-    <height>730</height>
+    <height>841</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -299,7 +299,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>685</width>
-                <height>681</height>
+                <height>792</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -943,8 +943,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>681</height>
+                <width>341</width>
+                <height>72</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -996,8 +996,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>681</height>
+                <width>603</width>
+                <height>101</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1056,8 +1056,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>681</height>
+                <width>290</width>
+                <height>543</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1546,11 +1546,11 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
-                <property name="text">
-                 <string>Toggle Selection</string>
-                </property>
                 <property name="toolTip">
                  <string>Inverts the state of the selected checkboxes</string>
+                </property>
+                <property name="text">
+                 <string>Toggle Selection</string>
                 </property>
                </widget>
               </item>
@@ -1635,8 +1635,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>681</height>
+                <width>178</width>
+                <height>54</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1686,6 +1686,12 @@
            </property>
            <item>
             <widget class="QgsScrollArea" name="scrollArea_5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -1698,489 +1704,53 @@
                 <x>0</x>
                 <y>0</y>
                 <width>671</width>
-                <height>3119</height>
+                <height>1335</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
                <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
                 <number>0</number>
                </property>
                <property name="bottomMargin">
                 <number>0</number>
                </property>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="grpOWSServiceCapabilities">
-                 <property name="title">
-                  <string>Service Capabilities</string>
+                <layout class="QGridLayout" name="gridLayout_3">
+                 <property name="bottomMargin">
+                  <number>0</number>
                  </property>
-                 <property name="checkable">
-                  <bool>true</bool>
-                 </property>
-                 <property name="checked">
-                  <bool>false</bool>
-                 </property>
-                 <property name="collapsed" stdset="0">
-                  <bool>false</bool>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">projowsserver</string>
-                 </property>
-                 <property name="saveCollapsedState" stdset="0">
-                  <bool>true</bool>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_6">
-                  <item row="7" column="1">
-                   <widget class="QLineEdit" name="mWMSName">
-                    <property name="toolTip">
-                     <string>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="16" column="1">
-                   <widget class="QComboBox" name="mWMSContactPositionCb">
-                    <property name="toolTip">
-                     <string>The contact person position for the service.</string>
-                    </property>
-                    <property name="accessibleDescription">
-                     <string/>
-                    </property>
-                    <property name="editable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="21" column="1">
-                   <widget class="QComboBox" name="mWMSAccessConstraintsCb">
-                    <property name="toolTip">
-                     <string>Access constraints applied to the service.</string>
-                    </property>
-                    <property name="editable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="15" column="1">
-                   <widget class="QLineEdit" name="mWMSContactPerson">
-                    <property name="toolTip">
-                     <string>The contact person name for the service.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The contact person name for the service.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="11" column="1">
-                   <layout class="QGridLayout" name="wmsOnlineResourceGrid">
-                    <item row="0" column="0">
-                     <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit">
-                      <property name="toolTip">
-                       <string>The web site URL of the service provider.</string>
-                      </property>
-                      <property name="placeholderText">
-                       <string>The web site URL of the service provider.</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QgsPropertyOverrideButton" name="mWMSOnlineResourceExpressionButton">
-                      <property name="text">
-                       <string>...</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="16" column="0">
-                   <widget class="QLabel" name="label_20">
-                    <property name="text">
-                     <string>Position</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="1">
-                   <widget class="QLineEdit" name="mWMSTitle">
-                    <property name="toolTip">
-                     <string>The title should be brief yet descriptive enough to identify this service.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The title should be brief yet descriptive enough to identify this service.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="20" column="1">
-                   <widget class="QComboBox" name="mWMSFeesCb">
-                    <property name="toolTip">
-                     <string>Fees applied to the service.</string>
-                    </property>
-                    <property name="editable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="17" column="1">
-                   <widget class="QLineEdit" name="mWMSContactMail">
-                    <property name="toolTip">
-                     <string>The contact person e-mail for the service.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The contact person e-mail for the service.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="19" column="1">
-                   <widget class="QTextEdit" name="mWMSAbstract">
-                    <property name="toolTip">
-                     <string>The abstract is a descriptive narrative providing more information about the service.</string>
-                    </property>
-                    <property name="whatsThis">
-                     <string/>
-                    </property>
-                    <property name="documentTitle">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="9" column="0">
-                   <widget class="QLabel" name="label_11">
-                    <property name="text">
-                     <string>Or&amp;ganization</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSContactOrganization</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="21" column="0">
-                   <widget class="QLabel" name="mWMSAccessConstraintsLabel">
-                    <property name="text">
-                     <string>Access constraints</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="18" column="0">
-                   <widget class="QLabel" name="label_12">
-                    <property name="text">
-                     <string>Phone</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSContactPhone</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="18" column="1">
-                   <widget class="QLineEdit" name="mWMSContactPhone">
-                    <property name="toolTip">
-                     <string>The contact person phone for the service.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The contact person phone for the service.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="0">
-                   <widget class="QLabel" name="label_10">
-                    <property name="text">
-                     <string>Title</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSTitle</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0" colspan="2">
-                   <widget class="QFrame" name="wmsWarningBox">
-                    <property name="autoFillBackground">
-                     <bool>false</bool>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true"/>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_23">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
+                 <item row="0" column="0">
+                  <widget class="QTabWidget" name="OWSTabWidget">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string/>
+                   </property>
+                   <property name="currentIndex">
+                    <number>0</number>
+                   </property>
+                   <widget class="QWidget" name="services">
+                    <attribute name="title">
+                     <string> Services Capabilities</string>
+                    </attribute>
+                    <attribute name="toolTip">
+                     <string>Services capabilities</string>
+                    </attribute>
+                    <layout class="QGridLayout" name="gridLayout_27">
                      <item row="0" column="0">
-                      <widget class="QLabel" name="warningLabel">
-                       <property name="styleSheet">
-                        <string notr="true">background-color: rgba(255,165,0,0.3);</string>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::NoFrame</enum>
-                       </property>
-                       <property name="text">
-                        <string>These parameters are used to generate the GetCapabilities document and shall be chosen carefully to avoid interoperability and security issues.</string>
-                       </property>
-                       <property name="textFormat">
-                        <enum>Qt::AutoText</enum>
-                       </property>
-                       <property name="wordWrap">
-                        <bool>true</bool>
-                       </property>
-                       <property name="margin">
-                        <number>9</number>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="22" column="1">
-                   <widget class="QLineEdit" name="mWMSKeywordList">
-                    <property name="toolTip">
-                     <string>List of keywords separated by comma to help catalog searching.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>List of keywords separated by comma to help catalog searching.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="17" column="0">
-                   <widget class="QLabel" name="label_13">
-                    <property name="text">
-                     <string>E-Mail</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="19" column="0">
-                   <widget class="QLabel" name="label_15">
-                    <property name="text">
-                     <string>Abstract</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSAbstract</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="22" column="0">
-                   <widget class="QLabel" name="mWMSKeywordListLabel">
-                    <property name="text">
-                     <string>Keyword list</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="15" column="0">
-                   <widget class="QLabel" name="label_9">
-                    <property name="text">
-                     <string>&amp;Person</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>mWMSContactPerson</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="9" column="1">
-                   <widget class="QLineEdit" name="mWMSContactOrganization">
-                    <property name="toolTip">
-                     <string>The name of the service provider.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The name of the service provider.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="20" column="0">
-                   <widget class="QLabel" name="mWMSFeesLabel">
-                    <property name="text">
-                     <string>Fees</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="11" column="0">
-                   <widget class="QLabel" name="mWMSOnlineResourceLabel">
-                    <property name="text">
-                     <string>Online resource</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="0">
-                   <widget class="QLabel" name="label_6">
-                    <property name="text">
-                     <string>Short name</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="grpWMSCapabilities">
-                 <property name="title">
-                  <string>WMS capabilities</string>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">projowsserver</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_13">
-                  <item row="5" column="0" colspan="2">
-                   <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
-                    <property name="text">
-                     <string>Add geometry to feature response</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="10" column="0" colspan="3">
-                   <layout class="QHBoxLayout" name="horizontalLayout_10">
-                    <item>
-                     <widget class="QLabel" name="mWMSImageQualityLabel">
-                      <property name="text">
-                       <string>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QgsSpinBox" name="mWMSImageQualitySpinBox">
-                      <property name="minimum">
-                       <number>10</number>
-                      </property>
-                      <property name="maximum">
-                       <number>100</number>
-                      </property>
-                      <property name="singleStep">
-                       <number>5</number>
-                      </property>
-                      <property name="value">
-                       <number>90</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="11" column="0" colspan="3">
-                   <layout class="QHBoxLayout" name="horizontalLayout_17">
-                    <item>
-                     <widget class="QLabel" name="mWMSMaxAtlasFeaturesLabel">
-                      <property name="text">
-                       <string>Maximum features for Atlas print requests</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QgsSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
-                      <property name="maximum">
-                       <number>9999999</number>
-                      </property>
-                      <property name="value">
-                       <number>1</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="12" column="0" colspan="3">
-                   <layout class="QHBoxLayout" name="horizontalLayout_18">
-                    <item>
-                     <widget class="QLabel" name="label_33">
-                      <property name="toolTip">
-                       <string>When using tiles set this to the size of the larger symbols to avoid cut symbols at tile boundaries. This works by drawing features that are outside the tile extent.</string>
-                      </property>
-                      <property name="text">
-                       <string>Tile buffer in pixels</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox"/>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="9" column="0" colspan="3">
-                   <layout class="QGridLayout" name="gridLayout_3">
-                    <item row="1" column="1">
-                     <widget class="QLabel" name="mMaxWidthLabel">
-                      <property name="text">
-                       <string>Width</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <spacer name="horizontalSpacer_6">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Fixed</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>6</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="1" column="4">
-                     <widget class="QLineEdit" name="mMaxHeightLineEdit"/>
-                    </item>
-                    <item row="1" column="2">
-                     <widget class="QLineEdit" name="mMaxWidthLineEdit"/>
-                    </item>
-                    <item row="1" column="3">
-                     <widget class="QLabel" name="mMaxHeightLabel">
-                      <property name="text">
-                       <string>Height</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0" colspan="5">
-                     <widget class="QLabel" name="label_21">
-                      <property name="text">
-                       <string>Maximum image size for GetMap and GetLegendGraphic requests</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="2" column="0" colspan="3">
-                   <widget class="QgsCollapsibleGroupBox" name="mWMSInspire">
-                    <property name="title">
-                     <string>INSPIRE (European directive)</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_14">
-                     <item row="0" column="1">
-                      <widget class="QComboBox" name="mWMSInspireLanguage">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_7">
-                       <property name="text">
-                        <string>Service language</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="0" colspan="2">
-                      <widget class="QGroupBox" name="mWMSInspireScenario2">
+                      <widget class="QgsCollapsibleGroupBox" name="grpOWSServiceCapabilities">
                        <property name="title">
-                        <string>Scenario &amp;2 - INSPIRE related fields using embedded service metadata</string>
+                        <string>Enable Service Capabilities</string>
                        </property>
                        <property name="checkable">
                         <bool>true</bool>
@@ -2188,26 +1758,531 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <layout class="QGridLayout" name="gridLayout_17">
-                        <item row="0" column="1">
-                         <widget class="QDateEdit" name="mWMSInspireTemporalReference">
+                       <property name="collapsed" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                       <property name="syncGroup" stdset="0">
+                        <string notr="true">projowsserver</string>
+                       </property>
+                       <property name="saveCollapsedState" stdset="0">
+                        <bool>true</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_6">
+                        <property name="topMargin">
+                         <number>9</number>
+                        </property>
+                        <item row="16" column="1" colspan="2">
+                         <widget class="QComboBox" name="mWMSContactPositionCb">
+                          <property name="toolTip">
+                           <string>The contact person position for the service.</string>
+                          </property>
+                          <property name="accessibleDescription">
+                           <string/>
+                          </property>
+                          <property name="editable">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="11" column="2">
+                         <widget class="QgsPropertyOverrideButton" name="mWMSOnlineResourceExpressionButton">
+                          <property name="text">
+                           <string>...</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="8" column="1" colspan="2">
+                         <widget class="QLineEdit" name="mWMSTitle">
+                          <property name="toolTip">
+                           <string>The title should be brief yet descriptive enough to identify this service.</string>
+                          </property>
+                          <property name="placeholderText">
+                           <string>The title should be brief yet descriptive enough to identify this service.</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="7" column="0">
+                         <widget class="QLabel" name="label_6">
+                          <property name="text">
+                           <string>Short name</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="8" column="0">
+                         <widget class="QLabel" name="label_10">
+                          <property name="text">
+                           <string>Title</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>mWMSTitle</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="15" column="0">
+                         <widget class="QLabel" name="label_9">
+                          <property name="text">
+                           <string>&amp;Person</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>mWMSContactPerson</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="21" column="1" colspan="2">
+                         <widget class="QComboBox" name="mWMSAccessConstraintsCb">
+                          <property name="toolTip">
+                           <string>Access constraints applied to the service.</string>
+                          </property>
+                          <property name="editable">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="15" column="1" colspan="2">
+                         <widget class="QLineEdit" name="mWMSContactPerson">
+                          <property name="toolTip">
+                           <string>The contact person name for the service.</string>
+                          </property>
+                          <property name="placeholderText">
+                           <string>The contact person name for the service.</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="20" column="0">
+                         <widget class="QLabel" name="mWMSFeesLabel">
+                          <property name="text">
+                           <string>Fees</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="19" column="1" colspan="2">
+                         <widget class="QTextEdit" name="mWMSAbstract">
                           <property name="sizePolicy">
-                           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                            </sizepolicy>
                           </property>
+                          <property name="toolTip">
+                           <string>The abstract is a descriptive narrative providing more information about the service.</string>
+                          </property>
+                          <property name="whatsThis">
+                           <string/>
+                          </property>
+                          <property name="documentTitle">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="17" column="0">
+                         <widget class="QLabel" name="label_13">
+                          <property name="text">
+                           <string>E-Mail</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="9" column="0">
+                         <widget class="QLabel" name="label_11">
+                          <property name="text">
+                           <string>Or&amp;ganization</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>mWMSContactOrganization</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="18" column="1" colspan="2">
+                         <widget class="QLineEdit" name="mWMSContactPhone">
+                          <property name="toolTip">
+                           <string>The contact person phone for the service.</string>
+                          </property>
+                          <property name="placeholderText">
+                           <string>The contact person phone for the service.</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="18" column="0">
+                         <widget class="QLabel" name="label_12">
+                          <property name="text">
+                           <string>Phone</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>mWMSContactPhone</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="20" column="1" colspan="2">
+                         <widget class="QComboBox" name="mWMSFeesCb">
+                          <property name="toolTip">
+                           <string>Fees applied to the service.</string>
+                          </property>
+                          <property name="editable">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="11" column="1">
+                         <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit">
+                          <property name="toolTip">
+                           <string>The web site URL of the service provider.</string>
+                          </property>
+                          <property name="placeholderText">
+                           <string>The web site URL of the service provider.</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="22" column="0">
+                         <widget class="QLabel" name="mWMSKeywordListLabel">
+                          <property name="text">
+                           <string>Keyword list</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="9" column="1" colspan="2">
+                         <widget class="QLineEdit" name="mWMSContactOrganization">
+                          <property name="toolTip">
+                           <string>The name of the service provider.</string>
+                          </property>
+                          <property name="placeholderText">
+                           <string>The name of the service provider.</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="6" column="0" colspan="3">
+                         <widget class="QFrame" name="wmsWarningBox">
+                          <property name="autoFillBackground">
+                           <bool>false</bool>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true"/>
+                          </property>
+                          <property name="frameShape">
+                           <enum>QFrame::StyledPanel</enum>
+                          </property>
+                          <property name="frameShadow">
+                           <enum>QFrame::Raised</enum>
+                          </property>
+                          <layout class="QGridLayout" name="gridLayout_23">
+                           <property name="leftMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="topMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="rightMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="bottomMargin">
+                            <number>0</number>
+                           </property>
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="warningLabel_2">
+                             <property name="styleSheet">
+                              <string notr="true">background-color: rgba(255,165,0,0.3);</string>
+                             </property>
+                             <property name="frameShape">
+                              <enum>QFrame::NoFrame</enum>
+                             </property>
+                             <property name="text">
+                              <string>These parameters are used to generate the GetCapabilities document and shall be chosen carefully to avoid interoperability and security issues.</string>
+                             </property>
+                             <property name="textFormat">
+                              <enum>Qt::AutoText</enum>
+                             </property>
+                             <property name="wordWrap">
+                              <bool>true</bool>
+                             </property>
+                             <property name="margin">
+                              <number>9</number>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item row="22" column="1" colspan="2">
+                         <widget class="QLineEdit" name="mWMSKeywordList">
+                          <property name="toolTip">
+                           <string>List of keywords separated by comma to help catalog searching.</string>
+                          </property>
+                          <property name="placeholderText">
+                           <string>List of keywords separated by comma to help catalog searching.</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="19" column="0">
+                         <widget class="QLabel" name="label_15">
+                          <property name="text">
+                           <string>Abstract</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>mWMSAbstract</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="17" column="1" colspan="2">
+                         <widget class="QLineEdit" name="mWMSContactMail">
+                          <property name="toolTip">
+                           <string>The contact person e-mail for the service.</string>
+                          </property>
+                          <property name="placeholderText">
+                           <string>The contact person e-mail for the service.</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="11" column="0">
+                         <widget class="QLabel" name="mWMSOnlineResourceLabel">
+                          <property name="text">
+                           <string>Online resource</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="16" column="0">
+                         <widget class="QLabel" name="label_20">
+                          <property name="text">
+                           <string>Position</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="21" column="0">
+                         <widget class="QLabel" name="mWMSAccessConstraintsLabel">
+                          <property name="text">
+                           <string>Access constraints</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="7" column="1" colspan="2">
+                         <widget class="QLineEdit" name="mWMSName">
+                          <property name="toolTip">
+                           <string>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</string>
+                          </property>
+                          <property name="placeholderText">
+                           <string>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="wms">
+                    <attribute name="title">
+                     <string>WMS</string>
+                    </attribute>
+                    <attribute name="toolTip">
+                     <string>WMS capabilities</string>
+                    </attribute>
+                    <layout class="QGridLayout" name="gridLayout_25">
+                     <item row="12" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="horizontalLayout_17">
+                       <item>
+                        <widget class="QLabel" name="mWMSMaxAtlasFeaturesLabel">
+                         <property name="text">
+                          <string>Maximum features for Atlas print requests</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QgsSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
+                         <property name="maximum">
+                          <number>9999999</number>
+                         </property>
+                         <property name="value">
+                          <number>1</number>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="11" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="horizontalLayout_10">
+                       <item>
+                        <widget class="QLabel" name="mWMSImageQualityLabel">
+                         <property name="text">
+                          <string>Quality for JPEG images ( 10 : smaller image - 100 : best quality )</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QgsSpinBox" name="mWMSImageQualitySpinBox">
+                         <property name="minimum">
+                          <number>10</number>
+                         </property>
+                         <property name="maximum">
+                          <number>100</number>
+                         </property>
+                         <property name="singleStep">
+                          <number>5</number>
+                         </property>
+                         <property name="value">
+                          <number>90</number>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="4" column="0" colspan="2">
+                      <widget class="QCheckBox" name="mUseAttributeFormSettingsCheckBox">
+                       <property name="text">
+                        <string>Use attribute form settings for GetFeatureInfo response</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="0" colspan="2">
+                      <widget class="QCheckBox" name="mSegmentizeFeatureInfoGeometryCheckBox">
+                       <property name="text">
+                        <string>Segmentize feature info geometry</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="grpWMSPrecision">
+                       <item>
+                        <widget class="QLabel" name="label_5">
+                         <property name="text">
+                          <string>GetFeatureInfo geometry precision (decimal places)</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QgsSpinBox" name="mWMSPrecisionSpinBox">
+                         <property name="minimum">
+                          <number>1</number>
+                         </property>
+                         <property name="maximum">
+                          <number>17</number>
+                         </property>
+                         <property name="value">
+                          <number>8</number>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
+                       <property name="title">
+                        <string>Ad&amp;vertised extent</string>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <property name="collapsed" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                       <property name="saveCollapsedState" stdset="0">
+                        <bool>true</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_4">
+                        <item row="0" column="1">
+                         <widget class="QLineEdit" name="mWMSExtMinX">
+                          <property name="text">
+                           <string/>
+                          </property>
                          </widget>
                         </item>
                         <item row="1" column="0">
-                         <widget class="QLabel" name="label_23">
+                         <widget class="QLabel" name="label_17">
                           <property name="text">
-                           <string>Metadata date</string>
+                           <string>Min. &amp;Y</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>mWMSExtMinY</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="5" column="0" colspan="2">
+                         <spacer name="verticalSpacer_3">
+                          <property name="orientation">
+                           <enum>Qt::Vertical</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>20</width>
+                            <height>40</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label_16">
+                          <property name="text">
+                           <string>Min. &amp;X</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>mWMSExtMinX</cstring>
                           </property>
                          </widget>
                         </item>
                         <item row="1" column="1">
-                         <widget class="QDateEdit" name="mWMSInspireMetadataDate">
+                         <widget class="QLineEdit" name="mWMSExtMinY">
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="2" column="0">
+                         <widget class="QLabel" name="label_18">
+                          <property name="text">
+                           <string>Max. X</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>mWMSExtMaxX</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="4" column="0" colspan="2">
+                         <widget class="QPushButton" name="pbnWMSExtCanvas">
+                          <property name="text">
+                           <string>Use Current Canvas Extent</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="3" column="0">
+                         <widget class="QLabel" name="label_19">
+                          <property name="text">
+                           <string>Max. Y</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>mWMSExtMaxY</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="3" column="1">
+                         <widget class="QLineEdit" name="mWMSExtMaxY">
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="2" column="1">
+                         <widget class="QLineEdit" name="mWMSExtMaxX">
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item row="2" column="0" colspan="2">
+                      <widget class="QgsCollapsibleGroupBox" name="mWMSInspire">
+                       <property name="title">
+                        <string>INSPIRE (European directive)</string>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_14">
+                        <item row="0" column="1">
+                         <widget class="QComboBox" name="mWMSInspireLanguage">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -2217,19 +2292,341 @@
                          </widget>
                         </item>
                         <item row="0" column="0">
-                         <widget class="QLabel" name="label_22">
+                         <widget class="QLabel" name="label_7">
                           <property name="text">
-                           <string>Last revision date</string>
+                           <string>Service language</string>
                           </property>
                          </widget>
                         </item>
+                        <item row="4" column="0" colspan="2">
+                         <widget class="QGroupBox" name="mWMSInspireScenario2">
+                          <property name="title">
+                           <string>Scenario &amp;2 - INSPIRE related fields using embedded service metadata</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QGridLayout" name="gridLayout_17">
+                           <item row="0" column="1">
+                            <widget class="QDateEdit" name="mWMSInspireTemporalReference">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="1" column="0">
+                            <widget class="QLabel" name="label_23">
+                             <property name="text">
+                              <string>Metadata date</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="1" column="1">
+                            <widget class="QDateEdit" name="mWMSInspireMetadataDate">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="label_22">
+                             <property name="text">
+                              <string>Last revision date</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item row="3" column="0" colspan="2">
+                         <widget class="QGroupBox" name="mWMSInspireScenario1">
+                          <property name="title">
+                           <string>Scenario &amp;1 - INSPIRE related fields using referenced external service metadata</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QGridLayout" name="gridLayout_15">
+                           <item row="0" column="1">
+                            <widget class="QLineEdit" name="mWMSInspireMetadataUrl"/>
+                           </item>
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="label_8">
+                             <property name="text">
+                              <string>Metadata URL</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="1" column="1">
+                            <widget class="QComboBox" name="mWMSInspireMetadataUrlType">
+                             <item>
+                              <property name="text">
+                               <string>application/vnd.iso.19139+xml</string>
+                              </property>
+                             </item>
+                             <item>
+                              <property name="text">
+                               <string>application/vnd.ogc.csw.GetRecordByIdResponse_xml</string>
+                              </property>
+                             </item>
+                             <item>
+                              <property name="text">
+                               <string>application/vnd.ogc.csw_xml</string>
+                              </property>
+                             </item>
+                            </widget>
+                           </item>
+                           <item row="1" column="0">
+                            <widget class="QLabel" name="label_24">
+                             <property name="text">
+                              <string>URL mime/type</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
                        </layout>
+                      </widget>
+                     </item>
+                     <item row="9" column="0" colspan="2">
+                      <layout class="QGridLayout" name="gridLayout_9">
+                       <item row="1" column="1">
+                        <widget class="QLabel" name="mMaxWidthLabel_2">
+                         <property name="text">
+                          <string>Width</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <spacer name="horizontalSpacer_6">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>6</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="1" column="4">
+                        <widget class="QLineEdit" name="mMaxHeightLineEdit"/>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLineEdit" name="mMaxWidthLineEdit"/>
+                       </item>
+                       <item row="1" column="3">
+                        <widget class="QLabel" name="mMaxHeightLabel">
+                         <property name="text">
+                          <string>Height</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0" colspan="5">
+                        <widget class="QLabel" name="label_21">
+                         <property name="text">
+                          <string>Maximum image size for GetMap and GetLegendGraphic requests</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox">
+                       <property name="title">
+                        <string>Exclude layers</string>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <property name="collapsed" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                       <property name="saveCollapsedState" stdset="0">
+                        <bool>true</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout">
+                        <item row="0" column="0" colspan="3">
+                         <widget class="QListWidget" name="mLayerRestrictionsListWidget"/>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QToolButton" name="mAddLayerRestrictionButton">
+                          <property name="toolTip">
+                           <string>Add layer to exclude</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QToolButton" name="mRemoveLayerRestrictionButton">
+                          <property name="toolTip">
+                           <string>Remove selected layer</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="2">
+                         <spacer name="horizontalSpacer_3">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>0</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QgsCollapsibleGroupBox" name="mWMSPrintLayoutGroupBox">
+                       <property name="title">
+                        <string>Excl&amp;ude layouts</string>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <property name="collapsed" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                       <property name="saveCollapsedState" stdset="0">
+                        <bool>true</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_10">
+                        <item row="0" column="0" colspan="3">
+                         <widget class="QListWidget" name="mPrintLayoutListWidget"/>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QToolButton" name="mAddWMSPrintLayoutButton">
+                          <property name="toolTip">
+                           <string>Add layout to exclude</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QToolButton" name="mRemoveWMSPrintLayoutButton">
+                          <property name="toolTip">
+                           <string>Remove selected layout</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="2">
+                         <spacer name="horizontalSpacer_2">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>0</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item row="8" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="horizontalLayout_2">
+                       <item>
+                        <widget class="QLabel" name="mWMSUrlLabel">
+                         <property name="text">
+                          <string>Advertised URL</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="13" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="horizontalLayout_18">
+                       <item>
+                        <widget class="QLabel" name="label_33">
+                         <property name="toolTip">
+                          <string>When using tiles set this to the size of the larger symbols to avoid cut symbols at tile boundaries. This works by drawing features that are outside the tile extent.</string>
+                         </property>
+                         <property name="text">
+                          <string>Tile buffer in pixels</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox"/>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="5" column="0" colspan="2">
+                      <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
+                       <property name="text">
+                        <string>Add geometry to feature response</string>
+                       </property>
                       </widget>
                      </item>
                      <item row="3" column="0" colspan="2">
-                      <widget class="QGroupBox" name="mWMSInspireScenario1">
+                      <widget class="QCheckBox" name="mWmsUseLayerIDs">
+                       <property name="text">
+                        <string>Use layer ids as names</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
                        <property name="title">
-                        <string>Scenario &amp;1 - INSPIRE related fields using referenced external service metadata</string>
+                        <string>CRS restrictions</string>
                        </property>
                        <property name="checkable">
                         <bool>true</bool>
@@ -2237,785 +2634,439 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <layout class="QGridLayout" name="gridLayout_15">
-                        <item row="0" column="1">
-                         <widget class="QLineEdit" name="mWMSInspireMetadataUrl"/>
-                        </item>
-                        <item row="0" column="0">
-                         <widget class="QLabel" name="label_8">
-                          <property name="text">
-                           <string>Metadata URL</string>
+                       <property name="collapsed" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                       <property name="saveCollapsedState" stdset="0">
+                        <bool>true</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_5">
+                        <item row="1" column="1">
+                         <widget class="QToolButton" name="pbnWMSRemoveSRS">
+                          <property name="toolTip">
+                           <string>Remove selected CRS</string>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                           </property>
                          </widget>
                         </item>
-                        <item row="1" column="1">
-                         <widget class="QComboBox" name="mWMSInspireMetadataUrlType">
-                          <item>
-                           <property name="text">
-                            <string>application/vnd.iso.19139+xml</string>
-                           </property>
-                          </item>
-                          <item>
-                           <property name="text">
-                            <string>application/vnd.ogc.csw.GetRecordByIdResponse_xml</string>
-                           </property>
-                          </item>
-                          <item>
-                           <property name="text">
-                            <string>application/vnd.ogc.csw_xml</string>
-                           </property>
-                          </item>
+                        <item row="0" column="0" colspan="4">
+                         <widget class="QListWidget" name="mWMSList"/>
+                        </item>
+                        <item row="1" column="2">
+                         <widget class="QPushButton" name="pbnWMSSetUsedSRS">
+                          <property name="toolTip">
+                           <string>Fetch all CRS's from layers</string>
+                          </property>
+                          <property name="text">
+                           <string>Used</string>
+                          </property>
                          </widget>
                         </item>
                         <item row="1" column="0">
-                         <widget class="QLabel" name="label_24">
-                          <property name="text">
-                           <string>URL mime/type</string>
+                         <widget class="QToolButton" name="pbnWMSAddSRS">
+                          <property name="toolTip">
+                           <string>Add new CRS</string>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                           </property>
                          </widget>
                         </item>
                        </layout>
                       </widget>
                      </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
-                    <property name="title">
-                     <string>CRS restrictions</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <property name="collapsed" stdset="0">
-                     <bool>false</bool>
-                    </property>
-                    <property name="saveCollapsedState" stdset="0">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_5">
-                     <item row="1" column="1">
-                      <widget class="QToolButton" name="pbnWMSRemoveSRS">
-                       <property name="toolTip">
-                        <string>Remove selected CRS</string>
+                     <item row="14" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="mWMSDefaultMapUnitsPerMmLayout">
+                       <property name="sizeConstraint">
+                        <enum>QLayout::SetFixedSize</enum>
                        </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0" colspan="4">
-                      <widget class="QListWidget" name="mWMSList"/>
-                     </item>
-                     <item row="1" column="2">
-                      <widget class="QPushButton" name="pbnWMSSetUsedSRS">
-                       <property name="toolTip">
-                        <string>Fetch all CRS's from layers</string>
-                       </property>
-                       <property name="text">
-                        <string>Used</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QToolButton" name="pbnWMSAddSRS">
-                       <property name="toolTip">
-                        <string>Add new CRS</string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                       </property>
-                      </widget>
+                       <item>
+                        <widget class="QLabel" name="mWMSDefaultMapUnitsPerMmLabel">
+                         <property name="text">
+                          <string>Default map units per mm in legend</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </item>
                     </layout>
                    </widget>
-                  </item>
-                  <item row="0" column="0" colspan="2">
-                   <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
-                    <property name="title">
-                     <string>Ad&amp;vertised extent</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <property name="collapsed" stdset="0">
-                     <bool>false</bool>
-                    </property>
-                    <property name="saveCollapsedState" stdset="0">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_4">
-                     <item row="0" column="1">
-                      <widget class="QLineEdit" name="mWMSExtMinX">
-                       <property name="text">
-                        <string/>
+                   <widget class="QWidget" name="wmts">
+                    <attribute name="title">
+                     <string>WMTS</string>
+                    </attribute>
+                    <attribute name="toolTip">
+                     <string>WMTS capabilities</string>
+                    </attribute>
+                    <layout class="QVBoxLayout" name="verticalLayout_26">
+                     <item>
+                      <widget class="QgsCollapsibleGroupBox" name="wmtsLayersGroupBox">
+                       <property name="title">
+                        <string>Published layers</string>
                        </property>
+                       <layout class="QVBoxLayout" name="verticalLayout_22">
+                        <item>
+                         <widget class="QTreeWidget" name="twWmtsLayers">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <column>
+                           <property name="text">
+                            <string>Layer</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>Published</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>PNG</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>JPEG</string>
+                           </property>
+                          </column>
+                         </widget>
+                        </item>
+                       </layout>
                       </widget>
                      </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_17">
-                       <property name="text">
-                        <string>Min. &amp;Y</string>
+                     <item>
+                      <widget class="QgsCollapsibleGroupBox" name="wmtsGridsGroupBox">
+                       <property name="title">
+                        <string>Grids</string>
                        </property>
-                       <property name="buddy">
-                        <cstring>mWMSExtMinY</cstring>
-                       </property>
+                       <layout class="QVBoxLayout" name="verticalLayout_24">
+                        <item>
+                         <widget class="QTreeWidget" name="twWmtsGrids">
+                          <column>
+                           <property name="text">
+                            <string>CRS</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>Published</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>Top</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>Left</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>Min. scale</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>Last level</string>
+                           </property>
+                          </column>
+                          <column>
+                           <property name="text">
+                            <string>Max. scale</string>
+                           </property>
+                          </column>
+                         </widget>
+                        </item>
+                       </layout>
                       </widget>
                      </item>
-                     <item row="5" column="0" colspan="2">
-                      <spacer name="verticalSpacer_3">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_16">
+                       <item>
+                        <widget class="QLabel" name="mWMTSMinScaleLabel">
+                         <property name="text">
+                          <string>Minimum scale</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QgsSpinBox" name="mWMTSMinScaleSpinBox">
+                         <property name="minimum">
+                          <number>1</number>
+                         </property>
+                         <property name="maximum">
+                          <number>1000000000</number>
+                         </property>
+                         <property name="value">
+                          <number>5000</number>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_16">
-                       <property name="text">
-                        <string>Min. &amp;X</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mWMSExtMinX</cstring>
-                       </property>
-                      </widget>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_15">
+                       <item>
+                        <widget class="QLabel" name="mWMTSUrlLabel">
+                         <property name="text">
+                          <string>Advertised URL</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLineEdit" name="mWMTSUrlLineEdit"/>
+                       </item>
+                      </layout>
                      </item>
-                     <item row="1" column="1">
-                      <widget class="QLineEdit" name="mWMSExtMinY">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="wfs">
+                    <attribute name="title">
+                     <string>WFS/OAPIF</string>
+                    </attribute>
+                    <attribute name="toolTip">
+                     <string>WFS or OAPIF capabilities</string>
+                    </attribute>
+                    <layout class="QGridLayout" name="gridLayout_24">
                      <item row="2" column="0">
-                      <widget class="QLabel" name="label_18">
+                      <widget class="QPushButton" name="pbnWFSLayersSelectAll">
                        <property name="text">
-                        <string>Max. X</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mWMSExtMaxX</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="0" colspan="2">
-                      <widget class="QPushButton" name="pbnWMSExtCanvas">
-                       <property name="text">
-                        <string>Use Current Canvas Extent</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="label_19">
-                       <property name="text">
-                        <string>Max. Y</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mWMSExtMaxY</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QLineEdit" name="mWMSExtMaxY">
-                       <property name="text">
-                        <string/>
+                        <string>Publish All</string>
                        </property>
                       </widget>
                      </item>
                      <item row="2" column="1">
-                      <widget class="QLineEdit" name="mWMSExtMaxX">
+                      <widget class="QPushButton" name="pbnWFSLayersDeselectAll">
                        <property name="text">
-                        <string/>
+                        <string>Unpublish All</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="horizontalLayout_8">
+                       <item>
+                        <widget class="QLabel" name="mWFSUrlLabel">
+                         <property name="text">
+                          <string>Advertised URL</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLineEdit" name="mWFSUrlLineEdit"/>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="1" column="0" colspan="2">
+                      <widget class="QTableWidget" name="twWFSLayers">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <column>
+                        <property name="text">
+                         <string>Layer</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Published</string>
+                        </property>
+                        <property name="toolTip">
+                         <string>Layer can be published</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Geometry precision</string>
+                        </property>
+                        <property name="toolTip">
+                         <string>Number of decimal places to consider for geometry precision</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Update</string>
+                        </property>
+                        <property name="toolTip">
+                         <string>Allow features to be edited</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Insert</string>
+                        </property>
+                        <property name="toolTip">
+                         <string>Allow addition of new features</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Delete</string>
+                        </property>
+                        <property name="toolTip">
+                         <string>Allow features to be deleted</string>
+                        </property>
+                       </column>
+                      </widget>
+                     </item>
+                     <item row="0" column="0" colspan="2">
+                      <widget class="QLabel" name="label_37">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text">
+                        <string>The WFS capabilities also influences DXF export</string>
                        </property>
                       </widget>
                      </item>
                     </layout>
                    </widget>
-                  </item>
-                  <item row="6" column="0" colspan="2">
-                   <widget class="QCheckBox" name="mSegmentizeFeatureInfoGeometryCheckBox">
-                    <property name="text">
-                     <string>Segmentize feature info geometry</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="0" colspan="3">
-                   <layout class="QHBoxLayout" name="grpWMSPrecision">
-                    <item>
-                     <widget class="QLabel" name="label_5">
-                      <property name="text">
-                       <string>GetFeatureInfo geometry precision (decimal places)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QgsSpinBox" name="mWMSPrecisionSpinBox">
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>17</number>
-                      </property>
-                      <property name="value">
-                       <number>8</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="1" column="0" colspan="2">
-                   <widget class="QgsCollapsibleGroupBox" name="mWMSPrintLayoutGroupBox">
-                    <property name="title">
-                     <string>Excl&amp;ude layouts</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <property name="collapsed" stdset="0">
-                     <bool>false</bool>
-                    </property>
-                    <property name="saveCollapsedState" stdset="0">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_10">
-                     <item row="0" column="0" colspan="3">
-                      <widget class="QListWidget" name="mPrintLayoutListWidget"/>
+                   <widget class="QWidget" name="wcs">
+                    <attribute name="title">
+                     <string>WCS</string>
+                    </attribute>
+                    <attribute name="toolTip">
+                     <string>WCS capabilities</string>
+                    </attribute>
+                    <layout class="QGridLayout" name="gridLayout_2">
+                     <item row="0" column="0" colspan="2">
+                      <widget class="QTableWidget" name="twWCSLayers">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <column>
+                        <property name="text">
+                         <string>Layer</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Published</string>
+                        </property>
+                       </column>
+                      </widget>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QToolButton" name="mAddWMSPrintLayoutButton">
-                       <property name="toolTip">
-                        <string>Add layout to exclude</string>
-                       </property>
+                      <widget class="QPushButton" name="pbnWCSLayersSelectAll">
                        <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                        <string>Select All</string>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QToolButton" name="mRemoveWMSPrintLayoutButton">
-                       <property name="toolTip">
-                        <string>Remove selected layout</string>
-                       </property>
+                      <widget class="QPushButton" name="pbnWCSLayersDeselectAll">
                        <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                        <string>Deselect All</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="2">
-                      <spacer name="horizontalSpacer_2">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>0</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
+                     <item row="2" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="horizontalLayout_9">
+                       <item>
+                        <widget class="QLabel" name="mWCSUrlLabel">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Advertised URL</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLineEdit" name="mWCSUrlLineEdit"/>
+                       </item>
+                      </layout>
                      </item>
                     </layout>
                    </widget>
-                  </item>
-                  <item row="8" column="0" colspan="2">
-                   <layout class="QHBoxLayout" name="horizontalLayout_2">
-                    <item>
-                     <widget class="QLabel" name="mWMSUrlLabel">
-                      <property name="text">
-                       <string>Advertised URL</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QCheckBox" name="mWmsUseLayerIDs">
-                    <property name="text">
-                     <string>Use layer ids as names</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="13" column="0" colspan="3">
-                   <layout class="QHBoxLayout" name="mWMSDefaultMapUnitsPerMmLayout">
-                    <item>
-                     <widget class="QLabel" name="mWMSDefaultMapUnitsPerMmLabel">
-                      <property name="text">
-                       <string>Default map units per mm in legend</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox">
-                    <property name="title">
-                     <string>Exclude layers</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <property name="collapsed" stdset="0">
-                     <bool>false</bool>
-                    </property>
-                    <property name="saveCollapsedState" stdset="0">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout">
-                     <item row="0" column="0" colspan="3">
-                      <widget class="QListWidget" name="mLayerRestrictionsListWidget"/>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QToolButton" name="mAddLayerRestrictionButton">
-                       <property name="toolTip">
-                        <string>Add layer to exclude</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QToolButton" name="mRemoveLayerRestrictionButton">
-                       <property name="toolTip">
-                        <string>Remove selected layer</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2">
-                      <spacer name="horizontalSpacer_3">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>0</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QCheckBox" name="mUseAttributeFormSettingsCheckBox">
-                    <property name="text">
-                     <string>Use attribute form settings for GetFeatureInfo response</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="grpWmtsCapabilities">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>3</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>WMTS capabilities</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_20">
-                  <item row="3" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_16">
-                    <item>
-                     <widget class="QLabel" name="mWMTSMinScaleLabel">
-                      <property name="text">
-                       <string>Minimum scale</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QgsSpinBox" name="mWMTSMinScaleSpinBox">
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>1000000000</number>
-                      </property>
-                      <property name="value">
-                       <number>5000</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="4" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_15">
-                    <item>
-                     <widget class="QLabel" name="mWMTSUrlLabel">
-                      <property name="text">
-                       <string>Advertised URL</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="mWMTSUrlLineEdit"/>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_17a">
-                    <item>
-                     <layout class="QVBoxLayout" name="vlWmtsLayers">
-                      <item>
-                       <widget class="QLabel" name="label_31">
-                        <property name="text">
-                         <string>Published layers</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QTreeWidget" name="twWmtsLayers">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <column>
-                         <property name="text">
-                          <string>Layer</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Published</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>PNG</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>JPEG</string>
-                         </property>
-                        </column>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                    <item>
-                     <layout class="QVBoxLayout" name="vlWmtsGrids">
-                      <item>
-                       <widget class="QLabel" name="label_32">
-                        <property name="text">
-                         <string>Grids</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QTreeWidget" name="twWmtsGrids">
-                        <column>
-                         <property name="text">
-                          <string>CRS</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Published</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Top</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Left</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Min. scale</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Last level</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Max. scale</string>
-                         </property>
-                        </column>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="grpWFSCapabilities">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>3</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>WFS capabilities (also influences DXF export)</string>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">projowsserver</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_8">
-                  <item row="0" column="0" colspan="2">
-                   <widget class="QTableWidget" name="twWFSLayers">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <column>
-                     <property name="text">
-                      <string>Layer</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Published</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Geometry precision (decimal places)</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Update</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Insert</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Delete</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QPushButton" name="pbnWFSLayersDeselectAll">
-                    <property name="text">
-                     <string>Deselect All</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QPushButton" name="pbnWFSLayersSelectAll">
-                    <property name="text">
-                     <string>Select All</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0" colspan="2">
-                   <layout class="QHBoxLayout" name="horizontalLayout_8">
-                    <item>
-                     <widget class="QLabel" name="mWFSUrlLabel">
-                      <property name="text">
-                       <string>Advertised URL</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="mWFSUrlLineEdit"/>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="grpWCSCapabilities">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>3</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>WCS capabilities</string>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">projowsserver</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_9">
-                  <item row="1" column="1">
-                   <widget class="QPushButton" name="pbnWCSLayersDeselectAll">
-                    <property name="text">
-                     <string>Deselect All</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0" colspan="2">
-                   <layout class="QHBoxLayout" name="horizontalLayout_9">
-                    <item>
-                     <widget class="QLabel" name="mWCSUrlLabel">
-                      <property name="text">
-                       <string>Advertised URL</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="mWCSUrlLineEdit"/>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QPushButton" name="pbnWCSLayersSelectAll">
-                    <property name="text">
-                     <string>Select All</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0" colspan="2">
-                   <widget class="QTableWidget" name="twWCSLayers">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <column>
-                     <property name="text">
-                      <string>Layer</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Published</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="mOWSCheckerGroupBox">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>3</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>Test Configuration</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_24">
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_11">
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QGroupBox" name="testlayout">
+                   <property name="title">
+                    <string>Test Configuration</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_28">
                     <item>
                      <widget class="QPushButton" name="pbnLaunchOWSChecker">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="toolTip">
+                       <string>Test the configuration</string>
+                      </property>
                       <property name="text">
                        <string>Launch</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <spacer name="horizontalSpacer_7">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
+                     <widget class="QTextEdit" name="teOWSChecker">
+                      <property name="enabled">
+                       <bool>true</bool>
                       </property>
-                      <property name="sizeHint" stdset="0">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
                        <size>
-                        <width>40</width>
-                        <height>20</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
-                     </spacer>
+                      <property name="acceptDrops">
+                       <bool>true</bool>
+                      </property>
+                      <property name="lineWidth">
+                       <number>2</number>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                      <property name="acceptRichText">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
-                  </item>
-                  <item>
-                   <widget class="QTextEdit" name="teOWSChecker">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>200</height>
-                     </size>
-                    </property>
-                    <property name="acceptDrops">
-                     <bool>true</bool>
-                    </property>
-                    <property name="lineWidth">
-                     <number>2</number>
-                    </property>
-                    <property name="readOnly">
-                     <bool>true</bool>
-                    </property>
-                    <property name="acceptRichText">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <spacer name="verticalSpacer_6">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Fixed</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -3291,6 +3342,7 @@
   <tabstop>scrollArea_6</tabstop>
   <tabstop>grpPythonMacros</tabstop>
   <tabstop>scrollArea_5</tabstop>
+  <tabstop>OWSTabWidget</tabstop>
   <tabstop>grpOWSServiceCapabilities</tabstop>
   <tabstop>mWMSName</tabstop>
   <tabstop>mWMSTitle</tabstop>
@@ -3312,18 +3364,18 @@
   <tabstop>mWMSExtMaxY</tabstop>
   <tabstop>pbnWMSExtCanvas</tabstop>
   <tabstop>grpWMSList</tabstop>
+  <tabstop>mWMSList</tabstop>
   <tabstop>pbnWMSAddSRS</tabstop>
   <tabstop>pbnWMSRemoveSRS</tabstop>
   <tabstop>pbnWMSSetUsedSRS</tabstop>
-  <tabstop>mWMSList</tabstop>
   <tabstop>mWMSPrintLayoutGroupBox</tabstop>
+  <tabstop>mPrintLayoutListWidget</tabstop>
   <tabstop>mAddWMSPrintLayoutButton</tabstop>
   <tabstop>mRemoveWMSPrintLayoutButton</tabstop>
-  <tabstop>mPrintLayoutListWidget</tabstop>
   <tabstop>mLayerRestrictionsGroupBox</tabstop>
+  <tabstop>mLayerRestrictionsListWidget</tabstop>
   <tabstop>mAddLayerRestrictionButton</tabstop>
   <tabstop>mRemoveLayerRestrictionButton</tabstop>
-  <tabstop>mLayerRestrictionsListWidget</tabstop>
   <tabstop>mWMSInspire</tabstop>
   <tabstop>mWMSInspireLanguage</tabstop>
   <tabstop>mWMSInspireScenario1</tabstop>

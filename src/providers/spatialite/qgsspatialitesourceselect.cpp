@@ -431,8 +431,7 @@ QString QgsSpatiaLiteSourceSelect::connectionInfo()
 
 void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
 {
-  const QModelIndex idx = proxyModel()->mapToSource( index );
-  const auto item { mTableModel->itemFromIndex( idx.sibling( idx.row(), 0 ) ) };
+  const auto item { mTableModel->itemFromIndex( index.sibling( index.row(), 0 ) ) };
   if ( !item )
   {
     return;
@@ -441,7 +440,7 @@ void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
   const QString tableName = item->text();
 
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "spatialite" ), options );
+  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( index ), tableName, QStringLiteral( "spatialite" ), options );
 
   if ( !vlayer->isValid() )
   {

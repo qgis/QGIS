@@ -161,6 +161,16 @@ QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &
     QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
     errorTitle = QStringLiteral( "Network error" );
     errorText = networkRequest.errorMessage();
+
+    // try to get detailed error message from reply
+    const QString content = networkRequest.reply().content();
+    const thread_local QRegularExpression errorRx( QStringLiteral( "Error: <.*?>(.*?)<" ) );
+    const QRegularExpressionMatch match = errorRx.match( content );
+    if ( match.hasMatch() )
+    {
+      errorText = match.captured( 1 );
+    }
+
     return QByteArray();
   }
 

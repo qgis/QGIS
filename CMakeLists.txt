@@ -119,9 +119,8 @@ set (WITH_CORE TRUE CACHE BOOL "Determines whether QGIS core should be built.")
 mark_as_advanced(WITH_CORE)
 
 if(WITH_CORE)
-  # Only GRASS 7 is currently supported but we keep dual version support in cmake for possible future switch to GRASS 8.
   # Try to configure and build GRASS plugin by default
-  foreach (GRASS_SEARCH_VERSION 7)
+  foreach (GRASS_SEARCH_VERSION 7 8)
     # Legacy note:
     # For GRASS 6 there were used cached variables without version suffix so that existing caches didn't have to be reconfigured.
     # Cached variables were: WITH_GRASS, WITH_GRASS7, GRASS_PREFIX, GRASS_PREFIX7, GRASS_INCLUDE_DIR, GRASS_INCLUDE_DIR7
@@ -174,6 +173,7 @@ if(WITH_CORE)
   set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 
   set (NATIVE_CRSSYNC_BIN "" CACHE PATH "Path to a natively compiled synccrsdb binary. If set, crssync will not build but use provided bin instead.")
+  mark_as_advanced (NATIVE_CRSSYNC_BIN)
 
   # try to configure and build python bindings by default
   set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
@@ -197,6 +197,8 @@ if(WITH_CORE)
   # server disabled default because it needs FastCGI (which is optional dependency)
   set (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
   if(WITH_SERVER)
+    set (WITH_SERVER_LANDINGPAGE_WEBAPP FALSE CACHE BOOL "Determines whether QGIS server landingpage webapp should be built (requires nodejs and yarn)")
+
     set (SERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS server should disable ECW (ECW in server apps requires a special license)")
 
     set (WITH_SERVER_PLUGINS ${WITH_BINDINGS} CACHE BOOL "Determines whether QGIS server support for python plugins should be built")

@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertree.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayer.h"
 
 QgsLayerTree::QgsLayerTree()

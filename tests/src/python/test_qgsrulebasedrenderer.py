@@ -28,7 +28,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import Qt, QSize
+from qgis.PyQt.QtCore import Qt, QSize, QVariant
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsVectorLayer,
@@ -48,6 +48,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsSimpleMarkerSymbolLayer,
                        QgsProperty,
                        QgsFeature,
+                       QgsField,
                        QgsGeometry,
                        QgsEmbeddedSymbolRenderer
                        )
@@ -71,6 +72,8 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'rectangles.shp')
         layer = QgsVectorLayer(myShpFile, 'Rectangles', 'ogr')
+        vfield = QgsField('fa_cy-fie+ld', QVariant.Int)
+        layer.addExpressionField('"id"', vfield)
         QgsProject.instance().addMapLayer(layer)
 
         # Create rulebased style
@@ -208,6 +211,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         QgsRuleBasedRenderer.refineRuleCategories(self.r2, c)
         self.assertEqual(self.r2.children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(self.r2.children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(self.r2.children()[2].filterExpression(), '"id" IS NULL')
         self.assertEqual(self.r2.children()[0].label(), 'id 1')
         self.assertEqual(self.r2.children()[1].label(), '2')
         self.assertEqual(self.r2.children()[2].label(), '')
@@ -271,6 +275,66 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
     def testConvertFromCategorisedRenderer(self):
         # Test converting categorised renderer to rule based
+        vl = self.mapsettings.layers()[0]
+        # First, try with a field based category (id)
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "id 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "id 2"))
+        cats.append(QgsRendererCategory('a\'b', QgsMarkerSymbol(), "id a'b"))
+        cats.append(QgsRendererCategory('a\nb', QgsMarkerSymbol(), "id a\\nb"))
+        cats.append(QgsRendererCategory('a\\b', QgsMarkerSymbol(), "id a\\\\b"))
+        cats.append(QgsRendererCategory('a\tb', QgsMarkerSymbol(), "id a\\tb"))
+        cats.append(QgsRendererCategory(['c', 'd'], QgsMarkerSymbol(), "c/d"))
+        c = QgsCategorizedSymbolRenderer("id", cats)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(c, vl)
+        self.assertEqual(len(r.rootRule().children()), 7)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" = 1')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" = \'a\'\'b\'')
+        self.assertEqual(r.rootRule().children()[3].filterExpression(), '"id" = \'a\\nb\'')
+        self.assertEqual(r.rootRule().children()[4].filterExpression(), '"id" = \'a\\\\b\'')
+        self.assertEqual(r.rootRule().children()[5].filterExpression(), '"id" = \'a\\tb\'')
+        self.assertEqual(r.rootRule().children()[6].filterExpression(), '"id" IN (\'c\',\'d\')')
+
+        # Next try with an expression based category
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        cats.append(QgsRendererCategory([3, 4], QgsMarkerSymbol(), "result 3/4"))
+        c = QgsCategorizedSymbolRenderer("id + 1", cats)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(c, vl)
+        self.assertEqual(len(r.rootRule().children()), 3)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), 'id + 1 = 1')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), 'id + 1 = 2')
+        self.assertEqual(r.rootRule().children()[2].filterExpression(), 'id + 1 IN (3,4)')
+
+        # Last try with an expression which is just a quoted field name
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        cats.append(QgsRendererCategory([3, 4], QgsMarkerSymbol(), "result 3/4"))
+        c = QgsCategorizedSymbolRenderer('"id"', cats)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(c, vl)
+        self.assertEqual(len(r.rootRule().children()), 3)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" = 1')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" IN (3,4)')
+
+        # Next try with a complex name
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "fa_cy-fie+ld 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "fa_cy-fie+ld 2"))
+        c = QgsCategorizedSymbolRenderer("fa_cy-fie+ld", cats)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(c, vl)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"fa_cy-fie+ld" = 1')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"fa_cy-fie+ld" = 2')
+
+    def testConvertFromCategorisedRendererNoLayer(self):
+        # Test converting categorised renderer to rule based
 
         # First, try with a field based category (id)
         cats = []
@@ -319,9 +383,62 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
         self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" IN (3,4)')
 
+        # Next try with a complex name -- in this case since we don't have a layer or
+        # actual field names available, we must assume the complex field name is actually an expression
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "fa_cy-fie+ld 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "fa_cy-fie+ld 2"))
+        c = QgsCategorizedSymbolRenderer("fa_cy-fie+ld", cats)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(c)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), 'fa_cy-fie+ld = 1')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), 'fa_cy-fie+ld = 2')
+
     def testConvertFromGraduatedRenderer(self):
         # Test converting graduated renderer to rule based
+        vl = self.mapsettings.layers()[0]
+        # First, try with a field based category (id)
+        ranges = []
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("id", ranges)
 
+        r = QgsRuleBasedRenderer.convertFromRenderer(g, vl)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
+
+        # Next try with an expression based range
+        ranges = []
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("id / 2", ranges)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(g, vl)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '(id / 2) >= 0.000000 AND (id / 2) <= 1.000000')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '(id / 2) > 1.000000 AND (id / 2) <= 2.000000')
+
+        # Last try with an expression which is just a quoted field name
+        ranges = []
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer('"id"', ranges)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(g, vl)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
+
+        # Test with a complex field name
+        ranges = []
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("fa_cy-fie+ld", ranges)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(g, vl)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"fa_cy-fie+ld" >= 0.000000 AND "fa_cy-fie+ld" <= 1.000000')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"fa_cy-fie+ld" > 1.000000 AND "fa_cy-fie+ld" <= 2.000000')
+
+    def testConvertFromGraduatedRendererNoLayer(self):
+        # Test converting graduated renderer to rule based
         # First, try with a field based category (id)
         ranges = []
         ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
@@ -351,6 +468,17 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         r = QgsRuleBasedRenderer.convertFromRenderer(g)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
+
+        # Next try with a complex name -- in this case since we don't have a layer or
+        # actual field names available, we must assume the complex field name is actually an expression
+        ranges = []
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("fa_cy-fie+ld", ranges)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(g)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '(fa_cy-fie+ld) >= 0.000000 AND (fa_cy-fie+ld) <= 1.000000')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '(fa_cy-fie+ld) > 1.000000 AND (fa_cy-fie+ld) <= 2.000000')
 
     def testWillRenderFeatureTwoElse(self):
         """Regression #21287, also test rulesForFeature since there were no tests any where and I've found a couple of issues"""

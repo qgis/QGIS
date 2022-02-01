@@ -497,6 +497,7 @@ set(QGIS_CORE_SRCS
   qgstransaction.cpp
   qgstransactiongroup.cpp
   qgsunittypes.cpp
+  qgsvariantutils.cpp
   qgsvector.cpp
   qgsvector3d.cpp
   qgsvectorfilewriter.cpp
@@ -634,6 +635,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectutils.cpp
   project/qgsprojectversion.cpp
   project/qgsprojectviewsettings.cpp
+  project/qgsmapviewsmanager.cpp
 
   raster/qgscliptominmaxenhancement.cpp
   raster/qgscolorrampshader.cpp
@@ -779,6 +781,7 @@ set(QGIS_CORE_SRCS
   3d/qgs3dsymbolregistry.cpp
   3d/qgsabstract3dsymbol.cpp
   3d/qgsabstract3drenderer.cpp
+
 
   fieldformatter/qgscheckboxfieldformatter.cpp
   fieldformatter/qgsrangefieldformatter.cpp
@@ -1147,6 +1150,7 @@ set(QGIS_CORE_HDRS
   qgsunittypes.h
   qgsuserprofile.h
   qgsuserprofilemanager.h
+  qgsvariantutils.h
   qgsvector.h
   qgsvector3d.h
   qgsvectorfilewriter.h
@@ -1573,6 +1577,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectutils.h
   project/qgsprojectversion.h
   project/qgsprojectviewsettings.h
+  project/qgsmapviewsmanager.h
 
   providers/qgsabstractdbtablemodel.h
   providers/qgsabstractdatabaseproviderconnection.h
@@ -1773,20 +1778,32 @@ set(QGIS_CORE_HDRS
 )
 
 set(QGIS_CORE_PRIVATE_HDRS
+  qgsexpressionsorter_p.h
   qgsfeature_p.h
   qgsfield_p.h
   qgsfields_p.h
+  qgsmaplayerlistutils_p.h
+  qgspolymorphicrelation_p.h
   qgsproperty_p.h
   qgsrelation_p.h
   qgsspatialindexkdbush_p.h
 
+  dxf/qgsdxfexport_p.h
+
   editform/qgseditformconfig_p.h
+
+  expression/qgsexpression_p.h
+
   externalstorage/qgssimplecopyexternalstorage_p.h
   externalstorage/qgswebdavexternalstorage_p.h
 
   proj/qgscoordinatereferencesystem_p.h
   proj/qgscoordinatetransformcontext_p.h
   proj/qgscoordinatetransform_p.h
+  proj/qgscoordinatereferencesystem_legacy_p.h
+
+  providers/ogr/qgscplerrorhandler_p.h
+
   textrenderer/qgstextrenderer_p.h
 )
 

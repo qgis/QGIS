@@ -49,7 +49,7 @@ bool QgsMapToolAddPart::supportsTechnique( QgsMapToolCapture::CaptureTechnique t
       return true;
 
     case QgsMapToolCapture::CircularString:
-      return false;
+      return mode() != QgsMapToolCapture::CapturePoint;
   }
   return false;
 }

@@ -247,6 +247,8 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
 
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
+
   private:
 
     /**
@@ -606,13 +608,15 @@ class QgsPostgresProviderMetadata final: public QgsProviderMetadata
         bool overwrite,
         QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
         const QMap<QString, QVariant> *options ) override;
+
+    bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName,
                     const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids,
                     QStringList &names, QStringList &descriptions, QString &errCause ) override;
-    bool deleteStyleById( const QString &uri, QString styleId, QString &errCause ) override;
-    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
+    QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     QgsTransaction *createTransaction( const QString &connString ) override;
     QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
     QgsAbstractProviderConnection *createConnection( const QString &name ) override;

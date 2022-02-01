@@ -25,7 +25,7 @@
 #include "qgspointxy.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsexpressioncontextutils.h"
@@ -493,6 +493,14 @@ void TestQgsMapSettings::testExpressionContext()
   QgsExpression e( QStringLiteral( "@map_scale" ) );
   r = e.evaluate( &c );
   QGSCOMPARENEAR( r.toDouble(), 247990, 10.0 );
+
+  e = QgsExpression( QStringLiteral( "@zoom_level" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), 10.0 );
+
+  e = QgsExpression( QStringLiteral( "@vector_tile_zoom" ) );
+  r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 10.1385606747, 0.0001 );
 
   // The old $scale function should silently map to @map_scale, so that older projects work without change
   e = QgsExpression( QStringLiteral( "$scale" ) );

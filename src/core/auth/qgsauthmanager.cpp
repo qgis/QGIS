@@ -3171,7 +3171,7 @@ QgsAuthManager::~QgsAuthManager()
   while ( iterator.hasNext() )
   {
     iterator.next();
-    iterator.key()->disconnect( iterator.value() );
+    QThread::disconnect( iterator.value() );
   }
   locker.unlock();
 

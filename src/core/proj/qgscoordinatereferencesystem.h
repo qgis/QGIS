@@ -225,13 +225,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
       EpsgCrsId       //!< EPSG code
     };
 
-    //! Projection definition formats
-    enum Format
-    {
-      FormatWkt = 0, //!< WKT format (always recommended over proj string format)
-      FormatProj, //!< Proj string format
-    };
-
     //! Constructs an invalid CRS object
     QgsCoordinateReferenceSystem();
 
@@ -912,7 +905,40 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \note Since QGIS 3.18, internally this calls QgsCoordinateReferenceSystemRegistry::addUserCrs().
      */
-    long saveAsUserCrs( const QString &name, Format nativeFormat = FormatWkt );
+    long saveAsUserCrs( const QString &name, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
+
+    /**
+     * Sets the native \a format for the CRS definition.
+     *
+     * \note This has no effect on the underlying definition of the CRS, rather it controls what format
+     * to use when displaying the CRS's definition to users.
+     *
+     * \see nativeFormat()
+     * \since QGIS 3.24
+     */
+    void setNativeFormat( Qgis::CrsDefinitionFormat format );
+
+    /**
+     * Returns the native format for the CRS definition.
+     *
+     * \note This has no effect on the underlying definition of the CRS, rather it controls what format
+     * to use when displaying the CRS's definition to users.
+     *
+     * \see setNativeFormat()
+     * \since QGIS 3.24
+     */
+    Qgis::CrsDefinitionFormat nativeFormat() const;
+
+    /**
+     * Returns the geographic CRS associated with this CRS object.
+     *
+     * May return an invalid CRS if the geographic CRS could not be determined.
+     *
+     * \note This method will always return a longitude, latitude ordered CRS.
+     *
+     * \since QGIS 3.24
+     */
+    QgsCoordinateReferenceSystem toGeographicCrs() const;
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
@@ -939,6 +965,28 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.8
      */
     PJ *projObject() const;
+
+    /**
+     * Constructs a QgsCoordinateReferenceSystem from a PROJ PJ object.
+     *
+     * The \a object must correspond to a PROJ CRS object.
+     *
+     * Ownership of \a object is not transferred.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.24
+     */
+    static QgsCoordinateReferenceSystem fromProjObject( PJ *object );
+
+    /**
+     * Sets this CRS by passing it a PROJ PJ \a object, corresponding to a PROJ CRS object.
+     *
+     * Ownership of \a object is not transferred.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.24
+     */
+    bool createFromProjObject( PJ *object );
 #endif
 
     /**
@@ -1065,6 +1113,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
     QString mValidationHint;
+
+    Qgis::CrsDefinitionFormat mNativeFormat = Qgis::CrsDefinitionFormat::Wkt;
 
     friend class QgsProjContext;
 

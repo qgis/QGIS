@@ -82,7 +82,7 @@ class QgsProjectTimeSettings;
 class QgsAnnotationLayer;
 class QgsAttributeEditorContainer;
 class QgsPropertyCollection;
-
+class QgsMapViewsManager;
 
 /**
  * \ingroup core
@@ -128,6 +128,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       FlagDontLoadLayouts = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
       FlagTrustLayerMetadata = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
       FlagDontStoreOriginalStyles = 1 << 3, //!< Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
+      FlagDontLoad3DViews = 1 << 4, //!<
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -754,6 +755,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.0
      */
     QgsLayoutManager *layoutManager();
+
+    /**
+     * Returns the project's views manager, which manages map views (including 3d maps)
+     * in the project.
+     * \note not available in Python bindings
+     * \since QGIS 3.24
+     */
+    const QgsMapViewsManager *viewsManager() const SIP_SKIP;
+
+    /**
+     * Returns the project's views manager, which manages map views (including 3d maps)
+     * in the project.
+     * \since QGIS 3.24
+     */
+    QgsMapViewsManager *viewsManager();
 
     /**
      * Returns the project's bookmark manager, which manages bookmarks within
@@ -2042,6 +2058,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
+    std::unique_ptr<QgsMapViewsManager> m3DViewsManager;
 
     QgsBookmarkManager *mBookmarkManager = nullptr;
 

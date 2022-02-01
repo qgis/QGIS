@@ -3,6 +3,7 @@ PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composerutils
 PyQgsAppStartup
+test_gui_queryresultwidget
 
 # code layout tests are run on separate build
 qgis_spelling

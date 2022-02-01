@@ -64,6 +64,7 @@
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
 #include "qgscolorrampimpl.h"
+#include "qgstextformat.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -197,6 +198,10 @@ class TestQgsProcessingAlgs: public QObject
     void downloadGpsData();
     void uploadGpsData();
     void transferMainAnnotationLayer();
+
+    void extractLabels();
+
+    void splitVectorLayer();
 
   private:
 
@@ -7173,6 +7178,105 @@ void TestQgsProcessingAlgs::exportMeshTimeSeries()
   outputFile.close();
 }
 
+void TestQgsProcessingAlgs::extractLabels()
+{
+  QgsProject project;
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( mPointLayerPath,
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( mPointsLayer->isValid() );
+  project.addMapLayer( pointsLayer );
+
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
+  format.setSize( 10 );
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  settings.setFormat( format );
+  pointsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:extractlabels" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QgsReferencedRectangle extent( QgsRectangle( -120, 20, -80, 50 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "EXTENT" ), extent );
+  parameters.insert( QStringLiteral( "SCALE" ), 9000000.00 );
+  parameters.insert( QStringLiteral( "DPI" ), 96.00 );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( &project );
+  QgsProcessingFeedback feedback;
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *resultLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QCOMPARE( resultLayer->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( resultLayer->featureCount(), 17 );
+
+  QgsFeature feature = resultLayer->getFeature( 1 );
+  QVariantMap attributes = feature.attributeMap();
+  QCOMPARE( attributes[QStringLiteral( "Layer" )], QStringLiteral( "points" ) );
+  QCOMPARE( attributes[QStringLiteral( "FeatureID" )], 1 );
+  QCOMPARE( attributes[QStringLiteral( "LabelText" )], QStringLiteral( "Biplane" ) );
+  QCOMPARE( attributes[QStringLiteral( "LabelRotation" )], 0.0 );
+  QCOMPARE( attributes[QStringLiteral( "Family" )], QStringLiteral( "QGIS Vera Sans" ) );
+  QCOMPARE( attributes[QStringLiteral( "Size" )], 9.75 );
+  QCOMPARE( attributes[QStringLiteral( "Italic" )], false );
+  QCOMPARE( attributes[QStringLiteral( "Bold" )], false );
+  QCOMPARE( attributes[QStringLiteral( "FontStyle" )], QStringLiteral( "Roman" ) );
+  QCOMPARE( attributes[QStringLiteral( "FontLetterSpacing" )], 0.0 );
+  QCOMPARE( attributes[QStringLiteral( "FontWordSpacing" )], 0.0 );
+  QCOMPARE( attributes[QStringLiteral( "MultiLineAlignment" )], QStringLiteral( "left" ) );
+  QCOMPARE( attributes[QStringLiteral( "MultiLineHeight" )], 1.0 );
+}
+
+void TestQgsProcessingAlgs::splitVectorLayer()
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << QVariant() );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 0)" ) ) );
+  layer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 2 << QStringLiteral( "" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 1)" ) ) );
+  layer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 3 << QStringLiteral( "value" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 2)" ) ) );
+  layer->dataProvider()->addFeature( f );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:splitvectorlayer" ) ) );
+  QVERIFY( alg != nullptr );
+
+  //const QString outputDir = QDir::tempPath() + "/split_vector/";
+  QDir outputDir( QDir::tempPath() + "/split_vector/" );
+  if ( outputDir.exists() )
+    outputDir.removeRecursively();
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer ) );
+  parameters.insert( QStringLiteral( "FIELD" ), QStringLiteral( "col1" ) );
+  parameters.insert( QStringLiteral( "FILE_TYPE" ), QStringLiteral( "gpkg" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputDir.absolutePath() );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT_LAYERS" ) ).toList().count(), 3 );
+  QDir dataDir( outputDir );
+  QStringList entries = dataDir.entryList( QStringList(), QDir::Files | QDir::NoDotAndDotDot );
+  QCOMPARE( entries.count(), 3 );
+}
 
 bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )
 {

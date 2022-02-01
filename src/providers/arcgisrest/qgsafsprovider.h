@@ -81,6 +81,8 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
     static QString providerKey();
 
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
+
   private:
     bool mValid = false;
     std::shared_ptr<QgsAfsSharedData> mSharedData;

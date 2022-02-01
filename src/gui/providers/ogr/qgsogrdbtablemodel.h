@@ -43,7 +43,7 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
     void setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type );
 
     //! Adds entry for one database table to the model
-    void addTableEntry( const Qgis::BrowserLayerType &layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql );
+    void addTableEntry( Qgis::BrowserLayerType layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
     void setSql( const QModelIndex &index, const QString &sql ) override;
@@ -53,6 +53,14 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
     {
       return mTableCount;
     }
+
+    enum Columns
+    {
+      DbtmTable = 0,
+      DbtmType,
+      DbtmGeomCol,
+      DbtmSql,
+    };
 
     //! Sets the DB full path
     void setPath( const QString &path )
