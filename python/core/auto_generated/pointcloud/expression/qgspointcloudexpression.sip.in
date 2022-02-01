@@ -212,7 +212,7 @@ Returns a list of field name indexes obtained from the provided fields.
 %End
 
 
-    QVariant evaluate( int p );
+    double evaluate( int p );
 %Docstring
 Evaluate the feature and return the result.
 

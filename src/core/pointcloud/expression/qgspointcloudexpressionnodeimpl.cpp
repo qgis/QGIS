@@ -93,29 +93,20 @@ QString QgsPointcloudExpressionNode::NodeList::cleanNamedNodeName( const QString
 
 //
 
-QVariant QgsPointcloudExpressionNodeUnaryOperator::evalNode( QgsPointcloudExpression *parent, int p )
+double QgsPointcloudExpressionNodeUnaryOperator::evalNode( QgsPointcloudExpression *parent, int p )
 {
-  QVariant val = mOperand->eval( parent, p );
+  double val = mOperand->eval( parent, p );
   ENSURE_NO_EVAL_ERROR
 
   switch ( mOp )
   {
     case uoNot:
-    {
-      QgsPointcloudExpressionUtils::TVL tvl = QgsPointcloudExpressionUtils::getTVLValue( val, parent );
-      ENSURE_NO_EVAL_ERROR
-      return QgsPointcloudExpressionUtils::tvl2variant( QgsPointcloudExpressionUtils::NOT[tvl] );
-    }
+      return qgsDoubleNear( p, 0. ) ? 1. : 0.;
 
     case uoMinus:
-      if ( QgsPointcloudExpressionUtils::isIntSafe( val ) )
-        return QVariant( - QgsPointcloudExpressionUtils::getIntValue( val, parent ) );
-      else if ( QgsPointcloudExpressionUtils::isDoubleSafe( val ) )
-        return QVariant( - QgsPointcloudExpressionUtils::getDoubleValue( val, parent ) );
-      else
-        SET_EVAL_ERROR( tr( "Unary minus only for numeric values." ) )
-      }
-  return QVariant();
+      return - val;
+  }
+  return 1.;
 }
 
 QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeUnaryOperator::nodeType() const
@@ -171,105 +162,42 @@ QString QgsPointcloudExpressionNodeUnaryOperator::text() const
 
 //
 
-QVariant QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpression *parent, int p )
+double QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpression *parent, int p )
 {
-  QVariant vL = mOpLeft->eval( parent, p );
+  double vL = mOpLeft->eval( parent, p );
   ENSURE_NO_EVAL_ERROR
 
   if ( mOp == boAnd || mOp == boOr )
   {
-    QgsPointcloudExpressionUtils::TVL tvlL = QgsPointcloudExpressionUtils::getTVLValue( vL, parent );
-    ENSURE_NO_EVAL_ERROR
-    if ( mOp == boAnd && tvlL == QgsPointcloudExpressionUtils::False )
-      return TVL_False;  // shortcut -- no need to evaluate right-hand side
-    if ( mOp == boOr && tvlL == QgsPointcloudExpressionUtils::True )
-      return TVL_True;  // shortcut -- no need to evaluate right-hand side
+    if ( mOp == boAnd && !qgsDoubleNear( vL, 0. ) )
+      return 1.;  // shortcut -- no need to evaluate right-hand side
+    if ( mOp == boOr && qgsDoubleNear( vL, 0. ) )
+      return 0.;  // shortcut -- no need to evaluate right-hand side
   }
 
-  QVariant vR = mOpRight->eval( parent, p );
+  double vR = mOpRight->eval( parent, p );
   ENSURE_NO_EVAL_ERROR
 
   switch ( mOp )
   {
     case boPlus:
-      if ( vL.type() == QVariant::String && vR.type() == QVariant::String )
-      {
-        QString sL = QgsPointcloudExpressionUtils::isNull( vL ) ? QString() : QgsPointcloudExpressionUtils::getStringValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        QString sR = QgsPointcloudExpressionUtils::isNull( vR ) ? QString() : QgsPointcloudExpressionUtils::getStringValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-        return QVariant( sL + sR );
-      }
-      //intentional fall-through
-      FALLTHROUGH
+      return vL + vR;
     case boMinus:
+      return vL + vR;
     case boMul:
+      return vL * vR;
     case boDiv:
+      return vL / vR;
     case boMod:
-    {
-      if ( QgsPointcloudExpressionUtils::isNull( vL ) || QgsPointcloudExpressionUtils::isNull( vR ) )
-        return QVariant();
-      else if ( mOp != boDiv && QgsPointcloudExpressionUtils::isIntSafe( vL ) && QgsPointcloudExpressionUtils::isIntSafe( vR ) )
-      {
-        // both are integers - let's use integer arithmetic
-        qlonglong iL = QgsPointcloudExpressionUtils::getIntValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        qlonglong iR = QgsPointcloudExpressionUtils::getIntValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-
-        if ( mOp == boMod && iR == 0 )
-          return QVariant();
-
-        return QVariant( computeInt( iL, iR ) );
-      }
-      else
-      {
-        // general floating point arithmetic
-        double fL = QgsPointcloudExpressionUtils::getDoubleValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        double fR = QgsPointcloudExpressionUtils::getDoubleValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-        if ( ( mOp == boDiv || mOp == boMod ) && fR == 0. )
-          return QVariant(); // silently handle division by zero and return NULL
-        return QVariant( computeDouble( fL, fR ) );
-      }
-    }
+      return std::fmod( vL, vR );
     case boIntDiv:
-    {
-      //integer division
-      double fL = QgsPointcloudExpressionUtils::getDoubleValue( vL, parent );
-      ENSURE_NO_EVAL_ERROR
-      double fR = QgsPointcloudExpressionUtils::getDoubleValue( vR, parent );
-      ENSURE_NO_EVAL_ERROR
-      if ( fR == 0. )
-        return QVariant(); // silently handle division by zero and return NULL
-      return QVariant( qlonglong( std::floor( fL / fR ) ) );
-    }
+      return std::floor( vL / vR );
     case boPow:
-      if ( QgsPointcloudExpressionUtils::isNull( vL ) || QgsPointcloudExpressionUtils::isNull( vR ) )
-        return QVariant();
-      else
-      {
-        double fL = QgsPointcloudExpressionUtils::getDoubleValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        double fR = QgsPointcloudExpressionUtils::getDoubleValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-        return QVariant( std::pow( fL, fR ) );
-      }
-
+      return std::pow( vL, vR );
     case boAnd:
-    {
-      QgsPointcloudExpressionUtils::TVL tvlL = QgsPointcloudExpressionUtils::getTVLValue( vL, parent ), tvlR = QgsPointcloudExpressionUtils::getTVLValue( vR, parent );
-      ENSURE_NO_EVAL_ERROR
-      return  QgsPointcloudExpressionUtils::tvl2variant( QgsPointcloudExpressionUtils::AND[tvlL][tvlR] );
-    }
-
+      return ( qgsDoubleNear( vL, 0. ) && qgsDoubleNear( vR, 0. ) ) ? 0. : 1.;
     case boOr:
-    {
-      QgsPointcloudExpressionUtils::TVL tvlL = QgsPointcloudExpressionUtils::getTVLValue( vL, parent ), tvlR = QgsPointcloudExpressionUtils::getTVLValue( vR, parent );
-      ENSURE_NO_EVAL_ERROR
-      return  QgsPointcloudExpressionUtils::tvl2variant( QgsPointcloudExpressionUtils::OR[tvlL][tvlR] );
-    }
+      return ( qgsDoubleNear( vL, 0. ) || qgsDoubleNear( vR, 0. ) ) ? 0. : 1.;
 
     case boEQ:
     case boNE:
@@ -277,34 +205,10 @@ QVariant QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpre
     case boGT:
     case boLE:
     case boGE:
-      if ( QgsPointcloudExpressionUtils::isNull( vL ) || QgsPointcloudExpressionUtils::isNull( vR ) )
-      {
-        return TVL_Unknown;
-      }
-      else if ( ( vL.type() != QVariant::String || vR.type() != QVariant::String ) &&
-                QgsPointcloudExpressionUtils::isDoubleSafe( vL ) && QgsPointcloudExpressionUtils::isDoubleSafe( vR ) )
-      {
-        // do numeric comparison if both operators can be converted to numbers,
-        // and they aren't both string
-        double fL = QgsPointcloudExpressionUtils::getDoubleValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        double fR = QgsPointcloudExpressionUtils::getDoubleValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-        return compare( fL - fR ) ? TVL_True : TVL_False;
-      }
-      else
-      {
-        // do string comparison otherwise
-        QString sL = QgsPointcloudExpressionUtils::getStringValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        QString sR = QgsPointcloudExpressionUtils::getStringValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-        int diff = QString::compare( sL, sR );
-        return compare( diff ) ? TVL_True : TVL_False;
-      }
+      return compare( vL - vR ) ? 0. : 1.;
   }
   Q_ASSERT( false );
-  return QVariant();
+  return 1.;
 }
 
 bool QgsPointcloudExpressionNodeBinaryOperator::compare( double diff )
@@ -602,58 +506,26 @@ QString QgsPointcloudExpressionNodeBinaryOperator::text() const
 
 //
 
-QVariant QgsPointcloudExpressionNodeInOperator::evalNode( QgsPointcloudExpression *parent, int p )
+double QgsPointcloudExpressionNodeInOperator::evalNode( QgsPointcloudExpression *parent, int p )
 {
   if ( mList->count() == 0 )
-    return mNotIn ? TVL_True : TVL_False;
-  QVariant v1 = mNode->eval( parent, p );
+    return mNotIn ? 1. : 0.;
+  double v1 = mNode->eval( parent, p );
   ENSURE_NO_EVAL_ERROR
-  if ( QgsPointcloudExpressionUtils::isNull( v1 ) )
-    return TVL_Unknown;
-
-  bool listHasNull = false;
 
   const QList< QgsPointcloudExpressionNode * > nodeList = mList->list();
   for ( QgsPointcloudExpressionNode *n : nodeList )
   {
-    QVariant v2 = n->eval( parent, p );
+    double v2 = n->eval( parent, p );
     ENSURE_NO_EVAL_ERROR
-    if ( QgsPointcloudExpressionUtils::isNull( v2 ) )
-      listHasNull = true;
-    else
-    {
-      bool equal = false;
-      // check whether they are equal
-      if ( ( v1.type() != QVariant::String || v2.type() != QVariant::String ) &&
-           QgsPointcloudExpressionUtils::isDoubleSafe( v1 ) && QgsPointcloudExpressionUtils::isDoubleSafe( v2 ) )
-      {
-        // do numeric comparison if both operators can be converted to numbers,
-        // and they aren't both string
-        double f1 = QgsPointcloudExpressionUtils::getDoubleValue( v1, parent );
-        ENSURE_NO_EVAL_ERROR
-        double f2 = QgsPointcloudExpressionUtils::getDoubleValue( v2, parent );
-        ENSURE_NO_EVAL_ERROR
-        equal = qgsDoubleNear( f1, f2 );
-      }
-      else
-      {
-        QString s1 = QgsPointcloudExpressionUtils::getStringValue( v1, parent );
-        ENSURE_NO_EVAL_ERROR
-        QString s2 = QgsPointcloudExpressionUtils::getStringValue( v2, parent );
-        ENSURE_NO_EVAL_ERROR
-        equal = QString::compare( s1, s2 ) == 0;
-      }
-
-      if ( equal ) // we know the result
-        return mNotIn ? TVL_False : TVL_True;
-    }
+    bool equal = false;
+    // check whether they are equal
+    equal = qgsDoubleNear( v1, v2 );
+    if ( equal ) // we know the result
+      return mNotIn ? 1. : 0.;
   }
 
-  // item not found
-  if ( listHasNull )
-    return TVL_Unknown;
-  else
-    return mNotIn ? TVL_True : TVL_False;
+  return mNotIn ? 0. : 1.;
 }
 
 QgsPointcloudExpressionNodeInOperator::~QgsPointcloudExpressionNodeInOperator()
@@ -729,7 +601,7 @@ bool QgsPointcloudExpressionNodeInOperator::isStatic( QgsPointcloudExpression *p
 
 //
 
-QVariant QgsPointcloudExpressionNodeLiteral::evalNode( QgsPointcloudExpression *parent, int p )
+double QgsPointcloudExpressionNodeLiteral::evalNode( QgsPointcloudExpression *parent, int p )
 {
   Q_UNUSED( parent )
   return mValue;
@@ -750,24 +622,7 @@ bool QgsPointcloudExpressionNodeLiteral::prepareNode( QgsPointcloudExpression *p
 
 QString QgsPointcloudExpressionNodeLiteral::valueAsString() const
 {
-  if ( mValue.isNull() )
-    return QStringLiteral( "NULL" );
-
-  switch ( mValue.type() )
-  {
-    case QVariant::Int:
-      return QString::number( mValue.toInt() );
-    case QVariant::Double:
-      return QString::number( mValue.toDouble() );
-    case QVariant::LongLong:
-      return QString::number( mValue.toLongLong() );
-    case QVariant::String:
-      return QgsPointcloudExpression::quotedString( mValue.toString() );
-    case QVariant::Bool:
-      return mValue.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
-    default:
-      return tr( "[unsupported type: %1; value: %2]" ).arg( mValue.typeName(), mValue.toString() );
-  }
+  return QString( "%1" ).arg( mValue );
 }
 
 QString QgsPointcloudExpressionNodeLiteral::dump() const
@@ -803,7 +658,7 @@ bool QgsPointcloudExpressionNodeLiteral::isStatic( QgsPointcloudExpression *pare
 
 //
 
-QVariant QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpression *parent, int p )
+double QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpression *parent, int p )
 {
   Q_UNUSED( parent )
   int index = mIndex;
@@ -821,7 +676,7 @@ QVariant QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpress
 
 
 
-    QVariant val;
+    double val;
     switch ( type )
     {
       case QgsPointCloudAttribute::Char:
@@ -849,12 +704,12 @@ QVariant QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpress
         break;
     }
 
-    if ( attribute->name().compare( QString( "X" ) ) == 0 )
-      return val.toDouble() * mBlock->scale().x() + mBlock->offset().x();
-    if ( attribute->name().compare( QString( "Y" ) ) == 0 )
-      return val.toDouble() * mBlock->scale().y() + mBlock->offset().y();
-    if ( attribute->name().compare( QString( "Z" ) ) == 0 )
-      return val.toDouble() * mBlock->scale().z() + mBlock->offset().z();
+    if ( attribute->name().compare( QLatin1String( "X" ) ) == 0 )
+      return val * mBlock->scale().x() + mBlock->offset().x();
+    if ( attribute->name().compare( QLatin1String( "Y" ) ) == 0 )
+      return val * mBlock->scale().y() + mBlock->offset().y();
+    if ( attribute->name().compare( QLatin1String( "Z" ) ) == 0 )
+      return val * mBlock->scale().z() + mBlock->offset().z();
 
 
     return val; // calculate the  p's point respective attribute
@@ -887,7 +742,7 @@ QVariant QgsPointcloudExpressionNodeAttributeRef::evalNode( QgsPointcloudExpress
 //   }
   if ( index < 0 )
     parent->setEvalErrorString( tr( "Attribute '%1' not found" ).arg( mName ) );
-  return QVariant();
+  return 1.;
 }
 
 QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeAttributeRef::nodeType() const

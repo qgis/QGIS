@@ -17,7 +17,7 @@
 #include "qgspointcloudexpression.h"
 
 
-QVariant QgsPointcloudExpressionNode::eval( QgsPointcloudExpression *parent, int p )
+double QgsPointcloudExpressionNode::eval( QgsPointcloudExpression *parent, int p )
 {
   if ( mHasCachedValue )
   {
@@ -29,7 +29,7 @@ QVariant QgsPointcloudExpressionNode::eval( QgsPointcloudExpression *parent, int
   }
   else
   {
-    QVariant res = evalNode( parent, p );
+    double res = evalNode( parent, p );
     return res;
   }
 }

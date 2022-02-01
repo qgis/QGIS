@@ -206,12 +206,9 @@ expression:
     | QUOTED_ATTRIBUTE_REF                  { $$ = new QgsPointcloudExpressionNodeAttributeRef( *$1 ); delete $1; }
 
     //  literals
-    | NUMBER_FLOAT                { $$ = new QgsPointcloudExpressionNodeLiteral( QVariant($1) ); }
-    | NUMBER_INT                  { $$ = new QgsPointcloudExpressionNodeLiteral( QVariant($1) ); }
-    | NUMBER_INT64                { $$ = new QgsPointcloudExpressionNodeLiteral( QVariant($1) ); }
-    | BOOLEAN                     { $$ = new QgsPointcloudExpressionNodeLiteral( QVariant($1) ); }
-    | STRING                      { $$ = new QgsPointcloudExpressionNodeLiteral( QVariant(*$1) ); delete $1; }
-    | NULLVALUE                   { $$ = new QgsPointcloudExpressionNodeLiteral( QVariant() ); }
+    | NUMBER_FLOAT                { $$ = new QgsPointcloudExpressionNodeLiteral( $1 ); }
+    | NUMBER_INT                  { $$ = new QgsPointcloudExpressionNodeLiteral( $1 ); }
+    | NUMBER_INT64                { $$ = new QgsPointcloudExpressionNodeLiteral( $1 ); }
 ;
 
 named_node:

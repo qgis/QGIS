@@ -52,7 +52,7 @@ Returns the node the operator will operate upon.
 
     virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p );
+    virtual double evalNode( QgsPointcloudExpression *parent, int p );
 
     virtual QString dump() const;
 
@@ -141,7 +141,7 @@ Returns the node to the right of the operator.
 
     virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p );
+    virtual double evalNode( QgsPointcloudExpression *parent, int p );
 
     virtual QString dump() const;
 
@@ -207,7 +207,7 @@ Returns the list of nodes to search for matching values within.
 
     virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p );
+    virtual double evalNode( QgsPointcloudExpression *parent, int p );
 
     virtual QString dump() const;
 
@@ -230,7 +230,7 @@ An expression node for literal values.
 %End
   public:
 
-    QgsPointcloudExpressionNodeLiteral( const QVariant &value );
+    QgsPointcloudExpressionNodeLiteral( const double &value );
 %Docstring
 Constructor for QgsPointcloudExpressionNodeLiteral, with the specified literal ``value``.
 %End
@@ -241,7 +241,7 @@ Constructor for QgsPointcloudExpressionNodeLiteral, with the specified literal `
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QVariant value() const;
+    double value() const;
 %Docstring
 The value of the literal.
 %End
@@ -250,7 +250,7 @@ The value of the literal.
 
     virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p );
+    virtual double evalNode( QgsPointcloudExpression *parent, int p );
 
     virtual QString dump() const;
 
@@ -302,7 +302,7 @@ The name of the column.
 
     virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p );
+    virtual double evalNode( QgsPointcloudExpression *parent, int p );
 
     virtual QString dump() const;
 

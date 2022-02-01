@@ -193,7 +193,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 2.12
      */
-    QVariant eval( QgsPointcloudExpression *parent, int p );
+    double eval( QgsPointcloudExpression *parent, int p );
 
     /**
      * Generate a clone of this node.
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * \see hasCachedStaticValue()
      * \since QGIS 3.18
      */
-    QVariant cachedStaticValue() const { return mCachedStaticValue; }
+    double cachedStaticValue() const { return mCachedStaticValue; }
 
     /**
      * Returns a reference to the simplest node which represents this node,
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 3.20
      */
-    mutable QVariant mCachedStaticValue;
+    mutable double mCachedStaticValue;
 
     /**
      * Contains a compiled node which represents a simplified version of this node
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * Errors are reported to the parent
      * \since QGIS 3.0
      */
-    virtual QVariant evalNode( QgsPointcloudExpression *parent, int p ) = 0;
+    virtual double evalNode( QgsPointcloudExpression *parent, int p ) = 0;
 
 };
 

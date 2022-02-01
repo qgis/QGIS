@@ -302,7 +302,7 @@ class CORE_EXPORT QgsPointcloudExpression
      * \note this method does not expect that prepare() has been called on this instance
      * \since QGIS 2.12
      */
-    QVariant evaluate( int p );
+    double evaluate( int p );
 
     //! Returns TRUE if an error occurred when evaluating last input
     bool hasEvalError() const;

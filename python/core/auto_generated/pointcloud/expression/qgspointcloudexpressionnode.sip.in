@@ -156,7 +156,7 @@ The returned expression does not necessarily literally match
 the original expression, it's just guaranteed to behave the same way.
 %End
 
-    QVariant eval( QgsPointcloudExpression *parent, int p );
+    double eval( QgsPointcloudExpression *parent, int p );
 %Docstring
 Evaluate this node with the given context and parent.
 This will return a cached value if it has been determined to be static
@@ -232,7 +232,7 @@ Returns ``True`` if the node can be replaced by a static cached value.
 .. versionadded:: 3.18
 %End
 
-    QVariant cachedStaticValue() const;
+    double cachedStaticValue() const;
 %Docstring
 Returns the node's static cached value. Only valid if :py:func:`~QgsPointcloudExpressionNode.hasCachedStaticValue` is ``True``.
 

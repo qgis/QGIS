@@ -33,8 +33,8 @@
 
 class QgsGradientColorRamp;
 
-#define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
-#define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }
+#define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return 1.; }
+#define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return 1.; }
 
 #define FEAT_FROM_CONTEXT(c, f) if ( !(c) || !( c )->hasFeature() ) return QVariant(); \
   QgsFeature f = ( c )->feature();

@@ -68,7 +68,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeUnaryOperator : public QgsPointclou
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent, int p ) override;
+    double evalNode( QgsPointcloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeBinaryOperator : public QgsPointclo
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent, int p ) override;
+    double evalNode( QgsPointcloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeInOperator : public QgsPointcloudEx
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent, int p ) override;
+    double evalNode( QgsPointcloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpre
     /**
      * Constructor for QgsPointcloudExpressionNodeLiteral, with the specified literal \a value.
      */
-    QgsPointcloudExpressionNodeLiteral( const QVariant &value )
+    QgsPointcloudExpressionNodeLiteral( const double &value )
       : mValue( value )
     {}
 
@@ -273,11 +273,11 @@ class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpre
 #endif
 
     //! The value of the literal.
-    inline QVariant value() const { return mValue; }
+    inline double value() const { return mValue; }
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent, int p ) override;
+    double evalNode( QgsPointcloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpre
     QString valueAsString() const;
 
   private:
-    QVariant mValue;
+    double mValue;
 };
 
 /**
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeAttributeRef : public QgsPointcloud
 
     QgsPointcloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
-    QVariant evalNode( QgsPointcloudExpression *parent, int p ) override;
+    double evalNode( QgsPointcloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;

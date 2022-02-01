@@ -238,13 +238,13 @@ bool QgsPointcloudExpression::prepare( const QgsPointCloudBlock *block )
   return d->mRootNode->prepare( this, block );
 }
 
-QVariant QgsPointcloudExpression::evaluate( int p )
+double QgsPointcloudExpression::evaluate( int p )
 {
   d->mEvalErrorString = QString();
   if ( !d->mRootNode )
   {
     d->mEvalErrorString = tr( "No root node! Parsing failed?" );
-    return QVariant();
+    return 0;
   }
 
   return d->mRootNode->eval( this, p );
