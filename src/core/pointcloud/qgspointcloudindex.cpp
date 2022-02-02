@@ -250,7 +250,7 @@ int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
   int count = -1;
   mHierarchyMutex.lock();
   if ( mHierarchy.contains( n ) )
-    count = mHierarchy.contains( n );
+    count = mHierarchy.value( n );
   mHierarchyMutex.unlock();
   return count;
 }
