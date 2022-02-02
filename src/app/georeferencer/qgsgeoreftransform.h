@@ -110,8 +110,7 @@ class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
     QgsGeorefTransform( const QgsGeorefTransform &other );
     QgsGeorefTransform &operator= ( const QgsGeorefTransform & ) = delete;
 
-    // convenience wrapper around GDALTransformerFunc
-    bool gdal_transform( const QgsPointXY &src, QgsPointXY &dst, int dstToSrc ) const;
+    bool transformPrivate( const QgsPointXY &src, QgsPointXY &dst, bool inverseTransform ) const;
 
     QVector<QgsPointXY> mSourceCoordinates;
     QVector<QgsPointXY> mDestinationCoordinates;
