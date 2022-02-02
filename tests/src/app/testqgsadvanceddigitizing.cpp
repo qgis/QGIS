@@ -454,7 +454,7 @@ void TestQgsAdvancedDigitizing::coordinates()
   utils.mouseClick( 0, 2, Qt::RightButton );
 
   QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
-            QStringLiteral( "LineString (5 0, 0 2)" ) );
+            QStringLiteral( "LineString (0 0, 0 2)" ) );
 }
 
 
