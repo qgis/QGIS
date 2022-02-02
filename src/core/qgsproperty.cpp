@@ -371,7 +371,7 @@ void QgsProperty::setExpressionString( const QString &expression )
 {
   d.detach();
   d->expressionString = expression;
-  d->expression = QgsExpression(expression);
+  d->expression = QgsExpression( expression );
   d->expressionPrepared = false;
   d->expressionIsInvalid = false;
 
