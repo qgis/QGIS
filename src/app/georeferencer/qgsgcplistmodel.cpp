@@ -147,7 +147,7 @@ void QgsGCPListModel::updateModel()
     if ( mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized() )
     {
       QgsPointXY dst;
-      const QgsPointXY pixel = mGeorefTransform->hasCrs() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
+      const QgsPointXY pixel = mGeorefTransform->hasExistingGeoreference() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
       if ( unitType == tr( "pixels" ) )
       {
         // Transform from world to raster coordinate:
