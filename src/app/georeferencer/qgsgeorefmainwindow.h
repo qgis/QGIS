@@ -90,14 +90,14 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void linkQGisToGeoref( bool link );
 
     // gcps
-    void addPoint( const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords,
-                   const QgsCoordinateReferenceSystem &crs, bool enable = true, bool finalize = true );
+    void addPoint( const QgsPointXY &sourceCoords, const QgsPointXY &destinationMapCoords,
+                   const QgsCoordinateReferenceSystem &destinationCrs, bool enable = true, bool finalize = true );
     void deleteDataPoint( QPoint pixelCoords );
     void deleteDataPoint( int index );
     void showCoordDialog( const QgsPointXY &pixelCoords );
 
     void selectPoint( QPoint );
-    void movePoint( QPoint );
+    void movePoint( QPoint canvasPixels );
     void releasePoint( QPoint );
 
     void loadGCPsDialog();

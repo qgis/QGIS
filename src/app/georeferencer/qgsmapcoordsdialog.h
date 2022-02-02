@@ -73,7 +73,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     void setPrevTool();
 
   signals:
-    void pointAdded( const QgsPointXY &a, const QgsPointXY &b, const QgsCoordinateReferenceSystem &crs );
+    void pointAdded( const QgsPointXY &a, const QgsPointXY &destination, const QgsCoordinateReferenceSystem &destinationCrs );
 
   private:
     double dmsToDD( const QString &dms );

@@ -54,7 +54,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   if ( mDataPoint )
   {
     enabled = mDataPoint->isEnabled();
-    worldCoords = mDataPoint->canvasCoords();
+    worldCoords = mDataPoint->destinationMapCoords();
     id = mDataPoint->id();
   }
   p->setOpacity( enabled ? 1.0 : 0.3 );
@@ -163,18 +163,19 @@ void QgsGCPCanvasItem::updatePosition()
 
   if ( mIsGCPSource )
   {
-    setPos( toCanvasCoordinates( mDataPoint->pixelCoords() ) );
+    setPos( toCanvasCoordinates( mDataPoint->sourceCoords() ) );
   }
   else
   {
-    if ( mDataPoint->canvasCoords().isEmpty() )
+    if ( mDataPoint->destinationInCanvasPixels().isEmpty() )
     {
-      const QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
-      const QgsCoordinateTransform transf( mDataPoint->crs(), mapCrs, QgsProject::instance() );
-      const QgsPointXY mapCoords  = transf.transform( mDataPoint->mapCoords() );
-      mDataPoint->setCanvasCoords( mapCoords );
+      const QgsCoordinateReferenceSystem canvasCrs = mMapCanvas->mapSettings().destinationCrs();
+      const QgsCoordinateTransform pointToCanvasTransform( mDataPoint->destinationCrs(), canvasCrs, QgsProject::instance() );
+      const QgsPointXY canvasMapCoords = pointToCanvasTransform.transform( mDataPoint->destinationMapCoords() );
+      const QPointF canvasCoordinatesInPixels = toCanvasCoordinates( canvasMapCoords );
+      mDataPoint->setDestinationInCanvasPixels( canvasCoordinatesInPixels );
     }
-    setPos( toCanvasCoordinates( mDataPoint->canvasCoords() ) );
+    setPos( mDataPoint->destinationInCanvasPixels().toQPointF() );
   }
 }
 

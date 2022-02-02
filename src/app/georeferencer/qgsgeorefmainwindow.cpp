@@ -534,14 +534,16 @@ void QgsGeoreferencerMainWindow::linkGeorefToQgis( bool link )
 }
 
 // GCPs slots
-void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords, const QgsCoordinateReferenceSystem &crs,
+void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &sourceCoords, const QgsPointXY &destinationMapCoords, const QgsCoordinateReferenceSystem &destinationCrs,
     bool enable, bool finalize )
 {
-  QgsGeorefDataPoint *pnt = new QgsGeorefDataPoint( mCanvas, QgisApp::instance()->mapCanvas(), pixelCoords, mapCoords, crs, enable );
+  QgsGeorefDataPoint *pnt = new QgsGeorefDataPoint( mCanvas, QgisApp::instance()->mapCanvas(), sourceCoords, destinationMapCoords, destinationCrs, enable );
   mPoints.append( pnt );
-  if ( !mLastGCPProjection.isValid() || mLastGCPProjection != crs )
-    mLastGCPProjection = QgsCoordinateReferenceSystem( crs );
+
+  if ( !mLastGCPProjection.isValid() || mLastGCPProjection != destinationCrs )
+    mLastGCPProjection = destinationCrs;
   mGCPsDirty = true;
+
   if ( finalize )
   {
     mGCPListWidget->setGCPList( &mPoints );
@@ -598,7 +600,7 @@ void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
   }
 }
 
-void QgsGeoreferencerMainWindow::movePoint( QPoint p )
+void QgsGeoreferencerMainWindow::movePoint( QPoint canvasPixels )
 {
   // Get Map Sender
   bool isMapPlugin = sender() == mToolMovePoint;
@@ -606,7 +608,7 @@ void QgsGeoreferencerMainWindow::movePoint( QPoint p )
 
   if ( mvPoint )
   {
-    mvPoint->moveTo( p, isMapPlugin );
+    mvPoint->moveTo( canvasPixels, isMapPlugin );
   }
 
 }
@@ -640,9 +642,9 @@ void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords 
   if ( mLayer && !mMapCoordsDialog )
   {
     mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), pixelCoords, lastProjection, this );
-    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & a, const QgsPointXY & b, const QgsCoordinateReferenceSystem & crs )
+    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & a, const QgsPointXY & destination, const QgsCoordinateReferenceSystem & destinationCrs )
     {
-      addPoint( a, b, crs );
+      addPoint( a, destination, destinationCrs );
     } );
     connect( mMapCoordsDialog, &QObject::destroyed, this, [ = ]
     {
@@ -761,7 +763,7 @@ void QgsGeoreferencerMainWindow::jumpToGCP( uint theGCPIndex )
   QgsRectangle ext = mCanvas->extent();
 
   QgsPointXY center = ext.center();
-  QgsPointXY new_center = mPoints[theGCPIndex]->pixelCoords();
+  QgsPointXY new_center = mPoints[theGCPIndex]->sourceCoords();
 
   QgsPointXY diff( new_center.x() - center.x(), new_center.y() - center.y() );
   QgsRectangle new_extent( ext.xMinimum() + diff.x(), ext.yMinimum() + diff.y(),
@@ -1288,6 +1290,8 @@ bool QgsGeoreferencerMainWindow::loadGCPs( /*bool verbose*/ )
     QgsPointXY mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
     QgsPointXY pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
 
+    // TO FIX -- pixelCoord needs to be converted to sourceCoord, i.e. if source is georeferenced we need to convert to layer coordinates from pixels!!!!
+
     if ( ls.count() == 5 )
     {
       bool enable = ls.at( 4 ).toInt();
@@ -1325,8 +1329,8 @@ void QgsGeoreferencerMainWindow::saveGCPs()
       points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
              .arg( qgsDoubleToString( pt->transCoords().x() ),
                    qgsDoubleToString( pt->transCoords().y() ),
-                   qgsDoubleToString( pt->pixelCoords().x() ),
-                   qgsDoubleToString( pt->pixelCoords().y() ) )
+                   qgsDoubleToString( pt->sourceCoords().x() ),
+                   qgsDoubleToString( pt->sourceCoords().y() ) )
              .arg( pt->isEnabled() )
              .arg( qgsDoubleToString( pt->residual().x() ),
                    qgsDoubleToString( pt->residual().y() ),
@@ -1805,7 +1809,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
     {
       currentGCPStrings << tr( "no" );
     }
-    currentGCPStrings << QString::number( ( *gcpIt )->pixelCoords().x(), 'f', 0 ) << QString::number( ( *gcpIt )->pixelCoords().y(), 'f', 0 ) << QString::number( ( *gcpIt )->transCoords().x(), 'f', 3 )
+    currentGCPStrings << QString::number( ( *gcpIt )->sourceCoords().x(), 'f', 0 ) << QString::number( ( *gcpIt )->sourceCoords().y(), 'f', 0 ) << QString::number( ( *gcpIt )->transCoords().x(), 'f', 3 )
                       <<  QString::number( ( *gcpIt )->transCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
     gcpTableContents << currentGCPStrings;
   }
@@ -1911,7 +1915,7 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
 
   for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
-    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( -pt->pixelCoords().y() )
+    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->sourceCoords().x() ).arg( -pt->sourceCoords().y() )
                 .arg( pt->transCoords().x() ).arg( pt->transCoords().y() );
   }
 
@@ -2157,10 +2161,10 @@ bool QgsGeoreferencerMainWindow::equalGCPlists( const QgsGCPList &list1, const Q
   {
     QgsGeorefDataPoint *p1 = list1.at( i );
     QgsGeorefDataPoint *p2 = list2.at( j );
-    if ( p1->pixelCoords() != p2->pixelCoords() )
+    if ( p1->sourceCoords() != p2->sourceCoords() )
       return false;
 
-    if ( p1->mapCoords() != p2->mapCoords() )
+    if ( p1->destinationMapCoords() != p2->destinationMapCoords() )
       return false;
   }
 
@@ -2210,7 +2214,7 @@ void QgsGeoreferencerMainWindow::invalidateCanvasCoords()
   for ( int i = 0; i < count; ++i, ++j )
   {
     QgsGeorefDataPoint *p = mPoints.at( i );
-    p->setCanvasCoords( QgsPointXY() );
+    p->setDestinationInCanvasPixels( QgsPointXY() );
     p->updateCoords();
   }
 }
