@@ -101,7 +101,7 @@ double QgsPointcloudExpressionNodeUnaryOperator::evalNode( QgsPointcloudExpressi
   switch ( mOp )
   {
     case uoNot:
-      return !qgsDoubleNear( p, 1. ) ? 0. : 1.;
+      return p == 0. ? 1. : 0.;
 
     case uoMinus:
       return -val;
@@ -169,9 +169,9 @@ double QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpress
 
   if ( mOp == boAnd || mOp == boOr )
   {
-    if ( mOp == boAnd && !qgsDoubleNear( vL, 1. ) )
+    if ( mOp == boAnd && vL == 0. )
       return 0.;  // shortcut -- no need to evaluate right-hand side
-    if ( mOp == boOr && qgsDoubleNear( vL, 1. ) )
+    if ( mOp == boOr && vL != 0. )
       return 1.;  // shortcut -- no need to evaluate right-hand side
   }
 
@@ -187,7 +187,7 @@ double QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpress
     case boMul:
       return vL * vR;
     case boDiv:
-      if ( qgsDoubleNear( vR, 0. ) )
+      if ( vR == 0. )
         return std::numeric_limits<double>::quiet_NaN();
       return vL / vR;
     case boMod:
@@ -197,11 +197,11 @@ double QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpress
     case boPow:
       return std::pow( vL, vR );
     case boAnd:
-      // vL is already checked and is 1.0
-      return qgsDoubleNear( vR, 1. ) ? 1. : 0.;
+      // vL is already checked and is true (not 0.)
+      return vR == 0. ? 0. : 1.;
     case boOr:
-      // vL is already checked and is not 1.0
-      return qgsDoubleNear( vR, 1. ) ? 1. : 0.;
+      // vL is already checked and is false (0.)
+      return vR == 0. ? 0. : 1.;
 
     case boEQ:
     case boNE:
@@ -220,9 +220,9 @@ bool QgsPointcloudExpressionNodeBinaryOperator::compare( double diff )
   switch ( mOp )
   {
     case boEQ:
-      return qgsDoubleNear( diff, 0.0 );
+      return diff == 0.0;
     case boNE:
-      return !qgsDoubleNear( diff, 0.0 );
+      return diff != 0.0;
     case boLT:
       return diff < 0;
     case boGT:
@@ -524,7 +524,7 @@ double QgsPointcloudExpressionNodeInOperator::evalNode( QgsPointcloudExpression 
     ENSURE_NO_EVAL_ERROR
     bool equal = false;
     // check whether they are equal
-    equal = qgsDoubleNear( v1, v2 );
+    equal = v1 == v2;
     if ( equal ) // we know the result
       return mNotIn ? 0. : 1.;
   }
