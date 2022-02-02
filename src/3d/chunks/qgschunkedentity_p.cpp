@@ -177,6 +177,7 @@ void QgsChunkedEntity::update( const SceneState &state )
   {
     QgsChunkListEntry *entry = mReplacementQueue->takeLast();
     entry->chunk->unloadChunk();  // also deletes the entry
+    mActiveNodes.removeOne( entry->chunk );
     ++unloaded;
   }
 
