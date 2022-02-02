@@ -18,10 +18,11 @@
 
 #include <QVector>
 
+#include "qgis_app.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
 
-class QgsRasterChangeCoords
+class APP_EXPORT QgsRasterChangeCoords
 {
   public:
     QgsRasterChangeCoords() = default;
@@ -38,6 +39,8 @@ class QgsRasterChangeCoords
     double mUL_Y = 0.;
     double mResX = 1.;
     double mResY = 1.;
+
+    friend class TestQgsGeoreferencer;
 };
 
 #endif // QGSRASTERCHANGECOORDS_H
