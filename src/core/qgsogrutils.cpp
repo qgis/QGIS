@@ -962,24 +962,76 @@ QgsCoordinateReferenceSystem QgsOgrUtils::OGRSpatialReferenceToCrs( OGRSpatialRe
   if ( wkt.isEmpty() )
     return QgsCoordinateReferenceSystem();
 
+  const char *authorityName = OSRGetAuthorityName( srs, nullptr );
+  const char *authorityCode = OSRGetAuthorityCode( srs, nullptr );
+  QgsCoordinateReferenceSystem res;
+  if ( authorityName && authorityCode )
+  {
+    QString authId = QString( authorityName ) + ':' + QString( authorityCode );
+    OGRSpatialReferenceH ogrSrsTmp = OSRNewSpatialReference( nullptr );
+    // Check that the CRS build from authId and the input one are the "same".
+    if ( OSRSetFromUserInput( ogrSrsTmp, authId.toUtf8().constData() ) != OGRERR_NONE &&
+         OSRIsSame( srs, ogrSrsTmp ) )
+    {
+      res = QgsCoordinateReferenceSystem();
+      res.createFromUserInput( authId );
+    }
+    OSRDestroySpatialReference( ogrSrsTmp );
+  }
+  if ( !res.isValid() )
+    res = QgsCoordinateReferenceSystem::fromWkt( wkt );
+
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
-  QgsCoordinateReferenceSystem res = QgsCoordinateReferenceSystem::fromWkt( wkt );
   const double coordinateEpoch = OSRGetCoordinateEpoch( srs );
   if ( coordinateEpoch > 0 )
     res.setCoordinateEpoch( coordinateEpoch );
-  return res;
-#else
-  return QgsCoordinateReferenceSystem::fromWkt( wkt );
 #endif
+  return res;
 }
 
 OGRSpatialReferenceH QgsOgrUtils::crsToOGRSpatialReference( const QgsCoordinateReferenceSystem &crs )
 {
   if ( crs.isValid() )
   {
-    const QString srsWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
+    OGRSpatialReferenceH ogrSrs = nullptr;
 
-    if ( OGRSpatialReferenceH ogrSrs = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() ) )
+    // First try instantiating the CRS from its authId. This will give a
+    // more complete representation of the CRS for GDAL. In particular it might
+    // help a few drivers to get the datum code, that would be missing in WKT-2.
+    // See https://github.com/OSGeo/gdal/pull/5218
+    const QString authId = crs.authid();
+    const QString srsWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
+    if ( !authId.isEmpty() )
+    {
+      ogrSrs = OSRNewSpatialReference( nullptr );
+      if ( OSRSetFromUserInput( ogrSrs, authId.toUtf8().constData() ) == OGRERR_NONE )
+      {
+        // Check that the CRS build from WKT and authId are the "same".
+        OGRSpatialReferenceH ogrSrsFromWkt = OSRNewSpatialReference( srsWkt.toUtf8().constData() );
+        if ( ogrSrsFromWkt )
+        {
+          if ( !OSRIsSame( ogrSrs, ogrSrsFromWkt ) )
+          {
+            OSRDestroySpatialReference( ogrSrs );
+            ogrSrs = ogrSrsFromWkt;
+          }
+          else
+          {
+            OSRDestroySpatialReference( ogrSrsFromWkt );
+          }
+        }
+      }
+      else
+      {
+        OSRDestroySpatialReference( ogrSrs );
+        ogrSrs = nullptr;
+      }
+    }
+    if ( !ogrSrs )
+    {
+      ogrSrs = OSRNewSpatialReference( srsWkt.toUtf8().constData() );
+    }
+    if ( ogrSrs )
     {
       OSRSetAxisMappingStrategy( ogrSrs, OAMS_TRADITIONAL_GIS_ORDER );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
