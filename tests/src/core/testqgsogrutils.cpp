@@ -727,6 +727,15 @@ void TestQgsOgrUtils::ogrCrsConversion()
     const QgsCoordinateReferenceSystem crs1( QStringLiteral( "EPSG:3111" ) );
     OGRSpatialReferenceH srs = QgsOgrUtils::crsToOGRSpatialReference( crs1 );
     QVERIFY( srs );
+
+    // Check that OGRSpatialReferenceH object built has all information preserved
+    const char *authName = OSRGetAuthorityName( srs, "DATUM" );
+    QVERIFY( authName );
+    QCOMPARE( QString( authName ), "EPSG" );
+    const char *authCode = OSRGetAuthorityCode( srs, "DATUM" );
+    QVERIFY( authCode );
+    QCOMPARE( QString( authCode ), "6283" );
+
     const QgsCoordinateReferenceSystem crs2( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
     // round trip should be lossless
     QCOMPARE( crs1, crs2 );
@@ -735,6 +744,15 @@ void TestQgsOgrUtils::ogrCrsConversion()
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
     QVERIFY( std::isnan( crs2.coordinateEpoch() ) );
 #endif
+  }
+
+  {
+    OGRSpatialReferenceH srs = OSRNewSpatialReference( "PROJCS[\"GDA94 / Vicgrid\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"latitude_of_origin\",-37],PARAMETER[\"central_meridian\",145],PARAMETER[\"standard_parallel_1\",-36],PARAMETER[\"standard_parallel_2\",-38],PARAMETER[\"false_easting\",2500000],PARAMETER[\"false_northing\",2500000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"3111\"]]" );
+    // Check that we used EPSG:3111 to instantiate the CRS, and thus get the
+    // extent from PROJ
+    const QgsCoordinateReferenceSystem crs( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
+    OSRRelease( srs );
+    QVERIFY( !crs.bounds().isEmpty() );
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
