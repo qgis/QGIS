@@ -127,7 +127,7 @@ class Grass7Utils:
                 for line in lines:
                     if "GRASS GIS " in line:
                         line = line.split(" ")[-1].strip()
-                        if line.startswith("7."):
+                        if line.startswith("7.") or line.startswith("8."):
                             Grass7Utils.version = line
                             return Grass7Utils.version
             except Exception:
@@ -174,8 +174,8 @@ class Grass7Utils:
                 ]
         else:
             cmdList = [
-                "grass78", "grass76", "grass74", "grass72", "grass70", "grass",
-                "grass78.sh", "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"
+                "grass80", "grass78", "grass76", "grass74", "grass72", "grass70", "grass",
+                "grass80.sh", "grass78.sh", "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"
             ]
 
         # For MS-Windows there is a difference between GRASS Path and GRASS binary
@@ -235,7 +235,7 @@ class Grass7Utils:
                 folder = os.environ["GISBASE"]
             else:
                 # Find grass folder if it exists inside QGIS bundle
-                for version in ['', '7', '78', '76', '74', '72', '71', '70']:
+                for version in ['', '8', '7', '80', '78', '76', '74', '72', '71', '70']:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()),
                                               'grass{}'.format(version))
                     if os.path.isdir(testfolder):
