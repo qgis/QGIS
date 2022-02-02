@@ -214,15 +214,16 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
   if ( lineEdit )
   {
     const double value = lineEdit->text().toDouble();
-    QgsPointXY newMapCoords( dataPoint->mapCoords() );
-    QgsPointXY newPixelCoords( dataPoint->pixelCoords() );
+    QgsPointXY newMapCoords( dataPoint->destinationMapCoords() );
+
+    QgsPointXY newSourceCoords( dataPoint->sourceCoords() );
     if ( mPrevColumn == 2 ) // srcX
     {
-      newPixelCoords.setX( value );
+      newSourceCoords.setX( value );
     }
     else if ( mPrevColumn == 3 ) // srcY
     {
-      newPixelCoords.setY( value );
+      newSourceCoords.setY( value );
     }
     else if ( mPrevColumn == 4 ) // dstX
     {
@@ -237,8 +238,8 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
       return;
     }
 
-    dataPoint->setPixelCoords( newPixelCoords );
-    dataPoint->setMapCoords( newMapCoords );
+    dataPoint->setSourceCoords( newSourceCoords );
+    dataPoint->setDestinationMapCoords( newMapCoords );
   }
 
   dataPoint->updateCoords();

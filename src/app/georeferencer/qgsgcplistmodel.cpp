@@ -135,8 +135,8 @@ void QgsGCPListModel::updateModel()
 
     setItem( i, j++, si );
     setItem( i, j++, new QgsStandardItem( i ) );
-    setItem( i, j++, new QgsStandardItem( p->pixelCoords().x() ) );
-    setItem( i, j++, new QgsStandardItem( p->pixelCoords().y() ) );
+    setItem( i, j++, new QgsStandardItem( p->sourceCoords().x() ) );
+    setItem( i, j++, new QgsStandardItem( p->sourceCoords().y() ) );
     setItem( i, j++, new QgsStandardItem( p->transCoords().x() ) );
     setItem( i, j++, new QgsStandardItem( p->transCoords().y() ) );
 
@@ -147,7 +147,7 @@ void QgsGCPListModel::updateModel()
     if ( mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized() )
     {
       QgsPointXY dst;
-      const QgsPointXY pixel = mGeorefTransform->hasExistingGeoreference() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
+      const QgsPointXY pixel = mGeorefTransform->hasExistingGeoreference() ? mGeorefTransform->toColumnLine( p->sourceCoords() ) : p->sourceCoords();
       if ( unitType == tr( "pixels" ) )
       {
         // Transform from world to raster coordinate:
