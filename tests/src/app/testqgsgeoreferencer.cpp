@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgsgeorefencer.cpp
+     testqgsgeoreferencer.cpp
      --------------------------
     Date                 : 2022-02-02
     Copyright            : (C) 2022 by Nyall Dawson
