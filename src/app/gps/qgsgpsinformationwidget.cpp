@@ -1042,7 +1042,15 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     }
     else
     {
-      bearing = 180 * mDistanceCalculator.bearing( mSecondLastGpsPosition, mLastGpsPosition ) / M_PI;
+      try
+      {
+        bearing = 180 * mDistanceCalculator.bearing( mSecondLastGpsPosition, mLastGpsPosition ) / M_PI;
+      }
+      catch ( QgsCsException & )
+      {
+
+      }
+
     }
 
     const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
@@ -1665,13 +1673,20 @@ void QgsGpsInformationWidget::updateGpsDistanceStatusMessage( bool forceDisplay 
 
   const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
                           QgsProject::instance()->distanceUnits() );
-  const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
-  const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
-  const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
-  const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
+  try
+  {
+    const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
+    const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+    const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
+    const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
 
-  QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS
-      : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - mLastForcedStatusUpdate.elapsed() );
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS
+        : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - mLastForcedStatusUpdate.elapsed() );
+  }
+  catch ( QgsCsException & )
+  {
+
+  }
 }
 
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
