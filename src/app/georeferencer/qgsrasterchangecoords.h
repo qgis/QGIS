@@ -26,14 +26,14 @@ class QgsRasterChangeCoords
   public:
     QgsRasterChangeCoords() = default;
     void setRaster( const QString &fileRaster );
-    bool hasCrs() const { return mHasCrs; }
+    bool hasExistingGeoreference() const { return mHasExistingGeoreference; }
     QVector<QgsPointXY> getPixelCoords( const QVector<QgsPointXY> &mapCoords );
     QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel );
     QgsPointXY toColumnLine( const QgsPointXY &pntMap );
     QgsPointXY toXY( const QgsPointXY &pntPixel );
 
   private:
-    bool mHasCrs = false;
+    bool mHasExistingGeoreference = false;
     double mUL_X = 0.;
     double mUL_Y = 0.;
     double mResX = 1.;
