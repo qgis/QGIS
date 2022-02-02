@@ -131,12 +131,12 @@ bool QgsGeorefTransform::transformRasterToWorld( const QgsPointXY &raster, QgsPo
 {
   // flip y coordinate due to different CS orientation
   const QgsPointXY raster_flipped( raster.x(), -raster.y() );
-  return gdal_transform( raster_flipped, world, 0 );
+  return transformPrivate( raster_flipped, world, false );
 }
 
 bool QgsGeorefTransform::transformWorldToRaster( const QgsPointXY &world, QgsPointXY &raster )
 {
-  const bool success = gdal_transform( world, raster, 1 );
+  const bool success = transformPrivate( world, raster, true );
   // flip y coordinate due to different CS orientation
   raster.setY( -raster.y() );
   return success;
@@ -186,13 +186,13 @@ bool QgsGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, double &sca
 }
 
 
-bool QgsGeorefTransform::gdal_transform( const QgsPointXY &src, QgsPointXY &dst, int dstToSrc ) const
+bool QgsGeorefTransform::transformPrivate( const QgsPointXY &src, QgsPointXY &dst, bool inverseTransform ) const
 {
   // Copy the source coordinate for inplace transform
   double x = src.x();
   double y = src.y();
 
-  if ( !QgsGcpTransformerInterface::transform( x, y, dstToSrc == 1 ) )
+  if ( !QgsGcpTransformerInterface::transform( x, y, inverseTransform ) )
     return false;
 
   dst.setX( x );
