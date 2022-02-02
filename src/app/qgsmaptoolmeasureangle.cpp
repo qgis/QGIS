@@ -56,6 +56,18 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
   mRubberBand->movePoint( point );
   if ( mAnglePoints.size() == 2 )
   {
+    double azimuthOne = 0;
+    double azimuthTwo = 0;
+    try
+    {
+      azimuthOne = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
+      azimuthTwo = mDa.bearing( mAnglePoints.at( 1 ), point );
+    }
+    catch ( QgsCsException & )
+    {
+      return;
+    }
+
     if ( !mResultDisplay->isVisible() )
     {
       mResultDisplay->move( e->pos() - QPoint( 100, 100 ) );
@@ -63,8 +75,6 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
     }
 
     //angle calculation
-    const double azimuthOne = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
-    const double azimuthTwo = mDa.bearing( mAnglePoints.at( 1 ), point );
     double resultAngle = azimuthTwo - azimuthOne;
     QgsDebugMsg( QString::number( std::fabs( resultAngle ) ) );
     QgsDebugMsg( QString::number( M_PI ) );
@@ -193,8 +203,17 @@ void QgsMapToolMeasureAngle::updateSettings()
   configureDistanceArea();
 
   //angle calculation
-  const double azimuthOne = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
-  const double azimuthTwo = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 2 ) );
+  double azimuthOne = 0;
+  double azimuthTwo = 0;
+  try
+  {
+    azimuthOne = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
+    azimuthTwo = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 2 ) );
+  }
+  catch ( QgsCsException & )
+  {
+    return;
+  }
   double resultAngle = azimuthTwo - azimuthOne;
   QgsDebugMsg( QString::number( std::fabs( resultAngle ) ) );
   QgsDebugMsg( QString::number( M_PI ) );

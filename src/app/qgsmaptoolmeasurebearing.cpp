@@ -56,14 +56,21 @@ void QgsMapToolMeasureBearing::canvasMoveEvent( QgsMapMouseEvent *e )
   mRubberBand->movePoint( point );
   if ( mAnglePoints.size() == 1 )
   {
-    if ( !mResultDisplay->isVisible() )
+    try
     {
-      mResultDisplay->move( e->pos() - QPoint( 100, 100 ) );
-      mResultDisplay->show();
-    }
+      const double bearing = mDa.bearing( mAnglePoints.at( 0 ), point );
+      mResultDisplay->setBearingInRadians( bearing );
 
-    const double bearing = mDa.bearing( mAnglePoints.at( 0 ), point );
-    mResultDisplay->setBearingInRadians( bearing );
+      if ( !mResultDisplay->isVisible() )
+      {
+        mResultDisplay->move( e->pos() - QPoint( 100, 100 ) );
+        mResultDisplay->show();
+      }
+    }
+    catch ( QgsCsException & )
+    {
+
+    }
   }
 }
 
@@ -176,8 +183,13 @@ void QgsMapToolMeasureBearing::updateSettings()
 
   configureDistanceArea();
 
-  const double bearing = mDa.bearing( mAnglePoints.at( 0 ), mAnglePoints.at( 1 ) );
-  mResultDisplay->setBearingInRadians( bearing );
+  try
+  {
+    const double bearing = mDa.bearing( mAnglePoints.at( 0 ), mAnglePoints.at( 1 ) );
+    mResultDisplay->setBearingInRadians( bearing );
+  }
+  catch ( QgsCsException & )
+  {}
 }
 
 void QgsMapToolMeasureBearing::configureDistanceArea()
