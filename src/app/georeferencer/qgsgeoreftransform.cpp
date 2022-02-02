@@ -95,7 +95,7 @@ bool QgsGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &so
   {
     return false;
   }
-  if ( mRasterChangeCoords.hasCrs() )
+  if ( mRasterChangeCoords.hasExistingGeoreference() )
   {
     const QVector<QgsPointXY> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords( sourceCoordinates );
     mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGcps( sourceCoordinates, pixelCoordsCorrect, invertYAxis );

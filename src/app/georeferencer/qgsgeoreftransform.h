@@ -18,6 +18,7 @@
 #define QGSGEOREFTRANSFORM_H
 
 #include <gdal_alg.h>
+#include "qgis_app.h"
 #include "qgspoint.h"
 #include "qgsgcptransformer.h"
 #include "qgsrasterchangecoords.h"
@@ -33,7 +34,7 @@
  * Delegates to concrete implementations of \ref QgsGeorefInterface. For exception safety,
  * this is preferred over using the subclasses directly.
  */
-class QgsGeorefTransform : public QgsGcpTransformerInterface
+class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
 {
   public:
 
@@ -121,6 +122,8 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
     TransformMethod mTransformParametrisation = TransformMethod::InvalidTransform;
     bool mParametersInitialized = false;
     QgsRasterChangeCoords mRasterChangeCoords;
+
+    friend class TestQgsGeoreferencer;
 };
 
 #endif //QGSGEOREFTRANSFORM_H
