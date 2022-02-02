@@ -28,9 +28,8 @@ void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
   const gdal::dataset_unique_ptr hDS( GDALOpen( fileRaster.toUtf8().constData(), GA_ReadOnly ) );
   double adfGeoTransform[6];
   if ( GDALGetProjectionRef( hDS.get() ) && GDALGetGeoTransform( hDS.get(), adfGeoTransform ) == CE_None )
-    //if ( false )
   {
-    mHasCrs = true;
+    mHasExistingGeoreference = true;
     mUL_X = adfGeoTransform[0];
     mUL_Y = adfGeoTransform[3];
     mResX = adfGeoTransform[1];
@@ -38,7 +37,7 @@ void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
   }
   else
   {
-    mHasCrs = false;
+    mHasExistingGeoreference = false;
   }
 }
 

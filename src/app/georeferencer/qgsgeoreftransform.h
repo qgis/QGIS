@@ -51,8 +51,8 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
      */
     void setRasterChangeCoords( const QString &fileRaster );
 
-    //! \returns Whether has Coordinate Reference Systems in image
-    bool hasCrs() const { return mRasterChangeCoords.hasCrs(); }
+    //! \returns Whether has image already has existing georeference
+    bool hasExistingGeoreference() const { return mRasterChangeCoords.hasExistingGeoreference(); }
 
     //! \returns Coordinates of image
     QgsPointXY toColumnLine( const QgsPointXY &pntMap ) { return mRasterChangeCoords.toColumnLine( pntMap ); }

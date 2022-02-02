@@ -164,16 +164,18 @@ void QgsGCPCanvasItem::updatePosition()
   if ( mIsGCPSource )
   {
     setPos( toCanvasCoordinates( mDataPoint->pixelCoords() ) );
-    return;
   }
-  if ( mDataPoint->canvasCoords().isEmpty() )
+  else
   {
-    const QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
-    const QgsCoordinateTransform transf( mDataPoint->crs(), mapCrs, QgsProject::instance() );
-    const QgsPointXY mapCoords  = transf.transform( mDataPoint->mapCoords() );
-    mDataPoint->setCanvasCoords( mapCoords );
+    if ( mDataPoint->canvasCoords().isEmpty() )
+    {
+      const QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
+      const QgsCoordinateTransform transf( mDataPoint->crs(), mapCrs, QgsProject::instance() );
+      const QgsPointXY mapCoords  = transf.transform( mDataPoint->mapCoords() );
+      mDataPoint->setCanvasCoords( mapCoords );
+    }
+    setPos( toCanvasCoordinates( mDataPoint->canvasCoords() ) );
   }
-  setPos( toCanvasCoordinates( mDataPoint->canvasCoords() ) );
 }
 
 void QgsGCPCanvasItem::drawResidualArrow( QPainter *p, const QgsRenderContext &context )
