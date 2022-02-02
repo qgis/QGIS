@@ -33,7 +33,7 @@ QgsGCPList::QgsGCPList( const QgsGCPList &list )
   }
 }
 
-void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords, const QgsCoordinateReferenceSystem targetCrs )
+void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords, const QgsCoordinateReferenceSystem &targetCrs )
 {
   mapCoords   = QVector<QgsPointXY>( size() );
   pixelCoords = QVector<QgsPointXY>( size() );
@@ -47,20 +47,21 @@ void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPo
       {
         try
         {
-          transCoords =  QgsCoordinateTransform( pt->crs(), targetCrs,
-                                                 QgsProject::instance() ).transform( pt->mapCoords() );
+          transCoords = QgsCoordinateTransform( pt->destinationCrs(), targetCrs,
+                                                QgsProject::instance() ).transform( pt->destinationMapCoords() );
           mapCoords[j] = transCoords;
           pt->setTransCoords( transCoords );
         }
-        catch ( const QgsException &e )
+        catch ( const QgsException & )
         {
-          Q_UNUSED( e );
-          mapCoords[j] = pt->mapCoords();
+          mapCoords[j] = pt->destinationMapCoords();
         }
       }
       else
-        mapCoords[j] = pt->mapCoords();
-      pixelCoords[j] = pt->pixelCoords();
+        mapCoords[j] = pt->destinationMapCoords();
+
+      // TODO -- this must be converted to pixels!!!
+      pixelCoords[j] = pt->sourceCoords();
       j++;
     }
   }
