@@ -13,22 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include <QObject>
 #include <QString>
-#include <QStringList>
-#include <QSettings>
 #include <QVector>
 
-#include <ogr_api.h>
-#include "cpl_conv.h"
-#include "cpl_string.h"
-
-#include "qgsfield.h"
-#include "qgsgeometry.h"
-#include "qgsogrutils.h"
+#include "qgstest.h"
 #include "qgsapplication.h"
-#include "qgspoint.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudblock.h"
 #include "qgspointcloudexpression.h"
@@ -112,24 +102,6 @@ QgsPointCloudBlock *TestQgsPointCloudExpression::createPointCloudBlock( const QV
   char *dataBuffer = data.data();
   int dataOffset = 0;
   int count = 0;
-
-  QVector< QLatin1String > allAttributes;
-  allAttributes << QLatin1String( "X" )
-                << QLatin1String( "Y" )
-                << QLatin1String( "Z" )
-                << QLatin1String( "Classification" )
-                << QLatin1String( "Intensity" )
-                << QLatin1String( "ReturnNumber" )
-                << QLatin1String( "NumberOfReturns" )
-                << QLatin1String( "ScanDirectionFlag" )
-                << QLatin1String( "EdgeOfFlightLine" )
-                << QLatin1String( "ScanAngleRank" )
-                << QLatin1String( "UserData" )
-                << QLatin1String( "PointSourceId" )
-                << QLatin1String( "GpsTime" )
-                << QLatin1String( "Red" )
-                << QLatin1String( "Green" )
-                << QLatin1String( "Blue" );
 
   const QVector< QgsPointCloudAttribute > attributesVector = attributes.attributes();
   for ( const auto &point : points )
