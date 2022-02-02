@@ -28,23 +28,36 @@ class QgsGeorefDataPoint : public QObject
   public:
     //! constructor
     QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
-                        const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords,
-                        const QgsCoordinateReferenceSystem proj, bool enable );
+                        const QgsPointXY &sourceCoordinates, const QgsPointXY &destinationMapCoords,
+                        const QgsCoordinateReferenceSystem &destinationCrs, bool enable );
     QgsGeorefDataPoint( const QgsGeorefDataPoint &p );
     ~QgsGeorefDataPoint() override;
 
-    //! returns coordinates of the point
-    QgsPointXY pixelCoords() const { return mPixelCoords; }
-    void setPixelCoords( const QgsPointXY &p );
+    /**
+     * Returns source coordinates of the point.
+     *
+     * This may either be in pixels (for completely non-referenced images) OR in the source layer CRS.
+     */
+    QgsPointXY sourceCoords() const { return mSourceCoords; }
+    void setSourceCoords( const QgsPointXY &p );
 
-    QgsPointXY mapCoords() const { return mMapCoords; }
-    void setMapCoords( const QgsPointXY &p );
+    QgsPointXY destinationMapCoords() const { return mDestinationMapCoords; }
+    void setDestinationMapCoords( const QgsPointXY &p );
 
     QgsPointXY transCoords() const;
     void setTransCoords( const QgsPointXY &p );
 
-    QgsPointXY canvasCoords() const;
-    void setCanvasCoords( const QgsPointXY &p );
+    /**
+     * Returns the destination point in canvas coordinates (i.e. pixels).
+     *
+     * May be an empty point if not yet calculated.
+     */
+    QgsPointXY destinationInCanvasPixels() const;
+
+    /**
+     * Sets the destination point in canvas coordinates (i.e. pixels).
+     */
+    void setDestinationInCanvasPixels( const QgsPointXY &p );
 
     bool isEnabled() const { return mEnabled; }
     void setEnabled( bool enabled );
@@ -60,10 +73,10 @@ class QgsGeorefDataPoint : public QObject
     QPointF residual() const { return mResidual; }
     void setResidual( QPointF r );
 
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+    QgsCoordinateReferenceSystem destinationCrs() const { return mDestinationCrs; }
 
   public slots:
-    void moveTo( QPoint, bool isMapPlugin );
+    void moveTo( QPoint canvasPixels, bool isMapPlugin );
     void updateCoords();
 
   private:
@@ -71,13 +84,15 @@ class QgsGeorefDataPoint : public QObject
     QgsMapCanvas *mDstCanvas = nullptr;
     QgsGCPCanvasItem *mGCPSourceItem = nullptr;
     QgsGCPCanvasItem *mGCPDestinationItem = nullptr;
-    QgsPointXY mPixelCoords;
-    QgsPointXY mMapCoords;
+    QgsPointXY mSourceCoords;
+    QgsPointXY mDestinationMapCoords;
     QgsPointXY mTransCoords;
-    QgsPointXY mCanvasCoords;
+
+    // destination point converted to canvas coordinates (i.e. pixels)
+    QgsPointXY mDestinationInCanvasPixels;
 
     int mId;
-    QgsCoordinateReferenceSystem mCrs;
+    QgsCoordinateReferenceSystem mDestinationCrs;
     bool mEnabled;
     QPointF mResidual;
 
