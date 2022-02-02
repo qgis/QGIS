@@ -77,7 +77,7 @@ QString QgsProcessingParameterMeshDatasetGroups::asPythonString( QgsProcessing::
         dt.append( QStringLiteral( "QgsMeshDatasetGroupMetadata.DataOnEdges" ) );
       if ( !dt.isEmpty() )
       {
-        code += QLatin1String( ", dataType=[" );
+        code += QLatin1String( ", supportedDataType=[" );
         code += dt.join( ',' );
         code += ']';
       }
