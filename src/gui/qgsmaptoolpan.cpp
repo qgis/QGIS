@@ -101,7 +101,12 @@ void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent *e )
           QgsDistanceArea da;
           da.setEllipsoid( QgsProject::instance()->ellipsoid() );
           da.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
-          emit panDistanceBearingChanged( da.measureLine( center, prevCenter ), da.lengthUnits(), da.bearing( center, prevCenter ) * 180 / M_PI );
+          try
+          {
+            emit panDistanceBearingChanged( da.measureLine( center, prevCenter ), da.lengthUnits(), da.bearing( center, prevCenter ) * 180 / M_PI );
+          }
+          catch ( QgsCsException & )
+          {}
         }
       }
     }
