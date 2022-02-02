@@ -2999,10 +2999,12 @@ void QgsGdalProvider::initBaseDataset()
   {
     QgsLogger::warning( QStringLiteral( "Creating Warped VRT." ) );
 
-    // Add alpha band to the output VRT dataset if it does not exist already
-    // so that pixels in empty regions (e.g. when the raster is rotated) will be transparent
     gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
-    if ( GDALGetRasterColorInterpretation( GDALGetRasterBand( mGdalBaseDataset, GDALGetRasterCount( mGdalBaseDataset ) ) ) != GCI_AlphaBand )
+    // Add alpha band to the output VRT dataset if there's no way for GDAL to
+    // respresent the fact that some pixels should be transparent (in the empty regions
+    // when the raster is rotated). For example, this fixes the issue for RGB rasters
+    // (with no alpha channel) or single-band raster without "no data" value set.
+    if ( GDALGetMaskFlags( GDALGetRasterBand( mGdalBaseDataset, 1 ) ) == GMF_ALL_VALID )
     {
       psWarpOptions->nDstAlphaBand = GDALGetRasterCount( mGdalBaseDataset ) + 1;
     }
