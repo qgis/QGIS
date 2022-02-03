@@ -47,6 +47,8 @@ class TestQgsAdvancedDigitizing: public QObject
     void coordinates();
     void coordinatesWithZM();
     void valuesWhenSnapping();
+    void currentPoint();
+    void currentPointWhenSanpping();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -551,6 +553,57 @@ void TestQgsAdvancedDigitizing::valuesWhenSnapping()
 
   QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
             QStringLiteral( "LineString (0 -2, 2.02 2)" ) );
+}
+
+void TestQgsAdvancedDigitizing::currentPoint()
+{
+  auto utils = getMapToolDigitizingUtils( mLayer3950 );
+
+  QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
+
+  utils.mouseMove( 5, 0 );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 5, 0 ) );
+}
+
+void TestQgsAdvancedDigitizing::currentPointWhenSanpping()
+{
+  auto utils = getMapToolDigitizingUtils( mLayer3950 );
+
+  QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
+
+  utils.mouseClick( 0, 10, Qt::LeftButton );
+  utils.mouseClick( 0, -10, Qt::LeftButton );
+  utils.mouseClick( 0, -10, Qt::RightButton );
+
+  utils.mouseClick( 10, 0, Qt::LeftButton );
+  utils.mouseClick( -10, 0, Qt::LeftButton );
+  utils.mouseClick( -10, 0, Qt::RightButton );
+
+  QgsSnappingConfig snapConfig = mSnappingUtils->config();
+  snapConfig.setEnabled( true );
+  snapConfig.setIntersectionSnapping( true );
+  snapConfig.setSelfSnapping( true );
+
+  mSnappingUtils->setConfig( snapConfig );
+
+  mSnappingUtils->setCurrentLayer( mLayer3950 );
+  mCanvas->setSnappingUtils( mSnappingUtils );
+
+  utils.mouseClick( 25, 0, Qt::LeftButton );
+  utils.mouseClick( 30, 0, Qt::LeftButton );
+
+  // on an existing point
+  utils.mouseMove( 0.1, 10 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 0, 10 ) );
+
+  // on an intersection (see issue #46128)
+  utils.mouseMove( 0.1, 0 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 0, 0 ) );
+
+  // on an self point
+//  utils.mouseMove( 25, 0.1 );
+//  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 25, 0 ) );
 }
 
 QGSTEST_MAIN( TestQgsAdvancedDigitizing )
