@@ -68,8 +68,10 @@ class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
      */
     QgsPointXY toSourceCoordinate( const QgsPointXY &pixel );
 
-    //! \returns Bounding box of image(transform to coordinate of Map or Image )
-    QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel ) { return mRasterChangeCoords.getBoundingBox( rect, toPixel ); }
+    /**
+     * Transforms a bounding box of the source image from source coordinates to source pixels or vice versa.
+     */
+    QgsRectangle transformSourceExtent( const QgsRectangle &rect, bool toPixel ) { return mRasterChangeCoords.transformExtent( rect, toPixel ); }
 
     //! \brief The transform parametrisation currently in use.
     TransformMethod transformParametrisation() const;

@@ -789,7 +789,7 @@ void QgsGeoreferencerMainWindow::extentsChangedGeorefCanvas()
     }
 
     // Reproject the georeference plugin canvas into world coordinates and fit axis aligned bounding box
-    QgsRectangle rectMap = mGeorefTransform.hasExistingGeoreference() ? mGeorefTransform.getBoundingBox( mCanvas->extent(), true ) : mCanvas->extent();
+    QgsRectangle rectMap = mGeorefTransform.transformSourceExtent( mCanvas->extent(), true );
     QgsRectangle boundingBox = transformViewportBoundingBox( rectMap, mGeorefTransform, true );
 
     mExtentsChangedRecursionGuard = true;
@@ -820,7 +820,7 @@ void QgsGeoreferencerMainWindow::extentsChangedQGisCanvas()
 
     // Reproject the canvas into raster coordinates and fit axis aligned bounding box
     QgsRectangle boundingBox = transformViewportBoundingBox( QgisApp::instance()->mapCanvas()->extent(), mGeorefTransform, false );
-    QgsRectangle rectMap = mGeorefTransform.hasExistingGeoreference() ? mGeorefTransform.getBoundingBox( boundingBox, false ) : boundingBox;
+    QgsRectangle rectMap = mGeorefTransform.transformSourceExtent( boundingBox, false );
 
     mExtentsChangedRecursionGuard = true;
     // Just set the whole extent for now
