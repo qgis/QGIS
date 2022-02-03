@@ -58,7 +58,7 @@ void QgsGeorefTransform::loadRaster( const QString &fileRaster )
   mRasterChangeCoords.loadRaster( fileRaster );
 }
 
-QgsPointXY QgsGeorefTransform::toSourceCoordinate( const QgsPointXY &pixel )
+QgsPointXY QgsGeorefTransform::toSourceCoordinate( const QgsPointXY &pixel ) const
 {
   return mRasterChangeCoords.toXY( pixel );
 }

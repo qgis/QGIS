@@ -41,7 +41,7 @@ void QgsRasterChangeCoords::loadRaster( const QString &fileRaster )
   }
 }
 
-QVector<QgsPointXY> QgsRasterChangeCoords::getPixelCoords( const QVector<QgsPointXY> &mapCoords )
+QVector<QgsPointXY> QgsRasterChangeCoords::getPixelCoords( const QVector<QgsPointXY> &mapCoords ) const
 {
   const int size = mapCoords.size();
   QVector<QgsPointXY> pixelCoords( size );
@@ -52,7 +52,7 @@ QVector<QgsPointXY> QgsRasterChangeCoords::getPixelCoords( const QVector<QgsPoin
   return pixelCoords;
 }
 
-QgsRectangle QgsRasterChangeCoords::transformExtent( const QgsRectangle &rect, bool toPixel )
+QgsRectangle QgsRasterChangeCoords::transformExtent( const QgsRectangle &rect, bool toPixel ) const
 {
   if ( ! mHasExistingGeoreference )
     return rect;
@@ -60,15 +60,14 @@ QgsRectangle QgsRasterChangeCoords::transformExtent( const QgsRectangle &rect, b
   QgsRectangle rectReturn;
   const QgsPointXY p1( rect.xMinimum(), rect.yMinimum() );
   const QgsPointXY p2( rect.xMaximum(), rect.yMaximum() );
-  QgsPointXY( QgsRasterChangeCoords::* func )( const QgsPointXY & );
 
-  func = toPixel ? &QgsRasterChangeCoords::toColumnLine : &QgsRasterChangeCoords::toXY;
+  auto func = toPixel ? &QgsRasterChangeCoords::toColumnLine : &QgsRasterChangeCoords::toXY;
   rectReturn.set( ( this->*func )( p1 ), ( this->*func )( p2 ) );
 
   return rectReturn;
 }
 
-QgsPointXY QgsRasterChangeCoords::toColumnLine( const QgsPointXY &pntMap )
+QgsPointXY QgsRasterChangeCoords::toColumnLine( const QgsPointXY &pntMap ) const
 {
   if ( ! mHasExistingGeoreference )
     return QgsPointXY( pntMap.x(), pntMap.y() );
@@ -78,7 +77,7 @@ QgsPointXY QgsRasterChangeCoords::toColumnLine( const QgsPointXY &pntMap )
   return QgsPointXY( col, line );
 }
 
-QgsPointXY QgsRasterChangeCoords::toXY( const QgsPointXY &pntPixel )
+QgsPointXY QgsRasterChangeCoords::toXY( const QgsPointXY &pntPixel ) const
 {
   if ( ! mHasExistingGeoreference )
     return QgsPointXY( pntPixel.x(), pntPixel.y() );
