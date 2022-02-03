@@ -22,7 +22,7 @@
 
 #include <QFile>
 
-void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
+void QgsRasterChangeCoords::loadRaster( const QString &fileRaster )
 {
   GDALAllRegister();
   const gdal::dataset_unique_ptr hDS( GDALOpen( fileRaster.toUtf8().constData(), GA_ReadOnly ) );

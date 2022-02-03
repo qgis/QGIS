@@ -70,7 +70,7 @@ void TestQgsGeoreferencer::testTransformImageNoGeoference()
 {
   QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::Linear );
   // this image has no georeferencing set
-  transform.setRasterChangeCoords( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/rgb256x256.png" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/rgb256x256.png" ) );
 
   QVERIFY( !transform.hasExistingGeoreference() );
 
@@ -112,7 +112,7 @@ void TestQgsGeoreferencer::testTransformImageWithExistingGeoreference()
 {
   // load an image which is already georeferenced
   QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::Linear );
-  transform.setRasterChangeCoords( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
 
   QVERIFY( transform.mRasterChangeCoords.mHasExistingGeoreference );
   QGSCOMPARENEAR( transform.mRasterChangeCoords.mResX, 57, 0.00001 );
@@ -211,7 +211,7 @@ void TestQgsGeoreferencer::testRasterChangeCoords()
   QgsRasterChangeCoords transform;
   QVERIFY( !transform.hasExistingGeoreference() );
 
-  transform.setRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
   QVERIFY( transform.hasExistingGeoreference() );
   QGSCOMPARENEAR( transform.toXY( QgsPointXY( 0, 0 ) ).x(), 781662.375, 0.001 );
   QGSCOMPARENEAR( transform.toXY( QgsPointXY( 0, 0 ) ).y(), 3350923.125, 0.001 );
@@ -228,7 +228,7 @@ void TestQgsGeoreferencer::testRasterChangeCoords()
   QGSCOMPARENEAR( transform.toColumnLine( QgsPointXY( 787362.375,  3362323.125 ) ).y(), 200.0, 0.0001 );
 
   // load a raster with no georeferencing
-  transform.setRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/rgb256x256.png" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/rgb256x256.png" ) );
   QVERIFY( !transform.hasExistingGeoreference() );
   // should be treat layer coordinates and pixels as identical
   QCOMPARE( transform.toXY( QgsPointXY( 0, 0 ) ).x(), 0.0 );
