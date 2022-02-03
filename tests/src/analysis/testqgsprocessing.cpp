@@ -2261,7 +2261,8 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( f.geometry().asWkt( 1 ), QStringLiteral( "PointZ (1 2 3)" ) );
   QVERIFY( it.nextFeature( f ) );
   QCOMPARE( f.attributes().at( 1 ).toString(), QStringLiteral( "val2" ) );
-  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Point (-10199761 -4017774)" ) );
+  QGSCOMPARENEAR( f.geometry().asPoint().x(), -10199761, 10 );
+  QGSCOMPARENEAR( f.geometry().asPoint().y(), -4017774, 10 );
   delete layer;
   //windows style path
   destination = "d:\\temp\\create_feature_sink.tab";
@@ -10879,6 +10880,8 @@ void TestQgsProcessing::modelScope()
   QgsProcessingContext pc;
 
   QgsProcessingModelAlgorithm alg( "test", "testGroup" );
+
+  QVERIFY( !alg.fromFile( QStringLiteral( "not a file" ) ) );
 
   QVariantMap variables;
   variables.insert( QStringLiteral( "v1" ), 5 );
