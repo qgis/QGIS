@@ -29,7 +29,12 @@ class APP_EXPORT QgsRasterChangeCoords
     void loadRaster( const QString &fileRaster );
     bool hasExistingGeoreference() const { return mHasExistingGeoreference; }
     QVector<QgsPointXY> getPixelCoords( const QVector<QgsPointXY> &mapCoords );
-    QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel );
+
+    /**
+     * Transforms a rectangle extent of the source image from source coordinates to source pixels or vice versa.
+     */
+    QgsRectangle transformExtent( const QgsRectangle &rect, bool toPixel );
+
     QgsPointXY toColumnLine( const QgsPointXY &pntMap );
     QgsPointXY toXY( const QgsPointXY &pntPixel );
 
