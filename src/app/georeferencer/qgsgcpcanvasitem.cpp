@@ -220,7 +220,7 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
     }
   }
 
-  return 1.0 / ( mapUnitsPerScreenPixel * mapUnitsPerRasterPixel );
+  return mapUnitsPerRasterPixel / mapUnitsPerScreenPixel;
 }
 
 void QgsGCPCanvasItem::checkBoundingRectChange()
