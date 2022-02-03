@@ -26,7 +26,7 @@ class APP_EXPORT QgsRasterChangeCoords
 {
   public:
     QgsRasterChangeCoords() = default;
-    void setRaster( const QString &fileRaster );
+    void loadRaster( const QString &fileRaster );
     bool hasExistingGeoreference() const { return mHasExistingGeoreference; }
     QVector<QgsPointXY> getPixelCoords( const QVector<QgsPointXY> &mapCoords );
     QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel );

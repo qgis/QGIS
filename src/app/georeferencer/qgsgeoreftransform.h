@@ -48,9 +48,10 @@ class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
     void selectTransformParametrisation( TransformMethod parametrisation );
 
     /**
-     * Setting the mRasterChangeCoords for change type coordinate(map for pixel).
+     * Loads an existing raster image so that the source pixel to source layer conversion
+     * can be correctly initialized.
      */
-    void setRasterChangeCoords( const QString &fileRaster );
+    void loadRaster( const QString &fileRaster );
 
     //! \returns Whether has image already has existing georeference
     bool hasExistingGeoreference() const { return mRasterChangeCoords.hasExistingGeoreference(); }

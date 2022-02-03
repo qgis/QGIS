@@ -261,7 +261,7 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/rasterdirectory" ), fileInfo.path() );
 
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
-  mGeorefTransform.setRasterChangeCoords( mRasterFileName );
+  mGeorefTransform.loadRaster( mRasterFileName );
   statusBar()->showMessage( tr( "Raster loaded: %1" ).arg( mRasterFileName ) );
   setWindowTitle( tr( "Georeferencer - %1" ).arg( fileInfo.fileName() ) );
 
