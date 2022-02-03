@@ -2019,14 +2019,15 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
 
 bool QgsGeoreferencerMainWindow::updateGeorefTransform()
 {
-  QVector<QgsPointXY> mapCoords, pixelCoords;
+  QVector<QgsPointXY> sourceCoordinates;
+  QVector<QgsPointXY> destinationCoords;
   if ( mGCPListWidget->gcpList() )
-    mGCPListWidget->gcpList()->createGCPVectors( mapCoords, pixelCoords, mProjection );
+    mGCPListWidget->gcpList()->createGCPVectors( sourceCoordinates, destinationCoords, mProjection );
   else
     return false;
 
   // Parametrize the transform with GCPs
-  if ( !mGeorefTransform.updateParametersFromGcps( pixelCoords, mapCoords, true ) )
+  if ( !mGeorefTransform.updateParametersFromGcps( sourceCoordinates, destinationCoords, true ) )
   {
     return false;
   }

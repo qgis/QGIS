@@ -30,7 +30,7 @@ class QgsGCPList : public QList<QgsGeorefDataPoint *>
     QgsGCPList() = default;
     QgsGCPList( const QgsGCPList &list );
 
-    void createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords, const QgsCoordinateReferenceSystem &targetCrs );
+    void createGCPVectors( QVector<QgsPointXY> &sourceCoordinates, QVector<QgsPointXY> &destinationCoordinates, const QgsCoordinateReferenceSystem &targetCrs );
     int size() const;
     int sizeAll() const;
 
