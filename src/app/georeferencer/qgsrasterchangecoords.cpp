@@ -52,8 +52,11 @@ QVector<QgsPointXY> QgsRasterChangeCoords::getPixelCoords( const QVector<QgsPoin
   return pixelCoords;
 }
 
-QgsRectangle QgsRasterChangeCoords::getBoundingBox( const QgsRectangle &rect, bool toPixel )
+QgsRectangle QgsRasterChangeCoords::transformExtent( const QgsRectangle &rect, bool toPixel )
 {
+  if ( ! mHasExistingGeoreference )
+    return rect;
+
   QgsRectangle rectReturn;
   const QgsPointXY p1( rect.xMinimum(), rect.yMinimum() );
   const QgsPointXY p2( rect.xMaximum(), rect.yMaximum() );
