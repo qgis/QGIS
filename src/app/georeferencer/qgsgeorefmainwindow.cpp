@@ -1457,7 +1457,7 @@ bool QgsGeoreferencerMainWindow::georeference()
       {
         writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
       }
-      if ( !mSaveGcp.isEmpty() )
+      if ( mSaveGcp )
       {
         mGCPpointsFileName = mModifiedRasterFileName + QLatin1String( ".points" );
         saveGCPs();
