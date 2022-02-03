@@ -82,14 +82,15 @@ void QgsGCPListModel::updateModel()
   QString unitType;
   const QgsSettings s;
   bool mapUnitsPossible = false;
-  QVector<QgsPointXY> mapCoords, pixelCoords;
+  QVector<QgsPointXY> sourceCoordinates;
+  QVector<QgsPointXY> destinationCoordinates;
 
-  mGCPList->createGCPVectors( mapCoords, pixelCoords,
+  mGCPList->createGCPVectors( sourceCoordinates, destinationCoordinates,
                               QgsCoordinateReferenceSystem( s.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString() ) );
 
   if ( mGeorefTransform )
   {
-    bTransformUpdated = mGeorefTransform->updateParametersFromGcps( pixelCoords, mapCoords, true );
+    bTransformUpdated = mGeorefTransform->updateParametersFromGcps( sourceCoordinates, destinationCoordinates, true );
     mapUnitsPossible = mGeorefTransform->providesAccurateInverseTransformation();
   }
 
