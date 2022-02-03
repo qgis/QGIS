@@ -89,7 +89,7 @@ void QgsInterpolatedLineRenderer::renderInDeviceCoordinates( double valueColor1,
     double width1 = mStrokeWidth.strokeWidth( valueWidth1 );
     double width2 = mStrokeWidth.strokeWidth( valueWidth2 );
 
-    if ( !std::isnan( width1 ) || !std::isnan( width2 ) ) // the two widths on extremity are not out of range and ignored
+    if ( !std::isnan( width1 ) && !std::isnan( width2 ) ) // the two widths on extremity are not out of range and ignored
     {
       //Draw line cap
       QBrush brush( Qt::SolidPattern );
@@ -158,6 +158,7 @@ void QgsInterpolatedLineRenderer::renderInDeviceCoordinates( double valueColor1,
         painter->setPen( pen );
 
         painter->drawPolygon( varLine );
+
       }
       else if ( !gradients.isEmpty() && !breakValues.isEmpty() && !breakColors.isEmpty() )
       {
@@ -920,6 +921,7 @@ void QgsInterpolatedLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &co
   }
 
   renderPolyline( points, context );
+
 }
 
 
