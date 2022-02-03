@@ -52,7 +52,6 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
   mTransCoords = p.transCoords();
   mEnabled = p.isEnabled();
   mResidual = p.residual();
-  mDestinationInCanvasPixels = p.destinationInCanvasPixels();
   mDestinationCrs = p.destinationCrs();
   mId = p.id();
 }
@@ -99,16 +98,6 @@ void QgsGeorefDataPoint::setTransCoords( const QgsPointXY &p )
 QgsPointXY QgsGeorefDataPoint::transCoords() const
 {
   return mTransCoords.isEmpty() ? mDestinationMapCoords : mTransCoords;
-}
-
-void QgsGeorefDataPoint::setDestinationInCanvasPixels( const QgsPointXY &p )
-{
-  mDestinationInCanvasPixels = p;
-}
-
-QgsPointXY QgsGeorefDataPoint::destinationInCanvasPixels() const
-{
-  return mDestinationInCanvasPixels;
 }
 
 void QgsGeorefDataPoint::setEnabled( bool enabled )
@@ -179,7 +168,6 @@ void QgsGeorefDataPoint::moveTo( QPoint canvasPixels, bool isMapPlugin )
   }
   else
   {
-    mDestinationInCanvasPixels = canvasPixels;
     mDestinationMapCoords = mGCPDestinationItem->toMapCoordinates( canvasPixels );
     if ( mSrcCanvas && mSrcCanvas->mapSettings().destinationCrs().isValid() )
       mDestinationCrs = mSrcCanvas->mapSettings().destinationCrs();

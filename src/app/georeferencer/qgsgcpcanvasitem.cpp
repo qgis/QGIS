@@ -167,15 +167,16 @@ void QgsGCPCanvasItem::updatePosition()
   }
   else
   {
-    if ( mDataPoint->destinationInCanvasPixels().isEmpty() )
+    const QgsCoordinateTransform pointToCanvasTransform( mDataPoint->destinationCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    try
     {
-      const QgsCoordinateReferenceSystem canvasCrs = mMapCanvas->mapSettings().destinationCrs();
-      const QgsCoordinateTransform pointToCanvasTransform( mDataPoint->destinationCrs(), canvasCrs, QgsProject::instance() );
       const QgsPointXY canvasMapCoords = pointToCanvasTransform.transform( mDataPoint->destinationMapCoords() );
       const QPointF canvasCoordinatesInPixels = toCanvasCoordinates( canvasMapCoords );
-      mDataPoint->setDestinationInCanvasPixels( canvasCoordinatesInPixels );
+
+      setPos( canvasCoordinatesInPixels );
     }
-    setPos( mDataPoint->destinationInCanvasPixels().toQPointF() );
+    catch ( QgsCsException & )
+    {}
   }
 }
 
