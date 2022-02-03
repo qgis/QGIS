@@ -55,8 +55,17 @@ class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
     //! \returns Whether has image already has existing georeference
     bool hasExistingGeoreference() const { return mRasterChangeCoords.hasExistingGeoreference(); }
 
-    //! \returns Coordinates of image
-    QgsPointXY toColumnLine( const QgsPointXY &pntMap ) { return mRasterChangeCoords.toColumnLine( pntMap ); }
+    /**
+     * Returns the pixel coordinate from the source image given a layer coordinate from the source image.
+     * \see toSourceCoordinate()
+     */
+    QgsPointXY toSourcePixel( const QgsPointXY &pntMap ) { return mRasterChangeCoords.toColumnLine( pntMap ); }
+
+    /**
+     * Returns the layer coordinate from the source image given a pixel coordinate from the source image.
+     * \see toSourcePixel()
+     */
+    QgsPointXY toSourceCoordinate( const QgsPointXY &pixel );
 
     //! \returns Bounding box of image(transform to coordinate of Map or Image )
     QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel ) { return mRasterChangeCoords.getBoundingBox( rect, toPixel ); }
