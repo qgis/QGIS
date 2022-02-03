@@ -28,15 +28,15 @@ class APP_EXPORT QgsRasterChangeCoords
     QgsRasterChangeCoords() = default;
     void loadRaster( const QString &fileRaster );
     bool hasExistingGeoreference() const { return mHasExistingGeoreference; }
-    QVector<QgsPointXY> getPixelCoords( const QVector<QgsPointXY> &mapCoords );
+    QVector<QgsPointXY> getPixelCoords( const QVector<QgsPointXY> &mapCoords ) const;
 
     /**
      * Transforms a rectangle extent of the source image from source coordinates to source pixels or vice versa.
      */
-    QgsRectangle transformExtent( const QgsRectangle &rect, bool toPixel );
+    QgsRectangle transformExtent( const QgsRectangle &rect, bool toPixel ) const;
 
-    QgsPointXY toColumnLine( const QgsPointXY &pntMap );
-    QgsPointXY toXY( const QgsPointXY &pntPixel );
+    QgsPointXY toColumnLine( const QgsPointXY &pntMap ) const;
+    QgsPointXY toXY( const QgsPointXY &pntPixel ) const;
 
   private:
     bool mHasExistingGeoreference = false;

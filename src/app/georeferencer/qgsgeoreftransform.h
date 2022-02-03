@@ -60,18 +60,18 @@ class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
      * Returns the pixel coordinate from the source image given a layer coordinate from the source image.
      * \see toSourceCoordinate()
      */
-    QgsPointXY toSourcePixel( const QgsPointXY &pntMap ) { return mRasterChangeCoords.toColumnLine( pntMap ); }
+    QgsPointXY toSourcePixel( const QgsPointXY &pntMap ) const { return mRasterChangeCoords.toColumnLine( pntMap ); }
 
     /**
      * Returns the layer coordinate from the source image given a pixel coordinate from the source image.
      * \see toSourcePixel()
      */
-    QgsPointXY toSourceCoordinate( const QgsPointXY &pixel );
+    QgsPointXY toSourceCoordinate( const QgsPointXY &pixel ) const;
 
     /**
      * Transforms a bounding box of the source image from source coordinates to source pixels or vice versa.
      */
-    QgsRectangle transformSourceExtent( const QgsRectangle &rect, bool toPixel ) { return mRasterChangeCoords.transformExtent( rect, toPixel ); }
+    QgsRectangle transformSourceExtent( const QgsRectangle &rect, bool toPixel ) const { return mRasterChangeCoords.transformExtent( rect, toPixel ); }
 
     //! \brief The transform parametrisation currently in use.
     TransformMethod transformParametrisation() const;
