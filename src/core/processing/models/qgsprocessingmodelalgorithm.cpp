@@ -1526,6 +1526,10 @@ bool QgsProcessingModelAlgorithm::fromFile( const QString &path )
 
     file.close();
   }
+  else
+  {
+    return false;
+  }
 
   QVariant props = QgsXmlUtils::readVariant( doc.firstChildElement() );
   return loadVariant( props );
