@@ -1,11 +1,15 @@
-
 {
   "name": "from_base64",
   "groups": ["Conversions"],
   "type": "function",
   "description": "Decodes a string in the Base64 encoding into a binary value.",
-  "arguments": [
-    {"arg":"string", "description": "the string to decode"}],
-    "examples": [ { "expression":"from_base64('UUdJUw==')", "returns":"'QGIS'"}
-    ]
+  "arguments": [{
+    "arg": "string",
+    "description": "the string to decode"
+  }],
+  "examples": [{
+    "expression": "from_base64('UUdJUw==')",
+    "returns": "'QGIS'"
+  }],
+  "tags": ["encoding", "base", "binary", "decodes"]
 }

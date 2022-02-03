@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["Form"],
   "description": "Only usable in an embedded form context, this function returns the current, unsaved value of a field in the parent form currently being edited. This will differ from the parent feature's actual attribute values for features which are currently being edited or have not yet been added to a parent layer. When used in a value-relation widget filter expression, this function should be wrapped into a 'coalesce()' that can retrieve the actual parent feature from the layer when the form is not used in an embedded context.",
-  "arguments": [ {"arg":"field_name","description":"a field name in the current parent form"}],
-  "examples": [ { "expression":"current_parent_value( 'FIELD_NAME' )","returns":"The current value of a field 'FIELD_NAME' in the parent form."} ]
+  "arguments": [{
+    "arg": "field_name",
+    "description": "a field name in the current parent form"
+  }],
+  "examples": [{
+    "expression": "current_parent_value( 'FIELD_NAME' )",
+    "returns": "The current value of a field 'FIELD_NAME' in the parent form."
+  }],
+  "tags": ["field", "actual", "unsaved", "wrapped", "retrieve", "widget", "current", "relation", "differ", "edited", "embedded", "coalesce", "attribute", "form", "filter", "added", "features", "parent", "context", "usable"]
 }

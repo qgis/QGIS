@@ -91,5 +91,6 @@
       "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), sort_by_intersection_size:='des')",
       "returns": "an array of geometries (in WKT) ordered by the overlap value in descending order"
     }
-  ]
+  ],
+  "tags": ["intersected", "least", "predicate", "current", "target", "array", "geos", "postgis", "described", "st_intersects", "intersects", "underlying", "features"]
 }

@@ -2,8 +2,14 @@
   "name": "$map",
   "type": "function",
   "description": "Returns the id of the current map item if the map is being drawn in a print layout, or \"canvas\" if the map is being drawn within the main QGIS window.",
-  "examples": [
-	{ "expression": "$map", "returns": "\"overview_map\"", "description": "within a layout map item"},
-	{ "expression": "$map", "returns": "\"canvas\"", "description": "within the main QGIS main canvas"}
-  ]
+  "examples": [{
+    "expression": "$map",
+    "returns": "\"overview_map\"",
+    "description": "within a layout map item"
+  }, {
+    "expression": "$map",
+    "returns": "\"canvas\"",
+    "description": "within the main QGIS main canvas"
+  }],
+  "tags": ["layout", "item", "drawn", "current", "main", "print", "map", "window", "overview", "canvas"]
 }

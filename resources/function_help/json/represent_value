@@ -3,12 +3,19 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Returns the configured representation value for a field value. It depends on the configured widget type. Often, this is useful for 'Value Map' widgets.",
-  "arguments": [
-    {"arg":"value", "description": "The value which should be resolved. Most likely a field." },
-    {"arg":"fieldName", "description": "The field name for which the widget configuration should be loaded. (Optional)"}
-  ],
-  "examples": [
-    { "expression":"represent_value(\"field_with_value_map\")", "returns":"Description for value"},
-    { "expression":"represent_value('static value', 'field_name')", "returns":"Description for static value"}
-  ]
+  "arguments": [{
+    "arg": "value",
+    "description": "The value which should be resolved. Most likely a field."
+  }, {
+    "arg": "fieldName",
+    "description": "The field name for which the widget configuration should be loaded. (Optional)"
+  }],
+  "examples": [{
+    "expression": "represent_value(\"field_with_value_map\")",
+    "returns": "Description for value"
+  }, {
+    "expression": "represent_value('static value', 'field_name')",
+    "returns": "Description for static value"
+  }],
+  "tags": ["depends", "configured", "field", "type", "widgets", "map", "representation", "widget"]
 }

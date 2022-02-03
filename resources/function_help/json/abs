@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["Math"],
   "description": "Returns the absolute value of a number.",
-  "arguments": [ {"arg":"value","description":"a number"}],
-  "examples": [ { "expression":"abs(-2)", "returns":"2"}]
+  "arguments": [{
+    "arg": "value",
+    "description": "a number"
+  }],
+  "examples": [{
+    "expression": "abs(-2)",
+    "returns": "2"
+  }],
+  "tags": ["absolute"]
 }

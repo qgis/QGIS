@@ -3,10 +3,24 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"},
-                 {"arg":"precision","description":"numeric precision", "optional":true, "default":"8"}],
-  "examples": [ { "expression":"geom_to_wkt( make_point(6, 50) )", "returns":"'POINT(6 50)'"},
-                { "expression":"geom_to_wkt(centroid(geom_from_wkt('Polygon((1 1, 0 0, -1 1, 1 1))')))", "returns":"'POINT(0 0.66666667)'"},
-                { "expression":"geom_to_wkt(centroid(geom_from_wkt('Polygon((1 1, 0 0, -1 1, 1 1))')), 2)", "returns":"'POINT(0 0.67)'"}
- ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "precision",
+    "description": "numeric precision",
+    "optional": true,
+    "default": "8"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt( make_point(6, 50) )",
+    "returns": "'POINT(6 50)'"
+  }, {
+    "expression": "geom_to_wkt(centroid(geom_from_wkt('Polygon((1 1, 0 0, -1 1, 1 1))')))",
+    "returns": "'POINT(0 0.66666667)'"
+  }, {
+    "expression": "geom_to_wkt(centroid(geom_from_wkt('Polygon((1 1, 0 0, -1 1, 1 1))')), 2)",
+    "returns": "'POINT(0 0.67)'"
+  }],
+  "tags": ["text", "wkt", "srid", "representation", "known", "conversion"]
 }

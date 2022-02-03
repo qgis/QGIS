@@ -3,10 +3,19 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the Nth value (0 for the first one) or the last -Nth value (-1 for the last one) of an array.",
-  "arguments": [ {"arg":"array","description":"an array"},
-                 {"arg":"index","description":"the index to get (0 based)"}],
-  "examples": [ 
-  { "expression":"array_get(array('a','b','c'),1)", "returns":"'b'"},
-  { "expression":"array_get(array('a','b','c'),-1)", "returns":"'c'"}
-  ]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "index",
+    "description": "the index to get (0 based)"
+  }],
+  "examples": [{
+    "expression": "array_get(array('a','b','c'),1)",
+    "returns": "'b'"
+  }, {
+    "expression": "array_get(array('a','b','c'),-1)",
+    "returns": "'c'"
+  }],
+  "tags": ["array", "position", "index", "last", "nth", "one", "first"]
 }

@@ -3,16 +3,31 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Extracts the year part from a date, or the number of years from an interval.",
-  "variants": [
-  { "variant": "Date variant",
-      "variant_description": "Extracts the year part from a date or datetime.",
-      "arguments": [ {"arg":"date","description":"a date or datetime value"}],
-      "examples": [ { "expression":"year('2012-05-12')", "returns":"2012"}] },
-      {
-      "variant": "Interval variant",
-      "variant_description": "Calculates the length in years of an interval.",
-      "arguments": [ {"arg":"interval","description":"interval value to return number of years from"}],
-      "examples": [ { "expression":"year(to_interval('3 years'))", "returns":"3"},
-                    { "expression":"year(age('2012-01-01','2010-01-01'))", "returns":"1.9986"}]
-  }]
+  "variants": [{
+    "variant": "Date variant",
+    "variant_description": "Extracts the year part from a date or datetime.",
+    "arguments": [{
+      "arg": "date",
+      "description": "a date or datetime value"
+    }],
+    "examples": [{
+      "expression": "year('2012-05-12')",
+      "returns": "2012"
+    }]
+  }, {
+    "variant": "Interval variant",
+    "variant_description": "Calculates the length in years of an interval.",
+    "arguments": [{
+      "arg": "interval",
+      "description": "interval value to return number of years from"
+    }],
+    "examples": [{
+      "expression": "year(to_interval('3 years'))",
+      "returns": "3"
+    }, {
+      "expression": "year(age('2012-01-01','2010-01-01'))",
+      "returns": "1.9986"
+    }]
+  }],
+  "tags": ["year", "years", "date", "extracts", "part", "interval", "number"]
 }

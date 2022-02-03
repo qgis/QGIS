@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns true if a geometry is valid; if it is well-formed in 2D according to the OGC rules.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"}],
-  "examples": [ { "expression":"is_valid(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2, 0 0)'))", "returns":"true"},
-                { "expression":"is_valid(geom_from_wkt('LINESTRING(0 0)'))", "returns":"false"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "is_valid(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2, 0 0)'))",
+    "returns": "true"
+  }, {
+    "expression": "is_valid(geom_from_wkt('LINESTRING(0 0)'))",
+    "returns": "false"
+  }],
+  "tags": ["rules", "valid", "ogc", "according", "formed"]
 }

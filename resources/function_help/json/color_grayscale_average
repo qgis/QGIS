@@ -3,8 +3,13 @@
   "type": "function",
   "groups": ["Color"],
   "description": "Applies a grayscale filter and returns a string representation from a provided color.",
-  "arguments": [
-               {"arg":"color", "description":"a color string"}
-	          ],
-  "examples": [ { "expression":"color_grayscale_average('255,100,50')", "returns":"'135,135,135,255'"}]
+  "arguments": [{
+    "arg": "color",
+    "description": "a color string"
+  }],
+  "examples": [{
+    "expression": "color_grayscale_average('255,100,50')",
+    "returns": "'135,135,135,255'"
+  }],
+  "tags": ["filter", "color", "provided", "applies", "grayscale", "representation"]
 }

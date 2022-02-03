@@ -3,12 +3,21 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a multipoint geometry consisting of every node in the input geometry.",
-  "arguments": [
-    {"arg":"geometry","description":"geometry object"},
-    {"arg":"ignore_closing_nodes", "optional": true, "default": "false", "description":"optional argument specifying whether to include duplicate nodes which close lines or polygons rings. Defaults to false, set to true to avoid including these duplicate nodes in the output collection."}
-  ],
-  "examples": [
-    { "expression":"geom_to_wkt(nodes_to_points(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)')))", "returns":"'MultiPoint ((0 0),(1 1),(2 2))'"},
-    { "expression":"geom_to_wkt(nodes_to_points(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'),true))", "returns":"'MultiPoint ((-1 -1),(4 0),(4 2),(0 2))'"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "geometry object"
+  }, {
+    "arg": "ignore_closing_nodes",
+    "optional": true,
+    "default": "false",
+    "description": "optional argument specifying whether to include duplicate nodes which close lines or polygons rings. Defaults to false, set to true to avoid including these duplicate nodes in the output collection."
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(nodes_to_points(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)')))",
+    "returns": "'MultiPoint ((0 0),(1 1),(2 2))'"
+  }, {
+    "expression": "geom_to_wkt(nodes_to_points(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'),true))",
+    "returns": "'MultiPoint ((-1 -1),(4 0),(4 2),(0 2))'"
+  }],
+  "tags": ["vertex", "multipoint", "node", "input"]
 }

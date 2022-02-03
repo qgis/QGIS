@@ -3,10 +3,19 @@
   "type": "function",
   "groups": ["Color"],
   "description": "Returns a string representing a color mixing the red, green, blue, and alpha values of two provided colors based on a given ratio.",
-  "arguments": [
-               {"arg":"color1", "description":"a color string"},
-               {"arg":"color2", "description":"a color string"},
-               {"arg":"ratio", "description":"a ratio"}
-	          ],
-  "examples": [ { "expression":"color_mix_rgb('0,0,0','255,255,255',0.5)", "returns":"'127,127,127,255'"}]
+  "arguments": [{
+    "arg": "color1",
+    "description": "a color string"
+  }, {
+    "arg": "color2",
+    "description": "a color string"
+  }, {
+    "arg": "ratio",
+    "description": "a ratio"
+  }],
+  "examples": [{
+    "expression": "color_mix_rgb('0,0,0','255,255,255',0.5)",
+    "returns": "'127,127,127,255'"
+  }],
+  "tags": ["green", "blue", "red", "alpha", "mixing", "color", "colors", "provided", "ratio"]
 }

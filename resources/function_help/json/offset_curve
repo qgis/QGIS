@@ -3,14 +3,40 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a geometry formed by offsetting a linestring geometry to the side. Distances are in the Spatial Reference System of this geometry.",
-  "arguments": [ {"arg":"geometry","description":"a (multi)linestring geometry"},
-                 {"arg":"distance","description":"offset distance. Positive values will be buffered to the left of lines, negative values to the right"},
-                 {"arg":"segments","optional":true,"default":"8","description":"number of segments to use to represent a quarter circle when a round join style is used. A larger number results in a smoother line with more nodes."},
-                 {"arg":"join","optional":true,"default":"1","description":"join style for corners, where 1 = round, 2 = miter and 3 = bevel"},
-                 {"arg":"miter_limit","optional":true,"default":"2.0","description":"limit on the miter ratio used for very sharp corners (when using miter joins only)"}],
-  "examples": [ { "expression":"offset_curve($geometry, 10.5)", "returns":"line offset to the left by 10.5 units"},
-  { "expression":"offset_curve($geometry, -10.5)", "returns":"line offset to the right by 10.5 units"},
-  { "expression":"offset_curve($geometry, 10.5, segments:=16, join:=1)", "returns":"line offset to the left by 10.5 units, using more segments to result in a smoother curve"},
-  { "expression":"offset_curve($geometry, 10.5, join:=3)", "returns":"line offset to the left by 10.5 units, using a beveled join"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a (multi)linestring geometry"
+  }, {
+    "arg": "distance",
+    "description": "offset distance. Positive values will be buffered to the left of lines, negative values to the right"
+  }, {
+    "arg": "segments",
+    "optional": true,
+    "default": "8",
+    "description": "number of segments to use to represent a quarter circle when a round join style is used. A larger number results in a smoother line with more nodes."
+  }, {
+    "arg": "join",
+    "optional": true,
+    "default": "1",
+    "description": "join style for corners, where 1 = round, 2 = miter and 3 = bevel"
+  }, {
+    "arg": "miter_limit",
+    "optional": true,
+    "default": "2.0",
+    "description": "limit on the miter ratio used for very sharp corners (when using miter joins only)"
+  }],
+  "examples": [{
+    "expression": "offset_curve($geometry, 10.5)",
+    "returns": "line offset to the left by 10.5 units"
+  }, {
+    "expression": "offset_curve($geometry, -10.5)",
+    "returns": "line offset to the right by 10.5 units"
+  }, {
+    "expression": "offset_curve($geometry, 10.5, segments:=16, join:=1)",
+    "returns": "line offset to the left by 10.5 units, using more segments to result in a smoother curve"
+  }, {
+    "expression": "offset_curve($geometry, 10.5, join:=3)",
+    "returns": "line offset to the left by 10.5 units, using a beveled join"
+  }],
+  "tags": ["spatial", "offsetting", "reference", "system", "linestring", "formed", "distances", "side"]
 }
-

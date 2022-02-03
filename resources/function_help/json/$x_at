@@ -3,7 +3,13 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Retrieves a x coordinate of the current feature's geometry.",
-  "arguments": [ {"arg":"i","description":"index of point of a line (indices start at 0; negative values apply from the last index, starting at -1)"}],
-  "examples": [ { "expression":"$x_at(1)", "returns":"5"}
-  ]
+  "arguments": [{
+    "arg": "i",
+    "description": "index of point of a line (indices start at 0; negative values apply from the last index, starting at -1)"
+  }],
+  "examples": [{
+    "expression": "$x_at(1)",
+    "returns": "5"
+  }],
+  "tags": ["current", "retrieves", "feature", "coordinate"]
 }

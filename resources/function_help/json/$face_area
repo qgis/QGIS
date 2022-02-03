@@ -3,5 +3,9 @@
   "type": "function",
   "groups": ["Meshes"],
   "description": "Returns the area of the current mesh face. The area calculated by this function respects both the current project's ellipsoid setting and area unit settings. For example, if an ellipsoid has been set for the project then the calculated area will be ellipsoidal, and if no ellipsoid is set then the calculated area will be planimetric.",
-  "examples": [ { "expression":"$face_area", "returns":"42"}]
+  "examples": [{
+    "expression": "$face_area",
+    "returns": "42"
+  }],
+  "tags": ["planimetric", "mesh", "current", "area", "surface", "project", "settings", "face", "ellipsoid", "setting", "calculated", "set"]
 }

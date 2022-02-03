@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the minimum value of an array.",
-  "arguments": [ {"arg":"array","description":"an array"} ],
-  "examples": [ { "expression":"array_min(array(43,42,54))", "returns":"42"}]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }],
+  "examples": [{
+    "expression": "array_min(array(43,42,54))",
+    "returns": "42"
+  }],
+  "tags": ["array", "minimum"]
 }

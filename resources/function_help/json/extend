@@ -3,9 +3,22 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Extends the start and end of a linestring geometry by a specified amount. Lines are extended using the bearing of the first and last segment in the line. For a multilinestring, all the parts are extended. Distances are in the Spatial Reference System of this geometry.",
-  "arguments": [ {"arg":"geometry","description":"a (multi)linestring geometry"},
-                 {"arg":"start_distance","description":"distance to extend the start of the line"},
-                 {"arg":"end_distance","description":"distance to extend the end of the line."}],
-  "examples": [ { "expression":"geom_to_wkt(extend(geom_from_wkt('LineString(0 0, 1 0, 1 1)'),1,2))", "returns":"'LineString (-1 0, 1 0, 1 3)'"},
-                { "expression":"geom_to_wkt(extend(geom_from_wkt('MultiLineString((0 0, 1 0, 1 1), (2 2, 0 2, 0 5))'),1,2))", "returns":"'MultiLineString ((-1 0, 1 0, 1 3),(3 2, 0 2, 0 7))'"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a (multi)linestring geometry"
+  }, {
+    "arg": "start_distance",
+    "description": "distance to extend the start of the line"
+  }, {
+    "arg": "end_distance",
+    "description": "distance to extend the end of the line."
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(extend(geom_from_wkt('LineString(0 0, 1 0, 1 1)'),1,2))",
+    "returns": "'LineString (-1 0, 1 0, 1 3)'"
+  }, {
+    "expression": "geom_to_wkt(extend(geom_from_wkt('MultiLineString((0 0, 1 0, 1 1), (2 2, 0 2, 0 5))'),1,2))",
+    "returns": "'MultiLineString ((-1 0, 1 0, 1 3),(3 2, 0 2, 0 7))'"
+  }],
+  "tags": ["start", "distances", "line", "last", "linestring", "amount", "parts", "bearing", "lines", "extends", "reference", "spatial", "extended", "first", "segment", "system", "multilinestring", "specified", "end"]
 }

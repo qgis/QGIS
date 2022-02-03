@@ -3,29 +3,48 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Returns True if a feature is selected. Can be used with zero, one or two arguments, see below for details.",
-  "variants": [
-        {
-            "variant": "No parameters",
-            "variant_description": "If called with no parameters, the function will return true if the current feature in the current layer is selected.",
-            "arguments": [],
-            "examples": [ { "expression": "is_selected()", "returns" : "True if the current feature in the current layer is selected." } ]
-        },
-        {
-            "variant": "One 'feature' parameter",
-            "variant_description": "If called with a 'feature' parameter only, the function returns true if the specified feature from the current layer is selected.",
-            "arguments": [ { "arg": "feature", "description": "The feature which should be checked for selection." } ],
-            "examples": [ { "expression": "is_selected(@atlas_feature)", "returns": "True if the current atlas feature is selected." },
-                          { "expression": "is_selected(get_feature('streets', 'name', 'Main St.')))", "returns": "True if the unique named \"Main St.\" feature on the active \"streets\" layer is selected." },
-                          { "expression": "is_selected(get_feature_by_id('streets', 1))", "returns": "True if the feature with the id 1 on the active \"streets\" layer is selected." }
-                        ]
-        },
-        {
-            "variant" : "Two parameters",
-            "variant_description": "If the function is called with both a layer and a feature, it will return true if the specified feature from the specified layer is selected.",
-            "arguments": [ { "arg": "layer", "description": "The layer (its ID or name) on which the selection will be checked." }, { "arg": "feature", "description": "The feature which should be checked for selection." } ],
-            "examples": [ { "expression": "is_selected( 'streets', get_feature('streets', 'name', \"street_name\"))", "returns": "True if the current building's street is selected (assuming the building layer has a field named 'street_name' and the 'streets' layer has a field called 'name' with unique values)." },
-                          { "expression": "is_selected( 'streets', get_feature_by_id('streets', 1))", "returns": "True if the feature with the id 1 on the \"streets\" layer is selected." }
-                        ]
-        }
-  ]
- }
+  "variants": [{
+    "variant": "No parameters",
+    "variant_description": "If called with no parameters, the function will return true if the current feature in the current layer is selected.",
+    "arguments": [],
+    "examples": [{
+      "expression": "is_selected()",
+      "returns": "True if the current feature in the current layer is selected."
+    }]
+  }, {
+    "variant": "One 'feature' parameter",
+    "variant_description": "If called with a 'feature' parameter only, the function returns true if the specified feature from the current layer is selected.",
+    "arguments": [{
+      "arg": "feature",
+      "description": "The feature which should be checked for selection."
+    }],
+    "examples": [{
+      "expression": "is_selected(@atlas_feature)",
+      "returns": "True if the current atlas feature is selected."
+    }, {
+      "expression": "is_selected(get_feature('streets', 'name', 'Main St.')))",
+      "returns": "True if the unique named \"Main St.\" feature on the active \"streets\" layer is selected."
+    }, {
+      "expression": "is_selected(get_feature_by_id('streets', 1))",
+      "returns": "True if the feature with the id 1 on the active \"streets\" layer is selected."
+    }]
+  }, {
+    "variant": "Two parameters",
+    "variant_description": "If the function is called with both a layer and a feature, it will return true if the specified feature from the specified layer is selected.",
+    "arguments": [{
+      "arg": "layer",
+      "description": "The layer (its ID or name) on which the selection will be checked."
+    }, {
+      "arg": "feature",
+      "description": "The feature which should be checked for selection."
+    }],
+    "examples": [{
+      "expression": "is_selected( 'streets', get_feature('streets', 'name', \"street_name\"))",
+      "returns": "True if the current building's street is selected (assuming the building layer has a field named 'street_name' and the 'streets' layer has a field called 'name' with unique values)."
+    }, {
+      "expression": "is_selected( 'streets', get_feature_by_id('streets', 1))",
+      "returns": "True if the feature with the id 1 on the \"streets\" layer is selected."
+    }]
+  }],
+  "tags": ["selected", "arguments", "details"]
+}

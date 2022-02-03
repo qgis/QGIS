@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a geometry created from a Well-Known Text (WKT) representation.",
-  "arguments": [ {"arg":"text","description":"Well-Known Text (WKT) representation of a geometry"}],
-  "examples": [ { "expression":"geom_from_wkt( 'POINT(4 5)' )", "returns":"a geometry object"}]
+  "arguments": [{
+    "arg": "text",
+    "description": "Well-Known Text (WKT) representation of a geometry"
+  }],
+  "examples": [{
+    "expression": "geom_from_wkt( 'POINT(4 5)' )",
+    "returns": "a geometry object"
+  }],
+  "tags": ["text", "known", "wkt", "representation", "conversion"]
 }

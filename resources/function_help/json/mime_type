@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["General"],
   "description": "Returns the mime type of the binary data.",
-  "arguments": [ {"arg":"bytes","description":"the binary data"}],
-  "examples": [ { "expression":"mime_type('&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;')", "returns":"text/html"},
-  { "expression":"mime_type(from_base64('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAIAOw=='))", "returns":"image/gif"} ]
+  "arguments": [{
+    "arg": "bytes",
+    "description": "the binary data"
+  }],
+  "examples": [{
+    "expression": "mime_type('&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;')",
+    "returns": "text/html"
+  }, {
+    "expression": "mime_type(from_base64('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAIAOw=='))",
+    "returns": "image/gif"
+  }],
+  "tags": ["type", "data", "binary"]
 }

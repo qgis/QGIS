@@ -3,9 +3,25 @@
   "type": "function",
   "groups": ["String"],
   "description": "Returns a number formatted with the locale separator for thousands. By default the current QGIS user locale is used. Also truncates the decimal places to the number of supplied places.",
-  "arguments": [ {"arg":"number","description":"number to be formatted"},
-                 {"arg":"places","optional":true,"default":"0","description":"integer representing the number of decimal places to truncate the string to."},
-                 {"arg":"language","optional":true,"description":"language (lowercase, two- or three-letter, <a href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO 639 language code</a>) used to format the number into a string. By default the current QGIS user locale is used."}],
-  "examples": [ { "expression":"format_number(10000000.332,2)", "returns":"'10,000,000.33' if e.g. the current locale is an English variant"},
-                { "expression":"format_number(10000000.332,2,'fr')", "returns":"'10 000 000,33'"}]
+  "arguments": [{
+    "arg": "number",
+    "description": "number to be formatted"
+  }, {
+    "arg": "places",
+    "optional": true,
+    "default": "0",
+    "description": "integer representing the number of decimal places to truncate the string to."
+  }, {
+    "arg": "language",
+    "optional": true,
+    "description": "language (lowercase, two- or three-letter, <a href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO 639 language code</a>) used to format the number into a string. By default the current QGIS user locale is used."
+  }],
+  "examples": [{
+    "expression": "format_number(10000000.332,2)",
+    "returns": "'10,000,000.33' if e.g. the current locale is an English variant"
+  }, {
+    "expression": "format_number(10000000.332,2,'fr')",
+    "returns": "'10 000 000,33'"
+  }],
+  "tags": ["formatted", "truncates", "places", "separator", "decimal", "default", "thousands", "locale", "language"]
 }

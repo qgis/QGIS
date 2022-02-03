@@ -3,14 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the point on geometry1 that is closest to geometry2.",
-  "arguments": [
-    {"arg":"geometry1","description":"geometry to find closest point on"},
-    {"arg":"geometry2","description":"geometry to find closest point to"}
-  ],
-  "examples": [
-    {
-      "expression":"geom_to_wkt(closest_point(geom_from_wkt('LINESTRING (20 80, 98 190, 110 180, 50 75 )'),geom_from_wkt('POINT(100 100)')))",
-      "returns":"'Point(73.0769 115.384)'"
-    }
-  ]
+  "arguments": [{
+    "arg": "geometry1",
+    "description": "geometry to find closest point on"
+  }, {
+    "arg": "geometry2",
+    "description": "geometry to find closest point to"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(closest_point(geom_from_wkt('LINESTRING (20 80, 98 190, 110 180, 50 75 )'),geom_from_wkt('POINT(100 100)')))",
+    "returns": "'Point(73.0769 115.384)'"
+  }],
+  "tags": ["closest", "point", "nearest"]
 }

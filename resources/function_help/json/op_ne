@@ -3,14 +3,25 @@
   "type": "operator",
   "groups": ["Operators"],
   "description": "Compares two values and evaluates to 1 if they are not equal.",
-  "arguments": [
-        { "arg": "a", "description": "value" },
-        { "arg": "b", "description": "value" }
-  ],
-  "examples": [
-	{ "expression":"5 &lt;&gt; 4", "returns":"1"},
-	{ "expression":"4 &lt;&gt; 4", "returns":"0"},
-	{ "expression":"5 &lt;&gt; NULL", "returns":"NULL"},
-	{ "expression":"NULL &lt;&gt; NULL", "returns":"NULL"}
-  ]
+  "arguments": [{
+    "arg": "a",
+    "description": "value"
+  }, {
+    "arg": "b",
+    "description": "value"
+  }],
+  "examples": [{
+    "expression": "5 &lt;&gt; 4",
+    "returns": "1"
+  }, {
+    "expression": "4 &lt;&gt; 4",
+    "returns": "0"
+  }, {
+    "expression": "5 &lt;&gt; NULL",
+    "returns": "NULL"
+  }, {
+    "expression": "NULL &lt;&gt; NULL",
+    "returns": "NULL"
+  }],
+  "tags": ["compares", "evaluates", "values", "equal"]
 }

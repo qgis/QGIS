@@ -3,6 +3,9 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the perimeter length of the current feature. The perimeter calculated by this function respects both the current project's ellipsoid setting and distance unit settings. For example, if an ellipsoid has been set for the project then the calculated perimeter will be ellipsoidal, and if no ellipsoid is set then the calculated perimeter will be planimetric.",
-  "examples": [ { "expression":"$perimeter", "returns":"42"}
-  ]
+  "examples": [{
+    "expression": "$perimeter",
+    "returns": "42"
+  }],
+  "tags": ["distance", "planimetric", "length", "perimeter", "current", "polygon", "project", "settings", "ellipsoid", "setting", "calculated"]
 }

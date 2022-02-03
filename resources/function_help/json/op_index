@@ -3,14 +3,25 @@
   "type": "operator",
   "groups": ["Operators"],
   "description": "Index operator. Returns an element from an array or map value.",
-  "arguments": [
-        { "arg": "index", "description": "array index or map key value" }
-  ],
-  "examples": [
-	{ "expression":"array(1,2,3)[0]", "returns":"1"},
-	{ "expression":"array(1,2,3)[2]", "returns":"3"},
-	{ "expression":"array(1,2,3)[-1]", "returns":"3"},
-	{ "expression":"map('a',1,'b',2)['a']", "returns":"1"},
-	{ "expression":"map('a',1,'b',2)['b']", "returns":"2"}
-  ]
+  "arguments": [{
+    "arg": "index",
+    "description": "array index or map key value"
+  }],
+  "examples": [{
+    "expression": "array(1,2,3)[0]",
+    "returns": "1"
+  }, {
+    "expression": "array(1,2,3)[2]",
+    "returns": "3"
+  }, {
+    "expression": "array(1,2,3)[-1]",
+    "returns": "3"
+  }, {
+    "expression": "map('a',1,'b',2)['a']",
+    "returns": "1"
+  }, {
+    "expression": "map('a',1,'b',2)['b']",
+    "returns": "2"
+  }],
+  "tags": ["array", "operator", "element", "map", "index"]
 }

@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the bisector angle (average angle) to the geometry for a specified vertex on a linestring geometry. Angles are in degrees clockwise from north.",
-  "arguments": [ {"arg":"geometry","description":"a linestring geometry"},
-                 {"arg":"vertex","description":"vertex index, starting from 0; if the value is negative, the selected vertex index will be its total count minus the absolute value"}],
-  "examples": [ { "expression":"angle_at_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=1)", "returns":"45.0"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a linestring geometry"
+  }, {
+    "arg": "vertex",
+    "description": "vertex index, starting from 0; if the value is negative, the selected vertex index will be its total count minus the absolute value"
+  }],
+  "examples": [{
+    "expression": "angle_at_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=1)",
+    "returns": "45.0"
+  }],
+  "tags": ["angles", "specified", "clockwise", "angle", "linestring", "degrees", "bisector", "north", "average", "vertex"]
 }

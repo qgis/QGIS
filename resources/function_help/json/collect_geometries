@@ -3,18 +3,36 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Collects a set of geometries into a multi-part geometry object.",
-  "variants": [
-  { "variant": "List of arguments variant",
-      "variant_description": "Geometry parts are specified as separate arguments to the function.",
-      "variableLenArguments": true,
-      "arguments": [ {"arg":"geometry1", "syntaxOnly": true},
-                 {"arg":"geometry2", "syntaxOnly": true},
-                 {"arg":"geometry", "descOnly": true, "description":"a geometry"}],
-      "examples": [ { "expression":"geom_to_wkt(collect_geometries(make_point(1,2), make_point(3,4), make_point(5,6)))", "returns":"'MultiPoint ((1 2),(3 4),(5 6))'"} ] },
-      {
-      "variant": "Array variant",
-      "variant_description": "Geometry parts are specified as an array of geometry parts.",
-      "arguments": [ {"arg":"array","description":"array of geometry objects"}],
-      "examples": [ { "expression":"geom_to_wkt(collect_geometries(array(make_point(1,2), make_point(3,4), make_point(5,6))))", "returns":"'MultiPoint ((1 2),(3 4),(5 6))'"} ]
-  }]
+  "variants": [{
+    "variant": "List of arguments variant",
+    "variant_description": "Geometry parts are specified as separate arguments to the function.",
+    "variableLenArguments": true,
+    "arguments": [{
+      "arg": "geometry1",
+      "syntaxOnly": true
+    }, {
+      "arg": "geometry2",
+      "syntaxOnly": true
+    }, {
+      "arg": "geometry",
+      "descOnly": true,
+      "description": "a geometry"
+    }],
+    "examples": [{
+      "expression": "geom_to_wkt(collect_geometries(make_point(1,2), make_point(3,4), make_point(5,6)))",
+      "returns": "'MultiPoint ((1 2),(3 4),(5 6))'"
+    }]
+  }, {
+    "variant": "Array variant",
+    "variant_description": "Geometry parts are specified as an array of geometry parts.",
+    "arguments": [{
+      "arg": "array",
+      "description": "array of geometry objects"
+    }],
+    "examples": [{
+      "expression": "geom_to_wkt(collect_geometries(array(make_point(1,2), make_point(3,4), make_point(5,6))))",
+      "returns": "'MultiPoint ((1 2),(3 4),(5 6))'"
+    }]
+  }],
+  "tags": ["part", "set", "collects", "object", "multi"]
 }

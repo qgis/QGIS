@@ -3,7 +3,9 @@
   "type": "function",
   "groups": ["deprecated"],
   "description": "Returns the current scale denominator of the map canvas.<br><br>Note: This function is only available in some contexts and will be 0 otherwise.",
-  "examples": [
-	{ "expression":"$scale", "returns":"10000"}
-  ]
+  "examples": [{
+    "expression": "$scale",
+    "returns": "10000"
+  }],
+  "tags": ["denominator", "contexts", "current", "scale", "canvas", "map"]
 }

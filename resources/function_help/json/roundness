@@ -3,10 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Calculates how close a polygon shape is to a circle. The function returns 1 when the polygon shape is a perfect circle and 0 when it is completely flat.",
-  "arguments": [
-    {"arg":"geometry","description":"a polygon"}],
-  "examples": [
-    { "expression":"round(roundness(geom_from_wkt('POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0))')), 3)", "returns":"0.785"},
-    { "expression":"round(roundness(geom_from_wkt('POLYGON(( 0 0, 0 0.1, 1 0.1, 1 0, 0 0))')), 3)", "returns":"0.260"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a polygon"
+  }],
+  "examples": [{
+    "expression": "round(roundness(geom_from_wkt('POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0))')), 3)",
+    "returns": "0.785"
+  }, {
+    "expression": "round(roundness(geom_from_wkt('POLYGON(( 0 0, 0 0.1, 1 0.1, 1 0, 0 0))')), 3)",
+    "returns": "0.260"
+  }],
+  "tags": ["polygon", "perfect", "flat", "close", "shape", "calculates", "circle"]
 }

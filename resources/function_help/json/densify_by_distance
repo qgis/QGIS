@@ -3,11 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Takes a polygon or line layer geometry and generates a new one in which the geometries are densified by adding additional vertices on edges that have a maximum distance of the specified interval distance.",
-  "arguments": [
-    {"arg":"geometry","description":"a geometry (accepts (multi)linestrings or (multi)polygons)."},
-    {"arg":"distance","description":"maximum interval distance between vertices in output geometry"}
-  ],
-  "examples": [
-    { "expression":"geom_to_wkt(densify_by_distance(geom_from_wkt('LINESTRING(1 1, 10 1)'), 4))", "returns":"LineString (1 1, 4 1, 7 1, 10 1)"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry (accepts (multi)linestrings or (multi)polygons)."
+  }, {
+    "arg": "distance",
+    "description": "maximum interval distance between vertices in output geometry"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(densify_by_distance(geom_from_wkt('LINESTRING(1 1, 10 1)'), 4))",
+    "returns": "LineString (1 1, 4 1, 7 1, 10 1)"
+  }],
+  "tags": ["maximum", "edges", "additional", "generates", "line", "densified", "adding", "new", "polygon", "interval", "layer", "one", "distance", "vertices", "specified"]
 }

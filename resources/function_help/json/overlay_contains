@@ -3,57 +3,45 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns whether the current feature spatially contains at least one feature from a target layer, or an array of expression-based results for the features in the target layer contained in the current feature.<br><br>Read more on the underlying GEOS \"Contains\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Contains.html'>ST_Contains</a> function.",
-  "arguments": [
-    {
-      "arg": "layer",
-      "description": "the layer whose overlay is checked"
-    },
-    {
-      "arg": "expression",
-      "description": "an optional expression to evaluate on the features from the target layer. If not set, the function will just return a boolean indicating whether there is at least one match.",
-      "optional": true
-    },
-    {
-      "arg": "filter",
-      "description": "an optional expression to filter the target features to check. If not set, all the features will be checked.",
-      "optional": true
-    },
-    {
-      "arg": "limit",
-      "description": "an optional integer to limit the number of matching features. If not set, all the matching features will be returned.",
-      "optional": true
-    },
-    {
-      "arg": "cache",
-      "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
-      "optional": true,
-      "default": "false"
-    }
-  ],
-  "examples": [
-    {
-      "expression": "overlay_contains('regions')",
-      "returns": "true if the current feature spatially contains a region"
-    },
-    {
-      "expression": "overlay_contains('regions', filter:= population > 10000)",
-      "returns": "true if the current feature spatially contains a region with a population greater than 10000"
-    },
-    {
-      "expression": "overlay_contains('regions', name)",
-      "returns": "an array of names, for the regions contained in the current feature"
-    },
-    {
-      "expression": "array_to_string(overlay_contains('regions', name))",
-      "returns": "a string as a comma separated list of names, for the regions contained in the current feature"
-    },
-    {
-      "expression": "array_sort(overlay_contains(layer:='regions', expression:=\"name\", filter:= population > 10000))",
-      "returns": "an ordered array of names, for the regions contained in the current feature and with a population greater than 10000"
-    },
-    {
-      "expression": "overlay_contains(layer:='regions', expression:= geom_to_wkt($geometry), limit:=2)",
-      "returns": "an array of geometries (in WKT), for up to two regions contained in the current feature"
-    }
-  ]
+  "arguments": [{
+    "arg": "layer",
+    "description": "the layer whose overlay is checked"
+  }, {
+    "arg": "expression",
+    "description": "an optional expression to evaluate on the features from the target layer. If not set, the function will just return a boolean indicating whether there is at least one match.",
+    "optional": true
+  }, {
+    "arg": "filter",
+    "description": "an optional expression to filter the target features to check. If not set, all the features will be checked.",
+    "optional": true
+  }, {
+    "arg": "limit",
+    "description": "an optional integer to limit the number of matching features. If not set, all the matching features will be returned.",
+    "optional": true
+  }, {
+    "arg": "cache",
+    "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
+    "optional": true,
+    "default": "false"
+  }],
+  "examples": [{
+    "expression": "overlay_contains('regions')",
+    "returns": "true if the current feature spatially contains a region"
+  }, {
+    "expression": "overlay_contains('regions', filter:= population > 10000)",
+    "returns": "true if the current feature spatially contains a region with a population greater than 10000"
+  }, {
+    "expression": "overlay_contains('regions', name)",
+    "returns": "an array of names, for the regions contained in the current feature"
+  }, {
+    "expression": "array_to_string(overlay_contains('regions', name))",
+    "returns": "a string as a comma separated list of names, for the regions contained in the current feature"
+  }, {
+    "expression": "array_sort(overlay_contains(layer:='regions', expression:=\"name\", filter:= population > 10000))",
+    "returns": "an ordered array of names, for the regions contained in the current feature and with a population greater than 10000"
+  }, {
+    "expression": "overlay_contains(layer:='regions', expression:= geom_to_wkt($geometry), limit:=2)",
+    "returns": "an array of geometries (in WKT), for up to two regions contained in the current feature"
+  }],
+  "tags": ["least", "predicate", "current", "contained", "target", "contains", "array", "geos", "st_contains", "postgis", "described", "underlying", "features"]
 }

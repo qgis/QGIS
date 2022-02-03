@@ -3,13 +3,22 @@
   "type": "function",
   "groups": ["Fuzzy Matching"],
   "description": "Returns the longest common substring between two strings. This substring is the longest string that is a substring of the two input strings. For example, the longest common substring of \"ABABC\" and \"BABCA\" is \"BABC\". The substring is case sensitive.",
-  "arguments": [
-	{"arg":"string1","description":"a string"},
-	{"arg":"string2","description":"a string"}
-  ],
-  "examples": [
-	{ "expression":"longest_common_substring('ABABC','BABCA')", "returns":"'BABC'"},
-	{ "expression":"longest_common_substring('abcDeF','abcdef')", "returns":"'abc'"},
-	{ "expression":"longest_common_substring(upper('abcDeF'),upper('abcdex'))", "returns":"'ABCDE'"}
-  ]
+  "arguments": [{
+    "arg": "string1",
+    "description": "a string"
+  }, {
+    "arg": "string2",
+    "description": "a string"
+  }],
+  "examples": [{
+    "expression": "longest_common_substring('ABABC','BABCA')",
+    "returns": "'BABC'"
+  }, {
+    "expression": "longest_common_substring('abcDeF','abcdef')",
+    "returns": "'abc'"
+  }, {
+    "expression": "longest_common_substring(upper('abcDeF'),upper('abcdex'))",
+    "returns": "'ABCDE'"
+  }],
+  "tags": ["longest", "common", "input", "sensitive", "case", "substring", "strings"]
 }

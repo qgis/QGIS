@@ -3,6 +3,9 @@
   "type": "function",
   "groups": ["Meshes"],
   "description": "Returns the current vertex as a point geometry.",
-  "examples": [ { "expression":"geom_to_wkt( $vertex_as_point )", "returns":"'POINT(800 1500 41)'"}
-  ]
+  "examples": [{
+    "expression": "geom_to_wkt( $vertex_as_point )",
+    "returns": "'POINT(800 1500 41)'"
+  }],
+  "tags": ["point", "mesh", "vertex", "current"]
 }

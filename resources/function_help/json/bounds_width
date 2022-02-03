@@ -3,9 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the width of the bounding box of a geometry. Calculations are in the Spatial Reference System of this geometry.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"}],
-  "examples": [ { "expression":"bounds_width($geometry)", "returns":"width of bounding box of the current feature's geometry"},
-                { "expression":"bounds_width(geom_from_wkt('Polygon((1 1, 0 0, -1 1, 1 1))'))", "returns":"2"}
-              ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "bounds_width($geometry)",
+    "returns": "width of bounding box of the current feature's geometry"
+  }, {
+    "expression": "bounds_width(geom_from_wkt('Polygon((1 1, 0 0, -1 1, 1 1))'))",
+    "returns": "2"
+  }],
+  "tags": ["width", "box", "spatial", "reference", "calculations", "system", "bounding"]
 }
-

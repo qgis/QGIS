@@ -3,12 +3,36 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this geometry.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"},
-                 {"arg":"distance","description":"buffer distance in layer units"},
-                 {"arg":"segments","optional":true,"default":"8","description":"number of segments to use to represent a quarter circle when a round join style is used. A larger number results in a smoother buffer with more nodes."},
-                 {"arg":"cap","optional":true,"default":"'round'","description":"end cap style for buffer. Valid values are 'round', 'flat' or 'square'"},
-                 {"arg":"join","optional":true,"default":"'round'","description":"join style for buffer. Valid values are 'round', 'bevel' or 'miter'."},
-                 {"arg":"miter_limit","optional":true,"default":"2","description":"miter distance limit, for use when the join style is set to 'miter'"}],
-  "examples": [ { "expression":"buffer($geometry, 10.5)", "returns":"polygon of the current feature's geometry buffered by 10.5 units"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "distance",
+    "description": "buffer distance in layer units"
+  }, {
+    "arg": "segments",
+    "optional": true,
+    "default": "8",
+    "description": "number of segments to use to represent a quarter circle when a round join style is used. A larger number results in a smoother buffer with more nodes."
+  }, {
+    "arg": "cap",
+    "optional": true,
+    "default": "'round'",
+    "description": "end cap style for buffer. Valid values are 'round', 'flat' or 'square'"
+  }, {
+    "arg": "join",
+    "optional": true,
+    "default": "'round'",
+    "description": "join style for buffer. Valid values are 'round', 'bevel' or 'miter'."
+  }, {
+    "arg": "miter_limit",
+    "optional": true,
+    "default": "2",
+    "description": "miter distance limit, for use when the join style is set to 'miter'"
+  }],
+  "examples": [{
+    "expression": "buffer($geometry, 10.5)",
+    "returns": "polygon of the current feature's geometry buffered by 10.5 units"
+  }],
+  "tags": ["distance", "equal", "spatial", "reference", "calculations", "system", "points", "segments", "miter", "join", "cap", "round"]
 }
-

@@ -3,9 +3,19 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Tests whether a geometry overlaps another. Returns true if the geometries share space, are of the same dimension, but are not completely contained by each other.",
-  "arguments": [ {"arg":"geometry1","description":"a geometry"},
-                 {"arg":"geometry2","description":"a geometry"}],
-  "examples": [ { "expression":"overlaps( geom_from_wkt( 'LINESTRING(3 5, 4 4, 5 5, 5 3)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )", "returns":"true"},
-  { "expression":"overlaps( geom_from_wkt( 'LINESTRING(0 0, 1 1)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )", "returns":"false"}
-  ]
+  "arguments": [{
+    "arg": "geometry1",
+    "description": "a geometry"
+  }, {
+    "arg": "geometry2",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "overlaps( geom_from_wkt( 'LINESTRING(3 5, 4 4, 5 5, 5 3)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )",
+    "returns": "true"
+  }, {
+    "expression": "overlaps( geom_from_wkt( 'LINESTRING(0 0, 1 1)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )",
+    "returns": "false"
+  }],
+  "tags": ["share", "tests", "contained", "overlaps", "same", "dimension", "space"]
 }

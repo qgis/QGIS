@@ -3,19 +3,43 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns an array with the supplied value, array, or map of values replaced.",
-  "variants": [
-  { "variant": "Value & array variant",
-      "variant_description": "Returns an array with the supplied value or array of values replaced by another value or an array of values.",
-      "arguments": [ {"arg":"array","description":"the input array"},
-                     {"arg":"before","description":"the value or array of values to replace"},
-                     {"arg":"after","description":"the value or array of values to use as a replacement"}],
-      "examples": [ { "expression":"array_replace(array('QGIS','SHOULD','ROCK'),'SHOULD','DOES')", "returns":"[ 'QGIS', 'DOES', 'ROCK' ]"},
-                    { "expression":"array_replace(array(3,2,1),array(1,2,3),array(7,8,9))", "returns":"[ 9, 8, 7 ]"},
-                    { "expression":"array_replace(array('Q','G','I','S'),array('Q','S'),'-')", "returns":"[ '-', 'G', 'I', '-' ]"} ] },
-  { "variant": "Map variant",
-      "variant_description": "Returns an array with the supplied map keys replaced by their paired values.",
-      "arguments": [ {"arg":"array","description":"the input array"},
-                     {"arg":"map","description":"the map containing keys and values"} ],
-      "examples": [ { "expression":"array_replace(array('APP', 'SHOULD', 'ROCK'),map('APP','QGIS','SHOULD','DOES'))", "returns":"[ 'QGIS', 'DOES', 'ROCK' ]"} ]
-  }]
+  "variants": [{
+    "variant": "Value & array variant",
+    "variant_description": "Returns an array with the supplied value or array of values replaced by another value or an array of values.",
+    "arguments": [{
+      "arg": "array",
+      "description": "the input array"
+    }, {
+      "arg": "before",
+      "description": "the value or array of values to replace"
+    }, {
+      "arg": "after",
+      "description": "the value or array of values to use as a replacement"
+    }],
+    "examples": [{
+      "expression": "array_replace(array('QGIS','SHOULD','ROCK'),'SHOULD','DOES')",
+      "returns": "[ 'QGIS', 'DOES', 'ROCK' ]"
+    }, {
+      "expression": "array_replace(array(3,2,1),array(1,2,3),array(7,8,9))",
+      "returns": "[ 9, 8, 7 ]"
+    }, {
+      "expression": "array_replace(array('Q','G','I','S'),array('Q','S'),'-')",
+      "returns": "[ '-', 'G', 'I', '-' ]"
+    }]
+  }, {
+    "variant": "Map variant",
+    "variant_description": "Returns an array with the supplied map keys replaced by their paired values.",
+    "arguments": [{
+      "arg": "array",
+      "description": "the input array"
+    }, {
+      "arg": "map",
+      "description": "the map containing keys and values"
+    }],
+    "examples": [{
+      "expression": "array_replace(array('APP', 'SHOULD', 'ROCK'),map('APP','QGIS','SHOULD','DOES'))",
+      "returns": "[ 'QGIS', 'DOES', 'ROCK' ]"
+    }]
+  }],
+  "tags": ["array", "map", "replaced", "supplied"]
 }

@@ -3,9 +3,16 @@
   "type": "function",
   "groups": ["String"],
   "description": "Returns a substring that contains the <i>n</i> leftmost characters of the string.",
-  "arguments": [
-	{"arg":"string","description":"a string"},
-	{"arg":"length","description":"integer. The number of characters from the left of the string to return."}],
-  "examples": [ { "expression":"left('Hello World',5)", "returns":"'Hello'"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "a string"
+  }, {
+    "arg": "length",
+    "description": "integer. The number of characters from the left of the string to return."
+  }],
+  "examples": [{
+    "expression": "left('Hello World',5)",
+    "returns": "'Hello'"
+  }],
+  "tags": ["first", "substring", "leftmost", "characters", "contains", "extracts"]
 }

@@ -3,11 +3,24 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns an array of all strings captured by capturing groups, in the order the groups themselves appear in the supplied regular expression against a string.",
-  "arguments": [
-    {"arg":"string", "description":"the string to capture groups from against the regular expression"},
-    {"arg":"regex","description":"the regular expression used to capture groups"},
-    {"arg":"empty_value","optional":true,"default":"''","description":"the optional string to use as replacement for empty (zero length) matches"}],
-  "examples": [ { "expression":"regexp_matches('QGIS=>rocks','(.*)=>(.*)')", "returns":"[ 'QGIS', 'rocks' ]"},
-                { "expression":"regexp_matches('key=>','(.*)=>(.*)','empty value')", "returns":"[ 'key', 'empty value' ]"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "the string to capture groups from against the regular expression"
+  }, {
+    "arg": "regex",
+    "description": "the regular expression used to capture groups"
+  }, {
+    "arg": "empty_value",
+    "optional": true,
+    "default": "''",
+    "description": "the optional string to use as replacement for empty (zero length) matches"
+  }],
+  "examples": [{
+    "expression": "regexp_matches('QGIS=>rocks','(.*)=>(.*)')",
+    "returns": "[ 'QGIS', 'rocks' ]"
+  }, {
+    "expression": "regexp_matches('key=>','(.*)=>(.*)','empty value')",
+    "returns": "[ 'key', 'empty value' ]"
+  }],
+  "tags": ["array", "groups", "capturing", "captured", "order", "appear", "supplied", "regular", "strings"]
 }
