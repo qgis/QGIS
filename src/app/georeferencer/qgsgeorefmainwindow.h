@@ -90,11 +90,21 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void linkQGisToGeoref( bool link );
 
     // gcps
+
+    /**
+     * Adds a new reference point.
+     * \param sourceCoords MUST be in source layer coordinates, e.g. if source is already georeferenced then it is in layer coordinates NOT pixels
+     * \param destinationMapCoords
+     * \param destinationCrs
+     * \param enable
+     * \param finalize
+     */
     void addPoint( const QgsPointXY &sourceCoords, const QgsPointXY &destinationMapCoords,
                    const QgsCoordinateReferenceSystem &destinationCrs, bool enable = true, bool finalize = true );
+
     void deleteDataPoint( QPoint pixelCoords );
     void deleteDataPoint( int index );
-    void showCoordDialog( const QgsPointXY &pixelCoords );
+    void showCoordDialog( const QgsPointXY &sourceCoordinates );
 
     void selectPoint( QPoint );
     void movePoint( QPoint canvasPixels );

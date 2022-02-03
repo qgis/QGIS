@@ -628,7 +628,7 @@ void QgsGeoreferencerMainWindow::releasePoint( QPoint p )
   }
 }
 
-void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords )
+void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &sourceCoordinates )
 {
   delete mNewlyAddedPointItem;
   mNewlyAddedPointItem = nullptr;
@@ -636,15 +636,15 @@ void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords 
   // show a temporary marker at the clicked source point on the raster while we show the coordinate dialog.
   mNewlyAddedPointItem = new QgsGCPCanvasItem( mCanvas, nullptr, true );
   mNewlyAddedPointItem->setPointColor( QColor( 0, 200, 0 ) );
-  mNewlyAddedPointItem->setPos( mNewlyAddedPointItem->toCanvasCoordinates( pixelCoords ) );
+  mNewlyAddedPointItem->setPos( mNewlyAddedPointItem->toCanvasCoordinates( sourceCoordinates ) );
 
   QgsCoordinateReferenceSystem lastProjection = mLastGCPProjection.isValid() ? mLastGCPProjection : mProjection;
   if ( mLayer && !mMapCoordsDialog )
   {
-    mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), pixelCoords, lastProjection, this );
-    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & a, const QgsPointXY & destination, const QgsCoordinateReferenceSystem & destinationCrs )
+    mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), sourceCoordinates, lastProjection, this );
+    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & sourceLayerCoordinate, const QgsPointXY & destinationCoordinate, const QgsCoordinateReferenceSystem & destinationCrs )
     {
-      addPoint( a, destination, destinationCrs );
+      addPoint( sourceLayerCoordinate, destinationCoordinate, destinationCrs );
     } );
     connect( mMapCoordsDialog, &QObject::destroyed, this, [ = ]
     {
@@ -1266,14 +1266,14 @@ bool QgsGeoreferencerMainWindow::loadGCPs( /*bool verbose*/ )
   QTextStream points( &pointFile );
   QString line = points.readLine();
   int i = 0;
-  QgsCoordinateReferenceSystem proj;
-  if ( line.contains( "#CRS: " ) )
+  QgsCoordinateReferenceSystem destinationCrs;
+  if ( line.contains( QLatin1String( "#CRS: " ) ) )
   {
-    proj = QgsCoordinateReferenceSystem( line.remove( "#CRS: " ) );
+    destinationCrs = QgsCoordinateReferenceSystem( line.remove( QStringLiteral( "#CRS: " ) ) );
     line = points.readLine();
   }
   else
-    proj = QgsProject::instance()->crs();
+    destinationCrs = QgsProject::instance()->crs();
 
   while ( !points.atEnd() )
   {

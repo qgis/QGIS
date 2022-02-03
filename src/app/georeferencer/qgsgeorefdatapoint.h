@@ -26,7 +26,16 @@ class QgsGeorefDataPoint : public QObject
     Q_OBJECT
 
   public:
-    //! constructor
+
+    /**
+     * Constructor for QgsGeorefDataPoint
+     * \param srcCanvas
+     * \param dstCanvas
+     * \param sourceCoordinates must be in source layer coordinates, NOT pixels (unless source image is completely non-referenced)!
+     * \param destinationMapCoords
+     * \param destinationCrs
+     * \param enable
+     */
     QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
                         const QgsPointXY &sourceCoordinates, const QgsPointXY &destinationMapCoords,
                         const QgsCoordinateReferenceSystem &destinationCrs, bool enable );
