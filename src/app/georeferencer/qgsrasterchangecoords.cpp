@@ -67,6 +67,9 @@ QgsRectangle QgsRasterChangeCoords::getBoundingBox( const QgsRectangle &rect, bo
 
 QgsPointXY QgsRasterChangeCoords::toColumnLine( const QgsPointXY &pntMap )
 {
+  if ( ! mHasExistingGeoreference )
+    return QgsPointXY( pntMap.x(), pntMap.y() );
+
   const double col = ( pntMap.x() - mUL_X ) / mResX;
   const double line = ( mUL_Y - pntMap.y() ) / mResY;
   return QgsPointXY( col, line );
@@ -74,6 +77,9 @@ QgsPointXY QgsRasterChangeCoords::toColumnLine( const QgsPointXY &pntMap )
 
 QgsPointXY QgsRasterChangeCoords::toXY( const QgsPointXY &pntPixel )
 {
+  if ( ! mHasExistingGeoreference )
+    return QgsPointXY( pntPixel.x(), pntPixel.y() );
+
   const double x = mUL_X + ( pntPixel.x() *  mResX );
   const double y = mUL_Y + ( pntPixel.y() * -mResY );
   return QgsPointXY( x, y );
