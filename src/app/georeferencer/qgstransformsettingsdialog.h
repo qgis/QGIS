@@ -32,7 +32,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
 
     void getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
-                               QString &raster, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, QString &gcpPoints, bool &zt, bool &loadInQgis,
+                               QString &raster, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &saveGcpPoints, bool &zt, bool &loadInQgis,
                                double &resX, double &resY );
     static void resetSettings();
 
