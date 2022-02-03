@@ -269,7 +269,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>10</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
