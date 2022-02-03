@@ -184,13 +184,7 @@ void TestQgsGeoreferencer::testTransformImageWithExistingGeoreference()
 
   QVERIFY( transform.hasExistingGeoreference() );
 
-  // currently disabled -- it is ambiguous whether calling updateParametersFromGcps should be using PIXEL coordinates as source or layer CRS coordinates, and is quite broken either
-  // way. Here the disabled tests assume layer CRS coordinates, but in the actual georeferencer a mix of pixel/layer coordinates are used.
-  // it would be better if all calls to updateParametersFromGcps ALWAYS use pixel coordinates to avoid the confusion, with the caller transforming from layer CRS coordinates
-  // back to pixel coordinates before calling this method.
-#if 0
-  // source coordinates here should be raster CRS - ie. 32633
-  // first use a "null" transform
+  // when calling updateParametersFromGcps the source list MUST be in source layer CRS, not pixels!
   QVERIFY( transform.updateParametersFromGcps( {QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 )},
   {QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 )}, true ) );
 
@@ -225,7 +219,6 @@ void TestQgsGeoreferencer::testTransformImageWithExistingGeoreference()
   QVERIFY( transform.transform( QgsPointXY( 791234, 3341601 ), res, false ) );
   QGSCOMPARENEAR( res.x(), 166.168859649, 0.1 );
   QGSCOMPARENEAR( res.y(), -167.0548245614, 0.1 );
-#endif
 }
 
 void TestQgsGeoreferencer::testRasterChangeCoords()
