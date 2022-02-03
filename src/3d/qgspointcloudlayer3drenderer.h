@@ -295,12 +295,25 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
      */
     void setPointRenderingBudget( int budget );
 
+    /**
+     * Returns the limit of the GPU memory used for rendering
+     * \since QGIS 3.24
+     */
+    long long gpuMemoryLimit() const { return mGpuMemoryLimit; }
+
+    /**
+     * Sets the limit of the GPU memory used for rendering
+     * \since QGIS 3.24
+     */
+    void setGpuMemoryLimit( long long gpuMemoryLimit );
+
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mMaximumScreenError = 1.0;
     bool mShowBoundingBoxes = false;
     int mPointBudget = 1000000;
+    long long mGpuMemoryLimit = 1024 * 1024 * 100; // 100Mb of memory
 
   private:
 #ifdef SIP_RUN

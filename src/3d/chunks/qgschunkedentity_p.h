@@ -64,7 +64,10 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr );
+    QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory,
+                      int primitivesBudget = std::numeric_limits<int>::max(),
+                      long long gpuMemoryLimit = std::numeric_limits<long long>::max(),
+                      Qt3DCore::QNode *parent = nullptr );
     ~QgsChunkedEntity() override;
 
     //! Records some bits about the scene (context for update() method)
@@ -173,9 +176,6 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     QTime mCurrentTime;
 
-    //! max. length for replacement queue
-    int mMaxLoadedChunks = 512;
-
     //! Entity that shows bounding boxes of active chunks (NULLPTR if not enabled)
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
 
@@ -194,6 +194,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     bool mIsValid = true;
 
     int mPrimitivesBudget = std::numeric_limits<int>::max();
+    long long mGpuMemoryLimit = std::numeric_limits<long long>::max();
 };
 
 /// @endcond

@@ -47,6 +47,9 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
 
     void setPointCloudSize( int size );
 
+    void setGpuMemoryLimit( long long gpuMemoryLimit );
+    long long gpuMemoryLimit() const;
+
     void connectChildPanels( QgsPanelWidget *parent );
 
   private slots:

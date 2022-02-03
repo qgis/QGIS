@@ -102,6 +102,20 @@ Returns the maximum number of points that will be rendered to the scene
 Sets the maximum number of points to be rendered in the scene
 %End
 
+    long long gpuMemoryLimit() const;
+%Docstring
+Returns the limit of the GPU memory used for rendering
+
+.. versionadded:: 3.24
+%End
+
+    void setGpuMemoryLimit( long long gpuMemoryLimit );
+%Docstring
+Sets the limit of the GPU memory used for rendering
+
+.. versionadded:: 3.24
+%End
+
   private:
     QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );
     QgsPointCloudLayer3DRenderer &operator=( const QgsPointCloudLayer3DRenderer & );

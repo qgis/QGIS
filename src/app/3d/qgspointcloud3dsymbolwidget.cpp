@@ -622,6 +622,16 @@ double QgsPointCloud3DSymbolWidget::pointBudget() const
   return mPointBudgetSpinBox->value();
 }
 
+void QgsPointCloud3DSymbolWidget::setGpuMemoryLimit( long long gpuMemoryLimit )
+{
+  whileBlocking( mGpuMemoryLimitDoubleSpinBox )->setValue( gpuMemoryLimit / 1024.0 / 1024.0 ); // Scale size from bytes to megabytes
+}
+
+long long QgsPointCloud3DSymbolWidget::gpuMemoryLimit() const
+{
+  return mGpuMemoryLimitDoubleSpinBox->value() * 1024l * 1024l; // Scale size from megabytes to bytes
+}
+
 void QgsPointCloud3DSymbolWidget::setPointCloudSize( int size )
 {
   mPointCloudSizeLabel->setText( QStringLiteral( "%1 points" ).arg( size ) );

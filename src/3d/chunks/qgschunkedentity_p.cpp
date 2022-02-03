@@ -19,6 +19,7 @@
 #include <QVector4D>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickTriangleEvent>
+#include <Qt3DRender/QBuffer>
 
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
@@ -72,12 +73,13 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
   return sse;
 }
 
-QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitiveBudget, Qt3DCore::QNode *parent )
+QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitiveBudget, long long gpuMemoryLimit, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mTau( tau )
   , mChunkLoaderFactory( loaderFactory )
   , mOwnsFactory( ownsFactory )
   , mPrimitivesBudget( primitiveBudget )
+  , mGpuMemoryLimit( gpuMemoryLimit )
 {
   mRootNode = loaderFactory->createRootNode();
   mChunkLoaderQueue = new QgsChunkList;
@@ -171,12 +173,21 @@ void QgsChunkedEntity::update( const SceneState &state )
     }
   }
 
-  // unload those that are over the limit for replacement
-  // TODO: what to do when our cache is too small and nodes are being constantly evicted + loaded again
-  while ( mReplacementQueue->count() > mMaxLoadedChunks )
+  long long usedGpuMemory = 0;
+  for ( Qt3DRender::QBuffer *buffer : this->findChildren<Qt3DRender::QBuffer *>() )
+  {
+    usedGpuMemory += buffer->data().size();
+  }
+
+  while ( usedGpuMemory > mGpuMemoryLimit )
   {
     QgsChunkListEntry *entry = mReplacementQueue->takeLast();
+    for ( Qt3DRender::QBuffer *buffer : entry->chunk->entity()->findChildren<Qt3DRender::QBuffer *>() )
+    {
+      usedGpuMemory -= buffer->data().size();
+    }
     entry->chunk->unloadChunk();  // also deletes the entry
+    mActiveNodes.removeOne( entry->chunk );
     ++unloaded;
   }
 
