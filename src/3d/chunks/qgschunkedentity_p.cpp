@@ -153,22 +153,26 @@ void QgsChunkedEntity::update( const SceneState &state )
     }
     else
     {
-      if ( Qt3DCore::QEntity *entity = node->entity() )
+      if ( !node->entity() )
       {
-        entity->setEnabled( true );
-        ++enabled;
+        QgsDebugMsg( "Active node has null entity - this should never happen!" );
+        continue;
       }
+      node->entity()->setEnabled( true );
+      ++enabled;
     }
   }
 
   // disable those that were active but will not be anymore
   for ( QgsChunkNode *node : activeBefore )
   {
-    if ( Qt3DCore::QEntity *entity = node->entity() )
+    if ( !node->entity() )
     {
-      entity->setEnabled( false );
-      ++disabled;
+      QgsDebugMsg( "Active node has null entity - this should never happen!" );
+      continue;
     }
+    node->entity()->setEnabled( false );
+    ++disabled;
   }
 
   // unload those that are over the limit for replacement
