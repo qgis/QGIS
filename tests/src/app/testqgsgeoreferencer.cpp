@@ -90,6 +90,17 @@ void TestQgsGeoreferencer::testTransformImageNoGeoference()
   QCOMPARE( res.x(), 100.0 );
   QCOMPARE( res.y(), 200.0 );
 
+  QgsRectangle rect = transform.transformSourceExtent( QgsRectangle( 0, 0, 100, 200 ), true );
+  QCOMPARE( rect.xMinimum(), 0.0 );
+  QCOMPARE( rect.yMinimum(), 0.0 );
+  QCOMPARE( rect.xMaximum(), 100.0 );
+  QCOMPARE( rect.yMaximum(), 200.0 );
+  rect = transform.transformSourceExtent( QgsRectangle( 0, 0, 100, 200 ), false );
+  QCOMPARE( rect.xMinimum(), 0.0 );
+  QCOMPARE( rect.yMinimum(), 0.0 );
+  QCOMPARE( rect.xMaximum(), 100.0 );
+  QCOMPARE( rect.yMaximum(), 200.0 );
+
   QVERIFY( transform.updateParametersFromGcps( {QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ), QgsPointXY( 0, 30 ), QgsPointXY( 10, 30 )},
   {QgsPointXY( 10, 5 ), QgsPointXY( 16, 5 ), QgsPointXY( 10, 8 ), QgsPointXY( 16, 8 )}, true ) );
 
@@ -141,6 +152,17 @@ void TestQgsGeoreferencer::testTransformImageWithExistingGeoreference()
   res = transform.mRasterChangeCoords.toXY( QgsPointXY( 30.7302631579, -14.0548245614 ) );
   QGSCOMPARENEAR( res.x(), 783414, 10 );
   QGSCOMPARENEAR( res.y(), 3350122, 10 );
+
+  QgsRectangle rect = transform.transformSourceExtent( QgsRectangle( 781662.375, 3350923.125, 787362.375, 3362323.125 ), true );
+  QGSCOMPARENEAR( rect.xMinimum(), 0.0, 0.1 );
+  QGSCOMPARENEAR( rect.yMinimum(), 0.0, 0.1 );
+  QGSCOMPARENEAR( rect.xMaximum(), 100.0, 0.1 );
+  QGSCOMPARENEAR( rect.yMaximum(), 200.0, 0.1 );
+  rect = transform.transformSourceExtent( QgsRectangle( 0, 0, 100, 200 ), false );
+  QGSCOMPARENEAR( rect.xMinimum(), 781662.375, 0.1 );
+  QGSCOMPARENEAR( rect.yMinimum(), 3350923.125, 0.1 );
+  QGSCOMPARENEAR( rect.xMaximum(), 787362.375, 0.1 );
+  QGSCOMPARENEAR( rect.yMaximum(),  3362323.125, 0.1 );
 
   QVector<QgsPointXY> pixelCoords = transform.mRasterChangeCoords.getPixelCoords(
   {
