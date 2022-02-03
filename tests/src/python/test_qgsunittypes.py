@@ -16,12 +16,14 @@ from qgis.testing import unittest
 from qgis.core import QgsUnitTypes
 from qgis.PyQt.QtCore import QLocale
 
-# enforce C locale because the tests expect it
-# (decimal separators / thousand separators)
-QLocale.setDefault(QLocale.c())
-
 
 class TestQgsUnitTypes(unittest.TestCase):
+
+    def setUp(self):
+        super().setUp()
+        # enforce C locale because the tests expect it
+        # (decimal separators / thousand separators)
+        QLocale.setDefault(QLocale.c())
 
     def testEncodeDecodeUnitType(self):
         """Test encoding and decoding unit type"""
@@ -1221,6 +1223,11 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatDistance(0.00000168478, 2, QgsUnitTypes.DistanceMeters, False), '1.68e-06 m')
         self.assertEqual(QgsUnitTypes.formatDistance(0.00168478, 2, QgsUnitTypes.DistanceMeters, True), '1.68e-03 m')
 
+        # test different locales
+        QLocale.setDefault(QLocale(QLocale.Italian))
+        self.assertEqual(QgsUnitTypes.formatDistance(10, 3, QgsUnitTypes.DistanceMeters, False), '10,000 m')
+        self.assertEqual(QgsUnitTypes.formatDistance(0.5, 2, QgsUnitTypes.DistanceMiles, False), '2.640,00 ft')
+
     def testFormatArea(self):
         """Test formatting areas"""
         # keep base unit
@@ -1265,6 +1272,11 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 4, QgsUnitTypes.AreaSquareMeters, False), '0.0017 m²')
         self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 2, QgsUnitTypes.AreaSquareMeters, False), '1.68e-03 m²')
         self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 2, QgsUnitTypes.AreaSquareMeters, True), '1.68e-03 m²')
+
+        # test different locales
+        QLocale.setDefault(QLocale(QLocale.Italian))
+        self.assertEqual(QgsUnitTypes.formatArea(100, 2, QgsUnitTypes.AreaSquareKilometers, False), '100,00 km²')
+        self.assertEqual(QgsUnitTypes.formatArea(2787, 2, QgsUnitTypes.AreaSquareFeet, False), '2.787,00 ft²')
 
     def testEncodeDecodeLayoutUnits(self):
         """Test encoding and decoding layout units"""
