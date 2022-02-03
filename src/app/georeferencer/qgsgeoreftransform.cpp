@@ -58,6 +58,11 @@ void QgsGeorefTransform::setRasterChangeCoords( const QString &fileRaster )
   mRasterChangeCoords.setRaster( fileRaster );
 }
 
+QgsPointXY QgsGeorefTransform::toSourceCoordinate( const QgsPointXY &pixel )
+{
+  return mRasterChangeCoords.toXY( pixel );
+}
+
 bool QgsGeorefTransform::providesAccurateInverseTransformation() const
 {
   return ( mTransformParametrisation == TransformMethod::Linear

@@ -40,7 +40,7 @@ class TestQgsGeoreferencer : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
-    void testTransformNoExistingImage();
+    void testTransformImageNoGeoference();
     void testTransformImageWithExistingGeoreference();
     void testRasterChangeCoords();
 
@@ -66,16 +66,33 @@ void TestQgsGeoreferencer::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsGeoreferencer::testTransformNoExistingImage()
+void TestQgsGeoreferencer::testTransformImageNoGeoference()
 {
   QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::Linear );
+  // this image has no georeferencing set
+  transform.setRasterChangeCoords( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/rgb256x256.png" ) );
 
   QVERIFY( !transform.hasExistingGeoreference() );
+
+  QgsPointXY res;
+  // should be treating source coordinates and source pixels as identical
+  res = transform.toSourceCoordinate( QgsPointXY( 0, 0 ) );
+  QCOMPARE( res.x(), 0.0 );
+  QCOMPARE( res.y(), 0.0 );
+  res = transform.toSourceCoordinate( QgsPointXY( 100, 200 ) );
+  QCOMPARE( res.x(), 100.0 );
+  QCOMPARE( res.y(), 200.0 );
+
+  res = transform.toSourcePixel( QgsPointXY( 0, 0 ) );
+  QCOMPARE( res.x(), 0.0 );
+  QCOMPARE( res.y(), 0.0 );
+  res = transform.toSourcePixel( QgsPointXY( 100, 200 ) );
+  QCOMPARE( res.x(), 100.0 );
+  QCOMPARE( res.y(), 200.0 );
 
   QVERIFY( transform.updateParametersFromGcps( {QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ), QgsPointXY( 0, 30 ), QgsPointXY( 10, 30 )},
   {QgsPointXY( 10, 5 ), QgsPointXY( 16, 5 ), QgsPointXY( 10, 8 ), QgsPointXY( 16, 8 )}, true ) );
 
-  QgsPointXY res;
   QVERIFY( transform.transform( QgsPointXY( 0, 5 ), res, true ) );
   QCOMPARE( res.x(), 10 );
   QCOMPARE( res.y(), 5.5 );
@@ -103,7 +120,22 @@ void TestQgsGeoreferencer::testTransformImageWithExistingGeoreference()
   QGSCOMPARENEAR( transform.mRasterChangeCoords.mUL_X, 781662.375, 0.01 );
   QGSCOMPARENEAR( transform.mRasterChangeCoords.mUL_Y, 3350923.125, 0.01 );
 
-  QgsPointXY res = transform.mRasterChangeCoords.toColumnLine( QgsPointXY( 783414, 3350122 ) );
+  QgsPointXY res;
+  res = transform.toSourceCoordinate( QgsPointXY( 0, 0 ) );
+  QGSCOMPARENEAR( res.x(), 781662.375, 0.1 );
+  QGSCOMPARENEAR( res.y(), 3350923.125, 0.1 );
+  res = transform.toSourceCoordinate( QgsPointXY( 100, 200 ) );
+  QGSCOMPARENEAR( res.x(), 787362.375, 0.1 );
+  QGSCOMPARENEAR( res.y(), 3362323.125, 0.1 );
+
+  res = transform.toSourcePixel( QgsPointXY( 781662.375, 3350923.125 ) );
+  QGSCOMPARENEAR( res.x(), 0.0, 0.1 );
+  QGSCOMPARENEAR( res.y(), 0.0, 0.1 );
+  res = transform.toSourcePixel( QgsPointXY( 787362.375, 3362323.125 ) );
+  QGSCOMPARENEAR( res.x(), 100.0, 0.1 );
+  QGSCOMPARENEAR( res.y(), 200.0, 0.1 );
+
+  res = transform.mRasterChangeCoords.toColumnLine( QgsPointXY( 783414, 3350122 ) );
   QGSCOMPARENEAR( res.x(), 30.7302631579, 0.01 );
   QGSCOMPARENEAR( res.y(), -14.0548245614, 0.01 );
   res = transform.mRasterChangeCoords.toXY( QgsPointXY( 30.7302631579, -14.0548245614 ) );
