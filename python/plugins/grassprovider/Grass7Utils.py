@@ -505,10 +505,9 @@ class Grass7Utils:
                 cmdpath = os.path.join(Grass7Utils.path, 'bin', 'r.out.gdal.exe')
                 if not os.path.exists(cmdpath):
                     return Grass7Utils.tr(
-                        'The specified GRASS 7 folder "{}" does not contain '
-                        'a valid set of GRASS 7 modules.\nPlease, go to the '
-                        'Processing settings dialog, and check that the '
-                        'GRASS 7\nfolder is correctly configured'.format(os.path.join(Grass7Utils.path, 'bin')))
+                        'The GRASS GIS folder "{}" does not contain a valid set '
+                        'of GRASS modules.\nPlease, check that GRASS is correctly '
+                        'installed and available on your system.'.format(os.path.join(Grass7Utils.path, 'bin')))
             Grass7Utils.isGrassInstalled = True
             return
         # Return error messages
@@ -517,8 +516,9 @@ class Grass7Utils:
             if isWindows() or isMac():
                 if Grass7Utils.path is None:
                     return Grass7Utils.tr(
-                        'GRASS GIS 7 folder is not configured. Please configure '
-                        'it before running GRASS GIS 7 algorithms.')
+                        'Could not locate GRASS GIS folder. Please make '
+                        'sure that GRASS GIS is correctly installed before '
+                        'running GRASS algorithms.')
                 if Grass7Utils.command is None:
                     return Grass7Utils.tr(
                         'GRASS GIS 7 binary {0} can\'t be found on this system from a shell. '
