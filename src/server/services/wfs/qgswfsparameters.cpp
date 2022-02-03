@@ -343,7 +343,7 @@ namespace QgsWfs
 
   QStringList QgsWfsParameters::expFilters() const
   {
-    return mWfsParameters[ QgsWfsParameter::EXP_FILTER ].toStringListWithExp( QString( ) );
+    return mWfsParameters[ QgsWfsParameter::EXP_FILTER ].toExpressionList();
   }
 
   QString QgsWfsParameters::geometryNameAsString() const

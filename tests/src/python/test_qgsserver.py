@@ -39,10 +39,10 @@ import email
 import difflib
 
 from io import StringIO
-from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
+from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse, QgsServerParameterDefinition
 from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker
 from qgis.testing import unittest, start_app
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import QSize, QUrlQuery
 from qgis.PyQt.QtGui import QColor
 from utilities import unitTestDataPath
 
@@ -525,6 +525,118 @@ class TestQgsServer(QgsServerTestBase):
                     self.assertEqual(online_resource in item, True)
                     item_found = True
             self.assertTrue(item_found)
+
+
+class TestQgsServerParameter(unittest.TestCase):
+
+    def test_filter(self):
+        # empty filter
+        param = QgsServerParameterDefinition()
+        param.mValue = ""
+
+        self.assertEqual(len(param.toOgcFilterList()), 0)
+        self.assertEqual(len(param.toExpressionList()), 0)
+
+        # single qgis expression
+        filter = "\"name\"=concat('t', 'wo')"
+
+        param = QgsServerParameterDefinition()
+        param.mValue = filter
+
+        self.assertEqual(len(param.toOgcFilterList()), 0)
+        self.assertEqual(len(param.toExpressionList()), 1)
+
+        self.assertEqual(param.toExpressionList()[0], filter)
+
+        # multiple qgis expressions
+        filter0 = "to_datetime('2017-09-29 12:00:00')"
+        filter1 = "Contours:\"elev\" <= 1200"
+        filter2 = "\"name\"='three'"
+
+        param = QgsServerParameterDefinition()
+        param.mValue = f"{filter0};{filter1};{filter2}"
+
+        self.assertEqual(len(param.toOgcFilterList()), 0)
+        self.assertEqual(len(param.toExpressionList()), 3)
+
+        self.assertEqual(param.toExpressionList()[0], filter0)
+        self.assertEqual(param.toExpressionList()[1], filter1)
+        self.assertEqual(param.toExpressionList()[2], filter2)
+
+        # multiple qgis expressions with some empty one
+        param = QgsServerParameterDefinition()
+        param.mValue = f";;{filter0};;;{filter2};;"
+
+        self.assertEqual(len(param.toOgcFilterList()), 0)
+        self.assertEqual(len(param.toExpressionList()), 8)
+
+        self.assertEqual(param.toExpressionList()[0], "")
+        self.assertEqual(param.toExpressionList()[1], "")
+        self.assertEqual(param.toExpressionList()[2], filter0)
+        self.assertEqual(param.toExpressionList()[3], "")
+        self.assertEqual(param.toExpressionList()[4], "")
+        self.assertEqual(param.toExpressionList()[5], filter2)
+        self.assertEqual(param.toExpressionList()[6], "")
+        self.assertEqual(param.toExpressionList()[7], "")
+
+        # two empty expressions
+        param = QgsServerParameterDefinition()
+        param.mValue = ";"
+
+        self.assertEqual(len(param.toOgcFilterList()), 0)
+        self.assertEqual(len(param.toExpressionList()), 2)
+
+        # single ogc empty filter
+        param = QgsServerParameterDefinition()
+        param.mValue = "()"
+
+        self.assertEqual(len(param.toExpressionList()), 0)
+        self.assertEqual(len(param.toOgcFilterList()), 1)
+
+        self.assertEqual(param.toOgcFilterList()[0], "")
+
+        # single ogc filter
+        filter = "<Filter><Within><PropertyName>name<PropertyName><gml:Envelope><gml:lowerCorner>43.5707 -79.5797</gml:lowerCorner><gml:upperCorner>43.8219 -79.2693</gml:upperCorner></gml:Envelope></Within></Filter>"
+
+        param = QgsServerParameterDefinition()
+        param.mValue = filter
+
+        self.assertEqual(len(param.toExpressionList()), 0)
+        self.assertEqual(len(param.toOgcFilterList()), 1)
+
+        self.assertEqual(param.toOgcFilterList()[0], filter)
+
+        # multiple ogc filter
+        filter0 = "<Filter><Within><PropertyName>InWaterA_1M/wkbGeom<PropertyName><gml:Envelope><gml:lowerCorner>43.5707 -79.5797</gml:lowerCorner><gml:upperCorner>43.8219 -79.2693</gml:upperCorner></gml:Envelope></Within></Filter>"
+        filter1 = "<Filter><Within><PropertyName>BuiltUpA_1M/wkbGeom<PropertyName><gml:Envelope><gml:lowerCorner>43.5705 -79.5797</gml:lowerCorner><gml:upperCorner>43.8219 -79.2693</gml:upperCorner></gml:Envelope></Within></Filter>"
+
+        param = QgsServerParameterDefinition()
+        param.mValue = f"({filter0})({filter1})"
+
+        self.assertEqual(len(param.toExpressionList()), 0)
+        self.assertEqual(len(param.toOgcFilterList()), 2)
+
+        self.assertEqual(param.toOgcFilterList()[0], filter0)
+        self.assertEqual(param.toOgcFilterList()[1], filter1)
+
+        # multiple ogc filter with some empty one
+        filter0 = "<Filter><Within><PropertyName>InWaterA_1M/wkbGeom<PropertyName><gml:Envelope><gml:lowerCorner>43.5707 -79.5797</gml:lowerCorner><gml:upperCorner>43.8219 -79.2693</gml:upperCorner></gml:Envelope></Within></Filter>"
+        filter1 = "<Filter><Within><PropertyName>BuiltUpA_1M/wkbGeom<PropertyName><gml:Envelope><gml:lowerCorner>43.5705 -79.5797</gml:lowerCorner><gml:upperCorner>43.8219 -79.2693</gml:upperCorner></gml:Envelope></Within></Filter>"
+
+        param = QgsServerParameterDefinition()
+        param.mValue = f"()()({filter0})()()({filter1})()()"
+
+        self.assertEqual(len(param.toExpressionList()), 0)
+        self.assertEqual(len(param.toOgcFilterList()), 8)
+
+        self.assertEqual(param.toOgcFilterList()[0], "")
+        self.assertEqual(param.toOgcFilterList()[1], "")
+        self.assertEqual(param.toOgcFilterList()[2], filter0)
+        self.assertEqual(param.toOgcFilterList()[3], "")
+        self.assertEqual(param.toOgcFilterList()[4], "")
+        self.assertEqual(param.toOgcFilterList()[5], filter1)
+        self.assertEqual(param.toOgcFilterList()[6], "")
+        self.assertEqual(param.toOgcFilterList()[7], "")
 
 
 if __name__ == '__main__':

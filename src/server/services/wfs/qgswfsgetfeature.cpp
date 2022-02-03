@@ -715,11 +715,7 @@ namespace QgsWfs
         {
           getFeatureQuery &query = *qIt;
           // Get Filter for this typeName
-          QString expFilter;
-          if ( expFilterIt != expFilterList.constEnd() )
-          {
-            expFilter = *expFilterIt;
-          }
+          const QString expFilter = *expFilterIt++;
           std::shared_ptr<QgsExpression> filter( new QgsExpression( expFilter ) );
           if ( filter )
           {
