@@ -1287,18 +1287,16 @@ bool QgsGeoreferencerMainWindow::loadGCPs( /*bool verbose*/ )
     if ( ls.count() < 4 )
       return false;
 
-    QgsPointXY mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
-    QgsPointXY pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
-
-    // TO FIX -- pixelCoord needs to be converted to sourceCoord, i.e. if source is georeferenced we need to convert to layer coordinates from pixels!!!!
-
+    const QgsPointXY destinationCoordinate( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
+    const QgsPointXY pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
+    const QgsPointXY sourceLayerCoordinate = mGeorefTransform.toSourceCoordinate( pixelCoords );
     if ( ls.count() == 5 )
     {
       bool enable = ls.at( 4 ).toInt();
-      addPoint( pixelCoords, mapCoords, proj, enable, false );
+      addPoint( sourceLayerCoordinate, destinationCoordinate, destinationCrs, enable, false );
     }
     else
-      addPoint( pixelCoords, mapCoords, proj, true, false );
+      addPoint( sourceLayerCoordinate, destinationCoordinate, destinationCrs, true, false );
 
     ++i;
   }
