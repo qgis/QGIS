@@ -53,9 +53,9 @@ void QgsGeorefTransform::selectTransformParametrisation( TransformMethod paramet
   }
 }
 
-void QgsGeorefTransform::setRasterChangeCoords( const QString &fileRaster )
+void QgsGeorefTransform::loadRaster( const QString &fileRaster )
 {
-  mRasterChangeCoords.setRaster( fileRaster );
+  mRasterChangeCoords.loadRaster( fileRaster );
 }
 
 QgsPointXY QgsGeorefTransform::toSourceCoordinate( const QgsPointXY &pixel )
