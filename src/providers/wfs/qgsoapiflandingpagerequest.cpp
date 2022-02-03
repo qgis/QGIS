@@ -134,7 +134,7 @@ void QgsOapifLandingPageRequest::processReply()
     return;
   }
 
-  // Strip off suffixex like /collections?f=json
+  // Strip off suffixes like /collections?f=json
   const auto posQuotationMark = mCollectionsUrl.indexOf( '?' );
   if ( posQuotationMark > 0 )
   {
