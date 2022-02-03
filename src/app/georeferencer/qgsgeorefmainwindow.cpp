@@ -1324,11 +1324,13 @@ void QgsGeoreferencerMainWindow::saveGCPs()
     points << "mapX,mapY,pixelX,pixelY,enable,dX,dY,residual" << endl;
     for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
     {
+      const QgsPointXY sourcePixel = mGeorefTransform.toSourcePixel( pt->sourceCoords() );
+
       points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
              .arg( qgsDoubleToString( pt->transCoords().x() ),
                    qgsDoubleToString( pt->transCoords().y() ),
-                   qgsDoubleToString( pt->sourceCoords().x() ),
-                   qgsDoubleToString( pt->sourceCoords().y() ) )
+                   qgsDoubleToString( sourcePixel.x() ),
+                   qgsDoubleToString( sourcePixel.y() ) )
              .arg( pt->isEnabled() )
              .arg( qgsDoubleToString( pt->residual().x() ),
                    qgsDoubleToString( pt->residual().y() ),
