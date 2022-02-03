@@ -131,7 +131,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
     QgsImageWarper::ResamplingMethod &rm,
     QString &comprMethod, QString &raster,
-    QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, QString &gcpPoints, bool &zt, bool &loadInQgis,
+    QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &saveGcpPoints, bool &zt, bool &loadInQgis,
     double &resX, double &resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
@@ -161,10 +161,7 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
     resX = dsbHorizRes->value();
     resY = dsbVerticalRes->value();
   }
-  if ( saveGcpCheckBox->isChecked() )
-  {
-    gcpPoints = mOutputRaster->filePath();
-  }
+  saveGcpPoints = saveGcpCheckBox->isChecked();
 }
 
 void QgsTransformSettingsDialog::resetSettings()
