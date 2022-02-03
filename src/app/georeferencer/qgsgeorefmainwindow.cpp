@@ -1444,7 +1444,7 @@ bool QgsGeoreferencerMainWindow::georeference()
       }
       if ( mSaveGcp )
       {
-        mGCPpointsFileName = mModifiedRasterFileName + QLatin1String( ".points" );
+        mGCPpointsFileName = mRasterFileName + QLatin1String( ".points" );
         saveGCPs();
       }
       return true;
