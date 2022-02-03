@@ -2193,7 +2193,6 @@ void QgsGeoreferencerMainWindow::invalidateCanvasCoords()
   for ( int i = 0; i < count; ++i, ++j )
   {
     QgsGeorefDataPoint *p = mPoints.at( i );
-    p->setDestinationInCanvasPixels( QgsPointXY() );
     p->updateCoords();
   }
 }

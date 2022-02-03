@@ -56,18 +56,6 @@ class QgsGeorefDataPoint : public QObject
     QgsPointXY transCoords() const;
     void setTransCoords( const QgsPointXY &p );
 
-    /**
-     * Returns the destination point in canvas coordinates (i.e. pixels).
-     *
-     * May be an empty point if not yet calculated.
-     */
-    QgsPointXY destinationInCanvasPixels() const;
-
-    /**
-     * Sets the destination point in canvas coordinates (i.e. pixels).
-     */
-    void setDestinationInCanvasPixels( const QgsPointXY &p );
-
     bool isEnabled() const { return mEnabled; }
     void setEnabled( bool enabled );
 
@@ -96,9 +84,6 @@ class QgsGeorefDataPoint : public QObject
     QgsPointXY mSourceCoords;
     QgsPointXY mDestinationMapCoords;
     QgsPointXY mTransCoords;
-
-    // destination point converted to canvas coordinates (i.e. pixels)
-    QgsPointXY mDestinationInCanvasPixels;
 
     int mId;
     QgsCoordinateReferenceSystem mDestinationCrs;
