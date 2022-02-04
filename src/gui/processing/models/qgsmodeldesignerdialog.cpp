@@ -507,6 +507,14 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
     oldScene->deleteLater();
 }
 
+void QgsModelDesignerDialog::activate()
+{
+  show();
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
+}
+
 void QgsModelDesignerDialog::updateVariablesGui()
 {
   mBlockUndoCommands++;

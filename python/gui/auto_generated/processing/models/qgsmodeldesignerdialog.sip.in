@@ -67,6 +67,15 @@ Loads a model into the designer from the specified file ``path``.
 Sets the related ``scene``.
 %End
 
+  public slots:
+
+    void activate();
+%Docstring
+Raise, unminimize and activate this window.
+
+.. versionadded:: 3.24
+%End
+
   protected:
 
     virtual void repaintModel( bool showControls = true ) = 0;
