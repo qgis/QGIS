@@ -539,12 +539,19 @@ void QgsModelDesignerDialog::setDirty( bool dirty )
   updateWindowTitle();
 }
 
-bool QgsModelDesignerDialog::validateSave()
+bool QgsModelDesignerDialog::validateSave( SaveAction action )
 {
-  if ( mNameEdit->text().trimmed().isEmpty() )
+  switch ( action )
   {
-    mMessageBar->pushWarning( QString(), tr( "Please enter a model name before saving" ) );
-    return false;
+    case QgsModelDesignerDialog::SaveAction::SaveAsFile:
+      break;
+    case QgsModelDesignerDialog::SaveAction::SaveInProject:
+      if ( mNameEdit->text().trimmed().isEmpty() )
+      {
+        mMessageBar->pushWarning( QString(), tr( "Please enter a model name before saving" ) );
+        return false;
+      }
+      break;
   }
 
   return true;
@@ -588,6 +595,11 @@ void QgsModelDesignerDialog::setLastRunChildAlgorithmInputs( const QVariantMap &
   mChildInputs = inputs;
   if ( mScene )
     mScene->setChildAlgorithmInputs( mChildInputs );
+}
+
+void QgsModelDesignerDialog::setModelName( const QString &name )
+{
+  mNameEdit->setText( name );
 }
 
 void QgsModelDesignerDialog::zoomIn()

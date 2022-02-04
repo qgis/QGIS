@@ -103,6 +103,17 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     void activate();
 
+    /**
+     * Save action.
+     *
+     * \since QGIS 3.24
+     */
+    enum class SaveAction
+    {
+      SaveAsFile, //!< Save model as a file
+      SaveInProject, //!< Save model into project
+    };
+
   protected:
 
     // cppcheck-suppress pureVirtualCall
@@ -126,7 +137,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     /**
      * Checks if the model can current be saved, and returns TRUE if it can.
      */
-    bool validateSave();
+    bool validateSave( SaveAction action );
 
     /**
      * Checks if there are unsaved changes in the model, and if so, prompts the user to save them.
@@ -144,6 +155,15 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      * Sets the inputs for child algorithms for the last run of the model through the designer window.
      */
     void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
+
+    /**
+     * Sets the model \a name.
+     *
+     * Updates both the name text edit and the model name itself.
+     *
+     * \since QGIS 3.24
+     */
+    void setModelName( const QString &name );
 
   private slots:
     void zoomIn();
