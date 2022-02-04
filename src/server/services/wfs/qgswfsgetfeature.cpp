@@ -190,7 +190,7 @@ namespace QgsWfs
     {
       if ( !mapLayerMap.contains( typeName ) )
       {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "TypeName '%1' unknown" ).arg( typeName ) );
+        throw QgsRequestNotWellFormedException( QStringLiteral( "TypeName '%1' could not be found" ).arg( typeName ) );
       }
     }
 
