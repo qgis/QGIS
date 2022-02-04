@@ -104,7 +104,7 @@ class QgsFeatureExpressionValuesGatherer: public QThread
       {
         mExpressionContext.setFeature( feature );
         QVariantList attributes;
-        for ( const int idx : attributeIndexes )
+        for ( const int idx : std::as_const( attributeIndexes ) )
           attributes << feature.attribute( idx );
 
         const QString expressionValue = mDisplayExpression.evaluate( &mExpressionContext ).toString();
