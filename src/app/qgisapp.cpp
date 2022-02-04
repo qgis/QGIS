@@ -455,7 +455,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include <gdal_version.h>
 #include <proj.h>
 
-#ifdef HAVE_PDAL
+#ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>
 #endif
 
@@ -5512,7 +5512,7 @@ void QgisApp::about()
     versionString += QLatin1String( "</tr><tr>" );
 
     // PDAL
-#ifdef HAVE_PDAL
+#ifdef HAVE_PDAL_QGIS
     const QString pdalVersionCompiled { PDAL_VERSION };
 #if PDAL_VERSION_MAJOR_INT > 1 || (PDAL_VERSION_MAJOR_INT == 1 && PDAL_VERSION_MINOR_INT >= 7)
     const QString pdalVersionRunningRaw { QString::fromStdString( pdal::Config::fullVersionString() ) };

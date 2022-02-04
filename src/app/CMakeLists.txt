@@ -431,7 +431,7 @@ if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
-if (HAVE_PDAL)
+if (WITH_PDAL)
   include_directories(SYSTEM ${PDAL_INCLUDE_DIR})
   if(MSVC)
     add_definitions(-DWIN32_LEAN_AND_MEAN)
@@ -618,7 +618,7 @@ if (POSTGRES_FOUND)
   target_link_libraries (qgis_app ${POSTGRES_LIBRARY})
 endif()
 
-if (HAVE_PDAL)
+if (WITH_PDAL)
   target_link_libraries(qgis_app ${PDAL_LIBRARIES})
 endif()
 

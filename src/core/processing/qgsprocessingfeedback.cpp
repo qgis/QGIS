@@ -22,7 +22,7 @@
 #include <gdal_version.h>
 #include <proj.h>
 
-#ifdef HAVE_PDAL
+#ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>
 #endif
 
@@ -125,7 +125,7 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
   const PJ_INFO info = proj_info();
   pushDebugInfo( tr( "PROJ version: %1" ).arg( info.release ) );
 
-#ifdef HAVE_PDAL
+#ifdef HAVE_PDAL_QGIS
 #if PDAL_VERSION_MAJOR_INT > 1 || (PDAL_VERSION_MAJOR_INT == 1 && PDAL_VERSION_MINOR_INT >= 7)
   pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::Config::fullVersionString() ) ) );
 #else

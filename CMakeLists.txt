@@ -284,7 +284,7 @@ if(WITH_CORE)
 
   set (WITH_PDAL FALSE CACHE BOOL "Determines whether PDAL support should be built")
   if(WITH_PDAL)
-    set(HAVE_PDAL TRUE)
+    set(HAVE_PDAL_QGIS TRUE) # note -- we can't use HAVE_PDAL here as the grass public headers redefine this!
   endif()
 
   set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
@@ -434,7 +434,7 @@ if(WITH_CORE)
     find_package(PDAL) # PDAL provider
   endif()
   if (PDAL_FOUND)
-    set(HAVE_PDAL TRUE)  # used in qgsconfig.h
+    set(HAVE_PDAL_QGIS TRUE)  # used in qgsconfig.h
   endif()
 
   #############################################################
