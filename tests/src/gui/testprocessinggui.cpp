@@ -738,6 +738,9 @@ void TestProcessingGui::testModelerWrapper()
   model.addModelParameter( new TestParamType( "test_type", "p2" ), testParam );
   QgsProcessingModelParameter testDestParam( "p3" );
   model.addModelParameter( new QgsProcessingParameterFileDestination( "test_dest", "p3" ), testDestParam );
+  QgsProcessingModelParameter testLayerParam( "p4" );
+  model.addModelParameter( new QgsProcessingParameterMapLayer( "p4", "test_layer" ), testLayerParam );
+
   // try to create a parameter widget, no factories registered
   QgsProcessingGuiRegistry registry;
   QgsProcessingContext context;
@@ -750,9 +753,21 @@ void TestProcessingGui::testModelerWrapper()
   QVERIFY( w );
   delete w;
 
+  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p1" ), context );
+  QVERIFY( w );
+  // should default to static value
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::StaticValue );
+  delete w;
+
+  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p4" ), context );
+  QVERIFY( w );
+  // a layer parameter should default to "model input" type
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  delete w;
 
   // widget tests
   w = new QgsProcessingModelerParameterWidget( &model, "alg1", model.parameterDefinition( "p1" ), context );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( w->parameterDefinition()->name(), QStringLiteral( "p1" ) );
   QLabel *l = w->createLabel();
   QVERIFY( l );
