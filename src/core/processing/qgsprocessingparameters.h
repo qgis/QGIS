@@ -3204,6 +3204,7 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
 
     friend class QgsProcessingModelAlgorithm;
     friend class TestQgsProcessing;
+    friend class TestQgsProcessingModelAlgorithm;
 };
 
 
