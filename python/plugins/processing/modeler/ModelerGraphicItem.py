@@ -24,6 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (QgsProcessingParameterDefinition,
+                       QgsProcessingModelOutput,
                        QgsProject,
                        Qgis)
 from qgis.gui import (
@@ -202,13 +203,22 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
             dlg.switchToCommentTab()
 
         if dlg.exec_():
-            model_output = child_alg.modelOutput(self.component().name())
+            model_outputs = child_alg.modelOutputs()
+
+            model_output = QgsProcessingModelOutput(model_outputs[self.component().name()])
+            del model_outputs[self.component().name()]
+
+            model_output.setName(dlg.param.description())
             model_output.setDescription(dlg.param.description())
             model_output.setDefaultValue(dlg.param.defaultValue())
             model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
             model_output.comment().setDescription(dlg.comments())
             model_output.comment().setColor(dlg.commentColor())
+            model_outputs[model_output.name()] = model_output
+            child_alg.setModelOutputs(model_outputs)
+
             self.aboutToChange.emit(self.tr('Edit {}').format(model_output.description()))
+
             self.model().updateDestinationParameters()
             self.requestModelRepaint.emit()
             self.changed.emit()
