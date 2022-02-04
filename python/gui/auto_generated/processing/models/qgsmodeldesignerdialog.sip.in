@@ -67,6 +67,12 @@ Loads a model into the designer from the specified file ``path``.
 Sets the related ``scene``.
 %End
 
+    enum class SaveAction
+    {
+      SaveAsFile,
+      SaveInProject,
+    };
+
   public slots:
 
     void activate();
@@ -75,12 +81,6 @@ Raise, unminimize and activate this window.
 
 .. versionadded:: 3.24
 %End
-
-    enum class SaveAction
-    {
-      SaveAsFile,
-      SaveInProject,
-    };
 
   protected:
 
