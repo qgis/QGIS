@@ -55,3 +55,4 @@ class OpenModelFromFileAction(ToolboxAction):
             dlg = ModelerDialog.create()
             dlg.loadModel(filename)
             dlg.show()
+            dlg.activate()
