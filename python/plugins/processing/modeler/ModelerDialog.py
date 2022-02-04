@@ -21,9 +21,10 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-import sys
 import os
 import re
+import sys
+from pathlib import Path
 
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -42,7 +43,8 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsProcessingModelParameter,
                        QgsSettings,
-                       QgsProcessingContext
+                       QgsProcessingContext,
+                       QgsFileUtils
                        )
 from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsProcessingParameterWidgetContext,
@@ -50,16 +52,17 @@ from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsModelDesignerDialog,
                       QgsProcessingContextGenerator,
                       QgsProcessingParametersGenerator)
-from processing.gui.HelpEditionDialog import HelpEditionDialog
+from qgis.utils import iface
+
 from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
-from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
+from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools.dataobjects import createContext
-from qgis.utils import iface
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -164,7 +167,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.model().setDesignerParameterValues(dlg.createProcessingParameters(flags=QgsProcessingParametersGenerator.Flags(QgsProcessingParametersGenerator.Flag.SkipDefaultValueParameters)))
 
     def saveInProject(self):
-        if not self.validateSave():
+        if not self.validateSave(QgsModelDesignerDialog.SaveAction.SaveInProject):
             return
 
         self.model().setSourceFilePath(None)
@@ -180,40 +183,50 @@ class ModelerDialog(QgsModelDesignerDialog):
         QgsProject.instance().setDirty(True)
 
     def saveModel(self, saveAs):
-        if not self.validateSave():
+        if not self.validateSave(QgsModelDesignerDialog.SaveAction.SaveAsFile):
             return
+
         if self.model().sourceFilePath() and not saveAs:
             filename = self.model().sourceFilePath()
         else:
-            filename, filter = QFileDialog.getSaveFileName(self,
-                                                           self.tr('Save Model'),
-                                                           ModelerUtils.modelsFolders()[0],
-                                                           self.tr('Processing models (*.model3 *.MODEL3)'))
-            if filename:
-                if not filename.endswith('.model3'):
-                    filename += '.model3'
-                self.model().setSourceFilePath(filename)
-        if filename:
-            if not self.model().toFile(filename):
-                if saveAs:
-                    QMessageBox.warning(self, self.tr('I/O error'),
-                                        self.tr('Unable to save edits. Reason:\n {0}').format(str(sys.exc_info()[1])))
-                else:
-                    QMessageBox.warning(self, self.tr("Can't save model"),
-                                        QCoreApplication.translate('QgsPluginInstallerInstallingDialog', (
-                                            "This model can't be saved in its original location (probably you do not "
-                                            "have permission to do it). Please, use the 'Save as…' option."))
-                                        )
-                return
-            self.update_model.emit()
-            if saveAs:
-                self.messageBar().pushMessage("", self.tr("Model was correctly saved to <a href=\"{}\">{}</a>").format(
-                    QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success,
-                    duration=5)
+            if self.model().name():
+                initial_path = Path(ModelerUtils.modelsFolders()[0]) / (self.model().name() + '.model3')
             else:
-                self.messageBar().pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
+                initial_path = Path(ModelerUtils.modelsFolders()[0])
 
-            self.setDirty(False)
+            filename, _ = QFileDialog.getSaveFileName(self,
+                                                      self.tr('Save Model'),
+                                                      initial_path.as_posix(),
+                                                      self.tr('Processing models (*.model3 *.MODEL3)'))
+            if not filename:
+                return
+
+            filename = QgsFileUtils.ensureFileNameHasExtension(filename, ['model3'])
+            self.model().setSourceFilePath(filename)
+
+            if not self.model().name() or self.model().name() == self.tr('model'):
+                self.setModelName(Path(filename).stem)
+
+        if not self.model().toFile(filename):
+            if saveAs:
+                QMessageBox.warning(self, self.tr('I/O error'),
+                                    self.tr('Unable to save edits. Reason:\n {0}').format(str(sys.exc_info()[1])))
+            else:
+                QMessageBox.warning(self, self.tr("Can't save model"),
+                                    QCoreApplication.translate('QgsPluginInstallerInstallingDialog', (
+                                        "This model can't be saved in its original location (probably you do not "
+                                        "have permission to do it). Please, use the 'Save as…' option."))
+                                    )
+            return
+        self.update_model.emit()
+        if saveAs:
+            self.messageBar().pushMessage("", self.tr("Model was correctly saved to <a href=\"{}\">{}</a>").format(
+                QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success,
+                duration=5)
+        else:
+            self.messageBar().pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
+
+        self.setDirty(False)
 
     def openModel(self):
         if not self.checkForUnsavedChanges():
