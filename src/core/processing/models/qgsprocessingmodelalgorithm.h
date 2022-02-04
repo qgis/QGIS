@@ -385,6 +385,16 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void setSourceFilePath( const QString &path );
 
     /**
+     * Returns TRUE if the model name matches the current model sourceFilePath().
+     *
+     * Specifically, this method will return true if the complete base name of sourceFilePath()
+     * is identical (case-insensitive) to the model name.
+     *
+     * \since QGIS 3.24
+     */
+    bool modelNameMatchesFilePath() const;
+
+    /**
      * Attempts to convert the model to executable Python code, and returns the generated lines of code.
      *
      * The \a outputType argument dictates the desired script type.

@@ -103,6 +103,7 @@ class TestQgsProcessingModelAlgorithm: public QObject
     void modelInputs();
     void modelDependencies();
     void modelSource();
+    void modelNameMatchesFileName();
 
   private:
 
@@ -2095,10 +2096,24 @@ void TestQgsProcessingModelAlgorithm::modelSource()
   QCOMPARE( res.expression(), QStringLiteral( "expression" ) );
   QCOMPARE( res.expressionText(), QStringLiteral( "expression string" ) );
   QCOMPARE( res.outputName(), QStringLiteral( "output name " ) );
-  QCOMPARE( res.staticValue().toString(), QString( "value" ) );
+  QCOMPARE( res.staticValue().toString(), QStringLiteral( "value" ) );
   QCOMPARE( res.outputChildId(), QStringLiteral( "output child id" ) );
   QCOMPARE( res.parameterName(), QStringLiteral( "parameter name" ) );
   QCOMPARE( res.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+}
+
+void TestQgsProcessingModelAlgorithm::modelNameMatchesFileName()
+{
+  QgsProcessingModelAlgorithm model;
+  model.setName( QStringLiteral( "my name" ) );
+  QVERIFY( !model.modelNameMatchesFilePath() );
+
+  model.setSourceFilePath( QStringLiteral( "/home/me/my name.something.model3" ) );
+  QVERIFY( !model.modelNameMatchesFilePath() );
+  model.setSourceFilePath( QStringLiteral( "/home/me/my name.model3" ) );
+  QVERIFY( model.modelNameMatchesFilePath() );
+  model.setSourceFilePath( QStringLiteral( "/home/me/MY NAME.model3" ) );
+  QVERIFY( model.modelNameMatchesFilePath() );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModelAlgorithm )
