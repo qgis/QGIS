@@ -185,6 +185,15 @@ namespace QgsWfs
       }
     }
 
+    // check if all typename are valid
+    for ( const QString &typeName : typeNameList )
+    {
+      if ( !mapLayerMap.contains( typeName ) )
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "TypeName '%1' unknown" ).arg( typeName ) );
+      }
+    }
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
@@ -204,11 +213,6 @@ namespace QgsWfs
     {
       getFeatureQuery &query = *qIt;
       QString typeName = query.typeName;
-
-      if ( !mapLayerMap.contains( typeName ) )
-      {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "TypeName '%1' unknown" ).arg( typeName ) );
-      }
 
       QgsMapLayer *layer = mapLayerMap[typeName];
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
