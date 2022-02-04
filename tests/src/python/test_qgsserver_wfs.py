@@ -131,6 +131,31 @@ class TestQgsServerWFS(QgsServerTestBase):
             header, body
         )
 
+    def test_getfeature_invalid_typename(self):
+        project = self.testdata_path + "test_project_wfs.qgs"
+
+        # a single invalid typename
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "invalid"
+        }.items())])
+        header, body = self._execute_request(qs)
+
+        self.assertTrue(b"TypeName 'invalid' unknown" in body)
+
+        # an invalid typename preceded by a valid one
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "testlayer,invalid"
+        }.items())])
+        header, body = self._execute_request(qs)
+
+        self.assertTrue(b"TypeName 'invalid' unknown" in body)
+
     def test_getfeature(self):
 
         tests = []
