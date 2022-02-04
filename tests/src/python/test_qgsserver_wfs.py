@@ -143,7 +143,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         }.items())])
         header, body = self._execute_request(qs)
 
-        self.assertTrue(b"TypeName 'invalid' unknown" in body)
+        self.assertTrue(b"TypeName 'invalid' could not be found" in body)
 
         # an invalid typename preceded by a valid one
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -154,7 +154,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         }.items())])
         header, body = self._execute_request(qs)
 
-        self.assertTrue(b"TypeName 'invalid' unknown" in body)
+        self.assertTrue(b"TypeName 'invalid' could not be found" in body)
 
     def test_getfeature(self):
 
