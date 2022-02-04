@@ -2053,6 +2053,32 @@ void TestProcessingGui::testNumericWrapperInt()
   QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->dataType(), QgsProcessingParameterNumber::Double );
   QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->minimum(), -2.5 );
   QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->maximum(), 2.5 );
+
+  // integer type, no min/max values set
+  QgsProcessingParameterNumber numParam2( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterNumber::Integer, 1 );
+  widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext, &numParam2 );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->defaultValue().toDouble(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->dataType(), QgsProcessingParameterNumber::Integer );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->minimum(), numParam2.minimum() );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->maximum(), numParam2.maximum() );
+
+  // double type, no min/max values set
+  QgsProcessingParameterNumber numParam3( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterNumber::Double, 1 );
+  widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext, &numParam3 );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->defaultValue().toDouble(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->dataType(), QgsProcessingParameterNumber::Double );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->minimum(), numParam3.minimum() );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->maximum(), numParam3.maximum() );
 }
 
 void TestProcessingGui::testDistanceWrapper()
