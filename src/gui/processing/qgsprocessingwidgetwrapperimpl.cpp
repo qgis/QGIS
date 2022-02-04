@@ -700,8 +700,25 @@ QgsProcessingNumberParameterDefinitionWidget::QgsProcessingNumberParameterDefini
   if ( const QgsProcessingParameterNumber *numberParam = dynamic_cast<const QgsProcessingParameterNumber *>( definition ) )
   {
     mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( numberParam->dataType() ) );
-    mMinLineEdit->setText( QLocale().toString( numberParam->minimum() ) );
-    mMaxLineEdit->setText( QLocale().toString( numberParam->maximum() ) );
+
+    if ( !qgsDoubleNear( numberParam->maximum(), std::numeric_limits<double>::max() ) )
+    {
+      mMaxLineEdit->setText( QLocale().toString( numberParam->maximum() ) );
+    }
+    else
+    {
+      mMaxLineEdit->clear();
+    }
+
+    if ( !qgsDoubleNear( numberParam->minimum(), std::numeric_limits<double>::lowest() ) )
+    {
+      mMinLineEdit->setText( QLocale().toString( numberParam->minimum() ) );
+    }
+    else
+    {
+      mMinLineEdit->clear();
+    }
+
     mDefaultLineEdit->setText( numberParam->defaultValueForGui().toString() );
   }
 
@@ -716,16 +733,22 @@ QgsProcessingParameterDefinition *QgsProcessingNumberParameterDefinitionWidget::
   QgsProcessingParameterNumber::Type dataType = static_cast< QgsProcessingParameterNumber::Type >( mTypeComboBox->currentData().toInt() );
   auto param = std::make_unique< QgsProcessingParameterNumber >( name, description, dataType, ok ? val : QVariant() );
 
-  val = QgsDoubleValidator::toDouble( mMinLineEdit->text( ), &ok );
-  if ( ok )
+  if ( !mMinLineEdit->text().trimmed().isEmpty() )
   {
-    param->setMinimum( val );
+    val = QgsDoubleValidator::toDouble( mMinLineEdit->text( ), &ok );
+    if ( ok )
+    {
+      param->setMinimum( val );
+    }
   }
 
-  val = QgsDoubleValidator::toDouble( mMaxLineEdit->text(), &ok );
-  if ( ok )
+  if ( !mMaxLineEdit->text().trimmed().isEmpty() )
   {
-    param->setMaximum( val );
+    val = QgsDoubleValidator::toDouble( mMaxLineEdit->text(), &ok );
+    if ( ok )
+    {
+      param->setMaximum( val );
+    }
   }
 
   param->setFlags( flags );
