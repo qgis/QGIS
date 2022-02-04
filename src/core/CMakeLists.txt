@@ -1855,7 +1855,7 @@ if (${QT_VERSION_BASE}Positioning_FOUND)
   )
 endif()
 
-if (HAVE_PDAL)
+if (WITH_PDAL)
   include_directories(SYSTEM
     ${PDAL_INCLUDE_DIR}
   )
@@ -2155,7 +2155,7 @@ if (WITH_EPT)
   )
 endif()
 
-if (HAVE_PDAL)
+if (WITH_PDAL)
   target_link_libraries(qgis_core
     ${PDAL_LIBRARIES}
   )

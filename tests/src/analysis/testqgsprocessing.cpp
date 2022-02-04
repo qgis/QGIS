@@ -10495,7 +10495,7 @@ void TestQgsProcessing::parameterPointCloudLayer()
 
   QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
   QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
-#ifdef HAVE_PDAL
+#ifdef HAVE_PDAL_QGIS
   QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.las" ) ) );
 #endif
   QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
