@@ -36,7 +36,7 @@ QToolTip
 {
     border: 1px solid #222;
     background-color: @itemdarkbackground;
-    color: @itembackground;
+    color: @text;
 }
 
 QMenuBar {
