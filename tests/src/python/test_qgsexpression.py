@@ -294,11 +294,11 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         e.setExpression("foo = 1")
         self.assertTrue(e.isValid())
         self.assertEqual(len(e.referencedAttributeIndexes(QgsFields())), 0)
-        
+
     def testSuccessfulEvaluationReturnsNoEvalErrorString(self):
         exp = QgsExpression("True is False")  # the result does not matter
         self.assertEqual(exp.evalErrorString(), "")
-        
+
     def testExceptionDuringEvalReturnsTraceback(self):
         QgsExpression.registerFunction(self.raise_exception)
         exp = QgsExpression('raise_exception()')
