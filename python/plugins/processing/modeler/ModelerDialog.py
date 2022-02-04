@@ -32,7 +32,8 @@ from qgis.PyQt.QtCore import (
     QPoint,
     QPointF,
     pyqtSignal,
-    QUrl)
+    QUrl,
+    QFileInfo)
 from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QFileDialog)
 from qgis.core import (Qgis,
@@ -218,11 +219,15 @@ class ModelerDialog(QgsModelDesignerDialog):
         if not self.checkForUnsavedChanges():
             return
 
+        settings = QgsSettings()
+        last_dir = settings.value('Processing/lastModelsDir', QDir.homePath())
         filename, selected_filter = QFileDialog.getOpenFileName(self,
                                                                 self.tr('Open Model'),
-                                                                ModelerUtils.modelsFolders()[0],
+                                                                last_dir,
                                                                 self.tr('Processing models (*.model3 *.MODEL3)'))
         if filename:
+            settings.setValue('Processing/lastModelsDir',
+                              QFileInfo(filename).absoluteDir().absolutePath())
             self.loadModel(filename)
 
     def repaintModel(self, showControls=True):
