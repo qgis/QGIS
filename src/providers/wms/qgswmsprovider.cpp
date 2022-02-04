@@ -4556,7 +4556,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
           const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
 
           QString errorMessage;
-          if ( contentType.startsWith( QStringLiteral( "text/plain" ) ) )
+          if ( contentType.startsWith( QLatin1String( "text/plain" ) ) )
             errorMessage = reply->readAll();
           else
             errorMessage = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString();
