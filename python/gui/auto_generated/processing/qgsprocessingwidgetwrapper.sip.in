@@ -602,6 +602,13 @@ and should give helpful text to users to indicate the expected results from the 
 This is purely a text format and no expression validation is made against it.
 %End
 
+    virtual QgsProcessingModelChildParameterSource::Source defaultModelSource( const QgsProcessingParameterDefinition *parameter ) const;
+%Docstring
+Returns the default source type to use for the widget for the specified ``parameter``.
+
+.. versionadded:: 3.24
+%End
+
 };
 
 class QgsProcessingHiddenWidgetWrapper: QgsAbstractProcessingParameterWidgetWrapper

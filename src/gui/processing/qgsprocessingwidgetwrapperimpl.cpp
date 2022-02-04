@@ -5999,6 +5999,11 @@ QString QgsProcessingMapLayerWidgetWrapper::modelerExpressionFormatString() cons
   return tr( "path to a map layer" );
 }
 
+QgsProcessingModelChildParameterSource::Source QgsProcessingMapLayerWidgetWrapper::defaultModelSource( const QgsProcessingParameterDefinition * ) const
+{
+  return QgsProcessingModelChildParameterSource::ModelParameter;
+}
+
 QString QgsProcessingMapLayerWidgetWrapper::parameterType() const
 {
   return QgsProcessingParameterMapLayer::typeName();
