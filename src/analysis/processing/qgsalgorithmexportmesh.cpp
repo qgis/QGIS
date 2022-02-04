@@ -210,7 +210,7 @@ void QgsExportMeshOnElement::initAlgorithm( const QVariantMap &configuration )
                   QStringLiteral( "DATASET_GROUPS" ),
                   QObject::tr( "Dataset groups" ),
                   QStringLiteral( "INPUT" ),
-                  supportedDataType(), true ) );
+                  supportedDataType() ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetTime(
                   QStringLiteral( "DATASET_TIME" ),
