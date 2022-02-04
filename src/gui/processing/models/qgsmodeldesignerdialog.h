@@ -94,15 +94,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     void setModelScene( QgsModelGraphicsScene *scene SIP_TRANSFER );
 
-  public slots:
-
-    /**
-     * Raise, unminimize and activate this window.
-     *
-     * \since QGIS 3.24
-     */
-    void activate();
-
     /**
      * Save action.
      *
@@ -113,6 +104,15 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
       SaveAsFile, //!< Save model as a file
       SaveInProject, //!< Save model into project
     };
+
+  public slots:
+
+    /**
+     * Raise, unminimize and activate this window.
+     *
+     * \since QGIS 3.24
+     */
+    void activate();
 
   protected:
 
