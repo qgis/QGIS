@@ -557,6 +557,11 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   const QgsProcessingModelOutput oo2;
   QMap< QString, QgsProcessingModelOutput > a2Outs2;
   a2Outs2.insert( QStringLiteral( "out1" ), oo2 );
+  // this one didn't already exist in the algorithm
+  QgsProcessingModelOutput oo3;
+  oo3.comment()->setDescription( QStringLiteral( "my comment" ) );
+  a2Outs2.insert( QStringLiteral( "out3" ), oo3 );
+
   a2other.setModelOutputs( a2Outs2 );
 
   a2other.copyNonDefinitionPropertiesFromModel( &alg );
@@ -576,6 +581,8 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   // should be copied for outputs
   QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).comment()->description(), QStringLiteral( "c3" ) );
   QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).comment()->color(), QColor( 155, 14, 353 ) );
+  // new outputs should not be affected
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out3" ) ).comment()->description(), QStringLiteral( "my comment" ) );
 
   QgsProcessingModelChildAlgorithm a3;
   a3.setChildId( QStringLiteral( "c" ) );
