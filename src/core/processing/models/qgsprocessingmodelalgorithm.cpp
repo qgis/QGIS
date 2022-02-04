@@ -462,6 +462,15 @@ void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile )
   mSourceFile = sourceFile;
 }
 
+bool QgsProcessingModelAlgorithm::modelNameMatchesFilePath() const
+{
+  if ( mSourceFile.isEmpty() )
+    return false;
+
+  const QFileInfo fi( mSourceFile );
+  return fi.completeBaseName().compare( mModelName, Qt::CaseInsensitive ) == 0;
+}
+
 QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const int indentSize ) const
 {
   QStringList fileDocString;

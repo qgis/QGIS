@@ -435,6 +435,16 @@ Sets the source file ``path`` for the model, if available.
 .. seealso:: :py:func:`sourceFilePath`
 %End
 
+    bool modelNameMatchesFilePath() const;
+%Docstring
+Returns ``True`` if the model name matches the current model :py:func:`~QgsProcessingModelAlgorithm.sourceFilePath`.
+
+Specifically, this method will return true if the complete base name of :py:func:`~QgsProcessingModelAlgorithm.sourceFilePath`
+is identical (case-insensitive) to the model name.
+
+.. versionadded:: 3.24
+%End
+
     QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, int indentSize ) const;
 %Docstring
 Attempts to convert the model to executable Python code, and returns the generated lines of code.
