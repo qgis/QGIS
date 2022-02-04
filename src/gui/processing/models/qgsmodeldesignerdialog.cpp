@@ -464,6 +464,7 @@ void QgsModelDesignerDialog::loadModel( const QString &path )
   if ( alg->fromFile( path ) )
   {
     alg->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
+    alg->setSourceFilePath( path );
     setModel( alg.release() );
   }
   else
