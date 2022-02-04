@@ -149,8 +149,8 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   const int fieldPrecision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
   const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
 
-  QVariant::Type fieldType;
-  QVariant::Type fieldSubType;
+  QVariant::Type fieldType = QVariant::Type::String;
+  QVariant::Type fieldSubType = QVariant::Type::Invalid;
   switch ( fieldTypeIdx )
   {
     case 0: // Float
