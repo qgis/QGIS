@@ -186,10 +186,13 @@ class ModelerDialog(QgsModelDesignerDialog):
         if not self.validateSave(QgsModelDesignerDialog.SaveAction.SaveAsFile):
             return
 
+        model_name_matched_file_name = self.model().modelNameMatchesFilePath()
         if self.model().sourceFilePath() and not saveAs:
             filename = self.model().sourceFilePath()
         else:
-            if self.model().name():
+            if self.model().sourceFilePath():
+                initial_path = Path(self.model().sourceFilePath())
+            elif self.model().name():
                 initial_path = Path(ModelerUtils.modelsFolders()[0]) / (self.model().name() + '.model3')
             else:
                 initial_path = Path(ModelerUtils.modelsFolders()[0])
@@ -206,6 +209,10 @@ class ModelerDialog(QgsModelDesignerDialog):
 
             if not self.model().name() or self.model().name() == self.tr('model'):
                 self.setModelName(Path(filename).stem)
+            elif saveAs and model_name_matched_file_name:
+                # if saving as, and the model name used to match the filename, then automatically update the
+                # model name to match the new file name
+                self.setModelName(Path(filename).stem)
 
         if not self.model().toFile(filename):
             if saveAs:
@@ -218,6 +225,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                                         "have permission to do it). Please, use the 'Save as…' option."))
                                     )
             return
+
         self.update_model.emit()
         if saveAs:
             self.messageBar().pushMessage("", self.tr("Model was correctly saved to <a href=\"{}\">{}</a>").format(
