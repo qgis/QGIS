@@ -220,10 +220,9 @@ class ModelerDialog(QgsModelDesignerDialog):
                                     self.tr('Unable to save edits. Reason:\n {0}').format(str(sys.exc_info()[1])))
             else:
                 QMessageBox.warning(self, self.tr("Can't save model"),
-                                    QCoreApplication.translate('QgsPluginInstallerInstallingDialog', (
+                                    self.tr(
                                         "This model can't be saved in its original location (probably you do not "
                                         "have permission to do it). Please, use the 'Save as…' option."))
-                                    )
             return
 
         self.update_model.emit()
