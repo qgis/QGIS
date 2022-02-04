@@ -563,7 +563,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     void reattachAlgorithms() const;
 
-    friend class TestQgsProcessing;
+    friend class TestQgsProcessingModelAlgorithm;
 };
 
 ///@endcond
