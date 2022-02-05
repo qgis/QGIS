@@ -721,8 +721,10 @@ static void _drawDebugRect( QPainter &p, const QRectF &rect, const QColor &color
 #endif
 }
 
-//! Reinitialises an image with a buffered image (add 2 pixels on each side) to take account of external pixels considering the resolution,
-//! Returns the map extent of the buffered image.
+/**
+ * Reset an image with a buffered image (add 2 pixels on each side) to take account of external pixels considering the resolution,
+ * Returns the map extent of the buffered image.
+ */
 static QgsRectangle initializeBufferedImage( const QgsRectangle &viewExtent, double resolution, QImage *image )
 {
   int pixelX = std::ceil( viewExtent.width() / resolution ) + 4;
