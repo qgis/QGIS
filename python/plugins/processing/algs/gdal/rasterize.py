@@ -27,6 +27,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
@@ -171,6 +172,9 @@ class rasterize(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         arguments = [
             '-l',
@@ -211,7 +215,7 @@ class rasterize(GdalAlgorithm):
             arguments.append('-a_nodata')
             arguments.append(nodata)
 
-        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
+        extent = self.parameterAsExtent(parameters, self.EXTENT, context, source.sourceCrs())
         if not extent.isNull():
             arguments.append('-te')
             arguments.append(extent.xMinimum())
