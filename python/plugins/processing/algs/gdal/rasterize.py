@@ -101,7 +101,8 @@ class rasterize(GdalAlgorithm):
                                                        minValue=0.0,
                                                        defaultValue=0.0))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
-                                                       self.tr('Output extent')))
+                                                       self.tr('Output extent'),
+                                                       optional=True))
         nodataParam = QgsProcessingParameterNumber(self.NODATA,
                                                    self.tr('Assign a specified nodata value to output bands'),
                                                    type=QgsProcessingParameterNumber.Double,
