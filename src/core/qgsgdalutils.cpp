@@ -18,6 +18,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsrasterblock.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
@@ -147,6 +148,40 @@ gdal::dataset_unique_ptr QgsGdalUtils::imageToMemoryDataset( const QImage &image
   CSLDestroy( papszOptions );
 
   return hSrcDS;
+}
+
+gdal::dataset_unique_ptr QgsGdalUtils::blockToSingleBandMemoryDataset( int pixelWidth, int pixelHeight, const QgsRectangle &extent, void *block,  GDALDataType dataType )
+{
+  if ( !block )
+    return nullptr;
+
+  GDALDriverH hDriverMem = GDALGetDriverByName( "MEM" );
+  if ( !hDriverMem )
+    return nullptr;
+
+  const double cellSizeX = extent.width() / pixelWidth;
+  const double cellSizeY = extent.height() / pixelHeight;
+  double geoTransform[6];
+  geoTransform[0] = extent.xMinimum();
+  geoTransform[1] = cellSizeX;
+  geoTransform[2] = 0;
+  geoTransform[3] = extent.yMinimum() + ( cellSizeY * pixelHeight );
+  geoTransform[4] = 0;
+  geoTransform[5] = -cellSizeY;
+
+  gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriverMem, "", pixelWidth, pixelHeight, 0, dataType, nullptr ) );
+
+  int dataTypeSize = GDALGetDataTypeSizeBytes( dataType );
+  char **papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                        << QStringLiteral( "PIXELOFFSET=%1" ).arg( dataTypeSize )
+                        << QStringLiteral( "LINEOFFSET=%1" ).arg( pixelWidth * dataTypeSize )
+                        << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( block ) ) );
+  GDALAddBand( hDstDS.get(), dataType, papszOptions );
+  CSLDestroy( papszOptions );
+
+  GDALSetGeoTransform( hDstDS.get(), geoTransform );
+
+  return hDstDS;
 }
 
 bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation )
