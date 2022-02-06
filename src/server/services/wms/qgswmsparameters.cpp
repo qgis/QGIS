@@ -1900,6 +1900,34 @@ namespace QgsWms
         for ( const QString &value : values )
           wmsUri.setParam( paramName, value );
       }
+      else if ( paramName == QLatin1String( "ignorereportedlayerextents" ) )
+      {
+        wmsUri.setParam( QStringLiteral( "IgnoreReportedLayerExtents" ), paramIt.value() );
+      }
+      else if ( paramName == QLatin1String( "smoothpixmaptransform" ) )
+      {
+        wmsUri.setParam( QStringLiteral( "SmoothPixmapTransform" ), paramIt.value() );
+      }
+      else if ( paramName == QLatin1String( "ignoregetmapurl" ) )
+      {
+        wmsUri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), paramIt.value() );
+      }
+      else if ( paramName == QLatin1String( "ignoregetfeatureinfourl" ) )
+      {
+        wmsUri.setParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ), paramIt.value() );
+      }
+      else if ( paramName == QLatin1String( "ignoreaxisorientation" ) )
+      {
+        wmsUri.setParam( QStringLiteral( "IgnoreAxisOrientation" ), paramIt.value() );
+      }
+      else if ( paramName == QLatin1String( "invertaxisorientation" ) )
+      {
+        wmsUri.setParam( QStringLiteral( "InvertAxisOrientation" ), paramIt.value() );
+      }
+      else if ( paramName == QLatin1String( "dpimode" ) )
+      {
+        wmsUri.setParam( QStringLiteral( "dpiMode" ), paramIt.value() );
+      }
       else
       {
         wmsUri.setParam( paramName, paramIt.value() );
