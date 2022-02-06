@@ -171,11 +171,11 @@ class rasterize(GdalAlgorithm):
         return 'gdal_rasterize'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         arguments = [
             '-l',
             layerName
