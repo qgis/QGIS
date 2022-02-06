@@ -170,6 +170,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void zoomOut();
     void zoomActual();
     void zoomFull();
+    void newModel();
     void exportToImage();
     void exportToPdf();
     void exportToSvg();

@@ -134,6 +134,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   QgsSettings settings;
 
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
+  connect( mActionNew, &QAction::triggered, this, &QgsModelDesignerDialog::newModel );
   connect( mActionZoomIn, &QAction::triggered, this, &QgsModelDesignerDialog::zoomIn );
   connect( mActionZoomOut, &QAction::triggered, this, &QgsModelDesignerDialog::zoomOut );
   connect( mActionZoomActual, &QAction::triggered, this, &QgsModelDesignerDialog::zoomActual );
@@ -634,6 +635,16 @@ void QgsModelDesignerDialog::zoomFull()
   QRectF totalRect = mView->scene()->itemsBoundingRect();
   totalRect.adjust( -10, -10, 10, 10 );
   mView->fitInView( totalRect, Qt::KeepAspectRatio );
+}
+
+void QgsModelDesignerDialog::newModel()
+{
+  if ( !checkForUnsavedChanges() )
+    return;
+
+  std::unique_ptr< QgsProcessingModelAlgorithm > alg = std::make_unique< QgsProcessingModelAlgorithm >();
+  alg->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
+  setModel( alg.release() );
 }
 
 void QgsModelDesignerDialog::exportToImage()
