@@ -257,7 +257,7 @@ QgsWmsProvider::~QgsWmsProvider()
   QgsDebugMsgLevel( QStringLiteral( "deconstructing." ), 4 );
 }
 
-//! Return the destination extent in image coordinate of a tile image defined by its extent
+//! Returns the destination extent in image coordinate of a tile image defined by its extent
 static QRectF destinationRect( const QgsRectangle &destinationExtent, const QRectF &tileImageExtent, int imagePixelWidth )
 {
   double cr = destinationExtent.width() / imagePixelWidth;
@@ -722,7 +722,7 @@ static void _drawDebugRect( QPainter &p, const QRectF &rect, const QColor &color
 }
 
 /**
- * Reset an image with a buffered image (add 2 pixels on each side) to take account of external pixels considering the resolution,
+ * Resets an image with a buffered image (add 2 pixels on each side) to take account of external pixels considering the resolution,
  * Returns the map extent of the buffered image.
  */
 static QgsRectangle initializeBufferedImage( const QgsRectangle &viewExtent, double resolution, QImage *image )
