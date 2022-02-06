@@ -567,8 +567,7 @@ bool QgsModelDesignerDialog::checkForUnsavedChanges()
     switch ( ret )
     {
       case QMessageBox::Save:
-        saveModel( false );
-        return true;
+        return saveModel( false );
 
       case QMessageBox::Discard:
         return true;

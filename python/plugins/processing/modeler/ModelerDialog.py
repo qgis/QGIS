@@ -182,9 +182,9 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.setDirty(False)
         QgsProject.instance().setDirty(True)
 
-    def saveModel(self, saveAs):
+    def saveModel(self, saveAs) -> bool:
         if not self.validateSave(QgsModelDesignerDialog.SaveAction.SaveAsFile):
-            return
+            return False
 
         model_name_matched_file_name = self.model().modelNameMatchesFilePath()
         if self.model().sourceFilePath() and not saveAs:
@@ -202,7 +202,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                                                       initial_path.as_posix(),
                                                       self.tr('Processing models (*.model3 *.MODEL3)'))
             if not filename:
-                return
+                return False
 
             filename = QgsFileUtils.ensureFileNameHasExtension(filename, ['model3'])
             self.model().setSourceFilePath(filename)
@@ -223,7 +223,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                                     self.tr(
                                         "This model can't be saved in its original location (probably you do not "
                                         "have permission to do it). Please, use the 'Save as…' option."))
-            return
+            return False
 
         self.update_model.emit()
         if saveAs:
@@ -234,6 +234,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.messageBar().pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
 
         self.setDirty(False)
+        return True
 
     def openModel(self):
         if not self.checkForUnsavedChanges():
