@@ -111,7 +111,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
     virtual void exportAsScriptAlgorithm() = 0;
     // cppcheck-suppress pureVirtualCall
-    virtual void saveModel( bool saveAs = false ) = 0;
+    virtual bool saveModel( bool saveAs = false ) = 0;
 
     QToolBar *toolbar() { return mToolbar; }
     QAction *actionOpen() { return mActionOpen; }
