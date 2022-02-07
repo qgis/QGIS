@@ -1108,7 +1108,12 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
   else
   {
-    return value.toString();
+    QString str { value.toString() };
+    if ( str.length() > maximumPreviewLength - 3 )
+    {
+      str = tr( "%1…" ).arg( str.left( maximumPreviewLength - 2 ) );
+    }
+    return str;
   }
 }
 
