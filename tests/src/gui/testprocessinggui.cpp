@@ -2956,7 +2956,7 @@ void TestProcessingGui::testFieldSelectionPanel()
   QgsProcessingFieldPanelWidget w( nullptr, &fieldParam );
   QSignalSpy spy( &w, &QgsProcessingFieldPanelWidget::changed );
 
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 fields selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 field(s) selected" ) );
   w.setValue( QStringLiteral( "aa" ) );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "aa" ) );
@@ -2970,7 +2970,7 @@ void TestProcessingGui::testFieldSelectionPanel()
   w.setValue( QVariant() );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( w.value().toList(), QVariantList() );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 fields selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 field(s) selected" ) );
 
 }
 
@@ -3674,26 +3674,26 @@ void TestProcessingGui::testRasterBandSelectionPanel()
   QgsProcessingRasterBandPanelWidget w( nullptr, &bandParam );
   QSignalSpy spy( &w, &QgsProcessingRasterBandPanelWidget::changed );
 
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 bands selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 band(s) selected" ) );
   w.setValue( QStringLiteral( "1" ) );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "1" ) );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 bands selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 band(s) selected" ) );
 
   w.setValue( QVariantList() << QStringLiteral( "2" ) << QStringLiteral( "1" ) );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "2" ) << QStringLiteral( "1" ) );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 bands selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 band(s) selected" ) );
 
   w.setValue( QVariantList() << 3 << 5 << 1 );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( w.value().toList(), QVariantList() << 3 << 5 << 1 );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "3 bands selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "3 band(s) selected" ) );
 
   w.setValue( QVariant() );
   QCOMPARE( spy.count(), 4 );
   QCOMPARE( w.value().toList(), QVariantList() );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 bands selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 band(s) selected" ) );
 }
 
 void TestProcessingGui::testBandWrapper()
