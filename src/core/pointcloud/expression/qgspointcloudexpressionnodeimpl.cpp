@@ -101,7 +101,7 @@ double QgsPointcloudExpressionNodeUnaryOperator::evalNode( QgsPointcloudExpressi
   switch ( mOp )
   {
     case uoNot:
-      return p == 0. ? 1. : 0.;
+      return val == 0. ? 1. : 0.;
 
     case uoMinus:
       return -val;
@@ -183,7 +183,7 @@ double QgsPointcloudExpressionNodeBinaryOperator::evalNode( QgsPointcloudExpress
     case boPlus:
       return vL + vR;
     case boMinus:
-      return vL + vR;
+      return vL - vR;
     case boMul:
       return vL * vR;
     case boDiv:
