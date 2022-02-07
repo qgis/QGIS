@@ -908,7 +908,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::StaticValue:
       case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
-    };
+    }
     variables.insert( safeName( name ), VariableDefinition( value, source, description ) );
   }
 
@@ -955,7 +955,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
 
-    };
+    }
 
     if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
     {
@@ -970,7 +970,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     if ( !layer )
       layer = QgsProcessingUtils::mapLayerFromString( value.toString(), context );
 
-    variables.insert( safeName( name ), VariableDefinition( QVariant::fromValue( layer ), source, description ) );
+    variables.insert( safeName( name ), VariableDefinition( QVariant::fromValue( QgsWeakMapLayerPointer( layer ) ), source, description ) );
     variables.insert( safeName( QStringLiteral( "%1_minx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMinimum() : QVariant(), source, QObject::tr( "Minimum X of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_miny" ).arg( name ) ), VariableDefinition( layer ? layer->extent().yMinimum() : QVariant(), source, QObject::tr( "Minimum Y of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_maxx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMaximum() : QVariant(), source, QObject::tr( "Maximum X of %1" ).arg( description ) ) );
@@ -1014,7 +1014,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
 
-    };
+    }
 
     QgsFeatureSource *featureSource = nullptr;
     if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )

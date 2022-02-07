@@ -4915,7 +4915,6 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( QgsExpressionUtils::toLocalizedString( QString( "hello world" ) ), QStringLiteral( "hello world" ) );
     }
-
 };
 
 QGSTEST_MAIN( TestQgsExpression )
