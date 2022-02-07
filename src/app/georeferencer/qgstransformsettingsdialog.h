@@ -27,8 +27,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     Q_OBJECT
 
   public:
-    QgsTransformSettingsDialog( const QString &raster, const QString &output,
-                                int countGCPpoints, QWidget *parent = nullptr );
+    QgsTransformSettingsDialog( const QString &raster, const QString &output, QWidget *parent = nullptr );
 
     void getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
@@ -47,12 +46,9 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     void showHelp();
 
   private:
-    bool checkGCPpoints( int count, int &minGCPpoints );
     QString generateModifiedRasterFileName( const QString &raster );
 
     QString mSourceRasterFile;
-
-    int mCountGCPpoints;
 
     QStringList mListCompression;
 };
