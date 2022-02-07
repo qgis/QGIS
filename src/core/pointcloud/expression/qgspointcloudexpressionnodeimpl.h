@@ -21,6 +21,8 @@
 #include "qgsinterval.h"
 #include "qgspointcloudblock.h"
 
+#define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return std::numeric_limits<double>::quiet_NaN(); }
+
 /**
  * \ingroup core
  * \brief A unary node is either negative as in boolean (not) or as in numbers (minus).

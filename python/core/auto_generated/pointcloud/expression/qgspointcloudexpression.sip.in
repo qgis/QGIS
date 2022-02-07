@@ -194,23 +194,6 @@ Gets list of columns referenced by the expression.
 %End
 
 
-    QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
-%Docstring
-Returns a list of field name indexes obtained from the provided fields.
-
-.. warning::
-
-   If the expression has been prepared via a call to :py:func:`QgsPointcloudExpression.prepare()`,
-   or a call to :py:func:`QgsPointcloudExpressionNode.prepare()` for a node has been made, then parts of
-   the expression may have been determined to evaluate to a static pre-calculatable value.
-   In this case the results will omit attribute indices which are used by these
-   pre-calculated nodes, regardless of their actual referenced columns.
-   If you are seeking to use these functions to introspect an expression you must
-   take care to do this with an unprepared expression.
-
-.. versionadded:: 3.0
-%End
-
 
     double evaluate( int p );
 %Docstring
@@ -318,50 +301,6 @@ quotations where required.
 .. versionadded:: 2.14
 %End
 
-
-    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType = QVariant::Type::Invalid );
-%Docstring
-Create an expression allowing to evaluate if a field is equal to a
-value. The value may be null.
-
-:param fieldName: the name of the field
-:param value: the value of the field
-:param fieldType: the type of the field on the left side used to quote the value. If not given, the value type is used instead
-
-:return: the expression to evaluate field equality
-
-.. versionadded:: 3.0
-%End
-
-    static bool isFieldEqualityExpression( const QString &expression, QString &field /Out/, QVariant &value /Out/ );
-%Docstring
-Returns ``True`` if the given ``expression`` is a simple "field=value" type expression.
-
-:param expression: expression to test
-
-:return: - ``True`` if the expression is a field equality expression
-         - field: will be set to the field name if the expression is a field equality expression
-         - value: will be set to the value if the expression is a field equality expression
-
-.. versionadded:: 3.18
-%End
-
-    static bool attemptReduceToInClause( const QStringList &expressions, QString &result /Out/ );
-%Docstring
-Attempts to reduce a list of expressions to a single "field IN (val1, val2, ... )" type expression.
-
-This will only be possible if all the input expressions form simple "field=value" OR "field IN (value1, value2)" expressions, and all
-reference the same field name.
-
-Returns ``True`` if the given ``expressions`` could be converted to an IN type expression.
-
-:param expressions: expressions to test
-
-:return: - ``True`` if the expression was converted to a field IN type expression
-         - result: will be set to the calculated "field IN (...)" expression, wherever possible
-
-.. versionadded:: 3.18
-%End
 
     SIP_PYOBJECT __repr__();
 %MethodCode

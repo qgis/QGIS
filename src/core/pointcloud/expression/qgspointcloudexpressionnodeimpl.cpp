@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgspointcloudexpressionnodeimpl.h"
-#include "qgspointcloudexpressionutils.h"
 #include "qgspointcloudexpression.h"
 
 #include "qgsgeometry.h"
@@ -421,8 +420,8 @@ bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpressio
         mOpLeft->prepare( parent, block );
         if ( mOpLeft->hasCachedStaticValue() )
         {
-          QgsPointcloudExpressionUtils::TVL tvl = QgsPointcloudExpressionUtils::getTVLValue( mOpLeft->cachedStaticValue(), parent );
-          if ( !parent->hasEvalError() && tvl == QgsPointcloudExpressionUtils::True )
+          double val = mOpLeft->cachedStaticValue();
+          if ( !parent->hasEvalError() && val != 0. )
           {
             mCachedStaticValue = true;
             mHasCachedValue = true;
@@ -435,8 +434,8 @@ bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpressio
         mOpRight->prepare( parent, block );
         if ( mOpRight->hasCachedStaticValue() )
         {
-          QgsPointcloudExpressionUtils::TVL tvl = QgsPointcloudExpressionUtils::getTVLValue( mOpRight->cachedStaticValue(), parent );
-          if ( !parent->hasEvalError() && tvl == QgsPointcloudExpressionUtils::True )
+          double val = mOpRight->cachedStaticValue();
+          if ( !parent->hasEvalError() && val != 0. )
           {
             mCachedStaticValue = true;
             mHasCachedValue = true;
@@ -457,8 +456,8 @@ bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpressio
         mOpLeft->prepare( parent, block );
         if ( mOpLeft->hasCachedStaticValue() )
         {
-          QgsPointcloudExpressionUtils::TVL tvl = QgsPointcloudExpressionUtils::getTVLValue( mOpLeft->cachedStaticValue(), parent );
-          if ( !parent->hasEvalError() && tvl == QgsPointcloudExpressionUtils::False )
+          double val = mOpLeft->cachedStaticValue();
+          if ( !parent->hasEvalError() && val == 0. )
           {
             mCachedStaticValue = false;
             mHasCachedValue = true;
@@ -471,8 +470,8 @@ bool QgsPointcloudExpressionNodeBinaryOperator::isStatic( QgsPointcloudExpressio
         mOpRight->prepare( parent, block );
         if ( mOpRight->hasCachedStaticValue() )
         {
-          QgsPointcloudExpressionUtils::TVL tvl = QgsPointcloudExpressionUtils::getTVLValue( mOpRight->cachedStaticValue(), parent );
-          if ( !parent->hasEvalError() && tvl == QgsPointcloudExpressionUtils::False )
+          double val = mOpRight->cachedStaticValue();
+          if ( !parent->hasEvalError() && val == 0. )
           {
             mCachedStaticValue = false;
             mHasCachedValue = true;
@@ -756,17 +755,6 @@ QgsPointcloudExpressionNode::NodeType QgsPointcloudExpressionNodeAttributeRef::n
 
 bool QgsPointcloudExpressionNodeAttributeRef::prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block )
 {
-//   if ( !context || !context->hasVariable( QgsPointcloudExpressionContext::EXPR_FIELDS ) )
-//     return false;
-//
-//   QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsPointcloudExpressionContext::EXPR_FIELDS ) );
-//
-//   mIndex = fields.lookupField( mName );
-//
-//   if ( mIndex == -1 && context->hasFeature() )
-//   {
-//     mIndex = context->feature().fieldNameIndex( mName );
-//   }
   mBlock = block;
   mIndex = mBlock->attributes().indexOf( mName );
 

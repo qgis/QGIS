@@ -9,6 +9,7 @@
 
 
 
+
 class QgsPointcloudExpressionNodeUnaryOperator : QgsPointcloudExpressionNode
 {
 %Docstring(signature="appended")

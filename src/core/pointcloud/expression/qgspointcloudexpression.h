@@ -280,21 +280,6 @@ class CORE_EXPORT QgsPointcloudExpression
     }
 #endif
 
-    /**
-     * Returns a list of field name indexes obtained from the provided fields.
-     *
-     * \warning If the expression has been prepared via a call to QgsPointcloudExpression::prepare(),
-     * or a call to QgsPointcloudExpressionNode::prepare() for a node has been made, then parts of
-     * the expression may have been determined to evaluate to a static pre-calculatable value.
-     * In this case the results will omit attribute indices which are used by these
-     * pre-calculated nodes, regardless of their actual referenced columns.
-     * If you are seeking to use these functions to introspect an expression you must
-     * take care to do this with an unprepared expression.
-     *
-     * \since QGIS 3.0
-     */
-    QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
-
     // evaluation
 
     /**
@@ -379,45 +364,6 @@ class CORE_EXPORT QgsPointcloudExpression
     static QString quotedValue( const QVariant &value, QVariant::Type type );
 
     //////
-
-    /**
-     * Create an expression allowing to evaluate if a field is equal to a
-     *  value. The value may be null.
-     * \param fieldName the name of the field
-     * \param value the value of the field
-     * \param fieldType the type of the field on the left side used to quote the value. If not given, the value type is used instead
-     * \returns the expression to evaluate field equality
-     * \since QGIS 3.0
-     */
-    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType = QVariant::Type::Invalid );
-
-    /**
-     * Returns TRUE if the given \a expression is a simple "field=value" type expression.
-     *
-     * \param expression expression to test
-     * \param field will be set to the field name if the expression is a field equality expression
-     * \param value will be set to the value if the expression is a field equality expression
-     * \returns TRUE if the expression is a field equality expression
-     *
-     * \since QGIS 3.18
-     */
-    static bool isFieldEqualityExpression( const QString &expression, QString &field SIP_OUT, QVariant &value SIP_OUT );
-
-    /**
-     * Attempts to reduce a list of expressions to a single "field IN (val1, val2, ... )" type expression.
-     *
-     * This will only be possible if all the input expressions form simple "field=value" OR "field IN (value1, value2)" expressions, and all
-     * reference the same field name.
-     *
-     * Returns TRUE if the given \a expressions could be converted to an IN type expression.
-     *
-     * \param expressions expressions to test
-     * \param result will be set to the calculated "field IN (...)" expression, wherever possible
-     * \returns TRUE if the expression was converted to a field IN type expression
-     *
-     * \since QGIS 3.18
-     */
-    static bool attemptReduceToInClause( const QStringList &expressions, QString &result SIP_OUT );
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
