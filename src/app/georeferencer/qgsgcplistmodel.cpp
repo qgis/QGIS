@@ -116,7 +116,7 @@ void QgsGCPListModel::updateModel()
   setHorizontalHeaderLabels( itemLabels );
   setRowCount( mGCPList->size() );
 
-  for ( int i = 0; i < mGCPList->sizeAll(); ++i )
+  for ( int i = 0; i < mGCPList->size(); ++i )
   {
     int j = 0;
     QgsGeorefDataPoint *p = mGCPList->at( i );

@@ -754,7 +754,7 @@ void QgsGeoreferencerMainWindow::localHistogramStretch()
 // Comfort slots
 void QgsGeoreferencerMainWindow::jumpToGCP( uint theGCPIndex )
 {
-  if ( static_cast<int>( theGCPIndex ) >= mPoints.size() )
+  if ( static_cast<int>( theGCPIndex ) >= mPoints.numberEnabledPoints() )
   {
     return;
   }
