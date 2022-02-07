@@ -35,40 +35,40 @@ QgsGCPList::QgsGCPList( const QgsGCPList &list )
 
 void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourceCoordinates, QVector<QgsPointXY> &destinationCoordinates, const QgsCoordinateReferenceSystem &targetCrs )
 {
-  sourceCoordinates = QVector<QgsPointXY>( size() );
-  destinationCoordinates = QVector<QgsPointXY>( size() );
-  QgsPointXY transCoords;
-  for ( int i = 0, j = 0; i < sizeAll(); i++ )
-  {
-    QgsGeorefDataPoint *pt = at( i );
-    if ( pt->isEnabled() )
-    {
-      if ( targetCrs.isValid() )
-      {
-        try
-        {
-          transCoords = QgsCoordinateTransform( pt->destinationCrs(), targetCrs,
-                                                QgsProject::instance() ).transform( pt->destinationMapCoords() );
-          destinationCoordinates[j] = transCoords;
-          pt->setTransCoords( transCoords );
-        }
-        catch ( const QgsException & )
-        {
-          destinationCoordinates[j] = pt->destinationMapCoords();
-        }
-      }
-      else
-        destinationCoordinates[j] = pt->destinationMapCoords();
+  const int targetSize = countEnabledPoints();
+  sourceCoordinates.clear();
+  sourceCoordinates.reserve( targetSize );
+  destinationCoordinates.clear();
+  destinationCoordinates.reserve( targetSize );
 
-      sourceCoordinates[j] = pt->sourceCoords();
-      j++;
+  for ( QgsGeorefDataPoint *pt : std::as_const( *this ) )
+  {
+    if ( !pt->isEnabled() )
+      continue;
+
+    sourceCoordinates.push_back( pt->sourceCoords() );
+    if ( targetCrs.isValid() )
+    {
+      try
+      {
+        QgsPointXY transCoords = QgsCoordinateTransform( pt->destinationCrs(), targetCrs,
+                                 QgsProject::instance() ).transform( pt->destinationMapCoords() );
+        destinationCoordinates.push_back( transCoords );
+        pt->setTransCoords( transCoords );
+      }
+      catch ( const QgsException & )
+      {
+        destinationCoordinates.push_back( pt->destinationMapCoords() );
+      }
     }
+    else
+      destinationCoordinates.push_back( pt->destinationMapCoords() );
   }
 }
 
-int QgsGCPList::size() const
+int QgsGCPList::countEnabledPoints() const
 {
-  if ( QList<QgsGeorefDataPoint *>::isEmpty() )
+  if ( isEmpty() )
     return 0;
 
   int s = 0;
@@ -80,11 +80,6 @@ int QgsGCPList::size() const
     ++it;
   }
   return s;
-}
-
-int QgsGCPList::sizeAll() const
-{
-  return QList<QgsGeorefDataPoint *>::size();
 }
 
 QgsGCPList &QgsGCPList::operator =( const QgsGCPList &list )
