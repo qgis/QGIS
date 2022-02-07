@@ -78,7 +78,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
 
   if ( !res )
   {
-    children.append( new QgsErrorItem( this, tr( "Failed to download capabilities" ), mPath + "/error" ) );
+    children.append( new QgsErrorItem( this, mCapabilitiesDownload->lastError(), mPath + "/error" ) );
     return children;
   }
 
