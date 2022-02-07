@@ -46,23 +46,23 @@ void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourceCoordinates, QVect
     if ( !pt->isEnabled() )
       continue;
 
-    sourceCoordinates.push_back( pt->sourceCoords() );
+    sourceCoordinates.push_back( pt->sourcePoint() );
     if ( targetCrs.isValid() )
     {
       try
       {
-        QgsPointXY transCoords = QgsCoordinateTransform( pt->destinationCrs(), targetCrs,
-                                 QgsProject::instance() ).transform( pt->destinationMapCoords() );
+        QgsPointXY transCoords = QgsCoordinateTransform( pt->destinationPointCrs(), targetCrs,
+                                 QgsProject::instance() ).transform( pt->destinationPoint() );
         destinationCoordinates.push_back( transCoords );
         pt->setTransCoords( transCoords );
       }
       catch ( const QgsException & )
       {
-        destinationCoordinates.push_back( pt->destinationMapCoords() );
+        destinationCoordinates.push_back( pt->destinationPoint() );
       }
     }
     else
-      destinationCoordinates.push_back( pt->destinationMapCoords() );
+      destinationCoordinates.push_back( pt->destinationPoint() );
   }
 }
 
