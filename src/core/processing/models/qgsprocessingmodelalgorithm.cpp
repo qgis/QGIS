@@ -98,9 +98,10 @@ QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
   return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
 }
 
-QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const
+QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error ) const
 {
-  auto evaluateSources = [ = ]( const QgsProcessingParameterDefinition * def )->QVariant
+  error.clear();
+  auto evaluateSources = [ =, &error ]( const QgsProcessingParameterDefinition * def )->QVariant
   {
     const QgsProcessingModelChildParameterSources paramSources = child.parameterSources().value( def->name() );
 
@@ -129,6 +130,10 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
         {
           QgsExpression exp( source.expression() );
           paramParts << exp.evaluate( &expressionContext );
+          if ( exp.hasEvalError() )
+          {
+            error = QObject::tr( "Could not evaluate expression for parameter %1 for %2: %3" ).arg( def->name(), child.description(), exp.evalErrorString() );
+          }
           break;
         }
         case QgsProcessingModelChildParameterSource::ExpressionText:
@@ -329,7 +334,11 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
                  << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
       context.setExpressionContext( expContext );
 
-      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
+      QString error;
+      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext, error );
+      if ( !error.isEmpty() )
+        throw QgsProcessingException( error );
+
       if ( feedback && !skipGenericLogging )
         feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
 
