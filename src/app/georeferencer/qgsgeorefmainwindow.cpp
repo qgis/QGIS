@@ -754,7 +754,8 @@ void QgsGeoreferencerMainWindow::localHistogramStretch()
 // Comfort slots
 void QgsGeoreferencerMainWindow::jumpToGCP( uint theGCPIndex )
 {
-  if ( static_cast<int>( theGCPIndex ) >= mPoints.numberEnabledPoints() )
+  // TODO -- probably a bug here!!!! re enabled/not enabled points
+  if ( static_cast<int>( theGCPIndex ) >= mPoints.countEnabledPoints() )
   {
     return;
   }
@@ -763,7 +764,7 @@ void QgsGeoreferencerMainWindow::jumpToGCP( uint theGCPIndex )
   QgsRectangle ext = mCanvas->extent();
 
   QgsPointXY center = ext.center();
-  QgsPointXY new_center = mPoints[theGCPIndex]->sourceCoords();
+  QgsPointXY new_center = mPoints[theGCPIndex]->sourcePoint();
 
   QgsPointXY diff( new_center.x() - center.x(), new_center.y() - center.y() );
   QgsRectangle new_extent( ext.xMinimum() + diff.x(), ext.yMinimum() + diff.y(),
@@ -1324,7 +1325,7 @@ void QgsGeoreferencerMainWindow::saveGCPs()
     points << "mapX,mapY,pixelX,pixelY,enable,dX,dY,residual" << endl;
     for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
     {
-      const QgsPointXY sourcePixel = mGeorefTransform.toSourcePixel( pt->sourceCoords() );
+      const QgsPointXY sourcePixel = mGeorefTransform.toSourcePixel( pt->sourcePoint() );
 
       points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
              .arg( qgsDoubleToString( pt->transCoords().x() ),
@@ -1809,7 +1810,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
     {
       currentGCPStrings << tr( "no" );
     }
-    currentGCPStrings << QString::number( ( *gcpIt )->sourceCoords().x(), 'f', 0 ) << QString::number( ( *gcpIt )->sourceCoords().y(), 'f', 0 ) << QString::number( ( *gcpIt )->transCoords().x(), 'f', 3 )
+    currentGCPStrings << QString::number( ( *gcpIt )->sourcePoint().x(), 'f', 0 ) << QString::number( ( *gcpIt )->sourcePoint().y(), 'f', 0 ) << QString::number( ( *gcpIt )->transCoords().x(), 'f', 3 )
                       <<  QString::number( ( *gcpIt )->transCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
     gcpTableContents << currentGCPStrings;
   }
@@ -1915,7 +1916,7 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
 
   for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
-    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->sourceCoords().x() ).arg( -pt->sourceCoords().y() )
+    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->sourcePoint().x() ).arg( -pt->sourcePoint().y() )
                 .arg( pt->transCoords().x() ).arg( pt->transCoords().y() );
   }
 
@@ -2162,10 +2163,10 @@ bool QgsGeoreferencerMainWindow::equalGCPlists( const QgsGCPList &list1, const Q
   {
     QgsGeorefDataPoint *p1 = list1.at( i );
     QgsGeorefDataPoint *p2 = list2.at( j );
-    if ( p1->sourceCoords() != p2->sourceCoords() )
+    if ( p1->sourcePoint() != p2->sourcePoint() )
       return false;
 
-    if ( p1->destinationMapCoords() != p2->destinationMapCoords() )
+    if ( p1->destinationPoint() != p2->destinationPoint() )
       return false;
   }
 
