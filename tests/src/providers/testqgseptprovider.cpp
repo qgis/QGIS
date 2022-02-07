@@ -484,7 +484,7 @@ void TestQgsEptProvider::testExtraBytesAttributesValues()
   std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( dataPath, QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
   {
-    const float maxErrorInMapCoords =  0.0015207174;
+    const float maxErrorInMapCoords = 0.0015207174f;
     QPolygonF polygon;
     polygon.push_back( QPointF( 527919.2459517354,   6210983.5918774214 ) );
     polygon.push_back( QPointF( 527919.0742796324,   6210983.5918774214 ) );
@@ -564,7 +564,7 @@ void TestQgsEptProvider::testPointCloudIndex()
   QVERIFY( index->pointCount() == 518862 );
   QVERIFY( index->zMin() == 2322 );
   QVERIFY( index->zMax() == 2339 );
-  QVERIFY( index->scale().toVector3D() == QVector3D( 0.00025, 0.00025, 0.00025 ) );
+  QVERIFY( index->scale().toVector3D() == QVector3D( 0.00025f, 0.00025f, 0.00025f ) );
   QVERIFY( index->offset().toVector3D() == QVector3D( 515385, 4918361, 2331 ) );
   QVERIFY( index->span() == 128 );
 
