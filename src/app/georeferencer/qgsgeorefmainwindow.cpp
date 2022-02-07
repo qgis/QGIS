@@ -370,7 +370,7 @@ void QgsGeoreferencerMainWindow::doGeoreference()
 
 bool QgsGeoreferencerMainWindow::getTransformSettings()
 {
-  QgsTransformSettingsDialog d( mRasterFileName, mModifiedRasterFileName, mPoints.size() );
+  QgsTransformSettingsDialog d( mRasterFileName, mModifiedRasterFileName );
   if ( !d.exec() )
   {
     return false;
