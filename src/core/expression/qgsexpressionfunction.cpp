@@ -2464,14 +2464,24 @@ static QVariant fcnDateTimeFromEpoch( const QVariantList &values, const QgsExpre
 
 static QVariant fcnExif( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString filepath = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `exif` requires a value which represents a possible file path" ) );
+    return QVariant();
+  }
   QString tag = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   return !tag.isNull() ? QgsExifTools::readTag( filepath, tag ) : QVariant( QgsExifTools::readTags( filepath ) );
 }
 
 static QVariant fcnExifGeoTag( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString filepath = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `exif_geotag` requires a value which represents a possible file path" ) );
+    return QVariant();
+  }
   bool ok;
   return QVariant::fromValue( QgsGeometry( new QgsPoint( QgsExifTools::getGeoTag( filepath, ok ) ) ) );
 }
@@ -6515,53 +6525,91 @@ static QVariant fcnEnvVar( const QVariantList &values, const QgsExpressionContex
 
 static QVariant fcnBaseFileName( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `base_file_name` requires a value which represents a possible file path" ) );
+    return QVariant();
+  }
   return QFileInfo( file ).completeBaseName();
 }
 
 static QVariant fcnFileSuffix( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `file_suffix` requires a value which represents a possible file path" ) );
+    return QVariant();
+  }
   return QFileInfo( file ).completeSuffix();
 }
 
 static QVariant fcnFileExists( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  return QFileInfo::exists( file );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `file_exists` requires a value which represents a possible file path" ) );
+    return QVariant();
+  }  return QFileInfo::exists( file );
 }
 
 static QVariant fcnFileName( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  return QFileInfo( file ).fileName();
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `file_name` requires a value which represents a possible file path" ) );
+    return QVariant();
+  }  return QFileInfo( file ).fileName();
 }
 
 static QVariant fcnPathIsFile( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `is_file` requires a value which represents a possible file path" ) );
+    return QVariant();
+  }
   return QFileInfo( file ).isFile();
 }
 
 static QVariant fcnPathIsDir( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `is_directory` requires a value which represents a possible file path" ) );
+    return QVariant();
+  }
   return QFileInfo( file ).isDir();
 }
 
 static QVariant fcnFilePath( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `file_path` requires a value which represents a possible file path" ) );
+    return QVariant();
+  }
   return QDir::toNativeSeparators( QFileInfo( file ).path() );
 }
 
 static QVariant fcnFileSize( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `file_size` requires a value which represents a possible file path" ) );
+    return QVariant();
+  }
   return QFileInfo( file ).size();
 }
 
-static QVariant fcnHash( const QString str, const QCryptographicHash::Algorithm algorithm )
+static QVariant fcnHash( const QString &str, const QCryptographicHash::Algorithm algorithm )
 {
   return QString( QCryptographicHash::hash( str.toUtf8(), algorithm ).toHex() );
 }

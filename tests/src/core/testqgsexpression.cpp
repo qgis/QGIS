@@ -1990,35 +1990,43 @@ class TestQgsExpression: public QObject
       QTest::newRow( "base_file_name(NULL)" ) << QStringLiteral( "base_file_name(NULL)" ) << false << QVariant();
       QTest::newRow( "base_file_name('/home/qgis/test.qgs')" ) << QStringLiteral( "base_file_name('/home/qgis/test.qgs')" ) << false << QVariant( "test" );
       QTest::newRow( "base_file_name(points.shp)" ) << QStringLiteral( "base_file_name('%1/points.shp')" ).arg( TEST_DATA_DIR ) << false << QVariant( "points" );
+      QTest::newRow( "base_file_name(map layer)" ) << QStringLiteral( "base_file_name('%1')" ).arg( mPointsLayer->id() ) << false << QVariant( "points" );
       QTest::newRow( "file_exists(NULL)" ) << QStringLiteral( "file_exists(NULL)" ) << false << QVariant();
       QTest::newRow( "file_exists('/home/qgis/test.qgs')" ) << QStringLiteral( "file_exists('/home/qgis/test.qgs')" ) << false << QVariant( false );
       QTest::newRow( "file_exists(points.shp)" ) << QStringLiteral( "file_exists('%1/points.shp')" ).arg( TEST_DATA_DIR ) << false << QVariant( true );
+      QTest::newRow( "file_exists(map layer)" ) << QStringLiteral( "file_exists('%1')" ).arg( mPointsLayer->id() ) << false << QVariant( true );
       QTest::newRow( "file_name(5)" ) << QStringLiteral( "file_name(5)" ) << false << QVariant( "5" );
       QTest::newRow( "file_name(NULL)" ) << QStringLiteral( "file_name(NULL)" ) << false << QVariant();
       QTest::newRow( "file_name('/home/qgis/test.qgs')" ) << QStringLiteral( "file_name('/home/qgis/test.qgs')" ) << false << QVariant( "test.qgs" );
       QTest::newRow( "file_name(points.shp)" ) << QStringLiteral( "file_name('%1/points.shp')" ).arg( TEST_DATA_DIR ) << false << QVariant( "points.shp" );
+      QTest::newRow( "file_name(map layer)" ) << QStringLiteral( "file_name('%1')" ).arg( mPointsLayer->id() ) << false << QVariant( "points.shp" );
       QTest::newRow( "file_path(5)" ) << QStringLiteral( "file_path(5)" ) << false << QVariant( "." );
       QTest::newRow( "file_path(NULL)" ) << QStringLiteral( "file_path(NULL)" ) << false << QVariant();
       QTest::newRow( "file_path('/home/qgis/test.qgs')" ) << QStringLiteral( "file_path('/home/qgis/test.qgs')" ) << false << QVariant( "/home/qgis" );
       QTest::newRow( "file_path(points.shp)" ) << QStringLiteral( "file_path('%1/points.shp')" ).arg( TEST_DATA_DIR ) << false << QVariant( TEST_DATA_DIR );
+      QTest::newRow( "file_path(map layer)" ) << QStringLiteral( "file_path('%1')" ).arg( mPointsLayer->id() ) << false << QVariant( TEST_DATA_DIR );
       QTest::newRow( "file_size(5)" ) << QStringLiteral( "file_size(5)" ) << false << QVariant( 0LL );
       QTest::newRow( "file_size(NULL)" ) << QStringLiteral( "file_size(NULL)" ) << false << QVariant();
       QTest::newRow( "file_size('/home/qgis/test.qgs')" ) << QStringLiteral( "file_size('/home/qgis/test.qgs')" ) << false << QVariant( 0LL );
       QTest::newRow( "file_size(points.shp)" ) << QStringLiteral( "file_size('%1/points.shp')" ).arg( TEST_DATA_DIR ) << false << QVariant( 576LL );
+      QTest::newRow( "file_size(map layer)" ) << QStringLiteral( "file_size('%1')" ).arg( mPointsLayer->id() ) << false << QVariant( 576LL );
       QTest::newRow( "file_suffix(5)" ) << QStringLiteral( "file_suffix(5)" ) << false << QVariant( "" );
       QTest::newRow( "file_suffix(NULL)" ) << QStringLiteral( "file_suffix(NULL)" ) << false << QVariant();
       QTest::newRow( "file_suffix('/home/qgis/test.qgs')" ) << QStringLiteral( "file_suffix('/home/qgis/test.qgs')" ) << false << QVariant( "qgs" );
       QTest::newRow( "file_suffix(points.shp)" ) << QStringLiteral( "file_suffix('%1/points.shp')" ).arg( TEST_DATA_DIR ) << false << QVariant( "shp" );
+      QTest::newRow( "file_suffix(map layer)" ) << QStringLiteral( "file_suffix('%1')" ).arg( mPointsLayer->id() ) << false << QVariant( "shp" );
       QTest::newRow( "is_directory(5)" ) << QStringLiteral( "is_directory(5)" ) << false << QVariant( false );
       QTest::newRow( "is_directory(NULL)" ) << QStringLiteral( "is_directory(NULL)" ) << false << QVariant();
       QTest::newRow( "is_directory('/home/qgis/test.qgs')" ) << QStringLiteral( "is_directory('/home/qgis/test.qgs')" ) << false << QVariant( false );
       QTest::newRow( "is_directory(points.shp)" ) << QStringLiteral( "is_directory('%1/points.shp')" ).arg( TEST_DATA_DIR ) << false << QVariant( false );
       QTest::newRow( "is_directory(valid)" ) << QStringLiteral( "is_directory('%1')" ).arg( TEST_DATA_DIR ) << false << QVariant( true );
+      QTest::newRow( "is_directory(map layer)" ) << QStringLiteral( "is_directory('%1')" ).arg( mPointsLayer->id() ) << false << QVariant( false );
       QTest::newRow( "is_file(5)" ) << QStringLiteral( "is_file(5)" ) << false << QVariant( false );
       QTest::newRow( "is_file(NULL)" ) << QStringLiteral( "is_file(NULL)" ) << false << QVariant();
       QTest::newRow( "is_file('/home/qgis/test.qgs')" ) << QStringLiteral( "is_file('/home/qgis/test.qgs')" ) << false << QVariant( false );
       QTest::newRow( "is_file(points.shp)" ) << QStringLiteral( "is_file('%1/points.shp')" ).arg( TEST_DATA_DIR ) << false << QVariant( true );
       QTest::newRow( "is_file(valid)" ) << QStringLiteral( "is_file('%1')" ).arg( TEST_DATA_DIR ) << false << QVariant( false );
+      QTest::newRow( "is_file(map layer)" ) << QStringLiteral( "is_file('%1')" ).arg( mPointsLayer->id() ) << false << QVariant( true );
 
       // hash functions
       QTest::newRow( "md5(NULL)" ) << QStringLiteral( "md5(NULL)" ) << false << QVariant();
@@ -4295,6 +4303,33 @@ class TestQgsExpression: public QObject
       // TODO -- probably should flag an error here?
       QVERIFY( !exp.hasEvalError() );
 #endif
+    }
+
+    void testGetFilePathValue()
+    {
+      QgsExpression exp;
+      // NULL value
+      QString path = QgsExpressionUtils::getFilePathValue( QVariant(), &exp );
+      QVERIFY( path.isEmpty() );
+      QVERIFY( !exp.hasEvalError() );
+
+      // value which CANNOT be a file path
+      path = QgsExpressionUtils::getFilePathValue( QVariant::fromValue( QgsGeometry() ), &exp );
+      QVERIFY( path.isEmpty() );
+      QVERIFY( exp.hasEvalError() );
+      QCOMPARE( exp.evalErrorString(), QStringLiteral( "Cannot convert value to a file path" ) );
+
+      // good value
+      exp = QgsExpression();
+      path = QgsExpressionUtils::getFilePathValue( QVariant::fromValue( QStringLiteral( "/home/me/mine.txt" ) ), &exp );
+      QCOMPARE( path, QStringLiteral( "/home/me/mine.txt" ) );
+      QVERIFY( !exp.hasEvalError() );
+
+      // with map layer pointer -- should use layer path
+      exp = QgsExpression();
+      path = QgsExpressionUtils::getFilePathValue( QVariant::fromValue( mPointsLayer ), &exp );
+      QCOMPARE( path, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) );
+      QVERIFY( !exp.hasEvalError() );
     }
 
     void test_env()
