@@ -4116,7 +4116,7 @@ QgsProcessingFieldPanelWidget::QgsProcessingFieldPanelWidget( QWidget *parent, c
 
   if ( mParam )
   {
-    mLineEdit->setText( tr( "%1 fields selected" ).arg( 0 ) );
+    mLineEdit->setText( tr( "%n field(s) selected", nullptr, 0 ) );
   }
 
   connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingFieldPanelWidget::showDialog );
@@ -4188,7 +4188,7 @@ void QgsProcessingFieldPanelWidget::updateSummaryText()
 
   if ( mValue.empty() )
   {
-    mLineEdit->setText( tr( "%1 fields selected" ).arg( 0 ) );
+    mLineEdit->setText( tr( "%n field(s) selected", nullptr, 0 ) );
   }
   else
   {
@@ -4203,7 +4203,7 @@ void QgsProcessingFieldPanelWidget::updateSummaryText()
     if ( concatenated.length() < 100 )
       mLineEdit->setText( concatenated );
     else
-      mLineEdit->setText( tr( "%1 fields selected" ).arg( mValue.count() ) );
+      mLineEdit->setText( tr( "%n field(s) selected", nullptr, mValue.count() ) );
   }
 }
 
@@ -6375,7 +6375,7 @@ QgsProcessingRasterBandPanelWidget::QgsProcessingRasterBandPanelWidget( QWidget 
 
   if ( mParam )
   {
-    mLineEdit->setText( tr( "%1 bands selected" ).arg( 0 ) );
+    mLineEdit->setText( tr( "%n band(s) selected", nullptr, 0 ) );
   }
 
   connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingRasterBandPanelWidget::showDialog );
@@ -6450,7 +6450,7 @@ void QgsProcessingRasterBandPanelWidget::showDialog()
 void QgsProcessingRasterBandPanelWidget::updateSummaryText()
 {
   if ( mParam )
-    mLineEdit->setText( tr( "%1 bands selected" ).arg( mValue.count() ) );
+    mLineEdit->setText( tr( "%n band(s) selected", nullptr, mValue.count() ) );
 }
 
 
@@ -6824,7 +6824,7 @@ QgsProcessingMultipleLayerPanelWidget::QgsProcessingMultipleLayerPanelWidget( QW
 
   if ( mParam )
   {
-    mLineEdit->setText( tr( "%1 inputs selected" ).arg( 0 ) );
+    mLineEdit->setText( tr( "%n input(s) selected", nullptr, 0 ) );
   }
 
   connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingMultipleLayerPanelWidget::showDialog );
@@ -7041,7 +7041,7 @@ void QgsProcessingMultipleLayerPanelWidget::showDialog()
 void QgsProcessingMultipleLayerPanelWidget::updateSummaryText()
 {
   if ( mParam )
-    mLineEdit->setText( tr( "%1 inputs selected" ).arg( mValue.count() ) );
+    mLineEdit->setText( tr( "%n input(s) selected", nullptr, mValue.count() ) );
 }
 
 //
