@@ -88,9 +88,13 @@ class TestQgsPointCloudExpression: public QObject
     void testCreateBlock();
     void testParsing_data();
     void testParsing();
+    void testEvaluating_data();
+    void testEvaluating();
 
   private:
     QString mTestDataDir;
+    QVector<QVariantMap> mPoints;
+    QgsPointCloudBlock *mBlock = nullptr;;
 };
 
 QgsPointCloudBlock *TestQgsPointCloudExpression::createPointCloudBlock( const QVector<QVariantMap> &points, const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudAttributeCollection &attributes )
@@ -160,25 +164,8 @@ void TestQgsPointCloudExpression::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::registerOgrDrivers();
-}
 
-void TestQgsPointCloudExpression::cleanupTestCase()
-{
-  QgsApplication::exitQgis();
-}
 
-void TestQgsPointCloudExpression::init()
-{
-
-}
-
-void TestQgsPointCloudExpression::cleanup()
-{
-
-}
-
-void TestQgsPointCloudExpression::testCreateBlock()
-{
   // Create all attributes
   QgsPointCloudAttributeCollection attributes;
   attributes.push_back( QgsPointCloudAttribute( QLatin1String( "X" ), QgsPointCloudAttribute::Int32 ) );
@@ -199,47 +186,64 @@ void TestQgsPointCloudExpression::testCreateBlock()
   attributes.push_back( QgsPointCloudAttribute( QLatin1String( "Blue" ), QgsPointCloudAttribute::UShort ) );
 
   // Generate some points with predefined data
-  QVariantMap p1, p2, p3;
-  p1[ QLatin1String( "X" ) ] = 1001.1;
-  p1[ QLatin1String( "Y" ) ] = 2002.2;
-  p1[ QLatin1String( "Z" ) ] = 3003.3;
-  p1[ QLatin1String( "Classification" ) ] = 1;
-  p1[ QLatin1String( "Intensity" ) ] = 2;
-  p1[ QLatin1String( "ReturnNumber" ) ] = 3;
-  p1[ QLatin1String( "NumberOfReturns" ) ] = 4;
-  p1[ QLatin1String( "ScanDirectionFlag" ) ] = 5;
-  p1[ QLatin1String( "EdgeOfFlightLine" ) ] = 6;
-  p1[ QLatin1String( "ScanAngleRank" ) ] = 7;
-  p1[ QLatin1String( "UserData" ) ] = 8;
-  p1[ QLatin1String( "PointSourceId" ) ] = 9;
-  p1[ QLatin1String( "GpsTime" ) ] = 10;
-  p1[ QLatin1String( "Red" ) ] = 11;
-  p1[ QLatin1String( "Green" ) ] = 12;
-  p1[ QLatin1String( "Blue" ) ] = 13;
+  QVariantMap p0, p1, p2, p3, p4;
+  p0[ QLatin1String( "X" ) ] = 1001.1;
+  p0[ QLatin1String( "Y" ) ] = 2002.2;
+  p0[ QLatin1String( "Z" ) ] = 3003.3;
+  p0[ QLatin1String( "Classification" ) ] = 1;
+  p0[ QLatin1String( "Intensity" ) ] = 2;
+  p0[ QLatin1String( "ReturnNumber" ) ] = 3;
+  p0[ QLatin1String( "NumberOfReturns" ) ] = 4;
+  p0[ QLatin1String( "ScanDirectionFlag" ) ] = 5;
+  p0[ QLatin1String( "EdgeOfFlightLine" ) ] = 6;
+  p0[ QLatin1String( "ScanAngleRank" ) ] = 7;
+  p0[ QLatin1String( "UserData" ) ] = 8;
+  p0[ QLatin1String( "PointSourceId" ) ] = 9;
+  p0[ QLatin1String( "GpsTime" ) ] = 10;
+  p0[ QLatin1String( "Red" ) ] = 11;
+  p0[ QLatin1String( "Green" ) ] = 12;
+  p0[ QLatin1String( "Blue" ) ] = 13;
 
-  p2[ QLatin1String( "X" ) ] = 1002.2;
-  p2[ QLatin1String( "Y" ) ] = 2003.3;
-  p2[ QLatin1String( "Z" ) ] = 3004.4;
-  p2[ QLatin1String( "Classification" ) ] = 2;
-  p2[ QLatin1String( "Intensity" ) ] = 3;
-  p2[ QLatin1String( "ReturnNumber" ) ] = 4;
-  p2[ QLatin1String( "NumberOfReturns" ) ] = 5;
-  p2[ QLatin1String( "ScanDirectionFlag" ) ] = 6;
-  p2[ QLatin1String( "EdgeOfFlightLine" ) ] = 7;
-  p2[ QLatin1String( "ScanAngleRank" ) ] = 8;
-  p2[ QLatin1String( "UserData" ) ] = 9;
-  p2[ QLatin1String( "PointSourceId" ) ] = 10;
-  p2[ QLatin1String( "GpsTime" ) ] = 11;
-  p2[ QLatin1String( "Red" ) ] = 12;
-  p2[ QLatin1String( "Green" ) ] = 13;
-  p2[ QLatin1String( "Blue" ) ] = 14;
+  p1[ QLatin1String( "X" ) ] = 1002.2;
+  p1[ QLatin1String( "Y" ) ] = 2003.3;
+  p1[ QLatin1String( "Z" ) ] = 3004.4;
+  p1[ QLatin1String( "Classification" ) ] = 2;
+  p1[ QLatin1String( "Intensity" ) ] = 3;
+  p1[ QLatin1String( "ReturnNumber" ) ] = 4;
+  p1[ QLatin1String( "NumberOfReturns" ) ] = 5;
+  p1[ QLatin1String( "ScanDirectionFlag" ) ] = 6;
+  p1[ QLatin1String( "EdgeOfFlightLine" ) ] = 7;
+  p1[ QLatin1String( "ScanAngleRank" ) ] = 8;
+  p1[ QLatin1String( "UserData" ) ] = 9;
+  p1[ QLatin1String( "PointSourceId" ) ] = 10;
+  p1[ QLatin1String( "GpsTime" ) ] = 11;
+  p1[ QLatin1String( "Red" ) ] = 12;
+  p1[ QLatin1String( "Green" ) ] = 13;
+  p1[ QLatin1String( "Blue" ) ] = 14;
 
-  p3[ QLatin1String( "X" ) ] = 1003.3;
-  p3[ QLatin1String( "Y" ) ] = 2004.4;
-  p3[ QLatin1String( "Z" ) ] = 3005.5;
-  p3[ QLatin1String( "Classification" ) ] = 3;
+  p2[ QLatin1String( "X" ) ] = 1003.3;
+  p2[ QLatin1String( "Y" ) ] = 2004.4;
+  p2[ QLatin1String( "Z" ) ] = 3005.5;
+  p2[ QLatin1String( "Classification" ) ] = 3;
+  p2[ QLatin1String( "Intensity" ) ] = 4;
+  p2[ QLatin1String( "ReturnNumber" ) ] = 5;
+  p2[ QLatin1String( "NumberOfReturns" ) ] = 6;
+  p2[ QLatin1String( "ScanDirectionFlag" ) ] = 7;
+  p2[ QLatin1String( "EdgeOfFlightLine" ) ] = 8;
+  p2[ QLatin1String( "ScanAngleRank" ) ] = 9;
+  p2[ QLatin1String( "UserData" ) ] = 10;
+  p2[ QLatin1String( "PointSourceId" ) ] = 11;
+  p2[ QLatin1String( "GpsTime" ) ] = 12;
+  p2[ QLatin1String( "Red" ) ] = 13;
+  p2[ QLatin1String( "Green" ) ] = 14;
+  p2[ QLatin1String( "Blue" ) ] = 15;
+
+  p3[ QLatin1String( "X" ) ] = 1004.4;
+  p3[ QLatin1String( "Y" ) ] = 2005.5;
+  p3[ QLatin1String( "Z" ) ] = 3006.6;
+  p3[ QLatin1String( "Classification" ) ] = 4;
   p3[ QLatin1String( "Intensity" ) ] = 4;
-  p3[ QLatin1String( "ReturnNumber" ) ] = 5;
+  p3[ QLatin1String( "ReturnNumber" ) ] = 6;
   p3[ QLatin1String( "NumberOfReturns" ) ] = 6;
   p3[ QLatin1String( "ScanDirectionFlag" ) ] = 7;
   p3[ QLatin1String( "EdgeOfFlightLine" ) ] = 8;
@@ -251,21 +255,60 @@ void TestQgsPointCloudExpression::testCreateBlock()
   p3[ QLatin1String( "Green" ) ] = 14;
   p3[ QLatin1String( "Blue" ) ] = 15;
 
-  QVector<QVariantMap> points;
-  points << p1 << p2 << p3;
+  p4[ QLatin1String( "X" ) ] = 1005.5;
+  p4[ QLatin1String( "Y" ) ] = 2006.6;
+  p4[ QLatin1String( "Z" ) ] = 3007.7;
+  p4[ QLatin1String( "Classification" ) ] = 1;
+  p4[ QLatin1String( "Intensity" ) ] = 4;
+  p4[ QLatin1String( "ReturnNumber" ) ] = 7;
+  p4[ QLatin1String( "NumberOfReturns" ) ] = 7;
+  p4[ QLatin1String( "ScanDirectionFlag" ) ] = 7;
+  p4[ QLatin1String( "EdgeOfFlightLine" ) ] = 8;
+  p4[ QLatin1String( "ScanAngleRank" ) ] = 9;
+  p4[ QLatin1String( "UserData" ) ] = 10;
+  p4[ QLatin1String( "PointSourceId" ) ] = 11;
+  p4[ QLatin1String( "GpsTime" ) ] = 12;
+  p4[ QLatin1String( "Red" ) ] = 13;
+  p4[ QLatin1String( "Green" ) ] = 14;
+  p4[ QLatin1String( "Blue" ) ] = 15;
+  mPoints << p0 << p1 << p2 << p3 << p4;
 
   // Also define scale and offset for x/y/z in the block
   QgsVector3D scale( 0.01, 0.01, 0.01 );
   QgsVector3D offset( 1000, 2000, 3000 );
 
-  QgsPointCloudBlock *block = createPointCloudBlock( points, scale, offset, attributes );
+  mBlock = createPointCloudBlock( mPoints, scale, offset, attributes );
+}
+
+void TestQgsPointCloudExpression::cleanupTestCase()
+{
+  delete mBlock;
+  QgsApplication::exitQgis();
+}
+
+void TestQgsPointCloudExpression::init()
+{
+
+}
+
+void TestQgsPointCloudExpression::cleanup()
+{
+
+}
+
+void TestQgsPointCloudExpression::testCreateBlock()
+{
+  const QgsVector3D scale = mBlock->scale();
+  const QgsVector3D offset = mBlock->offset();
 
   // Check that the block has the correct data
   QVariantMap map;
   int i = 0;
-  for ( const auto &p : points )
+  for ( const auto &p : mPoints )
   {
-    map = QgsPointCloudAttribute::getAttributeMap( block->data(), i * attributes.pointRecordSize(), attributes );
+    map = QgsPointCloudAttribute::getAttributeMap( mBlock->data(),
+          i * mBlock->attributes().pointRecordSize(),
+          mBlock->attributes() );
 
     QCOMPARE( map[ "X" ].toDouble() * scale.x() + offset.x(), p[ "X" ] );
     QCOMPARE( map[ "Y" ].toDouble() * scale.y() + offset.y(), p[ "Y" ] );
@@ -285,7 +328,6 @@ void TestQgsPointCloudExpression::testCreateBlock()
     QCOMPARE( map[ "Blue" ], p[ "Blue" ] );
     ++i;
   }
-  delete block;
 }
 
 void TestQgsPointCloudExpression::testParsing_data()
@@ -310,6 +352,8 @@ void TestQgsPointCloudExpression::testParsing_data()
   QTest::newRow( "float literal" ) << "1.23" << true;
   QTest::newRow( "attribute reference" ) << "Classification" << true;
   QTest::newRow( "quoted attribute" ) << "\"Classification\"" << true;
+  QTest::newRow( "unknown attribute" ) << "Jujufication" << true;
+  QTest::newRow( "unknown quoted attribute" ) << "\"Jujufication\"" << true;
   QTest::newRow( "unary minus" ) << "-(-3)" << true;
   QTest::newRow( "operator IN" ) << "n in (a,b,c)" << true;
   QTest::newRow( "pow" ) << "2 ^ 8" << true;
@@ -333,6 +377,121 @@ void TestQgsPointCloudExpression::testParsing()
   QCOMPARE( !exp.hasParserError(), valid );
 }
 
+void TestQgsPointCloudExpression::testEvaluating_data()
+{
+  QTest::addColumn<QString>( "string" );
+  QTest::addColumn<int>( "point_n" );
+  QTest::addColumn<bool>( "valid" );
+
+  QTest::newRow( "geom eq" ) << "X = 1001.1" << 0 << true;
+  QTest::newRow( "geom eq" ) << "X = 1001.1" << 1 << false;
+  QTest::newRow( "geom eq" ) << "X = 1001.1" << 2 << false;
+  QTest::newRow( "geom eq" ) << "X = 1001.1" << 3 << false;
+  QTest::newRow( "geom eq" ) << "X = 1001.1" << 4 << false;
+
+  QTest::newRow( "single attribute eq" ) << "Classification = 1" << 0 << true;
+  QTest::newRow( "single attribute eq" ) << "Classification = 1" << 1 << false;
+  QTest::newRow( "single attribute eq" ) << "Classification = 1" << 2 << false;
+  QTest::newRow( "single attribute eq" ) << "Classification = 1" << 3 << false;
+  QTest::newRow( "single attribute eq" ) << "Classification = 1" << 4 << true;
+
+  QTest::newRow( "single attribute lt" ) << "Z < 3004.5" << 0 << true;
+  QTest::newRow( "single attribute lt" ) << "Z < 3004.5" << 1 << true;
+  QTest::newRow( "single attribute lt" ) << "Z < 3004.5" << 2 << false;
+  QTest::newRow( "single attribute lt" ) << "Z < 3004.5" << 3 << false;
+  QTest::newRow( "single attribute lt" ) << "Z < 3004.5" << 4 << false;
+
+  QTest::newRow( "single attribute gt" ) << "Z > 3004.5" << 0 << false;
+  QTest::newRow( "single attribute gt" ) << "Z > 3004.5" << 1 << false;
+  QTest::newRow( "single attribute gt" ) << "Z > 3004.5" << 2 << true;
+  QTest::newRow( "single attribute gt" ) << "Z > 3004.5" << 3 << true;
+  QTest::newRow( "single attribute gt" ) << "Z > 3004.5" << 4 << true;
+
+  QTest::newRow( "single attribute lteq" ) << "Y <= 2005" << 0 << true;
+  QTest::newRow( "single attribute lteq" ) << "Y <= 2005" << 1 << true;
+  QTest::newRow( "single attribute lteq" ) << "Y <= 2005" << 2 << true;
+  QTest::newRow( "single attribute lteq" ) << "Y <= 2005" << 3 << false;
+  QTest::newRow( "single attribute lteq" ) << "Y <= 2005" << 4 << false;
+
+  QTest::newRow( "single attribute gteq" ) << "Y >= 2005" << 0 << false;
+  QTest::newRow( "single attribute gteq" ) << "Y >= 2005" << 1 << false;
+  QTest::newRow( "single attribute gteq" ) << "Y >= 2005" << 2 << false;
+  QTest::newRow( "single attribute gteq" ) << "Y >= 2005" << 3 << true;
+  QTest::newRow( "single attribute gteq" ) << "Y >= 2005" << 4 << true;
+
+  QTest::newRow( "single attribute neq" ) << "Classification != 1" << 0 << false;
+  QTest::newRow( "single attribute neq" ) << "Classification != 1" << 1 << true;
+  QTest::newRow( "single attribute neq" ) << "Classification != 1" << 2 << true;
+  QTest::newRow( "single attribute neq" ) << "Classification != 1" << 3 << true;
+  QTest::newRow( "single attribute neq" ) << "Classification != 1" << 4 << false;
+
+  QTest::newRow( "single attribute in()" ) << "Classification in (1, 3, 5)" << 0 << true;
+  QTest::newRow( "single attribute in()" ) << "Classification in (1, 3, 5)" << 1 << false;
+  QTest::newRow( "single attribute in()" ) << "Classification in (1, 3, 5)" << 2 << true;
+  QTest::newRow( "single attribute in()" ) << "Classification in (1, 3, 5)" << 3 << false;
+  QTest::newRow( "single attribute in()" ) << "Classification in (1, 3, 5)" << 4 << true;
+
+  QTest::newRow( "single attribute not in()" ) << "Classification not in (1, 3, 5)" << 0 << false;
+  QTest::newRow( "single attribute not in()" ) << "Classification not in (1, 3, 5)" << 1 << true;
+  QTest::newRow( "single attribute not in()" ) << "Classification not in (1, 3, 5)" << 2 << false;
+  QTest::newRow( "single attribute not in()" ) << "Classification not in (1, 3, 5)" << 3 << true;
+  QTest::newRow( "single attribute not in()" ) << "Classification not in (1, 3, 5)" << 4 << false;
+
+  QTest::newRow( "single attribute arithmetics" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 0 << false;
+  QTest::newRow( "single attribute arithmetics" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 1 << false;
+  QTest::newRow( "single attribute arithmetics" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 2 << true;
+  QTest::newRow( "single attribute arithmetics" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 3 << true;
+  QTest::newRow( "single attribute arithmetics" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 4 << true;
+
+  QTest::newRow( "multiple attributes AND" ) << "Classification = 1 and X < 1002" << 0 << true;
+  QTest::newRow( "multiple attributes AND" ) << "Classification = 1 and X < 1002" << 1 << false;
+  QTest::newRow( "multiple attributes AND" ) << "Classification = 1 and X < 1002" << 2 << false;
+  QTest::newRow( "multiple attributes AND" ) << "Classification = 1 and X < 1002" << 3 << false;
+  QTest::newRow( "multiple attributes AND" ) << "Classification = 1 and X < 1002" << 4 << false;
+
+  QTest::newRow( "multiple attributes OR" ) << "Classification = 1 or ReturnNumber = 4" << 0 << true;
+  QTest::newRow( "multiple attributes OR" ) << "Classification = 1 or ReturnNumber = 4" << 1 << true;
+  QTest::newRow( "multiple attributes OR" ) << "Classification = 1 or ReturnNumber = 4" << 2 << false;
+  QTest::newRow( "multiple attributes OR" ) << "Classification = 1 or ReturnNumber = 4" << 3 << false;
+  QTest::newRow( "multiple attributes OR" ) << "Classification = 1 or ReturnNumber = 4" << 4 << true;
+
+  QTest::newRow( "multiple attributes NOT" ) << "not Classification = 1" << 0 << false;
+  QTest::newRow( "multiple attributes NOT" ) << "not Classification = 1" << 1 << true;
+  QTest::newRow( "multiple attributes NOT" ) << "not Classification = 1" << 2 << true;
+  QTest::newRow( "multiple attributes NOT" ) << "not Classification = 1" << 3 << true;
+  QTest::newRow( "multiple attributes NOT" ) << "not Classification = 1" << 4 << false;
+
+  QTest::newRow( "multiple attributes AND/OR/NOT" ) << "Classification = 1 and X < 1005 or Z = 3004.4" << 0 << true;
+  QTest::newRow( "multiple attributes AND/OR/NOT" ) << "Classification = 1 and X < 1005 or Z = 3004.4" << 1 << true;
+  QTest::newRow( "multiple attributes AND/OR/NOT" ) << "Classification = 1 and X < 1005 or Z = 3004.4" << 2 << false;
+  QTest::newRow( "multiple attributes AND/OR/NOT" ) << "Classification = 1 and X < 1005 or Z = 3004.4" << 3 << false;
+  QTest::newRow( "multiple attributes AND/OR/NOT" ) << "Classification = 1 and X < 1005 or Z = 3004.4" << 4 << false;
+
+  QTest::newRow( "multiple attributes compared" ) << "ReturnNumber = NumberOfReturns" << 0 << false;
+  QTest::newRow( "multiple attributes compared" ) << "ReturnNumber = NumberOfReturns" << 1 << false;
+  QTest::newRow( "multiple attributes compared" ) << "ReturnNumber = NumberOfReturns" << 2 << false;
+  QTest::newRow( "multiple attributes compared" ) << "ReturnNumber = NumberOfReturns" << 3 << true;
+  QTest::newRow( "multiple attributes compared" ) << "ReturnNumber = NumberOfReturns" << 4 << true;
+
+  QTest::newRow( "multiple attributes compared arithmetics" ) << "ReturnNumber = NumberOfReturns -1" << 0 << true;
+  QTest::newRow( "multiple attributes compared arithmetics" ) << "ReturnNumber = NumberOfReturns -1" << 1 << true;
+  QTest::newRow( "multiple attributes compared arithmetics" ) << "ReturnNumber = NumberOfReturns -1" << 2 << true;
+  QTest::newRow( "multiple attributes compared arithmetics" ) << "ReturnNumber = NumberOfReturns -1" << 3 << false;
+  QTest::newRow( "multiple attributes compared arithmetics" ) << "ReturnNumber = NumberOfReturns -1" << 4 << false;
+
+}
+
+void TestQgsPointCloudExpression::testEvaluating()
+{
+  QFETCH( QString, string );
+  QFETCH( int, point_n );
+  QFETCH( bool, valid );
+
+  QgsPointcloudExpression exp( string );
+  exp.prepare( mBlock );
+
+  QVERIFY( valid ? exp.evaluate( point_n ) != 0. : exp.evaluate( point_n ) == 0. );
+}
 
 QGSTEST_MAIN( TestQgsPointCloudExpression )
 #include "testqgspointcloudexpression.moc"
