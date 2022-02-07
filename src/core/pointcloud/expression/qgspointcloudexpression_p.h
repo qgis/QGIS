@@ -25,18 +25,18 @@
 ///@cond
 
 /**
- * This class exists only for implicit sharing of QgsPointcloudExpression
+ * This class exists only for implicit sharing of QgsPointCloudExpression
  * and is not part of the public API.
  * It should be considered an implementation detail.
  */
-class QgsPointcloudExpressionPrivate
+class QgsPointCloudExpressionPrivate
 {
   public:
-    QgsPointcloudExpressionPrivate()
+    QgsPointCloudExpressionPrivate()
       : ref( 1 )
     {}
 
-    QgsPointcloudExpressionPrivate( const QgsPointcloudExpressionPrivate &other )
+    QgsPointCloudExpressionPrivate( const QgsPointCloudExpressionPrivate &other )
       : ref( 1 )
       , mRootNode( other.mRootNode ? other.mRootNode->clone() : nullptr )
       , mParserErrorString( other.mParserErrorString )
@@ -45,26 +45,26 @@ class QgsPointcloudExpressionPrivate
       , mExp( other.mExp )
     {}
 
-    ~QgsPointcloudExpressionPrivate()
+    ~QgsPointCloudExpressionPrivate()
     {
       delete mRootNode;
     }
 
     QAtomicInt ref;
 
-    QgsPointcloudExpressionNode *mRootNode = nullptr;
+    QgsPointCloudExpressionNode *mRootNode = nullptr;
 
     QString mParserErrorString;
     QString mEvalErrorString;
 
-    QList<QgsPointcloudExpression::ParserError> mParserErrors;
+    QList<QgsPointCloudExpression::ParserError> mParserErrors;
 
     QString mExp;
 
     //! Whether prepare() has been called before evaluate()
     bool mIsPrepared = false;
 
-    QgsPointcloudExpressionPrivate &operator= ( const QgsPointcloudExpressionPrivate & ) = delete;
+    QgsPointCloudExpressionPrivate &operator= ( const QgsPointCloudExpressionPrivate & ) = delete;
 };
 
 ///@endcond

@@ -315,7 +315,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, 
 
 
 template<typename FileType>
-QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, const QgsPointcloudExpression &expression )
+QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, const QgsPointCloudExpression &expression )
 {
   Q_UNUSED( attributes );
   Q_UNUSED( _scale );
@@ -480,7 +480,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   );
 
   int skippedPoints = 0;
-  QgsPointcloudExpression expr( expression );
+  QgsPointCloudExpression expr( expression );
   bool prep = expr.prepare( block );
   for ( size_t i = 0 ; i < count ; i ++ )
   {
@@ -614,7 +614,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes,
     const QgsVector3D &scale, const QgsVector3D &offset,
-    const QgsPointcloudExpression &expression )
+    const QgsPointCloudExpression &expression )
 {
   const QByteArray arr = filename.toUtf8();
   std::ifstream file( arr.constData(), std::ios::binary );
@@ -628,7 +628,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayDat
     const QgsVector3D &scale, const QgsVector3D &offset )
 {
   std::istringstream file( byteArrayData.toStdString() );
-  return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes, scale, offset, QgsPointcloudExpression() );
+  return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes, scale, offset, QgsPointCloudExpression() );
 }
 
 ///@endcond

@@ -49,12 +49,12 @@ class CORE_EXPORT QgsPointCloudRequest
     //! Set attributes filter in the request
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 
-    QgsPointcloudExpression filterExpression() const;
-    void setFilterExpression( const QgsPointcloudExpression &expression );
+    QgsPointCloudExpression filterExpression() const;
+    void setFilterExpression( const QgsPointCloudExpression &expression );
 
   private:
     QgsPointCloudAttributeCollection mAttributes;
-    QgsPointcloudExpression mFilterExpression;
+    QgsPointCloudExpression mFilterExpression;
 };
 
 #endif // QGSPOINTCLOUDREQUEST_H

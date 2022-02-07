@@ -45,9 +45,9 @@ extern int pointcloud_lex(YYSTYPE* yylval_param, YYLTYPE* yyloc, yyscan_t yyscan
 extern YY_BUFFER_STATE pointcloud__scan_string(const char* buffer, yyscan_t scanner);
 
 /** returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
-    (interface function to be called from QgsPointcloudExpression)
+    (interface function to be called from QgsPointCloudExpression)
   */
-QgsPointcloudExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg, QList<QgsPointcloudExpression::ParserError>& parserError);
+QgsPointCloudExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg, QList<QgsPointCloudExpression::ParserError>& parserError);
 
 /** error handler for bison */
 void pointcloud_error(YYLTYPE* yyloc, expression_parser_context* parser_ctx, const char* msg);
@@ -58,12 +58,12 @@ struct expression_parser_context
   yyscan_t flex_scanner;
 
   // List of all errors.
-  QList<QgsPointcloudExpression::ParserError> parserErrors;
+  QList<QgsPointCloudExpression::ParserError> parserErrors;
   QString errorMsg;
   // Current parser error.
-  QgsPointcloudExpression::ParserError::ParserErrorType currentErrorType = QgsPointcloudExpression::ParserError::Unknown;
+  QgsPointCloudExpression::ParserError::ParserErrorType currentErrorType = QgsPointCloudExpression::ParserError::Unknown;
   // root node of the expression
-  QgsPointcloudExpressionNode* rootNode;
+  QgsPointCloudExpressionNode* rootNode;
 };
 
 #define scanner parser_ctx->flex_scanner
@@ -71,9 +71,9 @@ struct expression_parser_context
 // we want verbose error messages
 #define YYERROR_VERBOSE 1
 
-#define BINOP(x, y, z)  new QgsPointcloudExpressionNodeBinaryOperator(x, y, z)
+#define BINOP(x, y, z)  new QgsPointCloudExpressionNodeBinaryOperator(x, y, z)
 
-void addParserLocation(YYLTYPE* yyloc, QgsPointcloudExpressionNode *node)
+void addParserLocation(YYLTYPE* yyloc, QgsPointCloudExpressionNode *node)
 {
   node->parserFirstLine = yyloc->first_line;
   node->parserFirstColumn = yyloc->first_column;
@@ -91,16 +91,16 @@ void addParserLocation(YYLTYPE* yyloc, QgsPointcloudExpressionNode *node)
 
 %union
 {
-  QgsPointcloudExpressionNode* node;
-  QgsPointcloudExpressionNode::NodeList* nodelist;
-  QgsPointcloudExpressionNode::NamedNode* namednode;
+  QgsPointCloudExpressionNode* node;
+  QgsPointCloudExpressionNode::NodeList* nodelist;
+  QgsPointCloudExpressionNode::NamedNode* namednode;
   double numberFloat;
   int    numberInt;
   qlonglong numberInt64;
   bool   boolVal;
   QString* text;
-  QgsPointcloudExpressionNodeBinaryOperator::BinaryOperator b_op;
-  QgsPointcloudExpressionNodeUnaryOperator::UnaryOperator u_op;
+  QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator b_op;
+  QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator u_op;
 }
 
 %start root
@@ -193,26 +193,26 @@ expression:
     | expression DIV expression       { $$ = BINOP($2, $1, $3); }
     | expression MOD expression       { $$ = BINOP($2, $1, $3); }
     | expression POW expression       { $$ = BINOP($2, $1, $3); }
-    | NOT expression                  { $$ = new QgsPointcloudExpressionNodeUnaryOperator($1, $2); }
+    | NOT expression                  { $$ = new QgsPointCloudExpressionNodeUnaryOperator($1, $2); }
     | '(' expression ')'              { $$ = $2; }
-    | expression IN '(' exp_list ')'     { $$ = new QgsPointcloudExpressionNodeInOperator($1, $4, false);  }
-    | expression NOT IN '(' exp_list ')' { $$ = new QgsPointcloudExpressionNodeInOperator($1, $5, true); }
+    | expression IN '(' exp_list ')'     { $$ = new QgsPointCloudExpressionNodeInOperator($1, $4, false);  }
+    | expression NOT IN '(' exp_list ')' { $$ = new QgsPointCloudExpressionNodeInOperator($1, $5, true); }
 
     | PLUS expression %prec UMINUS { $$ = $2; }
-    | MINUS expression %prec UMINUS { $$ = new QgsPointcloudExpressionNodeUnaryOperator( QgsPointcloudExpressionNodeUnaryOperator::uoMinus, $2); }
+    | MINUS expression %prec UMINUS { $$ = new QgsPointCloudExpressionNodeUnaryOperator( QgsPointCloudExpressionNodeUnaryOperator::uoMinus, $2); }
 
     // columns
-    | NAME                  { $$ = new QgsPointcloudExpressionNodeAttributeRef( *$1 ); delete $1; }
-    | QUOTED_ATTRIBUTE_REF                  { $$ = new QgsPointcloudExpressionNodeAttributeRef( *$1 ); delete $1; }
+    | NAME                  { $$ = new QgsPointCloudExpressionNodeAttributeRef( *$1 ); delete $1; }
+    | QUOTED_ATTRIBUTE_REF                  { $$ = new QgsPointCloudExpressionNodeAttributeRef( *$1 ); delete $1; }
 
     //  literals
-    | NUMBER_FLOAT                { $$ = new QgsPointcloudExpressionNodeLiteral( $1 ); }
-    | NUMBER_INT                  { $$ = new QgsPointcloudExpressionNodeLiteral( $1 ); }
-    | NUMBER_INT64                { $$ = new QgsPointcloudExpressionNodeLiteral( $1 ); }
+    | NUMBER_FLOAT                { $$ = new QgsPointCloudExpressionNodeLiteral( $1 ); }
+    | NUMBER_INT                  { $$ = new QgsPointCloudExpressionNodeLiteral( $1 ); }
+    | NUMBER_INT64                { $$ = new QgsPointCloudExpressionNodeLiteral( $1 ); }
 ;
 
 named_node:
-    NAMED_NODE expression { $$ = new QgsPointcloudExpressionNode::NamedNode( *$1, $2 ); delete $1; }
+    NAMED_NODE expression { $$ = new QgsPointCloudExpressionNode::NamedNode( *$1, $2 ); delete $1; }
    ;
 
 exp_list:
@@ -220,7 +220,7 @@ exp_list:
        {
          if ( $1->hasNamedNodes() )
          {
-           QgsPointcloudExpression::ParserError::ParserErrorType errorType = QgsPointcloudExpression::ParserError::FunctionNamedArgsError;
+           QgsPointCloudExpression::ParserError::ParserErrorType errorType = QgsPointCloudExpression::ParserError::FunctionNamedArgsError;
            parser_ctx->currentErrorType = errorType;
            pointcloud_error(&yyloc, parser_ctx, QObject::tr( "All parameters following a named parameter must also be named." ).toUtf8().constData() );
            delete $1;
@@ -232,15 +232,15 @@ exp_list:
          }
        }
     | exp_list COMMA named_node { $$ = $1; $1->append($3); }
-    | expression              { $$ = new QgsPointcloudExpressionNode::NodeList(); $$->append($1); }
-    | named_node              { $$ = new QgsPointcloudExpressionNode::NodeList(); $$->append($1); }
+    | expression              { $$ = new QgsPointCloudExpressionNode::NodeList(); $$->append($1); }
+    | named_node              { $$ = new QgsPointCloudExpressionNode::NodeList(); $$->append($1); }
    ;
 
 %%
 
 
 // returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
-QgsPointcloudExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg, QList<QgsPointcloudExpression::ParserError> &parserErrors)
+QgsPointCloudExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg, QList<QgsPointCloudExpression::ParserError> &parserErrors)
 {
   expression_parser_context ctx;
   ctx.rootNode = 0;
@@ -267,7 +267,7 @@ QgsPointcloudExpressionNode* parseExpression(const QString& str, QString& parser
 
 void pointcloud_error(YYLTYPE* yyloc,expression_parser_context* parser_ctx, const char* msg)
 {
-  QgsPointcloudExpression::ParserError error = QgsPointcloudExpression::ParserError();
+  QgsPointCloudExpression::ParserError error = QgsPointCloudExpression::ParserError();
   error.firstColumn = yyloc->first_column;
   error.firstLine = yyloc->first_line;
   error.lastColumn = yyloc->last_column;
@@ -276,7 +276,7 @@ void pointcloud_error(YYLTYPE* yyloc,expression_parser_context* parser_ctx, cons
   error.errorType = parser_ctx->currentErrorType;
   parser_ctx->parserErrors.append(error);
   // Reset the current error type for the next error.
-  parser_ctx->currentErrorType = QgsPointcloudExpression::ParserError::Unknown;
+  parser_ctx->currentErrorType = QgsPointCloudExpression::ParserError::Unknown;
 
   parser_ctx->errorMsg = parser_ctx->errorMsg + "\n" + msg;
 }

@@ -18,20 +18,18 @@
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudexpression_p.h"
 
-#include <QRegularExpression>
-
 // from parser
-extern QgsPointcloudExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsPointcloudExpression::ParserError> &parserErrors );
+extern QgsPointCloudExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsPointCloudExpression::ParserError> &parserErrors );
 
-bool QgsPointcloudExpression::checkExpression( const QString &text, const QgsPointCloudBlock *block, QString &errorMessage )
+bool QgsPointCloudExpression::checkExpression( const QString &text, const QgsPointCloudBlock *block, QString &errorMessage )
 {
-  QgsPointcloudExpression exp( text );
+  QgsPointCloudExpression exp( text );
   exp.prepare( block );
   errorMessage = exp.parserErrorString();
   return !exp.hasParserError();
 }
 
-void QgsPointcloudExpression::setExpression( const QString &expression )
+void QgsPointCloudExpression::setExpression( const QString &expression )
 {
   detach();
   d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserErrors );
@@ -40,7 +38,7 @@ void QgsPointcloudExpression::setExpression( const QString &expression )
   d->mIsPrepared = false;
 }
 
-QString QgsPointcloudExpression::expression() const
+QString QgsPointCloudExpression::expression() const
 {
   if ( !d->mExp.isNull() )
     return d->mExp;
@@ -48,12 +46,12 @@ QString QgsPointcloudExpression::expression() const
     return dump();
 }
 
-QString QgsPointcloudExpression::quotedAttributeRef( QString name )
+QString QgsPointCloudExpression::quotedAttributeRef( QString name )
 {
   return QStringLiteral( "\"%1\"" ).arg( name.replace( '\"', QLatin1String( "\"\"" ) ) );
 }
 
-QString QgsPointcloudExpression::quotedString( QString text )
+QString QgsPointCloudExpression::quotedString( QString text )
 {
   text.replace( '\'', QLatin1String( "''" ) );
   text.replace( '\\', QLatin1String( "\\\\" ) );
@@ -62,12 +60,12 @@ QString QgsPointcloudExpression::quotedString( QString text )
   return QStringLiteral( "'%1'" ).arg( text );
 }
 
-QString QgsPointcloudExpression::quotedValue( const QVariant &value )
+QString QgsPointCloudExpression::quotedValue( const QVariant &value )
 {
   return quotedValue( value, value.type() );
 }
 
-QString QgsPointcloudExpression::quotedValue( const QVariant &value, QVariant::Type type )
+QString QgsPointCloudExpression::quotedValue( const QVariant &value, QVariant::Type type )
 {
   if ( value.isNull() )
     return QStringLiteral( "NULL" );
@@ -101,21 +99,21 @@ QString QgsPointcloudExpression::quotedValue( const QVariant &value, QVariant::T
 
 }
 
-QgsPointcloudExpression::QgsPointcloudExpression( const QString &expr )
-  : d( new QgsPointcloudExpressionPrivate )
+QgsPointCloudExpression::QgsPointCloudExpression( const QString &expr )
+  : d( new QgsPointCloudExpressionPrivate )
 {
   d->mRootNode = ::parseExpression( expr, d->mParserErrorString, d->mParserErrors );
   d->mExp = expr;
   Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
 }
 
-QgsPointcloudExpression::QgsPointcloudExpression( const QgsPointcloudExpression &other )
+QgsPointCloudExpression::QgsPointCloudExpression( const QgsPointCloudExpression &other )
   : d( other.d )
 {
   d->ref.ref();
 }
 
-QgsPointcloudExpression &QgsPointcloudExpression::operator=( const QgsPointcloudExpression &other )
+QgsPointCloudExpression &QgsPointCloudExpression::operator=( const QgsPointCloudExpression &other )
 {
   if ( this != &other )
   {
@@ -130,49 +128,49 @@ QgsPointcloudExpression &QgsPointcloudExpression::operator=( const QgsPointcloud
   return *this;
 }
 
-QgsPointcloudExpression::operator QString() const
+QgsPointCloudExpression::operator QString() const
 {
   return d->mExp;
 }
 
-QgsPointcloudExpression::QgsPointcloudExpression()
-  : d( new QgsPointcloudExpressionPrivate )
+QgsPointCloudExpression::QgsPointCloudExpression()
+  : d( new QgsPointCloudExpressionPrivate )
 {
 }
 
-QgsPointcloudExpression::~QgsPointcloudExpression()
+QgsPointCloudExpression::~QgsPointCloudExpression()
 {
   Q_ASSERT( d );
   if ( !d->ref.deref() )
     delete d;
 }
 
-bool QgsPointcloudExpression::operator==( const QgsPointcloudExpression &other ) const
+bool QgsPointCloudExpression::operator==( const QgsPointCloudExpression &other ) const
 {
   return ( d == other.d || d->mExp == other.d->mExp );
 }
 
-bool QgsPointcloudExpression::isValid() const
+bool QgsPointCloudExpression::isValid() const
 {
   return d->mRootNode;
 }
 
-bool QgsPointcloudExpression::hasParserError() const
+bool QgsPointCloudExpression::hasParserError() const
 {
   return d->mParserErrors.count() > 0;
 }
 
-QString QgsPointcloudExpression::parserErrorString() const
+QString QgsPointCloudExpression::parserErrorString() const
 {
   return d->mParserErrorString;
 }
 
-QList<QgsPointcloudExpression::ParserError> QgsPointcloudExpression::parserErrors() const
+QList<QgsPointCloudExpression::ParserError> QgsPointCloudExpression::parserErrors() const
 {
   return d->mParserErrors;
 }
 
-QSet<QString> QgsPointcloudExpression::referencedAttributes() const
+QSet<QString> QgsPointCloudExpression::referencedAttributes() const
 {
   if ( !d->mRootNode )
     return QSet<QString>();
@@ -180,7 +178,7 @@ QSet<QString> QgsPointcloudExpression::referencedAttributes() const
   return d->mRootNode->referencedAttributes();
 }
 
-void QgsPointcloudExpression::detach()
+void QgsPointCloudExpression::detach()
 {
   Q_ASSERT( d );
 
@@ -188,11 +186,11 @@ void QgsPointcloudExpression::detach()
   {
     ( void )d->ref.deref();
 
-    d = new QgsPointcloudExpressionPrivate( *d );
+    d = new QgsPointCloudExpressionPrivate( *d );
   }
 }
 
-bool QgsPointcloudExpression::prepare( const QgsPointCloudBlock *block )
+bool QgsPointCloudExpression::prepare( const QgsPointCloudBlock *block )
 {
   detach();
   d->mEvalErrorString = QString();
@@ -207,7 +205,7 @@ bool QgsPointcloudExpression::prepare( const QgsPointCloudBlock *block )
   return d->mRootNode->prepare( this, block );
 }
 
-double QgsPointcloudExpression::evaluate( int p )
+double QgsPointCloudExpression::evaluate( int p )
 {
   d->mEvalErrorString = QString();
   if ( !d->mRootNode )
@@ -219,22 +217,22 @@ double QgsPointcloudExpression::evaluate( int p )
   return d->mRootNode->eval( this, p );
 }
 
-bool QgsPointcloudExpression::hasEvalError() const
+bool QgsPointCloudExpression::hasEvalError() const
 {
   return !d->mEvalErrorString.isNull();
 }
 
-QString QgsPointcloudExpression::evalErrorString() const
+QString QgsPointCloudExpression::evalErrorString() const
 {
   return d->mEvalErrorString;
 }
 
-void QgsPointcloudExpression::setEvalErrorString( const QString &str )
+void QgsPointCloudExpression::setEvalErrorString( const QString &str )
 {
   d->mEvalErrorString = str;
 }
 
-QString QgsPointcloudExpression::dump() const
+QString QgsPointCloudExpression::dump() const
 {
   if ( !d->mRootNode )
     return QString();
@@ -242,15 +240,15 @@ QString QgsPointcloudExpression::dump() const
   return d->mRootNode->dump();
 }
 
-const QgsPointcloudExpressionNode *QgsPointcloudExpression::rootNode() const
+const QgsPointCloudExpressionNode *QgsPointCloudExpression::rootNode() const
 {
   return d->mRootNode;
 }
 
-QList<const QgsPointcloudExpressionNode *> QgsPointcloudExpression::nodes() const
+QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpression::nodes() const
 {
   if ( !d->mRootNode )
-    return QList<const QgsPointcloudExpressionNode *>();
+    return QList<const QgsPointCloudExpressionNode *>();
 
   return d->mRootNode->nodes();
 }

@@ -25,34 +25,34 @@
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudblock.h"
 
-class QgsPointcloudExpression;
+class QgsPointCloudExpression;
 
 /**
  * \ingroup core
  *
  * \brief Abstract base class for all nodes that can appear in an expression.
  */
-class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
+class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
 {
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     switch ( sipCpp->nodeType() )
     {
-      case QgsPointcloudExpressionNode::ntUnaryOperator:
-        sipType = sipType_QgsPointcloudExpressionNodeUnaryOperator;
+      case QgsPointCloudExpressionNode::ntUnaryOperator:
+        sipType = sipType_QgsPointCloudExpressionNodeUnaryOperator;
         break;
-      case QgsPointcloudExpressionNode::ntBinaryOperator:
-        sipType = sipType_QgsPointcloudExpressionNodeBinaryOperator;
+      case QgsPointCloudExpressionNode::ntBinaryOperator:
+        sipType = sipType_QgsPointCloudExpressionNodeBinaryOperator;
         break;
       case QgsExpressionNode::ntInOperator:
         sipType = sipType_QgsExpressionNodeInOperator;
         break;
-      case QgsPointcloudExpressionNode::ntLiteral:
-        sipType = sipType_QgsPointcloudExpressionNodeLiteral;
+      case QgsPointCloudExpressionNode::ntLiteral:
+        sipType = sipType_QgsPointCloudExpressionNodeLiteral;
         break;
-      case QgsPointcloudExpressionNode::ntAttributeRef:
-        sipType = sipType_QgsPointcloudExpressionNodeAttributeRef;
+      case QgsPointCloudExpressionNode::ntAttributeRef:
+        sipType = sipType_QgsPointCloudExpressionNodeAttributeRef;
         break;
       default:
         sipType = 0;
@@ -61,18 +61,18 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
     SIP_END
 #endif
 
-    Q_DECLARE_TR_FUNCTIONS( QgsPointcloudExpressionNode )
+    Q_DECLARE_TR_FUNCTIONS( QgsPointCloudExpressionNode )
 
   public:
 
     //! Known node types.
     enum NodeType
     {
-      ntUnaryOperator, //!< \see QgsPointcloudExpression::Node::NodeUnaryOperator
-      ntBinaryOperator, //!< \see QgsPointcloudExpression::Node::NodeBinaryOperator
+      ntUnaryOperator, //!< \see QgsPointCloudExpression::Node::NodeUnaryOperator
+      ntBinaryOperator, //!< \see QgsPointCloudExpression::Node::NodeBinaryOperator
       ntInOperator, //!< \see QgsExpression::Node::NodeInOperator
-      ntLiteral, //!< \see QgsPointcloudExpression::Node::NodeLiteral
-      ntAttributeRef, //!< \see QgsPointcloudExpression::Node::NodeAttributeRef
+      ntLiteral, //!< \see QgsPointCloudExpression::Node::NodeLiteral
+      ntAttributeRef, //!< \see QgsPointCloudExpression::Node::NodeAttributeRef
     };
 
 
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
          * \param name node name
          * \param node node
          */
-        NamedNode( const QString &name, QgsPointcloudExpressionNode *node )
+        NamedNode( const QString &name, QgsPointCloudExpressionNode *node )
           : name( name )
           , node( node )
         {}
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
         QString name;
 
         //! Node
-        QgsPointcloudExpressionNode *node = nullptr;
+        QgsPointCloudExpressionNode *node = nullptr;
     };
 
     /**
@@ -111,13 +111,13 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
       public:
         virtual ~NodeList();
         //! Takes ownership of the provided node
-        void append( QgsPointcloudExpressionNode *node SIP_TRANSFER ) { mList.append( node ); mNameList.append( QString() ); }
+        void append( QgsPointCloudExpressionNode *node SIP_TRANSFER ) { mList.append( node ); mNameList.append( QString() ); }
 
         /**
          * Adds a named node. Takes ownership of the provided node.
          * \since QGIS 2.16
         */
-        void append( QgsPointcloudExpressionNode::NamedNode *node SIP_TRANSFER );
+        void append( QgsPointCloudExpressionNode::NamedNode *node SIP_TRANSFER );
 
         /**
          * Returns the number of nodes in the list.
@@ -133,14 +133,14 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
         /**
          * Gets a list of all the nodes.
          */
-        QList<QgsPointcloudExpressionNode *> list() { return mList; }
+        QList<QgsPointCloudExpressionNode *> list() { return mList; }
 
         /**
          * Gets the node at position i in the list.
          *
          * \since QGIS 3.0
          */
-        QgsPointcloudExpressionNode *at( int i ) { return mList.at( i ); }
+        QgsPointCloudExpressionNode *at( int i ) { return mList.at( i ); }
 
         /**
          * Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
         QStringList names() const { return mNameList; }
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
-        QgsPointcloudExpressionNode::NodeList *clone() const SIP_FACTORY;
+        QgsPointCloudExpressionNode::NodeList *clone() const SIP_FACTORY;
 
         /**
          * Returns a string dump of the expression node.
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
         virtual QString dump() const;
 
       private:
-        QList<QgsPointcloudExpressionNode *> mList;
+        QList<QgsPointCloudExpressionNode *> mList;
         QStringList mNameList;
 
         bool mHasNamedNodes = false;
@@ -170,14 +170,14 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
       public:
     };
 
-    virtual ~QgsPointcloudExpressionNode() = default;
+    virtual ~QgsPointCloudExpressionNode() = default;
 
     /**
      * Gets the type of this node.
      *
      * \returns The type of this node
      */
-    virtual QgsPointcloudExpressionNode::NodeType nodeType() const = 0;
+    virtual QgsPointCloudExpressionNode::NodeType nodeType() const = 0;
 
     /**
      * Dump this node into a serialized (part) of an expression.
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 2.12
      */
-    double eval( QgsPointcloudExpression *parent, int p );
+    double eval( QgsPointCloudExpression *parent, int p );
 
     /**
      * Generate a clone of this node.
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \returns a deep copy of this node.
      */
-    virtual QgsPointcloudExpressionNode *clone() const = 0;
+    virtual QgsPointCloudExpressionNode *clone() const = 0;
 
     /**
      * Abstract virtual method which returns a list of columns required to
@@ -211,8 +211,8 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * evaluate this node and in addition recursively collect all the columns required
      * to evaluate child nodes.
      *
-     * \warning If the expression has been prepared via a call to QgsPointcloudExpression::prepare(),
-     * or a call to QgsPointcloudExpressionNode::prepare() for a node has been made, then some nodes in
+     * \warning If the expression has been prepared via a call to QgsPointCloudExpression::prepare(),
+     * or a call to QgsPointCloudExpressionNode::prepare() for a node has been made, then some nodes in
      * the expression may have been determined to evaluate to a static pre-calculatable value.
      * In this case the results will omit attribute indices which are used by these
      * pre-calculated nodes, regardless of their actual referenced columns.
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * \note not available in Python bindings
      * \since QGIS 3.2
      */
-    virtual QList<const QgsPointcloudExpressionNode *> nodes( ) const = 0; SIP_SKIP
+    virtual QList<const QgsPointCloudExpressionNode *> nodes( ) const = 0; SIP_SKIP
 
     /**
      * Returns TRUE if this node can be evaluated for a static value. This is used during
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 3.0
      */
-    virtual bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const = 0;
+    virtual bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const = 0;
 
     /**
      * Prepare this node for evaluation.
@@ -249,33 +249,33 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      *
      * \since QGIS 2.12
      */
-    bool prepare( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block );
+    bool prepare( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block );
 
     /**
      * First line in the parser this node was found.
      * \note This might not be complete for all nodes. Currently
-     * only \see QgsPointcloudExpressionNode has this complete
+     * only \see QgsPointCloudExpressionNode has this complete
      */
     int parserFirstLine = 0;
 
     /**
      * First column in the parser this node was found.
      * \note This might not be complete for all nodes. Currently
-     * only \see QgsPointcloudExpressionNode has this complete
+     * only \see QgsPointCloudExpressionNode has this complete
      */
     int parserFirstColumn = 0;
 
     /**
      * Last line in the parser this node was found.
      * \note This might not be complete for all nodes. Currently
-     * only \see QgsPointcloudExpressionNode has this complete
+     * only \see QgsPointCloudExpressionNode has this complete
      */
     int parserLastLine = 0;
 
     /**
      * Last column in the parser this node was found.
      * \note This might not be complete for all nodes. Currently
-     * only \see QgsPointcloudExpressionNode has this complete
+     * only \see QgsPointCloudExpressionNode has this complete
      */
     int parserLastColumn = 0;
 
@@ -300,37 +300,37 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * after any compilation optimizations have been applied.
      *
      * Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
-     * be replaced entirely by a QgsPointcloudExpressionNodeColumnRef referencing the "some_field" field, as the
+     * be replaced entirely by a QgsPointCloudExpressionNodeColumnRef referencing the "some_field" field, as the
      * CASE WHEN ... will ALWAYS evaluate to "some_field".
      *
      * Returns a reference to the current object if no optimizations were applied.
      *
      * \since QGIS 3.20
      */
-    const QgsPointcloudExpressionNode *effectiveNode() const { return mCompiledSimplifiedNode ? mCompiledSimplifiedNode.get() : this; }
+    const QgsPointCloudExpressionNode *effectiveNode() const { return mCompiledSimplifiedNode ? mCompiledSimplifiedNode.get() : this; }
 
   protected:
 
     /**
      * Constructor.
      */
-    QgsPointcloudExpressionNode() = default;
+    QgsPointCloudExpressionNode() = default;
 
     //! Copy constructor
-    QgsPointcloudExpressionNode( const QgsPointcloudExpressionNode &other );
+    QgsPointCloudExpressionNode( const QgsPointCloudExpressionNode &other );
     //! Assignment operator
-    QgsPointcloudExpressionNode &operator=( const QgsPointcloudExpressionNode &other );
+    QgsPointCloudExpressionNode &operator=( const QgsPointCloudExpressionNode &other );
 
     /**
      * Copies the members of this node to the node provided in \a target.
      * Needs to be called by all subclasses as part of their clone() implementation.
      *
-     * \note Not available in python bindings, QgsPointcloudExpression::Node is not
+     * \note Not available in python bindings, QgsPointCloudExpression::Node is not
      * going to be subclassed from python. If that's what you are looking
      * for, look into writing a custom python expression function.
      * \since QGIS 3.0
      */
-    void cloneTo( QgsPointcloudExpressionNode *target ) const SIP_SKIP;
+    void cloneTo( QgsPointCloudExpressionNode *target ) const SIP_SKIP;
 
 #ifndef SIP_RUN
 
@@ -353,12 +353,12 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * as a result of compilation optimizations.
      *
      * Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
-     * be replaced entirely by a QgsPointcloudExpressionNodeColumnRef referencing the "some_field" field, as the
+     * be replaced entirely by a QgsPointCloudExpressionNodeColumnRef referencing the "some_field" field, as the
      * CASE WHEN ... will ALWAYS evaluate to "some_field".
      *
      * \since QGIS 3.20
      */
-    mutable std::unique_ptr< QgsPointcloudExpressionNode > mCompiledSimplifiedNode;
+    mutable std::unique_ptr< QgsPointCloudExpressionNode > mCompiledSimplifiedNode;
 #endif
 
   private:
@@ -368,17 +368,17 @@ class CORE_EXPORT QgsPointcloudExpressionNode SIP_ABSTRACT
      * Errors are reported to the parent
      * \since QGIS 3.0
      */
-    virtual bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) = 0;
+    virtual bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) = 0;
 
     /**
      * Abstract virtual eval method
      * Errors are reported to the parent
      * \since QGIS 3.0
      */
-    virtual double evalNode( QgsPointcloudExpression *parent, int p ) = 0;
+    virtual double evalNode( QgsPointCloudExpression *parent, int p ) = 0;
 
 };
 
-Q_DECLARE_METATYPE( QgsPointcloudExpressionNode * )
+Q_DECLARE_METATYPE( QgsPointCloudExpressionNode * )
 
 #endif // QGSPOINTCLOUDEXPRESSIONNODE_H

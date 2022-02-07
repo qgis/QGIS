@@ -367,7 +367,7 @@ void TestQgsPointCloudExpression::testParsing()
   QFETCH( QString, string );
   QFETCH( bool, valid );
 
-  QgsPointcloudExpression exp( string );
+  QgsPointCloudExpression exp( string );
 
   if ( exp.hasParserError() )
     qDebug() << "Parser error: " << exp.parserErrorString();
@@ -487,7 +487,7 @@ void TestQgsPointCloudExpression::testEvaluating()
   QFETCH( int, point_n );
   QFETCH( bool, valid );
 
-  QgsPointcloudExpression exp( string );
+  QgsPointCloudExpression exp( string );
   exp.prepare( mBlock );
 
   QVERIFY( valid ? exp.evaluate( point_n ) != 0. : exp.evaluate( point_n ) == 0. );

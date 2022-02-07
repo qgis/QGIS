@@ -51,8 +51,8 @@
 #define YY_NO_UNISTD_H
 #endif
 
-#define B_OP(x) yylval->b_op = QgsPointcloudExpressionNodeBinaryOperator::x
-#define U_OP(x) yylval->u_op = QgsPointcloudExpressionNodeUnaryOperator::x
+#define B_OP(x) yylval->b_op = QgsPointCloudExpressionNodeBinaryOperator::x
+#define U_OP(x) yylval->u_op = QgsPointCloudExpressionNodeUnaryOperator::x
 #define TEXT                   yylval->text = new QString( QString::fromUtf8(yytext) );
 #define TEXT_FILTER(filter_fn) yylval->text = new QString( filter_fn( QString::fromUtf8(yytext) ) );
 

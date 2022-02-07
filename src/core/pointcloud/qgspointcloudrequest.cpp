@@ -31,12 +31,12 @@ void QgsPointCloudRequest::setAttributes( const QgsPointCloudAttributeCollection
   mAttributes = attributes;
 }
 
-QgsPointcloudExpression QgsPointCloudRequest::filterExpression() const
+QgsPointCloudExpression QgsPointCloudRequest::filterExpression() const
 {
   return mFilterExpression;
 }
 
-void QgsPointCloudRequest::setFilterExpression( const QgsPointcloudExpression &expression )
+void QgsPointCloudRequest::setFilterExpression( const QgsPointCloudExpression &expression )
 {
   mFilterExpression = expression;
 }

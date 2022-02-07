@@ -17,7 +17,7 @@
 #include "qgspointcloudexpression.h"
 
 
-double QgsPointcloudExpressionNode::eval( QgsPointcloudExpression *parent, int p )
+double QgsPointCloudExpressionNode::eval( QgsPointCloudExpression *parent, int p )
 {
   if ( mHasCachedValue )
   {
@@ -34,7 +34,7 @@ double QgsPointcloudExpressionNode::eval( QgsPointcloudExpression *parent, int p
   }
 }
 
-bool QgsPointcloudExpressionNode::prepare( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block )
+bool QgsPointCloudExpressionNode::prepare( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block )
 {
   mHasCachedValue = false;
   mCompiledSimplifiedNode.reset();
@@ -57,7 +57,7 @@ bool QgsPointcloudExpressionNode::prepare( QgsPointcloudExpression *parent, cons
   }
 }
 
-QgsPointcloudExpressionNode::QgsPointcloudExpressionNode( const QgsPointcloudExpressionNode &other )
+QgsPointCloudExpressionNode::QgsPointCloudExpressionNode( const QgsPointCloudExpressionNode &other )
   : parserFirstLine( other.parserFirstLine )
   , parserFirstColumn( other.parserFirstColumn )
   , parserLastLine( other.parserLastLine )
@@ -69,7 +69,7 @@ QgsPointcloudExpressionNode::QgsPointcloudExpressionNode( const QgsPointcloudExp
 
 }
 
-QgsPointcloudExpressionNode &QgsPointcloudExpressionNode::operator=( const QgsPointcloudExpressionNode &other )
+QgsPointCloudExpressionNode &QgsPointCloudExpressionNode::operator=( const QgsPointCloudExpressionNode &other )
 {
   parserFirstLine = other.parserFirstLine;
   parserFirstColumn = other.parserFirstColumn;
@@ -81,7 +81,7 @@ QgsPointcloudExpressionNode &QgsPointcloudExpressionNode::operator=( const QgsPo
   return *this;
 }
 
-void QgsPointcloudExpressionNode::cloneTo( QgsPointcloudExpressionNode *target ) const
+void QgsPointCloudExpressionNode::cloneTo( QgsPointCloudExpressionNode *target ) const
 {
   target->mHasCachedValue = mHasCachedValue;
   target->mCachedStaticValue = mCachedStaticValue;

@@ -40,8 +40,8 @@ class QgsField;
 class QgsFields;
 class QgsDistanceArea;
 class QDomElement;
-class QgsPointcloudExpressionPrivate;
-class QgsPointcloudExpressionFunction;
+class QgsPointCloudExpressionPrivate;
+class QgsPointCloudExpressionFunction;
 
 /**
  * \ingroup core
@@ -50,7 +50,7 @@ class QgsPointcloudExpressionFunction;
  *
  * Usage:
  * \code{.py}
- *   exp = QgsPointcloudExpression("gid*2 > 10 and type not in ('D','F')")
+ *   exp = QgsPointCloudExpression("gid*2 > 10 and type not in ('D','F')")
  *   if exp.hasParserError():
  *       # show error message with parserErrorString() and exit
  *
@@ -89,18 +89,18 @@ class QgsPointcloudExpressionFunction;
  * \section implicit_sharing Implicit sharing
  *
  * This class is implicitly shared, copying has a very low overhead.
- * It is normally preferable to call `QgsPointcloudExpression( otherExpression )` instead of
- * `QgsPointcloudExpression( otherExpression.expression() )`. A deep copy will only be made
+ * It is normally preferable to call `QgsPointCloudExpression( otherExpression )` instead of
+ * `QgsPointCloudExpression( otherExpression.expression() )`. A deep copy will only be made
  * when prepare() is called. For usage this means mainly, that you should
- * normally keep an unprepared master copy of a QgsPointcloudExpression and whenever using it
+ * normally keep an unprepared master copy of a QgsPointCloudExpression and whenever using it
  * with a particular QgsFeatureIterator copy it just before and prepare it using the
  * same context as the iterator.
  *
  * Implicit sharing was added in 2.14
 */
-class CORE_EXPORT QgsPointcloudExpression
+class CORE_EXPORT QgsPointCloudExpression
 {
-    Q_DECLARE_TR_FUNCTIONS( QgsPointcloudExpression )
+    Q_DECLARE_TR_FUNCTIONS( QgsPointCloudExpression )
   public:
 
     /**
@@ -157,21 +157,21 @@ class CORE_EXPORT QgsPointcloudExpression
      * prepare() should always be called before every
      * loop in which this expression is used.
      */
-    QgsPointcloudExpression( const QString &expr );
+    QgsPointCloudExpression( const QString &expr );
 
     /**
      * Create a copy of this expression. This is preferred
      * over recreating an expression from a string since
      * it does not need to be re-parsed.
      */
-    QgsPointcloudExpression( const QgsPointcloudExpression &other );
+    QgsPointCloudExpression( const QgsPointCloudExpression &other );
 
     /**
      * Create a copy of this expression. This is preferred
      * over recreating an expression from a string since
      * it does not need to be re-parsed.
      */
-    QgsPointcloudExpression &operator=( const QgsPointcloudExpression &other );
+    QgsPointCloudExpression &operator=( const QgsPointCloudExpression &other );
 
     /**
      * Automatically convert this expression to a string where requested.
@@ -185,9 +185,9 @@ class CORE_EXPORT QgsPointcloudExpression
      *
      * \since QGIS 3.0
      */
-    QgsPointcloudExpression();
+    QgsPointCloudExpression();
 
-    ~QgsPointcloudExpression();
+    ~QgsPointCloudExpression();
 
     /**
      * Compares two expressions. The operator returns TRUE
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsPointcloudExpression
      *
      * \since QGIS 3.0
      */
-    bool operator==( const QgsPointcloudExpression &other ) const;
+    bool operator==( const QgsPointCloudExpression &other ) const;
 
     /**
      * Checks if this expression is valid.
@@ -214,14 +214,14 @@ class CORE_EXPORT QgsPointcloudExpression
      * Returns parser error details including location of error.
      * \since QGIS 3.0
      */
-    QList<QgsPointcloudExpression::ParserError> parserErrors() const;
+    QList<QgsPointCloudExpression::ParserError> parserErrors() const;
 
     /**
      * Returns the root node of the expression.
      *
      * The root node is NULLPTR if parsing has failed.
      */
-    const QgsPointcloudExpressionNode *rootNode() const;
+    const QgsPointCloudExpressionNode *rootNode() const;
 
     /**
      * Gets the expression ready for evaluation - find out column indexes.
@@ -237,8 +237,8 @@ class CORE_EXPORT QgsPointcloudExpression
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
-     * \warning If the expression has been prepared via a call to QgsPointcloudExpression::prepare(),
-     * or a call to QgsPointcloudExpressionNode::prepare() for a node has been made, then parts of
+     * \warning If the expression has been prepared via a call to QgsPointCloudExpression::prepare(),
+     * or a call to QgsPointCloudExpressionNode::prepare() for a node has been made, then parts of
      * the expression may have been determined to evaluate to a static pre-calculatable value.
      * In this case the results will omit attribute indices which are used by these
      * pre-calculated nodes, regardless of their actual referenced columns.
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsPointcloudExpression
      * \note not available in Python bindings
      * \since QGIS 3.2
      */
-    QList<const QgsPointcloudExpressionNode *> nodes( ) const;
+    QList<const QgsPointCloudExpressionNode *> nodes( ) const;
 
     /**
      * Returns a list of all nodes of the given class which are used in this expression
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsPointcloudExpression
     QList<const T *> findNodes( ) const
     {
       QList<const T *> lst;
-      const QList<const QgsPointcloudExpressionNode *> allNodes( nodes() );
+      const QList<const QgsPointCloudExpressionNode *> allNodes( nodes() );
       for ( const auto &node : allNodes )
       {
         const T *n = dynamic_cast<const T *>( node );
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsPointcloudExpression
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointcloudExpression: '%1'>" ).arg( sipCpp->expression() );
+    QString str = QStringLiteral( "<QgsPointCloudExpression: '%1'>" ).arg( sipCpp->expression() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -383,10 +383,10 @@ class CORE_EXPORT QgsPointcloudExpression
      */
     void detach() SIP_SKIP;
 
-    QgsPointcloudExpressionPrivate *d = nullptr;
+    QgsPointCloudExpressionPrivate *d = nullptr;
 
 };
 
-Q_DECLARE_METATYPE( QgsPointcloudExpression )
+Q_DECLARE_METATYPE( QgsPointCloudExpression )
 
 #endif // QGSPOINTCLOUDEXPRESSION_H

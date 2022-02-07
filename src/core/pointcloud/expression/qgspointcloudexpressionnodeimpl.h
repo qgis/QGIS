@@ -27,13 +27,13 @@
  * \ingroup core
  * \brief A unary node is either negative as in boolean (not) or as in numbers (minus).
  */
-class CORE_EXPORT QgsPointcloudExpressionNodeUnaryOperator : public QgsPointcloudExpressionNode
+class CORE_EXPORT QgsPointCloudExpressionNodeUnaryOperator : public QgsPointCloudExpressionNode
 {
   public:
 
     /**
      * \brief list of unary operators
-     * \note if any change is made here, the definition of QgsPointcloudExpression::UnaryOperatorText[] must be adapted.
+     * \note if any change is made here, the definition of QgsPointCloudExpression::UnaryOperatorText[] must be adapted.
      */
     enum UnaryOperator
     {
@@ -44,16 +44,16 @@ class CORE_EXPORT QgsPointcloudExpressionNodeUnaryOperator : public QgsPointclou
     /**
      * A node unary operator is modifying the value of \a operand by negating it with \a op.
      */
-    QgsPointcloudExpressionNodeUnaryOperator( QgsPointcloudExpressionNodeUnaryOperator::UnaryOperator op, QgsPointcloudExpressionNode *operand SIP_TRANSFER )
+    QgsPointCloudExpressionNodeUnaryOperator( QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op, QgsPointCloudExpressionNode *operand SIP_TRANSFER )
       : mOp( op )
       , mOperand( operand )
     {}
-    ~QgsPointcloudExpressionNodeUnaryOperator() override { delete mOperand; }
+    ~QgsPointCloudExpressionNodeUnaryOperator() override { delete mOperand; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointcloudExpressionNodeUnaryOperator: %1>" ).arg( sipCpp->text() );
+    QString str = QStringLiteral( "<QgsPointCloudExpressionNodeUnaryOperator: %1>" ).arg( sipCpp->text() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -61,23 +61,23 @@ class CORE_EXPORT QgsPointcloudExpressionNodeUnaryOperator : public QgsPointclou
     /**
      * Returns the unary operator.
      */
-    QgsPointcloudExpressionNodeUnaryOperator::UnaryOperator op() const { return mOp; }
+    QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op() const { return mOp; }
 
     /**
      * Returns the node the operator will operate upon.
      */
-    QgsPointcloudExpressionNode *operand() const { return mOperand; }
+    QgsPointCloudExpressionNode *operand() const { return mOperand; }
 
-    QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
-    double evalNode( QgsPointcloudExpression *parent, int p ) override;
+    QgsPointCloudExpressionNode::NodeType nodeType() const override;
+    bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) override;
+    double evalNode( QgsPointCloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
-    QList<const QgsPointcloudExpressionNode *> nodes() const override; SIP_SKIP
-    QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
+    QList<const QgsPointCloudExpressionNode *> nodes() const override; SIP_SKIP
+    QgsPointCloudExpressionNode *clone() const override SIP_FACTORY;
 
-    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const override;
+    bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
     /**
      * Returns a the name of this operator without the operands.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeUnaryOperator : public QgsPointclou
 
   private:
     UnaryOperator mOp;
-    QgsPointcloudExpressionNode *mOperand = nullptr;
+    QgsPointCloudExpressionNode *mOperand = nullptr;
 
     static const char *UNARY_OPERATOR_TEXT[];
 };
@@ -96,13 +96,13 @@ class CORE_EXPORT QgsPointcloudExpressionNodeUnaryOperator : public QgsPointclou
  * \brief A binary expression operator, which operates on two values.
  * \ingroup core
  */
-class CORE_EXPORT QgsPointcloudExpressionNodeBinaryOperator : public QgsPointcloudExpressionNode
+class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointCloudExpressionNode
 {
   public:
 
     /**
      * \brief list of binary operators
-     * \note if any change is made here, the definition of QgsPointcloudExpression::BinaryOperatorText[] must be adapted.
+     * \note if any change is made here, the definition of QgsPointCloudExpression::BinaryOperatorText[] must be adapted.
      */
     enum BinaryOperator
     {
@@ -131,17 +131,17 @@ class CORE_EXPORT QgsPointcloudExpressionNodeBinaryOperator : public QgsPointclo
     /**
      * Binary combination of the left and the right with op.
      */
-    QgsPointcloudExpressionNodeBinaryOperator( QgsPointcloudExpressionNodeBinaryOperator::BinaryOperator op, QgsPointcloudExpressionNode *opLeft SIP_TRANSFER, QgsPointcloudExpressionNode *opRight SIP_TRANSFER )
+    QgsPointCloudExpressionNodeBinaryOperator( QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op, QgsPointCloudExpressionNode *opLeft SIP_TRANSFER, QgsPointCloudExpressionNode *opRight SIP_TRANSFER )
       : mOp( op )
       , mOpLeft( opLeft )
       , mOpRight( opRight )
     {}
-    ~QgsPointcloudExpressionNodeBinaryOperator() override { delete mOpLeft; delete mOpRight; }
+    ~QgsPointCloudExpressionNodeBinaryOperator() override { delete mOpLeft; delete mOpRight; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointcloudExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
+    QString str = QStringLiteral( "<QgsPointCloudExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -149,30 +149,30 @@ class CORE_EXPORT QgsPointcloudExpressionNodeBinaryOperator : public QgsPointclo
     /**
      * Returns the binary operator.
      */
-    QgsPointcloudExpressionNodeBinaryOperator::BinaryOperator op() const { return mOp; }
+    QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op() const { return mOp; }
 
     /**
      * Returns the node to the left of the operator.
      * \see opRight()
      */
-    QgsPointcloudExpressionNode *opLeft() const { return mOpLeft; }
+    QgsPointCloudExpressionNode *opLeft() const { return mOpLeft; }
 
     /**
      * Returns the node to the right of the operator.
      * \see opLeft()
      */
-    QgsPointcloudExpressionNode *opRight() const { return mOpRight; }
+    QgsPointCloudExpressionNode *opRight() const { return mOpRight; }
 
-    QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
-    double evalNode( QgsPointcloudExpression *parent, int p ) override;
+    QgsPointCloudExpressionNode::NodeType nodeType() const override;
+    bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) override;
+    double evalNode( QgsPointCloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
-    QList<const QgsPointcloudExpressionNode *> nodes( ) const override; SIP_SKIP
+    QList<const QgsPointCloudExpressionNode *> nodes( ) const override; SIP_SKIP
 
-    QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
-    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const override;
+    QgsPointCloudExpressionNode *clone() const override SIP_FACTORY;
+    bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
     /**
      * Returns the precedence index for the operator. Higher values have higher precedence.
@@ -196,8 +196,8 @@ class CORE_EXPORT QgsPointcloudExpressionNodeBinaryOperator : public QgsPointclo
     double computeDouble( double x, double y );
 
     BinaryOperator mOp;
-    QgsPointcloudExpressionNode *mOpLeft = nullptr;
-    QgsPointcloudExpressionNode *mOpRight = nullptr;
+    QgsPointCloudExpressionNode *mOpLeft = nullptr;
+    QgsPointCloudExpressionNode *mOpRight = nullptr;
 
     static const char *BINARY_OPERATOR_TEXT[];
 };
@@ -206,24 +206,24 @@ class CORE_EXPORT QgsPointcloudExpressionNodeBinaryOperator : public QgsPointclo
  * \brief An expression node for value IN or NOT IN clauses.
  * \ingroup core
  */
-class CORE_EXPORT QgsPointcloudExpressionNodeInOperator : public QgsPointcloudExpressionNode
+class CORE_EXPORT QgsPointCloudExpressionNodeInOperator : public QgsPointCloudExpressionNode
 {
   public:
 
     /**
      * This node tests if the result of \a node is in the result of \a list. Optionally it can be inverted with \a notin which by default is FALSE.
      */
-    QgsPointcloudExpressionNodeInOperator( QgsPointcloudExpressionNode *node SIP_TRANSFER, QgsPointcloudExpressionNode::NodeList *list SIP_TRANSFER, bool notin = false )
+    QgsPointCloudExpressionNodeInOperator( QgsPointCloudExpressionNode *node SIP_TRANSFER, QgsPointCloudExpressionNode::NodeList *list SIP_TRANSFER, bool notin = false )
       : mNode( node )
       , mList( list )
       , mNotIn( notin )
     {}
-    ~QgsPointcloudExpressionNodeInOperator() override;
+    ~QgsPointCloudExpressionNodeInOperator() override;
 
     /**
      * Returns the expression node.
      */
-    QgsPointcloudExpressionNode *node() const { return mNode; }
+    QgsPointCloudExpressionNode *node() const { return mNode; }
 
     /**
      * Returns TRUE if this node is a "NOT IN" operator, or FALSE if the node is a normal "IN" operator.
@@ -233,21 +233,21 @@ class CORE_EXPORT QgsPointcloudExpressionNodeInOperator : public QgsPointcloudEx
     /**
      * Returns the list of nodes to search for matching values within.
      */
-    QgsPointcloudExpressionNode::NodeList *list() const { return mList; }
+    QgsPointCloudExpressionNode::NodeList *list() const { return mList; }
 
-    QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
-    double evalNode( QgsPointcloudExpression *parent, int p ) override;
+    QgsPointCloudExpressionNode::NodeType nodeType() const override;
+    bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) override;
+    double evalNode( QgsPointCloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
-    QList<const QgsPointcloudExpressionNode *> nodes() const override; SIP_SKIP
-    QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
-    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const override;
+    QList<const QgsPointCloudExpressionNode *> nodes() const override; SIP_SKIP
+    QgsPointCloudExpressionNode *clone() const override SIP_FACTORY;
+    bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
   private:
-    QgsPointcloudExpressionNode *mNode = nullptr;
-    QgsPointcloudExpressionNodeInOperator::NodeList *mList = nullptr;
+    QgsPointCloudExpressionNode *mNode = nullptr;
+    QgsPointCloudExpressionNodeInOperator::NodeList *mList = nullptr;
     bool mNotIn;
 };
 
@@ -255,21 +255,21 @@ class CORE_EXPORT QgsPointcloudExpressionNodeInOperator : public QgsPointcloudEx
  * \brief An expression node for literal values.
  * \ingroup core
  */
-class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpressionNode
+class CORE_EXPORT QgsPointCloudExpressionNodeLiteral : public QgsPointCloudExpressionNode
 {
   public:
 
     /**
-     * Constructor for QgsPointcloudExpressionNodeLiteral, with the specified literal \a value.
+     * Constructor for QgsPointCloudExpressionNodeLiteral, with the specified literal \a value.
      */
-    QgsPointcloudExpressionNodeLiteral( const double &value )
+    QgsPointCloudExpressionNodeLiteral( const double &value )
       : mValue( value )
     {}
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointcloudExpressionNodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
+    QString str = QStringLiteral( "<QgsPointCloudExpressionNodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -277,16 +277,16 @@ class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpre
     //! The value of the literal.
     inline double value() const { return mValue; }
 
-    QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
-    double evalNode( QgsPointcloudExpression *parent, int p ) override;
+    QgsPointCloudExpressionNode::NodeType nodeType() const override;
+    bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) override;
+    double evalNode( QgsPointCloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
 
-    QList<const QgsPointcloudExpressionNode *> nodes() const override; SIP_SKIP
-    QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
-    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const override;
+    QList<const QgsPointCloudExpressionNode *> nodes() const override; SIP_SKIP
+    QgsPointCloudExpressionNode *clone() const override SIP_FACTORY;
+    bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
     /**
      * Returns a string representation of the node's literal value.
@@ -303,15 +303,15 @@ class CORE_EXPORT QgsPointcloudExpressionNodeLiteral : public QgsPointcloudExpre
  * \brief An expression node which takes it value from a feature's field.
  * \ingroup core
  */
-class CORE_EXPORT QgsPointcloudExpressionNodeAttributeRef : public QgsPointcloudExpressionNode
+class CORE_EXPORT QgsPointCloudExpressionNodeAttributeRef : public QgsPointCloudExpressionNode
 {
   public:
 
     /**
-     * Constructor for QgsPointcloudExpressionNodeColumnRef, referencing the column
+     * Constructor for QgsPointCloudExpressionNodeColumnRef, referencing the column
      * with the specified \a name.
      */
-    QgsPointcloudExpressionNodeAttributeRef( const QString &name )
+    QgsPointCloudExpressionNodeAttributeRef( const QString &name )
       : mName( name )
       , mIndex( -1 )
     {}
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsPointcloudExpressionNodeAttributeRef : public QgsPointcloud
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointcloudExpressionNodeAttributeRef: \"%1\">" ).arg( sipCpp->name() );
+    QString str = QStringLiteral( "<QgsPointCloudExpressionNodeAttributeRef: \"%1\">" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -327,16 +327,16 @@ class CORE_EXPORT QgsPointcloudExpressionNodeAttributeRef : public QgsPointcloud
     //! The name of the column.
     QString name() const { return mName; }
 
-    QgsPointcloudExpressionNode::NodeType nodeType() const override;
-    bool prepareNode( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) override;
-    double evalNode( QgsPointcloudExpression *parent, int p ) override;
+    QgsPointCloudExpressionNode::NodeType nodeType() const override;
+    bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) override;
+    double evalNode( QgsPointCloudExpression *parent, int p ) override;
     QString dump() const override;
 
     QSet<QString> referencedAttributes() const override;
-    QList<const QgsPointcloudExpressionNode *> nodes( ) const override; SIP_SKIP
+    QList<const QgsPointCloudExpressionNode *> nodes( ) const override; SIP_SKIP
 
-    QgsPointcloudExpressionNode *clone() const override SIP_FACTORY;
-    bool isStatic( QgsPointcloudExpression *parent, const QgsPointCloudBlock *block ) const override;
+    QgsPointCloudExpressionNode *clone() const override SIP_FACTORY;
+    bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
   private:
     QString mName;
