@@ -47,7 +47,7 @@ QgsGrassModuleOptions::QgsGrassModuleOptions(
   , mModule( module )
   , mDirect( direct )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   mCanvas = mIface->mapCanvas();
 }
@@ -68,7 +68,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   , QgsGrassModuleOptions( tools, module, iface, direct )
   , mXName( xname )
 {
-  //QgsDebugMsg( "called." );
+  //QgsDebugMsgLevel( "called.", 4 );
   QgsDebugMsg( QString( "PATH = %1" ).arg( getenv( "PATH" ) ) );
 
   //
@@ -438,7 +438,7 @@ QgsGrassModuleParam *QgsGrassModuleStandardOptions::item( QString id )
 
 QStringList QgsGrassModuleStandardOptions::checkOutput()
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
   QStringList list;
 
   for ( int i = 0; i < mParams.size(); i++ )
@@ -508,7 +508,7 @@ QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProvid
 // when open by another app. It is enabled on all platforms, so that it gets tested.
 void QgsGrassModuleStandardOptions::freezeOutput( bool freeze )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
@@ -580,7 +580,7 @@ void QgsGrassModuleStandardOptions::freezeOutput( bool freeze )
 
 QStringList QgsGrassModuleStandardOptions::output( int type )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
   QStringList list;
 
   for ( int i = 0; i < mParams.size(); i++ )
@@ -609,7 +609,7 @@ QStringList QgsGrassModuleStandardOptions::output( int type )
 
 bool QgsGrassModuleStandardOptions::hasOutput( int type )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
   QStringList list;
 
   for ( int i = 0; i < mParams.size(); i++ )
@@ -648,7 +648,7 @@ QStringList QgsGrassModuleStandardOptions::ready()
 
 QStringList QgsGrassModuleStandardOptions::checkRegion()
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
   QStringList list;
 
   struct Cell_head currentWindow;
@@ -694,7 +694,7 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
 
 bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   RegionMode mode = ( QgsGrassModuleOptions::RegionMode ) mRegionModeComboBox->currentData().toInt();
   if ( mDirect && mode == RegionCurrent )
@@ -796,7 +796,7 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
 
 bool QgsGrassModuleStandardOptions::requestsRegion()
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   if ( mDirect ) return true;
 
@@ -814,7 +814,7 @@ bool QgsGrassModuleStandardOptions::requestsRegion()
 
 bool QgsGrassModuleStandardOptions::usesRegion()
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   for ( int i = 0; i < mParams.size(); i++ )
   {

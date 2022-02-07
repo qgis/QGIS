@@ -760,7 +760,7 @@ if(WITH_GRASS_DIRECT)
           # Declare function type
           list ( APPEND FUNCTIONS_MAP "typedef ${FUNCTION_TYPE} ${POINTER} ${FUNCTION_NAME}_type(${PARAM_TYPES})\;\n\n" )
           list ( APPEND FUNCTIONS_MAP "${FUNCTION_TYPE} GRASS_LIB_EXPORT ${POINTER} ${FUNCTION_NAME} ( ${PARAMS} ) {\n" )
-          #list ( APPEND FUNCTIONS_MAP "  QgsDebugMsg( \"Entered\" )\;\n" )
+	  #list ( APPEND FUNCTIONS_MAP "  QgsDebugMsgLevel( \"Entered\", 4 )\;\n" )
           list ( APPEND FUNCTIONS_MAP "  ${FUNCTION_NAME}_type* fn = (${FUNCTION_NAME}_type*) cast_to_fptr (QgsGrassGisLib::instance()->resolve( \"${FUNCTION_NAME}\" ))\;\n" )
           list ( APPEND FUNCTIONS_MAP "  return fn( ${PARAM_NAMES} )\;\n")
           list ( APPEND FUNCTIONS_MAP "}\n\n" )
