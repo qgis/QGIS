@@ -5,7 +5,7 @@
   "description": "Returns the size (in bytes) of a file.",
   "arguments": [{
     "arg": "path",
-    "description": "a file path"
+    "description": "a file path or a map layer value. If a map layer layer value is specified then the file source of the layer will be used."
   }],
   "examples": [{
     "expression": "file_size('/home/qgis/data/country_boundaries.geojson')",

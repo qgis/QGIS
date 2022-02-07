@@ -5,7 +5,7 @@
   "description": "Returns the name of a file (including the file extension), excluding the directory.",
   "arguments": [{
     "arg": "path",
-    "description": "a file path"
+    "description": "a file path or a map layer value. If a map layer layer value is specified then the file source of the layer will be used."
   }],
   "examples": [{
     "expression": "file_name('/home/qgis/data/country_boundaries.shp')",

@@ -419,6 +419,13 @@ class CORE_EXPORT QgsExpressionUtils
       return qobject_cast<QgsMeshLayer *>( getMapLayer( value, e ) );
     }
 
+    /**
+     * Tries to convert a \a value to a file path.
+     *
+     * \since QGIS 3.24
+     */
+    static QString getFilePathValue( const QVariant &value, QgsExpression *parent );
+
     static QVariantList getListValue( const QVariant &value, QgsExpression *parent )
     {
       if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
