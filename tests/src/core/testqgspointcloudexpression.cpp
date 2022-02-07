@@ -109,11 +109,11 @@ QgsPointCloudBlock *TestQgsPointCloudExpression::createPointCloudBlock( const QV
     for ( const auto &attribute : std::as_const( attributesVector ) )
     {
       if ( attribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 )
-        _storeToStream<qint32>( dataBuffer, dataOffset, attribute.type(), ( point[ attribute.name() ].toDouble() - offset.x() ) / scale.x() );
+        _storeToStream<qint32>( dataBuffer, dataOffset, attribute.type(), std::round( ( point[ attribute.name() ].toDouble() - offset.x() ) / scale.x() ) );
       else if ( attribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 )
-        _storeToStream<qint32>( dataBuffer, dataOffset, attribute.type(), ( point[ attribute.name() ].toDouble() - offset.y() ) / scale.y() );
+        _storeToStream<qint32>( dataBuffer, dataOffset, attribute.type(), std::round( ( point[ attribute.name() ].toDouble() - offset.y() ) / scale.y() ) );
       else if ( attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
-        _storeToStream<qint32>( dataBuffer, dataOffset, attribute.type(), ( point[ attribute.name() ].toDouble() - offset.z() ) / scale.z() );
+        _storeToStream<qint32>( dataBuffer, dataOffset, attribute.type(), std::round( ( point[ attribute.name() ].toDouble() - offset.z() ) / scale.z() ) );
       else if ( attribute.name().compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
         _storeToStream<unsigned char>( dataBuffer, dataOffset, attribute.type(), point[ attribute.name() ].toInt() );
       else if ( attribute.name().compare( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) == 0 )
@@ -199,26 +199,60 @@ void TestQgsPointCloudExpression::testCreateBlock()
   attributes.push_back( QgsPointCloudAttribute( QLatin1String( "Blue" ), QgsPointCloudAttribute::UShort ) );
 
   // Generate some points with predefined data
-  QVariantMap point;
-  point[ QLatin1String( "X" ) ] = 1001.1;
-  point[ QLatin1String( "Y" ) ] = 2002.2;
-  point[ QLatin1String( "Z" ) ] = 3003.3;
-  point[ QLatin1String( "Classification" ) ] = 1;
-  point[ QLatin1String( "Intensity" ) ] = 2;
-  point[ QLatin1String( "ReturnNumber" ) ] = 3;
-  point[ QLatin1String( "NumberOfReturns" ) ] = 4;
-  point[ QLatin1String( "ScanDirectionFlag" ) ] = 5;
-  point[ QLatin1String( "EdgeOfFlightLine" ) ] = 6;
-  point[ QLatin1String( "ScanAngleRank" ) ] = 7;
-  point[ QLatin1String( "UserData" ) ] = 8;
-  point[ QLatin1String( "PointSourceId" ) ] = 9;
-  point[ QLatin1String( "GpsTime" ) ] = 10;
-  point[ QLatin1String( "Red" ) ] = 11;
-  point[ QLatin1String( "Green" ) ] = 12;
-  point[ QLatin1String( "Blue" ) ] = 13;
+  QVariantMap p1, p2, p3;
+  p1[ QLatin1String( "X" ) ] = 1001.1;
+  p1[ QLatin1String( "Y" ) ] = 2002.2;
+  p1[ QLatin1String( "Z" ) ] = 3003.3;
+  p1[ QLatin1String( "Classification" ) ] = 1;
+  p1[ QLatin1String( "Intensity" ) ] = 2;
+  p1[ QLatin1String( "ReturnNumber" ) ] = 3;
+  p1[ QLatin1String( "NumberOfReturns" ) ] = 4;
+  p1[ QLatin1String( "ScanDirectionFlag" ) ] = 5;
+  p1[ QLatin1String( "EdgeOfFlightLine" ) ] = 6;
+  p1[ QLatin1String( "ScanAngleRank" ) ] = 7;
+  p1[ QLatin1String( "UserData" ) ] = 8;
+  p1[ QLatin1String( "PointSourceId" ) ] = 9;
+  p1[ QLatin1String( "GpsTime" ) ] = 10;
+  p1[ QLatin1String( "Red" ) ] = 11;
+  p1[ QLatin1String( "Green" ) ] = 12;
+  p1[ QLatin1String( "Blue" ) ] = 13;
+
+  p2[ QLatin1String( "X" ) ] = 1002.2;
+  p2[ QLatin1String( "Y" ) ] = 2003.3;
+  p2[ QLatin1String( "Z" ) ] = 3004.4;
+  p2[ QLatin1String( "Classification" ) ] = 2;
+  p2[ QLatin1String( "Intensity" ) ] = 3;
+  p2[ QLatin1String( "ReturnNumber" ) ] = 4;
+  p2[ QLatin1String( "NumberOfReturns" ) ] = 5;
+  p2[ QLatin1String( "ScanDirectionFlag" ) ] = 6;
+  p2[ QLatin1String( "EdgeOfFlightLine" ) ] = 7;
+  p2[ QLatin1String( "ScanAngleRank" ) ] = 8;
+  p2[ QLatin1String( "UserData" ) ] = 9;
+  p2[ QLatin1String( "PointSourceId" ) ] = 10;
+  p2[ QLatin1String( "GpsTime" ) ] = 11;
+  p2[ QLatin1String( "Red" ) ] = 12;
+  p2[ QLatin1String( "Green" ) ] = 13;
+  p2[ QLatin1String( "Blue" ) ] = 14;
+
+  p3[ QLatin1String( "X" ) ] = 1003.3;
+  p3[ QLatin1String( "Y" ) ] = 2004.4;
+  p3[ QLatin1String( "Z" ) ] = 3005.5;
+  p3[ QLatin1String( "Classification" ) ] = 3;
+  p3[ QLatin1String( "Intensity" ) ] = 4;
+  p3[ QLatin1String( "ReturnNumber" ) ] = 5;
+  p3[ QLatin1String( "NumberOfReturns" ) ] = 6;
+  p3[ QLatin1String( "ScanDirectionFlag" ) ] = 7;
+  p3[ QLatin1String( "EdgeOfFlightLine" ) ] = 8;
+  p3[ QLatin1String( "ScanAngleRank" ) ] = 9;
+  p3[ QLatin1String( "UserData" ) ] = 10;
+  p3[ QLatin1String( "PointSourceId" ) ] = 11;
+  p3[ QLatin1String( "GpsTime" ) ] = 12;
+  p3[ QLatin1String( "Red" ) ] = 13;
+  p3[ QLatin1String( "Green" ) ] = 14;
+  p3[ QLatin1String( "Blue" ) ] = 15;
 
   QVector<QVariantMap> points;
-  points << point << point << point;
+  points << p1 << p2 << p3;
 
   // Also define scale and offset for x/y/z in the block
   QgsVector3D scale( 0.01, 0.01, 0.01 );
@@ -227,25 +261,30 @@ void TestQgsPointCloudExpression::testCreateBlock()
   QgsPointCloudBlock *block = createPointCloudBlock( points, scale, offset, attributes );
 
   // Check that the block has the correct data
-  QVariantMap map = QgsPointCloudAttribute::getAttributeMap( block->data(), 0, attributes );
+  QVariantMap map;
+  int i = 0;
+  for ( const auto &p : points )
+  {
+    map = QgsPointCloudAttribute::getAttributeMap( block->data(), i * attributes.pointRecordSize(), attributes );
 
-  QCOMPARE( map[ "X" ].toDouble() * scale.x() + offset.x(), point[ "X" ] );
-  QCOMPARE( map[ "Y" ].toDouble() * scale.y() + offset.y(), point[ "Y" ] );
-  QCOMPARE( map[ "Z" ].toDouble() * scale.z() + offset.z(), point[ "Z" ] );
-  QCOMPARE( map[ "Classification" ], point[ "Classification" ] );
-  QCOMPARE( map[ "Intensity" ], point[ "Intensity" ] );
-  QCOMPARE( map[ "ReturnNumber" ], point[ "ReturnNumber" ] );
-  QCOMPARE( map[ "NumberOfReturns" ], point[ "NumberOfReturns" ] );
-  QCOMPARE( map[ "ScanDirectionFlag" ], point[ "ScanDirectionFlag" ] );
-  QCOMPARE( map[ "EdgeOfFlightLine" ], point[ "EdgeOfFlightLine" ] );
-  QCOMPARE( map[ "ScanAngleRank" ], point[ "ScanAngleRank" ] );
-  QCOMPARE( map[ "UserData" ], point[ "UserData" ] );
-  QCOMPARE( map[ "PointSourceId" ], point[ "PointSourceId" ] );
-  QCOMPARE( map[ "GpsTime" ], point[ "GpsTime" ] );
-  QCOMPARE( map[ "Red" ], point[ "Red" ] );
-  QCOMPARE( map[ "Green" ], point[ "Green" ] );
-  QCOMPARE( map[ "Blue" ], point[ "Blue" ] );
-
+    QCOMPARE( map[ "X" ].toDouble() * scale.x() + offset.x(), p[ "X" ] );
+    QCOMPARE( map[ "Y" ].toDouble() * scale.y() + offset.y(), p[ "Y" ] );
+    QCOMPARE( map[ "Z" ].toDouble() * scale.z() + offset.z(), p[ "Z" ] );
+    QCOMPARE( map[ "Classification" ], p[ "Classification" ] );
+    QCOMPARE( map[ "Intensity" ], p[ "Intensity" ] );
+    QCOMPARE( map[ "ReturnNumber" ], p[ "ReturnNumber" ] );
+    QCOMPARE( map[ "NumberOfReturns" ], p[ "NumberOfReturns" ] );
+    QCOMPARE( map[ "ScanDirectionFlag" ], p[ "ScanDirectionFlag" ] );
+    QCOMPARE( map[ "EdgeOfFlightLine" ], p[ "EdgeOfFlightLine" ] );
+    QCOMPARE( map[ "ScanAngleRank" ], p[ "ScanAngleRank" ] );
+    QCOMPARE( map[ "UserData" ], p[ "UserData" ] );
+    QCOMPARE( map[ "PointSourceId" ], p[ "PointSourceId" ] );
+    QCOMPARE( map[ "GpsTime" ], p[ "GpsTime" ] );
+    QCOMPARE( map[ "Red" ], p[ "Red" ] );
+    QCOMPARE( map[ "Green" ], p[ "Green" ] );
+    QCOMPARE( map[ "Blue" ], p[ "Blue" ] );
+    ++i;
+  }
   delete block;
 }
 

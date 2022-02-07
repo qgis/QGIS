@@ -127,7 +127,9 @@ bool QgsPointCloudLayerRenderer::render()
 
 
 
-  QString expr = "X != 0 and Y != 0 and Z > 250 and Classification in (1,2,6)";
+//  QString expr = "X != 0 and Y != 0 and Z > 250 and Classification in (1,2,6)";
+  QString expr = "X != 0 and Y != 0 and ReturnNumber != NumberOfReturns";
+//  QString expr = "X < 1 or Y < 1 or Z < 1 or Classification < 1 or Intensity < 1 or ReturnNumber < 1 or NumberOfReturns < 1 or ScanDirectionFlag < 1 or EdgeOfFlightLine < 1 or ScanAngleRank < 1 or UserData < 1 or PointSourceId < 1 or GpsTime < 1 or Red < 1 or Green < 1 or Blue < 1 ";
   QString err;
   QgsPointcloudExpression filterExpression = QgsPointcloudExpression( expr );
 //  bool prep = filterExpression.prepare( mLayerAttributes );
