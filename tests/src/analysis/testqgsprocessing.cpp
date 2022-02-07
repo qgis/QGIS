@@ -10678,7 +10678,9 @@ void TestQgsProcessing::modelExecution()
   layerDef.destinationName = "my_dest";
   modelInputs.insert( "cx3:MY_OUT", QVariant::fromValue( layerDef ) );
   QVariantMap childResults;
-  QVariantMap params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx1" ), modelInputs, childResults, expContext );
+  QString error;
+  QVariantMap params = model2.parametersForChildAlgorithm( model2.childAlgorithm( QStringLiteral( "cx1" ) ), modelInputs, childResults, expContext, error );
+  QVERIFY( error.isEmpty() );
   QCOMPARE( params.value( "DISSOLVE" ).toBool(), false );
   QCOMPARE( params.value( "DISTANCE" ).toInt(), 271 );
   QCOMPARE( params.value( "SEGMENTS" ).toInt(), 16 );
@@ -10733,7 +10735,8 @@ void TestQgsProcessing::modelExecution()
   alg2c2.setAlgorithmId( "native:centroids" );
   alg2c2.addParameterSources( "INPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromChildOutput( "cx1", "OUTPUT" ) );
   model2.addChildAlgorithm( alg2c2 );
-  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults, expContext );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults, expContext, error );
+  QVERIFY( error.isEmpty() );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:Centroids" ) );
   QCOMPARE( params.count(), 2 );
@@ -10784,7 +10787,8 @@ void TestQgsProcessing::modelExecution()
   alg2c3.setModelOutputs( outputs3 );
 
   model2.addChildAlgorithm( alg2c3 );
-  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults, expContext );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults, expContext, error );
+  QVERIFY( error.isEmpty() );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.value( "EXPRESSION" ).toString(), QStringLiteral( "true" ) );
   QVERIFY( params.value( "OUTPUT" ).canConvert<QgsProcessingOutputLayerDefinition>() );
@@ -10793,19 +10797,35 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( outDef.sink.staticValue().toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 3 ); // don't want FAIL_OUTPUT set!
 
+  // a child with an expression which is invalid
+  QgsProcessingModelChildAlgorithm alg2c3a;
+  alg2c3a.setChildId( "cx3a" );
+  alg2c3a.setAlgorithmId( "native:extractbyexpression" );
+  alg2c3a.setDescription( "Extract by expression" );
+  alg2c3a.addParameterSources( "INPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "1/'a'" ) ) );
+  alg2c3a.addParameterSources( "EXPRESSION", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( "true" ) );
+  alg2c3a.addParameterSources( "OUTPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromModelParameter( "MY_OUT" ) );
+
+  model2.addChildAlgorithm( alg2c3a );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3a" ), modelInputs, childResults, expContext, error );
+  QCOMPARE( error, QStringLiteral( "Could not evaluate expression for parameter INPUT for Extract by expression: Cannot convert 'a' to double" ) );
+  model2.removeChildAlgorithm( "cx3a" );
+
   // a child with an static output value
   QgsProcessingModelChildAlgorithm alg2c4;
   alg2c4.setChildId( "cx4" );
   alg2c4.setAlgorithmId( "native:extractbyexpression" );
   alg2c4.addParameterSources( "OUTPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( "STATIC" ) );
   model2.addChildAlgorithm( alg2c4 );
-  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx4" ), modelInputs, childResults, expContext );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx4" ), modelInputs, childResults, expContext, error );
+  QVERIFY( error.isEmpty() );
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "STATIC" ) );
   model2.removeChildAlgorithm( "cx4" );
   // expression based output value
   alg2c4.addParameterSources( "OUTPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromExpression( "'A' || 'B'" ) );
   model2.addChildAlgorithm( alg2c4 );
-  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx4" ), modelInputs, childResults, expContext );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx4" ), modelInputs, childResults, expContext, error );
+  QVERIFY( error.isEmpty() );
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "AB" ) );
   model2.removeChildAlgorithm( "cx4" );
 
