@@ -703,7 +703,10 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         alg.loadVariant( v.toMap() );
 
         // ensure algorithm id is unique
-        alg.generateChildId( *modelScene()->model() );
+        if ( modelScene()->model()->childAlgorithms().contains( alg.childId() ) )
+        {
+          alg.generateChildId( *modelScene()->model() );
+        }
         alg.reattach();
 
         pastedAlgorithms << alg.childId();
