@@ -4246,6 +4246,57 @@ class TestQgsExpression: public QObject
       QCOMPARE( result.toString(), QString( "f2" ) );
     }
 
+    void testExpressionUtilsMapLayerRetrieval()
+    {
+      QgsExpression exp;
+      // NULL value
+      QgsMapLayer *res = QgsExpressionUtils::getMapLayer( QVariant(), &exp );
+      QVERIFY( !res );
+      QVERIFY( !exp.hasEvalError() );
+
+      // value which CANNOT be a map layer
+      res = QgsExpressionUtils::getMapLayer( QVariant( 5 ), &exp );
+      QVERIFY( !res );
+#if 0
+      // TODO probably **should** raise an eval error for this situation?
+      QVERIFY( exp.hasEvalError() );
+#endif
+
+      // with weak map layer pointer
+      exp = QgsExpression();
+      QgsWeakMapLayerPointer weakPointer( mPointsLayer );
+      res = QgsExpressionUtils::getMapLayer( QVariant::fromValue( weakPointer ), &exp );
+      QCOMPARE( res, mPointsLayer );
+      QVERIFY( !exp.hasEvalError() );
+
+      // with raw map layer pointer
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( QVariant::fromValue( mPointsLayer ), &exp );
+      QCOMPARE( res, mPointsLayer );
+      QVERIFY( !exp.hasEvalError() );
+
+      // with layer id
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( mPointsLayer->id(), &exp );
+      QCOMPARE( res, mPointsLayer );
+      QVERIFY( !exp.hasEvalError() );
+
+      // with layer name
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( mPointsLayer->name(), &exp );
+      QCOMPARE( res, mPointsLayer );
+      QVERIFY( !exp.hasEvalError() );
+
+      // with string which is neither id or name
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( QStringLiteral( "xxxA" ), &exp );
+      QVERIFY( !res );
+#if 0
+      // TODO -- probably should flag an error here?
+      QVERIFY( !exp.hasEvalError() );
+#endif
+    }
+
     void test_env()
     {
       QgsExpressionContext context;
