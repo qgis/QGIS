@@ -248,6 +248,32 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const;
 
     /**
+     * Given a set of \a parameter values, retrieves the value corresponding to the
+     * given parameter name.
+     *
+     * This method correctly handles parameter aliases, by also retrieving any values
+     * set to aliases of the matching parameter definition.
+     *
+     * Returns an invalid variant if no matching value is present in \a parameters.
+     *
+     * \see hasParameterValue()
+     * \since QGIS 3.24
+     */
+    QVariant parameterValue( const QVariantMap &parameters, const QString &name ) const;
+
+    /**
+     * Given a set of \a parameter values, returns TRUE if a value is present for the
+     * given parameter by name.
+     *
+     * This method correctly handles parameter aliases, by also checking any values
+     * set to aliases of the matching parameter definition.
+     *
+     * \see parameterValue()
+     * \since QGIS 3.24
+     */
+    bool hasParameterValue( const QVariantMap &parameters, const QString &name ) const;
+
+    /**
      * Checks the supplied \a parameter values to verify that they satisfy the requirements
      * of this algorithm in the supplied \a context. The \a message parameter will be
      * filled with explanatory text if validation fails.
@@ -649,6 +675,14 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see processAlgorithm()
      */
     virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+
+    /**
+     * Updates a parameter map by replacing any keys which correspond to aliases of parameters
+     * with the actual parameter names.
+     *
+     * \since QGIS 3.24
+     */
+    QVariantMap replaceAliases( const QVariantMap &parameters ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a static string value.

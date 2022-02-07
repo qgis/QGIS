@@ -219,6 +219,34 @@ external dependencies. If specified, the ``errorMessage`` argument will be fille
 with a localised error message describing why the algorithm cannot execute.
 %End
 
+    QVariant parameterValue( const QVariantMap &parameters, const QString &name ) const;
+%Docstring
+Given a set of ``parameter`` values, retrieves the value corresponding to the
+given parameter name.
+
+This method correctly handles parameter aliases, by also retrieving any values
+set to aliases of the matching parameter definition.
+
+Returns an invalid variant if no matching value is present in ``parameters``.
+
+.. seealso:: :py:func:`hasParameterValue`
+
+.. versionadded:: 3.24
+%End
+
+    bool hasParameterValue( const QVariantMap &parameters, const QString &name ) const;
+%Docstring
+Given a set of ``parameter`` values, returns ``True`` if a value is present for the
+given parameter by name.
+
+This method correctly handles parameter aliases, by also checking any values
+set to aliases of the matching parameter definition.
+
+.. seealso:: :py:func:`parameterValue`
+
+.. versionadded:: 3.24
+%End
+
     virtual bool checkParameterValues( const QVariantMap &parameters,
                                        QgsProcessingContext &context, QString *message /Out/ = 0 ) const;
 %Docstring
@@ -640,6 +668,14 @@ or if an exception was raised by the :py:func:`~QgsProcessingAlgorithm.processAl
 .. seealso:: :py:func:`prepareAlgorithm`
 
 .. seealso:: :py:func:`processAlgorithm`
+%End
+
+    QVariantMap replaceAliases( const QVariantMap &parameters ) const;
+%Docstring
+Updates a parameter map by replacing any keys which correspond to aliases of parameters
+with the actual parameter names.
+
+.. versionadded:: 3.24
 %End
 
     QString parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;

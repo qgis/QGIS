@@ -22,7 +22,7 @@ QgsProcessingParameterTinInputLayers::QgsProcessingParameterTinInputLayers( cons
 
 QgsProcessingParameterDefinition *QgsProcessingParameterTinInputLayers::clone() const
 {
-  return new QgsProcessingParameterTinInputLayers( name(), description() );
+  return new QgsProcessingParameterTinInputLayers( *this );
 }
 
 QString QgsProcessingParameterTinInputLayers::type() const

@@ -30,7 +30,7 @@ QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups
 
 QgsProcessingParameterDefinition *QgsProcessingParameterMeshDatasetGroups::clone() const
 {
-  return new QgsProcessingParameterMeshDatasetGroups( name(), description(), mMeshLayerParameterName, mSupportedDataType );
+  return new QgsProcessingParameterMeshDatasetGroups( *this );
 }
 
 QString QgsProcessingParameterMeshDatasetGroups::type() const
@@ -179,7 +179,7 @@ QgsProcessingParameterMeshDatasetTime::QgsProcessingParameterMeshDatasetTime( co
 
 QgsProcessingParameterDefinition *QgsProcessingParameterMeshDatasetTime::clone() const
 {
-  return new QgsProcessingParameterMeshDatasetTime( name(), description(), mMeshLayerParameterName, mDatasetGroupParameterName );
+  return new QgsProcessingParameterMeshDatasetTime( *this );
 }
 
 QString QgsProcessingParameterMeshDatasetTime::type() const

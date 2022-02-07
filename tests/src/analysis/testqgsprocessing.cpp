@@ -122,6 +122,69 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addParameter( p4 ) );
       QCOMPARE( countVisibleParameters(), 2 );
 
+      // parameter with alias
+      QgsProcessingParameterBoolean *pAlias = new QgsProcessingParameterBoolean( "paliases" );
+      pAlias->setAliases( { QStringLiteral( "ppppppp" ), QStringLiteral( "PPP" )} );
+      QCOMPARE( pAlias->aliases(), QStringList( { QStringLiteral( "ppppppp" ), QStringLiteral( "PPP" )} ) );
+      QVERIFY( addParameter( pAlias ) );
+      QCOMPARE( parameterDefinition( "paliases" ), pAlias );
+      // any of the aliases should also work
+      QCOMPARE( parameterDefinition( "ppppppp" ), pAlias );
+      QCOMPARE( parameterDefinition( "PPP" ), pAlias );
+      QCOMPARE( parameterDefinition( "ppp" ), pAlias ); // should be case-insensitive
+
+      // parameterValue
+      QVariantMap testParams;
+      testParams.insert( QStringLiteral( "no def" ), 55 );
+      testParams.insert( QStringLiteral( "p1" ), 56 );
+      testParams.insert( QStringLiteral( "p3" ), 57 );
+      testParams.insert( QStringLiteral( "p4" ), 58 );
+      testParams.insert( QStringLiteral( "paliases" ), 59 );
+      QVERIFY( hasParameterValue( testParams, QStringLiteral( "no def" ) ) );
+      QCOMPARE( parameterValue( testParams, QStringLiteral( "no def" ) ), QVariant( 55 ) );
+      QVERIFY( !hasParameterValue( testParams, QStringLiteral( "no value" ) ) );
+      QCOMPARE( parameterValue( testParams, QStringLiteral( "no value" ) ), QVariant() );
+      QVERIFY( hasParameterValue( testParams, QStringLiteral( "p1" ) ) );
+      QCOMPARE( parameterValue( testParams, QStringLiteral( "p1" ) ), QVariant( 56 ) );
+      QVERIFY( hasParameterValue( testParams, QStringLiteral( "p3" ) ) );
+      QCOMPARE( parameterValue( testParams, QStringLiteral( "p3" ) ), QVariant( 57 ) );
+      QVERIFY( hasParameterValue( testParams, QStringLiteral( "p4" ) ) );
+      QCOMPARE( parameterValue( testParams, QStringLiteral( "p4" ) ), QVariant( 58 ) );
+      QVERIFY( hasParameterValue( testParams, QStringLiteral( "paliases" ) ) );
+      QCOMPARE( parameterValue( testParams, QStringLiteral( "paliases" ) ), QVariant( 59 ) );
+
+      QVariantMap remaped = replaceAliases( testParams );
+      QCOMPARE( remaped.value( QStringLiteral( "no def" ) ), QVariant( 55 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "p1" ) ), QVariant( 56 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "p3" ) ), QVariant( 57 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "p4" ) ), QVariant( 58 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "paliases" ) ), QVariant( 59 ) );
+
+      // aliases should be handled -- i.e. if value is present with a key which is an alias of a parameter, it should be retrieved successfully
+      testParams.remove( QStringLiteral( "paliases" ) );
+      testParams.insert( QStringLiteral( "ppppppp" ), 60 );
+      QVERIFY( hasParameterValue( testParams, QStringLiteral( "paliases" ) ) );
+      QCOMPARE( parameterValue( testParams, QStringLiteral( "paliases" ) ), QVariant( 60 ) );
+
+      // 'pppppppp' key should be replaced by actual name, i.e. 'paliases'
+      remaped = replaceAliases( testParams );
+      QCOMPARE( remaped.value( QStringLiteral( "no def" ) ), QVariant( 55 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "p1" ) ), QVariant( 56 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "p3" ) ), QVariant( 57 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "p4" ) ), QVariant( 58 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "paliases" ) ), QVariant( 60 ) );
+
+      testParams.remove( QStringLiteral( "ppppppp" ) );
+      testParams.insert( QStringLiteral( "PPP" ), 61 );
+      QVERIFY( hasParameterValue( testParams, QStringLiteral( "paliases" ) ) );
+      QCOMPARE( parameterValue( testParams, QStringLiteral( "paliases" ) ), QVariant( 61 ) );
+
+      remaped = replaceAliases( testParams );
+      QCOMPARE( remaped.value( QStringLiteral( "no def" ) ), QVariant( 55 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "p1" ) ), QVariant( 56 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "p3" ) ), QVariant( 57 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "p4" ) ), QVariant( 58 ) );
+      QCOMPARE( remaped.value( QStringLiteral( "paliases" ) ), QVariant( 61 ) );
 
       //destination styleparameters
       QVERIFY( destinationParameterDefinitions().isEmpty() );
@@ -173,7 +236,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // should allow parameters with same name but different case (required for grass provider)
       QgsProcessingParameterBoolean *p1C = new QgsProcessingParameterBoolean( "P1" );
       QVERIFY( addParameter( p1C ) );
-      QCOMPARE( parameterDefinitions().count(), 8 );
+      QCOMPARE( parameterDefinitions().count(), 9 );
 
       // remove parameter and auto created output
       QgsProcessingParameterVectorDestination *p9 = new QgsProcessingParameterVectorDestination( "p9", "output" );
@@ -194,7 +257,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
       // parameterDefinition should be case insensitive, but prioritize correct case matches
       QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
-      QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 7 ) );
+      QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 8 ) );
     }
 
     void runParameterChecks2()

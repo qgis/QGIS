@@ -373,6 +373,8 @@ Returns the name of the parameter. This is the internal identifier by which
 algorithms access this parameter.
 
 .. seealso:: :py:func:`setName`
+
+.. seealso:: :py:func:`aliases`
 %End
 
     void setName( const QString &name );
@@ -381,6 +383,30 @@ Sets the ``name`` of the parameter. This is the internal identifier by which
 algorithms access this parameter.
 
 .. seealso:: :py:func:`name`
+
+.. seealso:: :py:func:`setAliases`
+%End
+
+    QStringList aliases() const;
+%Docstring
+Returns a list of additional names by which the parameter can be referred to.
+
+.. seealso:: :py:func:`setAliases`
+
+.. seealso:: :py:func:`name`
+
+.. versionadded:: 3.24
+%End
+
+    void setAliases( const QStringList &aliases );
+%Docstring
+Sets a list of additional names by which the parameter can be referred to.
+
+.. seealso:: :py:func:`aliases`
+
+.. seealso:: :py:func:`setName`
+
+.. versionadded:: 3.24
 %End
 
     QString description() const;
@@ -774,6 +800,7 @@ The ``variables`` list should contain the variable names only, without the usual
 %End
 
   protected:
+
 
 
 

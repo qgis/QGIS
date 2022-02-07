@@ -79,7 +79,7 @@ QString QgsProcessingAlgorithm::helpUrl() const
 
 QIcon QgsProcessingAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( "/processingAlgorithm.svg" );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/processingAlgorithm.svg" ) );
 }
 
 QString QgsProcessingAlgorithm::svgIconPath() const
@@ -97,11 +97,41 @@ bool QgsProcessingAlgorithm::canExecute( QString * ) const
   return true;
 }
 
+QVariant QgsProcessingAlgorithm::parameterValue( const QVariantMap &parameters, const QString &name ) const
+{
+  QStringList names { name };
+  if ( const QgsProcessingParameterDefinition *def = parameterDefinition( name ) )
+    names.append( def->aliases() );
+
+  for ( const QString &name : std::as_const( names ) )
+  {
+    auto it = parameters.constFind( name );
+    if ( it != parameters.constEnd() )
+      return it.value();
+  }
+  return QVariant();
+}
+
+bool QgsProcessingAlgorithm::hasParameterValue( const QVariantMap &parameters, const QString &name ) const
+{
+  QStringList names { name };
+  if ( const QgsProcessingParameterDefinition *def = parameterDefinition( name ) )
+    names.append( def->aliases() );
+
+  for ( const QString &name : std::as_const( names ) )
+  {
+    auto it = parameters.constFind( name );
+    if ( it != parameters.constEnd() )
+      return true;
+  }
+  return false;
+}
+
 bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters, QgsProcessingContext &context, QString *message ) const
 {
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
-    if ( !def->checkValueIsAcceptable( parameters.value( def->name() ), &context ) )
+    if ( !def->checkValueIsAcceptable( parameterValue( parameters, def->name() ), &context ) )
     {
       if ( message )
       {
@@ -175,7 +205,7 @@ QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVar
       << QgsExpressionContextUtils::projectScope( context.project() );
   }
 
-  c << QgsExpressionContextUtils::processingAlgorithmScope( this, parameters, context );
+  c << QgsExpressionContextUtils::processingAlgorithmScope( this, replaceAliases( parameters ), context );
   return c;
 }
 
@@ -297,10 +327,10 @@ QString QgsProcessingAlgorithm::asPythonCommand( const QVariantMap &parameters, 
     if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
       continue;
 
-    if ( !parameters.contains( def->name() ) )
+    if ( !hasParameterValue( parameters, def->name() ) )
       continue;
 
-    parts << QStringLiteral( "'%1':%2" ).arg( def->name(), def->valueAsPythonString( parameters.value( def->name() ), context ) );
+    parts << QStringLiteral( "'%1':%2" ).arg( def->name(), def->valueAsPythonString( parameterValue( parameters, def->name() ), context ) );
   }
 
   s += QStringLiteral( " {%1})" ).arg( parts.join( ',' ) );
@@ -343,16 +373,16 @@ QString QgsProcessingAlgorithm::asQgisProcessCommand( const QVariantMap &paramet
     if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
       continue;
 
-    if ( !parameters.contains( def->name() ) )
+    if ( !hasParameterValue( parameters, def->name() ) )
       continue;
 
-    const QStringList partValues = def->valueAsStringList( parameters.value( def->name() ), context, ok );
+    const QStringList partValues = def->valueAsStringList( parameterValue( parameters, def->name() ), context, ok );
     if ( !ok )
       return QString();
 
     for ( const QString &partValue : partValues )
     {
-      parts << QStringLiteral( "--%1=%2" ).arg( def->name(), escapeIfNeeded( partValue ) );
+      parts << QStringLiteral( "--%1=%2" ).arg( escapeIfNeeded( def->name() ), escapeIfNeeded( partValue ) );
     }
   }
 
@@ -373,10 +403,10 @@ QVariantMap QgsProcessingAlgorithm::asMap( const QVariantMap &parameters, QgsPro
     if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
       continue;
 
-    if ( !parameters.contains( def->name() ) )
+    if ( !hasParameterValue( parameters, def->name() ) )
       continue;
 
-    paramValues.insert( def->name(), def->valueAsJsonObject( parameters.value( def->name() ), context ) );
+    paramValues.insert( def->name(), def->valueAsJsonObject( parameterValue( parameters, def->name() ), context ) );
   }
 
   properties.insert( QStringLiteral( "inputs" ), paramValues );
@@ -448,6 +478,24 @@ bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definitio
   return true;
 }
 
+QVariantMap QgsProcessingAlgorithm::replaceAliases( const QVariantMap &parameters ) const
+{
+  QVariantMap res;
+  for ( auto it = parameters.constBegin(); it != parameters.constEnd(); ++it )
+  {
+    if ( const QgsProcessingParameterDefinition *def = parameterDefinition( it.key() ) )
+    {
+      // if key is a name or alias of a parameter, always insert the value with the parameter name as key (not the alias!)
+      res.insert( def->name(), it.value() );
+    }
+    else
+    {
+      res.insert( it.key(), it.value() );
+    }
+  }
+  return res;
+}
+
 bool QgsProcessingAlgorithm::prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   return true;
@@ -473,6 +521,14 @@ const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinit
     if ( def->name().compare( name, Qt::CaseInsensitive ) == 0 )
       return def;
   }
+
+  // third pass - by alias
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
+  {
+    if ( def->aliases().contains( name, Qt::CaseInsensitive ) )
+      return def;
+  }
+
   return nullptr;
 }
 
@@ -529,14 +585,15 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
   if ( ok )
     *ok = false;
 
-  bool res = alg->prepare( parameters, context, feedback );
+  const QVariantMap processedParameters = replaceAliases( parameters );
+  bool res = alg->prepare( processedParameters, context, feedback );
   if ( !res )
     return QVariantMap();
 
   QVariantMap runRes;
   try
   {
-    runRes = alg->runPrepared( parameters, context, feedback );
+    runRes = alg->runPrepared( processedParameters, context, feedback );
   }
   catch ( QgsProcessingException &e )
   {
@@ -562,9 +619,11 @@ bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessi
 {
   Q_ASSERT_X( QThread::currentThread() == context.temporaryLayerStore()->thread(), "QgsProcessingAlgorithm::prepare", "prepare() must be called from the same thread as context was created in" );
   Q_ASSERT_X( !mHasPrepared, "QgsProcessingAlgorithm::prepare", "prepare() has already been called for the algorithm instance" );
+
+  const QVariantMap processedParameters = replaceAliases( parameters );
   try
   {
-    mHasPrepared = prepareAlgorithm( parameters, context, feedback );
+    mHasPrepared = prepareAlgorithm( processedParameters, context, feedback );
     return mHasPrepared;
   }
   catch ( QgsProcessingException &e )
@@ -579,6 +638,8 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
 {
   Q_ASSERT_X( mHasPrepared, "QgsProcessingAlgorithm::runPrepared", QStringLiteral( "prepare() was not called for the algorithm instance %1" ).arg( name() ).toLatin1() );
   Q_ASSERT_X( !mHasExecuted, "QgsProcessingAlgorithm::runPrepared", "runPrepared() was already called for this algorithm instance" );
+
+  const QVariantMap processedParameters = replaceAliases( parameters );
 
   // Hey kids, let's all be thread safe! It's the fun thing to do!
   //
@@ -607,7 +668,7 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
 
   try
   {
-    QVariantMap runResults = processAlgorithm( parameters, *runContext, feedback );
+    QVariantMap runResults = processAlgorithm( processedParameters, *runContext, feedback );
 
     mHasExecuted = true;
     if ( mLocalContext )
@@ -662,57 +723,57 @@ QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, 
 
 QString QgsProcessingAlgorithm::parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsString( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsString( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsExpression( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsExpression( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsExpression( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 double QgsProcessingAlgorithm::parameterAsDouble( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsDouble( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsDouble( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 int QgsProcessingAlgorithm::parameterAsInt( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsInt( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsInt( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QList<int> QgsProcessingAlgorithm::parameterAsInts( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsInts( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsInts( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 int QgsProcessingAlgorithm::parameterAsEnum( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsEnum( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsEnum( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QList<int> QgsProcessingAlgorithm::parameterAsEnums( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsEnums( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsEnums( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsEnumString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsEnumString( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsEnumString( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QStringList QgsProcessingAlgorithm::parameterAsEnumStrings( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsEnumStrings( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsEnumStrings( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 bool QgsProcessingAlgorithm::parameterAsBool( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 bool QgsProcessingAlgorithm::parameterAsBoolean( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions ) const
@@ -720,167 +781,167 @@ QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &para
   if ( !parameterDefinition( name ) )
     throw QgsProcessingException( QObject::tr( "No parameter definition for the sink '%1'" ).arg( name ) );
 
-  return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), parameters, fields, geometryType, crs, context, destinationIdentifier, sinkFlags, createOptions, datasourceOptions, layerOptions );
+  return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), replaceAliases( parameters ), fields, geometryType, crs, context, destinationIdentifier, sinkFlags, createOptions, datasourceOptions, layerOptions );
 }
 
 QgsProcessingFeatureSource *QgsProcessingAlgorithm::parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsSource( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsSource( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsCompatibleSourceLayerPath( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback )
 {
-  return QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( parameterDefinition( name ), parameters, context, compatibleFormats, preferredFormat, feedback );
+  return QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( parameterDefinition( name ), replaceAliases( parameters ), context, compatibleFormats, preferredFormat, feedback );
 }
 
 QString QgsProcessingAlgorithm::parameterAsCompatibleSourceLayerPathAndLayerName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback, QString *layerName )
 {
-  return QgsProcessingParameters::parameterAsCompatibleSourceLayerPathAndLayerName( parameterDefinition( name ), parameters, context, compatibleFormats, preferredFormat, feedback, layerName );
+  return QgsProcessingParameters::parameterAsCompatibleSourceLayerPathAndLayerName( parameterDefinition( name ), replaceAliases( parameters ), context, compatibleFormats, preferredFormat, feedback, layerName );
 }
 
 QgsMapLayer *QgsProcessingAlgorithm::parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsLayer( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsRasterLayer *QgsProcessingAlgorithm::parameterAsRasterLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsRasterLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsRasterLayer( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsMeshLayer *QgsProcessingAlgorithm::parameterAsMeshLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsMeshLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsMeshLayer( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsOutputLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsOutputLayer( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsFileOutput( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsFileOutput( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsVectorLayer *QgsProcessingAlgorithm::parameterAsVectorLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsVectorLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsVectorLayer( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsCrs( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsCrs( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsExtentCrs( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsExtentCrs( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const
 {
-  return QgsProcessingParameters::parameterAsExtent( parameterDefinition( name ), parameters, context, crs );
+  return QgsProcessingParameters::parameterAsExtent( parameterDefinition( name ), replaceAliases( parameters ), context, crs );
 }
 
 QgsGeometry QgsProcessingAlgorithm::parameterAsExtentGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs )
 {
-  return QgsProcessingParameters::parameterAsExtentGeometry( parameterDefinition( name ), parameters, context, crs );
+  return QgsProcessingParameters::parameterAsExtentGeometry( parameterDefinition( name ), replaceAliases( parameters ), context, crs );
 }
 
 QgsPointXY QgsProcessingAlgorithm::parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const
 {
-  return QgsProcessingParameters::parameterAsPoint( parameterDefinition( name ), parameters, context, crs );
+  return QgsProcessingParameters::parameterAsPoint( parameterDefinition( name ), replaceAliases( parameters ), context, crs );
 }
 
 QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsPointCrs( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsPointCrs( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsGeometry QgsProcessingAlgorithm::parameterAsGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const
 {
-  return QgsProcessingParameters::parameterAsGeometry( parameterDefinition( name ), parameters, context, crs );
+  return QgsProcessingParameters::parameterAsGeometry( parameterDefinition( name ), replaceAliases( parameters ), context, crs );
 }
 
 QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsGeometryCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsGeometryCrs( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsGeometryCrs( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsFile( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsFile( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QVariantList QgsProcessingAlgorithm::parameterAsMatrix( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsMatrix( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsMatrix( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QList<QgsMapLayer *> QgsProcessingAlgorithm::parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsLayerList( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsLayerList( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QStringList QgsProcessingAlgorithm::parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsFileList( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsFileList( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QList<double> QgsProcessingAlgorithm::parameterAsRange( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsRange( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsRange( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsPrintLayout *QgsProcessingAlgorithm::parameterAsLayout( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsLayout( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsLayout( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsLayoutItem *QgsProcessingAlgorithm::parameterAsLayoutItem( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsPrintLayout *layout )
 {
-  return QgsProcessingParameters::parameterAsLayoutItem( parameterDefinition( name ), parameters, context, layout );
+  return QgsProcessingParameters::parameterAsLayoutItem( parameterDefinition( name ), replaceAliases( parameters ), context, layout );
 }
 
 QColor QgsProcessingAlgorithm::parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsColor( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsColor( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsConnectionName( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsConnectionName( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QDateTime QgsProcessingAlgorithm::parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsDateTime( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsDateTime( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsSchema( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsSchema( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsDatabaseTableName( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsDatabaseTableName( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsPointCloudLayer *QgsProcessingAlgorithm::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QgsAnnotationLayer *QgsProcessingAlgorithm::parameterAsAnnotationLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsAnnotationLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsAnnotationLayer( parameterDefinition( name ), replaceAliases( parameters ), context );
 }
 
 QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
@@ -966,8 +1027,8 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
 
 QString QgsProcessingAlgorithm::writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name )
 {
-  Q_UNUSED( sink );
-  Q_UNUSED( parameters );
+  Q_UNUSED( sink )
+  Q_UNUSED( parameters )
   if ( !name.isEmpty() )
     return QObject::tr( "Could not write feature into %1" ).arg( name );
   else

@@ -484,6 +484,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Returns the name of the parameter. This is the internal identifier by which
      * algorithms access this parameter.
      * \see setName()
+     * \see aliases()
      */
     QString name() const { return mName; }
 
@@ -491,8 +492,27 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Sets the \a name of the parameter. This is the internal identifier by which
      * algorithms access this parameter.
      * \see name()
+     * \see setAliases()
      */
     void setName( const QString &name ) { mName = name; }
+
+    /**
+     * Returns a list of additional names by which the parameter can be referred to.
+     *
+     * \see setAliases()
+     * \see name()
+     * \since QGIS 3.24
+     */
+    QStringList aliases() const { return mAliases; }
+
+    /**
+     * Sets a list of additional names by which the parameter can be referred to.
+     *
+     * \see aliases()
+     * \see setName()
+     * \since QGIS 3.24
+     */
+    void setAliases( const QStringList &aliases ) { mAliases = aliases; }
 
     /**
      * Returns the description for the parameter. This is the user-visible string
@@ -877,6 +897,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Additional expression context variables exposed for use by this parameter
     QStringList mAdditionalExpressionVariables;
+
+    //! List of additional names by which this parameter can be referred to
+    QStringList mAliases;
 
     // To allow access to mAlgorithm. We don't want a public setter for this!
     friend class QgsProcessingAlgorithm;
