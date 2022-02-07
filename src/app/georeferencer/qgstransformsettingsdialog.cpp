@@ -27,11 +27,9 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 
-QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, const QString &output,
-    int countGCPpoints, QWidget *parent )
+QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, const QString &output, QWidget *parent )
   : QDialog( parent )
   , mSourceRasterFile( raster )
-  , mCountGCPpoints( countGCPpoints )
 {
   setupUi( this );
   QgsSettings settings;
@@ -257,14 +255,6 @@ void QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged( int state )
   }
   label_2->setEnabled( enableOutputRaster );
   mOutputRaster->setEnabled( enableOutputRaster );
-}
-
-bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
-{
-  QgsGeorefTransform georefTransform;
-  georefTransform.selectTransformParametrisation( ( QgsGeorefTransform::TransformMethod )count );
-  minGCPpoints = georefTransform.minimumGcpCount();
-  return ( mCountGCPpoints >= minGCPpoints );
 }
 
 QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QString &raster )
