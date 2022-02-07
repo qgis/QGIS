@@ -298,8 +298,8 @@ class TestQgsMapToolLabel : public QObject
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       // defaults to bottom left
-      QgsPalLayerSettings::QuadrantPosition quadrantPosition = tool->currentAlignment();
-      QCOMPARE( quadrantPosition, QgsPalLayerSettings::QuadrantOver );
+      QgsMapToolLabel::LabelAlignment labelAlignment = tool->currentAlignment();
+      QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::HalfCenter );
 
       // using field bound alignment
       pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Hali, QgsProperty::fromField( QStringLiteral( "halig" ) ) );
@@ -315,8 +315,8 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
-      quadrantPosition = tool->currentAlignment();
-      QCOMPARE( quadrantPosition, QgsPalLayerSettings::QuadrantBelowLeft );
+      labelAlignment = tool->currentAlignment();
+      QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::TopRight );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
       event = std::make_unique< QMouseEvent >(
@@ -329,8 +329,8 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
-      quadrantPosition = tool->currentAlignment();
-      QCOMPARE( quadrantPosition, QgsPalLayerSettings::QuadrantAbove );
+      labelAlignment = tool->currentAlignment();
+      QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::BaseCenter );
 
       // now try with expression based alignment
       pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Hali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'right' else 'left' end" ) ) );
@@ -352,8 +352,8 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
-      quadrantPosition = tool->currentAlignment();
-      QCOMPARE( quadrantPosition, QgsPalLayerSettings::QuadrantBelowRight );
+      labelAlignment = tool->currentAlignment();
+      QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::CapLeft );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
       event = std::make_unique< QMouseEvent >(
@@ -366,8 +366,8 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
-      quadrantPosition = tool->currentAlignment();
-      QCOMPARE( quadrantPosition, QgsPalLayerSettings::QuadrantLeft );
+      labelAlignment = tool->currentAlignment();
+      QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::HalfRight );
     }
 
     void testAlignmentQuadrant()
@@ -439,35 +439,35 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
-      QgsPalLayerSettings::QuadrantPosition quadrantPosition = tool->currentAlignment();
-      QCOMPARE( quadrantPosition, QgsPalLayerSettings::QuadrantOver );
+      QgsMapToolLabel::LabelAlignment labelAlignment = tool->currentAlignment();
+      QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::HalfCenter );
 
       // defaults to bottom left if qudrant is not relevant
       pls1.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
       tool->mCurrentLabel.settings = pls1;
-      quadrantPosition = tool->currentAlignment();
-      QCOMPARE( quadrantPosition, QgsPalLayerSettings::QuadrantAboveRight );
+      labelAlignment = tool->currentAlignment();
+      QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::BottomLeft );
 
       // now try with quadrant property
       pls1.placement = QgsPalLayerSettings::OverPoint;
       pls1.quadOffset = QgsPalLayerSettings::QuadrantBelowLeft;
       tool->mCurrentLabel.settings = pls1;
-      quadrantPosition = tool->currentAlignment();
-      QCOMPARE( quadrantPosition, QgsPalLayerSettings::QuadrantBelowLeft );
+      labelAlignment = tool->currentAlignment();
+      QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::TopRight );
 
       // using field bound alignment
       pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Hali, QgsProperty::fromField( QStringLiteral( "halig" ) ) );
       pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Vali, QgsProperty::fromField( QStringLiteral( "valig" ) ) );
       tool->mCurrentLabel.settings = pls1;
-      quadrantPosition = tool->currentAlignment();
-      QCOMPARE( quadrantPosition, QgsPalLayerSettings::QuadrantBelowLeft );
+      labelAlignment = tool->currentAlignment();
+      QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::TopRight );
 
       // now try with expression based alignment
       pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Hali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'right' else 'left' end" ) ) );
       pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Vali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'half' else 'cap' end" ) ) );
       tool->mCurrentLabel.settings = pls1;
-      quadrantPosition = tool->currentAlignment();
-      QCOMPARE( quadrantPosition, QgsPalLayerSettings::QuadrantBelowRight );
+      labelAlignment = tool->currentAlignment();
+      QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::CapLeft );
     }
 
     void dataDefinedColumnName()
