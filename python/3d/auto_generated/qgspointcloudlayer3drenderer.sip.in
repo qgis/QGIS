@@ -102,14 +102,14 @@ Returns the maximum number of points that will be rendered to the scene
 Sets the maximum number of points to be rendered in the scene
 %End
 
-    long long gpuMemoryLimit() const;
+    double gpuMemoryLimit() const;
 %Docstring
 Returns the limit of the GPU memory used for rendering
 
 .. versionadded:: 3.24
 %End
 
-    void setGpuMemoryLimit( long long gpuMemoryLimit );
+    void setGpuMemoryLimit( double gpuMemoryLimit );
 %Docstring
 Sets the limit of the GPU memory used for rendering
 

@@ -227,9 +227,9 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudI
     const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol,
     float maximumScreenSpaceError, bool showBoundingBoxes,
     double zValueScale, double zValueOffset,
-    int pointBudget, long long gpuMemoryLimit )
+    int pointBudget )
   : QgsChunkedEntity( maximumScreenSpaceError,
-                      new QgsPointCloudLayerChunkLoaderFactory( map, coordinateTransform, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget, gpuMemoryLimit )
+                      new QgsPointCloudLayerChunkLoaderFactory( map, coordinateTransform, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
 {
   setUsingAdditiveStrategy( true );
   setShowBoundingBoxes( showBoundingBoxes );

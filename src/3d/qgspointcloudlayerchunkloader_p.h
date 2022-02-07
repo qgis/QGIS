@@ -123,7 +123,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
     Q_OBJECT
   public:
     explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
-        double zValueScale, double zValueOffset, int pointBudget, long long gpuMemoryLimit );
+        double zValueScale, double zValueOffset, int pointBudget );
 
     ~QgsPointCloudLayerChunkedEntity();
 };

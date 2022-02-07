@@ -299,13 +299,13 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
      * Returns the limit of the GPU memory used for rendering
      * \since QGIS 3.24
      */
-    long long gpuMemoryLimit() const { return mGpuMemoryLimit; }
+    double gpuMemoryLimit() const { return mGpuMemoryLimit; }
 
     /**
      * Sets the limit of the GPU memory used for rendering
      * \since QGIS 3.24
      */
-    void setGpuMemoryLimit( long long gpuMemoryLimit );
+    void setGpuMemoryLimit( double gpuMemoryLimit );
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
@@ -313,7 +313,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
     double mMaximumScreenError = 1.0;
     bool mShowBoundingBoxes = false;
     int mPointBudget = 1000000;
-    long long mGpuMemoryLimit = 1024 * 1024 * 100; // 100Mb of memory
+    double mGpuMemoryLimit = 100.0; // in megabytes
 
   private:
 #ifdef SIP_RUN

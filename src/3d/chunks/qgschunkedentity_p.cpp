@@ -73,13 +73,12 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
   return sse;
 }
 
-QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitiveBudget, long long gpuMemoryLimit, Qt3DCore::QNode *parent )
+QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitiveBudget, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mTau( tau )
   , mChunkLoaderFactory( loaderFactory )
   , mOwnsFactory( ownsFactory )
   , mPrimitivesBudget( primitiveBudget )
-  , mGpuMemoryLimit( gpuMemoryLimit )
 {
   mRootNode = loaderFactory->createRootNode();
   mChunkLoaderQueue = new QgsChunkList;
@@ -173,19 +172,14 @@ void QgsChunkedEntity::update( const SceneState &state )
     }
   }
 
-  long long usedGpuMemory = 0;
-  for ( Qt3DRender::QBuffer *buffer : this->findChildren<Qt3DRender::QBuffer *>() )
-  {
-    usedGpuMemory += buffer->data().size();
-  }
+  double usedGpuMemory = QgsChunkedEntity::calculateEntityGpuMemorySize( this );
 
+  // unload those that are over the limit for replacement
+  // TODO: what to do when our cache is too small and nodes are being constantly evicted + loaded again
   while ( usedGpuMemory > mGpuMemoryLimit )
   {
     QgsChunkListEntry *entry = mReplacementQueue->takeLast();
-    for ( Qt3DRender::QBuffer *buffer : entry->chunk->entity()->findChildren<Qt3DRender::QBuffer *>() )
-    {
-      usedGpuMemory -= buffer->data().size();
-    }
+    usedGpuMemory -= QgsChunkedEntity::calculateEntityGpuMemorySize( entry->chunk->entity() );
     entry->chunk->unloadChunk();  // also deletes the entry
     mActiveNodes.removeOne( entry->chunk );
     ++unloaded;
@@ -634,6 +628,21 @@ void QgsChunkedEntity::onPickEvent( Qt3DRender::QPickEvent *event )
   {
     emit pickedObject( event, fid );
   }
+}
+
+double QgsChunkedEntity::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
+{
+  long long usedGpuMemory = 0;
+  for ( Qt3DRender::QBuffer *buffer : entity->findChildren<Qt3DRender::QBuffer *>() )
+  {
+    usedGpuMemory += buffer->data().size();
+  }
+  for ( Qt3DRender::QTexture2D *tex : entity->findChildren<Qt3DRender::QTexture2D *>() )
+  {
+    // TODO : lift the assumption that the texture is RGBA
+    usedGpuMemory += tex->width() * tex->height() * 4;
+  }
+  return usedGpuMemory / 1024.0 / 1024.0;
 }
 
 /// @endcond
