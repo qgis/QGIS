@@ -24,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "georeferencer/qgsgeoreftransform.h"
+#include "georeferencer/qgsgeorefdatapoint.h"
 
 /**
  * \ingroup UnitTests
@@ -40,6 +41,7 @@ class TestQgsGeoreferencer : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
+    void testGcpPoint();
     void testTransformImageNoGeoference();
     void testTransformImageWithExistingGeoreference();
     void testRasterChangeCoords();
@@ -64,6 +66,27 @@ void TestQgsGeoreferencer::initTestCase()
 void TestQgsGeoreferencer::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+void TestQgsGeoreferencer::testGcpPoint()
+{
+  QgsGcpPoint p( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( "EPSG:3111" ), false );
+
+  QCOMPARE( p.sourcePoint(), QgsPointXY( 1, 2 ) );
+  p.setSourcePoint( QgsPointXY( 11, 22 ) );
+  QCOMPARE( p.sourcePoint(), QgsPointXY( 11, 22 ) );
+
+  QCOMPARE( p.destinationPoint(), QgsPointXY( 3, 4 ) );
+  p.setDestinationPoint( QgsPointXY( 33, 44 ) );
+  QCOMPARE( p.destinationPoint(), QgsPointXY( 33, 44 ) );
+
+  QCOMPARE( p.destinationPointCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+  p.setDestinationPointCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  QCOMPARE( p.destinationPointCrs().authid(), QStringLiteral( "EPSG:28356" ) );
+
+  QVERIFY( !p.isEnabled() );
+  p.setEnabled( true );
+  QVERIFY( p.isEnabled() );
 }
 
 void TestQgsGeoreferencer::testTransformImageNoGeoference()
