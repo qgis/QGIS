@@ -39,14 +39,6 @@ QgsPointCloudExpressionNode::NodeList::~NodeList()
   qDeleteAll( mList );
 }
 
-void QgsPointCloudExpressionNode::NodeList::append( QgsPointCloudExpressionNode::NamedNode *node )
-{
-  mList.append( node->node );
-  mNameList.append( cleanNamedNodeName( node->name ) );
-  mHasNamedNodes = true;
-  delete node;
-}
-
 QgsPointCloudExpressionNode::NodeList *QgsPointCloudExpressionNode::NodeList::clone() const
 {
   NodeList *nl = new NodeList;
@@ -71,24 +63,6 @@ QString QgsPointCloudExpressionNode::NodeList::dump() const
   }
   return msg;
 }
-
-QString QgsPointCloudExpressionNode::NodeList::cleanNamedNodeName( const QString &name )
-{
-  QString cleaned = name.toLower();
-
-  // upgrade older argument names to standard versions
-  if ( cleaned == QLatin1String( "geom" ) )
-    cleaned = QStringLiteral( "geometry" );
-  else if ( cleaned == QLatin1String( "val" ) )
-    cleaned = QStringLiteral( "value" );
-  else if ( cleaned == QLatin1String( "geometry a" ) )
-    cleaned = QStringLiteral( "geometry1" );
-  else if ( cleaned == QLatin1String( "geometry b" ) )
-    cleaned = QStringLiteral( "geometry2" );
-
-  return cleaned;
-}
-
 
 //
 

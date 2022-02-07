@@ -77,32 +77,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
 
 
     /**
-     * \brief Named node
-     * \ingroup core
-     * \since QGIS 2.16
-     */
-    struct NamedNode
-    {
-      public:
-
-        /**
-         * Constructor for NamedNode
-         * \param name node name
-         * \param node node
-         */
-        NamedNode( const QString &name, QgsPointCloudExpressionNode *node )
-          : name( name )
-          , node( node )
-        {}
-
-        //! Node name
-        QString name;
-
-        //! Node
-        QgsPointCloudExpressionNode *node = nullptr;
-    };
-
-    /**
      * \brief A list of expression nodes.
      * \ingroup core
      */
@@ -114,21 +88,9 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
         void append( QgsPointCloudExpressionNode *node SIP_TRANSFER ) { mList.append( node ); mNameList.append( QString() ); }
 
         /**
-         * Adds a named node. Takes ownership of the provided node.
-         * \since QGIS 2.16
-        */
-        void append( QgsPointCloudExpressionNode::NamedNode *node SIP_TRANSFER );
-
-        /**
          * Returns the number of nodes in the list.
          */
         int count() const { return mList.count(); }
-
-        /**
-         * Returns TRUE if list contains any named nodes
-         * \since QGIS 2.16
-         */
-        bool hasNamedNodes() const { return mHasNamedNodes; }
 
         /**
          * Gets a list of all the nodes.
@@ -160,12 +122,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
         QList<QgsPointCloudExpressionNode *> mList;
         QStringList mNameList;
 
-        bool mHasNamedNodes = false;
-
-        /**
-         * Cleans up and standardises the name of a named node.
-         */
-        static QString cleanNamedNodeName( const QString &name );
 
       public:
     };

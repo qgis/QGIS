@@ -96,12 +96,6 @@ static QString stripText(QString text)
   return text;
 }
 
-static QString stripNamedText(QString text)
-{
-  text.remove(":=");
-  return text.trimmed();
-}
-
 static QString stripAttributeRef(QString text)
 {
   // strip double quotes on start,end
@@ -128,8 +122,6 @@ non_ascii    [\x80-\xFF]
 col_first    [A-Za-z_]|{non_ascii}
 col_next     [A-Za-z0-9_]|{non_ascii}
 identifier  {col_first}{col_next}*
-
-named_node {identifier}{white}*":="{white}*
 
 col_str_char  "\"\""|[^\"]
 identifier_quoted  "\""{col_str_char}*"\""
@@ -203,8 +195,6 @@ string      "'"{str_char}*"'"
 {boolean} { yylval->boolVal = QString( yytext ).compare( "true", Qt::CaseInsensitive ) == 0; return BOOLEAN; }
 
 {string}  { TEXT_FILTER(stripText); return STRING; }
-
-{named_node} { TEXT_FILTER(stripNamedText); return NAMED_NODE; }
 
 {identifier}         { TEXT; return NAME; }
 

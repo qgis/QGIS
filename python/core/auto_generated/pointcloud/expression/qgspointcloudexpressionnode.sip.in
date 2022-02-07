@@ -56,23 +56,6 @@ Abstract base class for all nodes that can appear in an expression.
     };
 
 
-    struct NamedNode
-    {
-      public:
-
-        NamedNode( const QString &name, QgsPointCloudExpressionNode *node );
-%Docstring
-Constructor for NamedNode
-
-:param name: node name
-:param node: node
-%End
-
-        QString name;
-
-        QgsPointCloudExpressionNode *node;
-    };
-
     class NodeList
 {
 %Docstring(signature="appended")
@@ -89,23 +72,9 @@ A list of expression nodes.
 Takes ownership of the provided node
 %End
 
-        void append( QgsPointCloudExpressionNode::NamedNode *node /Transfer/ );
-%Docstring
-Adds a named node. Takes ownership of the provided node.
-
-.. versionadded:: 2.16
-%End
-
         int count() const;
 %Docstring
 Returns the number of nodes in the list.
-%End
-
-        bool hasNamedNodes() const;
-%Docstring
-Returns ``True`` if list contains any named nodes
-
-.. versionadded:: 2.16
 %End
 
         QList<QgsPointCloudExpressionNode *> list();

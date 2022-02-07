@@ -93,7 +93,6 @@ void addParserLocation(YYLTYPE* yyloc, QgsPointCloudExpressionNode *node)
 {
   QgsPointCloudExpressionNode* node;
   QgsPointCloudExpressionNode::NodeList* nodelist;
-  QgsPointCloudExpressionNode::NamedNode* namednode;
   double numberFloat;
   int    numberInt;
   qlonglong numberInt64;
@@ -123,7 +122,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsPointCloudExpressionNode *node)
 %token NULLVALUE
 
 
-%token <text> STRING QUOTED_ATTRIBUTE_REF NAME SPECIAL_COL NAMED_NODE
+%token <text> STRING QUOTED_ATTRIBUTE_REF NAME SPECIAL_COL
 
 %token COMMA
 
@@ -135,7 +134,6 @@ void addParserLocation(YYLTYPE* yyloc, QgsPointCloudExpressionNode *node)
 
 %type <node> expression
 %type <nodelist> exp_list
-%type <namednode> named_node
 
 // debugging
 %define parse.error verbose
@@ -161,7 +159,6 @@ void addParserLocation(YYLTYPE* yyloc, QgsPointCloudExpressionNode *node)
 
 %destructor { delete $$; } <node>
 %destructor { delete $$; } <nodelist>
-%destructor { delete $$; } <namednode>
 %destructor { delete $$; } <text>
 
 %%
@@ -211,29 +208,12 @@ expression:
     | NUMBER_INT64                { $$ = new QgsPointCloudExpressionNodeLiteral( $1 ); }
 ;
 
-named_node:
-    NAMED_NODE expression { $$ = new QgsPointCloudExpressionNode::NamedNode( *$1, $2 ); delete $1; }
-   ;
-
 exp_list:
       exp_list COMMA expression
        {
-         if ( $1->hasNamedNodes() )
-         {
-           QgsPointCloudExpression::ParserError::ParserErrorType errorType = QgsPointCloudExpression::ParserError::FunctionNamedArgsError;
-           parser_ctx->currentErrorType = errorType;
-           pointcloud_error(&yyloc, parser_ctx, QObject::tr( "All parameters following a named parameter must also be named." ).toUtf8().constData() );
-           delete $1;
-           YYERROR;
-         }
-         else
-         {
-           $$ = $1; $1->append($3);
-         }
+         $$ = $1; $1->append($3);
        }
-    | exp_list COMMA named_node { $$ = $1; $1->append($3); }
     | expression              { $$ = new QgsPointCloudExpressionNode::NodeList(); $$->append($1); }
-    | named_node              { $$ = new QgsPointCloudExpressionNode::NodeList(); $$->append($1); }
    ;
 
 %%
