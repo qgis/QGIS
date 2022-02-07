@@ -2484,7 +2484,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 
         if ( mHttpCapabilitiesResponse.isEmpty() )
         {
-          mError = tr( "Empty of capabilities:\n%1" ).arg( mCapabilitiesReply->errorString() );
+          mError = tr( "Capabilities are empty:\n%1" ).arg( mCapabilitiesReply->errorString() );
         }
       }
     }
