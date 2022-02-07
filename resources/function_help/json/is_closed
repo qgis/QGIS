@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns true if a line string is closed (start and end points are coincident), or false if a line string is not closed. If the geometry is not a line string then the result will be NULL.",
-  "arguments": [ {"arg":"geometry","description":"a line string geometry"}],
-  "examples": [ { "expression":"is_closed(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'))", "returns":"false"},
-                { "expression":"is_closed(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2, 0 0)'))", "returns":"true"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a line string geometry"
+  }],
+  "examples": [{
+    "expression": "is_closed(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'))",
+    "returns": "false"
+  }, {
+    "expression": "is_closed(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2, 0 0)'))",
+    "returns": "true"
+  }],
+  "tags": ["points", "start", "closed", "end", "coincident", "result", "false", "line"]
 }

@@ -922,6 +922,9 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertFalse(
             result, 'Provider reported success when changing an attribute value that violates a DB level CHECK constraint')
 
+        if getattr(self, 'stopEditableLayerWithCheckConstraint', None):
+            self.stopEditableLayerWithCheckConstraint()
+
     def testUniqueNotNullConstraints(self):
         """Test provider-level NOT NULL and UNIQUE constraints, to enable
         this test, implement getEditableLayerWithUniqueNotNullConstraints

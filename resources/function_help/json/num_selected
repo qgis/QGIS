@@ -3,16 +3,18 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Returns the number of selected features on a given layer. By default works on the layer on which the expression is evaluated.",
-  "arguments": [
-        {
-          "arg": "layer",
-          "optional": true,
-          "default": "current layer",
-          "description": "The layer (or its id or name) on which the selection will be checked."
-        }
-  ],
-  "examples": [
-	{ "expression":"num_selected()", "returns":"The number of selected features on the current layer."},
-	{ "expression":"num_selected('streets')", "returns":"The number of selected features on the layer streets"}
-  ]
+  "arguments": [{
+    "arg": "layer",
+    "optional": true,
+    "default": "current layer",
+    "description": "The layer (or its id or name) on which the selection will be checked."
+  }],
+  "examples": [{
+    "expression": "num_selected()",
+    "returns": "The number of selected features on the current layer."
+  }, {
+    "expression": "num_selected('streets')",
+    "returns": "The number of selected features on the layer streets"
+  }],
+  "tags": ["evaluated", "selected", "works", "default", "features"]
 }

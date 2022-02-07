@@ -134,6 +134,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   QgsSettings settings;
 
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
+  connect( mActionNew, &QAction::triggered, this, &QgsModelDesignerDialog::newModel );
   connect( mActionZoomIn, &QAction::triggered, this, &QgsModelDesignerDialog::zoomIn );
   connect( mActionZoomOut, &QAction::triggered, this, &QgsModelDesignerDialog::zoomOut );
   connect( mActionZoomActual, &QAction::triggered, this, &QgsModelDesignerDialog::zoomActual );
@@ -464,6 +465,7 @@ void QgsModelDesignerDialog::loadModel( const QString &path )
   if ( alg->fromFile( path ) )
   {
     alg->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
+    alg->setSourceFilePath( path );
     setModel( alg.release() );
   }
   else
@@ -506,6 +508,14 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
     oldScene->deleteLater();
 }
 
+void QgsModelDesignerDialog::activate()
+{
+  show();
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
+}
+
 void QgsModelDesignerDialog::updateVariablesGui()
 {
   mBlockUndoCommands++;
@@ -530,12 +540,19 @@ void QgsModelDesignerDialog::setDirty( bool dirty )
   updateWindowTitle();
 }
 
-bool QgsModelDesignerDialog::validateSave()
+bool QgsModelDesignerDialog::validateSave( SaveAction action )
 {
-  if ( mNameEdit->text().trimmed().isEmpty() )
+  switch ( action )
   {
-    mMessageBar->pushWarning( QString(), tr( "Please enter a model name before saving" ) );
-    return false;
+    case QgsModelDesignerDialog::SaveAction::SaveAsFile:
+      break;
+    case QgsModelDesignerDialog::SaveAction::SaveInProject:
+      if ( mNameEdit->text().trimmed().isEmpty() )
+      {
+        mMessageBar->pushWarning( QString(), tr( "Please enter a model name before saving" ) );
+        return false;
+      }
+      break;
   }
 
   return true;
@@ -551,8 +568,7 @@ bool QgsModelDesignerDialog::checkForUnsavedChanges()
     switch ( ret )
     {
       case QMessageBox::Save:
-        saveModel( false );
-        return true;
+        return saveModel( false );
 
       case QMessageBox::Discard:
         return true;
@@ -579,6 +595,11 @@ void QgsModelDesignerDialog::setLastRunChildAlgorithmInputs( const QVariantMap &
   mChildInputs = inputs;
   if ( mScene )
     mScene->setChildAlgorithmInputs( mChildInputs );
+}
+
+void QgsModelDesignerDialog::setModelName( const QString &name )
+{
+  mNameEdit->setText( name );
 }
 
 void QgsModelDesignerDialog::zoomIn()
@@ -614,6 +635,16 @@ void QgsModelDesignerDialog::zoomFull()
   QRectF totalRect = mView->scene()->itemsBoundingRect();
   totalRect.adjust( -10, -10, 10, 10 );
   mView->fitInView( totalRect, Qt::KeepAspectRatio );
+}
+
+void QgsModelDesignerDialog::newModel()
+{
+  if ( !checkForUnsavedChanges() )
+    return;
+
+  std::unique_ptr< QgsProcessingModelAlgorithm > alg = std::make_unique< QgsProcessingModelAlgorithm >();
+  alg->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
+  setModel( alg.release() );
 }
 
 void QgsModelDesignerDialog::exportToImage()

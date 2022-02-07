@@ -1255,7 +1255,7 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     QgsTextRendererUtils::generateCurvedTextPlacement( *metrics, mapShape->x.data(), mapShape->y.data(), mapShape->nbPoints, pathDistances, offsetAlongLine, direction, maximumCharacterAngleInside, maximumCharacterAngleOutside, uprightOnly )
   );
 
-  labeledLineSegmentIsRightToLeft = placement->flippedCharacterPlacementToGetUprightLabels;
+  labeledLineSegmentIsRightToLeft = !uprightOnly ? placement->labeledLineSegmentIsRightToLeft : placement->flippedCharacterPlacementToGetUprightLabels;
 
   if ( placement->graphemePlacement.empty() )
     return nullptr;
@@ -1325,6 +1325,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     expanded = mapShape->clone();
     expanded->extendLineByDistance( overrun, overrun, mLF->overrunSmoothDistance() );
     mapShape = expanded.get();
+    shapeLength += 2 * overrun;
   }
 
   QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
@@ -1337,12 +1338,16 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( hasAboveBelowLinePlacement && !qgsDoubleNear( offsetDistance, 0 ) )
   {
     // create offseted map shapes to be used for above and below line placements
-    mapShapeOffsetPositive = mapShape->clone();
-    mapShapeOffsetNegative = mapShape->clone();
-    if ( offsetDistance >= 0.0 )
+    if ( ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) || ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
+      mapShapeOffsetPositive = mapShape->clone();
+    if ( ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) || ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) )
+      mapShapeOffsetNegative = mapShape->clone();
+    if ( offsetDistance >= 0.0 || !( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) )
     {
-      mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance );
-      mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance * -1 );
+      if ( mapShapeOffsetPositive )
+        mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance );
+      if ( mapShapeOffsetNegative )
+        mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance * -1 );
     }
     else
     {
@@ -1359,10 +1364,15 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
         flags &= ~QgsLabeling::LinePlacementFlag::BelowLine;
         flags |= QgsLabeling::LinePlacementFlag::AboveLine;
       }
-      mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance * -1 );
-      mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance );
+      if ( mapShapeOffsetPositive )
+        mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance * -1 );
+      if ( mapShapeOffsetNegative )
+        mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance );
     }
   }
+
+  // calculate the anchor point for the original line shape as a GEOS point
+  const geos::unique_ptr originalPoint = mapShape->interpolatePoint( shapeLength * mLF->lineAnchorPercent() );
 
   std::vector< std::unique_ptr< LabelPosition >> positions;
   for ( PathOffset offset : { PositiveOffset, NoOffset, NegativeOffset } )
@@ -1388,7 +1398,20 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     if ( qgsDoubleNear( totalDistance, 0.0 ) )
       continue;
 
-    const double lineAnchorPoint = totalDistance * mLF->lineAnchorPercent();
+    double lineAnchorPoint = 0;
+    if ( originalPoint && offset != NoOffset )
+    {
+      // the actual anchor point for the offset curves is the closest point on those offset curves
+      // to the anchor point on the original line. This avoids anchor points which differ greatly
+      // on the positive/negative offset lines due to line curvature.
+      lineAnchorPoint = currentMapShape->lineLocatePoint( originalPoint.get() );
+    }
+    else
+    {
+      lineAnchorPoint = totalDistance * mLF->lineAnchorPercent();
+      if ( offset == NegativeOffset )
+        lineAnchorPoint = totalDistance - lineAnchorPoint;
+    }
 
     if ( pal->isCanceled() )
       return 0;
@@ -1405,16 +1428,21 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
         break;
 
       case QgsLabelLineSettings::AnchorType::Strict:
-        distanceAlongLineToStartCandidate = std::min( lineAnchorPoint, totalDistance * 0.99 - getLabelWidth() );
+        distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint - getLabelWidth() / 2, 0.0, totalDistance * 0.99 - getLabelWidth() );
         singleCandidateOnly = true;
         break;
     }
 
+    bool hasTestedFirstPlacement = false;
     for ( ; distanceAlongLineToStartCandidate <= totalDistance; distanceAlongLineToStartCandidate += delta )
     {
+      if ( singleCandidateOnly && hasTestedFirstPlacement )
+        break;
+
       if ( pal->isCanceled() )
         return 0;
 
+      hasTestedFirstPlacement = true;
       // placements may need to be reversed if using map orientation and the line has right-to-left direction
       bool labeledLineSegmentIsRightToLeft = false;
       const QgsTextRendererUtils::LabelLineDirection direction = ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ? QgsTextRendererUtils::RespectPainterOrientation : QgsTextRendererUtils::FollowLineDirection;
@@ -1422,10 +1450,13 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
       if ( !labelPosition )
         continue;
-      if ( ( offset != NoOffset ) && !labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
-        continue;
-      if ( ( offset != NoOffset ) && labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::BelowLine ) )
-        continue;
+      if ( flags & QgsLabeling::LinePlacementFlag::MapOrientation )
+      {
+        if ( ( offset != NoOffset ) && !labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
+          continue;
+        if ( ( offset != NoOffset ) && labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::BelowLine ) )
+          continue;
+      }
 
       // evaluate cost
       const double angleDiff = labelPosition->angleDifferential();
@@ -1475,9 +1506,6 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
       if ( p )
         positions.emplace_back( std::move( p ) );
-
-      if ( singleCandidateOnly )
-        break;
     }
   }
 

@@ -98,9 +98,10 @@ QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
   return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
 }
 
-QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const
+QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error ) const
 {
-  auto evaluateSources = [ = ]( const QgsProcessingParameterDefinition * def )->QVariant
+  error.clear();
+  auto evaluateSources = [ =, &error ]( const QgsProcessingParameterDefinition * def )->QVariant
   {
     const QgsProcessingModelChildParameterSources paramSources = child.parameterSources().value( def->name() );
 
@@ -129,6 +130,10 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
         {
           QgsExpression exp( source.expression() );
           paramParts << exp.evaluate( &expressionContext );
+          if ( exp.hasEvalError() )
+          {
+            error = QObject::tr( "Could not evaluate expression for parameter %1 for %2: %3" ).arg( def->name(), child.description(), exp.evalErrorString() );
+          }
           break;
         }
         case QgsProcessingModelChildParameterSource::ExpressionText:
@@ -329,7 +334,11 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
                  << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
       context.setExpressionContext( expContext );
 
-      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
+      QString error;
+      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext, error );
+      if ( !error.isEmpty() )
+        throw QgsProcessingException( error );
+
       if ( feedback && !skipGenericLogging )
         feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
 
@@ -460,6 +469,15 @@ QString QgsProcessingModelAlgorithm::sourceFilePath() const
 void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile )
 {
   mSourceFile = sourceFile;
+}
+
+bool QgsProcessingModelAlgorithm::modelNameMatchesFilePath() const
+{
+  if ( mSourceFile.isEmpty() )
+    return false;
+
+  const QFileInfo fi( mSourceFile );
+  return fi.completeBaseName().compare( mModelName, Qt::CaseInsensitive ) == 0;
 }
 
 QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const int indentSize ) const
@@ -899,7 +917,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::StaticValue:
       case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
-    };
+    }
     variables.insert( safeName( name ), VariableDefinition( value, source, description ) );
   }
 
@@ -946,7 +964,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
 
-    };
+    }
 
     if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
     {
@@ -961,7 +979,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     if ( !layer )
       layer = QgsProcessingUtils::mapLayerFromString( value.toString(), context );
 
-    variables.insert( safeName( name ), VariableDefinition( QVariant::fromValue( layer ), source, description ) );
+    variables.insert( safeName( name ), VariableDefinition( QVariant::fromValue( QgsWeakMapLayerPointer( layer ) ), source, description ) );
     variables.insert( safeName( QStringLiteral( "%1_minx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMinimum() : QVariant(), source, QObject::tr( "Minimum X of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_miny" ).arg( name ) ), VariableDefinition( layer ? layer->extent().yMinimum() : QVariant(), source, QObject::tr( "Minimum Y of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_maxx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMaximum() : QVariant(), source, QObject::tr( "Maximum X of %1" ).arg( description ) ) );
@@ -1005,7 +1023,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
 
-    };
+    }
 
     QgsFeatureSource *featureSource = nullptr;
     if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
@@ -1525,6 +1543,10 @@ bool QgsProcessingModelAlgorithm::fromFile( const QString &path )
       return false;
 
     file.close();
+  }
+  else
+  {
+    return false;
   }
 
   QVariant props = QgsXmlUtils::readVariant( doc.firstChildElement() );

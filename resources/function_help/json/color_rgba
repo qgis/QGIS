@@ -3,9 +3,22 @@
   "type": "function",
   "groups": ["Color"],
   "description": "Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components.",
-  "arguments": [ {"arg":"red","description":"red component as an integer value from 0 to 255"},
-                 {"arg":"green","description":"green component as an integer value from 0 to 255"},
-                 {"arg":"blue","description":"blue component as an integer value from 0 to 255"},
-                 {"arg":"alpha","description":"alpha component as an integer value from 0 (completely transparent) to 255 (opaque)."}],
-  "examples": [ { "expression":"color_rgba(255,127,0,200)", "returns":"'255,127,0,200'"}]
+  "arguments": [{
+    "arg": "red",
+    "description": "red component as an integer value from 0 to 255"
+  }, {
+    "arg": "green",
+    "description": "green component as an integer value from 0 to 255"
+  }, {
+    "arg": "blue",
+    "description": "blue component as an integer value from 0 to 255"
+  }, {
+    "arg": "alpha",
+    "description": "alpha component as an integer value from 0 (completely transparent) to 255 (opaque)."
+  }],
+  "examples": [{
+    "expression": "color_rgba(255,127,0,200)",
+    "returns": "'255,127,0,200'"
+  }],
+  "tags": ["green", "blue", "red", "alpha", "color", "representation", "components"]
 }

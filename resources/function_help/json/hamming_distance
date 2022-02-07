@@ -3,13 +3,25 @@
   "type": "function",
   "groups": ["Fuzzy Matching"],
   "description": "Returns the Hamming distance between two strings. This equates to the number of characters at corresponding positions within the input strings where the characters are different. The input strings must be the same length, and the comparison is case-sensitive.",
-  "arguments": [ {"arg":"string1","description":"a string"},
-  {"arg":"string2","description":"a string"}
-  ],
-  "examples": [
-    { "expression":"hamming_distance('abc','xec')", "returns":"2"},
-    { "expression":"hamming_distance('abc','ABc')", "returns":"2"},
-    { "expression":"hamming_distance(upper('abc'),upper('ABC'))", "returns":"0"},
-    { "expression":"hamming_distance('abc','abcd')", "returns":"NULL"}
-  ]
+  "arguments": [{
+    "arg": "string1",
+    "description": "a string"
+  }, {
+    "arg": "string2",
+    "description": "a string"
+  }],
+  "examples": [{
+    "expression": "hamming_distance('abc','xec')",
+    "returns": "2"
+  }, {
+    "expression": "hamming_distance('abc','ABc')",
+    "returns": "2"
+  }, {
+    "expression": "hamming_distance(upper('abc'),upper('ABC'))",
+    "returns": "0"
+  }, {
+    "expression": "hamming_distance('abc','abcd')",
+    "returns": "NULL"
+  }],
+  "tags": ["distance", "length", "input", "sensitive", "different", "strings", "corresponding", "hamming", "equates", "characters", "case", "same", "comparison", "positions"]
 }

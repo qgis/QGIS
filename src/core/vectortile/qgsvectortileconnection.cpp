@@ -30,7 +30,7 @@ QString QgsVectorTileProviderConnection::encodedUri( const QgsVectorTileProvider
 
   const QFileInfo info( conn.url );
   QString suffix = info.suffix().toLower();
-  if ( suffix.startsWith( QStringLiteral( "mbtiles" ) ) )
+  if ( suffix.startsWith( QLatin1String( "mbtiles" ) ) )
   {
     uri.setParam( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
   }
@@ -98,7 +98,7 @@ QString QgsVectorTileProviderConnection::encodedLayerUri( const QgsVectorTilePro
 
   const QFileInfo info( conn.url );
   QString suffix = info.suffix().toLower();
-  if ( suffix.startsWith( QStringLiteral( "mbtiles" ) ) )
+  if ( suffix.startsWith( QLatin1String( "mbtiles" ) ) )
   {
     uri.setParam( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
   }

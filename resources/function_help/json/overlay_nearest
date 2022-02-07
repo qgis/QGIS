@@ -3,67 +3,53 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns whether the current feature has feature(s) from a target layer within a given distance, or an array of expression-based results for the features in the target layer within a distance from the current feature.<br><br>Note: This function can be slow and consume a lot of memory for large layers.",
-  "arguments": [
-    {
-      "arg": "layer",
-      "description": "the target layer"
-    },
-    {
-      "arg": "expression",
-      "description": "an optional expression to evaluate on the features from the target layer. If not set, the function will just return a boolean indicating whether there is at least one match.",
-      "optional": true
-    },
-    {
-      "arg": "filter",
-      "description": "an optional expression to filter the target features to check. If not set, all the features in the target layer will be used.",
-      "optional": true
-    },
-    {
-      "arg": "limit",
-      "description": "an optional integer to limit the number of matching features. If not set, only the nearest feature will be returned. If set to -1, returns all the matching features.",
-      "optional": true,
-      "default": "1"
-    },
-    {
-      "arg": "max_distance",
-      "description": "an optional distance to limit the search of matching features. If not set, all the features in the target layer will be used.",
-      "optional": true
-    },
-    {
-      "arg": "cache",
-      "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
-      "optional": true,
-      "default": "false"
-    }
-  ],
-  "examples": [
-    {
-      "expression": "overlay_nearest('airports')",
-      "returns": "true if the \"airports\" layer has at least one feature"
-    },
-    {
-      "expression": "overlay_nearest('airports', max_distance:= 5000)",
-      "returns": "true if there is an airport within a distance of 5000 map units from the current feature"
-    },
-    {
-      "expression": "overlay_nearest('airports', name)",
-      "returns": "the name of the closest airport to the current feature, as an array"
-    },
-    {
-      "expression": "array_to_string(overlay_nearest('airports', name))",
-      "returns": "the name of the closest airport to the current feature, as a string"
-    },
-    {
-      "expression": "overlay_nearest(layer:='airports', expression:= name, max_distance:= 5000)",
-      "returns": "the name of the closest airport within a distance of 5000 map units from the current feature, as an array"
-    },
-    {
-      "expression": "overlay_nearest(layer:='airports', expression:=\"name\", filter:= \"Use\"='Civilian', limit:=3)",
-      "returns": "an array of names, for up to the three closest civilian airports ordered by distance"
-    },
-    {
-      "expression": "overlay_nearest(layer:='airports', expression:=\"name\", limit:= -1, max_distance:= 5000)",
-      "returns": "an array of names, for all the airports within a distance of 5000 map units from the current feature, ordered by distance"
-    }
-  ]
+  "arguments": [{
+    "arg": "layer",
+    "description": "the target layer"
+  }, {
+    "arg": "expression",
+    "description": "an optional expression to evaluate on the features from the target layer. If not set, the function will just return a boolean indicating whether there is at least one match.",
+    "optional": true
+  }, {
+    "arg": "filter",
+    "description": "an optional expression to filter the target features to check. If not set, all the features in the target layer will be used.",
+    "optional": true
+  }, {
+    "arg": "limit",
+    "description": "an optional integer to limit the number of matching features. If not set, only the nearest feature will be returned. If set to -1, returns all the matching features.",
+    "optional": true,
+    "default": "1"
+  }, {
+    "arg": "max_distance",
+    "description": "an optional distance to limit the search of matching features. If not set, all the features in the target layer will be used.",
+    "optional": true
+  }, {
+    "arg": "cache",
+    "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
+    "optional": true,
+    "default": "false"
+  }],
+  "examples": [{
+    "expression": "overlay_nearest('airports')",
+    "returns": "true if the \"airports\" layer has at least one feature"
+  }, {
+    "expression": "overlay_nearest('airports', max_distance:= 5000)",
+    "returns": "true if there is an airport within a distance of 5000 map units from the current feature"
+  }, {
+    "expression": "overlay_nearest('airports', name)",
+    "returns": "the name of the closest airport to the current feature, as an array"
+  }, {
+    "expression": "array_to_string(overlay_nearest('airports', name))",
+    "returns": "the name of the closest airport to the current feature, as a string"
+  }, {
+    "expression": "overlay_nearest(layer:='airports', expression:= name, max_distance:= 5000)",
+    "returns": "the name of the closest airport within a distance of 5000 map units from the current feature, as an array"
+  }, {
+    "expression": "overlay_nearest(layer:='airports', expression:=\"name\", filter:= \"Use\"='Civilian', limit:=3)",
+    "returns": "an array of names, for up to the three closest civilian airports ordered by distance"
+  }, {
+    "expression": "overlay_nearest(layer:='airports', expression:=\"name\", limit:= -1, max_distance:= 5000)",
+    "returns": "an array of names, for all the airports within a distance of 5000 map units from the current feature, ordered by distance"
+  }],
+  "tags": ["distance", "layers", "large", "slow", "current", "target", "array", "lot", "features"]
 }

@@ -129,9 +129,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBox">
+      <widget class="QGroupBox" name="groupBoxOptions">
        <property name="title">
-        <string>Options (collapsed only)</string>
+        <string>Options</string>
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="1">

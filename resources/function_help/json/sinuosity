@@ -3,11 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the sinuosity of a curve, which is the ratio of the curve length to the straight (2D) distance between its endpoints.",
-  "arguments": [
-    {"arg":"geometry", "description": "Input curve (circularstring, linestring)"}
-  ],
-  "examples": [
-    { "expression":"round(sinuosity(geom_from_wkt('LINESTRING(2 0, 2 2, 3 2, 3 3)')), 3)", "returns":"1.265"},
-    { "expression":"sinuosity(geom_from_wkt('LINESTRING( 3 1, 5 1)'))", "returns":"1.0"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "Input curve (circularstring, linestring)"
+  }],
+  "examples": [{
+    "expression": "round(sinuosity(geom_from_wkt('LINESTRING(2 0, 2 2, 3 2, 3 3)')), 3)",
+    "returns": "1.265"
+  }, {
+    "expression": "sinuosity(geom_from_wkt('LINESTRING( 3 1, 5 1)'))",
+    "returns": "1.0"
+  }],
+  "tags": ["curve", "distance", "length", "endpoints", "sinuosity", "ratio", "straight"]
 }

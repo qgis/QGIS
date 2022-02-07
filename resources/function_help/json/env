@@ -3,12 +3,19 @@
   "type": "function",
   "groups": ["General"],
   "description": "Gets an environment variable and returns its content as a string. If the variable is not found, NULL will be returned. This is handy to inject system specific configuration like drive letters or path prefixes. Definition of environment variables depends on the operating system, please check with your system administrator or the operating system documentation how this can be set.",
-  "arguments": [
-    {"arg":"name","description":"The name of the environment variable which should be retrieved."}
-  ],
-  "examples": [
-    { "expression":"env( 'LANG' )", "returns":"'en_US.UTF-8'"},
-    { "expression":"env( 'MY_OWN_PREFIX_VAR' )", "returns":"'Z:'"},
-    { "expression":"env( 'I_DO_NOT_EXIST' )", "returns":"NULL"}
-  ]
+  "arguments": [{
+    "arg": "name",
+    "description": "The name of the environment variable which should be retrieved."
+  }],
+  "examples": [{
+    "expression": "env( 'LANG' )",
+    "returns": "'en_US.UTF-8'"
+  }, {
+    "expression": "env( 'MY_OWN_PREFIX_VAR' )",
+    "returns": "'Z:'"
+  }, {
+    "expression": "env( 'I_DO_NOT_EXIST' )",
+    "returns": "NULL"
+  }],
+  "tags": ["operating", "content", "prefixes", "gets", "definition", "found", "drive", "check", "system", "environment", "path", "variables", "letters", "inject", "specific", "configuration", "depends", "administrator", "variable", "documentation", "handy", "set"]
 }

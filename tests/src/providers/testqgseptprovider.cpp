@@ -67,6 +67,7 @@ class TestQgsEptProvider : public QObject
     void testIdentify();
     void testExtraBytesAttributesExtraction();
     void testExtraBytesAttributesValues();
+    void testPointCloudIndex();
 
   private:
     QString mTestDataDir;
@@ -544,6 +545,61 @@ void TestQgsEptProvider::testExtraBytesAttributesValues()
     }
 
     QCOMPARE( identifiedPoints, expectedPoints );
+  }
+}
+
+void TestQgsEptProvider::testPointCloudIndex()
+{
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsPointCloudIndex *index = layer->dataProvider()->index();
+  QVERIFY( index->isValid() );
+
+  QVERIFY( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) ) == 41998 );
+  QVERIFY( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) ) == 48879 );
+  QVERIFY( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) ) == 41734 );
+  QVERIFY( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "9-9-9-9" ) ) ) == -1 );
+
+  QVERIFY( index->pointCount() == 518862 );
+  QVERIFY( index->zMin() == 2322 );
+  QVERIFY( index->zMax() == 2339 );
+  QVERIFY( index->scale().toVector3D() == QVector3D( 0.00025, 0.00025, 0.00025 ) );
+  QVERIFY( index->offset().toVector3D() == QVector3D( 515385, 4918361, 2331 ) );
+  QVERIFY( index->span() == 128 );
+
+  QVERIFY( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) ) == 0.34375 );
+  QVERIFY( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) ) == 0.171875 );
+  QVERIFY( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) ) == 0.0859375 );
+
+  {
+    QgsPointCloudDataBounds bounds = index->nodeBounds( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) );
+    QVERIFY( bounds.xMin() == -88000 );
+    QVERIFY( bounds.yMin() == -88000 );
+    QVERIFY( bounds.zMin() == -88000 );
+    QVERIFY( bounds.xMax() ==  88000 );
+    QVERIFY( bounds.yMax() ==  88000 );
+    QVERIFY( bounds.zMax() ==  88000 );
+  }
+
+  {
+    QgsPointCloudDataBounds bounds = index->nodeBounds( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) );
+    QVERIFY( bounds.xMin() == 0 );
+    QVERIFY( bounds.yMin() == 0 );
+    QVERIFY( bounds.zMin() == 0 );
+    QVERIFY( bounds.xMax() == 88000 );
+    QVERIFY( bounds.yMax() == 88000 );
+    QVERIFY( bounds.zMax() == 88000 );
+  }
+
+  {
+    QgsPointCloudDataBounds bounds = index->nodeBounds( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) );
+    QVERIFY( bounds.xMin() == 44000 );
+    QVERIFY( bounds.yMin() == 44000 );
+    QVERIFY( bounds.zMin() == -44000 );
+    QVERIFY( bounds.xMax() == 88000 );
+    QVERIFY( bounds.yMax() == 88000 );
+    QVERIFY( bounds.zMax() == 0 );
   }
 }
 

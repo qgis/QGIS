@@ -1659,6 +1659,9 @@ void QgsAttributeForm::init()
         c->addWidget( collapsibleGroupBox );
         layout->addLayout( c, row, column, 1, 2 );
         column += 2;
+
+        // we consider all relation editors should be expanding
+        addSpacer = false;
       }
       else
       {

@@ -3,14 +3,27 @@
   "type": "function",
   "groups": ["Conversions", "Date and Time"],
   "description": "Converts a string into a date object. An optional format string can be provided to parse the string; see <a href='https://doc.qt.io/qt-5/qdate.html#fromString-2'>QDate::fromString</a> or the documentation of the format_date function for additional documentation on the format. By default the current QGIS user locale is used.",
-  "arguments": [
-   {"arg":"string","description":"string representing a date value"},
-   {"arg":"format","optional":true,"description":"format used to convert the string into a date"},
-   {"arg":"language","optional":true,"description":"language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a date. By default the current QGIS user locale is used."}
-  ],
-  "examples": [
-   { "expression":"to_date('2012-05-04')", "returns":"2012-05-04"},
-   { "expression":"to_date('June 29, 2019','MMMM d, yyyy')", "returns":"2019-06-29, if the current locale uses the name 'June' for the sixth month, otherwise an error occurs"},
-   { "expression":"to_date('29 juin, 2019','d MMMM, yyyy','fr')", "returns":"2019-06-29"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "string representing a date value"
+  }, {
+    "arg": "format",
+    "optional": true,
+    "description": "format used to convert the string into a date"
+  }, {
+    "arg": "language",
+    "optional": true,
+    "description": "language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a date. By default the current QGIS user locale is used."
+  }],
+  "examples": [{
+    "expression": "to_date('2012-05-04')",
+    "returns": "2012-05-04"
+  }, {
+    "expression": "to_date('June 29, 2019','MMMM d, yyyy')",
+    "returns": "2019-06-29, if the current locale uses the name 'June' for the sixth month, otherwise an error occurs"
+  }, {
+    "expression": "to_date('29 juin, 2019','d MMMM, yyyy','fr')",
+    "returns": "2019-06-29"
+  }],
+  "tags": ["provided", "additional", "user", "format_date", "parse", "qdate", "converts", "default", "current", "format", "object", "fromstring", "date", "optional", "documentation", "see"]
 }

@@ -3,13 +3,23 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a point projected from a start point using a distance, a bearing (azimuth) and an elevation in radians.",
-  "arguments": [
-    {"arg":"point","description":"start point"},
-    {"arg":"distance","description":"distance to project"},
-    {"arg":"azimuth","description":"azimuth in radians clockwise, where 0 corresponds to north"},
-    {"arg":"elevation","description":"angle of inclination in radians", "optional":true}
-  ],
-  "examples": [
-	{ "expression":"geom_to_wkt(project(make_point(1, 2), 3, radians(270)))", "returns":"'Point(-2, 2)'"}
-  ]
+  "arguments": [{
+    "arg": "point",
+    "description": "start point"
+  }, {
+    "arg": "distance",
+    "description": "distance to project"
+  }, {
+    "arg": "azimuth",
+    "description": "azimuth in radians clockwise, where 0 corresponds to north"
+  }, {
+    "arg": "elevation",
+    "description": "angle of inclination in radians",
+    "optional": true
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(project(make_point(1, 2), 3, radians(270)))",
+    "returns": "'Point(-2, 2)'"
+  }],
+  "tags": ["distance", "elevation", "projected", "start", "point", "azimuth", "radians", "bearing"]
 }

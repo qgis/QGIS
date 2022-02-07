@@ -64,9 +64,9 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   markerLayers << markerSymbolLayer;
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( markerLayers );
   firstVertexMarkerLine->setSubSymbol( markerSymbol );
-  firstVertexMarkerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+  firstVertexMarkerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
   QgsMarkerLineSymbolLayer *lastVertexMarkerLine = static_cast<QgsMarkerLineSymbolLayer *>( firstVertexMarkerLine->clone() );
-  lastVertexMarkerLine->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+  lastVertexMarkerLine->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
   for ( int value : colors.keys() )
   {
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry );

@@ -173,6 +173,13 @@ Sets the parent ``dialog`` in which the widget is shown.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
+    void setSourceType( QgsProcessingModelChildParameterSource::Source type );
+%Docstring
+Sets the current source ``type`` for the parameter.
+
+.. versionadded:: 3.24
+%End
+
 };
 
 

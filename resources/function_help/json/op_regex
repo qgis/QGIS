@@ -3,14 +3,25 @@
   "type": "operator",
   "groups": ["Operators"],
   "description": "Performs a regular expression match on a string value. Backslash characters must be double escaped (e.g., \"\\\\\\\\s\" to match a white space character).",
-  "arguments": [
-        { "arg": "string", "description": "A string value" },
-        { "arg": "regex", "description": "A regular expression. Slashes must be escaped, eg \\\\\\\\d." }
-  ],
-  "examples": [
-	{ "expression":"'hello' ~ 'll'", "returns":"1"},
-	{ "expression":"'hello' ~ '^ll'", "returns":"0"},
-	{ "expression":"'hello' ~ 'llo$'", "returns":"1"},
-	{ "expression":"'abc123' ~ '\\\\\\\\d+'", "returns":"1"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "A string value"
+  }, {
+    "arg": "regex",
+    "description": "A regular expression. Slashes must be escaped, eg \\\\\\\\d."
+  }],
+  "examples": [{
+    "expression": "'hello' ~ 'll'",
+    "returns": "1"
+  }, {
+    "expression": "'hello' ~ '^ll'",
+    "returns": "0"
+  }, {
+    "expression": "'hello' ~ 'llo$'",
+    "returns": "1"
+  }, {
+    "expression": "'abc123' ~ '\\\\\\\\d+'",
+    "returns": "1"
+  }],
+  "tags": ["white", "space", "regular", "performs", "backslash", "characters", "escaped", "character", "expression", "match"]
 }

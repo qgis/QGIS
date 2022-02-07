@@ -3,15 +3,27 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Creates a rectangle from 3 points.",
-  "arguments": [
-    {"arg":"point1", "description": "First point."},
-    {"arg":"point2", "description": "Second point."},
-    {"arg":"point3", "description": "Third point."},
-    {"arg":"option", "optional": true, "default": "0", "description":
-    "An optional argument to construct the rectangle. By default this value is 0. Value can be 0 (distance) or 1 (projected). Option distance: Second distance is equal to the distance between 2nd and 3rd point. Option projected: Second distance is equal to the distance of the perpendicular projection of the 3rd point on the segment or its extension."}
-  ],
-  "examples": [
-    { "expression":"geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 5), 0)))", "returns":"'Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))'"},
-    { "expression":"geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 3), 1)))", "returns":"'Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))'"}
-  ]
+  "arguments": [{
+    "arg": "point1",
+    "description": "First point."
+  }, {
+    "arg": "point2",
+    "description": "Second point."
+  }, {
+    "arg": "point3",
+    "description": "Third point."
+  }, {
+    "arg": "option",
+    "optional": true,
+    "default": "0",
+    "description": "An optional argument to construct the rectangle. By default this value is 0. Value can be 0 (distance) or 1 (projected). Option distance: Second distance is equal to the distance between 2nd and 3rd point. Option projected: Second distance is equal to the distance of the perpendicular projection of the 3rd point on the segment or its extension."
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 5), 0)))",
+    "returns": "'Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))'"
+  }, {
+    "expression": "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 3), 1)))",
+    "returns": "'Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))'"
+  }],
+  "tags": ["rectangle", "points"]
 }

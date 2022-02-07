@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns an array with the given value added at the beginning.",
-  "arguments": [ {"arg":"array","description":"an array"},
-                 {"arg":"value","description":"the value to add"}],
-  "examples": [ { "expression":"array_prepend(array(1,2,3),0)", "returns":"[ 0, 1, 2, 3 ]"}]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "value",
+    "description": "the value to add"
+  }],
+  "examples": [{
+    "expression": "array_prepend(array(1,2,3),0)",
+    "returns": "[ 0, 1, 2, 3 ]"
+  }],
+  "tags": ["array", "added", "beginning"]
 }

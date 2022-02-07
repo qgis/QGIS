@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns true if at least one element of array1 exists in array2.",
-  "arguments": [ {"arg":"array1","description":"an array"},
-                 {"arg":"array2","description":"another array"}],
-  "examples": [ { "expression":"array_intersect(array(1,2,3,4),array(4,0,2,5))", "returns":"true"}]
+  "arguments": [{
+    "arg": "array1",
+    "description": "an array"
+  }, {
+    "arg": "array2",
+    "description": "another array"
+  }],
+  "examples": [{
+    "expression": "array_intersect(array(1,2,3,4),array(4,0,2,5))",
+    "returns": "true"
+  }],
+  "tags": ["array", "element", "exists", "intersection", "overlap"]
 }

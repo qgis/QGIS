@@ -75,13 +75,13 @@ class TestQgsGeometryValidator(unittest.TestCase):
 
         self.assertEqual(len(spy), 3)
         self.assertEqual(spy[0][0].where(), QgsPointXY(1, 6))
-        self.assertEqual(spy[0][0].what(), 'line 1 contains 2 duplicate nodes starting at vertex 10')
+        self.assertEqual(spy[0][0].what(), 'line 1 contains 2 duplicate node(s) starting at vertex 10')
 
         self.assertEqual(spy[1][0].where(), QgsPointXY(1, 3))
-        self.assertEqual(spy[1][0].what(), 'line 1 contains 3 duplicate nodes starting at vertex 5')
+        self.assertEqual(spy[1][0].what(), 'line 1 contains 3 duplicate node(s) starting at vertex 5')
 
         self.assertEqual(spy[2][0].where(), QgsPointXY(1, 1))
-        self.assertEqual(spy[2][0].what(), 'line 1 contains 3 duplicate nodes starting at vertex 1')
+        self.assertEqual(spy[2][0].what(), 'line 1 contains 3 duplicate node(s) starting at vertex 1')
 
     def test_ring_intersections(self):
         # no intersections

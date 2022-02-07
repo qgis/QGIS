@@ -3,8 +3,21 @@
   "type": "function",
   "groups": ["Math"],
   "description": "Returns a random integer within the range specified by the minimum and maximum argument (inclusive). If a seed is provided, the returned will always be the same, depending on the seed.",
-  "arguments": [ {"arg":"min","description":"an integer representing the smallest possible random number desired"},
-                 {"arg":"max","description":"an integer representing the largest possible random number desired"},
-                 {"arg":"seed","optional":true,"default":"NULL","description":"any value to use as seed"}],
-  "examples": [ { "expression":"rand(1, 10)", "returns":"8"}]
+  "arguments": [{
+    "arg": "min",
+    "description": "an integer representing the smallest possible random number desired"
+  }, {
+    "arg": "max",
+    "description": "an integer representing the largest possible random number desired"
+  }, {
+    "arg": "seed",
+    "optional": true,
+    "default": "NULL",
+    "description": "any value to use as seed"
+  }],
+  "examples": [{
+    "expression": "rand(1, 10)",
+    "returns": "8"
+  }],
+  "tags": ["random", "inclusive", "specified", "range", "argument", "seed", "same", "provided", "minimum", "maximum", "integer", "depending"]
 }

@@ -3,14 +3,27 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Creates a regular polygon.",
-  "arguments": [
-    {"arg":"center", "description": "center of the regular polygon"},
-    {"arg":"radius", "description": "second point. The first if the regular polygon is inscribed. The midpoint of the first side if the regular polygon is circumscribed."},
-    {"arg":"number_sides", "description": "Number of sides/edges of the regular polygon"},
-    {"arg":"circle", "optional": true, "default": "0", "description": "Optional argument to construct the regular polygon. By default this value is 0. Value can be 0 (inscribed) or 1 (circumscribed)"}
-  ],
-  "examples": [
-    { "expression":"geom_to_wkt(make_regular_polygon(make_point(0,0), make_point(0,5), 5))", "returns":"'Polygon ((0 5, 4.76 1.55, 2.94 -4.05, -2.94 -4.05, -4.76 1.55, 0 5))'"},
-    { "expression":"geom_to_wkt(make_regular_polygon(make_point(0,0), project(make_point(0,0), 4.0451, radians(36)), 5))", "returns":"'Polygon ((0 5, 4.76 1.55, 2.94 -4.05, -2.94 -4.05, -4.76 1.55, 0 5))'"}
-  ]
+  "arguments": [{
+    "arg": "center",
+    "description": "center of the regular polygon"
+  }, {
+    "arg": "radius",
+    "description": "second point. The first if the regular polygon is inscribed. The midpoint of the first side if the regular polygon is circumscribed."
+  }, {
+    "arg": "number_sides",
+    "description": "Number of sides/edges of the regular polygon"
+  }, {
+    "arg": "circle",
+    "optional": true,
+    "default": "0",
+    "description": "Optional argument to construct the regular polygon. By default this value is 0. Value can be 0 (inscribed) or 1 (circumscribed)"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(make_regular_polygon(make_point(0,0), make_point(0,5), 5))",
+    "returns": "'Polygon ((0 5, 4.76 1.55, 2.94 -4.05, -2.94 -4.05, -4.76 1.55, 0 5))'"
+  }, {
+    "expression": "geom_to_wkt(make_regular_polygon(make_point(0,0), project(make_point(0,0), 4.0451, radians(36)), 5))",
+    "returns": "'Polygon ((0 5, 4.76 1.55, 2.94 -4.05, -2.94 -4.05, -4.76 1.55, 0 5))'"
+  }],
+  "tags": ["polygon", "regular"]
 }

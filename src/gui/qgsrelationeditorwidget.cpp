@@ -245,6 +245,8 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
 
   // Set initial state for add/remove etc. buttons
   updateButtons();
+
+  setLayout( rootLayout );
 }
 
 void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request )

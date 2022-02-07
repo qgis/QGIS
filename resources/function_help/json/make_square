@@ -3,12 +3,19 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Creates a square from a diagonal.",
-  "arguments": [
-    {"arg":"point1", "description": "First point of the diagonal"},
-    {"arg":"point2", "description": "Last point of the diagonal"}
-  ],
-  "examples": [
-    { "expression":"geom_to_wkt(make_square( make_point(0,0), make_point(5,5)))", "returns":"'Polygon ((0 0, -0 5, 5 5, 5 0, 0 0))'"},
-    { "expression":"geom_to_wkt(make_square( make_point(5,0), make_point(5,5)))", "returns":"'Polygon ((5 0, 2.5 2.5, 5 5, 7.5 2.5, 5 0))'"}
-  ]
+  "arguments": [{
+    "arg": "point1",
+    "description": "First point of the diagonal"
+  }, {
+    "arg": "point2",
+    "description": "Last point of the diagonal"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(make_square( make_point(0,0), make_point(5,5)))",
+    "returns": "'Polygon ((0 0, -0 5, 5 5, 5 0, 0 0))'"
+  }, {
+    "expression": "geom_to_wkt(make_square( make_point(5,0), make_point(5,5)))",
+    "returns": "'Polygon ((5 0, 2.5 2.5, 5 5, 7.5 2.5, 5 0))'"
+  }],
+  "tags": ["square", "diagonal"]
 }

@@ -3,9 +3,16 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the mean of arithmetic values in an array. Non numeric values in the array are ignored.",
-  "arguments": [ {"arg":"array","description":"an array"} ],
-  "examples": [ 
-    { "expression":"array_mean(array(0,1,7,66.6,135.4))", "returns":"42"},
-    { "expression":"array_mean(array(0,84,'a','b','c'))", "returns":"42"}
-  ]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }],
+  "examples": [{
+    "expression": "array_mean(array(0,1,7,66.6,135.4))",
+    "returns": "42"
+  }, {
+    "expression": "array_mean(array(0,84,'a','b','c'))",
+    "returns": "42"
+  }],
+  "tags": ["array", "ignored", "mean", "numeric", "arithmetic"]
 }

@@ -127,7 +127,7 @@ class Grass7Utils:
                 for line in lines:
                     if "GRASS GIS " in line:
                         line = line.split(" ")[-1].strip()
-                        if line.startswith("7."):
+                        if line.startswith("7.") or line.startswith("8."):
                             Grass7Utils.version = line
                             return Grass7Utils.version
             except Exception:
@@ -174,8 +174,8 @@ class Grass7Utils:
                 ]
         else:
             cmdList = [
-                "grass78", "grass76", "grass74", "grass72", "grass70", "grass",
-                "grass78.sh", "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"
+                "grass80", "grass78", "grass76", "grass74", "grass72", "grass70", "grass",
+                "grass80.sh", "grass78.sh", "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"
             ]
 
         # For MS-Windows there is a difference between GRASS Path and GRASS binary
@@ -235,7 +235,7 @@ class Grass7Utils:
                 folder = os.environ["GISBASE"]
             else:
                 # Find grass folder if it exists inside QGIS bundle
-                for version in ['', '7', '78', '76', '74', '72', '71', '70']:
+                for version in ['', '8', '7', '80', '78', '76', '74', '72', '71', '70']:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()),
                                               'grass{}'.format(version))
                     if os.path.isdir(testfolder):
@@ -505,10 +505,9 @@ class Grass7Utils:
                 cmdpath = os.path.join(Grass7Utils.path, 'bin', 'r.out.gdal.exe')
                 if not os.path.exists(cmdpath):
                     return Grass7Utils.tr(
-                        'The specified GRASS 7 folder "{}" does not contain '
-                        'a valid set of GRASS 7 modules.\nPlease, go to the '
-                        'Processing settings dialog, and check that the '
-                        'GRASS 7\nfolder is correctly configured'.format(os.path.join(Grass7Utils.path, 'bin')))
+                        'The GRASS GIS folder "{}" does not contain a valid set '
+                        'of GRASS modules.\nPlease, check that GRASS is correctly '
+                        'installed and available on your system.'.format(os.path.join(Grass7Utils.path, 'bin')))
             Grass7Utils.isGrassInstalled = True
             return
         # Return error messages
@@ -517,8 +516,9 @@ class Grass7Utils:
             if isWindows() or isMac():
                 if Grass7Utils.path is None:
                     return Grass7Utils.tr(
-                        'GRASS GIS 7 folder is not configured. Please configure '
-                        'it before running GRASS GIS 7 algorithms.')
+                        'Could not locate GRASS GIS folder. Please make '
+                        'sure that GRASS GIS is correctly installed before '
+                        'running GRASS algorithms.')
                 if Grass7Utils.command is None:
                     return Grass7Utils.tr(
                         'GRASS GIS 7 binary {0} can\'t be found on this system from a shell. '

@@ -4,11 +4,29 @@
   "groups": ["String"],
   "description": "Concatenates several strings to one. NULL values are converted to empty strings. Other values (like numbers) are converted to strings.",
   "variableLenArguments": true,
-  "arguments": [ {"arg":"string1", "syntaxOnly": true},
-                 {"arg":"string2", "syntaxOnly": true},
-                 {"arg":"string", "descOnly": true, "description":"a string value"}],
-  "examples": [ { "expression":"concat('sun', 'set')", "returns":"'sunset'"},
-                { "expression":"concat('a','b','c','d','e')", "returns":"'abcde'"},
-                { "expression":"concat('Anno ', 1984)", "returns":"'Anno 1984'"},
-                { "expression":"concat('The Wall', NULL)", "returns":"'The Wall'"}]
+  "arguments": [{
+    "arg": "string1",
+    "syntaxOnly": true
+  }, {
+    "arg": "string2",
+    "syntaxOnly": true
+  }, {
+    "arg": "string",
+    "descOnly": true,
+    "description": "a string value"
+  }],
+  "examples": [{
+    "expression": "concat('sun', 'set')",
+    "returns": "'sunset'"
+  }, {
+    "expression": "concat('a','b','c','d','e')",
+    "returns": "'abcde'"
+  }, {
+    "expression": "concat('Anno ', 1984)",
+    "returns": "'Anno 1984'"
+  }, {
+    "expression": "concat('The Wall', NULL)",
+    "returns": "'The Wall'"
+  }],
+  "tags": ["empty", "converted", "numbers", "concatenates", "null", "strings", "several", "other", "values"]
 }

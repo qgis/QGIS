@@ -3,13 +3,22 @@
   "type": "operator",
   "groups": ["Operators"],
   "description": "Compares two values and evaluates to 1 if the left value is less than the right value.",
-  "arguments": [
-        { "arg": "a", "description": "value" },
-        { "arg": "b", "description": "value" }
-  ],
-  "examples": [
-	{ "expression":"5 &lt; 4", "returns":"0"},
-	{ "expression":"5 &lt; 5", "returns":"0"},
-	{ "expression":"4 &lt; 5", "returns":"1"}
-  ]
+  "arguments": [{
+    "arg": "a",
+    "description": "value"
+  }, {
+    "arg": "b",
+    "description": "value"
+  }],
+  "examples": [{
+    "expression": "5 &lt; 4",
+    "returns": "0"
+  }, {
+    "expression": "5 &lt; 5",
+    "returns": "0"
+  }, {
+    "expression": "4 &lt; 5",
+    "returns": "1"
+  }],
+  "tags": ["left", "evaluates", "compares", "less", "values", "right"]
 }

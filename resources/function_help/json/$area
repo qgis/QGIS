@@ -3,5 +3,9 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the area of the current feature. The area calculated by this function respects both the current project's ellipsoid setting and area unit settings. For example, if an ellipsoid has been set for the project then the calculated area will be ellipsoidal, and if no ellipsoid is set then the calculated area will be planimetric.",
-  "examples": [ { "expression":"$area", "returns":"42"}]
+  "examples": [{
+    "expression": "$area",
+    "returns": "42"
+  }],
+  "tags": ["planimetric", "current", "area", "surface", "project", "settings", "ellipsoid", "setting", "calculated"]
 }

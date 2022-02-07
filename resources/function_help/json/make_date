@@ -3,12 +3,19 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Creates a date value from year, month and day numbers.",
-  "arguments": [
-    {"arg":"year","description":"Year number. Years 1 to 99 are interpreted as is. Year 0 is invalid."},
-    {"arg":"month","description":"Month number, where 1=January"},
-    {"arg":"day", "description":"Day number, beginning with 1 for the first day in the month"}
-  ],
-  "examples": [
-    { "expression":"make_date(2020,5,4)", "returns":"date value 2020-05-04"}
-  ]
+  "arguments": [{
+    "arg": "year",
+    "description": "Year number. Years 1 to 99 are interpreted as is. Year 0 is invalid."
+  }, {
+    "arg": "month",
+    "description": "Month number, where 1=January"
+  }, {
+    "arg": "day",
+    "description": "Day number, beginning with 1 for the first day in the month"
+  }],
+  "examples": [{
+    "expression": "make_date(2020,5,4)",
+    "returns": "date value 2020-05-04"
+  }],
+  "tags": ["year", "date", "month", "numbers", "day"]
 }

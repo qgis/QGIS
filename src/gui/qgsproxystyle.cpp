@@ -15,6 +15,7 @@
 
 #include "qgsproxystyle.h"
 #include "qgsimageoperation.h"
+#include "qgis.h"
 #include <QStyleFactory>
 #include <QStyle>
 #include <QStyleOption>
@@ -80,9 +81,9 @@ QPixmap QgsAppStyle::generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &p
     case QIcon::Normal:
     case QIcon::Active:
     case QIcon::Selected:
-      break;
-
+      return pixmap;
   }
+  BUILTIN_UNREACHABLE
   return QProxyStyle::generatedIconPixmap( iconMode, pixmap, opt );
 }
 

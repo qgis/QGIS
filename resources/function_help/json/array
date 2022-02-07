@@ -4,11 +4,23 @@
   "groups": ["Arrays"],
   "description": "Returns an array containing all the values passed as parameter.",
   "variableLenArguments": true,
-  "arguments": [
-    {"arg":"value1", "syntaxOnly": true},
-    {"arg":"value2", "syntaxOnly": true},
-    {"arg":"value", "descOnly": true, "description":"a value"}],
-  "examples": [ { "expression":"array(2,10)", "returns":"[ 2, 10 ]"},
-                { "expression":"array(2,10)[0]", "returns":"2"}
-  ]
+  "arguments": [{
+    "arg": "value1",
+    "syntaxOnly": true
+  }, {
+    "arg": "value2",
+    "syntaxOnly": true
+  }, {
+    "arg": "value",
+    "descOnly": true,
+    "description": "a value"
+  }],
+  "examples": [{
+    "expression": "array(2,10)",
+    "returns": "[ 2, 10 ]"
+  }, {
+    "expression": "array(2,10)[0]",
+    "returns": "2"
+  }],
+  "tags": ["list", "array", "parameter", "containing"]
 }

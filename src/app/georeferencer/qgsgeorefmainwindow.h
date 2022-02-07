@@ -140,6 +140,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void createMenus();
     void createDockWidgets();
     QLabel *createBaseLabelStatus();
+    QFont statusBarFont();
     void createStatusBar();
     void setupConnections();
     void removeOldLayer();

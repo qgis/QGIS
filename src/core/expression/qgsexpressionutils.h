@@ -356,6 +356,17 @@ class CORE_EXPORT QgsExpressionUtils
     {
       // First check if we already received a layer pointer
       QgsMapLayer *ml = value.value< QgsWeakMapLayerPointer >().data();
+      if ( !ml )
+      {
+        ml = value.value< QgsMapLayer * >();
+#ifdef QGISDEBUG
+        if ( ml )
+        {
+          qWarning( "Raw map layer pointer stored in expression evaluation, switch to QgsWeakMapLayerPointer instead" );
+        }
+#endif
+      }
+
       QgsProject *project = QgsProject::instance();
 
       // No pointer yet, maybe it's a layer id?
@@ -407,6 +418,13 @@ class CORE_EXPORT QgsExpressionUtils
     {
       return qobject_cast<QgsMeshLayer *>( getMapLayer( value, e ) );
     }
+
+    /**
+     * Tries to convert a \a value to a file path.
+     *
+     * \since QGIS 3.24
+     */
+    static QString getFilePathValue( const QVariant &value, QgsExpression *parent );
 
     static QVariantList getListValue( const QVariant &value, QgsExpression *parent )
     {

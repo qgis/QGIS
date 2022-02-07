@@ -3,17 +3,35 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the most common values in an array.",
-  "arguments": [
-    {"arg":"array","description":"an array"},
-    {"arg":"option='all'", "optional":true, "description":"a string specifying the return values handling. Valid options are:<br /><ul><li>all: Default, all most common values are returned in an array.</li><li>any: Returns one of the most common values.</li><li>median: Returns the median of the most common values. Non arithmetic values are ignored.</li><li>real_majority: Returns the value which occurs more than half the size of the array.</li></ul>"}
-  ],
-  "examples": [
-    { "expression":"array_majority(array(0,1,42,42,43), 'all')", "returns":"[ 42 ]"},
-    { "expression":"array_majority(array(0,1,42,42,43,1), 'all')", "returns":"[ 42, 1 ]"},
-    { "expression":"array_majority(array(0,1,42,42,43,1), 'any')", "returns":"1 or 42"},
-    { "expression":"array_majority(array(0,1,1,2,2), 'median')", "returns":"1.5"},
-    { "expression":"array_majority(array(0,1,42,42,43), 'real_majority')", "returns":"NULL"},
-    { "expression":"array_majority(array(0,1,42,42,43,42), 'real_majority')", "returns":"NULL"},
-    { "expression":"array_majority(array(0,1,42,42,43,42,42), 'real_majority')", "returns":"42"}
-  ]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "option='all'",
+    "optional": true,
+    "description": "a string specifying the return values handling. Valid options are:<br><ul><li>all: Default, all most common values are returned in an array.</li><li>any: Returns one of the most common values.</li><li>median: Returns the median of the most common values. Non arithmetic values are ignored.</li><li>real_majority: Returns the value which occurs more than half the size of the array.</li></ul>"
+  }],
+  "examples": [{
+    "expression": "array_majority(array(0,1,42,42,43), 'all')",
+    "returns": "[ 42 ]"
+  }, {
+    "expression": "array_majority(array(0,1,42,42,43,1), 'all')",
+    "returns": "[ 42, 1 ]"
+  }, {
+    "expression": "array_majority(array(0,1,42,42,43,1), 'any')",
+    "returns": "1 or 42"
+  }, {
+    "expression": "array_majority(array(0,1,1,2,2), 'median')",
+    "returns": "1.5"
+  }, {
+    "expression": "array_majority(array(0,1,42,42,43), 'real_majority')",
+    "returns": "NULL"
+  }, {
+    "expression": "array_majority(array(0,1,42,42,43,42), 'real_majority')",
+    "returns": "NULL"
+  }, {
+    "expression": "array_majority(array(0,1,42,42,43,42,42), 'real_majority')",
+    "returns": "42"
+  }],
+  "tags": ["common", "array", "median"]
 }

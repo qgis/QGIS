@@ -407,7 +407,8 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   }
 
   // https://docs.qgis.org/3.16/en/docs/server_manual/services.html#wms-map
-  const QString map = request.parameter( QStringLiteral( "MAP" ) );
+  const QString map = QUrlQuery( request.originalUrl().query().replace( QLatin1String( "MAP" ), QStringLiteral( "MAP" ), Qt::CaseInsensitive ) ).queryItemValue( QStringLiteral( "MAP" ) );
+
   if ( ! map.isEmpty() )
   {
     QUrlQuery query;
@@ -418,6 +419,7 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   {
     urlQUrl.setQuery( NULL );
   }
+
   return urlQUrl.url();
 }
 

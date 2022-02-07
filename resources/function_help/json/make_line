@@ -3,22 +3,39 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Creates a line geometry from a series of point geometries.",
-  "variants": [
-   { "variant": "List of arguments variant",
-     "variant_description": "Line vertices are specified as separate arguments to the function.",
-     "variableLenArguments": true,
-     "arguments": [
-	{"arg":"point1", "syntaxOnly": true},
-	{"arg":"point2", "syntaxOnly": true},
-	{"arg":"point", "descOnly": true, "description":"a point geometry (or array of points)"}],
-  "examples": [ { "expression":"geom_to_wkt(make_line(make_point(2,4),make_point(3,5)))", "returns":"'LineString (2 4, 3 5)'"},
-    { "expression":"geom_to_wkt(make_line(make_point(2,4),make_point(3,5),make_point(9,7)))", "returns":"'LineString (2 4, 3 5, 9 7)'"}
-    ]},
-      {
-      "variant": "Array variant",
-      "variant_description": "Line vertices are specified as an array of points.",
-      "arguments": [ {"arg":"array","description":"array of points"}],
-      "examples": [ { "expression":"geom_to_wkt(make_line(array(make_point(2,4),make_point(3,5),make_point(9,7))))", "returns":"'LineString (2 4, 3 5, 9 7)'"} ]
-  }]
-
+  "variants": [{
+    "variant": "List of arguments variant",
+    "variant_description": "Line vertices are specified as separate arguments to the function.",
+    "variableLenArguments": true,
+    "arguments": [{
+      "arg": "point1",
+      "syntaxOnly": true
+    }, {
+      "arg": "point2",
+      "syntaxOnly": true
+    }, {
+      "arg": "point",
+      "descOnly": true,
+      "description": "a point geometry (or array of points)"
+    }],
+    "examples": [{
+      "expression": "geom_to_wkt(make_line(make_point(2,4),make_point(3,5)))",
+      "returns": "'LineString (2 4, 3 5)'"
+    }, {
+      "expression": "geom_to_wkt(make_line(make_point(2,4),make_point(3,5),make_point(9,7)))",
+      "returns": "'LineString (2 4, 3 5, 9 7)'"
+    }]
+  }, {
+    "variant": "Array variant",
+    "variant_description": "Line vertices are specified as an array of points.",
+    "arguments": [{
+      "arg": "array",
+      "description": "array of points"
+    }],
+    "examples": [{
+      "expression": "geom_to_wkt(make_line(array(make_point(2,4),make_point(3,5),make_point(9,7))))",
+      "returns": "'LineString (2 4, 3 5, 9 7)'"
+    }]
+  }],
+  "tags": ["point", "line", "series"]
 }

@@ -3,12 +3,21 @@
   "type": "function",
   "groups": ["Aggregates"],
   "description": "Returns the count of distinct values.",
-  "arguments": [
-	{"arg":"expression", "description":"sub expression of field to aggregate"},
-	{"arg":"group_by", "optional":true, "description":"optional expression to use to group aggregate calculations"},
-	{"arg":"filter", "optional":true, "description":"optional expression to use to filter features used to calculate aggregate"}
-  ],
-  "examples": [
-	{ "expression":"count_distinct(\"stations\",group_by:=\"state\")", "returns":"count of distinct stations values, grouped by state field"}
-  ]
+  "arguments": [{
+    "arg": "expression",
+    "description": "sub expression of field to aggregate"
+  }, {
+    "arg": "group_by",
+    "optional": true,
+    "description": "optional expression to use to group aggregate calculations"
+  }, {
+    "arg": "filter",
+    "optional": true,
+    "description": "optional expression to use to filter features used to calculate aggregate"
+  }],
+  "examples": [{
+    "expression": "count_distinct(\"stations\",group_by:=\"state\")",
+    "returns": "count of distinct stations values, grouped by state field"
+  }],
+  "tags": ["aggregate", "distinct", "count"]
 }

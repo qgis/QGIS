@@ -1704,7 +1704,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>671</width>
-                <height>1335</height>
+                <height>1213</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2717,6 +2717,9 @@
                             <verstretch>0</verstretch>
                            </sizepolicy>
                           </property>
+                          <property name="sortingEnabled">
+                           <bool>true</bool>
+                          </property>
                           <column>
                            <property name="text">
                             <string>Layer</string>
@@ -2750,6 +2753,9 @@
                        <layout class="QVBoxLayout" name="verticalLayout_24">
                         <item>
                          <widget class="QTreeWidget" name="twWmtsGrids">
+                          <property name="sortingEnabled">
+                           <bool>true</bool>
+                          </property>
                           <column>
                            <property name="text">
                             <string>CRS</string>
@@ -2874,6 +2880,9 @@
                          <verstretch>0</verstretch>
                         </sizepolicy>
                        </property>
+                       <property name="sortingEnabled">
+                        <bool>true</bool>
+                       </property>
                        <column>
                         <property name="text">
                          <string>Layer</string>
@@ -2951,6 +2960,9 @@
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
+                       </property>
+                       <property name="sortingEnabled">
+                        <bool>true</bool>
                        </property>
                        <column>
                         <property name="text">

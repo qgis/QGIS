@@ -120,7 +120,7 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
   {
     ++mManager->mStats.networkRequestsFailed;
     const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-    if ( contentType.startsWith( QStringLiteral( "text/plain" ) ) )
+    if ( contentType.startsWith( QLatin1String( "text/plain" ) ) )
       data = reply->readAll();
   }
 

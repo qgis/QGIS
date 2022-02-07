@@ -23,7 +23,7 @@ __copyright__ = '(C) 2018, Nyall Dawson'
 
 import os
 from qgis.PyQt.QtWidgets import QFileDialog
-from qgis.PyQt.QtCore import QFileInfo, QCoreApplication
+from qgis.PyQt.QtCore import QFileInfo, QCoreApplication, QDir
 
 from qgis.core import QgsApplication, QgsSettings
 from qgis.utils import iface
@@ -44,7 +44,7 @@ class OpenModelFromFileAction(ToolboxAction):
 
     def execute(self):
         settings = QgsSettings()
-        lastDir = settings.value('Processing/lastModelsDir', '')
+        lastDir = settings.value('Processing/lastModelsDir', QDir.homePath())
         filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
                                                                 self.tr('Open Model', 'AddModelFromFileAction'), lastDir,
                                                                 self.tr('Processing models (*.model3 *.MODEL3)', 'AddModelFromFileAction'))
@@ -55,3 +55,4 @@ class OpenModelFromFileAction(ToolboxAction):
             dlg = ModelerDialog.create()
             dlg.loadModel(filename)
             dlg.show()
+            dlg.activate()

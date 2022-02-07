@@ -3,8 +3,13 @@
   "type": "function",
   "groups": ["Maps"],
   "description": "Creates a map from a hstore-formatted string.",
-  "arguments": [
-    {"arg":"string", "description":"the input string"}],
-  "examples": [ { "expression":"hstore_to_map('qgis=>rocks')", "returns":"{ 'qgis': 'rocks' }"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "the input string"
+  }],
+  "examples": [{
+    "expression": "hstore_to_map('qgis=>rocks')",
+    "returns": "{ 'qgis': 'rocks' }"
+  }],
+  "tags": ["formatted", "hstore", "map"]
 }

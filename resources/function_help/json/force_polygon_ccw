@@ -3,7 +3,13 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Forces a geometry to respect the convention where exterior rings are counter-clockwise, interior rings are clockwise.",
-  "arguments": [ {"arg":"geometry","description":"a geometry. Any non-polygon geometries are returned unchanged."}],
-  "examples": [ { "expression":"geom_to_wkt(force_polygon_ccw(geometry:=geom_from_wkt('Polygon ((-1 -1, 0 2, 4 2, 4 0, -1 -1)))')))", "returns":"'Polygon ((-1 -1, 4 0, 4 2, 0 2, -1 -1))'"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry. Any non-polygon geometries are returned unchanged."
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(force_polygon_ccw(geometry:=geom_from_wkt('Polygon ((-1 -1, 0 2, 4 2, 4 0, -1 -1)))')))",
+    "returns": "'Polygon ((-1 -1, 4 0, 4 2, 0 2, -1 -1))'"
+  }],
+  "tags": ["exterior", "clockwise", "respect", "convention", "rings", "counter", "interior", "forces"]
 }
-

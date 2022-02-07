@@ -3,9 +3,19 @@
   "type": "function",
   "groups": ["Rasters"],
   "description": "Returns the raster value found at the provided point.",
-  "arguments": [ {"arg":"layer","description":"the name or id of a raster layer"},
-                 {"arg":"band","description":"the band number to sample the value from."},
-                 {"arg":"point","description":"point geometry (for multipart geometries having more than one part, a NULL value will be returned)"}],
-  "examples": [ { "expression":"raster_value('dem', 1, make_point(1,1))", "returns":"25"}]
+  "arguments": [{
+    "arg": "layer",
+    "description": "the name or id of a raster layer"
+  }, {
+    "arg": "band",
+    "description": "the band number to sample the value from."
+  }, {
+    "arg": "point",
+    "description": "point geometry (for multipart geometries having more than one part, a NULL value will be returned)"
+  }],
+  "examples": [{
+    "expression": "raster_value('dem', 1, make_point(1,1))",
+    "returns": "25"
+  }],
+  "tags": ["provided", "point", "raster", "found"]
 }
-

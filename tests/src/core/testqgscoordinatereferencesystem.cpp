@@ -1734,8 +1734,8 @@ void TestQgsCoordinateReferenceSystem::geographicCrsAuthId()
   crs.createFromString( QStringLiteral( "EPSG:3825" ) );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3825" ) );
   QCOMPARE( crs.geographicCrsAuthId(), QStringLiteral( "EPSG:3824" ) );
-  QCOMPARE( crs.toGeographicCrs().toProj().replace( QStringLiteral( "+towgs84=0,0,0,0,0,0,0 " ), QString() ).replace( QStringLiteral( " +type=crs" ), QString() ),
-            QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3824" ) ).toProj().replace( QStringLiteral( "+towgs84=0,0,0,0,0,0,0 " ), QString() ).replace( QStringLiteral( " +type=crs" ), QString() ) );
+  QCOMPARE( crs.toGeographicCrs().toProj().replace( QLatin1String( "+towgs84=0,0,0,0,0,0,0 " ), QString() ).replace( QLatin1String( " +type=crs" ), QString() ),
+            QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3824" ) ).toProj().replace( QLatin1String( "+towgs84=0,0,0,0,0,0,0 " ), QString() ).replace( QLatin1String( " +type=crs" ), QString() ) );
 }
 
 void TestQgsCoordinateReferenceSystem::noProj()

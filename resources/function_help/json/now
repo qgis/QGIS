@@ -3,5 +3,9 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Returns the current date and time. The function is static and will return consistent results while evaluating. The time returned is the time when the expression is prepared.",
-  "examples": [ { "expression":"now()", "returns":"2012-07-22T13:24:57"}]
+  "examples": [{
+    "expression": "now()",
+    "returns": "2012-07-22T13:24:57"
+  }],
+  "tags": ["static", "evaluating", "current", "date", "time"]
 }

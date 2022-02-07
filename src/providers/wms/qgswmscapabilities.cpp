@@ -2493,7 +2493,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
       const QString contentType = mCapabilitiesReply->header( QNetworkRequest::ContentTypeHeader ).toString();
 
       QString errorMessage;
-      if ( contentType.startsWith( QStringLiteral( "text/plain" ) ) )
+      if ( contentType.startsWith( QLatin1String( "text/plain" ) ) )
         errorMessage = mCapabilitiesReply->readAll();
       else
         errorMessage = mCapabilitiesReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString();

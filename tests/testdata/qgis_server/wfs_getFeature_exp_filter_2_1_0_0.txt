@@ -1,0 +1,43 @@
+Content-Type: text/xml; subtype=gml/2.1.2; charset=utf-8
+
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:qgs="http://www.qgis.org/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml ?">
+<gml:boundedBy>
+ <gml:Box srsName="EPSG:4326">
+  <gml:coordinates cs="," ts=" ">8.203459,44.901395 8.203547,44.901483</gml:coordinates>
+ </gml:Box>
+</gml:boundedBy>
+<gml:featureMember>
+ <qgs:testlayer fid="testlayer.0">
+  <gml:boundedBy>
+   <gml:Box srsName="EPSG:4326">
+    <gml:coordinates cs="," ts=" ">8.20349634,44.90148253 8.20349634,44.90148253</gml:coordinates>
+   </gml:Box>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">8.20349634,44.90148253</coordinates>
+   </Point>
+  </qgs:geometry>
+  <qgs:id>1</qgs:id>
+  <qgs:name>one</qgs:name>
+  <qgs:utf8nameè>one èé</qgs:utf8nameè>
+ </qgs:testlayer>
+</gml:featureMember>
+<gml:featureMember>
+ <qgs:testlayer fid="testlayer.1">
+  <gml:boundedBy>
+   <gml:Box srsName="EPSG:4326">
+    <gml:coordinates cs="," ts=" ">8.20354699,44.90143568 8.20354699,44.90143568</gml:coordinates>
+   </gml:Box>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">8.20354699,44.90143568</coordinates>
+   </Point>
+  </qgs:geometry>
+  <qgs:id>2</qgs:id>
+  <qgs:name>two</qgs:name>
+  <qgs:utf8nameè>two àò</qgs:utf8nameè>
+ </qgs:testlayer>
+</gml:featureMember>
+</wfs:FeatureCollection>

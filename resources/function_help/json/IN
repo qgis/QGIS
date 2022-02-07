@@ -3,12 +3,19 @@
   "type": "operator",
   "groups": ["Operators"],
   "description": "Returns 1 if value is found within a list of values.",
-  "arguments": [
-	{"arg":"a","description":"value"},
-	{"arg":"b","description":"list of values"}
-  ],
-  "examples": [
-	{ "expression":"'A' IN ('A','B')", "returns":"1"},
-	{ "expression":"'A' IN ('C','B')", "returns":"0"}
-  ]
+  "arguments": [{
+    "arg": "a",
+    "description": "value"
+  }, {
+    "arg": "b",
+    "description": "list of values"
+  }],
+  "examples": [{
+    "expression": "'A' IN ('A','B')",
+    "returns": "1"
+  }, {
+    "expression": "'A' IN ('C','B')",
+    "returns": "0"
+  }],
+  "tags": ["list", "contained", "found"]
 }

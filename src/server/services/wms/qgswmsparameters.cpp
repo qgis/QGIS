@@ -1384,47 +1384,10 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::filters() const
   {
-    const QString filter = mWmsParameters[ QgsWmsParameter::FILTER ].toString();
-    QStringList results;
-    int pos = 0;
-    while ( pos < filter.size() )
-    {
-      if ( pos + 1 < filter.size() && filter[pos] == '(' && filter[pos + 1] == '<' )
-      {
-        // OGC filter on multiple layers
-        int posEnd = filter.indexOf( "Filter>)", pos );
-        if ( posEnd < 0 )
-        {
-          posEnd = filter.size();
-        }
-        results.append( filter.mid( pos + 1, posEnd - pos + 6 ) );
-        pos = posEnd + 8;
-      }
-      else if ( pos + 1 < filter.size() && filter[pos] == '(' && filter[pos + 1] == ')' )
-      {
-        // empty OGC filter
-        results.append( "" );
-        pos += 2;
-      }
-      else if ( filter[pos] == '<' )
-      {
-        // Single OGC filter
-        results.append( filter.mid( pos ) );
-        break;
-      }
-      else
-      {
-        // QGIS specific filter
-        int posEnd = filter.indexOf( ';', pos + 1 );
-        if ( posEnd < 0 )
-        {
-          posEnd = filter.size();
-        }
-        results.append( filter.mid( pos, posEnd - pos ) );
-        pos = posEnd + 1;
-      }
-    }
-    return results;
+    QStringList filters = mWmsParameters[ QgsWmsParameter::FILTER ].toOgcFilterList();
+    if ( filters.isEmpty() )
+      filters = mWmsParameters[ QgsWmsParameter::FILTER ].toExpressionList();
+    return filters;
   }
 
   QString QgsWmsParameters::filterGeom() const

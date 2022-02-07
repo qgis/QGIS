@@ -214,29 +214,29 @@ class ModelerParameterDefinitionDialog(QDialog):
         if (isinstance(self.param, QgsProcessingParameterFeatureSink)):
             self.param = QgsProcessingParameterFeatureSink(
                 name=name,
-                description=self.param.description(),
+                description=description,
                 type=self.param.dataType(),
                 defaultValue=self.defaultWidget.value())
         elif (isinstance(self.param, QgsProcessingParameterFileDestination)):
             self.param = QgsProcessingParameterFileDestination(
                 name=name,
-                description=self.param.description(),
+                description=description,
                 fileFilter=self.param.fileFilter(),
                 defaultValue=self.defaultWidget.value())
         elif (isinstance(self.param, QgsProcessingParameterFolderDestination)):
             self.param = QgsProcessingParameterFolderDestination(
                 name=name,
-                description=self.param.description(),
+                description=description,
                 defaultValue=self.defaultWidget.value())
         elif (isinstance(self.param, QgsProcessingParameterRasterDestination)):
             self.param = QgsProcessingParameterRasterDestination(
                 name=name,
-                description=self.param.description(),
+                description=description,
                 defaultValue=self.defaultWidget.value())
         elif (isinstance(self.param, QgsProcessingParameterVectorDestination)):
             self.param = QgsProcessingParameterVectorDestination(
                 name=name,
-                description=self.param.description(),
+                description=description,
                 type=self.param.dataType(),
                 defaultValue=self.defaultWidget.value())
 

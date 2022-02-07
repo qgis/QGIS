@@ -3,11 +3,27 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a wedge shaped buffer originating from a point geometry.",
-  "arguments": [ {"arg":"center","description":"center point (origin) of buffer. Must be a point geometry."},
-                 {"arg":"azimuth","description":"angle (in degrees) for the middle of the wedge to point."},
-                 {"arg":"width","description":"buffer width (in degrees). Note that the wedge will extend to half of the angular width either side of the azimuth direction."},
-                 {"arg":"outer_radius","description":"outer radius for buffers"},
-                 {"arg":"inner_radius","optional":true,"default":"0.0","description":"optional inner radius for buffers"}],
-  "examples": [ { "expression":"wedge_buffer(center:=geom_from_wkt('POINT(1 2)'),azimuth:=90,width:=180,outer_radius:=1)", "returns":"A wedge shaped buffer centered on the point (1,2), facing to the East, with a width of 180 degrees and outer radius of 1."}]
+  "arguments": [{
+    "arg": "center",
+    "description": "center point (origin) of buffer. Must be a point geometry."
+  }, {
+    "arg": "azimuth",
+    "description": "angle (in degrees) for the middle of the wedge to point."
+  }, {
+    "arg": "width",
+    "description": "buffer width (in degrees). Note that the wedge will extend to half of the angular width either side of the azimuth direction."
+  }, {
+    "arg": "outer_radius",
+    "description": "outer radius for buffers"
+  }, {
+    "arg": "inner_radius",
+    "optional": true,
+    "default": "0.0",
+    "description": "optional inner radius for buffers"
+  }],
+  "examples": [{
+    "expression": "wedge_buffer(center:=geom_from_wkt('POINT(1 2)'),azimuth:=90,width:=180,outer_radius:=1)",
+    "returns": "A wedge shaped buffer centered on the point (1,2), facing to the East, with a width of 180 degrees and outer radius of 1."
+  }],
+  "tags": ["buffer", "wedge", "point", "originating", "shaped"]
 }
-
