@@ -497,19 +497,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
   QMap< QString, QString> friendlyChildNames;
   QMap< QString, QString> friendlyOutputNames;
-  auto safeName = []( const QString & name, bool capitalize )->QString
-  {
-    QString n = name.toLower().trimmed();
-    QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
-    n.replace( rx, QString() );
-    QRegularExpression rx2( QStringLiteral( "^\\d*" ) ); // name can't start in a digit
-    n.replace( rx2, QString() );
-    if ( !capitalize )
-      n = n.replace( ' ', '_' );
-    return capitalize ? QgsStringUtils::capitalize( n, Qgis::Capitalization::UpperCamelCase ) : n;
-  };
-
-  auto uniqueSafeName = [ &safeName ]( const QString & name, bool capitalize, const QMap< QString, QString > &friendlyNames )->QString
+  auto uniqueSafeName = []( const QString & name, bool capitalize, const QMap< QString, QString > &friendlyNames )->QString
   {
     const QString base = safeName( name, capitalize );
     QString candidate = base;
@@ -583,7 +571,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
           if ( defClone->isDestination() )
           {
             const QString &friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
-            friendlyOutputNames.insert( defClone->name(), friendlyName );
+            friendlyOutputNames.insert( !defClone->aliases().empty() ? defClone->aliases().at( 0 ) : defClone->name(), friendlyName );
             defClone->setName( friendlyName );
           }
           else
@@ -1283,6 +1271,21 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
   mOutputs.clear();
 
   // rebuild
+  QSet< QString > usedFriendlyNames;
+  auto uniqueSafeName = [&usedFriendlyNames ]( const QString & name )->QString
+  {
+    const QString base = safeName( name, false );
+    QString candidate = base;
+    int i = 1;
+    while ( usedFriendlyNames.contains( candidate ) )
+    {
+      i++;
+      candidate = QStringLiteral( "%1_%2" ).arg( base ).arg( i );
+    }
+    usedFriendlyNames.insert( candidate );
+    return candidate;
+  };
+
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
@@ -1304,7 +1307,16 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagHidden );
       if ( outputIt->isMandatory() )
         param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagOptional );
-      param->setName( outputIt->childId() + ':' + outputIt->name() );
+      if ( !outputIt->description().isEmpty() )
+      {
+        QString friendlyName = uniqueSafeName( outputIt->description() );
+        param->setName( friendlyName );
+        param->setAliases( { outputIt->childId() + ':' + outputIt->name() } );
+      }
+      else
+      {
+        param->setName( outputIt->childId() + ':' + outputIt->name() );
+      }
       param->setDescription( outputIt->description() );
       param->setDefaultValue( outputIt->defaultValue() );
 
@@ -1951,6 +1963,18 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   alg->setProvider( provider() );
   alg->setSourceFilePath( sourceFilePath() );
   return alg;
+}
+
+QString QgsProcessingModelAlgorithm::safeName( const QString &name, bool capitalize )
+{
+  QString n = name.toLower().trimmed();
+  const thread_local QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
+  n.replace( rx, QString() );
+  const thread_local QRegularExpression rx2( QStringLiteral( "^\\d*" ) ); // name can't start in a digit
+  n.replace( rx2, QString() );
+  if ( !capitalize )
+    n = n.replace( ' ', '_' );
+  return capitalize ? QgsStringUtils::capitalize( n, Qgis::Capitalization::UpperCamelCase ) : n;
 }
 
 QVariantMap QgsProcessingModelAlgorithm::variables() const

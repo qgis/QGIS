@@ -1031,11 +1031,12 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   alg7.addChildAlgorithm( alg7c1 );
   // verify that model has destination parameter created
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->aliases(), QStringList{ QStringLiteral( "cx1:my_output" ) } );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg7.destinationParameterDefinitions().at( 0 ) )->originalProvider()->id(), QStringLiteral( "native" ) );
   QCOMPARE( alg7.outputDefinitions().count(), 1 );
-  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
 
@@ -1054,28 +1055,31 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   alg7.addChildAlgorithm( alg7c2 );
 
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 2 );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->aliases(), QStringList{ QStringLiteral( "cx1:my_output" ) } );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QVERIFY( alg7.destinationParameterDefinitions().at( 0 )->defaultValue().isNull() );
   QVERIFY( !( alg7.destinationParameterDefinitions().at( 0 )->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx2:my_output2" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "my_output2" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->aliases(), QStringList{ QStringLiteral( "cx2:my_output2" ) } );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->defaultValue().toString(), QStringLiteral( "my value" ) );
   QVERIFY( !( alg7.destinationParameterDefinitions().at( 1 )->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
   QCOMPARE( alg7.outputDefinitions().count(), 2 );
-  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
-  QCOMPARE( alg7.outputDefinitions().at( 1 )->name(), QStringLiteral( "cx2:my_output2" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 1 )->name(), QStringLiteral( "my_output2" ) );
   QCOMPARE( alg7.outputDefinitions().at( 1 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
 
   alg7.removeChildAlgorithm( QStringLiteral( "cx1" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx2:my_output2" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "my_output2" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->aliases(), QStringList{ QStringLiteral( "cx2:my_output2" ) } );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
   QCOMPARE( alg7.outputDefinitions().count(), 1 );
-  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx2:my_output2" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "my_output2" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
 
@@ -1681,7 +1685,7 @@ void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
   alg.addChildAlgorithm( algc1 );
   // verify that model has destination parameter created
   QCOMPARE( alg.destinationParameterDefinitions().count(), 3 );
-  QCOMPARE( alg.destinationParameterDefinitions().at( 2 )->name(), QStringLiteral( "cx1:my_vector_output" ) );
+  QCOMPARE( alg.destinationParameterDefinitions().at( 2 )->name(), QStringLiteral( "my_output_3" ) );
   QCOMPARE( alg.destinationParameterDefinitions().at( 2 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 2 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
   QCOMPARE( static_cast< const QgsProcessingParameterVectorDestination * >( alg.destinationParameterDefinitions().at( 2 ) )->supportedOutputVectorLayerExtensions(), QStringList() << QStringLiteral( "mif" ) );
@@ -1689,7 +1693,7 @@ void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
   QVERIFY( static_cast< const QgsProcessingParameterVectorDestination * >( alg.destinationParameterDefinitions().at( 2 ) )->generateTemporaryDestination().endsWith( QLatin1String( ".mif" ) ) );
   QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 2 ) )->supportsNonFileBasedOutput() );
 
-  QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_raster_output" ) );
+  QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 0 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
   QCOMPARE( static_cast< const QgsProcessingParameterRasterDestination * >( alg.destinationParameterDefinitions().at( 0 ) )->supportedOutputRasterLayerExtensions(), QStringList() << QStringLiteral( "mig" ) );
@@ -1697,7 +1701,7 @@ void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
   QVERIFY( static_cast< const QgsProcessingParameterRasterDestination * >( alg.destinationParameterDefinitions().at( 0 ) )->generateTemporaryDestination().endsWith( QLatin1String( ".mig" ) ) );
   QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 0 ) )->supportsNonFileBasedOutput() );
 
-  QCOMPARE( alg.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx1:my_sink_output" ) );
+  QCOMPARE( alg.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "my_output_2" ) );
   QCOMPARE( alg.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 1 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
   QCOMPARE( static_cast< const QgsProcessingParameterFeatureSink * >( alg.destinationParameterDefinitions().at( 1 ) )->supportedOutputVectorLayerExtensions(), QStringList() << QStringLiteral( "mif" ) );
