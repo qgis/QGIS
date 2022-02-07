@@ -283,14 +283,8 @@ if(WITH_CORE)
   endif(WITH_HANA)
 
   set (WITH_PDAL FALSE CACHE BOOL "Determines whether PDAL support should be built")
-  if(WITH_PDAL)
-    set(HAVE_PDAL_QGIS TRUE) # note -- we can't use HAVE_PDAL here as the grass public headers redefine this!
-  endif()
 
   set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
-  if(WITH_EPT)
-    set(HAVE_EPT TRUE)
-  endif()
 
   set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   mark_as_advanced(WITH_THREAD_LOCAL)
@@ -416,10 +410,7 @@ if(WITH_CORE)
   endif()
 
   if (WITH_EPT)  # EPT provider
-    find_package(ZSTD) # for decompression of point clouds
-    if (NOT ZSTD_FOUND)
-      message(FATAL_ERROR "ZSTD not found - EPT provider cannot be built")
-    endif()
+    find_package(ZSTD REQUIRED) # for decompression of point clouds
     find_package(LazPerf) # for decompression of point clouds
     if (NOT LazPerf_FOUND)
       message(STATUS "Using embedded laz-perf")
@@ -431,10 +422,8 @@ if(WITH_CORE)
     if (NOT WITH_EPT)
       message(FATAL_ERROR "PDAL provider cannot be built with EPT disabled")
     endif()
-    find_package(PDAL) # PDAL provider
-  endif()
-  if (PDAL_FOUND)
-    set(HAVE_PDAL_QGIS TRUE)  # used in qgsconfig.h
+    find_package(PDAL REQUIRED) # PDAL provider
+    set(HAVE_PDAL_QGIS TRUE)  # used in qgisconfig.h. note -- we can't use HAVE_PDAL here as the grass public headers redefine this!
   endif()
 
   #############################################################
