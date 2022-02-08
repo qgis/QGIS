@@ -278,7 +278,8 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
 
   // load previously added points
   mGCPpointsFileName = mRasterFileName + ".points";
-  ( void )loadGCPs();
+  QString error;
+  ( void )loadGCPs( error );
 
   if ( mLayer )
     mCanvas->setExtent( mLayer->extent() );
@@ -663,9 +664,10 @@ void QgsGeoreferencerMainWindow::loadGCPsDialog()
   if ( mGCPpointsFileName.isEmpty() )
     return;
 
-  if ( !loadGCPs() )
+  QString error;
+  if ( !loadGCPs( error ) )
   {
-    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "Invalid GCP file. File could not be read." ), Qgis::MessageLevel::Critical );
+    mMessageBar->pushMessage( tr( "Load GCP Points" ), error, Qgis::MessageLevel::Critical );
   }
   else
   {
@@ -1238,52 +1240,18 @@ void QgsGeoreferencerMainWindow::writeSettings()
 }
 
 // GCP points
-bool QgsGeoreferencerMainWindow::loadGCPs( /*bool verbose*/ )
+bool QgsGeoreferencerMainWindow::loadGCPs( QString &error )
 {
-  QFile pointFile( mGCPpointsFileName );
-  if ( !pointFile.open( QIODevice::ReadOnly ) )
-  {
+  const QList< QgsGcpPoint > points = QgsGCPList::loadGcps( mGCPpointsFileName,
+                                      QgsProject::instance()->crs(),
+                                      error );
+  if ( !error.isEmpty() )
     return false;
-  }
 
   clearGCPData();
-
-  QTextStream points( &pointFile );
-  QString line = points.readLine();
-  int i = 0;
-  QgsCoordinateReferenceSystem destinationCrs;
-  if ( line.contains( QLatin1String( "#CRS: " ) ) )
+  for ( const QgsGcpPoint &point : points )
   {
-    destinationCrs = QgsCoordinateReferenceSystem( line.remove( QStringLiteral( "#CRS: " ) ) );
-    line = points.readLine();
-  }
-  else
-    destinationCrs = QgsProject::instance()->crs();
-
-  while ( !points.atEnd() )
-  {
-    line = points.readLine();
-    QStringList ls;
-    if ( line.contains( ',' ) ) // in previous format "\t" is delimiter of points in new - ","
-      ls = line.split( ',' ); // points from new georeferencer
-    else
-      ls = line.split( '\t' ); // points from prev georeferencer
-
-    if ( ls.count() < 4 )
-      return false;
-
-    const QgsPointXY destinationCoordinate( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
-    const QgsPointXY pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
-    const QgsPointXY sourceLayerCoordinate = mGeorefTransform.toSourceCoordinate( pixelCoords );
-    if ( ls.count() == 5 )
-    {
-      bool enable = ls.at( 4 ).toInt();
-      addPoint( sourceLayerCoordinate, destinationCoordinate, destinationCrs, enable, false );
-    }
-    else
-      addPoint( sourceLayerCoordinate, destinationCoordinate, destinationCrs, true, false );
-
-    ++i;
+    addPoint( point.sourcePoint(), point.destinationPoint(), point.destinationPointCrs(), point.isEnabled(), false );
   }
 
   mSavedPoints = mPoints.asPoints();
@@ -1301,38 +1269,15 @@ bool QgsGeoreferencerMainWindow::loadGCPs( /*bool verbose*/ )
 
 void QgsGeoreferencerMainWindow::saveGCPs()
 {
-  QFile pointFile( mGCPpointsFileName );
-  if ( pointFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  QString error;
+  if ( mPoints.saveGcps( mGCPpointsFileName, mProjection, QgsProject::instance()->transformContext(), error ) )
   {
-    QTextStream points( &pointFile );
-    points << QStringLiteral( "#CRS: %1" ).arg( mProjection.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) ) << endl;
-    points << "mapX,mapY,pixelX,pixelY,enable,dX,dY,residual" << endl;
-    for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
-    {
-      const QgsPointXY sourcePixel = mGeorefTransform.toSourcePixel( pt->sourcePoint() );
-
-      const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( mProjection, QgsProject::instance()->transformContext() );
-      points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
-             .arg( qgsDoubleToString( transformedDestinationPoint.x() ),
-                   qgsDoubleToString( transformedDestinationPoint.y() ),
-                   qgsDoubleToString( sourcePixel.x() ),
-                   qgsDoubleToString( sourcePixel.y() ) )
-             .arg( pt->isEnabled() )
-             .arg( qgsDoubleToString( pt->residual().x() ),
-                   qgsDoubleToString( pt->residual().y() ),
-                   qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ) )
-             << endl;
-    }
-
     mSavedPoints = mPoints.asPoints();
   }
   else
   {
-    mMessageBar->pushMessage( tr( "Write Error" ), tr( "Could not write to GCP points file %1." ).arg( mGCPpointsFileName ), Qgis::MessageLevel::Critical );
-    return;
+    mMessageBar->pushMessage( tr( "Write Error" ), error, Qgis::MessageLevel::Critical );
   }
-
-  //  showMessageInLog(tr("GCP points saved in"), mGCPpointsFileName);
 }
 
 QgsGeoreferencerMainWindow::SaveGCPs QgsGeoreferencerMainWindow::checkNeedGCPSave()

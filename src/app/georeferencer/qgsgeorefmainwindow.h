@@ -164,7 +164,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void writeSettings();
 
     // gcp points
-    bool loadGCPs( /*bool verbose = true*/ );
+    bool loadGCPs( QString &error );
     void saveGCPs();
     QgsGeoreferencerMainWindow::SaveGCPs checkNeedGCPSave();
 
