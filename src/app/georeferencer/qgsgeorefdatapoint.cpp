@@ -44,6 +44,20 @@ void QgsGcpPoint::setDestinationPointCrs( const QgsCoordinateReferenceSystem &cr
   mDestinationCrs = crs;
 }
 
+QgsPointXY QgsGcpPoint::transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const
+{
+  const QgsCoordinateTransform transform( mDestinationCrs, targetCrs, context );
+  try
+  {
+    return transform.transform( mDestinationPoint );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Error transforming destination point" ) );
+    return mDestinationPoint;
+  }
+}
+
 
 //
 // QgsGeorefDataPoint
@@ -57,7 +71,6 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *d
   , mGcpPoint( sourceCoordinates, destinationPoint, destinationPointCrs, enabled )
   , mId( -1 )
 {
-  mTransCoords = QgsPointXY( destinationPoint );
   mGCPSourceItem = new QgsGCPCanvasItem( srcCanvas, this, true );
   mGCPDestinationItem = new QgsGCPCanvasItem( dstCanvas, this, false );
   mGCPSourceItem->setEnabled( enabled );
@@ -73,7 +86,6 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
   // we share item representation on canvas between all points
 //  mGCPSourceItem = new QgsGCPCanvasItem(p.srcCanvas(), p.pixelCoords(), p.mapCoords(), p.isEnabled());
 //  mGCPDestinationItem = new QgsGCPCanvasItem(p.dstCanvas(), p.pixelCoords(), p.mapCoords(), p.isEnabled());
-  mTransCoords = p.transCoords();
   mResidual = p.residual();
   mId = p.id();
 }
@@ -104,22 +116,9 @@ void QgsGeorefDataPoint::setDestinationPoint( const QgsPointXY &p )
   }
 }
 
-void QgsGeorefDataPoint::setTransCoords( const QgsPointXY &p )
+QgsPointXY QgsGeorefDataPoint::transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const
 {
-  mTransCoords = p;
-  if ( mGCPSourceItem )
-  {
-    mGCPSourceItem->update();
-  }
-  if ( mGCPDestinationItem )
-  {
-    mGCPDestinationItem->update();
-  }
-}
-
-QgsPointXY QgsGeorefDataPoint::transCoords() const
-{
-  return mTransCoords.isEmpty() ? mGcpPoint.destinationPoint() : mTransCoords;
+  return mGcpPoint.transformedDestinationPoint( targetCrs, context );
 }
 
 void QgsGeorefDataPoint::setEnabled( bool enabled )

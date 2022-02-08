@@ -1312,9 +1312,10 @@ void QgsGeoreferencerMainWindow::saveGCPs()
     {
       const QgsPointXY sourcePixel = mGeorefTransform.toSourcePixel( pt->sourcePoint() );
 
+      const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( mProjection, QgsProject::instance()->transformContext() );
       points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
-             .arg( qgsDoubleToString( pt->transCoords().x() ),
-                   qgsDoubleToString( pt->transCoords().y() ),
+             .arg( qgsDoubleToString( transformedDestinationPoint.x() ),
+                   qgsDoubleToString( transformedDestinationPoint.y() ),
                    qgsDoubleToString( sourcePixel.x() ),
                    qgsDoubleToString( sourcePixel.y() ) )
              .arg( pt->isEnabled() )
@@ -1791,8 +1792,11 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
     {
       currentGCPStrings << tr( "no" );
     }
-    currentGCPStrings << QString::number( ( *gcpIt )->sourcePoint().x(), 'f', 0 ) << QString::number( ( *gcpIt )->sourcePoint().y(), 'f', 0 ) << QString::number( ( *gcpIt )->transCoords().x(), 'f', 3 )
-                      <<  QString::number( ( *gcpIt )->transCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
+
+    const QgsPointXY transformedDestinationPoint = ( *gcpIt )->transformedDestinationPoint( mProjection, QgsProject::instance()->transformContext() );
+
+    currentGCPStrings << QString::number( ( *gcpIt )->sourcePoint().x(), 'f', 0 ) << QString::number( ( *gcpIt )->sourcePoint().y(), 'f', 0 ) << QString::number( transformedDestinationPoint.x(), 'f', 3 )
+                      <<  QString::number( transformedDestinationPoint.y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
     gcpTableContents << currentGCPStrings;
   }
 
@@ -1897,8 +1901,9 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
 
   for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
+    const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( mProjection, QgsProject::instance()->transformContext() );
     gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->sourcePoint().x() ).arg( -pt->sourcePoint().y() )
-                .arg( pt->transCoords().x() ).arg( pt->transCoords().y() );
+                .arg( transformedDestinationPoint.x() ).arg( transformedDestinationPoint.y() );
   }
 
   QFileInfo rasterFileInfo( mRasterFileName );
