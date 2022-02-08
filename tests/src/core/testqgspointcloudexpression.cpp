@@ -437,11 +437,11 @@ void TestQgsPointCloudExpression::testEvaluating_data()
   QTest::newRow( "single attribute not in()" ) << "Classification not in (1, 3, 5)" << 3 << true;
   QTest::newRow( "single attribute not in()" ) << "Classification not in (1, 3, 5)" << 4 << false;
 
-  QTest::newRow( "single attribute arithmetics" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 0 << false;
-  QTest::newRow( "single attribute arithmetics" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 1 << false;
-  QTest::newRow( "single attribute arithmetics" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 2 << true;
-  QTest::newRow( "single attribute arithmetics" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 3 << true;
-  QTest::newRow( "single attribute arithmetics" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 4 << true;
+  QTest::newRow( "single attribute arithmetic" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 0 << false;
+  QTest::newRow( "single attribute arithmetic" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 1 << false;
+  QTest::newRow( "single attribute arithmetic" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 2 << true;
+  QTest::newRow( "single attribute arithmetic" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 3 << true;
+  QTest::newRow( "single attribute arithmetic" ) << "Z > ( 2000 + 20^3 ) * 0.4 / 2 + 1005" << 4 << true;
 
   QTest::newRow( "multiple attributes AND" ) << "Classification = 1 and X < 1002" << 0 << true;
   QTest::newRow( "multiple attributes AND" ) << "Classification = 1 and X < 1002" << 1 << false;
@@ -473,11 +473,11 @@ void TestQgsPointCloudExpression::testEvaluating_data()
   QTest::newRow( "multiple attributes compared" ) << "ReturnNumber = NumberOfReturns" << 3 << true;
   QTest::newRow( "multiple attributes compared" ) << "ReturnNumber = NumberOfReturns" << 4 << true;
 
-  QTest::newRow( "multiple attributes compared arithmetics" ) << "ReturnNumber = NumberOfReturns -1" << 0 << true;
-  QTest::newRow( "multiple attributes compared arithmetics" ) << "ReturnNumber = NumberOfReturns -1" << 1 << true;
-  QTest::newRow( "multiple attributes compared arithmetics" ) << "ReturnNumber = NumberOfReturns -1" << 2 << true;
-  QTest::newRow( "multiple attributes compared arithmetics" ) << "ReturnNumber = NumberOfReturns -1" << 3 << false;
-  QTest::newRow( "multiple attributes compared arithmetics" ) << "ReturnNumber = NumberOfReturns -1" << 4 << false;
+  QTest::newRow( "multiple attributes compared arithmetic" ) << "ReturnNumber = NumberOfReturns -1" << 0 << true;
+  QTest::newRow( "multiple attributes compared arithmetic" ) << "ReturnNumber = NumberOfReturns -1" << 1 << true;
+  QTest::newRow( "multiple attributes compared arithmetic" ) << "ReturnNumber = NumberOfReturns -1" << 2 << true;
+  QTest::newRow( "multiple attributes compared arithmetic" ) << "ReturnNumber = NumberOfReturns -1" << 3 << false;
+  QTest::newRow( "multiple attributes compared arithmetic" ) << "ReturnNumber = NumberOfReturns -1" << 4 << false;
 
 }
 

@@ -591,7 +591,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     }
     if ( expr.isValid() )
     {
-      // we're allways evaluating the last written point in the buffer
+      // we're always evaluating the last written point in the buffer
       double eval = expr.evaluate( i - skippedPoints );
       if ( eval != 1. )
       {

@@ -39,7 +39,7 @@ bool QgsPointCloudExpressionNode::prepare( QgsPointCloudExpression *parent, cons
     // happened then don't re-evaluate again
     if ( !mHasCachedValue )
     {
-      int map;
+      int map = 0;
       mCachedStaticValue = evalNode( parent, map );
       if ( !parent->hasEvalError() )
         mHasCachedValue = true;
