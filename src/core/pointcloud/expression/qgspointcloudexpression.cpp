@@ -46,59 +46,6 @@ QString QgsPointCloudExpression::expression() const
     return dump();
 }
 
-QString QgsPointCloudExpression::quotedAttributeRef( QString name )
-{
-  return QStringLiteral( "\"%1\"" ).arg( name.replace( '\"', QLatin1String( "\"\"" ) ) );
-}
-
-QString QgsPointCloudExpression::quotedString( QString text )
-{
-  text.replace( '\'', QLatin1String( "''" ) );
-  text.replace( '\\', QLatin1String( "\\\\" ) );
-  text.replace( '\n', QLatin1String( "\\n" ) );
-  text.replace( '\t', QLatin1String( "\\t" ) );
-  return QStringLiteral( "'%1'" ).arg( text );
-}
-
-QString QgsPointCloudExpression::quotedValue( const QVariant &value )
-{
-  return quotedValue( value, value.type() );
-}
-
-QString QgsPointCloudExpression::quotedValue( const QVariant &value, QVariant::Type type )
-{
-  if ( value.isNull() )
-    return QStringLiteral( "NULL" );
-
-  switch ( type )
-  {
-    case QVariant::Int:
-    case QVariant::LongLong:
-    case QVariant::Double:
-      return value.toString();
-
-    case QVariant::Bool:
-      return value.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
-
-    case QVariant::List:
-    {
-      QStringList quotedValues;
-      const QVariantList values = value.toList();
-      quotedValues.reserve( values.count() );
-      for ( const QVariant &v : values )
-      {
-        quotedValues += quotedValue( v );
-      }
-      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( QLatin1String( ", " ) ) );
-    }
-
-    default:
-    case QVariant::String:
-      return quotedString( value.toString() );
-  }
-
-}
-
 QgsPointCloudExpression::QgsPointCloudExpression( const QString &expr )
   : d( new QgsPointCloudExpressionPrivate )
 {

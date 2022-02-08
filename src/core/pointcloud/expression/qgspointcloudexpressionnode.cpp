@@ -23,10 +23,6 @@ double QgsPointCloudExpressionNode::eval( QgsPointCloudExpression *parent, int p
   {
     return mCachedStaticValue;
   }
-  else if ( mCompiledSimplifiedNode )
-  {
-    return mCompiledSimplifiedNode->eval( parent, p );
-  }
   else
   {
     double res = evalNode( parent, p );
@@ -37,7 +33,6 @@ double QgsPointCloudExpressionNode::eval( QgsPointCloudExpression *parent, int p
 bool QgsPointCloudExpressionNode::prepare( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block )
 {
   mHasCachedValue = false;
-  mCompiledSimplifiedNode.reset();
   if ( isStatic( parent, block ) )
   {
     // some calls to isStatic already evaluate the node to a cached value, so if that's
@@ -64,7 +59,6 @@ QgsPointCloudExpressionNode::QgsPointCloudExpressionNode( const QgsPointCloudExp
   , parserLastColumn( other.parserLastColumn )
   , mHasCachedValue( other.mHasCachedValue )
   , mCachedStaticValue( other.mCachedStaticValue )
-  , mCompiledSimplifiedNode( other.mCompiledSimplifiedNode ? other.mCompiledSimplifiedNode->clone() : nullptr )
 {
 
 }
@@ -77,7 +71,6 @@ QgsPointCloudExpressionNode &QgsPointCloudExpressionNode::operator=( const QgsPo
   parserLastColumn = other.parserLastColumn;
   mHasCachedValue = other.mHasCachedValue;
   mCachedStaticValue = other.mCachedStaticValue;
-  mCompiledSimplifiedNode.reset( other.mCompiledSimplifiedNode ? other.mCompiledSimplifiedNode->clone() : nullptr );
   return *this;
 }
 
@@ -85,8 +78,6 @@ void QgsPointCloudExpressionNode::cloneTo( QgsPointCloudExpressionNode *target )
 {
   target->mHasCachedValue = mHasCachedValue;
   target->mCachedStaticValue = mCachedStaticValue;
-  if ( mCompiledSimplifiedNode )
-    target->mCompiledSimplifiedNode.reset( mCompiledSimplifiedNode->clone() );
   target->parserLastColumn = parserLastColumn;
   target->parserLastLine = parserLastLine;
   target->parserFirstColumn = parserFirstColumn;

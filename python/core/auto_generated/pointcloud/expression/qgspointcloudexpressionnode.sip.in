@@ -86,14 +86,14 @@ Gets a list of all the nodes.
 %Docstring
 Gets the node at position i in the list.
 
-.. versionadded:: 3.0
+.. versionadded:: 3.26
 %End
 
         QStringList names() const;
 %Docstring
 Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
 
-.. versionadded:: 2.16
+.. versionadded:: 3.26
 %End
 
         QgsPointCloudExpressionNode::NodeList *clone() const /Factory/;
@@ -127,11 +127,11 @@ the original expression, it's just guaranteed to behave the same way.
 
     double eval( QgsPointCloudExpression *parent, int p );
 %Docstring
-Evaluate this node with the given context and parent.
+Evaluate this node for the given point and parent.
 This will return a cached value if it has been determined to be static
 during the :py:func:`~QgsPointCloudExpressionNode.prepare` execution.
 
-.. versionadded:: 2.12
+.. versionadded:: 3.26
 %End
 
     virtual QgsPointCloudExpressionNode *clone() const = 0;
@@ -147,21 +147,11 @@ Ownership is transferred to the caller.
 Abstract virtual method which returns a list of columns required to
 evaluate this node.
 
-When reimplementing this, you need to return any column that is required to
-evaluate this node and in addition recursively collect all the columns required
+When reimplementing this, you need to return any attribute that is required to
+evaluate this node and in addition recursively collect all the attributes required
 to evaluate child nodes.
 
-.. warning::
-
-   If the expression has been prepared via a call to :py:func:`QgsPointCloudExpression.prepare()`,
-   or a call to :py:func:`QgsPointCloudExpressionNode.prepare()` for a node has been made, then some nodes in
-   the expression may have been determined to evaluate to a static pre-calculatable value.
-   In this case the results will omit attribute indices which are used by these
-   pre-calculated nodes, regardless of their actual referenced columns.
-   If you are seeking to use these functions to introspect an expression you must
-   take care to do this with an unprepared expression node.
-
-:return: A list of columns required to evaluate this expression
+:return: A list of attributes required to evaluate this expression
 %End
 
     virtual bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const = 0;
@@ -171,7 +161,7 @@ the :py:func:`~QgsPointCloudExpressionNode.prepare` step and in case it returns 
 be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
 to :py:func:`~QgsPointCloudExpressionNode.eval`). In case this returns ``True``, :py:func:`~QgsPointCloudExpressionNode.prepareNode` will never be called.
 
-.. versionadded:: 3.0
+.. versionadded:: 3.26
 %End
 
     bool prepare( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block );
@@ -179,9 +169,9 @@ to :py:func:`~QgsPointCloudExpressionNode.eval`). In case this returns ``True``,
 Prepare this node for evaluation.
 This will check if the node content is static and in this case cache the value.
 If it's not static it will call :py:func:`~QgsPointCloudExpressionNode.prepareNode` to allow the node to do initialization
-work like for example resolving a column name to an attribute index.
+work like for example resolving an attribute name to an attribute index.
 
-.. versionadded:: 2.12
+.. versionadded:: 3.26
 %End
 
     int parserFirstLine;
@@ -198,7 +188,7 @@ Returns ``True`` if the node can be replaced by a static cached value.
 
 .. seealso:: :py:func:`cachedStaticValue`
 
-.. versionadded:: 3.18
+.. versionadded:: 3.26
 %End
 
     double cachedStaticValue() const;
@@ -207,21 +197,7 @@ Returns the node's static cached value. Only valid if :py:func:`~QgsPointCloudEx
 
 .. seealso:: :py:func:`hasCachedStaticValue`
 
-.. versionadded:: 3.18
-%End
-
-    const QgsPointCloudExpressionNode *effectiveNode() const;
-%Docstring
-Returns a reference to the simplest node which represents this node,
-after any compilation optimizations have been applied.
-
-Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
-be replaced entirely by a :py:class:`QgsPointCloudExpressionNodeColumnRef` referencing the "some_field" field, as the
-CASE WHEN ... will ALWAYS evaluate to "some_field".
-
-Returns a reference to the current object if no optimizations were applied.
-
-.. versionadded:: 3.20
+.. versionadded:: 3.26
 %End
 
   protected:

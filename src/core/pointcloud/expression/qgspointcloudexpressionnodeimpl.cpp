@@ -16,10 +16,6 @@
 #include "qgspointcloudexpressionnodeimpl.h"
 #include "qgspointcloudexpression.h"
 
-#include "qgsgeometry.h"
-#include "qgsfeaturerequest.h"
-#include "qgsstringutils.h"
-
 const char *QgsPointCloudExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =
 {
   // this must correspond (number and order of element) to the declaration of the enum BinaryOperator
@@ -330,7 +326,6 @@ QString QgsPointCloudExpressionNodeBinaryOperator::dump() const
 {
   QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft );
   QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight );
-  QgsPointCloudExpressionNodeUnaryOperator *ruOp = dynamic_cast<QgsPointCloudExpressionNodeUnaryOperator *>( mOpRight );
 
   QString rdump( mOpRight->dump() );
 
@@ -581,6 +576,7 @@ bool QgsPointCloudExpressionNodeInOperator::isStatic( QgsPointCloudExpression *p
 double QgsPointCloudExpressionNodeLiteral::evalNode( QgsPointCloudExpression *parent, int p )
 {
   Q_UNUSED( parent )
+  Q_UNUSED( p )
   return mValue;
 }
 
@@ -692,31 +688,6 @@ double QgsPointCloudExpressionNodeAttributeRef::evalNode( QgsPointCloudExpressio
     return val; // calculate the  p's point respective attribute
   }
 
-//   if ( index < 0 )
-//   {
-//     // have not yet found field index - first check explicitly set fields collection
-//     if ( context && context->hasVariable( QgsPointCloudExpressionContext::EXPR_FIELDS ) )
-//     {
-//       QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsPointCloudExpressionContext::EXPR_FIELDS ) );
-//       index = fields.lookupField( mName );
-//     }
-//   }
-//
-//   if ( context )
-//   {
-//     QgsFeature feature = context->feature();
-//     if ( feature.isValid() )
-//     {
-//       if ( index >= 0 )
-//         return feature.attribute( index );
-//       else
-//         return feature.attribute( mName );
-//     }
-//     else
-//     {
-//       parent->setEvalErrorString( tr( "No feature available for field '%1' evaluation" ).arg( mName ) );
-//     }
-//   }
   if ( index < 0 )
     parent->setEvalErrorString( tr( "Attribute '%1' not found" ).arg( mName ) );
   return std::numeric_limits<double>::quiet_NaN();
@@ -742,9 +713,7 @@ bool QgsPointCloudExpressionNodeAttributeRef::prepareNode( QgsPointCloudExpressi
 
 QString QgsPointCloudExpressionNodeAttributeRef::dump() const
 {
-  const thread_local QRegularExpression re( QStringLiteral( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ) );
-  const QRegularExpressionMatch match = re.match( mName );
-  return match.hasMatch() ? mName : QgsPointCloudExpression::quotedAttributeRef( mName );
+  return mName;
 }
 
 QSet<QString> QgsPointCloudExpressionNodeAttributeRef::referencedAttributes() const

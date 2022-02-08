@@ -104,9 +104,10 @@ Implicit sharing was added in 2.14
     QgsPointCloudExpression( const QString &expr );
 %Docstring
 Creates a new expression based on the provided string.
-The string will immediately be parsed. For optimization
-:py:func:`~QgsPointCloudExpression.prepare` should always be called before every
-loop in which this expression is used.
+The string will immediately be parsed. :py:func:`~QgsPointCloudExpression.prepare` should
+be called before evaluation.
+
+.. versionadded:: 3.26
 %End
 
     QgsPointCloudExpression( const QgsPointCloudExpression &other );
@@ -114,6 +115,8 @@ loop in which this expression is used.
 Create a copy of this expression. This is preferred
 over recreating an expression from a string since
 it does not need to be re-parsed.
+
+.. versionadded:: 3.26
 %End
 
 
@@ -122,7 +125,7 @@ it does not need to be re-parsed.
 %Docstring
 Create an empty expression.
 
-.. versionadded:: 3.0
+.. versionadded:: 3.26
 %End
 
     ~QgsPointCloudExpression();
@@ -134,23 +137,28 @@ Create an empty expression.
 Checks if this expression is valid.
 A valid expression could be parsed but does not necessarily evaluate properly.
 
-.. versionadded:: 3.0
+.. versionadded:: 3.26
 %End
 
     bool hasParserError() const;
 %Docstring
 Returns ``True`` if an error occurred when parsing the input expression
+
+.. versionadded:: 3.26
 %End
+
     QString parserErrorString() const;
 %Docstring
 Returns parser error
+
+.. versionadded:: 3.26
 %End
 
     QList<QgsPointCloudExpression::ParserError> parserErrors() const;
 %Docstring
 Returns parser error details including location of error.
 
-.. versionadded:: 3.0
+.. versionadded:: 3.26
 %End
 
     const QgsPointCloudExpressionNode *rootNode() const;
@@ -158,65 +166,58 @@ Returns parser error details including location of error.
 Returns the root node of the expression.
 
 The root node is ``None`` if parsing has failed.
+
+.. versionadded:: 3.26
 %End
 
     bool prepare( const QgsPointCloudBlock *block );
 %Docstring
-Gets the expression ready for evaluation - find out column indexes.
+Gets the expression ready for evaluation.
 
-:param context: context for preparing expression
+:param block: pointer to the :py:class:`QgsPointCloudBlock` that will be filtered
 
-.. versionadded:: 2.12
+.. versionadded:: 3.26
 %End
 
     QSet<QString> referencedAttributes() const;
 %Docstring
-Gets list of columns referenced by the expression.
+Gets list of attributes referenced by the expression.
 
-.. note::
-
-   If the returned list contains the :py:class:`QgsFeatureRequest`.AllAttributes constant then
-   all attributes from the layer are required for evaluation of the expression.
-   :py:class:`QgsFeatureRequest`.setSubsetOfAttributes automatically handles this case.
-
-.. warning::
-
-   If the expression has been prepared via a call to :py:func:`QgsPointCloudExpression.prepare()`,
-   or a call to :py:func:`QgsPointCloudExpressionNode.prepare()` for a node has been made, then parts of
-   the expression may have been determined to evaluate to a static pre-calculatable value.
-   In this case the results will omit attribute indices which are used by these
-   pre-calculated nodes, regardless of their actual referenced columns.
-   If you are seeking to use these functions to introspect an expression you must
-   take care to do this with an unprepared expression.
-
-
-.. seealso:: :py:func:`referencedAttributeIndexes`
+.. versionadded:: 3.26
 %End
 
 
 
     double evaluate( int p );
 %Docstring
-Evaluate the feature and return the result.
+Evaluate the expression for one point.
 
-.. note::
+:return: 0.0 for false or 1.0 for true.
 
-   this method does not expect that :py:func:`~QgsPointCloudExpression.prepare` has been called on this instance
+:param p: point number within the block to evaluate
 
-.. versionadded:: 2.12
+.. versionadded:: 3.26
 %End
 
     bool hasEvalError() const;
 %Docstring
 Returns ``True`` if an error occurred when evaluating last input
+
+.. versionadded:: 3.26
 %End
+
     QString evalErrorString() const;
 %Docstring
 Returns evaluation error
+
+.. versionadded:: 3.26
 %End
+
     void setEvalErrorString( const QString &str );
 %Docstring
 Sets evaluation error (used internally by evaluation functions)
+
+.. versionadded:: 3.26
 %End
 
     static bool checkExpression( const QString &text, const QgsPointCloudBlock *block, QString &errorMessage /Out/ );
@@ -224,19 +225,19 @@ Sets evaluation error (used internally by evaluation functions)
 Tests whether a string is a valid expression.
 
 :param text: string to test
-:param context: optional expression context
+:param block: :py:class:`QgsPointCloudBlock` to be filtered
 
 :return: - ``True`` if string is a valid expression
          - errorMessage: will be filled with any error message from the validation
 
-.. versionadded:: 2.12
+.. versionadded:: 3.26
 %End
 
     void setExpression( const QString &expression );
 %Docstring
 Set the expression string, will reset the whole internal structure.
 
-.. versionadded:: 3.0
+.. versionadded:: 3.26
 %End
 
     QString expression() const;
@@ -244,6 +245,8 @@ Set the expression string, will reset the whole internal structure.
 Returns the original, unmodified expression string.
 If there was none supplied because it was constructed by sole
 API calls, :py:func:`~QgsPointCloudExpression.dump` will be used to create one instead.
+
+.. versionadded:: 3.26
 %End
 
     QString dump() const;
@@ -252,53 +255,8 @@ Returns an expression string, constructed from the internal
 abstract syntax tree. This does not contain any nice whitespace
 formatting or comments. In general it is preferable to use
 :py:func:`~QgsPointCloudExpression.expression` instead.
-%End
 
-    static QString quotedAttributeRef( QString name );
-%Docstring
-Returns a quoted column reference (in double quotes)
-
-.. seealso:: :py:func:`quotedString`
-
-.. seealso:: :py:func:`quotedValue`
-%End
-
-    static QString quotedString( QString text );
-%Docstring
-Returns a quoted version of a string (in single quotes)
-
-.. seealso:: :py:func:`quotedValue`
-
-.. seealso:: :py:func:`quotedColumnRef`
-%End
-
-    static QString quotedValue( const QVariant &value );
-%Docstring
-Returns a string representation of a literal value, including appropriate
-quotations where required.
-
-:param value: value to convert to a string representation
-
-.. seealso:: :py:func:`quotedString`
-
-.. seealso:: :py:func:`quotedColumnRef`
-
-.. versionadded:: 2.14
-%End
-
-    static QString quotedValue( const QVariant &value, QVariant::Type type );
-%Docstring
-Returns a string representation of a literal value, including appropriate
-quotations where required.
-
-:param value: value to convert to a string representation
-:param type: value type
-
-.. seealso:: :py:func:`quotedString`
-
-.. seealso:: :py:func:`quotedColumnRef`
-
-.. versionadded:: 2.14
+.. versionadded:: 3.26
 %End
 
 

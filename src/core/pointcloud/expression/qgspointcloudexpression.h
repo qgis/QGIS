@@ -31,17 +31,7 @@
 #include "qgspointcloudexpressionnode.h"
 #include "qgspointcloudattribute.h"
 
-class QgsFeature;
-class QgsGeometry;
-class QgsOgcUtils;
-class QgsVectorLayer;
-class QgsVectorDataProvider;
-class QgsField;
-class QgsFields;
-class QgsDistanceArea;
-class QDomElement;
 class QgsPointCloudExpressionPrivate;
-class QgsPointCloudExpressionFunction;
 
 /**
  * \ingroup core
@@ -105,7 +95,7 @@ class CORE_EXPORT QgsPointCloudExpression
 
     /**
      * Details about any parser errors that were found when parsing the expression.
-     * \since QGIS 3.0
+     * \since QGIS 3.26
      */
     struct CORE_EXPORT ParserError
     {
@@ -153,9 +143,9 @@ class CORE_EXPORT QgsPointCloudExpression
 
     /**
      * Creates a new expression based on the provided string.
-     * The string will immediately be parsed. For optimization
-     * prepare() should always be called before every
-     * loop in which this expression is used.
+     * The string will immediately be parsed. prepare() should
+     * be called before evaluation.
+     * \since QGIS 3.26
      */
     QgsPointCloudExpression( const QString &expr );
 
@@ -163,6 +153,7 @@ class CORE_EXPORT QgsPointCloudExpression
      * Create a copy of this expression. This is preferred
      * over recreating an expression from a string since
      * it does not need to be re-parsed.
+     * \since QGIS 3.26
      */
     QgsPointCloudExpression( const QgsPointCloudExpression &other );
 
@@ -170,20 +161,21 @@ class CORE_EXPORT QgsPointCloudExpression
      * Create a copy of this expression. This is preferred
      * over recreating an expression from a string since
      * it does not need to be re-parsed.
+     * \since QGIS 3.26
      */
     QgsPointCloudExpression &operator=( const QgsPointCloudExpression &other );
 
     /**
      * Automatically convert this expression to a string where requested.
      *
-     * \since QGIS 3.0
+     * \since QGIS 3.26
      */
     operator QString() const SIP_SKIP;
 
     /**
      * Create an empty expression.
      *
-     * \since QGIS 3.0
+     * \since QGIS 3.26
      */
     QgsPointCloudExpression();
 
@@ -193,7 +185,7 @@ class CORE_EXPORT QgsPointCloudExpression
      * Compares two expressions. The operator returns TRUE
      * if the expression string is equal.
      *
-     * \since QGIS 3.0
+     * \since QGIS 3.26
      */
     bool operator==( const QgsPointCloudExpression &other ) const;
 
@@ -201,18 +193,28 @@ class CORE_EXPORT QgsPointCloudExpression
      * Checks if this expression is valid.
      * A valid expression could be parsed but does not necessarily evaluate properly.
      *
-     * \since QGIS 3.0
+     * \since QGIS 3.26
      */
     bool isValid() const;
 
-    //! Returns TRUE if an error occurred when parsing the input expression
+    /**
+     * Returns TRUE if an error occurred when parsing the input expression
+     *
+     * \since QGIS 3.26
+     */
     bool hasParserError() const;
-    //! Returns parser error
+
+    /**
+     * Returns parser error
+     *
+     * \since QGIS 3.26
+     */
     QString parserErrorString() const;
 
     /**
      * Returns parser error details including location of error.
-     * \since QGIS 3.0
+     *
+     * \since QGIS 3.26
      */
     QList<QgsPointCloudExpression::ParserError> parserErrors() const;
 
@@ -220,32 +222,21 @@ class CORE_EXPORT QgsPointCloudExpression
      * Returns the root node of the expression.
      *
      * The root node is NULLPTR if parsing has failed.
+     * \since QGIS 3.26
      */
     const QgsPointCloudExpressionNode *rootNode() const;
 
     /**
-     * Gets the expression ready for evaluation - find out column indexes.
-     * \param context context for preparing expression
-     * \since QGIS 2.12
+     * Gets the expression ready for evaluation.
+     * \param block pointer to the QgsPointCloudBlock that will be filtered
+     * \since QGIS 3.26
      */
     bool prepare( const QgsPointCloudBlock *block );
 
     /**
-     * Gets list of columns referenced by the expression.
+     * Gets list of attributes referenced by the expression.
      *
-     * \note If the returned list contains the QgsFeatureRequest::AllAttributes constant then
-     * all attributes from the layer are required for evaluation of the expression.
-     * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
-     *
-     * \warning If the expression has been prepared via a call to QgsPointCloudExpression::prepare(),
-     * or a call to QgsPointCloudExpressionNode::prepare() for a node has been made, then parts of
-     * the expression may have been determined to evaluate to a static pre-calculatable value.
-     * In this case the results will omit attribute indices which are used by these
-     * pre-calculated nodes, regardless of their actual referenced columns.
-     * If you are seeking to use these functions to introspect an expression you must
-     * take care to do this with an unprepared expression.
-     *
-     * \see referencedAttributeIndexes()
+     * \since QGIS 3.26
      */
     QSet<QString> referencedAttributes() const;
 
@@ -255,7 +246,7 @@ class CORE_EXPORT QgsPointCloudExpression
      * Returns a list of all nodes which are used in this expression
      *
      * \note not available in Python bindings
-     * \since QGIS 3.2
+     * \since QGIS 3.26
      */
     QList<const QgsPointCloudExpressionNode *> nodes( ) const;
 
@@ -263,7 +254,7 @@ class CORE_EXPORT QgsPointCloudExpression
      * Returns a list of all nodes of the given class which are used in this expression
      *
      * \note not available in Python bindings
-     * \since QGIS 3.2
+     * \since QGIS 3.26
      */
     template <class T>
     QList<const T *> findNodes( ) const
@@ -283,33 +274,48 @@ class CORE_EXPORT QgsPointCloudExpression
     // evaluation
 
     /**
-     * Evaluate the feature and return the result.
-     * \note this method does not expect that prepare() has been called on this instance
-     * \since QGIS 2.12
+     * Evaluate the expression for one point.
+     * \returns 0.0 for false or 1.0 for true.
+     * \param p point number within the block to evaluate
+     * \since QGIS 3.26
      */
     double evaluate( int p );
 
-    //! Returns TRUE if an error occurred when evaluating last input
+    /**
+     * Returns TRUE if an error occurred when evaluating last input
+     *
+     * \since QGIS 3.26
+     */
     bool hasEvalError() const;
-    //! Returns evaluation error
+
+    /**
+     * Returns evaluation error
+     *
+     * \since QGIS 3.26
+     */
     QString evalErrorString() const;
-    //! Sets evaluation error (used internally by evaluation functions)
+
+    /**
+     * Sets evaluation error (used internally by evaluation functions)
+     *
+     * \since QGIS 3.26
+     */
     void setEvalErrorString( const QString &str );
 
     /**
      * Tests whether a string is a valid expression.
      * \param text string to test
-     * \param context optional expression context
+     * \param block QgsPointCloudBlock to be filtered
      * \param errorMessage will be filled with any error message from the validation
      * \returns TRUE if string is a valid expression
-     * \since QGIS 2.12
+     * \since QGIS 3.26
      */
     static bool checkExpression( const QString &text, const QgsPointCloudBlock *block, QString &errorMessage SIP_OUT );
 
     /**
      * Set the expression string, will reset the whole internal structure.
      *
-     * \since QGIS 3.0
+     * \since QGIS 3.26
      */
     void setExpression( const QString &expression );
 
@@ -317,6 +323,8 @@ class CORE_EXPORT QgsPointCloudExpression
      * Returns the original, unmodified expression string.
      * If there was none supplied because it was constructed by sole
      * API calls, dump() will be used to create one instead.
+     *
+     * \since QGIS 3.26
      */
     QString expression() const;
 
@@ -325,43 +333,10 @@ class CORE_EXPORT QgsPointCloudExpression
      * abstract syntax tree. This does not contain any nice whitespace
      * formatting or comments. In general it is preferable to use
      * expression() instead.
+     *
+     * \since QGIS 3.26
      */
     QString dump() const;
-
-    /**
-     * Returns a quoted column reference (in double quotes)
-     * \see quotedString()
-     * \see quotedValue()
-     */
-    static QString quotedAttributeRef( QString name );
-
-    /**
-     * Returns a quoted version of a string (in single quotes)
-     * \see quotedValue()
-     * \see quotedColumnRef()
-     */
-    static QString quotedString( QString text );
-
-    /**
-     * Returns a string representation of a literal value, including appropriate
-     * quotations where required.
-     * \param value value to convert to a string representation
-     * \see quotedString()
-     * \see quotedColumnRef()
-     * \since QGIS 2.14
-     */
-    static QString quotedValue( const QVariant &value );
-
-    /**
-     * Returns a string representation of a literal value, including appropriate
-     * quotations where required.
-     * \param value value to convert to a string representation
-     * \param type value type
-     * \see quotedString()
-     * \see quotedColumnRef()
-     * \since QGIS 2.14
-     */
-    static QString quotedValue( const QVariant &value, QVariant::Type type );
 
     //////
 

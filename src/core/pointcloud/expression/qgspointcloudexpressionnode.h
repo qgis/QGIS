@@ -100,13 +100,13 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
         /**
          * Gets the node at position i in the list.
          *
-         * \since QGIS 3.0
+         * \since QGIS 3.26
          */
         QgsPointCloudExpressionNode *at( int i ) { return mList.at( i ); }
 
         /**
          * Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
-         * \since QGIS 2.16
+         * \since QGIS 3.26
          */
         QStringList names() const { return mNameList; }
 
@@ -143,11 +143,11 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
     virtual QString dump() const = 0;
 
     /**
-     * Evaluate this node with the given context and parent.
+     * Evaluate this node for the given point and parent.
      * This will return a cached value if it has been determined to be static
      * during the prepare() execution.
      *
-     * \since QGIS 2.12
+     * \since QGIS 3.26
      */
     double eval( QgsPointCloudExpression *parent, int p );
 
@@ -163,19 +163,11 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Abstract virtual method which returns a list of columns required to
      * evaluate this node.
      *
-     * When reimplementing this, you need to return any column that is required to
-     * evaluate this node and in addition recursively collect all the columns required
+     * When reimplementing this, you need to return any attribute that is required to
+     * evaluate this node and in addition recursively collect all the attributes required
      * to evaluate child nodes.
      *
-     * \warning If the expression has been prepared via a call to QgsPointCloudExpression::prepare(),
-     * or a call to QgsPointCloudExpressionNode::prepare() for a node has been made, then some nodes in
-     * the expression may have been determined to evaluate to a static pre-calculatable value.
-     * In this case the results will omit attribute indices which are used by these
-     * pre-calculated nodes, regardless of their actual referenced columns.
-     * If you are seeking to use these functions to introspect an expression you must
-     * take care to do this with an unprepared expression node.
-     *
-     * \returns A list of columns required to evaluate this expression
+     * \returns A list of attributes required to evaluate this expression
      */
     virtual QSet<QString> referencedAttributes() const = 0;
 
@@ -183,7 +175,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Returns a list of all nodes which are used in this expression.
      *
      * \note not available in Python bindings
-     * \since QGIS 3.2
+     * \since QGIS 3.26
      */
     virtual QList<const QgsPointCloudExpressionNode *> nodes( ) const = 0; SIP_SKIP
 
@@ -193,7 +185,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
      * to eval()). In case this returns TRUE, prepareNode() will never be called.
      *
-     * \since QGIS 3.0
+     * \since QGIS 3.26
      */
     virtual bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const = 0;
 
@@ -201,9 +193,9 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Prepare this node for evaluation.
      * This will check if the node content is static and in this case cache the value.
      * If it's not static it will call prepareNode() to allow the node to do initialization
-     * work like for example resolving a column name to an attribute index.
+     * work like for example resolving an attribute name to an attribute index.
      *
-     * \since QGIS 2.12
+     * \since QGIS 3.26
      */
     bool prepare( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block );
 
@@ -239,7 +231,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Returns TRUE if the node can be replaced by a static cached value.
      *
      * \see cachedStaticValue()
-     * \since QGIS 3.18
+     * \since QGIS 3.26
      */
     bool hasCachedStaticValue() const { return mHasCachedValue; }
 
@@ -247,23 +239,9 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Returns the node's static cached value. Only valid if hasCachedStaticValue() is TRUE.
      *
      * \see hasCachedStaticValue()
-     * \since QGIS 3.18
+     * \since QGIS 3.26
      */
     double cachedStaticValue() const { return mCachedStaticValue; }
-
-    /**
-     * Returns a reference to the simplest node which represents this node,
-     * after any compilation optimizations have been applied.
-     *
-     * Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
-     * be replaced entirely by a QgsPointCloudExpressionNodeColumnRef referencing the "some_field" field, as the
-     * CASE WHEN ... will ALWAYS evaluate to "some_field".
-     *
-     * Returns a reference to the current object if no optimizations were applied.
-     *
-     * \since QGIS 3.20
-     */
-    const QgsPointCloudExpressionNode *effectiveNode() const { return mCompiledSimplifiedNode ? mCompiledSimplifiedNode.get() : this; }
 
   protected:
 
@@ -284,7 +262,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * \note Not available in python bindings, QgsPointCloudExpression::Node is not
      * going to be subclassed from python. If that's what you are looking
      * for, look into writing a custom python expression function.
-     * \since QGIS 3.0
+     * \since QGIS 3.26
      */
     void cloneTo( QgsPointCloudExpressionNode *target ) const SIP_SKIP;
 
@@ -293,28 +271,17 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
     /**
      * TRUE if the node has a static, precalculated value.
      *
-     * \since QGIS 3.20
+     * \since QGIS 3.26
      */
     mutable bool mHasCachedValue = false;
 
     /**
      * Contains the static, precalculated value for the node if mHasCachedValue is TRUE.
      *
-     * \since QGIS 3.20
+     * \since QGIS 3.26
      */
     mutable double mCachedStaticValue;
 
-    /**
-     * Contains a compiled node which represents a simplified version of this node
-     * as a result of compilation optimizations.
-     *
-     * Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
-     * be replaced entirely by a QgsPointCloudExpressionNodeColumnRef referencing the "some_field" field, as the
-     * CASE WHEN ... will ALWAYS evaluate to "some_field".
-     *
-     * \since QGIS 3.20
-     */
-    mutable std::unique_ptr< QgsPointCloudExpressionNode > mCompiledSimplifiedNode;
 #endif
 
   private:
@@ -322,14 +289,14 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
     /**
      * Abstract virtual preparation method
      * Errors are reported to the parent
-     * \since QGIS 3.0
+     * \since QGIS 3.26
      */
     virtual bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) = 0;
 
     /**
      * Abstract virtual eval method
      * Errors are reported to the parent
-     * \since QGIS 3.0
+     * \since QGIS 3.26
      */
     virtual double evalNode( QgsPointCloudExpression *parent, int p ) = 0;
 
