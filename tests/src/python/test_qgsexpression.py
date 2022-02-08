@@ -310,7 +310,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
             "  File \".*qgsfunction.py\", line [0-9]+, in func\n"
             "    return self.function\\(\\*values\\)\n"
             "  File \".*test_qgsexpression.py\", line [0-9]+, in raise_exception\n"
-            "    foo  # an undefined variable\n"
+            "    foo  # noqa: F821\n"
             "NameError: name \'foo\' is not defined"
             "\n</pre>"
         )
