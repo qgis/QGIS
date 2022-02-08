@@ -2030,7 +2030,7 @@ bool QgsGeoreferencerMainWindow::updateGeorefTransform()
   QVector<QgsPointXY> sourceCoordinates;
   QVector<QgsPointXY> destinationCoords;
   if ( mGCPListWidget->gcpList() )
-    mGCPListWidget->gcpList()->createGCPVectors( sourceCoordinates, destinationCoords, mProjection );
+    mGCPListWidget->gcpList()->createGCPVectors( sourceCoordinates, destinationCoords, mProjection, QgsProject::instance()->transformContext() );
   else
     return false;
 

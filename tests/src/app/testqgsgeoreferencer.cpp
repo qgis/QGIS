@@ -187,7 +187,37 @@ void TestQgsGeoreferencer::testGcpList()
     QgsGcpPoint( QgsPointXY( 111, 222 ), QgsPointXY( 333, 444 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), true )
   } ) );
 
+
   qDeleteAll( list );
+  list.clear();
+
+  // create gcp vectors
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 111, 222 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                                       true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 11, 22 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ),
+                                       true ) );
+  // disabled!
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 33, 44 ), QgsPointXY( 100, 200 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ),
+                                       false ) );
+
+  QVector< QgsPointXY > sourcePoints;
+  QVector< QgsPointXY > destinationPoints;
+  list.createGCPVectors( sourcePoints, destinationPoints, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext() );
+  QCOMPARE( sourcePoints.size(), 2 );
+  QCOMPARE( sourcePoints.at( 0 ).x(), 111 );
+  QCOMPARE( sourcePoints.at( 0 ).y(), 222 );
+  QCOMPARE( sourcePoints.at( 1 ).x(), 11 );
+  QCOMPARE( sourcePoints.at( 1 ).y(), 22 );
+
+  QCOMPARE( destinationPoints.size(), 2 );
+  QGSCOMPARENEAR( destinationPoints.at( 0 ).x(), -3339584, 10000 );
+  QGSCOMPARENEAR( destinationPoints.at( 0 ).y(), 4865942, 10000 );
+  QCOMPARE( destinationPoints.at( 1 ).x(), 16697923 );
+  QCOMPARE( destinationPoints.at( 1 ).y(), -3503549 );
+
 }
 
 void TestQgsGeoreferencer::testTransformImageNoGeoference()

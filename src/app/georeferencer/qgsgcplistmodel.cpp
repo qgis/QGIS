@@ -87,7 +87,7 @@ void QgsGCPListModel::updateModel()
   QVector<QgsPointXY> destinationCoordinates;
 
   const QgsCoordinateReferenceSystem targetCrs( s.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString() );
-  mGCPList->createGCPVectors( sourceCoordinates, destinationCoordinates, targetCrs );
+  mGCPList->createGCPVectors( sourceCoordinates, destinationCoordinates, targetCrs, QgsProject::instance()->transformContext() );
 
   if ( mGeorefTransform )
   {

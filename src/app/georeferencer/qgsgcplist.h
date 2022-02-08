@@ -24,6 +24,7 @@ class QgsGeorefDataPoint;
 class QgsGcpPoint;
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;
+class QgsCoordinateTransformContext;
 
 /**
  * A container for GCP data points.
@@ -41,7 +42,8 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
      * Creates vectors of source and destination points, where the destination points are all transformed to the
      * specified \a targetCrs.
      */
-    void createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints, const QgsCoordinateReferenceSystem &targetCrs ) const;
+    void createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints,
+                           const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
 
     /**
      * Returns the count of currently enabled data points.
