@@ -183,9 +183,9 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
         if ( outputIt->childOutputName() == destParam->name() )
         {
           QString paramName = child.childId() + ':' + outputIt.key();
-          if ( modelParameters.contains( paramName ) )
+          if ( hasParameterValue( modelParameters, paramName ) )
           {
-            QVariant value = modelParameters.value( paramName );
+            QVariant value = parameterValue( modelParameters, paramName );
             if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
             {
               // make sure layout output name is correctly set

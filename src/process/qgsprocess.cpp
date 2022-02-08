@@ -1112,9 +1112,9 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &param
   QList< const QgsProcessingParameterDefinition * > missingParams;
   for ( const QgsProcessingParameterDefinition *p : defs )
   {
-    if ( !p->checkValueIsAcceptable( params.value( p->name() ), &context ) )
+    if ( !p->checkValueIsAcceptable( alg->parameterValue( params, p->name() ), &context ) )
     {
-      if ( !( p->flags() & QgsProcessingParameterDefinition::FlagOptional ) && !params.contains( p->name() ) )
+      if ( !( p->flags() & QgsProcessingParameterDefinition::FlagOptional ) && !alg->hasParameterValue( params, p->name() ) )
       {
         missingParams << p;
       }

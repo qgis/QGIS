@@ -99,9 +99,13 @@ bool QgsProcessingAlgorithm::canExecute( QString * ) const
 
 QVariant QgsProcessingAlgorithm::parameterValue( const QVariantMap &parameters, const QString &name ) const
 {
-  QStringList names { name };
+  QSet< QString > names { name };
   if ( const QgsProcessingParameterDefinition *def = parameterDefinition( name ) )
-    names.append( def->aliases() );
+  {
+    names.insert( def->name() );
+    for ( const QString &alias : def->aliases() )
+      names.insert( alias );
+  }
 
   for ( const QString &name : std::as_const( names ) )
   {
@@ -114,9 +118,13 @@ QVariant QgsProcessingAlgorithm::parameterValue( const QVariantMap &parameters, 
 
 bool QgsProcessingAlgorithm::hasParameterValue( const QVariantMap &parameters, const QString &name ) const
 {
-  QStringList names { name };
+  QSet< QString > names { name };
   if ( const QgsProcessingParameterDefinition *def = parameterDefinition( name ) )
-    names.append( def->aliases() );
+  {
+    names.insert( def->name() );
+    for ( const QString &alias : def->aliases() )
+      names.insert( alias );
+  }
 
   for ( const QString &name : std::as_const( names ) )
   {
