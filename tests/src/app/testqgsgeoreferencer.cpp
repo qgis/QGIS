@@ -45,6 +45,7 @@ class TestQgsGeoreferencer : public QObject
     void testGcpPoint();
     void testGeorefDataPoint();
     void testGcpList();
+    void testSaveLoadGcps();
     void testTransformImageNoGeoference();
     void testTransformImageWithExistingGeoreference();
     void testRasterChangeCoords();
@@ -218,6 +219,68 @@ void TestQgsGeoreferencer::testGcpList()
   QCOMPARE( destinationPoints.at( 1 ).x(), 16697923 );
   QCOMPARE( destinationPoints.at( 1 ).y(), -3503549 );
 
+}
+
+void TestQgsGeoreferencer::testSaveLoadGcps()
+{
+  // test saving and loading GCPs
+  QgsGCPList list;
+  QgsMapCanvas c1;
+  QgsMapCanvas c2;
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 111, 222 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                                       true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 11, 22 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ),
+                                       true ) );
+  // disabled!
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 33, 44 ), QgsPointXY( 100, 200 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ),
+                                       false ) );
+
+  QTemporaryDir dir;
+  QVERIFY( dir.isValid() );
+  const QString tempFilename = dir.filePath( QStringLiteral( "test.points" ) );
+
+  QString error;
+
+  QVERIFY( list.saveGcps( tempFilename, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ),
+                          QgsProject::instance()->transformContext(), error ) );
+  QVERIFY( error.isEmpty() );
+
+
+  // load
+  QList<QgsGcpPoint> res = QgsGCPList::loadGcps( QStringLiteral( "not real" ),
+                           QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ),
+                           error );
+  QVERIFY( !error.isEmpty() );
+
+  res = QgsGCPList::loadGcps( tempFilename,
+                              QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ),
+                              error );
+  QVERIFY( error.isEmpty() );
+  QCOMPARE( res.size(), 3 );
+
+  QCOMPARE( res.at( 0 ).sourcePoint().x(), 111 );
+  QCOMPARE( res.at( 0 ).sourcePoint().y(), 222 );
+  QGSCOMPARENEAR( res.at( 0 ).destinationPoint().x(), -3339584, 10000 );
+  QGSCOMPARENEAR( res.at( 0 ).destinationPoint().y(), 4865942, 10000 );
+  QVERIFY( res.at( 0 ).isEnabled() );
+  QCOMPARE( res.at( 0 ).destinationPointCrs().authid(), QStringLiteral( "EPSG:3857" ) );
+
+  QCOMPARE( res.at( 1 ).sourcePoint().x(), 11 );
+  QCOMPARE( res.at( 1 ).sourcePoint().y(), 22 );
+  QCOMPARE( res.at( 1 ).destinationPoint().x(), 16697923 );
+  QCOMPARE( res.at( 1 ).destinationPoint().y(), -3503549 );
+  QVERIFY( res.at( 1 ).isEnabled() );
+  QCOMPARE( res.at( 1 ).destinationPointCrs().authid(), QStringLiteral( "EPSG:3857" ) );
+
+  QCOMPARE( res.at( 2 ).sourcePoint().x(), 33 );
+  QCOMPARE( res.at( 2 ).sourcePoint().y(), 44 );
+  QCOMPARE( res.at( 2 ).destinationPoint().x(), 100 );
+  QCOMPARE( res.at( 2 ).destinationPoint().y(), 200 );
+  QVERIFY( !res.at( 2 ).isEnabled() );
+  QCOMPARE( res.at( 2 ).destinationPointCrs().authid(), QStringLiteral( "EPSG:3857" ) );
 }
 
 void TestQgsGeoreferencer::testTransformImageNoGeoference()
