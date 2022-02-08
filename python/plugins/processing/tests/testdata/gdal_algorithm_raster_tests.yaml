@@ -363,6 +363,28 @@ tests:
         hash: 30409eb496900df4ceeab37200a91552c350dbc7761eb089dd75a329
         type: rasterhash
 
+  - algorithm: gdal:rasterize
+    name: Test extent crs (gdal:rasterize)
+    params:
+      BURN: 0.0
+      DATA_TYPE: 5
+      EXTENT: -111319.491,1113194.908,-334111.171,669141.057 [EPSG:3857]
+      FIELD: intval
+      HEIGHT: 10.0
+      INIT: 0.0
+      INPUT:
+        name: polys.gml
+        type: vector
+      INVERT: false
+      NODATA: 0.0
+      OPTIONS: ''
+      UNITS: 0
+      WIDTH: 10.0
+    results:
+      OUTPUT:
+        hash: 30409eb496900df4ceeab37200a91552c350dbc7761eb089dd75a329
+        type: rasterhash
+
   - algorithm: gdal:roughness
     name: Roughness
     params:
