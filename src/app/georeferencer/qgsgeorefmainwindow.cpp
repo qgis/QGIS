@@ -1302,7 +1302,7 @@ bool QgsGeoreferencerMainWindow::loadGCPs( /*bool verbose*/ )
     ++i;
   }
 
-  mInitialPoints = mPoints;
+  mSavedPoints = mPoints.asPoints();
   //    showMessageInLog(tr("GCP points loaded from"), mGCPpointsFileName);
   if ( mGCPsDirty )
   {
@@ -1339,7 +1339,7 @@ void QgsGeoreferencerMainWindow::saveGCPs()
              << endl;
     }
 
-    mInitialPoints = mPoints;
+    mSavedPoints = mPoints.asPoints();
   }
   else
   {
@@ -1355,7 +1355,7 @@ QgsGeoreferencerMainWindow::SaveGCPs QgsGeoreferencerMainWindow::checkNeedGCPSav
   if ( 0 == mPoints.count() )
     return QgsGeoreferencerMainWindow::GCPDISCARD;
 
-  if ( !equalGCPlists( mInitialPoints, mPoints ) )
+  if ( !equalGCPlists( mSavedPoints, mPoints ) )
   {
     QMessageBox::StandardButton a = QMessageBox::question( this, tr( "Save GCPs" ),
                                     tr( "Save GCP points?" ),
@@ -2152,7 +2152,7 @@ bool QgsGeoreferencerMainWindow::checkFileExisting( const QString &fileName, con
   return true;
 }
 
-bool QgsGeoreferencerMainWindow::equalGCPlists( const QgsGCPList &list1, const QgsGCPList &list2 )
+bool QgsGeoreferencerMainWindow::equalGCPlists( const QList< QgsGcpPoint > &list1, const QgsGCPList &list2 )
 {
   if ( list1.count() != list2.count() )
     return false;
@@ -2161,12 +2161,9 @@ bool QgsGeoreferencerMainWindow::equalGCPlists( const QgsGCPList &list1, const Q
   int j = 0;
   for ( int i = 0; i < count; ++i, ++j )
   {
-    QgsGeorefDataPoint *p1 = list1.at( i );
-    QgsGeorefDataPoint *p2 = list2.at( j );
-    if ( p1->sourcePoint() != p2->sourcePoint() )
-      return false;
-
-    if ( p1->destinationPoint() != p2->destinationPoint() )
+    const QgsGcpPoint p1 = list1.at( i );
+    const QgsGcpPoint p2 = list2.at( j )->point();
+    if ( p1 != p2 )
       return false;
   }
 

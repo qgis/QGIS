@@ -21,18 +21,6 @@
 
 #include "qgsgcplist.h"
 
-QgsGCPList::QgsGCPList( const QgsGCPList &list )
-  :  QList<QgsGeorefDataPoint *>()
-{
-  clear();
-  QgsGCPList::const_iterator it = list.constBegin();
-  for ( ; it != list.constEnd(); ++it )
-  {
-    QgsGeorefDataPoint *pt = new QgsGeorefDataPoint( **it );
-    append( pt );
-  }
-}
-
 void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourceCoordinates, QVector<QgsPointXY> &destinationCoordinates, const QgsCoordinateReferenceSystem &targetCrs )
 {
   const int targetSize = countEnabledPoints();
@@ -82,14 +70,13 @@ int QgsGCPList::countEnabledPoints() const
   return s;
 }
 
-QgsGCPList &QgsGCPList::operator =( const QgsGCPList &list )
+QList<QgsGcpPoint> QgsGCPList::asPoints() const
 {
-  clear();
-  QgsGCPList::const_iterator it = list.constBegin();
-  for ( ; it != list.constEnd(); ++it )
+  QList<QgsGcpPoint> res;
+  res.reserve( size() );
+  for ( QgsGeorefDataPoint *pt : *this )
   {
-    QgsGeorefDataPoint *pt = new QgsGeorefDataPoint( **it );
-    append( pt );
+    res.append( QgsGcpPoint( pt->point() ) );
   }
-  return *this;
+  return res;
 }
