@@ -135,7 +135,9 @@ void QgsGCPListModel::updateModel()
     else
       si->setCheckState( Qt::Unchecked );
 
+    si->setData( p->sourcePoint(), SourcePointRole );
     setItem( i, j++, si );
+
     setItem( i, j++, new QgsStandardItem( i ) );
     setItem( i, j++, new QgsStandardItem( p->sourcePoint().x() ) );
     setItem( i, j++, new QgsStandardItem( p->sourcePoint().y() ) );

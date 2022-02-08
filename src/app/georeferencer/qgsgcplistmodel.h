@@ -28,6 +28,11 @@ class QgsGCPListModel : public QStandardItemModel
     Q_OBJECT
 
   public:
+    enum Role
+    {
+      SourcePointRole = Qt::UserRole + 1,
+    };
+
     explicit QgsGCPListModel( QObject *parent = nullptr );
 
     void setGCPList( QgsGCPList *theGCPList );
