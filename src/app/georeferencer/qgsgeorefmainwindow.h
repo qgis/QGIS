@@ -119,7 +119,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void showGeorefConfigDialog();
 
     // comfort
-    void jumpToGCP( uint theGCPIndex );
+    void recenterOnPoint( const QgsPointXY &point );
     void extentsChangedGeorefCanvas();
     void extentsChangedQGisCanvas();
     void updateCanvasRotation();

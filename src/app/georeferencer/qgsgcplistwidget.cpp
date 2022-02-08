@@ -99,16 +99,16 @@ void QgsGCPListWidget::closeEditors()
   }
 }
 
-void QgsGCPListWidget::itemDoubleClicked( QModelIndex index )
+void QgsGCPListWidget::itemDoubleClicked( const QModelIndex &index )
 {
-  index = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( index );
-  QStandardItem *item = mGCPListModel->item( index.row(), 1 );
-  bool ok;
-  const int id = item->text().toInt( &ok );
-
-  if ( ok )
+  const QModelIndex sourceIndex = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( index );
+  if ( QStandardItem *item = mGCPListModel->item( sourceIndex.row(), 0 ) )
   {
-    emit jumpToGCP( id );
+    const QgsPointXY sourcePoint = item->data( QgsGCPListModel::Role::SourcePointRole ).value< QgsPointXY >();
+    if ( !sourcePoint.isEmpty() )
+    {
+      emit jumpToGCP( sourcePoint );
+    }
   }
 }
 
@@ -285,7 +285,15 @@ void QgsGCPListWidget::jumpToPoint()
   const QModelIndex index = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( currentIndex() );
   mPrevRow = index.row();
   mPrevColumn = index.column();
-  emit jumpToGCP( index.row() );
+
+  if ( QStandardItem *item = mGCPListModel->item( index.row(), 0 ) )
+  {
+    const QgsPointXY sourcePoint = item->data( QgsGCPListModel::Role::SourcePointRole ).value< QgsPointXY >();
+    if ( !sourcePoint.isEmpty() )
+    {
+      emit jumpToGCP( sourcePoint );
+    }
+  }
 }
 
 void QgsGCPListWidget::adjustTableContent()
