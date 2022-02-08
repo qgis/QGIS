@@ -30,6 +30,7 @@ from qgis.core import (QgsProcessingContext,
                        QgsProcessingException,
                        QgsProcessingFeedback,
                        QgsRectangle,
+                       QgsReferencedRectangle,
                        QgsRasterLayer,
                        QgsProject,
                        QgsProjUtils,
@@ -1552,6 +1553,8 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
         feedback = QgsProcessingFeedback()
         source = os.path.join(testDataPath, 'polys.gml')
         sourceZ = os.path.join(testDataPath, 'pointsz.gml')
+        extent4326 = QgsReferencedRectangle(QgsRectangle(-1, -3, 10, 6), QgsCoordinateReferenceSystem('EPSG:4326'))
+        extent3857 = QgsReferencedRectangle(QgsRectangle(-111319.491, -334111.171, 1113194.908, 669141.057), QgsCoordinateReferenceSystem('EPSG:3857'))
         alg = rasterize()
         alg.initAlgorithm()
 
@@ -1625,6 +1628,27 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['gdal_rasterize',
                  '-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG ' +
                  sourceZ + ' ' +
+                 outdir + '/check.jpg'])
+
+            # with EXTENT in the same CRS as the input layer source
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'id',
+                                        'EXTENT': extent4326,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -a id -ts 0.0 0.0 -te -1.0 -3.0 10.0 6.0 -ot Float32 -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+            # with EXTENT in a different CRS than that of the input layer source
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'id',
+                                        'EXTENT': extent3857,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -a id -ts 0.0 0.0 -te -1.000000001857055 -2.9999999963940835 10.000000000604244 5.99999999960471 -ot Float32 -of JPEG ' +
+                 source + ' ' +
                  outdir + '/check.jpg'])
 
     def testRasterizeOver(self):
