@@ -553,6 +553,15 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertEqual(rc, 1)
         self.assertIn('is not a valid Processing script', err)
 
+    def testComplexParameterNames(self):
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/complex_names.py', '--INPUT with many complex chars.123 a=abc', '--another% complex# NaMe=def'])
+        if os.environ.get('TRAVIS', '') != 'true':
+            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
+            self.assertFalse(err)
+
+        self.assertIn('OUTPUT:	abc:def', output)
+        self.assertEqual(rc, 0)
+
 
 if __name__ == '__main__':
     # look for qgis bin path
