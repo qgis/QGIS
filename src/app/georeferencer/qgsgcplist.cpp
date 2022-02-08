@@ -21,36 +21,28 @@
 
 #include "qgsgcplist.h"
 
-void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourceCoordinates, QVector<QgsPointXY> &destinationCoordinates, const QgsCoordinateReferenceSystem &targetCrs )
+void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints, const QgsCoordinateReferenceSystem &targetCrs ) const
 {
   const int targetSize = countEnabledPoints();
-  sourceCoordinates.clear();
-  sourceCoordinates.reserve( targetSize );
-  destinationCoordinates.clear();
-  destinationCoordinates.reserve( targetSize );
+  sourcePoints.clear();
+  sourcePoints.reserve( targetSize );
+  destinationPoints.clear();
+  destinationPoints.reserve( targetSize );
 
-  for ( QgsGeorefDataPoint *pt : std::as_const( *this ) )
+  for ( const QgsGeorefDataPoint *pt : std::as_const( *this ) )
   {
     if ( !pt->isEnabled() )
       continue;
 
-    sourceCoordinates.push_back( pt->sourcePoint() );
+    sourcePoints.push_back( pt->sourcePoint() );
     if ( targetCrs.isValid() )
     {
-      try
-      {
-        QgsPointXY transCoords = QgsCoordinateTransform( pt->destinationPointCrs(), targetCrs,
-                                 QgsProject::instance() ).transform( pt->destinationPoint() );
-        destinationCoordinates.push_back( transCoords );
-        pt->setTransCoords( transCoords );
-      }
-      catch ( const QgsException & )
-      {
-        destinationCoordinates.push_back( pt->destinationPoint() );
-      }
+      destinationPoints.push_back( pt->transformedDestinationPoint( targetCrs, QgsProject::instance()->transformContext() ) );
     }
     else
-      destinationCoordinates.push_back( pt->destinationPoint() );
+    {
+      destinationPoints.push_back( pt->destinationPoint() );
+    }
   }
 }
 

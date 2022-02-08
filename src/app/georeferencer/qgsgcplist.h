@@ -30,14 +30,18 @@ class QgsCoordinateReferenceSystem;
  *
  * The container does NOT own the points -- they have to be manually deleted elsewhere!!
  */
-class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint *>
+class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
 {
   public:
     QgsGCPList() = default;
     QgsGCPList( const QgsGCPList &list ) = delete;
     QgsGCPList &operator =( const QgsGCPList &list ) = delete;
 
-    void createGCPVectors( QVector<QgsPointXY> &sourceCoordinates, QVector<QgsPointXY> &destinationCoordinates, const QgsCoordinateReferenceSystem &targetCrs );
+    /**
+     * Creates vectors of source and destination points, where the destination points are all transformed to the
+     * specified \a targetCrs.
+     */
+    void createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints, const QgsCoordinateReferenceSystem &targetCrs ) const;
 
     /**
      * Returns the count of currently enabled data points.

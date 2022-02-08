@@ -21,6 +21,7 @@
 #include "qgscoordinatereferencesystem.h"
 
 class QgsGCPCanvasItem;
+class QgsCoordinateTransformContext;
 
 /**
  * Contains properties of a ground control point (GCP).
@@ -85,6 +86,11 @@ class APP_EXPORT QgsGcpPoint
      * \see destinationCrs()
      */
     void setDestinationPointCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Returns the destionationPoint() transformed to the given target CRS.
+     */
+    QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
 
     /**
      * Returns TRUE if the point is currently enabled.
@@ -180,8 +186,10 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
      */
     void setDestinationPoint( const QgsPointXY &p );
 
-    QgsPointXY transCoords() const;
-    void setTransCoords( const QgsPointXY &p );
+    /**
+     * Returns the destionationPoint() transformed to the given target CRS.
+     */
+    QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
 
     /**
      * Returns TRUE if the point is currently enabled.
@@ -228,8 +236,6 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
     QgsGCPCanvasItem *mGCPDestinationItem = nullptr;
 
     QgsGcpPoint mGcpPoint;
-
-    QgsPointXY mTransCoords;
 
     int mId;
     QPointF mResidual;
