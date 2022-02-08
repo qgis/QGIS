@@ -287,10 +287,14 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   mCanvas->refresh();
   QgisApp::instance()->mapCanvas()->refresh();
 
-  mActionLinkGeorefToQgis->setChecked( false );
-  mActionLinkQGisToGeoref->setChecked( false );
-  mActionLinkGeorefToQgis->setEnabled( false );
-  mActionLinkQGisToGeoref->setEnabled( false );
+  const bool hasExistingReference = mLayer->crs().isValid();
+  mActionLinkGeorefToQgis->setEnabled( hasExistingReference );
+  mActionLinkQGisToGeoref->setEnabled( hasExistingReference );
+  if ( !hasExistingReference )
+  {
+    mActionLinkGeorefToQgis->setChecked( false );
+    mActionLinkQGisToGeoref->setChecked( false );
+  }
 
   mCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mWorldFileName = guessWorldFileName( mRasterFileName );
@@ -362,9 +366,6 @@ void QgsGeoreferencerMainWindow::doGeoreference()
       //      mGeorefTransform.selectTransformParametrisation(mTransformParam);
       //      mGCPListWidget->setGeorefTransform(&mGeorefTransform);
       //      mTransformParamLabel->setText(tr("Transform: ") + convertTransformEnumToString(mTransformParam));
-
-      mActionLinkGeorefToQgis->setEnabled( false );
-      mActionLinkQGisToGeoref->setEnabled( false );
     }
   }
 }
@@ -389,15 +390,14 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
   //  logTransformOptions();
   //  logRequaredGCPs();
 
-  if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
+  const bool hasReferencing = QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam
+                              || mLayer->crs().isValid();
+  mActionLinkGeorefToQgis->setEnabled( hasReferencing );
+  mActionLinkQGisToGeoref->setEnabled( hasReferencing );
+  if ( !hasReferencing )
   {
-    mActionLinkGeorefToQgis->setEnabled( true );
-    mActionLinkQGisToGeoref->setEnabled( true );
-  }
-  else
-  {
-    mActionLinkGeorefToQgis->setEnabled( false );
-    mActionLinkQGisToGeoref->setEnabled( false );
+    mActionLinkGeorefToQgis->setChecked( false );
+    mActionLinkQGisToGeoref->setChecked( false );
   }
 
   updateTransformParamLabel();
@@ -506,15 +506,8 @@ void QgsGeoreferencerMainWindow::linkQGisToGeoref( bool link )
 {
   if ( link )
   {
-    if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
-    {
-      // Indicate that georeferencer canvas extent has changed
-      extentsChangedGeorefCanvas();
-    }
-    else
-    {
-      mActionLinkGeorefToQgis->setEnabled( false );
-    }
+    // Indicate that georeferencer canvas extent has changed
+    extentsChangedGeorefCanvas();
   }
 }
 
@@ -522,15 +515,8 @@ void QgsGeoreferencerMainWindow::linkGeorefToQgis( bool link )
 {
   if ( link )
   {
-    if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
-    {
-      // Indicate that qgis main canvas extent has changed
-      extentsChangedQGisCanvas();
-    }
-    else
-    {
-      mActionLinkQGisToGeoref->setEnabled( false );
-    }
+    // Indicate that qgis main canvas extent has changed
+    extentsChangedQGisCanvas();
   }
 }
 
@@ -920,10 +906,10 @@ void QgsGeoreferencerMainWindow::createActions()
   connect( mActionZoomNext, &QAction::triggered, this, &QgsGeoreferencerMainWindow::zoomToNext );
 
   mActionLinkGeorefToQgis->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionLinkGeorefToQgis.png" ) ) );
-  connect( mActionLinkGeorefToQgis, &QAction::triggered, this, &QgsGeoreferencerMainWindow::linkGeorefToQgis );
+  connect( mActionLinkGeorefToQgis, &QAction::toggled, this, &QgsGeoreferencerMainWindow::linkGeorefToQgis );
 
   mActionLinkQGisToGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionLinkQGisToGeoref.png" ) ) );
-  connect( mActionLinkQGisToGeoref, &QAction::triggered, this, &QgsGeoreferencerMainWindow::linkQGisToGeoref );
+  connect( mActionLinkQGisToGeoref, &QAction::toggled, this, &QgsGeoreferencerMainWindow::linkQGisToGeoref );
 
   // Settings actions
   mActionRasterProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRasterProperties.png" ) ) );
