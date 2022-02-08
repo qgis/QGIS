@@ -751,25 +751,9 @@ void QgsGeoreferencerMainWindow::localHistogramStretch()
   mCanvas->refresh();
 }
 
-// Comfort slots
-void QgsGeoreferencerMainWindow::jumpToGCP( uint theGCPIndex )
+void QgsGeoreferencerMainWindow::recenterOnPoint( const QgsPointXY &point )
 {
-  // TODO -- probably a bug here!!!! re enabled/not enabled points
-  if ( static_cast<int>( theGCPIndex ) >= mPoints.countEnabledPoints() )
-  {
-    return;
-  }
-
-  // qgsmapcanvas doesn't seem to have a method for recentering the map
-  QgsRectangle ext = mCanvas->extent();
-
-  QgsPointXY center = ext.center();
-  QgsPointXY new_center = mPoints[theGCPIndex]->sourcePoint();
-
-  QgsPointXY diff( new_center.x() - center.x(), new_center.y() - center.y() );
-  QgsRectangle new_extent( ext.xMinimum() + diff.x(), ext.yMinimum() + diff.y(),
-                           ext.xMaximum() + diff.x(), ext.yMaximum() + diff.y() );
-  mCanvas->setExtent( new_extent );
+  mCanvas->setCenter( point );
   mCanvas->refresh();
 }
 
@@ -1094,7 +1078,7 @@ void QgsGeoreferencerMainWindow::createDockWidgets()
   mGCPListWidget->setGeorefTransform( &mGeorefTransform );
   dockWidgetGCPpoints->setWidget( mGCPListWidget );
 
-  connect( mGCPListWidget, &QgsGCPListWidget::jumpToGCP, this, &QgsGeoreferencerMainWindow::jumpToGCP );
+  connect( mGCPListWidget, &QgsGCPListWidget::jumpToGCP, this, &QgsGeoreferencerMainWindow::recenterOnPoint );
 #if 0
   connect( mGCPListWidget, SIGNAL( replaceDataPoint( QgsGeorefDataPoint *, int ) ),
            this, SLOT( replaceDataPoint( QgsGeorefDataPoint *, int ) ) );
