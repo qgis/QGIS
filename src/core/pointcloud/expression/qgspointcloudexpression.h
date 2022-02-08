@@ -18,75 +18,47 @@
 
 #include "qgis_core.h"
 #include <QMetaType>
-#include <QStringList>
-#include <QVariant>
 #include <QList>
-#include <QDomDocument>
 #include <QCoreApplication>
 #include <QSet>
-#include <functional>
 
-#include "qgis.h"
-#include "qgsunittypes.h"
 #include "qgspointcloudexpressionnode.h"
-#include "qgspointcloudattribute.h"
+#include "qgspointcloudblock.h"
 
 class QgsPointCloudExpressionPrivate;
 
 /**
  * \ingroup core
- * \brief Class for parsing and evaluation of expressions (formerly called "search strings").
- * The expressions try to follow both syntax and semantics of SQL expressions.
+ * \brief Class for parsing and evaluation of expressions for pointcloud filtering.
  *
  * Usage:
  * \code{.py}
- *   exp = QgsPointCloudExpression("gid*2 > 10 and type not in ('D','F')")
+ *   exp = QgsPointCloudExpression("Z > 10 and Classification in (1, 3, 5)")
+ *   block = QgsPointCloudBlock( ... )
  *   if exp.hasParserError():
  *       # show error message with parserErrorString() and exit
- *
- *   result = exp.evaluate(feature, fields)
+ *   exp.prepare( block )
+ *   result = exp.evaluate( pointNumber )
  *   if exp.hasEvalError():
  *       # show error message with evalErrorString()
  *   else:
  *       # examine the result
  * \endcode
  *
- * \section value_logic Three Value Logic
+ * \section evaluation Evaluation result
  *
- * Similarly to SQL, this class supports three-value logic: true/false/unknown.
- * Unknown value may be a result of operations with missing data (NULL). Please note
- * that NULL is different value than zero or an empty string. For example
- * 3 > NULL returns unknown.
- *
- * There is no special (three-value) 'boolean' type: true/false is represented as
- * 1/0 integer, unknown value is represented the same way as NULL values: NULL QVariant.
- *
- * \section performance Performance
- *
- * For better performance with many evaluations you may first call prepare(fields) function
- * to find out indices of columns and then repeatedly call evaluate(feature).
- *
- * \section type_conversion Type conversion
- *
- * Operators and functions that expect arguments to be of a particular
- * type automatically convert the arguments to that type, e.g. sin('2.1') will convert
- * the argument to a double, length(123) will first convert the number to a string.
- * Explicit conversion can be achieved with to_int, to_real, to_string functions.
- * If implicit or explicit conversion is invalid, the evaluation returns an error.
- * Comparison operators do numeric comparison in case both operators are numeric (int/double)
- * or they can be converted to numeric types.
+ * All expression evaluations return doubles
+ * 0.0 is considered as False, while any non-zero value is considered as True
+ * NaN is returned on evaluation error
  *
  * \section implicit_sharing Implicit sharing
  *
  * This class is implicitly shared, copying has a very low overhead.
  * It is normally preferable to call `QgsPointCloudExpression( otherExpression )` instead of
  * `QgsPointCloudExpression( otherExpression.expression() )`. A deep copy will only be made
- * when prepare() is called. For usage this means mainly, that you should
- * normally keep an unprepared master copy of a QgsPointCloudExpression and whenever using it
- * with a particular QgsFeatureIterator copy it just before and prepare it using the
- * same context as the iterator.
+ * when prepare() is called.
  *
- * Implicit sharing was added in 2.14
+ * \since QGIS 3.26
 */
 class CORE_EXPORT QgsPointCloudExpression
 {
