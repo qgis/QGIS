@@ -103,6 +103,12 @@ void TestQgsGeoreferencer::testGcpPoint()
   QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false )
            != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), true ) );
 
+
+  // transform destination point
+  QgsGcpPoint p2( QgsPointXY( 1, 2 ), QgsPointXY( 150, -30 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), false );
+  const QgsPointXY res = p2.transformedDestinationPoint( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext() );
+  QGSCOMPARENEAR( res.x(), 16697923, 10000 );
+  QGSCOMPARENEAR( res.y(), -3503549, 10000 );
 }
 
 void TestQgsGeoreferencer::testGeorefDataPoint()
@@ -131,6 +137,13 @@ void TestQgsGeoreferencer::testGeorefDataPoint()
                                     QgsPointXY( 33, 44 ),
                                     QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ),
                                     true ) );
+
+
+  // transform destination point
+  QgsGeorefDataPoint p2( &c1, &c2, QgsPointXY( 1, 2 ), QgsPointXY( 150, -30 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), false );
+  const QgsPointXY res = p2.transformedDestinationPoint( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext() );
+  QGSCOMPARENEAR( res.x(), 16697923, 10000 );
+  QGSCOMPARENEAR( res.y(), -3503549, 10000 );
 }
 
 void TestQgsGeoreferencer::testGcpList()
