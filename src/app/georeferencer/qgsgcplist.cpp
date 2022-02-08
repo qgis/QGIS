@@ -21,6 +21,7 @@
 
 #include "qgsgcplist.h"
 #include <QDir>
+#include <QTextStream>
 
 void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints, const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const
 {
@@ -82,8 +83,20 @@ bool QgsGCPList::saveGcps( const QString &filePath, const QgsCoordinateReference
   if ( pointFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream points( &pointFile );
-    points << QStringLiteral( "#CRS: %1" ).arg( targetCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) ) << endl;
-    points << "mapX,mapY,sourceX,sourceY,enable,dX,dY,residual" << endl;
+    points << QStringLiteral( "#CRS: %1" ).arg( targetCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    points << endl;
+#else
+    points << Qt::endl;
+#endif
+
+    points << "mapX,mapY,sourceX,sourceY,enable,dX,dY,residual";
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    points << endl;
+#else
+    points << Qt::endl;
+#endif
+
     for ( QgsGeorefDataPoint *pt : *this )
     {
       const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( targetCrs, context );
@@ -95,8 +108,12 @@ bool QgsGCPList::saveGcps( const QString &filePath, const QgsCoordinateReference
              .arg( pt->isEnabled() )
              .arg( qgsDoubleToString( pt->residual().x() ),
                    qgsDoubleToString( pt->residual().y() ),
-                   qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ) )
-             << endl;
+                   qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+      points << endl;
+#else
+      points << Qt::endl;
+#endif
     }
     return true;
   }
