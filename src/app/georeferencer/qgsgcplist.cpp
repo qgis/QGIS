@@ -21,7 +21,7 @@
 
 #include "qgsgcplist.h"
 
-void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints, const QgsCoordinateReferenceSystem &targetCrs ) const
+void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints, const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const
 {
   const int targetSize = countEnabledPoints();
   sourcePoints.clear();
@@ -37,7 +37,7 @@ void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<Qg
     sourcePoints.push_back( pt->sourcePoint() );
     if ( targetCrs.isValid() )
     {
-      destinationPoints.push_back( pt->transformedDestinationPoint( targetCrs, QgsProject::instance()->transformContext() ) );
+      destinationPoints.push_back( pt->transformedDestinationPoint( targetCrs, context ) );
     }
     else
     {
