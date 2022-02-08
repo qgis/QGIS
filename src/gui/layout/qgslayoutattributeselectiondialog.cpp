@@ -462,8 +462,7 @@ void QgsLayoutColumnSourceDelegate::setEditorData( QWidget *editor, const QModel
 void QgsLayoutColumnSourceDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QgsFieldExpressionWidget *fieldExpression = static_cast<QgsFieldExpressionWidget *>( editor );
-  const QString field = fieldExpression->currentField();
-
+  const QString field = fieldExpression->expression();
   model->setData( index, field, Qt::EditRole );
 }
 
