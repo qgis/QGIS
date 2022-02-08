@@ -259,7 +259,7 @@ void QgsQueryBuilder::test()
     {
       QMessageBox::information( this,
                                 tr( "Query Result" ),
-                                tr( "The where clause returned %1 row(s).", "returned test rows" ). arg( featureCount ) );
+                                tr( "The where clause returned %n row(s).", "returned test rows", featureCount ) );
     }
   }
   else if ( mLayer->dataProvider()->hasErrors() )

@@ -1083,7 +1083,7 @@ void QgsModelChildDependenciesWidget::showDialog()
 
 void QgsModelChildDependenciesWidget::updateSummaryText()
 {
-  mLineEdit->setText( tr( "%1 dependencies selected" ).arg( mValue.count() ) );
+  mLineEdit->setText( tr( "%n dependencies selected", nullptr, mValue.count() ) );
 }
 
 ///@endcond

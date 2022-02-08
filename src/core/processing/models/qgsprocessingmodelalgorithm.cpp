@@ -446,14 +446,14 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       childAlg.reset( nullptr );
       modelFeedback.setCurrentStep( executed.count() );
       if ( feedback && !skipGenericLogging )
-        feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
+        feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%n outputs).", nullptr, results.count() ).arg( childTime.elapsed() / 1000.0 ) );
     }
 
     if ( feedback && feedback->isCanceled() )
       break;
   }
   if ( feedback )
-    feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
+    feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %n algorithm(s) total in %1 s.", nullptr, executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
 
   mResults = finalResults;
   mResults.insert( QStringLiteral( "CHILD_RESULTS" ), childResults );

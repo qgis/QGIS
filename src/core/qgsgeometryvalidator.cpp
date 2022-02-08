@@ -384,7 +384,7 @@ void QgsGeometryValidator::run()
       }
       else if ( mErrorCount > 0 )
       {
-        emit validationFinished( QObject::tr( "Geometry has %1 errors." ).arg( mErrorCount ) );
+        emit validationFinished( QObject::tr( "Geometry has %n errors.", nullptr, mErrorCount ) );
       }
       else
       {

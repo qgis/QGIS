@@ -399,7 +399,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
     for ( QgsVectorLayer *chl : infoContextLayers )
     {
       childrenCount += infoContext.duplicatedFeatures( chl ).size();
-      childrenInfo += ( tr( "%1 feature(s) on layer \"%2\", " ).arg( infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+      childrenInfo += ( tr( "%n feature(s) on layer \"%1\", ", nullptr, infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
@@ -424,7 +424,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
         feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
         deletedCount += context.handledFeatures( contextLayer ).size();
       }
-      mEditorContext.mainMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
+      mEditorContext.mainMessageBar()->pushMessage( tr( "%n features deleted: %2", nullptr, deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
     }
 
     updateUi();

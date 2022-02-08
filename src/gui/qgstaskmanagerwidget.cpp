@@ -657,7 +657,7 @@ void QgsTaskManagerStatusBarWidget::countActiveTasksChanged( int count )
   if ( count > 1 )
   {
     mProgressBar->setMaximum( 0 );
-    setToolTip( tr( "%1 active tasks running" ).arg( count ) );
+    setToolTip( tr( "%n active task(s) running", nullptr, count ) );
   }
 }
 

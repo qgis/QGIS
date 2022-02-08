@@ -627,7 +627,7 @@ void QgsStyleManagerDialog::copyItemsToDefault()
     cursorOverride.reset();
     if ( count > 0 )
     {
-      mMessageBar->pushSuccess( tr( "Import Items" ), count > 1 ? tr( "Successfully imported %1 items." ).arg( count ) : tr( "Successfully imported item." ) );
+      mMessageBar->pushSuccess( tr( "Import Items" ), count > 1 ? tr( "Successfully imported %n item(s).", nullptr, count ) : tr( "Successfully imported item." ) );
     }
   }
 }

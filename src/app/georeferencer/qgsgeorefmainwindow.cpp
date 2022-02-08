@@ -1998,8 +1998,8 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
 
   if ( mPoints.count() < static_cast<int>( mGeorefTransform.minimumGcpCount() ) )
   {
-    mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %2 GCPs. Please define more." )
-                              .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) ).arg( mGeorefTransform.minimumGcpCount() )
+    mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %n GCPs. Please define more.", nullptr, mGeorefTransform.minimumGcpCount() )
+                              .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) )
                               , Qgis::MessageLevel::Critical );
     return false;
   }
@@ -2179,11 +2179,9 @@ bool QgsGeoreferencerMainWindow::equalGCPlists( const QgsGCPList &list1, const Q
 //  if (mGeorefTransform.minimumGcpCount() != 0)
 //  {
 //    if ((uint)mPoints.size() >= mGeorefTransform.minimumGcpCount())
-//      showMessageInLog(tr("Info"), tr("For georeferencing requared at least %1 GCP points")
-//                       .arg(mGeorefTransform.minimumGcpCount()));
+//      showMessageInLog(tr("Info"), tr("For georeferencing required at least %n GCP points", nullptr, mGeorefTransform.minimumGcpCount()));
 //    else
-//      showMessageInLog(tr("Critical"), tr("For georeferencing requared at least %1 GCP points")
-//                       .arg(mGeorefTransform.minimumGcpCount()));
+//      showMessageInLog(tr("Critical"), tr("For georeferencing required at least %n GCP points", nullptr, mGeorefTransform.minimumGcpCount()));
 //  }
 //}
 

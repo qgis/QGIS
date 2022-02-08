@@ -421,9 +421,9 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   }
   feedback->setProgress( 100 );
 
-  feedback->pushInfo( QObject::tr( "%1 features unchanged" ).arg( unchangedOriginalIds.size() ) );
-  feedback->pushInfo( QObject::tr( "%1 features added" ).arg( addedRevisedIds.size() ) );
-  feedback->pushInfo( QObject::tr( "%1 features deleted" ).arg( deleted ) );
+  feedback->pushInfo( QObject::tr( "%n features unchanged", nullptr, unchangedOriginalIds.size() ) );
+  feedback->pushInfo( QObject::tr( "%n features added", nullptr, addedRevisedIds.size() ) );
+  feedback->pushInfo( QObject::tr( "%n features deleted", nullptr, deleted ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "UNCHANGED" ), unchangedDestId );

@@ -246,7 +246,7 @@ void QgsProcessingDxfLayersWidget::showDialog()
 
 void QgsProcessingDxfLayersWidget::updateSummaryText()
 {
-  mLineEdit->setText( tr( "%1 vector layers selected" ).arg( mValue.count() ) );
+  mLineEdit->setText( tr( "%n vector layers selected", nullptr, mValue.count() ) );
 }
 
 

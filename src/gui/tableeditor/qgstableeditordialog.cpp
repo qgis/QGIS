@@ -270,10 +270,10 @@ void QgsTableEditorDialog::updateActionNamesFromSelection()
   }
   else
   {
-    mActionInsertRowsAbove->setText( tr( "%1 Rows Above" ).arg( rowCount ) );
-    mActionInsertRowsBelow->setText( tr( "%1 Rows Below" ).arg( rowCount ) );
-    mActionDeleteRows->setText( tr( "Delete %1 Rows" ).arg( rowCount ) );
-    mActionSelectRow->setText( tr( "Select %1 Rows" ).arg( rowCount ) );
+    mActionInsertRowsAbove->setText( tr( "%n Rows Above", nullptr, rowCount ) );
+    mActionInsertRowsBelow->setText( tr( "%n Rows Below", nullptr, rowCount ) );
+    mActionDeleteRows->setText( tr( "Delete %n Rows", nullptr, rowCount ) );
+    mActionSelectRow->setText( tr( "Select %n Rows", nullptr, rowCount ) );
   }
 
   mActionInsertColumnsBefore->setEnabled( columnCount > 0 );
@@ -296,10 +296,10 @@ void QgsTableEditorDialog::updateActionNamesFromSelection()
   }
   else
   {
-    mActionInsertColumnsBefore->setText( tr( "%1 Columns Before" ).arg( columnCount ) );
-    mActionInsertColumnsAfter->setText( tr( "%1 Columns After" ).arg( columnCount ) );
-    mActionDeleteColumns->setText( tr( "Delete %1 Columns" ).arg( columnCount ) );
-    mActionSelectColumn->setText( tr( "Select %1 Columns" ).arg( columnCount ) );
+    mActionInsertColumnsBefore->setText( tr( "%n Columns Before", nullptr, columnCount ) );
+    mActionInsertColumnsAfter->setText( tr( "%n Columns After", nullptr, columnCount ) );
+    mActionDeleteColumns->setText( tr( "Delete %n Columns", nullptr, columnCount ) );
+    mActionSelectColumn->setText( tr( "Select %n Columns", nullptr, columnCount ) );
   }
 }
 

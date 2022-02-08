@@ -570,7 +570,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     {
       // generic warning
       QMessageBox message( QMessageBox::Warning, sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
-                           sortedAllFilesWithSidecars.size() > 1 ? tr( "Permanently delete %1 files?" ).arg( sortedAllFilesWithSidecars.size() )
+                           sortedAllFilesWithSidecars.size() > 1 ? tr( "Permanently delete %n files?", nullptr, sortedAllFilesWithSidecars.size() )
                            : tr( "Permanently delete “%1”?" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
                            QMessageBox::Yes | QMessageBox::No );
       message.setDefaultButton( QMessageBox::No );
@@ -675,7 +675,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       if ( errors.size() == 1 )
         notify( QString(), tr( "Could not delete %1" ).arg( QFileInfo( errors.at( 0 ) ).fileName() ), context, Qgis::MessageLevel::Critical );
       else
-        notify( QString(), tr( "Could not delete %1 files" ).arg( errors.size() ), context, Qgis::MessageLevel::Critical );
+        notify( QString(), tr( "Could not delete %n files", nullptr, errors.size() ), context, Qgis::MessageLevel::Critical );
     }
   } );
   manageFileMenu->addAction( deleteAction );

@@ -441,7 +441,7 @@ void Qgs3DMapCanvasWidget::onTotalPendingJobsCountChanged()
   mProgressPendingJobs->setVisible( count );
   mLabelPendingJobs->setVisible( count );
   if ( count )
-    mLabelPendingJobs->setText( tr( "Loading %1 tiles" ).arg( count ) );
+    mLabelPendingJobs->setText( tr( "Loading %n tile(s)", nullptr, count ) );
 }
 
 void Qgs3DMapCanvasWidget::updateFpsCount( float fpsCount )
