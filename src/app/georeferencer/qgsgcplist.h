@@ -55,6 +55,33 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
      */
     QList< QgsGcpPoint > asPoints() const;
 
+    /**
+     * Saves the GCPs to a text file.
+     *
+     * \param filePath destination file path
+     * \param targetCrs target CRS for destination points
+     * \param context transform context
+     * \param error will be set to a descriptive error message if saving fails
+     *
+     * \returns TRUE on success
+     */
+    bool saveGcps( const QString &filePath,
+                   const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context,
+                   QString &error ) const;
+
+    /**
+     * Loads GCPs from a text file.
+     *
+     * \param filePath source file path
+     * \param defaultDestinationCrs default CRS to use for destination points if no destination CRS information is present in text file.
+     * \param error will be set to a descriptive error message if loading fails
+     *
+     * \returns TRUE on success
+     */
+    static QList< QgsGcpPoint > loadGcps( const QString &filePath,
+                                          const QgsCoordinateReferenceSystem &defaultDestinationCrs,
+                                          QString &error );
+
 };
 
 #endif
