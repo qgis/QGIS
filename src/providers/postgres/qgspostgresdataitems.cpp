@@ -584,7 +584,7 @@ int QgsPostgresDataItemProvider::capabilities() const
 QgsDataItem *QgsPostgresDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn )
-  return new QgsPGRootItem( parentItem, QStringLiteral( "PostGIS" ), QStringLiteral( "pg:" ) );
+  return new QgsPGRootItem( parentItem, QObject::tr( "PostgreSQL" ), QStringLiteral( "pg:" ) );
 }
 
 
