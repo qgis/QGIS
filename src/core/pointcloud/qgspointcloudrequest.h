@@ -50,7 +50,7 @@ class CORE_EXPORT QgsPointCloudRequest
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 
     /**
-     *  Return the filter expression for this request
+     *  Returns the filter expression for this request
      *
      *  \since QGIS 3.26
      */
