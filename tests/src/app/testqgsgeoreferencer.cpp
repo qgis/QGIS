@@ -25,6 +25,7 @@
 #include "qgsmapcanvas.h"
 #include "georeferencer/qgsgeoreftransform.h"
 #include "georeferencer/qgsgeorefdatapoint.h"
+#include "georeferencer/qgsgcplist.h"
 
 /**
  * \ingroup UnitTests
@@ -42,6 +43,8 @@ class TestQgsGeoreferencer : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void testGcpPoint();
+    void testGeorefDataPoint();
+    void testGcpList();
     void testTransformImageNoGeoference();
     void testTransformImageWithExistingGeoreference();
     void testRasterChangeCoords();
@@ -70,7 +73,7 @@ void TestQgsGeoreferencer::cleanupTestCase()
 
 void TestQgsGeoreferencer::testGcpPoint()
 {
-  QgsGcpPoint p( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( "EPSG:3111" ), false );
+  QgsGcpPoint p( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false );
 
   QCOMPARE( p.sourcePoint(), QgsPointXY( 1, 2 ) );
   p.setSourcePoint( QgsPointXY( 11, 22 ) );
@@ -87,6 +90,91 @@ void TestQgsGeoreferencer::testGcpPoint()
   QVERIFY( !p.isEnabled() );
   p.setEnabled( true );
   QVERIFY( p.isEnabled() );
+
+  // equality operator
+  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false )
+           == QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) );
+  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false )
+           != QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) );
+  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false )
+           != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) );
+  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false )
+           != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), false ) );
+  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false )
+           != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), true ) );
+
+}
+
+void TestQgsGeoreferencer::testGeorefDataPoint()
+{
+  QgsMapCanvas c1;
+  QgsMapCanvas c2;
+  QgsGeorefDataPoint p( &c1, &c2,
+                        QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ),
+                        false );
+
+  QCOMPARE( p.sourcePoint(), QgsPointXY( 1, 2 ) );
+  p.setSourcePoint( QgsPointXY( 11, 22 ) );
+  QCOMPARE( p.sourcePoint(), QgsPointXY( 11, 22 ) );
+
+  QCOMPARE( p.destinationPoint(), QgsPointXY( 3, 4 ) );
+  p.setDestinationPoint( QgsPointXY( 33, 44 ) );
+  QCOMPARE( p.destinationPoint(), QgsPointXY( 33, 44 ) );
+
+  QCOMPARE( p.destinationPointCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+
+  QVERIFY( !p.isEnabled() );
+  p.setEnabled( true );
+  QVERIFY( p.isEnabled() );
+
+  QCOMPARE( p.point(), QgsGcpPoint( QgsPointXY( 11, 22 ),
+                                    QgsPointXY( 33, 44 ),
+                                    QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ),
+                                    true ) );
+}
+
+void TestQgsGeoreferencer::testGcpList()
+{
+  QgsGCPList list;
+  QCOMPARE( list.countEnabledPoints(), 0 );
+  QVERIFY( list.asPoints().isEmpty() );
+
+  QgsMapCanvas c1;
+  QgsMapCanvas c2;
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ),
+                                       false ) );
+  QCOMPARE( list.countEnabledPoints(), 0 );
+  QCOMPARE( list.asPoints(),
+  {
+    QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false )
+  }
+          );
+
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ),
+                                       true ) );
+  QCOMPARE( list.countEnabledPoints(), 1 );
+  QCOMPARE( list.asPoints(),
+            QList< QgsGcpPoint >(
+  {
+    QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ),
+    QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), true )
+  } ) );
+
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 111, 222 ), QgsPointXY( 333, 444 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ),
+                                       true ) );
+  QCOMPARE( list.countEnabledPoints(), 2 );
+  QCOMPARE( list.asPoints(),
+            QList< QgsGcpPoint >(
+  {
+    QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ),
+    QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), true ),
+    QgsGcpPoint( QgsPointXY( 111, 222 ), QgsPointXY( 333, 444 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), true )
+  } ) );
+
+  qDeleteAll( list );
 }
 
 void TestQgsGeoreferencer::testTransformImageNoGeoference()

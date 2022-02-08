@@ -18,21 +18,24 @@
 
 #include <QList>
 #include <QVector>
+#include "qgis_app.h"
 
 class QgsGeorefDataPoint;
+class QgsGcpPoint;
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;
 
 /**
  * A container for GCP data points.
  *
- * The container does NOT own the points!
+ * The container does NOT own the points -- they have to be manually deleted elsewhere!!
  */
-class QgsGCPList : public QList<QgsGeorefDataPoint *>
+class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint *>
 {
   public:
     QgsGCPList() = default;
-    QgsGCPList( const QgsGCPList &list );
+    QgsGCPList( const QgsGCPList &list ) = delete;
+    QgsGCPList &operator =( const QgsGCPList &list ) = delete;
 
     void createGCPVectors( QVector<QgsPointXY> &sourceCoordinates, QVector<QgsPointXY> &destinationCoordinates, const QgsCoordinateReferenceSystem &targetCrs );
 
@@ -41,7 +44,11 @@ class QgsGCPList : public QList<QgsGeorefDataPoint *>
      */
     int countEnabledPoints() const;
 
-    QgsGCPList &operator =( const QgsGCPList &list );
+    /**
+     * Returns the container as a list of GCP points.
+     */
+    QList< QgsGcpPoint > asPoints() const;
+
 };
 
 #endif
