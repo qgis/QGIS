@@ -44,11 +44,11 @@ class QgsGCPListWidget : public QTableView
 
   public slots:
     // This slot is called by the list view if an item is double-clicked
-    void itemDoubleClicked( QModelIndex index );
+    void itemDoubleClicked( const QModelIndex &index );
     void itemClicked( QModelIndex index );
 
   signals:
-    void jumpToGCP( uint theGCPIndex );
+    void jumpToGCP( const QgsPointXY &point );
     void pointEnabled( QgsGeorefDataPoint *pnt, int i );
     void deleteDataPoint( int index );
 
