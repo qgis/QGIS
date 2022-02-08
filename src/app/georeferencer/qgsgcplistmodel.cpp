@@ -19,6 +19,7 @@
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <cmath>
 
@@ -85,8 +86,8 @@ void QgsGCPListModel::updateModel()
   QVector<QgsPointXY> sourceCoordinates;
   QVector<QgsPointXY> destinationCoordinates;
 
-  mGCPList->createGCPVectors( sourceCoordinates, destinationCoordinates,
-                              QgsCoordinateReferenceSystem( s.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString() ) );
+  const QgsCoordinateReferenceSystem targetCrs( s.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString() );
+  mGCPList->createGCPVectors( sourceCoordinates, destinationCoordinates, targetCrs );
 
   if ( mGeorefTransform )
   {
@@ -138,8 +139,9 @@ void QgsGCPListModel::updateModel()
     setItem( i, j++, new QgsStandardItem( i ) );
     setItem( i, j++, new QgsStandardItem( p->sourcePoint().x() ) );
     setItem( i, j++, new QgsStandardItem( p->sourcePoint().y() ) );
-    setItem( i, j++, new QgsStandardItem( p->transCoords().x() ) );
-    setItem( i, j++, new QgsStandardItem( p->transCoords().y() ) );
+    const QgsPointXY transformedDestinationPoint = p->transformedDestinationPoint( targetCrs, QgsProject::instance()->transformContext() );
+    setItem( i, j++, new QgsStandardItem( transformedDestinationPoint.x() ) );
+    setItem( i, j++, new QgsStandardItem( transformedDestinationPoint.y() ) );
 
     double residual;
     double dX = 0;
@@ -155,7 +157,7 @@ void QgsGCPListModel::updateModel()
         // This is the transform direction used by the warp operation.
         // As transforms of order >=2 are not invertible, we are only
         // interested in the residual in this direction
-        if ( mGeorefTransform->transformWorldToRaster( p->transCoords(), dst ) )
+        if ( mGeorefTransform->transformWorldToRaster( transformedDestinationPoint, dst ) )
         {
           dX = ( dst.x() - pixel.x() );
           dY = -( dst.y() - pixel.y() );
@@ -165,8 +167,8 @@ void QgsGCPListModel::updateModel()
       {
         if ( mGeorefTransform->transformRasterToWorld( pixel, dst ) )
         {
-          dX = ( dst.x() - p->transCoords().x() );
-          dY = ( dst.y() - p->transCoords().y() );
+          dX = ( dst.x() - transformedDestinationPoint.x() );
+          dY = ( dst.y() - transformedDestinationPoint.y() );
         }
       }
     }
