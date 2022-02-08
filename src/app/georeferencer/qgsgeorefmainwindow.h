@@ -45,6 +45,7 @@ class QgsGeorefToolDeletePoint;
 class QgsGeorefToolMovePoint;
 class QgsGeorefToolMovePoint;
 class QgsGCPCanvasItem;
+class QgsGcpPoint;
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -193,7 +194,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
     QString guessWorldFileName( const QString &rasterFileName );
     bool checkFileExisting( const QString &fileName, const QString &title, const QString &question );
-    bool equalGCPlists( const QgsGCPList &list1, const QgsGCPList &list2 );
+    bool equalGCPlists( const QList<QgsGcpPoint> &list1, const QgsGCPList &list2 );
     void logTransformOptions();
     void logRequaredGCPs();
     void clearGCPData();
@@ -245,7 +246,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QString mCompressionMethod;
 
     QgsGCPList mPoints;
-    QgsGCPList mInitialPoints;
+    QList< QgsGcpPoint > mSavedPoints;
+
     QgsMapCanvas *mCanvas = nullptr;
     std::unique_ptr< QgsRasterLayer > mLayer;
 

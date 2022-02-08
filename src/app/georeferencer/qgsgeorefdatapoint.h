@@ -100,6 +100,20 @@ class APP_EXPORT QgsGcpPoint
      */
     void setEnabled( bool enabled ) { mEnabled = enabled; }
 
+    // TODO c++20 - replace with = default
+    bool operator==( const QgsGcpPoint &other ) const
+    {
+      return mEnabled == other.mEnabled
+             && mSourcePoint == other.mSourcePoint
+             && mDestinationPoint == other.mDestinationPoint
+             && mDestinationCrs == other.mDestinationCrs;
+    }
+
+    bool operator!=( const QgsGcpPoint &other ) const
+    {
+      return !( *this == other );
+    }
+
   private:
 
     QgsPointXY mSourcePoint;
@@ -113,7 +127,7 @@ class APP_EXPORT QgsGcpPoint
 /**
  * Container for a GCP point and the graphical objects which represent it on the map canvas.
  */
-class QgsGeorefDataPoint : public QObject
+class APP_EXPORT QgsGeorefDataPoint : public QObject
 {
     Q_OBJECT
 
@@ -200,6 +214,8 @@ class QgsGeorefDataPoint : public QObject
      * \see setDestinationCrs()
      */
     QgsCoordinateReferenceSystem destinationPointCrs() const { return mGcpPoint.destinationPointCrs(); }
+
+    QgsGcpPoint point() const { return mGcpPoint; }
 
   public slots:
     void moveTo( QPoint canvasPixels, bool isMapPlugin );
