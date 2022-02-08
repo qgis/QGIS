@@ -392,6 +392,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
               mOgrGeometryTypeFilter,
               mOpenOptions );
 
+  // to be called only after mFilePath has been set
+  invalidateNetworkCache();
+
   if ( uri.contains( QLatin1String( "authcfg" ) ) )
   {
     QRegularExpression authcfgRe( QStringLiteral( " authcfg='([^']+)'" ) );
@@ -3684,8 +3687,21 @@ void QgsOgrProvider::close()
   invalidateCachedExtent( false );
 }
 
+void QgsOgrProvider::invalidateNetworkCache()
+{
+  if ( mFilePath.startsWith( QLatin1String( "/vsicurl/" ) )  ||
+       mFilePath.startsWith( QLatin1String( "/vsis3/" ) ) ||
+       mFilePath.startsWith( QLatin1String( "/vsigs/" ) ) ||
+       mFilePath.startsWith( QLatin1String( "/vsiaz/" ) ) )
+  {
+    QgsDebugMsgLevel( QString( "Invalidating cache for %1" ).arg( mFilePath ), 3 );
+    VSICurlPartialClearCache( mFilePath.toUtf8().constData() );
+  }
+}
+
 void QgsOgrProvider::reloadProviderData()
 {
+  invalidateNetworkCache();
   mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
   bool wasValid = mValid;
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
