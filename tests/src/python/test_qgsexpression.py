@@ -72,7 +72,8 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
 
     @qgsfunction(group='testing', register=False)
     def raise_exception(feature, parent):
-        foo  # an undefined variable
+        # an undefined variable
+        foo  # noqa: F821
 
     def tearDown(self):
         QgsExpression.unregisterFunction('testfun')
