@@ -19,12 +19,14 @@
 #include <QList>
 #include <QVector>
 #include "qgis_app.h"
+#include "qgsunittypes.h"
 
 class QgsGeorefDataPoint;
 class QgsGcpPoint;
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;
 class QgsCoordinateTransformContext;
+class QgsGeorefTransform;
 
 /**
  * A container for GCP data points.
@@ -49,6 +51,18 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
      * Returns the count of currently enabled data points.
      */
     int countEnabledPoints() const;
+
+    /**
+     * Updates the stored residual sizes for points in the list.
+     *
+     * \param georefTransform transformation to use for residual calculation
+     * \param targetCrs georeference output CRS
+     * \param context transform context
+     * \param residualUnit units for residual calculation. Supported values are QgsUnitTypes::RenderPixels or QgsUnitTypes::RenderMapUnits
+     */
+    void updateResiduals( QgsGeorefTransform *georefTransform,
+                          const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context,
+                          QgsUnitTypes::RenderUnit residualUnit );
 
     /**
      * Returns the container as a list of GCP points.
