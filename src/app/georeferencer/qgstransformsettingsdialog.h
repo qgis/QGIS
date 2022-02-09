@@ -52,7 +52,6 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
   private slots:
     void cmbTransformType_currentIndexChanged( const QString &text );
     void mWorldFileCheckBox_stateChanged( int state );
-    QIcon getThemeIcon( const QString &name );
     void showHelp();
 
   private:
