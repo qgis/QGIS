@@ -139,7 +139,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     enum SaveGCPs
     {
       GCPSAVE,
-      GCPSILENTSAVE,
       GCPDISCARD,
       GCPCANCEL
     };
