@@ -140,12 +140,15 @@ bool QgsGCPList::saveGcps( const QString &filePath, const QgsCoordinateReference
   if ( pointFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream points( &pointFile );
-    points << QStringLiteral( "#CRS: %1" ).arg( targetCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+    if ( targetCrs.isValid() )
+    {
+      points << QStringLiteral( "#CRS: %1" ).arg( targetCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    points << endl;
+      points << endl;
 #else
-    points << Qt::endl;
+      points << Qt::endl;
 #endif
+    }
 
     points << "mapX,mapY,sourceX,sourceY,enable,dX,dY,residual";
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
@@ -199,7 +202,15 @@ QList<QgsGcpPoint> QgsGCPList::loadGcps( const QString &filePath, const QgsCoord
   int i = 0;
   if ( line.contains( QLatin1String( "#CRS: " ) ) )
   {
-    actualDestinationCrs = QgsCoordinateReferenceSystem( line.remove( QStringLiteral( "#CRS: " ) ) );
+    const QString crsDef = line.remove( QStringLiteral( "#CRS: " ) );
+    if ( !crsDef.trimmed().isEmpty() )
+    {
+      actualDestinationCrs = QgsCoordinateReferenceSystem( crsDef );
+    }
+    else
+    {
+      actualDestinationCrs = defaultDestinationCrs;
+    }
     line = points.readLine();
     lineNumber++;
   }
