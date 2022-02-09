@@ -108,7 +108,6 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 
 %start root
 
-
 //
 // token definitions
 //
@@ -134,6 +133,8 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 
 %token Unknown_CHARACTER
 
+%token BETWEEN
+
 //
 // definition of non-terminal types
 //
@@ -143,6 +144,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 %type <whenthen> when_then_clause
 %type <whenthenlist> when_then_clauses
 %type <namednode> named_node
+%type <between> between_clause
 
 // debugging
 %define parse.error verbose
@@ -366,6 +368,10 @@ when_then_clauses:
 
 when_then_clause:
       WHEN expression THEN expression     { $$ = new QgsExpressionNodeCondition::WhenThen($2,$4); }
+   ;
+
+between_clause:
+      expression AND expression     { $$ = new $$ = new QgsExpressionNode::NodeList(); $$->append($1); }
    ;
 
 %%
