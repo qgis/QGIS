@@ -277,33 +277,6 @@ QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QStrin
   return modifiedFileName;
 }
 
-// Note this code is duplicated from qgisapp.cpp because
-// I didn't want to make plugins on qgsapplication [TS]
-QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &name )
-{
-  if ( QFile::exists( QgsApplication::activeThemePath() + name ) )
-  {
-    return QIcon( QgsApplication::activeThemePath() + name );
-  }
-  else if ( QFile::exists( QgsApplication::defaultThemePath() + name ) )
-  {
-    return QIcon( QgsApplication::defaultThemePath() + name );
-  }
-  else
-  {
-    QgsSettings settings;
-    QString themePath = ":/icons/" + settings.value( QStringLiteral( "Themes" ) ).toString() + name;
-    if ( QFile::exists( themePath ) )
-    {
-      return QIcon( themePath );
-    }
-    else
-    {
-      return QIcon( ":/icons/default" + name );
-    }
-  }
-}
-
 void QgsTransformSettingsDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_raster/georeferencer.html#defining-the-transformation-settings" ) );
