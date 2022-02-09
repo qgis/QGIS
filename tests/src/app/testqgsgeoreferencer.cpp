@@ -250,16 +250,21 @@ void TestQgsGeoreferencer::testSaveLoadGcps()
 
 
   // load
+  QgsCoordinateReferenceSystem actualDestinationCrs;
   QList<QgsGcpPoint> res = QgsGCPList::loadGcps( QStringLiteral( "not real" ),
                            QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ),
+                           actualDestinationCrs,
                            error );
   QVERIFY( !error.isEmpty() );
 
   res = QgsGCPList::loadGcps( tempFilename,
                               QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ),
+                              actualDestinationCrs,
                               error );
   QVERIFY( error.isEmpty() );
   QCOMPARE( res.size(), 3 );
+  // should be loaded from txt
+  QCOMPARE( actualDestinationCrs.authid(), QStringLiteral( "EPSG:3857" ) );
 
   QCOMPARE( res.at( 0 ).sourcePoint().x(), 111 );
   QCOMPARE( res.at( 0 ).sourcePoint().y(), 222 );

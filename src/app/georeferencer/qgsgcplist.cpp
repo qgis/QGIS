@@ -124,7 +124,7 @@ bool QgsGCPList::saveGcps( const QString &filePath, const QgsCoordinateReference
   }
 }
 
-QList<QgsGcpPoint> QgsGCPList::loadGcps( const QString &filePath, const QgsCoordinateReferenceSystem &defaultDestinationCrs, QString &error )
+QList<QgsGcpPoint> QgsGCPList::loadGcps( const QString &filePath, const QgsCoordinateReferenceSystem &defaultDestinationCrs, QgsCoordinateReferenceSystem &actualDestinationCrs, QString &error )
 {
   error.clear();
   QFile pointFile( filePath );
@@ -140,15 +140,14 @@ QList<QgsGcpPoint> QgsGCPList::loadGcps( const QString &filePath, const QgsCoord
   lineNumber++;
 
   int i = 0;
-  QgsCoordinateReferenceSystem destinationCrs;
   if ( line.contains( QLatin1String( "#CRS: " ) ) )
   {
-    destinationCrs = QgsCoordinateReferenceSystem( line.remove( QStringLiteral( "#CRS: " ) ) );
+    actualDestinationCrs = QgsCoordinateReferenceSystem( line.remove( QStringLiteral( "#CRS: " ) ) );
     line = points.readLine();
     lineNumber++;
   }
   else
-    destinationCrs = defaultDestinationCrs;
+    actualDestinationCrs = defaultDestinationCrs;
 
   QList<QgsGcpPoint> res;
   while ( !points.atEnd() )
@@ -174,7 +173,7 @@ QList<QgsGcpPoint> QgsGCPList::loadGcps( const QString &filePath, const QgsCoord
     {
       enable = ls.at( 4 ).toInt();
     }
-    res.append( QgsGcpPoint( sourcePoint, destinationPoint, destinationCrs, enable ) );
+    res.append( QgsGcpPoint( sourcePoint, destinationPoint, actualDestinationCrs, enable ) );
 
     ++i;
   }
