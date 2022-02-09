@@ -2467,7 +2467,7 @@ static QVariant fcnExif( const QVariantList &values, const QgsExpressionContext 
   const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
   if ( parent->hasEvalError() )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `exif` requires a value which represents a possible file path" ) );
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "exif" ) ) );
     return QVariant();
   }
   QString tag = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
@@ -2479,7 +2479,7 @@ static QVariant fcnExifGeoTag( const QVariantList &values, const QgsExpressionCo
   const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
   if ( parent->hasEvalError() )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `exif_geotag` requires a value which represents a possible file path" ) );
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "exif_geotag" ) ) );
     return QVariant();
   }
   bool ok;
@@ -6528,7 +6528,7 @@ static QVariant fcnBaseFileName( const QVariantList &values, const QgsExpression
   const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
   if ( parent->hasEvalError() )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `base_file_name` requires a value which represents a possible file path" ) );
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "base_file_name" ) ) );
     return QVariant();
   }
   return QFileInfo( file ).completeBaseName();
@@ -6539,7 +6539,7 @@ static QVariant fcnFileSuffix( const QVariantList &values, const QgsExpressionCo
   const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
   if ( parent->hasEvalError() )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `file_suffix` requires a value which represents a possible file path" ) );
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "file_suffix" ) ) );
     return QVariant();
   }
   return QFileInfo( file ).completeSuffix();
@@ -6550,9 +6550,10 @@ static QVariant fcnFileExists( const QVariantList &values, const QgsExpressionCo
   const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
   if ( parent->hasEvalError() )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `file_exists` requires a value which represents a possible file path" ) );
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "file_exists" ) ) );
     return QVariant();
-  }  return QFileInfo::exists( file );
+  }
+  return QFileInfo::exists( file );
 }
 
 static QVariant fcnFileName( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -6560,9 +6561,10 @@ static QVariant fcnFileName( const QVariantList &values, const QgsExpressionCont
   const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
   if ( parent->hasEvalError() )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `file_name` requires a value which represents a possible file path" ) );
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "file_name" ) ) );
     return QVariant();
-  }  return QFileInfo( file ).fileName();
+  }
+  return QFileInfo( file ).fileName();
 }
 
 static QVariant fcnPathIsFile( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -6570,7 +6572,7 @@ static QVariant fcnPathIsFile( const QVariantList &values, const QgsExpressionCo
   const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
   if ( parent->hasEvalError() )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `is_file` requires a value which represents a possible file path" ) );
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "is_file" ) ) );
     return QVariant();
   }
   return QFileInfo( file ).isFile();
@@ -6581,7 +6583,7 @@ static QVariant fcnPathIsDir( const QVariantList &values, const QgsExpressionCon
   const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
   if ( parent->hasEvalError() )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `is_directory` requires a value which represents a possible file path" ) );
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "is_directory" ) ) );
     return QVariant();
   }
   return QFileInfo( file ).isDir();
@@ -6592,7 +6594,7 @@ static QVariant fcnFilePath( const QVariantList &values, const QgsExpressionCont
   const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
   if ( parent->hasEvalError() )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `file_path` requires a value which represents a possible file path" ) );
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "file_path" ) ) );
     return QVariant();
   }
   return QDir::toNativeSeparators( QFileInfo( file ).path() );
@@ -6603,7 +6605,7 @@ static QVariant fcnFileSize( const QVariantList &values, const QgsExpressionCont
   const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
   if ( parent->hasEvalError() )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `file_size` requires a value which represents a possible file path" ) );
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "file_size" ) ) );
     return QVariant();
   }
   return QFileInfo( file ).size();
