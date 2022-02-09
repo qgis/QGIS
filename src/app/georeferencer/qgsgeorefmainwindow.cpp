@@ -1123,6 +1123,19 @@ void QgsGeoreferencerMainWindow::addRaster( const QString &file )
   options.skipCrsValidation = true;
   mLayer = std::make_unique< QgsRasterLayer >( file, QStringLiteral( "Raster" ), QStringLiteral( "gdal" ), options );
 
+  // guess a reasonable target CRS to use by default
+  if ( mLayer->crs().isValid() )
+  {
+    // if source raster already is already georeferenced, assume we'll be keeping the same CRS
+    mTargetCrs = mLayer->crs();
+  }
+  // otherwise use the previous target crs, unless that's never been set
+  else if ( !mTargetCrs.isValid() )
+  {
+    // in which case we'll use the current project CRS
+    mTargetCrs = QgsProject::instance()->crs();
+  }
+
   // add layer to map canvas
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer.get() );
 
@@ -1177,7 +1190,7 @@ bool QgsGeoreferencerMainWindow::loadGCPs( QString &error )
 {
   QgsCoordinateReferenceSystem actualDestinationCrs;
   const QList< QgsGcpPoint > points = QgsGCPList::loadGcps( mGCPpointsFileName,
-                                      QgsProject::instance()->crs(),
+                                      mTargetCrs,
                                       actualDestinationCrs,
                                       error );
   if ( !error.isEmpty() )
