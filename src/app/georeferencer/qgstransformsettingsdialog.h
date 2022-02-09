@@ -29,9 +29,19 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
   public:
     QgsTransformSettingsDialog( const QString &raster, const QString &output, QWidget *parent = nullptr );
 
+    /**
+     * Sets the selected target \a crs.
+     */
+    void setTargetCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Returns the selected target CRS.
+     */
+    QgsCoordinateReferenceSystem targetCrs() const;
+
     void getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
-                               QString &raster, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &saveGcpPoints, bool &zt, bool &loadInQgis,
+                               QString &raster, QString &pdfMapFile, QString &pdfReportFile, bool &saveGcpPoints, bool &zt, bool &loadInQgis,
                                double &resX, double &resY );
     static void resetSettings();
 
