@@ -69,13 +69,13 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
   private slots:
     void mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item );
     void mButtonBox_accepted();
-    void mCurrentLayerExtentButton_clicked();
     void mExpressionTextEdit_textChanged();
     //! Enables OK button if calculator expression is valid and output file path exists
     void setAcceptButtonState();
     //! Disables some options that are not required if using Virtual Provider
     void setOutputToVirtual();
     void showHelp();
+    void selectedLayerChanged( QgsMapLayer *layer );
 
     //calculator buttons
     void mPlusPushButton_clicked();

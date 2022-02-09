@@ -435,7 +435,7 @@ void QgsExtentWidget::setExtentToLayerExtent( const QString &layerId )
   QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
   if ( !layer )
     return;
-
+  emit selectedLayerChanged( layer );
   setOutputExtentFromLayer( layer );
 }
 

@@ -28,6 +28,7 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   connect( this, &QGroupBox::toggled, this, &QgsExtentGroupBox::groupBoxClicked );
   connect( mWidget, &QgsExtentWidget::extentChanged, this, &QgsExtentGroupBox::widgetExtentChanged );
   connect( mWidget, &QgsExtentWidget::validationChanged, this, &QgsExtentGroupBox::validationChanged );
+  connect( mWidget, &QgsExtentWidget::selectedLayerChanged, this, &QgsExtentGroupBox::selectedLayerChanged );
 
   connect( mWidget, &QgsExtentWidget::toggleDialogVisibility, this, [ = ]( bool visible )
   {

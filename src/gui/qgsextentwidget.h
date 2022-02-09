@@ -236,6 +236,11 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      */
     void toggleDialogVisibility( bool visible );
 
+    /**
+     * Emitted when the layer selected is changed
+     */
+    void selectedLayerChanged( QgsMapLayer *layer );
+
   protected:
 
     void dragEnterEvent( QDragEnterEvent *event ) override;

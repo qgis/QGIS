@@ -215,6 +215,12 @@ To unset a fixed aspect ratio, set the width and height to zero.
 Emitted when the widget's extent is changed.
 %End
 
+    void selectedLayerChanged( QgsMapLayer *layer );
+%Docstring
+Emitted when the layer selected is changed
+%End
+
+
 };
 
 /************************************************************************

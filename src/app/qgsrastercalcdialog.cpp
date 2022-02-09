@@ -79,6 +79,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog(
   connect( mOrButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOrButton_clicked );
   connect( mConditionalStatButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mConditionalStatButton_clicked );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterCalcDialog::showHelp );
+  connect( mExtentGroupBox, &QgsExtentGroupBox::selectedLayerChanged, this,  &QgsRasterCalcDialog::selectedLayerChanged );
 
   if ( rasterLayer && rasterLayer->dataProvider() && rasterLayer->providerType() == QLatin1String( "gdal" ) )
   {
@@ -292,31 +293,12 @@ void QgsRasterCalcDialog::showHelp()
   QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_analysis.html#raster-calculator" ) );
 }
 
-void QgsRasterCalcDialog::mCurrentLayerExtentButton_clicked()
+void QgsRasterCalcDialog::selectedLayerChanged( QgsMapLayer *layer )
 {
-  QListWidgetItem *currentLayerItem = mRasterBandsListWidget->currentItem();
-  if ( currentLayerItem )
-  {
-    QgsRasterLayer *rlayer = nullptr;
-    QList<QgsRasterCalculatorEntry>::const_iterator rasterIt = mAvailableRasterBands.constBegin();
-    for ( ; rasterIt != mAvailableRasterBands.constEnd(); ++rasterIt )
-    {
-      if ( rasterIt->ref == currentLayerItem->text() )
-      {
-        rlayer = rasterIt->raster;
-      }
-    }
-
-    if ( !rlayer )
-    {
-      return;
-    }
-
-    QgsRectangle layerExtent = rlayer->extent();
-    mNColumnsSpinBox->setValue( rlayer->width() );
-    mNRowsSpinBox->setValue( rlayer->height() );
-    mCrsSelector->setCrs( rlayer->crs() );
-  }
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  mNColumnsSpinBox->setValue( rlayer->width() );
+  mNRowsSpinBox->setValue( rlayer->height() );
+  mCrsSelector->setCrs( rlayer->crs() );
 }
 
 void QgsRasterCalcDialog::mExpressionTextEdit_textChanged()
