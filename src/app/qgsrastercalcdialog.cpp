@@ -30,21 +30,25 @@
 #include <QFileDialog>
 #include <QFontDatabase>
 
-QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsRasterCalcDialog::QgsRasterCalcDialog(
+  const QgsRectangle &currentExtent,
+  const QgsCoordinateReferenceSystem &currentCrs,
+  QgsRasterLayer *rasterLayer,
+  QWidget *parent,
+  Qt::WindowFlags f ): QDialog( parent, f ), mCurrentExtent( currentExtent ), mCurrentCrs( currentCrs )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  mXMaxSpinBox->setShowClearButton( false );
-  mXMinSpinBox->setShowClearButton( false );
-  mYMaxSpinBox->setShowClearButton( false );
-  mYMinSpinBox->setShowClearButton( false );
+//  mXMaxSpinBox->setShowClearButton( false );
+//  mXMinSpinBox->setShowClearButton( false );
+//  mYMaxSpinBox->setShowClearButton( false );
+//  mYMinSpinBox->setShowClearButton( false );
   mNColumnsSpinBox->setShowClearButton( false );
   mNRowsSpinBox->setShowClearButton( false );
 
   connect( mRasterBandsListWidget, &QListWidget::itemDoubleClicked, this, &QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRasterCalcDialog::mButtonBox_accepted );
-  connect( mCurrentLayerExtentButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mCurrentLayerExtentButton_clicked );
   connect( mExpressionTextEdit, &QTextEdit::textChanged, this, &QgsRasterCalcDialog::mExpressionTextEdit_textChanged );
   connect( mPlusPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mPlusPushButton_clicked );
   connect( mMinusPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mMinusPushButton_clicked );
@@ -78,12 +82,15 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
 
   if ( rasterLayer && rasterLayer->dataProvider() && rasterLayer->providerType() == QLatin1String( "gdal" ) )
   {
-    setExtentSize( rasterLayer->width(), rasterLayer->height(), rasterLayer->extent() );
+    setExtentSize( rasterLayer->width(), rasterLayer->height(), rasterLayer );
     mCrsSelector->setCrs( rasterLayer->crs() );
   }
   mCrsSelector->setShowAccuracyWarnings( true );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  mExtentGroupBox->setOutputCrs( outputCrs() );
+  mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
 
   //add supported output formats
   insertAvailableOutputFormats();
@@ -186,14 +193,11 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
 }
 
 
-void QgsRasterCalcDialog::setExtentSize( int width, int height, QgsRectangle bbox )
+void QgsRasterCalcDialog::setExtentSize( int width, int height, const QgsMapLayer *layer )
 {
   mNColumnsSpinBox->setValue( width );
   mNRowsSpinBox->setValue( height );
-  mXMinSpinBox->setValue( bbox.xMinimum() );
-  mXMaxSpinBox->setValue( bbox.xMaximum() );
-  mYMinSpinBox->setValue( bbox.yMinimum() );
-  mYMaxSpinBox->setValue( bbox.yMaximum() );
+  mExtentGroupBox->setOutputExtentFromLayer( layer );
   mExtentSizeSet = true;
 }
 
@@ -207,7 +211,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
     QgsRasterLayer *rlayer = entry.raster;
     if ( !mExtentSizeSet ) //set bounding box / resolution of output to the values of the first possible input layer
     {
-      setExtentSize( rlayer->width(), rlayer->height(), rlayer->extent() );
+      setExtentSize( rlayer->width(), rlayer->height(), rlayer );
       mCrsSelector->setCrs( rlayer->crs() );
     }
     QListWidgetItem *item = new QListWidgetItem( entry.ref, mRasterBandsListWidget );
@@ -260,7 +264,7 @@ void QgsRasterCalcDialog::insertAvailableOutputFormats()
 
 QgsRectangle QgsRasterCalcDialog::outputRectangle() const
 {
-  return QgsRectangle( mXMinSpinBox->value(), mYMinSpinBox->value(), mXMaxSpinBox->value(), mYMaxSpinBox->value() );
+  return mExtentGroupBox->outputExtent();
 }
 
 int QgsRasterCalcDialog::numberOfColumns() const
@@ -309,10 +313,6 @@ void QgsRasterCalcDialog::mCurrentLayerExtentButton_clicked()
     }
 
     QgsRectangle layerExtent = rlayer->extent();
-    mXMinSpinBox->setValue( layerExtent.xMinimum() );
-    mXMaxSpinBox->setValue( layerExtent.xMaximum() );
-    mYMinSpinBox->setValue( layerExtent.yMinimum() );
-    mYMaxSpinBox->setValue( layerExtent.yMaximum() );
     mNColumnsSpinBox->setValue( rlayer->width() );
     mNRowsSpinBox->setValue( rlayer->height() );
     mCrsSelector->setCrs( rlayer->crs() );

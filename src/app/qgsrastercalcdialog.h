@@ -35,7 +35,12 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
      * \param parent widget
      * \param f window flags
      */
-    QgsRasterCalcDialog( QgsRasterLayer *rasterLayer = nullptr, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsRasterCalcDialog(
+      const QgsRectangle &currentExtent,
+      const QgsCoordinateReferenceSystem &currentCrs,
+      QgsRasterLayer *rasterLayer = nullptr,
+      QWidget *parent = nullptr,
+      Qt::WindowFlags f = Qt::WindowFlags() );
 
     QString formulaString() const;
     QString outputFile() const;
@@ -103,8 +108,11 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void mConditionalStatButton_clicked();
 
   private:
+    QgsRectangle mCurrentExtent;
+    QgsCoordinateReferenceSystem mCurrentCrs;
+
     //! Sets the extent and size of the output
-    void setExtentSize( int width, int height, QgsRectangle bbox );
+    void setExtentSize( int width, int height, const QgsMapLayer *layer );
 
     // Insert available GDAL drivers that support the create() option
     void insertAvailableOutputFormats();

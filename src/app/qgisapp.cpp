@@ -6757,7 +6757,11 @@ void QgisApp::newGpxLayer()
 
 void QgisApp::showRasterCalculator()
 {
-  QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), this );
+  QgsRasterCalcDialog d(
+    mMapCanvas->extent(),
+    mMapCanvas->mapSettings().destinationCrs(),
+    qobject_cast<QgsRasterLayer *>( activeLayer() ),
+    this );
   if ( d.exec() != QDialog::Accepted )
   {
     return;
