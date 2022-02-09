@@ -164,13 +164,6 @@ void QgsGeoreferencerMainWindow::closeEvent( QCloseEvent *e )
       mRasterFileName.clear();
       e->accept();
       return;
-    case QgsGeoreferencerMainWindow::GCPSILENTSAVE:
-      if ( !mGCPpointsFileName.isEmpty() )
-        saveGCPs();
-      clearGCPData();
-      removeOldLayer();
-      mRasterFileName.clear();
-      return;
     case QgsGeoreferencerMainWindow::GCPDISCARD:
       writeSettings();
       clearGCPData();
@@ -212,10 +205,6 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   {
     case QgsGeoreferencerMainWindow::GCPSAVE:
       saveGCPsDialog();
-      break;
-    case QgsGeoreferencerMainWindow::GCPSILENTSAVE:
-      if ( !mGCPpointsFileName.isEmpty() )
-        saveGCPs();
       break;
     case QgsGeoreferencerMainWindow::GCPDISCARD:
       break;
@@ -1274,13 +1263,8 @@ QgsGeoreferencerMainWindow::SaveGCPs QgsGeoreferencerMainWindow::checkNeedGCPSav
     {
       return QgsGeoreferencerMainWindow::GCPCANCEL;
     }
-    else if ( a == QMessageBox::Discard )
-    {
-      return QgsGeoreferencerMainWindow::GCPDISCARD;
-    }
   }
-
-  return QgsGeoreferencerMainWindow::GCPSILENTSAVE;
+  return QgsGeoreferencerMainWindow::GCPDISCARD;
 }
 
 // Georeference
