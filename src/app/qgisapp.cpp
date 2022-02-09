@@ -8489,6 +8489,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
       auto fixLayer = [this]( QgsMapLayer * layer, const QgsMimeDataUtils::Uri & uri )
       {
         bool layerWasValid( layer->isValid() );
+        const QString previousProvider = layer->providerType();
         // Store subset string from vlayer if we are fixing a bad layer
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         QString subsetString;
@@ -8507,7 +8508,26 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
           subsetString = vlayer->subsetString();
         }
 
-        layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
+        QString newProvider = uri.providerKey;
+        QString newUri = uri.uri;
+        // special case -- if layer was using delimitedtext provider, and a new CSV file is picked, we shouldn't change the
+        // provider to OGR
+        if ( previousProvider.compare( QLatin1String( "delimitedtext" ), Qt::CaseInsensitive ) == 0
+             && newProvider.compare( QLatin1String( "ogr" ), Qt::CaseInsensitive ) == 0 )
+        {
+          QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+          const QVariantMap newUriParts = QgsProviderRegistry::instance()->decodeUri( uri.providerKey, uri.uri );
+          const QString newPath = newUriParts.value( QStringLiteral( "path" ) ).toString();
+          if ( QFileInfo( newPath ).suffix().compare( QLatin1String( "csv" ), Qt::CaseInsensitive ) == 0 )
+          {
+            newProvider = QStringLiteral( "delimitedtext" );
+            // keep all the other delimited text settings, such as field names etc, just change the path
+            uriParts.insert( QStringLiteral( "path" ), newPath );
+            newUri = QgsProviderRegistry::instance()->encodeUri( newProvider, uriParts );
+          }
+        }
+
+        layer->setDataSource( newUri, layer->name(), newProvider, QgsDataProvider::ProviderOptions() );
         // Re-apply original style and subset string  when fixing bad layers
         if ( !( layerWasValid || layer->originalXmlProperties().isEmpty() ) )
         {
