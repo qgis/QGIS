@@ -49,6 +49,7 @@ class TestQgsGeoreferencer : public QObject
     void testTransformImageNoGeoference();
     void testTransformImageWithExistingGeoreference();
     void testRasterChangeCoords();
+    void testUpdateResiduals();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -481,6 +482,66 @@ void TestQgsGeoreferencer::testRasterChangeCoords()
   QCOMPARE( transform.toColumnLine( QgsPointXY( 100, 0 ) ).y(), 0.0 );
   QCOMPARE( transform.toColumnLine( QgsPointXY( 100, 200 ) ).x(), 100.0 );
   QCOMPARE( transform.toColumnLine( QgsPointXY( 100, 200 ) ).y(), 200.0 );
+}
+
+void TestQgsGeoreferencer::testUpdateResiduals()
+{
+  // test updating residuals
+  QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::Linear );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  QVERIFY( transform.hasExistingGeoreference() );
+
+  QgsGCPList list;
+  QgsMapCanvas c1;
+  QgsMapCanvas c2;
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 781662.375, 3350923.125 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                                       true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 787362.375, 3350923.125 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ),
+                                       true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( -35, 42 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                                       true ) );
+
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), QgsUnitTypes::RenderPixels );
+  QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
+  QGSCOMPARENEAR( list.at( 0 )->residual().y(), -189.189, 0.1 );
+  QGSCOMPARENEAR( list.at( 1 )->residual().x(), 105.7142, 0.1 );
+  QGSCOMPARENEAR( list.at( 1 )->residual().y(), 189.189, 0.1 );
+  QGSCOMPARENEAR( list.at( 2 )->residual().x(), -105.7142, 0.1 );
+  QGSCOMPARENEAR( list.at( 2 )->residual().y(), 0, 0.00001 );
+
+  // in map units
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), QgsUnitTypes::RenderMapUnits );
+  QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
+  QGSCOMPARENEAR( list.at( 0 )->residual().y(), -34.999, 0.1 );
+  QGSCOMPARENEAR( list.at( 1 )->residual().x(), -92.499, 0.1 );
+  QGSCOMPARENEAR( list.at( 1 )->residual().y(), 34.99999, 0.1 );
+  QGSCOMPARENEAR( list.at( 2 )->residual().x(), 92.4999972, 0.1 );
+  QGSCOMPARENEAR( list.at( 2 )->residual().y(), 0, 0.00001 );
+
+  // different target CRS
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext(), QgsUnitTypes::RenderPixels );
+  QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
+  QGSCOMPARENEAR( list.at( 0 )->residual().y(), -186.828, 0.1 );
+  QGSCOMPARENEAR( list.at( 1 )->residual().x(), 105.7142, 0.1 );
+  QGSCOMPARENEAR( list.at( 1 )->residual().y(), 186.828, 0.1 );
+  QGSCOMPARENEAR( list.at( 2 )->residual().x(), -105.7142, 0.1 );
+  QGSCOMPARENEAR( list.at( 2 )->residual().y(), 0, 0.00001 );
+
+  // projective transform -- except 0 residuals here
+  QgsGeorefTransform projective( QgsGcpTransformerInterface::TransformMethod::Projective );
+  projective.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  QVERIFY( projective.hasExistingGeoreference() );
+
+  list.updateResiduals( &projective, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext(), QgsUnitTypes::RenderPixels );
+  QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
+  QGSCOMPARENEAR( list.at( 0 )->residual().y(), 0, 0.00001 );
+  QGSCOMPARENEAR( list.at( 1 )->residual().x(), 0, 0.00001 );
+  QGSCOMPARENEAR( list.at( 1 )->residual().y(), 0, 0.00001 );
+  QGSCOMPARENEAR( list.at( 2 )->residual().x(), 0, 0.00001 );
+  QGSCOMPARENEAR( list.at( 2 )->residual().y(), 0, 0.00001 );
 }
 
 QGSTEST_MAIN( TestQgsGeoreferencer )
