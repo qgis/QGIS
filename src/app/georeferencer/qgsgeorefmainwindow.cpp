@@ -1213,11 +1213,15 @@ void QgsGeoreferencerMainWindow::writeSettings()
 // GCP points
 bool QgsGeoreferencerMainWindow::loadGCPs( QString &error )
 {
+  QgsCoordinateReferenceSystem actualDestinationCrs;
   const QList< QgsGcpPoint > points = QgsGCPList::loadGcps( mGCPpointsFileName,
                                       QgsProject::instance()->crs(),
+                                      actualDestinationCrs,
                                       error );
   if ( !error.isEmpty() )
     return false;
+
+  QgsSettings().setValue( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ), actualDestinationCrs.authid() );
 
   clearGCPData();
   for ( const QgsGcpPoint &point : points )
