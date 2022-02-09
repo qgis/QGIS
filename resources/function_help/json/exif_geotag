@@ -5,7 +5,7 @@
   "description": "Creates a point geometry from the exif geotags of an image file.",
   "arguments": [{
     "arg": "path",
-    "description": "An image file path or a map layer value. If a map layer layer value is specified then the file source of the layer will be used."
+    "description": "An image file path or a map layer value. If a map layer value is specified then the file source of the layer will be used."
   }],
   "examples": [{
     "expression": "geom_to_wkt(exif_geotag('/my/photo.jpg'))",

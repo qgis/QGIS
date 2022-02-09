@@ -5,7 +5,7 @@
   "description": "Returns the directory component of a file path. This does not include the file name.",
   "arguments": [{
     "arg": "path",
-    "description": "a file path or a map layer value. If a map layer layer value is specified then the file source of the layer will be used."
+    "description": "a file path or a map layer value. If a map layer value is specified then the file source of the layer will be used."
   }],
   "examples": [{
     "expression": "file_path('/home/qgis/data/country_boundaries.shp')",
