@@ -197,7 +197,7 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
     }
   }
 
-  if ( filter.back() == ';' )
+  if ( ! filter.isEmpty() && filter.back() == ';' )
   {
     filters.append( QString() );
   }
