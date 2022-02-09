@@ -17,18 +17,33 @@
 #define QGSGCP_LIST_TABLE_VIEW_H
 
 #include <QTreeView>
-#include <QStandardItemModel>
+#include <QAbstractTableModel>
+#include "qgsunittypes.h"
 
 class QgsGeorefDataPoint;
 class QgsGeorefTransform;
 class QgsGCPList;
 
-class QgsGCPListModel : public QStandardItemModel
+class QgsGCPListModel : public QAbstractTableModel
 {
     Q_OBJECT
 
   public:
-    enum Role
+    enum class Column : int
+    {
+      Enabled,
+      ID,
+      SourceX,
+      SourceY,
+      DestinationX,
+      DestinationY,
+      ResidualDx,
+      ResidualDy,
+      TotalResidual,
+      LastColumn
+    };
+
+    enum class Role : int
     {
       SourcePointRole = Qt::UserRole + 1,
     };
@@ -37,15 +52,17 @@ class QgsGCPListModel : public QStandardItemModel
 
     void setGCPList( QgsGCPList *theGCPList );
     void setGeorefTransform( QgsGeorefTransform *georefTransform );
+
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+
     void updateModel();
-
-  public slots:
-    void replaceDataPoint( QgsGeorefDataPoint *newDataPoint, int i );
-
-    void onGCPListModified();
-    void onTransformationModified();
-
   private:
+    QgsUnitTypes::RenderUnit residualUnit() const;
+
     QgsGCPList         *mGCPList = nullptr;
     QgsGeorefTransform *mGeorefTransform = nullptr;
 };
