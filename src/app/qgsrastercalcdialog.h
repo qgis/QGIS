@@ -111,8 +111,8 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     QgsRectangle mCurrentExtent;
     QgsCoordinateReferenceSystem mCurrentCrs;
 
-    //! Sets the extent and size of the output
-    void setExtentSize( int width, int height, const QgsMapLayer *layer );
+    //! Sets the extent and size of the output a layer
+    void setExtentSize( const QgsRasterLayer *layer );
 
     // Insert available GDAL drivers that support the create() option
     void insertAvailableOutputFormats();

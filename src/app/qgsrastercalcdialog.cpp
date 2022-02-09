@@ -40,10 +40,6 @@ QgsRasterCalcDialog::QgsRasterCalcDialog(
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-//  mXMaxSpinBox->setShowClearButton( false );
-//  mXMinSpinBox->setShowClearButton( false );
-//  mYMaxSpinBox->setShowClearButton( false );
-//  mYMinSpinBox->setShowClearButton( false );
   mNColumnsSpinBox->setShowClearButton( false );
   mNRowsSpinBox->setShowClearButton( false );
 
@@ -83,7 +79,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog(
 
   if ( rasterLayer && rasterLayer->dataProvider() && rasterLayer->providerType() == QLatin1String( "gdal" ) )
   {
-    setExtentSize( rasterLayer->width(), rasterLayer->height(), rasterLayer );
+    setExtentSize( rasterLayer );
     mCrsSelector->setCrs( rasterLayer->crs() );
   }
   mCrsSelector->setShowAccuracyWarnings( true );
@@ -194,10 +190,10 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
 }
 
 
-void QgsRasterCalcDialog::setExtentSize( int width, int height, const QgsMapLayer *layer )
+void QgsRasterCalcDialog::setExtentSize( const QgsRasterLayer *layer )
 {
-  mNColumnsSpinBox->setValue( width );
-  mNRowsSpinBox->setValue( height );
+  mNColumnsSpinBox->setValue( layer->width() );
+  mNRowsSpinBox->setValue( layer->height() );
   mExtentGroupBox->setOutputExtentFromLayer( layer );
   mExtentSizeSet = true;
 }
@@ -212,7 +208,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
     QgsRasterLayer *rlayer = entry.raster;
     if ( !mExtentSizeSet ) //set bounding box / resolution of output to the values of the first possible input layer
     {
-      setExtentSize( rlayer->width(), rlayer->height(), rlayer );
+      setExtentSize( rlayer );
       mCrsSelector->setCrs( rlayer->crs() );
     }
     QListWidgetItem *item = new QListWidgetItem( entry.ref, mRasterBandsListWidget );
@@ -296,8 +292,7 @@ void QgsRasterCalcDialog::showHelp()
 void QgsRasterCalcDialog::selectedLayerChanged( QgsMapLayer *layer )
 {
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-  mNColumnsSpinBox->setValue( rlayer->width() );
-  mNRowsSpinBox->setValue( rlayer->height() );
+  setExtentSize( rlayer );
   mCrsSelector->setCrs( rlayer->crs() );
 }
 
