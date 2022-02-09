@@ -21,12 +21,6 @@
 #include "qgsgeorefdelegates.h"
 #include <cmath>
 
-// ------------------------ QgsNonEditableDelegate ------------------------- //
-QgsNonEditableDelegate::QgsNonEditableDelegate( QWidget *parent )
-  : QStyledItemDelegate( parent )
-{
-}
-
 // ------------------------- QgsDmsAndDdDelegate --------------------------- //
 QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )
   : QStyledItemDelegate( parent )
@@ -63,8 +57,6 @@ void QgsDmsAndDdDelegate::setModelData( QWidget *editor, QAbstractItemModel *mod
     value = stringValue.toDouble();
 
   model->setData( index, value, Qt::EditRole );
-  model->setData( index, value, Qt::DisplayRole );
-  model->setData( index, value, Qt::ToolTipRole );
 }
 
 void QgsDmsAndDdDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
@@ -121,8 +113,6 @@ void QgsCoordDelegate::setModelData( QWidget *editor, QAbstractItemModel *model,
   const QString stringValue = lineEdit->text();
   const double value = stringValue.toDouble();
   model->setData( index, value, Qt::EditRole );
-  model->setData( index, value, Qt::DisplayRole );
-  model->setData( index, value, Qt::ToolTipRole );
 }
 
 void QgsCoordDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
