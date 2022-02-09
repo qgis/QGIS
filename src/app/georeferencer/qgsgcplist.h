@@ -74,12 +74,14 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
      *
      * \param filePath source file path
      * \param defaultDestinationCrs default CRS to use for destination points if no destination CRS information is present in text file.
+     * \param actualDestinationCrs will be set to actual destination CRS for points, which is either the CRS information from the text file OR the defaultDestinationCrs
      * \param error will be set to a descriptive error message if loading fails
      *
      * \returns TRUE on success
      */
     static QList< QgsGcpPoint > loadGcps( const QString &filePath,
                                           const QgsCoordinateReferenceSystem &defaultDestinationCrs,
+                                          QgsCoordinateReferenceSystem &actualDestinationCrs,
                                           QString &error );
 
 };
