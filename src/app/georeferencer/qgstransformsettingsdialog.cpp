@@ -89,16 +89,16 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   cmbTransformType->addItem( tr( "Projective" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::Projective ) );
 
   // Populate CompressionComboBox
-  mListCompression.append( QStringLiteral( "None" ) );
-  mListCompression.append( QStringLiteral( "LZW" ) );
-  mListCompression.append( QStringLiteral( "PACKBITS" ) );
-  mListCompression.append( QStringLiteral( "DEFLATE" ) );
-  QStringList listCompressionTr;
-  for ( const QString &item : std::as_const( mListCompression ) )
-  {
-    listCompressionTr.append( tr( item.toLatin1().data() ) );
-  }
-  cmbCompressionComboBox->addItems( listCompressionTr );
+  cmbCompressionComboBox->addItem( tr( "None" ), QStringLiteral( "None" ) );
+  cmbCompressionComboBox->addItem( tr( "LZW" ), QStringLiteral( "LZW" ) );
+  cmbCompressionComboBox->addItem( tr( "PACKBITS" ), QStringLiteral( "PACKBITS" ) );
+  cmbCompressionComboBox->addItem( tr( "DEFLATE" ), QStringLiteral( "DEFLATE" ) );
+
+  cmbResampling->addItem( tr( "Nearest Neighbour" ), QgsImageWarper::ResamplingMethod::NearestNeighbour );
+  cmbResampling->addItem( tr( "Linear" ), QgsImageWarper::ResamplingMethod::Bilinear );
+  cmbResampling->addItem( tr( "Cubic" ), QgsImageWarper::ResamplingMethod::Cubic );
+  cmbResampling->addItem( tr( "Cubic Spline" ), QgsImageWarper::ResamplingMethod::CubicSpline );
+  cmbResampling->addItem( tr( "Lanczos" ), QgsImageWarper::ResamplingMethod::Lanczos );
 
   cmbTransformType->setCurrentIndex( settings.value( QStringLiteral( "/Plugin-GeoReferencer/lasttransformation" ), -1 ).toInt() );
   cmbResampling->setCurrentIndex( settings.value( QStringLiteral( "/Plugin-GeoReferencer/lastresampling" ), 0 ).toInt() );
@@ -142,8 +142,8 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
   else
     tp = static_cast< QgsGcpTransformerInterface::TransformMethod >( cmbTransformType->currentData().toInt() );
 
-  rm = ( QgsImageWarper::ResamplingMethod )cmbResampling->currentIndex();
-  comprMethod = mListCompression.at( cmbCompressionComboBox->currentIndex() ).toUpper();
+  rm = static_cast< QgsImageWarper::ResamplingMethod >( cmbResampling->currentData().toInt() );
+  comprMethod = cmbCompressionComboBox->currentData().toString();
   if ( mWorldFileCheckBox->isChecked() )
   {
     raster.clear();
@@ -181,19 +181,6 @@ void QgsTransformSettingsDialog::resetSettings()
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resy" ), -1.0 );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/word_file_checkbox" ), false );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() );
-}
-
-void QgsTransformSettingsDialog::changeEvent( QEvent *e )
-{
-  QDialog::changeEvent( e );
-  switch ( e->type() )
-  {
-    case QEvent::LanguageChange:
-      retranslateUi( this );
-      break;
-    default:
-      break;
-  }
 }
 
 void QgsTransformSettingsDialog::accept()
@@ -236,9 +223,10 @@ void QgsTransformSettingsDialog::accept()
   QDialog::accept();
 }
 
-void QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged( const QString &text )
+void QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged( const QString & )
 {
-  if ( text == tr( "Linear" ) )
+  if ( cmbTransformType->currentIndex() != -1
+       && static_cast< QgsGcpTransformerInterface::TransformMethod >( cmbTransformType->currentData().toInt() ) == QgsGcpTransformerInterface::TransformMethod::Linear )
   {
     mWorldFileCheckBox->setEnabled( true );
   }

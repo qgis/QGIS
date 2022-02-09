@@ -46,7 +46,6 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     static void resetSettings();
 
   protected:
-    void changeEvent( QEvent *e ) override;
     void accept() override;
 
   private slots:
@@ -58,8 +57,6 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     QString generateModifiedRasterFileName( const QString &raster );
 
     QString mSourceRasterFile;
-
-    QStringList mListCompression;
 };
 
 #endif // QGSTRANSFORMSETTINGSDIALOG_H
