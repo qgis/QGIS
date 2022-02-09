@@ -104,10 +104,6 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   cmbResampling->setCurrentIndex( settings.value( QStringLiteral( "/Plugin-GeoReferencer/lastresampling" ), 0 ).toInt() );
   cmbCompressionComboBox->setCurrentIndex( settings.value( QStringLiteral( "/Plugin-GeoReferencer/lastcompression" ), 0 ).toInt() );
 
-  QString targetCRSString = settings.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString();
-  QgsCoordinateReferenceSystem targetCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( targetCRSString );
-  mCrsSelector->setCrs( targetCRS );
-
   mWorldFileCheckBox->setChecked( settings.value( QStringLiteral( "/Plugin-Georeferencer/word_file_checkbox" ), false ).toBool() );
 
   cbxUserResolution->setChecked( settings.value( QStringLiteral( "/Plugin-Georeferencer/user_specified_resolution" ), false ).toBool() );
@@ -126,10 +122,19 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsTransformSettingsDialog::showHelp );
 }
 
+void QgsTransformSettingsDialog::setTargetCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrsSelector->setCrs( crs );
+}
+
+QgsCoordinateReferenceSystem QgsTransformSettingsDialog::targetCrs() const
+{
+  return mCrsSelector->crs();
+}
+
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
     QgsImageWarper::ResamplingMethod &rm,
-    QString &comprMethod, QString &raster,
-    QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &saveGcpPoints, bool &zt, bool &loadInQgis,
+    QString &comprMethod, QString &raster, QString &pdfMapFile, QString &pdfReportFile, bool &saveGcpPoints, bool &zt, bool &loadInQgis,
     double &resX, double &resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
@@ -147,7 +152,6 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
   {
     raster = mOutputRaster->filePath();
   }
-  proj = mCrsSelector->crs();
   pdfMapFile = mPdfMap->filePath();
   pdfReportFile = mPdfReport->filePath();
   zt = cbxZeroAsTrans->isChecked();
