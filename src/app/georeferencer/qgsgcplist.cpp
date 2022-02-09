@@ -18,6 +18,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsproject.h"
+#include "qgsgeoreftransform.h"
 
 #include "qgsgcplist.h"
 #include <QDir>
@@ -62,6 +63,62 @@ int QgsGCPList::countEnabledPoints() const
     ++it;
   }
   return s;
+}
+
+void QgsGCPList::updateResiduals( QgsGeorefTransform *georefTransform, const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context, QgsUnitTypes::RenderUnit residualUnit )
+{
+  bool bTransformUpdated = false;
+  QVector<QgsPointXY> sourceCoordinates;
+  QVector<QgsPointXY> destinationCoordinates;
+  createGCPVectors( sourceCoordinates, destinationCoordinates, targetCrs, context );
+
+  if ( georefTransform )
+  {
+    bTransformUpdated = georefTransform->updateParametersFromGcps( sourceCoordinates, destinationCoordinates, true );
+  }
+
+  // update residuals
+  for ( int i = 0; i < size(); ++i )
+  {
+    QgsGeorefDataPoint *p = at( i );
+
+    if ( !p )
+      continue;
+
+    p->setId( i );
+
+    const QgsPointXY transformedDestinationPoint = p->transformedDestinationPoint( targetCrs, QgsProject::instance()->transformContext() );
+
+    double dX = 0;
+    double dY = 0;
+    // Calculate residual if transform is available and up-to-date
+    if ( georefTransform && bTransformUpdated && georefTransform->parametersInitialized() )
+    {
+      QgsPointXY dst;
+      const QgsPointXY pixel = georefTransform->toSourcePixel( p->sourcePoint() );
+      if ( residualUnit == QgsUnitTypes::RenderPixels )
+      {
+        // Transform from world to raster coordinate:
+        // This is the transform direction used by the warp operation.
+        // As transforms of order >=2 are not invertible, we are only
+        // interested in the residual in this direction
+        if ( georefTransform->transformWorldToRaster( transformedDestinationPoint, dst ) )
+        {
+          dX = ( dst.x() - pixel.x() );
+          dY = -( dst.y() - pixel.y() );
+        }
+      }
+      else if ( residualUnit == QgsUnitTypes::RenderMapUnits )
+      {
+        if ( georefTransform->transformRasterToWorld( pixel, dst ) )
+        {
+          dX = ( dst.x() - transformedDestinationPoint.x() );
+          dY = ( dst.y() - transformedDestinationPoint.y() );
+        }
+      }
+    }
+    p->setResidual( QPointF( dX, dY ) );
+  }
 }
 
 QList<QgsGcpPoint> QgsGCPList::asPoints() const
