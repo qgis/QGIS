@@ -99,21 +99,13 @@ QgsGeorefDataPoint::~QgsGeorefDataPoint()
 void QgsGeorefDataPoint::setSourcePoint( const QgsPointXY &p )
 {
   mGcpPoint.setSourcePoint( p );
-  mGCPSourceItem->update();
-  mGCPDestinationItem->update();
+  updateCoords();
 }
 
 void QgsGeorefDataPoint::setDestinationPoint( const QgsPointXY &p )
 {
   mGcpPoint.setDestinationPoint( p );
-  if ( mGCPSourceItem )
-  {
-    mGCPSourceItem->update();
-  }
-  if ( mGCPDestinationItem )
-  {
-    mGCPDestinationItem->update();
-  }
+  updateCoords();
 }
 
 QgsPointXY QgsGeorefDataPoint::transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const
