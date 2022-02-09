@@ -47,10 +47,10 @@ QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
   setAlternatingRowColors( true );
 
   // set delegates for items
-  setItemDelegateForColumn( 2, mCoordDelegate ); // srcX
-  setItemDelegateForColumn( 3, mCoordDelegate ); // srcY
-  setItemDelegateForColumn( 4, mDmsAndDdDelegate ); // dstX
-  setItemDelegateForColumn( 5, mDmsAndDdDelegate ); // dstY
+  setItemDelegateForColumn( static_cast< int >( QgsGCPListModel::Column::SourceX ), mCoordDelegate );
+  setItemDelegateForColumn( static_cast< int >( QgsGCPListModel::Column::SourceY ), mCoordDelegate );
+  setItemDelegateForColumn( static_cast< int >( QgsGCPListModel::Column::DestinationX ), mDmsAndDdDelegate );
+  setItemDelegateForColumn( static_cast< int >( QgsGCPListModel::Column::DestinationY ), mDmsAndDdDelegate );
 
   connect( this, &QAbstractItemView::doubleClicked,
            this, &QgsGCPListWidget::itemDoubleClicked );
