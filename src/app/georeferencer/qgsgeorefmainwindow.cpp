@@ -2179,9 +2179,9 @@ bool QgsGeoreferencerMainWindow::equalGCPlists( const QgsGCPList &list1, const Q
 //  if (mGeorefTransform.minimumGcpCount() != 0)
 //  {
 //    if ((uint)mPoints.size() >= mGeorefTransform.minimumGcpCount())
-//      showMessageInLog(tr("Info"), tr("For georeferencing required at least %n GCP points", nullptr, mGeorefTransform.minimumGcpCount()));
+//      showMessageInLog(tr("Info"), tr("For georeferencing required at least %n GCP point(s)", nullptr, mGeorefTransform.minimumGcpCount()));
 //    else
-//      showMessageInLog(tr("Critical"), tr("For georeferencing required at least %n GCP points", nullptr, mGeorefTransform.minimumGcpCount()));
+//      showMessageInLog(tr("Critical"), tr("For georeferencing required at least %n GCP point(s)", nullptr, mGeorefTransform.minimumGcpCount()));
 //  }
 //}
 

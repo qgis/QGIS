@@ -3354,7 +3354,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
       {
         if ( errorMessage )
         {
-          *errorMessage += QObject::tr( "Stopping after %n errors", nullptr, errors );
+          *errorMessage += QObject::tr( "Stopping after %n error(s)", nullptr, errors );
         }
 
         n = -1;

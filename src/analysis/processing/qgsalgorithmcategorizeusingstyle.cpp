@@ -234,7 +234,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
 
   if ( matched > 0 )
   {
-    feedback->pushInfo( QObject::tr( "Matched %n categorie(s) to symbols from file.", nullptr, matched ) );
+    feedback->pushInfo( QObject::tr( "Matched %n categories to symbols from file.", nullptr, matched ) );
   }
   else
   {

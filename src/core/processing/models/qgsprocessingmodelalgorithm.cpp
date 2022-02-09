@@ -446,7 +446,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       childAlg.reset( nullptr );
       modelFeedback.setCurrentStep( executed.count() );
       if ( feedback && !skipGenericLogging )
-        feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%n outputs).", nullptr, results.count() ).arg( childTime.elapsed() / 1000.0 ) );
+        feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%n output(s)).", nullptr, results.count() ).arg( childTime.elapsed() / 1000.0 ) );
     }
 
     if ( feedback && feedback->isCanceled() )

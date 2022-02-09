@@ -322,9 +322,9 @@ void QgsKMeansClusteringAlgorithm::calculateKMeans( std::vector<QgsKMeansCluster
   }
 
   if ( !converged && feedback )
-    feedback->reportError( QObject::tr( "Clustering did not converge after %n iterations", nullptr, i ) );
+    feedback->reportError( QObject::tr( "Clustering did not converge after %n iteration(s)", nullptr, i ) );
   else if ( feedback )
-    feedback->pushInfo( QObject::tr( "Clustering converged after %n iterations", nullptr, i ) );
+    feedback->pushInfo( QObject::tr( "Clustering converged after %n iteration(s)", nullptr, i ) );
 }
 
 // ported from https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/lwkmeans.c

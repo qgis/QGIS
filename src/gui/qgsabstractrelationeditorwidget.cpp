@@ -424,7 +424,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
         feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
         deletedCount += context.handledFeatures( contextLayer ).size();
       }
-      mEditorContext.mainMessageBar()->pushMessage( tr( "%n features deleted: %2", nullptr, deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
+      mEditorContext.mainMessageBar()->pushMessage( tr( "%n feature(s) deleted: %2", nullptr, deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
     }
 
     updateUi();
