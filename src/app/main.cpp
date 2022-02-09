@@ -695,7 +695,16 @@ int main( int argc, char *argv[] )
         }
         else if ( i + 1 < argc && ( arg == QLatin1String( "--project" ) || arg == QLatin1String( "-p" ) ) )
         {
-          sProjectFileName = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+          const QString projectUri { args[++i] };
+          const QFileInfo projectFileInfo { projectUri };
+          if ( projectFileInfo.isFile() )
+          {
+            sProjectFileName = QDir::toNativeSeparators( projectFileInfo.absoluteFilePath() );
+          }
+          else
+          {
+            sProjectFileName = projectUri;
+          }
         }
         else if ( i + 1 < argc && ( arg == QLatin1String( "--extent" ) || arg == QLatin1String( "-e" ) ) )
         {
