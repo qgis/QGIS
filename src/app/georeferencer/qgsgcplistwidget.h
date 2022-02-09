@@ -18,7 +18,6 @@
 #include <QTableView>
 
 class QgsDoubleSpinBoxDelegate;
-class QgsNonEditableDelegate;
 class QgsDmsAndDdDelegate;
 class QgsCoordDelegate;
 
@@ -27,6 +26,8 @@ class QgsGCPListModel;
 class QgsGeorefTransform;
 class QgsGeorefDataPoint;
 class QgsPointXY;
+class QgsCoordinateReferenceSystem;
+class QgsCoordinateTransformContext;
 
 class QgsGCPListWidget : public QTableView
 {
@@ -36,8 +37,19 @@ class QgsGCPListWidget : public QTableView
 
     void setGCPList( QgsGCPList *theGCPList );
     void setGeorefTransform( QgsGeorefTransform *georefTransform );
+
+    /**
+     * Sets the target (output) CRS for the georeferencing.
+     */
+    void setTargetCrs( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context );
+
     QgsGCPList *gcpList() { return mGCPList; }
-    void updateGCPList();
+
+    /**
+     * Recalculates the residual values.
+     */
+    void updateResiduals();
+
     void closeEditors();
 
     void keyPressEvent( QKeyEvent *e ) override;
@@ -53,10 +65,8 @@ class QgsGCPListWidget : public QTableView
     void deleteDataPoint( int index );
 
   private slots:
-    void updateItemCoords( QWidget *editor );
     void showContextMenu( QPoint );
     void removeRow();
-    void editCell();
     void jumpToSourcePoint( const QModelIndex &modelIndex );
 
   private:
@@ -67,7 +77,6 @@ class QgsGCPListWidget : public QTableView
     QgsGCPList               *mGCPList = nullptr;
     QgsGCPListModel          *mGCPListModel = nullptr;
 
-    QgsNonEditableDelegate   *mNonEditableDelegate = nullptr;
     QgsDmsAndDdDelegate      *mDmsAndDdDelegate = nullptr;
     QgsCoordDelegate         *mCoordDelegate = nullptr;
 

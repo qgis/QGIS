@@ -543,7 +543,7 @@ void QgsGeoreferencerMainWindow::deleteDataPoint( QPoint coords )
     {
       delete *it;
       mPoints.erase( it );
-      mGCPListWidget->updateGCPList();
+      mGCPListWidget->updateResiduals();
 
       mCanvas->refresh();
       break;
@@ -556,7 +556,8 @@ void QgsGeoreferencerMainWindow::deleteDataPoint( int theGCPIndex )
 {
   Q_ASSERT( theGCPIndex >= 0 );
   delete mPoints.takeAt( theGCPIndex );
-  mGCPListWidget->updateGCPList();
+  // TODO -- would be cleaner to move responsibility for this to the model!
+  mGCPListWidget->setGCPList( &mPoints );
   updateGeorefTransform();
 }
 
@@ -592,7 +593,7 @@ void QgsGeoreferencerMainWindow::movePoint( QPoint canvasPixels )
 void QgsGeoreferencerMainWindow::releasePoint( QPoint p )
 {
   Q_UNUSED( p )
-  mGCPListWidget->updateGCPList();
+  mGCPListWidget->updateResiduals();
   // Get Map Sender
   if ( sender() == mToolMovePoint )
   {
@@ -706,7 +707,9 @@ void QgsGeoreferencerMainWindow::showGeorefConfigDialog()
     //update gcp model
     if ( mGCPListWidget )
     {
-      mGCPListWidget->updateGCPList();
+      const QgsCoordinateReferenceSystem targetCrs( QgsSettings().value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString() );
+      mGCPListWidget->setTargetCrs( targetCrs, QgsProject::instance()->transformContext() );
+      mGCPListWidget->updateResiduals();
     }
     //and status bar
     updateTransformParamLabel();
@@ -1211,8 +1214,9 @@ bool QgsGeoreferencerMainWindow::loadGCPs( QString &error )
     return false;
 
   QgsSettings().setValue( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ), actualDestinationCrs.authid() );
-
   clearGCPData();
+  mGCPListWidget->setTargetCrs( actualDestinationCrs, QgsProject::instance()->transformContext() );
+
   for ( const QgsGcpPoint &point : points )
   {
     addPoint( point.sourcePoint(), point.destinationPoint(), point.destinationPointCrs(), point.isEnabled(), false );
@@ -2087,7 +2091,7 @@ void QgsGeoreferencerMainWindow::clearGCPData()
 
   qDeleteAll( mPoints );
   mPoints.clear();
-  mGCPListWidget->updateGCPList();
+  mGCPListWidget->setGCPList( &mPoints );
 
   delete mNewlyAddedPointItem;
   mNewlyAddedPointItem = nullptr;

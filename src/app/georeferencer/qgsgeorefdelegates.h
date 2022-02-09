@@ -17,23 +17,6 @@
 
 #include <QStyledItemDelegate>
 
-class QgsNonEditableDelegate : public QStyledItemDelegate
-{
-    Q_OBJECT
-
-  public:
-    explicit QgsNonEditableDelegate( QWidget *parent = nullptr );
-
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const override
-    {
-      Q_UNUSED( parent )
-      Q_UNUSED( option )
-      Q_UNUSED( index )
-      return nullptr;
-    }
-};
-
 class QgsDmsAndDdDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
