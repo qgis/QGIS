@@ -42,7 +42,6 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
 
   private slots:
     void datasetGroupEntry( const QModelIndex &index );
-    void mCurrentLayerExtentButton_clicked();
     void mAllTimesButton_clicked();
     void toggleExtendMask();
     void updateInfoMessage();
@@ -94,9 +93,6 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
 
     //! Combines geometries from selected vector layer to create mask filter geometry
     QgsGeometry maskGeometry( QgsVectorLayer *layer ) const;
-
-    //! Sets widget to match full layer extent
-    void useFullLayerExtent();
 
     //! Sets time combos from current layer
     void useAllTimesFromLayer();

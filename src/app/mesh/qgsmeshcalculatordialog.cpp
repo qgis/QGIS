@@ -95,7 +95,11 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
 
   mExpressionTextEdit->setCurrentFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
 
-  useFullLayerExtent();
+  if ( meshLayer )
+  {
+    mExtentGroupBox->setOriginalExtent( meshLayer->extent(), meshLayer->dataProvider()->crs() );
+    mExtentGroupBox->setOutputExtentFromOriginal();
+  }
   repopulateTimeCombos();
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
@@ -381,11 +385,6 @@ QString QgsMeshCalculatorDialog::datasetGroupName( const QModelIndex &index ) co
   return index.data( Qt::DisplayRole ).toString();
 }
 
-void QgsMeshCalculatorDialog::mCurrentLayerExtentButton_clicked()
-{
-  useFullLayerExtent();
-}
-
 void QgsMeshCalculatorDialog::mAllTimesButton_clicked()
 {
   useAllTimesFromLayer();
@@ -583,13 +582,6 @@ void QgsMeshCalculatorDialog::populateDriversComboBox( )
     whileBlocking( mOutputFormatComboBox )->addItem( meta.description(), meta.name() );
   }
   mOutputFormatComboBox->setCurrentIndex( 0 );
-}
-
-void QgsMeshCalculatorDialog::useFullLayerExtent()
-{
-  QgsMeshLayer *layer = meshLayer();
-  if ( layer )
-    mExtentGroupBox->setOutputExtentFromLayer( layer );
 }
 
 void QgsMeshCalculatorDialog::useAllTimesFromLayer()
