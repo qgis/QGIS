@@ -210,14 +210,15 @@ void QgsTransformSettingsDialog::accept()
 void QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged( const QString & )
 {
   if ( cmbTransformType->currentIndex() != -1
-       && static_cast< QgsGcpTransformerInterface::TransformMethod >( cmbTransformType->currentData().toInt() ) == QgsGcpTransformerInterface::TransformMethod::Linear )
+       && ( static_cast< QgsGcpTransformerInterface::TransformMethod >( cmbTransformType->currentData().toInt() ) == QgsGcpTransformerInterface::TransformMethod::Linear
+            || static_cast< QgsGcpTransformerInterface::TransformMethod >( cmbTransformType->currentData().toInt() ) == QgsGcpTransformerInterface::TransformMethod::Helmert ) )
   {
     mWorldFileCheckBox->setEnabled( true );
   }
   else
   {
+    // world file only option is only compatible with helmert/linear transforms
     mWorldFileCheckBox->setEnabled( false );
-    // reset world file checkbox when transformation differ from Linear
     mWorldFileCheckBox->setChecked( false );
   }
 }
