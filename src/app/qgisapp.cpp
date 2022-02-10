@@ -8842,8 +8842,8 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
     QMessageBox question( QMessageBox::Question,
-                          tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
-                          tr( "Delete %1 feature(s) on layer \"%2\", %3 as well\nand all of its other descendants.\nDelete these features?" ).arg( numberOfSelectedFeatures ).arg( vlayer->name(), childrenInfo ),
+                          tr( "Delete at least %n feature(s) on other layer(s)", nullptr, childrenCount ),
+                          tr( "Delete %n feature(s) on layer \"%1\", %2 as well and all of its other descendants.\nDelete these features?", nullptr, numberOfSelectedFeatures ).arg( vlayer->name(), childrenInfo ),
                           QMessageBox::Yes | QMessageBox::Cancel,
                           mMapCanvas );
     question.button( QMessageBox::Yes )->setText( tr( "Delete %n Feature(s)", nullptr, numberOfSelectedFeatures ) );
@@ -8861,7 +8861,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
     {
       QMessageBox confirmMessage( QMessageBox::Question,
                                   tr( "Delete %n feature(s) from layer \"%1\"", nullptr, numberOfSelectedFeatures ).arg( vlayer->name() ),
-                                  tr( "<b>%n</b> selected feature(s) is/are about to be deleted. Would you like to continue?", nullptr, numberOfSelectedFeatures ),
+                                  tr( "<b>%n</b> selected feature(s) are about to be deleted. Would you like to continue?", nullptr, numberOfSelectedFeatures ),
                                   QMessageBox::Yes | QMessageBox::Cancel,
                                   mMapCanvas );
       confirmMessage.button( QMessageBox::Yes )->setText( tr( "Delete %n Feature(s)", nullptr, numberOfSelectedFeatures ) );
