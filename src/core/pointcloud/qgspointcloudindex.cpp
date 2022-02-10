@@ -254,3 +254,14 @@ int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
   mHierarchyMutex.unlock();
   return count;
 }
+
+bool QgsPointCloudIndex::setSubsetString( const QString &subset )
+{
+  mSubsetString = subset;
+  return true;
+}
+
+QString QgsPointCloudIndex::subsetString() const
+{
+  return mSubsetString;
+}

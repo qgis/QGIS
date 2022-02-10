@@ -135,6 +135,9 @@ Ownership of ``renderer`` is transferred to the layer.
 .. seealso:: :py:func:`renderer`
 %End
 
+    bool setSubsetString( const QString &subset );
+    QString subsetString() const;
+
   private:
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 };

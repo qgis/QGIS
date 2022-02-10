@@ -279,6 +279,9 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      */
     int nodePointCount( const IndexedPointCloudNode &n );
 
+    QString subsetString() const;
+    bool setSubsetString( const QString &subset );
+
   protected: //TODO private
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
@@ -293,6 +296,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
     QgsPointCloudAttributeCollection mAttributes; //! All native attributes stored in the file
     int mSpan;  //!< Number of points in one direction in a single node
+    QString mSubsetString;
 };
 
 #endif // QGSPOINTCLOUDINDEX_H

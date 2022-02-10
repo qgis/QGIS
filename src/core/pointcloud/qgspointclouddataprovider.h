@@ -278,6 +278,11 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * If no matching precalculated statistic is available then an invalid variant will be returned.
      */
     virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+
+    QString subsetString() const override;
+    bool supportsSubsetString() const override { return true; }
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
+
 #else
 
     /**
@@ -346,6 +351,9 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
+
+    //! String used to define a subset of the layer
+    QString mSubsetString;
 };
 
 #endif // QGSMESHDATAPROVIDER_H

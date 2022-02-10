@@ -169,6 +169,9 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     void setRenderer( QgsPointCloudRenderer *renderer SIP_TRANSFER );
 
+    bool setSubsetString( const QString &subset );
+    QString subsetString() const;
+
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
