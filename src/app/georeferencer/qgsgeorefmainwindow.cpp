@@ -189,6 +189,7 @@ void QgsGeoreferencerMainWindow::reset()
   {
     mRasterFileName.clear();
     mModifiedRasterFileName.clear();
+    mCreateWorldFileOnly = false;
     setWindowTitle( tr( "Georeferencer" ) );
 
     //delete old points
@@ -237,6 +238,7 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
     mRasterFileName = fileName;
   }
   mModifiedRasterFileName.clear();
+  mCreateWorldFileOnly = false;
 
   QString errMsg;
   if ( !QgsRasterLayer::isValidRasterFileName( mRasterFileName, errMsg ) )
@@ -337,7 +339,7 @@ void QgsGeoreferencerMainWindow::doGeoreference()
     mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
     if ( mLoadInQgis )
     {
-      if ( mModifiedRasterFileName.isEmpty() )
+      if ( mCreateWorldFileOnly )
       {
         QgisApp::instance()->addRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).completeBaseName(), QString() );
       }
@@ -353,6 +355,7 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
 {
   QgsTransformSettingsDialog d( mRasterFileName, mModifiedRasterFileName );
   d.setTargetCrs( mTargetCrs );
+  d.setCreateWorldFileOnly( mCreateWorldFileOnly );
   if ( !d.exec() )
   {
     return false;
@@ -360,6 +363,7 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
 
   d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
                           mModifiedRasterFileName, mPdfOutputMapFile, mPdfOutputFile, mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
+  mCreateWorldFileOnly = d.createWorldFileOnly();
   mTargetCrs = d.targetCrs();
 
   mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformParam ) );
@@ -1254,8 +1258,8 @@ bool QgsGeoreferencerMainWindow::georeference()
   if ( !checkReadyGeoref() )
     return false;
 
-  if ( mModifiedRasterFileName.isEmpty() && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() ||
-       QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
+  if ( mCreateWorldFileOnly && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() ||
+                                 QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
   {
     QgsPointXY origin;
     double pixelXSize, pixelYSize, rotation;
@@ -1301,7 +1305,7 @@ bool QgsGeoreferencerMainWindow::georeference()
     }
     return true;
   }
-  else // Helmert, Polinom 1, Polinom 2, Polinom 3
+  else
   {
     QgsImageWarper warper( this );
     int res = warper.warpFile( mRasterFileName, mModifiedRasterFileName, mGeorefTransform,
@@ -1848,8 +1852,8 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
     return false;
   }
 
-  //MH: helmert transformation without warping disabled until qgis is able to read rotated rasters efficiently
-  if ( mModifiedRasterFileName.isEmpty() && QgsGcpTransformerInterface::TransformMethod::Linear != mTransformParam /*&& QgsGeorefTransform::Helmert != mTransformParam*/ )
+  if ( mCreateWorldFileOnly
+       && ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformParam && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformParam ) )
   {
     QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set output raster name." ) );
     getTransformSettings();
