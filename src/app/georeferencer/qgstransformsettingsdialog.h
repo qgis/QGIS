@@ -39,11 +39,20 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
      */
     QgsCoordinateReferenceSystem targetCrs() const;
 
+    /**
+     * Returns TRUE if the create world file only option is set.
+     */
+    bool createWorldFileOnly() const;
+
+    /**
+     * Sets whether the create world file only option should be set.
+     */
+    void setCreateWorldFileOnly( bool enabled );
+
     void getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
                                QString &raster, QString &pdfMapFile, QString &pdfReportFile, bool &saveGcpPoints, bool &zt, bool &loadInQgis,
                                double &resX, double &resY );
-    static void resetSettings();
 
   protected:
     void accept() override;

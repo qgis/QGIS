@@ -244,6 +244,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsImageWarper::ResamplingMethod mResamplingMethod;
     QgsGeorefTransform mGeorefTransform;
     QString mCompressionMethod;
+    bool mCreateWorldFileOnly = false;
 
     QgsGCPList mPoints;
     QList< QgsGcpPoint > mSavedPoints;
