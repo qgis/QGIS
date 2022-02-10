@@ -273,6 +273,46 @@ class CORE_EXPORT QgsExpressionNodeIndexOperator : public QgsExpressionNode
 
 };
 
+class CORE_EXPORT QgsExpressionNodeBetweenOperator: public QgsExpressionNode
+{
+  public:
+
+    QgsExpressionNodeBetweenOperator( QgsExpressionNode *node SIP_TRANSFER, QgsExpressionNode *nodeLowerBound SIP_TRANSFER, QgsExpressionNode *nodeHigherBound SIP_TRANSFER, bool negate )
+      : mNode( node )
+      , mLowerBound( nodeLowerBound )
+      , mHigherBound( nodeHigherBound )
+      , mNegate( negate )
+    {}
+
+    ~QgsExpressionNodeBetweenOperator() override;
+
+    /**
+     * Returns the expression node.
+     */
+    QgsExpressionNode *node() const { return mNode; }
+
+
+    QgsExpressionNode::NodeType nodeType() const override;
+    bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+    QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+    QString dump() const override;
+
+    QSet<QString> referencedColumns() const override;
+    QSet<QString> referencedVariables() const override;
+    QSet<QString> referencedFunctions() const override;
+    QList<const QgsExpressionNode *> nodes() const override; SIP_SKIP
+    bool needsGeometry() const override;
+    QgsExpressionNode *clone() const override SIP_FACTORY;
+    bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+  private:
+    QgsExpressionNode *mNode = nullptr;
+    QgsExpressionNode *mLowerBound = nullptr;
+    QgsExpressionNode *mHigherBound = nullptr;
+    bool mNegate = false;
+
+};
+
 /**
  * \brief An expression node for value IN or NOT IN clauses.
  * \ingroup core

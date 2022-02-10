@@ -81,6 +81,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
       ntColumnRef, //!< \see QgsExpression::Node::NodeColumnRef
       ntCondition, //!< \see QgsExpression::Node::NodeCondition
       ntIndexOperator, //!< Index operator
+      ntBetweenOperator,
     };
 
 

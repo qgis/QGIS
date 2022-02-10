@@ -2083,6 +2083,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "url_encode" ) << QStringLiteral( "url_encode(map())" ).arg( testDataDir ) << false << QVariant( "" );
       QTest::newRow( "url_encode" ) << QStringLiteral( "url_encode(map('a b', 'a b', 'c &% d', 'c &% d'))" ).arg( testDataDir ) << false << QVariant( "a%20b=a%20b&c%20%26%25%20d=c%20%26%25%20d" );
       QTest::newRow( "url_encode" ) << QStringLiteral( "url_encode(map('a&+b', 'a and plus b', 'a=b', 'a equals b'))" ).arg( testDataDir ) << false << QVariant( "a%26+b=a%20and%20plus%20b&a%3Db=a%20equals%20b" );
+
+      // Between
+      QTest::newRow( "between chars" ) << QStringLiteral( "'b' between 'a' AND 'c'" ) << false << QVariant( true );
+      QTest::newRow( "not between chars" ) << QStringLiteral( "'b' not between 'a' AND 'c'" ) << false << QVariant( false );
+      QTest::newRow( "between ints" ) << QStringLiteral( "1 between 0 AND 2" ) << false << QVariant( true );
+      QTest::newRow( "not between ints" ) << QStringLiteral( "1 not between 0 AND 2" ) << false << QVariant( false );
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )

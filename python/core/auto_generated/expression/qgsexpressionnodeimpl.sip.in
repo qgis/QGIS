@@ -250,6 +250,46 @@ Returns the index node, representing an array element index or map key.
 
 };
 
+class QgsExpressionNodeBetweenOperator: QgsExpressionNode
+{
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsExpressionNodeBetweenOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode *nodeLowerBound /Transfer/, QgsExpressionNode *nodeHigherBound /Transfer/, bool negate );
+
+    ~QgsExpressionNodeBetweenOperator();
+
+    QgsExpressionNode *node() const;
+%Docstring
+Returns the expression node.
+%End
+
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+};
+
 class QgsExpressionNodeInOperator : QgsExpressionNode
 {
 %Docstring(signature="appended")
