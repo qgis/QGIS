@@ -164,38 +164,48 @@ void QgsGeorefDataPoint::updateCoords()
   }
 }
 
-bool QgsGeorefDataPoint::contains( QPoint p, bool isMapPlugin )
+bool QgsGeorefDataPoint::contains( QPoint p, QgsGcpPoint::PointType type )
 {
-  if ( isMapPlugin )
+  switch ( type )
   {
-    const QPointF pnt = mGCPSourceItem->mapFromScene( p );
-    return mGCPSourceItem->shape().contains( pnt );
+    case QgsGcpPoint::PointType::Source:
+    {
+      const QPointF pnt = mGCPSourceItem->mapFromScene( p );
+      return mGCPSourceItem->shape().contains( pnt );
+    }
+
+    case QgsGcpPoint::PointType::Destination:
+    {
+      const QPointF pnt = mGCPDestinationItem->mapFromScene( p );
+      return mGCPDestinationItem->shape().contains( pnt );
+    }
   }
-  else
-  {
-    const QPointF pnt = mGCPDestinationItem->mapFromScene( p );
-    return mGCPDestinationItem->shape().contains( pnt );
-  }
+  BUILTIN_UNREACHABLE
 }
 
-void QgsGeorefDataPoint::moveTo( QPoint canvasPixels, bool isMapPlugin )
+void QgsGeorefDataPoint::moveTo( QPoint canvasPixels, QgsGcpPoint::PointType type )
 {
-  if ( isMapPlugin )
+  switch ( type )
   {
-    const QgsPointXY pnt = mGCPSourceItem->toMapCoordinates( canvasPixels );
-    mGcpPoint.setSourcePoint( pnt );
+    case QgsGcpPoint::PointType::Source:
+    {
+      const QgsPointXY pnt = mGCPSourceItem->toMapCoordinates( canvasPixels );
+      mGcpPoint.setSourcePoint( pnt );
+      break;
+    }
+    case QgsGcpPoint::PointType::Destination:
+    {
+      mGcpPoint.setDestinationPoint( mGCPDestinationItem->toMapCoordinates( canvasPixels ) );
+      if ( mSrcCanvas && mSrcCanvas->mapSettings().destinationCrs().isValid() )
+        mGcpPoint.setDestinationPointCrs( mSrcCanvas->mapSettings().destinationCrs() );
+      else
+        mGcpPoint.setDestinationPointCrs( mGCPDestinationItem->canvas()->mapSettings().destinationCrs() );
+
+      if ( !mGcpPoint.destinationPointCrs().isValid() )
+        mGcpPoint.setDestinationPointCrs( QgsProject::instance()->crs() );
+      break;
+    }
   }
-  else
-  {
-    mGcpPoint.setDestinationPoint( mGCPDestinationItem->toMapCoordinates( canvasPixels ) );
-    if ( mSrcCanvas && mSrcCanvas->mapSettings().destinationCrs().isValid() )
-      mGcpPoint.setDestinationPointCrs( mSrcCanvas->mapSettings().destinationCrs() );
-    else
-      mGcpPoint.setDestinationPointCrs( mGCPDestinationItem->canvas()->mapSettings().destinationCrs() );
-  }
-  if ( !mGcpPoint.destinationPointCrs().isValid() )
-    mGcpPoint.setDestinationPointCrs( QgsProject::instance()->crs() );
-  mGCPSourceItem->update();
-  mGCPDestinationItem->update();
+
   updateCoords();
 }
