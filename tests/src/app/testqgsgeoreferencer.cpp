@@ -53,6 +53,7 @@ class TestQgsGeoreferencer : public QObject
     void testRasterChangeCoords();
     void testUpdateResiduals();
     void testListModel();
+    void testListModelCrs();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -709,6 +710,80 @@ void TestQgsGeoreferencer::testListModel()
   QVERIFY( model.setData( model.index( 0, 0 ), Qt::Checked, Qt::CheckStateRole ) );
   QCOMPARE( model.data( model.index( 0, 0 ), Qt::CheckStateRole ), Qt::Checked );
   QVERIFY( list.at( 0 )->isEnabled() );
+}
+
+void TestQgsGeoreferencer::testListModelCrs()
+{
+  // test destination crs handling in list model
+  QgsGCPList list;
+  QgsMapCanvas c1;
+  QgsMapCanvas c2;
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 781662.375, 3350923.125 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                                       true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 787362.375, 3350923.125 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ),
+                                       true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2,
+                                       QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( 17697923, -3403549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ),
+                                       true ) );
+
+  QgsGCPListModel model;
+  model.setGCPList( &list );
+  model.setTargetCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext() );
+
+  // all destination points are shown in target crs
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-30.0000" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.0000" ) );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "150.0000" ) );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-30.0000" ) );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "158.9831" ) );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.2190" ) );
+
+  // setting a point's destination x or y will update that point to being stored in the target crs
+  QVERIFY( model.setData( model.index( 0, 4 ), -31.0 ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-31.0000" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.0000" ) );
+  QCOMPARE( list.at( 0 )->destinationPoint().x(), -31.0 );
+  QCOMPARE( list.at( 0 )->destinationPoint().y(), 40.0 );
+  QCOMPARE( list.at( 0 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+
+  QVERIFY( model.setData( model.index( 0, 5 ), 41.0 ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-31.0000" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "41.0000" ) );
+  QCOMPARE( list.at( 0 )->destinationPoint().x(), -31.0 );
+  QCOMPARE( list.at( 0 )->destinationPoint().y(), 41.0 );
+  QCOMPARE( list.at( 0 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+
+  // destination point was originally in EPSG:3857, should be changed to 4326 when destination x is set
+  QVERIFY( model.setData( model.index( 1, 4 ), 148 ) );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "148.0000" ) );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-30.0000" ) );
+  QCOMPARE( list.at( 1 )->destinationPoint().x(), 148 );
+  QGSCOMPARENEAR( list.at( 1 )->destinationPoint().y(), -30, 0.001 );
+  QCOMPARE( list.at( 1 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+
+  QVERIFY( model.setData( model.index( 1, 5 ), -32.0 ) );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "148.0000" ) );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-32.0000" ) );
+  QCOMPARE( list.at( 1 )->destinationPoint().x(), 148 );
+  QCOMPARE( list.at( 1 )->destinationPoint().y(), -32 );
+  QCOMPARE( list.at( 1 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+
+  // destination point was originally in EPSG:3857, should be changed to 4326 when destination y is set
+  QVERIFY( model.setData( model.index( 2, 5 ), -29.0 ) );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "158.9831" ) );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.0000" ) );
+  QGSCOMPARENEAR( list.at( 2 )->destinationPoint().x(), 158.9831, 0.001 );
+  QCOMPARE( list.at( 2 )->destinationPoint().y(), -29 );
+  QCOMPARE( list.at( 2 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+
+  QVERIFY( model.setData( model.index( 2, 4 ), 159 ) );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "159.0000" ) );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.0000" ) );
+  QCOMPARE( list.at( 2 )->destinationPoint().x(), 159 );
+  QCOMPARE( list.at( 2 )->destinationPoint().y(), -29 );
+  QCOMPARE( list.at( 2 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
 }
 
 QGSTEST_MAIN( TestQgsGeoreferencer )
