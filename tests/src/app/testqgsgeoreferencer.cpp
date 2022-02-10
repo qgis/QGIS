@@ -638,51 +638,51 @@ void TestQgsGeoreferencer::testListModel()
 
   QCOMPARE( model.rowCount(), 3 );
   QCOMPARE( model.data( model.index( 0, 1 ) ).toString(), QStringLiteral( "0" ) );
-  QCOMPARE( model.data( model.index( 0, 2 ) ).toString(), QStringLiteral( "781662.3750" ) );
-  QCOMPARE( model.data( model.index( 0, 3 ) ).toString(), QStringLiteral( "3350923.1250" ) );
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-30.0000" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.0000" ) );
-  QCOMPARE( model.data( model.index( 0, 4 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>-30</b><br>EPSG:4326 - WGS 84" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>40</b><br>EPSG:4326 - WGS 84" ) );
+  QCOMPARE( model.data( model.index( 0, 2 ) ).toString(), QStringLiteral( "781662.38" ) );
+  QCOMPARE( model.data( model.index( 0, 3 ) ).toString(), QStringLiteral( "3350923.13" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-30.000000" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.000000" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>-30.000000</b><br>EPSG:4326 - WGS 84" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>40.000000</b><br>EPSG:4326 - WGS 84" ) );
 
   QCOMPARE( model.data( model.index( 0, 6 ) ).toString(), QStringLiteral( "n/a" ) );
   QCOMPARE( model.data( model.index( 0, 7 ) ).toString(), QStringLiteral( "n/a" ) );
   QCOMPARE( model.data( model.index( 0, 8 ) ).toString(), QStringLiteral( "n/a" ) );
 
   QCOMPARE( model.data( model.index( 1, 1 ) ).toString(), QStringLiteral( "1" ) );
-  QCOMPARE( model.data( model.index( 1, 2 ) ).toString(), QStringLiteral( "787362.3750" ) );
-  QCOMPARE( model.data( model.index( 1, 3 ) ).toString(), QStringLiteral( "3350923.1250" ) );
-  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "150.0000" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-30.0000" ) );
+  QCOMPARE( model.data( model.index( 1, 2 ) ).toString(), QStringLiteral( "787362.38" ) );
+  QCOMPARE( model.data( model.index( 1, 3 ) ).toString(), QStringLiteral( "3350923.13" ) );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "149.999994" ) );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-29.999993" ) );
   // tooltip should show target CRS details for user clarification
-  QCOMPARE( model.data( model.index( 1, 4 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>150</b><br>EPSG:4326 - WGS 84" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>-30</b><br>EPSG:4326 - WGS 84" ) );
+  QCOMPARE( model.data( model.index( 1, 4 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>149.999994</b><br>EPSG:4326 - WGS 84" ) );
+  QCOMPARE( model.data( model.index( 1, 5 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>-29.999993</b><br>EPSG:4326 - WGS 84" ) );
   QCOMPARE( model.data( model.index( 1, 6 ) ).toString(), QStringLiteral( "n/a" ) );
   QCOMPARE( model.data( model.index( 1, 7 ) ).toString(), QStringLiteral( "n/a" ) );
   QCOMPARE( model.data( model.index( 1, 8 ) ).toString(), QStringLiteral( "n/a" ) );
 
   QCOMPARE( model.data( model.index( 2, 1 ) ).toString(), QStringLiteral( "2" ) );
-  QCOMPARE( model.data( model.index( 2, 2 ) ).toString(), QStringLiteral( "787362.3750" ) );
-  QCOMPARE( model.data( model.index( 2, 3 ) ).toString(), QStringLiteral( "3362323.1250" ) );
-  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "-35.0000" ) );
-  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "42.0000" ) );
+  QCOMPARE( model.data( model.index( 2, 2 ) ).toString(), QStringLiteral( "787362.38" ) );
+  QCOMPARE( model.data( model.index( 2, 3 ) ).toString(), QStringLiteral( "3362323.13" ) );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "-35.000000" ) );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "42.000000" ) );
   QCOMPARE( model.data( model.index( 2, 6 ) ).toString(), QStringLiteral( "n/a" ) );
   QCOMPARE( model.data( model.index( 2, 7 ) ).toString(), QStringLiteral( "n/a" ) );
   QCOMPARE( model.data( model.index( 2, 8 ) ).toString(), QStringLiteral( "n/a" ) );
 
   // with transform set residuals should be visible
   model.setGeorefTransform( &transform );
-  QCOMPARE( model.data( model.index( 0, 6 ) ).toString(), QStringLiteral( "0.0000" ) );
-  QCOMPARE( model.data( model.index( 0, 7 ) ).toString(), QStringLiteral( "-189.1892" ) );
-  QCOMPARE( model.data( model.index( 0, 8 ) ).toString(), QStringLiteral( "189.1892" ) );
+  QCOMPARE( model.data( model.index( 0, 6 ) ).toString(), QStringLiteral( "0.000000" ) );
+  QCOMPARE( model.data( model.index( 0, 7 ) ).toString(), QStringLiteral( "-189.189188" ) );
+  QCOMPARE( model.data( model.index( 0, 8 ) ).toString(), QStringLiteral( "189.189188" ) );
 
-  QCOMPARE( model.data( model.index( 1, 6 ) ).toString(), QStringLiteral( "105.7143" ) );
-  QCOMPARE( model.data( model.index( 1, 7 ) ).toString(), QStringLiteral( "189.1892" ) );
-  QCOMPARE( model.data( model.index( 1, 8 ) ).toString(), QStringLiteral( "216.7212" ) );
+  QCOMPARE( model.data( model.index( 1, 6 ) ).toString(), QStringLiteral( "105.714286" ) );
+  QCOMPARE( model.data( model.index( 1, 7 ) ).toString(), QStringLiteral( "189.189188" ) );
+  QCOMPARE( model.data( model.index( 1, 8 ) ).toString(), QStringLiteral( "216.721155" ) );
 
-  QCOMPARE( model.data( model.index( 2, 6 ) ).toString(), QStringLiteral( "-105.7143" ) );
-  QCOMPARE( model.data( model.index( 2, 7 ) ).toString(), QStringLiteral( "0.0000" ) );
-  QCOMPARE( model.data( model.index( 2, 8 ) ).toString(), QStringLiteral( "105.7143" ) );
+  QCOMPARE( model.data( model.index( 2, 6 ) ).toString(), QStringLiteral( "-105.714286" ) );
+  QCOMPARE( model.data( model.index( 2, 7 ) ).toString(), QStringLiteral( "0.000000" ) );
+  QCOMPARE( model.data( model.index( 2, 8 ) ).toString(), QStringLiteral( "105.714286" ) );
 
   // set data
   // these columns are read-only
@@ -693,19 +693,19 @@ void TestQgsGeoreferencer::testListModel()
   QVERIFY( !model.setData( model.index( 0, 8 ), 11 ) );
 
   QVERIFY( model.setData( model.index( 0, 2 ), 777777.77 ) );
-  QCOMPARE( model.data( model.index( 0, 2 ) ).toString(), QStringLiteral( "777777.7700" ) );
+  QCOMPARE( model.data( model.index( 0, 2 ) ).toString(), QStringLiteral( "777777.77" ) );
   QCOMPARE( list.at( 0 )->sourcePoint().x(), 777777.77 );
 
   QVERIFY( model.setData( model.index( 0, 3 ), 3333333.33 ) );
-  QCOMPARE( model.data( model.index( 0, 3 ) ).toString(), QStringLiteral( "3333333.3300" ) );
+  QCOMPARE( model.data( model.index( 0, 3 ) ).toString(), QStringLiteral( "3333333.33" ) );
   QCOMPARE( list.at( 0 )->sourcePoint().y(), 3333333.33 );
 
   QVERIFY( model.setData( model.index( 0, 4 ), 1660000.77 ) );
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "1660000.7700" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "1660000.77" ) );
   QCOMPARE( list.at( 0 )->destinationPoint().x(), 1660000.77 );
 
   QVERIFY( model.setData( model.index( 0, 5 ), 4433333.33 ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "4433333.3300" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "4433333.33" ) );
   QCOMPARE( list.at( 0 )->destinationPoint().y(), 4433333.33 );
 
   // disable point
@@ -739,54 +739,54 @@ void TestQgsGeoreferencer::testListModelCrs()
   model.setTargetCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext() );
 
   // all destination points are shown in target crs
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-30.0000" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.0000" ) );
-  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "150.0000" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-30.0000" ) );
-  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "158.9831" ) );
-  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.2190" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-30.000000" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.000000" ) );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "149.999994" ) );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-29.999993" ) );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "158.983147" ) );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.218996" ) );
 
   // setting a point's destination x or y will update that point to being stored in the target crs
   QVERIFY( model.setData( model.index( 0, 4 ), -31.0 ) );
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-31.0000" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.0000" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-31.000000" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.000000" ) );
   QCOMPARE( list.at( 0 )->destinationPoint().x(), -31.0 );
   QCOMPARE( list.at( 0 )->destinationPoint().y(), 40.0 );
   QCOMPARE( list.at( 0 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
 
   QVERIFY( model.setData( model.index( 0, 5 ), 41.0 ) );
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-31.0000" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "41.0000" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-31.000000" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "41.000000" ) );
   QCOMPARE( list.at( 0 )->destinationPoint().x(), -31.0 );
   QCOMPARE( list.at( 0 )->destinationPoint().y(), 41.0 );
   QCOMPARE( list.at( 0 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
 
   // destination point was originally in EPSG:3857, should be changed to 4326 when destination x is set
   QVERIFY( model.setData( model.index( 1, 4 ), 148 ) );
-  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "148.0000" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-30.0000" ) );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "148.000000" ) );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-29.999993" ) );
   QCOMPARE( list.at( 1 )->destinationPoint().x(), 148 );
   QGSCOMPARENEAR( list.at( 1 )->destinationPoint().y(), -30, 0.001 );
   QCOMPARE( list.at( 1 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
 
   QVERIFY( model.setData( model.index( 1, 5 ), -32.0 ) );
-  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "148.0000" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-32.0000" ) );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "148.000000" ) );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-32.000000" ) );
   QCOMPARE( list.at( 1 )->destinationPoint().x(), 148 );
   QCOMPARE( list.at( 1 )->destinationPoint().y(), -32 );
   QCOMPARE( list.at( 1 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
 
   // destination point was originally in EPSG:3857, should be changed to 4326 when destination y is set
   QVERIFY( model.setData( model.index( 2, 5 ), -29.0 ) );
-  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "158.9831" ) );
-  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.0000" ) );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "158.983147" ) );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.000000" ) );
   QGSCOMPARENEAR( list.at( 2 )->destinationPoint().x(), 158.9831, 0.001 );
   QCOMPARE( list.at( 2 )->destinationPoint().y(), -29 );
   QCOMPARE( list.at( 2 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
 
   QVERIFY( model.setData( model.index( 2, 4 ), 159 ) );
-  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "159.0000" ) );
-  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.0000" ) );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "159.000000" ) );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.000000" ) );
   QCOMPARE( list.at( 2 )->destinationPoint().x(), 159 );
   QCOMPARE( list.at( 2 )->destinationPoint().y(), -29 );
   QCOMPARE( list.at( 2 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
