@@ -365,17 +365,26 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
 
       if ( deletedFeaturesPks.size() == 1 && relatedLinkingFeaturesCount > 1 )
       {
-        QMessageBox messageBox( QMessageBox::Question, tr( "Really delete entry?" ), tr( "The entry on %1 is still linked to %2 features on %3. Do you want to delete it?" ).arg( mNmRelation.referencedLayer()->name(), QLocale().toString( relatedLinkingFeaturesCount ), mRelation.referencedLayer()->name() ), QMessageBox::NoButton, this );
+        QMessageBox messageBox( QMessageBox::Question, tr( "Really delete entry?" ),
+                                tr( "The entry on %1 is still linked to %2 features on %3. Do you want to delete it?" )
+                                .arg( mNmRelation.referencedLayer()->name() )
+                                .arg( QLocale().toString( relatedLinkingFeaturesCount ) )//string?
+                                .arg( mRelation.referencedLayer()->name() ), QMessageBox::NoButton, this );
         messageBox.addButton( QMessageBox::Cancel );
-        QAbstractButton *deleteButton = messageBox.addButton( tr( "Delete" ),  QMessageBox::AcceptRole );
+        QAbstractButton *deleteButton = messageBox.addButton( tr( "Delete" ), QMessageBox::AcceptRole );
 
         messageBox.exec();
         if ( messageBox.clickedButton() != deleteButton )
           deleteFeatures = false;
       }
-      else if ( deletedFeaturesPks.size() > 1 && relatedLinkingFeaturesCount > deletedFeaturesPks.size() )
+      else if ( deletedFeaturesPks.size() > 1 && relatedLinkingFeaturesCount > deletedFeaturesPks.size() )// I don't understand the second condition scope but this if/else sounds like something to handle plural forms
       {
-        QMessageBox messageBox( QMessageBox::Question, tr( "Really delete entries?" ), tr( "The %1 entries on %2 are still linked to %3 features on %4. Do you want to delete them?" ).arg( QLocale().toString( deletedFeaturesPks.size() ), mNmRelation.referencedLayer()->name(), QLocale().toString( relatedLinkingFeaturesCount ), mRelation.referencedLayer()->name() ), QMessageBox::NoButton, this );
+        QMessageBox messageBox( QMessageBox::Question, tr( "Really delete entries?" ),
+                                tr( "The %1 entries on %2 are still linked to %3 features on %4. Do you want to delete them?" )// 1 and 3 pluralizable
+                                .arg( QLocale().toString( deletedFeaturesPks.size() ) )
+                                .arg( mNmRelation.referencedLayer()->name() )
+                                .arg( QLocale().toString( relatedLinkingFeaturesCount ) )
+                                .arg( mRelation.referencedLayer()->name() ), QMessageBox::NoButton, this );
         messageBox.addButton( QMessageBox::Cancel );
         QAbstractButton *deleteButton = messageBox.addButton( tr( "Delete" ), QMessageBox::AcceptRole );
 
@@ -403,8 +412,9 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    const int res = QMessageBox::question( this, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
-                                           tr( "Delete %1 feature(s) on layer \"%2\", %3 as well\nand all of its other descendants.\nDelete these features?" ).arg( fids.count() ).arg( layer->name() ).arg( childrenInfo ),
+    const int res = QMessageBox::question( this, tr( "Delete at least %n feature(s) on other layer(s)", nullptr, childrenCount ),
+                                           tr( "Delete %n feature(s) on layer \"%1\", %2 as well and all of its other descendants.\nDelete these features?", nullptr, fids.count() )
+                                           .arg( layer->name() ).arg( childrenInfo ),
                                            QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
       deleteFeatures = false;

@@ -2635,9 +2635,8 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
 
   if ( static_cast< int >( data.looplist.size() ) != data.loopsnum )
   {
-    LOG( tr( "0x%1: %2 instead of %3 loops found" )
+    LOG( tr( "0x%1: %n instead of %2 loop(s) found", nullptr, data.looplist.size() )//2 and 3 can be plural
          .arg( data.handle, 0, 16 )
-         .arg( data.looplist.size() )
          .arg( data.loopsnum )
        );
   }

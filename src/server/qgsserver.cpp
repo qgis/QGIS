@@ -283,7 +283,7 @@ bool QgsServer::init()
 
     QString accuracyMessage;
     if ( availableOperation.accuracy >= 0 && preferredOperation.accuracy >= 0 )
-      accuracyMessage = QStringLiteral( "Current transform '%1' has an accuracy of %2 meters, while the preferred transformation '%3' has accuracy %4 meters.\n" ).arg( availableOperation.name )
+      accuracyMessage = QStringLiteral( "Current transform '%1' has an accuracy of %2 meters, while the preferred transformation '%3' has accuracy %4 meters.\n" ).arg( availableOperation.name ) //to translate?same question for strings around
                         .arg( availableOperation.accuracy ).arg( preferredOperation.name ).arg( preferredOperation.accuracy );
     else if ( preferredOperation.accuracy >= 0 )
       accuracyMessage = QStringLiteral( "Current transform '%1' has an unknown accuracy, while the preferred transformation '%2' has accuracy %3 meters.\n" )

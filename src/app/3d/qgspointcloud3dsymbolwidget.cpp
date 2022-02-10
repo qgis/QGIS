@@ -624,7 +624,7 @@ double QgsPointCloud3DSymbolWidget::pointBudget() const
 
 void QgsPointCloud3DSymbolWidget::setPointCloudSize( int size )
 {
-  mPointCloudSizeLabel->setText( QStringLiteral( "%1 points" ).arg( size ) );
+  mPointCloudSizeLabel->setText( tr( "%1 points", nullptr, size ) );//tr?
 }
 
 bool QgsPointCloud3DSymbolWidget::showBoundingBoxes() const

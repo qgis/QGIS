@@ -1001,21 +1001,21 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   else if ( value.canConvert< QgsInterval >() )
   {
     QgsInterval interval = value.value<QgsInterval>();
-    if ( interval.days() > 1 )
+    if ( interval.days() > 1 )//these are int, right?
     {
-      return startToken + tr( "interval: %1 days" ).arg( interval.days() ) + endToken;
+      return startToken + tr( "interval: %n day(s)", nullptr, interval.days() ) + endToken;
     }
     else if ( interval.hours() > 1 )
     {
-      return startToken + tr( "interval: %1 hours" ).arg( interval.hours() ) + endToken;
+      return startToken + tr( "interval: %n hour(s)", nullptr, interval.hours() ) + endToken;
     }
     else if ( interval.minutes() > 1 )
     {
-      return startToken + tr( "interval: %1 minutes" ).arg( interval.minutes() ) + endToken;
+      return startToken + tr( "interval: %n minute(s)", nullptr, interval.minutes() ) + endToken;
     }
     else
     {
-      return startToken + tr( "interval: %1 seconds" ).arg( interval.seconds() ) + endToken;
+      return startToken + tr( "interval: %n second(s)", nullptr, interval.seconds() ) + endToken;
     }
   }
   else if ( value.canConvert< QgsGradientColorRamp >() )

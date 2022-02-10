@@ -9577,8 +9577,8 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    int res = QMessageBox::question( mMapCanvas, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
-                                     tr( "Delete %1 feature(s) on layer \"%2\", %3 as well\nand all of its other descendants.\nDelete these features?" ).arg( numberOfSelectedFeatures ).arg( vlayer->name() ).arg( childrenInfo ),
+    int res = QMessageBox::question( mMapCanvas, tr( "Delete at least %n feature(s) on other layer(s)", nullptr, childrenCount ),
+                                     tr( "Delete %n feature(s) on layer \"%1\", %2 as well and all of its other descendants.\nDelete these features?", nullptr, numberOfSelectedFeatures ).arg( vlayer->name() ).arg( childrenInfo ),// do we really need to split the sentence? the msgbox could handle this, no?
                                      QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
       return;
@@ -11120,7 +11120,7 @@ void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeomet
   }
   else
   {
-    message = tr( "%1 of %2 features could be pasted." ).arg( nCopiedFeatures ).arg( nTotalFeatures );
+    message = tr( "%n of %1 feature(s) could be pasted.", nullptr, nCopiedFeatures ).arg( nTotalFeatures );
   }
 
   // warn the user if the pasted features have invalid geometries
@@ -12074,7 +12074,7 @@ bool QgisApp::verifyEditsActionDialog( const QString &act, const QString &upon )
   bool res = false;
   switch ( QMessageBox::question( nullptr,
                                   tr( "Current edits" ),
-                                  tr( "%1 current changes for %2 layer(s)?" )
+                                  tr( "%1 current changes for %2 layer(s)?" ) //howto?
                                   .arg( act,
                                         upon ),
                                   QMessageBox::Yes | QMessageBox::No ) )
@@ -17689,11 +17689,11 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
     const auto duplicatedFeatureContextLayers = duplicateFeatureContext.layers();
     for ( QgsVectorLayer *chl : duplicatedFeatureContextLayers )
     {
-      childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( QLocale().toString( duplicateFeatureContext.duplicatedFeatures( chl ).size() ), chl->name() ) );
+      childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( QLocale().toString( duplicateFeatureContext.duplicatedFeatures( chl ).size() ) ).arg( chl->name() ) );// how about using %Ln (https://doc.qt.io/archives/qt-4.8/i18n-source-translation.html#handling-plurals)? Or not the same topic?
     }
   }
 
-  visibleMessageBar()->pushMessage( tr( "%1 features on layer %2 duplicated\n%3" ).arg( QLocale().toString( featureCount ), layer->name(), childrenInfo ), Qgis::MessageLevel::Success );
+  visibleMessageBar()->pushMessage( tr( "%1 feature(s) on layer %2 duplicated\n%2" ).arg( QLocale().toString( featureCount ) ).arg( layer->name(), childrenInfo ), Qgis::MessageLevel::Success );
 
   return QgsFeature();
 }

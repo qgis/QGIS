@@ -161,7 +161,7 @@ void QgsFileDownloaderAlgorithm::sendProgressFeedback()
   {
     mLastReport = mReceived;
     if ( mTotal.isEmpty() )
-      mFeedback->pushInfo( tr( "%1 downloaded" ).arg( mReceived ) );
+      mFeedback->pushInfo( tr( "%1 downloaded" ).arg( mReceived ) );//are these not numbers?
     else
       mFeedback->pushInfo( tr( "%1 of %2 downloaded" ).arg( mReceived, mTotal ) );
   }

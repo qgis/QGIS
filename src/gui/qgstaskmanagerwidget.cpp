@@ -409,7 +409,7 @@ QString QgsTaskManagerModel::createTooltip( QgsTask *task, ToolTipType type )
       formattedTime = tr( "%1:%2 minutes" ).arg( minutes ).arg( seconds, 2, 10, QChar( '0' ) );
     }
     else
-      formattedTime = tr( "%1 seconds" ).arg( msRemain / 1000 );
+      formattedTime = tr( "%1 seconds", nullptr, msRemain / 1000 );//int?
 
     formattedTime = tr( "Estimated time remaining: %1" ).arg( formattedTime );
 

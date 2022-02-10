@@ -2417,7 +2417,7 @@ QgsProcessingEnumPanelWidget::QgsProcessingEnumPanelWidget( QWidget *parent, con
 
   if ( mParam )
   {
-    mLineEdit->setText( tr( "%1 options selected" ).arg( 0 ) );
+    mLineEdit->setText( tr( "%1 options selected" ).arg( 0 ) );//what's this? Many in this file
   }
 
   connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingEnumPanelWidget::showDialog );

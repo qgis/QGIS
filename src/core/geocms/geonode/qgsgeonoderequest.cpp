@@ -151,7 +151,7 @@ QgsGeoNodeStyle QgsGeoNodeRequest::fetchStyleBlocking( const QString &styleId )
 
 void QgsGeoNodeRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QString msg = tr( "%1 of %2 bytes of request downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
+  QString msg = tr( "%n of %1 byte(s) of request downloaded.", nullptr, bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
   QgsDebugMsgLevel( msg, 3 );
   emit statusChanged( msg );
 }

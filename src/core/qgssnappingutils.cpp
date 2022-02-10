@@ -664,7 +664,7 @@ QString QgsSnappingUtils::dump()
         else
           extentStr = QStringLiteral( "full extent" );
         if ( loc->hasIndex() )
-          cachedGeoms = QStringLiteral( "%1 feats" ).arg( loc->cachedGeometryCount() );
+          cachedGeoms = QStringLiteral( "%1 feats" ).arg( loc->cachedGeometryCount() );// features? and should strings in this method be translated?
         else
           cachedGeoms = QStringLiteral( "not initialized" );
         if ( mStrategy == IndexHybrid )

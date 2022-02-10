@@ -60,7 +60,7 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
   if ( dialog->layerCount() < layers.size() )
     QgisApp::instance()->messageBar()->pushMessage(
       tr( "Handle unavailable layers" ),
-      tr( "%1 of %2 unavailable layers were not fixable." )
+      tr( "%1 of %2 unavailable layer(s) were not fixable." ) //howto: what is fixed and what was unavailable can be plural or not
       .arg( layers.size() - dialog->layerCount() )
       .arg( layers.size() ),
       Qgis::MessageLevel::Warning );

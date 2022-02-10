@@ -3181,7 +3181,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
               options.layerName != details.providerUriParams.value( QStringLiteral( "layerName" ) ) ) )
       {
         if ( errorMessage )
-          *errorMessage = QObject::tr( "Cannot overwrite a OGR layer in place" );
+          *errorMessage = QObject::tr( "Cannot overwrite an OGR layer in place" );
         return ErrCreateDataSource;
       }
     }
@@ -3368,7 +3368,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
 
   if ( errors > 0 && errorMessage && n > 0 )
   {
-    *errorMessage += QObject::tr( "\nOnly %1 of %2 features written." ).arg( n - errors ).arg( n );
+    *errorMessage += QObject::tr( "\nOnly %n of %1 feature(s) written.", nullptr, n - errors ).arg( n );
   }
 
   writer.reset();
@@ -3957,7 +3957,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
 
   if ( nErrors > 0 && errorMessage )
   {
-    *errorMessage += QObject::tr( "\nOnly %1 of %2 features written." ).arg( nTotalFeatures - nErrors ).arg( nTotalFeatures );
+    *errorMessage += QObject::tr( "\nOnly %n of %1 feature(s) written.", nullptr, nTotalFeatures - nErrors ).arg( nTotalFeatures );
   }
 
   return ( nErrors > 0 ) ? QgsVectorFileWriter::ErrFeatureWriteFailed : QgsVectorFileWriter::NoError;

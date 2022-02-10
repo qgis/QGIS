@@ -107,7 +107,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         const bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
         if ( hasZ || hasM )
         {
-          emit messageEmitted( QStringLiteral( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool." )
+          emit messageEmitted( tr( "layer %1 has %2%3%4 geometry. %2%3%4 values will be set to 0 when using offset tool." ) //to translate?
                                .arg( mSourceLayer->name(),
                                      hasZ ? QStringLiteral( "Z" ) : QString(),
                                      hasZ && hasM ? QStringLiteral( "/" ) : QString(),

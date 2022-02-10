@@ -281,13 +281,12 @@ void QgsQueryResultWidget::startFetching()
     {
       if ( mQueryResultWatcher.result().rowCount() != static_cast<long long>( Qgis::FeatureCountState::UnknownCount ) )
       {
-        mStatusLabel->setText( QStringLiteral( "Query executed successfully (%1 rows, %2 ms)" )
-                               .arg( QLocale().toString( mQueryResultWatcher.result().rowCount() ),
-                                     QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
+        mStatusLabel->setText( tr( "Query executed successfully (%1 rows, %2 ms)" ).arg( QLocale().toString( mQueryResultWatcher.result().rowCount() ) )//str
+                               .arg( QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
       }
       else
       {
-        mStatusLabel->setText( QStringLiteral( "Query executed successfully (%1 s)" ).arg( QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
+        mStatusLabel->setText( tr( "Query executed successfully (%1 s)" ).arg( QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
       }
       mProgressBar->hide();
       mModel = std::make_unique<QgsQueryResultModel>( mQueryResultWatcher.result() );

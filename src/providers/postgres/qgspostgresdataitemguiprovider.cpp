@@ -308,7 +308,7 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem, 
     QString objects = childObjects.join( QLatin1Char( '\n' ) );
     if ( count > maxListed )
     {
-      objects += QStringLiteral( "\n[%1 additional objects not listed]" ).arg( count - maxListed );
+      objects += QStringLiteral( "\n[%1 additional objects not listed]" ).arg( count - maxListed );//tr?
     }
     if ( QMessageBox::question( nullptr, QObject::tr( "Delete Schema" ),
                                 QObject::tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( schemaItem->name(), objects ),

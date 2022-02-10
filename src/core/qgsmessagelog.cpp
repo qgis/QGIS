@@ -61,7 +61,7 @@ QString QgsMessageLogConsole::formatLogMessage( const QString &message, const QS
                            level == Qgis::MessageLevel::Warning ? QStringLiteral( "WARNING" ) :
                            QStringLiteral( "CRITICAL" );
   const QString pid = QString::number( QCoreApplication::applicationPid() );
-  return QStringLiteral( "%1 %2 %3[%4]: %5\n" ).arg( time, levelStr, tag, pid, message );
+  return QStringLiteral( "%1 %2 %3[%4]: %5\n" ).arg( time, levelStr, tag, pid, message );//tr?
 }
 
 //

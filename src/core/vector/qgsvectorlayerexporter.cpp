@@ -505,7 +505,7 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   {
     if ( errors > 0 )
     {
-      *errorMessage += '\n' + QObject::tr( "Only %1 of %2 features written." ).arg( n - errors ).arg( n );
+      *errorMessage += '\n' + QObject::tr( "Only %n of %1 feature(s) written.", nullptr, n - errors ).arg( n );
     }
     else
     {

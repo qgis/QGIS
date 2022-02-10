@@ -95,7 +95,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
           if ( ! settings || ! settings->ignoreBadLayers() )
           {
             QgsMessageLog::logMessage(
-              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
+              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),//should we tr these log messages?S
               QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
             throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
           }

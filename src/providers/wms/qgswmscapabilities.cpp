@@ -2382,7 +2382,7 @@ void QgsWmsCapabilitiesDownload::abort()
 
 void QgsWmsCapabilitiesDownload::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QString message = tr( "%1 of %2 bytes of capabilities downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
+  QString message = tr( "%n of %2 byte(s) of capabilities downloaded.", nullptr, bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
   QgsDebugMsgLevel( message, 2 );
   emit statusChanged( message );
 }

@@ -271,7 +271,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       // does not create problem removing certs
       if ( !file.setPermissions( QFile::WriteOwner ) )
       {
-        QString errorMsg = tr( "Cannot set WriteOwner permission to cert: %0 to allow removing it" ).arg( file.fileName() );
+        QString errorMsg = tr( "Cannot set WriteOwner permission to cert: %1 to allow removing it" ).arg( file.fileName() );//typo?
         PQfinish();
         QgsMessageLog::logMessage( tr( "Client security failure" ) + '\n' + errorMsg, tr( "PostGIS" ) );
         mRef = 0;

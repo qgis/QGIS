@@ -277,7 +277,7 @@ void QgsHanaDataItemGuiProvider::deleteSchema( QgsHanaSchemaItem *schemaItem, Qg
           tableNames += tableProperty.tableName() + QLatin1Char( '\n' );
         else
         {
-          tableNames += QStringLiteral( "\n[%1 additional objects not listed]" ).arg( tables.size() - MAXIMUM_LISTED_ITEMS );
+          tableNames += QStringLiteral( "\n[%1 additional objects not listed]" ).arg( tables.size() - MAXIMUM_LISTED_ITEMS );//tr?
           break;
         }
       }

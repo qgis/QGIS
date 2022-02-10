@@ -1027,7 +1027,7 @@ QgsModelChildDependenciesWidget::QgsModelChildDependenciesWidget( QWidget *paren
 
   setLayout( hl );
 
-  mLineEdit->setText( tr( "%1 dependencies selected" ).arg( 0 ) );
+  mLineEdit->setText( tr( "%1 dependencies selected" ).arg( 0 ) );//?
 
   connect( mToolButton, &QToolButton::clicked, this, &QgsModelChildDependenciesWidget::showDialog );
 }

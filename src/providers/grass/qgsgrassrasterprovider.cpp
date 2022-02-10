@@ -223,7 +223,7 @@ bool QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
   QgsDebugMsg( QString( "mCols = %1 mYBlockSize = %2 dataTypeSize = %3" ).arg( mCols ).arg( mYBlockSize ).arg( dataTypeSize( bandNo ) ) );
   if ( size != data.size() )
   {
-    QString error = tr( "%1 bytes expected but %2 byte were read from qgis.d.rast" ).arg( size ).arg( data.size() );
+    QString error = tr( "%1 bytes expected but %2 bytes were read from qgis.d.rast" ).arg( size ).arg( data.size() );
     QgsDebugMsg( error );
     appendError( error );
     size = size < data.size() ? size : data.size();
@@ -275,7 +275,7 @@ bool QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const &viewExt
   int size = pixelWidth * pixelHeight * dataTypeSize( bandNo );
   if ( size != data.size() )
   {
-    QString error = tr( "%1 bytes expected but %2 byte were read from qgis.d.rast" ).arg( size ).arg( data.size() );
+    QString error = tr( "%1 bytes expected but %2 bytes were read from qgis.d.rast" ).arg( size ).arg( data.size() );
     QgsDebugMsg( error );
     appendError( error );
     size = size < data.size() ? size : data.size();

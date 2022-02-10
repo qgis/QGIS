@@ -92,7 +92,11 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer, const QgsAttributeEdito
 
 QString QgsFixAttributeDialog::descriptionText()
 {
-  return tr( "%1 of %2 features processed (%3 fixed, %4 skipped)" ).arg( mCurrentFeature - mFeatures.begin() ).arg( mFeatures.count() ).arg( mFixedFeatures.count() ).arg( mCurrentFeature - mFeatures.begin() - mFixedFeatures.count() );
+  return tr( "%1 of %2 feature(s) processed (%3 fixed, %4 skipped)" ) //howto: anything can be plural here
+         .arg( mCurrentFeature - mFeatures.begin() )
+         .arg( mFeatures.count() )
+         .arg( mFixedFeatures.count() )
+         .arg( mCurrentFeature - mFeatures.begin() - mFixedFeatures.count() );
 }
 
 void QgsFixAttributeDialog::accept()

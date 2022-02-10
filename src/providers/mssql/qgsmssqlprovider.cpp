@@ -1728,7 +1728,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
         return true;
       }
 
-      pushError( tr( "Only %1 of %2 features deleted" ).arg( query.numRowsAffected() ).arg( ids.size() ) );
+      pushError( tr( "Only %n of %1 feature(s) deleted", nullptr, query.numRowsAffected() ).arg( ids.size() ) );
     }
     else
       pushError( query.lastError().text() );
@@ -1764,7 +1764,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
     }
 
     if ( i > 0 )
-      pushError( tr( "Only %1 of %2 features deleted" ).arg( i ).arg( ids.size() ) );
+      pushError( tr( "Only %n of %1 feature(s) deleted", nullptr, i ).arg( ids.size() ) );
   }
 
   return false;

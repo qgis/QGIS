@@ -520,7 +520,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
 
       if ( provider->changeFeatures( mChangedAttributeValues, mChangedGeometries ) )
       {
-        commitErrors << tr( "SUCCESS: %1 attribute value(s) and %2 geometries changed." ).arg( mChangedAttributeValues.size(), mChangedGeometries.size() );
+        commitErrors << tr( "SUCCESS: %1 attribute value(s) and %2 geometries changed." ).arg( mChangedAttributeValues.size(), mChangedGeometries.size() );//howto
         emit committedAttributeValuesChanges( L->id(), mChangedAttributeValues );
         mChangedAttributeValues.clear();
 

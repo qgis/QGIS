@@ -94,11 +94,10 @@ void QgsMeshTransformCoordinatesDockWidget::setInput( QgsMeshLayer *layer, const
     {
       if ( mInputVertices.count() == 0 )
         mLabelInformation->setText( tr( "No vertex selected for mesh \"%1\"" ).arg( mInputLayer->name() ) );
-      else if ( mInputVertices.count() == 1 )
-        mLabelInformation->setText( tr( "1 vertex of mesh layer \"%1\" to transform" ).arg( mInputLayer->name() ) );
       else
-        mLabelInformation->setText( tr( "%1 vertices of mesh layer \"%2\" to transform" ).
-                                    arg( QString::number( mInputVertices.count() ), mInputLayer->name() ) );
+        mLabelInformation->setText( tr( "%1 vertices of mesh layer \"%2\" to transform" )
+                                    .arg( QString::number( mInputVertices.count() ) )//converted to str?
+                                    .arg( mInputLayer->name() ) );
     }
   }
   importVertexCoordinates();
