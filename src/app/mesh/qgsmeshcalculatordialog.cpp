@@ -39,9 +39,10 @@
 #include <QFontDatabase>
 #include <QMap>
 
-QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidget *parent, Qt::WindowFlags f )
+QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( const QgsRectangle &currentExtent,
+    const QgsCoordinateReferenceSystem &currentCrs, QgsMeshLayer *meshLayer, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f ),
-    mLayer( meshLayer )
+    mLayer( meshLayer ), mCurrentExtent( currentExtent ), mCurrentCrs( currentCrs )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -100,6 +101,8 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
     mExtentGroupBox->setOriginalExtent( meshLayer->extent(), meshLayer->dataProvider()->crs() );
     mExtentGroupBox->setOutputExtentFromOriginal();
   }
+  mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
+
   repopulateTimeCombos();
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]

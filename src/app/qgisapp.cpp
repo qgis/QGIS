@@ -6887,7 +6887,11 @@ void QgisApp::showMeshCalculator()
     QMessageBox::information( this, tr( "Mesh Calculator" ), tr( "Mesh calculator with mesh layer in edit mode is not supported." ) );
     return;
   }
-  QgsMeshCalculatorDialog d( meshLayer, this );
+  QgsMeshCalculatorDialog d(
+    mMapCanvas->extent(),
+    mMapCanvas->mapSettings().destinationCrs(),
+    meshLayer,
+    this );
   if ( d.exec() == QDialog::Accepted )
   {
     //invoke analysis library

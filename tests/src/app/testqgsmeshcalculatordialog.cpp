@@ -20,6 +20,7 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshcalculatordialog.h"
 #include "qgsfeedback.h"
+#include "qgsmapcanvas.h"
 
 #include <QTemporaryFile>
 
@@ -84,7 +85,10 @@ void TestQgsMeshCalculatorDialog::testCalc()
   if ( !QgsTest::runFlakyTests() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
-  std::unique_ptr< QgsMeshCalculatorDialog > dialog( new QgsMeshCalculatorDialog( mpMeshLayer ) );
+  std::unique_ptr< QgsMeshCalculatorDialog > dialog( new QgsMeshCalculatorDialog(
+        mQgisApp->mapCanvas()->extent(),
+        mQgisApp->mapCanvas()->mapSettings().destinationCrs(),
+        mpMeshLayer ) );
 
   const int groupCount = mpMeshLayer->dataProvider()->datasetGroupCount();
 
