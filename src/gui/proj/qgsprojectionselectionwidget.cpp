@@ -776,7 +776,7 @@ void QgsProjectionSelectionWidget::updateWarning()
 
       if ( ensemble.accuracy() > 0 )
       {
-        warning = tr( "The selected CRS is based on %1, which has a limited accuracy of <b>at best %2 meters</b>." ).arg( id ).arg( ensemble.accuracy() );
+        warning = tr( "The selected CRS is based on %1, which has a limited accuracy of <b>at best %n meter(s)</b>.", nullptr, ensemble.accuracy() ).arg( id );
       }
       else
       {

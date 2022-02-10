@@ -172,8 +172,8 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
     accuracyMessage = tr( "<p>Current transform “<i>%1</i>” has an accuracy of %2 meters, while the preferred transformation “<i>%3</i>” has accuracy %4 meters.</p>" ).arg( availableOperation.name )
                       .arg( availableOperation.accuracy ).arg( preferredOperation.name ).arg( preferredOperation.accuracy );
   else if ( preferredOperation.accuracy >= 0 )
-    accuracyMessage = tr( "<p>Current transform “<i>%1</i>” has an unknown accuracy, while the preferred transformation “<i>%2</i>” has accuracy %3 meters.</p>" ).arg( availableOperation.name )
-                      .arg( preferredOperation.name ).arg( preferredOperation.accuracy );
+    accuracyMessage = tr( "<p>Current transform “<i>%1</i>” has an unknown accuracy, while the preferred transformation “<i>%2</i>” has accuracy %n meter(s).</p>", nullptr, preferredOperation.accuracy ).arg( availableOperation.name )
+                      .arg( preferredOperation.name );
 
   const QString longMessage = tr( "<p>The preferred transform between <i>%1</i> and <i>%2</i> is not available for use on the system.</p>" ).arg( sourceCrs.userFriendlyIdentifier(),
                               destinationCrs.userFriendlyIdentifier() )
