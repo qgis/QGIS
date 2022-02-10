@@ -531,17 +531,16 @@ void QgsGeoreferencerMainWindow::deleteDataPoint( QPoint coords )
   for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
   {
     QgsGeorefDataPoint *pt = *it;
-    if ( /*pt->pixelCoords() == coords ||*/ pt->contains( coords, true ) ) // first operand for removing from GCP table
+    if ( pt->contains( coords, QgsGcpPoint::PointType::Source ) ) // first operand for removing from GCP table
     {
       delete *it;
       mPoints.erase( it );
-      mGCPListWidget->updateResiduals();
-
+      mGCPListWidget->setGCPList( &mPoints );
       mCanvas->refresh();
+      updateGeorefTransform();
       break;
     }
   }
-  updateGeorefTransform();
 }
 
 void QgsGeoreferencerMainWindow::deleteDataPoint( int theGCPIndex )
@@ -555,13 +554,12 @@ void QgsGeoreferencerMainWindow::deleteDataPoint( int theGCPIndex )
 
 void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
 {
-  // Get Map Sender
-  bool isMapPlugin = sender() == mToolMovePoint;
-  QgsGeorefDataPoint *&mvPoint = isMapPlugin ? mMovingPoint : mMovingPointQgis;
+  const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
+  QgsGeorefDataPoint *&mvPoint = pointType == QgsGcpPoint::PointType::Source ? mMovingPoint : mMovingPointQgis;
 
   for ( QgsGCPList::const_iterator it = mPoints.constBegin(); it != mPoints.constEnd(); ++it )
   {
-    if ( ( *it )->contains( p, isMapPlugin ) )
+    if ( ( *it )->contains( p, pointType ) )
     {
       mvPoint = *it;
       break;
@@ -571,15 +569,13 @@ void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
 
 void QgsGeoreferencerMainWindow::movePoint( QPoint canvasPixels )
 {
-  // Get Map Sender
-  bool isMapPlugin = sender() == mToolMovePoint;
-  QgsGeorefDataPoint *mvPoint = isMapPlugin ? mMovingPoint : mMovingPointQgis;
+  const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
+  QgsGeorefDataPoint *&mvPoint = pointType == QgsGcpPoint::PointType::Source ? mMovingPoint : mMovingPointQgis;
 
   if ( mvPoint )
   {
-    mvPoint->moveTo( canvasPixels, isMapPlugin );
+    mvPoint->moveTo( canvasPixels, pointType );
   }
-
 }
 
 void QgsGeoreferencerMainWindow::releasePoint( QPoint p )

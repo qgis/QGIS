@@ -30,6 +30,13 @@ class APP_EXPORT QgsGcpPoint
 {
   public:
 
+    //! Coordinate point types
+    enum class PointType
+    {
+      Source, //!< Source point
+      Destination, //!< Destination point
+    };
+
     /**
      * Constructor for QgsGcpPoint.
      *
@@ -215,7 +222,7 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
     int id() const { return mId; }
     void setId( int id );
 
-    bool contains( QPoint p, bool isMapPlugin );
+    bool contains( QPoint p, QgsGcpPoint::PointType type );
 
     QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
     QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
@@ -233,7 +240,7 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
     QgsGcpPoint point() const { return mGcpPoint; }
 
   public slots:
-    void moveTo( QPoint canvasPixels, bool isMapPlugin );
+    void moveTo( QPoint canvasPixels, QgsGcpPoint::PointType type );
     void updateCoords();
 
   private:
