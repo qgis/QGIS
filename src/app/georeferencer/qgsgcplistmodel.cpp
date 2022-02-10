@@ -92,17 +92,15 @@ QVariant QgsGCPListModel::data( const QModelIndex &index, int role ) const
         {
           switch ( role )
           {
-            case Qt::ToolTipRole:
             case Qt::EditRole:
             case Qt::UserRole:
               // use full precision
               return column == QgsGCPListModel::Column::SourceX ? point->sourcePoint().x() : point->sourcePoint().y();
 
+            case Qt::ToolTipRole:
             case Qt::DisplayRole:
               // truncate decimals for display
-              return QString::number(
-                       column == QgsGCPListModel::Column::SourceX ? point->sourcePoint().x() : point->sourcePoint().y(),
-                       'f', 4 );
+              return formatNumber( column == QgsGCPListModel::Column::SourceX ? point->sourcePoint().x() : point->sourcePoint().y() );
             default:
               break;
           }
@@ -120,7 +118,7 @@ QVariant QgsGCPListModel::data( const QModelIndex &index, int role ) const
             {
               const QString crsString = mTargetCrs.userFriendlyIdentifier();
               const double value = column == QgsGCPListModel::Column::DestinationX ? transformedDestinationPoint.x() : transformedDestinationPoint.y();
-              return QStringLiteral( "<b>%1</b><br>%2" ).arg( value ).arg( crsString );
+              return QStringLiteral( "<b>%1</b><br>%2" ).arg( formatNumber( value ), crsString );
             }
 
             case Qt::EditRole:
@@ -130,9 +128,7 @@ QVariant QgsGCPListModel::data( const QModelIndex &index, int role ) const
 
             case Qt::DisplayRole:
               // truncate decimals for display
-              return QString::number(
-                       column == QgsGCPListModel::Column::DestinationX ? transformedDestinationPoint.x() : transformedDestinationPoint.y(),
-                       'f', 4 );
+              return formatNumber( column == QgsGCPListModel::Column::DestinationX ? transformedDestinationPoint.x() : transformedDestinationPoint.y() );
             default:
               break;
           }
@@ -166,15 +162,15 @@ QVariant QgsGCPListModel::data( const QModelIndex &index, int role ) const
 
             switch ( role )
             {
-              case Qt::ToolTipRole:
               case Qt::EditRole:
               case Qt::UserRole:
                 // use full precision
                 return value;
 
+              case Qt::ToolTipRole:
               case Qt::DisplayRole:
                 // truncate decimals for display
-                return QString::number( value, 'f', 4 );
+                return formatNumber( value );
               default:
                 break;
             }
@@ -434,6 +430,17 @@ void QgsGCPListModel::updateResiduals()
   mGCPList->updateResiduals( mGeorefTransform, mTargetCrs, mTransformContext, residualUnit() );
   emit dataChanged( index( 0, static_cast< int >( Column::ResidualDx ) ),
                     index( rowCount() - 1, static_cast< int >( Column::TotalResidual ) ) );
+}
+
+QString QgsGCPListModel::formatNumber( double number )
+{
+  int decimalPlaces = 4;
+  if ( std::fabs( number ) > 100000 )
+    decimalPlaces = 2;
+  else if ( std::fabs( number ) < 1000 )
+    decimalPlaces = 6;
+
+  return QString::number( number, 'f', decimalPlaces );
 }
 
 

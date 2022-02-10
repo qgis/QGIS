@@ -72,6 +72,11 @@ class APP_EXPORT QgsGCPListModel : public QAbstractTableModel
      */
     void updateResiduals();
 
+    /**
+     * Formats a number for display with an appropriate number of decimal places.
+     */
+    static QString formatNumber( double number );
+
   signals:
 
     void pointEnabled( QgsGeorefDataPoint *pnt, int i );
