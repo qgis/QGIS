@@ -264,12 +264,16 @@ bool QgsGCPListModel::setData( const QModelIndex &index, const QVariant &value, 
     case QgsGCPListModel::Column::DestinationX:
     case QgsGCPListModel::Column::DestinationY:
     {
-      QgsPointXY destinationPoint = point->destinationPoint();
+      // when setting a destination point x/y, we need to use the transformed destination point
+      // as this is what we were showing to users
+      QgsPointXY destinationPoint = point->transformedDestinationPoint( mTargetCrs, mTransformContext );
       if ( column == QgsGCPListModel::Column::DestinationX )
         destinationPoint.setX( value.toDouble() );
       else
         destinationPoint.setY( value.toDouble() );
       point->setDestinationPoint( destinationPoint );
+      // we also have to update the destination point crs to the target crs, as the point is now in a different CRS
+      point->setDestinationPointCrs( mTargetCrs );
       emit dataChanged( index, index );
       updateResiduals();
       return true;
