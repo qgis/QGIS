@@ -68,7 +68,7 @@
            </widget>
           </item>
           <item row="1" column="1" colspan="2">
-           <widget class="QgsFileWidget" name="mOutputDatasetFileWidget" native="true"/>
+           <widget class="QgsFileWidget" name="mOutputDatasetFileWidget"/>
           </item>
           <item row="2" column="1" colspan="2">
            <widget class="QComboBox" name="mOutputFormatComboBox"/>
@@ -174,138 +174,13 @@
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="extendBox" native="true">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
+            <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
+             <property name="title">
+              <string>Extent</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_3">
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item row="2" column="4">
-               <widget class="QgsDoubleSpinBox" name="mXMaxSpinBox">
-                <property name="decimals">
-                 <number>5</number>
-                </property>
-                <property name="minimum">
-                 <double>-999999999.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>999999999.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="mYMinLabel">
-                <property name="text">
-                 <string>Y min</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="3">
-               <widget class="QLabel" name="mXMaxLabel">
-                <property name="text">
-                 <string>X max</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QgsDoubleSpinBox" name="mYMinSpinBox">
-                <property name="decimals">
-                 <number>5</number>
-                </property>
-                <property name="minimum">
-                 <double>-999999999.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>999999999.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="3">
-               <widget class="QLabel" name="mYMaxLabel">
-                <property name="text">
-                 <string>Y max</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QgsDoubleSpinBox" name="mXMinSpinBox">
-                <property name="decimals">
-                 <number>5</number>
-                </property>
-                <property name="minimum">
-                 <double>-999999999.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>999999999.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="4">
-               <widget class="QgsDoubleSpinBox" name="mYMaxSpinBox">
-                <property name="decimals">
-                 <number>5</number>
-                </property>
-                <property name="minimum">
-                 <double>-999999999.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>999999999.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="mXMinLabel">
-                <property name="text">
-                 <string>X min</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0" colspan="5">
-               <layout class="QHBoxLayout" name="horizontalLayout">
-                <item>
-                 <widget class="QPushButton" name="mCurrentLayerExtentButton">
-                  <property name="text">
-                   <string>Use Selected Layer Extent</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_3">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-              <item row="2" column="2">
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
+             <property name="titleBase">
+              <string>Extent</string>
+             </property>
             </widget>
            </item>
           </layout>
@@ -651,24 +526,25 @@
  <customwidgets>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
+   <extends></extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends></extends>
+   <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFileWidget</class>
-   <extends>QWidget</extends>
+   <extends></extends>
    <header>qgsfilewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
+   <extends></extends>
    <header>qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
@@ -680,11 +556,6 @@
   <tabstop>useExtentCb</tabstop>
   <tabstop>useMaskCb</tabstop>
   <tabstop>cboLayerMask</tabstop>
-  <tabstop>mCurrentLayerExtentButton</tabstop>
-  <tabstop>mXMinSpinBox</tabstop>
-  <tabstop>mXMaxSpinBox</tabstop>
-  <tabstop>mYMinSpinBox</tabstop>
-  <tabstop>mYMaxSpinBox</tabstop>
   <tabstop>mAllTimesButton</tabstop>
   <tabstop>mStartTimeComboBox</tabstop>
   <tabstop>mEndTimeComboBox</tabstop>

@@ -60,18 +60,12 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   connect( mOutputGroupNameLineEdit, &QLineEdit::textChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
 
   connect( mDatasetsListWidget, &QListView::doubleClicked, this, &QgsMeshCalculatorDialog::datasetGroupEntry );
-  connect( mCurrentLayerExtentButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mCurrentLayerExtentButton_clicked );
   connect( mAllTimesButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mAllTimesButton_clicked );
   connect( mExpressionTextEdit, &QTextEdit::textChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
 
   connect( useMaskCb, &QRadioButton::toggled, this, &QgsMeshCalculatorDialog::toggleExtendMask );
   maskBox->setVisible( false );
   useMaskCb->setEnabled( cboLayerMask->count() );
-
-  mXMaxSpinBox->setShowClearButton( false );
-  mXMinSpinBox->setShowClearButton( false );
-  mYMaxSpinBox->setShowClearButton( false );
-  mYMinSpinBox->setShowClearButton( false );
 
   connect( mPlusPushButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mPlusPushButton_clicked );
   connect( mMinusPushButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mMinusPushButton_clicked );
@@ -141,13 +135,7 @@ QString QgsMeshCalculatorDialog::outputFile() const
 
 QgsRectangle QgsMeshCalculatorDialog::outputExtent() const
 {
-  const QgsRectangle ret(
-    mXMinSpinBox->value(),
-    mYMinSpinBox->value(),
-    mXMaxSpinBox->value(),
-    mYMaxSpinBox->value()
-  );
-  return ret;
+  return mExtentGroupBox->outputExtent();
 }
 
 QgsGeometry QgsMeshCalculatorDialog::maskGeometry() const
@@ -287,7 +275,7 @@ void QgsMeshCalculatorDialog::datasetGroupEntry( const QModelIndex &index )
 void QgsMeshCalculatorDialog::toggleExtendMask()
 {
   bool visible = useMaskCb->isChecked();
-  extendBox->setVisible( !visible );
+  mExtentGroupBox->setVisible( !visible );
   maskBox->setVisible( visible );
 }
 
@@ -600,14 +588,8 @@ void QgsMeshCalculatorDialog::populateDriversComboBox( )
 void QgsMeshCalculatorDialog::useFullLayerExtent()
 {
   QgsMeshLayer *layer = meshLayer();
-  if ( !layer )
-    return;
-
-  const QgsRectangle layerExtent = layer->extent();
-  mXMinSpinBox->setValue( layerExtent.xMinimum() );
-  mXMaxSpinBox->setValue( layerExtent.xMaximum() );
-  mYMinSpinBox->setValue( layerExtent.yMinimum() );
-  mYMaxSpinBox->setValue( layerExtent.yMaximum() );
+  if ( layer )
+    mExtentGroupBox->setOutputExtentFromLayer( layer );
 }
 
 void QgsMeshCalculatorDialog::useAllTimesFromLayer()
