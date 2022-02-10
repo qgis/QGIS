@@ -197,7 +197,10 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
         {
           scope->setFeature( f );
           if ( filterExpression.isValid() && !filterExpression.evaluate( &context.expressionContext() ).toBool() )
+          {
+            sym->stopRender( context );
             continue;
+          }
 
           const QgsWkbTypes::GeometryType featureType = QgsWkbTypes::geometryType( f.geometry().wkbType() );
           if ( featureType == layerStyle.geometryType() )
@@ -231,7 +234,10 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
       {
         scope->setFeature( f );
         if ( filterExpression.isValid() && !filterExpression.evaluate( &context.expressionContext() ).toBool() )
+        {
+          sym->stopRender( context );
           continue;
+        }
 
         const QgsWkbTypes::GeometryType featureType = QgsWkbTypes::geometryType( f.geometry().wkbType() );
         if ( featureType == layerStyle.geometryType() )
