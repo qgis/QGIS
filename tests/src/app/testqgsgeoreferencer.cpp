@@ -642,6 +642,9 @@ void TestQgsGeoreferencer::testListModel()
   QCOMPARE( model.data( model.index( 0, 3 ) ).toString(), QStringLiteral( "3350923.1250" ) );
   QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-30.0000" ) );
   QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.0000" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>-30</b><br>EPSG:4326 - WGS 84" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>40</b><br>EPSG:4326 - WGS 84" ) );
+
   QCOMPARE( model.data( model.index( 0, 6 ) ).toString(), QStringLiteral( "n/a" ) );
   QCOMPARE( model.data( model.index( 0, 7 ) ).toString(), QStringLiteral( "n/a" ) );
   QCOMPARE( model.data( model.index( 0, 8 ) ).toString(), QStringLiteral( "n/a" ) );
@@ -651,6 +654,9 @@ void TestQgsGeoreferencer::testListModel()
   QCOMPARE( model.data( model.index( 1, 3 ) ).toString(), QStringLiteral( "3350923.1250" ) );
   QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "150.0000" ) );
   QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-30.0000" ) );
+  // tooltip should show target CRS details for user clarification
+  QCOMPARE( model.data( model.index( 1, 4 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>150</b><br>EPSG:4326 - WGS 84" ) );
+  QCOMPARE( model.data( model.index( 1, 5 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>-30</b><br>EPSG:4326 - WGS 84" ) );
   QCOMPARE( model.data( model.index( 1, 6 ) ).toString(), QStringLiteral( "n/a" ) );
   QCOMPARE( model.data( model.index( 1, 7 ) ).toString(), QStringLiteral( "n/a" ) );
   QCOMPARE( model.data( model.index( 1, 8 ) ).toString(), QStringLiteral( "n/a" ) );

@@ -117,6 +117,12 @@ QVariant QgsGCPListModel::data( const QModelIndex &index, int role ) const
           switch ( role )
           {
             case Qt::ToolTipRole:
+            {
+              const QString crsString = mTargetCrs.userFriendlyIdentifier();
+              const double value = column == QgsGCPListModel::Column::DestinationX ? transformedDestinationPoint.x() : transformedDestinationPoint.y();
+              return QStringLiteral( "<b>%1</b><br>%2" ).arg( value ).arg( crsString );
+            }
+
             case Qt::EditRole:
             case Qt::UserRole:
               // use full precision
@@ -329,6 +335,7 @@ QVariant QgsGCPListModel::headerData( int section, Qt::Orientation orientation, 
       switch ( role )
       {
         case Qt::DisplayRole:
+        case Qt::ToolTipRole:
         {
           QString residualUnitType;
           switch ( residualUnit() )
@@ -360,9 +367,25 @@ QVariant QgsGCPListModel::headerData( int section, Qt::Orientation orientation, 
             case QgsGCPListModel::Column::SourceY:
               return tr( "Source Y" );
             case QgsGCPListModel::Column::DestinationX:
-              return tr( "Dest. X" );
             case QgsGCPListModel::Column::DestinationY:
-              return tr( "Dest. Y" );
+            {
+              const QString heading = static_cast< Column >( section ) == QgsGCPListModel::Column::DestinationX ? tr( "Dest. X" ) : tr( "Dest. Y" );
+              switch ( role )
+              {
+                case Qt::DisplayRole:
+                  return heading;
+
+                case Qt::ToolTipRole:
+                {
+                  const QString crsString = mTargetCrs.userFriendlyIdentifier();
+                  return QStringLiteral( "<b>%1</b><br>%2" ).arg( heading, crsString );
+                }
+
+                default:
+                  break;
+              }
+              break;
+            }
             case QgsGCPListModel::Column::ResidualDx:
               return tr( "dX (%1)" ).arg( residualUnitType );
             case QgsGCPListModel::Column::ResidualDy:
