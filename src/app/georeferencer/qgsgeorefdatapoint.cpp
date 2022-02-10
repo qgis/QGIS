@@ -108,6 +108,12 @@ void QgsGeorefDataPoint::setDestinationPoint( const QgsPointXY &p )
   updateCoords();
 }
 
+void QgsGeorefDataPoint::setDestinationPointCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mGcpPoint.setDestinationPointCrs( crs );
+  updateCoords();
+}
+
 QgsPointXY QgsGeorefDataPoint::transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const
 {
   return mGcpPoint.transformedDestinationPoint( targetCrs, context );
