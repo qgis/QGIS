@@ -85,13 +85,14 @@ QgsRasterCalcDialog::QgsRasterCalcDialog(
   mCrsSelector->setShowAccuracyWarnings( true );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-
-  mExtentGroupBox->setOutputCrs( outputCrs() );
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   if ( rasterLayer )
   {
     mExtentGroupBox->setOriginalExtent( rasterLayer->extent(), rasterLayer->dataProvider()->crs() );
     mExtentGroupBox->setOutputExtentFromOriginal();
+
+    mExtentGroupBox->setOutputCrs( outputCrs() );
+    mExtentSizeSet = true;
   }
 
 
@@ -297,9 +298,14 @@ void QgsRasterCalcDialog::showHelp()
 
 void QgsRasterCalcDialog::selectedLayerChanged( QgsMapLayer *layer )
 {
+  mCrsSelector->setCrs( layer->crs() );
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-  setExtentSize( rlayer );
-  mCrsSelector->setCrs( rlayer->crs() );
+  if ( rlayer )
+  {
+    mNColumnsSpinBox->setValue( rlayer->width() );
+    mNRowsSpinBox->setValue( rlayer->height() );
+  }
+
 }
 
 void QgsRasterCalcDialog::mExpressionTextEdit_textChanged()
