@@ -1060,6 +1060,40 @@
           43.7005580
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Dimas Ciputra",
+        "Committer": "Yes",
+        "First Commit Message": "Modernizing qgis plugin",
+        "First Commit Date": "30-06-2020",
+        "GIT Nickname": "dimasciput"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.712498,
+          -7.361033
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Sumandari",
+        "Committer": "Yes",
+        "First Commit Message": "issue82, enable display 'modified_on' column in frontend /plugins",
+        "First Commit Date": "30-10-2020",
+        "GIT Nickname": "sumandari"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.606010,
+          3.166700
+        ]
+      }
     }
   ]
 }
