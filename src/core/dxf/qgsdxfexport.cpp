@@ -1637,6 +1637,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         else
         {
           const QgsGeometryCollection *gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
+          Q_ASSERT( gc );
           if ( gc )
           {
             for ( int i = 0; i < gc->numGeometries(); i++ )
@@ -1646,8 +1647,6 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
               writePolyline( *curve, layer, lineStyleName, penColor, width );
             }
           }
-          else
-            Q_ASSERT( gc );
         }
         break;
       }
@@ -1677,6 +1676,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         else
         {
           const QgsGeometryCollection *gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
+          Q_ASSERT( gc );
           if ( gc )
           {
             for ( int i = 0; i < gc->numGeometries(); i++ )
@@ -1688,10 +1688,6 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
               for ( int j = 0; j < polygon->numInteriorRings(); j++ )
                 writePolyline( *polygon->interiorRing( j ), layer, lineStyleName, penColor, width );
             }
-          }
-          else
-          {
-            Q_ASSERT( gc );
           }
         }
 
