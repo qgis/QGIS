@@ -1024,6 +1024,7 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
 
 QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry> &newGeometries, bool skipIntersectionCheck ) const
 {
+  Q_UNUSED( skipIntersectionCheck )
   if ( !splitLine )
     return InvalidInput;
 
