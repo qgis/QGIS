@@ -174,14 +174,24 @@ class GUI_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
     //! Returns the rule being edited
     QgsRuleBasedLabeling::Rule *rule() { return mRule; }
 
+    /**
+     * Set the widget in dock mode.
+     * \param dockMode TRUE for dock mode.
+     */
     void setDockMode( bool dockMode ) override;
 
   public slots:
     //! Apply any changes from the widget to the set rule.
     void apply();
 
-  public slots:
+    /**
+     * Test the filter that is set in the widget
+     */
     void testFilter();
+
+    /**
+     * Open the expression builder widget
+     */
     void buildExpression();
 
   private:
@@ -197,6 +207,10 @@ class GUI_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
 /**
  * \ingroup gui
  * \class QgsLabelingRulePropsDialog
+ * \brief Dialog for editing labeling rule
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.24
  */
 class GUI_EXPORT QgsLabelingRulePropsDialog : public QDialog
 {
@@ -214,11 +228,27 @@ class GUI_EXPORT QgsLabelingRulePropsDialog : public QDialog
     QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer,
                                 QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
 
+    /**
+     * Returns the current set rule.
+     * \returns The current rule.
+     */
     QgsRuleBasedLabeling::Rule *rule() { return mPropsWidget->rule(); }
 
   public slots:
+
+    /**
+     * Test the filter that is set in the widget
+     */
     void testFilter();
+
+    /**
+     * Open the expression builder widget
+     */
     void buildExpression();
+
+    /**
+     * Apply any changes from the widget to the set rule.
+     */
     void accept() override;
 
   private slots:
