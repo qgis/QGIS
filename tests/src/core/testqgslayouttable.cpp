@@ -57,6 +57,7 @@ class TestQgsLayoutTable : public QObject
 
     void attributeTableHeadings(); //test retrieving attribute table headers
     void attributeTableRows(); //test retrieving attribute table rows
+    void attributeTableFormattedRows(); //test retrieving attribute formatted table rows
     void attributeTableRowsLocalized(); //test retrieving attribute table rows with locale
     void attributeTableFilterFeatures(); //test filtering attribute table rows
     void attributeTableSetAttributes(); //test subset of attributes in table
@@ -231,6 +232,44 @@ void TestQgsLayoutTable::attributeTableRows()
   table->setMaximumNumberOfFeatures( 3 );
   compareTable( table, expectedRows );
 }
+
+void TestQgsLayoutTable::attributeTableFormattedRows()
+{
+  QgsVectorLayer vl { QStringLiteral( "Point?field=int:int" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) };
+  QVariantList valueConfig;
+  QVariantMap config;
+  config[ QStringLiteral( "one" ) ] = QStringLiteral( "1" );
+  config[ QStringLiteral( "two" ) ] = QStringLiteral( "2" );
+  valueConfig.append( config );
+  QVariantMap editorConfig;
+  editorConfig.insert( QStringLiteral( "map" ), valueConfig );
+  vl.setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), editorConfig ) );
+  QgsFeature f { vl.fields( ) };
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "point(9 45)" ) ) );
+  f.setAttribute( QStringLiteral( "int" ), 2 );
+  QgsFeature f2 { vl.fields( ) };
+  f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "point(10 46)" ) ) );
+  f2.setAttribute( QStringLiteral( "int" ), 1 );
+  vl.dataProvider()->addFeatures( QgsFeatureList() << f << f2 );
+
+  QVector<QStringList> expectedRows;
+  QStringList row;
+  row <<  QStringLiteral( "two" );
+  expectedRows.append( row );
+  QStringList row2;
+  row2 <<  QStringLiteral( "one" );
+  expectedRows.append( row2 );
+
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &l );
+  table->setVectorLayer( &vl );
+
+  //retrieve rows and check
+  compareTable( table, expectedRows );
+
+}
+
 void TestQgsLayoutTable::attributeTableRowsLocalized()
 {
   //test retrieving attribute table rows
