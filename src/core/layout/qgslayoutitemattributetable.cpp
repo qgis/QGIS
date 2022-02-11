@@ -25,6 +25,8 @@
 #include "qgslayoutframe.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
 #include "qgsgeometry.h"
 #include "qgsexception.h"
 #include "qgsmapsettings.h"
@@ -569,7 +571,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       if ( idx != -1 )
       {
 
-        const QVariant val = f.attributes().at( idx );
+        QVariant val = f.attributes().at( idx );
 
         if ( mUseConditionalStyling )
         {
@@ -577,6 +579,26 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
           styles = QgsConditionalStyle::matchingConditionalStyles( styles, val, context );
           styles.insert( 0, rowStyle );
           style = QgsConditionalStyle::compressStyles( styles );
+        }
+
+        const QgsEditorWidgetSetup setup = layer->fields().at( idx ).editorWidgetSetup();
+
+        if ( ! setup.isNull() )
+        {
+          QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+          QVariant cache;
+
+          if ( mLayerCache.contains( column.attribute() ) )
+          {
+            cache = mLayerCache[ column.attribute() ];
+          }
+          else
+          {
+            cache = fieldFormatter->createCache( mVectorLayer.get(), idx, setup.config() );
+            mLayerCache.insert( column.attribute(), cache );
+          }
+
+          val = fieldFormatter->representValue( mVectorLayer.get(), idx, setup.config(), cache, val );
         }
 
         QVariant v = val.isNull() ? QString() : replaceWrapChar( val );
