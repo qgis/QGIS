@@ -181,12 +181,24 @@ void QgsRuleBasedLabelingWidget::editRule( const QModelIndex &index )
     return;
 
   QgsRuleBasedLabeling::Rule *rule = mModel->ruleForIndex( index );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
 
-  QgsLabelingRulePropsWidget *widget = new QgsLabelingRulePropsWidget( rule, mLayer, this, mCanvas );
-  widget->setPanelTitle( tr( "Edit Rule" ) );
-  connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedLabelingWidget::ruleWidgetPanelAccepted );
-  connect( widget, &QgsLabelingRulePropsWidget::widgetChanged, this, &QgsRuleBasedLabelingWidget::liveUpdateRuleFromPanel );
-  openPanel( widget );
+  if ( panel && panel->dockMode() )
+  {
+    QgsLabelingRulePropsWidget *widget = new QgsLabelingRulePropsWidget( rule, mLayer, this, mCanvas );
+    widget->setPanelTitle( tr( "Edit Rule" ) );
+    connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedLabelingWidget::ruleWidgetPanelAccepted );
+    connect( widget, &QgsLabelingRulePropsWidget::widgetChanged, this, &QgsRuleBasedLabelingWidget::liveUpdateRuleFromPanel );
+    openPanel( widget );
+    return;
+  }
+
+  QgsLabelingRulePropsDialog dlg( rule, mLayer, this, mCanvas );
+  if ( dlg.exec() )
+  {
+    mModel->updateRule( index.parent(), index.row() );
+    emit widgetChanged();
+  }
 }
 
 void QgsRuleBasedLabelingWidget::removeRule()
@@ -232,6 +244,55 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabelingWidget::currentRule()
   if ( !idx.isValid() )
     return nullptr;
   return mModel->ruleForIndex( idx );
+}
+
+#include "qgsvscrollarea.h"
+
+QgsLabelingRulePropsDialog::QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *mapCanvas )
+  : QDialog( parent )
+{
+
+#ifdef Q_OS_MAC
+  setWindowModality( Qt::WindowModal );
+#endif
+
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  scrollArea->setFrameShape( QFrame::NoFrame );
+  layout->addWidget( scrollArea );
+
+  buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
+  mPropsWidget = new QgsLabelingRulePropsWidget( rule, layer, this, mapCanvas );
+
+  scrollArea->setWidget( mPropsWidget );
+  layout->addWidget( buttonBox );
+  this->setWindowTitle( "Edit Rule" );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsLabelingRulePropsDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLabelingRulePropsDialog::showHelp );
+}
+
+void QgsLabelingRulePropsDialog::testFilter()
+{
+  mPropsWidget->testFilter();
+}
+
+void QgsLabelingRulePropsDialog::buildExpression()
+{
+  mPropsWidget->buildExpression();
+}
+
+void QgsLabelingRulePropsDialog::accept()
+{
+  mPropsWidget->apply();
+  QDialog::accept();
+}
+
+void QgsLabelingRulePropsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#rule-based-labeling" ) );
 }
 
 ////
