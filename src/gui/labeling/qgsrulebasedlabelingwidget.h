@@ -148,7 +148,11 @@ class GUI_EXPORT QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui:
 
 class QgsLabelingGui;
 
+#include <QDialog>
+#include <QDialogButtonBox>
+
 #include "ui_qgslabelingrulepropswidget.h"
+#include "qgsgui.h"
 
 /**
  * \ingroup gui
@@ -176,7 +180,7 @@ class GUI_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
     //! Apply any changes from the widget to the set rule.
     void apply();
 
-  private slots:
+  public slots:
     void testFilter();
     void buildExpression();
 
@@ -190,5 +194,39 @@ class GUI_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
     QgsMapCanvas *mMapCanvas = nullptr;
 };
 
+/**
+ * \ingroup gui
+ * \class QgsLabelingRulePropsDialog
+ */
+class GUI_EXPORT QgsLabelingRulePropsDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsLabelingRulePropsDialog
+     * \param rule associated rule based labeling rule
+     * \param layer source vector layer
+     * \param parent parent widget
+     * \param mapCanvas map canvas
+     */
+    QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer,
+                                QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
+
+    QgsRuleBasedLabeling::Rule *rule() { return mPropsWidget->rule(); }
+
+  public slots:
+    void testFilter();
+    void buildExpression();
+    void accept() override;
+
+  private slots:
+    void showHelp();
+
+  private:
+    QgsLabelingRulePropsWidget *mPropsWidget = nullptr;
+    QDialogButtonBox *buttonBox = nullptr;
+};
 
 #endif // QGSRULEBASEDLABELINGWIDGET_H
