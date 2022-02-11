@@ -805,7 +805,7 @@ QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
         if ( mDoubleSpinBox )
         {
           mDoubleSpinBox->setShowClearButton( true );
-          const double min = mDoubleSpinBox->minimum() - 1;
+          const double min = mDoubleSpinBox->minimum() - mDoubleSpinBox->singleStep();
           mDoubleSpinBox->setMinimum( min );
           mDoubleSpinBox->setValue( min );
         }
