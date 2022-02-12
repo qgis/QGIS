@@ -315,7 +315,7 @@ void checkDock::fix()
     mErrorList.removeAt( row );
     mErrorListModel->resetModel();
     //parseErrorListByFeature();
-    mComment->setText( tr( "%1 errors were found" ).arg( mErrorList.count() ) );
+    mComment->setText( tr( "%n error(s) were found", nullptr, mErrorList.count() ) );
     qgsInterface->mapCanvas()->refresh();
   }
   else
@@ -394,7 +394,7 @@ void checkDock::validate( ValidateType type )
   mRbErrorMarkers.clear();
 
   runTests( type );
-  mComment->setText( tr( "%1 errors were found" ).arg( mErrorList.count() ) );
+  mComment->setText( tr( "%n error(s) were found", nullptr, mErrorList.count() ) );
 
   mRBFeature1->reset();
   mRBFeature2->reset();

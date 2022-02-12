@@ -1701,7 +1701,7 @@ static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionCon
   }
   else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `attribute` requires one or two parameters. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `attribute` requires one or two parameters. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 
@@ -1751,7 +1751,7 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
   }
   else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `represent_attributes` requires no more than two parameters. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `represent_attributes` requires no more than two parameters. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 
@@ -1842,11 +1842,11 @@ static QVariant fcnCoreFeatureMaptipDisplay( const QVariantList &values, const Q
   {
     if ( isMaptip )
     {
-      parent->setEvalErrorString( QObject::tr( "Function `maptip` requires no more than three parameters. %1 given." ).arg( values.length() ) );
+      parent->setEvalErrorString( QObject::tr( "Function `maptip` requires no more than three parameters. %n given.", nullptr, values.length() ) );
     }
     else
     {
-      parent->setEvalErrorString( QObject::tr( "Function `display` requires no more than three parameters. %1 given." ).arg( values.length() ) );
+      parent->setEvalErrorString( QObject::tr( "Function `display` requires no more than three parameters. %n given.", nullptr, values.length() ) );
     }
     return QVariant();
   }
@@ -1923,7 +1923,7 @@ static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionCo
   }
   else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `is_selected` requires no more than two parameters. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `is_selected` requires no more than two parameters. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 
@@ -1945,7 +1945,7 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
     layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
   else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one parameter. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one parameter. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 
@@ -4691,7 +4691,7 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
 {
   if ( values.length() != 2 )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `azimuth` requires exactly two parameters. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `azimuth` requires exactly two parameters. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 

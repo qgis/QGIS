@@ -86,7 +86,7 @@ QVariantMap QgsRepairShapefileAlgorithm::processAlgorithm( const QVariantMap &pa
 
   CPLSetConfigOption( "SHAPE_RESTORE_SHX", nullptr );
 
-  feedback->pushInfo( QObject::tr( "Successfully repaired, found %1 features" ).arg( layer->featureCount() ) );
+  feedback->pushInfo( QObject::tr( "Successfully repaired, found %n feature(s)", nullptr, layer->featureCount() ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), path );

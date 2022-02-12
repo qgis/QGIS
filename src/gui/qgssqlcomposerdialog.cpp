@@ -444,19 +444,11 @@ static QString getFunctionAbbridgedParameters( const QgsSQLComposerDialog::Funct
   }
   else if ( f.minArgs > 0 && f.maxArgs == f.minArgs )
   {
-    if ( f.minArgs == 1 )
-      return QObject::tr( "1 argument" );
-    else
-      return QObject::tr( "%1 arguments" ).arg( f.minArgs );
+    return QObject::tr( "%n argument(s)", nullptr, f.minArgs );
   }
   else if ( f.minArgs >= 0 && f.maxArgs < 0 )
   {
-    if ( f.minArgs > 1 )
-      return QObject::tr( "%1 arguments or more" ).arg( f.minArgs );
-    else if ( f.minArgs == 1 )
-      return QObject::tr( "1 argument or more" );
-    else
-      return QObject::tr( "0 argument or more" );
+    return QObject::tr( "%n argument(s) or more", nullptr, f.minArgs );
   }
   return QString();
 }
@@ -796,9 +788,9 @@ void QgsSQLComposerDialog::setSupportMultipleTables( bool on, const QString &mai
 
   QString mainTypenameFormatted;
   if ( !mainTypename.isEmpty() )
-    mainTypenameFormatted = " (" + mainTypename + ")";
+    mainTypenameFormatted = "(" + mainTypename + ")";
   mQueryEdit->setToolTip( tr( "This is the SQL query editor. The SQL statement can select data from several tables, \n"
-                              "but it must compulsory include the main typename%1 in the selected tables, \n"
+                              "but it must compulsory include the main typename %1 in the selected tables, \n"
                               "and only the geometry column of the main typename can be used as the geometry column of the resulting layer." ).arg( mainTypenameFormatted ) );
 }
 

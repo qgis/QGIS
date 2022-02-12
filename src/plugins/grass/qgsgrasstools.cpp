@@ -620,7 +620,7 @@ int QgsGrassTools::debug( QStandardItem *item )
     }
     if ( errors > 0 )
     {
-      label += " ( " + tr( "%1 errors" ).arg( errors ) + " )";
+      label += " ( " + tr( "%n error(s)", nullptr, errors ) + " )";
       item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) ) );
     }
     else

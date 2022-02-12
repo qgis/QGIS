@@ -9573,7 +9573,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
     for ( QgsVectorLayer *chl : infoContextLayers )
     {
       childrenCount += infoContext.duplicatedFeatures( chl ).size();
-      childrenInfo += ( tr( "%1 feature(s) on layer \"%2\", " ).arg( infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+      childrenInfo += ( tr( "%n feature(s) on layer \"%1\", ", nullptr, infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
@@ -9606,7 +9606,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
         feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
         deletedCount += context.handledFeatures( contextLayer ).size();
       }
-      visibleMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
+      visibleMessageBar()->pushMessage( tr( "%n feature(s) deleted: %1", nullptr, deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
     }
 
     showStatusMessage( tr( "%n feature(s) deleted.", "number of features deleted", deletedCount ) );
@@ -11116,7 +11116,7 @@ void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeomet
   }
   else if ( nCopiedFeatures == nTotalFeatures )
   {
-    message = tr( "%1 features were pasted." ).arg( nCopiedFeatures );
+    message = tr( "%n feature(s) were pasted.", nullptr, nCopiedFeatures );
   }
   else
   {
@@ -11126,8 +11126,7 @@ void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeomet
   // warn the user if the pasted features have invalid geometries
   if ( invalidGeometriesCount > 0 )
     message +=  invalidGeometriesCount == 1 ? tr( " Geometry collapsed due to intersection avoidance." ) :
-                tr( "%1 geometries collapsed due to intersection avoidance." )
-                .arg( invalidGeometriesCount );
+                tr( "%n geometries collapsed due to intersection avoidance.", nullptr, invalidGeometriesCount );
 
   visibleMessageBar()->pushMessage( tr( "Paste features" ),
                                     message,
@@ -17741,10 +17740,10 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
     const auto duplicateFeatureContextLayers = duplicateFeatureContext.layers();
     for ( QgsVectorLayer *chl : duplicateFeatureContextLayers )
     {
-      childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( duplicateFeatureContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+      childrenInfo += ( tr( "%n children on layer %1 duplicated", nullptr, duplicateFeatureContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
     }
 
-    visibleMessageBar()->pushMessage( tr( "Feature on layer %2 duplicated\n%3" ).arg( layer->name(), childrenInfo ), Qgis::MessageLevel::Success );
+    visibleMessageBar()->pushMessage( tr( "Feature on layer %1 duplicated\n%2" ).arg( layer->name(), childrenInfo ), Qgis::MessageLevel::Success );
 
     mMapCanvas->unsetMapTool( digitizeFeature );
   }

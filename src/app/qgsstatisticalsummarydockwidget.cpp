@@ -482,7 +482,7 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
   for ( const QgsDateTimeStatisticalSummary::Statistic stat : constStatsToDisplay )
   {
     const QString value = ( stat == QgsDateTimeStatisticalSummary::Range
-                            ? tr( "%1 seconds" ).arg( stats.range().seconds() )
+                            ? tr( "%n second(s)", nullptr, stats.range().seconds() )
                             : stats.statistic( stat ).toString() );
 
     addRow( row, QgsDateTimeStatisticalSummary::displayName( stat ),

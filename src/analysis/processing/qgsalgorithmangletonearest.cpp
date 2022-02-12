@@ -266,7 +266,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
       {
         if ( nearest.count() > 1 )
         {
-          feedback->pushInfo( QObject::tr( "Multiple matching features found at same distance from search feature, found %1 features" ).arg( nearest.count() ) );
+          feedback->pushInfo( QObject::tr( "Multiple matching features found at same distance from search feature, found %n feature(s)", nullptr, nearest.count() ) );
         }
 
         const QgsGeometry joinLine = f.geometry().shortestLine( index.geometry( nearest.at( 0 ) ) );

@@ -758,7 +758,7 @@ bool QgsDelimitedTextSourceSelect::validate()
     message = tr( "No data found in file" );
     if ( mBadRowCount > 0 )
     {
-      message = message + " (" + tr( "%1 badly formatted records discarded" ).arg( mBadRowCount ) + ')';
+      message = message + " (" + tr( "%n badly formatted record(s) discarded", nullptr, mBadRowCount ) + ')';
     }
   }
   else if ( geomTypeXY->isChecked() && ( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty() ) )
@@ -782,7 +782,7 @@ bool QgsDelimitedTextSourceSelect::validate()
     enabled = true;
     if ( mBadRowCount > 0 )
     {
-      message = tr( "%1 badly formatted records discarded from sample data" ).arg( mBadRowCount );
+      message = tr( "%n badly formatted record(s) discarded from sample data", nullptr, mBadRowCount );
     }
 
   }

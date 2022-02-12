@@ -2530,7 +2530,7 @@ void QgsProcessingEnumPanelWidget::updateSummaryText()
     if ( concatenated.length() < 100 )
       mLineEdit->setText( concatenated );
     else
-      mLineEdit->setText( tr( "%1 options selected" ).arg( mValue.count() ) );
+      mLineEdit->setText( tr( "%n option(s) selected", nullptr, mValue.count() ) );
   }
 }
 
