@@ -170,7 +170,7 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
 
   for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
   {
-    if ( !layerStyle.isActive( zoomLevel ) )
+    if ( !layerStyle.isActive( zoomLevel ) || !layerStyle.symbol() )
       continue;
 
     QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
