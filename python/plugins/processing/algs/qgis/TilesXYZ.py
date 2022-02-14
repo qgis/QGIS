@@ -212,7 +212,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
 
         image = QImage(size, QImage.Format_ARGB32_Premultiplied)
         image.fill(self.color)
-        dpm = threadSpecificSettings.outputDpi() / 25.4 * 1000
+        dpm = round(threadSpecificSettings.outputDpi() / 25.4 * 1000)
         image.setDotsPerMeterX(dpm)
         image.setDotsPerMeterY(dpm)
         painter = QPainter(image)
@@ -313,7 +313,9 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             for zoom in range(self.min_zoom, self.max_zoom + 1):
                 feedback.pushConsoleInfo(self.tr('Generating tiles for zoom level: {zoom}').format(zoom=zoom))
                 with ThreadPoolExecutor(max_workers=self.maxThreads) as threadPool:
-                    threadPool.map(self.renderSingleMetatile, metatiles_by_zoom[zoom])
+                    for result in threadPool.map(self.renderSingleMetatile, metatiles_by_zoom[zoom]):
+                        # re-raise exceptions from threads
+                        _ = result
         else:
             feedback.pushConsoleInfo(self.tr('Using 1 CPU Thread:'))
             for zoom in range(self.min_zoom, self.max_zoom + 1):
