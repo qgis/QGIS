@@ -389,6 +389,7 @@ void QgsLayoutItemAttributeTable::restoreFieldAliasMap( const QMap<int, QString>
 bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &contents )
 {
   contents.clear();
+  mLayerCache.clear();
 
   QgsVectorLayer *layer = sourceLayer();
   if ( !layer )
@@ -588,9 +589,10 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
           QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
           QVariant cache;
 
-          if ( mLayerCache.contains( column.attribute() ) )
+          auto it = mLayerCache.constFind( column.attribute() );
+          if ( it != mLayerCache.constEnd() )
           {
-            cache = mLayerCache[ column.attribute() ];
+            cache = it.value();
           }
           else
           {
