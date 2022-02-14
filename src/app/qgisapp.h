@@ -2684,7 +2684,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     std::unique_ptr<QgsGeometryValidationService> mGeometryValidationService;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
-    QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
+    QPointer< QgsHandleBadLayersHandler > mAppBadLayersHandler;
 
     std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
 
