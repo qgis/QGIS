@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>280</width>
+    <width>307</width>
     <height>649</height>
    </rect>
   </property>
@@ -71,7 +71,7 @@
       </item>
       <item>
        <widget class="QWidget" name="mVaryingWidthWidget" native="true">
-        <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,0,0,0,0,0,0,0">
+        <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,0,0,0,0,0,0">
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -87,35 +87,25 @@
          <property name="horizontalSpacing">
           <number>6</number>
          </property>
-         <item row="1" column="1" colspan="3">
+         <item row="1" column="1">
           <widget class="QgsFieldExpressionWidget" name="mWidthEndFieldExpression" native="true"/>
          </item>
-         <item row="0" column="1" colspan="3">
+         <item row="0" column="1">
           <widget class="QgsFieldExpressionWidget" name="mWidthStartFieldExpression" native="true"/>
          </item>
-         <item row="6" column="1" colspan="2">
-          <widget class="QDoubleSpinBox" name="mDoubleSpinBoxMinWidth"/>
-         </item>
-         <item row="8" column="0" colspan="4">
-          <layout class="QVBoxLayout" name="verticalLayout_7">
-           <property name="topMargin">
-            <number>0</number>
+         <item row="6" column="0" colspan="2">
+          <widget class="QCheckBox" name="mCheckBoxAbsoluteValue">
+           <property name="text">
+            <string>Use absolute value</string>
            </property>
-           <item>
-            <widget class="QCheckBox" name="mCheckBoxAbsoluteValue">
-             <property name="text">
-              <string>Use absolute value</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="mCheckBoxOutOfrange">
-             <property name="text">
-              <string>Ignore out of range</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          </widget>
+         </item>
+         <item row="7" column="0" colspan="2">
+          <widget class="QCheckBox" name="mCheckBoxOutOfrange">
+           <property name="text">
+            <string>Ignore out of range</string>
+           </property>
+          </widget>
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_2">
@@ -131,23 +121,77 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Max. value</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Min. value</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
           <widget class="QLabel" name="label_7">
            <property name="text">
             <string>Max. width</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="3" rowspan="2">
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QgsUnitSelectionWidget" name="mWidthUnitSelectionVarying" native="true"/>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Min. width</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1" rowspan="2">
+          <layout class="QGridLayout" name="gridLayout_12">
+           <item row="0" column="0">
+            <widget class="QDoubleSpinBox" name="mDoubleSpinBoxMinWidth"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QDoubleSpinBox" name="mDoubleSpinBoxMaxWidth"/>
+           </item>
+           <item row="0" column="1" rowspan="2">
+            <widget class="QgsUnitSelectionWidget" name="mWidthUnitSelectionVarying" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
-         <item row="2" column="3" rowspan="2">
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
+         <item row="2" column="1" rowspan="2">
+          <layout class="QGridLayout" name="gridLayout_13">
+           <item row="0" column="0">
+            <widget class="QgsDoubleSpinBox" name="mLineEditWidthMinValue">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QgsDoubleSpinBox" name="mLineEditWidthMaxValue">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" rowspan="2">
             <widget class="QPushButton" name="mButtonLoadMinMaxValueWidth">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -165,56 +209,6 @@
             </widget>
            </item>
           </layout>
-         </item>
-         <item row="7" column="1" colspan="2">
-          <widget class="QDoubleSpinBox" name="mDoubleSpinBoxMaxWidth"/>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>Min. width</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Max. value</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" colspan="2">
-          <widget class="QLineEdit" name="mLineEditWidthMinValue">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>0</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Min. value</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1" colspan="2">
-          <widget class="QLineEdit" name="mLineEditWidthMaxValue">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>10</string>
-           </property>
-          </widget>
          </item>
         </layout>
        </widget>
@@ -290,6 +284,68 @@
          <property name="bottomMargin">
           <number>10</number>
          </property>
+         <item row="4" column="0" colspan="2">
+          <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" rowspan="2">
+          <layout class="QGridLayout" name="gridLayout_6">
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QgsDoubleSpinBox" name="mLineEditColorMinValue">
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QgsDoubleSpinBox" name="mLineEditColorMaxValue">
+            </widget>
+           </item>
+           <item row="0" column="1" rowspan="2">
+            <widget class="QPushButton" name="mButtonLoadMinMaxValueColor">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>End value</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>Max. value</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QgsFieldExpressionWidget" name="mColorEndFieldExpression" native="true"/>
+         </item>
+         <item row="0" column="1">
+          <widget class="QgsFieldExpressionWidget" name="mColorStartFieldExpression" native="true"/>
+         </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_11">
            <property name="text">
@@ -303,63 +359,6 @@
             <string>Start value</string>
            </property>
           </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_12">
-           <property name="text">
-            <string>Max. value</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" colspan="2">
-          <widget class="QgsFieldExpressionWidget" name="mColorStartFieldExpression" native="true"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_10">
-           <property name="text">
-            <string>End value</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0" colspan="3">
-          <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="mLineEditColorMinValue"/>
-         </item>
-         <item row="2" column="2" rowspan="2">
-          <layout class="QVBoxLayout" name="verticalLayout_6">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QPushButton" name="mButtonLoadMinMaxValueColor">
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../images/images.qrc">
-               <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="mLineEditColorMaxValue"/>
-         </item>
-         <item row="1" column="1" colspan="2">
-          <widget class="QgsFieldExpressionWidget" name="mColorEndFieldExpression" native="true"/>
          </item>
         </layout>
        </widget>
@@ -413,6 +412,22 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mWidthMethodComboBox</tabstop>
+  <tabstop>mDoubleSpinBoxWidth</tabstop>
+  <tabstop>mLineEditWidthMinValue</tabstop>
+  <tabstop>mLineEditWidthMaxValue</tabstop>
+  <tabstop>mButtonLoadMinMaxValueWidth</tabstop>
+  <tabstop>mDoubleSpinBoxMinWidth</tabstop>
+  <tabstop>mDoubleSpinBoxMaxWidth</tabstop>
+  <tabstop>mCheckBoxAbsoluteValue</tabstop>
+  <tabstop>mCheckBoxOutOfrange</tabstop>
+  <tabstop>mColorMethodComboBox</tabstop>
+  <tabstop>mColorButton</tabstop>
+  <tabstop>mLineEditColorMinValue</tabstop>
+  <tabstop>mLineEditColorMaxValue</tabstop>
+  <tabstop>mButtonLoadMinMaxValueColor</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>
