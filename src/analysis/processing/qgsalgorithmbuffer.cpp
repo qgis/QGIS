@@ -161,7 +161,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     current++;
   }
 
-  if ( dissolve )
+  if ( dissolve && !bufferedGeometriesForDissolve.isEmpty() )
   {
     QgsGeometry finalGeometry = QgsGeometry::unaryUnion( bufferedGeometriesForDissolve );
     finalGeometry.convertToMultiType();
