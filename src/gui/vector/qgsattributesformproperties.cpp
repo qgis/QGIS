@@ -245,8 +245,8 @@ void QgsAttributesFormProperties::initInitPython()
                           "\"\"\"\n"
                           "from qgis.PyQt.QtWidgets import QWidget\n\n"
                           "def my_form_open(dialog, layer, feature):\n"
-                          "\tgeom = feature.geometry()\n"
-                          "\tcontrol = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );
+                          "    geom = feature.geometry()\n"
+                          "    control = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );
   }
 }
 
