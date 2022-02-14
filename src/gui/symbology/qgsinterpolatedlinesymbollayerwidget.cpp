@@ -38,6 +38,11 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   mColorStartFieldExpression->setFilters( QgsFieldProxyModel::Numeric );
   mColorEndFieldExpression->setFilters( QgsFieldProxyModel::Numeric );
 
+  mLineEditWidthMinValue->setClearValue( 0.0 );
+  mLineEditWidthMaxValue->setClearValue( 10.00 );
+  mLineEditColorMinValue->setClearValue( 0.00 );
+  mLineEditColorMaxValue->setClearValue( 10.00 );
+
   mWidthStartFieldExpression->setLayer( layer );
   mWidthEndFieldExpression->setLayer( layer );
   mColorStartFieldExpression->setLayer( layer );
@@ -74,8 +79,8 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   connect( mWidthEndFieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged )
            , this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxWidthFromLayer );
   connect( mButtonLoadMinMaxValueWidth, &QPushButton::clicked, this, &QgsInterpolatedLineSymbolLayerWidget::onReloadMinMaxValueWidth );
-  connect( mLineEditWidthMinValue, &QLineEdit::textChanged, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
-  connect( mLineEditWidthMaxValue, &QLineEdit::textChanged, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
+  connect( mLineEditWidthMinValue, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::apply );
+  connect( mLineEditWidthMaxValue, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mDoubleSpinBoxMinWidth, qOverload<double>( &QDoubleSpinBox::valueChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mDoubleSpinBoxMaxWidth, qOverload<double>( &QDoubleSpinBox::valueChanged ),
@@ -107,10 +112,10 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   connect( mColorEndFieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged )
            , this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxColorFromLayer );
 
-  connect( mLineEditColorMinValue, &QLineEdit::textChanged, this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextChanged );
-  connect( mLineEditColorMinValue, &QLineEdit::textEdited, this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextEdited );
-  connect( mLineEditColorMaxValue, &QLineEdit::textChanged, this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextChanged );
-  connect( mLineEditColorMaxValue, &QLineEdit::textEdited, this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextEdited );
+  //connect( mLineEditColorMinValue, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextChanged );
+  connect( mLineEditColorMinValue, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextEdited );
+  //connect( mLineEditColorMaxValue, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextChanged );
+  connect( mLineEditColorMaxValue, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextEdited );
   connect( mButtonLoadMinMaxValueColor, &QPushButton::clicked, this, &QgsInterpolatedLineSymbolLayerWidget::onReloadMinMaxValueColor );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
 
@@ -129,8 +134,8 @@ void QgsInterpolatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   whileBlocking( mDoubleSpinBoxWidth )->setValue( interpolatedWidth.fixedStrokeWidth() );
   whileBlocking( mWidthStartFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyLineStartWidthValue ).asExpression() );
   whileBlocking( mWidthEndFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyLineEndWidthValue ).asExpression() );
-  setLineEditValue( mLineEditWidthMinValue, interpolatedWidth.minimumValue() );
-  setLineEditValue( mLineEditWidthMaxValue, interpolatedWidth.maximumValue() );
+  whileBlocking( mLineEditWidthMinValue )->setValue( interpolatedWidth.minimumValue() );
+  whileBlocking( mLineEditWidthMaxValue )->setValue( interpolatedWidth.maximumValue() );
   whileBlocking( mDoubleSpinBoxMinWidth )->setValue( interpolatedWidth.minimumWidth() );
   whileBlocking( mDoubleSpinBoxMaxWidth )->setValue( interpolatedWidth.maximumWidth() );
   whileBlocking( mWidthUnitSelectionFixed )->setUnit( mLayer->widthUnit() );
@@ -144,8 +149,8 @@ void QgsInterpolatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   whileBlocking( mColorStartFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyLineStartColorValue ).asExpression() );
   whileBlocking( mColorEndFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyLineEndColorValue ).asExpression() );
   whileBlocking( mColorRampShaderWidget )->setFromShader( interpolatedColor.colorRampShader() );
-  setLineEditValue( mLineEditColorMinValue, interpolatedColor.colorRampShader().minimumValue() );
-  setLineEditValue( mLineEditColorMaxValue, interpolatedColor.colorRampShader().maximumValue() );
+  whileBlocking( mLineEditColorMinValue )->setValue( interpolatedColor.colorRampShader().minimumValue() );
+  whileBlocking( mLineEditColorMaxValue )->setValue( interpolatedColor.colorRampShader().maximumValue() );
   whileBlocking( mColorButton )->setColor( interpolatedColor.singleColor() );
 
 
@@ -201,16 +206,16 @@ void QgsInterpolatedLineSymbolLayerWidget::updateVisibleWidget()
 void QgsInterpolatedLineSymbolLayerWidget::onReloadMinMaxValueWidth()
 {
   reloadMinMaxWidthFromLayer();
-  setLineEditValue( mLineEditWidthMinValue, mMinimumForWidthFromLayer );
-  setLineEditValue( mLineEditWidthMaxValue, mMaximumForWidthFromLayer );
+  mLineEditWidthMinValue->setValue( mMinimumForWidthFromLayer );
+  mLineEditWidthMaxValue->setValue( mMaximumForWidthFromLayer );
   apply();
 }
 
 void QgsInterpolatedLineSymbolLayerWidget::onReloadMinMaxValueColor()
 {
   reloadMinMaxColorFromLayer();
-  setLineEditValue( mLineEditColorMinValue, mMinimumForColorFromLayer );
-  setLineEditValue( mLineEditColorMaxValue, mMaximumForColorFromLayer );
+  mLineEditColorMinValue->setValue( mMinimumForColorFromLayer );
+  mLineEditColorMaxValue->setValue( mMaximumForColorFromLayer );
   onColorMinMaxLineTextEdited();
 }
 
@@ -267,12 +272,12 @@ void QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxWidthFromLayer()
 
   if ( mLineEditWidthMinValue->text().isEmpty() && !std::isnan( mMinimumForWidthFromLayer ) )
   {
-    setLineEditValue( mLineEditWidthMinValue, mMinimumForWidthFromLayer );
+    mLineEditWidthMinValue->setValue( mMinimumForWidthFromLayer );
   }
 
   if ( mLineEditWidthMaxValue->text().isEmpty() && !std::isnan( mMaximumForWidthFromLayer ) )
   {
-    setLineEditValue( mLineEditWidthMaxValue, mMaximumForWidthFromLayer );
+    mLineEditWidthMaxValue->setValue( mMaximumForWidthFromLayer );
   }
 
   apply();
@@ -326,13 +331,13 @@ void QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxColorFromLayer()
   bool minMaxColorChanged = false;
   if ( mLineEditColorMinValue->text().isEmpty() && !std::isnan( mMinimumForColorFromLayer ) )
   {
-    setLineEditValue( mLineEditColorMinValue, mMinimumForColorFromLayer );
+    mLineEditColorMinValue->setValue( mMinimumForColorFromLayer );
     minMaxColorChanged = true;
   }
 
   if ( mLineEditColorMaxValue->text().isEmpty() && !std::isnan( mMaximumForColorFromLayer ) )
   {
-    setLineEditValue( mLineEditColorMaxValue, mMaximumForColorFromLayer );
+    mLineEditColorMaxValue->setValue( mMaximumForColorFromLayer );
     minMaxColorChanged = true;
   }
 
@@ -344,16 +349,16 @@ void QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxColorFromLayer()
 
 void QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextChanged()
 {
-  const double min = lineEditValue( mLineEditColorMinValue );
-  const double max = lineEditValue( mLineEditColorMaxValue );
+  const double min = mLineEditColorMinValue->value();
+  const double max = mLineEditColorMaxValue->value();
   whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( min, max );
   apply();
 }
 
 void QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextEdited()
 {
-  const double min = lineEditValue( mLineEditColorMinValue );
-  const double max = lineEditValue( mLineEditColorMaxValue );
+  const double min = mLineEditColorMinValue->value();
+  const double max = mLineEditColorMaxValue->value();
   whileBlocking( mColorRampShaderWidget )->setMinimumMaximumAndClassify( min, max );
   apply();
 }
@@ -362,8 +367,8 @@ QgsInterpolatedLineWidth QgsInterpolatedLineSymbolLayerWidget::interpolatedLineW
 {
   QgsInterpolatedLineWidth interWidth;
   interWidth.setIsVariableWidth( mWidthMethodComboBox->currentData().toBool() );
-  interWidth.setMinimumValue( lineEditValue( mLineEditWidthMinValue ) );
-  interWidth.setMaximumValue( lineEditValue( mLineEditWidthMaxValue ) );
+  interWidth.setMinimumValue( mLineEditWidthMinValue->value() );
+  interWidth.setMaximumValue( mLineEditWidthMaxValue->value() );
   interWidth.setMinimumWidth( mDoubleSpinBoxMinWidth->value() );
   interWidth.setMaximumWidth( mDoubleSpinBoxMaxWidth->value() );
   interWidth.setFixedStrokeWidth( mDoubleSpinBoxWidth->value() );
@@ -382,22 +387,4 @@ QgsInterpolatedLineColor QgsInterpolatedLineSymbolLayerWidget::interpolatedLineC
   interColor.setColoringMethod( static_cast<QgsInterpolatedLineColor::ColoringMethod>( mColorMethodComboBox->currentData().toInt() ) );
 
   return interColor;
-}
-
-double QgsInterpolatedLineSymbolLayerWidget::lineEditValue( QLineEdit *lineEdit )
-{
-  if ( lineEdit->text().isEmpty() )
-  {
-    return std::numeric_limits<double>::quiet_NaN();
-  }
-
-  return QgsDoubleValidator::toDouble( lineEdit->text() );
-}
-
-void QgsInterpolatedLineSymbolLayerWidget::setLineEditValue( QLineEdit *lineEdit, double value )
-{
-  QString strValue;
-  if ( !std::isnan( value ) )
-    strValue = QLocale().toString( value );
-  whileBlocking( lineEdit )->setText( strValue );
 }

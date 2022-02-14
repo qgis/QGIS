@@ -179,6 +179,18 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="decimals">
+              <number>4</number>
+             </property>
+             <property name="minimum">
+              <double>-999999999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999999999.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>0.000000000000000</double>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -189,6 +201,18 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="decimals">
+              <number>4</number>
+             </property>
+             <property name="minimum">
+              <double>-999999999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999999999.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>10.000000000000000</double>
+             </property>
             </widget>
            </item>
            <item row="0" column="1" rowspan="2">
@@ -198,6 +222,9 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Load bounds from the start and end values</string>
              </property>
              <property name="text">
               <string/>
@@ -301,10 +328,31 @@
            </property>
            <item row="0" column="0">
             <widget class="QgsDoubleSpinBox" name="mLineEditColorMinValue">
+             <property name="decimals">
+              <number>4</number>
+             </property>
+             <property name="minimum">
+              <double>-999999999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999999999.000000000000000</double>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
             <widget class="QgsDoubleSpinBox" name="mLineEditColorMaxValue">
+             <property name="decimals">
+              <number>4</number>
+             </property>
+             <property name="minimum">
+              <double>-999999999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999999999.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>10.000000000000000</double>
+             </property>
             </widget>
            </item>
            <item row="0" column="1" rowspan="2">
@@ -314,6 +362,9 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Load bounds from the start and end values</string>
              </property>
              <property name="text">
               <string/>
