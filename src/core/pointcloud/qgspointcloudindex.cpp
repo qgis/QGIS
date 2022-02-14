@@ -247,10 +247,8 @@ int QgsPointCloudIndex::span() const
 
 int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
 {
-  int count = -1;
   mHierarchyMutex.lock();
-  if ( mHierarchy.contains( n ) )
-    count = mHierarchy[ n ];
+  const int count = mHierarchy.value( n, -1 );
   mHierarchyMutex.unlock();
   return count;
 }
