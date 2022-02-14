@@ -908,7 +908,7 @@ void QgsRelationReferenceWidget::entryAdded( const QgsFeature &feat )
     }
   }
 
-  if ( mEditorContext.vectorLayerTools()->addFeature( mReferencedLayer, attributes, f.geometry(), &f ) )
+  if ( mEditorContext.vectorLayerTools()->addFeature( mReferencedLayer, attributes, f.geometry(), &f, this, false, true ) )
   {
     QVariantList attrs;
     for ( const QString &fieldName : std::as_const( mReferencedFields ) )

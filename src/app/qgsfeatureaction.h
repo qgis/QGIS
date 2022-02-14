@@ -52,7 +52,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
      *
      * \returns TRUE if feature was added if showModal is true. If showModal is FALSE, returns TRUE in every case
      */
-    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr );
+    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr, bool hideParent = false );
 
     /**
      * Sets whether to force suppression of the attribute form popup after creating a new feature.
@@ -79,6 +79,8 @@ class APP_EXPORT QgsFeatureAction : public QAction
 
   private slots:
     void onFeatureSaved( const QgsFeature &feature );
+    void unhideParentWidget();
+    void hideParentWidget();
 
   private:
     QgsAttributeDialog *newDialog( bool cloneFeature );
@@ -86,6 +88,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     QgsVectorLayer *mLayer = nullptr;
     QgsFeature *mFeature = nullptr;
     QUuid mActionId;
+    QWidget *mParentWidget = nullptr;
     int mIdx;
 
     bool mFeatureSaved;

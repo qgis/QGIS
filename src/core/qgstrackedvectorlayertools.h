@@ -33,7 +33,7 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
      */
     QgsTrackedVectorLayerTools() = default;
 
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const override;
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const override;
     bool startEditing( QgsVectorLayer *layer ) const override;
     bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const override;
     bool saveEdits( QgsVectorLayer *layer ) const override;

@@ -450,6 +450,9 @@ void QgsRelationEditorWidget::addFeatureGeometry()
 
 void QgsRelationEditorWidget::onDigitizingCompleted( const QgsFeature &feature )
 {
+  window()->setVisible( true );
+  window()->raise();
+  window()->activateWindow();
   QgsAbstractRelationEditorWidget::addFeature( feature.geometry() );
 
   unsetMapTool();
@@ -780,16 +783,15 @@ void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Escape )
   {
+    window()->setVisible( true );
+    window()->raise();
+    window()->activateWindow();
     unsetMapTool();
   }
 }
 
 void QgsRelationEditorWidget::mapToolDeactivated()
 {
-  window()->setVisible( true );
-  window()->raise();
-  window()->activateWindow();
-
   if ( mEditorContext.mainMessageBar() && mMessageBarItem )
   {
     mEditorContext.mainMessageBar()->popWidget( mMessageBarItem );
