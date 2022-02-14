@@ -942,7 +942,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
       tr( "Multiple instances of QGIS application object detected.\nPlease contact the developers.\n" ) );
     abort();
   }
-  mSkipBadLayers = skipBadLayers;
+
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
@@ -1488,7 +1488,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsHtmlDataItemProvider() );
 
   // set handler for missing layers (will be owned by QgsProject)
-  if ( !mSkipBadLayers )
+  if ( !skipBadLayers )
   {
     QgsDebugMsgLevel( QStringLiteral( "Creating bad layers handler" ), 2 );
     mAppBadLayersHandler = new QgsHandleBadLayersHandler();
@@ -7042,9 +7042,8 @@ bool QgisApp::addProject( const QString &projectFile )
   QObject connectionScope; // manually control scope of layersChanged lambda connection - we need the connection automatically destroyed when this function finishes
 
   bool badLayersHandled = false;
-  if ( !mSkipBadLayers )
+  if ( mAppBadLayersHandler )
   {
-    QgsDebugMsg( QStringLiteral( "NOT Skipping bad layers" ) );
     connect( mAppBadLayersHandler, &QgsHandleBadLayersHandler::layersChanged, &connectionScope, [&badLayersHandled] { badLayersHandled = true; } );
   }
 

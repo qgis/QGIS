@@ -2141,8 +2141,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void activeLayerChanged( QgsMapLayer *layer );
 
   private:
-    //Flag to allow user to bypass badlayer checks.
-    bool mSkipBadLayers;
+
     void createPreviewImage( const QString &path, const QIcon &overlayIcon = QIcon() );
     void startProfile( const QString &name );
     void endProfile();
@@ -2763,7 +2762,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     std::unique_ptr<QgsGeometryValidationService> mGeometryValidationService;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
-    QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
+    QPointer< QgsHandleBadLayersHandler > mAppBadLayersHandler;
 
     std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
 
