@@ -1232,7 +1232,14 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       if ( ! filterRect.isNull() )
       {
         const QgsCoordinateTransform ct( bboxCrs, crs, context.project()->transformContext() );
-        featureRequest.setFilterRect( ct.transform( filterRect ) );
+        try
+        {
+          featureRequest.setFilterRect( ct.transform( filterRect ) );
+        }
+        catch ( QgsCsException & )
+        {
+          throw QgsServerApiInternalServerError( QStringLiteral( "BBOX CRS could not be transformed to destination CRS" ) );
+        }
       }
 
       if ( ! attrFilters.isEmpty() )
