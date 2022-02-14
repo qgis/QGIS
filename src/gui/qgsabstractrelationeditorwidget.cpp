@@ -241,7 +241,7 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
     // n:m Relation: first let the user create a new feature on the other table
     // and autocreate a new linking feature.
     QgsFeature finalFeature;
-    if ( !vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &finalFeature ) )
+    if ( !vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &finalFeature, this, false, true ) )
       return QgsFeatureIds();
 
     addedFeatureIds.insert( finalFeature.id() );
@@ -280,7 +280,7 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
       keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeatureList.first().attribute( fieldPair.referencedField() ) );
 
     QgsFeature linkFeature;
-    if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature ) )
+    if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature, this, false, true ) )
       return QgsFeatureIds();
 
     addedFeatureIds.insert( linkFeature.id() );

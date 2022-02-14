@@ -17,7 +17,7 @@
 #include "qgsvectorlayer.h"
 
 
-bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const
+bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget, bool showModal, bool hideParent ) const
 {
   QgsFeature *f = feature;
   if ( !feature )
@@ -25,7 +25,7 @@ bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAtt
 
   const_cast<QgsVectorLayerTools *>( mBackend )->setForceSuppressFormPopup( forceSuppressFormPopup() );
 
-  if ( mBackend->addFeature( layer, defaultValues, defaultGeometry, f ) )
+  if ( mBackend->addFeature( layer, defaultValues, defaultGeometry, f, parentWidget, showModal, hideParent ) )
   {
     mAddedFeatures[layer].insert( f->id() );
     if ( !feature )

@@ -55,7 +55,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \returns                TRUE in case of success, FALSE if the operation failed/was aborted
      *
      */
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr ) const = 0;
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const = 0;
 
     // TODO QGIS 4: remove const qualifier
 

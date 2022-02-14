@@ -20,7 +20,7 @@ class QgsTrackedVectorLayerTools : QgsVectorLayerTools
 Constructor for QgsTrackedVectorLayerTools.
 %End
 
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const;
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget = 0, bool showModal = true, bool hideParent = false ) const;
 
     virtual bool startEditing( QgsVectorLayer *layer ) const;
 
