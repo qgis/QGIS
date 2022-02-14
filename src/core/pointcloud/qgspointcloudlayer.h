@@ -172,6 +172,9 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     bool setSubsetString( const QString &subset );
     QString subsetString() const;
 
+  signals:
+    void subsetStringChanged();
+
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;

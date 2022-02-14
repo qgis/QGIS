@@ -138,6 +138,9 @@ Ownership of ``renderer`` is transferred to the layer.
     bool setSubsetString( const QString &subset );
     QString subsetString() const;
 
+  signals:
+    void subsetStringChanged();
+
   private:
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 };

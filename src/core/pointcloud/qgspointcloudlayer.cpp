@@ -58,6 +58,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
   }
 
   setLegend( QgsMapLayerLegend::defaultPointCloudLegend( this ) );
+  connect( this, &QgsPointCloudLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
 }
 
 QgsPointCloudLayer::~QgsPointCloudLayer() = default;
@@ -664,11 +665,11 @@ bool QgsPointCloudLayer::setSubsetString( const QString &subset )
     return true;
 
   bool res = mDataProvider->setSubsetString( subset );
-//  if ( res )
-//  {
-//    emit subsetStringChanged();
-//    triggerRepaint();
-//  }
+  if ( res )
+  {
+    emit subsetStringChanged();
+    triggerRepaint();
+  }
   return res;
 }
 
