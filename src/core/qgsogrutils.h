@@ -378,7 +378,7 @@ class CORE_EXPORT QgsOgrUtils
     /**
      * Converts an QVariant type to the best matching OGR field type and sub type.
      *
-     * \param variant QVariant field type
+     * \param variantType QVariant field type
      * \param ogrType will be set to matching OGR type
      * \param ogrSubType will be set to matching OGR sub type
      *
