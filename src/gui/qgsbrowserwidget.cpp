@@ -99,7 +99,7 @@ QgsBrowserWidget::QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *p
   connect( mActionAddLayers, &QAction::triggered, this, &QgsBrowserWidget::addSelectedLayers );
   connect( mActionCollapse, &QAction::triggered, mBrowserView, &QgsDockBrowserTreeView::collapseAll );
   connect( mActionShowFilter, &QAction::triggered, this, &QgsBrowserWidget::showFilterWidget );
-  connect( mActionPropertiesWidget, &QAction::triggered, this, &QgsBrowserWidget::enablePropertiesWidget );
+  connect( mActionPropertiesWidget, &QAction::triggered, this, &QgsBrowserWidget::propertiesWidgetToggled );
   connect( mLeFilter, &QgsFilterLineEdit::returnPressed, this, &QgsBrowserWidget::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::cleared, this, &QgsBrowserWidget::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsBrowserWidget::setFilter );
@@ -111,13 +111,7 @@ QgsBrowserWidget::QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *p
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsBrowserWidget::onOptionsChanged );
 }
 
-QgsBrowserWidget::~QgsBrowserWidget()
-{
-  QgsSettings settings;
-  settings.setValue( settingsSection() + "/propertiesWidgetEnabled", mPropertiesWidgetEnabled );
-  //settings.setValue(settingsSection() + "/propertiesWidgetHeight", mPropertiesWidget->size().height() );
-  settings.setValue( settingsSection() + "/propertiesWidgetHeight", mPropertiesWidgetHeight );
-}
+QgsBrowserWidget::~QgsBrowserWidget() = default;
 
 void QgsBrowserWidget::showEvent( QShowEvent *e )
 {
@@ -149,20 +143,12 @@ void QgsBrowserWidget::showEvent( QShowEvent *e )
     connect( mModel, &QgsBrowserModel::connectionsChanged,
              this, &QgsBrowserWidget::connectionsChanged );
 
-
     // objectName used by settingsSection() is not yet set in constructor
     QgsSettings settings;
-    mPropertiesWidgetEnabled = settings.value( settingsSection() + "/propertiesWidgetEnabled", false ).toBool();
-    mActionPropertiesWidget->setChecked( mPropertiesWidgetEnabled );
+    mActionPropertiesWidget->setChecked( settings.value( settingsSection() + "/propertiesWidgetEnabled", false ).toBool() );
     mPropertiesWidget->setVisible( false ); // false until item is selected
 
-    mPropertiesWidgetHeight = settings.value( settingsSection() + "/propertiesWidgetHeight" ).toFloat();
-    QList<int> sizes = mSplitter->sizes();
-    int total = sizes.value( 0 ) + sizes.value( 1 );
-    int height = static_cast<int>( total * mPropertiesWidgetHeight );
-    sizes.clear();
-    sizes << total - height << height;
-    mSplitter->setSizes( sizes );
+    mSplitter->restoreState( settings.value( QStringLiteral( "%1/splitterState" ).arg( settingsSection() ) ).toByteArray() );
   }
 
   QWidget::showEvent( e );
@@ -484,7 +470,7 @@ void QgsBrowserWidget::selectionChanged( const QItemSelection &selected, const Q
 {
   Q_UNUSED( selected )
   Q_UNUSED( deselected )
-  if ( mPropertiesWidgetEnabled )
+  if ( mActionPropertiesWidget->isChecked() )
   {
     setPropertiesWidget();
   }
@@ -524,8 +510,13 @@ void QgsBrowserWidget::setPropertiesWidget()
 
 void QgsBrowserWidget::enablePropertiesWidget( bool enable )
 {
-  mPropertiesWidgetEnabled = enable;
-  if ( enable && selectedItemsCount() == 1 )
+  mActionPropertiesWidget->setChecked( enable );
+  propertiesWidgetToggled( enable );
+}
+
+void QgsBrowserWidget::propertiesWidgetToggled( bool enabled )
+{
+  if ( enabled && selectedItemsCount() == 1 )
   {
     setPropertiesWidget();
   }
@@ -533,6 +524,9 @@ void QgsBrowserWidget::enablePropertiesWidget( bool enable )
   {
     clearPropertiesWidget();
   }
+
+  QgsSettings settings;
+  settings.setValue( settingsSection() + "/propertiesWidgetEnabled", enabled );
 }
 
 void QgsBrowserWidget::setActiveIndex( const QModelIndex &index )
@@ -547,7 +541,6 @@ void QgsBrowserWidget::setActiveIndex( const QModelIndex &index )
 
 void QgsBrowserWidget::splitterMoved()
 {
-  QList<int> sizes = mSplitter->sizes();
-  float total = sizes.value( 0 ) + sizes.value( 1 );
-  mPropertiesWidgetHeight = total > 0 ? sizes.value( 1 ) / total : 0;
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "%1/splitterState" ).arg( settingsSection() ), mSplitter->saveState() );
 }

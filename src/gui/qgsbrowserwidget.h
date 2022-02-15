@@ -124,6 +124,9 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     void showFilterWidget( bool visible );
     //! Enable/disable properties widget
     void enablePropertiesWidget( bool enable );
+
+    void propertiesWidgetToggled( bool enabled );
+
     //! Sets filter syntax
     void setFilterSyntax( QAction * );
     //! Sets filter case sensitivity
@@ -163,9 +166,6 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     QgsBrowserGuiModel *mModel = nullptr;
     QgsBrowserProxyModel *mProxyModel = nullptr;
     QString mInitPath;
-    bool mPropertiesWidgetEnabled = false;
-    // height fraction
-    float mPropertiesWidgetHeight = 0;
 
     QgsMessageBar *mMessageBar = nullptr;
     QStringList mDisabledDataItemsKeys;
