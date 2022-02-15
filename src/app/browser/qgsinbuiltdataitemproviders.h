@@ -223,6 +223,8 @@ class QgsFieldDomainItemGuiProvider : public QObject, public QgsDataItemGuiProvi
     QgsFieldDomainItemGuiProvider() = default;
 
     QString name() override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
     QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) override;
 };
 
