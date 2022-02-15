@@ -260,7 +260,10 @@ void QgsOgrProviderConnection::setFieldDomainName( const QString &fieldName, con
     throw QgsProviderConnectionException( QObject::tr( "Could not set field domain: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
 #else
-  ( void )name;
+  ( void )fieldName;
+  ( void )schema;
+  ( void )tableName;
+  ( void )domainName;
   throw QgsProviderConnectionException( QObject::tr( "Setting field domains for datasets requires GDAL 3.3 or later" ) );
 #endif
 }
@@ -297,7 +300,8 @@ void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, con
     throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
   }
 #else
-  ( void )name;
+  ( void )domain;
+  ( void )schema;
   throw QgsProviderConnectionException( QObject::tr( "Creating field domains for datasets requires GDAL 3.3 or later" ) );
 #endif
 }
