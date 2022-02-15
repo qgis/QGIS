@@ -199,6 +199,7 @@ The development version
       Rename,
       Delete,
       ItemRepresentsFile,
+      RefreshChildrenWhenItemIsRefreshed,
     };
     typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
 
