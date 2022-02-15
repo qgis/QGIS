@@ -476,6 +476,7 @@ set(QGIS_GUI_SRCS
   qgsfieldmappingwidget.cpp
   qgsfieldmappingmodel.cpp
   qgsfeaturelistcombobox.cpp
+  qgsfielddomainwidget.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
   qgsfilecontentsourcelineedit.cpp
@@ -727,6 +728,7 @@ set(QGIS_GUI_HDRS
   qgsfeaturelistcombobox.h
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
+  qgsfielddomainwidget.h
   qgsfieldexpressionwidget.h
   qgsfieldmappingwidget.h
   qgsfieldmappingmodel.h
