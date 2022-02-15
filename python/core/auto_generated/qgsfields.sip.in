@@ -151,6 +151,20 @@ Returns if a field index is valid
       sipRes = new QgsField( sipCpp->operator[]( idx ) );
 %End
 
+    SIP_PYOBJECT __getitem__( const QString &name ) const /TypeHint="QgsField"/;
+%MethodCode
+    const int fieldIdx = sipCpp->lookupField( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = sipConvertFromType( new QgsField( sipCpp->at( fieldIdx ) ), sipType_QgsField, Py_None );
+    }
+%End
+
 
     QgsField at( int i ) const /Factory/;
 %Docstring
