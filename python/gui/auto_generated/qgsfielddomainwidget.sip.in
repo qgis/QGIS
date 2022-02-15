@@ -1,0 +1,56 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfielddomainwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsFieldDomainWidget : QWidget
+{
+%Docstring(signature="appended")
+A widget for configuration of the properties of a :py:class:`QgsFieldDomain`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfielddomainwidget.h"
+%End
+  public:
+
+    QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFieldDomainWidget for the given domain ``type``, with the specified ``parent`` widget.
+%End
+
+    void setFieldDomain( const QgsFieldDomain *domain );
+%Docstring
+Sets the current field domain to show properties for in the widget.
+
+.. seealso:: :py:func:`createFieldDomain`
+%End
+
+    QgsFieldDomain *createFieldDomain() const /Factory/;
+%Docstring
+Creates a new field domain using the properties from the widget.
+
+Caller takes ownership of the returned object.
+
+.. seealso:: :py:func:`setFieldDomain`
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfielddomainwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
