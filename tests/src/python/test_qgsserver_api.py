@@ -36,7 +36,17 @@ from qgis.server import (
     QgsServerApiUtils,
     QgsServiceRegistry
 )
-from qgis.core import QgsProject, QgsRectangle, QgsVectorLayerServerProperties, QgsFeatureRequest
+
+from qgis.core import (
+    QgsProject,
+    QgsRectangle,
+    QgsVectorLayerServerProperties,
+    QgsFeatureRequest,
+    QgsVectorLayer,
+    QgsFeature,
+    QgsGeometry,
+)
+
 from qgis.PyQt import QtCore
 
 from qgis.testing import unittest
@@ -641,6 +651,28 @@ class QgsServerAPITest(QgsServerAPITestBase):
                 encoded_crs))
         self.compareApi(
             request, project, 'test_wfs3_collections_items_testlayer_èé_bbox_3857.json')
+
+    def test_wfs3_collection_items_bbox_25832(self):
+        """Test WFS3 API bbox with reprojection"""
+
+        project = QgsProject()
+        vl = QgsVectorLayer("Point?crs=EPSG:25832&field=fldint:integer",
+                            "testlayer25832", "memory")
+
+        f = QgsFeature(vl.fields())
+        f.setAttribute(0, 1)
+        f.setGeometry(QgsGeometry.fromWkt('point(361774 4963545)'))
+        vl.dataProvider().addFeatures((f,))
+        project.addMapLayers([vl])
+
+        project.writeEntry("WFSLayers", "/", (vl.id(),))
+        project.writeEntry("WMSCrsList", "/", ("EPSG:25832", "EPSG:4326",))
+
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer25832/items?bbox=7.16305252070271603,44.75906320523620963,7.3418755610416051,44.87555723151492515')
+
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_testlayer25832_bbox.json')
 
     def test_wfs3_static_handler(self):
         """Test static handler"""
