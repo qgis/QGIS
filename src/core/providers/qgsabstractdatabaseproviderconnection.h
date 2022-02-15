@@ -843,7 +843,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \param fieldName name of the field to be modified
      * \param schema name of the schema (schema is ignored if not supported by the backend).
      * \param tableName name of the table
-     * \param domainName name of the domain to set for the field. Must be an existing field domain (see fieldDomainNames()).
+     * \param domainName name of the domain to set for the field. Must be an existing field domain (see fieldDomainNames()). Set to an empty string to remove a previously set domain.
      *
      * \throws QgsProviderConnectionException if any errors are encountered.
      * \since QGIS 3.26
