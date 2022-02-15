@@ -1260,6 +1260,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
       const QString schema = fieldsItem->schema();
       const QString tableName = fieldsItem->tableName();
       const QString fieldName = fieldItem->field().name();
+      const QString domainName = fieldItem->field().constraints().domainName();
 
       // Check if it is supported
       QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
@@ -1280,6 +1281,13 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
             {
               QAction *setDomainAction = new QAction( domain, setFieldDomainMenu );
               setFieldDomainMenu->addAction( setDomainAction );
+
+              if ( domain == domainName )
+              {
+                // show current domain as checked
+                setDomainAction->setCheckable( true );
+                setDomainAction->setChecked( true );
+              }
 
               connect( setDomainAction, &QAction::triggered, this, [connectionUri, providerKey, schema, tableName, fieldName, domain, context, fieldsItem]
               {
@@ -1303,6 +1311,32 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
               } );
             }
           }
+        }
+        if ( !domainName.isEmpty() && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SetFieldDomain ) )
+        {
+          QAction *clearDomainAction = new QAction( tr( "Unset Field Domain (%1)…" ).arg( domainName ), menu );
+          menu->addAction( clearDomainAction );
+
+          connect( clearDomainAction, &QAction::triggered, this, [connectionUri, providerKey, schema, tableName, fieldName, domainName, context, fieldsItem]
+          {
+            if ( QMessageBox::question( nullptr, tr( "Unset Field Domain" ),
+                                        tr( "Unset %1 field domain from %2?" ).arg( domainName, fieldName ),
+                                        QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+            {
+              QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+              try
+              {
+                conn2->setFieldDomainName( fieldName, schema, tableName, QString() );
+                if ( fieldsItem )
+                  fieldsItem->refresh();
+              }
+              catch ( const QgsProviderConnectionException &ex )
+              {
+                notify( tr( "Unset Field Domain" ), ex.what(), context, Qgis::MessageLevel::Critical );
+              }
+            }
+          } );
         }
 
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteField ) )
@@ -1347,6 +1381,9 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
               }
             }
           } );
+          if ( !menu->isEmpty() )
+            menu->addSeparator();
+
           menu->addAction( deleteFieldAction );
         }
       }
