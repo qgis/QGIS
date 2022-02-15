@@ -181,6 +181,8 @@ set(QGIS_3D_PRIVATE_HDRS
   mesh/qgsmesh3dgeometry_p.h
   mesh/qgsmesh3dmaterial_p.h
   qgscolorramptexture.h
+
+#  ${CMAKE_SOURCE_DIR}/external/delaunator-cpp/delaunator.hpp
 )
 
 set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
@@ -216,6 +218,7 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/terrain
 
   ${CMAKE_BINARY_DIR}/src/3d
+  ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
 )
 
 if (WITH_QT6)

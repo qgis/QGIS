@@ -37,6 +37,16 @@ void QgsPointCloud3DSymbol::setPointSize( float size )
   mPointSize = size;
 }
 
+bool QgsPointCloud3DSymbol::triangulate() const
+{
+  return mTriangulate;
+}
+
+void QgsPointCloud3DSymbol::setTriangulate( bool triangulate )
+{
+  mTriangulate = triangulate;
+}
+
 // QgsSingleColorPointCloud3DSymbol
 
 QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol()
@@ -55,6 +65,7 @@ QgsAbstract3DSymbol *QgsSingleColorPointCloud3DSymbol::clone() const
   QgsSingleColorPointCloud3DSymbol *result = new QgsSingleColorPointCloud3DSymbol;
   result->mPointSize = mPointSize;
   result->mSingleColor = mSingleColor;
+  result->mTriangulate = mTriangulate;
   copyBaseSettings( result );
   return result;
 }
@@ -65,6 +76,7 @@ void QgsSingleColorPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsRea
 
   elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
   elem.setAttribute( QStringLiteral( "single-color" ), QgsSymbolLayerUtils::encodeColor( mSingleColor ) );
+  elem.setAttribute( QStringLiteral( "triangulate" ), mTriangulate ? 1 : 0 );
 }
 
 void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -73,6 +85,7 @@ void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const Q
 
   mPointSize = elem.attribute( QStringLiteral( "point-size" ), QStringLiteral( "2.0" ) ).toFloat();
   mSingleColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "single-color" ), QStringLiteral( "0,0,255" ) ) );
+  mTriangulate = elem.attribute( QStringLiteral( "triangulate" ), QStringLiteral( "0" ) ).toInt() == 1;
 }
 
 void QgsSingleColorPointCloud3DSymbol::setSingleColor( QColor color )
@@ -106,6 +119,7 @@ QgsAbstract3DSymbol *QgsColorRampPointCloud3DSymbol::clone() const
   result->mColorRampShader = mColorRampShader;
   result->mColorRampShaderMin = mColorRampShaderMin;
   result->mColorRampShaderMax = mColorRampShaderMax;
+  result->mTriangulate = mTriangulate;
   copyBaseSettings( result );
   return result;
 }
@@ -123,6 +137,7 @@ void QgsColorRampPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadW
   elem.setAttribute( QStringLiteral( "rendering-parameter" ), mRenderingParameter );
   elem.setAttribute( QStringLiteral( "color-ramp-shader-min" ), mColorRampShaderMin );
   elem.setAttribute( QStringLiteral( "color-ramp-shader-max" ), mColorRampShaderMax );
+  elem.setAttribute( QStringLiteral( "triangulate" ), mTriangulate ? 1 : 0 );
   QDomDocument doc = elem.ownerDocument();
   const QDomElement elemColorRampShader = mColorRampShader.writeXml( doc );
   elem.appendChild( elemColorRampShader );
@@ -136,6 +151,7 @@ void QgsColorRampPointCloud3DSymbol::readXml( const QDomElement &elem, const Qgs
   mRenderingParameter = elem.attribute( "rendering-parameter", QString() );
   mColorRampShaderMin = elem.attribute( QStringLiteral( "color-ramp-shader-min" ), QStringLiteral( "0.0" ) ).toDouble();
   mColorRampShaderMax = elem.attribute( QStringLiteral( "color-ramp-shader-max" ), QStringLiteral( "1.0" ) ).toDouble();
+  mTriangulate = elem.attribute( QStringLiteral( "triangulate" ), QStringLiteral( "0" ) ).toInt() == 1;
   mColorRampShader.readXml( elem );
 }
 
@@ -211,6 +227,7 @@ QgsAbstract3DSymbol *QgsRgbPointCloud3DSymbol::clone() const
   result->mRedAttribute = mRedAttribute;
   result->mGreenAttribute = mGreenAttribute;
   result->mBlueAttribute = mBlueAttribute;
+  result->mTriangulate = mTriangulate;
 
   if ( mRedContrastEnhancement )
   {
@@ -236,6 +253,7 @@ void QgsRgbPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteCo
   elem.setAttribute( QStringLiteral( "red" ), mRedAttribute );
   elem.setAttribute( QStringLiteral( "green" ), mGreenAttribute );
   elem.setAttribute( QStringLiteral( "blue" ), mBlueAttribute );
+  elem.setAttribute( QStringLiteral( "triangulate" ), mTriangulate ? 1 : 0 );
 
   QDomDocument doc = elem.ownerDocument();
 
@@ -268,6 +286,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
   setRedAttribute( elem.attribute( QStringLiteral( "red" ), QStringLiteral( "Red" ) ) );
   setGreenAttribute( elem.attribute( QStringLiteral( "green" ), QStringLiteral( "Green" ) ) );
   setBlueAttribute( elem.attribute( QStringLiteral( "blue" ), QStringLiteral( "Blue" ) ) );
+  mTriangulate = elem.attribute( QStringLiteral( "triangulate" ), QStringLiteral( "0" ) ).toInt() == 1;
 
   //contrast enhancements
   QgsContrastEnhancement *redContrastEnhancement = nullptr;
@@ -382,6 +401,7 @@ QgsAbstract3DSymbol *QgsClassificationPointCloud3DSymbol::clone() const
   result->mPointSize = mPointSize;
   result->mRenderingParameter = mRenderingParameter;
   result->mCategoriesList = mCategoriesList;
+  result->mTriangulate = mTriangulate;
   copyBaseSettings( result );
   return result;
 }
@@ -398,6 +418,7 @@ void QgsClassificationPointCloud3DSymbol::writeXml( QDomElement &elem, const Qgs
 
   elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
   elem.setAttribute( QStringLiteral( "rendering-parameter" ), mRenderingParameter );
+  elem.setAttribute( QStringLiteral( "triangulate" ), mTriangulate ? 1 : 0 );
 
   // categories
   QDomElement catsElem = doc.createElement( QStringLiteral( "categories" ) );
@@ -419,6 +440,7 @@ void QgsClassificationPointCloud3DSymbol::readXml( const QDomElement &elem, cons
 
   mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
   mRenderingParameter = elem.attribute( "rendering-parameter", QString() );
+  mTriangulate = elem.attribute( QStringLiteral( "triangulate" ), QStringLiteral( "0" ) ).toInt() == 1;
 
   const QDomElement catsElem = elem.firstChildElement( QStringLiteral( "categories" ) );
   if ( !catsElem.isNull() )

@@ -83,8 +83,15 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     //! Used to fill material object with necessary QParameters (and consequently opengl uniforms)
     virtual void fillMaterial( Qt3DRender::QMaterial *material ) = 0 SIP_SKIP;
 
+    //! Returns whether points are triangulated to render solid surface
+    bool triangulate() const;
+
+    //! Sets whether points are triangulated to render solid surface
+    void setTriangulate( bool triangulate );
+
   protected:
     float mPointSize = 2.0;
+    bool mTriangulate = false;
 };
 
 /**
