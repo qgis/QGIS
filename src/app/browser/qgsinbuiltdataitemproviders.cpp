@@ -57,6 +57,8 @@
 #include "qgsogrproviderutils.h"
 #include "qgsprojectutils.h"
 #include "qgsvariantutils.h"
+#include "qgsfielddomainwidget.h"
+#include "qgsgeopackagedataitems.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1598,6 +1600,83 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 QString QgsFieldDomainItemGuiProvider::name()
 {
   return QStringLiteral( "field_domain_item" );
+}
+
+void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
+{
+  if ( qobject_cast< QgsFieldDomainsItem * >( item )
+       || qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
+  {
+    QString providerKey;
+    QString connectionUri;
+
+    if ( QgsFieldDomainsItem *fieldDomainsItem = qobject_cast< QgsFieldDomainsItem * >( item ) )
+    {
+      providerKey = fieldDomainsItem->providerKey();
+      connectionUri = fieldDomainsItem->connectionUri();
+    }
+    else if ( QgsGeoPackageCollectionItem *gpkgItem = qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
+    {
+      providerKey = QStringLiteral( "ogr" );
+      connectionUri = gpkgItem->path().remove( QStringLiteral( "gpkg:/" ) );
+    }
+
+    // Check if domain creation is supported
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+    if ( md )
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddFieldDomain ) )
+      {
+        QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
+        menu->addMenu( createFieldDomainMenu );
+
+        QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
+        createFieldDomainMenu->addAction( rangeDomainAction );
+        QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
+        createFieldDomainMenu->addAction( codedDomainAction );
+        QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
+        createFieldDomainMenu->addAction( globDomainAction );
+        QPointer< QgsDataItem > itemWeakPointer( item );
+
+        auto createDomain = [context, itemWeakPointer, md, connectionUri]( Qgis::FieldDomainType type )
+        {
+          QgsFieldDomainDialog dialog( type, QgisApp::instance() );
+          if ( dialog.exec() )
+          {
+            std::unique_ptr< QgsFieldDomain > newDomain( dialog.createFieldDomain() );
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+            try
+            {
+              conn->addFieldDomain( *newDomain, QString() );
+              notify( QObject::tr( "New Field Domain Created" ), QObject::tr( "Field domain '%1' was created successfully." ).arg( newDomain->name() ), context, Qgis::MessageLevel::Success );
+              if ( itemWeakPointer )
+              {
+                itemWeakPointer->refresh();
+              }
+            }
+            catch ( QgsProviderConnectionException &ex )
+            {
+              notify( QObject::tr( "Field Domain Creation Error" ), QObject::tr( "Error creating new field domain '%1': %2" ).arg( newDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+            }
+          }
+        };
+        connect( rangeDomainAction, &QAction::triggered, this, [ = ]
+        {
+          createDomain( Qgis::FieldDomainType::Range );
+        } );
+        connect( codedDomainAction, &QAction::triggered, this, [ = ]
+        {
+          createDomain( Qgis::FieldDomainType::Coded );
+        } );
+        connect( globDomainAction, &QAction::triggered, this, [ = ]
+        {
+          createDomain( Qgis::FieldDomainType::Glob );
+        } );
+      }
+    }
+  }
 }
 
 QWidget *QgsFieldDomainItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
