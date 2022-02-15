@@ -204,3 +204,17 @@ QIcon QgsFieldItem::icon()
   return icon;
 }
 
+bool QgsFieldItem::equal( const QgsDataItem *other )
+{
+  if ( type() != other->type() )
+  {
+    return false;
+  }
+
+  const QgsFieldItem *o = qobject_cast<const QgsFieldItem *>( other );
+  if ( !o )
+    return false;
+
+  return ( mPath == o->mPath && mName == o->mName && mField == o->mField );
+}
+

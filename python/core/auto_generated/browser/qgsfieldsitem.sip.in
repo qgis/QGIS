@@ -127,6 +127,9 @@ Returns the field definition.
 .. versionadded:: 3.26
 %End
 
+    virtual bool equal( const QgsDataItem *other );
+
+
 };
 
 

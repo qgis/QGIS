@@ -141,6 +141,8 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
      */
     QgsField field() const { return mField; }
 
+    bool equal( const QgsDataItem *other ) override;
+
   private:
 
     const QgsField mField;
