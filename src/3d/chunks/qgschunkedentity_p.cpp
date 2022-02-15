@@ -145,7 +145,7 @@ void QgsChunkedEntity::update( const SceneState &state )
 
   int enabled = 0, disabled = 0, unloaded = 0;
 
-  for ( QgsChunkNode *node : mActiveNodes )
+  for ( QgsChunkNode *node : std::as_const( mActiveNodes ) )
   {
     if ( activeBefore.contains( node ) )
     {
@@ -361,6 +361,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
         residencyRequests.push_back( ResidencyRequest( children[i], dist, children[i]->level() ) );
       }
     }
+
     if ( becomesActive )
     {
       mActiveNodes << node;

@@ -1,8 +1,12 @@
 #version 150
 
+uniform bool triangulate;
+
 in float parameter;
 
 in vec3 pointColor;
+in vec3 worldPosition;
+in vec3 vertNorm;
 out vec4 color;
 
 // Sets the redering style, 0: unique color, 1: color ramp shader of terrain, 2: color ramp shader of 2D rendering
@@ -15,6 +19,8 @@ uniform int u_colorRampType;
 uniform sampler1D u_colorRampTexture; //
 // Sets the color ramp value count, used to check the if not void
 uniform int u_colorRampCount;
+
+#pragma include light.inc.frag
 
 vec4 linearColorRamp()
 {
@@ -125,4 +131,14 @@ void main(void)
     color = vec4(pointColor, 1.0f);
     break;
   }
+
+  //Apply light
+  if (triangulate)
+  {
+      float ambianceFactor=0.15;
+      vec3 diffuseColor;
+      adModel(worldPosition, vertNorm, diffuseColor);
+      color = vec4(  color.xyz * (diffuseColor+ambianceFactor), 1 );
+  }
+
 }

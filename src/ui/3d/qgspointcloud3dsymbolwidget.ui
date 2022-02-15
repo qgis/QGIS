@@ -132,6 +132,13 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="mTriangulateCheckBox">
+        <property name="text">
+         <string>Triangulate</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

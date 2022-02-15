@@ -107,6 +107,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mMaxScreenErrorSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
   connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
   connect( mPointBudgetSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
+  connect( mTriangulateCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
 
   if ( !symbol ) // if we have a symbol, this was already handled in setSymbol above
     rampAttributeChanged();
@@ -131,6 +132,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
 
   mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( symbol->symbolType() ) );
   mPointSizeSpinBox->setValue( symbol->pointSize() );
+  mTriangulateCheckBox->setChecked( symbol->triangulate() );
 
   if ( symbol->symbolType() == QLatin1String( "single-color" ) )
   {
@@ -231,6 +233,9 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
     symb->setCategoriesList( mClassifiedRendererWidget->categoriesList() );
     retSymb = symb;
   }
+
+  if ( retSymb )
+    retSymb->setTriangulate( mTriangulateCheckBox->isChecked() );
 
   return retSymb;
 }
@@ -636,3 +641,4 @@ void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )
 {
   parent->connectChildPanel( mClassifiedRendererWidget );
 }
+

@@ -82,7 +82,8 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [pc, pcNode, this]
+  const QgsAABB bbox = node->bbox();
+  const QFuture<void> future = QtConcurrent::run( [pc, pcNode, bbox, this]
   {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
 
@@ -91,7 +92,10 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
       QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
       return;
     }
+
     mHandler->processNode( pc, pcNode, mContext );
+    if ( mContext.symbol()->triangulate() )
+      mHandler->triangulate( pc, pcNode, mContext, bbox );
   } );
 
   // emit finished() as soon as the handler is populated with features
@@ -227,7 +231,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudI
   : QgsChunkedEntity( maximumScreenSpaceError,
                       new QgsPointCloudLayerChunkLoaderFactory( map, coordinateTransform, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
 {
-  setUsingAdditiveStrategy( true );
+  setUsingAdditiveStrategy( !symbol->triangulate() );
   setShowBoundingBoxes( showBoundingBoxes );
 }
 
