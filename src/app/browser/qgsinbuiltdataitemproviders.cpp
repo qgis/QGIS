@@ -1252,7 +1252,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   if ( QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( item ) )
   {
     // Retrieve the connection from the parent
-    QgsFieldsItem *fieldsItem { static_cast<QgsFieldsItem *>( fieldItem->parent() ) };
+    QPointer< QgsFieldsItem > fieldsItem { qobject_cast<QgsFieldsItem *>( fieldItem->parent() ) };
     if ( fieldsItem )
     {
       const QString connectionUri = fieldsItem->connectionUri();
@@ -1281,7 +1281,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
               QAction *setDomainAction = new QAction( domain, setFieldDomainMenu );
               setFieldDomainMenu->addAction( setDomainAction );
 
-              connect( setDomainAction, &QAction::triggered, this, [connectionUri, providerKey, schema, tableName, fieldName, domain, context]
+              connect( setDomainAction, &QAction::triggered, this, [connectionUri, providerKey, schema, tableName, fieldName, domain, context, fieldsItem]
               {
                 if ( QMessageBox::question( nullptr, tr( "Set Field Domain" ),
                                             tr( "Set field domain for %1 to %2?" ).arg( fieldName, domain ),
@@ -1292,6 +1292,8 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
                   try
                   {
                     conn2->setFieldDomainName( fieldName, schema, tableName, domain );
+                    if ( fieldsItem )
+                      fieldsItem->refresh();
                   }
                   catch ( const QgsProviderConnectionException &ex )
                   {
