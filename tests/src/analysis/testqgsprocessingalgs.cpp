@@ -193,6 +193,8 @@ class TestQgsProcessingAlgs: public QObject
     void uploadGpsData();
     void transferMainAnnotationLayer();
 
+    void buffer();
+
   private:
 
     bool imageCheck( const QString &testName, const QString &renderedImage );
@@ -7074,6 +7076,51 @@ void TestQgsProcessingAlgs::exportMeshTimeSeries()
   outputFile.close();
 }
 
+void TestQgsProcessingAlgs::buffer()
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:buffer" ) ) );
+  QVERIFY( alg != nullptr );
+
+  // buffering empty layer should produce an empty layer
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer ) );
+  parameters.insert( QStringLiteral( "DISTANCE" ), 2.0 );
+  parameters.insert( QStringLiteral( "SEGMENTS" ), 5 );
+  parameters.insert( QStringLiteral( "END_CAP_STYLE" ), 0 );
+  parameters.insert( QStringLiteral( "JOIN_STYLE" ), 0 );
+  parameters.insert( QStringLiteral( "MITER_LIMIT" ), 0 );
+  parameters.insert( QStringLiteral( "DISSOLVE" ), false );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  QgsVectorLayer *bufferedLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( bufferedLayer->isValid() );
+  QCOMPARE( bufferedLayer->wkbType(), QgsWkbTypes::MultiPolygon );
+  QCOMPARE( bufferedLayer->featureCount(), layer->featureCount() );
+
+  // buffering empty layer with dissolve should produce an empty layer
+  parameters.insert( QStringLiteral( "DISSOLVE" ), true );
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  bufferedLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( bufferedLayer->isValid() );
+  QCOMPARE( bufferedLayer->wkbType(), QgsWkbTypes::MultiPolygon );
+  QCOMPARE( bufferedLayer->featureCount(), layer->featureCount() );
+}
 
 bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )
 {
