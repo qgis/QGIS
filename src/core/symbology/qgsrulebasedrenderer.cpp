@@ -585,7 +585,7 @@ QgsRuleBasedRenderer::Rule::RenderResult QgsRuleBasedRenderer::Rule::renderFeatu
     }
   }
 
-  bool willrendersomething = false;
+  bool matchedAChild = false;
 
   // process children
   const auto constMChildren = mChildren;
@@ -594,23 +594,25 @@ QgsRuleBasedRenderer::Rule::RenderResult QgsRuleBasedRenderer::Rule::renderFeatu
     // Don't process else rules yet
     if ( !rule->isElse() )
     {
-      RenderResult res = rule->renderFeature( featToRender, context, renderQueue );
-      // consider inactive items as "rendered" so the else rule will ignore them
-      willrendersomething |= ( res == Rendered || res == Inactive );
+      const RenderResult res = rule->renderFeature( featToRender, context, renderQueue );
+      // consider inactive items as "matched" so the else rule will ignore them
+      matchedAChild |= ( res == Rendered || res == Inactive );
       rendered |= ( res == Rendered );
     }
   }
 
   // If none of the rules passed then we jump into the else rules and process them.
-  if ( !willrendersomething )
+  if ( !matchedAChild )
   {
     const auto constMElseRules = mElseRules;
     for ( Rule *rule : constMElseRules )
     {
-      rendered |= rule->renderFeature( featToRender, context, renderQueue ) == Rendered;
+      const RenderResult res = rule->renderFeature( featToRender, context, renderQueue );
+      matchedAChild |= ( res == Rendered || res == Inactive );
+      rendered |= res == Rendered;
     }
   }
-  if ( !mIsActive || ( mSymbol && !rendered ) )
+  if ( !mIsActive || ( mSymbol && !rendered ) || ( matchedAChild && !rendered ) )
     return Inactive;
   else if ( rendered )
     return Rendered;
