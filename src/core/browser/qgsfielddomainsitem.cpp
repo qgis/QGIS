@@ -32,7 +32,7 @@ QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent,
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, tr( "Field Domains" ), path, providerKey )
   , mConnectionUri( connectionUri )
 {
-  mCapabilities |= ( Qgis::BrowserItemCapability::Fertile | Qgis::BrowserItemCapability::Collapse );
+  mCapabilities |= ( Qgis::BrowserItemCapability::Fertile | Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed );
 }
 
 QgsFieldDomainsItem::~QgsFieldDomainsItem() = default;

@@ -104,7 +104,7 @@ QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, c
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GPKG" ) )
 {
   mToolTip = QString( path ).remove( QLatin1String( "gpkg:/" ) );
-  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed;
 }
 
 
@@ -385,7 +385,7 @@ QgsGeoPackageCollectionItem *QgsGeoPackageAbstractLayerItem::collection() const
 QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
-  mCapabilities |= ( Qgis::BrowserItemCapability::Rename | Qgis::BrowserItemCapability::Fertile );
+  mCapabilities |= ( Qgis::BrowserItemCapability::Rename | Qgis::BrowserItemCapability::Fertile | Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed );
   setState( Qgis::BrowserItemState::NotPopulated );
 }
 

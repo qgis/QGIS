@@ -34,7 +34,7 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
   , mTableName( tableName )
   , mConnectionUri( connectionUri )
 {
-  mCapabilities |= ( Qgis::BrowserItemCapability::Fertile | Qgis::BrowserItemCapability::Collapse );
+  mCapabilities |= ( Qgis::BrowserItemCapability::Fertile | Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed );
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
   if ( md )
   {
