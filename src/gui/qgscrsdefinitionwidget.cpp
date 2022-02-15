@@ -228,7 +228,7 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
   if ( !okN || !okE )
   {
     QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                          tr( "Northing and Easting must be in decimal form." ) );
+                          tr( "Latitude and Longitude must be in decimal form." ) );
     mProjectedXLabel->clear();
     mProjectedYLabel->clear();
     return;
