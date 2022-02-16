@@ -16,6 +16,7 @@
 #include "qgsfielddomainwidget.h"
 #include "qgsfielddomain.h"
 #include "qgsvariantutils.h"
+#include "qgsgui.h"
 #include <QDialogButtonBox>
 #include <QPushButton>
 
@@ -442,6 +443,8 @@ bool QgsFieldDomainWidget::isValid() const
 QgsFieldDomainDialog::QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
+  setObjectName( QStringLiteral( "QgsFieldDomainDialog" ) );
+
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsFieldDomainWidget( type );
   vLayout->addWidget( mWidget, 1 );
@@ -454,6 +457,8 @@ QgsFieldDomainDialog::QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget 
   setLayout( vLayout );
   connect( mWidget, &QgsFieldDomainWidget::validityChanged, this, &QgsFieldDomainDialog::validityChanged );
   validityChanged( mWidget->isValid() );
+
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 void QgsFieldDomainDialog::setFieldDomain( const QgsFieldDomain *domain )

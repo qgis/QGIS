@@ -1643,6 +1643,7 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
         auto createDomain = [context, itemWeakPointer, md, connectionUri]( Qgis::FieldDomainType type )
         {
           QgsFieldDomainDialog dialog( type, QgisApp::instance() );
+          dialog.setWindowTitle( tr( "New Field Domain" ) );
           if ( dialog.exec() )
           {
             std::unique_ptr< QgsFieldDomain > newDomain( dialog.createFieldDomain() );
