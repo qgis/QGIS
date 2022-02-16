@@ -21,6 +21,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
+#include "qgsmapcanvassnappingutils.h"
 #include "qgssettingsregistrycore.h"
 
 #include "testqgsmaptoolutils.h"
@@ -49,6 +50,7 @@ class TestQgsAdvancedDigitizing: public QObject
     void valuesWhenSnapping();
     void currentPoint();
     void currentPointWhenSanpping();
+    void currentPointWhenSanppingWithDiffCanvasCRS();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -110,6 +112,8 @@ void TestQgsAdvancedDigitizing::initTestCase()
   // create snapping
   QgsSnappingConfig snapConfig;
   snapConfig.setEnabled( false );
+  snapConfig.setIntersectionSnapping( true );
+  snapConfig.setSelfSnapping( true );
   snapConfig.setMode( QgsSnappingConfig::AllLayers );
   snapConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
   snapConfig.setTolerance( 1.0 );
@@ -119,7 +123,7 @@ void TestQgsAdvancedDigitizing::initTestCase()
   mapSettings.setOutputSize( QSize( 512, 512 ) );
   mapSettings.setLayers( layers );
 
-  QgsSnappingUtils *snappingUtils = new QgsSnappingUtils();
+  QgsSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas );
   snappingUtils->setConfig( snapConfig );
   snappingUtils->setMapSettings( mapSettings );
 
@@ -516,13 +520,9 @@ void TestQgsAdvancedDigitizing::valuesWhenSnapping()
 
   oldFeatures = utils.existingFeatureIds();
 
-  QgsSnappingUtils *snappingUtils = mCanvas->snappingUtils();
-
-  QgsSnappingConfig snapConfig = snappingUtils->config();
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
-  snappingUtils->setConfig( snapConfig );
-
-  snappingUtils->setCurrentLayer( mLayer3950 );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
 
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseClick( 2.02, 2, Qt::LeftButton );
@@ -581,15 +581,11 @@ void TestQgsAdvancedDigitizing::currentPointWhenSanpping()
   utils.mouseClick( -10, 0, Qt::LeftButton );
   utils.mouseClick( -10, 0, Qt::RightButton );
 
-  QgsSnappingUtils *snappingUtils = mCanvas->snappingUtils();
-
-  QgsSnappingConfig snapConfig = snappingUtils->config();
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
-  snapConfig.setIntersectionSnapping( true );
-  snapConfig.setSelfSnapping( true );
-  snappingUtils->setConfig( snapConfig );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
 
-  snappingUtils->setCurrentLayer( mLayer3950 );
+  QCOMPARE( mCanvas->snappingUtils()->currentLayer(), mLayer3950 );
 
   utils.mouseClick( 25, 0, Qt::LeftButton );
   utils.mouseClick( 30, 0, Qt::LeftButton );
@@ -605,6 +601,49 @@ void TestQgsAdvancedDigitizing::currentPointWhenSanpping()
   // on an self point
   utils.mouseMove( 25, 0.1 );
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 25, 0 ) );
+
+  utils.mouseClick( 30, 0, Qt::RightButton );
+}
+
+void TestQgsAdvancedDigitizing::currentPointWhenSanppingWithDiffCanvasCRS()
+{
+  auto utils = getMapToolDigitizingUtils( mLayer4326 );
+
+  QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
+
+  QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
+
+  utils.mouseClick( 0, 10, Qt::LeftButton );
+  utils.mouseClick( 0, -10, Qt::LeftButton );
+  utils.mouseClick( 0, -10, Qt::RightButton );
+
+  utils.mouseClick( 10, 0, Qt::LeftButton );
+  utils.mouseClick( -10, 0, Qt::LeftButton );
+  utils.mouseClick( -10, 0, Qt::RightButton );
+
+  oldFeatures = utils.existingFeatureIds();
+
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  QCOMPARE( mCanvas->snappingUtils()->currentLayer(), mLayer4326 );
+
+  utils.mouseClick( 25, 0, Qt::LeftButton );
+  utils.mouseClick( 0.1, 10, Qt::LeftButton );
+  utils.mouseClick( 0.1, 10, Qt::RightButton );
+
+  // on an existing point (see issue #46352)
+  utils.mouseMove( 0.1, 10 );
+  QGSCOMPARENEARPOINT( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 0, 10 ), 0.000001 );
+
+  // on an intersection
+  utils.mouseMove( 0.1, 0 );
+  QGSCOMPARENEARPOINT( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 0, 0 ), 0.000001 );
+
+  // on an self point
+  utils.mouseMove( 25, 0.1 );
+  QGSCOMPARENEARPOINT( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 25, 0 ), 0.000001 );
 }
 
 QGSTEST_MAIN( TestQgsAdvancedDigitizing )
