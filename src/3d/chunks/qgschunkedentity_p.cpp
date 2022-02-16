@@ -175,14 +175,29 @@ void QgsChunkedEntity::update( const SceneState &state )
     ++disabled;
   }
 
-  // unload those that are over the limit for replacement
-  // TODO: what to do when our cache is too small and nodes are being constantly evicted + loaded again
-  while ( mReplacementQueue->count() > mMaxLoadedChunks )
+  // unload nodes that have their entities disabled or can be culled
+  while ( mReplacementQueue->count() + mChunkLoaderQueue->count() > mMaxLoadedChunks )
   {
-    QgsChunkListEntry *entry = mReplacementQueue->takeLast();
-    entry->chunk->unloadChunk();  // also deletes the entry
+    QgsChunkListEntry *entry = mReplacementQueue->last();
+    if ( ( entry->chunk->entity() && !entry->chunk->entity()->isEnabled() ) || Qgs3DUtils::isCullable( entry->chunk->bbox(), state.viewProjectionMatrix ) )
+    {
+      entry = mReplacementQueue->takeLast();
+      entry->chunk->unloadChunk();  // also deletes the entry
+      mActiveNodes.removeOne( entry->chunk );
+      ++unloaded;
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  // Disable loading nodes from mChunkLoaderQueue
+  while ( mChunkLoaderQueue->count() > 0 && mReplacementQueue->count() + mChunkLoaderQueue->count() > mMaxLoadedChunks )
+  {
+    QgsChunkListEntry *entry = mChunkLoaderQueue->takeLast();
+    entry->chunk->cancelQueuedForLoad();
     mActiveNodes.removeOne( entry->chunk );
-    ++unloaded;
   }
 
   if ( mBboxesEntity )
