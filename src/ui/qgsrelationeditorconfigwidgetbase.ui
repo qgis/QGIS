@@ -83,12 +83,12 @@
          </spacer>
         </item>
         <item>
-         <widget class="QCheckBox" name="mAddFeatureWithGeometryOnly">
+         <widget class="QCheckBox" name="mAllowAddChildFeatureWithNoGeometry">
           <property name="toolTip">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked it is not possible to add a feature whitout geometry to a spatial layer. Otherwise two &amp;quot;Add child feature&amp;quot; buttons are showed with and without geometry.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="text">
-           <string> Add child feature with geometry only (for spatial layer)</string>
+           <string> Allow add child feature with no geometry (for spatial layer)</string>
           </property>
          </widget>
         </item>
