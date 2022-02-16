@@ -4842,17 +4842,14 @@ QString  QgsPostgresProvider::description() const
   {
     QgsPostgresResult result;
 
+    /* TODO: expose a cached QgsPostgresConn::version() ? */
     result = lConnectionRO->PQexec( QStringLiteral( "SELECT version()" ) );
     if ( result.PQresultStatus() == PGRES_TUPLES_OK )
     {
       pgVersion = result.PQgetvalue( 0, 0 );
     }
 
-    result = lConnectionRO->PQexec( QStringLiteral( "SELECT postgis_version()" ) );
-    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-    {
-      postgisVersion = result.PQgetvalue( 0, 0 );
-    }
+    postgisVersion = lConnectionRO->postgisVersion();
   }
   else
   {
