@@ -49,6 +49,9 @@ class APP_EXPORT QgsFeatureAction : public QAction
      * and override with values in defaultAttributes if provided.
      *
      * \param defaultAttributes  Provide some default attributes here if desired.
+     * \param scope              Scope of the expression
+     * \param showModal          If the used dialog should be modal or not
+     * \param hideParent         If the parent widget should be hidden, when the used dialog is opened
      *
      * \returns TRUE if feature was added if showModal is true. If showModal is FALSE, returns TRUE in every case
      */
@@ -88,7 +91,6 @@ class APP_EXPORT QgsFeatureAction : public QAction
     QgsVectorLayer *mLayer = nullptr;
     QgsFeature *mFeature = nullptr;
     QUuid mActionId;
-    QWidget *mParentWidget = nullptr;
     int mIdx;
 
     bool mFeatureSaved;
