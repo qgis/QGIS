@@ -1296,7 +1296,7 @@ void TestQgsGeometryUtils::testPointOnSegment()
   QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( 0, 2 ) ), false );
   QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 1 ), QgsPoint( 5, 5 ), QgsPoint( 2, 0 ) ), false );
 
-  //QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 2, 0 ) ), true );
+  QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 2, 0 ) ), true );
   QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 4, 0 ) ), true );
   QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( -1, 0 ) ), false );
   QCOMPARE( QgsGeometryUtils::pointOnSegment( QgsPoint( 1, 0 ), QgsPoint( 5, 0 ), QgsPoint( 6, 0 ) ), false );
