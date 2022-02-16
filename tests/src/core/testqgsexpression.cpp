@@ -1879,6 +1879,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "from_base64 NULL" ) << QStringLiteral( "from_base64(NULL)" ) << false << QVariant();
       QTest::newRow( "from_base64" ) << QStringLiteral( "from_base64('UUdJUw==')" ) << false << QVariant( QByteArray( QString( "QGIS" ).toLocal8Bit() ) );
       QTest::newRow( "uuid()" ) << QStringLiteral( "regexp_match( uuid(), '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')" ) << false << QVariant( 1 );
+      QTest::newRow( "$uuid alias" ) << QStringLiteral( "regexp_match( $uuid, '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')" ) << false << QVariant( 1 );
       QTest::newRow( "uuid('WithBraces')" ) << QStringLiteral( "regexp_match( uuid('WithBraces'), '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')" ) << false << QVariant( 1 );
       QTest::newRow( "uuid('WithoutBraces')" ) << QStringLiteral( "regexp_match( uuid('WithoutBraces'), '([a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12})')" ) << false << QVariant( 1 );
       QTest::newRow( "uuid('Id128')" ) << QStringLiteral( "regexp_match( uuid('Id128'), '([a-zA-Z\\\\d]{32})')" ) << false << QVariant( 1 );
