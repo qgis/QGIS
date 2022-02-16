@@ -536,8 +536,8 @@ void QgsRelationReferenceWidget::openForm()
     return;
 
   QgsAttributeEditorContext context( mEditorContext, mRelation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::StandaloneDialog );
-  QgsAttributeDialog attributeDialog( mReferencedLayer, new QgsFeature( feat ), true, this, true, context );
-  attributeDialog.exec();
+  QgsAttributeDialog *attributeDialog = new QgsAttributeDialog( mReferencedLayer, new QgsFeature( feat ), true, this, true, context );
+  attributeDialog->show();
 }
 
 void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent canvasExtent )
