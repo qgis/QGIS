@@ -173,24 +173,68 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
     shared = false;
   }
 
+  QgsPostgresConn *conn;
+
   if ( shared )
   {
     // sharing connection between threads is not safe
     // See https://github.com/qgis/QGIS/issues/21205
     Q_ASSERT( QApplication::instance()->thread() == QThread::currentThread() );
 
-    if ( connections.contains( conninfo ) )
+    QMap<QString, QgsPostgresConn *>::iterator it = connections.find( conninfo );
+    if ( it != connections.end() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Using cached connection for %1" ).arg( conninfo ), 2 );
-      connections[conninfo]->mRef++;
-      return connections[conninfo];
+      conn = *it;
+      QgsDebugMsgLevel(
+        QStringLiteral(
+          "Using cached (%3) connection for %1 (%2)"
+        )
+        .arg( conninfo )
+        .arg( reinterpret_cast<std::uintptr_t>( conn ) )
+        .arg( readonly ? "readonly" : "read-write" )
+        ,
+        2
+      );
+      conn->mRef++;
+      return conn;
     }
+    QgsDebugMsgLevel(
+      QStringLiteral(
+        "Cached (%2) connection for %1 not found"
+      )
+      .arg( conninfo )
+      .arg( readonly ? "readonly" : "read-write" )
+      ,
+      2
+    );
   }
 
-  QgsPostgresConn *conn = new QgsPostgresConn( conninfo, readonly, shared, transaction );
+  conn = new QgsPostgresConn( conninfo, readonly, shared, transaction );
+  QgsDebugMsgLevel(
+    QStringLiteral(
+      "Created new (%4) connection %2 for %1%3"
+    )
+    .arg( conninfo )
+    .arg( reinterpret_cast<std::uintptr_t>( conn ) )
+    .arg( shared ? " (shared)" : "" )
+    .arg( readonly ? "readonly" : "read-write" )
+    ,
+    2
+  );
 
+  // mRef will be set to 0 when the connection fails
   if ( conn->mRef == 0 )
   {
+    QgsDebugMsgLevel(
+      QStringLiteral(
+        "New (%3) connection %2 failed for conninfo %1"
+      )
+      .arg( conninfo )
+      .arg( reinterpret_cast<std::uintptr_t>( conn ) )
+      .arg( readonly ? "readonly" : "read-write" )
+      ,
+      2
+    );
     delete conn;
     return nullptr;
   }
@@ -198,6 +242,16 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   if ( shared )
   {
     connections.insert( conninfo, conn );
+    QgsDebugMsgLevel(
+      QStringLiteral(
+        "Added connection %2 (for %1) in (%3) cache"
+      )
+      .arg( conninfo )
+      .arg( reinterpret_cast<std::uintptr_t>( conn ) )
+      .arg( readonly ? "readonly" : "read-write" )
+      ,
+      2
+    );
   }
 
   return conn;
@@ -389,10 +443,19 @@ void QgsPostgresConn::unref()
   {
     QMap<QString, QgsPostgresConn *> &connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
 
-    QString key = connections.key( this, QString() );
+    int removed = connections.remove( mConnInfo );
+    Q_ASSERT( removed == 1 );
 
-    Q_ASSERT( !key.isNull() );
-    connections.remove( key );
+    QgsDebugMsgLevel(
+      QStringLiteral(
+        "Cached (%1) connection for %2 (%3) removed"
+      )
+      .arg( mReadOnly ? "readonly" : "read-write" )
+      .arg( mConnInfo )
+      .arg( reinterpret_cast<std::uintptr_t>( this ) )
+      ,
+      2
+    );
   }
 
   // to avoid destroying locked mutex
