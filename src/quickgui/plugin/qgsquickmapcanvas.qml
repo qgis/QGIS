@@ -65,7 +65,6 @@ Item {
   signal longPressReleased()
 
   //! Emitted when user does some interaction with map canvas (pan, zoom)
-  //! This is helpful to determine whether the map extent changed programatically or by user interaction
   signal userInteractedWithMap()
 
   /**
