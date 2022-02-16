@@ -223,6 +223,11 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         self.assertEqual(res.minimum(), 5)
         self.assertEqual(res.maximum(), 15)
 
+        # try adding another with a duplicate name, should fail
+        with self.assertRaises(QgsProviderConnectionException) as e:
+            conn.addFieldDomain(domain, '')
+        self.assertEqual(str(e.exception), 'Could not create field domain: A domain of identical name already exists')
+
         domain = QgsGlobFieldDomain('my new glob domain', 'my new glob desc', QVariant.String, '*aaabc*')
         conn.addFieldDomain(domain, '')
 

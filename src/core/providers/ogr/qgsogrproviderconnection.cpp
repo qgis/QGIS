@@ -281,13 +281,15 @@ void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, con
   {
     if ( OGRFieldDomainH ogrDomain = QgsOgrUtils::convertFieldDomain( &domain ) )
     {
-      char **failureReason = nullptr;
-      if ( !GDALDatasetAddFieldDomain( hDS.get(), ogrDomain, failureReason ) )
+      char *failureReason = nullptr;
+      if ( !GDALDatasetAddFieldDomain( hDS.get(), ogrDomain, &failureReason ) )
       {
         OGR_FldDomain_Destroy( ogrDomain );
-        QString error( failureReason ? *failureReason : nullptr );
+        QString error( failureReason );
+        CPLFree( failureReason );
         throw QgsProviderConnectionException( QObject::tr( "Could not create field domain: %1" ).arg( error ) );
       }
+      CPLFree( failureReason );
       OGR_FldDomain_Destroy( ogrDomain );
     }
     else
