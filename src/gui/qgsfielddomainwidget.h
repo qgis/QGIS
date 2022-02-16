@@ -24,7 +24,9 @@
 #include "qgis.h"
 #include "qgsfielddomain.h"
 #include <QAbstractTableModel>
+#include <QDialog>
 
+class QDialogButtonBox;
 
 #ifndef SIP_RUN
 
@@ -66,6 +68,20 @@ class GUI_EXPORT QgsAbstractFieldDomainWidget : public QWidget
      */
     virtual QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const = 0 SIP_FACTORY;
 
+    /**
+     * Returns TRUE if the widget currently represents a valid field domain configuration.
+     *
+     * \see validityChanged()
+     */
+    virtual bool isValid() const = 0;
+
+  signals:
+
+    /**
+     * Emitted whenever the field domain configuration in the widget changes.
+     */
+    void changed();
+
 };
 
 /**
@@ -90,6 +106,7 @@ class GUI_EXPORT QgsRangeDomainWidget : public QgsAbstractFieldDomainWidget, pri
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
     QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const override SIP_FACTORY;
+    bool isValid() const override;
 
 };
 
@@ -115,7 +132,7 @@ class GUI_EXPORT QgsGlobDomainWidget : public QgsAbstractFieldDomainWidget, priv
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
     QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const override SIP_FACTORY;
-
+    bool isValid() const override;
 };
 
 /**
@@ -187,6 +204,7 @@ class GUI_EXPORT QgsCodedFieldDomainWidget : public QgsAbstractFieldDomainWidget
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
     QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const override SIP_FACTORY;
+    bool isValid() const override;
 
   private:
 
@@ -228,11 +246,74 @@ class GUI_EXPORT QgsFieldDomainWidget : public QWidget, private Ui_QgsFieldDomai
      */
     QgsFieldDomain *createFieldDomain() const SIP_FACTORY;
 
+    /**
+     * Returns TRUE if the widget currently represents a valid field domain configuration.
+     *
+     * \see validityChanged()
+     */
+    bool isValid() const;
+
+  signals:
+
+    /**
+     * Emitted whenever the validity of the field domain configuration in the widget changes.
+     *
+     * \see isValid()
+     */
+    void validityChanged( bool isValid );
+
   private:
 
     QgsAbstractFieldDomainWidget *mDomainWidget = nullptr;
 };
 
+
+
+/**
+ * \ingroup gui
+ * \brief A dialog for configuration of the properties of a QgsFieldDomain.
+ *
+ * \since QGIS 3.26
+ */
+class GUI_EXPORT QgsFieldDomainDialog: public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsFieldDomainDialog for the given domain \a type, with the specified \a parent widget and window \a flags.
+     */
+    explicit QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
+
+    /**
+     * Sets the current field domain to show properties for in the dialog.
+     *
+     * \see createFieldDomain()
+     */
+    void setFieldDomain( const QgsFieldDomain *domain );
+
+    /**
+     * Creates a new field domain using the properties from the dialog.
+     *
+     * Caller takes ownership of the returned object.
+     *
+     * \see setFieldDomain()
+     */
+    QgsFieldDomain *createFieldDomain() const SIP_FACTORY;
+
+  public slots:
+
+    void accept() override;
+
+  private slots:
+
+    void validityChanged( bool isValid );
+
+  private:
+    QgsFieldDomainWidget *mWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
+};
 
 
 #endif // QGSFIELDDOMAINWIDGET_H

@@ -16,6 +16,8 @@
 #include "qgsfielddomainwidget.h"
 #include "qgsfielddomain.h"
 #include "qgsvariantutils.h"
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 //
 // QgsAbstractFieldDomainWidget
@@ -53,6 +55,11 @@ QgsRangeDomainWidget::QgsRangeDomainWidget( QWidget *parent )
 
   mMinInclusiveCheckBox->setChecked( true );
   mMaxInclusiveCheckBox->setChecked( true );
+
+  connect( mMinSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsAbstractFieldDomainWidget::changed );
+  connect( mMaxSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsAbstractFieldDomainWidget::changed );
+  connect( mMinInclusiveCheckBox, &QCheckBox::toggled, this, &QgsAbstractFieldDomainWidget::changed );
+  connect( mMaxInclusiveCheckBox, &QCheckBox::toggled, this, &QgsAbstractFieldDomainWidget::changed );
 }
 
 void QgsRangeDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
@@ -76,6 +83,11 @@ QgsFieldDomain *QgsRangeDomainWidget::createFieldDomain( const QString &name, co
                                   mMaxSpinBox->value(), mMaxInclusiveCheckBox->isChecked() );
 }
 
+bool QgsRangeDomainWidget::isValid() const
+{
+  return mMinSpinBox->value() <= mMaxSpinBox->value();
+}
+
 //
 // QgsGlobDomainWidget
 //
@@ -84,6 +96,8 @@ QgsGlobDomainWidget::QgsGlobDomainWidget( QWidget *parent )
   : QgsAbstractFieldDomainWidget( parent )
 {
   setupUi( this );
+
+  connect( mEditGlob, &QLineEdit::textChanged, this, &QgsAbstractFieldDomainWidget::changed );
 }
 
 void QgsGlobDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
@@ -98,6 +112,11 @@ void QgsGlobDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
 QgsFieldDomain *QgsGlobDomainWidget::createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const
 {
   return new QgsGlobFieldDomain( name, description, fieldType, mEditGlob->text() );
+}
+
+bool QgsGlobDomainWidget::isValid() const
+{
+  return !mEditGlob->text().trimmed().isEmpty();
 }
 
 //
@@ -125,6 +144,10 @@ QgsCodedFieldDomainWidget::QgsCodedFieldDomainWidget( QWidget *parent )
       mModel->removeRow( selectedRows.first().row() );
     }
   } );
+
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsAbstractFieldDomainWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsAbstractFieldDomainWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsAbstractFieldDomainWidget::changed );
 }
 
 void QgsCodedFieldDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
@@ -139,6 +162,11 @@ void QgsCodedFieldDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
 QgsFieldDomain *QgsCodedFieldDomainWidget::createFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) const
 {
   return new QgsCodedFieldDomain( name, description, fieldType, mModel->values() );
+}
+
+bool QgsCodedFieldDomainWidget::isValid() const
+{
+  return true;
 }
 
 
@@ -358,6 +386,16 @@ QgsFieldDomainWidget::QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget 
 
   mStackedWidget->addWidget( mDomainWidget );
   mStackedWidget->setCurrentWidget( mDomainWidget );
+
+  connect( mNameEdit, &QLineEdit::textChanged, this, [ = ]
+  {
+    emit validityChanged( isValid() );
+  } );
+
+  connect( mDomainWidget, &QgsAbstractFieldDomainWidget::changed, this, [ = ]
+  {
+    emit validityChanged( isValid() );
+  } );
 }
 
 void QgsFieldDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
@@ -387,4 +425,56 @@ QgsFieldDomain *QgsFieldDomainWidget::createFieldDomain() const
   res->setMergePolicy( static_cast< Qgis::FieldDomainMergePolicy >( mComboMergePolicy->currentData().toInt() ) );
   res->setSplitPolicy( static_cast< Qgis::FieldDomainSplitPolicy >( mComboSplitPolicy->currentData().toInt() ) );
   return res.release();
+}
+
+bool QgsFieldDomainWidget::isValid() const
+{
+  if ( mNameEdit->text().trimmed().isEmpty() )
+    return false;
+
+  return mDomainWidget && mDomainWidget->isValid();
+}
+
+//
+// QgsFieldDomainDialog
+//
+
+QgsFieldDomainDialog::QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
+{
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  mWidget = new QgsFieldDomainWidget( type );
+  vLayout->addWidget( mWidget, 1 );
+
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  vLayout->addWidget( mButtonBox );
+
+  setLayout( vLayout );
+  connect( mWidget, &QgsFieldDomainWidget::validityChanged, this, &QgsFieldDomainDialog::validityChanged );
+  validityChanged( mWidget->isValid() );
+}
+
+void QgsFieldDomainDialog::setFieldDomain( const QgsFieldDomain *domain )
+{
+  mWidget->setFieldDomain( domain );
+}
+
+QgsFieldDomain *QgsFieldDomainDialog::createFieldDomain() const
+{
+  return mWidget->createFieldDomain();
+}
+
+void QgsFieldDomainDialog::accept()
+{
+  if ( !mWidget->isValid() )
+    return;
+
+  QDialog::accept();
+}
+
+void QgsFieldDomainDialog::validityChanged( bool isValid )
+{
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
 }
