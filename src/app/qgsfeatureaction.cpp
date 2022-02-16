@@ -320,7 +320,7 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
 
 void QgsFeatureAction::hideParentWidget()
 {
-  if ( parentWidget() && parentWidget()->parentWidget() )
+  if ( parentWidget() && parentWidget()->parentWidget() && parentWidget()->parentWidget()->window()->objectName() != QStringLiteral( "QgisApp" ) )
   {
     parentWidget()->parentWidget()->window()->setVisible( false );
   }
