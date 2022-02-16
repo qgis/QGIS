@@ -38,12 +38,10 @@ Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFla
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
 
   connect( mShowButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::showClicked );
-  connect( mHideButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::hideClicked );
   connect( mDuplicateButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::duplicateClicked );
   connect( mRemoveButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::removeClicked );
   connect( mRenameButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::renameClicked );
   mShowButton->setEnabled( false );
-  mHideButton->setEnabled( false );
 
   connect( m3DViewsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &Qgs3DViewsManagerDialog::currentChanged );
 
@@ -148,14 +146,12 @@ void Qgs3DViewsManagerDialog::currentChanged( const QModelIndex &current, const 
   if ( !current.isValid() )
   {
     mShowButton->setEnabled( false );
-    mHideButton->setEnabled( false );
     return;
   }
 
   QString viewName = current.data( Qt::DisplayRole ).toString();
   bool isOpen = QgsProject::instance()->viewsManager()->is3DViewOpen( viewName );
   mShowButton->setEnabled( !isOpen );
-  mHideButton->setEnabled( isOpen );
 }
 
 void Qgs3DViewsManagerDialog::reload()
