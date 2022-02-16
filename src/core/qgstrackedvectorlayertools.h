@@ -39,7 +39,7 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
      * \param layer           The layer to which the feature should be added
      * \param defaultValues   Default values for the feature to add
      * \param defaultGeometry A default geometry to add to the feature
-     * \param feat            A pointer to the feature
+     * \param feature         A pointer to the feature
      * \param parentWidget    The widget calling this function to be passed to the used dialog
      * \param showModal       If the used dialog should be modal or not
      * \param hideParent      If the parent widget should be hidden, when the used dialog is opened
