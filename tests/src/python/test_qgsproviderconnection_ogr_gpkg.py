@@ -89,7 +89,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
 
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
         vl = QgsVectorLayer('{}|layername=cdb_lines'.format(self.gpkg_path), 'test', 'ogr')
-        conn = md.createConnection(vl.dataProvider().uri().uri(), {})
+        conn = md.createConnection(vl.dataProvider().dataSourceUri(), {})
         self.assertEqual(conn.uri(), self.gpkg_path)
 
     def test_gpkg_table_uri(self):
