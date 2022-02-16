@@ -70,8 +70,6 @@ class GUI_EXPORT QgsAbstractFieldDomainWidget : public QWidget
 
     /**
      * Returns TRUE if the widget currently represents a valid field domain configuration.
-     *
-     * \see validityChanged()
      */
     virtual bool isValid() const = 0;
 
