@@ -233,6 +233,7 @@ Contains settings for how a map layer will be labeled.
       PolygonLabelOutside,
       LineAnchorPercent,
       LineAnchorClipping,
+      LineAnchorType,
 
       // rendering
       ScaleVisibility,
