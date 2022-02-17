@@ -56,4 +56,17 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
         mAnchorClipping = AnchorClipping::UseEntireLine;
     }
   }
+
+  if ( properties.isActive( QgsPalLayerSettings::LineAnchorType ) )
+  {
+    bool ok = false;
+    const QString value = properties.valueAsString( QgsPalLayerSettings::LineAnchorType, context, QString(), &ok ).trimmed();
+    if ( ok )
+    {
+      if ( value.compare( QLatin1String( "hint" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorType = AnchorType::HintOnly;
+      else if ( value.compare( QLatin1String( "strict" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorType = AnchorType::Strict;
+    }
+  }
 }

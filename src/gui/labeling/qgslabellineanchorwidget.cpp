@@ -73,6 +73,7 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
 
   registerDataDefinedButton( mLinePlacementDDBtn, QgsPalLayerSettings::LineAnchorPercent );
   registerDataDefinedButton( mLineClippingDDBtn, QgsPalLayerSettings::LineAnchorClipping );
+  registerDataDefinedButton( mAnchorTypeDDBtn, QgsPalLayerSettings::LineAnchorType );
   updateAnchorTypeHint();
 }
 
@@ -119,6 +120,7 @@ void QgsLabelLineAnchorWidget::updateDataDefinedProperties( QgsPropertyCollectio
 {
   properties.setProperty( QgsPalLayerSettings::LineAnchorPercent, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorPercent ) );
   properties.setProperty( QgsPalLayerSettings::LineAnchorClipping, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorClipping ) );
+  properties.setProperty( QgsPalLayerSettings::LineAnchorType, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorType ) );
 }
 
 void QgsLabelLineAnchorWidget::updateAnchorTypeHint()
