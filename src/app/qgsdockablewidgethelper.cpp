@@ -23,7 +23,7 @@
 QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow )
   : QObject( nullptr )
   , mWidget( widget )
-  , mDialogGeometry( 0, 0, 200, 200 )
+  , mDialogGeometry( 0, 0, 0, 0 )
   , mDockGeometry( QRect() )
   , mIsDockFloating( true )
   , mDockArea( Qt::RightDockWidgetArea )
@@ -190,7 +190,10 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins( 0, 0, 0, 0 );
     vl->addWidget( mWidget );
-    mDialog->setGeometry( mDialogGeometry );
+    if ( mDialogGeometry.isEmpty() )
+      mDialog->setGeometry( mDockGeometry );
+    else
+      mDialog->setGeometry( mDialogGeometry );
     mDialog->setLayout( vl );
     mDialog->raise();
     mDialog->show();
