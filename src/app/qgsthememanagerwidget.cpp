@@ -160,6 +160,7 @@ void QgsThemeManagerWidget::viewCurrentTheme() const
     return;
   QStringList themeIds;
   const QList<QgsMapLayer *> constMapThemeVisibleLayers = mThemeCollection->mapThemeVisibleLayers( mCurrentTheme );
+  // for symbol legend nodes support, maybe look into ./src/core/qgsmapthemecollection.cpp#L47-L65
   for ( QgsMapLayer *layer : constMapThemeVisibleLayers )
   {
     if ( layer->isValid() && layer->isSpatial() )
