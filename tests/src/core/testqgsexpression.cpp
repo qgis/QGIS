@@ -2891,6 +2891,28 @@ class TestQgsExpression: public QObject
       QCOMPARE( out, result );
     }
 
+    void testGeometryFromContext()
+    {
+      QgsExpressionContext context;
+
+      QgsExpression exp( QStringLiteral( "geom_to_wkt($geometry)" ) );
+      QCOMPARE( exp.evaluate( &context ).toString(), QString() );
+
+      // the $geometry function refers to the feature's geometry usually
+      QgsFeature feature;
+      feature.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 3, 4 ) ) );
+      context.setFeature( feature );
+
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (3 4)" ) );
+
+      // the $geometry function should prefer to get the geometry directly from the context if it's available
+      context.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) );
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (1 2)" ) );
+
+      context.scope( 0 )->removeGeometry();
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (3 4)" ) );
+    }
+
     void eval_geometry_calc()
     {
       QgsPolylineXY polyline, polygon_ring;
