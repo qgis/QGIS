@@ -4858,6 +4858,17 @@ class TestQgsGeometry(unittest.TestCase):
         point = QgsGeometry.fromWkt('Point(1 2)')
         # no meaning, just test no crash!
         self.assertEqual(point.interpolateAngle(5), 0)
+        self.assertEqual(point.interpolateAngle(0), 0)
+
+        collection_with_point = QgsGeometry.fromWkt('MultiPoint((0 -49))')
+        # no meaning, just test no crash!
+        self.assertEqual(collection_with_point.interpolateAngle(5), 0)
+        self.assertEqual(collection_with_point.interpolateAngle(0), 0)
+
+        collection_with_point = QgsGeometry.fromWkt('MultiPoint((0 -49), (10 10))')
+        # no meaning, just test no crash!
+        self.assertEqual(collection_with_point.interpolateAngle(5), 0)
+        self.assertEqual(collection_with_point.interpolateAngle(0), 0)
 
         # linestring
         linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0, 20 10, 20 20, 10 20)')
