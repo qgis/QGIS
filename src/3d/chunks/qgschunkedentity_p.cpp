@@ -192,7 +192,6 @@ void QgsChunkedEntity::update( const SceneState &state )
   {
     QgsChunkListEntry *entry = mChunkLoaderQueue->takeLast();
     entry->chunk->cancelQueuedForLoad();
-    mActiveNodes.removeOne( entry->chunk );
   }
 
   if ( mBboxesEntity )
