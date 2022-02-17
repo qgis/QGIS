@@ -110,7 +110,7 @@ void TestQgsAdvancedDigitizing::initTestCase()
   // create advanced digitizing dock widget
   mAdvancedDigitizingDockWidget =  new QgsAdvancedDigitizingDockWidget( mCanvas );
 
-  // create snapping
+  // create snapping config
   QgsSnappingConfig snapConfig;
   snapConfig.setEnabled( false );
   snapConfig.setIntersectionSnapping( true );
@@ -132,6 +132,7 @@ void TestQgsAdvancedDigitizing::initTestCase()
   snappingUtils->locatorForLayer( mLayer3950ZM )->init();
   snappingUtils->locatorForLayer( mLayer4326 )->init();
   snappingUtils->locatorForLayer( mLayer4326ZM )->init();
+
   mCanvas->setSnappingUtils( snappingUtils );
 
   // create base map tool
@@ -156,15 +157,18 @@ void TestQgsAdvancedDigitizing::init()
 
 void TestQgsAdvancedDigitizing::cleanup()
 {
+  // reset the advanced digitizing dock
   mAdvancedDigitizingDockWidget->releaseLocks();
   mAdvancedDigitizingDockWidget->enableAction()->trigger();
   QVERIFY( !mAdvancedDigitizingDockWidget->cadEnabled() );
 
+  // disable the snapping
   QgsSnappingUtils *snappingUtils = mCanvas->snappingUtils();
   QgsSnappingConfig snapConfig = snappingUtils->config();
   snapConfig.setEnabled( false );
   snappingUtils->setConfig( snapConfig );
 
+  // reset all layers
   mLayer3950->rollBack();
   mLayer3950ZM->rollBack();
   mLayer4326->rollBack();
@@ -177,6 +181,7 @@ TestQgsMapToolAdvancedDigitizingUtils TestQgsAdvancedDigitizing::getMapToolDigit
   layer->startEditing();
   mCaptureTool->setLayer( layer );
 
+  // enable the advanced digitizing widget
   mAdvancedDigitizingDockWidget->enableAction()->trigger();
 
   return TestQgsMapToolAdvancedDigitizingUtils( mCaptureTool );
@@ -184,13 +189,14 @@ TestQgsMapToolAdvancedDigitizingUtils TestQgsAdvancedDigitizing::getMapToolDigit
 
 QString TestQgsAdvancedDigitizing::getWktFromLastAddedFeature( TestQgsMapToolAdvancedDigitizingUtils utils, QSet<QgsFeatureId> oldFeatures )
 {
-  const QgsFeatureId newFid = utils.newFeatureId( oldFeatures );
   auto layer = qobject_cast<const QgsVectorLayer *>( mCanvas->currentLayer() );
 
+  const QgsFeatureId newFid = utils.newFeatureId( oldFeatures );
+  QgsGeometry geom = layer->getFeature( newFid ).geometry();
+
+  // transform the coordinates when canvas CRS and layer CRS are different
   const QgsCoordinateTransform transform( layer->sourceCrs(), mCanvas->mapSettings().destinationCrs(),
                                           QgsProject::instance() );
-
-  QgsGeometry geom = layer->getFeature( newFid ).geometry();
   geom.transform( transform, Qgis::TransformDirection::Forward );
 
   return geom.asWkt( WKT_PRECISION );
@@ -298,6 +304,7 @@ void TestQgsAdvancedDigitizing::distanceContrainstWhenSnapping()
 
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
 
+  // line for snapping
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::RightButton );
@@ -568,6 +575,7 @@ void TestQgsAdvancedDigitizing::coordinateContrainstWhenSnapping()
 
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
 
+  // line for snapping
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::RightButton );
@@ -581,6 +589,7 @@ void TestQgsAdvancedDigitizing::coordinateContrainstWhenSnapping()
   snapConfig.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
+  // simple snap test
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseClick( 2.02, 2, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::RightButton );
@@ -619,6 +628,7 @@ void TestQgsAdvancedDigitizing::cadPointList()
 
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
 
+  // start a digitized line
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 0, 1, Qt::LeftButton );
   utils.mouseClick( 0, 2, Qt::LeftButton );
@@ -651,6 +661,7 @@ void TestQgsAdvancedDigitizing::cadPointList()
 
   utils.mouseMove( 1, 1 );
 
+  // with no digitized points
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2( &exist ), QgsPoint( 1, 1 ) );
   QVERIFY( exist );
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPoint( &exist ), QgsPointXY( 1, 1 ) );
