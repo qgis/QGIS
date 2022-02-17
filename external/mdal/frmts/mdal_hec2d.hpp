@@ -52,13 +52,14 @@ namespace MDAL
       std::vector<MDAL::RelativeTimestamp> mTimes ;
       DateTime mReferenceTime;
 
-      // Pre 5.0.5 format
-      bool canReadOldFormat( const std::string &fileType ) const;
-      std::vector<std::string> read2DFlowAreasNamesOld( HdfGroup gGeom2DFlowAreas ) const;
+      // Regular format
+      bool canReadFormat( const std::string &fileType ) const;
 
-      // 5.0.5 + format
+      // 5.0.5 format
       bool canReadFormat505( const std::string &fileType ) const;
-      std::vector<std::string> read2DFlowAreasNames505( HdfGroup gGeom2DFlowAreas ) const;
+
+      std::vector<std::string> read2DFlowAreasNamesFromNameDataset( HdfGroup gGeom2DFlowAreas ) const;
+      std::vector<std::string> read2DFlowAreasNamesFromAttributesDataset( HdfGroup gGeom2DFlowAreas ) const;
 
       // Common functions
       void readFaceOutput( const HdfFile &hdfFile,
