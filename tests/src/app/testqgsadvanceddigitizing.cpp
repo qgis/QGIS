@@ -291,7 +291,63 @@ void TestQgsAdvancedDigitizing::distanceContrainstDiffCrs()
             QStringLiteral( "LineString (1 1, 2 2, 7 2)" ) );
 }
 
-void TestQgsAdvancedDigitizing::angle()
+void TestQgsAdvancedDigitizing::distanceContrainstWhenSnapping()
+{
+  auto utils = getMapToolDigitizingUtils( mLayer3950 );
+  QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
+
+  QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
+
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 2, 2, Qt::LeftButton );
+  utils.mouseClick( 2, 2, Qt::RightButton );
+
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
+            QStringLiteral( "LineString (1 1, 2 2)" ) );
+  oldFeatures = utils.existingFeatureIds();
+
+  // with no digitized vertex
+  auto capacities = mAdvancedDigitizingDockWidget->capacities();
+  QVERIFY( !capacities.testFlag( QgsAdvancedDigitizingDockWidget::Distance ) );
+
+  QVERIFY( !mAdvancedDigitizingDockWidget->mAngleLineEdit->isEnabled() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->mDistanceLineEdit->isEnabled() );
+
+  // activate contrainst on seconde point (one digitized vertex)
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+
+  capacities = mAdvancedDigitizingDockWidget->capacities();
+  QVERIFY( capacities.testFlag( QgsAdvancedDigitizingDockWidget::Distance ) );
+
+  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "10" ),
+      QgsAdvancedDigitizingDockWidget::ReturnPressed );
+
+  utils.mouseClick( 2, 2, Qt::LeftButton );
+  utils.mouseClick( 1, 2, Qt::RightButton );
+
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
+            QStringLiteral( "LineString (1 1, 8.07 8.07)" ) );
+
+  // activate contrainst on third point
+  oldFeatures = utils.existingFeatureIds();
+
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 2, 2, Qt::LeftButton );
+
+  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "5" ),
+      QgsAdvancedDigitizingDockWidget::ReturnPressed );
+
+  utils.mouseClick( 3, 2, Qt::LeftButton );
+  utils.mouseClick( 1, 2, Qt::RightButton );
+
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
+            QStringLiteral( "LineString (1 1, 2 2, 7 2)" ) );
+
+  capacities = mAdvancedDigitizingDockWidget->capacities();
+  QVERIFY( !capacities.testFlag( QgsAdvancedDigitizingDockWidget::Distance ) );
+}
+
+void TestQgsAdvancedDigitizing::angleContrainst()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
@@ -557,15 +613,60 @@ void TestQgsAdvancedDigitizing::coordinateContrainstWhenSnapping()
             QStringLiteral( "LineString (0 -2, 2.02 2)" ) );
 }
 
-void TestQgsAdvancedDigitizing::currentPoint()
+void TestQgsAdvancedDigitizing::cadPointList()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
 
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
 
-  utils.mouseMove( 5, 0 );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 1, Qt::LeftButton );
+  utils.mouseClick( 0, 2, Qt::LeftButton );
+  utils.mouseClick( 0, 3, Qt::LeftButton );
+  utils.mouseClick( 0, 4, Qt::LeftButton );
+  utils.mouseMove( 0, 5 );
 
-  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 5, 0 ) );
+  bool exist;
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2( &exist ), QgsPoint( 0, 5 ) );
+  QVERIFY( exist );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPoint( &exist ), QgsPointXY( 0, 5 ) );
+  QVERIFY( exist );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->previousPointV2( &exist ), QgsPoint( 0, 4 ) );
+  QVERIFY( exist );
+  QCOMPARE( mAdvancedDigitizingDockWidget->previousPoint( &exist ), QgsPointXY( 0, 4 ) );
+  QVERIFY( exist );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->penultimatePointV2( &exist ), QgsPoint( 0, 3 ) );
+  QVERIFY( exist );
+  QCOMPARE( mAdvancedDigitizingDockWidget->penultimatePoint( &exist ), QgsPointXY( 0, 3 ) );
+  QVERIFY( exist );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->pointsCount(), 6 );
+
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
+            QStringLiteral( "LineString (0 0, 0 1, 0 2, 0 3, 0 4)" ) );
+
+  utils.mouseMove( 1, 1 );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2( &exist ), QgsPoint( 1, 1 ) );
+  QVERIFY( exist );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPoint( &exist ), QgsPointXY( 1, 1 ) );
+  QVERIFY( exist );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->previousPointV2( &exist ), QgsPoint( ) );
+  QVERIFY( !exist );
+  QCOMPARE( mAdvancedDigitizingDockWidget->previousPoint( &exist ), QgsPointXY( ) );
+  QVERIFY( !exist );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->penultimatePointV2( &exist ), QgsPoint( ) );
+  QVERIFY( !exist );
+  QCOMPARE( mAdvancedDigitizingDockWidget->penultimatePoint( &exist ), QgsPointXY( ) );
+  QVERIFY( !exist );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->pointsCount(), 1 );
 }
 
 void TestQgsAdvancedDigitizing::currentPointWhenSanpping()
