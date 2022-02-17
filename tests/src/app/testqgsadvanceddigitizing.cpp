@@ -40,15 +40,16 @@ class TestQgsAdvancedDigitizing: public QObject
     QString getWktFromLastAddedFeature( TestQgsMapToolAdvancedDigitizingUtils utils, QSet<QgsFeatureId> oldFeatures );
     void setCanvasCrs( QString crsString );
 
-    void distance();
-    void distanceDiffCrs();
-    void angle();
-    void angleWithGeographicCrs();
-    void distanceWithAngle();
-    void coordinates();
-    void coordinatesWithZM();
-    void valuesWhenSnapping();
-    void currentPoint();
+    void distanceContrainst();
+    void distanceContrainstDiffCrs();
+    void distanceContrainstWhenSnapping();
+    void angleContrainst();
+    void angleContrainstWithGeographicCrs();
+    void distanceContrainstWithAngleContrainst();
+    void coordinateContrainst();
+    void coordinateContrainstWithZM();
+    void coordinateContrainstWhenSnapping();
+    void cadPointList();
     void currentPointWhenSanpping();
     void currentPointWhenSanppingWithDiffCanvasCRS();
 
@@ -208,7 +209,7 @@ void TestQgsAdvancedDigitizing::setCanvasCrs( QString crsString )
   mCanvas->hide();
 }
 
-void TestQgsAdvancedDigitizing::distance()
+void TestQgsAdvancedDigitizing::distanceContrainst()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
@@ -256,7 +257,7 @@ void TestQgsAdvancedDigitizing::distance()
   QVERIFY( !capacities.testFlag( QgsAdvancedDigitizingDockWidget::Distance ) );
 }
 
-void TestQgsAdvancedDigitizing::distanceDiffCrs()
+void TestQgsAdvancedDigitizing::distanceContrainstDiffCrs()
 {
   auto utils = getMapToolDigitizingUtils( mLayer4326 );
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
@@ -344,7 +345,7 @@ void TestQgsAdvancedDigitizing::angle()
             QStringLiteral( "LineString (0 0, 1 1)" ) );
 }
 
-void TestQgsAdvancedDigitizing::angleWithGeographicCrs()
+void TestQgsAdvancedDigitizing::angleContrainstWithGeographicCrs()
 {
   setCanvasCrs( QStringLiteral( "EPSG:4326" ) );
 
@@ -381,7 +382,7 @@ void TestQgsAdvancedDigitizing::angleWithGeographicCrs()
   setCanvasCrs( QStringLiteral( "EPSG:3950" ) );
 }
 
-void TestQgsAdvancedDigitizing::distanceWithAngle()
+void TestQgsAdvancedDigitizing::distanceContrainstWithAngleContrainst()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
@@ -421,7 +422,7 @@ void TestQgsAdvancedDigitizing::distanceWithAngle()
 }
 
 
-void TestQgsAdvancedDigitizing::coordinates()
+void TestQgsAdvancedDigitizing::coordinateContrainst()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
@@ -464,7 +465,7 @@ void TestQgsAdvancedDigitizing::coordinates()
 }
 
 
-void TestQgsAdvancedDigitizing::coordinatesWithZM()
+void TestQgsAdvancedDigitizing::coordinateContrainstWithZM()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950ZM );
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
@@ -503,7 +504,7 @@ void TestQgsAdvancedDigitizing::coordinatesWithZM()
             QStringLiteral( "LineStringZM (5 0 33 66, 3 5 33 66, 4 4 5 66, 6 6 33 5, 9 9 9 9)" ) );
 }
 
-void TestQgsAdvancedDigitizing::valuesWhenSnapping()
+void TestQgsAdvancedDigitizing::coordinateContrainstWhenSnapping()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
 
