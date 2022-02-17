@@ -43,12 +43,17 @@ class TestQgsAdvancedDigitizing: public QObject
     void distanceContrainst();
     void distanceContrainstDiffCrs();
     void distanceContrainstWhenSnapping();
+
     void angleContrainst();
     void angleContrainstWithGeographicCrs();
     void distanceContrainstWithAngleContrainst();
+
     void coordinateContrainst();
     void coordinateContrainstWithZM();
     void coordinateContrainstWhenSnapping();
+
+    void perpendicularConstraints();
+
     void cadPointList();
     void currentPointWhenSanpping();
     void currentPointWhenSanppingWithDiffCanvasCRS();
@@ -166,6 +171,10 @@ void TestQgsAdvancedDigitizing::cleanup()
   QgsSnappingUtils *snappingUtils = mCanvas->snappingUtils();
   QgsSnappingConfig snapConfig = snappingUtils->config();
   snapConfig.setEnabled( false );
+  snapConfig.setIntersectionSnapping( true );
+  snapConfig.setSelfSnapping( true );
+  snapConfig.setMode( QgsSnappingConfig::AllLayers );
+  snapConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
   snappingUtils->setConfig( snapConfig );
 
   // reset all layers
@@ -620,6 +629,48 @@ void TestQgsAdvancedDigitizing::coordinateContrainstWhenSnapping()
 
   QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
             QStringLiteral( "LineString (0 -2, 2.02 2)" ) );
+}
+
+void TestQgsAdvancedDigitizing::perpendicularConstraints()
+{
+  auto utils = getMapToolDigitizingUtils( mLayer3950 );
+
+  QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
+
+  // line for the perprendicular test
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 10, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
+            QStringLiteral( "LineString (0 0, 0 10)" ) );
+
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  snapConfig.setTypeFlag( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // test snapping on segment
+  utils.mouseMove( 0.1, 4 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 0, 4 ) );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->additionalConstraint(),
+            QgsAdvancedDigitizingDockWidget::AdditionalConstraint::NoConstraint );
+
+  // digitizing a first vertex
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+
+  mAdvancedDigitizingDockWidget->lockAdditionalConstraint( QgsAdvancedDigitizingDockWidget::AdditionalConstraint::Perpendicular );
+  QCOMPARE( mAdvancedDigitizingDockWidget->additionalConstraint(),
+            QgsAdvancedDigitizingDockWidget::AdditionalConstraint::Perpendicular );
+
+  // select the previous digitized line
+  utils.mouseClick( 0.1, 4, Qt::LeftButton );
+
+  // test the perprendicular constrainst
+  utils.mouseMove( 3, 2 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 3, 5 ) );
+
+  utils.mouseClick( 0, 0, Qt::RightButton );
 }
 
 void TestQgsAdvancedDigitizing::cadPointList()
