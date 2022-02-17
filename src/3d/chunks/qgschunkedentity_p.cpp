@@ -176,20 +176,15 @@ void QgsChunkedEntity::update( const SceneState &state )
   }
 
   // unload nodes that have their entities disabled or can be culled
-  while ( mReplacementQueue->count() + mChunkLoaderQueue->count() > mMaxLoadedChunks )
+  while ( mReplacementQueue->count() > mMaxLoadedChunks )
   {
     QgsChunkListEntry *entry = mReplacementQueue->last();
-    if ( ( entry->chunk->entity() && !entry->chunk->entity()->isEnabled() ) || Qgs3DUtils::isCullable( entry->chunk->bbox(), state.viewProjectionMatrix ) )
-    {
-      entry = mReplacementQueue->takeLast();
-      entry->chunk->unloadChunk();  // also deletes the entry
-      mActiveNodes.removeOne( entry->chunk );
-      ++unloaded;
-    }
-    else
-    {
+    if ( !entry->chunk->entity() || entry->chunk->entity()->isEnabled() )
       break;
-    }
+    entry = mReplacementQueue->takeLast();
+    entry->chunk->unloadChunk();  // also deletes the entry
+    mActiveNodes.removeOne( entry->chunk );
+    ++unloaded;
   }
 
   // Disable loading nodes from mChunkLoaderQueue
