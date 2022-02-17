@@ -94,7 +94,7 @@ bool QgsAuthMapTilerHmacSha256Method::updateNetworkRequest( QNetworkRequest &req
   query.setQueryItems( queryItems );
   url.setQuery( query );
 
-  QString signature = calculateSignature( secret, url.url() );
+  QString signature = calculateSignature( secret, url.toEncoded() );
   request.setUrl( QString( url.url() + QStringLiteral( "&signature=" ) + signature ) );
 
   return true;
