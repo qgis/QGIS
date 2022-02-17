@@ -40,19 +40,19 @@ class TestQgsAdvancedDigitizing: public QObject
     QString getWktFromLastAddedFeature( TestQgsMapToolAdvancedDigitizingUtils utils, QSet<QgsFeatureId> oldFeatures );
     void setCanvasCrs( QString crsString );
 
-    void distanceContrainst();
-    void distanceContrainstDiffCrs();
-    void distanceContrainstWhenSnapping();
+    void distanceConstraint();
+    void distanceConstraintDiffCrs();
+    void distanceConstraintWhenSnapping();
 
-    void angleContrainst();
-    void angleContrainstWithGeographicCrs();
-    void distanceContrainstWithAngleContrainst();
+    void angleConstraint();
+    void angleConstraintWithGeographicCrs();
+    void distanceConstraintWithAngleConstraint();
 
-    void coordinateContrainst();
-    void coordinateContrainstWithZM();
-    void coordinateContrainstWhenSnapping();
+    void coordinateConstraint();
+    void coordinateConstraintWithZM();
+    void coordinateConstraintWhenSnapping();
 
-    void perpendicularConstraints();
+    void perpendicularConstraint();
 
     void cadPointList();
     void currentPointWhenSanpping();
@@ -190,7 +190,7 @@ TestQgsMapToolAdvancedDigitizingUtils TestQgsAdvancedDigitizing::getMapToolDigit
   layer->startEditing();
   mCaptureTool->setLayer( layer );
 
-  // enable the advanced digitizing widget
+  // enable the advanced digitizing dock
   mAdvancedDigitizingDockWidget->enableAction()->trigger();
 
   return TestQgsMapToolAdvancedDigitizingUtils( mCaptureTool );
@@ -224,7 +224,7 @@ void TestQgsAdvancedDigitizing::setCanvasCrs( QString crsString )
   mCanvas->hide();
 }
 
-void TestQgsAdvancedDigitizing::distanceContrainst()
+void TestQgsAdvancedDigitizing::distanceConstraint()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
@@ -238,7 +238,7 @@ void TestQgsAdvancedDigitizing::distanceContrainst()
   QVERIFY( !mAdvancedDigitizingDockWidget->mAngleLineEdit->isEnabled() );
   QVERIFY( !mAdvancedDigitizingDockWidget->mDistanceLineEdit->isEnabled() );
 
-  // activate contrainst on seconde point (one digitized vertex)
+  // activate constraint on the second point (one digitized vertex)
   utils.mouseClick( 1, 1, Qt::LeftButton );
 
   capacities = mAdvancedDigitizingDockWidget->capacities();
@@ -253,7 +253,7 @@ void TestQgsAdvancedDigitizing::distanceContrainst()
   QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
             QStringLiteral( "LineString (1 1, 8.07 8.07)" ) );
 
-  // activate contrainst on third point
+  // activate constraint on the third point
   oldFeatures = utils.existingFeatureIds();
 
   utils.mouseClick( 1, 1, Qt::LeftButton );
@@ -272,7 +272,7 @@ void TestQgsAdvancedDigitizing::distanceContrainst()
   QVERIFY( !capacities.testFlag( QgsAdvancedDigitizingDockWidget::Distance ) );
 }
 
-void TestQgsAdvancedDigitizing::distanceContrainstDiffCrs()
+void TestQgsAdvancedDigitizing::distanceConstraintDiffCrs()
 {
   auto utils = getMapToolDigitizingUtils( mLayer4326 );
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
@@ -290,7 +290,7 @@ void TestQgsAdvancedDigitizing::distanceContrainstDiffCrs()
   QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
             QStringLiteral( "LineString (1 1, 8.07 8.07)" ) );
 
-  // activate contrainst on third point
+  // activate constraint on third point
   oldFeatures = utils.existingFeatureIds();
 
   utils.mouseClick( 1, 1, Qt::LeftButton );
@@ -306,7 +306,7 @@ void TestQgsAdvancedDigitizing::distanceContrainstDiffCrs()
             QStringLiteral( "LineString (1 1, 2 2, 7 2)" ) );
 }
 
-void TestQgsAdvancedDigitizing::distanceContrainstWhenSnapping()
+void TestQgsAdvancedDigitizing::distanceConstraintWhenSnapping()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
@@ -329,7 +329,7 @@ void TestQgsAdvancedDigitizing::distanceContrainstWhenSnapping()
   QVERIFY( !mAdvancedDigitizingDockWidget->mAngleLineEdit->isEnabled() );
   QVERIFY( !mAdvancedDigitizingDockWidget->mDistanceLineEdit->isEnabled() );
 
-  // activate contrainst on seconde point (one digitized vertex)
+  // activate constraint on the second point (one digitized vertex)
   utils.mouseClick( 1, 1, Qt::LeftButton );
 
   capacities = mAdvancedDigitizingDockWidget->capacities();
@@ -344,7 +344,7 @@ void TestQgsAdvancedDigitizing::distanceContrainstWhenSnapping()
   QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
             QStringLiteral( "LineString (1 1, 8.07 8.07)" ) );
 
-  // activate contrainst on third point
+  // activate constraint on the third point
   oldFeatures = utils.existingFeatureIds();
 
   utils.mouseClick( 1, 1, Qt::LeftButton );
@@ -363,7 +363,7 @@ void TestQgsAdvancedDigitizing::distanceContrainstWhenSnapping()
   QVERIFY( !capacities.testFlag( QgsAdvancedDigitizingDockWidget::Distance ) );
 }
 
-void TestQgsAdvancedDigitizing::angleContrainst()
+void TestQgsAdvancedDigitizing::angleConstraint()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
@@ -417,7 +417,7 @@ void TestQgsAdvancedDigitizing::angleContrainst()
             QStringLiteral( "LineString (0 0, 1 1)" ) );
 }
 
-void TestQgsAdvancedDigitizing::angleContrainstWithGeographicCrs()
+void TestQgsAdvancedDigitizing::angleConstraintWithGeographicCrs()
 {
   setCanvasCrs( QStringLiteral( "EPSG:4326" ) );
 
@@ -454,14 +454,14 @@ void TestQgsAdvancedDigitizing::angleContrainstWithGeographicCrs()
   setCanvasCrs( QStringLiteral( "EPSG:3950" ) );
 }
 
-void TestQgsAdvancedDigitizing::distanceContrainstWithAngleContrainst()
+void TestQgsAdvancedDigitizing::distanceConstraintWithAngleConstraint()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
 
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
 
-  // with these 2 next locks, there are only 2 posssibilities
+  // with these 2 next locks, there are only 2 possibilities
   // first
   utils.mouseClick( 0, 0, Qt::LeftButton );
 
@@ -494,7 +494,7 @@ void TestQgsAdvancedDigitizing::distanceContrainstWithAngleContrainst()
 }
 
 
-void TestQgsAdvancedDigitizing::coordinateContrainst()
+void TestQgsAdvancedDigitizing::coordinateConstraint()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
@@ -537,7 +537,7 @@ void TestQgsAdvancedDigitizing::coordinateContrainst()
 }
 
 
-void TestQgsAdvancedDigitizing::coordinateContrainstWithZM()
+void TestQgsAdvancedDigitizing::coordinateConstraintWithZM()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950ZM );
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
@@ -576,7 +576,7 @@ void TestQgsAdvancedDigitizing::coordinateContrainstWithZM()
             QStringLiteral( "LineStringZM (5 0 33 66, 3 5 33 66, 4 4 5 66, 6 6 33 5, 9 9 9 9)" ) );
 }
 
-void TestQgsAdvancedDigitizing::coordinateContrainstWhenSnapping()
+void TestQgsAdvancedDigitizing::coordinateConstraintWhenSnapping()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
 
@@ -631,13 +631,13 @@ void TestQgsAdvancedDigitizing::coordinateContrainstWhenSnapping()
             QStringLiteral( "LineString (0 -2, 2.02 2)" ) );
 }
 
-void TestQgsAdvancedDigitizing::perpendicularConstraints()
+void TestQgsAdvancedDigitizing::perpendicularConstraint()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
 
   QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
 
-  // line for the perprendicular test
+  // line for the perpendicular test
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 0, 10, Qt::LeftButton );
   utils.mouseClick( 1, 1, Qt::RightButton );
@@ -666,7 +666,7 @@ void TestQgsAdvancedDigitizing::perpendicularConstraints()
   // select the previous digitized line
   utils.mouseClick( 0.1, 4, Qt::LeftButton );
 
-  // test the perprendicular constrainst
+  // test the perpendicular constraint
   utils.mouseMove( 3, 2 );
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 3, 5 ) );
 
@@ -762,7 +762,7 @@ void TestQgsAdvancedDigitizing::currentPointWhenSanpping()
   utils.mouseMove( 0.1, 0 );
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 0, 0 ) );
 
-  // on an self point
+  // on a self point
   utils.mouseMove( 25, 0.1 );
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 25, 0 ) );
 
@@ -805,7 +805,7 @@ void TestQgsAdvancedDigitizing::currentPointWhenSanppingWithDiffCanvasCRS()
   utils.mouseMove( 0.1, 0 );
   QGSCOMPARENEARPOINT( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 0, 0 ), 0.000001 );
 
-  // on an self point
+  // on a self point
   utils.mouseMove( 25, 0.1 );
   QGSCOMPARENEARPOINT( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 25, 0 ), 0.000001 );
 }
