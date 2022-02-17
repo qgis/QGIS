@@ -984,7 +984,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     QAction *addBookmark = new QAction( tr( "New Spatial Bookmark…" ), menu );
     connect( addBookmark, &QAction::triggered, this, [ = ]
     {
-      QgisApp::instance()->newBookmark();
+      QgisApp::instance()->newBookmark( true );
     } );
     menu->addAction( addBookmark );
     QAction *showBookmarksPanel = new QAction( tr( "Show Spatial Bookmarks Manager" ), menu );
