@@ -691,17 +691,11 @@ void TestQgsAdvancedDigitizing::cadPointList()
 
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2( &exist ), QgsPoint( 0, 5 ) );
   QVERIFY( exist );
-  QCOMPARE( mAdvancedDigitizingDockWidget->currentPoint( &exist ), QgsPointXY( 0, 5 ) );
-  QVERIFY( exist );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->previousPointV2( &exist ), QgsPoint( 0, 4 ) );
   QVERIFY( exist );
-  QCOMPARE( mAdvancedDigitizingDockWidget->previousPoint( &exist ), QgsPointXY( 0, 4 ) );
-  QVERIFY( exist );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->penultimatePointV2( &exist ), QgsPoint( 0, 3 ) );
-  QVERIFY( exist );
-  QCOMPARE( mAdvancedDigitizingDockWidget->penultimatePoint( &exist ), QgsPointXY( 0, 3 ) );
   QVERIFY( exist );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->pointsCount(), 6 );
@@ -715,17 +709,11 @@ void TestQgsAdvancedDigitizing::cadPointList()
   // with no digitized points
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2( &exist ), QgsPoint( 1, 1 ) );
   QVERIFY( exist );
-  QCOMPARE( mAdvancedDigitizingDockWidget->currentPoint( &exist ), QgsPointXY( 1, 1 ) );
-  QVERIFY( exist );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->previousPointV2( &exist ), QgsPoint( ) );
   QVERIFY( !exist );
-  QCOMPARE( mAdvancedDigitizingDockWidget->previousPoint( &exist ), QgsPointXY( ) );
-  QVERIFY( !exist );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->penultimatePointV2( &exist ), QgsPoint( ) );
-  QVERIFY( !exist );
-  QCOMPARE( mAdvancedDigitizingDockWidget->penultimatePoint( &exist ), QgsPointXY( ) );
   QVERIFY( !exist );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->pointsCount(), 1 );
