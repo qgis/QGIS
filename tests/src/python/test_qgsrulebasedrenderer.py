@@ -139,6 +139,35 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         renderer.stopRender(ctx)
         self.assertTrue(rendered)
 
+    def testGroupAndElseRules(self):
+        vl = self.mapsettings.layers()[0]
+
+        # Create rulebased style
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c', 'outline_color': 'black'})
+        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4', 'outline_color': 'black'})
+
+        self.rx1 = QgsRuleBasedRenderer.Rule(None, 0, 0, '"id" < 3')
+        self.rx2 = QgsRuleBasedRenderer.Rule(sym3, 0, 0, 'ELSE')
+
+        self.subrx1 = QgsRuleBasedRenderer.Rule(sym1, 0, 0, '"id" = 1')
+        self.subrx2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 2')
+        self.rx1.appendChild(self.subrx1)
+        self.rx1.appendChild(self.subrx2)
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(self.rx1)
+        rootrule.appendChild(self.rx2)
+        rootrule.children()[0].children()[0].setActive(False)
+        rootrule.children()[0].children()[1].setActive(False)
+
+        vl.setRenderer(QgsRuleBasedRenderer(rootrule))
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlName('expected_rulebased_group_else')
+        self.assertTrue(renderchecker.runTest('rulebased_group_else'))
+
     def testWillRenderFeatureNestedElse(self):
         vl = self.mapsettings.layers()[0]
         ft = vl.getFeature(0)  # 'id' = 1
