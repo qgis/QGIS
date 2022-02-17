@@ -2122,6 +2122,9 @@ QString QgsDxfExport::dxfLayerName( const QString &name )
   layerName.replace( '|', '_' );
   layerName.replace( '=', '_' );
   layerName.replace( '\'', '_' );
+  // if layer name contains comma, resulting file is unreadable in AutoCAD
+  // see https://github.com/qgis/QGIS/issues/47381
+  layerName.replace( ',', '_' );
 
   // also remove newline characters (#15067)
   layerName.replace( QLatin1String( "\r\n" ), QLatin1String( "_" ) );
