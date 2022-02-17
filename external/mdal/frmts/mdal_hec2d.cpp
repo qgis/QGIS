@@ -555,29 +555,29 @@ std::vector<std::string> MDAL::DriverHec2D::read2DFlowAreasNamesFromNameDataset(
 }
 
 /**
-  For 5.0.5+ format
-
-  DATATYPE  H5T_COMPOUND {
-               H5T_STRING {
-                  STRSIZE 16;
-                  STRPAD H5T_STR_NULLTERM;
-                  CSET H5T_CSET_ASCII;
-                  CTYPE H5T_C_S1;
-               } "Name";
-               H5T_IEEE_F32LE "Mann";
-               H5T_IEEE_F32LE "Cell Vol Tol";
-               H5T_IEEE_F32LE "Cell Min Area Fraction";
-               H5T_IEEE_F32LE "Face Profile Tol";
-               H5T_IEEE_F32LE "Face Area Tol";
-               H5T_IEEE_F32LE "Face Conv Ratio";
-               H5T_IEEE_F32LE "Laminar Depth";
-               H5T_IEEE_F32LE "Spacing dx";
-               H5T_IEEE_F32LE "Spacing dy";
-               H5T_IEEE_F32LE "Shift dx";
-               H5T_IEEE_F32LE "Shift dy";
-               H5T_STD_I32LE "Cell Count";
-  }
-*/
+ *  For 5.0.5+ format
+ *
+ *  DATATYPE  H5T_COMPOUND {
+ *              H5T_STRING {
+ *                 STRSIZE 16;
+ *                 STRPAD H5T_STR_NULLTERM;
+ *                 CSET H5T_CSET_ASCII;
+ *                 CTYPE H5T_C_S1;
+ *              } "Name";
+ *              H5T_IEEE_F32LE "Mann";
+ *              H5T_IEEE_F32LE "Cell Vol Tol";
+ *              H5T_IEEE_F32LE "Cell Min Area Fraction";
+ *              H5T_IEEE_F32LE "Face Profile Tol";
+ *              H5T_IEEE_F32LE "Face Area Tol";
+ *              H5T_IEEE_F32LE "Face Conv Ratio";
+ *              H5T_IEEE_F32LE "Laminar Depth";
+ *              H5T_IEEE_F32LE "Spacing dx";
+ *              H5T_IEEE_F32LE "Spacing dy";
+ *              H5T_IEEE_F32LE "Shift dx";
+ *              H5T_IEEE_F32LE "Shift dy";
+ *             H5T_STD_I32LE "Cell Count";
+ * }
+ */
 typedef struct FlowAreasAttribute505
 {
   char name[HDF_MAX_NAME];
