@@ -44,6 +44,7 @@ class TestQgsExpressionContext : public QObject
     void contextStackFunctions();
     void evaluate();
     void setFeature();
+    void setGeometry();
     void setFields();
     void takeScopes();
     void highlighted();
@@ -484,6 +485,35 @@ void TestQgsExpressionContext::setFeature()
   QVERIFY( contextWithScope.feature().isValid() );
   QCOMPARE( contextWithScope.feature().id(), 50LL );
   QCOMPARE( contextWithScope.feature().id(), 50LL );
+}
+
+void TestQgsExpressionContext::setGeometry()
+{
+  QgsGeometry g( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) );
+  QgsExpressionContextScope scope;
+  scope.setGeometry( g );
+  QVERIFY( scope.hasGeometry() );
+  QCOMPARE( scope.geometry().asWkt(), QStringLiteral( "Point (1 2)" ) );
+  scope.removeGeometry();
+  QVERIFY( !scope.hasGeometry() );
+  QVERIFY( scope.geometry().isNull() );
+
+  //test setting a geometry in a context with no scopes
+  QgsExpressionContext emptyContext;
+  QVERIFY( !emptyContext.hasGeometry() );
+  QVERIFY( emptyContext.geometry().isNull() );
+  emptyContext.setGeometry( g );
+  //setGeometry should have created a scope
+  QCOMPARE( emptyContext.scopeCount(), 1 );
+  QVERIFY( emptyContext.hasGeometry() );
+  QCOMPARE( emptyContext.geometry().asWkt(), QStringLiteral( "Point (1 2)" ) );
+
+  QgsExpressionContext contextWithScope;
+  contextWithScope << new QgsExpressionContextScope();
+  contextWithScope.setGeometry( g );
+  QCOMPARE( contextWithScope.scopeCount(), 1 );
+  QVERIFY( contextWithScope.hasGeometry() );
+  QCOMPARE( contextWithScope.geometry().asWkt(), QStringLiteral( "Point (1 2)" ) );
 }
 
 void TestQgsExpressionContext::setFields()
