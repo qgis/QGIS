@@ -45,6 +45,8 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContext
   , mVariables( other.mVariables )
   , mHasFeature( other.mHasFeature )
   , mFeature( other.mFeature )
+  , mHasGeometry( other.mHasGeometry )
+  , mGeometry( other.mGeometry )
 {
   QHash<QString, QgsScopedExpressionFunction * >::const_iterator it = other.mFunctions.constBegin();
   for ( ; it != other.mFunctions.constEnd(); ++it )
@@ -59,6 +61,8 @@ QgsExpressionContextScope &QgsExpressionContextScope::operator=( const QgsExpres
   mVariables = other.mVariables;
   mHasFeature = other.mHasFeature;
   mFeature = other.mFeature;
+  mHasGeometry = other.mHasGeometry;
+  mGeometry = other.mGeometry;
 
   qDeleteAll( mFunctions );
   mFunctions.clear();
@@ -529,8 +533,7 @@ void QgsExpressionContext::setFeature( const QgsFeature &feature )
 
 bool QgsExpressionContext::hasFeature() const
 {
-  const auto constMStack = mStack;
-  for ( const QgsExpressionContextScope *scope : constMStack )
+  for ( const QgsExpressionContextScope *scope : mStack )
   {
     if ( scope->hasFeature() )
       return true;
@@ -549,6 +552,37 @@ QgsFeature QgsExpressionContext::feature() const
       return ( *it )->feature();
   }
   return QgsFeature();
+}
+
+void QgsExpressionContext::setGeometry( const QgsGeometry &geometry )
+{
+  if ( mStack.isEmpty() )
+    mStack.append( new QgsExpressionContextScope() );
+
+  mStack.last()->setGeometry( geometry );
+}
+
+bool QgsExpressionContext::hasGeometry() const
+{
+  for ( const QgsExpressionContextScope *scope : mStack )
+  {
+    if ( scope->hasGeometry() )
+      return true;
+  }
+  return false;
+}
+
+QgsGeometry QgsExpressionContext::geometry() const
+{
+  //iterate through stack backwards, so that higher priority variables take precedence
+  QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
+  while ( it != mStack.constBegin() )
+  {
+    --it;
+    if ( ( *it )->hasGeometry() )
+      return ( *it )->geometry();
+  }
+  return QgsGeometry();
 }
 
 void QgsExpressionContext::setFields( const QgsFields &fields )
