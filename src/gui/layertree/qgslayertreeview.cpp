@@ -120,6 +120,12 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   //checkModel();
 }
 
+void QgsLayerTreeView::disconnectProxyModel()
+{
+  disconnect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
+  disconnect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
+}
+
 QgsLayerTreeModel *QgsLayerTreeView::layerTreeModel() const
 {
   return mProxyModel ? qobject_cast<QgsLayerTreeModel *>( mProxyModel->sourceModel() ) : nullptr;
@@ -189,7 +195,6 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
   QgsLayerTreeNode *parentNode = index2node( index );
   if ( !parentNode )
     return;
-
   // Embedded widgets - replace placeholders in the model by actual widgets
   if ( layerTreeModel()->testFlag( QgsLayerTreeModel::UseEmbeddedWidgets ) && QgsLayerTree::isLayer( parentNode ) )
   {
@@ -568,6 +573,11 @@ void QgsLayerTreeView::setShowPrivateLayers( bool showPrivate )
   mProxyModel->setShowPrivateLayers( showPrivate );
 }
 
+void QgsLayerTreeView::showAllNodes( bool show )
+{
+  mProxyModel->setShowAllNodes( show );
+}
+
 bool QgsLayerTreeView::showPrivateLayers()
 {
   return mShowPrivateLayers;
@@ -739,6 +749,12 @@ void QgsLayerTreeProxyModel::setFilterText( const QString &filterText )
   invalidateFilter();
 }
 
+void QgsLayerTreeProxyModel::setApprovedIds( const QStringList &ids )
+{
+  mDesiredIds = ids;
+  invalidateFilter();
+}
+
 bool QgsLayerTreeProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
   QgsLayerTreeNode *node = mLayerTreeModel->index2node( mLayerTreeModel->index( sourceRow, 0, sourceParent ) );
@@ -747,18 +763,32 @@ bool QgsLayerTreeProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex 
 
 bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
 {
-  if ( !node )
+  if ( !node ) //symbol node
     return true;
 
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
-    return true;
+    if ( !mShowAllNodes && !mDesiredIds.isEmpty() )
+    {
+      QList <QgsLayerTreeNode *> children = node->children();
+      QList <QgsLayerTreeNode *>::const_iterator i;
+      for ( i = children.constBegin(); i != children.constEnd() ; ++i )
+      {
+        if ( nodeShown( *i ) )
+          return true;
+      }
+      return false;
+    }
+    else
+      return true;
   }
   else
   {
     QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
     if ( !layer )
-      return true;
+      return mShowAllNodes;
+    if ( !mDesiredIds.isEmpty() && !mDesiredIds.contains( layer->id() ) )
+      return false;
     if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
       return false;
     if ( ! mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
@@ -777,5 +807,11 @@ bool QgsLayerTreeProxyModel::showPrivateLayers() const
 void QgsLayerTreeProxyModel::setShowPrivateLayers( bool showPrivate )
 {
   mShowPrivateLayers = showPrivate;
+  invalidateFilter();
+}
+
+void QgsLayerTreeProxyModel::setShowAllNodes( bool show )
+{
+  mShowAllNodes = show;
   invalidateFilter();
 }

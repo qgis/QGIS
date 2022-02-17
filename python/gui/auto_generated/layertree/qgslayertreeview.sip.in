@@ -10,7 +10,6 @@
 
 
 
-
 class QgsLayerTreeProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
@@ -36,6 +35,13 @@ Constructs QgsLayerTreeProxyModel with source model ``treeModel`` and a ``parent
 Sets filter to ``filterText``.
 %End
 
+    void setApprovedIds( const QStringList &ids );
+%Docstring
+Sets a predefined list of layer Ids to process.
+
+.. versionadded:: 3.20
+%End
+
     bool showPrivateLayers() const;
 %Docstring
 Returns if private layers are shown.
@@ -44,6 +50,15 @@ Returns if private layers are shown.
     void setShowPrivateLayers( bool showPrivate );
 %Docstring
 Determines if private layers are shown.
+%End
+
+    void setShowAllNodes( bool show );
+%Docstring
+Allow non-spatial layers and empty groups to be show.
+
+:param show: If ``True`` (default behavior), non-spatial layers and groups will be shown.
+
+.. versionadded:: 3.20
 %End
 
   protected:
@@ -93,7 +108,9 @@ Constructor for QgsLayerTreeView
     virtual void setModel( QAbstractItemModel *model );
 
 %Docstring
-Overridden :py:func:`~QgsLayerTreeView.setModel` from base class. Only :py:class:`QgsLayerTreeModel` is an acceptable model.
+Overridden :py:func:`~QgsLayerTreeView.setModel` from base class.
+
+:param model: Model used to populate the view. Only :py:class:`QgsLayerTreeModel` models are accepted.
 %End
 
     QgsLayerTreeModel *layerTreeModel() const;
@@ -108,6 +125,13 @@ Returns the proxy model used by the view.
 This can be used to set filters controlling which layers are shown in the view.
 
 .. versionadded:: 3.18
+%End
+
+    void disconnectProxyModel();
+%Docstring
+Disconnects the Proxy Model to prevent crash when using a second view on the same model.
+
+.. versionadded:: 3.24
 %End
 
     QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
@@ -293,6 +317,15 @@ Returns width of contextual menu mark, at right of layer node items.
 .. seealso:: :py:func:`setLayerMarkWidth`
 
 .. versionadded:: 3.8
+%End
+
+    void showAllNodes( bool show );
+%Docstring
+Allow non-spatial layers and empty groups to be show.
+
+:param show: If ``True`` (default behavior), non-spatial layers and groups will be shown.
+
+.. versionadded:: 3.20
 %End
 
 

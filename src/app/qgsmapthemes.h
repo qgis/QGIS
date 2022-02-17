@@ -51,10 +51,12 @@ class APP_EXPORT QgsMapThemes : public QObject
     //! Convenience menu that lists available presets and actions for management
     QMenu *menu();
 
-  protected slots:
+  public slots:
 
     //! Handles adding a preset to the project's collection
     void addPreset();
+
+  protected slots:
 
     //! Handles apply a preset to the map canvas
     void presetTriggered();

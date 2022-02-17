@@ -32,7 +32,6 @@ class QgsMapLayer;
 class QgsMessageBar;
 class QgsLayerTreeFilterProxyModel;
 
-
 #include <QSortFilterProxyModel>
 
 /**
@@ -60,6 +59,12 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
     void setFilterText( const QString &filterText = QString() );
 
     /**
+     * Sets a predefined list of layer Ids to process.
+     * \since QGIS 3.20
+     */
+    void setApprovedIds( const QStringList &ids );
+
+    /**
      * Returns if private layers are shown.
      */
     bool showPrivateLayers() const;
@@ -68,6 +73,13 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
      * Determines if private layers are shown.
      */
     void setShowPrivateLayers( bool showPrivate );
+
+    /**
+     * Allow non-spatial layers and empty groups to be show.
+     * \param show If TRUE (default behavior), non-spatial layers and groups will be shown.
+     * \since QGIS 3.20
+     */
+    void setShowAllNodes( bool show );
 
   protected:
 
@@ -79,7 +91,10 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
     QString mFilterText;
+    QStringList mDesiredIds;
     bool mShowPrivateLayers = false;
+    bool mShowAllNodes = true;
+
 
 };
 
@@ -120,7 +135,10 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     explicit QgsLayerTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsLayerTreeView() override;
 
-    //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
+    /**
+     * Overridden setModel() from base class.
+     * \param model Model used to populate the view. Only QgsLayerTreeModel models are accepted.
+     */
     void setModel( QAbstractItemModel *model ) override;
 
     //! Gets access to the model casted to QgsLayerTreeModel
@@ -134,6 +152,12 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * \since QGIS 3.18
      */
     QgsLayerTreeProxyModel *proxyModel() const;
+
+    /**
+     * Disconnects the Proxy Model to prevent crash when using a second view on the same model.
+     * \since QGIS3.24
+     */
+    void disconnectProxyModel();
 
     /**
      * Returns layer tree node for given proxy model tree \a index. Returns root node for invalid index.
@@ -290,6 +314,13 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * \since QGIS 3.8
      */
     int layerMarkWidth() const { return mLayerMarkWidth; }
+
+    /**
+     * Allow non-spatial layers and empty groups to be show.
+     * \param show If TRUE (default behavior), non-spatial layers and groups will be shown.
+     * \since QGIS 3.20
+     */
+    void showAllNodes( bool show );
 
 ///@cond PRIVATE
 
