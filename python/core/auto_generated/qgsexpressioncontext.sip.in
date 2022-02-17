@@ -335,6 +335,49 @@ Removes any feature associated with the scope.
 .. versionadded:: 3.0
 %End
 
+    bool hasGeometry() const;
+%Docstring
+Returns ``True`` if the scope has a geometry associated with it.
+
+.. seealso:: :py:func:`geometry`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGeometry geometry() const;
+%Docstring
+Sets the geometry associated with the scope.
+
+.. seealso:: :py:func:`setGeometry`
+
+.. seealso:: :py:func:`hasGeometry`
+
+.. versionadded:: 3.24
+%End
+
+    void setGeometry( const QgsGeometry &geometry );
+%Docstring
+Convenience function for setting a ``geometry`` for the scope. Any existing
+geometry set by the scope will be overwritten.
+
+.. seealso:: :py:func:`removeGeometry`
+
+.. seealso:: :py:func:`geometry`
+
+.. versionadded:: 3.24
+%End
+
+    void removeGeometry();
+%Docstring
+Removes any geometry associated with the scope.
+
+.. seealso:: :py:func:`setGeometry`
+
+.. seealso:: :py:func:`hasGeometry`
+
+.. versionadded:: 3.24
+%End
+
     void setFields( const QgsFields &fields );
 %Docstring
 Convenience function for setting a fields for the scope. Any existing
@@ -692,6 +735,35 @@ Returns ``True`` if the context has a feature associated with it.
 Convenience function for retrieving the feature for the context, if set.
 
 .. seealso:: :py:func:`setFeature`
+%End
+
+    void setGeometry( const QgsGeometry &geometry );
+%Docstring
+Convenience function for setting a ``geometry`` for the context. The geometry
+will be set within the last scope of the context, so will override any
+existing geometries within the context.
+
+.. seealso:: :py:func:`geometry`
+
+.. versionadded:: 3.24
+%End
+
+    bool hasGeometry() const;
+%Docstring
+Returns ``True`` if the context has a geometry associated with it.
+
+.. seealso:: :py:func:`geometry`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGeometry geometry() const;
+%Docstring
+Convenience function for retrieving the geometry for the context, if set.
+
+.. seealso:: :py:func:`setGeometry`
+
+.. versionadded:: 3.24
 %End
 
     void setFields( const QgsFields &fields );
