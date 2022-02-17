@@ -27,6 +27,7 @@
 #include "qgsstylemanagerdialog.h"
 #include "qgsguiutils.h"
 #include "qgsfileutils.h"
+#include "qgsnewnamedialog.h"
 
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -1112,6 +1113,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       }
     }
 
+    // Export bookmarks
     QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
     connect( exportBookmarks, &QAction::triggered, this, [ = ]
     {
@@ -1129,6 +1131,19 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     menu->addAction( addBookmarkToGroup );
     menu->addSeparator();
 
+    // Rename bookmark group
+    QAction *renameBookmarkGroup = new QAction( tr( "Rename Bookmark Group…" ), menu );
+    connect( renameBookmarkGroup, &QAction::triggered, this, [ = ]
+    {
+      QgsNewNameDialog dlg( tr( "bookmark group “%1”" ).arg( groupItem->group() ), groupItem->group() );
+      dlg.setWindowTitle( tr( "Rename Bookmark Group" ) );
+      if ( dlg.exec() != QDialog::Accepted || dlg.name() == groupItem->group() )
+        return;
+      manager->renameGroup( groupItem->group(), dlg.name() );
+    } );
+    menu->addAction( renameBookmarkGroup );
+
+    // Delete bookmark group
     QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Bookmark Group" ) : tr( "Delete Bookmark Groups" ), menu );
     connect( actionDelete, &QAction::triggered, this, [selectedItems, groups, manager]
     {
