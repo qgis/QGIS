@@ -1252,17 +1252,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mMapStyleWidget = new QgsLayerStylingWidget( mMapCanvas, mInfoBar, mMapLayerPanelFactories );
   mMapStylingDock->setWidget( mMapStyleWidget );
   connect( mMapStyleWidget, &QgsLayerStylingWidget::styleChanged, this, &QgisApp::updateLabelToolButtons );
-  connect( mMapStyleWidget, &QgsLayerStylingWidget::layerChanged, this, [ = ]( QgsMapLayer * layer )
-  {
-    if ( !layer->styleManager()->isDefault( layer->styleManager()->currentStyle() ) )
-    {
-      mMapStylingDock->setWindowTitle( tr( "Layer Styling (%1)" ).arg( layer->styleManager()->currentStyle() ) );
-    }
-    else
-    {
-      mMapStylingDock->setWindowTitle( tr( "Layer Styling" ) );
-    }
-  } );
   connect( mMapStyleWidget, &QgsLayerStylingWidget::layerStyleChanged, this, [ = ]( QString styleName )
   {
     if ( !QgsMapLayerStyleManager::isDefault( styleName ) )
