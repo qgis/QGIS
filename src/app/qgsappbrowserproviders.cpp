@@ -1135,8 +1135,17 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     QAction *renameBookmarkGroup = new QAction( tr( "Rename Bookmark Group…" ), menu );
     connect( renameBookmarkGroup, &QAction::triggered, this, [ = ]
     {
-      QgsNewNameDialog dlg( tr( "bookmark group “%1”" ).arg( groupItem->group() ), groupItem->group() );
+      QStringList existingGroupNames = manager->groups();
+      existingGroupNames.removeOne( groupItem->group() );
+      QgsNewNameDialog dlg(
+        tr( "bookmark group “%1”" ).arg( groupItem->group() ),
+        groupItem->group(),
+        QStringList(),
+        existingGroupNames
+      );
       dlg.setWindowTitle( tr( "Rename Bookmark Group" ) );
+      dlg.setOverwriteEnabled( true );
+      dlg.setConflictingNameWarning( tr( "Group name already exists, overwriting will merge the bookmark groups." ) );
       if ( dlg.exec() != QDialog::Accepted || dlg.name() == groupItem->group() )
         return;
       manager->renameGroup( groupItem->group(), dlg.name() );
