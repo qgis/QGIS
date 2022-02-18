@@ -618,16 +618,33 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Space )
   {
-    const QList<QgsLayerTreeNode *> constSelectedNodes = selectedNodes();
+    const QModelIndexList selected = selectionModel()->selectedIndexes();
+    if ( ! selected.isEmpty() )
+    {    
+      QModelIndex layerTreeIndex = mProxyModel->mapToSource( selected.at( 0 ) );
+      bool isFirstNodeChecked;
 
-    if ( !constSelectedNodes.isEmpty() )
-    {
-      const bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
-      for ( QgsLayerTreeNode *node : constSelectedNodes )
+      if ( QgsLayerTreeNode *node = layerTreeModel()->index2node( layerTreeIndex ) )
       {
-        node->setItemVisibilityChecked( ! isFirstNodeChecked );
+        isFirstNodeChecked = node->itemVisibilityChecked();
       }
-
+      else if ( QgsLayerTreeModelLegendNode *legendNode = layerTreeModel()->index2legendNode( layerTreeIndex ) )
+      {
+         isFirstNodeChecked = legendNode->isVisibile(); // TO IMPLEMENT
+      }
+ 
+      for ( const QModelIndex &index : selected )
+      {
+        layerTreeIndex = mProxyModel->mapToSource( index );
+        if ( QgsLayerTreeNode *node = layerTreeModel()->index2node( layerTreeIndex ) )
+        {
+          node->setItemVisibilityChecked( ! isFirstNodeChecked );
+        }
+        else if ( QgsLayerTreeModelLegendNode *legendNode = layerTreeModel()->index2legendNode( layerTreeIndex ) )
+        {
+          legendNode->setVisibility( ! isFirstNodeChecked ); // TO IMPLEMENT
+        }
+      }
       // if we call the original keyPress handler, the current item will be checked to the original state yet again
       return;
     }
