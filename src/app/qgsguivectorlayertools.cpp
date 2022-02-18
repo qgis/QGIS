@@ -38,11 +38,10 @@ bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttribu
   f->setGeometry( defaultGeometry );
   QgsFeatureAction *a = new QgsFeatureAction( tr( "Add feature" ), *f, layer, QString(), -1, parentWidget );
   a->setForceSuppressFormPopup( forceSuppressFormPopup() );
+  connect( a, &QgsFeatureAction::addFeatureFinished, a, &QObject::deleteLater );
   const bool added = a->addFeature( defaultValues, showModal, nullptr, hideParent );
   if ( !feat )
     delete f;
-  if ( showModal )
-    delete a;
   return added;
 }
 
