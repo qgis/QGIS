@@ -29,7 +29,7 @@ QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
   reset();
 }
 
-QString QgsMapLayerStyleManager::defaultStyleName() const
+QString QgsMapLayerStyleManager::defaultStyleName()
 {
   return tr( "default" );
 }
@@ -226,7 +226,7 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
   return true;
 }
 
-bool QgsMapLayerStyleManager::isDefault( const QString &styleName ) const
+bool QgsMapLayerStyleManager::isDefault( const QString &styleName )
 {
   return styleName == defaultStyleName();
 }
