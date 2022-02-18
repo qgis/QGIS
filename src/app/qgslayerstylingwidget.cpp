@@ -168,6 +168,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
     mLastStyleXml.clear();
     mCurrentLayer = nullptr;
+    emitLayerStyleChanged( QString() );
     return;
   }
 
