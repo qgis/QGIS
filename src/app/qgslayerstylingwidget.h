@@ -116,7 +116,6 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 
   signals:
     void styleChanged( QgsMapLayer *layer );
-    void layerChanged( QgsMapLayer *layer );
     void layerStyleChanged( const QString &currentStyleName );
 
   public slots:
@@ -156,6 +155,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
   private:
     void pushUndoItem( const QString &name, bool triggerRepaint = true );
     void emitLayerStyleChanged( const QString &currentStyleName ) {emit layerStyleChanged( currentStyleName );};
+    void emitLayerStyleRenamed();
     int mNotSupportedPage;
     int mLayerPage;
     QTimer *mAutoApplyTimer = nullptr;
