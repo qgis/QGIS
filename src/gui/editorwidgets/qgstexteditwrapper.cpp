@@ -40,7 +40,14 @@ QVariant QgsTextEditWrapper::value() const
   {
     if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
     {
-      v = mTextEdit->toHtml();
+      if ( mTextEdit->toPlainText().isEmpty() )
+      {
+        v = QString();
+      }
+      else
+      {
+        v = mTextEdit->toHtml();
+      }
     }
     else
     {
