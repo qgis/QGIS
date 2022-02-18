@@ -1299,7 +1299,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   } );
   connect( mMapStyleWidget, &QgsLayerStylingWidget::layerStyleChanged, this, [ = ]( QString styleName )
   {
-    if ( tr( "default" ) != styleName )
+    if ( !QgsMapLayerStyleManager::isDefault( styleName ) )
     {
       mMapStylingDock->setWindowTitle( tr( "Layer Styling (%1)" ).arg( styleName ) );
     }
