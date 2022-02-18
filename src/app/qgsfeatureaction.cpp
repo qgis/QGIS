@@ -320,21 +320,23 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
 
 void QgsFeatureAction::hideParentWidget()
 {
-  if ( parentWidget() )
+  QWidget *dialog = parentWidget();
+  if ( dialog )
   {
-    QWidget *dialog = parentWidget()->parentWidget();
-    if ( dialog && dialog->window()->objectName() != QStringLiteral( "QgisApp" ) )
-      dialog->window()->setVisible( false );
+    QWidget *triggerWidget = dialog->parentWidget();
+    if ( triggerWidget && triggerWidget->window()->objectName() != QStringLiteral( "QgisApp" ) )
+      triggerWidget->window()->setVisible( false );
   }
 }
 
 void QgsFeatureAction::unhideParentWidget()
 {
-  if ( parentWidget() )
+  QWidget *dialog = parentWidget();
+  if ( dialog )
   {
-    QWidget *dialog = parentWidget()->parentWidget();
-    if ( dialog )
-      dialog->window()->setVisible( true );
+    QWidget *triggerWidget = dialog->parentWidget();
+    if ( triggerWidget )
+      triggerWidget->window()->setVisible( true );
   }
 }
 
