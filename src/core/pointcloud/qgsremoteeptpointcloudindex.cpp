@@ -42,6 +42,7 @@
 #include "qgsfileutils.h"
 #include "qgsapplication.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudexpression.h"
 
 ///@cond PRIVATE
 
@@ -139,7 +140,22 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
     return nullptr;
   }
 
-  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), request.attributes(), scale(), offset() );
+  QgsPointCloudExpression expr( mSubsetString );
+  const auto expressionAttributes = expr.referencedAttributes();
+  const QgsPointCloudAttributeCollection allAttributes = attributes();
+  QgsPointCloudAttributeCollection reqAttributes = request.attributes();
+
+  for ( const auto &attribute : expressionAttributes )
+  {
+    if ( reqAttributes.indexOf( attribute ) == -1 )
+    {
+      int offset;
+      const auto attr = allAttributes.find( attribute, offset );
+      if ( attr )
+        reqAttributes.push_back( *attr );
+    }
+  }
+  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, allAttributes, reqAttributes, scale(), offset(), expr );
 }
 
 bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const

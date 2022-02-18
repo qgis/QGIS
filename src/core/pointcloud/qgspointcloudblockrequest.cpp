@@ -29,10 +29,10 @@
 
 QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri, const QString &dataType,
     const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-    const QgsVector3D &scale, const QgsVector3D &offset )
+    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filter )
   : mNode( node ), mDataType( dataType ),
     mAttributes( attributes ), mRequestedAttributes( requestedAttributes ),
-    mScale( scale ), mOffset( offset )
+    mScale( scale ), mOffset( offset ), mFilter( filter )
 {
   QNetworkRequest nr( Uri );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
@@ -71,7 +71,7 @@ void QgsPointCloudBlockRequest::blockFinishedLoading()
       }
       else if ( mDataType == QLatin1String( "laszip" ) )
       {
-        mBlock = QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset );
+        mBlock = QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilter );
       }
       else
       {

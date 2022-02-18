@@ -625,10 +625,11 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayData,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes,
-    const QgsVector3D &scale, const QgsVector3D &offset )
+    const QgsVector3D &scale, const QgsVector3D &offset,
+    const QgsPointCloudExpression &expression )
 {
   std::istringstream file( byteArrayData.toStdString() );
-  return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes, scale, offset, QgsPointCloudExpression() );
+  return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes, scale, offset, expression );
 }
 
 ///@endcond
