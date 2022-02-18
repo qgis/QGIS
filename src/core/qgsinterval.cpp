@@ -216,7 +216,7 @@ QgsInterval QgsInterval::fromString( const QString &string )
 
   QRegularExpressionMatch matchtime = rxtime.match( string );
   QString modedString = QString( string );
-  if ( matchtime.hasMatch() && std::count( modedString.begin(), modedString.end(), ':' ) == 2 ) //some part of the string contains 00:00:00 style duration
+  if ( matchtime.hasMatch() ) //some part of the string contains 00:00:00 style duration
   {
     // Get the first occurrence of : (hours)
     size_t hourColonPos = modedString.indexOf( ':' );
