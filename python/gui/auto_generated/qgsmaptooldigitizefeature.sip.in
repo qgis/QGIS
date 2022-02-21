@@ -88,7 +88,7 @@ Check if CaptureMode matches layer type. Default is ``True``.
 %Docstring
 Called when the feature has been digitized
 
-.. versionadded:: 3.24
+.. versionadded:: 3.26
 %End
 };
 

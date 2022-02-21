@@ -195,7 +195,7 @@ class GUI_EXPORT QgsGui : public QObject
     /**
      * Returns the registry of shape map tools
      * \note Not available in Python bindings
-    * \since QGIS 3.24
+    * \since QGIS 3.26
      */
     static QgsMapToolShapeRegistry *mapToolShapeRegistry() SIP_SKIP;
 

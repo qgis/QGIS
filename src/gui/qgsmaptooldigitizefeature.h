@@ -95,7 +95,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
 
     /**
      * Called when the feature has been digitized
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     virtual void featureDigitized( const QgsFeature &feature )  {Q_UNUSED( feature )} SIP_FORCE
 

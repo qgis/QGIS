@@ -35,7 +35,7 @@ class QKeyEvent;
 /**
  * \ingroup gui
  * \brief QgsMapToolShapeAbstract is a base class for shape map tools to be used by QgsMapToolCapture.
- * \since QGIS 3.24
+ * \since QGIS 3.26
  */
 class GUI_EXPORT QgsMapToolShapeAbstract
   : public QObject
