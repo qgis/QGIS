@@ -141,7 +141,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
               || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Triangle
               || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::CurvePolygon )
     {
-      QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( part.release() );
+      QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( part.get() );
       if ( curvePolygon )
       {
         if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon && curvePolygon->hasCurvedSegments() )
@@ -151,6 +151,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
           delete curvePolygon;
           curvePolygon = polygon;
         }
+        part.release();
         added = geomCollection->addGeometry( curvePolygon );
       }
       else
@@ -210,7 +211,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
     }
     else
     {
-      QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.release() );
+      QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.get() );
       if ( curve )
       {
         if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiLineString && curve->hasCurvedSegments() )
@@ -220,6 +221,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
           delete curve;
           curve = line;
         }
+        part.release();
         added = geomCollection->addGeometry( curve );
       }
       else
