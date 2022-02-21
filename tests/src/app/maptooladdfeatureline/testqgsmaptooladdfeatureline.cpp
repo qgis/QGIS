@@ -308,6 +308,10 @@ void TestQgsMapToolAddFeatureLine::testTracing()
 
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 3, 2, Qt::LeftButton );
+
+  // be sure it doesn't create an extra curve
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((1 1, 2 1, 3 2))" ) );
+
   utils.mouseClick( 3, 2, Qt::RightButton );
 
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
