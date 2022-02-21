@@ -296,7 +296,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   mSnappingMatches.append( QgsPointLocator::Match() );
 
   int pointBefore = mCaptureCurve.numPoints();
-  mCaptureCurve.addCurve( new QgsLineString( layerPoints ) );
+  addCurve( new QgsLineString( layerPoints ) );
 
   resetRubberBand();
 
