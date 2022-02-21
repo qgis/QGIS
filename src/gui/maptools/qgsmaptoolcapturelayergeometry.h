@@ -31,7 +31,9 @@ class GUI_EXPORT QgsMapToolCaptureLayerGeometry : public QgsMapToolCapture
 {
   public:
     //! Constructor
-    QgsMapToolCaptureLayerGeometry( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
+    QgsMapToolCaptureLayerGeometry( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
+      : QgsMapToolCapture( canvas, cadDockWidget, mode )
+    {}
 
   private:
     void geometryCaptured( const QgsGeometry &geometry ) override;

@@ -71,7 +71,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
       StraightSegments, //!< Default capture mode - capture occurs with straight line segments
       CircularString, //!< Capture in circular strings
       Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves). Since QGIS 3.20.
-      Shape, //!< Digitize shapes. Since QGIS 3.24.
+      Shape, //!< Digitize shapes. Since QGIS 3.26.
     };
     Q_ENUM( CaptureTechnique )
 
@@ -104,14 +104,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /**
      * Sets the current capture if it is supported by the map tool
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     void setCurrentCaptureTechnique( CaptureTechnique technique );
 
     /**
      * Sets the current shape tool
      * \see QgsMapToolShapeRegistry
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     void setCurrentShapeMapTool( const QgsMapToolShapeMetadata *shapeMapToolMetadata ) SIP_SKIP;
 
@@ -205,14 +205,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /**
      * Enable the digitizing with curve
-     * \deprecated since QGIS 3.24 use setCurrentCaptureTechnique() instead
+     * \deprecated since QGIS 3.26 use setCurrentCaptureTechnique() instead
      */
     Q_DECL_DEPRECATED void setCircularDigitizingEnabled( bool enable ) SIP_DEPRECATED;
 
     /**
      * Toggles the stream digitizing mode.
      * \since QGIS 3.20
-    * \deprecated since QGIS 3.24 use setCurrentCaptureTechnique() instead
+    * \deprecated since QGIS 3.26 use setCurrentCaptureTechnique() instead
      */
     Q_DECL_DEPRECATED void setStreamDigitizingEnabled( bool enable ) SIP_DEPRECATED;
 
@@ -351,28 +351,28 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Called when the geometry is captured
      * A more specific handler is also called afterwards (pointCaptured, lineCaptured or polygonCaptured)
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     virtual void geometryCaptured( const QgsGeometry &geometry ) {Q_UNUSED( geometry )} SIP_FORCE
 
     /**
      * Called when a point is captured
      * geometryCaptured is called just before
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     virtual void pointCaptured( const QgsPoint &point ) {Q_UNUSED( point )} SIP_FORCE
 
     /**
      * Called when a line is captured
      * geometryCaptured is called just before
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     virtual void lineCaptured( const QgsCurve *line ) {Q_UNUSED( line )} SIP_FORCE
 
     /**
      * Called when a polygon is captured
      * geometryCaptured is called just before
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     virtual void polygonCaptured( const QgsCurvePolygon *polygon ) {Q_UNUSED( polygon )} SIP_FORCE
 

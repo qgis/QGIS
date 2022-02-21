@@ -20,11 +20,6 @@
 #include "qgscurve.h"
 
 
-QgsMapToolCaptureLayerGeometry::QgsMapToolCaptureLayerGeometry( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
-  : QgsMapToolCapture( canvas, cadDockWidget, mode )
-{
-
-}
 
 
 void QgsMapToolCaptureLayerGeometry::geometryCaptured( const QgsGeometry &geometry )
@@ -34,41 +29,65 @@ void QgsMapToolCaptureLayerGeometry::geometryCaptured( const QgsGeometry &geomet
     return;
 
   QgsGeometry g( geometry );
-  QList<QgsVectorLayer *>  avoidIntersectionsLayers;
-  switch ( QgsProject::instance()->avoidIntersectionsMode() )
+
+  switch ( mode() )
   {
-    case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
-      if ( vlayer )
-        avoidIntersectionsLayers.append( vlayer );
+    case QgsMapToolCapture::CaptureNone:
+    case QgsMapToolCapture::CapturePoint:
       break;
-    case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
-      avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+    case QgsMapToolCapture::CaptureLine:
+    case QgsMapToolCapture::CapturePolygon:
+      //does compoundcurve contain circular strings?
+      //does provider support circular strings?
+      const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+      const bool providerSupportsCurvedSegments = vlayer && ( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries );
+      if ( !hasCurvedSegments || !providerSupportsCurvedSegments )
+        g.get()->segmentize();
+
+      QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+      switch ( QgsProject::instance()->avoidIntersectionsMode() )
+      {
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+          if ( vlayer )
+            avoidIntersectionsLayers.append( vlayer );
+          break;
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+          avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+          break;
+        case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+          break;
+      }
+      if ( avoidIntersectionsLayers.size() > 0 )
+      {
+        const int avoidIntersectionsReturn = g.avoidIntersections( avoidIntersectionsLayers );
+        if ( avoidIntersectionsReturn == 3 )
+        {
+          emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
+        }
+        if ( g.isEmpty() ) //avoid intersection might have removed the whole geometry
+        {
+          emit messageEmitted( tr( "The feature cannot be added because its geometry collapsed due to intersection avoidance" ), Qgis::MessageLevel::Critical );
+          stopCapturing();
+          return;
+        }
+      }
       break;
-    case QgsProject::AvoidIntersectionsMode::AllowIntersections:
-      break;
-  }
-  if ( avoidIntersectionsLayers.size() > 0 )
-  {
-    const int avoidIntersectionsReturn = g.avoidIntersections( avoidIntersectionsLayers );
-    if ( avoidIntersectionsReturn == 3 )
-    {
-      emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
-    }
-    if ( g.isEmpty() ) //avoid intersection might have removed the whole geometry
-    {
-      emit messageEmitted( tr( "The feature cannot be added because its geometry collapsed due to intersection avoidance" ), Qgis::MessageLevel::Critical );
-      stopCapturing();
-      return;
-    }
   }
 
   layerGeometryCaptured( g );
-  if ( mode() == CaptureLine )
+
+  switch ( mode() )
   {
-    layerLineCaptured( qgsgeometry_cast<const QgsCurve *>( g.constGet() ) );
-  }
-  else
-  {
-    layerPolygonCaptured( qgsgeometry_cast<const QgsCurvePolygon *>( g.constGet() ) );
+    case QgsMapToolCapture::CaptureNone:
+      break;
+    case QgsMapToolCapture::CapturePoint:
+      layerPointCaptured( *qgsgeometry_cast<const QgsPoint *>( g.constGet() ) );
+      break;
+    case QgsMapToolCapture::CaptureLine:
+      layerLineCaptured( qgsgeometry_cast<const QgsCurve *>( g.constGet() ) );
+      break;
+    case QgsMapToolCapture::CapturePolygon:
+      layerPolygonCaptured( qgsgeometry_cast<const QgsCurvePolygon *>( g.constGet() ) );
+      break;
   }
 }

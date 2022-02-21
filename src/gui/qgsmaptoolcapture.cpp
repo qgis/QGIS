@@ -1209,8 +1209,6 @@ void QgsMapToolCapture::updateExtraSnapLayer()
 
 void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
-
   // POINT CAPTURING
   if ( mode() == CapturePoint )
   {
@@ -1344,42 +1342,16 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     if ( digitizingFinished )
     {
       QgsGeometry g;
-
-      //does compoundcurve contain circular strings?
-      //does provider support circular strings?
-      const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-      const bool providerSupportsCurvedSegments = vlayer && ( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries );
-
-      QList<QgsPointLocator::Match> snappingMatchesList;
-      QgsCurve *curveToAdd = nullptr;
-      QgsCurvePolygon *poly = nullptr;
-
-      if ( hasCurvedSegments && providerSupportsCurvedSegments )
-      {
-        curveToAdd = captureCurve()->clone();
-      }
-      else
-      {
-        curveToAdd = captureCurve()->curveToLine();
-        snappingMatchesList = snappingMatches();
-      }
+      QgsCurve *curveToAdd = captureCurve()->clone();
 
       if ( mode() == CaptureLine )
       {
-        g = QgsGeometry( curveToAdd );
-        geometryCaptured( g );
+        geometryCaptured( QgsGeometry( curveToAdd ) );
         lineCaptured( curveToAdd );
       }
       else
       {
-        if ( hasCurvedSegments && providerSupportsCurvedSegments )
-        {
-          poly = new QgsCurvePolygon();
-        }
-        else
-        {
-          poly = new QgsPolygon();
-        }
+        QgsCurvePolygon *poly = new QgsCurvePolygon();
         poly->setExteriorRing( curveToAdd );
         g = QgsGeometry( poly );
         geometryCaptured( g );
