@@ -49,7 +49,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
      */
     QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri, const QString &dataType,
                                const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-                               const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filter );
+                               const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression );
 
     /**
      * Returns the requested block. if the returned block is nullptr, that means the data request failed
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     QgsPointCloudBlock *mBlock = nullptr;
     QString mErrorStr;
     QgsVector3D mScale, mOffset;
-    QgsPointCloudExpression mFilter;
+    QgsPointCloudExpression mFilterExpression;
   private slots:
     void blockFinishedLoading();
 };

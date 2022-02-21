@@ -293,8 +293,8 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mDirectory, n.toString() );
 
-    QgsPointCloudExpression expr( mSubsetString );
-    const auto expressionAttributes = expr.referencedAttributes();
+    QgsPointCloudExpression filterExpression( mSubsetString );
+    const auto expressionAttributes = filterExpression.referencedAttributes();
     const QgsPointCloudAttributeCollection allAttributes = attributes();
     QgsPointCloudAttributeCollection reqAttributes = request.attributes();
 
@@ -309,7 +309,7 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
       }
     }
 
-    return QgsEptDecoder::decompressLaz( filename, allAttributes, reqAttributes, scale(), offset(), expr );
+    return QgsEptDecoder::decompressLaz( filename, allAttributes, reqAttributes, scale(), offset(), filterExpression );
   }
   else
   {

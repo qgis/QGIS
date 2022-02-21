@@ -315,7 +315,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, 
 
 
 template<typename FileType>
-QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, const QgsPointCloudExpression &expression )
+QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, const QgsPointCloudExpression &filterExpression )
 {
   Q_UNUSED( attributes );
   Q_UNUSED( _scale );
@@ -480,7 +480,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   );
 
   int skippedPoints = 0;
-  QgsPointCloudExpression expr( expression );
+  QgsPointCloudExpression expr( filterExpression );
   bool prep = expr.prepare( block );
   for ( size_t i = 0 ; i < count ; i ++ )
   {
@@ -614,22 +614,22 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes,
     const QgsVector3D &scale, const QgsVector3D &offset,
-    const QgsPointCloudExpression &expression )
+    const QgsPointCloudExpression &filterExpression )
 {
   const QByteArray arr = filename.toUtf8();
   std::ifstream file( arr.constData(), std::ios::binary );
 
-  return __decompressLaz<std::ifstream>( file, attributes, requestedAttributes, scale, offset, expression );
+  return __decompressLaz<std::ifstream>( file, attributes, requestedAttributes, scale, offset, filterExpression );
 }
 
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayData,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes,
     const QgsVector3D &scale, const QgsVector3D &offset,
-    const QgsPointCloudExpression &expression )
+    const QgsPointCloudExpression &filterExpression )
 {
   std::istringstream file( byteArrayData.toStdString() );
-  return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes, scale, offset, expression );
+  return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes, scale, offset, filterExpression );
 }
 
 ///@endcond
