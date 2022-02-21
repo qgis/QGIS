@@ -481,7 +481,12 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
 
   int skippedPoints = 0;
   QgsPointCloudExpression expr( filterExpression );
-  bool prep = expr.prepare( block );
+  if ( !expr.prepare( block ) && !expr.dump().isEmpty() )
+  {
+    // skip processing if the expression cannot be prepared
+    block->setPointCount( 0 );
+    return block;
+  }
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
@@ -589,11 +594,11 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
 
       outputOffset += requestedAttribute.size;
     }
-    if ( expr.isValid() )
+    if ( !expr.dump().isEmpty() )
     {
       // we're always evaluating the last written point in the buffer
       double eval = expr.evaluate( i - skippedPoints );
-      if ( eval != 1. )
+      if ( !eval || std::isnan( eval ) )
       {
         // if the point is filtered out, rewind the offset so the next point is written over it
         outputOffset -= requestedPointRecordSize;
