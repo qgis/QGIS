@@ -41,7 +41,7 @@ QIcon QgsMapToolShapeRegularPolygonCenterPointMetadata::icon() const
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRegularPolygonCenterPointMetadata::category() const
 {
-  return QgsMapToolShapeAbstract::ShapeCategory::RegularyPolygon;
+  return QgsMapToolShapeAbstract::ShapeCategory::RegularPolygon;
 }
 
 QgsMapToolShapeAbstract *QgsMapToolShapeRegularPolygonCenterPointMetadata::factory( QgsMapToolCapture *parentTool ) const
