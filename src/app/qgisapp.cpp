@@ -1288,7 +1288,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mMapStyleWidget, &QgsLayerStylingWidget::styleChanged, this, &QgisApp::updateLabelToolButtons );
   connect( mMapStyleWidget, &QgsLayerStylingWidget::layerStyleChanged, this, [ = ]( const QString &styleName )
   {
-    if ( !QgsMapLayerStyleManager::isDefault( styleName ) && !styleName.empty() )
+    if ( !QgsMapLayerStyleManager::isDefault( styleName ) && !styleName.isEmpty() )
     {
       mMapStylingDock->setWindowTitle( tr( "Layer Styling (%1)" ).arg( styleName ) );
     }
