@@ -50,7 +50,7 @@ class GUI_EXPORT QgsMapToolShapeRegistry
     void addMapTool( QgsMapToolShapeMetadata *mapTool SIP_TRANSFER );
 
     /**
-     * Removes a registered map tool at the given \id
+     * Removes a registered map tool at the given \a id
      * The tool will be deleted.
      */
     void removeMapTool( const QString &id );
