@@ -177,7 +177,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Creates a QgsPoint with ZM support if necessary (according to the
      * WkbType of the current layer). If the point is snapped, then the Z
-     * value is took from the snapped point.
+     * value is derived from the snapped point.
      *
      * \param e A mouse event
      *

@@ -21,6 +21,11 @@
 #include <QKeyEvent>
 
 
+QgsMapToolShapeAbstract::~QgsMapToolShapeAbstract()
+{
+  clean();
+}
+
 void QgsMapToolShapeAbstract::keyPressEvent( QKeyEvent *e )
 {
   e->ignore();

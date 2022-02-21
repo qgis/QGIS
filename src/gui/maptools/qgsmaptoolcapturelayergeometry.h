@@ -25,7 +25,7 @@ class QgsMapCanvas;
  * \ingroup gui
  * \brief QgsMapToolCaptureLayerGeometry is a base class for map tools digitizing layer geometries
  * This map tool subclass automatically handles intersection avoidance with other layers in the active project whenever a geometry is digitized by the user.
- * \since QGIS 3.24
+ * \since QGIS 3.26
  */
 class GUI_EXPORT QgsMapToolCaptureLayerGeometry : public QgsMapToolCapture
 {
@@ -38,29 +38,25 @@ class GUI_EXPORT QgsMapToolCaptureLayerGeometry : public QgsMapToolCapture
 
     /**
      * Called when the geometry is captured
-     * A more specific handler is also called afterwards (pointCaptured, lineCaptured or polygonCaptured)
-     * \since QGIS 3.24
+     * A more specific handler is also called afterwards (layerPointCaptured, layerLineCaptured or layerPolygonCaptured)
      */
     virtual void layerGeometryCaptured( const QgsGeometry &geometry ) {Q_UNUSED( geometry )} SIP_FORCE
 
     /**
      * Called when a point is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.24
+     * The generic geometryCaptured() signal will be emitted immediately before this point-specific signal.
      */
     virtual void layerPointCaptured( const QgsPoint &point ) {Q_UNUSED( point )} SIP_FORCE
 
     /**
      * Called when a line is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.24
+     * The generic geometryCaptured() signal will be emitted immediately before this line-specific signal.
      */
     virtual void layerLineCaptured( const QgsCurve *line ) {Q_UNUSED( line )} SIP_FORCE
 
     /**
      * Called when a polygon is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.24
+     * The generic geometryCaptured() signal will be emitted immediately before this polygon-specific signal.
      */
     virtual void layerPolygonCaptured( const QgsCurvePolygon *polygon ) {Q_UNUSED( polygon )} SIP_FORCE
 };

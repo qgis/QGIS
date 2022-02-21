@@ -61,7 +61,7 @@ class GUI_EXPORT QgsMapToolShapeAbstract
       Q_ASSERT( parentTool );
     }
 
-    virtual ~QgsMapToolShapeAbstract() = default;
+    virtual ~QgsMapToolShapeAbstract();
 
     //! Returns the id of the shape tool (equivalent to the one from the metadata)
     QString id() const {return mId;}
@@ -76,13 +76,13 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) = 0;
 
     /**
-     * Eventually filters a key press event
+     * Filters a key press event
      * Ignores the event in default implementation
      */
     virtual void keyPressEvent( QKeyEvent *e );
 
     /**
-     * Eventually filters a key press event
+     * Filters a key release event
      * Ignores the event in default implementation
      */
     virtual void keyReleaseEvent( QKeyEvent *e );

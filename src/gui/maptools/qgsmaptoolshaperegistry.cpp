@@ -46,6 +46,7 @@ void QgsMapToolShapeRegistry::removeMapTool( const QString &id )
   {
     if ( ( *it )->id() == id )
     {
+      delete *it;
       it = mMapTools.erase( it );
     }
     else

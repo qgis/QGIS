@@ -30,7 +30,7 @@ class QgsMapToolCapture;
 /**
  * \ingroup gui
  * \brief Keeps track of the registered shape map tools
- * \since QGIS 3.24
+ * \since QGIS 3.26
  */
 class GUI_EXPORT QgsMapToolShapeRegistry
 {
@@ -50,7 +50,8 @@ class GUI_EXPORT QgsMapToolShapeRegistry
     void addMapTool( QgsMapToolShapeMetadata *mapTool SIP_TRANSFER );
 
     /**
-     * Removes a registered relation widget with given \a widgetType
+     * Removes a registered map tool at the given \id
+     * The tool will be deleted.
      */
     void removeMapTool( const QString &id );
 
@@ -75,7 +76,7 @@ class GUI_EXPORT QgsMapToolShapeRegistry
 /**
  * \ingroup gui
  * \brief QgsMapToolShapeMetadata is a base class for shape map tools metadata to be used in QgsMapToolShapeRegistry
- * \since QGIS 3.24
+ * \since QGIS 3.26
  */
 class GUI_EXPORT QgsMapToolShapeMetadata
 {
@@ -97,7 +98,10 @@ class GUI_EXPORT QgsMapToolShapeMetadata
     //! Returns the shape category of the tool
     virtual QgsMapToolShapeAbstract::ShapeCategory category() const = 0;
 
-    //! Creates the shape map tool for the given \a parentTool
+    /**
+     * Creates the shape map tool for the given \a parentTool
+     * Caller takes ownership of the returned object.
+     */
     virtual QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentlTool ) const SIP_FACTORY = 0;
 };
 

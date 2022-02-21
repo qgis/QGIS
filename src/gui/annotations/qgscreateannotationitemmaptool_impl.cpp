@@ -70,7 +70,6 @@ bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique techni
     case CaptureTechnique::StraightSegments:
     case CaptureTechnique::CircularString:
     case CaptureTechnique::Streaming:
-      return true;
     case CaptureTechnique::Shape:
       return true;
   }
