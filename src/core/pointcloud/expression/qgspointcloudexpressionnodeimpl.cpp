@@ -652,12 +652,25 @@ double QgsPointCloudExpressionNodeAttributeRef::evalNode( QgsPointCloudExpressio
     double val;
     switch ( type )
     {
+      case QgsPointCloudAttribute::UChar:
       case QgsPointCloudAttribute::Char:
         val = *( data + offset );
         break;
 
+      case QgsPointCloudAttribute::UInt32:
+        val = *reinterpret_cast< const quint32 * >( data + offset );
+        break;
+
       case QgsPointCloudAttribute::Int32:
         val = *reinterpret_cast< const qint32 * >( data + offset );
+        break;
+
+      case QgsPointCloudAttribute::UInt64:
+        val = *reinterpret_cast< const quint64 * >( data + offset );
+        break;
+
+      case QgsPointCloudAttribute::Int64:
+        val = *reinterpret_cast< const qint64 * >( data + offset );
         break;
 
       case QgsPointCloudAttribute::Short:
