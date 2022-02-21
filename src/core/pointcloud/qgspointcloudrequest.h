@@ -49,23 +49,8 @@ class CORE_EXPORT QgsPointCloudRequest
     //! Set attributes filter in the request
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 
-    /**
-     *  Returns the filter expression for this request
-     *
-     *  \since QGIS 3.26
-     */
-    QgsPointCloudExpression filterExpression() const;
-
-    /**
-     *  Set a filter expression for this request
-     *
-     *  \since QGIS 3.26
-     */
-    void setFilterExpression( const QgsPointCloudExpression &expression );
-
   private:
     QgsPointCloudAttributeCollection mAttributes;
-    QgsPointCloudExpression mFilterExpression;
 };
 
 #endif // QGSPOINTCLOUDREQUEST_H
