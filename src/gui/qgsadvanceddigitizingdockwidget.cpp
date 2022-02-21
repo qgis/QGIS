@@ -616,9 +616,23 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
     QgsExpression expr( inputValue );
     const QVariant result = expr.evaluate();
     if ( expr.hasEvalError() )
+    {
       ok = false;
+      // Be nice with non-dot locales
+      if ( QLocale().decimalPoint() != QChar( '.' ) && inputValue.contains( QLocale().decimalPoint() ) )
+      {
+        QgsExpression exprC( QString( inputValue ).replace( QLocale().decimalPoint(), QChar( '.' ) ) );
+        const QVariant resultC = exprC.evaluate();
+        if ( ! exprC.hasEvalError() )
+        {
+          value = resultC.toDouble( &ok );
+        }
+      }
+    }
     else
+    {
       value = result.toDouble( &ok );
+    }
     return value;
   }
 }
