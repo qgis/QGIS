@@ -255,10 +255,9 @@ int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
   return count;
 }
 
-bool QgsPointCloudIndex::setSubsetString( const QString &subset )
+void QgsPointCloudIndex::setSubsetString( const QString &subset )
 {
   mSubsetString = subset;
-  return true;
 }
 
 QString QgsPointCloudIndex::subsetString() const
