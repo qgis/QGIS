@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgmaptoolcircle2points.cpp  -  map tool for adding circle
+    qgsmaptoolshapecircle2points.cpp  -  map tool for adding circle
     from 2 points
     ---------------------
     begin                : July 2017

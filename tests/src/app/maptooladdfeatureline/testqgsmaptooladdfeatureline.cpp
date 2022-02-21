@@ -255,7 +255,7 @@ void TestQgsMapToolAddFeatureLine::testNoTracing()
   QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ((1 1, 3 2))" ) );
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( "LineString ((1 1, 3 2))" ) );
 
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
