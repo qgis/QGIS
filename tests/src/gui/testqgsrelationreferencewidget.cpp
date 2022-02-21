@@ -582,8 +582,11 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
 // referenced layer
 class DummyVectorLayerTools : public QgsVectorLayerTools // clazy:exclude=missing-qobject-macro
 {
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr ) const override
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const override
     {
+      Q_UNUSED( parentWidget );
+      Q_UNUSED( showModal );
+      Q_UNUSED( hideParent );
       feat->setAttribute( QStringLiteral( "pk" ), 13 );
       feat->setAttribute( QStringLiteral( "material" ), QStringLiteral( "steel" ) );
       feat->setAttribute( QStringLiteral( "diameter" ), 140 );

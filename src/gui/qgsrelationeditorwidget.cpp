@@ -430,7 +430,10 @@ void QgsRelationEditorWidget::addFeatureGeometry()
   mMapToolDigitize->setLayer( layer );
 
   // window is always on top, so we hide it to digitize without seeing it
-  window()->setVisible( false );
+  if ( window()->objectName() != QStringLiteral( "QgisApp" ) )
+  {
+    window()->setVisible( false );
+  }
   setMapTool( mMapToolDigitize );
 
   connect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
@@ -780,16 +783,15 @@ void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Escape )
   {
+    window()->setVisible( true );
+    window()->raise();
+    window()->activateWindow();
     unsetMapTool();
   }
 }
 
 void QgsRelationEditorWidget::mapToolDeactivated()
 {
-  window()->setVisible( true );
-  window()->raise();
-  window()->activateWindow();
-
   if ( mEditorContext.mainMessageBar() && mMessageBarItem )
   {
     mEditorContext.mainMessageBar()->popWidget( mMessageBarItem );

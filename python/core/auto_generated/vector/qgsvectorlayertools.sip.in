@@ -28,13 +28,16 @@ in your application.
     QgsVectorLayerTools();
 
 
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature /Out/ = 0 ) const = 0;
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature /Out/ = 0, QWidget *parentWidget = 0, bool showModal = true, bool hideParent = false ) const = 0;
 %Docstring
 This method should/will be called, whenever a new feature will be added to the layer
 
 :param layer: The layer to which the feature should be added
 :param defaultValues: Default values for the feature to add
 :param defaultGeometry: A default geometry to add to the feature
+:param parentWidget: The widget calling this function to be passed to the used dialog
+:param showModal: If the used dialog should be modal or not
+:param hideParent: If the parent widget should be hidden, when the used dialog is opened
 
 :return: - ``True`` in case of success, ``False`` if the operation failed/was aborted
          - feature: Updated feature after adding will be written back to this
