@@ -36,13 +36,19 @@ bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType 
       s[position] = val;
       break;
     }
+    case QgsPointCloudAttribute::UChar:
+    {
+      const unsigned char val = ( unsigned char )( value );
+      s[position] = val;
+      break;
+    }
+
     case QgsPointCloudAttribute::Short:
     {
       short val = short( value );
       memcpy( s + position, reinterpret_cast<char * >( &val ), sizeof( short ) );
       break;
     }
-
     case QgsPointCloudAttribute::UShort:
     {
       unsigned short val = static_cast< unsigned short>( value );
@@ -50,16 +56,36 @@ bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType 
       break;
     }
 
-    case QgsPointCloudAttribute::Float:
-    {
-      float val = float( value );
-      memcpy( s + position, reinterpret_cast< char * >( &val ),  sizeof( float ) );
-      break;
-    }
     case QgsPointCloudAttribute::Int32:
     {
       qint32 val = qint32( value );
       memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( qint32 ) );
+      break;
+    }
+    case QgsPointCloudAttribute::UInt32:
+    {
+      quint32 val = quint32( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( quint32 ) );
+      break;
+    }
+
+    case QgsPointCloudAttribute::Int64:
+    {
+      qint64 val = qint64( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( qint64 ) );
+      break;
+    }
+    case QgsPointCloudAttribute::UInt64:
+    {
+      quint64 val = quint64( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( quint64 ) );
+      break;
+    }
+
+    case QgsPointCloudAttribute::Float:
+    {
+      float val = float( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ),  sizeof( float ) );
       break;
     }
     case QgsPointCloudAttribute::Double:
