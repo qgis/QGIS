@@ -42,7 +42,7 @@ void QgsMapToolCaptureLayerGeometry::geometryCaptured( const QgsGeometry &geomet
       const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       const bool providerSupportsCurvedSegments = vlayer && ( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries );
       if ( !hasCurvedSegments || !providerSupportsCurvedSegments )
-        g.get()->segmentize();
+        g = QgsGeometry( g.constGet()->segmentize() );
 
       QList<QgsVectorLayer *>  avoidIntersectionsLayers;
       switch ( QgsProject::instance()->avoidIntersectionsMode() )
