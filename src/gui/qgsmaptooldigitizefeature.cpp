@@ -122,12 +122,12 @@ void QgsMapToolDigitizeFeature::activate()
     mCanvas->setCurrentLayer( mLayer );
   }
 
-  QgsMapToolCapture::activate();
+  QgsMapToolCaptureLayerGeometry::activate();
 }
 
 void QgsMapToolDigitizeFeature::deactivate()
 {
-  QgsMapToolCapture::deactivate();
+  QgsMapToolCaptureLayerGeometry::deactivate();
 
   if ( mCurrentLayer )
     //set the layer back to the one remembered
@@ -194,7 +194,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  QgsMapToolCapture::cadCanvasReleaseEvent( e );
+  QgsMapToolCaptureLayerGeometry::cadCanvasReleaseEvent( e );
 }
 
 void QgsMapToolDigitizeFeature::setLayer( QgsMapLayer *vl )
