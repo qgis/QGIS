@@ -190,7 +190,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
     if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiLineString
          ||  QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiCurve )
     {
-      std::unique_ptr<QgsGeometryCollection> parts( static_cast<QgsGeometryCollection *>( part.release() ) );
+      std::unique_ptr<QgsGeometryCollection> parts( qgsgeometry_cast<QgsGeometryCollection *>( part.release() ) );
 
       int i;
       const int n = geomCollection->numGeometries();

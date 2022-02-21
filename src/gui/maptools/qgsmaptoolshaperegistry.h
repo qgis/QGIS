@@ -57,11 +57,12 @@ class GUI_EXPORT QgsMapToolShapeRegistry
     //! Returns the list of map tools
     QList<QgsMapToolShapeMetadata *> mapToolMetadatas() const {return mMapTools;}
 
-    //! Returns the map tool metadata for the gin \a id
+    //! Returns the map tool metadata for the given \a id
     QgsMapToolShapeMetadata *mapToolMetadata( const QString &id ) const;
 
     /**
      * Constructs the map tool at the given \a id for the given \a parentTool
+     * Caller takes ownership of the returned tool.
      */
     QgsMapToolShapeAbstract *mapTool( const QString &id, QgsMapToolCapture *parentTool ) const SIP_FACTORY;
 
@@ -97,7 +98,7 @@ class GUI_EXPORT QgsMapToolShapeMetadata
     virtual QgsMapToolShapeAbstract::ShapeCategory category() const = 0;
 
     //! Creates the shape map tool for the given \a parentTool
-    virtual QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentlTool ) const = 0;
+    virtual QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentlTool ) const SIP_FACTORY = 0;
 };
 
 

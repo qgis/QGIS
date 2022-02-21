@@ -34,7 +34,7 @@ class QKeyEvent;
 
 /**
  * \ingroup gui
- * \brief QgsMapToolShapeAbstract is a base class for shape map tools to be use in QgsMapToolCapture
+ * \brief QgsMapToolShapeAbstract is a base class for shape map tools to be used by QgsMapToolCapture.
  * \since QGIS 3.24
  */
 class GUI_EXPORT QgsMapToolShapeAbstract
@@ -49,7 +49,7 @@ class GUI_EXPORT QgsMapToolShapeAbstract
       Circle,//!< Circle
       Ellipse,//!< Ellipse
       Rectangle,//!< Rectangle
-      RegularyPolygon,//!< RegularyPolygon
+      RegularPolygon,//!< RegularPolygon (e.g pentagons or hexagons)
     };
     Q_ENUM( ShapeCategory )
 
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsMapToolShapeAbstract
 
     /**
      * Called for a mouse release event
-     * Must return true if the digitization has ended and the geometry is correctly set
+     * Must return TRUE if the digitization has ended and the geometry is correctly set
      */
     virtual bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) = 0;
 
