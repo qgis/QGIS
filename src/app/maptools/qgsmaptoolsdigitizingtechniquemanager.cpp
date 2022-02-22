@@ -62,18 +62,21 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
   {
     digitizeMenu->addAction( it.value() );
     actionGroup->addAction( it.value() );
-    connect( it.value(), &QAction::triggered, this, [ = ]( bool checked )
-    {
-      Q_UNUSED( checked );
-      setCaptureTechnique( it.key() );
-    } );
   }
   QgisApp::instance()->mActionStreamDigitize->setShortcut( tr( "R", "Keyboard shortcut: toggle stream digitizing" ) );
+  connect( digitizeMenu, &QMenu::triggered, this, [ = ]( QAction * action )
+  {
+    QgsMapToolCapture::CaptureTechnique technique = mTechniqueActions.key( action, QgsMapToolCapture::StraightSegments );
+    if ( mDigitizeModeToolButton->defaultAction() != action )
+      setCaptureTechnique( technique );
+    else if ( technique != QgsMapToolCapture::StraightSegments )
+      setCaptureTechnique( QgsMapToolCapture::StraightSegments );
+  } );
 
   mStreamDigitizingSettingsAction = new QgsStreamDigitizingSettingsAction( QgisApp::instance() );
-
   digitizeMenu->addSeparator();
   digitizeMenu->addAction( mStreamDigitizingSettingsAction );
+
   mDigitizeModeToolButton->setMenu( digitizeMenu );
 
   const QgsMapToolCapture::CaptureTechnique technique = settingsDigitizingTechnique.value();
