@@ -2326,14 +2326,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "get_feature 1" ) << "get_feature('test','col1',10)" << true << 1;
       QTest::newRow( "get_feature 2" ) << "get_feature('test','col2','test1')" << true << 1;
       QTest::newRow( "get_feature 3" ) << "get_feature('test','col1',11)" << true << 2;
-      QTest::newRow( "get_feature 4" ) << "get_feature('test','col2','test2')" << true << 2;
+      QTest::newRow( "get_feature 4" ) << "get_feature('test',attribute:= 'col2',value:='test2')" << true << 2;
       QTest::newRow( "get_feature 5" ) << "get_feature('test','col1',3)" << true << 3;
       QTest::newRow( "get_feature 6" ) << "get_feature('test','col2','test3')" << true << 3;
-      QTest::newRow( "get_feature 7" ) << "get_feature('test','col1',41)" << true << 4;
+      QTest::newRow( "get_feature 7" ) << "get_feature('test',attribute:= 'col1',value:= 41)" << true << 4;
       QTest::newRow( "get_feature 8" ) << "get_feature('test','col2','test4')" << true << 4;
 
       //by layer id
-      QTest::newRow( "get_feature 3" ) << QStringLiteral( "get_feature('%1','col1',11)" ).arg( mMemoryLayer->id() ) << true << 2;
+      QTest::newRow( "get_feature 3" ) << QStringLiteral( "get_feature('%1',attribute:= 'col1',value:= 11)" ).arg( mMemoryLayer->id() ) << true << 2;
       QTest::newRow( "get_feature 4" ) << QStringLiteral( "get_feature('%1','col2','test2')" ).arg( mMemoryLayer->id() ) << true << 2;
 
       //no matching features
@@ -2346,12 +2346,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "get_feature_by_id" ) << "get_feature_by_id('test', 1)" << true << 1;
 
       // multi-param
-      QTest::newRow( "get_feature multi1" ) << "get_feature('test',map('col1','11','col2','test2'))" << true << 2;
-      QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1',3,'col2','test3'))" << true << 3;
+      QTest::newRow( "get_feature multi1" ) << "get_feature('test',attribute:= map('col1','11','col2','test2'))" << true << 2;
+      QTest::newRow( "get_feature multi2" ) << "get_feature('test',attribute:= map('col1',3,'col2','test3'))" << true << 3;
       QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1','41','datef',to_date('2022-09-23')))" << true << 4;
 
       // multi-param no match
-      QTest::newRow( "get_feature no match-multi1" ) << "get_feature('test',map('col1','col2'),'no match!')" << false << -1;
+      QTest::newRow( "get_feature no match-multi1" ) << "get_feature('test',attribute:= map('col1','col2'),value:='no match!')" << false << -1;
       QTest::newRow( "get_feature no match-multi2" ) << "get_feature('test',map('col2','10','col4','test3'))" << false << -1;
       QTest::newRow( "get_feature no match-multi2" ) << "get_feature('test',map('col1',10,'datef',to_date('2021-09-24')))" << false << -1;
 
