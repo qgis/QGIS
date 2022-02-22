@@ -24,6 +24,7 @@ endif()
 #ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
 
 set(TESTS
+  testqgsadvanceddigitizingdockwidget.cpp
   testqgsannotationitemguiregistry.cpp
   testqgsmaptoolzoom.cpp
   testqgsmaptooledit.cpp

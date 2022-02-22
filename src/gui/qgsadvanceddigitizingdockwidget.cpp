@@ -616,9 +616,37 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
     QgsExpression expr( inputValue );
     const QVariant result = expr.evaluate();
     if ( expr.hasEvalError() )
+    {
       ok = false;
+      QString inputValueC { inputValue };
+
+      // First: try removing group separator
+      if ( inputValue.contains( QLocale().groupSeparator() ) )
+      {
+        inputValueC.remove( QLocale().groupSeparator() );
+        QgsExpression exprC( inputValueC );
+        const QVariant resultC = exprC.evaluate();
+        if ( ! exprC.hasEvalError() )
+        {
+          value = resultC.toDouble( &ok );
+        }
+      }
+
+      // Second: be nice with non-dot locales
+      if ( !ok && QLocale().decimalPoint() != QChar( '.' ) && inputValueC.contains( QLocale().decimalPoint() ) )
+      {
+        QgsExpression exprC( inputValueC .replace( QLocale().decimalPoint(), QChar( '.' ) ) );
+        const QVariant resultC = exprC.evaluate();
+        if ( ! exprC.hasEvalError() )
+        {
+          value = resultC.toDouble( &ok );
+        }
+      }
+    }
     else
+    {
       value = result.toDouble( &ok );
+    }
     return value;
   }
 }
