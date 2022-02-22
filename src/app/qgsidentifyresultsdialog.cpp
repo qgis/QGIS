@@ -2336,23 +2336,15 @@ void QgsIdentifyResultsDialog::selectFeatureByAttribute()
   }
 
   const QString attribute = item->data( 0, Qt::DisplayRole ).toString();
-  const QString value = item->data( 1, Qt::DisplayRole ).toString();
+  const QVariant value = item->data( 1, Qt::UserRole );
 
   QgsVectorLayer *vlayer = vectorLayer( item );
 
   if ( !vlayer )
     return;
 
-  if ( value != QString( "NULL" ) )
-  {
-    vlayer->selectByExpression( QString( "\"%1\"='%2'" ).arg( attribute, value ) );
-  }
-  else
-  {
-    vlayer->selectByExpression( QString( "\"%1\" IS %2" ).arg( attribute, value ) );
-  }
-
-
+  QString expression = QgsExpression::createFieldEqualityExpression( attribute, value );
+  vlayer->selectByExpression( expression );
 }
 
 void QgsIdentifyResultsDialog::copyGetFeatureInfoUrl()
