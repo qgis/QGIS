@@ -2328,7 +2328,22 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
 
 void QgsIdentifyResultsDialog::selectFeatureByAttribute()
 {
+  const QString attribute = lstResults->currentItem()->data( 0, Qt::DisplayRole ).toString();
+  const QString value = lstResults->currentItem()->data( 1, Qt::DisplayRole ).toString();
 
+  QgsIdentifyResultsFeatureItem *item = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( lstResults->selectedItems().value( 0 ) ) );
+
+  if ( !item ) // should not happen
+  {
+    QgsDebugMsg( QStringLiteral( "Selected item is not feature" ) );
+    return;
+  }
+
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer( item ) );
+  if ( !vl )
+    return;
+
+  vl->selectByExpression( QString( "\"%1\"='%2'" ).arg( attribute, value ) );
 }
 
 void QgsIdentifyResultsDialog::copyGetFeatureInfoUrl()
