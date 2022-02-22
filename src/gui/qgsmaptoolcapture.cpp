@@ -1347,7 +1347,8 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( mode() == CaptureLine )
       {
-        geometryCaptured( QgsGeometry( curveToAdd ) );
+        g = QgsGeometry( curveToAdd );
+        geometryCaptured( g );
         lineCaptured( curveToAdd );
       }
       else
