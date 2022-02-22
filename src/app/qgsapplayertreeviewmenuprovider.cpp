@@ -595,7 +595,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QgsMapLayerStyleManager *mgr = layer->styleManager();
         if ( mgr->styles().count() > 1 )
         {
-          menuStyleManager->setTitle( tr( "Styles [%1 styles defined]" ).arg( mgr->styles().count() ) );
+          menuStyleManager->setTitle( tr( "Styles (%1)" ).arg( mgr->styles().count() ) );
         }
 
         QgisApp *app = QgisApp::instance();
