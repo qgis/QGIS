@@ -43,7 +43,6 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
   setDataProviders( QStringList()
                     << QStringLiteral( "postgres" )
                     << QStringLiteral( "oracle" )
-                    << QStringLiteral( "db2" )
                     << QStringLiteral( "ows" )
                     << QStringLiteral( "wfs" )  // convert to lowercase
                     << QStringLiteral( "wcs" )

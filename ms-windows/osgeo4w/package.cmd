@@ -298,7 +298,6 @@ for %%i in (%packages%) do (
   "apps/%PACKAGENAME%/plugins/provider_gpx.dll" ^
   "apps/%PACKAGENAME%/plugins/authmethod_identcert.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_mssql.dll" ^
-  "apps/%PACKAGENAME%/plugins/provider_db2.dll" ^
   "apps/%PACKAGENAME%/plugins/authmethod_pkcs12.dll" ^
   "apps/%PACKAGENAME%/plugins/authmethod_pkipaths.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_postgres.dll" ^

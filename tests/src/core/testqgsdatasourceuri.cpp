@@ -164,28 +164,6 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // myparam
       << "public" // schema
       ;
-
-  QTest::newRow( "DB2" )
-      << "host=localhost port=50000 dbname=OSTEST user='osuser' password='osuserpw' estimatedmetadata=true srid=4326 key=OBJECTID table=TEST.ZIPPOINT (GEOM) myparam='myvalue' driver='IBM DB2 ODBC DRIVER' sql="
-      << "TEST.ZIPPOINT" // table
-      << "GEOM" // geometrycolumn
-      << "OBJECTID" // key
-      << true // estimatedmetadata
-      << "4326" // srid
-      << QgsWkbTypes::Unknown // type
-      << false // selectatid
-      << "" // service
-      << "osuser" // user
-      << "osuserpw" // password
-      << "OSTEST" // dbname
-      << "localhost" // host
-      << "50000" // port
-      << "IBM DB2 ODBC DRIVER" // driver
-      << QgsDataSourceUri::SslPrefer // sslmode
-      << "" // sql
-      << "myvalue" // myparam
-      << "TEST"  // schema
-      ;
 }
 
 void TestQgsDataSourceUri::checkparser()
