@@ -62,6 +62,7 @@
 #include "qgssubsetstringeditorproviderregistry.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsrelationwidgetregistry.h"
+#include "qgsmaptoolshaperegistry.h"
 #include "qgssettingsregistrygui.h"
 #include "qgshistoryproviderregistry.h"
 
@@ -89,6 +90,11 @@ QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
 QgsRelationWidgetRegistry *QgsGui::relationWidgetRegistry()
 {
   return instance()->mRelationEditorRegistry;
+}
+
+QgsMapToolShapeRegistry *QgsGui::mapToolShapeRegistry()
+{
+  return instance()->mShapeMapToolRegistry;
 }
 
 QgsSourceSelectProviderRegistry *QgsGui::sourceSelectProviderRegistry()
@@ -223,6 +229,7 @@ QgsGui::~QgsGui()
   delete mCodeEditorColorSchemeRegistry;
   delete mSubsetStringEditorProviderRegistry;
   delete mProviderSourceWidgetProviderRegistry;
+  delete mShapeMapToolRegistry;
   delete mRelationEditorRegistry;
   delete mSettingsRegistryGui;
 }
@@ -294,6 +301,7 @@ QgsGui::QgsGui()
 
   mEditorWidgetRegistry = new QgsEditorWidgetRegistry();
   mRelationEditorRegistry = new QgsRelationWidgetRegistry();
+  mShapeMapToolRegistry = new QgsMapToolShapeRegistry();
   mShortcutsManager = new QgsShortcutsManager();
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();

@@ -263,6 +263,11 @@ The default implementation does nothing and returns false.
 .. versionadded:: 3.18
 %End
 
+    QgsPointXY toMapCoordinates( QPoint point );
+%Docstring
+Transforms a ``point`` from screen coordinates to map coordinates.
+%End
+
   signals:
     void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 %Docstring
@@ -289,11 +294,6 @@ signal emitted once the map tool is deactivated
     QgsMapTool( QgsMapCanvas *canvas /TransferThis/ );
 %Docstring
 Constructor takes a map canvas as a parameter.
-%End
-
-    QgsPointXY toMapCoordinates( QPoint point );
-%Docstring
-Transforms a ``point`` from screen coordinates to map coordinates.
 %End
 
     QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toLayerCoordinatesV2/;

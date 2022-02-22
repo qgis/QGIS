@@ -141,7 +141,23 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
               || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Triangle
               || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::CurvePolygon )
     {
-      added = geomCollection->addGeometry( part.release() );
+      QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( part.get() );
+      if ( curvePolygon )
+      {
+        if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon && curvePolygon->hasCurvedSegments() )
+        {
+          //need to segmentize part as multipolygon does not support curves
+          QgsCurvePolygon *polygon = curvePolygon->toPolygon();
+          delete curvePolygon;
+          curvePolygon = polygon;
+        }
+        part.release();
+        added = geomCollection->addGeometry( curvePolygon );
+      }
+      else
+      {
+        added = geomCollection->addGeometry( part.release() );
+      }
     }
     else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiPolygon
               ||  QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiSurface )
@@ -150,8 +166,11 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
 
       int i;
       const int n = geomCollection->numGeometries();
-      for ( i = 0; i < parts->numGeometries() && geomCollection->addGeometry( parts->geometryN( i )->clone() ); i++ )
-        ;
+      for ( i = 0; i < parts->numGeometries(); i++ )
+      {
+        if ( !geomCollection->addGeometry( parts->geometryN( i )->clone() ) )
+          break;
+      }
 
       added = i == parts->numGeometries();
       if ( !added )
@@ -164,6 +183,51 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
     else
     {
       return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+    }
+  }
+  else if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiLineString
+            || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiCurve )
+  {
+    if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiLineString
+         ||  QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiCurve )
+    {
+      std::unique_ptr<QgsGeometryCollection> parts( qgsgeometry_cast<QgsGeometryCollection *>( part.release() ) );
+
+      int i;
+      const int n = geomCollection->numGeometries();
+      for ( i = 0; i < parts->numGeometries(); i++ )
+      {
+        if ( !geomCollection->addGeometry( parts->geometryN( i )->clone() ) )
+          break;
+      }
+
+      added = i == parts->numGeometries();
+      if ( !added )
+      {
+        while ( geomCollection->numGeometries() > n )
+          geomCollection->removeGeometry( n );
+        return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+      }
+    }
+    else
+    {
+      QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.get() );
+      if ( curve )
+      {
+        if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiLineString && curve->hasCurvedSegments() )
+        {
+          //need to segmentize part as multilinestring does not support curves
+          QgsCurve *line = curve->segmentize();
+          delete curve;
+          curve = line;
+        }
+        part.release();
+        added = geomCollection->addGeometry( curve );
+      }
+      else
+      {
+        added = geomCollection->addGeometry( part.release() );
+      }
     }
   }
   else

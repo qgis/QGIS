@@ -30,10 +30,13 @@ class APP_EXPORT QgsMapToolFillRing: public QgsMapToolCapture
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:
+    void polygonCaptured( const QgsCurvePolygon *polygon ) override;
+    void createFeature( const QgsGeometry &geometry, QgsFeatureId fid );
 
     /**
      * Returns the geometry of the ring under the point p and sets fid to the feature id
      */
-    QgsGeometry ringUnderPoint( const QgsPointXY &p, QgsFeatureId &fid );
+    void fillRingUnderPoint( const QgsPointXY &p );
 
+    QgsVectorLayer *getCheckLayer();
 };
