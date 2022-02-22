@@ -33,7 +33,7 @@ class QTableWidget;
  * Takes 2 map layers as input and returns the first one if it is valid
  * else the second one. If the 2 layers aren't valid, raises an error.
  *
- * \since QGIS 3.24
+ * \since QGIS 3.26
  */
 class QgsBranchMergeAlgorithm : public QgsProcessingAlgorithm
 {
