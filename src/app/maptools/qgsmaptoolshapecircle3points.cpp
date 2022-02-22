@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgmaptoolcircle3points.h  -  map tool for adding circle
+    qgsmaptoolshapecircle3points.h  -  map tool for adding circle
     from 3 points
     ---------------------
     begin                : July 2017

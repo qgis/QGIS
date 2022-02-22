@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgmaptoolregularpolygon2points.h  -  map tool for adding regular
+    qgmaptoolshaperegularpolygon2points.h  -  map tool for adding regular
     polygon from 2 points
     ---------------------
     begin                : July 2017

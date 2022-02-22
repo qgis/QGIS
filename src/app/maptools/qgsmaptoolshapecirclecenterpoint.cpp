@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgmaptoolcirclecenterpoint.cpp  -  map tool for adding circle
+    qgmaptoolshapecirclecenterpoint.cpp  -  map tool for adding circle
     from center and a point
     ---------------------
     begin                : July 2017

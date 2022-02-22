@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgmaptoolellipsefoci.h  -  map tool for adding ellipse
+    qgmaptoolshapeellipsefoci.h  -  map tool for adding ellipse
     from foci and a point
     ---------------------
     begin                : July 2017

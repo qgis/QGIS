@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgmaptoolellipseextent.h  -  map tool for adding ellipse
+    qgmaptoolshapeellipseextent.h  -  map tool for adding ellipse
     from extent
     ---------------------
     begin                : July 2017
