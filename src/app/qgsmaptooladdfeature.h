@@ -22,7 +22,7 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
     Q_OBJECT
 
   public:
-    //! \since QGIS 3.24
+    //! \since QGIS 3.26
     QgsMapToolAddFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
     /**

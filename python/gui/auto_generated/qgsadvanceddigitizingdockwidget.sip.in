@@ -542,7 +542,7 @@ Convenient method to get the M value from the line edit wiget
 %Docstring
 Returns the capacities
 
-.. versionadded:: 3.24
+.. versionadded:: 3.26
 %End
   signals:
 

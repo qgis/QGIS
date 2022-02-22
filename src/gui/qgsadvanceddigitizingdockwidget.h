@@ -515,7 +515,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * Returns the capacities
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     CadCapacities capacities() const { return mCapacities; };
 
