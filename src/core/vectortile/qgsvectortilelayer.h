@@ -132,6 +132,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
                          StyleCategories categories = AllStyleCategories ) const override;
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
+    Qgis::MapLayerProperties properties() const override;
 
     /**
      * Loads the default style for the layer, and returns TRUE if the style was

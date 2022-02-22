@@ -133,6 +133,9 @@ void TestQgsVectorTileLayer::test_basic()
 
   const QByteArray invalidTileRawData = mLayer->getRawTile( QgsTileXYZ( 0, 0, 99 ) );
   QCOMPARE( invalidTileRawData.length(), 0 );
+
+  // an xyz vector tile layer should be considered as a basemap layer
+  QCOMPARE( mLayer->properties(), Qgis::MapLayerProperties( Qgis::MapLayerProperty::IsBasemapLayer ) );
 }
 
 
