@@ -403,6 +403,22 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
   return error;
 }
 
+Qgis::MapLayerProperties QgsVectorTileLayer::properties() const
+{
+  Qgis::MapLayerProperties res;
+  if ( mSourceType == QLatin1String( "xyz" ) )
+  {
+    // always consider xyz vector tiles as basemap layers
+    res |= Qgis::MapLayerProperty::IsBasemapLayer;
+  }
+  else
+  {
+    // TODO when should we consider mbtiles layers as basemap layers? potentially if their extent is "large"?
+  }
+
+  return res;
+}
+
 bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings )
 {
   QgsDataSourceUri dsUri;

@@ -115,6 +115,8 @@ Constructs a new vector tile layer
 
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
 
+    virtual Qgis::MapLayerProperties properties() const;
+
 
 
     virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );

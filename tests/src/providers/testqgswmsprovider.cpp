@@ -235,6 +235,13 @@ class TestQgsWmsProvider: public QObject
       QCOMPARE( encodedUri, uriString );
     }
 
+    void testXyzIsBasemap()
+    {
+      // test that xyz tile layers are considered basemap layers
+      QgsRasterLayer layer( QStringLiteral( "type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ), QString(), QStringLiteral( "wms" ) );
+      QCOMPARE( layer.properties(), Qgis::MapLayerProperties( Qgis::MapLayerProperty::IsBasemapLayer ) );
+    }
+
     void testOsmMetadata()
     {
       // test that we auto-populate openstreetmap tile metadata

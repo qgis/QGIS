@@ -480,6 +480,16 @@ QString QgsRasterLayer::htmlMetadata() const
   return myMetadata;
 }
 
+Qgis::MapLayerProperties QgsRasterLayer::properties() const
+{
+  Qgis::MapLayerProperties res;
+  if ( mDataProvider && ( mDataProvider->flags() & Qgis::DataProviderFlag::IsBasemapSource ) )
+  {
+    res |= Qgis::MapLayerProperty::IsBasemapLayer;
+  }
+  return res;
+}
+
 QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
 {
   //TODO: This function should take dimensions

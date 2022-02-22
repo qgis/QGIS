@@ -344,6 +344,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool isSpatial() const override { return true; }
 
     QString htmlMetadata() const override;
+    Qgis::MapLayerProperties properties() const override;
 
     /**
      * Returns a 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
