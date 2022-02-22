@@ -117,7 +117,7 @@ for f in "$@"; do
 			cmd=astyleit
 			;;
 
-		*.ui|*.qgm|*.txt|resources/context_help/*)
+		*.ui|*.qgm|*.txt)
 			cmd=:
 			;;
 
