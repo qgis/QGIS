@@ -1668,7 +1668,7 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruningConditional()
   QVERIFY( ok ); // the branch with the exception should NOT be hit
 }
 
-void TestQgsProcessing::modelBranchMerger()
+void TestQgsProcessingModelAlgorithm::modelBranchMerger()
 {
   QgsProject p;
 
