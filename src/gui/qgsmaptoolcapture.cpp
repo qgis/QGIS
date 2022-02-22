@@ -105,6 +105,7 @@ bool QgsMapToolCapture::supportsTechnique( QgsMapToolCapture::CaptureTechnique t
     case CaptureTechnique::Shape:
       return false;
   }
+  BUILTIN_UNREACHABLE
 }
 
 void QgsMapToolCapture::activate()
