@@ -13,6 +13,7 @@ set(TESTS
   testqgsappbrowserproviders.cpp
   testqgisappclipboard.cpp
   testqgisappdockwidgets.cpp
+  testqgsadvanceddigitizing.cpp
   testqgsattributetable.cpp
   testqgsapplocatorfilters.cpp
   testqgsdecorationscalebar.cpp

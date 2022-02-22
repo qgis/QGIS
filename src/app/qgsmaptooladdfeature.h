@@ -20,8 +20,15 @@
 class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
 {
     Q_OBJECT
+
   public:
-    //! \since QGIS 2.12
+    //! \since QGIS 3.26
+    QgsMapToolAddFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
+
+    /**
+     * \since QGIS 2.12
+     * \deprecated Will be made in QGIS 4
+     */
     QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode );
 
   private slots:

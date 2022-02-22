@@ -23,13 +23,13 @@ Base class for map tools that edit vector geometry
 
     virtual Flags flags() const;
 
-    double defaultZValue() const;
+    static double defaultZValue();
 %Docstring
 Returns default Z value.
 Used for setting Z coordinate to new vertex.
 %End
 
-    double defaultMValue() const;
+    static double defaultMValue();
 %Docstring
 Returns default M value.
 Used for setting M coordinate to new vertex.

@@ -118,7 +118,7 @@ void TestQgsMapToolCircle::initTestCase()
   QgsProject::instance()->addMapLayers( layerList );
   mCanvas->setLayers( layerList );
 
-  mMapTool = new QgsMapToolAddFeature( mCanvas, QgsMapToolCapture::CaptureLine );
+  mMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
   mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::Shape );
   mCanvas->setMapTool( mMapTool );
 

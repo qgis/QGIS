@@ -34,14 +34,15 @@ QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
   }
 }
 
-double QgsMapToolEdit::defaultZValue() const
+double QgsMapToolEdit::defaultZValue()
 {
   return QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value();
 }
 
-double QgsMapToolEdit::defaultMValue() const
+double QgsMapToolEdit::defaultMValue()
 {
-  return QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_m_value" ), Qgis::DEFAULT_M_COORDINATE ).toDouble();
+  return QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.value();
+
 }
 
 QColor QgsMapToolEdit::digitizingStrokeColor()
