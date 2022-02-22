@@ -131,28 +131,22 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
       {
         poly = std::make_unique< QgsCurvePolygon >();
       }
-      // Ownership is still with part, curve points to the same object and is transferred
-      // to poly here.
-      part.release();
-      poly->setExteriorRing( curve );
+      poly->setExteriorRing( qgsgeometry_cast<QgsCurve *>( part.release() ) );
       added = geomCollection->addGeometry( poly.release() );
     }
     else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Polygon
               || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Triangle
               || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::CurvePolygon )
     {
-      QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( part.get() );
-      if ( curvePolygon )
+      if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon *>( part.get() ) )
       {
         if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon && curvePolygon->hasCurvedSegments() )
         {
           //need to segmentize part as multipolygon does not support curves
-          QgsCurvePolygon *polygon = curvePolygon->toPolygon();
-          delete curvePolygon;
-          curvePolygon = polygon;
+          std::unique_ptr< QgsCurvePolygon > polygon( curvePolygon->toPolygon() );
+          part = std::move( polygon );
         }
-        part.release();
-        added = geomCollection->addGeometry( curvePolygon );
+        added = geomCollection->addGeometry( qgsgeometry_cast<QgsCurvePolygon *>( part.release() ) );
       }
       else
       {
@@ -211,18 +205,15 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
     }
     else
     {
-      QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.get() );
-      if ( curve )
+      if ( QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.get() ) )
       {
         if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiLineString && curve->hasCurvedSegments() )
         {
           //need to segmentize part as multilinestring does not support curves
-          QgsCurve *line = curve->segmentize();
-          delete curve;
-          curve = line;
+          std::unique_ptr< QgsCurve > line( curve->segmentize() );
+          part = std::move( line );
         }
-        part.release();
-        added = geomCollection->addGeometry( curve );
+        added = geomCollection->addGeometry( qgsgeometry_cast<QgsCurve *>( part.release() ) );
       }
       else
       {
