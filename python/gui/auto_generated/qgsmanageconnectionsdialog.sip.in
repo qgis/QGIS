@@ -28,7 +28,6 @@ class QgsManageConnectionsDialog : QDialog
       PostGIS,
       WFS,
       MSSQL,
-      DB2,
       WCS,
       Oracle,
       HANA,
