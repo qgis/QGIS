@@ -634,76 +634,62 @@ bool QgsPointCloudExpressionNodeLiteral::isStatic( QgsPointCloudExpression *pare
 double QgsPointCloudExpressionNodeAttributeRef::evalNode( QgsPointCloudExpression *parent, int p )
 {
   Q_UNUSED( parent )
-  int index = mIndex;
 
-  if ( index >= 0 )
+  if ( !mAttribute )
   {
-    const char *data = mBlock->data();
-    // const QgsPointCloudAttribute attr = mBlock->attributes().at( index );
-    // const QgsPointCloudAttribute::DataType type = attr.type();
-    // auto value = *reinterpret_cast< const qint32 * >( mBlock->data() + mBlock->attributes().pointRecordSize() * p + attr.size() );
-    int attributeOffset;
-    const QgsPointCloudAttribute *attribute = mBlock->attributes().find( mName, attributeOffset );
-    const QgsPointCloudAttribute::DataType type = attribute->type();
-    const int offset = mBlock->attributes().pointRecordSize() * p + attributeOffset;
-
-
-
-    double val;
-    switch ( type )
-    {
-      case QgsPointCloudAttribute::UChar:
-      case QgsPointCloudAttribute::Char:
-        val = *( data + offset );
-        break;
-
-      case QgsPointCloudAttribute::UInt32:
-        val = *reinterpret_cast< const quint32 * >( data + offset );
-        break;
-
-      case QgsPointCloudAttribute::Int32:
-        val = *reinterpret_cast< const qint32 * >( data + offset );
-        break;
-
-      case QgsPointCloudAttribute::UInt64:
-        val = *reinterpret_cast< const quint64 * >( data + offset );
-        break;
-
-      case QgsPointCloudAttribute::Int64:
-        val = *reinterpret_cast< const qint64 * >( data + offset );
-        break;
-
-      case QgsPointCloudAttribute::Short:
-        val = *reinterpret_cast< const short * >( data + offset );
-        break;
-
-      case QgsPointCloudAttribute::UShort:
-        val = *reinterpret_cast< const unsigned short * >( data + offset );
-        break;
-
-      case QgsPointCloudAttribute::Float:
-        val = *reinterpret_cast< const float * >( data + offset );
-        break;
-
-      case QgsPointCloudAttribute::Double:
-        val = *reinterpret_cast< const double * >( data + offset );
-        break;
-    }
-
-    if ( attribute->name().compare( QLatin1String( "X" ) ) == 0 )
-      return val * mBlock->scale().x() + mBlock->offset().x();
-    if ( attribute->name().compare( QLatin1String( "Y" ) ) == 0 )
-      return val * mBlock->scale().y() + mBlock->offset().y();
-    if ( attribute->name().compare( QLatin1String( "Z" ) ) == 0 )
-      return val * mBlock->scale().z() + mBlock->offset().z();
-
-
-    return val; // calculate the  p's point respective attribute
+    parent->setEvalErrorString( tr( "Attribute '%1' not found" ).arg( mName ) );
+    return std::numeric_limits<double>::quiet_NaN();
   }
 
-  if ( index < 0 )
-    parent->setEvalErrorString( tr( "Attribute '%1' not found" ).arg( mName ) );
-  return std::numeric_limits<double>::quiet_NaN();
+  const char *data = mBlock->data();
+  const QgsPointCloudAttribute::DataType type = mAttribute->type();
+  const int offset = mBlock->attributes().pointRecordSize() * p + mOffset;
+
+  double val;
+  switch ( type )
+  {
+    case QgsPointCloudAttribute::UChar:
+    case QgsPointCloudAttribute::Char:
+      val = *( data + offset );
+      break;
+
+    case QgsPointCloudAttribute::UInt32:
+      val = *reinterpret_cast< const quint32 * >( data + offset );
+      break;
+    case QgsPointCloudAttribute::Int32:
+      val = *reinterpret_cast< const qint32 * >( data + offset );
+      break;
+
+    case QgsPointCloudAttribute::UInt64:
+      val = *reinterpret_cast< const quint64 * >( data + offset );
+      break;
+    case QgsPointCloudAttribute::Int64:
+      val = *reinterpret_cast< const qint64 * >( data + offset );
+      break;
+
+    case QgsPointCloudAttribute::Short:
+      val = *reinterpret_cast< const short * >( data + offset );
+      break;
+    case QgsPointCloudAttribute::UShort:
+      val = *reinterpret_cast< const unsigned short * >( data + offset );
+      break;
+
+    case QgsPointCloudAttribute::Float:
+      val = *reinterpret_cast< const float * >( data + offset );
+      break;
+    case QgsPointCloudAttribute::Double:
+      val = *reinterpret_cast< const double * >( data + offset );
+      break;
+  }
+
+  if ( mAttribute->name().compare( QLatin1String( "X" ) ) == 0 )
+    return val * mBlock->scale().x() + mBlock->offset().x();
+  if ( mAttribute->name().compare( QLatin1String( "Y" ) ) == 0 )
+    return val * mBlock->scale().y() + mBlock->offset().y();
+  if ( mAttribute->name().compare( QLatin1String( "Z" ) ) == 0 )
+    return val * mBlock->scale().z() + mBlock->offset().z();
+
+  return val; // calculate the p's point respective attribute
 }
 
 QgsPointCloudExpressionNode::NodeType QgsPointCloudExpressionNodeAttributeRef::nodeType() const
@@ -714,9 +700,9 @@ QgsPointCloudExpressionNode::NodeType QgsPointCloudExpressionNodeAttributeRef::n
 bool QgsPointCloudExpressionNodeAttributeRef::prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block )
 {
   mBlock = block;
-  mIndex = mBlock->attributes().indexOf( mName );
+  mAttribute = mBlock->attributes().find( mName, mOffset );
 
-  if ( mIndex == -1 )
+  if ( !mAttribute )
   {
     parent->setEvalErrorString( tr( "Attribute '%1' not found" ).arg( mName ) );
     return false;

@@ -312,7 +312,6 @@ class CORE_EXPORT QgsPointCloudExpressionNodeAttributeRef : public QgsPointCloud
      */
     QgsPointCloudExpressionNodeAttributeRef( const QString &name )
       : mName( name )
-      , mIndex( -1 )
     {}
 
 #ifdef SIP_RUN
@@ -339,7 +338,8 @@ class CORE_EXPORT QgsPointCloudExpressionNodeAttributeRef : public QgsPointCloud
 
   private:
     QString mName;
-    int mIndex;
+    const QgsPointCloudAttribute *mAttribute = nullptr;
+    int mOffset;
     const QgsPointCloudBlock *mBlock = nullptr;
 };
 
