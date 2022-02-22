@@ -323,16 +323,16 @@ namespace QgsWms
     const QgsWmsParameter pHighlightBufferSize( QgsWmsParameter::HIGHLIGHT_LABELBUFFERSIZE );
     save( pHighlightBufferSize );
 
-    const QgsWmsParameter pLabelRotation( QgsWmsParameter::HIGHLIGHT_LABELROTATION, QVariant::Double );
+    const QgsWmsParameter pLabelRotation( QgsWmsParameter::HIGHLIGHT_LABEL_ROTATION, QVariant::Double );
     save( pLabelRotation );
 
-    const QgsWmsParameter pLabelDistance( QgsWmsParameter::HIGHLIGHT_LABELDISTANCE, QVariant::Double );
+    const QgsWmsParameter pLabelDistance( QgsWmsParameter::HIGHLIGHT_LABEL_DISTANCE, QVariant::Double );
     save( pLabelDistance );
 
-    const QgsWmsParameter pLabelHali( QgsWmsParameter::HIGHLIGHT_LABELHALI );
+    const QgsWmsParameter pLabelHali( QgsWmsParameter::HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT );
     save( pLabelHali );
 
-    const QgsWmsParameter pLabelVali( QgsWmsParameter::HIGHLIGHT_LABELVALI );
+    const QgsWmsParameter pLabelVali( QgsWmsParameter::HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT );
     save( pLabelVali );
 
     const QgsWmsParameter pCRS( QgsWmsParameter::CRS );
@@ -1381,22 +1381,22 @@ namespace QgsWms
 
   QList<double> QgsWmsParameters::highlightLabelRotation() const
   {
-    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABELROTATION ].toDoubleList( ';' );
+    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABEL_ROTATION ].toDoubleList( ';' );
   }
 
   QList<double> QgsWmsParameters::highlightLabelDistance() const
   {
-    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABELDISTANCE ].toDoubleList( ';' );
+    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABEL_DISTANCE ].toDoubleList( ';' );
   }
 
   QStringList QgsWmsParameters::highlightLabelHali() const
   {
-    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABELHALI ].toStringList( ';' );
+    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT ].toStringList( ';' );
   }
 
   QStringList QgsWmsParameters::highlightLabelVali() const
   {
-    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABELVALI ].toStringList( ';' );
+    return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT ].toStringList( ';' );
   }
 
   QString QgsWmsParameters::wmsPrecision() const
@@ -1657,19 +1657,19 @@ namespace QgsWms
   QList<QgsWmsParametersHighlightLayer> QgsWmsParameters::highlightLayersParameters() const
   {
     QList<QgsWmsParametersHighlightLayer> params;
-    QList<QgsGeometry> geoms = highlightGeomAsGeom();
-    QStringList slds = highlightSymbol();
-    QStringList labels = highlightLabelString();
-    QList<QColor> colors = highlightLabelColorAsColor();
-    QList<int> sizes = highlightLabelSizeAsInt();
-    QList<int> weights = highlightLabelWeightAsInt();
-    QStringList fonts = highlightLabelFont();
-    QList<QColor> bufferColors = highlightLabelBufferColorAsColor();
-    QList<double> bufferSizes = highlightLabelBufferSizeAsFloat();
-    QList<double> rotation = highlightLabelRotation();
-    QList<double> distance = highlightLabelDistance();
-    QStringList hali = highlightLabelHali();
-    QStringList vali = highlightLabelVali();
+    const QList<QgsGeometry> geoms = highlightGeomAsGeom();
+    const QStringList slds = highlightSymbol();
+    const QStringList labels = highlightLabelString();
+    const QList<QColor> colors = highlightLabelColorAsColor();
+    const QList<int> sizes = highlightLabelSizeAsInt();
+    const QList<int> weights = highlightLabelWeightAsInt();
+    const QStringList fonts = highlightLabelFont();
+    const QList<QColor> bufferColors = highlightLabelBufferColorAsColor();
+    const QList<double> bufferSizes = highlightLabelBufferSizeAsFloat();
+    const QList<double> rotation = highlightLabelRotation();
+    const QList<double> distance = highlightLabelDistance();
+    const QStringList hali = highlightLabelHali();
+    const QStringList vali = highlightLabelVali();
 
     int nLayers = std::min( geoms.size(), slds.size() );
     for ( int i = 0; i < nLayers; i++ )
@@ -1933,28 +1933,28 @@ namespace QgsWms
     }
 
     QList<double> rotations;
-    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELROTATION, mapId );
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABEL_ROTATION, mapId );
     if ( wmsParam.isValid() )
     {
       rotations = wmsParam.toDoubleList( ';' );
     }
 
     QList<double> distances;
-    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELDISTANCE, mapId );
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABEL_DISTANCE, mapId );
     if ( wmsParam.isValid() )
     {
       distances = wmsParam.toDoubleList( ';' );
     }
 
     QStringList halis;
-    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELHALI, mapId );
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT, mapId );
     if ( wmsParam.isValid() )
     {
       halis = wmsParam.toStringList();
     }
 
     QStringList valis;
-    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELVALI, mapId );
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT, mapId );
     if ( wmsParam.isValid() )
     {
       valis = wmsParam.toStringList();

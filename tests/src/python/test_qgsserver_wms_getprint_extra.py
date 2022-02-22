@@ -129,7 +129,7 @@ class TestQgsServerWMSGetPrintExtra(QgsServerTestBase):
             "map0:HIGHLIGHT_LABELCOLOR": "%2300FF0000",
             "map0:HIGHLIGHT_LABELBUFFERCOLOR": "%232300FF00",
             "map0:HIGHLIGHT_LABELBUFFERSIZE": "1.5",
-            "map0:HIGHLIGHT_LABELDISTANCE": "5",
+            "map0:HIGHLIGHT_LABEL_DISTANCE": "5",
             "CRS": "EPSG:3857"
         }.items())])
 

@@ -166,10 +166,10 @@ namespace QgsWms
         HIGHLIGHT_LABELCOLOR,
         HIGHLIGHT_LABELBUFFERCOLOR,
         HIGHLIGHT_LABELBUFFERSIZE,
-        HIGHLIGHT_LABELROTATION,
-        HIGHLIGHT_LABELDISTANCE,
-        HIGHLIGHT_LABELHALI,
-        HIGHLIGHT_LABELVALI,
+        HIGHLIGHT_LABEL_ROTATION,
+        HIGHLIGHT_LABEL_DISTANCE,
+        HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT,
+        HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT,
         WMS_PRECISION,
         TRANSPARENT,
         BGCOLOR,
@@ -1160,25 +1160,25 @@ namespace QgsWms
       QList<QColor> highlightLabelBufferColorAsColor() const;
 
       /**
-       * Returns HIGHLIGHT_LABELROTATION as a list of double.
+       * Returns HIGHLIGHT_LABEL_ROTATION as a list of double.
        * \returns highlight label rotation
        */
       QList<double> highlightLabelRotation() const;
 
       /**
-       * Returns HIGHLIGHT_LABELDISTANCE as a list of double.
+       * Returns HIGHLIGHT_LABEL_DISTANCE as a list of double.
        * \returns highlight label distance
        */
       QList<double> highlightLabelDistance() const;
 
       /**
-       * Returns HIGHLIGHT_LABELHALI as a list of string.
+       * Returns HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT as a list of string.
        * \returns highlight label hali
        */
       QStringList highlightLabelHali() const;
 
       /**
-       * Returns HIGHLIGHT_LABELVALI as a list of string.
+       * Returns HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT as a list of string.
        * \returns highlight label vali
        */
       QStringList highlightLabelVali() const;
