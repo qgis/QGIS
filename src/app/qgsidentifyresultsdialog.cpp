@@ -1511,6 +1511,8 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     mActionPopup->addAction( tr( "Copy Attribute Value" ), this, &QgsIdentifyResultsDialog::copyAttributeValue );
     mActionPopup->addAction( tr( "Copy Feature Attributes" ), this, &QgsIdentifyResultsDialog::copyFeatureAttributes );
 
+    mActionPopup->addAction( tr( "Select Features by Attribute" ), this, &QgsIdentifyResultsDialog::selectFeatureByAttribute );
+
     if ( item->parent() == featItem && item->childCount() == 0 )
     {
       idx = item->data( 0, Qt::UserRole + 1 ).toInt();
@@ -2322,6 +2324,11 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
 
   QgsDebugMsg( QStringLiteral( "set clipboard: %1" ).arg( text ) );
   clipboard->setText( text );
+}
+
+void QgsIdentifyResultsDialog::selectFeatureByAttribute()
+{
+
 }
 
 void QgsIdentifyResultsDialog::copyGetFeatureInfoUrl()

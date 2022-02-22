@@ -242,6 +242,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void clearHighlights();
     void expandAll();
     void collapseAll();
+    void selectFeatureByAttribute();
 
     /**
      * Called when an item is expanded so that we can ensure that the
