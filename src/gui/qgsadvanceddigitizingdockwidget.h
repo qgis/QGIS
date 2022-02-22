@@ -966,7 +966,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     // Snap indicator
 
     QgsPointLocator::Match mSnapMatch;
-  private:
+
 #ifdef SIP_RUN
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
     bool eventFilter( QObject *obj, QEvent *event );
@@ -975,6 +975,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QgsPoint pointXYToPoint( const QgsPointXY &point ) const;
 
     friend class TestQgsAdvancedDigitizing;
+    friend class TestQgsAdvancedDigitizingDockWidget;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAdvancedDigitizingDockWidget::CadCapacities )
