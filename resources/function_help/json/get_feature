@@ -27,7 +27,7 @@
       "arg": "layer",
       "description": "layer name or ID"
     }, {
-      "arg": "map",
+      "arg": "attribute",
       "description": "Map containing the column and value pairs to use"
     }],
     "examples": [{
