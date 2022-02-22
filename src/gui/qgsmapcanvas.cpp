@@ -2250,14 +2250,10 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
 
   double zoomFactor = e->angleDelta().y() > 0 ? 1. / zoomInFactor() : zoomOutFactor();
 
-  // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( e->angleDelta().y() );
+  constexpr double ZOOM_SPEED = 20.0;
 
-  if ( e->modifiers() & Qt::ControlModifier )
-  {
-    //holding ctrl while wheel zooming results in a finer zoom
-    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 20.0;
-  }
+  // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( e->angleDelta().y() ) / ZOOM_SPEED;
 
   double signedWheelFactor = e->angleDelta().y() > 0 ? 1 / zoomFactor : zoomFactor;
 
