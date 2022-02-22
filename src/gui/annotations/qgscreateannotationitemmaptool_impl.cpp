@@ -73,9 +73,8 @@ bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique techni
     case CaptureTechnique::Shape:
       return true;
   }
+  BUILTIN_UNREACHABLE
 }
-
-
 
 
 //

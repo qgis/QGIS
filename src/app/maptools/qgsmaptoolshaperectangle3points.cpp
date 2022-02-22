@@ -37,6 +37,7 @@ QString QgsMapToolShapeRectangle3PointsMetadata::id() const
     case CreateMode::Projected:
       return QgsMapToolShapeRectangle3PointsMetadata::TOOL_ID_PROJECTED;
   }
+  BUILTIN_UNREACHABLE
 }
 
 QString QgsMapToolShapeRectangle3PointsMetadata::name() const
@@ -48,6 +49,7 @@ QString QgsMapToolShapeRectangle3PointsMetadata::name() const
     case CreateMode::Projected:
       return QObject::tr( "Rectangle from 3 points (projected)" );
   }
+  BUILTIN_UNREACHABLE
 }
 
 QIcon QgsMapToolShapeRectangle3PointsMetadata::icon() const
