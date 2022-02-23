@@ -635,7 +635,7 @@ double QgsPointCloudExpressionNodeAttributeRef::evalNode( QgsPointCloudExpressio
 {
   Q_UNUSED( parent )
 
-  if ( !mAttribute )
+  if ( !mAttribute || mOffset < 0 )
   {
     parent->setEvalErrorString( tr( "Attribute '%1' not found" ).arg( mName ) );
     return std::numeric_limits<double>::quiet_NaN();
@@ -707,6 +707,7 @@ bool QgsPointCloudExpressionNodeAttributeRef::prepareNode( QgsPointCloudExpressi
     parent->setEvalErrorString( tr( "Attribute '%1' not found" ).arg( mName ) );
     return false;
   }
+  Q_ASSERT( mOffset >= 0 );
   return true;
 }
 

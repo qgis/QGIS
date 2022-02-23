@@ -339,7 +339,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeAttributeRef : public QgsPointCloud
   private:
     QString mName;
     const QgsPointCloudAttribute *mAttribute = nullptr;
-    int mOffset;
+    int mOffset = -1;
     const QgsPointCloudBlock *mBlock = nullptr;
 };
 
