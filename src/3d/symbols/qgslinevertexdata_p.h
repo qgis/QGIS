@@ -33,6 +33,7 @@
 #define SIP_NO_FILE
 
 #include "qgs3dtypes.h"
+#include "qgis.h"
 
 namespace Qt3DCore
 {
@@ -68,14 +69,14 @@ struct QgsLineVertexData
   bool withAdjacency = false;  //!< Whether line strip with adjacency primitive will be used
 
   // extra info to calculate elevation
-  Qgs3DTypes::AltitudeClamping altClamping = Qgs3DTypes::AltClampRelative;
-  Qgs3DTypes::AltitudeBinding altBinding = Qgs3DTypes::AltBindVertex;
+  Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Relative;
+  Qgis::AltitudeBinding altBinding = Qgis::AltitudeBinding::Vertex;
   float baseHeight = 0;
   const Qgs3DMapSettings *mapSettings = nullptr;
 
   QgsLineVertexData();
 
-  void init( Qgs3DTypes::AltitudeClamping clamping, Qgs3DTypes::AltitudeBinding binding, float height, const Qgs3DMapSettings *map );
+  void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DMapSettings *map );
 
   QByteArray createVertexBuffer();
   QByteArray createIndexBuffer();

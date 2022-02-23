@@ -1327,3 +1327,16 @@ Qgis.FieldDomainType.Glob.__doc__ = "Glob string pattern field domain"
 Qgis.FieldDomainType.__doc__ = 'Types of field domain\n\n.. versionadded:: 3.26\n\n' + '* ``Coded``: ' + Qgis.FieldDomainType.Coded.__doc__ + '\n' + '* ``Range``: ' + Qgis.FieldDomainType.Range.__doc__ + '\n' + '* ``Glob``: ' + Qgis.FieldDomainType.Glob.__doc__
 # --
 Qgis.FieldDomainType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AltitudeClamping.Absolute.__doc__ = "Elevation is taken directly from feature and is independent of terrain height (final elevation = feature elevation)"
+Qgis.AltitudeClamping.Relative.__doc__ = "Elevation is relative to terrain height (final elevation = terrain elevation + feature elevation)"
+Qgis.AltitudeClamping.Terrain.__doc__ = "Elevation is clamped to terrain (final elevation = terrain elevation)"
+Qgis.AltitudeClamping.__doc__ = 'Altitude clamping.\n\n.. versionadded:: 3.24\n\n' + '* ``Absolute``: ' + Qgis.AltitudeClamping.Absolute.__doc__ + '\n' + '* ``Relative``: ' + Qgis.AltitudeClamping.Relative.__doc__ + '\n' + '* ``Terrain``: ' + Qgis.AltitudeClamping.Terrain.__doc__
+# --
+Qgis.AltitudeClamping.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AltitudeBinding.Vertex.__doc__ = "Clamp every vertex of feature"
+Qgis.AltitudeBinding.Centroid.__doc__ = "Clamp just centroid of feature"
+Qgis.AltitudeBinding.__doc__ = 'Altitude binding.\n\n.. versionadded:: 3.24\n\n' + '* ``Vertex``: ' + Qgis.AltitudeBinding.Vertex.__doc__ + '\n' + '* ``Centroid``: ' + Qgis.AltitudeBinding.Centroid.__doc__
+# --
+Qgis.AltitudeBinding.baseClass = Qgis

@@ -116,7 +116,7 @@ void QgsRubberBand3D::updateGeometry()
 {
   QgsLineVertexData lineData;
   lineData.withAdjacency = true;
-  lineData.init( Qgs3DTypes::AltClampAbsolute, Qgs3DTypes::AltBindVertex, 0, mMapSettings );
+  lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, mMapSettings );
   lineData.addLineString( mLineString );
 
   mPositionAttribute->buffer()->setData( lineData.createVertexBuffer() );

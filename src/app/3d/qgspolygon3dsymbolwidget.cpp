@@ -83,8 +83,8 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   std::unique_ptr< QgsPolygon3DSymbol > sym = std::make_unique< QgsPolygon3DSymbol >();
   sym->setHeight( spinHeight->value() );
   sym->setExtrusionHeight( spinExtrusion->value() );
-  sym->setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
-  sym->setAltitudeBinding( static_cast<Qgs3DTypes::AltitudeBinding>( cboAltBinding->currentIndex() ) );
+  sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+  sym->setAltitudeBinding( static_cast<Qgis::AltitudeBinding>( cboAltBinding->currentIndex() ) );
   sym->setCullingMode( static_cast<Qgs3DTypes::CullingMode>( cboCullingMode->currentIndex() ) );
   sym->setRenderedFacade( cboRenderedFacade->currentIndex() );
   sym->setAddBackFaces( chkAddBackFaces->isChecked() );
