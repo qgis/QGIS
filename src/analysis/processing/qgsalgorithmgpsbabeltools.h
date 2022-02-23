@@ -78,7 +78,7 @@ class ANALYSIS_EXPORT QgsConvertGpxFeatureTypeAlgorithm : public QgsProcessingAl
       QStringList &logArgs
     );
 
-    friend class TestQgsProcessingAlgs;
+    friend class TestQgsProcessingAlgsPt2;
 
 };
 

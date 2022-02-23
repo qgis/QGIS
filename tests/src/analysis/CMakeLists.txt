@@ -20,7 +20,8 @@ endif()
 set(TESTS
  testqgsgeometrysnapper.cpp
  testqgsinterpolator.cpp
- testqgsprocessingalgs.cpp
+ testqgsprocessingalgspt1.cpp
+ testqgsprocessingalgspt2.cpp
  testqgsprocessingmodelalgorithm.cpp
  testqgszonalstatistics.cpp
  testqgsrastercalculator.cpp
