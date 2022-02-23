@@ -141,7 +141,7 @@ QgsPointCloudAttributeCollection::QgsPointCloudAttributeCollection( const QVecto
 
 void QgsPointCloudAttributeCollection::push_back( const QgsPointCloudAttribute &attribute )
 {
-  mCachedAttributes.insert( attribute.name(), CachedAttributeData( mAttributes.size(), mSize ) );
+  mCachedAttributes.insert( attribute.name().toUpper(), CachedAttributeData( mAttributes.size(), mSize ) );
   mAttributes.push_back( attribute );
   mSize += attribute.size();
 }
@@ -153,7 +153,7 @@ QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() c
 
 const QgsPointCloudAttribute *QgsPointCloudAttributeCollection::find( const QString &attributeName, int &offset ) const
 {
-  const auto it = mCachedAttributes.constFind( attributeName );
+  const auto it = mCachedAttributes.constFind( attributeName.toUpper() );
   if ( it != mCachedAttributes.constEnd() )
   {
     offset = it->offset;
@@ -166,7 +166,7 @@ const QgsPointCloudAttribute *QgsPointCloudAttributeCollection::find( const QStr
 
 int QgsPointCloudAttributeCollection::indexOf( const QString &name ) const
 {
-  const auto it = mCachedAttributes.constFind( name );
+  const auto it = mCachedAttributes.constFind( name.toUpper() );
   if ( it != mCachedAttributes.constEnd() )
   {
     return it->index;
