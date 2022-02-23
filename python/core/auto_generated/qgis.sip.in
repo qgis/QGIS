@@ -856,6 +856,19 @@ The development version
       Glob,
     };
 
+    enum class AltitudeClamping
+    {
+      Absolute,
+      Relative,
+      Terrain,
+    };
+
+    enum class AltitudeBinding
+    {
+      Vertex,
+      Centroid,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

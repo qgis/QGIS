@@ -123,7 +123,7 @@ Qt3DRender::QGeometryRenderer *QgsMesh3DSymbolEntityNode::renderer( const Qgs3DM
       std::unique_ptr< QgsPolygon > polygon = QgsMeshUtils::toPolygon( triangle, vertices );
       Qgs3DUtils::clampAltitudes( polygon.get(),
                                   symbol.altitudeClamping(),
-                                  Qgs3DTypes::AltitudeBinding::AltBindVertex,
+                                  Qgis::AltitudeBinding::Vertex,
                                   height,
                                   map );
       polygons.append( polygon.release() );

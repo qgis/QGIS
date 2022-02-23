@@ -1411,6 +1411,31 @@ class CORE_EXPORT Qgis
     Q_ENUM( FieldDomainType )
 
     /**
+     * Altitude clamping.
+     *
+     * \since QGIS 3.24
+     */
+    enum class AltitudeClamping : int
+    {
+      Absolute, //!< Elevation is taken directly from feature and is independent of terrain height (final elevation = feature elevation)
+      Relative, //!< Elevation is relative to terrain height (final elevation = terrain elevation + feature elevation)
+      Terrain, //!< Elevation is clamped to terrain (final elevation = terrain elevation)
+    };
+    Q_ENUM( AltitudeClamping )
+
+    /**
+     * Altitude binding.
+     *
+     * \since QGIS 3.24
+     */
+    enum class AltitudeBinding : int
+    {
+      Vertex, //!< Clamp every vertex of feature
+      Centroid, //!< Clamp just centroid of feature
+    };
+    Q_ENUM( AltitudeBinding )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

@@ -227,7 +227,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   tr.scale( sca );
   tr.rotate( rot );
 
-  sym->setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+  sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setShape( static_cast<QgsPoint3DSymbol::Shape>( cboShape->itemData( cboShape->currentIndex() ).toInt() ) );
   sym->setShapeProperties( vm );
   sym->setMaterial( widgetMaterial->settings() );

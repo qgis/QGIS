@@ -230,58 +230,67 @@ int Qgs3DUtils::maxZoomLevel( double tile0width, double tileResolution, double m
   return round( zoomLevel );  // we could use ceil() here if we wanted to always get to the desired error
 }
 
-QString Qgs3DUtils::altClampingToString( Qgs3DTypes::AltitudeClamping altClamp )
+QString Qgs3DUtils::altClampingToString( Qgis::AltitudeClamping altClamp )
 {
   switch ( altClamp )
   {
-    case Qgs3DTypes::AltClampAbsolute: return QStringLiteral( "absolute" );
-    case Qgs3DTypes::AltClampRelative: return QStringLiteral( "relative" );
-    case Qgs3DTypes::AltClampTerrain: return QStringLiteral( "terrain" );
-    default: Q_ASSERT( false ); return QString();
+    case Qgis::AltitudeClamping::Absolute:
+      return QStringLiteral( "absolute" );
+    case Qgis::AltitudeClamping::Relative:
+      return QStringLiteral( "relative" );
+    case Qgis::AltitudeClamping::Terrain:
+      return QStringLiteral( "terrain" );
   }
+  BUILTIN_UNREACHABLE
 }
 
 
-Qgs3DTypes::AltitudeClamping Qgs3DUtils::altClampingFromString( const QString &str )
+Qgis::AltitudeClamping Qgs3DUtils::altClampingFromString( const QString &str )
 {
   if ( str == QLatin1String( "absolute" ) )
-    return Qgs3DTypes::AltClampAbsolute;
+    return Qgis::AltitudeClamping::Absolute;
   else if ( str == QLatin1String( "terrain" ) )
-    return Qgs3DTypes::AltClampTerrain;
+    return Qgis::AltitudeClamping::Terrain;
   else   // "relative"  (default)
-    return Qgs3DTypes::AltClampRelative;
+    return Qgis::AltitudeClamping::Relative;
 }
 
 
-QString Qgs3DUtils::altBindingToString( Qgs3DTypes::AltitudeBinding altBind )
+QString Qgs3DUtils::altBindingToString( Qgis::AltitudeBinding altBind )
 {
   switch ( altBind )
   {
-    case Qgs3DTypes::AltBindVertex: return QStringLiteral( "vertex" );
-    case Qgs3DTypes::AltBindCentroid: return QStringLiteral( "centroid" );
-    default: Q_ASSERT( false ); return QString();
+    case Qgis::AltitudeBinding::Vertex:
+      return QStringLiteral( "vertex" );
+    case Qgis::AltitudeBinding::Centroid:
+      return QStringLiteral( "centroid" );
   }
+  BUILTIN_UNREACHABLE
 }
 
 
-Qgs3DTypes::AltitudeBinding Qgs3DUtils::altBindingFromString( const QString &str )
+Qgis::AltitudeBinding Qgs3DUtils::altBindingFromString( const QString &str )
 {
   if ( str == QLatin1String( "vertex" ) )
-    return Qgs3DTypes::AltBindVertex;
+    return Qgis::AltitudeBinding::Vertex;
   else  // "centroid"  (default)
-    return Qgs3DTypes::AltBindCentroid;
+    return Qgis::AltitudeBinding::Centroid;
 }
 
 QString Qgs3DUtils::cullingModeToString( Qgs3DTypes::CullingMode mode )
 {
   switch ( mode )
   {
-    case Qgs3DTypes::NoCulling: return QStringLiteral( "no-culling" );
-    case Qgs3DTypes::Front: return QStringLiteral( "front" );
-    case Qgs3DTypes::Back: return QStringLiteral( "back" );
-    case Qgs3DTypes::FrontAndBack: return QStringLiteral( "front-and-back" );
+    case Qgs3DTypes::NoCulling:
+      return QStringLiteral( "no-culling" );
+    case Qgs3DTypes::Front:
+      return QStringLiteral( "front" );
+    case Qgs3DTypes::Back:
+      return QStringLiteral( "back" );
+    case Qgs3DTypes::FrontAndBack:
+      return QStringLiteral( "front-and-back" );
   }
-  return QString();
+  BUILTIN_UNREACHABLE
 }
 
 Qgs3DTypes::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )
@@ -296,47 +305,85 @@ Qgs3DTypes::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )
     return Qgs3DTypes::NoCulling;
 }
 
-float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map )
+float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map )
 {
   float terrainZ = 0;
-  if ( altClamp == Qgs3DTypes::AltClampRelative || altClamp == Qgs3DTypes::AltClampTerrain )
+  switch ( altClamp )
   {
-    const QgsPointXY pt = altBind == Qgs3DTypes::AltBindVertex ? p : centroid;
-    terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
+    case Qgis::AltitudeClamping::Relative:
+    case Qgis::AltitudeClamping::Terrain:
+    {
+      const QgsPointXY pt = altBind == Qgis::AltitudeBinding::Vertex ? p : centroid;
+      terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
+      break;
+    }
+
+    case Qgis::AltitudeClamping::Absolute:
+      break;
   }
 
   float geomZ = 0;
-  if ( p.is3D() && ( altClamp == Qgs3DTypes::AltClampAbsolute || altClamp == Qgs3DTypes::AltClampRelative ) )
-    geomZ = p.z();
+  if ( p.is3D() )
+  {
+    switch ( altClamp )
+    {
+      case Qgis::AltitudeClamping::Absolute:
+      case Qgis::AltitudeClamping::Relative:
+        geomZ = p.z();
+        break;
+
+      case Qgis::AltitudeClamping::Terrain:
+        break;
+    }
+  }
 
   const float z = ( terrainZ + geomZ ) * map.terrainVerticalScale() + height;
   return z;
 }
 
-void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map )
+void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map )
 {
   for ( int i = 0; i < lineString->nCoordinates(); ++i )
   {
     float terrainZ = 0;
-    if ( altClamp == Qgs3DTypes::AltClampRelative || altClamp == Qgs3DTypes::AltClampTerrain )
+    switch ( altClamp )
     {
-      QgsPointXY pt;
-      if ( altBind == Qgs3DTypes::AltBindVertex )
+      case Qgis::AltitudeClamping::Relative:
+      case Qgis::AltitudeClamping::Terrain:
       {
-        pt.setX( lineString->xAt( i ) );
-        pt.setY( lineString->yAt( i ) );
-      }
-      else
-      {
-        pt.set( centroid.x(), centroid.y() );
+        QgsPointXY pt;
+        switch ( altBind )
+        {
+          case Qgis::AltitudeBinding::Vertex:
+            pt.setX( lineString->xAt( i ) );
+            pt.setY( lineString->yAt( i ) );
+            break;
+
+          case Qgis::AltitudeBinding::Centroid:
+            pt.set( centroid.x(), centroid.y() );
+            break;
+        }
+
+        terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
+        break;
       }
 
-      terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
+      case Qgis::AltitudeClamping::Absolute:
+        break;
     }
 
     float geomZ = 0;
-    if ( altClamp == Qgs3DTypes::AltClampAbsolute || altClamp == Qgs3DTypes::AltClampRelative )
-      geomZ = lineString->zAt( i );
+
+    switch ( altClamp )
+    {
+      case Qgis::AltitudeClamping::Absolute:
+      case Qgis::AltitudeClamping::Relative:
+        geomZ = lineString->zAt( i );
+        break;
+
+      case Qgis::AltitudeClamping::Terrain:
+        break;
+    }
 
     const float z = ( terrainZ + geomZ ) * map.terrainVerticalScale() + height;
     lineString->setZAt( i, z );
@@ -344,14 +391,21 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgs3DTypes::Altitude
 }
 
 
-bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, float height, const Qgs3DMapSettings &map )
+bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float height, const Qgs3DMapSettings &map )
 {
   if ( !polygon->is3D() )
     polygon->addZValue( 0 );
 
   QgsPoint centroid;
-  if ( altBind == Qgs3DTypes::AltBindCentroid )
-    centroid = polygon->centroid();
+  switch ( altBind )
+  {
+    case Qgis::AltitudeBinding::Vertex:
+      break;
+
+    case Qgis::AltitudeBinding::Centroid:
+      centroid = polygon->centroid();
+      break;
+  }
 
   QgsCurve *curve = const_cast<QgsCurve *>( polygon->exteriorRing() );
   QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( curve );
@@ -393,7 +447,7 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
-void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DMapSettings &map, Qgs3DTypes::AltitudeClamping altClamp, QVector<QVector3D> &positions )
+void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DMapSettings &map, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions )
 {
   const QgsAbstractGeometry *g = f.geometry().constGet();
   for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
@@ -408,14 +462,13 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DMapSetti
     float h;
     switch ( altClamp )
     {
-      case Qgs3DTypes::AltClampAbsolute:
-      default:
+      case Qgis::AltitudeClamping::Absolute:
         h = geomZ;
         break;
-      case Qgs3DTypes::AltClampTerrain:
+      case Qgis::AltitudeClamping::Terrain:
         h = terrainZ;
         break;
-      case Qgs3DTypes::AltClampRelative:
+      case Qgis::AltitudeClamping::Relative:
         h = terrainZ + geomZ;
         break;
     }
