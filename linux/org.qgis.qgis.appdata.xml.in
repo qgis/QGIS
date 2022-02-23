@@ -2,6 +2,7 @@
 <component type="desktop">
   <id>org.qgis.qgis.desktop</id>
   <name>QGIS Desktop</name>
+  <developer_name>QGIS Development Team</developer_name>
   <summary>A Free and Open Source Geographic Information System</summary>
   <screenshots>
     <screenshot><image type="source">https://qgis.org/en/_static/images/about-screenshot.png</image></screenshot>
