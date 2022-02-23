@@ -339,7 +339,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, 
 
 
 template<typename FileType>
-QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, const QgsPointCloudExpression &filterExpression )
+QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, QgsPointCloudExpression &filterExpression )
 {
   Q_UNUSED( attributes );
   Q_UNUSED( _scale );
@@ -504,8 +504,8 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   );
 
   int skippedPoints = 0;
-  QgsPointCloudExpression expr( filterExpression );
-  if ( !expr.prepare( block ) && !expr.dump().isEmpty() )
+//  QgsPointCloudExpression expr( filterExpression );
+  if ( !filterExpression.prepare( block ) && !filterExpression.dump().isEmpty() )
   {
     // skip processing if the expression cannot be prepared
     block->setPointCount( 0 );
@@ -620,10 +620,10 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     }
 
     // check if point needs to be filtered out
-    if ( !expr.dump().isEmpty() )
+    if ( !filterExpression.dump().isEmpty() )
     {
       // we're always evaluating the last written point in the buffer
-      double eval = expr.evaluate( i - skippedPoints );
+      double eval = filterExpression.evaluate( i - skippedPoints );
       if ( !eval || std::isnan( eval ) )
       {
         // if the point is filtered out, rewind the offset so the next point is written over it
@@ -645,7 +645,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes,
     const QgsVector3D &scale, const QgsVector3D &offset,
-    const QgsPointCloudExpression &filterExpression )
+    QgsPointCloudExpression &filterExpression )
 {
   const QByteArray arr = filename.toUtf8();
   std::ifstream file( arr.constData(), std::ios::binary );
@@ -657,7 +657,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayDat
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes,
     const QgsVector3D &scale, const QgsVector3D &offset,
-    const QgsPointCloudExpression &filterExpression )
+    QgsPointCloudExpression &filterExpression )
 {
   std::istringstream file( byteArrayData.toStdString() );
   return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes, scale, offset, filterExpression );
