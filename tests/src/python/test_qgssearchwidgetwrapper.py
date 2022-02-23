@@ -251,7 +251,7 @@ class PyQgsCheckboxSearchWidgetWrapper(unittest.TestCase):
 
     def testCreateExpression(self):
         """ Test creating an expression using the widget"""
-        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "test", "memory")
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=fieldbool:bool", "test", "memory")
 
         w = QgsCheckboxSearchWidgetWrapper(layer, 0)
         config = {"CheckedState": 5,
@@ -281,6 +281,16 @@ class PyQgsCheckboxSearchWidgetWrapper(unittest.TestCase):
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldint" IS NOT NULL')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=9')
+
+        # Check boolean expression
+        parent = QWidget()
+        w = QgsCheckboxSearchWidgetWrapper(layer, 2)
+        w.initWidget(parent)
+        c = w.widget()
+        c.setChecked(True)
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fieldbool"=true')
+        c.setChecked(False)
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fieldbool"=false')
 
 
 class PyQgsDateTimeSearchWidgetWrapper(unittest.TestCase):
