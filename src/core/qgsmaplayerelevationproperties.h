@@ -41,6 +41,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
 {
 #ifdef SIP_RUN
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsrasterlayerelevationproperties.h"
 #endif
 
     Q_OBJECT
@@ -50,6 +51,10 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     if ( qobject_cast<QgsPointCloudLayerElevationProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsPointCloudLayerElevationProperties;
+    }
+    else if ( qobject_cast<QgsRasterLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterLayerElevationProperties;
     }
     else
     {

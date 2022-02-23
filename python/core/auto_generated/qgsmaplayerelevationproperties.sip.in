@@ -25,11 +25,16 @@ how an individual :py:class:`QgsMapLayer` behaves with relation to z values or e
 %TypeHeaderCode
 #include "qgsmaplayerelevationproperties.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsrasterlayerelevationproperties.h"
 %End
 %ConvertToSubClassCode
     if ( qobject_cast<QgsPointCloudLayerElevationProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsPointCloudLayerElevationProperties;
+    }
+    else if ( qobject_cast<QgsRasterLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterLayerElevationProperties;
     }
     else
     {
