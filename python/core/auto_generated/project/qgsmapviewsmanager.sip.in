@@ -17,7 +17,7 @@ Manages storage of a set of views.
 
 :py:class:`QgsMapViewsManager` handles the storage, serializing and deserializing
 of views. Usually this class is not constructed directly, but rather
-accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.get3DViewsManager()` for example.
+accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.viewsManager()`.
 
 .. versionadded:: 3.24
 %End
