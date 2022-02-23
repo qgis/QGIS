@@ -63,11 +63,11 @@ void QgsPointCloudBlockRequest::blockFinishedLoading()
 #ifdef WITH_EPT
       if ( mDataType == QLatin1String( "binary" ) )
       {
-        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset );
+        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
       }
       else if ( mDataType == QLatin1String( "zstandard" ) )
       {
-        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset );
+        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
       }
       else if ( mDataType == QLatin1String( "laszip" ) )
       {

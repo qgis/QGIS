@@ -176,7 +176,7 @@ bool __serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::Dat
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
+QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
 {
   const std::size_t pointRecordSize = attributes.pointRecordSize( );
   const std::size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
@@ -221,6 +221,20 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
                                 requestedAttribute.size(), requestedAttribute.type() ) );
   }
 
+  int skippedPoints = 0;
+  QgsPointCloudBlock *block = new QgsPointCloudBlock(
+    count,
+    requestedAttributes,
+    data, scale, offset
+  );
+
+  if ( !filterExpression.prepare( block ) && !filterExpression.dump().isEmpty() )
+  {
+    // skip processing if the expression cannot be prepared
+    block->setPointCount( 0 );
+    return block;
+  }
+
   // now loop through points
   size_t outputOffset = 0;
   for ( int i = 0; i < count; ++i )
@@ -233,15 +247,25 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
 
       outputOffset += attribute.requestedSize;
     }
+
+    // check if point needs to be filtered out
+    if ( !filterExpression.dump().isEmpty() )
+    {
+      // we're always evaluating the last written point in the buffer
+      double eval = filterExpression.evaluate( i - skippedPoints );
+      if ( !eval || std::isnan( eval ) )
+      {
+        // if the point is filtered out, rewind the offset so the next point is written over it
+        outputOffset -= requestedPointRecordSize;
+        ++skippedPoints;
+      }
+    }
   }
-  return new QgsPointCloudBlock(
-           count,
-           requestedAttributes,
-           data, scale, offset
-         );
+  block->setPointCount( count - skippedPoints );
+  return block;
 }
 
-QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
+QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
 {
   if ( ! QFile::exists( filename ) )
     return nullptr;
@@ -252,12 +276,12 @@ QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, co
     return nullptr;
 
   const QByteArray dataUncompressed = f.read( f.size() );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset );
+  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression );
 }
 
-QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
+QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
 {
-  return _decompressBinary( data, attributes, requestedAttributes, scale, offset );
+  return _decompressBinary( data, attributes, requestedAttributes, scale, offset, filterExpression );
 }
 
 /* *************************************************************************************** */
@@ -290,7 +314,7 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
   return dataUncompressed;
 }
 
-QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
+QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
 {
   if ( ! QFile::exists( filename ) )
     return nullptr;
@@ -302,13 +326,13 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename,
 
   const QByteArray dataCompressed = f.readAll();
   const QByteArray dataUncompressed = decompressZtdStream( dataCompressed );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset );
+  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression );
 }
 
-QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
+QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
 {
   const QByteArray dataUncompressed = decompressZtdStream( data );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset );
+  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression );
 }
 
 /* *************************************************************************************** */
@@ -594,6 +618,8 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
 
       outputOffset += requestedAttribute.size;
     }
+
+    // check if point needs to be filtered out
     if ( !expr.dump().isEmpty() )
     {
       // we're always evaluating the last written point in the buffer

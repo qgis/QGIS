@@ -279,37 +279,36 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   if ( !found )
     return nullptr;
 
+  QgsPointCloudExpression filterExpression( mSubsetString );
+  const QSet<QString> expressionAttributes = filterExpression.referencedAttributes();
+  const QgsPointCloudAttributeCollection allAttributes = attributes();
+  QgsPointCloudAttributeCollection requestAttributes = request.attributes();
+
+  for ( const auto &attribute : expressionAttributes )
+  {
+    if ( requestAttributes.indexOf( attribute ) == -1 )
+    {
+      int offset;
+      const auto attr = allAttributes.find( attribute, offset );
+      if ( attr )
+        requestAttributes.push_back( *attr );
+    }
+  }
+
   if ( mDataType == QLatin1String( "binary" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.bin" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressBinary( filename, attributes(), request.attributes(), scale(), offset() );
+    return QgsEptDecoder::decompressBinary( filename, allAttributes, requestAttributes, scale(), offset(), filterExpression );
   }
   else if ( mDataType == QLatin1String( "zstandard" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.zst" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset() );
+    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset(), filterExpression );
   }
   else if ( mDataType == QLatin1String( "laszip" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mDirectory, n.toString() );
-
-    QgsPointCloudExpression filterExpression( mSubsetString );
-    const auto expressionAttributes = filterExpression.referencedAttributes();
-    const QgsPointCloudAttributeCollection allAttributes = attributes();
-    QgsPointCloudAttributeCollection reqAttributes = request.attributes();
-
-    for ( const auto &attribute : expressionAttributes )
-    {
-      if ( reqAttributes.indexOf( attribute ) == -1 )
-      {
-        int offset;
-        const auto attr = allAttributes.find( attribute, offset );
-        if ( attr )
-          reqAttributes.push_back( *attr );
-      }
-    }
-
-    return QgsEptDecoder::decompressLaz( filename, allAttributes, reqAttributes, scale(), offset(), filterExpression );
+    return QgsEptDecoder::decompressLaz( filename, allAttributes, requestAttributes, scale(), offset(), filterExpression );
   }
   else
   {
