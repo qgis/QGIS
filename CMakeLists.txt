@@ -22,6 +22,7 @@ set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
 project(qgis VERSION ${COMPLETE_VERSION})
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if (APPLE)
   set(QGIS_APP_NAME "QGIS")
@@ -40,13 +41,15 @@ if (APPLE)
   # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
   # they can be downloaded from https://qgis.org/downloads/macos/qgis-deps
   # and extracted to /opt/QGIS/qgis-deps-<deps-version>/stage
-  set (QGIS_MAC_DEPS_DIR "" CACHE PATH "Path to QGIS Mac custom dependencies directory")
+  set (QGIS_MAC_DEPS_DIR ""
+       CACHE PATH "Path to QGIS Mac custom dependencies directory" )
 
   # Setup LIB_DIR and CMAKE_PREFIX_PATH to help CMake's
   # find_packages to look for these libraries instead of system libraries
   if ( QGIS_MAC_DEPS_DIR )
     set(ENV{LIB_DIR} ${QGIS_MAC_DEPS_DIR})
     list(APPEND CMAKE_PREFIX_PATH ${QGIS_MAC_DEPS_DIR})
+    include_directories(SYSTEM "${QGIS_MAC_DEPS_DIR}/include")
   endif()
 endif()
 

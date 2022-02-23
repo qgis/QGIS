@@ -2135,7 +2135,7 @@ set(IMAGE_RCCS ../../images/images.qrc)
 
 #############################################################
 # qgis_core library
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
 
