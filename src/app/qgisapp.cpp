@@ -117,6 +117,8 @@
 #include "options/qgsgpsdeviceoptions.h"
 #include "options/qgscustomprojectionoptions.h"
 
+#include "raster/qgsrasterelevationpropertieswidget.h"
+
 #ifdef HAVE_3D
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
@@ -1478,6 +1480,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
 #endif
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsRasterElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );
 

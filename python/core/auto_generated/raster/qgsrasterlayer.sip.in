@@ -421,6 +421,8 @@ to be drawn outside the data extent.
 
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+
 
   public slots:
     void showStatusMessage( const QString &message );

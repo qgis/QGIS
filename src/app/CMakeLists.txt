@@ -130,6 +130,8 @@ set(QGIS_APP_SRCS
   pointcloud/qgspointcloudlayerproperties.cpp
   pointcloud/qgspointcloudlayerstylewidget.cpp
 
+  raster/qgsrasterelevationpropertieswidget.cpp
+
   vectortile/qgsvectortilelayerproperties.cpp
 
   vertextool/qgslockedfeature.cpp

@@ -59,6 +59,7 @@ email                : tim at linfiniti.com
 #include "qgsruntimeprofiler.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsrasterpipe.h"
+#include "qgsrasterlayerelevationproperties.h"
 
 #include <cmath>
 #include <cstdio>
@@ -107,8 +108,8 @@ QgsRasterLayer::QgsRasterLayer()
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
+  , mElevationProperties( new QgsRasterLayerElevationProperties( this ) )
   , mPipe( std::make_unique< QgsRasterPipe >() )
-
 {
   init();
   setValid( false );
@@ -123,6 +124,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
+  , mElevationProperties( new QgsRasterLayerElevationProperties( this ) )
   , mPipe( std::make_unique< QgsRasterPipe >() )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
@@ -1068,6 +1070,11 @@ bool QgsRasterLayer::ignoreExtents() const
 QgsMapLayerTemporalProperties *QgsRasterLayer::temporalProperties()
 {
   return mTemporalProperties;
+}
+
+QgsMapLayerElevationProperties *QgsRasterLayer::elevationProperties()
+{
+  return mElevationProperties;
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
