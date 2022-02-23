@@ -62,7 +62,7 @@ class ANALYSIS_EXPORT QgsRasterBooleanLogicAlgorithmBase : public QgsProcessingA
     double mRasterUnitsPerPixelX;
     double mRasterUnitsPerPixelY;
     bool mTreatNodataAsFalse = false;
-    friend class TestQgsProcessingAlgs;
+    friend class TestQgsProcessingAlgsPt1;
 };
 
 /**
