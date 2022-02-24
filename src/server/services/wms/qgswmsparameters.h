@@ -1175,13 +1175,13 @@ namespace QgsWms
        * Returns HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT as a list of string.
        * \returns highlight label horizontal alignment strings
        */
-      QStringList highlightLabelHali() const;
+      QStringList highlightLabelHorizontalAlignment() const;
 
       /**
        * Returns HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT as a list of string.
        * \returns highlight label vertical alignment strings
        */
-      QStringList highlightLabelVali() const;
+      QStringList highlightLabelVerticalAlignment() const;
 
       /**
        * Returns WMS_PRECISION parameter or an empty string if not defined.

@@ -1389,12 +1389,12 @@ namespace QgsWms
     return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABEL_DISTANCE ].toDoubleList( ';' );
   }
 
-  QStringList QgsWmsParameters::highlightLabelHali() const
+  QStringList QgsWmsParameters::highlightLabelHorizontalAlignment() const
   {
     return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT ].toStringList( ';' );
   }
 
-  QStringList QgsWmsParameters::highlightLabelVali() const
+  QStringList QgsWmsParameters::highlightLabelVerticalAlignment() const
   {
     return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT ].toStringList( ';' );
   }
@@ -1668,8 +1668,8 @@ namespace QgsWms
     const QList<double> bufferSizes = highlightLabelBufferSizeAsFloat();
     const QList<double> rotation = highlightLabelRotation();
     const QList<double> distance = highlightLabelDistance();
-    const QStringList hali = highlightLabelHali();
-    const QStringList vali = highlightLabelVali();
+    const QStringList hali = highlightLabelHorizontalAlignment();
+    const QStringList vali = highlightLabelVerticalAlignment();
 
     int nLayers = std::min( geoms.size(), slds.size() );
     for ( int i = 0; i < nLayers; i++ )
