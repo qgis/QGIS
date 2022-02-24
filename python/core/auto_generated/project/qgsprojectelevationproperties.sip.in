@@ -1,0 +1,124 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectelevationproperties.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProjectElevationProperties : QObject
+{
+%Docstring(signature="appended")
+Contains elevation properties for a :py:class:`QgsProject`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprojectelevationproperties.h"
+%End
+  public:
+
+    QgsProjectElevationProperties( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectElevationProperties with the specified ``parent`` object.
+%End
+
+    ~QgsProjectElevationProperties();
+
+    void reset();
+%Docstring
+Resets the properties to a default state.
+%End
+
+    void resolveReferences( const QgsProject *project );
+%Docstring
+Resolves reference to layers from stored layer ID.
+%End
+
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads the property state from a DOM ``element``.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Returns a DOM element representing the properties.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    QgsAbstractProjectTerrainProvider *terrainProvider();
+%Docstring
+Returns the project's terrain provider.
+
+.. seealso:: :py:func:`setTerrainProvider`
+%End
+
+    void setTerrainProvider( QgsAbstractProjectTerrainProvider *provider /Transfer/ );
+%Docstring
+Sets the project's terrain ``provider``.
+
+Ownership of ``provider`` is transferred to this object.
+
+.. seealso:: :py:func:`terrainProvider`
+%End
+
+    void setTerrainOffset( double offset );
+%Docstring
+Sets the terrain elevation ``offset`` (used to move the terrain up or down by a fixed amount).
+
+.. seealso:: :py:func:`terrainOffset`
+%End
+
+    double terrainOffset() const;
+%Docstring
+Returns the offset of the terrain (used to move the terrain up or down by a fixed amount).
+
+.. seealso:: :py:func:`setTerrainOffset`
+%End
+
+    void setTerrainScale( double scale );
+%Docstring
+Sets the vertical ``scale`` of the terrain.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsProjectElevationProperties.setTerrainScale` is applied before any offset value specified via :py:func:`~QgsProjectElevationProperties.terrainOffset`.
+
+.. seealso:: :py:func:`terrainScale`
+%End
+
+    double terrainScale() const;
+%Docstring
+Returns the vertical scale of the terrain.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsProjectElevationProperties.terrainScale` is applied before any offset value specified via :py:func:`~QgsProjectElevationProperties.terrainOffset`.
+
+.. seealso:: :py:func:`setTerrainScale`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the elevation properties change.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectelevationproperties.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

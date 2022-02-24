@@ -68,6 +68,7 @@
 #include "qgsattributeeditorcontainer.h"
 #include "qgsgrouplayer.h"
 #include "qgsmapviewsmanager.h"
+#include "qgsprojectelevationproperties.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -375,6 +376,7 @@ QgsProject::QgsProject( QObject *parent )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
   , mTimeSettings( new QgsProjectTimeSettings( this ) )
+  , mElevationProperties( new QgsProjectElevationProperties( this ) )
   , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
@@ -916,6 +918,7 @@ void QgsProject::clear()
   mBookmarkManager->clear();
   mViewSettings->reset();
   mTimeSettings->reset();
+  mElevationProperties->reset();
   mDisplaySettings->reset();
   mSnappingConfig.reset();
   mAvoidIntersectionsMode = AvoidIntersectionsMode::AllowIntersections;
@@ -1876,6 +1879,12 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( !timeSettingsElement.isNull() )
     mTimeSettings->readXml( timeSettingsElement, context );
 
+  profile.switchTask( tr( "Loading elevation properties" ) );
+  const QDomElement elevationPropertiesElement = doc->documentElement().firstChildElement( QStringLiteral( "ElevationProperties" ) );
+  if ( !elevationPropertiesElement.isNull() )
+    mElevationProperties->readXml( elevationPropertiesElement, context );
+  mElevationProperties->resolveReferences( this );
+
   profile.switchTask( tr( "Loading display settings" ) );
   const QDomElement displaySettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectDisplaySettings" ) );
   if ( !displaySettingsElement.isNull() )
@@ -2608,6 +2617,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   const QDomElement timeSettingsElement = mTimeSettings->writeXml( *doc, context );
   qgisNode.appendChild( timeSettingsElement );
+
+  const QDomElement elevationPropertiesElement = mElevationProperties->writeXml( *doc, context );
+  qgisNode.appendChild( elevationPropertiesElement );
 
   const QDomElement displaySettingsElem = mDisplaySettings->writeXml( *doc, context );
   qgisNode.appendChild( displaySettingsElem );
@@ -3354,6 +3366,16 @@ const QgsProjectTimeSettings *QgsProject::timeSettings() const
 QgsProjectTimeSettings *QgsProject::timeSettings()
 {
   return mTimeSettings;
+}
+
+const QgsProjectElevationProperties *QgsProject::elevationProperties() const
+{
+  return mElevationProperties;
+}
+
+QgsProjectElevationProperties *QgsProject::elevationProperties()
+{
+  return mElevationProperties;
 }
 
 const QgsProjectDisplaySettings *QgsProject::displaySettings() const

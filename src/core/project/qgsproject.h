@@ -84,6 +84,7 @@ class QgsAnnotationLayer;
 class QgsAttributeEditorContainer;
 class QgsPropertyCollection;
 class QgsMapViewsManager;
+class QgsProjectElevationProperties;
 
 /**
  * \ingroup core
@@ -820,6 +821,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.14
      */
     QgsProjectTimeSettings *timeSettings();
+
+    /**
+     * Returns the project's elevation properties, which contains the project's elevation related settings.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.26
+     */
+    const QgsProjectElevationProperties *elevationProperties() const SIP_SKIP;
+
+    /**
+     * Returns the project's elevation properties, which contains the project's elevation related settings.
+     *
+     * \since QGIS 3.26
+     */
+    QgsProjectElevationProperties *elevationProperties();
 
     /**
      * Returns the project's display settings, which settings and properties relating
@@ -2163,6 +2179,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsProjectViewSettings *mViewSettings = nullptr;
 
     QgsProjectTimeSettings *mTimeSettings = nullptr;
+
+    QgsProjectElevationProperties *mElevationProperties = nullptr;
 
     QgsProjectDisplaySettings *mDisplaySettings = nullptr;
 
