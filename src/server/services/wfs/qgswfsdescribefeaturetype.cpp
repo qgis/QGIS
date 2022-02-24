@@ -391,11 +391,9 @@ namespace QgsWfs
             return QStringLiteral( "gml:MultiCurvePropertyType" );
 
           case QgsWkbTypes::MultiSurface:
-            return QStringLiteral( "gml:MultiSurfacePropertyType" );
-
           case QgsWkbTypes::MultiPolygon25D:
           case QgsWkbTypes::MultiPolygon:
-            return QStringLiteral( "gml:MultiPolygonPropertyType" );
+            return QStringLiteral( "gml:MultiSurfacePropertyType" );
 
           default:
             return QStringLiteral( "gml:GeometryPropertyType" );
