@@ -509,12 +509,10 @@ Uses :py:class:`QgsExpression`
 
     virtual QgsVectorDataProvider *dataProvider() ${SIP_FINAL};
 
-
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 
-%Docstring
-Returns temporal properties associated with the vector layer.
-%End
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+
 
     void setProviderEncoding( const QString &encoding );
 %Docstring

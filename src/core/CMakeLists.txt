@@ -819,6 +819,7 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayereditbuffer.cpp
   vector/qgsvectorlayereditpassthrough.cpp
   vector/qgsvectorlayereditutils.cpp
+  vector/qgsvectorlayerelevationproperties.cpp
   vector/qgsvectorlayerfeatureiterator.cpp
   vector/qgsvectorlayerexporter.cpp
   vector/qgsvectorlayerjoinbuffer.cpp
@@ -1758,6 +1759,7 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayereditbuffer.h
   vector/qgsvectorlayereditpassthrough.h
   vector/qgsvectorlayereditutils.h
+  vector/qgsvectorlayerelevationproperties.h
   vector/qgsvectorlayerexporter.h
   vector/qgsvectorlayerfeaturecounter.h
   vector/qgsvectorlayerfeatureiterator.h

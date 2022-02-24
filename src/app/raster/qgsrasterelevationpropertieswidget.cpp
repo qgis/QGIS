@@ -92,7 +92,7 @@ bool QgsRasterElevationPropertiesWidgetFactory::supportLayerPropertiesDialog() c
 
 bool QgsRasterElevationPropertiesWidgetFactory::supportsStyleDock() const
 {
-  return true;
+  return false;
 }
 
 bool QgsRasterElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
