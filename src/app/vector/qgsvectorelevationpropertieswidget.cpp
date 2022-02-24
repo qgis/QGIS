@@ -91,7 +91,7 @@ void QgsVectorElevationPropertiesWidget::onChanged()
 void QgsVectorElevationPropertiesWidget::clampingChanged()
 {
   bool enableScale = true;
-  bool enableBinding = true;
+  bool enableBinding = !mLayer || mLayer->geometryType() != QgsWkbTypes::PointGeometry;
   switch ( static_cast< Qgis::AltitudeClamping >( mComboClamping->currentData().toInt() ) )
   {
     case Qgis::AltitudeClamping::Absolute:
