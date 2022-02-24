@@ -140,6 +140,25 @@ The development version
       ScaleDiameter
     };
 
+    enum class SettingsType
+      {
+      Variant,
+      String,
+      StringList,
+      Bool,
+      Integer,
+      Double,
+      EnumFlag,
+      Color
+    };
+
+    enum class SettingsOption
+    {
+      SaveFormerValue,
+    };
+    typedef QFlags<Qgis::SettingsOption> SettingsOptions;
+
+
     enum class SymbolRenderHint
       {
       DynamicRotation,
