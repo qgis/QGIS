@@ -1496,11 +1496,7 @@ void QgsGrassMapcalcObject::paint( QPainter *painter,
 
       int lx = mRect.x() + mSpace;
       int ly = mRect.y() + mSpace + i * ( mTextHeight + mSpace );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-      QRect lr( lx, ly, metrics.width( l ), mTextHeight );
-#else
       QRect lr( lx, ly, metrics.horizontalAdvance( l ), mTextHeight );
-#endif
 
       painter->drawText( lr, Qt::AlignCenter | Qt::TextSingleLine, l );
     }
@@ -1552,21 +1548,13 @@ void QgsGrassMapcalcObject::resetSize()
     for ( int i = 0; i < mFunction.inputLabels().size(); i++ )
     {
       QString l = mFunction.inputLabels().at( i );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-      int len = metrics.width( l );
-#else
       int len = metrics.horizontalAdvance( l );
-#endif
       if ( len > mInputTextWidth )
         mInputTextWidth = len;
     }
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int labelTextWidth = metrics.width( mLabel );
-#else
   int labelTextWidth = metrics.horizontalAdvance( mLabel );
-#endif
   if ( mType == Function && !mFunction.drawlabel() )
   {
     labelTextWidth = 0;
@@ -2011,11 +1999,7 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
 
   if ( !labels.isEmpty() )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    mInputLabels = labels.split( QStringLiteral( "," ), QString::SkipEmptyParts );
-#else
     mInputLabels = labels.split( QStringLiteral( "," ), Qt::SkipEmptyParts );
-#endif
   }
 }
 

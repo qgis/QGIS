@@ -218,11 +218,7 @@ unsigned short Konsole::vt100_graphics[32] =
 
 template<class T> inline int horizontalAdvance(const QFontMetrics& fm, T t)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-    return fm.width( t );
-#else
     return fm.horizontalAdvance( t );
-#endif
 }
 
 void TerminalDisplay::fontChange( const QFont & )
@@ -743,11 +739,7 @@ void TerminalDisplay::drawCharacters( QPainter &painter,
     if ( _bidiEnabled )
       painter.drawText( rect, 0, text );
     else
-#if QT_VERSION >= 0x040800
       painter.drawText( rect, Qt::AlignBottom, LTR_OVERRIDE_CHAR + text );
-#else
-      painter.drawText( rect, 0, LTR_OVERRIDE_CHAR + text );
-#endif
   }
 }
 
