@@ -2782,7 +2782,16 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
     if ( hSqlLayer )
     {
       GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
-      return OGR_L_GetFeatureCount( hLayer, TRUE );
+      // try an inexpensive count first
+      GIntBig featureCount=OGR_L_GetFeatureCount( hLayer, FALSE ); // FALSE to not force an expensive count
+      if (featureCount != -1)
+      {
+          return featureCount;
+      }
+      else // if inexpensive count was not successful
+      {
+          return OGR_L_GetFeatureCount( hLayer, TRUE );
+      }
     }
 
     // Enumerate features up to a limit of 100000.
