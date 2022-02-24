@@ -259,6 +259,8 @@ set(QGIS_APP_SRCS
   mesh/qgsmaptooleditmeshframe.cpp
   mesh/qgsmeshtransformcoordinatesdockwidget.cpp
   mesh/qgsmeshselectbyexpressiondialog.cpp
+
+  vector/qgsvectorelevationpropertieswidget.cpp
 )
 
 if (WITH_SPATIALITE)

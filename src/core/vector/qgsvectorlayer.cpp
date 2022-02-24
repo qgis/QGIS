@@ -57,6 +57,7 @@
 #include "qgsrendercontext.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayertemporalproperties.h"
+#include "qgsvectorlayerelevationproperties.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayereditpassthrough.h"
 #include "qgsvectorlayereditutils.h"
@@ -157,6 +158,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QgsVectorLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::VectorLayer, baseName, vectorLayerPath )
   , mTemporalProperties( new QgsVectorLayerTemporalProperties( this ) )
+  , mElevationProperties( new QgsVectorLayerElevationProperties( this ) )
   , mAuxiliaryLayer( nullptr )
   , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( options.readExtentFromXml )
@@ -668,6 +670,11 @@ const QgsVectorDataProvider *QgsVectorLayer::dataProvider() const
 QgsMapLayerTemporalProperties *QgsVectorLayer::temporalProperties()
 {
   return mTemporalProperties;
+}
+
+QgsMapLayerElevationProperties *QgsVectorLayer::elevationProperties()
+{
+  return mElevationProperties;
 }
 
 void QgsVectorLayer::setProviderEncoding( const QString &encoding )

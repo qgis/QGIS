@@ -674,6 +674,7 @@
 %Include auto_generated/vector/qgsvectorlayereditbuffer.sip
 %Include auto_generated/vector/qgsvectorlayereditpassthrough.sip
 %Include auto_generated/vector/qgsvectorlayereditutils.sip
+%Include auto_generated/vector/qgsvectorlayerelevationproperties.sip
 %Include auto_generated/vector/qgsvectorlayerexporter.sip
 %Include auto_generated/vector/qgsvectorlayerfeaturecounter.sip
 %Include auto_generated/vector/qgsvectorlayerfeatureiterator.sip

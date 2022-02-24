@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsRasterLayerElevationProperties
+"""QGIS Unit tests for QgsVectorLayerElevationProperties
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -13,7 +13,8 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import (
-    QgsRasterLayerElevationProperties,
+    Qgis,
+    QgsVectorLayerElevationProperties,
     QgsReadWriteContext,
 )
 
@@ -24,32 +25,40 @@ from qgis.testing import start_app, unittest
 start_app()
 
 
-class TestQgsRasterLayerElevationProperties(unittest.TestCase):
+class TestQgsVectorLayerElevationProperties(unittest.TestCase):
 
     def testBasic(self):
-        props = QgsRasterLayerElevationProperties(None)
+        props = QgsVectorLayerElevationProperties(None)
         self.assertEqual(props.zScale(), 1)
         self.assertEqual(props.zOffset(), 0)
-        self.assertFalse(props.isEnabled())
+        self.assertEqual(props.extrusionHeight(), 0)
         self.assertFalse(props.hasElevation())
+        self.assertEqual(props.clamping(), Qgis.AltitudeClamping.Terrain)
+        self.assertEqual(props.binding(), Qgis.AltitudeBinding.Centroid)
 
         props.setZOffset(0.5)
         props.setZScale(2)
-        props.setEnabled(True)
+        props.setClamping(Qgis.AltitudeClamping.Relative)
+        props.setBinding(Qgis.AltitudeBinding.Vertex)
+        props.setExtrusionHeight(10)
         self.assertEqual(props.zScale(), 2)
         self.assertEqual(props.zOffset(), 0.5)
-        self.assertTrue(props.isEnabled())
+        self.assertEqual(props.extrusionHeight(), 10)
         self.assertTrue(props.hasElevation())
+        self.assertEqual(props.clamping(), Qgis.AltitudeClamping.Relative)
+        self.assertEqual(props.binding(), Qgis.AltitudeBinding.Vertex)
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
         props.writeXml(elem, doc, QgsReadWriteContext())
 
-        props2 = QgsRasterLayerElevationProperties(None)
+        props2 = QgsVectorLayerElevationProperties(None)
         props2.readXml(elem, QgsReadWriteContext())
         self.assertEqual(props2.zScale(), 2)
         self.assertEqual(props2.zOffset(), 0.5)
-        self.assertTrue(props2.isEnabled())
+        self.assertEqual(props2.clamping(), Qgis.AltitudeClamping.Relative)
+        self.assertEqual(props2.binding(), Qgis.AltitudeBinding.Vertex)
+        self.assertEqual(props2.extrusionHeight(), 10)
 
 
 if __name__ == '__main__':
