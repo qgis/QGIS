@@ -486,8 +486,17 @@ The development version
     enum class MapLayerProperty
     {
       UsersCannotToggleEditing,
+      IsBasemapLayer,
     };
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
+
+
+
+    enum class DataProviderFlag
+    {
+      IsBasemapSource,
+    };
+    typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
 
     enum class AnnotationItemFlag
@@ -912,6 +921,10 @@ QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags
 QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
 
 QFlags<Qgis::HistoryProviderBackend> operator|(Qgis::HistoryProviderBackend f1, QFlags<Qgis::HistoryProviderBackend> f2);
+
+QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis::MapLayerProperty> f2);
+
+QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
 
 
 

@@ -34,11 +34,14 @@ bool QgsMapToolSplitParts::supportsTechnique( QgsMapToolCapture::CaptureTechniqu
 {
   switch ( technique )
   {
-    case QgsMapToolCapture::StraightSegments:
-    case QgsMapToolCapture::Streaming:
+    case QgsMapToolCapture::CaptureTechnique::StraightSegments:
+    case QgsMapToolCapture::CaptureTechnique::Streaming:
       return true;
 
-    case QgsMapToolCapture::CircularString:
+    case QgsMapToolCapture::CaptureTechnique::CircularString:
+      return false;
+
+    case QgsMapToolCapture::CaptureTechnique::Shape:
       return false;
   }
   return false;

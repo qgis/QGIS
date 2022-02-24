@@ -149,7 +149,11 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
 
   mLayerTopoZ->startEditing();
   QgsFeature topoFeat;
-  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0))" ) );
+  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ("
+                        "(10 0 0, 10 10 0),"
+                        "(20 0 10, 20 10 10),"
+                        "(30 0 0, 30 10 10)"
+                        ")" ) );
 
   mLayerTopoZ->addFeature( topoFeat );
   QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );
@@ -159,7 +163,7 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
-  mCaptureTool = new QgsMapToolAddFeature( mCanvas, /*mAdvancedDigitizingDockWidget, */ QgsMapToolCapture::CaptureLine );
+  mCaptureTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
 
   mCanvas->setMapTool( mCaptureTool );
   mCanvas->setCurrentLayer( mLayerLine );
@@ -237,18 +241,23 @@ void TestQgsMapToolAddFeatureLineZ::testTopologicalEditingZ()
   mCanvas->snappingUtils()->setConfig( cfg );
 
   oldFids = utils.existingFeatureIds();
-  utils.mouseClick( 6, 6.5, Qt::LeftButton );
-  utils.mouseClick( 6.25, 6.5, Qt::LeftButton );
-  utils.mouseClick( 6.75, 6.5, Qt::LeftButton );
-  utils.mouseClick( 7.25, 6.5, Qt::LeftButton );
-  utils.mouseClick( 7.5, 6.5, Qt::LeftButton );
-  utils.mouseClick( 8, 6.5, Qt::RightButton );
+  utils.mouseClick( 0, 5, Qt::LeftButton );
+  utils.mouseClick( 10.1, 5, Qt::LeftButton );
+  utils.mouseClick( 20.1, 5, Qt::LeftButton );
+  utils.mouseClick( 30.1, 5, Qt::LeftButton );
+  utils.mouseClick( 40, 5, Qt::LeftButton );
+  utils.mouseClick( 40, 5, Qt::RightButton );
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QString wkt = "LineStringZ (6 6.5 333, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
+  QString wkt = "MultiLineStringZ ((0 5 333, 10 5 0, 20 5 10, 30 5 5, 40 5 333))";
   QCOMPARE( mLayerTopoZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-  wkt = "MultiLineStringZ ((7.25 6 0, 7.25 6.5 333, 7.25 7 0, 7.5 7 0, 7.5 6.5 333, 7.5 6 0, 7.25 6 0),(6 6 0, 6 6.5 333, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.5 333, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.5 333, 6.25 6.25 0))";
-  QCOMPARE( mLayerTopoZ->getFeature( qgis::setToList( oldFids ).last() ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  wkt = "MultiLineStringZ ("
+        "(10 0 0, 10 5 0, 10 10 0),"
+        "(20 0 10, 20 5 10, 20 10 10),"
+        "(30 0 0, 30 5 5, 30 10 10)"
+        ")";
+  QCOMPARE( mLayerTopoZ->getFeature( qgis::setToList( oldFids ).constLast() ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();
 

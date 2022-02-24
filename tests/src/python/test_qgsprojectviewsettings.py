@@ -22,7 +22,9 @@ from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPointXY)
+                       QgsPointXY,
+                       QgsRasterLayer,
+                       Qgis)
 from qgis.gui import QgsMapCanvas
 
 from qgis.PyQt.QtCore import QTemporaryDir
@@ -216,6 +218,38 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertAlmostEqual(p.viewSettings().fullExtent().xMaximum(), -8164115, -2)
         self.assertAlmostEqual(p.viewSettings().fullExtent().yMinimum(), 2657217, -2)
         self.assertAlmostEqual(p.viewSettings().fullExtent().yMaximum(), 5997492, -2)
+        self.assertEqual(p.viewSettings().fullExtent().crs().authid(), 'EPSG:3857')
+
+    def testFullExtentWithBasemap(self):
+        """
+        Test that basemap layer's extents are ignored when calculating the full extent of
+        a project, UNLESS only basemap layers are present
+        """
+        p = QgsProject()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertTrue(p.viewSettings().fullExtent().isNull())
+
+        # add only a basemap layer
+
+        xyz_layer = QgsRasterLayer("type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0", '', "wms")
+        self.assertEqual(xyz_layer.properties(), Qgis.MapLayerProperty.IsBasemapLayer)
+        p.addMapLayer(xyz_layer)
+
+        # should be global extent of xyz layer, as only basemap layers are present in project
+        self.assertAlmostEqual(p.viewSettings().fullExtent().xMinimum(), -20037508, -2)
+        self.assertAlmostEqual(p.viewSettings().fullExtent().xMaximum(), 20037508, -2)
+        self.assertAlmostEqual(p.viewSettings().fullExtent().yMinimum(), -20037508, -2)
+        self.assertAlmostEqual(p.viewSettings().fullExtent().yMaximum(), 20037508, -2)
+
+        # add a non-basemap layer
+        shapefile = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        layer = QgsVectorLayer(shapefile, 'Lines', 'ogr')
+        p.addMapLayer(layer)
+        # now project extent should ignore basemap layer extents
+        self.assertAlmostEqual(p.viewSettings().fullExtent().xMinimum(), -13093754, -2)
+        self.assertAlmostEqual(p.viewSettings().fullExtent().xMaximum(), -9164115, -2)
+        self.assertAlmostEqual(p.viewSettings().fullExtent().yMinimum(), 2657217, -2)
+        self.assertAlmostEqual(p.viewSettings().fullExtent().yMaximum(), 5809709, -2)
         self.assertEqual(p.viewSettings().fullExtent().crs().authid(), 'EPSG:3857')
 
     def testReadWrite(self):

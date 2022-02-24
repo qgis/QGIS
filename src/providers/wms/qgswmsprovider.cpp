@@ -425,6 +425,17 @@ void QgsWmsProvider::setConnectionName( QString const &connName )
   mConnectionName = connName;
 }
 
+Qgis::DataProviderFlags QgsWmsProvider::flags() const
+{
+  Qgis::DataProviderFlags res;
+  if ( mSettings.mXyz )
+  {
+    // always consider XYZ tiles as basemap sources
+    res |= Qgis::DataProviderFlag::IsBasemapSource;
+  }
+  return res;
+}
+
 void QgsWmsProvider::setLayerOrder( QStringList const &layers )
 {
   if ( layers.size() != mSettings.mActiveSubLayers.size() )

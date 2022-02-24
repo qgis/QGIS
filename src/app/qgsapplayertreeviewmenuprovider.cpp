@@ -35,6 +35,7 @@
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaplayerutils.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmessagebar.h"
 #include "qgspointcloudlayer.h"
 #include "qgsproject.h"
@@ -591,6 +592,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       {
         menu->addSeparator();
         QMenu *menuStyleManager = new QMenu( tr( "Styles" ), menu );
+        QgsMapLayerStyleManager *mgr = layer->styleManager();
+        if ( mgr->styles().count() > 1 )
+        {
+          menuStyleManager->setTitle( tr( "Styles (%1)" ).arg( mgr->styles().count() ) );
+        }
 
         QgisApp *app = QgisApp::instance();
         if ( layer->type() == QgsMapLayerType::VectorLayer )

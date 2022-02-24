@@ -329,26 +329,16 @@ QuantizedMeshGeometry::QuantizedMeshGeometry( QuantizedMeshTile *t, const Map3D 
     ibptr[i*3+2] = srcptr[i*3];
   }
   */
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  m_vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
-  m_indexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
-#else
   m_vertexBuffer = new Qt3DRender::QBuffer( this );
   m_indexBuffer = new Qt3DRender::QBuffer( this );
-#endif
 
   m_vertexBuffer->setData( vb );
   m_indexBuffer->setData( ib );
 
   m_positionAttribute = new Qt3DRender::QAttribute( this );
   m_positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
-#if QT_VERSION >= 0x050800
   m_positionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
   m_positionAttribute->setVertexSize( 3 );
-#else
-  m_positionAttribute->setDataType( Qt3DRender::QAttribute::Float );
-  m_positionAttribute->setDataSize( 3 );
-#endif
   m_positionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   m_positionAttribute->setBuffer( m_vertexBuffer );
   m_positionAttribute->setByteStride( vertexEntrySize );
@@ -356,13 +346,8 @@ QuantizedMeshGeometry::QuantizedMeshGeometry( QuantizedMeshTile *t, const Map3D 
 
   m_texCoordAttribute = new Qt3DRender::QAttribute( this );
   m_texCoordAttribute->setName( Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName() );
-#if QT_VERSION >= 0x050800
   m_texCoordAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
   m_texCoordAttribute->setVertexSize( 2 );
-#else
-  m_texCoordAttribute->setDataType( Qt3DRender::QAttribute::Float );
-  m_texCoordAttribute->setDataSize( 2 );
-#endif
   m_texCoordAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   m_texCoordAttribute->setBuffer( m_vertexBuffer );
   m_texCoordAttribute->setByteStride( vertexEntrySize );
@@ -371,11 +356,7 @@ QuantizedMeshGeometry::QuantizedMeshGeometry( QuantizedMeshTile *t, const Map3D 
 
   m_indexAttribute = new Qt3DRender::QAttribute( this );
   m_indexAttribute->setAttributeType( Qt3DRender::QAttribute::IndexAttribute );
-#if QT_VERSION >= 0x050800
   m_indexAttribute->setVertexBaseType( Qt3DRender::QAttribute::UnsignedShort );
-#else
-  m_indexAttribute->setDataType( Qt3DRender::QAttribute::UnsignedShort );
-#endif
   m_indexAttribute->setBuffer( m_indexBuffer );
   m_indexAttribute->setCount( indexCount );
 

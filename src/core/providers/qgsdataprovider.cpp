@@ -27,6 +27,11 @@ QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::Pro
   mReadFlags = flags;
 }
 
+Qgis::DataProviderFlags QgsDataProvider::flags() const
+{
+  return Qgis::DataProviderFlags();
+}
+
 QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities()
 {
   return nullptr;

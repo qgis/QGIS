@@ -207,6 +207,13 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
+     * Returns the generic data provider flags.
+     *
+     * \since QGIS 3.26
+     */
+    virtual Qgis::DataProviderFlags flags() const;
+
+    /**
      * Returns the provider's temporal capabilities.
      *
      * This may be NULLPTR, depending on the data provider.

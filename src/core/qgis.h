@@ -778,10 +778,25 @@ class CORE_EXPORT Qgis
     enum class MapLayerProperty : int
     {
       UsersCannotToggleEditing = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22.
+      IsBasemapLayer = 1 << 1, //!< Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest. Since QGIS 3.26.
     };
     //! Map layer properties
     Q_DECLARE_FLAGS( MapLayerProperties, MapLayerProperty )
     Q_ENUM( MapLayerProperty )
+
+
+    /**
+     * Generic data provider flags.
+     *
+     * \since QGIS 3.26
+     */
+    enum class DataProviderFlag : int
+    {
+      IsBasemapSource = 1 << 1, //!< Associated source should be considered a 'basemap' layer. See Qgis::MapLayerProperty::IsBasemapLayer.
+    };
+    //! Data provider flags
+    Q_DECLARE_FLAGS( DataProviderFlags, DataProviderFlag )
+    Q_ENUM( DataProviderFlag )
 
     /**
      * Flags for annotation items.
@@ -1468,6 +1483,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::HistoryProviderBackends )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerProperties )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
 
 
 // hack to workaround warnings when casting void pointers
