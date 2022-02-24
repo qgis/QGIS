@@ -261,7 +261,23 @@ class CORE_EXPORT QgsSettingsEntryBase
      */
     QString description() const;
 
-private:
+    /**
+     * Returns the former value of the settings if it has been enabled in the options
+     * Returns the current value (or default) if there is no former value.
+     * \since QGIS 3.26
+     */
+    QVariant formerValueAsVariant( const QString &dynamicKeyPart ) const;
+
+    /**
+     * Returns the former value of the settings if it has been enabled in the options
+     * Returns the current value (or default) if there is no former value.
+     * \since QGIS 3.26
+     */
+    QVariant formerValueAsVariant( const QStringList &dynamicKeyPartList ) const;
+
+  private:
+    QString formerValuekey( const QStringList &dynamicKeyPartList ) const;
+
     QString mKey;
     QVariant mDefaultValue;
     QgsSettings::Section mSection;
@@ -381,6 +397,18 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
     //! Returns settings default value.
     T defaultValue() const {return convertFromVariant( defaultValueAsVariant() );}
 
+    /**
+     * Returns the former value
+     * Returns the current value (or default) if there is no former value.
+     */
+    T formerValue( const QString &dynamicKeyPart = QString() ) const {return convertFromVariant( formerValueAsVariant( dynamicKeyPart ) );}
+
+    /**
+     * Returns the former value
+     * Returns the current value (or default) if there is no former value.
+     */
+    T formerValue( const QStringList &dynamicKeyPartList ) const {return convertFromVariant( formerValueAsVariant( dynamicKeyPartList ) );}
+
   protected:
     virtual T convertFromVariant( const QVariant &value ) const = 0;
 };
@@ -453,7 +481,7 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
      * Returns the settings value for the \a dynamicKeyPartList and  with a \a defaultValueOverride
      * \deprecated since QGIS 3.26 use valueWithDefaultOverride instead
      */
-    Q_DECL_DEPRECATED T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride , T defaultValueOverride ) const  SIP_DEPRECATED { Q_NOWARN_DEPRECATED_PUSH return this->convertFromVariant( valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ) ); Q_NOWARN_DEPRECATED_POP}
+    Q_DECL_DEPRECATED T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, T defaultValueOverride ) const  SIP_DEPRECATED { Q_NOWARN_DEPRECATED_PUSH return this->convertFromVariant( valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ) ); Q_NOWARN_DEPRECATED_POP}
 
     /**
      * Set settings value.
@@ -490,6 +518,18 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
 
     //! Returns settings default value.
     T defaultValue() const {return convertFromVariant( defaultValueAsVariant() );}
+
+    /**
+     * Returns the former value
+     * Returns the current value (or default) if there is no former value.
+     */
+    T formerValue( const QString &dynamicKeyPart = QString() ) const {return convertFromVariant( formerValueAsVariant( dynamicKeyPart ) );}
+
+    /**
+     * Returns the former value
+     * Returns the current value (or default) if there is no former value.
+     */
+    T formerValue( const QStringList &dynamicKeyPartList ) const {return convertFromVariant( formerValueAsVariant( dynamicKeyPartList ) );}
 
   protected:
     virtual T convertFromVariant( const QVariant &value ) const = 0;

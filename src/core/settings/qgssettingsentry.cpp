@@ -162,6 +162,17 @@ bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString
 
 bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const
 {
+  if ( mOptions.testFlag( Qgis::SettingsOption::SaveFormerValue ) )
+  {
+    if ( exists( dynamicKeyPartList ) )
+    {
+      QVariant currentValue = valueAsVariant( key( dynamicKeyPartList ) );
+      if ( value != currentValue )
+      {
+        QgsSettings().setValue( formerValuekey( dynamicKeyPartList ), currentValue, section() );
+      }
+    }
+  }
   QgsSettings().setValue( key( dynamicKeyPartList ), value, section() );
   return true;
 }
@@ -226,5 +237,25 @@ QString QgsSettingsEntryBase::description() const
   return mDescription;
 }
 
+QVariant QgsSettingsEntryBase::formerValueAsVariant( const QString &dynamicKeyPart ) const
+{
+  QStringList dynamicKeyPartList;
+  if ( !dynamicKeyPart.isNull() )
+    dynamicKeyPartList.append( dynamicKeyPart );
+
+  return formerValueAsVariant( dynamicKeyPartList );
+}
+
+QVariant QgsSettingsEntryBase::formerValueAsVariant( const QStringList &dynamicKeyPartList ) const
+{
+  Q_ASSERT( mOptions.testFlag( Qgis::SettingsOption::SaveFormerValue ) );
+  QVariant defaultValueOverride = valueAsVariant( key( dynamicKeyPartList ) );
+  return  QgsSettings().value( formerValuekey( dynamicKeyPartList ), defaultValueOverride, mSection );
+}
+
+QString QgsSettingsEntryBase::formerValuekey( const QStringList &dynamicKeyPartList ) const
+{
+  return key( dynamicKeyPartList ) + QStringLiteral( "_formervalue" );
+}
 
 
