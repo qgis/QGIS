@@ -201,6 +201,35 @@ class CORE_EXPORT Qgis
     Q_ENUM( ScaleMethod )
 
     /**
+     * Types of settings entries
+     * \since QGIS 3.26
+     */
+    enum class SettingsType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSettingsEntry, SettingsType ) : int
+      {
+      Variant, //!< Generic variant
+      String, //!< String
+      StringList, //!< List of strings
+      Bool, //!< Boolean
+      Integer, //!< Integer
+      Double, //!< Double precision numer
+      EnumFlag, //!< Enum or Flag
+      Color //!< Color
+    };
+    Q_ENUM( SettingsType )
+
+    /**
+     * Settings options
+     * \since QGIS 3.26
+     */
+    enum class SettingsOption : int
+    {
+      SaveFormerValue = 1 << 1, //<! Save the former value of the settings
+    };
+    Q_ENUM( SettingsOption )
+    Q_DECLARE_FLAGS( SettingsOptions, SettingsOption )
+    Q_FLAG( SettingsOptions )
+
+    /**
      * \brief Flags controlling behavior of symbols during rendering
      *
      * \since QGIS 3.20

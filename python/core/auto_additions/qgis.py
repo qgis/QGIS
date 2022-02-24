@@ -137,6 +137,42 @@ QgsSymbol.ScaleDiameter.__doc__ = "Calculate scale by the diameter"
 Qgis.ScaleMethod.__doc__ = 'Scale methods\n\n.. versionadded:: 3.20\n\n' + '* ``ScaleArea``: ' + Qgis.ScaleMethod.ScaleArea.__doc__ + '\n' + '* ``ScaleDiameter``: ' + Qgis.ScaleMethod.ScaleDiameter.__doc__
 # --
 Qgis.ScaleMethod.baseClass = Qgis
+QgsSettingsEntry.SettingsType = Qgis.SettingsType
+# monkey patching scoped based enum
+QgsSettingsEntry.Variant = Qgis.SettingsType.Variant
+QgsSettingsEntry.Variant.is_monkey_patched = True
+QgsSettingsEntry.Variant.__doc__ = "Generic variant"
+QgsSettingsEntry.String = Qgis.SettingsType.String
+QgsSettingsEntry.String.is_monkey_patched = True
+QgsSettingsEntry.String.__doc__ = "String"
+QgsSettingsEntry.StringList = Qgis.SettingsType.StringList
+QgsSettingsEntry.StringList.is_monkey_patched = True
+QgsSettingsEntry.StringList.__doc__ = "List of strings"
+QgsSettingsEntry.Bool = Qgis.SettingsType.Bool
+QgsSettingsEntry.Bool.is_monkey_patched = True
+QgsSettingsEntry.Bool.__doc__ = "Boolean"
+QgsSettingsEntry.Integer = Qgis.SettingsType.Integer
+QgsSettingsEntry.Integer.is_monkey_patched = True
+QgsSettingsEntry.Integer.__doc__ = "Integer"
+QgsSettingsEntry.Double = Qgis.SettingsType.Double
+QgsSettingsEntry.Double.is_monkey_patched = True
+QgsSettingsEntry.Double.__doc__ = "Double precision numer"
+QgsSettingsEntry.EnumFlag = Qgis.SettingsType.EnumFlag
+QgsSettingsEntry.EnumFlag.is_monkey_patched = True
+QgsSettingsEntry.EnumFlag.__doc__ = "Enum or Flag"
+QgsSettingsEntry.Color = Qgis.SettingsType.Color
+QgsSettingsEntry.Color.is_monkey_patched = True
+QgsSettingsEntry.Color.__doc__ = "Color"
+Qgis.SettingsType.__doc__ = 'Types of settings entries\n\n.. versionadded:: 3.26\n\n' + '* ``Variant``: ' + Qgis.SettingsType.Variant.__doc__ + '\n' + '* ``String``: ' + Qgis.SettingsType.String.__doc__ + '\n' + '* ``StringList``: ' + Qgis.SettingsType.StringList.__doc__ + '\n' + '* ``Bool``: ' + Qgis.SettingsType.Bool.__doc__ + '\n' + '* ``Integer``: ' + Qgis.SettingsType.Integer.__doc__ + '\n' + '* ``Double``: ' + Qgis.SettingsType.Double.__doc__ + '\n' + '* ``EnumFlag``: ' + Qgis.SettingsType.EnumFlag.__doc__ + '\n' + '* ``Color``: ' + Qgis.SettingsType.Color.__doc__
+# --
+Qgis.SettingsType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SettingsOption.SaveFormerValue.__doc__ = ""
+Qgis.SettingsOption.__doc__ = 'Settings options\n\n.. versionadded:: 3.26\n\n' + '* ``SaveFormerValue``: ' + Qgis.SettingsOption.SaveFormerValue.__doc__
+# --
+Qgis.SettingsOption.baseClass = Qgis
+Qgis.SettingsOptions.baseClass = Qgis
+SettingsOptions = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsSymbol.RenderHint = Qgis.SymbolRenderHint
 # monkey patching scoped based enum
 QgsSymbol.DynamicRotation = Qgis.SymbolRenderHint.DynamicRotation
