@@ -2,6 +2,9 @@
 
 class_headerfile:
   QgsAbstractFeatureIteratorFromSource: qgsfeatureiterator.h
+  QgsSettingsEntryByReference: qgssettingsentry.h
+  QgsSettingsEntryByValue: qgssettingsentry.h
+
 
 no_export_macro:
   - QgsRange

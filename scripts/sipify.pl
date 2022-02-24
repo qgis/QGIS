@@ -37,7 +37,7 @@ chomp(my @INPUT_LINES = <$handle>);
 close $handle;
 
 # config
-my $cfg_file = File::Spec->catfile( dirname(__FILE__), 'sipify.yaml' );
+my $cfg_file = File::Spec->catfile( dirname(__FILE__), '../python/sipify.yaml' );
 my $yaml = YAML::Tiny->read( $cfg_file  );
 my $SIP_CONFIG = $yaml->[0];
 
