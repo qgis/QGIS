@@ -1179,7 +1179,7 @@ namespace QgsWms
 
       /**
        * Returns HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT as a list of string.
-       * \returns highlight label vali
+       * \returns highlight label vertical alignment strings
        */
       QStringList highlightLabelVali() const;
 
