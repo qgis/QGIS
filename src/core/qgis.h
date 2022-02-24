@@ -204,7 +204,7 @@ class CORE_EXPORT Qgis
      * Types of settings entries
      * \since QGIS 3.26
      */
-    enum class SettingsType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSettingsEntry, SettingsType ) : int
+    enum class SettingsType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSettingsEntryBase, SettingsType ) : int
       {
       Variant, //!< Generic variant
       String, //!< String

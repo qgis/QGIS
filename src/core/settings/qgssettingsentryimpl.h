@@ -71,26 +71,12 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
     {
     }
 
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     */
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const override;
-
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
-     */
-    bool setValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const override;
 
     virtual Qgis::SettingsType settingsType() const override;
 
   private:
-    QVariant convertFromVariant( const QVariant &value ) const override {return value;}
+    bool setValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
+    QVariant convertFromVariant( const QVariant &value ) const override SIP_FORCE {return value;}
 };
 
 
@@ -155,22 +141,6 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
     {
     }
 
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     */
-    bool setValue( const QString &value, const QString &dynamicKeyPart = QString() ) const override;
-
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
-     */
-    bool setValue( const QString &value, const QStringList &dynamicKeyPartList ) const override;
-
     virtual Qgis::SettingsType settingsType() const override;
 
     /**
@@ -198,7 +168,8 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
     int maxLength();
 
   private:
-    QString convertFromVariant( const QVariant &value ) const override;
+    bool setValuePrivate( const QString &value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
+    QString convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 
     int mMinLength;
     int mMaxLength;
@@ -258,26 +229,11 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryByReferenc
     {
     }
 
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     */
-    bool setValue( const QStringList &value, const QString &dynamicKeyPart = QString() ) const override;
-
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
-     */
-    bool setValue( const QStringList &value, const QStringList &dynamicKeyPartList ) const override;
-
     virtual Qgis::SettingsType settingsType() const override;
 
   private:
-    QStringList convertFromVariant( const QVariant &value ) const override;
+    bool setValuePrivate( const QStringList &value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
+    QStringList convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 
 };
 
@@ -329,26 +285,11 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
       : QgsSettingsEntryByValue( key, pluginName, defaultValue, description, options )
     {}
 
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     */
-    bool setValue( bool value, const QString &dynamicKeyPart = QString() ) const override;
-
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
-     */
-    bool setValue( bool value, const QStringList &dynamicKeyPartList ) const override;
-
     virtual Qgis::SettingsType settingsType() const override;
 
   private:
-    bool convertFromVariant( const QVariant &value ) const override;
+    bool setValuePrivate( bool value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
+    bool convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 };
 
 
@@ -412,23 +353,6 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
       , mMaxValue( std::numeric_limits<qlonglong>::max() )
     {
     }
-
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     */
-    bool setValue( qlonglong value, const QString &dynamicKeyPart = QString() ) const override;
-
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
-     */
-    bool setValue( qlonglong value, const QStringList &dynamicKeyPartList ) const override;
-
     virtual Qgis::SettingsType settingsType() const override;
 
     /**
@@ -456,7 +380,8 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
     qlonglong maxValue();
 
   private:
-    qlonglong convertFromVariant( const QVariant &value ) const override;
+    bool setValuePrivate( qlonglong value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
+    qlonglong convertFromVariant( const QVariant &value ) const override SIP_FORCE;
     qlonglong mMinValue;
     qlonglong mMaxValue;
 
@@ -528,22 +453,6 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
     {
     }
 
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     */
-    bool setValue( double value, const QString &dynamicKeyPart = QString() ) const override;
-
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
-     */
-    bool setValue( double value, const QStringList &dynamicKeyPartList ) const override;
-
     virtual Qgis::SettingsType settingsType() const override;
 
     /**
@@ -583,7 +492,8 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
     int displayHintDecimals() const;
 
   private:
-    double convertFromVariant( const QVariant &value ) const override;
+    bool setValuePrivate( double value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
+    double convertFromVariant( const QVariant &value ) const override SIP_FORCE;
     double mMinValue;
     double mMaxValue;
 
@@ -644,27 +554,11 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
       : QgsSettingsEntryByReference( key, pluginName, defaultValue, description, options )
     {
     }
-
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     */
-    bool setValue( const QColor &value, const QString &dynamicKeyPart = QString() ) const override;
-
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
-     */
-    bool setValue( const QColor &value, const QStringList &dynamicKeyPartList ) const override;
-
     virtual Qgis::SettingsType settingsType() const override;
 
   private:
-    QColor convertFromVariant( const QVariant &value ) const override;
+    bool setValuePrivate( const QColor &value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
+    QColor convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 
 };
 

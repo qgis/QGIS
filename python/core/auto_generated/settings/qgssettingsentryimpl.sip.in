@@ -45,26 +45,13 @@ The ``description`` argument specifies a description for the settings entry.
 The ``options`` arguments specifies the options for the settings entry.
 %End
 
-    virtual bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    virtual bool setValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
 
     virtual Qgis::SettingsType settingsType() const;
 
+  private:
+    virtual bool setValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
+
+    virtual QVariant convertFromVariant( const QVariant &value ) const;
 };
 
 
@@ -104,24 +91,6 @@ The ``description`` argument specifies a description for the settings entry.
 The ``options`` arguments specifies the options for the settings entry.
 %End
 
-    virtual bool setValue( const QString &value, const QString &dynamicKeyPart = QString() ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    virtual bool setValue( const QString &value, const QStringList &dynamicKeyPartList ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
     virtual Qgis::SettingsType settingsType() const;
 
     void setMinLength( int minLength );
@@ -147,6 +116,11 @@ maxLength The string maximum length.
 %Docstring
 Returns the string maximum length. By -1 there is no limitation.
 %End
+
+  private:
+    virtual bool setValuePrivate( const QString &value, const QStringList &dynamicKeyPartList ) const;
+
+    virtual QString convertFromVariant( const QVariant &value ) const;
 
 };
 
@@ -187,25 +161,12 @@ The ``description`` argument specifies a description for the settings entry.
 The ``options`` arguments specifies the options for the settings entry.
 %End
 
-    virtual bool setValue( const QStringList &value, const QString &dynamicKeyPart = QString() ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    virtual bool setValue( const QStringList &value, const QStringList &dynamicKeyPartList ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
     virtual Qgis::SettingsType settingsType() const;
+
+  private:
+    virtual bool setValuePrivate( const QStringList &value, const QStringList &dynamicKeyPartList ) const;
+
+    virtual QStringList convertFromVariant( const QVariant &value ) const;
 
 };
 
@@ -242,25 +203,12 @@ The ``description`` argument specifies a description for the settings entry.
 The ``options`` arguments specifies the options for the settings entry.
 %End
 
-    virtual bool setValue( bool value, const QString &dynamicKeyPart = QString() ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    virtual bool setValue( bool value, const QStringList &dynamicKeyPartList ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
     virtual Qgis::SettingsType settingsType() const;
+
+  private:
+    virtual bool setValuePrivate( bool value, const QStringList &dynamicKeyPartList ) const;
+
+    virtual bool convertFromVariant( const QVariant &value ) const;
 
 };
 
@@ -301,25 +249,6 @@ The ``defaultValue`` argument specifies the default value for the settings entry
 The ``description`` argument specifies a description for the settings entry.
 The ``options`` arguments specifies the options for the settings entry.
 %End
-
-    virtual bool setValue( qlonglong value, const QString &dynamicKeyPart = QString() ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    virtual bool setValue( qlonglong value, const QStringList &dynamicKeyPartList ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
     virtual Qgis::SettingsType settingsType() const;
 
     void setMinValue( qlonglong minValue );
@@ -345,6 +274,11 @@ maxValue The maximum value.
 %Docstring
 Returns the maximum value.
 %End
+
+  private:
+    virtual bool setValuePrivate( qlonglong value, const QStringList &dynamicKeyPartList ) const;
+
+    virtual qlonglong convertFromVariant( const QVariant &value ) const;
 
 };
 
@@ -385,24 +319,6 @@ The ``options`` arguments specifies the options for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 %End
 
-    virtual bool setValue( double value, const QString &dynamicKeyPart = QString() ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    virtual bool setValue( double value, const QStringList &dynamicKeyPartList ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
     virtual Qgis::SettingsType settingsType() const;
 
     void setMinValue( double minValue );
@@ -440,6 +356,11 @@ displayHintDecimals The number of decimals that should be shown in the Gui.
 %Docstring
 Returns how much decimals should be shown in the Gui.
 %End
+
+  private:
+    virtual bool setValuePrivate( double value, const QStringList &dynamicKeyPartList ) const;
+
+    virtual double convertFromVariant( const QVariant &value ) const;
 
 };
 
@@ -480,26 +401,12 @@ The ``defaultValue`` argument specifies the default value for the settings entry
 The ``description`` argument specifies a description for the settings entry.
 The ``options`` arguments specifies the options for the settings entry.
 %End
-
-    virtual bool setValue( const QColor &value, const QString &dynamicKeyPart = QString() ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    virtual bool setValue( const QColor &value, const QStringList &dynamicKeyPartList ) const;
-
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
     virtual Qgis::SettingsType settingsType() const;
+
+  private:
+    virtual bool setValuePrivate( const QColor &value, const QStringList &dynamicKeyPartList ) const;
+
+    virtual QColor convertFromVariant( const QVariant &value ) const;
 
 };
 
