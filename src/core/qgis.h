@@ -1792,27 +1792,38 @@ template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
 
 /**
  * Returns the value for the given key of an enum.
+ * If \a returnOk is given, it defines if the value could be converted to the key
  * \since QGIS 3.6
  */
-template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
+template<class T> QString qgsEnumValueToKey( const T &value, bool *returnOk = nullptr ) SIP_SKIP
 {
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
-  return QString::fromUtf8( metaEnum.valueToKey( static_cast<int>( value ) ) );
+  const char *key = metaEnum.valueToKey( static_cast<int>( value ) );
+  if ( returnOk )
+  {
+    *returnOk = key ? true : false;
+  }
+  return QString::fromUtf8( key );
 }
 
 /**
  * Returns the value corresponding to the given \a key of an enum.
  * If the key is invalid, it will return the \a defaultValue.
  * If \a tryValueAsKey is TRUE, it will try to convert the string key to an enum value
+ * If \a returnOk is given, it defines if the key could be converted to the value or if it had returned the default
  * \since QGIS 3.6
  */
-template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue, bool tryValueAsKey = true ) SIP_SKIP
+template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue, bool tryValueAsKey = true,  bool *returnOk = nullptr ) SIP_SKIP
 {
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   bool ok = false;
   T v = static_cast<T>( metaEnum.keyToValue( key.toUtf8().data(), &ok ) );
+  if ( returnOk )
+  {
+    *returnOk = ok;
+  }
   if ( ok )
   {
     return v;
@@ -1826,6 +1837,10 @@ template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue
       const int intValue = key.toInt( &canConvert );
       if ( canConvert && metaEnum.valueToKey( intValue ) )
       {
+        if ( returnOk )
+        {
+          *returnOk = true;
+        }
         return static_cast<T>( intValue );
       }
     }
@@ -1835,30 +1850,68 @@ template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue
 
 /**
  * Returns the value for the given keys of a flag.
+ * If \a returnOk is given, it defines if the value could be converted to the keys
  * \since QGIS 3.16
  */
-template<class T> QString qgsFlagValueToKeys( const T &value ) SIP_SKIP
+template<class T> QString qgsFlagValueToKeys( const T &value, bool *returnOk = nullptr ) SIP_SKIP
 {
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
-  return QString::fromUtf8( metaEnum.valueToKeys( static_cast<int>( value ) ) );
+  int intValue = static_cast<int>( value );
+  const QByteArray ba = metaEnum.valueToKeys( intValue );
+  // check that the int value does correspond to a flag
+  // see https://stackoverflow.com/a/68495949/1548052
+  const int intValueCheck = metaEnum.keysToValue( ba );
+  bool ok = intValue == intValueCheck;
+  if ( returnOk )
+    *returnOk = ok;
+  return ok ? QString::fromUtf8( ba ) : QString();
 }
 
 /**
  * Returns the value corresponding to the given \a keys of a flag.
  * If the keys are invalid, it will return the \a defaultValue.
+ * If \a tryValueAsKey is TRUE, it will try to convert the string key to an enum value
+ * If \a returnOk is given, it defines if the key could be converted to the value or if it had returned the default
  * \since QGIS 3.16
  */
-template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultValue ) SIP_SKIP
+template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultValue, bool tryValueAsKey = true,  bool *returnOk = nullptr ) SIP_SKIP
 {
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   bool ok = false;
   T v = static_cast<T>( metaEnum.keysToValue( keys.toUtf8().constData(), &ok ) );
+  if ( returnOk )
+  {
+    *returnOk = ok;
+  }
   if ( ok )
+  {
     return v;
+  }
   else
-    return defaultValue;
+  {
+    // if conversion has failed, try with conversion from int value
+    if ( tryValueAsKey )
+    {
+      bool canConvert = false;
+      const int intValue = keys.toInt( &canConvert );
+      if ( canConvert )
+      {
+        const QByteArray keys = metaEnum.valueToKeys( intValue );
+        const int intValueCheck = metaEnum.keysToValue( keys );
+        if ( intValue == intValueCheck )
+        {
+          if ( returnOk )
+          {
+            *returnOk = true;
+          }
+          return T( intValue );
+        }
+      }
+    }
+  }
+  return defaultValue;
 }
 
 
