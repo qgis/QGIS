@@ -659,6 +659,7 @@
 %Include auto_generated/textrenderer/qgstextshadowsettings.sip
 %Include auto_generated/settings/qgssettings.sip
 %Include auto_generated/settings/qgssettingsentry.sip
+%Include auto_generated/settings/qgssettingsentryimpl.sip
 %Include auto_generated/settings/qgssettingsregistry.sip
 %Include auto_generated/settings/qgssettingsregistrycore.sip
 %Include auto_generated/validity/qgsabstractvaliditycheck.sip
