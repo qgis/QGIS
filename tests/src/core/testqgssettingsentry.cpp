@@ -16,7 +16,8 @@
 
 
 #include "qgssettings.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgsunittypes.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgstest.h"
@@ -35,6 +36,7 @@ class TestQgsSettingsEntry : public QObject
     void settingsKey();
     void enumValue();
     void flagValue();
+    void testFormerValue();
 };
 
 void TestQgsSettingsEntry::settingsKey()
@@ -119,7 +121,7 @@ void TestQgsSettingsEntry::enumValue()
   QCOMPARE( settingsEntryEnum.value(), QgsUnitTypes::LayoutPicas );
 
   // Check settings type
-  QCOMPARE( settingsEntryEnum.settingsType(), QgsSettingsEntryBase::SettingsType::EnumFlag );
+  QCOMPARE( settingsEntryEnum.settingsType(), Qgis::SettingsType::EnumFlag );
 
   // assign to inexisting value
   {
@@ -168,7 +170,7 @@ void TestQgsSettingsEntry::flagValue()
   QCOMPARE( settingsEntryFlag.value(), pointAndLine );
 
   // Check settings type
-  QCOMPARE( settingsEntryFlag.settingsType(), QgsSettingsEntryBase::SettingsType::EnumFlag );
+  QCOMPARE( settingsEntryFlag.settingsType(), Qgis::SettingsType::EnumFlag );
 
   // check that value is stored as string
   QCOMPARE( settingsEntryFlag.valueAsVariant().toByteArray(), QMetaEnum::fromType<QgsMapLayerProxyModel::Filters>().valueToKeys( pointAndLine ) );
@@ -177,6 +179,41 @@ void TestQgsSettingsEntry::flagValue()
   QSettings().setValue( settingsKey, static_cast<int>( pointAndPolygon ) );
   QCOMPARE( settingsEntryFlag.valueAsVariant().toInt(), pointAndPolygon );
   QCOMPARE( settingsEntryFlag.value(), pointAndPolygon );
+}
+
+void TestQgsSettingsEntry::testFormerValue()
+{
+  const QString settingsKey( QStringLiteral( "qgis/testing/settingsEntryInteger/integer-former-value" ) );
+  const QString settingsKeyFormer = settingsKey + ( QStringLiteral( "_formervalue" ) );
+
+  QgsSettings().remove( settingsKey, QgsSettings::NoSection );
+  QgsSettings().remove( settingsKeyFormer, QgsSettings::NoSection );
+  int defaultValue = 111;
+  int defaultFormerValue = 222;
+
+  QgsSettingsEntryInteger settingsEntryInteger = QgsSettingsEntryInteger( settingsKey, QgsSettings::NoSection, defaultValue, QString(), Qgis::SettingsOption::SaveFormerValue );
+
+  QCOMPARE( settingsEntryInteger.formerValue(), defaultValue );
+  QCOMPARE( QgsSettings().value( settingsKey, defaultValue, QgsSettings::NoSection ), defaultValue );
+  QCOMPARE( QgsSettings().value( settingsKeyFormer, defaultFormerValue, QgsSettings::NoSection ), defaultFormerValue );
+
+  settingsEntryInteger.setValue( 2 );
+  QCOMPARE( QgsSettings().value( settingsKey, defaultValue, QgsSettings::NoSection ), 2 );
+  QCOMPARE( QgsSettings().value( settingsKeyFormer, defaultFormerValue, QgsSettings::NoSection ), defaultFormerValue );
+  QCOMPARE( settingsEntryInteger.formerValue(), 2 );
+
+  settingsEntryInteger.setValue( 2 );
+  QCOMPARE( QgsSettings().value( settingsKey, defaultValue, QgsSettings::NoSection ), 2 );
+  QCOMPARE( QgsSettings().value( settingsKeyFormer, defaultFormerValue, QgsSettings::NoSection ), defaultFormerValue );
+  QCOMPARE( settingsEntryInteger.formerValue(), 2 );
+
+  settingsEntryInteger.setValue( 3 );
+  QCOMPARE( QgsSettings().value( settingsKey, defaultValue, QgsSettings::NoSection ), 3 );
+  QCOMPARE( QgsSettings().value( settingsKeyFormer, defaultFormerValue, QgsSettings::NoSection ).toLongLong(), 2 );
+  QCOMPARE( settingsEntryInteger.formerValue(), 2 );
+
+  settingsEntryInteger.setValue( 2 );
+  QCOMPARE( settingsEntryInteger.formerValue(), 3 );
 }
 
 
