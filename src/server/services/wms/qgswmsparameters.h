@@ -1173,7 +1173,7 @@ namespace QgsWms
 
       /**
        * Returns HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT as a list of string.
-       * \returns highlight label hali
+       * \returns highlight label horizontal alignment strings
        */
       QStringList highlightLabelHali() const;
 
