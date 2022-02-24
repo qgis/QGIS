@@ -12,6 +12,7 @@
 
 
 
+
 class QgsAbstract3DSymbol
 {
 %Docstring(signature="appended")
@@ -85,6 +86,13 @@ Returns a reference to the symbol layer's property collection, used for data def
 Sets the symbol layer's property collection, used for data defined overrides.
 %End
 
+
+    virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
+%Docstring
+Sets default properties for the symbol based on a layer's configuration.
+
+.. versionadded:: 3.26
+%End
 
   protected:
 
