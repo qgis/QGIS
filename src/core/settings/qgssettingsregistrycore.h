@@ -21,6 +21,8 @@
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
 #include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 #include "qgis.h"
 #include "qgssnappingconfig.h"
