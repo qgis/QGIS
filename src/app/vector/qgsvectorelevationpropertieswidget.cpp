@@ -121,6 +121,7 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
   mLabelScale->setVisible( enableScale );
   mScaleZSpinBox->setVisible( enableScale );
   mBindingGroupBox->setVisible( enableBinding );
+  mLabelBindingExplanation->setVisible( enableBinding );
 }
 
 void QgsVectorElevationPropertiesWidget::bindingChanged()
