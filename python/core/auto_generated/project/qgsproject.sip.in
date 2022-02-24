@@ -782,6 +782,14 @@ time based settings.
 %End
 
 
+    QgsProjectElevationProperties *elevationProperties();
+%Docstring
+Returns the project's elevation properties, which contains the project's elevation related settings.
+
+.. versionadded:: 3.26
+%End
+
+
     QgsProjectDisplaySettings *displaySettings();
 %Docstring
 Returns the project's display settings, which settings and properties relating
