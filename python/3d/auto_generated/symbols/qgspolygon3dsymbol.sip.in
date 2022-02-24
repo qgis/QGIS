@@ -44,6 +44,8 @@ Constructor for QgsPolygon3DSymbol
 
     virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
 
+    virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
+
 
     static QgsAbstract3DSymbol *create() /Factory/;
 %Docstring

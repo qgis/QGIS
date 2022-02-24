@@ -57,6 +57,8 @@ Caller takes ownership of the returned symbol.
 
     virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
 
+    virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
+
 
     Qgis::AltitudeClamping altitudeClamping() const;
 %Docstring
