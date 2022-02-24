@@ -16,12 +16,8 @@
 
 #include "qgssettingsentryimpl.h"
 
-bool QgsSettingsEntryVariant::setValue( const QVariant &value, const QString &dynamicKeyPart ) const
-{
-  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPart );
-}
 
-bool QgsSettingsEntryVariant::setValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryVariant::setValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const
 {
   return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
 }
@@ -33,17 +29,7 @@ Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
 
 
 
-
-bool QgsSettingsEntryString::setValue( const QString &value, const QString &dynamicKeyPart ) const
-{
-  QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isNull() )
-    dynamicKeyPartList.append( dynamicKeyPart );
-
-  return setValue( value, dynamicKeyPartList );
-}
-
-bool QgsSettingsEntryString::setValue( const QString &value, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryString::setValuePrivate( const QString &value, const QStringList &dynamicKeyPartList ) const
 {
   if ( value.length() < mMinLength )
   {
@@ -99,12 +85,7 @@ int QgsSettingsEntryString::maxLength()
 
 
 
-bool QgsSettingsEntryStringList::setValue( const QStringList &value, const QString &dynamicKeyPart ) const
-{
-  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPart );
-}
-
-bool QgsSettingsEntryStringList::setValue( const QStringList &value, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryStringList::setValuePrivate( const QStringList &value, const QStringList &dynamicKeyPartList ) const
 {
   return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
 }
@@ -122,13 +103,7 @@ Qgis::SettingsType QgsSettingsEntryStringList::settingsType() const
 
 
 
-
-bool QgsSettingsEntryBool::setValue( bool value, const QString &dynamicKeyPart ) const
-{
-  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPart );
-}
-
-bool QgsSettingsEntryBool::setValue( bool value, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryBool::setValuePrivate( bool value, const QStringList &dynamicKeyPartList ) const
 {
   return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
 }
@@ -145,16 +120,7 @@ Qgis::SettingsType QgsSettingsEntryBool::settingsType() const
 
 
 
-bool QgsSettingsEntryInteger::setValue( qlonglong value, const QString &dynamicKeyPart ) const
-{
-  QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isNull() )
-    dynamicKeyPartList.append( dynamicKeyPart );
-
-  return setValue( value, dynamicKeyPartList );
-}
-
-bool QgsSettingsEntryInteger::setValue( qlonglong value, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryInteger::setValuePrivate( qlonglong value, const QStringList &dynamicKeyPartList ) const
 {
   if ( value < mMinValue )
   {
@@ -210,17 +176,7 @@ qlonglong QgsSettingsEntryInteger::maxValue()
 
 
 
-
-bool QgsSettingsEntryDouble::setValue( double value, const QString &dynamicKeyPart ) const
-{
-  QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isNull() )
-    dynamicKeyPartList.append( dynamicKeyPart );
-
-  return setValue( value, dynamicKeyPartList );
-}
-
-bool QgsSettingsEntryDouble::setValue( double value, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryDouble::setValuePrivate( double value, const QStringList &dynamicKeyPartList ) const
 {
   if ( value < mMinValue )
   {
@@ -284,16 +240,7 @@ int QgsSettingsEntryDouble::displayHintDecimals() const
 }
 
 
-bool QgsSettingsEntryColor::setValue( const QColor &value, const QString &dynamicKeyPart ) const
-{
-  QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isNull() )
-    dynamicKeyPartList.append( dynamicKeyPart );
-
-  return setValue( value, dynamicKeyPartList );
-}
-
-bool QgsSettingsEntryColor::setValue( const QColor &value, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryColor::setValuePrivate( const QColor &value, const QStringList &dynamicKeyPartList ) const
 {
   return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
 }

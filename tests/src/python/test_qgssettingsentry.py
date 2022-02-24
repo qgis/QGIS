@@ -10,7 +10,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import QgsSettings, QgsSettingsEntryBase, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel
+from qgis.core import Qgis, QgsSettings, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel
 from qgis.testing import start_app, unittest
 
 __author__ = 'Damiano Lombardi'
@@ -72,7 +72,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryVariant.valueAsVariant(), 43)
 
         # Settings type
-        self.assertEqual(settingsEntryVariant.settingsType(), QgsSettingsEntryBase.SettingsType.Variant)
+        self.assertEqual(settingsEntryVariant.settingsType(), Qgis.SettingsType.Variant)
 
         # Description
         self.assertEqual(settingsEntryVariant.description(), description)
@@ -165,7 +165,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryVariant.valueAsVariant(), "abc")
 
         # Settings type
-        self.assertEqual(settingsEntryVariant.settingsType(), QgsSettingsEntryBase.SettingsType.Variant)
+        self.assertEqual(settingsEntryVariant.settingsType(), Qgis.SettingsType.Variant)
 
     def test_settings_entry_string(self):
         settingsKey = "settingsEntryString/stringValue"
@@ -187,7 +187,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryString.valueAsVariant(), "xyz")
 
         # Settings type
-        self.assertEqual(settingsEntryString.settingsType(), QgsSettingsEntryBase.SettingsType.String)
+        self.assertEqual(settingsEntryString.settingsType(), Qgis.SettingsType.String)
 
     def test_settings_entry_stringlist(self):
         settingsKey = "settingsEntryStringList/stringListValue"
@@ -209,7 +209,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryStringList.valueAsVariant(), ["uvw", "xyz"])
 
         # Settings type
-        self.assertEqual(settingsEntryStringList.settingsType(), QgsSettingsEntryBase.SettingsType.StringList)
+        self.assertEqual(settingsEntryStringList.settingsType(), Qgis.SettingsType.StringList)
 
     def test_settings_entry_bool(self):
         settingsKey = "settingsEntryBool/boolValue"
@@ -231,7 +231,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryBool.valueAsVariant(), True)
 
         # Settings type
-        self.assertEqual(settingsEntryBool.settingsType(), QgsSettingsEntryBase.SettingsType.Bool)
+        self.assertEqual(settingsEntryBool.settingsType(), Qgis.SettingsType.Bool)
 
     def test_settings_entry_integer(self):
         settingsKey = "settingsEntryInteger/integerValue"
@@ -259,7 +259,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryInteger.valueAsVariant(), -42)
 
         # Settings type
-        self.assertEqual(settingsEntryInteger.settingsType(), QgsSettingsEntryBase.SettingsType.Integer)
+        self.assertEqual(settingsEntryInteger.settingsType(), Qgis.SettingsType.Integer)
 
     def test_settings_entry_double(self):
         settingsKey = "settingsEntryDouble/doubleValue"
@@ -287,7 +287,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryDouble.valueAsVariant(), -273.15)
 
         # Settings type
-        self.assertEqual(settingsEntryDouble.settingsType(), QgsSettingsEntryBase.SettingsType.Double)
+        self.assertEqual(settingsEntryDouble.settingsType(), Qgis.SettingsType.Double)
 
     def test_settings_entry_enum(self):
         settingsKey = "settingsEntryEnum/enumValue"
@@ -314,7 +314,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryEnum.value(), QgsUnitTypes.LayoutPicas)
 
         # Check settings type
-        self.assertEqual(settingsEntryEnum.settingsType(), QgsSettingsEntryBase.SettingsType.EnumFlag)
+        self.assertEqual(settingsEntryEnum.settingsType(), Qgis.SettingsType.EnumFlag)
 
         # assign to inexisting value
         success = settingsEntryEnum.setValue(-1)
@@ -352,7 +352,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryFlag.value(), pointAndPolygon)
 
         # Check settings type
-        self.assertEqual(settingsEntryFlag.settingsType(), QgsSettingsEntryBase.SettingsType.EnumFlag)
+        self.assertEqual(settingsEntryFlag.settingsType(), Qgis.SettingsType.EnumFlag)
 
 
 if __name__ == '__main__':
