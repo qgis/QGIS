@@ -94,7 +94,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
     }
 
     mHandler->processNode( pc, pcNode, mContext );
-    if ( mContext.symbol()->triangulate() )
+    if ( mContext.symbol()->renderAsTriangles() )
       mHandler->triangulate( pc, pcNode, mContext, bbox );
   } );
 
@@ -231,7 +231,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudI
   : QgsChunkedEntity( maximumScreenSpaceError,
                       new QgsPointCloudLayerChunkLoaderFactory( map, coordinateTransform, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
 {
-  setUsingAdditiveStrategy( !symbol->triangulate() );
+  setUsingAdditiveStrategy( !symbol->renderAsTriangles() );
   setShowBoundingBoxes( showBoundingBoxes );
 }
 

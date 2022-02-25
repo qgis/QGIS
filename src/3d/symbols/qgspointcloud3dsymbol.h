@@ -83,15 +83,62 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     //! Used to fill material object with necessary QParameters (and consequently opengl uniforms)
     virtual void fillMaterial( Qt3DRender::QMaterial *material ) = 0 SIP_SKIP;
 
-    //! Returns whether points are triangulated to render solid surface
-    bool triangulate() const;
+    /**
+     * Returns whether points are triangulated to render solid surface
+     *
+     * \since QGIS 3.26
+     */
+    bool renderAsTriangles() const;
 
-    //! Sets whether points are triangulated to render solid surface
-    void setTriangulate( bool triangulate );
+    /**
+     * Sets whether points are triangulated to render solid surface
+     *
+     * \since QGIS 3.26
+     */
+    void setRenderAsTriangles( bool asTriangles );
+
+    /**
+     * Returns whether triangles are filtered by size for rendering. If the triangles are filtered, triangles with a size greater
+     * than a threshold value will not be rendered, see triangleSizeThreshold().
+     *
+     * \since QGIS 3.26
+     */
+    bool filterTrianglesBySize() const;
+
+    /**
+     * Sets whether triangles are filtered by size for rendering. If the triangles are filtered, triangles with a size greater
+     * than a threshold value will not be rendered, see setTriangleSizeThreshold().
+     *
+     * \since QGIS 3.26
+     */
+    void setFilterTrianglesBySize( bool filterTriangleBySize );
+
+    /**
+     * Returns the threshold size value for filtering triangles. If the triangles are filtered, triangles with a side's size greater
+     * than this threshold value will not be rendered, see setTriangleSizeThreshold().
+     *
+     * \since QGIS 3.26
+     */
+    float triangleSizeThreshold() const;
+
+    /**
+     * Sets the threshold size value for filtering triangles. If the triangles are filtered, triangles with a side's size greater
+     * than this threshold value will not be rendered, see setTriangleSizeThreshold().
+     *
+     * \since QGIS 3.26
+     */
+    void setTriangleSizeThreshold( float triangleSizeThreshold );
 
   protected:
     float mPointSize = 2.0;
-    bool mTriangulate = false;
+    bool mRenderAsTriangles = false;
+    bool mFilterTrianglesBySize = false;
+    float mTriangleSizesThreshold = 10.0;
+
+    void writeBaseXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+    void readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    void copyBaseSettings( QgsAbstract3DSymbol *destination ) const override;
 };
 
 /**

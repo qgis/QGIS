@@ -361,7 +361,6 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
         residencyRequests.push_back( ResidencyRequest( children[i], dist, children[i]->level() ) );
       }
     }
-
     if ( becomesActive )
     {
       mActiveNodes << node;

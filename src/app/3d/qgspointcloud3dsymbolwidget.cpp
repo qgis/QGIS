@@ -107,7 +107,15 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mMaxScreenErrorSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
   connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
   connect( mPointBudgetSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
-  connect( mTriangulateCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
+  connect( mTriangulateGroupBox, &QGroupBox::toggled, this, [&]() { emitChangedSignal(); } );
+  connect( mTriangulateGroupBox, &QGroupBox::toggled, this, [&]() {mPointSizeSpinBox->setEnabled( !mTriangulateGroupBox->isChecked() ); } );
+  connect( mFilterTriangleBySizeCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
+  connect( mFilterTriangleBySizeCheckBox, &QCheckBox::stateChanged, this, [&]()
+  { mTriangleSizeThresholdDoubleSpinBox->setEnabled( mFilterTriangleBySizeCheckBox->isChecked() ); } );
+  connect( mTriangleSizeThresholdDoubleSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
+
+  mPointSizeSpinBox->setEnabled( !mTriangulateGroupBox->isChecked() );
+  mTriangleSizeThresholdDoubleSpinBox->setEnabled( mFilterTriangleBySizeCheckBox->isChecked() );
 
   if ( !symbol ) // if we have a symbol, this was already handled in setSymbol above
     rampAttributeChanged();
@@ -132,7 +140,9 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
 
   mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( symbol->symbolType() ) );
   mPointSizeSpinBox->setValue( symbol->pointSize() );
-  mTriangulateCheckBox->setChecked( symbol->triangulate() );
+  mTriangulateGroupBox->setChecked( symbol->renderAsTriangles() );
+  mFilterTriangleBySizeCheckBox->setChecked( symbol->filterTrianglesBySize() );
+  mTriangleSizeThresholdDoubleSpinBox->setValue( symbol->triangleSizeThreshold() );
 
   if ( symbol->symbolType() == QLatin1String( "single-color" ) )
   {
@@ -199,7 +209,6 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
   if ( symbolType == QLatin1String( "single-color" ) )
   {
     QgsSingleColorPointCloud3DSymbol *symb = new QgsSingleColorPointCloud3DSymbol;
-    symb->setPointSize( mPointSizeSpinBox->value() );
     symb->setSingleColor( mSingleColorBtn->color() );
     retSymb = symb;
   }
@@ -207,7 +216,6 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
   {
     QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol;
     symb->setAttribute( mRenderingParameterComboBox->currentText() );
-    symb->setPointSize( mPointSizeSpinBox->value() );
     symb->setColorRampShader( mColorRampShaderWidget->shader() );
     symb->setColorRampShaderMinMax( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );
     retSymb = symb;
@@ -215,27 +223,27 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
   else if ( symbolType == QLatin1String( "rgb" ) )
   {
     QgsRgbPointCloud3DSymbol *symb = new QgsRgbPointCloud3DSymbol;
-    symb->setPointSize( mPointSizeSpinBox->value() );
-
     symb->setRedAttribute( mRedAttributeComboBox->currentAttribute() );
     symb->setGreenAttribute( mGreenAttributeComboBox->currentAttribute() );
     symb->setBlueAttribute( mBlueAttributeComboBox->currentAttribute() );
-
     setCustomMinMaxValues( symb );
     retSymb = symb;
   }
   else if ( symbolType == QLatin1String( "classification" ) )
   {
     QgsClassificationPointCloud3DSymbol *symb = new QgsClassificationPointCloud3DSymbol;
-    symb->setPointSize( mPointSizeSpinBox->value() );
-
     symb->setAttribute( mClassifiedRendererWidget->attribute() );
     symb->setCategoriesList( mClassifiedRendererWidget->categoriesList() );
     retSymb = symb;
   }
 
   if ( retSymb )
-    retSymb->setTriangulate( mTriangulateCheckBox->isChecked() );
+  {
+    retSymb->setPointSize( mPointSizeSpinBox->value() );
+    retSymb->setRenderAsTriangles( mTriangulateGroupBox->isChecked() );
+    retSymb->setFilterTrianglesBySize( mFilterTriangleBySizeCheckBox->isChecked() );
+    retSymb->setTriangleSizeThreshold( mTriangleSizeThresholdDoubleSpinBox->value() );
+  }
 
   return retSymb;
 }
@@ -641,4 +649,3 @@ void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )
 {
   parent->connectChildPanel( mClassifiedRendererWidget );
 }
-

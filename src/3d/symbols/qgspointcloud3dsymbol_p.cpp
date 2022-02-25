@@ -36,10 +36,8 @@
 #include <Qt3DRender/QEffect>
 #include <QPointSize>
 #include <QUrl>
-#include <QElapsedTimer>
 
 #include <delaunator.hpp>
-#include <qgsproviderregistry.h>
 
 QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
   : Qt3DRender::QGeometry( parent )
@@ -205,7 +203,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   // Geometry
   Qt3DRender::QGeometry *geom = makeGeometry( parent, out, context.symbol()->byteStride() );
   Qt3DRender::QGeometryRenderer *gr = new Qt3DRender::QGeometryRenderer;
-  if ( context.symbol()->triangulate() )
+  if ( context.symbol()->renderAsTriangles() && ! out.triangles.isEmpty() )
   {
     gr->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
     gr->setVertexCount( out.triangles.size() /  sizeof( quint32 ) );
@@ -273,11 +271,8 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
   if ( outNormal.positions.isEmpty() )
     return;
 
-  QElapsedTimer timer;
-  timer.start();
-
   bool hasColorData = !outNormal.colors.empty();
-  bool hasParamertData = !outNormal.parameter.empty();
+  bool hasParameterData = !outNormal.parameter.empty();
 
   // first, get the points of the concerned node
   std::vector<double> vertices( outNormal.positions.size() * 2 );
@@ -288,108 +283,82 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
     vertices[idx++] = outNormal.positions.at( i ).z();
   }
 
-  size_t properPositionsSize = outNormal.positions.size();
-
   // next, we also need all points of all parents nodes to make the triangulation (also external points)
   IndexedPointCloudNode parentNode = n.parentNode();
-  int previousPositonsSize = outNormal.positions.size();
+
+  int properPointsCount = outNormal.positions.count();
   while ( parentNode.d() >= 0 )
   {
     processNode( pc, parentNode, context );
-    int newPointCount = outNormal.positions.size() - previousPositonsSize;
-    size_t idNewPt = vertices.size();
-    vertices.resize( vertices.size() + newPointCount * 2 );
-    for ( int i = previousPositonsSize; i < outNormal.positions.size(); ++i )
-    {
-      vertices[idNewPt++] = outNormal.positions.at( i ).x();
-      vertices[idNewPt++] = outNormal.positions.at( i ).z();
-    }
     parentNode = parentNode.parentNode();
-    previousPositonsSize = outNormal.positions.size();
   }
+
+  PointData filteredExtraPointData;
+
+  double span = pc->span();
+  double extraBoxFactor = 16 / span;
+  double extraX = extraBoxFactor * bbox.xExtent();
+  double extraZ = extraBoxFactor * bbox.zExtent();
+
+  // We keep all points in vertical direction to avoid odd triangulation if points are isolated on top
+  const QgsAABB extentedBBox( bbox.xMin - extraX, -std::numeric_limits<float>::max(), bbox.zMin - extraZ, bbox.xMax + extraX, std::numeric_limits<float>::max(), bbox.zMax + extraZ );
+
+  for ( int i = properPointsCount; i < outNormal.positions.count(); ++i )
+  {
+    const  QVector3D pos = outNormal.positions.at( i );
+    if ( extentedBBox.intersects( pos.x(), pos.y(), pos.z() ) )
+    {
+      filteredExtraPointData.positions.append( pos );
+      vertices.push_back( pos.x() );
+      vertices.push_back( pos.z() );
+      //vertSize += 2;
+
+      if ( hasColorData )
+        filteredExtraPointData.colors.append( outNormal.colors.at( i ) );
+      if ( hasParameterData )
+        filteredExtraPointData.parameter.append( outNormal.parameter.at( i ) );
+    }
+  }
+
+  outNormal.positions.resize( properPointsCount );
+  if ( hasColorData )
+    outNormal.colors.resize( properPointsCount );
+  if ( hasParameterData )
+    outNormal.parameter.resize( properPointsCount );
+
+  outNormal.positions.append( filteredExtraPointData.positions );
+  outNormal.colors.append( filteredExtraPointData.colors );
+  outNormal.parameter.append( filteredExtraPointData.parameter );
 
   try
   {
     // Triangulation happens here
     delaunator::Delaunator triangulation( vertices );
 
-    // Now we have a triangulation that cover all the layer extent
-    // but we will keep only triangles that have at least one points in the node extent
-    // About the position of vertices, we only know that all vertices with index < properPositionsSize are in the bounding box
-    // For other vertices we need to check with the bounding box of the node
-
-    QVector<int> extraVertices( outNormal.positions.size() - properPositionsSize, 0 ); //array that contains indexes of extra vertices to keep, 0 if not kept
-    int extraVerticesCount = 0;
-    for ( int i = properPositionsSize; i < outNormal.positions.size(); ++i )
-    {
-      const QVector3D &pos = outNormal.positions.at( i );
-      if ( bbox.intersects( pos.x(), pos.y(), pos.z() ) )
-      {
-        extraVertices[static_cast<size_t>( i - properPositionsSize )] = 1;
-        extraVerticesCount++;
-      }
-    }
-
-    // Go through the triangle and we keep only triangle with a least one vertex in the bounding box
-    // It is also the opportunity to calculate normals at vertices
+    QVector<QVector3D> normals( outNormal.positions.count(), QVector3D( 0.0, 0.0, 0.0 ) );
     const std::vector<size_t> &triangleIndexes = triangulation.triangles;
-    QVector<char> keptTriangles( triangleIndexes.size() / 3, 0 ); //array to flag  kept triangles
-    QVector<QVector3D> normals( vertices.size(), QVector3D( 0.0, 0.0, 0.0 ) );
-    size_t keptTrianglesCount = 0;
-
-    QSet<size_t> verticesToadd;
     for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
     {
-      int inVertexCount = 0;
-      QSet<size_t> extra;
       QVector<QVector3D> triangleVertices( 3 );
       for ( size_t j = 0; j < 3; ++j )
       {
         size_t vertIndex = triangleIndexes.at( i + j );
         triangleVertices[j] = outNormal.positions.at( vertIndex );
-
-        if ( vertIndex  < properPositionsSize ) //it is a proper vertex of this node
-          inVertexCount++;
-        else
-        {
-          size_t extraVertIndex = vertIndex - properPositionsSize;
-          if ( extraVertices.at( extraVertIndex ) != 0 )
-            inVertexCount++;
-          else
-            extra.insert( extraVertIndex );
-        }
       }
-
-      if ( inVertexCount != 0 )
-      {
-        verticesToadd.unite( extra );
-        keptTrianglesCount++;
-        keptTriangles[i / 3] = 1;
-      }
-
       //calculate normals
-      QVector3D v1( triangleVertices.at( 1 ) - triangleVertices.at( 0 ) );
-      QVector3D v2( triangleVertices.at( 2 ) - triangleVertices.at( 0 ) );
-      QVector3D partialNormal = QVector3D::crossProduct( v1, v2 );
+      const QVector3D v1( triangleVertices.at( 1 ) - triangleVertices.at( 0 ) );
+      const  QVector3D v2( triangleVertices.at( 2 ) - triangleVertices.at( 0 ) );
+      const QVector3D partialNormal = QVector3D::crossProduct( v1, v2 );
       for ( size_t j = 0; j < 3; ++j )
         normals[triangleIndexes.at( i + j )] += partialNormal;
     }
 
-    extraVerticesCount += verticesToadd.count();
-    for ( size_t v : verticesToadd )
-      extraVertices[v] = 1;
-
-
-    // Build now the normals array
-    QByteArray normalsByteArray;
-    normalsByteArray.resize( ( properPositionsSize + extraVerticesCount ) * sizeof( float ) * 3 );
-    float *normPtr = reinterpret_cast<float *>( normalsByteArray.data() );
-    for ( size_t i = 0; i < properPositionsSize; ++i )
+    // Build now normals array
+    outNormal.normals.resize( ( outNormal.positions.count() ) * sizeof( float ) * 3 );
+    float *normPtr = reinterpret_cast<float *>( outNormal.normals.data() );
+    for ( int i = 0; i < normals.size(); ++i )
     {
-      QVector3D normal;
-      normal = normals.at( i );
-
-      normal = QVector3D( normal.x(), normal.y(), normal.z() );
+      QVector3D normal = normals.at( i );
       normal = normal.normalized();
 
       *normPtr++ = normal.x();
@@ -397,71 +366,58 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
       *normPtr++ = normal.z();
     }
 
-    // Rebuild the data array only with kept vertices
-    PointData extraData;
-    extraData.positions.resize( extraVerticesCount );
-    if ( hasColorData )
-      extraData.colors.resize( extraVerticesCount );
-    if ( hasParamertData )
-      extraData.parameter.resize( extraVerticesCount );
+    // We apply a filter on triangles to improve the rendering:
+    // - we keep only triangles that have a least one point in the bounding box
+    // - if option is selected, we don't keep triangle with side greater than a threshold
 
-    int extraIndex = 0;
-    float *ptr = reinterpret_cast<float *>( normalsByteArray.data() );
-    for ( int i = 0; i < extraVertices.size(); ++i )
-    {
-      if ( extraVertices.at( i ) != 0 )
-      {
-        size_t prevIndex = i + properPositionsSize;
-        extraData.positions[extraIndex] = outNormal.positions.at( prevIndex );
-        if ( hasColorData )
-          extraData.colors[extraIndex] = outNormal.colors.at( prevIndex );
-        if ( hasParamertData )
-          extraData.parameter[extraIndex] = outNormal.parameter.at( prevIndex );
-        extraVertices[i] = extraIndex + properPositionsSize; //store the new index for triangles later
-
-        QVector3D normal;
-        normal = normals.at( prevIndex );
-
-        normal = QVector3D( normal.x(), normal.y(), normal.z() );
-        normal = normal.normalized();
-
-        ptr[3 * extraVertices[i]] = normal.x();
-        ptr[3 * extraVertices[i] + 1] = normal.y();
-        ptr[3 * extraVertices[i] + 2] = normal.z();
-
-        extraIndex++;
-      }
-    }
-
-    // give the data the initial size and add the effective extra data
-    outNormal.positions.resize( properPositionsSize );
-    if ( hasColorData )
-      outNormal.colors.resize( properPositionsSize );
-    if ( hasParamertData )
-      outNormal.parameter.resize( properPositionsSize );
-
-    outNormal.positions.append( extraData.positions );
-    outNormal.colors.append( extraData.colors );
-    outNormal.parameter.append( extraData.parameter );
-
-    outNormal.triangles.resize( keptTrianglesCount * sizeof( quint32 ) * 3 );
+    outNormal.triangles.resize( triangleIndexes.size() * sizeof( quint32 ) );
     quint32 *indexPtr = reinterpret_cast<quint32 *>( outNormal.triangles.data() );
+    size_t effective = 0;
+
+    bool sizeFilter = context.symbol()->filterTrianglesBySize();
+    float sizeThreshold =  context.symbol()->triangleSizeThreshold();
+
     for ( size_t i = 0; i < triangleIndexes.size() / 3; ++i )
     {
-      if ( keptTriangles.at( i ) != 0 )
+      bool atLeastOneInBox = false;
+      bool greaterThanSizeThreshold = false;
+      for ( size_t j = 0; j < 3; j++ )
+      {
+        QVector3D pos = outNormal.positions.at( triangleIndexes.at( i * 3 + j ) );
+        atLeastOneInBox |= bbox.intersects( pos.x(), pos.y(), pos.z() );
+
+        if ( sizeFilter )
+        {
+          QVector3D pos2 = outNormal.positions.at( triangleIndexes.at( i * 3 + ( j + 1 ) % 3 ) );
+          // filter only in the horizontal plan, it is a 2.5D triangulation.
+          pos2.setY( 0 );
+          pos.setY( 0 );
+          greaterThanSizeThreshold |= pos2.distanceToPoint( pos ) > sizeThreshold;
+        }
+
+        if ( greaterThanSizeThreshold )
+          break;
+      }
+      if ( atLeastOneInBox && !greaterThanSizeThreshold )
       {
         for ( size_t j = 0; j < 3; j++ )
         {
           size_t vertIndex = triangleIndexes.at( i * 3 + j );
-          if ( vertIndex >= properPositionsSize )
-            *indexPtr++ = quint32( extraVertices.at( vertIndex - properPositionsSize ) );
-          else
-            *indexPtr++ = quint32( vertIndex );
+          *indexPtr++ = quint32( vertIndex );
         }
+        effective++;
       }
     }
 
-    outNormal.normals = normalsByteArray;
+    if ( effective != 0 )
+    {
+      outNormal.triangles.resize( effective * 3 * sizeof( quint32 ) );
+    }
+    else
+    {
+      outNormal.triangles.clear();
+      outNormal.normals.clear();
+    }
   }
   catch ( std::exception &e )
   {
