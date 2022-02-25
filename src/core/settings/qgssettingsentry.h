@@ -410,7 +410,10 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
     T formerValue( const QStringList &dynamicKeyPartList ) const {return convertFromVariant( formerValueAsVariant( dynamicKeyPartList ) );}
 
   protected:
+    //! Sets the settings value with an optional list of dynamic parts
     virtual bool setValuePrivate( const T &value, const QStringList &dynamicKeyPartList ) const = 0;
+
+    //! Converts the variant value to the value type of the setting
     virtual T convertFromVariant( const QVariant &value ) const = 0;
 };
 
@@ -543,7 +546,10 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
     T formerValue( const QStringList &dynamicKeyPartList ) const {return convertFromVariant( formerValueAsVariant( dynamicKeyPartList ) );}
 
   protected:
+    //! Sets the settings value with an optional list of dynamic parts
     virtual bool setValuePrivate( T value, const QStringList &dynamicKeyPartList ) const = 0;
+
+    //! Converts the variant value to the value type of the setting
     virtual T convertFromVariant( const QVariant &value ) const = 0;
 };
 

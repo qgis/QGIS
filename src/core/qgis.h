@@ -256,6 +256,7 @@ class CORE_EXPORT Qgis
       LineEndpoint SIP_MONKEYPATCH_COMPAT_NAME( LineEndpointFlag ) = 1 << 5, //!< Start or end points of lines, or first vertex in polygon rings only (since QGIS 3.20)
     };
     Q_ENUM( SnappingType )
+    //! Snapping types
     Q_DECLARE_FLAGS( SnappingTypes, SnappingType ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSanppingConfig, SnappingTypeFlag )
     Q_FLAG( SnappingTypes )
 
