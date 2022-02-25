@@ -187,22 +187,6 @@ class CORE_EXPORT QgsSettingsEntryBase
      */
     QgsSettings::Section section() const;
 
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     */
-    virtual bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
-
-    /**
-     * Set settings value.
-     *
-     * The \a value to set.
-     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
-     */
-    virtual bool setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
-
     //! Returns settings value with the \a dynamicKeyPart argument specifying the dynamic part of the settings key.
     QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
 
@@ -265,6 +249,15 @@ class CORE_EXPORT QgsSettingsEntryBase
      * \since QGIS 3.26
      */
     QVariant formerValueAsVariant( const QStringList &dynamicKeyPartList ) const;
+
+  protected:
+
+    /**
+     * Sets the settings value with a variant value
+     * This should be called from any implementation as it takes care of actually calling QSettings
+     * \since QGIS 3.26
+     */
+    bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
 
   private:
     QString formerValuekey( const QStringList &dynamicKeyPartList ) const;
@@ -334,11 +327,6 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
 
     virtual Qgis::SettingsType settingsType() const override = 0;
 
-    //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
-    T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );}
-    //! Returns the settings value with a \a defaultValueOverride for the \a dynamicKeyPartList
-    T valueWithDefaultOverride( const T &defaultValueOverride, const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPartList ) );}
-
     /**
      * Returns settings value.
      *
@@ -347,7 +335,6 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
      */
     T value( const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariant( dynamicKeyPart ) );}
 
-
     /**
      * Returns settings value.
      *
@@ -355,6 +342,11 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
      * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
     T value( const QStringList &dynamicKeyPartList )  const { return this->convertFromVariant( valueAsVariant( dynamicKeyPartList ) );}
+
+    //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
+    T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );}
+    //! Returns the settings value with a \a defaultValueOverride for the \a dynamicKeyPartList
+    T valueWithDefaultOverride( const T &defaultValueOverride, const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPartList ) );}
 
     /**
      * Returns the settings value for the \a dynamicKeyPart and  with a \a defaultValueOverride
@@ -380,7 +372,7 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
       QStringList dynamicKeyPartList;
       if ( !dynamicKeyPart.isNull() )
         dynamicKeyPartList.append( dynamicKeyPart );
-      return this->setValuePrivate( value, dynamicKeyPartList );
+      return setValuePrivate( value, dynamicKeyPartList );
     }
 
     /**
@@ -391,7 +383,7 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
      */
     bool setValue( const T &value, const QStringList &dynamicKeyPartList ) const
     {
-      return this->setValuePrivate( value, dynamicKeyPartList );
+      return setValuePrivate( value, dynamicKeyPartList );
     }
 
     //! Returns settings default value.
@@ -411,10 +403,29 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
 
   protected:
     //! Sets the settings value with an optional list of dynamic parts
-    virtual bool setValuePrivate( const T &value, const QStringList &dynamicKeyPartList ) const = 0;
+    bool setValuePrivate( const T &value, const QStringList &dynamicKeyPartList ) const
+    {
+      if ( checkValue( value ) )
+        return QgsSettingsEntryBase::setVariantValuePrivate( convertToVariant( value ), dynamicKeyPartList );
+      else
+        return false;
+    }
 
     //! Converts the variant value to the value type of the setting
     virtual T convertFromVariant( const QVariant &value ) const = 0;
+
+    //! Converts the value to a variant
+    virtual QVariant convertToVariant( const T &value ) const
+    {
+      return QVariant::fromValue( value );
+    }
+
+    //! Check if the value is valid
+    virtual bool checkValue( const T &value ) const
+    {
+      Q_UNUSED( value )
+      return true;
+    }
 };
 
 
@@ -470,11 +481,6 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
 
     virtual Qgis::SettingsType settingsType() const override = 0;
 
-    //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
-    T valueWithDefaultOverride( T defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );}
-    //! Returns the settings value with a \a defaultValueOverride for the \a dynamicKeyPartList
-    T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPartList ) );}
-
     /**
      * Returns settings value.
      *
@@ -482,7 +488,6 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
      * The \a defaultValueOverride argument if valid is used instead of the normal default value.
      */
     T value( const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariant( dynamicKeyPart ) );}
-
 
     /**
      * Returns settings value.
@@ -492,6 +497,10 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
      */
     T value( const QStringList &dynamicKeyPartList )  const { return this->convertFromVariant( valueAsVariant( dynamicKeyPartList ) );}
 
+    //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
+    T valueWithDefaultOverride( T defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );}
+    //! Returns the settings value with a \a defaultValueOverride for the \a dynamicKeyPartList
+    T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPartList ) );}
 
     /**
      * Returns the settings value for the \a dynamicKeyPart and  with a \a defaultValueOverride
@@ -516,7 +525,7 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
       QStringList dynamicKeyPartList;
       if ( !dynamicKeyPart.isNull() )
         dynamicKeyPartList.append( dynamicKeyPart );
-      return this->setValuePrivate( value, dynamicKeyPartList );
+      return setValuePrivate( value, dynamicKeyPartList );
     }
 
     /**
@@ -527,7 +536,7 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
      */
     virtual bool setValue( T value, const QStringList &dynamicKeyPartList ) const
     {
-      return this->setValuePrivate( value, dynamicKeyPartList );
+      return setValuePrivate( value, dynamicKeyPartList );
     }
 
     //! Returns settings default value.
@@ -547,10 +556,29 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
 
   protected:
     //! Sets the settings value with an optional list of dynamic parts
-    virtual bool setValuePrivate( T value, const QStringList &dynamicKeyPartList ) const = 0;
+    virtual bool setValuePrivate( T value, const QStringList &dynamicKeyPartList ) const
+    {
+      if ( checkValue( value ) )
+        return QgsSettingsEntryBase::setVariantValuePrivate( convertToVariant( value ), dynamicKeyPartList );
+      else
+        return false;
+    }
 
     //! Converts the variant value to the value type of the setting
     virtual T convertFromVariant( const QVariant &value ) const = 0;
+
+    //! Converts the value to a variant
+    virtual QVariant convertToVariant( T value ) const
+    {
+      return QVariant::fromValue( value );
+    }
+
+    //! Check if the value is valid
+    virtual bool checkValue( T value ) const
+    {
+      Q_UNUSED( value )
+      return true;
+    }
 };
 
 
