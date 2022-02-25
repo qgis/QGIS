@@ -21,7 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsgeometry.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QObject>
 

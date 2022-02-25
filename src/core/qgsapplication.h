@@ -24,7 +24,7 @@
 #include <memory>
 #include "qgis_sip.h"
 #include "qgsconfig.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
 #include "qgstranslationcontext.h"
 
 class QgsSettingsRegistryCore;

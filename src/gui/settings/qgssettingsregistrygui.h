@@ -20,7 +20,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
 
 /**
  * \ingroup gui

@@ -29,7 +29,7 @@
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
 #include "qgslocatorcontext.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
 
 
 /**

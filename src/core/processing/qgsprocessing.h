@@ -19,7 +19,7 @@
 #define QGSPROCESSING_H
 
 #include "qgis_core.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
 #include <QString>
 
 //

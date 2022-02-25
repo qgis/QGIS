@@ -24,7 +24,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
 
 /**
  * \ingroup core
