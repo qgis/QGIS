@@ -158,24 +158,14 @@ Returns settings value with the ``dynamicKeyPart`` argument specifying the dynam
 Returns settings value with the ``dynamicKeyPart`` argument specifying the dynamic part of the settings key.
 %End
 
-    QVariant valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride ) const;
+    QVariant valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Returns settings value with a ``defaultValueOverride``
 
 .. versionadded:: 3.26
 %End
 
-    QVariant valueAsVariantWithDefaultOverride( const QString &dynamicKeyPart, const QVariant &defaultValueOverride ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-
-.. versionadded:: 3.26
-%End
-
-    QVariant valueAsVariantWithDefaultOverride( const QStringList &dynamicKeyPartList, const QVariant &defaultValueOverride ) const;
+    QVariant valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Returns settings value.
 
@@ -274,17 +264,13 @@ The ``options`` arguments specifies the options for the settings entry.
 
     virtual Qgis::SettingsType settingsType() const = 0;
 
-    T valueWithDefaultOverride( const T &defaultValueOverride ) const;
+    T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
-Returns the settings value with a ``defaultValueOverride``
+Returns the settings value with a ``defaultValueOverride`` and with an optional ``dynamicKeyPart``
 %End
-    T valueWithDefaultOverride( const QString &dynamicKeyPart, const T &defaultValueOverride ) const;
+    T valueWithDefaultOverride( const T &defaultValueOverride, const QStringList &dynamicKeyPartList ) const;
 %Docstring
-Returns the settings value for the ``dynamicKeyPart`` and with a ``defaultValueOverride``
-%End
-    T valueWithDefaultOverride( const QStringList &dynamicKeyPartList, const T &defaultValueOverride ) const;
-%Docstring
-Returns the settings value for the ``dynamicKeyPartList`` and  with a ``defaultValueOverride``
+Returns the settings value with a ``defaultValueOverride`` for the ``dynamicKeyPartList``
 %End
 
     T value( const QString &dynamicKeyPart = QString() ) const;
@@ -398,17 +384,13 @@ The ``options`` arguments specifies the options for the settings entry.
 
     virtual Qgis::SettingsType settingsType() const = 0;
 
-    T valueWithDefaultOverride( T defaultValueOverride ) const;
+    T valueWithDefaultOverride( T defaultValueOverride, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
-Returns the settings value with a ``defaultValueOverride``
+Returns the settings value with a ``defaultValueOverride`` and with an optional ``dynamicKeyPart``
 %End
-    T valueWithDefaultOverride( const QString &dynamicKeyPart, T defaultValueOverride ) const;
+    T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const;
 %Docstring
-Returns the settings value for the ``dynamicKeyPart`` and  with a ``defaultValueOverride``
-%End
-    T valueWithDefaultOverride( const QStringList &dynamicKeyPartList, T defaultValueOverride ) const;
-%Docstring
-Returns the settings value for the ``dynamicKeyPartList`` and  with a ``defaultValueOverride``
+Returns the settings value with a ``defaultValueOverride`` for the ``dynamicKeyPartList``
 %End
 
     T value( const QString &dynamicKeyPart = QString() ) const;
