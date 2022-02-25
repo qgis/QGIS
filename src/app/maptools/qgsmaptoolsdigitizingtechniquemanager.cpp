@@ -68,9 +68,14 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
   {
     QgsMapToolCapture::CaptureTechnique technique = mTechniqueActions.key( action, QgsMapToolCapture::StraightSegments );
     if ( mDigitizeModeToolButton->defaultAction() != action )
+    {
       setCaptureTechnique( technique );
-    else if ( technique != QgsMapToolCapture::StraightSegments )
-      setCaptureTechnique( QgsMapToolCapture::StraightSegments );
+    }
+    else
+    {
+      QgsMapToolCapture::CaptureTechnique formerTechnique = settingsDigitizingTechnique.formerValue();
+      setCaptureTechnique( formerTechnique );
+    }
   } );
 
   mStreamDigitizingSettingsAction = new QgsStreamDigitizingSettingsAction( QgisApp::instance() );
