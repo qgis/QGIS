@@ -72,7 +72,59 @@ Sets the point size
 Returns the byte stride for the geometries used to for the vertex buffer
 %End
 
+    bool triangulate() const;
+%Docstring
+Returns whether points are triangulated to render solid surface
+
+.. versionadded:: 3.26
+%End
+
+    void setTriangulate( bool triangulate );
+%Docstring
+Sets whether points are triangulated to render solid surface
+
+.. versionadded:: 3.26
+%End
+
+    bool filterTrianglesBySize() const;
+%Docstring
+Returns whether triangles are filtered by size for rendering. If the triangles are filtered, triangles with a size greater
+than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.triangleSizeThreshold`.
+
+.. versionadded:: 3.26
+%End
+
+    void setFilterTrianglesBySize( bool filterTriangleBySize );
+%Docstring
+Sets whether triangles are filtered by size for rendering. If the triangles are filtered, triangles with a size greater
+than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setTriangleSizeThreshold`.
+
+.. versionadded:: 3.26
+%End
+
+    float triangleSizeThreshold() const;
+%Docstring
+Returns the threshold size value for filtering triangles. If the triangles are filtered, triangles with a size greater
+than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setTriangleSizeThreshold`.
+
+.. versionadded:: 3.26
+%End
+
+    void setTriangleSizeThreshold( float triangleSizeThreshold );
+%Docstring
+Sets the threshold size value for filtering triangles. If the triangles are filtered, triangles with a size greater
+than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setTriangleSizeThreshold`.
+
+.. versionadded:: 3.26
+%End
+
   protected:
+
+    void writeBaseXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+    void readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
+
 };
 
 class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol

@@ -30,8 +30,8 @@ void main(void)
     //gl_PointSize = viewportMatrix[1][1] * projectionMatrix[1][1] * 1.0 / gl_Position.w;
     //gl_PointSize = 100.0;
 
-    worldPosition =vec3 (modelMatrix * vec4 (vertexPosition,1));
-    vertNorm=vertexNormal;
+    worldPosition = vec3 (modelMatrix * vec4 (vertexPosition,1));
+    vertNorm = vertexNormal;
     parameter = vertexParameter;
     pointColor = vertexColor;
 }
