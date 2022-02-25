@@ -83,7 +83,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
           } )
     {
       QAction *action = new QAction( QgsSnappingConfig::snappingTypeFlagToIcon( type ), QgsSnappingConfig::snappingTypeFlagToString( type ), typeMenu );
-      action->setData( type );
+      action->setData( QVariant::fromValue( type ) );
       action->setCheckable( true );
       typeMenu->addAction( action );
     }
@@ -587,19 +587,19 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        if ( ls.typeFlag() == Qgis::SnappingType::NoSnap )
+        if ( ls.typeFlag().testFlag( Qgis::SnappingType::NoSnap ) )
         {
-          return QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() );
+          return QgsSnappingConfig::snappingTypeFlagToString( Qgis::SnappingType::NoSnap );
         }
         else
         {
           QString modes;
           int activeTypes = 0;
 
-          const QMetaEnum snappingTypeEnum = QMetaEnum::fromType<Qgis::SnappingTypes>();
-          for ( int i = 0; i < snappingTypeEnum.keyCount(); ++i )
+          const auto enumMap = qgsEnumMap<Qgis::SnappingType>();
+          for ( auto it = enumMap.constBegin(); it != enumMap.constEnd(); ++it )
           {
-            if ( ls.typeFlag() & snappingTypeEnum.value( i ) )
+            if ( ls.typeFlag().testFlag( it.key() ) )
             {
               if ( activeTypes == 2 )
               {
@@ -608,7 +608,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
               }
               if ( activeTypes > 0 )
                 modes.append( tr( ", " ) );
-              modes.append( QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() & snappingTypeEnum.value( i ) ) );
+              modes.append( QgsSnappingConfig::snappingTypeFlagToString( it.key() ) );
               activeTypes++;
             }
           }

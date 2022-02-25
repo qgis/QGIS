@@ -72,6 +72,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingLineGhost );
   addSettingsEntry( &settingsDigitizingDefaultZValue );
   addSettingsEntry( &settingsDigitizingDefaultSnapEnabled );
+  addSettingsEntry( &settingsDigitizingDefaultSnapMode );
   addSettingsEntry( &settingsDigitizingDefaultSnapType );
   addSettingsEntry( &settingsDigitizingDefaultSnappingTolerance );
   addSettingsEntry( &settingsDigitizingDefaultSnappingToleranceUnit );

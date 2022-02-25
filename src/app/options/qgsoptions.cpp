@@ -1172,13 +1172,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
           Qgis::SnappingType::Area,
         } )
   {
-    mDefaultSnapModeComboBox->addItem( QgsSnappingConfig::snappingTypeFlagToIcon( type ),
+    mDefaultSnapTypeComboBox->addItem( QgsSnappingConfig::snappingTypeFlagToIcon( type ),
                                        QgsSnappingConfig::snappingTypeFlagToString( type ),
                                        QVariant::fromValue( type ) );
   }
 
-  Qgis::SnappingTypes defaultSnapMode = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
-  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( static_cast<int>( defaultSnapMode ) ) );
+  Qgis::SnappingTypes defaultSnapType = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
+  mDefaultSnapTypeComboBox->setCurrentIndex( mDefaultSnapTypeComboBox->findData( static_cast<int>( defaultSnapType ) ) );
   mDefaultSnappingToleranceSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value() );
   mDefaultSnappingToleranceSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.defaultValue() );
   mSearchRadiusVertexEditSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value() );
@@ -1885,7 +1885,7 @@ void QgsOptions::saveOptions()
 
   //default snap mode
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.setValue( mSnappingEnabledDefault->isChecked() );
-  QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.setValue( static_cast<Qgis::SnappingType>( mDefaultSnapModeComboBox->currentData().toInt() ) );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.setValue( static_cast<Qgis::SnappingType>( mDefaultSnapTypeComboBox->currentData().toInt() ) );
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.setValue( mDefaultSnappingToleranceSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.setValue( mSearchRadiusVertexEditSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.setValue(

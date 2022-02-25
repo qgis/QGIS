@@ -201,7 +201,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
         } )
   {
     QAction *action = new QAction( QgsSnappingConfig::snappingTypeFlagToIcon( type ), QgsSnappingConfig::snappingTypeFlagToString( type ), typeMenu );
-    action->setData( type );
+    action->setData( QVariant::fromValue( type ) );
     action->setCheckable( true );
     typeMenu->addAction( action );
     mSnappingFlagActions << action;

@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsSnappingConfig
 {
 %Docstring(signature="appended")
@@ -39,18 +41,41 @@ This is a container for configuration of the snapping of the project
       PerLayer
     };
 
-    static QString snappingTypeFlagToString( Qgis::SnappingType type );
+    static QString snappingTypeToString( Qgis::SnappingType type );
+%Docstring
+Convenient method to returns the translated name of the enum type
+Qgis.SnappingTypes.
+
+.. versionadded:: 3.26
+%End
+
+ static QString snappingTypeFlagToString( Qgis::SnappingType type ) /Deprecated/;
 %Docstring
 Convenient method to returns the translated name of the enum type
 Qgis.SnappingTypes.
 
 .. versionadded:: 3.12
+
+.. deprecated:: QGIS 3.26
+   use Qgis.snappingTypeToString instead
 %End
 
-    static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type );
+
+    static QIcon snappingTypeToIcon( Qgis::SnappingType type );
 %Docstring
 Convenient method to return an icon corresponding to the enum type
 Qgis.SnappingTypes.
+
+.. versionadded:: 3.20
+%End
+
+ static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) /Deprecated/;
+%Docstring
+Convenient method to return an icon corresponding to the enum type
+Qgis.SnappingTypes.
+
+.. deprecated:: QGIS 3.26
+   use Qgis.snappingTypeToString instead
 
 .. versionadded:: 3.20
 %End
