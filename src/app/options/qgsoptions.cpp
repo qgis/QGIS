@@ -1161,19 +1161,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //default snap mode
   mSnappingEnabledDefault->setChecked( QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value() );
 
-  for ( Qgis::SnappingType type :
-        {
-          Qgis::SnappingType::NoSnap,
-          Qgis::SnappingType::Vertex,
-          Qgis::SnappingType::Segment,
-          Qgis::SnappingType::Centroid,
-          Qgis::SnappingType::MiddleOfSegment,
-          Qgis::SnappingType::LineEndpoint,
-          Qgis::SnappingType::Area,
-        } )
+  for ( Qgis::SnappingType type : qgsEnumMap<Qgis::SnappingType>().keys() )
   {
-    mDefaultSnapTypeComboBox->addItem( QgsSnappingConfig::snappingTypeFlagToIcon( type ),
-                                       QgsSnappingConfig::snappingTypeFlagToString( type ),
+    mDefaultSnapTypeComboBox->addItem( QgsSnappingConfig::snappingTypeToIcon( type ),
+                                       QgsSnappingConfig::snappingTypeToString( type ),
                                        QVariant::fromValue( type ) );
   }
 
