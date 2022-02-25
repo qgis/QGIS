@@ -190,17 +190,12 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mTypeButton->setPopupMode( QToolButton::InstantPopup );
   SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), this );
 
-  for ( Qgis::SnappingType type :
-        {
-          Qgis::SnappingType::Vertex,
-          Qgis::SnappingType::Segment,
-          Qgis::SnappingType::Area,
-          Qgis::SnappingType::Centroid,
-          Qgis::SnappingType::MiddleOfSegment,
-          Qgis::SnappingType::LineEndpoint
-        } )
+
+  for ( Qgis::SnappingType type : qgsEnumMap<Qgis::SnappingType>().keys() )
   {
-    QAction *action = new QAction( QgsSnappingConfig::snappingTypeFlagToIcon( type ), QgsSnappingConfig::snappingTypeFlagToString( type ), typeMenu );
+    if ( type == Qgis::SnappingType::NoSnap )
+      continue;
+    QAction *action = new QAction( QgsSnappingConfig::snappingTypeToIcon( type ), QgsSnappingConfig::snappingTypeToString( type ), typeMenu );
     action->setData( QVariant::fromValue( type ) );
     action->setCheckable( true );
     typeMenu->addAction( action );
