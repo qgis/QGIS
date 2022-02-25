@@ -233,7 +233,7 @@ class CORE_EXPORT Qgis
      * SnappingMode defines on which layer the snapping is performed
      * \since QGIS 3.26
      */
-    enum class SnappingMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSanppingConfig, SnappingMode ) : int
+    enum class SnappingMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSnappingConfig, SnappingMode ) : int
       {
       ActiveLayer = 1, //!< On the active layer
       AllLayers = 2, //!< On all vector layers
@@ -245,7 +245,7 @@ class CORE_EXPORT Qgis
      * SnappingTypeFlag defines on what object the snapping is performed
      * \since QGIS 3.26
      */
-    enum class SnappingType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSanppingConfig, SnappingTypes ) : int
+    enum class SnappingType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSnappingConfig, SnappingTypes ) : int
       {
       NoSnap SIP_MONKEYPATCH_COMPAT_NAME( NoSnapFlag ) = 0, //!< No snapping
       Vertex SIP_MONKEYPATCH_COMPAT_NAME( VertexFlag ) = 1 << 0, //!< On vertices
@@ -257,7 +257,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( SnappingType )
     //! Snapping types
-    Q_DECLARE_FLAGS( SnappingTypes, SnappingType ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSanppingConfig, SnappingTypeFlag )
+    Q_DECLARE_FLAGS( SnappingTypes, SnappingType ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSnappingConfig, SnappingTypeFlag )
     Q_FLAG( SnappingTypes )
 
     /**
