@@ -568,8 +568,8 @@ void TestQgsMapToolAddFeatureLine::testSelfSnapping()
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setEnabled( true );
-  cfg.setMode( QgsSnappingConfig::AllLayers );
-  cfg.setTypeFlag( QgsSnappingConfig::VertexFlag );
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
+  cfg.setTypeFlag( Qgis::SnappingType::Vertex );
   cfg.setTolerance( 50 );
   cfg.setUnits( QgsTolerance::Pixels );
   mCanvas->snappingUtils()->setConfig( cfg );

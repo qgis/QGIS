@@ -1078,8 +1078,8 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
   const QgsSnappingConfig canvasConfig = snappingUtils->config();
   QgsSnappingConfig localConfig = snappingUtils->config();
 
-  localConfig.setMode( QgsSnappingConfig::AllLayers );
-  localConfig.setTypeFlag( QgsSnappingConfig::SegmentFlag );
+  localConfig.setMode( Qgis::SnappingMode::AllLayers );
+  localConfig.setTypeFlag( Qgis::SnappingType::Segment );
   snappingUtils->setConfig( localConfig );
 
   match = snappingUtils->snapToMap( originalMapPoint, nullptr, true );

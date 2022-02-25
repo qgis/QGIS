@@ -231,7 +231,7 @@ void TestQgsMapToolAddFeatureLineM::testTopologicalEditingM()
   const bool topologicalEditing = cfg.project()->topologicalEditing();
   cfg.project()->setTopologicalEditing( true );
 
-  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 

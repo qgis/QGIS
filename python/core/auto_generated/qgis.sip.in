@@ -159,6 +159,26 @@ The development version
     typedef QFlags<Qgis::SettingsOption> SettingsOptions;
 
 
+    enum class SnappingMode
+      {
+      ActiveLayer,
+      AllLayers,
+      AdvancedConfiguration,
+    };
+
+    enum class SnappingType
+      {
+      NoSnap,
+      Vertex,
+      Segment,
+      Area,
+      Centroid,
+      MiddleOfSegment,
+      LineEndpoint,
+    };
+    typedef QFlags<Qgis::SnappingType> SnappingTypes;
+
+
     enum class SymbolRenderHint
       {
       DynamicRotation,
@@ -944,6 +964,8 @@ QFlags<Qgis::HistoryProviderBackend> operator|(Qgis::HistoryProviderBackend f1, 
 QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis::MapLayerProperty> f2);
 
 QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
+
+QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
 
 
 
