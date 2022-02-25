@@ -109,7 +109,7 @@ class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
         variantValue = qgsFlagValueToKeys( value, &ok );
 
       if ( ok )
-        return this->setVariantValue( variantValue, dynamicKeyPartList );
+        return this->setVariantValuePrivate( variantValue, dynamicKeyPartList );
       else
         return false;
     }

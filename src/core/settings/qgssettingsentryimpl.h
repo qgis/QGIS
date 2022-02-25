@@ -75,7 +75,6 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
     virtual Qgis::SettingsType settingsType() const override;
 
   private:
-    bool setValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
     QVariant convertFromVariant( const QVariant &value ) const override SIP_FORCE {return value;}
 };
 
@@ -168,7 +167,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
     int maxLength();
 
   private:
-    bool setValuePrivate( const QString &value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
+    bool checkValue( const QString &value ) const override SIP_FORCE;
     QString convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 
     int mMinLength;
@@ -232,7 +231,6 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryByReferenc
     virtual Qgis::SettingsType settingsType() const override;
 
   private:
-    bool setValuePrivate( const QStringList &value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
     QStringList convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 
 };
@@ -288,7 +286,6 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
     virtual Qgis::SettingsType settingsType() const override;
 
   private:
-    bool setValuePrivate( bool value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
     bool convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 };
 
@@ -380,7 +377,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
     qlonglong maxValue();
 
   private:
-    bool setValuePrivate( qlonglong value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
+    bool checkValue( qlonglong value ) const override SIP_FORCE;
     qlonglong convertFromVariant( const QVariant &value ) const override SIP_FORCE;
     qlonglong mMinValue;
     qlonglong mMaxValue;
@@ -492,7 +489,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
     int displayHintDecimals() const;
 
   private:
-    bool setValuePrivate( double value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
+    bool checkValue( double value ) const override SIP_FORCE;
     double convertFromVariant( const QVariant &value ) const override SIP_FORCE;
     double mMinValue;
     double mMaxValue;
@@ -557,7 +554,6 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
     virtual Qgis::SettingsType settingsType() const override;
 
   private:
-    bool setValuePrivate( const QColor &value, const QStringList &dynamicKeyPartList ) const override SIP_FORCE;
     QColor convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 
 };

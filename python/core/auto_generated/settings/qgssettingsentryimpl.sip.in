@@ -49,8 +49,6 @@ The ``options`` arguments specifies the options for the settings entry.
     virtual Qgis::SettingsType settingsType() const;
 
   private:
-    virtual bool setValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
-
     virtual QVariant convertFromVariant( const QVariant &value ) const;
 };
 
@@ -118,7 +116,7 @@ Returns the string maximum length. By -1 there is no limitation.
 %End
 
   private:
-    virtual bool setValuePrivate( const QString &value, const QStringList &dynamicKeyPartList ) const;
+    virtual bool checkValue( const QString &value ) const;
 
     virtual QString convertFromVariant( const QVariant &value ) const;
 
@@ -164,8 +162,6 @@ The ``options`` arguments specifies the options for the settings entry.
     virtual Qgis::SettingsType settingsType() const;
 
   private:
-    virtual bool setValuePrivate( const QStringList &value, const QStringList &dynamicKeyPartList ) const;
-
     virtual QStringList convertFromVariant( const QVariant &value ) const;
 
 };
@@ -206,8 +202,6 @@ The ``options`` arguments specifies the options for the settings entry.
     virtual Qgis::SettingsType settingsType() const;
 
   private:
-    virtual bool setValuePrivate( bool value, const QStringList &dynamicKeyPartList ) const;
-
     virtual bool convertFromVariant( const QVariant &value ) const;
 
 };
@@ -276,7 +270,7 @@ Returns the maximum value.
 %End
 
   private:
-    virtual bool setValuePrivate( qlonglong value, const QStringList &dynamicKeyPartList ) const;
+    virtual bool checkValue( qlonglong value ) const;
 
     virtual qlonglong convertFromVariant( const QVariant &value ) const;
 
@@ -358,7 +352,7 @@ Returns how much decimals should be shown in the Gui.
 %End
 
   private:
-    virtual bool setValuePrivate( double value, const QStringList &dynamicKeyPartList ) const;
+    virtual bool checkValue( double value ) const;
 
     virtual double convertFromVariant( const QVariant &value ) const;
 
@@ -404,8 +398,6 @@ The ``options`` arguments specifies the options for the settings entry.
     virtual Qgis::SettingsType settingsType() const;
 
   private:
-    virtual bool setValuePrivate( const QColor &value, const QStringList &dynamicKeyPartList ) const;
-
     virtual QColor convertFromVariant( const QVariant &value ) const;
 
 };

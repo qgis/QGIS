@@ -17,10 +17,6 @@
 #include "qgssettingsentryimpl.h"
 
 
-bool QgsSettingsEntryVariant::setValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const
-{
-  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
-}
 
 Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
 {
@@ -29,12 +25,11 @@ Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
 
 
 
-bool QgsSettingsEntryString::setValuePrivate( const QString &value, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryString::checkValue( const QString &value ) const
 {
   if ( value.length() < mMinLength )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is shorter than minimum length '%3'." )
-                 .arg( QgsSettingsEntryBase::key( dynamicKeyPartList ) )
+    QgsDebugMsg( QObject::tr( "Can't set value for settings. String length '%1' is shorter than minimum length '%2'." )
                  .arg( value.length() )
                  .arg( mMinLength ) );
     return false;
@@ -43,14 +38,13 @@ bool QgsSettingsEntryString::setValuePrivate( const QString &value, const QStrin
   if ( mMaxLength >= 0
        && value.length() > mMaxLength )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is longer than maximum length '%3'." )
-                 .arg( QgsSettingsEntryBase::key( dynamicKeyPartList ) )
+    QgsDebugMsg( QObject::tr( "Can't set value for settings. String length '%1' is longer than maximum length '%2'." )
                  .arg( value.length() )
                  .arg( mMinLength ) );
     return false;
   }
 
-  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
+  return true;
 }
 
 QString QgsSettingsEntryString::convertFromVariant( const QVariant &value ) const
@@ -85,11 +79,6 @@ int QgsSettingsEntryString::maxLength()
 
 
 
-bool QgsSettingsEntryStringList::setValuePrivate( const QStringList &value, const QStringList &dynamicKeyPartList ) const
-{
-  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
-}
-
 QStringList QgsSettingsEntryStringList::convertFromVariant( const QVariant &value ) const
 {
   return value.toStringList();
@@ -100,13 +89,6 @@ Qgis::SettingsType QgsSettingsEntryStringList::settingsType() const
   return Qgis::SettingsType::StringList;
 }
 
-
-
-
-bool QgsSettingsEntryBool::setValuePrivate( bool value, const QStringList &dynamicKeyPartList ) const
-{
-  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
-}
 
 bool QgsSettingsEntryBool::convertFromVariant( const QVariant &value ) const
 {
@@ -120,27 +102,25 @@ Qgis::SettingsType QgsSettingsEntryBool::settingsType() const
 
 
 
-bool QgsSettingsEntryInteger::setValuePrivate( qlonglong value, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryInteger::checkValue( qlonglong value ) const
 {
   if ( value < mMinValue )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
-                 .arg( QgsSettingsEntryBase::key( dynamicKeyPartList ),
-                       QString::number( value ),
-                       QString::number( mMinValue ) ) );
+    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
+                 .arg( QString::number( value ) )
+                 .arg( QString::number( mMinValue ) ) );
     return false;
   }
 
   if ( value > mMaxValue )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
-                 .arg( QgsSettingsEntryBase::key( dynamicKeyPartList ),
-                       QString::number( value ),
-                       QString::number( mMinValue ) ) );
+    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
+                 .arg( QString::number( value ) )
+                 .arg( QString::number( mMaxValue ) ) );
     return false;
   }
 
-  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
+  return true;
 }
 
 qlonglong QgsSettingsEntryInteger::convertFromVariant( const QVariant &value ) const
@@ -176,27 +156,25 @@ qlonglong QgsSettingsEntryInteger::maxValue()
 
 
 
-bool QgsSettingsEntryDouble::setValuePrivate( double value, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryDouble::checkValue( double value ) const
 {
   if ( value < mMinValue )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is less than minimum value '%3'." )
-                 .arg( QgsSettingsEntryBase::key( dynamicKeyPartList ),
-                       QString::number( value ),
-                       QString::number( mMinValue ) ) );
+    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
+                 .arg( QString::number( value ) )
+                 .arg( QString::number( mMinValue ) ) );
     return false;
   }
 
   if ( value > mMaxValue )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. Value '%2' is greather than maximum value '%3'." )
-                 .arg( QgsSettingsEntryBase::key( dynamicKeyPartList ),
-                       QString::number( value ),
-                       QString::number( mMinValue ) ) );
+    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
+                 .arg( QString::number( value ) )
+                 .arg( QString::number( mMaxValue ) ) );
     return false;
   }
 
-  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
+  return true;
 }
 
 double QgsSettingsEntryDouble::convertFromVariant( const QVariant &value ) const
@@ -239,11 +217,6 @@ int QgsSettingsEntryDouble::displayHintDecimals() const
   return mDisplayHintDecimals;
 }
 
-
-bool QgsSettingsEntryColor::setValuePrivate( const QColor &value, const QStringList &dynamicKeyPartList ) const
-{
-  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
-}
 
 QColor QgsSettingsEntryColor::convertFromVariant( const QVariant &value ) const
 {
