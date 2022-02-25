@@ -230,6 +230,36 @@ class CORE_EXPORT Qgis
     Q_FLAG( SettingsOptions )
 
     /**
+     * SnappingMode defines on which layer the snapping is performed
+     * \since QGIS 3.26
+     */
+    enum class SnappingMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSanppingConfig, SnappingMode ) : int
+      {
+      ActiveLayer = 1, //!< On the active layer
+      AllLayers = 2, //!< On all vector layers
+      AdvancedConfiguration = 3, //!< On a per layer configuration basis
+    };
+    Q_ENUM( SnappingMode )
+
+    /**
+     * SnappingTypeFlag defines on what object the snapping is performed
+     * \since QGIS 3.26
+     */
+    enum class SnappingType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSanppingConfig, SnappingTypes ) : int
+      {
+      NoSnap SIP_MONKEYPATCH_COMPAT_NAME( NoSnapFlag ) = 0, //!< No snapping
+      Vertex SIP_MONKEYPATCH_COMPAT_NAME( VertexFlag ) = 1 << 0, //!< On vertices
+      Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentFlag ) = 1 << 1, //!< On segments
+      Area SIP_MONKEYPATCH_COMPAT_NAME( AreaFlag ) = 1 << 2, //!< On Area
+      Centroid SIP_MONKEYPATCH_COMPAT_NAME( CentroidFlag ) = 1 << 3, //!< On centroid
+      MiddleOfSegment SIP_MONKEYPATCH_COMPAT_NAME( MiddleOfSegmentFlag ) = 1 << 4, //!< On Middle segment
+      LineEndpoint SIP_MONKEYPATCH_COMPAT_NAME( LineEndpointFlag ) = 1 << 5, //!< Start or end points of lines, or first vertex in polygon rings only (since QGIS 3.20)
+    };
+    Q_ENUM( SnappingType )
+    Q_DECLARE_FLAGS( SnappingTypes, SnappingType ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSanppingConfig, SnappingTypeFlag )
+    Q_FLAG( SnappingTypes )
+
+    /**
      * \brief Flags controlling behavior of symbols during rendering
      *
      * \since QGIS 3.20
@@ -1514,6 +1544,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::HistoryProviderBackends )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerProperties )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 
 
 // hack to workaround warnings when casting void pointers

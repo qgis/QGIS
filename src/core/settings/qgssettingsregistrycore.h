@@ -25,14 +25,13 @@
 #include "qgssettingsentryenumflag.h"
 
 #include "qgis.h"
-#include "qgssnappingconfig.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayerproxymodel.h"
 
 #ifdef _MSC_VER
 #include "qgsunittypes.h"
 
-template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> SIP_SKIP;
+template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::SnappingType> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::JoinStyle> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> SIP_SKIP;
@@ -109,7 +108,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const inline QgsSettingsEntryBool settingsDigitizingDefaultSnapEnabled = QgsSettingsEntryBool( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), QgsSettings::NoSection,  false );
 
     //! Settings entry digitizing default snap type
-    static const inline QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> settingsDigitizingDefaultSnapType = QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes>( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSettings::NoSection, QgsSnappingConfig::VertexFlag );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::SnappingType> settingsDigitizingDefaultSnapType = QgsSettingsEntryEnumFlag<Qgis::SnappingType>( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSettings::NoSection, Qgis::SnappingType::Vertex );
 
     //! Settings entry digitizing default snapping tolerance
     static const inline QgsSettingsEntryDouble settingsDigitizingDefaultSnappingTolerance = QgsSettingsEntryDouble( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), QgsSettings::NoSection, Qgis::DEFAULT_SNAP_TOLERANCE );

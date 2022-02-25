@@ -72,14 +72,14 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     mTypeButton->setPopupMode( QToolButton::InstantPopup );
     SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), parent );
 
-    for ( const QgsSnappingConfig::SnappingTypes type :
+    for ( const Qgis::SnappingType type :
           {
-            QgsSnappingConfig::VertexFlag,
-            QgsSnappingConfig::SegmentFlag,
-            QgsSnappingConfig::AreaFlag,
-            QgsSnappingConfig::CentroidFlag,
-            QgsSnappingConfig::MiddleOfSegmentFlag,
-            QgsSnappingConfig::LineEndpointFlag
+            Qgis::SnappingType::Vertex,
+            Qgis::SnappingType::Segment,
+            Qgis::SnappingType::Area,
+            Qgis::SnappingType::Centroid,
+            Qgis::SnappingType::MiddleOfSegment,
+            Qgis::SnappingType::LineEndpoint
           } )
     {
       QAction *action = new QAction( QgsSnappingConfig::snappingTypeFlagToIcon( type ), QgsSnappingConfig::snappingTypeFlagToString( type ), typeMenu );
@@ -158,14 +158,14 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
 
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
-    const QgsSnappingConfig::SnappingTypeFlag type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( val.toInt() );
+    const Qgis::SnappingTypes type = static_cast<Qgis::SnappingTypes>( val.toInt() );
     QToolButton *tb = qobject_cast<QToolButton *>( editor );
     if ( tb )
     {
       const QList<QAction *> actions = tb->menu()->actions();
       for ( QAction *action : actions )
       {
-        action->setChecked( type & static_cast< QgsSnappingConfig::SnappingTypeFlag >( action->data().toInt() ) );
+        action->setChecked( type & static_cast< Qgis::SnappingTypes >( action->data().toInt() ) );
       }
     }
   }
@@ -212,14 +212,14 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
     if ( t )
     {
       const QList<QAction *> actions = t->menu()->actions();
-      QgsSnappingConfig::SnappingTypeFlag type = QgsSnappingConfig::NoSnapFlag;
+      Qgis::SnappingTypes type = Qgis::SnappingType::NoSnap;
 
       for ( QAction *action : actions )
       {
         if ( action->isChecked() )
         {
-          const QgsSnappingConfig::SnappingTypeFlag actionFlag = static_cast<QgsSnappingConfig::SnappingTypeFlag>( action->data().toInt() );
-          type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | actionFlag );
+          const Qgis::SnappingTypes actionFlag = static_cast<Qgis::SnappingTypes>( action->data().toInt() );
+          type = static_cast<Qgis::SnappingTypes>( type | actionFlag );
         }
       }
       model->setData( index, static_cast<int>( type ), Qt::EditRole );
@@ -587,7 +587,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        if ( ls.typeFlag() == QgsSnappingConfig::NoSnapFlag )
+        if ( ls.typeFlag() == Qgis::SnappingType::NoSnap )
         {
           return QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() );
         }
@@ -596,7 +596,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
           QString modes;
           int activeTypes = 0;
 
-          const QMetaEnum snappingTypeEnum = QMetaEnum::fromType<QgsSnappingConfig::SnappingTypeFlag>();
+          const QMetaEnum snappingTypeEnum = QMetaEnum::fromType<Qgis::SnappingTypes>();
           for ( int i = 0; i < snappingTypeEnum.keyCount(); ++i )
           {
             if ( ls.typeFlag() & snappingTypeEnum.value( i ) )
@@ -773,7 +773,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( value.toInt() ) );
+      ls.setTypeFlag( static_cast<Qgis::SnappingTypes>( value.toInt() ) );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );

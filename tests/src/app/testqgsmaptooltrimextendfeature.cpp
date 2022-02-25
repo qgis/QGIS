@@ -169,9 +169,9 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       mSnappingUtils->setMapSettings( mapSettings );
       snappingConfig.setEnabled( true );
       snappingConfig.setTolerance( 100 );
-      snappingConfig.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ) );
+      snappingConfig.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) );
       snappingConfig.setUnits( QgsTolerance::Pixels );
-      snappingConfig.setMode( QgsSnappingConfig::AllLayers );
+      snappingConfig.setMode( Qgis::SnappingMode::AllLayers );
       mSnappingUtils->setConfig( snappingConfig );
 
       mSnappingUtils->locatorForLayer( vlPolygon.get() )->init();

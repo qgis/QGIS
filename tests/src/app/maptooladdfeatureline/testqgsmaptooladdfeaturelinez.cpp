@@ -236,7 +236,7 @@ void TestQgsMapToolAddFeatureLineZ::testTopologicalEditingZ()
   const bool topologicalEditing = cfg.project()->topologicalEditing();
   cfg.project()->setTopologicalEditing( true );
 
-  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 
@@ -275,7 +275,7 @@ void TestQgsMapToolAddFeatureLineZ::testZSnapping()
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
-  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 
@@ -311,7 +311,7 @@ void TestQgsMapToolAddFeatureLineZ::testZSnapping()
 
   // Snap on middle Segment
   mCanvas->setCurrentLayer( mLayerLineZ );
-  cfg.setTypeFlag( QgsSnappingConfig::MiddleOfSegmentFlag );
+  cfg.setTypeFlag( Qgis::SnappingType::MiddleOfSegment );
   mCanvas->snappingUtils()->setConfig( cfg );
 
   // create geometry will be snapped
