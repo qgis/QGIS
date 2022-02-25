@@ -209,22 +209,15 @@ QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPart
     return QgsSettings().value( key( dynamicKeyPartList ), mDefaultValue, mSection );
 }
 
-QVariant QgsSettingsEntryBase::valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride ) const
-{
-  return QgsSettings().value( key(), defaultValueOverride, mSection );
-}
-
-QVariant QgsSettingsEntryBase::valueAsVariantWithDefaultOverride( const QString &dynamicKeyPart, const QVariant &defaultValueOverride ) const
+QVariant QgsSettingsEntryBase::valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QString &dynamicKeyPart ) const
 {
   return QgsSettings().value( key( dynamicKeyPart ), defaultValueOverride, mSection );
 }
 
-QVariant QgsSettingsEntryBase::valueAsVariantWithDefaultOverride( const QStringList &dynamicKeyPartList, const QVariant &defaultValueOverride ) const
+QVariant QgsSettingsEntryBase::valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QStringList &dynamicKeyPartList ) const
 {
   return QgsSettings().value( key( dynamicKeyPartList ), defaultValueOverride, mSection );
 }
-
-
 
 
 QVariant QgsSettingsEntryBase::defaultValueAsVariant() const
