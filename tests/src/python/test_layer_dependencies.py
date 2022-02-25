@@ -16,6 +16,7 @@ import os
 from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsMapSettings,
+                       QgsSnappingConfig,
                        QgsSnappingUtils,
                        Qgis,
                        QgsTolerance,
@@ -112,7 +113,7 @@ class TestLayerDependencies(unittest.TestCase):
         cfg.setEnabled(True)
         cfg.setMode(Qgis.SnappingMode.AdvancedConfiguration)
         cfg.setIndividualLayerSettings(self.pointsLayer,
-                                       Qgis.SnappingMode.IndividualLayerSettings(True,
+                                       QgsSnappingConfig.IndividualLayerSettings(True,
                                                                                  Qgis.SnappingType.Vertex, 20, QgsTolerance.Pixels, 0.0, 0.0))
         u.setConfig(cfg)
 
@@ -155,7 +156,7 @@ class TestLayerDependencies(unittest.TestCase):
 
         # test chained layer dependencies A -> B -> C
         cfg.setIndividualLayerSettings(self.pointsLayer2,
-                                       Qgis.SnappingMode.IndividualLayerSettings(True,
+                                       QgsSnappingConfig.IndividualLayerSettings(True,
                                                                                  Qgis.SnappingType.Vertex, 20, QgsTolerance.Pixels, 0.0, 0.0))
         u.setConfig(cfg)
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
@@ -303,10 +304,10 @@ class TestLayerDependencies(unittest.TestCase):
         cfg.setEnabled(True)
         cfg.setMode(Qgis.SnappingMode.AdvancedConfiguration)
         cfg.setIndividualLayerSettings(self.pointsLayer,
-                                       Qgis.SnappingMode.IndividualLayerSettings(True,
+                                       QgsSnappingConfig.IndividualLayerSettings(True,
                                                                                  Qgis.SnappingType.Vertex, 20, QgsTolerance.Pixels, 0.0, 0.0))
         cfg.setIndividualLayerSettings(self.pointsLayer2,
-                                       Qgis.SnappingMode.IndividualLayerSettings(True,
+                                       QgsSnappingConfig.IndividualLayerSettings(True,
                                                                                  Qgis.SnappingType.Vertex, 20, QgsTolerance.Pixels, 0.0, 0.0))
         u.setConfig(cfg)
         # add another line
