@@ -120,8 +120,8 @@ void TestQgsAdvancedDigitizing::initTestCase()
   snapConfig.setEnabled( false );
   snapConfig.setIntersectionSnapping( true );
   snapConfig.setSelfSnapping( true );
-  snapConfig.setMode( QgsSnappingConfig::AllLayers );
-  snapConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
+  snapConfig.setMode( Qgis::SnappingMode::AllLayers );
+  snapConfig.setTypeFlag( Qgis::SnappingType::Vertex );
   snapConfig.setTolerance( 1.0 );
 
   QgsMapSettings mapSettings;
@@ -173,8 +173,8 @@ void TestQgsAdvancedDigitizing::cleanup()
   snapConfig.setEnabled( false );
   snapConfig.setIntersectionSnapping( true );
   snapConfig.setSelfSnapping( true );
-  snapConfig.setMode( QgsSnappingConfig::AllLayers );
-  snapConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
+  snapConfig.setMode( Qgis::SnappingMode::AllLayers );
+  snapConfig.setTypeFlag( Qgis::SnappingType::Vertex );
   snappingUtils->setConfig( snapConfig );
 
   // reset all layers
@@ -646,7 +646,7 @@ void TestQgsAdvancedDigitizing::perpendicularConstraint()
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
-  snapConfig.setTypeFlag( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag );
+  snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   // test snapping on segment
