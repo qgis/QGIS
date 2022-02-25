@@ -29,7 +29,7 @@
 #include "qgslabelsink.h"
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
 
 
 class QgsLabelingEngine;
