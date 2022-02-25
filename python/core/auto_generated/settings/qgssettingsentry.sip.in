@@ -342,7 +342,14 @@ Returns the current value (or default) if there is no former value.
 
   protected:
     virtual bool setValuePrivate( const T &value, const QStringList &dynamicKeyPartList ) const = 0;
+%Docstring
+Sets the settings value with an optional list of dynamic parts
+%End
+
     virtual T convertFromVariant( const QVariant &value ) const = 0;
+%Docstring
+Converts the variant value to the value type of the setting
+%End
 };
 
 
@@ -462,7 +469,14 @@ Returns the current value (or default) if there is no former value.
 
   protected:
     virtual bool setValuePrivate( T value, const QStringList &dynamicKeyPartList ) const = 0;
+%Docstring
+Sets the settings value with an optional list of dynamic parts
+%End
+
     virtual T convertFromVariant( const QVariant &value ) const = 0;
+%Docstring
+Converts the variant value to the value type of the setting
+%End
 };
 
 

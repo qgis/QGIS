@@ -10,12 +10,12 @@ class QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType
 %TypeHeaderCode
 #include "sipifyheader.h"
 #include "qgssettingsentry.h"
-typedef QgsSettingsEntryEnumFlag<Qgis::SnappingType> QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType;
+typedef QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType;
 %End
   public:
-    QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType( const QString &key, QgsSettings::Section section, const Qgis::SnappingType &defaultValue, const QString &description = QString() );
+    QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType( const QString &key, QgsSettings::Section section, const QgsSnappingConfig::SnappingTypes &defaultValue, const QString &description = QString() );
     QString key( const QString &dynamicKeyPart = QString() ) const;
-    Qgis::SnappingType value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const Qgis::SnappingType &defaultValueOverride = Qgis::SnappingType() ) const;
+    QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsSnappingConfig::SnappingTypes &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
 };
 
 
