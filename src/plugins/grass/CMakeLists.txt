@@ -197,6 +197,8 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
       set_source_files_properties(${GRASS_PLUGIN_SRCS} PROPERTIES COMPILE_FLAGS "-wd4611")
     endif()
 
+    target_compile_features(plugin_grass${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
+
     target_link_libraries(plugin_grass${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
       qgis_app
