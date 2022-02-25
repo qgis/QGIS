@@ -190,8 +190,8 @@ void QgsSnappingConfig::reset()
 {
   // get defaults values. They are both used for standard and advanced configuration (per layer)
   const bool enabled = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value();
-  Qgis::SnappingMode mode = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_mode" ),  Qgis::SnappingMode::AllLayers );
-  const Qgis::SnappingTypes type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
+  const Qgis::SnappingMode mode = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode.value();
+  const Qgis::SnappingType type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
   const double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
   const QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
 
@@ -274,7 +274,7 @@ QgsSnappingConfig::SnappingType QgsSnappingConfig::type() const
     return QgsSnappingConfig::SnappingType::Vertex;
 }
 
-QString QgsSnappingConfig::snappingTypeFlagToString( Qgis::SnappingType type )
+QString QgsSnappingConfig::snappingTypeToString( Qgis::SnappingType type )
 {
   switch ( type )
   {
@@ -296,7 +296,7 @@ QString QgsSnappingConfig::snappingTypeFlagToString( Qgis::SnappingType type )
   return QString();
 }
 
-QIcon QgsSnappingConfig::snappingTypeFlagToIcon( Qgis::SnappingType type )
+QIcon QgsSnappingConfig::snappingTypeToIcon( Qgis::SnappingType type )
 {
   switch ( type )
   {

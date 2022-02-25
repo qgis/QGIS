@@ -108,6 +108,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const inline QgsSettingsEntryBool settingsDigitizingDefaultSnapEnabled = QgsSettingsEntryBool( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), QgsSettings::NoSection,  false );
 
     //! Settings entry digitizing default snap type
+    static const inline QgsSettingsEntryEnumFlag<Qgis::SnappingMode> settingsDigitizingDefaultSnapMode = QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "/qgis/digitizing/default_snap_mode" ), QgsSettings::NoSection, Qgis::SnappingMode::AllLayers );
+
+    //! Settings entry digitizing default snap type
     static const inline QgsSettingsEntryEnumFlag<Qgis::SnappingType> settingsDigitizingDefaultSnapType = QgsSettingsEntryEnumFlag<Qgis::SnappingType>( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSettings::NoSection, Qgis::SnappingType::Vertex );
 
     //! Settings entry digitizing default snapping tolerance

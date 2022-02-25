@@ -16,14 +16,17 @@
 #ifndef QGSPROJECTSNAPPINGSETTINGS_H
 #define QGSPROJECTSNAPPINGSETTINGS_H
 
-#include <QHash>
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgstolerance.h"
 
+#include <QHash>
+#include <QIcon>
+
 class QDomDocument;
 class QgsProject;
 class QgsVectorLayer;
+
 
 
 /**
@@ -68,18 +71,33 @@ class CORE_EXPORT QgsSnappingConfig
     /**
      * Convenient method to returns the translated name of the enum type
      * Qgis::SnappingTypes.
-     *
-     * \since QGIS 3.12
+     * \since QGIS 3.26
      */
-    static QString snappingTypeFlagToString( Qgis::SnappingType type );
+    static QString snappingTypeToString( Qgis::SnappingType type );
+
+    /**
+     * Convenient method to returns the translated name of the enum type
+     * Qgis::SnappingTypes.
+     * \since QGIS 3.12
+     * \deprecated since QGIS 3.26 use Qgis::snappingTypeToString instead
+     */
+    Q_DECL_DEPRECATED static QString snappingTypeFlagToString( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToString( type );}
+
 
     /**
      * Convenient method to return an icon corresponding to the enum type
      * Qgis::SnappingTypes.
-     *
      * \since QGIS 3.20
      */
-    static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type );
+    static QIcon snappingTypeToIcon( Qgis::SnappingType type );
+
+    /**
+     * Convenient method to return an icon corresponding to the enum type
+     * Qgis::SnappingTypes.
+     * \deprecated since QGIS 3.26 use Qgis::snappingTypeToString instead
+     * \since QGIS 3.20
+     */
+    Q_DECL_DEPRECATED static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToIcon( type );}
 
     /**
      * \ingroup core
