@@ -1410,7 +1410,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( FieldDomainType )
 
-    /*
+    /**
      * Transaction mode.
      *
      * \since QGIS 3.26
