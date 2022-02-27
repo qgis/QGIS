@@ -159,7 +159,7 @@ class OARecSearch(SearchBase):
     def __init__(self, url, timeout, auth):
         try:
             from owslib.ogcapi.records import Records
-        except Exception:
+        except ModuleNotFoundError:
             # OWSLIB_OAREC_SUPPORTED already set to False
             pass
 
