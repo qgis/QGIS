@@ -4101,6 +4101,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::quotedValue( QVariant(), QVariant::String ), QString( "NULL" ) );
       QVariantList array = QVariantList() << QVariant( 1 ) << QVariant( "a" ) << QVariant();
       QCOMPARE( QgsExpression::quotedValue( array ), QString( "array( 1, 'a', NULL )" ) );
+      QCOMPARE( QgsExpression::quotedValue( QStringList( { QStringLiteral( "abc" ), QStringLiteral( "def" )} ) ), QString( "array( 'abc', 'def' )" ) );
     }
 
     void reentrant()
