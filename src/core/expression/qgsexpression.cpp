@@ -100,6 +100,7 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
       return value.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
 
     case QVariant::List:
+    case QVariant::StringList:
     {
       QStringList quotedValues;
       const QVariantList values = value.toList();
