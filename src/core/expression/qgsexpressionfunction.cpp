@@ -1441,7 +1441,7 @@ static QVariant fcnReplace( const QVariantList &values, const QgsExpressionConte
     QVariantList after;
     bool isSingleReplacement = false;
 
-    if ( values.at( 1 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+    if ( !QgsExpressionUtils::isList( values.at( 1 ) ) && values.at( 2 ).type() != QVariant::StringList )
     {
       before = QVariantList() << QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
     }
@@ -1450,7 +1450,7 @@ static QVariant fcnReplace( const QVariantList &values, const QgsExpressionConte
       before = QgsExpressionUtils::getListValue( values.at( 1 ), parent );
     }
 
-    if ( values.at( 2 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+    if ( !QgsExpressionUtils::isList( values.at( 2 ) ) )
     {
       after = QVariantList() << QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
       isSingleReplacement = true;
@@ -2837,7 +2837,7 @@ static QVariant fcnSmooth( const QVariantList &values, const QgsExpressionContex
 static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantList list;
-  if ( values.size() == 1 && ( values.at( 0 ).type() == QVariant::List || values.at( 0 ).type() == QVariant::StringList ) )
+  if ( values.size() == 1 && QgsExpressionUtils::isList( values.at( 0 ) ) )
   {
     list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   }
@@ -5813,7 +5813,7 @@ static QVariant fcnArrayReplace( const QVariantList &values, const QgsExpression
     QVariantList after;
     bool isSingleReplacement = false;
 
-    if ( values.at( 1 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+    if ( !QgsExpressionUtils::isList( values.at( 1 ) ) && values.at( 2 ).type() != QVariant::StringList )
     {
       before = QVariantList() << values.at( 1 );
     }
@@ -5822,7 +5822,7 @@ static QVariant fcnArrayReplace( const QVariantList &values, const QgsExpression
       before = QgsExpressionUtils::getListValue( values.at( 1 ), parent );
     }
 
-    if ( values.at( 2 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+    if ( !QgsExpressionUtils::isList( values.at( 2 ) ) )
     {
       after = QVariantList() << values.at( 2 );
       isSingleReplacement = true;
