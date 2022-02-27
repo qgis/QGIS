@@ -226,10 +226,10 @@ gzip ChangeLog
       -D WITH_BINDINGS:BOOL=TRUE \
 %if 0%{?fedora} >= 36
       -D WITH_GRASS8:BOOL=TRUE \
-      -D GRASS_PREFIX8= %{grass_prefix} \
+      -D GRASS_PREFIX8=%{grass_prefix} \
 %else
       -D WITH_GRASS7:BOOL=TRUE \
-      -D GRASS_PREFIX7= %{grass_prefix} \
+      -D GRASS_PREFIX7=%{grass_prefix} \
 %endif
       -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
       -D BINDINGS_GLOBAL_INSTALL:BOOL=TRUE \
