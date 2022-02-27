@@ -46,11 +46,6 @@ Source5:        %{name}-server-README.fedora
 # Based on debian/qgis.xml but excluding already defined or proprietary types
 Source6:        %{name}-mime.xml
 
-# Fix builds on 64-bit machines
-# https://github.com/qgis/QGIS/issues/23525
-# https://github.com/qgis/QGIS/commit/718581ffb12b723f9a3c0ae01b7ec2d8aed9d4bb.patch
-Patch0:         %{name}-lib64.patch
-
 # Compiling stuff
 BuildRequires:  bison
 BuildRequires:  clang
@@ -208,7 +203,6 @@ Please refer to %{name}-server-README.fedora for details!
 
 %prep
 %setup -q
-%patch0 -p0 -b .lib64
 
 # Remove executable permissions from source code files
 find . \( -name "*.cpp" -o -name "*.h" \) -type f -perm /111 -execdir chmod -x {} \+
