@@ -3728,6 +3728,22 @@ class TestQgsExpression: public QObject
       builderExpected << QVariant();
       QCOMPARE( QgsExpression( "array('hello', 'world', NULL)" ).evaluate( &context ), QVariant( builderExpected ) );
 
+      // operators
+      QCOMPARE( QgsExpression( "\"strings\" = array('one', 'two')" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "\"strings\" = array('two', 'one')" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "\"strings\" = array('one')" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "\"strings\" = array('one', 'two', 'three')" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "\"strings\" = 'one'" ).evaluate( &context ), QVariant() );
+      QCOMPARE( QgsExpression( "\"strings\" = 5" ).evaluate( &context ), QVariant() );
+      QCOMPARE( QgsExpression( "array('one', 'two') = \"strings\"" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array('two', 'one') = \"strings\"" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array('one') = \"strings\"" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array('one', 'two', 'three') = \"strings\"" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "\"strings\" <> array('one', 'two')" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "\"strings\" <> array('two', 'one')" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "\"strings\" <> array('one')" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "\"strings\" <> array('one', 'two', 'three')" ).evaluate( &context ), QVariant( true ) );
+
       QCOMPARE( QgsExpression( "array_length(\"strings\")" ).evaluate( &context ), QVariant( 2 ) );
 
       QCOMPARE( QgsExpression( "array_all(array(1,2,3), array(2,3))" ).evaluate( &context ), QVariant( true ) );
