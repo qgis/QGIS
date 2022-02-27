@@ -190,7 +190,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static inline bool isList( const QVariant &v )
     {
-      return v.type() == QVariant::List;
+      return v.type() == QVariant::List || v.type() == QVariant::StringList;
     }
 
 // implicit conversion to string
