@@ -1161,7 +1161,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //default snap mode
   mSnappingEnabledDefault->setChecked( QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value() );
 
-  for ( Qgis::SnappingType type : qgsEnumMap<Qgis::SnappingType>().keys() )
+  for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
   {
     mDefaultSnapTypeComboBox->addItem( QgsSnappingConfig::snappingTypeToIcon( type ),
                                        QgsSnappingConfig::snappingTypeToString( type ),

@@ -72,7 +72,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     mTypeButton->setPopupMode( QToolButton::InstantPopup );
     SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), parent );
 
-    for ( Qgis::SnappingType type : qgsEnumMap<Qgis::SnappingType>().keys() )
+    for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
     {
       if ( type == Qgis::SnappingType::NoSnap )
         continue;
@@ -590,10 +590,9 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
           QString modes;
           int activeTypes = 0;
 
-          const auto enumMap = qgsEnumMap<Qgis::SnappingType>();
-          for ( auto it = enumMap.constBegin(); it != enumMap.constEnd(); ++it )
+          for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
           {
-            if ( ls.typeFlag().testFlag( it.key() ) )
+            if ( ls.typeFlag().testFlag( type ) )
             {
               if ( activeTypes == 2 )
               {
@@ -602,7 +601,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
               }
               if ( activeTypes > 0 )
                 modes.append( tr( ", " ) );
-              modes.append( QgsSnappingConfig::snappingTypeToString( it.key() ) );
+              modes.append( QgsSnappingConfig::snappingTypeToString( type ) );
               activeTypes++;
             }
           }

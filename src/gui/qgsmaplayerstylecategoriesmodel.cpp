@@ -22,7 +22,7 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( QgsMapLayerTyp
   switch ( type )
   {
     case QgsMapLayerType::VectorLayer:
-      mCategoryList = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
+      mCategoryList = qgsEnumList<QgsMapLayer::StyleCategory>();
       break;
 
     case QgsMapLayerType::VectorTileLayer:
