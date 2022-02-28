@@ -227,11 +227,9 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         self.update_model.emit()
         if saveAs:
-            self.messageBar().pushMessage("", self.tr("Model was correctly saved to <a href=\"{}\">{}</a>").format(
+            self.messageBar().pushMessage("", self.tr("Model was saved to <a href=\"{}\">{}</a>").format(
                 QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success,
                 duration=5)
-        else:
-            self.messageBar().pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
 
         self.setDirty(False)
         return True
