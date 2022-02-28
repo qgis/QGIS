@@ -159,8 +159,8 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
 
 
   QVariantMap childParams;
-  const auto constParameterDefinitions = child.algorithm()->parameterDefinitions();
-  for ( const QgsProcessingParameterDefinition *def : constParameterDefinitions )
+  const QList< const QgsProcessingParameterDefinition * > childParameterDefinitions = child.algorithm()->parameterDefinitions();
+  for ( const QgsProcessingParameterDefinition *def : childParameterDefinitions )
   {
     if ( !def->isDestination() )
     {
@@ -183,12 +183,34 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
         if ( outputIt->childOutputName() == destParam->name() )
         {
           QString paramName = child.childId() + ':' + outputIt.key();
+          bool foundParam = false;
+          QVariant value;
+
+          // if parameter was specified using child_id:child_name directly, take that
           if ( modelParameters.contains( paramName ) )
           {
-            QVariant value = modelParameters.value( paramName );
+            value = modelParameters.value( paramName );
+            foundParam  = true;
+          }
+
+          // ...otherwise we need to find the corresponding model parameter which matches this output
+          if ( !foundParam )
+          {
+            if ( const QgsProcessingParameterDefinition *modelParam = modelParameterFromChildIdAndOutputName( child.childId(), outputIt.key() ) )
+            {
+              if ( modelParameters.contains( modelParam->name() ) )
+              {
+                value = modelParameters.value( modelParam->name() );
+                foundParam = true;
+              }
+            }
+          }
+
+          if ( foundParam )
+          {
             if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
             {
-              // make sure layout output name is correctly set
+              // make sure layer output name is correctly set
               QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
               fromVar.destinationName = outputIt.key();
               value = QVariant::fromValue( fromVar );
@@ -231,6 +253,22 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
     }
   }
   return childParams;
+}
+
+const QgsProcessingParameterDefinition *QgsProcessingModelAlgorithm::modelParameterFromChildIdAndOutputName( const QString &childId, const QString &childOutputName ) const
+{
+  for ( const QgsProcessingParameterDefinition *definition : mParameters )
+  {
+    if ( !definition->isDestination() )
+      continue;
+
+    const QString modelChildId = definition->metadata().value( QStringLiteral( "_modelChildId" ) ).toString();
+    const QString modelOutputName = definition->metadata().value( QStringLiteral( "_modelChildOutputName" ) ).toString();
+
+    if ( modelChildId == childId && modelOutputName == childOutputName )
+      return definition;
+  }
+  return nullptr;
 }
 
 bool QgsProcessingModelAlgorithm::childOutputIsRequired( const QString &childId, const QString &outputName ) const
@@ -374,7 +412,18 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QMap<QString, QgsProcessingModelOutput>::const_iterator outputIt = outputs.constBegin();
       for ( ; outputIt != outputs.constEnd(); ++outputIt )
       {
-        finalResults.insert( childId + ':' + outputIt->name(), results.value( outputIt->childOutputName() ) );
+        switch ( mInternalVersion )
+        {
+          case QgsProcessingModelAlgorithm::InternalVersion::Version1:
+            finalResults.insert( childId + ':' + outputIt->name(), results.value( outputIt->childOutputName() ) );
+            break;
+          case QgsProcessingModelAlgorithm::InternalVersion::Version2:
+            if ( const QgsProcessingParameterDefinition *modelParam = modelParameterFromChildIdAndOutputName( child.childId(), outputIt.key() ) )
+            {
+              finalResults.insert( modelParam->name(), results.value( outputIt->childOutputName() ) );
+            }
+            break;
+        }
       }
 
       executed.insert( childId );
@@ -497,19 +546,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
   QMap< QString, QString> friendlyChildNames;
   QMap< QString, QString> friendlyOutputNames;
-  auto safeName = []( const QString & name, bool capitalize )->QString
-  {
-    QString n = name.toLower().trimmed();
-    QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
-    n.replace( rx, QString() );
-    QRegularExpression rx2( QStringLiteral( "^\\d*" ) ); // name can't start in a digit
-    n.replace( rx2, QString() );
-    if ( !capitalize )
-      n = n.replace( ' ', '_' );
-    return capitalize ? QgsStringUtils::capitalize( n, Qgis::Capitalization::UpperCamelCase ) : n;
-  };
-
-  auto uniqueSafeName = [ &safeName ]( const QString & name, bool capitalize, const QMap< QString, QString > &friendlyNames )->QString
+  auto uniqueSafeName = []( const QString & name, bool capitalize, const QMap< QString, QString > &friendlyNames )->QString
   {
     const QString base = safeName( name, capitalize );
     QString candidate = base;
@@ -582,8 +619,9 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
           if ( defClone->isDestination() )
           {
-            const QString &friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
-            friendlyOutputNames.insert( defClone->name(), friendlyName );
+            const QString uniqueChildName = defClone->metadata().value( QStringLiteral( "_modelChildId" ) ).toString() + ':' + defClone->metadata().value( QStringLiteral( "_modelChildOutputName" ) ).toString();
+            const QString friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
+            friendlyOutputNames.insert( uniqueChildName, friendlyName );
             defClone->setName( friendlyName );
           }
           else
@@ -1283,6 +1321,21 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
   mOutputs.clear();
 
   // rebuild
+  QSet< QString > usedFriendlyNames;
+  auto uniqueSafeName = [&usedFriendlyNames ]( const QString & name )->QString
+  {
+    const QString base = safeName( name, false );
+    QString candidate = base;
+    int i = 1;
+    while ( usedFriendlyNames.contains( candidate ) )
+    {
+      i++;
+      candidate = QStringLiteral( "%1_%2" ).arg( base ).arg( i );
+    }
+    usedFriendlyNames.insert( candidate );
+    return candidate;
+  };
+
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
@@ -1304,7 +1357,19 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagHidden );
       if ( outputIt->isMandatory() )
         param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagOptional );
-      param->setName( outputIt->childId() + ':' + outputIt->name() );
+      if ( mInternalVersion != InternalVersion::Version1 && !outputIt->description().isEmpty() )
+      {
+        QString friendlyName = uniqueSafeName( outputIt->description() );
+        param->setName( friendlyName );
+      }
+      else
+      {
+        param->setName( outputIt->childId() + ':' + outputIt->name() );
+      }
+      // add some metadata so we can easily link this parameter back to the child source
+      param->metadata().insert( QStringLiteral( "_modelChildId" ), outputIt->childId() );
+      param->metadata().insert( QStringLiteral( "_modelChildOutputName" ), outputIt->name() );
+
       param->setDescription( outputIt->description() );
       param->setDefaultValue( outputIt->defaultValue() );
 
@@ -2042,6 +2107,18 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   alg->setProvider( provider() );
   alg->setSourceFilePath( sourceFilePath() );
   return alg;
+}
+
+QString QgsProcessingModelAlgorithm::safeName( const QString &name, bool capitalize )
+{
+  QString n = name.toLower().trimmed();
+  const thread_local QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
+  n.replace( rx, QString() );
+  const thread_local QRegularExpression rx2( QStringLiteral( "^\\d*" ) ); // name can't start in a digit
+  n.replace( rx2, QString() );
+  if ( !capitalize )
+    n = n.replace( ' ', '_' );
+  return capitalize ? QgsStringUtils::capitalize( n, Qgis::Capitalization::UpperCamelCase ) : n;
 }
 
 QVariantMap QgsProcessingModelAlgorithm::variables() const
