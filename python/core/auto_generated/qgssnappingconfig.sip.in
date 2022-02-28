@@ -51,7 +51,7 @@ Qgis.SnappingTypes.
 
  static QString snappingTypeFlagToString( Qgis::SnappingType type ) /Deprecated/;
 %Docstring
-Convenient method to returns the translated name of the enum type
+Convenient method to return the translated name of the enum type
 Qgis.SnappingTypes.
 
 .. versionadded:: 3.12
