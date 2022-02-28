@@ -22,7 +22,6 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudrequest.h"
-#include "qgscolorramptexture.h"
 #include "qgs3dmapsettings.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudblockrequest.h"
@@ -221,7 +220,10 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   // Material
   Qt3DRender::QMaterial *mat = new Qt3DRender::QMaterial;
   if ( context.symbol() )
+  {
     context.symbol()->fillMaterial( mat );
+    mat->addParameter( new Qt3DRender::QParameter( "triangulate", !out.triangles.isEmpty() ) );
+  }
 
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( mat );
   shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/pointcloud.vert" ) ) ) );
@@ -250,7 +252,6 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
   technique->graphicsApiFilter()->setMajorVersion( 3 );
   technique->graphicsApiFilter()->setMinorVersion( 1 );
-  technique->addParameter( new Qt3DRender::QParameter( "triangulate", !out.triangles.isEmpty() ) );
 
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect;
   eff->addTechnique( technique );
@@ -833,6 +834,8 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   QgsPointCloudAttribute::DataType attributeType = QgsPointCloudAttribute::Float;
   int attributeOffset = 0;
   QgsClassificationPointCloud3DSymbol *symbol = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( context.symbol() );
+  bool prepareColor = false;
+  QHash< int, QColor > colors;
   if ( symbol )
   {
     int offset = 0;
@@ -859,6 +862,19 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
         attributeName = attr->name();
         attributeOffset = attributes.pointRecordSize();
         attributes.push_back( *attr );
+      }
+    }
+
+    prepareColor = symbol->renderAsTriangles();
+    if ( prepareColor )
+    {
+      const QgsPointCloudCategoryList categories = symbol->categoriesList();
+      for ( const QgsPointCloudCategory &category : categories )
+      {
+        if ( !category.renderState() )
+          continue;
+
+        colors.insert( category.value(), category.color() );
       }
     }
   }
@@ -910,20 +926,44 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     }
     const QgsVector3D point( x, y, z );
     const QgsVector3D p = context.map().mapToWorldCoordinates( point );
-    float iParam = 0.0f;
-    if ( attrIsX )
-      iParam = x;
-    else if ( attrIsY )
-      iParam = y;
-    else if ( attrIsZ )
-      iParam = z;
-    else
-      context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
 
-    if ( filteredOutValues.contains( ( int ) iParam ) )
-      continue;
+    if ( prepareColor )
+    {
+      int iParam = 0;
+      if ( attrIsX )
+        iParam = int( x );
+      else if ( attrIsY )
+        iParam = int( y );
+      else if ( attrIsZ )
+        iParam = int( z );
+      else
+        context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
+
+      if ( filteredOutValues.contains( iParam ) )
+        continue;
+
+      const QColor &color = colors.value( iParam );
+      outNormal.colors.push_back( {float( color.redF() ), float( color.greenF() ), float( color.blueF() )} );
+    }
+    else
+    {
+      float iParam = 0.0f;
+      if ( attrIsX )
+        iParam = x;
+      else if ( attrIsY )
+        iParam = y;
+      else if ( attrIsZ )
+        iParam = z;
+      else
+        context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
+
+      if ( filteredOutValues.contains( ( int ) iParam ) )
+        continue;
+
+      outNormal.parameter.push_back( iParam );
+    }
+
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
-    outNormal.parameter.push_back( iParam );
   }
 }
 
@@ -935,7 +975,10 @@ void QgsClassificationPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *pa
 
 Qt3DRender::QGeometry *QgsClassificationPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
 {
-  return new QgsColorRampPointCloud3DGeometry( parent, data, byteStride );
+  if ( data.colors.isEmpty() )
+    return new QgsColorRampPointCloud3DGeometry( parent, data, byteStride );
+  else
+    return new QgsRGBPointCloud3DGeometry( parent, data, byteStride );
 }
 
 
