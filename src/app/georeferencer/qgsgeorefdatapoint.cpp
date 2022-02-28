@@ -17,51 +17,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsgcpcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
-
-
 #include "qgsgeorefdatapoint.h"
-
-//
-// QgsGcpPoint
-//
-
-QgsGcpPoint::QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint, const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled )
-  : mSourcePoint( sourcePoint )
-  , mDestinationPoint( destinationPoint )
-  , mDestinationCrs( destinationPointCrs )
-  , mEnabled( enabled )
-{
-
-}
-
-QgsCoordinateReferenceSystem QgsGcpPoint::destinationPointCrs() const
-{
-  return mDestinationCrs;
-}
-
-void QgsGcpPoint::setDestinationPointCrs( const QgsCoordinateReferenceSystem &crs )
-{
-  mDestinationCrs = crs;
-}
-
-QgsPointXY QgsGcpPoint::transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const
-{
-  const QgsCoordinateTransform transform( mDestinationCrs, targetCrs, context );
-  try
-  {
-    return transform.transform( mDestinationPoint );
-  }
-  catch ( QgsCsException & )
-  {
-    QgsDebugMsg( QStringLiteral( "Error transforming destination point" ) );
-    return mDestinationPoint;
-  }
-}
-
-
-//
-// QgsGeorefDataPoint
-//
 
 QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
                                         const QgsPointXY &sourceCoordinates, const QgsPointXY &destinationPoint,
