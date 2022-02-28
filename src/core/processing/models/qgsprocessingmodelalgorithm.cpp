@@ -1344,6 +1344,7 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   map.insert( QStringLiteral( "model_name" ), mModelName );
   map.insert( QStringLiteral( "model_group" ), mModelGroup );
   map.insert( QStringLiteral( "help" ), mHelpContent );
+  map.insert( QStringLiteral( "internal_version" ), qgsEnumValueToKey( mInternalVersion ) );
 
   QVariantMap childMap;
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
@@ -1392,6 +1393,8 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   mModelGroup = map.value( QStringLiteral( "model_group" ) ).toString();
   mModelGroupId = map.value( QStringLiteral( "model_group" ) ).toString();
   mHelpContent = map.value( QStringLiteral( "help" ) ).toMap();
+
+  mInternalVersion = qgsEnumKeyToValue( map.value( QStringLiteral( "internal_version" ) ).toString(), InternalVersion::Version1 );
 
   mVariables = map.value( QStringLiteral( "modelVariables" ) ).toMap();
   mDesignerParameterValues = map.value( QStringLiteral( "designerParameterValues" ) ).toMap();

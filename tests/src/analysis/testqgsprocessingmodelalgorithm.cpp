@@ -105,6 +105,7 @@ class TestQgsProcessingModelAlgorithm: public QObject
     void modelSource();
     void modelNameMatchesFileName();
     void renameModelParameter();
+    void internalVersion();
 
   private:
 
@@ -2202,6 +2203,22 @@ void TestQgsProcessingModelAlgorithm::renameModelParameter()
   QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "MODEL_PARAM_1" ) ].constFirst().parameterName(), QStringLiteral( "apricot" ) );
   QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "MODEL_PARAM_2" ) ].constFirst().parameterName(), QStringLiteral( "int2" ) );
   QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "EXPRESSION" ) ].constFirst().expression(), QStringLiteral( "@apricot * 2 + @int2" ) );
+}
+
+void TestQgsProcessingModelAlgorithm::internalVersion()
+{
+  // test internal version handling
+  QgsProcessingModelAlgorithm model;
+
+  // load older model, should be version 1
+  QVERIFY( model.fromFile( TEST_DATA_DIR + QStringLiteral( "/test_model.model3" ) ) );
+  QCOMPARE( model.mInternalVersion, QgsProcessingModelAlgorithm::InternalVersion::Version1 );
+
+  // create new model and save/restore, should be version 2
+  QgsProcessingModelAlgorithm model2;
+  QgsProcessingModelAlgorithm model3;
+  QVERIFY( model3.loadVariant( model2.toVariant() ) );
+  QCOMPARE( model3.mInternalVersion, QgsProcessingModelAlgorithm::InternalVersion::Version2 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModelAlgorithm )

@@ -37,6 +37,8 @@
  */
 class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -523,6 +525,18 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     void setDesignerParameterValues( const QVariantMap &values ) { mDesignerParameterValues = values; }
 
+#ifndef SIP_RUN
+
+    //! Internal model versions
+    enum class InternalVersion
+    {
+      Version1, //!< Created in < 3.26
+      Version2, //!< Created in >= 3.26
+    };
+    Q_ENUM( InternalVersion )
+
+#endif
+
   protected:
 
     QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
@@ -530,6 +544,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override SIP_THROW( QgsProcessingException );
 
   private:
+
+    InternalVersion mInternalVersion = InternalVersion::Version2;
 
     QString mModelName;
     QString mModelGroup;
