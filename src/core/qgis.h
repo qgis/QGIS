@@ -1805,8 +1805,7 @@ namespace std
 #endif
 
 /**
- * Returns a map of all enum entries.
- * The map has the enum values (int) as keys and the enum keys (QString) as values.
+ * Returns a list all enum entries.
  * The enum must have been declared using Q_ENUM or Q_FLAG.
  */
 template<class T> const QList<T> qgsEnumList() SIP_SKIP
