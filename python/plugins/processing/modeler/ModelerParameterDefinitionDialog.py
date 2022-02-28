@@ -198,17 +198,11 @@ class ModelerParameterDefinitionDialog(QDialog):
             QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                 self.tr('Invalid parameter name'))
             return
-        if self.param is None:
-            validChars = \
-                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-            safeName = ''.join(c for c in description if c in validChars)
-            name = safeName.lower()
-            i = 2
-            while self.alg.parameterDefinition(name):
-                name = safeName.lower() + str(i)
-                i += 1
-        else:
-            name = self.param.name()
+
+        validChars = \
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        safeName = ''.join(c for c in description if c in validChars)
+        name = safeName.lower()
 
         # Destination parameter
         if (isinstance(self.param, QgsProcessingParameterFeatureSink)):
