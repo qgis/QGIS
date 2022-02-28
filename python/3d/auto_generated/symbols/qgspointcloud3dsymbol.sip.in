@@ -88,7 +88,7 @@ Sets whether points are triangulated to render solid surface
 
     bool filterTrianglesBySize() const;
 %Docstring
-Returns whether triangles are filtered by size for rendering. If the triangles are filtered, triangles with a size greater
+Returns whether triangles are filtered by size for rendering. If the triangles are filtered by size, triangles with a size greater
 than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.triangleSizeThreshold`.
 
 .. versionadded:: 3.26
@@ -96,7 +96,7 @@ than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbo
 
     void setFilterTrianglesBySize( bool filterTriangleBySize );
 %Docstring
-Sets whether triangles are filtered by size for rendering. If the triangles are filtered, triangles with a size greater
+Sets whether triangles are filtered by size for rendering. If the triangles are filtered by size, triangles with a size greater
 than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setTriangleSizeThreshold`.
 
 .. versionadded:: 3.26
@@ -104,16 +104,48 @@ than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbo
 
     float triangleSizeThreshold() const;
 %Docstring
-Returns the threshold size value for filtering triangles. If the triangles are filtered, triangles with a side's size greater
-than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setTriangleSizeThreshold`.
+Returns the threshold size value for filtering triangles. If the triangles are filtered by size, triangles with a side's size greater
+than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.filterTrianglesBySize`.
 
 .. versionadded:: 3.26
 %End
 
     void setTriangleSizeThreshold( float triangleSizeThreshold );
 %Docstring
-Sets the threshold size value for filtering triangles. If the triangles are filtered, triangles with a side's size greater
-than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setTriangleSizeThreshold`.
+Sets the threshold size value for filtering triangles. If the triangles are filtered by size, triangles with a side's size greater
+than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setFilterTrianglesBySize`.
+
+.. versionadded:: 3.26
+%End
+
+    bool filterTrianglesByHeight() const;
+%Docstring
+Returns whether triangles are filtered by 3D height for rendering. If the triangles are filtered by height, triangles with a 3D height greater
+than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.triangleHeightThreshold`.
+
+.. versionadded:: 3.26
+%End
+
+    void setFilterTrianglesByHeight( bool filterTriangleByHeight );
+%Docstring
+Sets whether triangles are filtered by 3D height for rendering. If the triangles are filtered by height, triangles with a 3D height greater
+than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setTriangleHeightThreshold`.
+
+.. versionadded:: 3.26
+%End
+
+    float triangleHeightThreshold() const;
+%Docstring
+Returns the threshold 3D height value for filtering triangles. If the triangles are filtered by height, triangles with a side's size greater
+than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.filterTrianglesByHeight`.
+
+.. versionadded:: 3.26
+%End
+
+    void setTriangleHeightThreshold( float triangleHeightThreshold );
+%Docstring
+Sets the threshold 3D height value for filtering triangles. If the triangles are filtered by height, triangles with a side's size greater
+than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setFilterTrianglesByHeight`.
 
 .. versionadded:: 3.26
 %End

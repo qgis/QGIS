@@ -59,12 +59,32 @@ void QgsPointCloud3DSymbol::setFilterTrianglesBySize( bool filterTriangleBySize 
 
 float QgsPointCloud3DSymbol::triangleSizeThreshold() const
 {
-  return mTriangleSizesThreshold;
+  return mTriangleSizeThreshold;
 }
 
 void QgsPointCloud3DSymbol::setTriangleSizeThreshold( float triangleSizeThreshold )
 {
-  mTriangleSizesThreshold = triangleSizeThreshold;
+  mTriangleSizeThreshold = triangleSizeThreshold;
+}
+
+bool QgsPointCloud3DSymbol::filterTrianglesByHeight() const
+{
+  return mFilterTrianglesByHeight;
+}
+
+void QgsPointCloud3DSymbol::setFilterTrianglesByHeight( bool filterTriangleByHeight )
+{
+  mFilterTrianglesByHeight = filterTriangleByHeight;
+}
+
+float QgsPointCloud3DSymbol::triangleHeightThreshold() const
+{
+  return mTriangleHeightThreshold;
+}
+
+void QgsPointCloud3DSymbol::setTriangleHeightThreshold( float triangleHeightThreshold )
+{
+  mTriangleHeightThreshold = triangleHeightThreshold;
 }
 
 void QgsPointCloud3DSymbol::writeBaseXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -74,7 +94,9 @@ void QgsPointCloud3DSymbol::writeBaseXml( QDomElement &elem, const QgsReadWriteC
   elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
   elem.setAttribute( QStringLiteral( "render-as-triangles" ), mRenderAsTriangles ? 1 : 0 );
   elem.setAttribute( QStringLiteral( "filter-triangle-by-size" ), mFilterTrianglesBySize ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "triangle-size-threshold" ), mTriangleSizesThreshold );
+  elem.setAttribute( QStringLiteral( "triangle-size-threshold" ), mTriangleSizeThreshold );
+  elem.setAttribute( QStringLiteral( "filter-triangle-by-height" ), mFilterTrianglesByHeight ? 1 : 0 );
+  elem.setAttribute( QStringLiteral( "triangle-height-threshold" ), mTriangleHeightThreshold );
 }
 
 void QgsPointCloud3DSymbol::readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -84,7 +106,9 @@ void QgsPointCloud3DSymbol::readBaseXml( const QDomElement &elem, const QgsReadW
   mPointSize = elem.attribute( QStringLiteral( "point-size" ), QStringLiteral( "2.0" ) ).toFloat();
   mRenderAsTriangles = elem.attribute( QStringLiteral( "render-as-triangles" ), QStringLiteral( "0" ) ).toInt() == 1;
   mFilterTrianglesBySize = elem.attribute( QStringLiteral( "filter-triangle-by-size" ), QStringLiteral( "0" ) ).toInt() == 1;
-  mTriangleSizesThreshold = elem.attribute( QStringLiteral( "triangle-size-threshold" ), QStringLiteral( "10.0" ) ).toFloat();
+  mTriangleSizeThreshold = elem.attribute( QStringLiteral( "triangle-size-threshold" ), QStringLiteral( "10.0" ) ).toFloat();
+  mFilterTrianglesByHeight = elem.attribute( QStringLiteral( "filter-triangle-by-height" ), QStringLiteral( "0" ) ).toInt() == 1;
+  mTriangleHeightThreshold = elem.attribute( QStringLiteral( "triangle-height-threshold" ), QStringLiteral( "10.0" ) ).toFloat();
 }
 
 void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination ) const
@@ -93,8 +117,10 @@ void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination )
   QgsPointCloud3DSymbol *pcDestination = static_cast<QgsPointCloud3DSymbol *>( destination );
   pcDestination->mPointSize = mPointSize;
   pcDestination->mRenderAsTriangles = mRenderAsTriangles;
-  pcDestination->mTriangleSizesThreshold = mTriangleSizesThreshold;
+  pcDestination->mTriangleSizeThreshold = mTriangleSizeThreshold;
   pcDestination->mFilterTrianglesBySize = mFilterTrianglesBySize;
+  pcDestination->mTriangleHeightThreshold = mTriangleHeightThreshold;
+  pcDestination->mFilterTrianglesByHeight = mFilterTrianglesByHeight;
 }
 
 // QgsSingleColorPointCloud3DSymbol

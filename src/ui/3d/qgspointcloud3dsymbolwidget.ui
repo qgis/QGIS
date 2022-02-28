@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>581</width>
-    <height>534</height>
+    <height>551</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -161,9 +161,26 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QgsDoubleSpinBox" name="mTriangleSizeThresholdDoubleSpinBox">
+          <widget class="QgsDoubleSpinBox" name="mTriangleSizeThresholdSpinBox">
            <property name="toolTip">
             <string>Maximum Triangle Side Size in Horizontal Plan</string>
+           </property>
+           <property name="maximum">
+            <double>10000000000000000000000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="mFilterTriangleByHeightCheckBox">
+           <property name="text">
+            <string>Maximum triangle height</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QgsDoubleSpinBox" name="mTriangleHeightThresholdSpinBox">
+           <property name="toolTip">
+            <string>Maximum Triangle Side 3D Height</string>
            </property>
            <property name="maximum">
             <double>10000000000000000000000.000000000000000</double>
