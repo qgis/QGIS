@@ -402,6 +402,10 @@ class TestQgsProcessExecutable(unittest.TestCase):
             self.assertFalse(err)
         self.assertEqual(rc, 0)
         self.assertIn('model description', output.lower())
+        self.assertIn('author of model', output.lower())
+        self.assertIn('version 2.1', output.lower())
+        self.assertIn('examples', output.lower())
+        self.assertIn('this is an example of running the model', output.lower())
 
     def testModelRun(self):
         output_file = self.TMP_DIR + '/model_output.shp'
