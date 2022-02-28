@@ -193,7 +193,7 @@ Returns the settings entry description.
 
     QVariant formerValueAsVariant( const QString &dynamicKeyPart ) const;
 %Docstring
-Returns the former value of the settings if it has been enabled in the options
+Returns the former value of the settings if it has been enabled in the options.
 Returns the current value (or default) if there is no former value.
 
 .. versionadded:: 3.26
@@ -211,7 +211,7 @@ Returns the current value (or default) if there is no former value.
 
     bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
 %Docstring
-Sets the settings value with a variant value
+Sets the settings value with a variant value.
 This should be called from any implementation as it takes care of actually calling QSettings
 
 .. versionadded:: 3.26
@@ -323,7 +323,7 @@ Returns settings default value.
 
     T formerValue( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
-Returns the former value
+Returns the former value.
 Returns the current value (or default) if there is no former value.
 %End
 
