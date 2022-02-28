@@ -211,7 +211,7 @@ class CORE_EXPORT Qgis
       StringList, //!< List of strings
       Bool, //!< Boolean
       Integer, //!< Integer
-      Double, //!< Double precision numer
+      Double, //!< Double precision number
       EnumFlag, //!< Enum or Flag
       Color //!< Color
     };
@@ -1919,7 +1919,7 @@ template<class T> QString qgsFlagValueToKeys( const T &value, bool *returnOk = n
 /**
  * Returns the value corresponding to the given \a keys of a flag.
  * If the keys are invalid, it will return the \a defaultValue.
- * If \a tryValueAsKey is TRUE, it will try to convert the string key to an enum value
+ * If \a tryValueAsKey is TRUE, it will try to convert the string key to an enum value.
  * If \a returnOk is given, it defines if the key could be converted to the value or if it had returned the default
  * \since QGIS 3.16
  */
