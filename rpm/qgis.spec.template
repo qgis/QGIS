@@ -242,6 +242,14 @@ gzip ChangeLog
       %{configure_with_sha} \
       .
 
+%if 0%{?fedora} >= 36
+# FIXME from downstream
+# No idea why libgrass_imagery appears as -lgrass_imagery and not as %%{_libdir}/grass/lib/libgrass_imagery.8.0.so
+# like all other grass libs... But it results in a Requires on libgrass_imagery.so rather than libgrass_imagery.8.0.so
+# and the former is not provided by grass-libs, hence results in broken dependencies...
+find %{_vpath_builddir} -type f -name link.txt -exec sed -i 's|-lgrass_imagery|%{_libdir}/grass80/lib/libgrass_imagery.8.0.so|' {} \;
+%endif
+
 %cmake_build
 
 %install
