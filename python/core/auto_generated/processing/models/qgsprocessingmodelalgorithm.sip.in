@@ -578,6 +578,13 @@ run through the designer.
 .. versionadded:: 3.14
 %End
 
+    const QgsProcessingParameterDefinition *modelParameterFromChildIdAndOutputName( const QString &childId, const QString &childOutputName ) const;
+%Docstring
+Given a child algorithm ID and output name, attempts to match it to a parameter definition from the overall model.
+
+.. versionadded:: 3.26
+%End
+
 
   protected:
 

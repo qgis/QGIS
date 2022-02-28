@@ -1369,6 +1369,7 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       // add some metadata so we can easily link this parameter back to the child source
       param->metadata().insert( QStringLiteral( "_modelChildId" ), outputIt->childId() );
       param->metadata().insert( QStringLiteral( "_modelChildOutputName" ), outputIt->name() );
+      param->metadata().insert( QStringLiteral( "_modelChildProvider" ), childIt->algorithm()->provider()->id() );
 
       param->setDescription( outputIt->description() );
       param->setDefaultValue( outputIt->defaultValue() );
