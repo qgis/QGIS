@@ -164,14 +164,14 @@ void QgsGeoreferencerMainWindow::closeEvent( QCloseEvent *e )
       writeSettings();
       clearGCPData();
       removeOldLayer();
-      mRasterFileName.clear();
+      mFileName.clear();
       e->accept();
       return;
     case QgsGeoreferencerMainWindow::GCPDISCARD:
       writeSettings();
       clearGCPData();
       removeOldLayer();
-      mRasterFileName.clear();
+      mFileName.clear();
       e->accept();
       return;
     case QgsGeoreferencerMainWindow::GCPCANCEL:
@@ -187,8 +187,8 @@ void QgsGeoreferencerMainWindow::reset()
                               tr( "Reset georeferencer and clear all GCP points?" ),
                               QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Cancel )
   {
-    mRasterFileName.clear();
-    mModifiedRasterFileName.clear();
+    mFileName.clear();
+    mModifiedFileName.clear();
     mCreateWorldFileOnly = false;
     setWindowTitle( tr( "Georeferencer" ) );
 
@@ -226,34 +226,34 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
     QString filters = QgsProviderRegistry::instance()->fileRasterFilters();
     filters.prepend( otherFiles + QStringLiteral( ";;" ) );
     filters.chop( otherFiles.size() + 2 );
-    mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter, QFileDialog::HideNameFilterDetails );
+    mFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter, QFileDialog::HideNameFilterDetails );
 
-    if ( mRasterFileName.isEmpty() )
+    if ( mFileName.isEmpty() )
       return;
 
     s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastusedfilter" ), lastUsedFilter );
   }
   else
   {
-    mRasterFileName = fileName;
+    mFileName = fileName;
   }
-  mModifiedRasterFileName.clear();
+  mModifiedFileName.clear();
   mCreateWorldFileOnly = false;
 
   QString errMsg;
-  if ( !QgsRasterLayer::isValidRasterFileName( mRasterFileName, errMsg ) )
+  if ( !QgsRasterLayer::isValidRasterFileName( mFileName, errMsg ) )
   {
-    mMessageBar->pushMessage( tr( "Open Raster" ), tr( "%1 is not a supported raster data source.%2" ).arg( mRasterFileName,
+    mMessageBar->pushMessage( tr( "Open Raster" ), tr( "%1 is not a supported raster data source.%2" ).arg( mFileName,
                               !errMsg.isEmpty() ? QStringLiteral( " (%1)" ).arg( errMsg ) : QString() ), Qgis::MessageLevel::Critical );
     return;
   }
 
-  QFileInfo fileInfo( mRasterFileName );
+  QFileInfo fileInfo( mFileName );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/rasterdirectory" ), fileInfo.path() );
 
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
-  mGeorefTransform.loadRaster( mRasterFileName );
-  statusBar()->showMessage( tr( "Raster loaded: %1" ).arg( mRasterFileName ) );
+  mGeorefTransform.loadRaster( mFileName );
+  statusBar()->showMessage( tr( "Raster loaded: %1" ).arg( mFileName ) );
   setWindowTitle( tr( "Georeferencer - %1" ).arg( fileInfo.fileName() ) );
 
   //delete old points
@@ -263,10 +263,10 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   removeOldLayer();
 
   // Add raster
-  addRaster( mRasterFileName );
+  addRaster( mFileName );
 
   // load previously added points
-  mGCPpointsFileName = mRasterFileName + ".points";
+  mGCPpointsFileName = mFileName + ".points";
   QString error;
   ( void )loadGCPs( error );
 
@@ -286,7 +286,7 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   }
 
   mCanvas->clearExtentHistory();
-  mWorldFileName = guessWorldFileName( mRasterFileName );
+  mWorldFileName = guessWorldFileName( mFileName );
 }
 
 void QgsGeoreferencerMainWindow::dropEvent( QDropEvent *event )
@@ -341,11 +341,11 @@ void QgsGeoreferencerMainWindow::doGeoreference()
     {
       if ( mCreateWorldFileOnly )
       {
-        QgisApp::instance()->addRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).completeBaseName(), QString() );
+        QgisApp::instance()->addRasterLayer( mFileName, QFileInfo( mFileName ).completeBaseName(), QString() );
       }
       else
       {
-        QgisApp::instance()->addRasterLayer( mModifiedRasterFileName, QFileInfo( mModifiedRasterFileName ).completeBaseName(), QString() );
+        QgisApp::instance()->addRasterLayer( mModifiedFileName, QFileInfo( mModifiedFileName ).completeBaseName(), QString() );
       }
     }
   }
@@ -353,7 +353,7 @@ void QgsGeoreferencerMainWindow::doGeoreference()
 
 bool QgsGeoreferencerMainWindow::getTransformSettings()
 {
-  QgsTransformSettingsDialog d( mRasterFileName, mModifiedRasterFileName );
+  QgsTransformSettingsDialog d( mFileName, mModifiedFileName );
   d.setTargetCrs( mTargetCrs );
   d.setCreateWorldFileOnly( mCreateWorldFileOnly );
   if ( !d.exec() )
@@ -362,14 +362,14 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
   }
 
   d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
-                          mModifiedRasterFileName, mPdfOutputMapFile, mPdfOutputFile, mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
+                          mModifiedFileName, mPdfOutputMapFile, mPdfOutputFile, mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
   mCreateWorldFileOnly = d.createWorldFileOnly();
   mTargetCrs = d.targetCrs();
 
   mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformParam ) );
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
   mGCPListWidget->setGeorefTransform( &mGeorefTransform );
-  mWorldFileName = guessWorldFileName( mRasterFileName );
+  mWorldFileName = guessWorldFileName( mFileName );
 
   const bool hasReferencing = QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam
                               || mLayer->crs().isValid();
@@ -626,7 +626,7 @@ void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &sourceCoordi
 
 void QgsGeoreferencerMainWindow::loadGCPsDialog()
 {
-  QString selectedFile = mRasterFileName.isEmpty() ? QString() : mRasterFileName + ".points";
+  QString selectedFile = mFileName.isEmpty() ? QString() : mFileName + ".points";
   mGCPpointsFileName = QFileDialog::getOpenFileName( this, tr( "Load GCP Points" ),
                        selectedFile, tr( "GCP file" ) + " (*.points)" );
   if ( mGCPpointsFileName.isEmpty() )
@@ -651,7 +651,7 @@ void QgsGeoreferencerMainWindow::saveGCPsDialog()
     return;
   }
 
-  QString selectedFile = mRasterFileName.isEmpty() ? QString() : mRasterFileName + ".points";
+  QString selectedFile = mFileName.isEmpty() ? QString() : mFileName + ".points";
   mGCPpointsFileName = QFileDialog::getSaveFileName( this, tr( "Save GCP Points" ),
                        selectedFile,
                        tr( "GCP file" ) + " (*.points)" );
@@ -1323,7 +1323,7 @@ bool QgsGeoreferencerMainWindow::georeference()
   else
   {
     QgsImageWarper warper( this );
-    int res = warper.warpFile( mRasterFileName, mModifiedRasterFileName, mGeorefTransform,
+    int res = warper.warpFile( mFileName, mModifiedFileName, mGeorefTransform,
                                mResamplingMethod, mUseZeroForTrans, mCompressionMethod, mTargetCrs, mUserResX, mUserResY );
     if ( res == 0 ) // fault to compute GCP transform
     {
@@ -1333,8 +1333,8 @@ bool QgsGeoreferencerMainWindow::georeference()
     }
     else if ( res == -1 ) // operation canceled
     {
-      QFileInfo fi( mModifiedRasterFileName );
-      fi.dir().remove( mModifiedRasterFileName );
+      QFileInfo fi( mModifiedFileName );
+      fi.dir().remove( mModifiedFileName );
       return false;
     }
     else // 1 all right
@@ -1349,7 +1349,7 @@ bool QgsGeoreferencerMainWindow::georeference()
       }
       if ( mSaveGcp )
       {
-        mGCPpointsFileName = mRasterFileName + QLatin1String( ".points" );
+        mGCPpointsFileName = mFileName + QLatin1String( ".points" );
         saveGCPs();
       }
       return true;
@@ -1550,7 +1550,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   double contentWidth = 210 - ( leftMargin + rightMargin );
 
   //title
-  QFileInfo rasterFi( mRasterFileName );
+  QFileInfo rasterFi( mFileName );
   QgsLayoutItemLabel *titleLabel = new QgsLayoutItemLabel( &layout );
   titleLabel->setTextFormat( titleFormat );
   titleLabel->setText( rasterFi.fileName() );
@@ -1812,9 +1812,9 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
                 .arg( transformedDestinationPoint.x() ).arg( transformedDestinationPoint.y() );
   }
 
-  QFileInfo rasterFileInfo( mRasterFileName );
-  mTranslatedRasterFileName = QDir::tempPath() + '/' + rasterFileInfo.fileName();
-  gdalCommand << QStringLiteral( "\"%1\"" ).arg( mRasterFileName ) << QStringLiteral( "\"%1\"" ).arg( mTranslatedRasterFileName );
+  QFileInfo rasterFileInfo( mFileName );
+  mTranslatedFileName = QDir::tempPath() + '/' + rasterFileInfo.fileName();
+  gdalCommand << QStringLiteral( "\"%1\"" ).arg( mFileName ) << QStringLiteral( "\"%1\"" ).arg( mTranslatedFileName );
 
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
@@ -1851,14 +1851,14 @@ QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resa
     gdalCommand << QStringLiteral( "-t_srs \"%1\"" ).arg( mTargetCrs.toProj().simplified() );
   }
 
-  gdalCommand << QStringLiteral( "\"%1\"" ).arg( mTranslatedRasterFileName ) << QStringLiteral( "\"%1\"" ).arg( mModifiedRasterFileName );
+  gdalCommand << QStringLiteral( "\"%1\"" ).arg( mTranslatedFileName ) << QStringLiteral( "\"%1\"" ).arg( mModifiedFileName );
 
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
 bool QgsGeoreferencerMainWindow::checkReadyGeoref()
 {
-  if ( mRasterFileName.isEmpty() )
+  if ( mFileName.isEmpty() )
   {
     mMessageBar->pushMessage( tr( "No Raster Loaded" ), tr( "Please load raster to be georeferenced." ), Qgis::MessageLevel::Warning );
     return false;
