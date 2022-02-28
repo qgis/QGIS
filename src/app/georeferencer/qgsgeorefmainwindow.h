@@ -46,6 +46,7 @@ class QgsGeorefToolMovePoint;
 class QgsGeorefToolMovePoint;
 class QgsGCPCanvasItem;
 class QgsGcpPoint;
+class QgsMapLayer;
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -70,7 +71,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
   private slots:
     // file
     void reset();
-    void openRaster( const QString &fileName = QString() );
+    void openLayer( QgsMapLayerType layerType, const QString &fileName = QString() );
     void doGeoreference();
     void generateGDALScript();
     bool getTransformSettings();
@@ -115,7 +116,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void saveGCPsDialog();
 
     // settings
-    void showRasterPropertiesDialog();
+    void showLayerPropertiesDialog();
     void showGeorefConfigDialog();
 
     // comfort
@@ -155,8 +156,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void setupConnections();
     void removeOldLayer();
 
-    // Mapcanvas Plugin
-    void addRaster( const QString &file );
+    void loadSource( QgsMapLayerType layerType, const QString &file );
 
     // settings
     void readSettings();
@@ -192,7 +192,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
         bool rasterToWorld = true, uint numSamples = 4 );
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
     int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
-    QString guessWorldFileName( const QString &rasterFileName );
+    QString guessWorldFileName( const QString &sourceFileName );
     bool checkFileExisting( const QString &fileName, const QString &title, const QString &question );
     bool equalGCPlists( const QList<QgsGcpPoint> &list1, const QgsGCPList &list2 );
     void logTransformOptions();
@@ -250,7 +250,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QList< QgsGcpPoint > mSavedPoints;
 
     QgsMapCanvas *mCanvas = nullptr;
-    std::unique_ptr< QgsRasterLayer > mLayer;
+    std::unique_ptr< QgsMapLayer > mLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
