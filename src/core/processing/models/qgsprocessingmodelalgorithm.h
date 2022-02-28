@@ -571,10 +571,17 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     QStringList mParameterOrder;
 
+    static QString safeName( const QString &name, bool capitalize );
+
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch ) const;
 
     QVariantMap parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error ) const;
+
+    /**
+     * Given a child algorithm ID and output name, attempts to match it to a parameter definition from the overall model.
+     */
+    const QgsProcessingParameterDefinition *modelParameterFromChildIdAndOutputName( const QString &childId, const QString &childOutputName ) const;
 
     /**
      * Returns TRUE if an output from a child algorithm is required elsewhere in

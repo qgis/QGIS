@@ -1033,11 +1033,11 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   alg7.addChildAlgorithm( alg7c1 );
   // verify that model has destination parameter created
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg7.destinationParameterDefinitions().at( 0 ) )->originalProvider()->id(), QStringLiteral( "native" ) );
   QCOMPARE( alg7.outputDefinitions().count(), 1 );
-  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
 
@@ -1056,28 +1056,28 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   alg7.addChildAlgorithm( alg7c2 );
 
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 2 );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QVERIFY( alg7.destinationParameterDefinitions().at( 0 )->defaultValue().isNull() );
   QVERIFY( !( alg7.destinationParameterDefinitions().at( 0 )->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx2:my_output2" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "my_output2" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->defaultValue().toString(), QStringLiteral( "my value" ) );
   QVERIFY( !( alg7.destinationParameterDefinitions().at( 1 )->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
   QCOMPARE( alg7.outputDefinitions().count(), 2 );
-  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
-  QCOMPARE( alg7.outputDefinitions().at( 1 )->name(), QStringLiteral( "cx2:my_output2" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 1 )->name(), QStringLiteral( "my_output2" ) );
   QCOMPARE( alg7.outputDefinitions().at( 1 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
 
   alg7.removeChildAlgorithm( QStringLiteral( "cx1" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx2:my_output2" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "my_output2" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
   QCOMPARE( alg7.outputDefinitions().count(), 1 );
-  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx2:my_output2" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "my_output2" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
 
@@ -1270,10 +1270,14 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QMap<QString, QgsProcessingModelOutput> outputs3;
   QgsProcessingModelOutput out2( "MY_OUT" );
   out2.setChildOutputName( "OUTPUT" );
+  out2.setDescription( QStringLiteral( "My output" ) );
   outputs3.insert( QStringLiteral( "MY_OUT" ), out2 );
   alg2c3.setModelOutputs( outputs3 );
 
   model2.addChildAlgorithm( alg2c3 );
+  QVERIFY( model2.parameterDefinition( QStringLiteral( "My_output" ) ) );
+
+  // using older version compatibility
   params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults, expContext, error );
   QVERIFY( error.isEmpty() );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
@@ -1282,6 +1286,19 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   const QgsProcessingOutputLayerDefinition outDef = qvariant_cast<QgsProcessingOutputLayerDefinition>( params.value( "OUTPUT" ) );
   QCOMPARE( outDef.destinationName, QStringLiteral( "MY_OUT" ) );
   QCOMPARE( outDef.sink.staticValue().toString(), QStringLiteral( "memory:" ) );
+  QCOMPARE( params.count(), 3 ); // don't want FAIL_OUTPUT set!
+
+  // using newer version naming
+  modelInputs.remove( QStringLiteral( "cx3:MY_OUT" ) );
+  modelInputs.insert( "my_output", QVariant::fromValue( layerDef ) );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults, expContext, error );
+  QVERIFY( error.isEmpty() );
+  QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
+  QCOMPARE( params.value( "EXPRESSION" ).toString(), QStringLiteral( "true" ) );
+  QVERIFY( params.value( "OUTPUT" ).canConvert<QgsProcessingOutputLayerDefinition>() );
+  const QgsProcessingOutputLayerDefinition outDef2 = qvariant_cast<QgsProcessingOutputLayerDefinition>( params.value( "OUTPUT" ) );
+  QCOMPARE( outDef2.destinationName, QStringLiteral( "MY_OUT" ) );
+  QCOMPARE( outDef2.sink.staticValue().toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 3 ); // don't want FAIL_OUTPUT set!
 
   // a child with an expression which is invalid
@@ -1407,7 +1424,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
                                     "    param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)\n"
                                     "    self.addParameter(param)\n"
                                     "    self.addParameter(QgsProcessingParameterFeatureSink('MyModelOutput', 'my model output', type=QgsProcessing.TypeVectorPolygon, createByDefault=True, supportsAppend=True, defaultValue=None))\n"
-                                    "    self.addParameter(QgsProcessingParameterFeatureSink('cx3:MY_OUT', '', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, defaultValue=None))\n"
+                                    "    self.addParameter(QgsProcessingParameterFeatureSink('MyOutput', 'My output', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, defaultValue=None))\n"
                                     "\n"
                                     "  def processAlgorithm(self, parameters, context, model_feedback):\n"
                                     "    # Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the\n"
@@ -1447,10 +1464,10 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
                                     "      'EXPRESSION': 'true',\n"
                                     "      'INPUT': outputs['FirstStepInMyModel']['OUTPUT'],\n"
                                     "      'OUTPUT': parameters['MY_OUT'],\n"
-                                    "      'OUTPUT': parameters['cx3:MY_OUT']\n"
+                                    "      'OUTPUT': parameters['MyOutput']\n"
                                     "    }\n"
                                     "    outputs['cx3'] = processing.run('native:extractbyexpression', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
-                                    "    results['cx3:MY_OUT'] = outputs['cx3']['OUTPUT']\n"
+                                    "    results['MyOutput'] = outputs['cx3']['OUTPUT']\n"
                                     "    return results\n"
                                     "\n"
                                     "  def name(self):\n"
@@ -1683,7 +1700,7 @@ void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
   alg.addChildAlgorithm( algc1 );
   // verify that model has destination parameter created
   QCOMPARE( alg.destinationParameterDefinitions().count(), 3 );
-  QCOMPARE( alg.destinationParameterDefinitions().at( 2 )->name(), QStringLiteral( "cx1:my_vector_output" ) );
+  QCOMPARE( alg.destinationParameterDefinitions().at( 2 )->name(), QStringLiteral( "my_output_3" ) );
   QCOMPARE( alg.destinationParameterDefinitions().at( 2 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 2 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
   QCOMPARE( static_cast< const QgsProcessingParameterVectorDestination * >( alg.destinationParameterDefinitions().at( 2 ) )->supportedOutputVectorLayerExtensions(), QStringList() << QStringLiteral( "mif" ) );
@@ -1691,7 +1708,7 @@ void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
   QVERIFY( static_cast< const QgsProcessingParameterVectorDestination * >( alg.destinationParameterDefinitions().at( 2 ) )->generateTemporaryDestination().endsWith( QLatin1String( ".mif" ) ) );
   QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 2 ) )->supportsNonFileBasedOutput() );
 
-  QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_raster_output" ) );
+  QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 0 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
   QCOMPARE( static_cast< const QgsProcessingParameterRasterDestination * >( alg.destinationParameterDefinitions().at( 0 ) )->supportedOutputRasterLayerExtensions(), QStringList() << QStringLiteral( "mig" ) );
@@ -1699,7 +1716,7 @@ void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
   QVERIFY( static_cast< const QgsProcessingParameterRasterDestination * >( alg.destinationParameterDefinitions().at( 0 ) )->generateTemporaryDestination().endsWith( QLatin1String( ".mig" ) ) );
   QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 0 ) )->supportsNonFileBasedOutput() );
 
-  QCOMPARE( alg.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx1:my_sink_output" ) );
+  QCOMPARE( alg.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "my_output_2" ) );
   QCOMPARE( alg.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 1 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
   QCOMPARE( static_cast< const QgsProcessingParameterFeatureSink * >( alg.destinationParameterDefinitions().at( 1 ) )->supportedOutputVectorLayerExtensions(), QStringList() << QStringLiteral( "mif" ) );
