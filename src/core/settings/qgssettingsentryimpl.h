@@ -102,7 +102,6 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
      * The \a options arguments specifies the options for the settings entry.
      * The \a minLength argument specifies the minimal length of the string value. 0 means no limit.
      * The \a maxLength argument specifies the maximal length of the string value. -1 means no limit.
-     * By -1 the there is no limit
      */
     QgsSettingsEntryString( const QString &key,
                             QgsSettings::Section section,

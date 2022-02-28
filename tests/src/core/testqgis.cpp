@@ -34,13 +34,14 @@ class TestQgis : public QObject
 {
     Q_OBJECT
 
-  private:
+  public:
     enum class TestEnum : int
     {
       TestEnum1 = 1,
       TestEnum2 = 2,
       TestEnum3 = 6,
     };
+    Q_ENUM( TestEnum )
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
