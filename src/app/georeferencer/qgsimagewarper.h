@@ -31,11 +31,12 @@ class QWidget;
 class QgsImageWarper
 {
     Q_DECLARE_TR_FUNCTIONS( QgsImageWarper )
+    Q_GADGET
 
   public:
     explicit QgsImageWarper( QWidget *parent );
 
-    enum ResamplingMethod
+    enum class ResamplingMethod : int
     {
       NearestNeighbour = GRA_NearestNeighbour,
       Bilinear         = GRA_Bilinear,
@@ -43,6 +44,7 @@ class QgsImageWarper
       CubicSpline      = GRA_CubicSpline,
       Lanczos          = GRA_Lanczos
     };
+    Q_ENUM( ResamplingMethod )
 
     /**
      * Warp the file specified by "input" and write the resulting raster to the file "output".

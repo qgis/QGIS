@@ -68,6 +68,7 @@
 
 #include "qgsgeorefmainwindow.h"
 #include "qgsmessagebar.h"
+#include "qgsvectorwarper.h"
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
@@ -307,7 +308,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   QFileInfo fileInfo( mFileName );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastdirectory" ), fileInfo.path() );
 
-  mGeorefTransform.selectTransformParametrisation( mTransformParam );
+  mGeorefTransform.setMethod( mTransformMethod );
 
 
   switch ( layerType )
@@ -409,60 +410,45 @@ void QgsGeoreferencerMainWindow::dragEnterEvent( QDragEnterEvent *event )
   }
 }
 
-void QgsGeoreferencerMainWindow::doGeoreference()
+bool QgsGeoreferencerMainWindow::showTransformSettingsDialog()
 {
-  if ( georeference() )
-  {
-    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
-    if ( mLoadInQgis )
-    {
-      const QString layerSource = mCreateWorldFileOnly ? mFileName : mModifiedFileName;
-
-      switch ( mLayer->type() )
-      {
-        case QgsMapLayerType::VectorLayer:
-        {
-          QgisApp::instance()->addVectorLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), QStringLiteral( "ogr" ) );
-          break;
-        }
-
-        case QgsMapLayerType::RasterLayer:
-          QgisApp::instance()->addRasterLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), QStringLiteral( "gdal" ) );
-          break;
-
-        case QgsMapLayerType::PluginLayer:
-        case QgsMapLayerType::MeshLayer:
-        case QgsMapLayerType::VectorTileLayer:
-        case QgsMapLayerType::AnnotationLayer:
-        case QgsMapLayerType::PointCloudLayer:
-        case QgsMapLayerType::GroupLayer:
-          break;
-      }
-    }
-  }
-}
-
-bool QgsGeoreferencerMainWindow::getTransformSettings()
-{
-  QgsTransformSettingsDialog d( mFileName, mModifiedFileName );
+  QgsTransformSettingsDialog d( mLayer ? mLayer->type() : QgsMapLayerType::RasterLayer, mFileName, mModifiedFileName );
   d.setTargetCrs( mTargetCrs );
   d.setCreateWorldFileOnly( mCreateWorldFileOnly );
+  d.setTransformMethod( mTransformMethod );
+  d.setResamplingMethod( mResamplingMethod );
+  d.setCompressionMethod( mCompressionMethod );
+  d.setPdfMapFilename( mPdfOutputMapFile );
+  d.setPdfReportFilename( mPdfOutputFile );
+  d.setSaveGcpPoints( mSaveGcp );
+  d.setUseZeroForTransparent( mUseZeroForTrans );
+  d.setLoadInProject( mLoadInQgis );
+  d.setOutputResolution( mUserResX, mUserResY );
+
   if ( !d.exec() )
   {
     return false;
   }
 
-  d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
-                          mModifiedFileName, mPdfOutputMapFile, mPdfOutputFile, mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
+  d.outputResolution( mUserResX, mUserResY );
   mCreateWorldFileOnly = d.createWorldFileOnly();
   mTargetCrs = d.targetCrs();
+  mTransformMethod = d.transformMethod();
+  mResamplingMethod = d.resamplingMethod();
+  mCompressionMethod = d.compressionMethod();
+  mModifiedFileName = d.destinationFilename();
+  mPdfOutputMapFile = d.pdfMapFilename();
+  mPdfOutputFile = d.pdfReportFilename();
+  mSaveGcp = d.saveGcpPoints();
+  mUseZeroForTrans = d.useZeroForTransparent();
+  mLoadInQgis = d.loadInProject();
 
-  mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformParam ) );
-  mGeorefTransform.selectTransformParametrisation( mTransformParam );
+  mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformMethod ) );
+  mGeorefTransform.setMethod( mTransformMethod );
   mGCPListWidget->setGeorefTransform( &mGeorefTransform );
   mWorldFileName = guessWorldFileName( mFileName );
 
-  const bool hasReferencing = QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam
+  const bool hasReferencing = QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformMethod
                               || mLayer->crs().isValid();
   mActionLinkGeorefToQgis->setEnabled( hasReferencing );
   mActionLinkQGisToGeoref->setEnabled( hasReferencing );
@@ -485,37 +471,74 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
 
 void QgsGeoreferencerMainWindow::generateGDALScript()
 {
-  if ( !checkReadyGeoref() )
+  if ( !validate() )
     return;
 
-  switch ( mTransformParam )
+  bool isIncompatibleTransformMethod = false;
+
+  switch ( mTransformMethod )
   {
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
     case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
     {
-      // CAVEAT: generateGDALwarpCommand() relies on some member variables being set
-      // by generateGDALtranslateCommand(), so this method must be called before
-      // gdalwarpCommand*()!
-      QString translateCommand = generateGDALtranslateCommand( false );
-      QString gdalwarpCommand;
-      QString resamplingStr = convertResamplingEnumToString( mResamplingMethod );
-
-      int order = polynomialOrder( mTransformParam );
-      if ( order != 0 )
+      switch ( mLayer->type() )
       {
-        gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCompressionMethod, mUseZeroForTrans, order,
-                          mUserResX, mUserResY );
-        showGDALScript( QStringList() << translateCommand << gdalwarpCommand );
-        break;
+        case QgsMapLayerType::RasterLayer:
+        {
+          // CAVEAT: generateGDALwarpCommand() relies on some member variables being set
+          // by generateGDALtranslateCommand(), so this method must be called before
+          // gdalwarpCommand*()!
+          QString translateCommand = generateGDALtranslateCommand( false );
+          QString gdalwarpCommand;
+          QString resamplingStr = convertResamplingEnumToString( mResamplingMethod );
+
+          int order = polynomialOrder( mTransformMethod );
+          if ( order != 0 )
+          {
+            gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCompressionMethod, mUseZeroForTrans, order,
+                              mUserResX, mUserResY );
+            showGDALScript( QStringList() << translateCommand << gdalwarpCommand );
+          }
+          else
+          {
+            isIncompatibleTransformMethod = true;
+          }
+          break;
+        }
+
+        case QgsMapLayerType::VectorLayer:
+        {
+          const QString command = generateGDALogr2ogrCommand();
+          showGDALScript( QStringList() << command );
+          break;
+        }
+
+        case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
+        case QgsMapLayerType::AnnotationLayer:
+        case QgsMapLayerType::PointCloudLayer:
+        case QgsMapLayerType::GroupLayer:
+          break;
       }
+      break;
     }
-    FALLTHROUGH
-    default:
-      mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
-                                .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) )
-                                , Qgis::MessageLevel::Critical );
+
+    case QgsGcpTransformerInterface::TransformMethod::Linear:
+    case QgsGcpTransformerInterface::TransformMethod::Helmert:
+    case QgsGcpTransformerInterface::TransformMethod::Projective:
+    case QgsGcpTransformerInterface::TransformMethod::InvalidTransform:
+      isIncompatibleTransformMethod = true;
+      break;
+  }
+
+  if ( isIncompatibleTransformMethod )
+  {
+    mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
+                              .arg( QgsGcpTransformerInterface::methodToString( mTransformMethod ) )
+                              , Qgis::MessageLevel::Critical );
   }
 }
 
@@ -933,8 +956,10 @@ void QgsGeoreferencerMainWindow::createActions()
   mActionOpenRaster->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
   connect( mActionOpenRaster, &QAction::triggered, this, [ = ] { openLayer( QgsMapLayerType::RasterLayer ); } );
 
+  connect( mActionOpenVector, &QAction::triggered, this, [ = ] { openLayer( QgsMapLayerType::VectorLayer ); } );
+
   mActionStartGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionStart.svg" ) ) );
-  connect( mActionStartGeoref, &QAction::triggered, this, &QgsGeoreferencerMainWindow::doGeoreference );
+  connect( mActionStartGeoref, &QAction::triggered, this, &QgsGeoreferencerMainWindow::georeference );
 
   mActionGDALScript->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionGDALScript.png" ) ) );
   connect( mActionGDALScript, &QAction::triggered, this, &QgsGeoreferencerMainWindow::generateGDALScript );
@@ -946,7 +971,7 @@ void QgsGeoreferencerMainWindow::createActions()
   connect( mActionSaveGCPpoints, &QAction::triggered, this, &QgsGeoreferencerMainWindow::saveGCPsDialog );
 
   mActionTransformSettings->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
-  connect( mActionTransformSettings, &QAction::triggered, this, &QgsGeoreferencerMainWindow::getTransformSettings );
+  connect( mActionTransformSettings, &QAction::triggered, this, &QgsGeoreferencerMainWindow::showTransformSettingsDialog );
 
   // Edit actions
   mActionAddPoint->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionAddGCPPoint.png" ) ) );
@@ -1081,7 +1106,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
 
   mExtentsChangedRecursionGuard = false;
 
-  mGeorefTransform.selectTransformParametrisation( QgsGcpTransformerInterface::TransformMethod::Linear );
+  mGeorefTransform.setMethod( QgsGcpTransformerInterface::TransformMethod::Linear );
   mGCPsDirty = true;
 
   // Connect main canvas and georef canvas signals so we are aware if any of the viewports change
@@ -1189,7 +1214,7 @@ void QgsGeoreferencerMainWindow::createStatusBar()
   statusBar()->addPermanentWidget( mRotationEdit, 0 );
 
   mTransformParamLabel = createBaseLabelStatus();
-  mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformParam ) );
+  mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformMethod ) );
   mTransformParamLabel->setToolTip( tr( "Current transform parametrisation" ) );
   statusBar()->addPermanentWidget( mTransformParamLabel, 0 );
 
@@ -1319,10 +1344,12 @@ void QgsGeoreferencerMainWindow::readSettings()
   restoreState( s.value( QStringLiteral( "/Plugin-GeoReferencer/uistate" ) ).toByteArray() );
 
   // warp options
-  mResamplingMethod = ( QgsImageWarper::ResamplingMethod )s.value( QStringLiteral( "/Plugin-GeoReferencer/resamplingmethod" ),
-                      QgsImageWarper::NearestNeighbour ).toInt();
-  mCompressionMethod = s.value( QStringLiteral( "/Plugin-GeoReferencer/compressionmethod" ), "NONE" ).toString();
+  mResamplingMethod = qgsEnumKeyToValue( s.value( QStringLiteral( "/Plugin-GeoReferencer/resamplingmethod" ) ).toString(), QgsImageWarper::ResamplingMethod::NearestNeighbour );
+  mCompressionMethod = s.value( QStringLiteral( "/Plugin-GeoReferencer/compressionmethod" ), QStringLiteral( "NONE" ) ).toString();
   mUseZeroForTrans = s.value( QStringLiteral( "/Plugin-GeoReferencer/usezerofortrans" ), false ).toBool();
+  mTransformMethod = qgsEnumKeyToValue( s.value( QStringLiteral( "/Plugin-GeoReferencer/transformmethod" ) ).toString(), QgsGcpTransformerInterface::TransformMethod::InvalidTransform );
+  mSaveGcp = s.value( QStringLiteral( "/Plugin-GeoReferencer/saveGcpPoints" ), false ).toBool();
+  mLoadInQgis = s.value( QStringLiteral( "/Plugin-GeoReferencer/loadInProject" ), true ).toBool();
 }
 
 void QgsGeoreferencerMainWindow::writeSettings()
@@ -1333,10 +1360,12 @@ void QgsGeoreferencerMainWindow::writeSettings()
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/uistate" ), saveState() );
 
   // warp options
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/transformparam" ), static_cast< int >( mTransformParam ) );
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/resamplingmethod" ), mResamplingMethod );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/transformmethod" ), qgsEnumValueToKey( mTransformMethod ) );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/resamplingmethod" ), qgsEnumValueToKey( mResamplingMethod ) );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/compressionmethod" ), mCompressionMethod );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/usezerofortrans" ), mUseZeroForTrans );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/saveGcpPoints" ), mSaveGcp );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/loadInProject" ), mLoadInQgis );
 }
 
 bool QgsGeoreferencerMainWindow::loadGCPs( QString &error )
@@ -1408,11 +1437,11 @@ QgsGeoreferencerMainWindow::SaveGCPs QgsGeoreferencerMainWindow::checkNeedGCPSav
 
 bool QgsGeoreferencerMainWindow::georeference()
 {
-  if ( !checkReadyGeoref() )
+  if ( !validate() )
     return false;
 
-  if ( mCreateWorldFileOnly && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() ||
-                                 QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
+  if ( mLayer->type() == QgsMapLayerType::RasterLayer && mCreateWorldFileOnly && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() ||
+       QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
   {
     QgsPointXY origin;
     double pixelXSize, pixelYSize, rotation;
@@ -1460,39 +1489,127 @@ bool QgsGeoreferencerMainWindow::georeference()
   }
   else
   {
-    QgsImageWarper warper( this );
-    int res = warper.warpFile( mFileName, mModifiedFileName, mGeorefTransform,
-                               mResamplingMethod, mUseZeroForTrans, mCompressionMethod, mTargetCrs, mUserResX, mUserResY );
-    if ( res == 0 ) // fault to compute GCP transform
+    switch ( mLayer->type() )
     {
-      //TODO: be more specific in the error message
-      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::MessageLevel::Critical );
-      return false;
+      case QgsMapLayerType::VectorLayer:
+        return georeferenceVector();
+
+      case QgsMapLayerType::RasterLayer:
+        return georeferenceRaster();
+
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
     }
-    else if ( res == -1 ) // operation canceled
-    {
-      QFileInfo fi( mModifiedFileName );
-      fi.dir().remove( mModifiedFileName );
-      return false;
-    }
-    else // 1 all right
-    {
-      if ( !mPdfOutputFile.isEmpty() )
-      {
-        writePDFReportFile( mPdfOutputFile, mGeorefTransform );
-      }
-      if ( !mPdfOutputMapFile.isEmpty() )
-      {
-        writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
-      }
-      if ( mSaveGcp )
-      {
-        mGCPpointsFileName = mFileName + QLatin1String( ".points" );
-        saveGCPs();
-      }
-      return true;
-    }
+    return false;
   }
+}
+
+bool QgsGeoreferencerMainWindow::georeferenceRaster()
+{
+  QgsImageWarper warper( this );
+  int res = warper.warpFile( mFileName, mModifiedFileName, mGeorefTransform,
+                             mResamplingMethod, mUseZeroForTrans, mCompressionMethod, mTargetCrs, mUserResX, mUserResY );
+  if ( res == 0 ) // fault to compute GCP transform
+  {
+    //TODO: be more specific in the error message
+    mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::MessageLevel::Critical );
+    return false;
+  }
+  else if ( res == -1 ) // operation canceled
+  {
+    QFileInfo fi( mModifiedFileName );
+    fi.dir().remove( mModifiedFileName );
+    return false;
+  }
+  else // 1 all right
+  {
+    if ( !mPdfOutputFile.isEmpty() )
+    {
+      writePDFReportFile( mPdfOutputFile, mGeorefTransform );
+    }
+    if ( !mPdfOutputMapFile.isEmpty() )
+    {
+      writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
+    }
+    if ( mSaveGcp )
+    {
+      mGCPpointsFileName = mFileName + QLatin1String( ".points" );
+      saveGCPs();
+    }
+
+    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
+    if ( mLoadInQgis )
+    {
+      const QString layerSource = mCreateWorldFileOnly ? mFileName : mModifiedFileName;
+      QgisApp::instance()->addRasterLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), QStringLiteral( "gdal" ) );
+    }
+    return true;
+  }
+}
+
+bool QgsGeoreferencerMainWindow::georeferenceVector()
+{
+  QgsVectorWarperTask *task = new QgsVectorWarperTask( mTransformMethod,
+      mPoints.asPoints(), mTargetCrs, qobject_cast< QgsVectorLayer * >( mLayer.get() ), mModifiedFileName );
+
+  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
+  progressDialog->setWindowTitle( tr( "Georeferencer" ) );
+  connect( task, &QgsTask::progressChanged, progressDialog.get(), [ & ]( double progress )
+  {
+    progressDialog->setValue( static_cast< int >( progress ) );
+  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, task, [ & ]
+  {
+    task->cancel();
+  } );
+  progressDialog->show();
+
+  // task is running in a thread, so we don't strictly need to show a blocking progress dialog here... but we don't have a good ui
+  // for illustrating that the task is running in the main window otherwise, so stick with the dialog for now
+  QEventLoop loop;
+  bool result = true;
+  connect( task, &QgsTask::taskCompleted, &loop, [&loop, this]
+  {
+    if ( !mPdfOutputFile.isEmpty() )
+    {
+      writePDFReportFile( mPdfOutputFile, mGeorefTransform );
+    }
+    if ( !mPdfOutputMapFile.isEmpty() )
+    {
+      writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
+    }
+    if ( mSaveGcp )
+    {
+      mGCPpointsFileName = mFileName + QLatin1String( ".points" );
+      saveGCPs();
+    }
+    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Vector layer was successfully georeferenced." ), Qgis::MessageLevel::Success );
+    if ( mLoadInQgis )
+    {
+      QgisApp::instance()->addVectorLayer( mModifiedFileName, QFileInfo( mModifiedFileName ).completeBaseName(), QStringLiteral( "ogr" ) );
+    }
+
+    loop.quit();
+  } );
+
+  connect( task, &QgsTask::taskTerminated, &loop, [&loop, this, task, &result]
+  {
+    if ( task->result() != QgsVectorWarperTask::Result::Canceled )
+    {
+      mMessageBar->pushMessage( tr( "Transform Failed" ), task->errorMessage(), Qgis::MessageLevel::Critical );
+    }
+    loop.quit();
+    result = false;
+  } );
+
+  QgsApplication::taskManager()->addTask( task );
+  loop.exec();
+  return result;
 }
 
 bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, double pixelXSize, double pixelYSize, double rotation )
@@ -1957,6 +2074,50 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
+QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
+{
+  QStringList gdalCommand;
+  gdalCommand << QStringLiteral( "ogr2ogr" );
+
+  for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
+  {
+    const QgsPointXY dest = pt->transformedDestinationPoint( mTargetCrs, QgsProject::instance()->transformContext() );
+    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->sourcePoint().x() ).arg( pt->sourcePoint().y() )
+                .arg( dest.x() ).arg( dest.y() );
+  }
+
+  switch ( mTransformMethod )
+  {
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
+      gdalCommand << QStringLiteral( "-order 1" );
+      break;
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
+      gdalCommand << QStringLiteral( "-order 2" );
+      break;
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
+      gdalCommand << QStringLiteral( "-order 3" );
+      break;
+    default:
+      gdalCommand << QStringLiteral( "-tps" );
+  }
+
+  if ( mTargetCrs.authid().startsWith( QStringLiteral( "EPSG:" ), Qt::CaseInsensitive ) )
+  {
+    gdalCommand << QStringLiteral( "-t_srs %1" ).arg( mTargetCrs.authid() );
+  }
+  else
+  {
+    gdalCommand << QStringLiteral( "-t_srs \"%1\"" ).arg( mTargetCrs.toProj().simplified() );
+  }
+
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( mLayer->providerType(), mLayer->source() );
+  const QString sourcePath = parts.value( QStringLiteral( "path" ) ).toString();
+
+  gdalCommand << QStringLiteral( "\"%1\"" ).arg( mModifiedFileName ) << QStringLiteral( "\"%1\"" ).arg( sourcePath );
+
+  return gdalCommand.join( QLatin1Char( ' ' ) );
+}
+
 QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QString &compress,
     bool useZeroForTrans, int order, double targetResX, double targetResY )
 {
@@ -1994,33 +2155,33 @@ QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resa
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
-bool QgsGeoreferencerMainWindow::checkReadyGeoref()
+bool QgsGeoreferencerMainWindow::validate()
 {
   if ( mFileName.isEmpty() )
   {
-    mMessageBar->pushMessage( tr( "No Raster Loaded" ), tr( "Please load raster to be georeferenced." ), Qgis::MessageLevel::Warning );
+    mMessageBar->pushMessage( tr( "No Layer Loaded" ), tr( "Please load layer to be georeferenced." ), Qgis::MessageLevel::Warning );
     return false;
   }
 
-  if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform == mTransformParam )
+  if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform == mTransformMethod )
   {
     QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set transformation type." ) );
-    getTransformSettings();
+    showTransformSettingsDialog();
     return false;
   }
 
   if ( mCreateWorldFileOnly
-       && ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformParam && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformParam ) )
+       && ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformMethod && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformMethod ) )
   {
-    QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set output raster name." ) );
-    getTransformSettings();
+    QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set output file name." ) );
+    showTransformSettingsDialog();
     return false;
   }
 
   if ( mPoints.count() < static_cast<int>( mGeorefTransform.minimumGcpCount() ) )
   {
     mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %n GCPs. Please define more.", nullptr, mGeorefTransform.minimumGcpCount() )
-                              .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) )
+                              .arg( QgsGcpTransformerInterface::methodToString( mTransformMethod ) )
                               , Qgis::MessageLevel::Critical );
     return false;
   }
@@ -2106,18 +2267,18 @@ QString QgsGeoreferencerMainWindow::convertResamplingEnumToString( QgsImageWarpe
 {
   switch ( resampling )
   {
-    case QgsImageWarper::NearestNeighbour:
+    case QgsImageWarper::ResamplingMethod::NearestNeighbour:
       return QStringLiteral( "near" );
-    case QgsImageWarper::Bilinear:
+    case QgsImageWarper::ResamplingMethod::Bilinear:
       return QStringLiteral( "bilinear" );
-    case QgsImageWarper::Cubic:
+    case QgsImageWarper::ResamplingMethod::Cubic:
       return QStringLiteral( "cubic" );
-    case QgsImageWarper::CubicSpline:
+    case QgsImageWarper::ResamplingMethod::CubicSpline:
       return QStringLiteral( "cubicspline" );
-    case QgsImageWarper::Lanczos:
+    case QgsImageWarper::ResamplingMethod::Lanczos:
       return QStringLiteral( "lanczos" );
   }
-  return QString();
+  BUILTIN_UNREACHABLE
 }
 
 int QgsGeoreferencerMainWindow::polynomialOrder( QgsGeorefTransform::TransformMethod transform )

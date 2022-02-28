@@ -3,6 +3,7 @@
 %Include auto_generated/georeferencing/qgsgcpgeometrytransformer.sip
 %Include auto_generated/georeferencing/qgsgcppoint.sip
 %Include auto_generated/georeferencing/qgsgcptransformer.sip
+%Include auto_generated/georeferencing/qgsvectorwarper.sip
 %Include auto_generated/interpolation/qgsgridfilewriter.sip
 %Include auto_generated/interpolation/qgsidwinterpolator.sip
 %Include auto_generated/interpolation/qgsinterpolator.sip
