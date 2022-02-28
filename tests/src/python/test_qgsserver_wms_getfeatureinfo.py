@@ -255,6 +255,24 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo-values2-text-xml',
                                  'test_project_values.qgz')
 
+    def testGetFeatureInfoSortedByDesigner(self):
+        """Test GetFeatureInfo resolves DRAG&DROP Designer order when use attribute form settings for GetFeatureInfo
+        is checked, see https://github.com/qgis/QGIS/pull/41031
+        """
+        mypath = self.testdata_path + "test_project_values.qgz"
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=layer2&styles=&' +
+                                 'VERSION=1.3.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=926&height=787&srs=EPSG%3A4326' +
+                                 '&bbox=912217,5605059,914099,5606652' +
+                                 '&CRS=EPSG:3857' +
+                                 '&FEATURE_COUNT=10' +
+                                 '&WITH_GEOMETRY=True' +
+                                 '&QUERY_LAYERS=layer3&I=487&J=308',
+                                 'wms_getfeatureinfo-values5-text-xml',
+                                 'test_project_values.qgz')
+
     def testGetFeatureInfoFilterGPKG(self):
         # 'test_project.qgz' ='test_project.qgs' but with a gpkg source + different fid
         # Regression for #8656 Test getfeatureinfo response xml with gpkg datasource
