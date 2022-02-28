@@ -153,7 +153,18 @@ than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSy
   protected:
 
     void writeBaseXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes symbol configuration of this class to the given DOM element
+
+.. versionadded:: 3.26
+%End
+
     void readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads symbol configuration of this class from the given DOM element
+
+.. versionadded:: 3.26
+%End
 
     virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
 

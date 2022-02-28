@@ -302,12 +302,12 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
   double extraZ = extraBoxFactor * bbox.zExtent();
 
   // We keep all points in vertical direction to avoid odd triangulation if points are isolated on top
-  const QgsAABB extentedBBox( bbox.xMin - extraX, -std::numeric_limits<float>::max(), bbox.zMin - extraZ, bbox.xMax + extraX, std::numeric_limits<float>::max(), bbox.zMax + extraZ );
+  const QgsAABB extendedBBox( bbox.xMin - extraX, -std::numeric_limits<float>::max(), bbox.zMin - extraZ, bbox.xMax + extraX, std::numeric_limits<float>::max(), bbox.zMax + extraZ );
 
   for ( int i = properPointsCount; i < outNormal.positions.count(); ++i )
   {
     const  QVector3D pos = outNormal.positions.at( i );
-    if ( extentedBBox.intersects( pos.x(), pos.y(), pos.z() ) )
+    if ( extendedBBox.intersects( pos.x(), pos.y(), pos.z() ) )
     {
       filteredExtraPointData.positions.append( pos );
       vertices.push_back( pos.x() );
@@ -383,8 +383,8 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
     for ( size_t i = 0; i < triangleIndexes.size() / 3; ++i )
     {
       bool atLeastOneInBox = false;
-      bool greaterThanSizeThreshold = false;
-      bool greaterThanHeighThreshold = false;
+      bool greaterThanSize = false;
+      bool greaterThanHeigh = false;
       for ( size_t j = 0; j < 3; j++ )
       {
         QVector3D pos = outNormal.positions.at( triangleIndexes.at( i * 3 + j ) );
@@ -396,21 +396,21 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
           pos2 = outNormal.positions.at( triangleIndexes.at( i * 3 + ( j + 1 ) % 3 ) );
 
         if ( heightFilter )
-          greaterThanHeighThreshold |= std::fabs( pos.y() - pos2.y() ) > heightThreshold;
+          greaterThanHeigh |= std::fabs( pos.y() - pos2.y() ) > heightThreshold;
 
-        if ( sizeFilter && ! greaterThanHeighThreshold )
+        if ( sizeFilter && ! greaterThanHeigh )
         {
           QVector3D pos2 = outNormal.positions.at( triangleIndexes.at( i * 3 + ( j + 1 ) % 3 ) );
           // filter only in the horizontal plan, it is a 2.5D triangulation.
           pos2.setY( 0 );
           pos.setY( 0 );
-          greaterThanSizeThreshold |= pos2.distanceToPoint( pos ) > sizeThreshold;
+          greaterThanSize |= pos2.distanceToPoint( pos ) > sizeThreshold;
         }
 
-        if ( greaterThanSizeThreshold || greaterThanHeighThreshold )
+        if ( greaterThanSize || greaterThanHeigh )
           break;
       }
-      if ( atLeastOneInBox && !greaterThanSizeThreshold && !greaterThanHeighThreshold )
+      if ( atLeastOneInBox && !greaterThanSize && !greaterThanHeigh )
       {
         for ( size_t j = 0; j < 3; j++ )
         {
