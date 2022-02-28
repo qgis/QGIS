@@ -72,14 +72,14 @@ Sets the point size
 Returns the byte stride for the geometries used to for the vertex buffer
 %End
 
-    bool triangulate() const;
+    bool renderAsTriangles() const;
 %Docstring
 Returns whether points are triangulated to render solid surface
 
 .. versionadded:: 3.26
 %End
 
-    void setTriangulate( bool triangulate );
+    void setRenderAsTriangles( bool asTriangles );
 %Docstring
 Sets whether points are triangulated to render solid surface
 
@@ -104,7 +104,7 @@ than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbo
 
     float triangleSizeThreshold() const;
 %Docstring
-Returns the threshold size value for filtering triangles. If the triangles are filtered, triangles with a size greater
+Returns the threshold size value for filtering triangles. If the triangles are filtered, triangles with a side's size greater
 than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setTriangleSizeThreshold`.
 
 .. versionadded:: 3.26
@@ -112,7 +112,7 @@ than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSy
 
     void setTriangleSizeThreshold( float triangleSizeThreshold );
 %Docstring
-Sets the threshold size value for filtering triangles. If the triangles are filtered, triangles with a size greater
+Sets the threshold size value for filtering triangles. If the triangles are filtered, triangles with a side's size greater
 than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setTriangleSizeThreshold`.
 
 .. versionadded:: 3.26

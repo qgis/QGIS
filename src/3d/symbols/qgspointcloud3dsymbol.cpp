@@ -546,28 +546,38 @@ QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
 
 void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
-  const QgsColorRampShader mColorRampShader = colorRampShader();
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::ColorRamp );
-  mat->addParameter( renderingStyle );
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
   mat->addParameter( pointSizeParameter );
-  // Create the texture to pass the color ramp
-  Qt3DRender::QTexture1D *colorRampTexture = nullptr;
-  if ( mColorRampShader.colorRampItemList().count() > 0 )
-  {
-    colorRampTexture = new Qt3DRender::QTexture1D( mat );
-    colorRampTexture->addTextureImage( new QgsColorRampTexture( mColorRampShader, 1 ) );
-    colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
-    colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
-  }
 
-  // Parameters
-  Qt3DRender::QParameter *colorRampTextureParameter = new Qt3DRender::QParameter( "u_colorRampTexture", colorRampTexture );
-  mat->addParameter( colorRampTextureParameter );
-  Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( "u_colorRampCount", mColorRampShader.colorRampItemList().count() );
-  mat->addParameter( colorRampCountParameter );
-  const int colorRampType = mColorRampShader.colorRampType();
-  Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", colorRampType );
-  mat->addParameter( colorRampTypeParameter );
+  if ( !mRenderAsTriangles )
+  {
+    // Create the texture to pass the color ramp
+    const QgsColorRampShader mColorRampShader = colorRampShader();
+    Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::ColorRamp );
+    mat->addParameter( renderingStyle );
+    Qt3DRender::QTexture1D *colorRampTexture = nullptr;
+    if ( mColorRampShader.colorRampItemList().count() > 0 )
+    {
+      colorRampTexture = new Qt3DRender::QTexture1D( mat );
+      colorRampTexture->addTextureImage( new QgsColorRampTexture( mColorRampShader, 1 ) );
+      colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
+      colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
+    }
+
+    // Parameters
+    Qt3DRender::QParameter *colorRampTextureParameter = new Qt3DRender::QParameter( "u_colorRampTexture", colorRampTexture );
+    mat->addParameter( colorRampTextureParameter );
+    Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( "u_colorRampCount", mColorRampShader.colorRampItemList().count() );
+    mat->addParameter( colorRampCountParameter );
+    const int colorRampType = mColorRampShader.colorRampType();
+    Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", colorRampType );
+    mat->addParameter( colorRampTypeParameter );
+  }
+  else
+  {
+    // When we triangulate, the color is passed to the shader instead of the parameter
+    Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::RgbRendering );
+    mat->addParameter( renderingStyle );
+  }
 }
 

@@ -31,7 +31,6 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudrequest.h"
-#include "qgscolorramptexture.h"
 #include "qgspointcloud3dsymbol_p.h"
 
 #include <QtConcurrent>
