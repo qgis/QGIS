@@ -169,7 +169,18 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     bool mFilterTrianglesByHeight = false;
     float mTriangleHeightThreshold = 10.0;
 
+    /**
+     * Writes symbol configuration of this class to the given DOM element
+     *
+     * \since QGIS 3.26
+     */
     void writeBaseXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Reads symbol configuration of this class from the given DOM element
+     *
+     * \since QGIS 3.26
+     */
     void readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     void copyBaseSettings( QgsAbstract3DSymbol *destination ) const override;
