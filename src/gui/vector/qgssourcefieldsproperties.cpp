@@ -258,7 +258,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 
   // Flags
   QgsCheckableComboBox *cb = new QgsCheckableComboBox( mFieldsList );
-  const QList<QgsField::ConfigurationFlag> flagList = qgsEnumMap<QgsField::ConfigurationFlag>().keys();
+  const QList<QgsField::ConfigurationFlag> flagList = qgsEnumList<QgsField::ConfigurationFlag>();
   for ( const QgsField::ConfigurationFlag flag : flagList )
   {
     if ( flag == QgsField::ConfigurationFlag::None )

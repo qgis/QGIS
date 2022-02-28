@@ -34,6 +34,14 @@ class TestQgis : public QObject
 {
     Q_OBJECT
 
+  private:
+    enum class TestEnum : int
+    {
+      TestEnum1 = 1,
+      TestEnum2 = 2,
+      TestEnum3 = 6,
+    };
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -52,6 +60,7 @@ class TestQgis : public QObject
     void testQgsAsConst();
     void testQgsRound();
     void testQgsVariantEqual();
+    void testQgsEnumMapList();
     void testQgsEnumValueToKey();
     void testQgsEnumKeyToValue();
     void testQgsFlagValueToKeys();
@@ -430,6 +439,14 @@ void TestQgis::testQgsVariantEqual()
   // NULL should not be equal to invalid
   QVERIFY( !qgsVariantEqual( QVariant(), QVariant( QVariant::Int ) ) );
 }
+
+void TestQgis::testQgsEnumMapList()
+{
+  QCOMPARE( qgsEnumList<TestEnum>(), QList<TestEnum>( {TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3} ) );
+  QCOMPARE( qgsEnumMap<TestEnum>().keys(), QList<TestEnum>( {TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3} ) );
+  QCOMPARE( qgsEnumMap<TestEnum>().values(), QStringList( {QStringLiteral( "TestEnum1" ), QStringLiteral( "TestEnum2" ), QStringLiteral( "TestEnum3" ) } ) );
+}
+
 
 void TestQgis::testQgsEnumValueToKey()
 {

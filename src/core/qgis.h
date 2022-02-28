@@ -1809,6 +1809,23 @@ namespace std
  * The map has the enum values (int) as keys and the enum keys (QString) as values.
  * The enum must have been declared using Q_ENUM or Q_FLAG.
  */
+template<class T> const QList<T> qgsEnumList() SIP_SKIP
+{
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  QList<T> enumList;
+  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  {
+    enumList.append( static_cast<T>( metaEnum.value( idx ) ) );
+  }
+  return enumList;
+}
+
+/**
+ * Returns a map of all enum entries.
+ * The map has the enum values (int) as keys and the enum keys (QString) as values.
+ * The enum must have been declared using Q_ENUM or Q_FLAG.
+ */
 template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
 {
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
@@ -1816,8 +1833,7 @@ template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
   QMap<T, QString> enumMap;
   for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
   {
-    const char *enumKey = metaEnum.key( idx );
-    enumMap.insert( static_cast<T>( metaEnum.keyToValue( enumKey ) ), QString( enumKey ) );
+    enumMap.insert( static_cast<T>( metaEnum.value( idx ) ), QString( metaEnum.key( idx ) ) );
   }
   return enumMap;
 }

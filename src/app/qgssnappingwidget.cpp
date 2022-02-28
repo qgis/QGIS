@@ -191,7 +191,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), this );
 
 
-  for ( Qgis::SnappingType type : qgsEnumMap<Qgis::SnappingType>().keys() )
+  for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
   {
     if ( type == Qgis::SnappingType::NoSnap )
       continue;
