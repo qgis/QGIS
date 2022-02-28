@@ -98,7 +98,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     void setRenderAsTriangles( bool asTriangles );
 
     /**
-     * Returns whether triangles are filtered by size for rendering. If the triangles are filtered, triangles with a size greater
+     * Returns whether triangles are filtered by size for rendering. If the triangles are filtered by size, triangles with a size greater
      * than a threshold value will not be rendered, see triangleSizeThreshold().
      *
      * \since QGIS 3.26
@@ -106,7 +106,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     bool filterTrianglesBySize() const;
 
     /**
-     * Sets whether triangles are filtered by size for rendering. If the triangles are filtered, triangles with a size greater
+     * Sets whether triangles are filtered by size for rendering. If the triangles are filtered by size, triangles with a size greater
      * than a threshold value will not be rendered, see setTriangleSizeThreshold().
      *
      * \since QGIS 3.26
@@ -114,26 +114,60 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     void setFilterTrianglesBySize( bool filterTriangleBySize );
 
     /**
-     * Returns the threshold size value for filtering triangles. If the triangles are filtered, triangles with a side's size greater
-     * than this threshold value will not be rendered, see setTriangleSizeThreshold().
+     * Returns the threshold size value for filtering triangles. If the triangles are filtered by size, triangles with a side's size greater
+     * than this threshold value will not be rendered, see filterTrianglesBySize().
      *
      * \since QGIS 3.26
      */
     float triangleSizeThreshold() const;
 
     /**
-     * Sets the threshold size value for filtering triangles. If the triangles are filtered, triangles with a side's size greater
-     * than this threshold value will not be rendered, see setTriangleSizeThreshold().
+     * Sets the threshold size value for filtering triangles. If the triangles are filtered by size, triangles with a side's size greater
+     * than this threshold value will not be rendered, see setFilterTrianglesBySize().
      *
      * \since QGIS 3.26
      */
     void setTriangleSizeThreshold( float triangleSizeThreshold );
 
+    /**
+     * Returns whether triangles are filtered by 3D height for rendering. If the triangles are filtered by height, triangles with a 3D height greater
+     * than a threshold value will not be rendered, see triangleHeightThreshold().
+     *
+     * \since QGIS 3.26
+     */
+    bool filterTrianglesByHeight() const;
+
+    /**
+     * Sets whether triangles are filtered by 3D height for rendering. If the triangles are filtered by height, triangles with a 3D height greater
+     * than a threshold value will not be rendered, see setTriangleHeightThreshold().
+     *
+     * \since QGIS 3.26
+     */
+    void setFilterTrianglesByHeight( bool filterTriangleByHeight );
+
+    /**
+     * Returns the threshold 3D height value for filtering triangles. If the triangles are filtered by height, triangles with a side's size greater
+     * than this threshold value will not be rendered, see filterTrianglesByHeight().
+     *
+     * \since QGIS 3.26
+     */
+    float triangleHeightThreshold() const;
+
+    /**
+     * Sets the threshold 3D height value for filtering triangles. If the triangles are filtered by height, triangles with a side's size greater
+     * than this threshold value will not be rendered, see setFilterTrianglesByHeight().
+     *
+     * \since QGIS 3.26
+     */
+    void setTriangleHeightThreshold( float triangleHeightThreshold );
+
   protected:
     float mPointSize = 2.0;
     bool mRenderAsTriangles = false;
     bool mFilterTrianglesBySize = false;
-    float mTriangleSizesThreshold = 10.0;
+    float mTriangleSizeThreshold = 10.0;
+    bool mFilterTrianglesByHeight = false;
+    float mTriangleHeightThreshold = 10.0;
 
     void writeBaseXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
     void readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context );
