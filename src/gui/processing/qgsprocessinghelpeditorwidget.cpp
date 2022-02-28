@@ -28,6 +28,7 @@ const QString QgsProcessingHelpEditorWidget::ALGORITHM_HELP_CREATOR = QStringLit
 const QString QgsProcessingHelpEditorWidget::ALGORITHM_VERSION = QStringLiteral( "ALG_VERSION" );
 const QString QgsProcessingHelpEditorWidget::ALGORITHM_SHORT_DESCRIPTION = QStringLiteral( "SHORT_DESCRIPTION" );
 const QString QgsProcessingHelpEditorWidget::ALGORITHM_HELP_URL = QStringLiteral( "HELP_URL" );
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_EXAMPLES = QStringLiteral( "EXAMPLES" );
 
 
 class QgsProcessingHelpEditorTreeItem : public QTreeWidgetItem
@@ -106,6 +107,8 @@ void QgsProcessingHelpEditorWidget::setAlgorithm( const QgsProcessingAlgorithm *
   {
     outputsItem->addChild( new QgsProcessingHelpEditorTreeItem( output->name(), output->description() ) );
   }
+
+  mElementTree->addTopLevelItem( new QgsProcessingHelpEditorTreeItem( ALGORITHM_EXAMPLES, tr( "Examples" ) ) );
 
   mElementTree->addTopLevelItem( new QgsProcessingHelpEditorTreeItem( ALGORITHM_CREATOR, tr( "Algorithm author" ) ) );
   mElementTree->addTopLevelItem( new QgsProcessingHelpEditorTreeItem( ALGORITHM_HELP_CREATOR, tr( "Help author" ) ) );

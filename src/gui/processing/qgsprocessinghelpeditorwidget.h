@@ -81,6 +81,7 @@ class GUI_EXPORT QgsProcessingHelpEditorWidget : public QWidget, public Ui::QgsP
     static const QString ALGORITHM_VERSION;
     static const QString ALGORITHM_SHORT_DESCRIPTION;
     static const QString ALGORITHM_HELP_URL;
+    static const QString ALGORITHM_EXAMPLES;
 
 };
 
