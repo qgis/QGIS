@@ -342,20 +342,17 @@ GDALResampleAlg QgsImageWarper::toGDALResampleAlg( const QgsImageWarper::Resampl
 {
   switch ( method )
   {
-    case NearestNeighbour:
+    case ResamplingMethod::NearestNeighbour:
       return GRA_NearestNeighbour;
-    case Bilinear:
+    case ResamplingMethod::Bilinear:
       return  GRA_Bilinear;
-    case Cubic:
+    case ResamplingMethod::Cubic:
       return GRA_Cubic;
-    case CubicSpline:
+    case ResamplingMethod::CubicSpline:
       return GRA_CubicSpline;
-    case Lanczos:
+    case ResamplingMethod::Lanczos:
       return GRA_Lanczos;
-    default:
-      break;
-  };
+  }
 
-  //avoid warning
-  return GRA_NearestNeighbour;
+  BUILTIN_UNREACHABLE
 }
