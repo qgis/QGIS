@@ -525,6 +525,13 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     void setDesignerParameterValues( const QVariantMap &values ) { mDesignerParameterValues = values; }
 
+    /**
+     * Given a child algorithm ID and output name, attempts to match it to a parameter definition from the overall model.
+     *
+     * \since QGIS 3.26
+     */
+    const QgsProcessingParameterDefinition *modelParameterFromChildIdAndOutputName( const QString &childId, const QString &childOutputName ) const;
+
 #ifndef SIP_RUN
 
     //! Internal model versions
@@ -577,11 +584,6 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch ) const;
 
     QVariantMap parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error ) const;
-
-    /**
-     * Given a child algorithm ID and output name, attempts to match it to a parameter definition from the overall model.
-     */
-    const QgsProcessingParameterDefinition *modelParameterFromChildIdAndOutputName( const QString &childId, const QString &childOutputName ) const;
 
     /**
      * Returns TRUE if an output from a child algorithm is required elsewhere in

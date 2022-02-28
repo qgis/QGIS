@@ -218,9 +218,8 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
 
     def edit(self, edit_comment=False):
         child_alg = self.model().childAlgorithm(self.component().childId())
-        param_name = '{}:{}'.format(self.component().childId(), self.component().name())
         dlg = ModelerParameterDefinitionDialog(self.model(),
-                                               param=self.model().parameterDefinition(param_name))
+                                               param=self.model().modelParameterFromChildIdAndOutputName(self.component().childId(), self.component().name()))
         dlg.setComments(self.component().comment().description())
         dlg.setCommentColor(self.component().comment().color())
         if edit_comment:
