@@ -27,7 +27,7 @@ QGIS utilities module
 """
 from typing import List, Dict, Optional
 
-from qgis.PyQt.QtCore import QCoreApplication, QDir, QLocale, QThread, qDebug, QUrl
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread, qDebug, QUrl
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QPushButton, QApplication
 from qgis.core import Qgis, QgsMessageLog, qgsfunction, QgsMessageOutput
@@ -618,10 +618,10 @@ def showPluginHelp(packageName: str = None, filename: str = "index", section: st
     if not os.path.exists(helpfile):
         helpfile = os.path.join(path, filename + ".html")
     if os.path.exists(helpfile):
-        url = "file://" + QDir.fromNativeSeparators(helpfile)
+        url = "file://" + helpfile
         if section != "":
             url = url + "#" + section
-        QDesktopServices.openUrl(QUrl(url, QUrl.TolerantMode))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(url))
 
 
 def pluginDirectory(packageName: str) -> str:
