@@ -65,7 +65,7 @@
      <string>Settings</string>
     </property>
     <addaction name="mActionTransformSettings"/>
-    <addaction name="mActionRasterProperties"/>
+    <addaction name="mActionSourceProperties"/>
     <addaction name="mActionGeorefConfig"/>
    </widget>
    <addaction name="menuFile"/>
@@ -340,9 +340,12 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="mActionRasterProperties">
+  <action name="mActionSourceProperties">
    <property name="text">
-    <string>Raster Properties…</string>
+    <string>Source Properties…</string>
+   </property>
+   <property name="toolTip">
+    <string>Source Properties…</string>
    </property>
   </action>
   <action name="mActionMoveGCPPoint">
