@@ -247,6 +247,15 @@ is deleted.
 .. seealso:: :py:func:`updateModelParameter`
 %End
 
+    void changeParameterName( const QString &oldName, const QString &newName );
+%Docstring
+Changes a model parameter's internal name from ``oldName`` to ``newName``.
+
+This method will automatically update all model components to relink using the new name.
+
+.. versionadded:: 3.26
+%End
+
     bool childAlgorithmsDependOnParameter( const QString &name ) const;
 %Docstring
 Returns ``True`` if any child algorithms depend on the model parameter

@@ -1632,6 +1632,94 @@ void QgsProcessingModelAlgorithm::removeModelParameter( const QString &name )
   mParameterComponents.remove( name );
 }
 
+void QgsProcessingModelAlgorithm::changeParameterName( const QString &oldName, const QString &newName )
+{
+  QgsProcessingContext context;
+  QgsExpressionContext expressionContext = createExpressionContext( QVariantMap(), context );
+
+  auto replaceExpressionVariable = [oldName, newName, &expressionContext]( const QString & expressionString ) -> std::tuple< bool, QString >
+  {
+    QgsExpression expression( expressionString );
+    expression.prepare( &expressionContext );
+    QSet<QString> variables = expression.referencedVariables();
+    if ( variables.contains( oldName ) )
+    {
+      QString newExpression = expressionString;
+      newExpression.replace( QStringLiteral( "@%1" ).arg( oldName ), QStringLiteral( "@%2" ).arg( newName ) );
+      return { true, newExpression };
+    }
+    return { false, QString() };
+  };
+
+  QMap< QString, QgsProcessingModelChildAlgorithm >::iterator childIt = mChildAlgorithms.begin();
+  for ( ; childIt != mChildAlgorithms.end(); ++childIt )
+  {
+    bool changed = false;
+    QMap<QString, QgsProcessingModelChildParameterSources> childParams = childIt->parameterSources();
+    QMap<QString, QgsProcessingModelChildParameterSources>::iterator paramIt = childParams.begin();
+    for ( ; paramIt != childParams.end(); ++paramIt )
+    {
+      QList< QgsProcessingModelChildParameterSource > &value = paramIt.value();
+      for ( auto valueIt = value.begin(); valueIt != value.end(); ++valueIt )
+      {
+        switch ( valueIt->source() )
+        {
+          case QgsProcessingModelChildParameterSource::ModelParameter:
+          {
+            if ( valueIt->parameterName() == oldName )
+            {
+              valueIt->setParameterName( newName );
+              changed = true;
+            }
+            break;
+          }
+
+          case QgsProcessingModelChildParameterSource::Expression:
+          {
+            bool updatedExpression = false;
+            QString newExpression;
+            std::tie( updatedExpression, newExpression ) = replaceExpressionVariable( valueIt->expression() );
+            if ( updatedExpression )
+            {
+              valueIt->setExpression( newExpression );
+              changed = true;
+            }
+            break;
+          }
+
+          case QgsProcessingModelChildParameterSource::StaticValue:
+          {
+            if ( valueIt->staticValue().canConvert< QgsProperty >() )
+            {
+              QgsProperty property = valueIt->staticValue().value< QgsProperty >();
+              if ( property.propertyType() == QgsProperty::ExpressionBasedProperty )
+              {
+                bool updatedExpression = false;
+                QString newExpression;
+                std::tie( updatedExpression, newExpression ) = replaceExpressionVariable( property.expressionString() );
+                if ( updatedExpression )
+                {
+                  property.setExpressionString( newExpression );
+                  valueIt->setStaticValue( property );
+                  changed = true;
+                }
+              }
+            }
+            break;
+          }
+
+          case QgsProcessingModelChildParameterSource::ChildOutput:
+          case QgsProcessingModelChildParameterSource::ExpressionText:
+          case QgsProcessingModelChildParameterSource::ModelOutput:
+            break;
+        }
+      }
+    }
+    if ( changed )
+      childIt->setParameterSources( childParams );
+  }
+}
+
 bool QgsProcessingModelAlgorithm::childAlgorithmsDependOnParameter( const QString &name ) const
 {
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();

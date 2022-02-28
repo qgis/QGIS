@@ -218,6 +218,15 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void removeModelParameter( const QString &name );
 
     /**
+     * Changes a model parameter's internal name from \a oldName to \a newName.
+     *
+     * This method will automatically update all model components to relink using the new name.
+     *
+     * \since QGIS 3.26
+     */
+    void changeParameterName( const QString &oldName, const QString &newName );
+
+    /**
      * Returns TRUE if any child algorithms depend on the model parameter
      * with the specified \a name.
      * \see otherParametersDependOnParameter()

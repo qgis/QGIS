@@ -104,6 +104,7 @@ class TestQgsProcessingModelAlgorithm: public QObject
     void modelDependencies();
     void modelSource();
     void modelNameMatchesFileName();
+    void renameModelParameter();
 
   private:
 
@@ -2140,6 +2141,67 @@ void TestQgsProcessingModelAlgorithm::modelNameMatchesFileName()
   QVERIFY( model.modelNameMatchesFilePath() );
   model.setSourceFilePath( QStringLiteral( "/home/me/MY NAME.model3" ) );
   QVERIFY( model.modelNameMatchesFilePath() );
+}
+
+void TestQgsProcessingModelAlgorithm::renameModelParameter()
+{
+  // test renaming a model parameter correctly updates all child algorithm sources
+  // to match
+
+  QgsProcessingModelAlgorithm m;
+  const QgsProcessingModelParameter stringParam1( "oldName" );
+  m.addModelParameter( new QgsProcessingParameterString( "string" ), stringParam1 );
+
+  const QgsProcessingModelParameter stringParam2( "string2" );
+  m.addModelParameter( new QgsProcessingParameterString( "string2" ), stringParam2 );
+
+  QgsProcessingModelChildAlgorithm algc1;
+  algc1.setChildId( QStringLiteral( "cx1" ) );
+  algc1.setAlgorithmId( "native:buffer" );
+
+  algc1.addParameterSources( QStringLiteral( "CHILD_OUTPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "filter" ), QStringLiteral( "VECTOR" ) ) );
+  algc1.addParameterSources( QStringLiteral( "STATIC_VALUE" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromStaticValue( 5 ) );
+  algc1.addParameterSources( QStringLiteral( "STATIC_VALUE_DD_EXPERESSION" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromStaticValue( QgsProperty::fromExpression( QStringLiteral( "@oldName * 2 + @string2" ) ) ) );
+  algc1.addParameterSources( QStringLiteral( "MODEL_PARAM_1" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "oldName" ) ) );
+  algc1.addParameterSources( QStringLiteral( "MODEL_PARAM_2" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "string2" ) ) );
+  algc1.addParameterSources( QStringLiteral( "EXPRESSION" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@oldName * 2 + @string2" ) ) );
+
+  m.addChildAlgorithm( algc1 );
+
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "CHILD_OUTPUT" ) ].constFirst().outputChildId(), QStringLiteral( "filter" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "CHILD_OUTPUT" ) ].constFirst().outputName(), QStringLiteral( "VECTOR" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "STATIC_VALUE" ) ].constFirst().staticValue(), QVariant( 5 ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "STATIC_VALUE_DD_EXPERESSION" ) ].constFirst().staticValue().value< QgsProperty >().expressionString(), QStringLiteral( "@oldName * 2 + @string2" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "MODEL_PARAM_1" ) ].constFirst().parameterName(), QStringLiteral( "oldName" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "MODEL_PARAM_2" ) ].constFirst().parameterName(), QStringLiteral( "string2" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "EXPRESSION" ) ].constFirst().expression(), QStringLiteral( "@oldName * 2 + @string2" ) );
+
+  m.changeParameterName( QStringLiteral( "x" ), QStringLiteral( "y" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "CHILD_OUTPUT" ) ].constFirst().outputChildId(), QStringLiteral( "filter" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "CHILD_OUTPUT" ) ].constFirst().outputName(), QStringLiteral( "VECTOR" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "STATIC_VALUE" ) ].constFirst().staticValue(), QVariant( 5 ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "STATIC_VALUE_DD_EXPERESSION" ) ].constFirst().staticValue().value< QgsProperty >().expressionString(), QStringLiteral( "@oldName * 2 + @string2" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "MODEL_PARAM_1" ) ].constFirst().parameterName(), QStringLiteral( "oldName" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "MODEL_PARAM_2" ) ].constFirst().parameterName(), QStringLiteral( "string2" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "EXPRESSION" ) ].constFirst().expression(), QStringLiteral( "@oldName * 2 + @string2" ) );
+
+  m.changeParameterName( QStringLiteral( "oldName" ), QStringLiteral( "apricot" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "CHILD_OUTPUT" ) ].constFirst().outputChildId(), QStringLiteral( "filter" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "CHILD_OUTPUT" ) ].constFirst().outputName(), QStringLiteral( "VECTOR" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "STATIC_VALUE" ) ].constFirst().staticValue(), QVariant( 5 ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "STATIC_VALUE_DD_EXPERESSION" ) ].constFirst().staticValue().value< QgsProperty >().expressionString(), QStringLiteral( "@apricot * 2 + @string2" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "MODEL_PARAM_1" ) ].constFirst().parameterName(), QStringLiteral( "apricot" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "MODEL_PARAM_2" ) ].constFirst().parameterName(), QStringLiteral( "string2" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "EXPRESSION" ) ].constFirst().expression(), QStringLiteral( "@apricot * 2 + @string2" ) );
+
+  m.changeParameterName( QStringLiteral( "string2" ), QStringLiteral( "int2" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "CHILD_OUTPUT" ) ].constFirst().outputChildId(), QStringLiteral( "filter" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "CHILD_OUTPUT" ) ].constFirst().outputName(), QStringLiteral( "VECTOR" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "STATIC_VALUE" ) ].constFirst().staticValue(), QVariant( 5 ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "STATIC_VALUE_DD_EXPERESSION" ) ].constFirst().staticValue().value< QgsProperty >().expressionString(), QStringLiteral( "@apricot * 2 + @int2" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "MODEL_PARAM_1" ) ].constFirst().parameterName(), QStringLiteral( "apricot" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "MODEL_PARAM_2" ) ].constFirst().parameterName(), QStringLiteral( "int2" ) );
+  QCOMPARE( m.childAlgorithm( QStringLiteral( "cx1" ) ).parameterSources()[ QStringLiteral( "EXPRESSION" ) ].constFirst().expression(), QStringLiteral( "@apricot * 2 + @int2" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModelAlgorithm )
