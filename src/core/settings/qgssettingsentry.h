@@ -70,7 +70,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * The \a section argument specifies the section.
      * The \a defaultValue argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * The \a options argument specifies the options for the settings entry.
      */
     QgsSettingsEntryBase( const QString &key,
                           QgsSettings::Section section,
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     QString description() const;
 
     /**
-     * Returns the former value of the settings if it has been enabled in the options
+     * Returns the former value of the settings if it has been enabled in the options.
      * Returns the current value (or default) if there is no former value.
      * \since QGIS 3.26
      */
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsSettingsEntryBase
   protected:
 
     /**
-     * Sets the settings value with a variant value
+     * Sets the settings value with a variant value.
      * This should be called from any implementation as it takes care of actually calling QSettings
      * \since QGIS 3.26
      */
@@ -390,7 +390,7 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
     T defaultValue() const {return convertFromVariant( defaultValueAsVariant() );}
 
     /**
-     * Returns the former value
+     * Returns the former value.
      * Returns the current value (or default) if there is no former value.
      */
     T formerValue( const QString &dynamicKeyPart = QString() ) const {return convertFromVariant( formerValueAsVariant( dynamicKeyPart ) );}

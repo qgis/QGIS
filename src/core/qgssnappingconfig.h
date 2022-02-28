@@ -76,7 +76,7 @@ class CORE_EXPORT QgsSnappingConfig
     static QString snappingTypeToString( Qgis::SnappingType type );
 
     /**
-     * Convenient method to returns the translated name of the enum type
+     * Convenient method to return the translated name of the enum type
      * Qgis::SnappingTypes.
      * \since QGIS 3.12
      * \deprecated since QGIS 3.26 use Qgis::snappingTypeToString instead

@@ -39,7 +39,7 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
      * The \a section argument specifies the section.
      * The \a defaultValue argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * The \a options argument specifies the options for the settings entry.
      */
     QgsSettingsEntryVariant( const QString &key,
                              QgsSettings::Section section,
