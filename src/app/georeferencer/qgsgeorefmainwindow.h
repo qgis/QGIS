@@ -228,10 +228,10 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsDoubleSpinBox *mRotationEdit = nullptr;
     unsigned int mMousePrecisionDecimalPlaces = 0;
 
-    QString mRasterFileName;
-    QString mModifiedRasterFileName;
+    QString mFileName;
+    QString mModifiedFileName;
     QString mWorldFileName;
-    QString mTranslatedRasterFileName;
+    QString mTranslatedFileName;
     QString mGCPpointsFileName;
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateReferenceSystem mLastGCPProjection;
