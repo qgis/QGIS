@@ -127,7 +127,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QToolBar *toolbar() { return mToolbar; }
     QAction *actionOpen() { return mActionOpen; }
     QAction *actionSaveInProject() { return mActionSaveInProject; }
-    QAction *actionEditHelp() { return mActionEditHelp; }
     QAction *actionRun() { return mActionRun; }
     QgsMessageBar *messageBar() { return mMessageBar; }
     QGraphicsView *view() { return mView; }
@@ -182,6 +181,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void validate();
     void reorderInputs();
     void setPanelVisibility( bool hidden );
+    void editHelp();
 
   private:
 

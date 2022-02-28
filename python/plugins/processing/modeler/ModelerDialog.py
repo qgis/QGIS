@@ -55,7 +55,6 @@ from qgis.gui import (QgsProcessingParameterDefinitionDialog,
 from qgis.utils import iface
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerScene import ModelerScene
@@ -102,7 +101,6 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         self.actionOpen().triggered.connect(self.openModel)
         self.actionSaveInProject().triggered.connect(self.saveInProject)
-        self.actionEditHelp().triggered.connect(self.editHelp)
         self.actionRun().triggered.connect(self.runModel)
 
         if model is not None:
@@ -124,15 +122,6 @@ class ModelerDialog(QgsModelDesignerDialog):
                 return self.processing_context
 
         self.context_generator = ContextGenerator(self.processing_context)
-
-    def editHelp(self):
-        alg = self.model()
-        dlg = HelpEditionDialog(alg)
-        dlg.exec_()
-        if dlg.descriptions:
-            self.beginUndoCommand(self.tr('Edit Model Help'))
-            self.model().setHelpContent(dlg.descriptions)
-            self.endUndoCommand()
 
     def runModel(self):
         valid, errors = self.model().validate()

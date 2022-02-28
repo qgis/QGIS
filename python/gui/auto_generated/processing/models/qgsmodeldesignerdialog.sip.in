@@ -93,7 +93,6 @@ Raise, unminimize and activate this window.
     QToolBar *toolbar();
     QAction *actionOpen();
     QAction *actionSaveInProject();
-    QAction *actionEditHelp();
     QAction *actionRun();
     QgsMessageBar *messageBar();
     QGraphicsView *view();
