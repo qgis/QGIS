@@ -22,6 +22,9 @@ Model based algorithm with processing.
 #include "qgsprocessingmodelalgorithm.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     QgsProcessingModelAlgorithm( const QString &name = QString(), const QString &group = QString(), const QString &groupId = QString() );
 %Docstring
@@ -574,6 +577,7 @@ run through the designer.
 
 .. versionadded:: 3.14
 %End
+
 
   protected:
 
