@@ -384,7 +384,7 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
     {
       bool atLeastOneInBox = false;
       bool greaterThanSize = false;
-      bool greaterThanHeigh = false;
+      bool greaterThanHeight = false;
       for ( size_t j = 0; j < 3; j++ )
       {
         QVector3D pos = outNormal.positions.at( triangleIndexes.at( i * 3 + j ) );
@@ -396,9 +396,9 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
           pos2 = outNormal.positions.at( triangleIndexes.at( i * 3 + ( j + 1 ) % 3 ) );
 
         if ( heightFilter )
-          greaterThanHeigh |= std::fabs( pos.y() - pos2.y() ) > heightThreshold;
+          greaterThanHeight |= std::fabs( pos.y() - pos2.y() ) > heightThreshold;
 
-        if ( sizeFilter && ! greaterThanHeigh )
+        if ( sizeFilter && ! greaterThanHeight )
         {
           QVector3D pos2 = outNormal.positions.at( triangleIndexes.at( i * 3 + ( j + 1 ) % 3 ) );
           // filter only in the horizontal plan, it is a 2.5D triangulation.
@@ -407,10 +407,10 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
           greaterThanSize |= pos2.distanceToPoint( pos ) > sizeThreshold;
         }
 
-        if ( greaterThanSize || greaterThanHeigh )
+        if ( greaterThanSize || greaterThanHeight )
           break;
       }
-      if ( atLeastOneInBox && !greaterThanSize && !greaterThanHeigh )
+      if ( atLeastOneInBox && !greaterThanSize && !greaterThanHeight )
       {
         for ( size_t j = 0; j < 3; j++ )
         {
