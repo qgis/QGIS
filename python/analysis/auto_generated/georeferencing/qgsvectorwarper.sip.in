@@ -68,6 +68,15 @@ A task for warping a vector layer in a background thread.
                          const QgsCoordinateReferenceSystem &destinationCrs,
                          QgsVectorLayer *layer,
                          const QString &fileName );
+%Docstring
+Constructor for QgsVectorWarperTask.
+
+:param method: transformation method
+:param points: GCP point list
+:param destinationCrs: destination layer CRS
+:param layer: source layer
+:param fileName: filename for destination layer
+%End
 
     virtual void cancel();
 
@@ -76,7 +85,7 @@ A task for warping a vector layer in a background thread.
     {
       Success,
       Canceled,
-      Error
+      Error,
     };
 
     Result result() const;
