@@ -222,6 +222,7 @@
     <addaction name="mAddLayerMenu"/>
     <addaction name="mActionEmbedLayers"/>
     <addaction name="mActionAddLayerDefinition"/>
+    <addaction name="mActionShowGeoreferencer"/>
     <addaction name="separator"/>
     <addaction name="mActionCopyStyle"/>
     <addaction name="mActionPasteStyle"/>
@@ -299,7 +300,6 @@
     </property>
     <addaction name="mActionShowRasterCalculator"/>
     <addaction name="mActionShowAlignRasterTool"/>
-    <addaction name="mActionShowGeoreferencer"/>
    </widget>
    <widget class="QMenu" name="mVectorMenu">
     <property name="title">
