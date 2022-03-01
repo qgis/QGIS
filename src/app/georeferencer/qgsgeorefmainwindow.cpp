@@ -1507,22 +1507,35 @@ bool QgsGeoreferencerMainWindow::georeference()
 
 bool QgsGeoreferencerMainWindow::georeferenceRaster()
 {
-  QgsImageWarper warper( this );
-  int res = warper.warpFile( mFileName, mModifiedFileName, mGeorefTransform,
-                             mResamplingMethod, mUseZeroForTrans, mCompressionMethod, mTargetCrs, mUserResX, mUserResY );
-  if ( res == 0 ) // fault to compute GCP transform
+
+  QgsImageWarperTask *task = new QgsImageWarperTask(
+    mFileName,
+    mModifiedFileName,
+    mGeorefTransform,
+    mResamplingMethod,
+    mUseZeroForTrans,
+    mCompressionMethod,
+    mTargetCrs,
+    mUserResX,
+    mUserResY );
+
+  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
+  progressDialog->setWindowTitle( tr( "Georeferencer" ) );
+  connect( task, &QgsTask::progressChanged, progressDialog.get(), [ & ]( double progress )
   {
-    //TODO: be more specific in the error message
-    mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::MessageLevel::Critical );
-    return false;
-  }
-  else if ( res == -1 ) // operation canceled
+    progressDialog->setValue( static_cast< int >( progress ) );
+  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, task, [ & ]
   {
-    QFileInfo fi( mModifiedFileName );
-    fi.dir().remove( mModifiedFileName );
-    return false;
-  }
-  else // 1 all right
+    task->cancel();
+  } );
+  progressDialog->show();
+
+  // task is running in a thread, so we don't strictly need to show a blocking progress dialog here... but we don't have a good ui
+  // for illustrating that the task is running in the main window otherwise, so stick with the dialog for now
+  QEventLoop loop;
+  bool result = true;
+  connect( task, &QgsTask::taskCompleted, &loop, [&loop, this]
   {
     if ( !mPdfOutputFile.isEmpty() )
     {
@@ -1544,8 +1557,45 @@ bool QgsGeoreferencerMainWindow::georeferenceRaster()
       const QString layerSource = mCreateWorldFileOnly ? mFileName : mModifiedFileName;
       QgisApp::instance()->addRasterLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), QStringLiteral( "gdal" ) );
     }
-    return true;
-  }
+
+    loop.quit();
+  } );
+
+  connect( task, &QgsTask::taskTerminated, &loop, [&loop, this, task, &result]
+  {
+    switch ( task->result() )
+    {
+      case QgsImageWarper::Result::Success:
+        break;
+      case QgsImageWarper::Result::Canceled:
+      {
+        QFileInfo fi( mModifiedFileName );
+        fi.dir().remove( mModifiedFileName );
+        break;
+      }
+      case QgsImageWarper::Result::InvalidParameters:
+        mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::MessageLevel::Critical );
+        break;
+      case QgsImageWarper::Result::SourceError:
+        mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Could not read source image." ), Qgis::MessageLevel::Critical );
+        break;
+      case QgsImageWarper::Result::TransformError:
+        mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Error creating GDAL transformation." ), Qgis::MessageLevel::Critical );
+        break;
+      case QgsImageWarper::Result::DestinationCreationError:
+        mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Could not create destination file." ), Qgis::MessageLevel::Critical );
+        break;
+      case QgsImageWarper::Result::WarpFailure:
+        mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Error occurred while warping image." ), Qgis::MessageLevel::Critical );
+        break;
+    }
+    loop.quit();
+    result = false;
+  } );
+
+  QgsApplication::taskManager()->addTask( task );
+  loop.exec();
+  return result;
 }
 
 bool QgsGeoreferencerMainWindow::georeferenceVector()
