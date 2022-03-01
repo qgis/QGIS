@@ -440,6 +440,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
   bool supportsDateTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" );
   bool supportsBinary = false;
+  bool supportIntegerList = false;
+  bool supportInteger64List = false;
+  bool supportDoubleList = false;
   bool supportsStringList = false;
   const char *pszDataTypes = nullptr;
   if ( mOgrOrigLayer )
@@ -455,6 +458,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
     supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
     supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
     supportsBinary = CSLFindString( papszTokens, "Binary" ) >= 0;
+    supportIntegerList = CSLFindString( papszTokens, "IntegerList" ) >= 0;
+    supportInteger64List = CSLFindString( papszTokens, "Integer64List" ) >= 0;
+    supportDoubleList = CSLFindString( papszTokens, "RealList" ) >= 0;
     supportsStringList = CSLFindString( papszTokens, "StringList" ) >= 0;
     CSLDestroy( papszTokens );
   }
@@ -487,6 +493,21 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   {
     nativeTypes
         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), QStringLiteral( "binary" ), QVariant::ByteArray );
+  }
+  if ( supportIntegerList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int );
+  }
+  if ( supportInteger64List )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+  }
+  if ( supportDoubleList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double );
   }
   if ( supportsStringList )
   {
