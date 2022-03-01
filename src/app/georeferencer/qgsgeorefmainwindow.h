@@ -18,6 +18,7 @@
 #include "qgsmapcoordsdialog.h"
 #include "qgsimagewarper.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <memory>
 
