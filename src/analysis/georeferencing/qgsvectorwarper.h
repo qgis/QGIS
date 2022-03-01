@@ -53,7 +53,7 @@ class ANALYSIS_EXPORT QgsVectorWarper
     /**
      * Transforms the features from \a iterator and adds the results to the specified \a sink.
      *
-     * The optional \a feedback argument can be used for progress reporting and cancelation.
+     * The optional \a feedback argument can be used for progress reporting and cancellation.
      *
      * \returns TRUE if all features were successfully transformed
      */
