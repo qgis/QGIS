@@ -17,7 +17,6 @@
 #include <QFileInfo>
 #include <QMessageBox>
 
-#include "qgssettings.h"
 #include "qgsprojectionselectiontreewidget.h"
 #include "qgsapplication.h"
 #include "qgsfilewidget.h"
@@ -34,7 +33,6 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( QgsMapLayerType type, co
   , mSourceFile( source )
 {
   setupUi( this );
-  QgsSettings settings;
   QgsGui::enableAutoGeometryRestore( this );
 
   QgsFileWidget *outputFile = mType == QgsMapLayerType::RasterLayer ? mRasterOutputFile : mVectorOutputFile;
@@ -72,34 +70,30 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( QgsMapLayerType type, co
   mOutputSettingsGroupBox->adjustSize();
 
   outputFile->setDialogTitle( tr( "Destination File" ) );
-  outputFile->setDefaultRoot( settings.value( QStringLiteral( "/Plugin-GeoReferencer/lastSourceDir" ), QDir::homePath() ).toString() );
+  const QString lastDestinationFolder = settingLastDestinationFolder.value();
+  outputFile->setDefaultRoot( lastDestinationFolder.isEmpty() ? QDir::homePath() : lastDestinationFolder );
   connect( outputFile, &QgsFileWidget::fileChanged, this, [ = ]
   {
-    QgsSettings settings;
-    QFileInfo tmplFileInfo( outputFile->filePath() );
-    settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastSourceDir" ), tmplFileInfo.absolutePath() );
+    settingLastDestinationFolder.setValue( QFileInfo( outputFile->filePath() ).absolutePath() );
   } );
 
   mPdfMap->setStorageMode( QgsFileWidget::SaveFile );
   mPdfMap->setFilter( tr( "PDF files" ) + " (*.pdf *.PDF)" );
   mPdfMap->setDialogTitle( tr( "Save Map File As" ) );
-  mPdfMap->setDefaultRoot( settings.value( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() ).toString() );
+  const QString lastPdfFolder = settingLastPdfFolder.value();
+  mPdfMap->setDefaultRoot( lastPdfFolder.isEmpty() ? QDir::homePath() : lastPdfFolder );
   connect( mPdfMap, &QgsFileWidget::fileChanged, this, [ = ]
   {
-    QgsSettings settings;
-    QFileInfo tmplFileInfo( mPdfMap->filePath() );
-    settings.setValue( QStringLiteral( "Plugin-GeoReferencer/lastPDFReportDir" ), tmplFileInfo.absolutePath() );
+    settingLastPdfFolder.setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
   } );
 
   mPdfReport->setStorageMode( QgsFileWidget::SaveFile );
   mPdfReport->setFilter( tr( "PDF files" ) + " (*.pdf *.PDF)" );
   mPdfReport->setDialogTitle( tr( "Save Report File As" ) );
-  mPdfReport->setDefaultRoot( settings.value( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() ).toString() );
+  mPdfReport->setDefaultRoot( lastPdfFolder.isEmpty() ? QDir::homePath() : lastPdfFolder );
   connect( mPdfReport, &QgsFileWidget::fileChanged, this, [ = ]
   {
-    QgsSettings settings;
-    QFileInfo tmplFileInfo( mPdfReport->filePath() );
-    settings.setValue( QStringLiteral( "Plugin-GeoReferencer/lastPDFReportDir" ), tmplFileInfo.absolutePath() );
+    settingLastPdfFolder.setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
   } );
 
   connect( cmbTransformType, &QComboBox::currentTextChanged, this, &QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged );
