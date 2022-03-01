@@ -275,7 +275,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * This should be called from any implementation as it takes care of actually calling QSettings
      * \since QGIS 3.26
      */
-    bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
+    bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList = QStringList() ) const;
 
     /**
      * Transforms a dynamic key part string to list
@@ -541,7 +541,7 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
      * The \a value to set.
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
      */
-    virtual bool setValue( T value, const QString &dynamicKeyPart = QString() ) const
+    bool setValue( T value, const QString &dynamicKeyPart = QString() ) const
     {
       return setValuePrivate( value, dynamicKeyPartToList( dynamicKeyPart ) );
     }
@@ -552,7 +552,7 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
      * The \a value to set.
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
      */
-    virtual bool setValue( T value, const QStringList &dynamicKeyPartList ) const
+    bool setValue( T value, const QStringList &dynamicKeyPartList ) const
     {
       return setValuePrivate( value, dynamicKeyPartList );
     }
