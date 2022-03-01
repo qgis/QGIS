@@ -231,7 +231,7 @@ Returns the current value (or default) if there is no former value.
 
   protected:
 
-    bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
+    bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList = QStringList() ) const;
 %Docstring
 Sets the settings value with a variant value.
 This should be called from any implementation as it takes care of actually calling QSettings
@@ -464,7 +464,7 @@ Returns the settings value for the ``dynamicKeyPartList`` and  with a ``defaultV
    use valueWithDefaultOverride instead
 %End
 
-    virtual bool setValue( T value, const QString &dynamicKeyPart = QString() ) const;
+    bool setValue( T value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Set settings value.
 
@@ -472,7 +472,7 @@ The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
-    virtual bool setValue( T value, const QStringList &dynamicKeyPartList ) const;
+    bool setValue( T value, const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Set settings value.
 

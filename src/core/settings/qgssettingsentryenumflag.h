@@ -34,7 +34,6 @@ template <typename T>
 class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
 {
   public:
-    using QgsSettingsEntryByValue<T>::setValue;
 
     /**
      * Constructor for QgsSettingsEntryEnumFlagBase.
