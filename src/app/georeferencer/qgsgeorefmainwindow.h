@@ -155,7 +155,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void setupConnections();
     void removeOldLayer();
 
-    void loadSource( QgsMapLayerType layerType, const QString &file );
+    void loadSource( QgsMapLayerType layerType, const QString &uri, const QString &provider );
 
     // settings
     void readSettings();

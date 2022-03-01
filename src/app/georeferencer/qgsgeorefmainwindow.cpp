@@ -48,6 +48,7 @@
 #include "qgsmapcoordsdialog.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
+#include "qgsdatasourceselectdialog.h"
 
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
@@ -215,6 +216,8 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   }
 
   QgsSettings s;
+  QString provider;
+  QString uri;
   if ( fileName.isEmpty() )
   {
     QString dir = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastdirectory" ) ).toString();
@@ -238,22 +241,25 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
         if ( mFileName.isEmpty() )
           return;
 
+        provider = QStringLiteral( "gdal" );
+        uri = mFileName;
         s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastusedrasterfilter" ), lastUsedFilter );
         break;
       }
 
       case QgsMapLayerType::VectorLayer:
       {
-        QString lastUsedFilter = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastusedvectorfilter" ), otherFiles ).toString();
-
-        QString filters = QgsProviderRegistry::instance()->fileVectorFilters();
-        filters.prepend( otherFiles + QStringLiteral( ";;" ) );
-        filters.chop( otherFiles.size() + 2 );
-        mFileName = QFileDialog::getOpenFileName( this, tr( "Open Vector" ), dir, filters, &lastUsedFilter, QFileDialog::HideNameFilterDetails );
-        if ( mFileName.isEmpty() )
+        QgsDataSourceSelectDialog dlg( QgisApp::instance()->browserModel(), true, QgsMapLayerType::VectorLayer, this );
+        dlg.setWindowTitle( tr( "Open Vector" ) );
+        if ( !dlg.exec() )
           return;
 
-        s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastusedvectorfilter" ), lastUsedFilter );
+        uri = dlg.uri().uri;
+        provider = dlg.uri().providerKey;
+
+        const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, uri );
+        mFileName = parts.value( QStringLiteral( "path" ) ).toString().isEmpty() ? uri : parts.value( QStringLiteral( "path" ) ).toString();
+
         break;
       }
 
@@ -285,18 +291,8 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
       }
       break;
 
-    case QgsMapLayerType::VectorLayer:
-    {
-      if ( !QgsVectorLayer( mFileName, QStringLiteral( "testvalid" ), QStringLiteral( "ogr" ) ).isValid() )
-      {
-        mMessageBar->pushMessage( tr( "Open Vector" ), tr( "%1 is not a supported vector data source.%2" ).arg( mFileName,
-                                  !errMsg.isEmpty() ? QStringLiteral( " (%1)" ).arg( errMsg ) : QString() ), Qgis::MessageLevel::Critical );
-        return;
-      }
-      break;
-    }
-
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::VectorLayer:
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
@@ -336,7 +332,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   removeOldLayer();
 
   // Add source layer
-  loadSource( layerType, mFileName );
+  loadSource( layerType, uri, provider );
 
   // load previously added points
   mGCPpointsFileName = mFileName + ".points";
@@ -1253,7 +1249,7 @@ void QgsGeoreferencerMainWindow::removeOldLayer()
   mCanvas->refresh();
 }
 
-void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QString &file )
+void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QString &uri, const QString &provider )
 {
   switch ( layerType )
   {
@@ -1262,7 +1258,7 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
       QgsVectorLayer::LayerOptions options( QgsProject::instance()->transformContext() );
       // never prompt for a crs selection for the input layer!
       options.skipCrsValidation = true;
-      mLayer = std::make_unique< QgsVectorLayer >( file, QStringLiteral( "Vector" ), QStringLiteral( "ogr" ), options );
+      mLayer = std::make_unique< QgsVectorLayer >( uri, QStringLiteral( "Vector" ), provider, options );
       break;
     }
 
@@ -1271,7 +1267,7 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
       QgsRasterLayer::LayerOptions options( true, QgsProject::instance()->transformContext() );
       // never prompt for a crs selection for the input raster!
       options.skipCrsValidation = true;
-      mLayer = std::make_unique< QgsRasterLayer >( file, QStringLiteral( "Raster" ), QStringLiteral( "gdal" ), options );
+      mLayer = std::make_unique< QgsRasterLayer >( uri, QStringLiteral( "Raster" ), provider, options );
       break;
     }
 
