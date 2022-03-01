@@ -187,6 +187,24 @@ class CORE_EXPORT QgsSettingsEntryBase
      */
     QgsSettings::Section section() const;
 
+    /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     * \deprecated since QGIS 3.26 use setVariantValuePrivate or an implementation setValue instead
+     */
+    Q_DECL_DEPRECATED virtual bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const SIP_DEPRECATED;
+
+    /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     * \deprecated since QGIS 3.26 use setVariantValuePrivate or an implementation setValue instead
+     */
+    Q_DECL_DEPRECATED virtual bool setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const SIP_DEPRECATED;
+
     //! Returns settings value with the \a dynamicKeyPart argument specifying the dynamic part of the settings key.
     QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
 
