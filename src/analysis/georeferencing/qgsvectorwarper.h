@@ -2,8 +2,8 @@
     qgsvectorwarper.h
      --------------------------------------
     Date                 : February 2022
-    Copyright            : (C) 2022 by Alex (roya0045)
-    Email                :
+    Copyright            : (C) 2022 by Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -88,6 +88,15 @@ class ANALYSIS_EXPORT QgsVectorWarperTask : public QgsTask
 
   public:
 
+    /**
+     * Constructor for QgsVectorWarperTask.
+     *
+     * \param method transformation method
+     * \param points GCP point list
+     * \param destinationCrs destination layer CRS
+     * \param layer source layer
+     * \param fileName filename for destination layer
+     */
     QgsVectorWarperTask( QgsGcpTransformerInterface::TransformMethod method, const QList < QgsGcpPoint > &points,
                          const QgsCoordinateReferenceSystem &destinationCrs,
                          QgsVectorLayer *layer,
@@ -100,7 +109,7 @@ class ANALYSIS_EXPORT QgsVectorWarperTask : public QgsTask
     {
       Success, //!< Warping completed successfully
       Canceled, //!< Task was canceled before completion
-      Error
+      Error, //!< An error occurred while warping
     };
 
     /**

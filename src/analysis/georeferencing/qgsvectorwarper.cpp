@@ -2,8 +2,8 @@
     qgsgcptransformer.cpp
      --------------------------------------
     Date                 : February 2022
-    Copyright            : (C) 2022 by Alex (roya0045)
-    Email                :
+    Copyright            : (C) 2022 by Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
