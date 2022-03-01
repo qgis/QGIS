@@ -28,7 +28,7 @@ jobs:
         - ${{ github.workspace }}:/w
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Update system
         run: dnf -y update
