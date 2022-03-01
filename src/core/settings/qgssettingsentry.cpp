@@ -22,11 +22,7 @@
 
 QString QgsSettingsEntryBase::key( const QString &dynamicKeyPart ) const
 {
-  QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isNull() )
-    dynamicKeyPartList.append( dynamicKeyPart );
-
-  return key( dynamicKeyPartList );
+  return key( dynamicKeyPartToList( dynamicKeyPart ) );
 }
 
 QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
@@ -153,10 +149,7 @@ QgsSettings::Section QgsSettingsEntryBase::section() const
 
 bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString &dynamicKeyPart ) const
 {
-  QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isNull() )
-    dynamicKeyPartList.append( dynamicKeyPart );
-  return setVariantValuePrivate( value, dynamicKeyPartList );
+  return setVariantValuePrivate( value, dynamicKeyPartToList( dynamicKeyPart ) );
 }
 
 bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const
@@ -181,13 +174,17 @@ bool QgsSettingsEntryBase::setVariantValuePrivate( const QVariant &value, const 
   return true;
 }
 
-QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart ) const
+QStringList QgsSettingsEntryBase::dynamicKeyPartToList( const QString &dynamicKeyPart ) const
 {
   QStringList dynamicKeyPartList;
   if ( !dynamicKeyPart.isNull() )
     dynamicKeyPartList.append( dynamicKeyPart );
+  return dynamicKeyPartList;
+}
 
-  return valueAsVariant( dynamicKeyPartList );
+QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart ) const
+{
+  return valueAsVariant( dynamicKeyPartToList( dynamicKeyPart ) );
 }
 
 QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList ) const
@@ -198,11 +195,7 @@ QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPart
 
 QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
 {
-  QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isNull() )
-    dynamicKeyPartList.append( dynamicKeyPart );
-
-  return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride );
+  return valueAsVariant( dynamicKeyPartToList( dynamicKeyPart ), useDefaultValueOverride, defaultValueOverride );
 }
 
 QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
@@ -236,11 +229,7 @@ QString QgsSettingsEntryBase::description() const
 
 QVariant QgsSettingsEntryBase::formerValueAsVariant( const QString &dynamicKeyPart ) const
 {
-  QStringList dynamicKeyPartList;
-  if ( !dynamicKeyPart.isNull() )
-    dynamicKeyPartList.append( dynamicKeyPart );
-
-  return formerValueAsVariant( dynamicKeyPartList );
+  return formerValueAsVariant( dynamicKeyPartToList( dynamicKeyPart ) );
 }
 
 QVariant QgsSettingsEntryBase::formerValueAsVariant( const QStringList &dynamicKeyPartList ) const
