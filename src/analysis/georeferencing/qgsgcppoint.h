@@ -47,7 +47,7 @@ class ANALYSIS_EXPORT QgsGcpPoint
      * \param enabled whether the point is currently enabled
      */
     QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint,
-                 const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled );
+                 const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled = true );
 
     /**
      * Returns the source coordinates.
@@ -84,14 +84,14 @@ class ANALYSIS_EXPORT QgsGcpPoint
     /**
      * Returns the CRS of the destination point.
      *
-     * \see setDestinationCrs()
+     * \see setDestinationPointCrs()
      */
     QgsCoordinateReferenceSystem destinationPointCrs() const;
 
     /**
      * Sets the \a crs of the destination point.
      *
-     * \see destinationCrs()
+     * \see destinationPointCrs()
      */
     void setDestinationPointCrs( const QgsCoordinateReferenceSystem &crs );
 
@@ -110,7 +110,7 @@ class ANALYSIS_EXPORT QgsGcpPoint
     /**
      * Sets whether the point is currently enabled.
      *
-     * \see enabled()
+     * \see isEnabled()
      */
     void setEnabled( bool enabled ) { mEnabled = enabled; }
 
