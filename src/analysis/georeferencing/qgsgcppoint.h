@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT QgsGcpPoint
     /**
      * Constructor for QgsGcpPoint.
      *
-     * \param sourceCoordinates source coordinates. This may either be in pixels (for completely non-referenced images) OR in the source layer CRS.
+     * \param sourcePoint source coordinates. This may either be in pixels (for completely non-referenced images) OR in the source layer CRS.
      * \param destinationPoint destination coordinates
      * \param destinationPointCrs CRS of destination point
      * \param enabled whether the point is currently enabled
