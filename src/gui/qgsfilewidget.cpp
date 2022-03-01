@@ -281,7 +281,7 @@ void QgsFileWidget::openFileDialog()
 
   // if we use a relative path option, we need to obtain the full path
   // first choice is the current file path, if one is entered
-  if ( !mFilePath.isEmpty() && QFile::exists( mFilePath ) )
+  if ( !mFilePath.isEmpty() && ( QFile::exists( mFilePath ) || mStorageMode == SaveFile ) )
   {
     oldPath = relativePath( mFilePath, false );
   }
