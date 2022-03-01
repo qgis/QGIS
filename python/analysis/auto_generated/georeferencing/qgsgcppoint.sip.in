@@ -29,7 +29,7 @@ Contains properties of a ground control point (GCP).
     };
 
     QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint,
-                 const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled );
+                 const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled = true );
 %Docstring
 Constructor for QgsGcpPoint.
 
@@ -75,14 +75,14 @@ Sets the destination coordinates.
 %Docstring
 Returns the CRS of the destination point.
 
-.. seealso:: :py:func:`setDestinationCrs`
+.. seealso:: :py:func:`setDestinationPointCrs`
 %End
 
     void setDestinationPointCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Sets the ``crs`` of the destination point.
 
-.. seealso:: :py:func:`destinationCrs`
+.. seealso:: :py:func:`destinationPointCrs`
 %End
 
     QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
@@ -101,7 +101,7 @@ Returns ``True`` if the point is currently enabled.
 %Docstring
 Sets whether the point is currently enabled.
 
-.. seealso:: :py:func:`enabled`
+.. seealso:: :py:func:`isEnabled`
 %End
 
     bool operator==( const QgsGcpPoint &other ) const;
