@@ -1413,7 +1413,7 @@ class CORE_EXPORT Qgis
     /**
      * Altitude clamping.
      *
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     enum class AltitudeClamping : int
     {
@@ -1426,7 +1426,7 @@ class CORE_EXPORT Qgis
     /**
      * Altitude binding.
      *
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     enum class AltitudeBinding : int
     {
