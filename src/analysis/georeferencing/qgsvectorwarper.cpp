@@ -20,6 +20,7 @@
 #include "qgsfeaturesource.h"
 #include "qgsvectorlayer.h"
 #include <QObject>
+#include <QFileInfo>
 
 QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs )
   : mMethod( method )
@@ -122,6 +123,10 @@ bool QgsVectorWarperTask::run()
   mFeedback = std::make_unique< QgsFeedback >();
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
+
+  const QString fileExtension = QFileInfo( mDestFileName ).completeSuffix();
+  saveOptions.driverName = QgsVectorFileWriter::driverForExtension( fileExtension );
+
   std::unique_ptr< QgsVectorFileWriter > exporter( QgsVectorFileWriter::create( mDestFileName, mFields, mWkbType, mDestinationCrs, mTransformContext, saveOptions ) );
   if ( exporter->hasError() )
   {
