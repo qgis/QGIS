@@ -538,6 +538,18 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.wfs_request_compare(
             "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_0_0_featureid_0')
 
+        # with multiple feature ids
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0,testlayer.2", 'wfs_getFeature_1_0_0_featureid_02')
+
+        # with layer name Testing Layer (copy)
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=Testing_Layer_(copy)&FEATUREID=Testing_Layer_(copy).0", 'wfs_getFeature_1_0_0_featureid_0_testing')
+
+        # with propertynanme *
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0&PROPERTYNAME=*", 'wfs_getFeature_1_0_0_featureid_0')
+
     def test_getFeatureFeature11urn(self):
         """Test GetFeature with SRSNAME urn:ogc:def:crs:EPSG::4326"""
 
