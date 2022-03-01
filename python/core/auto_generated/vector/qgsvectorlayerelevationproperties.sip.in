@@ -59,12 +59,20 @@ with respect to terrain heights.
 %Docstring
 Returns the altitude binding method, which determines how altitude is bound to individual vertices in features.
 
+.. note::
+
+   Binding only relevant for line or polygon feature types -- it is not applicable for point layers.
+
 .. seealso:: :py:func:`setBinding`
 %End
 
     void setBinding( Qgis::AltitudeBinding binding );
 %Docstring
 Sets the altitude ``binding`` method, which determines how altitude is bound to individual vertices in features.
+
+.. note::
+
+   Binding only relevant for line or polygon feature types -- it is not applicable for point layers.
 
 .. seealso:: :py:func:`binding`
 %End

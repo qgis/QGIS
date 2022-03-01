@@ -68,12 +68,16 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     /**
      * Returns the altitude binding method, which determines how altitude is bound to individual vertices in features.
      *
+     * \note Binding only relevant for line or polygon feature types -- it is not applicable for point layers.
+     *
      * \see setBinding()
      */
     Qgis::AltitudeBinding binding() const { return mBinding; }
 
     /**
      * Sets the altitude \a binding method, which determines how altitude is bound to individual vertices in features.
+     *
+     * \note Binding only relevant for line or polygon feature types -- it is not applicable for point layers.
      *
      * \see binding()
      */
