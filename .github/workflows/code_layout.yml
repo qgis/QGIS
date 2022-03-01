@@ -194,11 +194,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Sip Checks
-        run: ./tests/code_layout/test_sipify.sh
+        run: ./tests/code_layout/sipify/test_sipify.sh
       - name: Sip Include Test
-        run: ./tests/code_layout/test_sip_include.sh
+        run: ./tests/code_layout/sipify/test_sip_include.sh
       - name: Sip Files Up To Date
-        run: ./tests/code_layout/test_sipfiles.sh
+        run: ./tests/code_layout/sipify/test_sipfiles.sh
 
   cppcheck_18_04:
     runs-on: ubuntu-18.04
