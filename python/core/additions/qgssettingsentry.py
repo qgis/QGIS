@@ -105,7 +105,6 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             QgsLogger.debug("Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{0}'".format(self.key()))
             return False
 
-        enumFlagKey = str()
         if self.__metaEnum.isFlag():
             enumFlagKey = self.__metaEnum.valueToKeys(value)
         else:
@@ -116,6 +115,8 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
 
         if type(dynamicKeyPart) == str:
             dynamicKeyPart = [dynamicKeyPart]
+        elif dynamicKeyPart is None:
+            dynamicKeyPart = []
 
         return super().setVariantValuePrivate(enumFlagKey, dynamicKeyPart)
 
