@@ -38,7 +38,7 @@ Constructor for QgsVectorWarper.
 %Docstring
 Transforms the features from ``iterator`` and adds the results to the specified ``sink``.
 
-The optional ``feedback`` argument can be used for progress reporting and cancelation.
+The optional ``feedback`` argument can be used for progress reporting and cancellation.
 
 :return: ``True`` if all features were successfully transformed
 %End
