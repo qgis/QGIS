@@ -58,6 +58,7 @@ class QgsImageWarper
       DestinationCreationError, //!< Error creating destination file
       WarpFailure, //!< Failed warping source
     };
+    Q_ENUM( Result )
 
     /**
      * Warp the file specified by "input" and write the resulting raster to the file "output".
