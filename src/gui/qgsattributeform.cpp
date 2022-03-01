@@ -59,7 +59,6 @@
 #include <QFile>
 #include <QFormLayout>
 #include <QGridLayout>
-#include <QGroupBox>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QPushButton>
@@ -1088,7 +1087,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 
     QgsExpressionContext context = createExpressionContext( ft );
 
-    // Recheck visibility for all containers which are controlled by this value
+    // Recheck visibility/collapsed state for all containers which are controlled by this value
     const QVector<ContainerInformation *> infos = mContainerInformationDependency.value( eww->field().name() );
     for ( ContainerInformation *info : infos )
     {
@@ -1101,7 +1100,7 @@ void QgsAttributeForm::updateContainersVisibility()
 {
   QgsExpressionContext context = createExpressionContext( mFeature );
 
-  const QVector<ContainerInformation *> infos = mContainerVisibilityInformation;
+  const QVector<ContainerInformation *> infos = mContainerVisibilityCollapsedInformation;
 
   for ( ContainerInformation *info : infos )
   {
@@ -1224,9 +1223,9 @@ bool QgsAttributeForm::currentFormValuesFeature( QgsFeature &feature )
 
 void QgsAttributeForm::registerContainerInformation( QgsAttributeForm::ContainerInformation *info )
 {
-  mContainerVisibilityInformation.append( info );
+  mContainerVisibilityCollapsedInformation.append( info );
 
-  const QSet<QString> referencedColumns = info->expression.referencedColumns();
+  const QSet<QString> referencedColumns = info->expression.referencedColumns().unite( info->collapsedExpression.referencedColumns() );
 
   for ( const QString &col : referencedColumns )
   {
@@ -1611,9 +1610,9 @@ void QgsAttributeForm::init()
           tabWidget = nullptr;
           WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
           layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
-          if ( containerDef->visibilityExpression().enabled() )
+          if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
           {
-            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
           }
           column += 2;
         }
@@ -2232,12 +2231,13 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       QWidget *myContainer = nullptr;
       if ( container->isGroupBox() )
       {
-        QGroupBox *groupBox = new QGroupBox( parent );
+        QgsCollapsibleGroupBoxBasic *groupBox = new QgsCollapsibleGroupBoxBasic();
         widgetName = QStringLiteral( "QGroupBox" );
         if ( container->showLabel() )
           groupBox->setTitle( container->name() );
         myContainer = groupBox;
         newWidgetInfo.widget = myContainer;
+        groupBox->setCollapsed( container->collapsed() );
       }
       else
       {
@@ -2274,9 +2274,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         if ( childDef->type() == QgsAttributeEditorElement::AeTypeContainer )
         {
           QgsAttributeEditorContainer *containerDef = static_cast<QgsAttributeEditorContainer *>( childDef );
-          if ( containerDef->visibilityExpression().enabled() )
+          if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
           {
-            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
           }
         }
 
@@ -2679,9 +2679,10 @@ void QgsAttributeForm::setExtraContextScope( QgsExpressionContextScope *extraSco
 
 void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expressionContext )
 {
-  bool newVisibility = expression.evaluate( expressionContext ).toBool();
 
-  if ( newVisibility != isVisible )
+  const bool newVisibility = expression.evaluate( expressionContext ).toBool();
+
+  if ( expression.isValid() && ! expression.hasEvalError() && newVisibility != isVisible )
   {
     if ( tabWidget )
     {
@@ -2693,6 +2694,19 @@ void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expres
     }
 
     isVisible = newVisibility;
+  }
+
+  const bool newCollapsedState = collapsedExpression.evaluate( expressionContext ).toBool();
+
+  if ( collapsedExpression.isValid() && ! collapsedExpression.hasEvalError() && newCollapsedState != isCollapsed )
+  {
+
+    QgsCollapsibleGroupBoxBasic *collapsibleGroupBox { qobject_cast<QgsCollapsibleGroupBoxBasic *>( widget ) };
+    if ( collapsibleGroupBox )
+    {
+      collapsibleGroupBox->setCollapsed( newCollapsedState );
+      isCollapsed = newCollapsedState;
+    }
   }
 }
 

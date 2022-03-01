@@ -52,6 +52,28 @@ Returns if this container is going to be rendered as a group box
 :return: ``True`` if it will be a group box, ``False`` if it will be a tab
 %End
 
+    bool collapsed() const;
+%Docstring
+For containers rendedered a group box returns if this group box is collapsed.
+
+:return: ``True`` if the group box, ``False`` otherwise.
+
+.. seealso:: :py:func:`collapsed`
+
+.. seealso:: :py:func:`setCollapsed`
+
+.. versionadded:: 3.26
+%End
+    void setCollapsed( bool collapsed );
+%Docstring
+For containers rendedered a group box sets if this group box is ``collapsed``.
+
+.. seealso:: :py:func:`collapsed`
+
+.. seealso:: :py:func:`setCollapsed`
+
+.. versionadded:: 3.26
+%End
     QList<QgsAttributeEditorElement *> children() const;
 %Docstring
 Gets a list of the children elements of this container
@@ -112,6 +134,26 @@ show or hide this container based on an expression incorporating
 the field value controlled by editor widgets.
 
 .. versionadded:: 3.0
+%End
+
+    QgsOptionalExpression collapsedExpression() const;
+%Docstring
+The collapsed expression is used in the attribute form to
+set the collapsed status of the group box container container based on an expression incorporating
+the field value controlled by editor widgets. This property is ignored if the container is not
+rendered as a group box.
+
+.. versionadded:: 3.26
+%End
+
+    void setCollapsedExpression( const QgsOptionalExpression &collapsedExpression );
+%Docstring
+The visibility expression is used in the attribute form to
+set the collapsed status of the group box of this container based on an expression incorporating
+the field value controlled by editor widgets. This property is ignored if the container is not
+rendered as a group box.
+
+.. versionadded:: 3.26
 %End
 
     QColor backgroundColor() const;

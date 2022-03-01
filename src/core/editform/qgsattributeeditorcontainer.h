@@ -67,6 +67,25 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     virtual bool isGroupBox() const { return mIsGroupBox; }
 
     /**
+     * For containers rendedered a group box returns if this group box is collapsed.
+     *
+     * \returns TRUE if the group box, FALSE otherwise.
+     * \see collapsed()
+     * \see setCollapsed()
+     * \since QGIS 3.26
+     */
+    bool collapsed() const { return mCollapsed; };
+
+    /**
+     * For containers rendedered a group box sets if this group box is \a collapsed.
+     *
+     * \see collapsed()
+     * \see setCollapsed()
+     * \since QGIS 3.26
+     */
+    void setCollapsed( bool collapsed ) { mCollapsed = collapsed; };
+
+    /**
      * Gets a list of the children elements of this container
      *
      * \returns A list of elements
@@ -128,6 +147,26 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 
     /**
+     * The collapsed expression is used in the attribute form to
+     * set the collapsed status of the group box container container based on an expression incorporating
+     * the field value controlled by editor widgets. This property is ignored if the container is not
+     * rendered as a group box.
+     *
+     * \since QGIS 3.26
+     */
+    QgsOptionalExpression collapsedExpression() const;
+
+    /**
+     * The visibility expression is used in the attribute form to
+     * set the collapsed status of the group box of this container based on an expression incorporating
+     * the field value controlled by editor widgets. This property is ignored if the container is not
+     * rendered as a group box.
+     *
+     * \since QGIS 3.26
+     */
+    void setCollapsedExpression( const QgsOptionalExpression &collapsedExpression );
+
+    /**
      * \brief backgroundColor
      * \return background color of the container
      * \since QGIS 3.8
@@ -149,6 +188,8 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     int mColumnCount;
     QgsOptionalExpression mVisibilityExpression;
     QColor mBackgroundColor;
+    bool mCollapsed = false;
+    QgsOptionalExpression mCollapsedExpression;
 };
 
 

@@ -137,11 +137,33 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         bool showAsGroupBox() const;
         void setShowAsGroupBox( bool showAsGroupBox );
 
+        /**
+         * For containers rendedered a group box returns if this group box is collapsed.
+         *
+         * \returns TRUE if the group box, FALSE otherwise.
+         * \see collapsed()
+         * \see setCollapsed()
+         * \since QGIS 3.26
+         */
+        bool collapsed() const { return mCollapsed; };
+
+        /**
+         * For containers rendedered a group box sets if this group box is \a collapsed.
+         *
+         * \see collapsed()
+         * \see setCollapsed()
+         * \since QGIS 3.26
+         */
+        void setCollapsed( bool collapsed ) { mCollapsed = collapsed; };
+
         bool showLabel() const;
         void setShowLabel( bool showLabel );
 
         QgsOptionalExpression visibilityExpression() const;
-        void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
+        void setVisibilityExpression( const QgsOptionalExpression &collapsedExpression );
+
+        QgsOptionalExpression collapsedExpression() const;
+        void setCollapsedExpression( const QgsOptionalExpression &collapsedExpression );
 
         RelationEditorConfiguration relationEditorConfiguration() const;
         void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
@@ -167,6 +189,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QmlElementEditorConfiguration mQmlElementEditorConfiguration;
         HtmlElementEditorConfiguration mHtmlElementEditorConfiguration;
         QColor mBackgroundColor;
+        bool mCollapsed = false;
+        QgsOptionalExpression mCollapsedExpression;
     };
 
 
