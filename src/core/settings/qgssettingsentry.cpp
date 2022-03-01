@@ -151,6 +151,19 @@ QgsSettings::Section QgsSettingsEntryBase::section() const
   return mSection;
 }
 
+bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString &dynamicKeyPart ) const
+{
+  QStringList dynamicKeyPartList;
+  if ( !dynamicKeyPart.isNull() )
+    dynamicKeyPartList.append( dynamicKeyPart );
+  return setVariantValuePrivate( value, dynamicKeyPartList );
+}
+
+bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const
+{
+  return setVariantValuePrivate( value, dynamicKeyPartList );
+}
+
 bool QgsSettingsEntryBase::setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const
 {
   if ( mOptions.testFlag( Qgis::SettingsOption::SaveFormerValue ) )

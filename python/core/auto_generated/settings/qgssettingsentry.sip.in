@@ -132,6 +132,28 @@ The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the sett
 Returns settings section. The settings section of the parent group is returned if available.
 %End
 
+ virtual bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const /Deprecated/;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+
+.. deprecated:: QGIS 3.26
+   use setVariantValuePrivate or an implementation setValue instead
+%End
+
+ virtual bool setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const /Deprecated/;
+%Docstring
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+
+.. deprecated:: QGIS 3.26
+   use setVariantValuePrivate or an implementation setValue instead
+%End
+
     QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Returns settings value with the ``dynamicKeyPart`` argument specifying the dynamic part of the settings key.
