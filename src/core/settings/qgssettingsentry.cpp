@@ -195,7 +195,9 @@ QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPart
 
 QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return valueAsVariant( dynamicKeyPartToList( dynamicKeyPart ), useDefaultValueOverride, defaultValueOverride );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
