@@ -442,7 +442,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   bool supportsBinary = false;
   bool supportIntegerList = false;
   bool supportInteger64List = false;
-  bool supportDoubleList = false;
+  bool supportRealList = false;
   bool supportsStringList = false;
   const char *pszDataTypes = nullptr;
   if ( mOgrOrigLayer )
@@ -460,7 +460,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
     supportsBinary = CSLFindString( papszTokens, "Binary" ) >= 0;
     supportIntegerList = CSLFindString( papszTokens, "IntegerList" ) >= 0;
     supportInteger64List = CSLFindString( papszTokens, "Integer64List" ) >= 0;
-    supportDoubleList = CSLFindString( papszTokens, "RealList" ) >= 0;
+    supportRealList = CSLFindString( papszTokens, "RealList" ) >= 0;
     supportsStringList = CSLFindString( papszTokens, "StringList" ) >= 0;
     CSLDestroy( papszTokens );
   }
@@ -504,7 +504,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
     nativeTypes
         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
   }
-  if ( supportDoubleList )
+  if ( supportRealList )
   {
     nativeTypes
         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double );
