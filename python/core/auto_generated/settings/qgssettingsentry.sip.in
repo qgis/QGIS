@@ -239,6 +239,13 @@ This should be called from any implementation as it takes care of actually calli
 .. versionadded:: 3.26
 %End
 
+    QStringList dynamicKeyPartToList( const QString &dynamicKeyPart ) const;
+%Docstring
+Transforms a dynamic key part string to list
+
+.. versionadded:: 3.26
+%End
+
 };
 
 

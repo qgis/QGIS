@@ -277,6 +277,12 @@ class CORE_EXPORT QgsSettingsEntryBase
      */
     bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
 
+    /**
+     * Transforms a dynamic key part string to list
+     * \since QGIS 3.26
+     */
+    QStringList dynamicKeyPartToList( const QString &dynamicKeyPart ) const;
+
   private:
     QString formerValuekey( const QStringList &dynamicKeyPartList ) const;
 
@@ -387,10 +393,7 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
      */
     bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const
     {
-      QStringList dynamicKeyPartList;
-      if ( !dynamicKeyPart.isNull() )
-        dynamicKeyPartList.append( dynamicKeyPart );
-      return setValuePrivate( value, dynamicKeyPartList );
+      return setValuePrivate( value, dynamicKeyPartToList( dynamicKeyPart ) );
     }
 
     /**
@@ -540,10 +543,7 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
      */
     virtual bool setValue( T value, const QString &dynamicKeyPart = QString() ) const
     {
-      QStringList dynamicKeyPartList;
-      if ( !dynamicKeyPart.isNull() )
-        dynamicKeyPartList.append( dynamicKeyPart );
-      return setValuePrivate( value, dynamicKeyPartList );
+      return setValuePrivate( value, dynamicKeyPartToList( dynamicKeyPart ) );
     }
 
     /**
