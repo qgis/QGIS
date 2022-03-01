@@ -6,7 +6,7 @@
 #include "mdal_h2i.hpp"
 
 #include <fstream>
-#include <nlohmann_json/json.hpp>
+#include <nlohmann/json.hpp>
 #include <gdal.h>
 #include <cpl_string.h>
 
