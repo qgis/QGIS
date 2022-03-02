@@ -55,6 +55,8 @@ class TestQgsAdvancedDigitizing: public QObject
     void currentPointWhenSanpping();
     void currentPointWhenSanppingWithDiffCanvasCRS();
 
+    void releaseLockAfterDisable();
+
   private:
     TestQgsMapToolAdvancedDigitizingUtils getMapToolDigitizingUtils( QgsVectorLayer *layer );
     QString getWktFromLastAddedFeature( TestQgsMapToolAdvancedDigitizingUtils utils, QSet<QgsFeatureId> oldFeatures );
@@ -853,6 +855,103 @@ void TestQgsAdvancedDigitizing::currentPointWhenSanppingWithDiffCanvasCRS()
   // on a self point
   utils.mouseMove( 25, 0.1 );
   QGSCOMPARENEARPOINT( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 25, 0 ), 0.000001 );
+}
+
+void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
+{
+  // activate advanced digitizing
+  getMapToolDigitizingUtils( mLayer4326 );
+
+  QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
+            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintX()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintY()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintZ()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintM()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  // enable some constraints
+  mAdvancedDigitizingDockWidget->setAngle( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setX( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setY( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setZ( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setM( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
+            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintX()->isLocked() );
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintY()->isLocked() );
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintZ()->isLocked() );
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintM()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  // disable advanced digitizing
+  mAdvancedDigitizingDockWidget->enableAction()->trigger();
+
+  QVERIFY( !mAdvancedDigitizingDockWidget->cadEnabled() );
+
+  // all constraints should be deactivated
+  QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
+            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintX()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintY()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintZ()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintM()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  // activate advanced digitizing
+  mAdvancedDigitizingDockWidget->enableAction()->trigger();
+
+  // enable another constraints
+  mAdvancedDigitizingDockWidget->lockBetweenLineConstraint( QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::Perpendicular );
+  mAdvancedDigitizingDockWidget->mXyVertexAction->trigger();
+  mAdvancedDigitizingDockWidget->mLineExtensionAction->trigger();
+
+  QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
+            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::Perpendicular );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintX()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintY()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintZ()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintM()->isLocked() );
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  // disable advanced digitizing
+  mAdvancedDigitizingDockWidget->enableAction()->trigger();
+
+  QVERIFY( !mAdvancedDigitizingDockWidget->cadEnabled() );
+
+  // all constraints should be deactivated
+  QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
+           QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintX()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintY()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintZ()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintM()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  // to be compliant with the integration
+  mAdvancedDigitizingDockWidget->enableAction()->trigger();
 }
 
 QGSTEST_MAIN( TestQgsAdvancedDigitizing )

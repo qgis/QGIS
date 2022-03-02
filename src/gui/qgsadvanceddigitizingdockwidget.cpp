@@ -338,6 +338,12 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   mToggleFloaterAction->setEnabled( enabled );
   mConstructionAction->setEnabled( enabled );
 
+  if ( !enabled )
+  {
+    mLineExtensionAction->setChecked( false );
+    mXyVertexAction->setChecked( false );
+  }
+
   clear();
   setConstructionMode( false );
 
@@ -537,6 +543,11 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
   // release all locks except construction mode
 
   lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
+
+  mXyVertexConstraint->setLockMode( CadConstraint::NoLock );
+  emit softLockXyChanged( false );
+  mLineExtensionConstraint->setLockMode( CadConstraint::NoLock );
+  emit softLockLineExtensionChanged( false );
 
   if ( releaseRepeatingLocks || !mAngleConstraint->isRepeatingLock() )
   {
@@ -1296,6 +1307,8 @@ bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent *e )
 void QgsAdvancedDigitizingDockWidget::clear()
 {
   clearPoints();
+  mLockedSnapVertices.clear();
+
   releaseLocks();
 }
 
