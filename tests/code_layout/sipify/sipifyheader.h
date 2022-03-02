@@ -121,7 +121,20 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     enum OneLiner { Success, NoSuccess };
 
-    static const inline QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> settingsDigitizingDefaultSnapType = QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes>( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSettings::NoSection, QgsSnappingConfig::VertexFlag );
+    void makePrivate( int a ) SIP_MAKE_PRIVATE;
+
+    void publicMethodInBetween1();
+
+    void makePrivateMultiline( int a,
+                               int b ) SIP_MAKE_PRIVATE;
+
+    void publicMethodInBetween2();
+
+    bool makePrivateMultilineImpl( int a,
+                                   int b ) SIP_MAKE_PRIVATE
+    {return false}
+
+    static const inline QgsSettingsEntryEnumFlag<Qgis::SnappingType> settingsDigitizingDefaultSnapType = QgsSettingsEntryEnumFlag<Qgis::SnappingType>( QStringLiteral( "/qgis/digitizing/default_snap_type" ), Qgis::SnappingType::VertexFlag );
 
     /**
      * Docstring headers for structs are not supported by sip (as of 4.18) and
@@ -190,7 +203,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void multilineMethod( const QgsPointXY &startPoint,
                           QgsFeatureId featureId,
                           QgsVectorLayer *vl,
-                          QgsSnappingResult::SnappingType snap_to ) const;
+                          Qgis::SnappingType snap_to ) const;
 
     // Adding SIP_SKIP at the end of a line will discard this line
     bool thisShouldBeSkipped() const SIP_SKIP;
