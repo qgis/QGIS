@@ -54,10 +54,20 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   if ( !mLayer )
     return;
 
+  if ( !QgsWkbTypes::hasZ( mLayer->wkbType() ) )
+  {
+    const int clampingIndex = mComboClamping->findData( static_cast< int >( Qgis::AltitudeClamping::Relative ) );
+    if ( clampingIndex >= 0 )
+      mComboClamping->removeItem( clampingIndex );
+  }
+
   mBlockUpdates = true;
   const QgsVectorLayerElevationProperties *props = qgis::down_cast< const QgsVectorLayerElevationProperties * >( mLayer->elevationProperties() );
 
   mComboClamping->setCurrentIndex( mComboClamping->findData( static_cast< int >( props->clamping() ) ) );
+  if ( mComboClamping->currentIndex() == -1 )
+    mComboClamping->setCurrentIndex( 0 );
+
   mComboBinding->setCurrentIndex( mComboBinding->findData( static_cast< int >( props->binding() ) ) );
   mOffsetZSpinBox->setValue( props->zOffset() );
   mScaleZSpinBox->setValue( props->zScale() );
