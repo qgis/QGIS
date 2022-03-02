@@ -127,7 +127,7 @@ void QgsPoint3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *laye
 
   mAltClamping = props->clamping();
   mTransform.data()[13] = static_cast< float >( props->zOffset() );
-  mShapeProperties[QStringLiteral( "length" )] = props->extrusionHeight();
+  mShapeProperties[QStringLiteral( "length" )] = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
 }
 
 QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape )

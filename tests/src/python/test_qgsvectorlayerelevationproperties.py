@@ -31,6 +31,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         props = QgsVectorLayerElevationProperties(None)
         self.assertEqual(props.zScale(), 1)
         self.assertEqual(props.zOffset(), 0)
+        self.assertFalse(props.extrusionEnabled())
         self.assertEqual(props.extrusionHeight(), 0)
         self.assertFalse(props.hasElevation())
         self.assertEqual(props.clamping(), Qgis.AltitudeClamping.Terrain)
@@ -41,10 +42,12 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         props.setClamping(Qgis.AltitudeClamping.Relative)
         props.setBinding(Qgis.AltitudeBinding.Vertex)
         props.setExtrusionHeight(10)
+        props.setExtrusionEnabled(True)
         self.assertEqual(props.zScale(), 2)
         self.assertEqual(props.zOffset(), 0.5)
         self.assertEqual(props.extrusionHeight(), 10)
         self.assertTrue(props.hasElevation())
+        self.assertTrue(props.extrusionEnabled())
         self.assertEqual(props.clamping(), Qgis.AltitudeClamping.Relative)
         self.assertEqual(props.binding(), Qgis.AltitudeBinding.Vertex)
 
@@ -59,6 +62,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props2.clamping(), Qgis.AltitudeClamping.Relative)
         self.assertEqual(props2.binding(), Qgis.AltitudeBinding.Vertex)
         self.assertEqual(props2.extrusionHeight(), 10)
+        self.assertTrue(props2.extrusionEnabled())
 
 
 if __name__ == '__main__':

@@ -77,9 +77,31 @@ Sets the altitude ``binding`` method, which determines how altitude is bound to 
 .. seealso:: :py:func:`binding`
 %End
 
+    bool extrusionEnabled() const;
+%Docstring
+Returns ``True`` if extrusion is enabled.
+
+.. seealso:: :py:func:`setExtrusionEnabled`
+
+.. seealso:: :py:func:`extrusionHeight`
+%End
+
+    void setExtrusionEnabled( bool enabled );
+%Docstring
+Sets whether extrusion is ``enabled``.
+
+.. seealso:: :py:func:`extrusionEnabled`
+
+.. seealso:: :py:func:`setExtrusionHeight`
+%End
+
     double extrusionHeight() const;
 %Docstring
 Returns the feature extrusion height.
+
+.. warning::
+
+   extrusion is only applied if :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``True``.
 
 .. note::
 
@@ -91,6 +113,10 @@ Returns the feature extrusion height.
     void setExtrusionHeight( double height );
 %Docstring
 Sets the feature extrusion height.
+
+.. warning::
+
+   extrusion is only applied if :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``True``.
 
 .. note::
 

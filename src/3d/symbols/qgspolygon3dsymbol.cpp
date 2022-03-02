@@ -130,7 +130,7 @@ void QgsPolygon3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *la
 
   mAltClamping = props->clamping();
   mAltBinding = props->binding();
-  mExtrusionHeight = static_cast< float >( props->extrusionHeight() );
+  mExtrusionHeight = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
   mHeight = static_cast< float >( props->zOffset() );
 }
 

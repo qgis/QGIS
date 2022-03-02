@@ -106,10 +106,10 @@
       <enum>Qt::StrongFocus</enum>
      </property>
      <property name="title">
-      <string>Extrusion</string>
+      <string>Enable Extrusion</string>
      </property>
      <property name="checkable">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="syncGroup" stdset="0">
       <string notr="true">vectorgeneral</string>
