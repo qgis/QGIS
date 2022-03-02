@@ -179,6 +179,9 @@ double QgsPointCloudExpressionNodeBinaryOperator::evalNode( QgsPointCloudExpress
     case boLE:
     case boGE:
       return compare( vL - vR ) ? 1. : 0.;
+
+    case boNotImplemented:
+      return std::numeric_limits<double>::quiet_NaN();
   }
   Q_ASSERT( false );
   return std::numeric_limits<double>::quiet_NaN();
@@ -289,6 +292,9 @@ int QgsPointCloudExpressionNodeBinaryOperator::precedence() const
 
     case boPow:
       return 6;
+
+    case boNotImplemented:
+      return 7;
   }
   Q_ASSERT( false && "unexpected binary operator" );
   return -1;
@@ -316,6 +322,9 @@ bool QgsPointCloudExpressionNodeBinaryOperator::leftAssociative() const
       return true;
 
     case boPow:
+      return false;
+
+    case boNotImplemented:
       return false;
   }
   Q_ASSERT( false && "unexpected binary operator" );
@@ -465,10 +474,58 @@ bool QgsPointCloudExpressionNodeBinaryOperator::isStatic( QgsPointCloudExpressio
     case QgsPointCloudExpressionNodeBinaryOperator::boIntDiv:
     case QgsPointCloudExpressionNodeBinaryOperator::boMod:
     case QgsPointCloudExpressionNodeBinaryOperator::boPow:
+    case QgsPointCloudExpressionNodeBinaryOperator::boNotImplemented:
       break;
   }
 
   return false;
+}
+
+QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator QgsPointCloudExpressionNodeBinaryOperator::convert( const QgsExpressionNodeBinaryOperator::BinaryOperator op )
+{
+  switch ( op )
+  {
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boOr:
+      return boOr;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boAnd:
+      return boAnd;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boEQ:
+      return boEQ;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boNE:
+      return boNE;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boLE:
+      return boLE;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boGE:
+      return boGE;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boLT:
+      return boLT;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boGT:
+      return boGT;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boPlus:
+      return boPlus;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boMinus:
+      return boMinus;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boMul:
+      return boMul;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boDiv:
+      return boDiv;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boIntDiv:
+      return boIntDiv;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boMod:
+      return boMod;
+
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boRegexp:
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boLike:
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boILike:
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boNotLike:
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boNotILike:
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boIs:
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boIsNot:
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boConcat:
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boPow:
+      break;
+  }
+  return boNotImplemented;
 }
 
 QString QgsPointCloudExpressionNodeBinaryOperator::text() const

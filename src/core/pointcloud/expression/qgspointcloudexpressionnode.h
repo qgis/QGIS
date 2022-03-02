@@ -26,6 +26,7 @@
 #include "qgspointcloudblock.h"
 
 class QgsPointCloudExpression;
+class QgsExpressionNode;
 
 /**
  * \ingroup core
@@ -242,6 +243,8 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * \since QGIS 3.26
      */
     double cachedStaticValue() const { return mCachedStaticValue; }
+
+    static QgsPointCloudExpressionNode *convert( const QgsExpressionNode *node, QString &error );
 
   protected:
 

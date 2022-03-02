@@ -26,6 +26,7 @@
 #include "qgspointcloudblock.h"
 
 class QgsPointCloudExpressionPrivate;
+class QgsExpression;
 
 /**
  * \ingroup core
@@ -112,6 +113,8 @@ class CORE_EXPORT QgsPointCloudExpression
        */
       int lastColumn = 0;
     };
+
+    QgsPointCloudExpression( const QgsExpression &expression );
 
     /**
      * Creates a new expression based on the provided string.

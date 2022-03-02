@@ -200,6 +200,8 @@ Returns the node's static cached value. Only valid if :py:func:`~QgsPointCloudEx
 .. versionadded:: 3.26
 %End
 
+    static QgsPointCloudExpressionNode *convert( const QgsExpressionNode *node, QString &error );
+
   protected:
 
     QgsPointCloudExpressionNode();

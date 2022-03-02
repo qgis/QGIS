@@ -33,6 +33,7 @@
 #include "qgslogger.h"
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"
+#include "qgsexpression.h"
 
 ///@cond PRIVATE
 
@@ -279,7 +280,8 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   if ( !found )
     return nullptr;
 
-  QgsPointCloudExpression filterExpression( mSubsetString );
+  QgsExpression expr( mSubsetString );
+  QgsPointCloudExpression filterExpression( expr );
   const QSet<QString> expressionAttributes = filterExpression.referencedAttributes();
   const QgsPointCloudAttributeCollection allAttributes = attributes();
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();

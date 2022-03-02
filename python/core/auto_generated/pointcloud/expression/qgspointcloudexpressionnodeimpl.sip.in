@@ -105,6 +105,9 @@ A binary expression operator, which operates on two values.
       boIntDiv,
       boMod,
       boPow,
+
+      // other operator not implemented in pointcloud expressions
+      boNotImplemented,
     };
 
     QgsPointCloudExpressionNodeBinaryOperator( QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op, QgsPointCloudExpressionNode *opLeft /Transfer/, QgsPointCloudExpressionNode *opRight /Transfer/ );
@@ -169,6 +172,8 @@ Returns ``True`` if the operator is left-associative.
 Returns a the name of this operator without the operands.
 I.e. "AND", "OR", ...
 %End
+
+    static BinaryOperator convert( const QgsExpressionNodeBinaryOperator::BinaryOperator op );
 
 };
 

@@ -77,6 +77,8 @@ when :py:func:`~prepare` is called.
       int lastColumn;
     };
 
+    QgsPointCloudExpression( const QgsExpression &expression );
+
     QgsPointCloudExpression( const QString &expr );
 %Docstring
 Creates a new expression based on the provided string.

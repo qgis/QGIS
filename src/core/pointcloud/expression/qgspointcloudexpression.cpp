@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsexpression.h"
 #include "qgspointcloudexpression.h"
 #include "qgspointcloudexpressionnodeimpl.h"
 #include "qgspointcloudattribute.h"
@@ -44,6 +45,15 @@ QString QgsPointCloudExpression::expression() const
     return d->mExp;
   else
     return dump();
+}
+
+QgsPointCloudExpression::QgsPointCloudExpression( const QgsExpression &expr )
+  : d( new QgsPointCloudExpressionPrivate )
+{
+  QString error;
+  d->mRootNode = QgsPointCloudExpressionNode::convert( expr.rootNode(), error ); //::parseExpression( expr, d->mParserErrorString, d->mParserErrors );
+  d->mExp = expr.dump();
+  //Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
 }
 
 QgsPointCloudExpression::QgsPointCloudExpression( const QString &expr )

@@ -19,6 +19,7 @@
 
 #include "qgspointcloudexpressionnode.h"
 #include "qgspointcloudblock.h"
+#include "qgsexpressionnodeimpl.h"
 
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return std::numeric_limits<double>::quiet_NaN(); }
 
@@ -125,6 +126,9 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
       boIntDiv,
       boMod,
       boPow,
+
+      // other operator not implemented in pointcloud expressions
+      boNotImplemented,
     };
 
     /**
@@ -188,6 +192,8 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
      * I.e. "AND", "OR", ...
      */
     QString text() const;
+
+    static BinaryOperator convert( const QgsExpressionNodeBinaryOperator::BinaryOperator op );
 
   private:
     bool compare( double diff );

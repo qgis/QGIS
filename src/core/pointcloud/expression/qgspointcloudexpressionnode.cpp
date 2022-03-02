@@ -14,7 +14,10 @@
  ***************************************************************************/
 
 #include "qgspointcloudexpressionnode.h"
+#include "qgspointcloudexpressionnodeimpl.h"
 #include "qgspointcloudexpression.h"
+#include "qgsexpressionnode.h"
+#include "qgsexpressionnodeimpl.h"
 
 
 double QgsPointCloudExpressionNode::eval( QgsPointCloudExpression *parent, int p )
@@ -84,3 +87,100 @@ void QgsPointCloudExpressionNode::cloneTo( QgsPointCloudExpressionNode *target )
   target->parserFirstLine = parserFirstLine;
 }
 
+QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpressionNode *expressionNode, QString &error )
+{
+  if ( !expressionNode )
+    return nullptr;
+  switch ( expressionNode->nodeType() )
+  {
+    case QgsExpressionNode::NodeType::ntFunction:
+    case QgsExpressionNode::NodeType::ntCondition:
+    case QgsExpressionNode::NodeType::ntIndexOperator:
+    {
+      error = QStringLiteral( "Unsupported node type" );
+      return nullptr;
+    }
+    case QgsExpressionNode::NodeType::ntLiteral:
+    {
+      const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( expressionNode );
+      bool ok;
+      const double value = n->value().toDouble( &ok );
+      if ( !ok )
+      {
+        error = QStringLiteral( "Literal %1 cannot be converted to double" ).arg( n->value().toString() );
+        return nullptr;
+      }
+      return new QgsPointCloudExpressionNodeLiteral( value );
+    }
+    case QgsExpressionNode::NodeType::ntBinaryOperator:
+    {
+      const QgsExpressionNodeBinaryOperator *n = static_cast<const QgsExpressionNodeBinaryOperator *>( expressionNode );
+      QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op = QgsPointCloudExpressionNodeBinaryOperator::convert( n->op() );
+      if ( op == QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator::boNotImplemented )
+      {
+        error = QStringLiteral( "Unsupported operator" );
+        return nullptr;
+      }
+      QgsPointCloudExpressionNode *opLeft = convert( n->opLeft(), error );
+      if ( !opLeft )
+      {
+        error = QStringLiteral( "Incompatible node" );
+        return nullptr;
+      }
+      QgsPointCloudExpressionNode *opRight = convert( n->opRight(), error );
+      if ( !opRight )
+      {
+        error = QStringLiteral( "Incompatible node" );
+        delete opLeft;
+        return nullptr;
+      }
+      return new QgsPointCloudExpressionNodeBinaryOperator( op, opLeft, opRight );
+    }
+    case QgsExpressionNode::NodeType::ntColumnRef:
+    {
+      const QgsExpressionNodeColumnRef *n = static_cast<const QgsExpressionNodeColumnRef *>( expressionNode );
+      return new QgsPointCloudExpressionNodeAttributeRef( n->name() );
+    }
+    case QgsExpressionNode::NodeType::ntInOperator:
+    {
+      const QgsExpressionNodeInOperator *n = static_cast<const QgsExpressionNodeInOperator *>( expressionNode );
+      QgsPointCloudExpressionNode *node = convert( n->node(), error );
+      if ( !node )
+      {
+        error = QStringLiteral( "Incompatible node" );
+        return nullptr;
+      }
+      const bool notIn = n->isNotIn();
+      QgsPointCloudExpressionNode::NodeList *nodeList = new QgsPointCloudExpressionNode::NodeList; \
+      QList<QgsExpressionNode *> nNodeList = n->list()->list();
+      for ( const auto nd : nNodeList )
+      {
+        QgsPointCloudExpressionNode *convertedNode = convert( nd, error );
+        if ( !convertedNode )
+        {
+          error = QStringLiteral( "Incompatible node" );
+          delete node;
+          qDeleteAll( nodeList->list() );
+          return nullptr;
+        }
+        nodeList->append( convertedNode );
+      }
+      return new QgsPointCloudExpressionNodeInOperator( node, nodeList, notIn );
+    }
+    case QgsExpressionNode::NodeType::ntUnaryOperator:
+    {
+      const QgsExpressionNodeUnaryOperator *n = static_cast<const QgsExpressionNodeUnaryOperator *>( expressionNode );
+      // the UnaryOperators are identical between those classes, so it can be safely cast from QgsExpressionNodeUnaryOperator::UnaryOperator
+      QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op = static_cast<QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator>( n->op() );
+      QgsPointCloudExpressionNode *operand = convert( n->operand(), error );
+      if ( !operand )
+      {
+        error = QStringLiteral( "Incompatible node" );
+        return nullptr;
+      }
+      return new QgsPointCloudExpressionNodeUnaryOperator( op, operand );
+    }
+  }
+  Q_ASSERT( false );
+  return nullptr;
+}
