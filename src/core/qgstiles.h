@@ -107,7 +107,11 @@ class CORE_EXPORT QgsTileMatrix
     //! Returns a tile matrix for the usual web mercator
     static QgsTileMatrix fromWebMercator( int zoomLevel );
 
-    //! Returns a tile matrix for a specific CRS, top left point, zoom level 0 dimension in CRS units
+    /**
+     * Returns a tile matrix for a specific CRS, top left point, zoom level 0 dimension in CRS units.
+     *
+     * The \a z0Dimension argument must specify the dimension (width or height, in map units) of the root tiles in zoom level 0.
+     */
     static QgsTileMatrix fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs,
                                         const QgsPointXY &z0TopLeftPoint, double z0Dimension,
                                         int z0MatrixWidth = 1, int z0MatrixHeight = 1 );
