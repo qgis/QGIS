@@ -103,13 +103,13 @@ typedef QtClass<QVariant> QtClassQVariantBase;
     void makePrivate( int a );
 
   public:
-    void publicMethodInBetween1();
+    void publicMethodBetween1();
 
   private:
     void makePrivateMultiline( int a,
                                int b );
   public:
-    void publicMethodInBetween2();
+    void publicMethodBetween2();
 
   private:
     bool makePrivateMultilineImpl( int a,

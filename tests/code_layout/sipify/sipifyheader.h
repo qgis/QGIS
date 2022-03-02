@@ -123,12 +123,12 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     void makePrivate( int a ) SIP_MAKE_PRIVATE;
 
-    void publicMethodInBetween1();
+    void publicMethodBetween1();
 
     void makePrivateMultiline( int a,
                                int b ) SIP_MAKE_PRIVATE;
 
-    void publicMethodInBetween2();
+    void publicMethodBetween2();
 
     bool makePrivateMultilineImpl( int a,
                                    int b ) SIP_MAKE_PRIVATE
