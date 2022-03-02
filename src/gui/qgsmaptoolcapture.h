@@ -458,7 +458,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )
   
 #ifdef _MSC_VER
-template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureMode> SIP_SKIP;
+template class GUI_EXPORT QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureMode> SIP_SKIP;
 #endif
 
 #endif
