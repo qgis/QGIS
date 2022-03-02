@@ -653,15 +653,15 @@ void TestQgsAdvancedDigitizing::perpendicularConstraint()
   utils.mouseMove( 0.1, 4 );
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 0, 4 ) );
 
-  QCOMPARE( mAdvancedDigitizingDockWidget->additionalConstraint(),
-            QgsAdvancedDigitizingDockWidget::AdditionalConstraint::NoConstraint );
+  QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
+            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
 
   // digitizing a first vertex
   utils.mouseClick( 5, 5, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->lockAdditionalConstraint( QgsAdvancedDigitizingDockWidget::AdditionalConstraint::Perpendicular );
-  QCOMPARE( mAdvancedDigitizingDockWidget->additionalConstraint(),
-            QgsAdvancedDigitizingDockWidget::AdditionalConstraint::Perpendicular );
+  mAdvancedDigitizingDockWidget->lockBetweenLineConstraint( QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::Perpendicular );
+  QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
+            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::Perpendicular );
 
   // select the previous digitized line
   utils.mouseClick( 0.1, 4, Qt::LeftButton );
