@@ -576,6 +576,20 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, QgsV
       strValue = QStringLiteral( "array(%1)" ).arg( result );
       forceRepresentedValue = true;
     }
+    else if ( value.type() == QVariant::List )
+    {
+      QString result;
+      const QList list = value.toList();
+      for ( const QVariant &item : list )
+      {
+        if ( !result.isEmpty() )
+          result.append( QStringLiteral( ", " ) );
+
+        result.append( item.toString() );
+      }
+      strValue = QStringLiteral( "array(%1)" ).arg( result );
+      forceRepresentedValue = true;
+    }
     else
       strValue = '\'' + value.toString().replace( '\'', QLatin1String( "''" ) ) + '\'';
 
