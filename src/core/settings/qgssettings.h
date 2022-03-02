@@ -80,6 +80,32 @@ class CORE_EXPORT QgsSettings : public QObject
     };
 
     /**
+     * Prefixes for the settings keys
+     * \since QGIS 3.26
+     */
+    class CORE_EXPORT Prefix SIP_SKIP
+    {
+      public:
+        Prefix() = default;
+
+        static const inline char *CORE = "core";
+        static const inline char *CORE_LAYOUT = "core/Layout";
+        static const inline char *GEOMETRYVALIDATION = "geometry_validation";
+        static const inline char *GPS = "gps";
+        static const inline char *GUI_LOCATORFILTERS = "gui/locator_filters";
+        static const inline char *GUI_QGIS = "gui/qgis";
+        static const inline char *LOCALE = "locale";
+        static const inline char *MAP = "Map";
+        static const inline char *PLUGINS = "plugins";
+        static const inline char *PROCESSING_CONFIGURATION = "Processing/Configuration";
+        static const inline char *QGIS = "qgis";
+        static const inline char *QGIS_DIGITIZING = "qgis/digitizing";
+        static const inline char *QGIS_DIGITIZING_SHAPEMAPTOOLS = "qgis/digitizing/shape-map-tools";
+        static const inline char *QGIS_NETWORKANDPROXY = "qgis/networkAndProxy";
+        static const inline char *SVG = "svg";
+    };
+
+    /**
      * Constructs a QgsSettings object for accessing settings of the application
      * called application from the organization called organization, and with parent parent.
      */
