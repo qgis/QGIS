@@ -61,7 +61,6 @@ class CORE_EXPORT QgsSettingsEntryBase
 
   public:
 
-#ifndef SIP_RUN
 
     /**
      * Constructor for QgsSettingsEntryBase.
@@ -73,44 +72,16 @@ class CORE_EXPORT QgsSettingsEntryBase
      * The \a options argument specifies the options for the settings entry.
      */
     QgsSettingsEntryBase( const QString &key,
-                          QgsSettings::Section section,
+                          const QString &section,
                           const QVariant &defaultValue = QVariant(),
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : mKey( key )
+      : mKey( QStringLiteral( "%1/%2" ).arg( section, key ) )
       , mDefaultValue( defaultValue )
-      , mSection( section )
       , mDescription( description )
       , mPluginName()
       , mOptions( options )
-    {
-    }
-
-#endif
-
-    /**
-     * Constructor for QgsSettingsEntryBase.
-     * This constructor is intended to be used from plugins.
-     *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is inserted in the key after the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     */
-    QgsSettingsEntryBase( const QString &key,
-                          const QString &pluginName,
-                          const QVariant &defaultValue = QVariant(),
-                          const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : mKey( key )
-      , mDefaultValue( defaultValue )
-      , mSection( QgsSettings::Plugins )
-      , mDescription( description )
-      , mPluginName( pluginName )
-      , mOptions( options )
-    {
-    }
+    {}
 
     /**
      * Destructor for QgsSettingsEntryBase.
@@ -184,8 +155,9 @@ class CORE_EXPORT QgsSettingsEntryBase
 
     /**
      * Returns settings section. The settings section of the parent group is returned if available.
+     * \deprecated since QGIS 3.26 the key is entirely self-defined
      */
-    QgsSettings::Section section() const;
+    Q_DECL_DEPRECATED QgsSettings::Section section() const {return QgsSettings::NoSection;}
 
     /**
      * Set settings value.
@@ -288,7 +260,6 @@ class CORE_EXPORT QgsSettingsEntryBase
 
     QString mKey;
     QVariant mDefaultValue;
-    QgsSettings::Section mSection;
     QString mDescription;
     QString mPluginName;
     Qgis::SettingsOptions mOptions;
@@ -310,44 +281,22 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
 {
   public:
 
-#ifndef SIP_RUN
-
     /**
      * Constructor for QgsSettingsEntryByReference.
      *
      * The \a key argument specifies the key of the settings.
-     * The \a section argument specifies the section.
      * The \a defaultValue argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      * The \a options arguments specifies the options for the settings entry.
      */
     QgsSettingsEntryByReference( const QString &key,
-                                 QgsSettings::Section section,
+                                 const QString &section,
                                  const T &defaultValue,
                                  const QString &description = QString(),
                                  Qgis::SettingsOptions options = Qgis::SettingsOptions() )
       : QgsSettingsEntryBase( key, section, defaultValue, description, options )
     {}
 
-#endif
-
-    /**
-     * Constructor for QgsSettingsEntryByReference.
-     * This constructor is intended to be used from plugins.
-     *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is inserted in the key after the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     */
-    QgsSettingsEntryByReference( const QString &key,
-                                 const QString &pluginName,
-                                 const T &defaultValue,
-                                 const QString &description = QString(),
-                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryBase( key, pluginName, QVariant::fromValue<T>( defaultValue ), description, options )
-    {}
 
     virtual Qgis::SettingsType settingsType() const override = 0;
 
@@ -465,7 +414,6 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
 {
   public:
 
-#ifndef SIP_RUN
 
     /**
      * Constructor for QgsSettingsEntryByValue.
@@ -476,28 +424,8 @@ class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
      * The \a description argument specifies a description for the settings entry.
      * The \a options arguments specifies the options for the settings entry.
      */
-    QgsSettingsEntryByValue( const QString &key, QgsSettings::Section section, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
+    QgsSettingsEntryByValue( const QString &key, const QString &section, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
       : QgsSettingsEntryBase( key, section, defaultValue, description, options )
-    {}
-
-#endif
-
-    /**
-     * Constructor for QgsSettingsEntryByValue.
-     * This constructor is intended to be used from plugins.
-     *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is inserted in the key after the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     */
-    QgsSettingsEntryByValue( const QString &key,
-                             const QString &pluginName,
-                             T defaultValue,
-                             const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryBase( key, pluginName, defaultValue, description, options )
     {}
 
     virtual Qgis::SettingsType settingsType() const override = 0;
