@@ -36,9 +36,6 @@
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
 {
-  setBackgroundRole( QPalette::Window );
-  setAutoFillBackground( true );
-
   mLayout = new QHBoxLayout();
   mLayout->setContentsMargins( 0, 0, 0, 0 );
 
