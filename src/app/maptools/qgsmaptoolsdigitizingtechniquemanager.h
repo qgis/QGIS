@@ -32,10 +32,6 @@ class QgsSpinBox;
 class QAction;
 class QToolButton;
 
-
-template class APP_EXPORT QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique>;
-
-
 class APP_EXPORT QgsStreamDigitizingSettingsAction: public QWidgetAction
 {
     Q_OBJECT
