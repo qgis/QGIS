@@ -128,6 +128,13 @@ Constructs a new vector tile layer
 
 
 
+    QgsVectorTileStructure &tileStructure();
+%Docstring
+Returns the vector tile structure.
+
+.. versionadded:: 3.22.6
+%End
+
     QString sourceType() const;
 %Docstring
 Returns type of the data source
