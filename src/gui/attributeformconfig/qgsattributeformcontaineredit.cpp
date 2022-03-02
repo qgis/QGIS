@@ -35,7 +35,27 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
     mShowAsGroupBox->setEnabled( false );
   }
 
+  connect( mTitleLineEdit, &QLineEdit::textChanged, [ = ]( const QString & title )
+  {
+    mFontButton->setText( title.isEmpty() ? tr( "Title" ) :  title );
+  } );
+
+  connect( mOverrideLabelStyle, &QCheckBox::stateChanged, [ = ]( bool checked )
+  {
+    mFontButton->setEnabled( checked );
+  } );
+
+  mOverrideLabelStyle->setChecked( itemData.overrideLabelStyle() );
+  mFontButton->setEnabled( itemData.overrideLabelStyle() );
+
   mTitleLineEdit->setText( itemData.name() );
+
+  mFontButton->setMode( QgsFontButton::Mode::ModeQFontColor );
+  mFontButton->setColor( itemData.labelColor() );
+  mFontButton->setCurrentFont( itemData.labelFont() );
+
+  connect( mShowLabelCheckBox, &QCheckBox::stateChanged, [ = ]( bool checked ) { mFontButton->setEnabled( checked ); } );
+
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
   mShowLabelCheckBox->setEnabled( itemData.showAsGroupBox() ); // show label makes sense for group box, not for tabs
   mShowAsGroupBox->setChecked( itemData.showAsGroupBox() );
@@ -72,6 +92,9 @@ void QgsAttributeFormContainerEdit::updateItemData()
   itemData.setName( mTitleLineEdit->text() );
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
   itemData.setBackgroundColor( mBackgroundColorButton->color() );
+  itemData.setLabelColor( mFontButton->currentColor() );
+  itemData.setLabelFont( mFontButton->currentFont() );
+  itemData.setOverrideLabelStyle( mOverrideLabelStyle->isChecked() );
 
   QgsOptionalExpression visibilityExpression;
   visibilityExpression.setData( QgsExpression( mVisibilityExpressionWidget->expression() ) );

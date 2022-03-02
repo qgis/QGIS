@@ -36,6 +36,7 @@ used only in a QFont object.
     {
       ModeTextRenderer,
       ModeQFont,
+      ModeQFontColor,
     };
 
 
@@ -127,9 +128,19 @@ This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
     QFont currentFont() const;
 %Docstring
 Returns the current QFont set by the widget.
-This is only used when :py:func:`~QgsFontButton.mode` is ModeQFont.
+This is only used when :py:func:`~QgsFontButton.mode` is ModeQFont or ModeQFontColor.
 
 .. seealso:: :py:func:`setCurrentFont`
+%End
+
+    QColor currentColor() const;
+%Docstring
+Returns the current QColor set by the widget.
+This is only used when :py:func:`~QgsFontButton.mode` is ModeQFontColor.
+
+.. seealso:: :py:func:`setColor`
+
+.. versionadded:: 3.26
 %End
 
     QgsVectorLayer *layer() const;
@@ -236,7 +247,7 @@ This is only used when :py:func:`~QgsFontButton.mode` is ModeQFont.
 %Docstring
 Sets the current ``color`` for the text. Will emit a changed signal if the color is different
 to the previous text color.
-This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
+This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer or ModeQFontColor.
 %End
 
     void copyFormat();

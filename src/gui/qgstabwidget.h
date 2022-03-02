@@ -17,7 +17,12 @@
 #define QGSTABWIDGET_H
 
 #include <QTabWidget>
+
+#include "qgis_sip.h"
 #include "qgis_gui.h"
+
+#include "qgstabbarproxystyle.h"
+
 
 /**
  * \ingroup gui
@@ -87,6 +92,12 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      */
     void tabRemoved( int index ) override;
 
+    /**
+     * Sets the optional custom \a font for the tab idenfied by \a tabIndex.
+     * \since QGIS 3.26
+     */
+    void setTabFont( int tabIndex, const QFont &font );
+
   private:
     void synchronizeIndexes();
 
@@ -113,6 +124,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
 
     QList<TabInformation> mTabs;
     bool mSetTabVisibleFlag = false;
+    std::unique_ptr<QgsTabBarProxyStyle> mTabBarStyle;
 };
 
 #endif // QGSTABWIDGET_H

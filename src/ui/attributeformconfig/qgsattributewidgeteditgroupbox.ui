@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>283</width>
-    <height>278</height>
+    <width>242</width>
+    <height>121</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,17 +17,50 @@
    <string>Widget Display</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <widget class="QCheckBox" name="mShowLabelCheckBox">
-     <property name="text">
-      <string>Show label</string>
-     </property>
-    </widget>
+   <item row="5" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
+     <item>
+      <widget class="QCheckBox" name="mOverrideLabelStyle">
+       <property name="toolTip">
+        <string>Override default label font and color</string>
+       </property>
+       <property name="text">
+        <string>Label font and color</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsFontButton" name="mFontButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="3" column="0">
+   <item row="10" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mWidgetSpecificConfigGroupBox">
      <property name="title">
       <string>GroupBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QCheckBox" name="mShowLabelCheckBox">
+     <property name="text">
+      <string>Show label</string>
      </property>
     </widget>
    </item>
@@ -39,6 +72,11 @@
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -12,10 +12,11 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsTextFormat
+from qgis.core import QgsTextFormat, QgsFontUtils
 from qgis.gui import QgsFontButton, QgsMapCanvas
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QColor, QFont
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout
 from qgis.PyQt.QtTest import QSignalSpy
 from utilities import getTestFont
 
@@ -117,6 +118,27 @@ class TestQgsFontButton(unittest.TestCase):
         self.assertFalse(button.textFormat().isValid())
         button.setTextFormat(s)
         self.assertTrue(button.textFormat().isValid())
+
+    def testFontColorMode(self):
+
+        button = QgsFontButton()
+        button.setMode(QgsFontButton.ModeQFontColor)
+        button.setColor(QColor(255, 0, 0))
+        self.assertEqual(button.currentColor(), QColor(255, 0, 0))
+
+        font = QFont()
+        font.fromString("QGIS Vera Sans,16,-1,5,50,0,0,0,0,0")
+        button.setCurrentFont(font)
+        self.assertEqual(button.currentColor(), QColor(255, 0, 0))
+        self.assertEqual(button.currentFont().toString(), font.toString())
+
+        # Change to True for local interactive testing
+        if False:
+            d = QDialog()
+            l = QVBoxLayout(d)
+            l.addWidget(button)
+            d.setLayout(l)
+            d.exec_()
 
 
 if __name__ == '__main__':

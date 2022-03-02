@@ -21,6 +21,7 @@
 #include "qgsoptionalexpression.h"
 #include "qgspropertycollection.h"
 #include <QColor>
+#include <QFont>
 
 /**
  * \ingroup core
@@ -143,12 +144,69 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      */
     void setShowLabel( bool showLabel );
 
+    /**
+     * Returns the custom label font, this is only effective if overrideStyleLabel() is also set.
+     * \see setLabelFont()
+     * \see overrideLabelStyle()
+     * \see setOverrideLabelStyle()
+     * \since QGIS 3.26
+     */
+    const QFont &labelFont() const;
+
+    /**
+     * Sets the custom \a labelFont, this is only effective if overrideStyleLabel() is also set.
+     * \see setLabelFont()
+     * \see overrideLabelStyle()
+     * \see setOverrideLabelStyle()
+     * \since QGIS 3.26
+     */
+    void setLabelFont( const QFont &labelFont );
+
+    /**
+     * Returns the custom label color, this is only effective if overrideStyleLabel() is also set.
+     * \see setLabelColor()
+     * \see overrideLabelStyle()
+     * \see setOverrideLabelStyle()
+     * \since QGIS 3.26
+     */
+    const QColor &labelColor() const;
+
+    /**
+     * Sets the custom \a labelColor, this is only effective if overrideStyleLabel() is also set.
+     * \see setLabelColor()
+     * \see overrideLabelStyle()
+     * \see setOverrideLabelStyle()
+     * \since QGIS 3.26
+     */
+    void setLabelColor( const QColor &labelColor );
+
+    /**
+     * Returns TRUE if the label style (font and color) is overridden.
+     * \see labelColor()
+     * \see labelFont()
+     * \see setOverrideLabelStyle()
+     * \since QGIS 3.26
+     */
+    bool overrideLabelStyle() const;
+
+    /**
+     * Sets \a overrideLabelStyle flag which determines if label style (font and color) is overridden.
+     * \see labelColor()
+     * \see labelFont()
+     * \see overrideLabelStyle()
+     * \since QGIS 3.26
+     */
+    void setOverrideLabelStyle( bool overrideLabelStyle );
+
   protected:
 #ifndef SIP_RUN
     AttributeEditorType mType;
     QString mName;
     QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;
+    QFont mLabelFont;
+    QColor mLabelColor;
+    bool mOverrideLabelStyle = false;
 #endif
 
   private:

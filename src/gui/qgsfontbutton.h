@@ -60,6 +60,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     {
       ModeTextRenderer,  //!< Configure font settings for use with QgsTextRenderer
       ModeQFont, //!< Configure font settings for use with QFont objects
+      ModeQFontColor, //!< Configure font settings for use with QFont objects and allows to set the foreground color
     };
 
     Q_ENUM( Mode )
@@ -138,10 +139,18 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
     /**
      * Returns the current QFont set by the widget.
-     * This is only used when mode() is ModeQFont.
+     * This is only used when mode() is ModeQFont or ModeQFontColor.
      * \see setCurrentFont()
      */
     QFont currentFont() const;
+
+    /**
+     * Returns the current QColor set by the widget.
+     * This is only used when mode() is ModeQFontColor.
+     * \see setColor()
+     * \since QGIS 3.26
+     */
+    QColor currentColor() const;
 
     /**
      * Returns the layer associated with the widget.
@@ -233,7 +242,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     /**
      * Sets the current \a color for the text. Will emit a changed signal if the color is different
      * to the previous text color.
-     * This is only used when mode() is ModeTextRenderer.
+     * This is only used when mode() is ModeTextRenderer or ModeQFontColor.
      */
     void setColor( const QColor &color );
 
@@ -315,6 +324,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     QString mDialogTitle;
     QgsTextFormat mFormat;
     QFont mFont;
+    QColor mColor;
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;

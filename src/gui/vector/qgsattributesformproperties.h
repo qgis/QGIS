@@ -201,6 +201,15 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QColor backgroundColor() const;
         void setBackgroundColor( const QColor &backgroundColor );
 
+        const QColor &labelColor() const;
+        void setLabelColor( const QColor &newLabelColor );
+
+        const QFont &labelFont() const;
+        void setLabelFont( const QFont &newLabelFont );
+
+        bool overrideLabelStyle() const;
+        void setOverrideLabelStyle( bool overrideLabelStyle );
+
       private:
         Type mType = Field;
         QString mName;
@@ -215,6 +224,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QColor mBackgroundColor;
         bool mCollapsed = false;
         QgsOptionalExpression mCollapsedExpression;
+        QColor mLabelColor;
+        QFont mLabelFont;
+        bool mOverrideLabelStyle = false;
     };
 
 

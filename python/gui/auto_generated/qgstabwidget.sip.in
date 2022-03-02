@@ -7,6 +7,9 @@
  ************************************************************************/
 
 
+
+
+
 class QgsTabWidget : QTabWidget
 {
 %Docstring(signature="appended")
@@ -76,6 +79,13 @@ Is called internally whenever a tab has been removed.
 Is used to keep track of currently available and visible tabs.
 
 .. versionadded:: 3.0
+%End
+
+    void setTabFont( int tabIndex, const QFont &font );
+%Docstring
+Sets the optional custom ``font`` for the tab idenfied by ``tabIndex``.
+
+.. versionadded:: 3.26
 %End
 
 };

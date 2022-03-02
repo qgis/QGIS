@@ -1609,6 +1609,11 @@ void QgsAttributeForm::init()
         {
           tabWidget = nullptr;
           WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
+          if ( widgetInfo.overrideLabelStyle )
+          {
+            widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: rgba(%1,%2,%3,%4); }" ).arg( widgetInfo.labelColor.red() ).arg( widgetInfo.labelColor.green() ).arg( widgetInfo.labelColor.blue() ).arg( QString::number( widgetInfo.labelColor.alphaF(), 'f', 4 ) ) );
+            widgetInfo.widget->setFont( widgetInfo.labelFont );
+          }
           layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
           if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
           {
@@ -1629,6 +1634,12 @@ void QgsAttributeForm::init()
 
           tabWidget->addTab( tabPage, widgDef->name() );
 
+          if ( widgDef->overrideLabelStyle() )
+          {
+            tabWidget->setTabFont( tabWidget->tabBar()->count() - 1, widgDef->labelFont() );
+            tabWidget->tabBar()->setTabTextColor( tabWidget->tabBar()->count() - 1, widgDef->labelColor() );
+          }
+
           if ( containerDef->visibilityExpression().enabled() )
           {
             registerContainerInformation( new ContainerInformation( tabWidget, tabPage, containerDef->visibilityExpression().data() ) );
@@ -1648,7 +1659,14 @@ void QgsAttributeForm::init()
         QgsCollapsibleGroupBox *collapsibleGroupBox = new QgsCollapsibleGroupBox();
 
         if ( widgetInfo.showLabel )
+        {
           collapsibleGroupBox->setTitle( widgetInfo.labelText );
+          if ( widgetInfo.overrideLabelStyle )
+          {
+            collapsibleGroupBox->setFont( widgetInfo.labelFont );
+            collapsibleGroupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: rgba(%1,%2,%3,%4); }" ).arg( widgetInfo.labelColor.red() ).arg( widgetInfo.labelColor.green() ).arg( widgetInfo.labelColor.blue() ).arg( QString::number( widgetInfo.labelColor.alphaF(), 'f', 4 ) ) );
+          }
+        }
 
         QVBoxLayout *collapsibleGroupBoxLayout = new QVBoxLayout();
         collapsibleGroupBoxLayout->addWidget( widgetInfo.widget );
@@ -1668,6 +1686,11 @@ void QgsAttributeForm::init()
         tabWidget = nullptr;
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
         QLabel *label = new QLabel( widgetInfo.labelText );
+        if ( widgetInfo.overrideLabelStyle )
+        {
+          label->setFont( widgetInfo.labelFont );
+          label->setStyleSheet( QStringLiteral( "QLabel { color: rgba(%1,%2,%3,%4); }" ).arg( widgetInfo.labelColor.red() ).arg( widgetInfo.labelColor.green() ).arg( widgetInfo.labelColor.blue() ).arg( QString::number( widgetInfo.labelColor.alphaF(), 'f', 4 ) ) );
+        }
         label->setToolTip( widgetInfo.toolTip );
         if ( columnCount > 1 && !widgetInfo.labelOnTop )
         {
@@ -2184,6 +2207,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelText.replace( '&', QLatin1String( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
       newWidgetInfo.toolTip = QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( mLayer->attributeDisplayName( fldIdx ), newWidgetInfo.hint );
       newWidgetInfo.showLabel = widgetDef->showLabel();
+      newWidgetInfo.labelColor = widgetDef->labelColor();
+      newWidgetInfo.labelFont = widgetDef->labelFont();
+      newWidgetInfo.overrideLabelStyle = widgetDef->overrideLabelStyle();
 
       break;
     }
@@ -2210,6 +2236,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.widget = formWidget;
       newWidgetInfo.showLabel = relDef->showLabel();
       newWidgetInfo.labelText = relDef->label();
+      newWidgetInfo.labelColor = widgetDef->labelColor();
+      newWidgetInfo.labelFont = widgetDef->labelFont();
+      newWidgetInfo.overrideLabelStyle = widgetDef->overrideLabelStyle();
       if ( newWidgetInfo.labelText.isEmpty() )
         newWidgetInfo.labelText = rww->relation().name();
       newWidgetInfo.labelOnTop = true;
@@ -2233,11 +2262,21 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       {
         QgsCollapsibleGroupBoxBasic *groupBox = new QgsCollapsibleGroupBoxBasic();
         widgetName = QStringLiteral( "QGroupBox" );
-        if ( container->showLabel() )
-          groupBox->setTitle( container->name() );
         myContainer = groupBox;
         newWidgetInfo.widget = myContainer;
         groupBox->setCollapsed( container->collapsed() );
+        newWidgetInfo.labelColor = widgetDef->labelColor();
+        newWidgetInfo.labelFont = widgetDef->labelFont();
+        newWidgetInfo.overrideLabelStyle = widgetDef->overrideLabelStyle();
+        if ( container->showLabel() )
+        {
+          groupBox->setTitle( container->name() );
+          if ( newWidgetInfo.overrideLabelStyle )
+          {
+            groupBox->setFont( newWidgetInfo.labelFont );
+            groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: rgba(%1,%2,%3,%4); }" ).arg( newWidgetInfo.labelColor.red() ).arg( newWidgetInfo.labelColor.green() ).arg( newWidgetInfo.labelColor.blue() ).arg( QString::number( newWidgetInfo.labelColor.alphaF(), 'f', 4 ) ) );
+          }
+        }
       }
       else
       {
@@ -2255,7 +2294,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       if ( container->backgroundColor().isValid() )
       {
-        QString style {QStringLiteral( "background-color: %1;" ).arg( container->backgroundColor().name() )};
+        const QString style {QStringLiteral( "background-color: %1;" ).arg( container->backgroundColor().name() )};
         newWidgetInfo.widget->setStyleSheet( style );
       }
 
@@ -2287,8 +2326,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         }
         else
         {
-          QLabel *mypLabel = new QLabel( widgetInfo.labelText );
-
+          QLabel *label = new QLabel( widgetInfo.labelText );
+          if ( widgetInfo.overrideLabelStyle )
+          {
+            label->setFont( widgetInfo.labelFont );
+            label->setStyleSheet( QStringLiteral( "QLabel { color: rgba(%1,%2,%3,%4); }" ).arg( widgetInfo.labelColor.red() ).arg( widgetInfo.labelColor.green() ).arg( widgetInfo.labelColor.blue() ).arg( QString::number( widgetInfo.labelColor.alphaF(), 'f', 4 ) ) );
+          }
           // Alias DD overrides
           if ( childDef->type() == QgsAttributeEditorElement::AeTypeField )
           {
@@ -2303,32 +2346,32 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
                 const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
                 if ( property.isActive() && ! property.expressionString().isEmpty() )
                 {
-                  mLabelDataDefinedProperties[ mypLabel ] = property;
+                  mLabelDataDefinedProperties[ label ] = property;
                 }
               }
             }
           }
 
-          mypLabel->setToolTip( widgetInfo.toolTip );
+          label->setToolTip( widgetInfo.toolTip );
           if ( columnCount > 1 && !widgetInfo.labelOnTop )
           {
-            mypLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+            label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
           }
 
-          mypLabel->setBuddy( widgetInfo.widget );
+          label->setBuddy( widgetInfo.widget );
 
           if ( widgetInfo.labelOnTop )
           {
             QVBoxLayout *c = new QVBoxLayout();
-            mypLabel->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-            c->layout()->addWidget( mypLabel );
+            label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+            c->layout()->addWidget( label );
             c->layout()->addWidget( widgetInfo.widget );
             gbLayout->addLayout( c, row, column, 1, 2 );
             column += 2;
           }
           else
           {
-            gbLayout->addWidget( mypLabel, row, column++ );
+            gbLayout->addWidget( label, row, column++ );
             gbLayout->addWidget( widgetInfo.widget, row, column++ );
           }
         }
@@ -2347,6 +2390,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       newWidgetInfo.showLabel = widgetDef->showLabel();
+      newWidgetInfo.labelColor = widgetDef->labelColor();
+      newWidgetInfo.labelFont = widgetDef->labelFont();
+      newWidgetInfo.overrideLabelStyle = widgetDef->overrideLabelStyle();
       break;
     }
 
@@ -2365,6 +2411,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelText = elementDef->name();
       newWidgetInfo.labelOnTop = true;
       newWidgetInfo.showLabel = widgetDef->showLabel();
+      newWidgetInfo.labelColor = widgetDef->labelColor();
+      newWidgetInfo.labelFont = widgetDef->labelFont();
+      newWidgetInfo.overrideLabelStyle = widgetDef->overrideLabelStyle();
       break;
     }
 
@@ -2382,6 +2431,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelText = elementDef->name();
       newWidgetInfo.labelOnTop = true;
       newWidgetInfo.showLabel = widgetDef->showLabel();
+      newWidgetInfo.labelColor = widgetDef->labelColor();
+      newWidgetInfo.labelFont = widgetDef->labelFont();
+      newWidgetInfo.overrideLabelStyle = widgetDef->overrideLabelStyle();
       mNeedsGeometry |= htmlWrapper->needsGeometry();
       break;
     }

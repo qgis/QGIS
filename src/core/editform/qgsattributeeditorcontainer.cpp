@@ -122,6 +122,9 @@ QgsAttributeEditorElement *QgsAttributeEditorContainer::clone( QgsAttributeEdito
   element->mVisibilityExpression = mVisibilityExpression;
   element->mCollapsed = mCollapsed;
   element->mCollapsedExpression = mCollapsedExpression;
+  element->mOverrideLabelStyle = mOverrideLabelStyle;
+  element->mLabelColor = mLabelColor;
+  element->mLabelFont = mLabelFont;
 
   return element;
 }

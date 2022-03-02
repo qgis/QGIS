@@ -16,15 +16,21 @@
 #include "qgstabwidget.h"
 
 #include "qgslogger.h"
+#include "qgstabbarproxystyle.h"
 
 QgsTabWidget::QgsTabWidget( QWidget *parent )
   : QTabWidget( parent )
 {
+  QgsTabBar *qgsTabBar = new QgsTabBar( this );
+  setTabBar( qgsTabBar );
+  mTabBarStyle = std::make_unique<QgsTabBarProxyStyle>( tabBar() );
+  qgsTabBar->setTabBarStyle( mTabBarStyle.get() );
+  setStyle( mTabBarStyle.get() );
 }
 
 void QgsTabWidget::hideTab( QWidget *tab )
 {
-  QgsDebugMsg( QStringLiteral( "Hide" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Hide" ), 3 );
   TabInformation &info = mTabs[ realTabIndex( tab )];
   if ( info.visible )
   {
@@ -37,7 +43,7 @@ void QgsTabWidget::hideTab( QWidget *tab )
 
 void QgsTabWidget::showTab( QWidget *tab )
 {
-  QgsDebugMsg( QStringLiteral( "Show" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Show" ), 3 );
   TabInformation &info = mTabs[ realTabIndex( tab )];
   if ( ! info.visible )
   {
@@ -123,9 +129,14 @@ void QgsTabWidget::tabRemoved( int index )
   synchronizeIndexes();
 }
 
+void QgsTabWidget::setTabFont( int tabIndex, const QFont &customFont )
+{
+  mTabBarStyle->addStyle( tabIndex, QgsTabBarProxyStyle::TabStyle{ customFont } );
+}
+
 void QgsTabWidget::synchronizeIndexes()
 {
-  QgsDebugMsg( QStringLiteral( "---------" ) );
+  QgsDebugMsgLevel( QStringLiteral( "---------" ), 4 );
   int i = -1;
   QWidget *nextWidget = widget( 0 );
 
@@ -139,7 +150,7 @@ void QgsTabWidget::synchronizeIndexes()
       nextWidget = widget( i + 1 );
     }
     it->sourceIndex = i;
-    QgsDebugMsg( QStringLiteral( "Tab %1 (%2): %3" ).arg( it->sourceIndex ).arg( it->label ).arg( i ) );
+    QgsDebugMsgLevel( QStringLiteral( "Tab %1 (%2): %3" ).arg( it->sourceIndex ).arg( it->label ).arg( i ), 4 );
   }
 }
 

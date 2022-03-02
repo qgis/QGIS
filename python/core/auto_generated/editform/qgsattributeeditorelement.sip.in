@@ -124,6 +124,84 @@ Controls if this element should be labeled with a title (field, relation or grou
 .. versionadded:: 2.18
 %End
 
+    const QFont &labelFont() const;
+%Docstring
+Returns the custom label font, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideStyleLabel` is also set.
+
+.. seealso:: :py:func:`setLabelFont`
+
+.. seealso:: :py:func:`overrideLabelStyle`
+
+.. seealso:: :py:func:`setOverrideLabelStyle`
+
+.. versionadded:: 3.26
+%End
+
+    void setLabelFont( const QFont &labelFont );
+%Docstring
+Sets the custom ``labelFont``, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideStyleLabel` is also set.
+
+.. seealso:: :py:func:`setLabelFont`
+
+.. seealso:: :py:func:`overrideLabelStyle`
+
+.. seealso:: :py:func:`setOverrideLabelStyle`
+
+.. versionadded:: 3.26
+%End
+
+    const QColor &labelColor() const;
+%Docstring
+Returns the custom label color, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideStyleLabel` is also set.
+
+.. seealso:: :py:func:`setLabelColor`
+
+.. seealso:: :py:func:`overrideLabelStyle`
+
+.. seealso:: :py:func:`setOverrideLabelStyle`
+
+.. versionadded:: 3.26
+%End
+
+    void setLabelColor( const QColor &labelColor );
+%Docstring
+Sets the custom ``labelColor``, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideStyleLabel` is also set.
+
+.. seealso:: :py:func:`setLabelColor`
+
+.. seealso:: :py:func:`overrideLabelStyle`
+
+.. seealso:: :py:func:`setOverrideLabelStyle`
+
+.. versionadded:: 3.26
+%End
+
+    bool overrideLabelStyle() const;
+%Docstring
+Returns ``True`` if the label style (font and color) is overridden.
+
+.. seealso:: :py:func:`labelColor`
+
+.. seealso:: :py:func:`labelFont`
+
+.. seealso:: :py:func:`setOverrideLabelStyle`
+
+.. versionadded:: 3.26
+%End
+
+    void setOverrideLabelStyle( bool overrideLabelStyle );
+%Docstring
+Sets ``overrideLabelStyle`` flag which determines if label style (font and color) is overridden.
+
+.. seealso:: :py:func:`labelColor`
+
+.. seealso:: :py:func:`labelFont`
+
+.. seealso:: :py:func:`overrideLabelStyle`
+
+.. versionadded:: 3.26
+%End
+
   protected:
 
 };

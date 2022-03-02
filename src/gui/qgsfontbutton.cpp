@@ -111,6 +111,7 @@ void QgsFontButton::showSettingsDialog()
     }
 
     case ModeQFont:
+    case ModeQFontColor:
     {
       bool ok;
       const QFont newFont = QgsGuiUtils::getFont( ok, mFont, mDialogTitle );
@@ -176,12 +177,25 @@ void QgsFontButton::setColor( const QColor &color )
   if ( mNullFormatAction )
     mNullFormatAction->setChecked( false );
 
-  if ( mFormat.color() != opaque )
+  if ( mMode == ModeQFontColor )
   {
-    mFormat.setColor( opaque );
-    updatePreview();
-    emit changed();
+    if ( mColor != opaque )
+    {
+      mColor = opaque;
+      updatePreview( );
+      emit changed();
+    }
   }
+  else
+  {
+    if ( mFormat.color() != opaque )
+    {
+      mFormat.setColor( opaque );
+      updatePreview();
+      emit changed();
+    }
+  }
+
 }
 
 void QgsFontButton::copyFormat()
@@ -193,7 +207,10 @@ void QgsFontButton::copyFormat()
       break;
 
     case ModeQFont:
-      QApplication::clipboard()->setMimeData( QgsFontUtils::toMimeData( mFont ) );
+    case ModeQFontColor:
+      QMimeData *mimeData { QgsFontUtils::toMimeData( mFont ) };
+      mimeData->setColorData( mColor );
+      QApplication::clipboard()->setMimeData( mimeData );
       break;
   }
 }
@@ -209,6 +226,7 @@ void QgsFontButton::pasteFormat()
   }
   else if ( mMode == ModeQFont && fontFromMimeData( QApplication::clipboard()->mimeData(), font ) )
   {
+    // TODO: format and color
     QgsFontUtils::addRecentFontFamily( font.family() );
     setCurrentFont( font );
   }
@@ -228,6 +246,7 @@ bool QgsFontButton::event( QEvent *e )
         break;
 
       case ModeQFont:
+      case ModeQFontColor:
         fontSize = mFont.pointSizeF();
         break;
     }
@@ -280,6 +299,12 @@ void QgsFontButton::mouseMoveEvent( QMouseEvent *e )
     case ModeQFont:
       drag->setMimeData( QgsFontUtils::toMimeData( mFont ) );
       break;
+
+    case ModeQFontColor:
+      QMimeData *mimeData { QgsFontUtils::toMimeData( mFont ) };
+      mimeData->setColorData( mColor );
+      drag->setMimeData( mimeData );
+      break;
   }
   const int iconSize = QgsGuiUtils::scaleIconSize( 50 );
   drag->setPixmap( createDragIcon( QSize( iconSize, iconSize ) ) );
@@ -320,6 +345,18 @@ void QgsFontButton::dragEnterEvent( QDragEnterEvent *e )
     e->acceptProposedAction();
     updatePreview( QColor(), nullptr, &font );
   }
+  else if ( mMode == ModeQFontColor && fontFromMimeData( e->mimeData(), font ) )
+  {
+    e->acceptProposedAction();
+    if ( colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) )
+    {
+      updatePreview( mimeColor, nullptr, &font );
+    }
+    else
+    {
+      updatePreview( QColor(), nullptr, &font );
+    }
+  }
   else if ( mMode == ModeTextRenderer && colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) )
   {
     //if so, we accept the drag, and temporarily change the button's color
@@ -356,6 +393,24 @@ void QgsFontButton::dropEvent( QDropEvent *e )
     setCurrentFont( font );
     return;
   }
+  else if ( mMode == ModeQFontColor && fontFromMimeData( e->mimeData(), font ) )
+  {
+    QgsFontUtils::addRecentFontFamily( font.family() );
+    setCurrentFont( font );
+    if ( colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) )
+    {
+      if ( hasAlpha )
+      {
+        mFormat.setOpacity( mimeColor.alphaF() );
+      }
+      mimeColor.setAlphaF( 1.0 );
+      mFormat.setColor( mimeColor );
+      QgsRecentColorScheme::addRecentColor( mimeColor );
+      updatePreview();
+      emit changed();
+    }
+    return;
+  }
   else if ( mMode == ModeTextRenderer && colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) )
   {
     //accept drop and set new color
@@ -384,6 +439,7 @@ void QgsFontButton::wheelEvent( QWheelEvent *event )
       break;
 
     case ModeQFont:
+    case ModeQFontColor:
       size = mFont.pointSizeF();
       break;
   }
@@ -410,6 +466,7 @@ void QgsFontButton::wheelEvent( QWheelEvent *event )
     }
 
     case ModeQFont:
+    case ModeQFontColor:
     {
       QFont newFont = mFont;
       newFont.setPointSizeF( size );
@@ -515,6 +572,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       break;
     }
     case ModeQFont:
+    case ModeQFontColor:
     {
       p.setBrush( Qt::NoBrush );
       p.setPen( QColor( 0, 0, 0 ) );
@@ -564,6 +622,7 @@ void QgsFontButton::prepareMenu()
       break;
 
     case ModeQFont:
+    case ModeQFontColor:
       fontHeaderLabel = tr( "Font size (pt)" );
       break;
   }
@@ -587,6 +646,7 @@ void QgsFontButton::prepareMenu()
         mFormat.setSize( value );
         break;
       case ModeQFont:
+      case ModeQFontColor:
         mFont.setPointSizeF( value );
         break;
     }
@@ -634,6 +694,7 @@ void QgsFontButton::prepareMenu()
           break;
         }
         case ModeQFont:
+        case ModeQFontColor:
         {
           QFont font = mFont;
           font.setFamily( family );
@@ -666,7 +727,7 @@ void QgsFontButton::prepareMenu()
     tempFormat.setSize( 14 );
     pasteFormatAction->setIcon( createDragIcon( QSize( iconSize, iconSize ), &tempFormat ) );
   }
-  else if ( mMode == ModeQFont && fontFromMimeData( QApplication::clipboard()->mimeData(), tempFont ) )
+  else if ( ( mMode == ModeQFont || mMode == ModeQFontColor ) && fontFromMimeData( QApplication::clipboard()->mimeData(), tempFont ) )
   {
     tempFont.setPointSize( 8 );
     pasteFormatAction->setIcon( createDragIcon( QSize( iconSize, iconSize ), nullptr, &tempFont ) );
@@ -678,7 +739,53 @@ void QgsFontButton::prepareMenu()
   mMenu->addAction( pasteFormatAction );
   connect( pasteFormatAction, &QAction::triggered, this, &QgsFontButton::pasteFormat );
 
-  if ( mMode == ModeTextRenderer )
+  if ( mMode == ModeQFontColor )
+  {
+    mMenu->addSeparator();
+
+    QgsColorWheel *colorWheel = new QgsColorWheel( mMenu );
+    colorWheel->setColor( mColor );
+    QgsColorWidgetAction *colorAction = new QgsColorWidgetAction( colorWheel, mMenu, mMenu );
+    colorAction->setDismissOnColorSelection( false );
+    connect( colorAction, &QgsColorWidgetAction::colorChanged, this, &QgsFontButton::setColor );
+    mMenu->addAction( colorAction );
+
+    //get schemes with ShowInColorButtonMenu flag set
+    QList< QgsColorScheme * > schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorButtonMenu );
+    QList< QgsColorScheme * >::iterator it = schemeList.begin();
+    for ( ; it != schemeList.end(); ++it )
+    {
+      QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, QStringLiteral( "labeling" ), this );
+      colorAction->setBaseColor( mColor );
+      mMenu->addAction( colorAction );
+      connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsFontButton::setColor );
+      connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsFontButton::addRecentColor );
+    }
+
+    mMenu->addSeparator();
+
+    QAction *copyColorAction = new QAction( tr( "Copy Color" ), this );
+    mMenu->addAction( copyColorAction );
+    connect( copyColorAction, &QAction::triggered, this, &QgsFontButton::copyColor );
+
+    QAction *pasteColorAction = new QAction( tr( "Paste Color" ), this );
+    //enable or disable paste action based on current clipboard contents. We always show the paste
+    //action, even if it's disabled, to give hint to the user that pasting colors is possible
+    QColor clipColor;
+    bool hasAlpha = false;
+    if ( colorFromMimeData( QApplication::clipboard()->mimeData(), clipColor, hasAlpha ) )
+    {
+      pasteColorAction->setIcon( createColorIcon( clipColor ) );
+    }
+    else
+    {
+      pasteColorAction->setEnabled( false );
+    }
+    mMenu->addAction( pasteColorAction );
+    connect( pasteColorAction, &QAction::triggered, this, &QgsFontButton::pasteColor );
+
+  }
+  else if ( mMode == ModeTextRenderer )
   {
     mMenu->addSeparator();
 
@@ -752,6 +859,11 @@ void QgsFontButton::addRecentColor( const QColor &color )
 QFont QgsFontButton::currentFont() const
 {
   return mFont;
+}
+
+QColor QgsFontButton::currentColor() const
+{
+  return mColor;
 }
 
 QgsVectorLayer *QgsFontButton::layer() const
@@ -834,6 +946,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 
   QgsTextFormat tempFormat;
   QFont tempFont;
+  QColor tempColor;
 
   if ( format )
     tempFormat = *format;
@@ -845,7 +958,20 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
     tempFont = mFont;
 
   if ( color.isValid() )
-    tempFormat.setColor( color );
+  {
+    if ( mMode == ModeQFontColor )
+    {
+      tempColor = color;
+    }
+    else
+    {
+      tempFormat.setColor( color );
+    }
+  }
+  else if ( mMode == ModeQFontColor )
+  {
+    tempColor = mColor;
+  }
 
   QSize currentIconSize;
   //icon size is button size with a small margin
@@ -947,6 +1073,16 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       p.drawText( textRect, Qt::AlignVCenter, text() );
       break;
     }
+    case ModeQFontColor:
+    {
+      p.setBrush( Qt::NoBrush );
+      p.setPen( tempColor );
+      p.setFont( tempFont );
+      QRectF textRect = rect;
+      textRect.setLeft( 2 );
+      p.drawText( textRect, Qt::AlignVCenter, text() );
+      break;
+    }
 
   }
   p.end();
@@ -957,7 +1093,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 void QgsFontButton::copyColor()
 {
   //copy color
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mFormat.color() ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( currentColor() ) );
 }
 
 void QgsFontButton::pasteColor()

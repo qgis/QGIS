@@ -22,7 +22,7 @@
 #include "qgsattributeeditorhtmlelement.h"
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorrelation.h"
-
+#include "qgssymbollayerutils.h"
 
 
 QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
@@ -30,6 +30,9 @@ QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
   QDomElement elem = doc.createElement( typeIdentifier() );
   elem.setAttribute( QStringLiteral( "name" ), mName );
   elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
+  elem.setAttribute( QStringLiteral( "labelColor" ), QgsSymbolLayerUtils::encodeColor( mLabelColor ) );
+  elem.setAttribute( QStringLiteral( "labelFont" ), mLabelFont.toString() );
+  elem.setAttribute( QStringLiteral( "overrideLabelStyle" ), mOverrideLabelStyle );
   saveConfiguration( elem, doc );
   return elem;
 }
@@ -42,6 +45,36 @@ bool QgsAttributeEditorElement::showLabel() const
 void QgsAttributeEditorElement::setShowLabel( bool showLabel )
 {
   mShowLabel = showLabel;
+}
+
+const QFont &QgsAttributeEditorElement::labelFont() const
+{
+  return mLabelFont;
+}
+
+void QgsAttributeEditorElement::setLabelFont( const QFont &labelFont )
+{
+  mLabelFont = labelFont;
+}
+
+const QColor &QgsAttributeEditorElement::labelColor() const
+{
+  return mLabelColor;
+}
+
+void QgsAttributeEditorElement::setLabelColor( const QColor &labelColor )
+{
+  mLabelColor = labelColor;
+}
+
+bool QgsAttributeEditorElement::overrideLabelStyle() const
+{
+  return mOverrideLabelStyle;
+}
+
+void QgsAttributeEditorElement::setOverrideLabelStyle( bool overrideLabelStyle )
+{
+  mOverrideLabelStyle = overrideLabelStyle;
 }
 
 QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent )
@@ -85,6 +118,24 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
       newElement->setShowLabel( element.attribute( QStringLiteral( "showLabel" ) ).toInt() );
     else
       newElement->setShowLabel( true );
+
+    // Label font and color
+    if ( element.hasAttribute( QStringLiteral( "labelColor" ) ) )
+    {
+      newElement->setLabelColor( QgsSymbolLayerUtils::decodeColor( element.attribute( QStringLiteral( "labelColor" ) ) ) );
+    }
+
+    if ( element.hasAttribute( QStringLiteral( "labelFont" ) ) )
+    {
+      QFont font;
+      font.fromString( element.attribute( QStringLiteral( "labelFont" ) ) );
+      newElement->setLabelFont( font );
+    }
+
+    if ( element.hasAttribute( QStringLiteral( "overrideLabelStyle" ) ) )
+    {
+      newElement->setOverrideLabelStyle( element.attribute( QStringLiteral( "overrideLabelStyle" ) ) == QChar( '1' ) );
+    }
 
     newElement->loadConfiguration( element, layerId, context, fields );
   }

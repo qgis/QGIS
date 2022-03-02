@@ -28,6 +28,20 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
   const QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
 
   // common configs
+  mFontButton->setMode( QgsFontButton::Mode::ModeQFontColor );
+  mFontButton->setColor( itemData.labelColor( ) );
+  mFontButton->setCurrentFont( itemData.labelFont( ) );
+  mFontButton->setText( itemData.name() );
+
+  connect( mShowLabelCheckBox, &QCheckBox::stateChanged, [ = ]( bool checked ) { mFontButton->setEnabled( checked ); } );
+  connect( mOverrideLabelStyle, &QCheckBox::stateChanged, [ = ]( bool checked )
+  {
+    mFontButton->setEnabled( checked );
+  } );
+
+  mOverrideLabelStyle->setChecked( itemData.overrideLabelStyle( ) );
+  mFontButton->setEnabled( itemData.overrideLabelStyle() );
+
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
 
   switch ( itemData.type() )
@@ -62,6 +76,9 @@ void QgsAttributeWidgetEdit::updateItemData()
 
   // common configs
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
+  itemData.setLabelColor( mFontButton->currentColor() );
+  itemData.setLabelFont( mFontButton->currentFont() );
+  itemData.setOverrideLabelStyle( mOverrideLabelStyle->isChecked() );
 
   // specific configs
   switch ( itemData.type() )
