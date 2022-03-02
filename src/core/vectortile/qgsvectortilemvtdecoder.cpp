@@ -31,7 +31,9 @@
 #include <QPointer>
 
 
-QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder() = default;
+QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder( const QgsVectorTileStructure &structure )
+  : mStructure( structure )
+{}
 
 QgsVectorTileMVTDecoder::~QgsVectorTileMVTDecoder() = default;
 
@@ -55,7 +57,9 @@ bool QgsVectorTileMVTDecoder::decode( QgsTileXYZ tileID, const QByteArray &rawTi
 QStringList QgsVectorTileMVTDecoder::layers() const
 {
   QStringList layerNames;
-  for ( int layerNum = 0; layerNum < tile.layers_size(); layerNum++ )
+  const int layerSize = tile.layers_size();
+  layerNames.reserve( layerSize );
+  for ( int layerNum = 0; layerNum < layerSize; layerNum++ )
   {
     const ::vector_tile::Tile_Layer &layer = tile.layers( layerNum );
     const QString layerName = layer.name().c_str();
@@ -71,7 +75,9 @@ QStringList QgsVectorTileMVTDecoder::layerFieldNames( const QString &layerName )
 
   const ::vector_tile::Tile_Layer &layer = tile.layers( mLayerNameToIndex[layerName] );
   QStringList fieldNames;
-  for ( int i = 0; i < layer.keys_size(); ++i )
+  const int size = layer.keys_size();
+  fieldNames.reserve( size );
+  for ( int i = 0; i < size; ++i )
   {
     const QString fieldName = layer.keys( i ).c_str();
     fieldNames << fieldName;
@@ -84,12 +90,10 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
   QgsVectorTileFeatures features;
 
   const int numTiles = static_cast<int>( pow( 2, mTileID.zoomLevel() ) ); // assuming we won't ever go over 30 zoom levels
-  double z0xMin = -20037508.3427892, z0yMin = -20037508.3427892;
-  double z0xMax =  20037508.3427892, z0yMax =  20037508.3427892;
-  const double tileDX = ( z0xMax - z0xMin ) / numTiles;
-  const double tileDY = ( z0yMax - z0yMin ) / numTiles;
-  const double tileXMin = z0xMin + mTileID.column() * tileDX;
-  const double tileYMax = z0yMax - mTileID.row() * tileDY;
+  const double tileDX = ( mStructure.z0xMax() - mStructure.z0xMin() ) / numTiles;
+  const double tileDY = ( mStructure.z0yMax() - mStructure.z0yMin() ) / numTiles;
+  const double tileXMin = mStructure.z0xMin() + mTileID.column() * tileDX;
+  const double tileYMax = mStructure.z0yMax() - mTileID.row() * tileDY;
 
   for ( int layerNum = 0; layerNum < tile.layers_size(); layerNum++ )
   {
