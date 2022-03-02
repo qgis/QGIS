@@ -460,7 +460,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )
   
-template class GUI_EXPORT QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureMode> SIP_SKIP;
 template class GUI_EXPORT QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique> SIP_SKIP;
 
 #endif
