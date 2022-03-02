@@ -24,6 +24,9 @@
 #include "qobjectuniqueptr.h"
 #include "qgssnappingutils.h"
 
+#include "qgssettingsentryenumflag.h"
+
+
 #include <QPoint>
 #include <QList>
 #include "qgis_gui.h"
