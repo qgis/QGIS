@@ -84,8 +84,25 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     void setBinding( Qgis::AltitudeBinding binding ) { mBinding = binding; }
 
     /**
+     * Returns TRUE if extrusion is enabled.
+     *
+     * \see setExtrusionEnabled()
+     * \see extrusionHeight()
+     */
+    bool extrusionEnabled() const { return mEnableExtrusion; }
+
+    /**
+     * Sets whether extrusion is \a enabled.
+     *
+     * \see extrusionEnabled()
+     * \see setExtrusionHeight()
+     */
+    void setExtrusionEnabled( bool enabled ) { mEnableExtrusion = enabled; }
+
+    /**
      * Returns the feature extrusion height.
      *
+     * \warning extrusion is only applied if extrusionEnabled() is TRUE.
      * \note the zScale() factor is NOT applied to extrusion heights.
      *
      * \see setExtrusionHeight()
@@ -95,6 +112,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     /**
      * Sets the feature extrusion height.
      *
+     * \warning extrusion is only applied if extrusionEnabled() is TRUE.
      * \note the zScale() factor is NOT applied to extrusion heights.
      *
      * \see extrusionHeight()
@@ -106,6 +124,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     Qgis::AltitudeClamping mClamping = Qgis::AltitudeClamping::Terrain;
     Qgis::AltitudeBinding mBinding = Qgis::AltitudeBinding::Centroid;
 
+    bool mEnableExtrusion = false;
     double mExtrusionHeight = 0;
 
 };

@@ -35,6 +35,7 @@ QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElem
   element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
   element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
 
+  element.setAttribute( QStringLiteral( "extrusionEnabled" ), mEnableExtrusion ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "extrusion" ), qgsDoubleToString( mExtrusionHeight ) );
   element.setAttribute( QStringLiteral( "clamping" ), qgsEnumValueToKey( mClamping ) );
   element.setAttribute( QStringLiteral( "binding" ), qgsEnumValueToKey( mBinding ) );
@@ -50,6 +51,7 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
 
   mClamping = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "clamping" ) ), Qgis::AltitudeClamping::Terrain );
   mBinding = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "binding" ) ), Qgis::AltitudeBinding::Centroid );
+  mEnableExtrusion = elevationElement.attribute( QStringLiteral( "extrusionEnabled" ), QStringLiteral( "0" ) ).toInt();
   mExtrusionHeight = elevationElement.attribute( QStringLiteral( "extrusion" ), QStringLiteral( "0" ) ).toDouble();
 
   return true;
