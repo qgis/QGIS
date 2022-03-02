@@ -50,6 +50,7 @@ class TestQgsAdvancedDigitizing: public QObject
 
     void perpendicularConstraint();
     void xyExtensionConstraint();
+    void lineExtensionConstraint();
 
     void cadPointList();
     void currentPointWhenSanpping();
@@ -732,6 +733,57 @@ void TestQgsAdvancedDigitizing::xyExtensionConstraint()
   utils.mouseClick( 0, 0, Qt::RightButton );
 }
 
+void TestQgsAdvancedDigitizing::lineExtensionConstraint()
+{
+  auto utils = getMapToolDigitizingUtils( mLayer3950 );
+
+  QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
+
+  // line for the xy extension test
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 10, 10, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
+            QStringLiteral( "LineString (0 0, 10 10)" ) );
+
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // test snapping on segment
+  utils.mouseMove( 4.9, 5.1 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 5, 5 ) );
+
+  // activate xy extension constraint
+  QCOMPARE( mAdvancedDigitizingDockWidget->mLineExtensionConstraint->lockMode(),
+            QgsAdvancedDigitizingDockWidget::CadConstraint::NoLock );
+
+  mAdvancedDigitizingDockWidget->mLineExtensionAction->trigger();
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->mLineExtensionConstraint->lockMode(),
+            QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->mLockedSnapVertices.size(), 0 );
+
+  // move to a vertex to activate constraint
+  utils.mouseMove( 10.1, 10 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 10, 10 ) );
+
+  // check if the vertex is in the heap mLockedSnapVertices
+  QCOMPARE( mAdvancedDigitizingDockWidget->mLockedSnapVertices.size(), 1 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->mLockedSnapVertices.first().point(), QgsPointXY( 10, 10 ) );
+
+  // test the 2 configurations
+  utils.mouseMove( 15.1, 14.9 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 15, 15 ) );
+
+  utils.mouseMove( -15.1, -14.9 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( -15, -15 ) );
+
+  utils.mouseClick( 0, 0, Qt::RightButton );
+}
+
 void TestQgsAdvancedDigitizing::cadPointList()
 {
   auto utils = getMapToolDigitizingUtils( mLayer3950 );
@@ -940,7 +992,7 @@ void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
 
   // all constraints should be deactivated
   QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
-           QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
+            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintX()->isLocked() );
