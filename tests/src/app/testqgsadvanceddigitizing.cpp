@@ -36,10 +36,6 @@ class TestQgsAdvancedDigitizing: public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
 
-    TestQgsMapToolAdvancedDigitizingUtils getMapToolDigitizingUtils( QgsVectorLayer *layer );
-    QString getWktFromLastAddedFeature( TestQgsMapToolAdvancedDigitizingUtils utils, QSet<QgsFeatureId> oldFeatures );
-    void setCanvasCrs( QString crsString );
-
     void distanceConstraint();
     void distanceConstraintDiffCrs();
     void distanceConstraintWhenSnapping();
@@ -53,12 +49,17 @@ class TestQgsAdvancedDigitizing: public QObject
     void coordinateConstraintWhenSnapping();
 
     void perpendicularConstraint();
+    void xyExtensionConstraint();
 
     void cadPointList();
     void currentPointWhenSanpping();
     void currentPointWhenSanppingWithDiffCanvasCRS();
 
   private:
+    TestQgsMapToolAdvancedDigitizingUtils getMapToolDigitizingUtils( QgsVectorLayer *layer );
+    QString getWktFromLastAddedFeature( TestQgsMapToolAdvancedDigitizingUtils utils, QSet<QgsFeatureId> oldFeatures );
+    void setCanvasCrs( QString crsString );
+
     QgisApp *mQgisApp = nullptr;
     QgsMapToolAddFeature *mCaptureTool = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
@@ -669,6 +670,62 @@ void TestQgsAdvancedDigitizing::perpendicularConstraint()
   // test the perpendicular constraint
   utils.mouseMove( 3, 2 );
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 3, 5 ) );
+
+  utils.mouseClick( 0, 0, Qt::RightButton );
+}
+
+void TestQgsAdvancedDigitizing::xyExtensionConstraint()
+{
+  auto utils = getMapToolDigitizingUtils( mLayer3950 );
+
+  QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
+
+  // line for the xy extension test
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 10, 10, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
+            QStringLiteral( "LineString (0 0, 10 10)" ) );
+
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // test snapping on segment
+  utils.mouseMove( 4.9, 5.1 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 5, 5 ) );
+
+  // activate xy extension constraint
+  QCOMPARE( mAdvancedDigitizingDockWidget->mXyVertexConstraint->lockMode(),
+            QgsAdvancedDigitizingDockWidget::CadConstraint::NoLock );
+
+  mAdvancedDigitizingDockWidget->mXyVertexAction->trigger();
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->mXyVertexConstraint->lockMode(),
+            QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
+
+  QCOMPARE( mAdvancedDigitizingDockWidget->mLockedSnapVertices.size(), 0 );
+
+  // move to the segment, shouldn't activate constraint
+  utils.mouseMove( 5, 5 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->mLockedSnapVertices.size(), 0 );
+
+  // move to a vertex to activate constraint
+  utils.mouseMove( 10.1, 10 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 10, 10 ) );
+
+  // check if the vertex is in the heap mLockedSnapVertices
+  QCOMPARE( mAdvancedDigitizingDockWidget->mLockedSnapVertices.size(), 1 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->mLockedSnapVertices.first().point(), QgsPointXY( 10, 10 ) );
+
+  // test soft constraint on X
+  utils.mouseMove( 10.1, 0 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 10, 0 ) );
+
+  // test soft constraint on Y
+  utils.mouseMove( 0, 10.1 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 0, 10 ) );
 
   utils.mouseClick( 0, 0, Qt::RightButton );
 }
