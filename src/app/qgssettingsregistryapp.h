@@ -21,6 +21,10 @@
 #include "qgisapp.h"
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
+#include "qgsmaptoolsdigitizingtechniquemanager.h"
+
+
+template class APP_EXPORT QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique>;
 
 
 class APP_EXPORT QgsSettingsRegistryApp : public QgsSettingsRegistry
