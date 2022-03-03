@@ -225,7 +225,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
     {
       // do nothing if both X,Y are already locked
     }
-    else if ( ctx.xConstraint.locked )
+    else if ( ctx.xConstraint.locked || !std::isnan( res.softLockX ) )
     {
       if ( qgsDoubleNear( cosa, 0.0 ) )
       {
@@ -241,7 +241,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
         point.setY( previousPt.y() + x * sina / cosa );
       }
     }
-    else if ( ctx.yConstraint.locked )
+    else if ( ctx.yConstraint.locked || !std::isnan( res.softLockY ) )
     {
       if ( qgsDoubleNear( sina, 0.0 ) )
       {
