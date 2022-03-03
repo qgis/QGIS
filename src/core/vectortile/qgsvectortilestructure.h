@@ -195,6 +195,13 @@ class CORE_EXPORT QgsVectorTileStructure
      */
     int scaleToZoomLevel( double scale ) const;
 
+    /**
+     * Initializes the tile structure settings from an ESRI REST VectorTileService \a json map.
+     *
+     * \note This same structure is utilised in ESRI vtpk archives in the root.json file.
+     */
+    bool fromEsriJson( const QVariantMap &json );
+
   private:
 
     double mZ0xMin = 0;
