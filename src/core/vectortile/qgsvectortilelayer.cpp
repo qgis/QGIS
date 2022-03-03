@@ -32,6 +32,7 @@
 #include "qgsjsonutils.h"
 #include "qgspainting.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsarcgisrestutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -65,6 +66,8 @@ bool QgsVectorTileLayer::loadDataSource()
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
+
+  setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
   mSourcePath = dsUri.param( QStringLiteral( "url" ) );
@@ -131,8 +134,6 @@ bool QgsVectorTileLayer::loadDataSource()
     return false;
   }
 
-  setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
-
   const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
   const QgsDataProvider::ReadFlags flags;
   mDataProvider.reset( new QgsVectorTileDataProvider( providerOptions, flags ) );
@@ -190,6 +191,9 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
     return false;
   }
 
+  mTileStructure.fromEsriJson( mArcgisLayerConfiguration );
+  setCrs( mTileStructure.crs() );
+
   // if hardcoded zoom limits aren't specified, take them from the server
   if ( !dataSourceUri.hasParam( QStringLiteral( "zmin" ) ) )
     mTileStructure.setMinimumZoom( 0 );
@@ -201,7 +205,40 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
   else
     mTileStructure.setMaximumZoom( dataSourceUri.param( QStringLiteral( "zmax" ) ).toInt() );
 
-  setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
+  const QVariantMap fullExtent = mArcgisLayerConfiguration.value( QStringLiteral( "fullExtent" ) ).toMap();
+  if ( !fullExtent.isEmpty() )
+  {
+    const QgsRectangle fullExtentRect(
+      fullExtent.value( QStringLiteral( "xmin" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "ymin" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "xmax" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "ymax" ) ).toDouble()
+    );
+
+    const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( QStringLiteral( "spatialReference" ) ).toMap() );
+    const QgsCoordinateTransform extentTransform( fullExtentCrs, crs(), transformContext() );
+    try
+    {
+      setExtent( extentTransform.transformBoundingBox( fullExtentRect ) );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
+    }
+  }
+  else
+  {
+    // if no fullExtent specified in JSON, default to web mercator specs full extent
+    const QgsCoordinateTransform extentTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), crs(), transformContext() );
+    try
+    {
+      setExtent( extentTransform.transformBoundingBox( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) ) );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
+    }
+  }
 
   return true;
 }
@@ -252,6 +289,7 @@ bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
     QgsCoordinateReferenceSystem crs;
     crs.readXml( structureElement );
     structure.setCrs( crs );
+    setCrs( crs );
 
     mTileStructure = structure;
   }
