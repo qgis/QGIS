@@ -338,6 +338,15 @@ Returns the snap matches whose vertices have been locked
 .. versionadded:: 3.24
 %End
 
+    void clearLockedSnapVertices( bool force = true );
+%Docstring
+Removes all points from the locked snap vertex list
+
+.. versionadded:: 3.26
+
+:param force: Clears the list even if the constraints that use it are still locked.
+%End
+
     void clearPoints();
 %Docstring
 Removes all points from the CAD point list

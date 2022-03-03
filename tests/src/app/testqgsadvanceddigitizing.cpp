@@ -53,6 +53,7 @@ class TestQgsAdvancedDigitizing: public QObject
     void lineExtensionConstraint();
 
     void cadPointList();
+    void lockedSnapVertices();
     void currentPointWhenSanpping();
     void currentPointWhenSanppingWithDiffCanvasCRS();
 
@@ -828,6 +829,110 @@ void TestQgsAdvancedDigitizing::cadPointList()
   QVERIFY( !exist );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->pointsCount(), 1 );
+}
+
+void TestQgsAdvancedDigitizing::lockedSnapVertices()
+{
+  auto utils = getMapToolDigitizingUtils( mLayer3950 );
+
+  QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
+
+  // digitizes a line
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 1, Qt::LeftButton );
+  utils.mouseClick( 0, 2, Qt::LeftButton );
+  utils.mouseClick( 0, 3, Qt::LeftButton );
+  utils.mouseClick( 0, 4, Qt::LeftButton );
+  utils.mouseClick( 0, 4, Qt::RightButton );
+
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
+            QStringLiteral( "LineString (0 0, 0 1, 0 2, 0 3, 0 4)" ) );
+
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // no locked snap vertex while xy vertex constraint or line extension
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 0 );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  utils.mouseMove( 0, 0 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 0 );
+
+  // enable xy vertex constraint
+  mAdvancedDigitizingDockWidget->mXyVertexAction->trigger();
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  utils.mouseMove( 0, 1 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 1 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().last().point(), QgsPointXY( 0, 1 ) );
+
+  // enable also line extension constraint
+  mAdvancedDigitizingDockWidget->mLineExtensionAction->trigger();
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  utils.mouseMove( 0, 2 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 2 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().last().point(), QgsPointXY( 0, 2 ) );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().first().point(), QgsPointXY( 0, 1 ) );
+
+  utils.mouseMove( 0, 3 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 3 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().last().point(), QgsPointXY( 0, 3 ) );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().first().point(), QgsPointXY( 0, 1 ) );
+
+  // the max size of lockedSnapVertices is 3
+  utils.mouseMove( 0, 4 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 3 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().last().point(), QgsPointXY( 0, 4 ) );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().first().point(), QgsPointXY( 0, 2 ) );
+
+  // start to digitizing a new line
+  utils.mouseClick( 10, 0, Qt::LeftButton );
+  utils.mouseClick( 10, 1, Qt::LeftButton );
+  utils.mouseClick( 10, 2, Qt::LeftButton );
+
+  // this shouldn't reset lockedSnapVertices
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 3 );
+//  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().last().point(), QgsPointXY( 0, 4 ) );
+//  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().first().point(), QgsPointXY( 0, 2 ) );
+
+  // disable line extension constraint
+  mAdvancedDigitizingDockWidget->mXyVertexAction->trigger();
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  // this shouldn't reset lockedSnapVertices
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 3 );
+//  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().last().point(), QgsPointXY( 0, 4 ) );
+//  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().first().point(), QgsPointXY( 0, 2 ) );
+
+  // stops digitizing
+  utils.mouseClick( 10, 2, Qt::RightButton );
+
+  // this should reset lockedSnapVertices
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 0 );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  // enable line extension constraint
+  mAdvancedDigitizingDockWidget->mLineExtensionAction->trigger();
+  QVERIFY( mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+
+  // add one locked snap vertex
+  utils.mouseMove( 0, 1 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 1 );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().last().point(), QgsPointXY( 0, 1 ) );
+
+  // line extension constraint and xy vertex constraint are disable, this should reset lockedSnapVertices
+  mAdvancedDigitizingDockWidget->mLineExtensionAction->trigger();
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() );
+  QVERIFY( !mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
+  QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 0 );
 }
 
 void TestQgsAdvancedDigitizing::currentPointWhenSanpping()

@@ -346,7 +346,9 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
     mPerpendicularAction->setEnabled( false );
   }
 
+
   clear();
+  clearLockedSnapVertices();
   setConstructionMode( false );
 
   switchZM();
@@ -546,10 +548,18 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
 
   lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
 
-  mXyVertexConstraint->setLockMode( CadConstraint::NoLock );
-  emit softLockXyChanged( false );
-  mLineExtensionConstraint->setLockMode( CadConstraint::NoLock );
-  emit softLockLineExtensionChanged( false );
+  if ( releaseRepeatingLocks )
+  {
+    mXyVertexAction->setChecked( false );
+    mXyVertexConstraint->setLockMode( CadConstraint::NoLock );
+    emit softLockXyChanged( false );
+
+    mLineExtensionAction->setChecked( false );
+    mLineExtensionConstraint->setLockMode( CadConstraint::NoLock );
+    emit softLockLineExtensionChanged( false );
+
+    clearLockedSnapVertices();
+  }
 
   if ( releaseRepeatingLocks || !mAngleConstraint->isRepeatingLock() )
   {
@@ -849,10 +859,7 @@ void QgsAdvancedDigitizingDockWidget::lockParameterlessConstraint( bool activate
     emit pointChangedV2( mCadPointList.value( 0 ) );
   }
 
-  if ( !mLineExtensionConstraint->isLocked() && !mXyVertexConstraint->isLocked() )
-  {
-    mLockedSnapVertices.clear();
-  }
+  clearLockedSnapVertices( false );
 }
 
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
@@ -892,8 +899,10 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 
   mPerpendicularAction->setEnabled( distance && snappingEnabled );
   mParallelAction->setEnabled( distance && snappingEnabled );
+
   mLineExtensionAction->setEnabled( snappingEnabled );
   mXyVertexAction->setEnabled( snappingEnabled );
+  clearLockedSnapVertices( false );
 
   //update tooltips on buttons
   if ( !snappingEnabled )
@@ -1323,8 +1332,6 @@ bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent *e )
 void QgsAdvancedDigitizingDockWidget::clear()
 {
   clearPoints();
-  mLockedSnapVertices.clear();
-
   releaseLocks();
 }
 
@@ -1679,6 +1686,17 @@ void QgsAdvancedDigitizingDockWidget::updateCadPaintItem()
 {
   mCadPaintItem->update();
 }
+
+void QgsAdvancedDigitizingDockWidget::clearLockedSnapVertices( bool force )
+{
+  if ( !force && ( mLineExtensionConstraint->isLocked() || mXyVertexConstraint->isLocked() ) )
+  {
+    return;
+  }
+
+  mLockedSnapVertices.clear();
+}
+
 
 void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
 {

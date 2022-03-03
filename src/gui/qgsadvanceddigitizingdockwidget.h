@@ -347,6 +347,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QList< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; }
 
     /**
+      * Removes all points from the locked snap vertex list
+      * \since QGIS 3.26
+      * \param force Clears the list even if the constraints that use it are still locked.
+      */
+    void clearLockedSnapVertices( bool force = true );
+
+    /**
      * Removes all points from the CAD point list
      * \since QGIS 3.0
      */
