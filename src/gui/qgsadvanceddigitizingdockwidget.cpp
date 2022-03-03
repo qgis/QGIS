@@ -331,8 +331,6 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   mCadEnabled = enabled;
   mEnableAction->setChecked( enabled );
   mConstructionModeAction->setEnabled( enabled );
-  mParallelAction->setEnabled( enabled );
-  mPerpendicularAction->setEnabled( enabled );
   mSettingsAction->setEnabled( enabled );
   mInputWidgets->setEnabled( enabled );
   mToggleFloaterAction->setEnabled( enabled );
@@ -340,8 +338,12 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
 
   if ( !enabled )
   {
+    // uncheck at deactivation
     mLineExtensionAction->setChecked( false );
     mXyVertexAction->setChecked( false );
+    // will be reactivated in updateCapacities
+    mParallelAction->setEnabled( false );
+    mPerpendicularAction->setEnabled( false );
   }
 
   clear();
@@ -888,14 +890,28 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   const bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
   const bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
 
-  mPerpendicularAction->setEnabled( distance && absoluteAngle && snappingEnabled );
-  mParallelAction->setEnabled( distance && absoluteAngle && snappingEnabled );
+  mPerpendicularAction->setEnabled( distance && snappingEnabled );
+  mParallelAction->setEnabled( distance && snappingEnabled );
+  mLineExtensionAction->setEnabled( snappingEnabled );
+  mXyVertexAction->setEnabled( snappingEnabled );
 
   //update tooltips on buttons
   if ( !snappingEnabled )
   {
-    mPerpendicularAction->setToolTip( tr( "Snapping must be enabled to utilize perpendicular mode" ) );
-    mParallelAction->setToolTip( tr( "Snapping must be enabled to utilize parallel mode" ) );
+    mPerpendicularAction->setToolTip( tr( "Snapping must be enabled to utilize perpendicular mode." ) );
+    mParallelAction->setToolTip( tr( "Snapping must be enabled to utilize parallel mode." ) );
+    mLineExtensionAction->setToolTip( tr( "Snapping must be enabled to utilize line extension mode." ) );
+    mXyVertexAction->setToolTip( tr( "Snapping must be enabled to utilize xy point mode." ) );
+  }
+  else if ( mCadPointList.count() <= 1 )
+  {
+    mPerpendicularAction->setToolTip( tr( "A first vertex should be drawn to utilize perpendicular mode." ) );
+    mParallelAction->setToolTip( tr( "A first vertex should be drawn to utilize parallel mode." ) );
+  }
+  else if ( isGeographic )
+  {
+    mPerpendicularAction->setToolTip( tr( "Perpendicular mode cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
+    mParallelAction->setToolTip( tr( "Parallel mode cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
   }
   else
   {
