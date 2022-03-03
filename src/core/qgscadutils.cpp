@@ -312,15 +312,38 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
         if ( distance / ctx.mapUnitsPerPixel < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
         {
-          double angleValue = std::atan2( extensionPoint.y() - vertex.y(),
-                                          extensionPoint.x() - vertex.x() );
+          if ( ctx.xConstraint.locked || !std::isnan( res.softLockX ) )
+          {
+            QgsPoint intersection;
+            QgsGeometryUtils::lineIntersection(
+              QgsPoint( point ), QgsVector( 0, 1 ),
+              QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
+              intersection
+            );
+            point = QgsPointXY( intersection );
+          }
+          else if ( ctx.yConstraint.locked || !std::isnan( res.softLockY ) )
+          {
+            QgsPoint intersection;
+            QgsGeometryUtils::lineIntersection(
+              QgsPoint( point ), QgsVector( 1, 0 ),
+              QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
+              intersection
+            );
+            point = QgsPointXY( intersection );
+          }
+          else
+          {
+            double angleValue = std::atan2( extensionPoint.y() - vertex.y(),
+                                            extensionPoint.x() - vertex.x() );
 
-          const double cosa = std::cos( angleValue );
-          const double sina = std::sin( angleValue );
-          const double v = ( point.x() - extensionPoint.x() ) * cosa + ( point.y() - extensionPoint.y() ) * sina;
+            const double cosa = std::cos( angleValue );
+            const double sina = std::sin( angleValue );
+            const double v = ( point.x() - extensionPoint.x() ) * cosa + ( point.y() - extensionPoint.y() ) * sina;
 
-          point.setX( extensionPoint.x() + cosa * v );
-          point.setY( extensionPoint.y() + sina * v );
+            point.setX( extensionPoint.x() + cosa * v );
+            point.setY( extensionPoint.y() + sina * v );
+          }
 
           return true;
         }
