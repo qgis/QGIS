@@ -234,6 +234,12 @@ in the metadata, and even for sources with statistical metadata only some ``stat
     }
 %End
 
+    virtual bool supportsSubsetString() const;
+    virtual QString subsetString() const;
+
+    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = false );
+
+
     static QMap< int, QString > lasClassificationCodes();
 %Docstring
 Returns the map of LAS classification code to untranslated string value, corresponding to the ASPRS Standard

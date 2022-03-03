@@ -28,7 +28,6 @@
 #define SIP_NO_FILE
 
 #include "qgspointcloudattribute.h"
-#include "qgspointcloudexpression.h"
 
 /**
  * \ingroup core

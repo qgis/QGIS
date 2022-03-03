@@ -504,7 +504,6 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   );
 
   int skippedPoints = 0;
-//  QgsPointCloudExpression expr( filterExpression );
   if ( !filterExpression.prepare( block ) && !filterExpression.dump().isEmpty() )
   {
     // skip processing if the expression cannot be prepared

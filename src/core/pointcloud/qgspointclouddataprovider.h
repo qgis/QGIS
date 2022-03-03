@@ -279,10 +279,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      */
     virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
 
-    QString subsetString() const override;
-    bool supportsSubsetString() const override { return true; }
-    bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
-
 #else
 
     /**
@@ -311,6 +307,10 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     }
     % End
 #endif
+
+    bool supportsSubsetString() const override { return true; }
+    QString subsetString() const override;
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
 
     /**
      * Returns the map of LAS classification code to untranslated string value, corresponding to the ASPRS Standard
