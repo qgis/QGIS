@@ -81,6 +81,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
+  , mViewSyncMode( other.mViewSyncMode )
   , mDebugShadowMapEnabled( other.mDebugShadowMapEnabled )
   , mDebugShadowMapCorner( other.mDebugShadowMapCorner )
   , mDebugShadowMapSize( other.mDebugShadowMapSize )
@@ -269,6 +270,9 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mEyeDomeLightingStrength = elemEyeDomeLighting.attribute( "eye-dome-lighting-strength", QStringLiteral( "1000.0" ) ).toDouble();
   mEyeDomeLightingDistance = elemEyeDomeLighting.attribute( "eye-dome-lighting-distance", QStringLiteral( "1" ) ).toInt();
 
+  QDomElement elemNavigationSync = elem.firstChildElement( QStringLiteral( "navigation-sync" ) );
+  mViewSyncMode = ( Qgs3DMapSettings::ViewSyncMode )( elemNavigationSync.attribute( QStringLiteral( "view-sync-mode" ), QStringLiteral( "0" ) ).toInt() );
+
   QDomElement elemDebugSettings = elem.firstChildElement( QStringLiteral( "debug-settings" ) );
   mDebugShadowMapEnabled = elemDebugSettings.attribute( QStringLiteral( "shadowmap-enabled" ), QStringLiteral( "0" ) ).toInt();
   mDebugShadowMapCorner = static_cast<Qt::Corner>( elemDebugSettings.attribute( QStringLiteral( "shadowmap-corner" ), "0" ).toInt() );
@@ -401,11 +405,14 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemDebug );
 
   QDomElement elemEyeDomeLighting = doc.createElement( QStringLiteral( "eye-dome-lighting" ) );
-  elemEyeDomeLighting.setAttribute( "enabled", mEyeDomeLightingEnabled ? 1 : 0 );
-  elemEyeDomeLighting.setAttribute( "eye-dome-lighting-strength", mEyeDomeLightingStrength );
-  elemEyeDomeLighting.setAttribute( "eye-dome-lighting-distance", mEyeDomeLightingDistance );
+  elemEyeDomeLighting.setAttribute( QStringLiteral( "enabled" ), mEyeDomeLightingEnabled ? 1 : 0 );
+  elemEyeDomeLighting.setAttribute( QStringLiteral( "eye-dome-lighting-strength" ), mEyeDomeLightingStrength );
+  elemEyeDomeLighting.setAttribute( QStringLiteral( "eye-dome-lighting-distance" ), mEyeDomeLightingDistance );
   elem.appendChild( elemEyeDomeLighting );
 
+  QDomElement elemNavigationSync = doc.createElement( QStringLiteral( "navigation-sync" ) );
+  elemNavigationSync.setAttribute( QStringLiteral( "view-sync-mode" ), ( int )mViewSyncMode );
+  elem.appendChild( elemNavigationSync );
 
   QDomElement elemDebugSettings = doc.createElement( QStringLiteral( "debug-settings" ) );
   elemDebugSettings.setAttribute( QStringLiteral( "shadowmap-enabled" ), mDebugShadowMapEnabled );
@@ -821,6 +828,11 @@ Qgis::RendererUsage Qgs3DMapSettings::rendererUsage() const
 void Qgs3DMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
 {
   mRendererUsage = rendererUsage;
+}
+
+void Qgs3DMapSettings::setViewSyncMode( ViewSyncMode mode )
+{
+  mViewSyncMode = mode;
 }
 
 void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()

@@ -22,6 +22,7 @@
 
 #include "qgsrange.h"
 #include "qgscameracontroller.h"
+#include "qgsrectangle.h"
 
 namespace Qt3DExtras
 {
@@ -99,6 +100,20 @@ class Qgs3DMapCanvas : public QWidget
      */
     QSize windowSize() const;
 
+    /**
+     * Resets camera view to show the extent \a extent (top view)
+     *
+     * \since QGIS 3.26
+     */
+    void viewExtent( const QgsRectangle &extent );
+
+    /**
+     * Calculates the 2D extent viewed by the 3D camera
+     *
+     * \since QGIS 3.26
+     */
+    QgsRectangle viewFrustum2DExtent();
+
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
     void savedAsImage( const QString &fileName );
@@ -110,6 +125,13 @@ class Qgs3DMapCanvas : public QWidget
     void fpsCountChanged( float fpsCount );
     //! Emitted when the FPS counter is enabled or disabeld
     void fpsCounterEnabledChanged( bool enabled );
+
+    /**
+     * Emitted when the viewed 2D extent seen by the 3D camera has changed
+     *
+     * \since QGIS 3.26
+     */
+    void viewed2DExtentFrom3DChanged( QgsRectangle extent );
 
     /**
      * Emitted when the camera navigation \a speed is changed.

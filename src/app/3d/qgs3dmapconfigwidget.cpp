@@ -192,6 +192,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   edlStrengthSpinBox->setValue( map->eyeDomeLightingStrength() );
   edlDistanceSpinBox->setValue( map->eyeDomeLightingDistance() );
 
+  mSyncModeComboBox->setCurrentIndex( ( int )map->viewSyncMode() );
+
   mDebugShadowMapCornerComboBox->addItem( tr( "Top Left" ) );
   mDebugShadowMapCornerComboBox->addItem( tr( "Top Right" ) );
   mDebugShadowMapCornerComboBox->addItem( tr( "Bottom Left" ) );
@@ -357,6 +359,8 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setEyeDomeLightingEnabled( edlGroupBox->isChecked() );
   mMap->setEyeDomeLightingStrength( edlStrengthSpinBox->value() );
   mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
+
+  mMap->setViewSyncMode( static_cast<Qgs3DMapSettings::ViewSyncMode>( mSyncModeComboBox->currentIndex() ) );
 
   mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugDepthMapCornerComboBox->currentIndex() ), mDebugDepthMapSizeSpinBox->value() );
   mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), mDebugShadowMapSizeSpinBox->value() );
