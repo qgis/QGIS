@@ -111,19 +111,19 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mTriangulateGroupBox, &QGroupBox::toggled, this, [&]() { emitChangedSignal(); } );
   connect( mTriangulateGroupBox, &QGroupBox::toggled, this, [&]() {mPointSizeSpinBox->setEnabled( !mTriangulateGroupBox->isChecked() ); } );
 
-  connect( mFilterTriangleBySizeCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
-  connect( mFilterTriangleBySizeCheckBox, &QCheckBox::stateChanged, this, [&]()
-  { mTriangleSizeThresholdSpinBox->setEnabled( mFilterTriangleBySizeCheckBox->isChecked() ); } );
-  connect( mTriangleSizeThresholdSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
+  connect( mHorizontalTriangleCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
+  connect( mHorizontalTriangleCheckBox, &QCheckBox::stateChanged, this, [&]()
+  { mHorizontalTriangleThresholdSpinBox->setEnabled( mHorizontalTriangleCheckBox->isChecked() ); } );
+  connect( mHorizontalTriangleThresholdSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
 
-  connect( mFilterTriangleByHeightCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
-  connect( mFilterTriangleByHeightCheckBox, &QCheckBox::stateChanged, this, [&]()
-  { mTriangleHeightThresholdSpinBox->setEnabled( mFilterTriangleByHeightCheckBox->isChecked() ); } );
-  connect( mTriangleHeightThresholdSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
+  connect( mVerticalTriangleCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
+  connect( mVerticalTriangleCheckBox, &QCheckBox::stateChanged, this, [&]()
+  { mVerticalTriangleThresholdSpinBox->setEnabled( mVerticalTriangleCheckBox->isChecked() ); } );
+  connect( mVerticalTriangleThresholdSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
 
   mPointSizeSpinBox->setEnabled( !mTriangulateGroupBox->isChecked() );
-  mTriangleSizeThresholdSpinBox->setEnabled( mFilterTriangleBySizeCheckBox->isChecked() );
-  mTriangleHeightThresholdSpinBox->setEnabled( mFilterTriangleByHeightCheckBox->isChecked() );
+  mHorizontalTriangleThresholdSpinBox->setEnabled( mHorizontalTriangleCheckBox->isChecked() );
+  mHorizontalTriangleThresholdSpinBox->setEnabled( mVerticalTriangleCheckBox->isChecked() );
 
   if ( !symbol ) // if we have a symbol, this was already handled in setSymbol above
     rampAttributeChanged();
@@ -149,10 +149,10 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( symbol->symbolType() ) );
   mPointSizeSpinBox->setValue( symbol->pointSize() );
   mTriangulateGroupBox->setChecked( symbol->renderAsTriangles() );
-  mFilterTriangleBySizeCheckBox->setChecked( symbol->filterTrianglesBySize() );
-  mTriangleSizeThresholdSpinBox->setValue( symbol->triangleSizeThreshold() );
-  mFilterTriangleByHeightCheckBox->setChecked( symbol->filterTrianglesByHeight() );
-  mTriangleHeightThresholdSpinBox->setValue( symbol->triangleHeightThreshold() );
+  mHorizontalTriangleCheckBox->setChecked( symbol->horizontalTriangleFilter() );
+  mHorizontalTriangleThresholdSpinBox->setValue( symbol->horizontalFilterThreshold() );
+  mVerticalTriangleCheckBox->setChecked( symbol->verticalTriangleFilter() );
+  mVerticalTriangleThresholdSpinBox->setValue( symbol->verticalFilterThreshold() );
 
   if ( symbol->symbolType() == QLatin1String( "single-color" ) )
   {
@@ -251,10 +251,10 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
   {
     retSymb->setPointSize( mPointSizeSpinBox->value() );
     retSymb->setRenderAsTriangles( mTriangulateGroupBox->isChecked() );
-    retSymb->setFilterTrianglesBySize( mFilterTriangleBySizeCheckBox->isChecked() );
-    retSymb->setTriangleSizeThreshold( mTriangleSizeThresholdSpinBox->value() );
-    retSymb->setFilterTrianglesByHeight( mFilterTriangleByHeightCheckBox->isChecked() );
-    retSymb->setTriangleHeightThreshold( mTriangleHeightThresholdSpinBox->value() );
+    retSymb->setHorizontalTriangleFilter( mHorizontalTriangleCheckBox->isChecked() );
+    retSymb->setHorizontalFilterThreshold( mHorizontalTriangleThresholdSpinBox->value() );
+    retSymb->setVerticalTriangleFilter( mVerticalTriangleCheckBox->isChecked() );
+    retSymb->setVerticalFilterThreshold( mVerticalTriangleThresholdSpinBox->value() );
   }
 
   return retSymb;

@@ -312,7 +312,6 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
       filteredExtraPointData.positions.append( pos );
       vertices.push_back( pos.x() );
       vertices.push_back( pos.z() );
-      //vertSize += 2;
 
       if ( hasColorData )
         filteredExtraPointData.colors.append( outNormal.colors.at( i ) );
@@ -347,11 +346,10 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
         triangleVertices[j] = outNormal.positions.at( vertIndex );
       }
       //calculate normals
-      const QVector3D v1( triangleVertices.at( 1 ) - triangleVertices.at( 0 ) );
-      const  QVector3D v2( triangleVertices.at( 2 ) - triangleVertices.at( 0 ) );
-      const QVector3D partialNormal = QVector3D::crossProduct( v1, v2 );
       for ( size_t j = 0; j < 3; ++j )
-        normals[triangleIndexes.at( i + j )] += partialNormal;
+        normals[triangleIndexes.at( i + j )] += QVector3D::crossProduct(
+            triangleVertices.at( 1 ) - triangleVertices.at( 0 ),
+            triangleVertices.at( 2 ) - triangleVertices.at( 0 ) );
     }
 
     // Build now normals array
@@ -375,46 +373,44 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
     quint32 *indexPtr = reinterpret_cast<quint32 *>( outNormal.triangles.data() );
     size_t effective = 0;
 
-    bool sizeFilter = context.symbol()->filterTrianglesBySize();
-    bool heightFilter = context.symbol()->filterTrianglesByHeight();
-    float sizeThreshold =  context.symbol()->triangleSizeThreshold();
-    float heightThreshold =  context.symbol()->triangleHeightThreshold();
+    bool horizontalFilter = context.symbol()->horizontalTriangleFilter();
+    bool verticalFilter = context.symbol()->verticalTriangleFilter();
+    float horizontalThreshold =  context.symbol()->horizontalFilterThreshold();
+    float verticalThreshold =  context.symbol()->verticalFilterThreshold();
 
-    for ( size_t i = 0; i < triangleIndexes.size() / 3; ++i )
+    for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
     {
       bool atLeastOneInBox = false;
-      bool greaterThanSize = false;
-      bool greaterThanHeight = false;
+      bool horizontalSkip = false;
+      bool verticalSkip = false;
       for ( size_t j = 0; j < 3; j++ )
       {
-        QVector3D pos = outNormal.positions.at( triangleIndexes.at( i * 3 + j ) );
-        QVector3D pos2;
-
+        QVector3D pos = outNormal.positions.at( triangleIndexes.at( i  + j ) );
         atLeastOneInBox |= bbox.intersects( pos.x(), pos.y(), pos.z() );
 
-        if ( heightFilter || sizeFilter )
-          pos2 = outNormal.positions.at( triangleIndexes.at( i * 3 + ( j + 1 ) % 3 ) );
-
-        if ( heightFilter )
-          greaterThanHeight |= std::fabs( pos.y() - pos2.y() ) > heightThreshold;
-
-        if ( sizeFilter && ! greaterThanHeight )
+        if ( verticalFilter || horizontalFilter )
         {
-          QVector3D pos2 = outNormal.positions.at( triangleIndexes.at( i * 3 + ( j + 1 ) % 3 ) );
-          // filter only in the horizontal plan, it is a 2.5D triangulation.
-          pos2.setY( 0 );
-          pos.setY( 0 );
-          greaterThanSize |= pos2.distanceToPoint( pos ) > sizeThreshold;
-        }
+          const QVector3D pos2 = outNormal.positions.at( triangleIndexes.at( i + ( j + 1 ) % 3 ) );
 
-        if ( greaterThanSize || greaterThanHeight )
-          break;
+          if ( verticalFilter )
+            verticalSkip |= std::fabs( pos.y() - pos2.y() ) > verticalThreshold;
+
+          if ( horizontalFilter && ! verticalSkip )
+          {
+            // filter only in the horizontal plan, it is a 2.5D triangulation.
+            horizontalSkip |= sqrt( std::pow( pos.x() - pos2.x(), 2 ) +
+                                    std::pow( pos.z() - pos2.z(), 2 ) ) > horizontalThreshold;
+          }
+
+          if ( horizontalSkip || verticalSkip )
+            break;
+        }
       }
-      if ( atLeastOneInBox && !greaterThanSize && !greaterThanHeight )
+      if ( atLeastOneInBox && !horizontalSkip && !verticalSkip )
       {
         for ( size_t j = 0; j < 3; j++ )
         {
-          size_t vertIndex = triangleIndexes.at( i * 3 + j );
+          size_t vertIndex = triangleIndexes.at( i + j );
           *indexPtr++ = quint32( vertIndex );
         }
         effective++;
