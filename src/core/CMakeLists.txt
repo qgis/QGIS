@@ -10,9 +10,6 @@ ADD_FLEX_BISON_DEPENDENCY(QgsSqlStatementLexer QgsSqlStatementParser)
 BISON_TARGET(QgsMeshCalcParser mesh/qgsmeshcalcparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalcparser.cpp COMPILE_FLAGS "-p mesh_")
 FLEX_TARGET(QgsMeshCalcLexer mesh/qgsmeshcalclexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalclexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
-BISON_TARGET(QgsPointCloudExpressionParser pointcloud/expression/qgspointcloudexpressionparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgspointcloudexpressionparser.cpp COMPILE_FLAGS "-p pointcloud_")
-FLEX_TARGET(QgsPointCloudExpressionLexer pointcloud/expression/qgspointcloudexpressionlexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgspointcloudexpressionlexer.cpp)
-ADD_FLEX_BISON_DEPENDENCY(QgsPointCloudExpressionLexer QgsPointCloudExpressionParser)
 
 set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
@@ -33,8 +30,6 @@ set(QGIS_CORE_SRCS
   ${BISON_QgsSqlStatementParser_OUTPUTS}
   ${FLEX_QgsMeshCalcLexer_OUTPUTS}
   ${BISON_QgsMeshCalcParser_OUTPUTS}
-  ${FLEX_QgsPointCloudExpressionLexer_OUTPUTS}
-  ${BISON_QgsPointCloudExpressionParser_OUTPUTS}
 
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
@@ -912,8 +907,6 @@ if(NOT MSVC)
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
-    ${FLEX_QgsPointCloudExpressionLexer_OUTPUTS}
-    ${BISON_QgsPointCloudExpressionParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS -w)
 else()
   # -wd4702 unreachable code
@@ -930,8 +923,6 @@ else()
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
-    ${FLEX_QgsPointCloudExpressionLexer_OUTPUTS}
-    ${BISON_QgsPointCloudExpressionParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS /W0)
 endif()
 
