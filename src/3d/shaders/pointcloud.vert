@@ -12,12 +12,12 @@ uniform int u_renderingParameter;
 in vec3 vertexPosition;
 in float vertexParameter;
 in vec3 vertexColor;
-in vec3 vertexNormal;
+in vec3 vertexNormal; //used when points are triangulated
 
 out float parameter;
 out vec3 pointColor;
-out vec3 worldPosition;
-out vec3 vertNorm;
+out vec3 worldPosition; //used when points are triangulated
+out vec3 vertNorm; //used when points are triangulated
 
 void main(void)
 {

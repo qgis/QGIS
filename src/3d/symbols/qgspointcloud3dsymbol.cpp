@@ -47,44 +47,44 @@ void QgsPointCloud3DSymbol::setRenderAsTriangles( bool asTriangles )
   mRenderAsTriangles = asTriangles;
 }
 
-bool QgsPointCloud3DSymbol::filterTrianglesBySize() const
+bool QgsPointCloud3DSymbol::horizontalTriangleFilter() const
 {
-  return mFilterTrianglesBySize;
+  return mHorizontalTriangleFilter;
 }
 
-void QgsPointCloud3DSymbol::setFilterTrianglesBySize( bool filterTriangleBySize )
+void QgsPointCloud3DSymbol::setHorizontalTriangleFilter( bool horizontalTriangleFilter )
 {
-  mFilterTrianglesBySize = filterTriangleBySize;
+  mHorizontalTriangleFilter = horizontalTriangleFilter;
 }
 
-float QgsPointCloud3DSymbol::triangleSizeThreshold() const
+float QgsPointCloud3DSymbol::horizontalFilterThreshold() const
 {
-  return mTriangleSizeThreshold;
+  return mHorizontalFilterThreshold;
 }
 
-void QgsPointCloud3DSymbol::setTriangleSizeThreshold( float triangleSizeThreshold )
+void QgsPointCloud3DSymbol::setHorizontalFilterThreshold( float horizontalFilterThreshold )
 {
-  mTriangleSizeThreshold = triangleSizeThreshold;
+  mHorizontalFilterThreshold = horizontalFilterThreshold;
 }
 
-bool QgsPointCloud3DSymbol::filterTrianglesByHeight() const
+bool QgsPointCloud3DSymbol::verticalTriangleFilter() const
 {
-  return mFilterTrianglesByHeight;
+  return mVerticalTriangleFilter;
 }
 
-void QgsPointCloud3DSymbol::setFilterTrianglesByHeight( bool filterTriangleByHeight )
+void QgsPointCloud3DSymbol::setVerticalTriangleFilter( bool verticalTriangleFilter )
 {
-  mFilterTrianglesByHeight = filterTriangleByHeight;
+  mVerticalTriangleFilter = verticalTriangleFilter;
 }
 
-float QgsPointCloud3DSymbol::triangleHeightThreshold() const
+float QgsPointCloud3DSymbol::verticalFilterThreshold() const
 {
-  return mTriangleHeightThreshold;
+  return mVerticalFilterThreshold;
 }
 
-void QgsPointCloud3DSymbol::setTriangleHeightThreshold( float triangleHeightThreshold )
+void QgsPointCloud3DSymbol::setVerticalFilterThreshold( float verticalFilterThreshold )
 {
-  mTriangleHeightThreshold = triangleHeightThreshold;
+  mVerticalFilterThreshold = verticalFilterThreshold;
 }
 
 void QgsPointCloud3DSymbol::writeBaseXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -93,10 +93,10 @@ void QgsPointCloud3DSymbol::writeBaseXml( QDomElement &elem, const QgsReadWriteC
 
   elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
   elem.setAttribute( QStringLiteral( "render-as-triangles" ), mRenderAsTriangles ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "filter-triangle-by-size" ), mFilterTrianglesBySize ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "triangle-size-threshold" ), mTriangleSizeThreshold );
-  elem.setAttribute( QStringLiteral( "filter-triangle-by-height" ), mFilterTrianglesByHeight ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "triangle-height-threshold" ), mTriangleHeightThreshold );
+  elem.setAttribute( QStringLiteral( "horizontal-triangle-filter" ), mHorizontalTriangleFilter ? 1 : 0 );
+  elem.setAttribute( QStringLiteral( "horizontal-filter-threshold" ), mHorizontalFilterThreshold );
+  elem.setAttribute( QStringLiteral( "vertical-triangle-filter" ), mVerticalTriangleFilter ? 1 : 0 );
+  elem.setAttribute( QStringLiteral( "vertical-filter-threshold" ), mVerticalFilterThreshold );
 }
 
 void QgsPointCloud3DSymbol::readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -105,10 +105,10 @@ void QgsPointCloud3DSymbol::readBaseXml( const QDomElement &elem, const QgsReadW
 
   mPointSize = elem.attribute( QStringLiteral( "point-size" ), QStringLiteral( "2.0" ) ).toFloat();
   mRenderAsTriangles = elem.attribute( QStringLiteral( "render-as-triangles" ), QStringLiteral( "0" ) ).toInt() == 1;
-  mFilterTrianglesBySize = elem.attribute( QStringLiteral( "filter-triangle-by-size" ), QStringLiteral( "0" ) ).toInt() == 1;
-  mTriangleSizeThreshold = elem.attribute( QStringLiteral( "triangle-size-threshold" ), QStringLiteral( "10.0" ) ).toFloat();
-  mFilterTrianglesByHeight = elem.attribute( QStringLiteral( "filter-triangle-by-height" ), QStringLiteral( "0" ) ).toInt() == 1;
-  mTriangleHeightThreshold = elem.attribute( QStringLiteral( "triangle-height-threshold" ), QStringLiteral( "10.0" ) ).toFloat();
+  mHorizontalTriangleFilter = elem.attribute( QStringLiteral( "horizontal-triangle-filter" ), QStringLiteral( "0" ) ).toInt() == 1;
+  mHorizontalFilterThreshold = elem.attribute( QStringLiteral( "horizontal-filter-threshold" ), QStringLiteral( "10.0" ) ).toFloat();
+  mVerticalTriangleFilter = elem.attribute( QStringLiteral( "vertical-triangle-filter" ), QStringLiteral( "0" ) ).toInt() == 1;
+  mVerticalFilterThreshold = elem.attribute( QStringLiteral( "vertical-filter-threshold" ), QStringLiteral( "10.0" ) ).toFloat();
 }
 
 void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination ) const
@@ -117,10 +117,10 @@ void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination )
   QgsPointCloud3DSymbol *pcDestination = static_cast<QgsPointCloud3DSymbol *>( destination );
   pcDestination->mPointSize = mPointSize;
   pcDestination->mRenderAsTriangles = mRenderAsTriangles;
-  pcDestination->mTriangleSizeThreshold = mTriangleSizeThreshold;
-  pcDestination->mFilterTrianglesBySize = mFilterTrianglesBySize;
-  pcDestination->mTriangleHeightThreshold = mTriangleHeightThreshold;
-  pcDestination->mFilterTrianglesByHeight = mFilterTrianglesByHeight;
+  pcDestination->mHorizontalFilterThreshold = mHorizontalFilterThreshold;
+  pcDestination->mHorizontalTriangleFilter = mHorizontalTriangleFilter;
+  pcDestination->mVerticalFilterThreshold = mVerticalFilterThreshold;
+  pcDestination->mVerticalTriangleFilter = mVerticalTriangleFilter;
 }
 
 // QgsSingleColorPointCloud3DSymbol
@@ -484,7 +484,6 @@ void QgsClassificationPointCloud3DSymbol::writeXml( QDomElement &elem, const Qgs
   writeBaseXml( elem, context );
 
   elem.setAttribute( QStringLiteral( "rendering-parameter" ), mRenderingParameter );
-  elem.setAttribute( QStringLiteral( "triangulate" ), mRenderAsTriangles ? 1 : 0 );
 
   // categories
   QDomElement catsElem = doc.createElement( QStringLiteral( "categories" ) );

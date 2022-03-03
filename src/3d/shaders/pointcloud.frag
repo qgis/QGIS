@@ -5,8 +5,8 @@ uniform bool triangulate;
 in float parameter;
 
 in vec3 pointColor;
-in vec3 worldPosition;
-in vec3 vertNorm;
+in vec3 worldPosition; //used when points are triangulated
+in vec3 vertNorm; //used when points are triangulated
 out vec4 color;
 
 // Sets the redering style, 0: unique color, 1: color ramp shader of terrain, 2: color ramp shader of 2D rendering

@@ -135,7 +135,7 @@
       <item row="2" column="0">
        <widget class="QgsCollapsibleGroupBox" name="mTriangulateGroupBox">
         <property name="title">
-         <string>Triangulate Points</string>
+         <string>Render as a Surface (Triangulate)</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -154,14 +154,14 @@
           <number>0</number>
          </property>
          <item row="0" column="0">
-          <widget class="QCheckBox" name="mFilterTriangleBySizeCheckBox">
+          <widget class="QCheckBox" name="mHorizontalTriangleCheckBox">
            <property name="text">
-            <string>Maximum triangle size</string>
+            <string>Skip triangles longer than</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QgsDoubleSpinBox" name="mTriangleSizeThresholdSpinBox">
+          <widget class="QgsDoubleSpinBox" name="mHorizontalTriangleThresholdSpinBox">
            <property name="toolTip">
             <string>Maximum Triangle Side Size in Horizontal Plan</string>
            </property>
@@ -171,14 +171,14 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QCheckBox" name="mFilterTriangleByHeightCheckBox">
+          <widget class="QCheckBox" name="mVerticalTriangleCheckBox">
            <property name="text">
-            <string>Maximum triangle height</string>
+            <string>Skip triangles taller than</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QgsDoubleSpinBox" name="mTriangleHeightThresholdSpinBox">
+          <widget class="QgsDoubleSpinBox" name="mVerticalTriangleThresholdSpinBox">
            <property name="toolTip">
             <string>Maximum Triangle Side 3D Height</string>
            </property>
