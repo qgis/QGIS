@@ -294,7 +294,7 @@ int QgsPointCloudExpressionNodeBinaryOperator::precedence() const
       return 6;
 
     case boNotImplemented:
-      return 7;
+      break;
   }
   Q_ASSERT( false && "unexpected binary operator" );
   return -1;
@@ -302,7 +302,7 @@ int QgsPointCloudExpressionNodeBinaryOperator::precedence() const
 
 bool QgsPointCloudExpressionNodeBinaryOperator::leftAssociative() const
 {
-  // see left/right in qgspointcloudexpressionparser.yy
+  // see left/right in qgsexpressionparser.yy
   switch ( mOp )
   {
     case boOr:
@@ -325,7 +325,7 @@ bool QgsPointCloudExpressionNodeBinaryOperator::leftAssociative() const
       return false;
 
     case boNotImplemented:
-      return false;
+      break;
   }
   Q_ASSERT( false && "unexpected binary operator" );
   return false;
