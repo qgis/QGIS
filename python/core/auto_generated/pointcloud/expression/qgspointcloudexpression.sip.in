@@ -84,8 +84,6 @@ when :py:func:`~prepare` is called.
 Create a copy of this expression. This is preferred
 over recreating an expression from a string since
 it does not need to be re-parsed.
-
-.. versionadded:: 3.26
 %End
 
 
@@ -93,8 +91,6 @@ it does not need to be re-parsed.
     QgsPointCloudExpression();
 %Docstring
 Create an empty expression.
-
-.. versionadded:: 3.26
 %End
 
     ~QgsPointCloudExpression();
@@ -105,29 +101,21 @@ Create an empty expression.
 %Docstring
 Checks if this expression is valid.
 A valid expression could be parsed but does not necessarily evaluate properly.
-
-.. versionadded:: 3.26
 %End
 
     bool hasParserError() const;
 %Docstring
 Returns ``True`` if an error occurred when parsing the input expression
-
-.. versionadded:: 3.26
 %End
 
     QString parserErrorString() const;
 %Docstring
 Returns parser error
-
-.. versionadded:: 3.26
 %End
 
     QList<QgsPointCloudExpression::ParserError> parserErrors() const;
 %Docstring
 Returns parser error details including location of error.
-
-.. versionadded:: 3.26
 %End
 
     const QgsPointCloudExpressionNode *rootNode() const;
@@ -135,8 +123,6 @@ Returns parser error details including location of error.
 Returns the root node of the expression.
 
 The root node is ``None`` if parsing has failed.
-
-.. versionadded:: 3.26
 %End
 
     bool prepare( const QgsPointCloudBlock *block );
@@ -144,15 +130,11 @@ The root node is ``None`` if parsing has failed.
 Gets the expression ready for evaluation.
 
 :param block: pointer to the :py:class:`QgsPointCloudBlock` that will be filtered
-
-.. versionadded:: 3.26
 %End
 
     QSet<QString> referencedAttributes() const;
 %Docstring
 Gets list of attributes referenced by the expression.
-
-.. versionadded:: 3.26
 %End
 
 
@@ -164,29 +146,21 @@ Evaluate the expression for one point.
 :return: 0.0 for false or 1.0 for true.
 
 :param p: point number within the block to evaluate
-
-.. versionadded:: 3.26
 %End
 
     bool hasEvalError() const;
 %Docstring
 Returns ``True`` if an error occurred when evaluating last input
-
-.. versionadded:: 3.26
 %End
 
     QString evalErrorString() const;
 %Docstring
 Returns evaluation error
-
-.. versionadded:: 3.26
 %End
 
     void setEvalErrorString( const QString &str );
 %Docstring
 Sets evaluation error (used internally by evaluation functions)
-
-.. versionadded:: 3.26
 %End
 
     static bool checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage /Out/ );
@@ -198,15 +172,11 @@ Tests whether a string is a valid expression.
 
 :return: - ``True`` if string is a valid expression
          - errorMessage: will be filled with any error message from the validation
-
-.. versionadded:: 3.26
 %End
 
     void setExpression( const QgsExpression &expression );
 %Docstring
 Set the expression string, will reset the whole internal structure.
-
-.. versionadded:: 3.26
 %End
 
     QString expression() const;
@@ -214,8 +184,6 @@ Set the expression string, will reset the whole internal structure.
 Returns the original, unmodified expression string.
 If there was none supplied because it was constructed by sole
 API calls, :py:func:`~QgsPointCloudExpression.dump` will be used to create one instead.
-
-.. versionadded:: 3.26
 %End
 
     QString dump() const;
@@ -224,8 +192,6 @@ Returns an expression string, constructed from the internal
 abstract syntax tree. This does not contain any nice whitespace
 formatting or comments. In general it is preferable to use
 :py:func:`~QgsPointCloudExpression.expression` instead.
-
-.. versionadded:: 3.26
 %End
 
 

@@ -32,6 +32,8 @@ class QgsExpressionNode;
  * \ingroup core
  *
  * \brief Abstract base class for all nodes that can appear in an expression.
+ *
+ * \since QGIS 3.26
  */
 class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
 {
@@ -100,14 +102,11 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
 
         /**
          * Gets the node at position i in the list.
-         *
-         * \since QGIS 3.26
          */
         QgsPointCloudExpressionNode *at( int i ) { return mList.at( i ); }
 
         /**
          * Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
-         * \since QGIS 3.26
          */
         QStringList names() const { return mNameList; }
 
@@ -147,8 +146,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Evaluate this node for the given point and parent.
      * This will return a cached value if it has been determined to be static
      * during the prepare() execution.
-     *
-     * \since QGIS 3.26
      */
     double eval( QgsPointCloudExpression *parent, int p );
 
@@ -176,7 +173,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Returns a list of all nodes which are used in this expression.
      *
      * \note not available in Python bindings
-     * \since QGIS 3.26
      */
     virtual QList<const QgsPointCloudExpressionNode *> nodes( ) const = 0; SIP_SKIP
 
@@ -185,8 +181,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * the prepare() step and in case it returns TRUE, the value of this node will already
      * be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
      * to eval()). In case this returns TRUE, prepareNode() will never be called.
-     *
-     * \since QGIS 3.26
      */
     virtual bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const = 0;
 
@@ -195,8 +189,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * This will check if the node content is static and in this case cache the value.
      * If it's not static it will call prepareNode() to allow the node to do initialization
      * work like for example resolving an attribute name to an attribute index.
-     *
-     * \since QGIS 3.26
      */
     bool prepare( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block );
 
@@ -232,7 +224,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Returns TRUE if the node can be replaced by a static cached value.
      *
      * \see cachedStaticValue()
-     * \since QGIS 3.26
      */
     bool hasCachedStaticValue() const { return mHasCachedValue; }
 
@@ -240,7 +231,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Returns the node's static cached value. Only valid if hasCachedStaticValue() is TRUE.
      *
      * \see hasCachedStaticValue()
-     * \since QGIS 3.26
      */
     double cachedStaticValue() const { return mCachedStaticValue; }
 
@@ -265,7 +255,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * \note Not available in python bindings, QgsPointCloudExpression::Node is not
      * going to be subclassed from python. If that's what you are looking
      * for, look into writing a custom python expression function.
-     * \since QGIS 3.26
      */
     void cloneTo( QgsPointCloudExpressionNode *target ) const SIP_SKIP;
 
@@ -273,15 +262,11 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
 
     /**
      * TRUE if the node has a static, precalculated value.
-     *
-     * \since QGIS 3.26
      */
     mutable bool mHasCachedValue = false;
 
     /**
      * Contains the static, precalculated value for the node if mHasCachedValue is TRUE.
-     *
-     * \since QGIS 3.26
      */
     mutable double mCachedStaticValue;
 
@@ -292,14 +277,12 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
     /**
      * Abstract virtual preparation method
      * Errors are reported to the parent
-     * \since QGIS 3.26
      */
     virtual bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) = 0;
 
     /**
      * Abstract virtual eval method
      * Errors are reported to the parent
-     * \since QGIS 3.26
      */
     virtual double evalNode( QgsPointCloudExpression *parent, int p ) = 0;
 

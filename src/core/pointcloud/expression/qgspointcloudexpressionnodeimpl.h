@@ -26,6 +26,8 @@
 /**
  * \ingroup core
  * \brief A unary node is either negative as in boolean (not) or as in numbers (minus).
+ *
+ * \since QGIS 3.26
  */
 class CORE_EXPORT QgsPointCloudExpressionNodeUnaryOperator : public QgsPointCloudExpressionNode
 {
@@ -95,6 +97,8 @@ class CORE_EXPORT QgsPointCloudExpressionNodeUnaryOperator : public QgsPointClou
 /**
  * \brief A binary expression operator, which operates on two values.
  * \ingroup core
+ *
+ * \since QGIS 3.26
  */
 class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointCloudExpressionNode
 {
@@ -210,6 +214,8 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
 /**
  * \brief An expression node for value IN or NOT IN clauses.
  * \ingroup core
+ *
+ * \since QGIS 3.26
  */
 class CORE_EXPORT QgsPointCloudExpressionNodeInOperator : public QgsPointCloudExpressionNode
 {
@@ -259,6 +265,8 @@ class CORE_EXPORT QgsPointCloudExpressionNodeInOperator : public QgsPointCloudEx
 /**
  * \brief An expression node for literal values.
  * \ingroup core
+ *
+ * \since QGIS 3.26
  */
 class CORE_EXPORT QgsPointCloudExpressionNodeLiteral : public QgsPointCloudExpressionNode
 {
@@ -295,8 +303,6 @@ class CORE_EXPORT QgsPointCloudExpressionNodeLiteral : public QgsPointCloudExpre
 
     /**
      * Returns a string representation of the node's literal value.
-     *
-     * \since QGIS 3.20
      */
     QString valueAsString() const;
 
@@ -307,6 +313,8 @@ class CORE_EXPORT QgsPointCloudExpressionNodeLiteral : public QgsPointCloudExpre
 /**
  * \brief An expression node which takes it value from a feature's field.
  * \ingroup core
+ *
+ * \since QGIS 3.26
  */
 class CORE_EXPORT QgsPointCloudExpressionNodeAttributeRef : public QgsPointCloudExpressionNode
 {
