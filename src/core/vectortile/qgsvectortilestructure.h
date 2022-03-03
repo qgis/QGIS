@@ -198,7 +198,7 @@ class CORE_EXPORT QgsVectorTileStructure
     /**
      * Initializes the tile structure settings from an ESRI REST VectorTileService \a json map.
      *
-     * \note This same structure is utilised in ESRI vtpk archives in the root.json file.
+     * \note This same structure is utilized in ESRI vtpk archives in the root.json file.
      */
     bool fromEsriJson( const QVariantMap &json );
 
