@@ -186,6 +186,15 @@ Finds the best fitting (integer) zoom level given a map ``scale`` denominator.
 Values are constrained to the zoom levels between :py:func:`~QgsVectorTileStructure.minimumZoom` and :py:func:`~QgsVectorTileStructure.maximumZoom`.
 %End
 
+    bool fromEsriJson( const QVariantMap &json );
+%Docstring
+Initializes the tile structure settings from an ESRI REST VectorTileService ``json`` map.
+
+.. note::
+
+   This same structure is utilised in ESRI vtpk archives in the root.json file.
+%End
+
 };
 
 /************************************************************************
