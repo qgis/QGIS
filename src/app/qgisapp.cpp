@@ -9315,6 +9315,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     options.forceMulti = dialog->forceMulti();
     options.includeZ = dialog->includeZ();
     options.attributes = dialog->selectedAttributes();
+    options.attributesExportNames = dialog->attributesExportNames();
     options.fieldValueConverter = converterPtr;
     options.saveMetadata = dialog->persistMetadata();
     options.layerMetadata = vlayer->metadata();

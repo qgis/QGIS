@@ -122,6 +122,11 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsAttributeList attributesAsDisplayedValues() const;
 
     /**
+     * Returns a list of export names for attributes
+     */
+    QStringList attributesExportNames() const;
+
+    /**
      * Returns TRUE if the "add to canvas" checkbox is checked.
      *
      * \see setAddToCanvas()
@@ -233,6 +238,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void accept() override;
     void mSelectAllAttributes_clicked();
     void mDeselectAllAttributes_clicked();
+    void mUseAliasesForExportedName_stateChanged( int state );
     void mReplaceRawFieldValues_stateChanged( int state );
     void mAttributeTable_itemChanged( QTableWidgetItem *item );
 
