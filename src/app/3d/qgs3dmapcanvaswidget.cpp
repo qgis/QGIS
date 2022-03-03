@@ -172,6 +172,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mCanvas, &Qgs3DMapCanvas::fpsCountChanged, this, &Qgs3DMapCanvasWidget::updateFpsCount );
   connect( mCanvas, &Qgs3DMapCanvas::fpsCounterEnabledChanged, this, &Qgs3DMapCanvasWidget::toggleFpsCounter );
   connect( mCanvas, &Qgs3DMapCanvas::cameraNavigationSpeedChanged, this, &Qgs3DMapCanvasWidget::cameraNavigationSpeedChanged );
+  connect( mCanvas, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged );
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 
@@ -329,6 +330,7 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
 
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasLayersChanged );
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
+  connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged );
 }
 
 void Qgs3DMapCanvasWidget::resetView()
@@ -501,3 +503,31 @@ void Qgs3DMapCanvasWidget::currentMapThemeRenamed( const QString &theme, const Q
   }
 }
 
+void Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged()
+{
+  switch ( mCanvas->map()->viewSyncMode() )
+  {
+    case Qgs3DMapSettings::NoSync:
+      break;
+    case Qgs3DMapSettings::Sync3DTo2D:
+      mCanvas->viewExtent( mMainCanvas->extent() );
+      break;
+    case Qgs3DMapSettings::Sync2DTo3D:
+      break;
+  }
+}
+
+void Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged( QgsRectangle extent )
+{
+  switch ( mCanvas->map()->viewSyncMode() )
+  {
+    case Qgs3DMapSettings::NoSync:
+      break;
+    case Qgs3DMapSettings::Sync3DTo2D:
+      break;
+    case Qgs3DMapSettings::Sync2DTo3D:
+      mMainCanvas->setExtent( extent );
+      mMainCanvas->refresh();
+      break;
+  }
+}

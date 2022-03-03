@@ -27,6 +27,12 @@ Definition of the world.
 #include "qgs3dmapsettings.h"
 %End
   public:
+    enum ViewSyncMode
+    {
+      NoSync,
+      Sync3DTo2D,
+      Sync2DTo3D
+    };
 
     Qgs3DMapSettings();
 %Docstring
@@ -620,6 +626,20 @@ Sets the renderer usage
 .. seealso:: :py:func:`rendererUsage`
 
 .. versionadded:: 3.24
+%End
+
+    ViewSyncMode viewSyncMode() const;
+%Docstring
+Returns the view sync mode (used to syncronize the 2D main map canvas and the 3D camera navigation)
+
+.. versionadded:: 3.26
+%End
+
+    void setViewSyncMode( ViewSyncMode mode );
+%Docstring
+Sets the view sync mode (used to syncronize the 2D main map canvas and the 3D camera navigation)
+
+.. versionadded:: 3.26
 %End
 
   signals:

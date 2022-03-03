@@ -57,6 +57,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 {
     Q_OBJECT
   public:
+    enum ViewSyncMode
+    {
+      NoSync, //! No syncronisation will happen
+      Sync3DTo2D, //! Syncronize 3D view camera to the main map canvas extent
+      Sync2DTo3D //! Update the 2D main canvas extent to include the viewed area from the 3D view
+    };
 
     //! Constructor for Qgs3DMapSettings
     Qgs3DMapSettings();
@@ -592,6 +598,20 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setRendererUsage( Qgis::RendererUsage rendererUsage );
 
+    /**
+     * Returns the view sync mode (used to syncronize the 2D main map canvas and the 3D camera navigation)
+     *
+     * \since QGIS 3.26
+     */
+    ViewSyncMode viewSyncMode() const { return mViewSyncMode; }
+
+    /**
+     * Sets the view sync mode (used to syncronize the 2D main map canvas and the 3D camera navigation)
+     *
+     * \since QGIS 3.26
+     */
+    void setViewSyncMode( ViewSyncMode mode );
+
   signals:
 
     /**
@@ -811,6 +831,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;
     int mEyeDomeLightingDistance = 1;
+
+    ViewSyncMode mViewSyncMode = ViewSyncMode::NoSync;
 
     bool mDebugShadowMapEnabled = false;
     Qt::Corner mDebugShadowMapCorner = Qt::Corner::TopLeftCorner;

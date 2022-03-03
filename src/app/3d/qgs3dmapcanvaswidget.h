@@ -20,6 +20,7 @@
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
 #include "qtoolbutton.h"
+#include "qgsrectangle.h"
 
 #define SIP_NO_FILE
 
@@ -83,6 +84,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void mapThemeMenuAboutToShow();
     //! Renames the active map theme called \a theme to \a newTheme
     void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
+
+    void onMainMapCanvasExtentChanged();
+    void onViewed2DExtentFrom3DChanged( QgsRectangle extent );
 
   private:
     QString mCanvasName;

@@ -81,6 +81,20 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Resets camera view to show the whole scene (top view)
     void viewZoomFull();
 
+    /**
+     * Resets camera view to show the extent \a extent (top view)
+     *
+     * \since QGIS 3.26
+     */
+    void viewExtent( const QgsRectangle &extent );
+
+    /**
+     * Calculates the 2D extent viewed by the 3D camera
+     *
+     * \since QGIS 3.26
+     */
+    QgsRectangle viewFrustum2DExtent();
+
     //! Returns number of pending jobs of the terrain entity
     int terrainPendingJobsCount() const;
 
@@ -145,6 +159,13 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void fpsCountChanged( float fpsCount );
     //! Emitted when the FPS counter is activated or deactivated
     void fpsCounterEnabledChanged( bool fpsCounterEnabled );
+
+    /**
+     * Emitted when the viewed 2D extent seen by the 3D camera has changed
+     *
+     * \since QGIS 3.26
+     */
+    void viewed2DExtentFrom3DChanged( QgsRectangle extent );
 
   public slots:
     //! Updates the temporale entities

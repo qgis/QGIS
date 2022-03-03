@@ -136,6 +136,11 @@
          </item>
          <item>
           <property name="text">
+           <string>Navigation sync</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Advanced</string>
           </property>
           <property name="toolTip">
@@ -205,8 +210,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>709</width>
-                <height>604</height>
+                <width>342</width>
+                <height>283</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -416,7 +421,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>77</width>
+                <width>98</width>
                 <height>43</height>
                </rect>
               </property>
@@ -706,6 +711,68 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mPage2DCanvasSync">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QScrollArea" name="scrollArea">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>707</width>
+                <height>584</height>
+               </rect>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="0" column="1">
+                <widget class="QComboBox" name="mSyncModeComboBox">
+                 <item>
+                  <property name="text">
+                   <string>No sync</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Sync 3D camera to 2D main canvas extent</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Sync 2D map canvas extent to 3D viewing area</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>Sync mode</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mPageAdvanced">
           <layout class="QVBoxLayout" name="verticalLayout_63">
            <property name="topMargin">
@@ -730,7 +797,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>695</width>
+                <width>408</width>
                 <height>690</height>
                </rect>
               </property>
@@ -1133,6 +1200,7 @@
   <tabstop>mDebugDepthMapSizeSpinBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

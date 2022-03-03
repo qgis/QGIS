@@ -247,6 +247,36 @@ void Qgs3DMapScene::viewZoomFull()
   mCameraController->resetView( 1.5 * std::sqrt( a * a - side * side ) );  // assuming FOV being 45 degrees
 }
 
+void Qgs3DMapScene::viewExtent( const QgsRectangle &extent )
+{
+  QgsPointXY center = extent.center();
+  QgsVector3D centerWrld = mMap.mapToWorldCoordinates( QVector3D( center.x(), center.y(), 0 ) );
+  QgsVector3D p1 = mMap.mapToWorldCoordinates( QVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
+  QgsVector3D p2 = mMap.mapToWorldCoordinates( QVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
+
+  float side = std::max( std::abs( p1.x() - p2.x() ), std::abs( p1.z() - p2.z() ) );
+  float a =  side / 2.0f / std::sin( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2.0f );
+  mCameraController->setViewFromTop( centerWrld.x(), centerWrld.z(), std::sqrt( a * a - side * side ) );
+}
+
+QgsRectangle Qgs3DMapScene::viewFrustum2DExtent()
+{
+  QVector4D p = mCameraController->camera()->projectionMatrix() * mCameraController->camera()->viewMatrix() * mCameraController->camera()->viewCenter();
+  double maxDepth = p.z();// p.w();
+  const QRect viewport = mCameraController->viewport();
+  QgsRectangle extent;
+  extent.setMinimal();
+  for ( int i = 0; i < 8; ++i )
+  {
+    const QPoint p( ( ( i >> 0 ) & 1 ) ? 0 : viewport.width(), ( ( i >> 1 ) & 1 ) ? 0 : viewport.height() );
+    const double depth = ( ( i >> 2 ) & 1 ) ? 0 : maxDepth;
+    QVector3D pWorld = Qgs3DUtils::screenPointToWorldPos( p, depth, viewport.size(), mCameraController->camera() );
+    QgsVector3D pMap = mMap.worldToMapCoordinates( pWorld );
+    extent.include( QgsPointXY( pMap.x(), pMap.y() ) );
+  }
+  return extent;
+}
+
 int Qgs3DMapScene::terrainPendingJobsCount() const
 {
   return mTerrain ? mTerrain->pendingJobsCount() : 0;
@@ -354,6 +384,9 @@ void Qgs3DMapScene::onCameraChanged()
   }
 
   onShadowSettingsChanged();
+
+  QgsRectangle extent2D = viewFrustum2DExtent();
+  emit viewed2DExtentFrom3DChanged( extent2D );
 }
 
 void removeQLayerComponentsFromHierarchy( Qt3DCore::QEntity *entity )
