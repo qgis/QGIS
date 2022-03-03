@@ -117,14 +117,6 @@ class CORE_EXPORT QgsPointCloudExpression
     QgsPointCloudExpression( const QgsExpression &expression );
 
     /**
-     * Creates a new expression based on the provided string.
-     * The string will immediately be parsed. prepare() should
-     * be called before evaluation.
-     * \since QGIS 3.26
-     */
-    QgsPointCloudExpression( const QString &expr );
-
-    /**
      * Create a copy of this expression. This is preferred
      * over recreating an expression from a string since
      * it does not need to be re-parsed.
@@ -279,20 +271,20 @@ class CORE_EXPORT QgsPointCloudExpression
 
     /**
      * Tests whether a string is a valid expression.
-     * \param text string to test
+     * \param expression the QgsExpression to test
      * \param block QgsPointCloudBlock to be filtered
      * \param errorMessage will be filled with any error message from the validation
      * \returns TRUE if string is a valid expression
      * \since QGIS 3.26
      */
-    static bool checkExpression( const QString &text, const QgsPointCloudBlock *block, QString &errorMessage SIP_OUT );
+    static bool checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage SIP_OUT );
 
     /**
      * Set the expression string, will reset the whole internal structure.
      *
      * \since QGIS 3.26
      */
-    void setExpression( const QString &expression );
+    void setExpression( const QgsExpression &expression );
 
     /**
      * Returns the original, unmodified expression string.

@@ -19,21 +19,20 @@
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudexpression_p.h"
 
-// from parser
-extern QgsPointCloudExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsPointCloudExpression::ParserError> &parserErrors );
 
-bool QgsPointCloudExpression::checkExpression( const QString &text, const QgsPointCloudBlock *block, QString &errorMessage )
+bool QgsPointCloudExpression::checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage )
 {
-  QgsPointCloudExpression exp( text );
+  QgsPointCloudExpression exp( expression );
   exp.prepare( block );
   errorMessage = exp.parserErrorString();
   return !exp.hasParserError();
 }
 
-void QgsPointCloudExpression::setExpression( const QString &expression )
+void QgsPointCloudExpression::setExpression( const QgsExpression &expression )
 {
   detach();
-  d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserErrors );
+  QString error;
+  d->mRootNode = QgsPointCloudExpressionNode::convert( expression.rootNode(), error );
   d->mEvalErrorString = QString();
   d->mExp = expression;
   d->mIsPrepared = false;
@@ -54,14 +53,6 @@ QgsPointCloudExpression::QgsPointCloudExpression( const QgsExpression &expr )
   d->mRootNode = QgsPointCloudExpressionNode::convert( expr.rootNode(), error ); //::parseExpression( expr, d->mParserErrorString, d->mParserErrors );
   d->mExp = expr.dump();
   //Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
-}
-
-QgsPointCloudExpression::QgsPointCloudExpression( const QString &expr )
-  : d( new QgsPointCloudExpressionPrivate )
-{
-  d->mRootNode = ::parseExpression( expr, d->mParserErrorString, d->mParserErrors );
-  d->mExp = expr;
-  Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
 }
 
 QgsPointCloudExpression::QgsPointCloudExpression( const QgsPointCloudExpression &other )

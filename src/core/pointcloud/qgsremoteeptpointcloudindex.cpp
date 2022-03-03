@@ -43,6 +43,7 @@
 #include "qgsapplication.h"
 #include "qgspointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
+#include "qgsexpression.h"
 
 ///@cond PRIVATE
 
@@ -140,7 +141,8 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
     return nullptr;
   }
 
-  QgsPointCloudExpression filterExpression( mSubsetString );
+  QgsExpression expr( mSubsetString );
+  QgsPointCloudExpression filterExpression( expr );
   const auto expressionAttributes = filterExpression.referencedAttributes();
   const QgsPointCloudAttributeCollection allAttributes = attributes();
   QgsPointCloudAttributeCollection reqAttributes = request.attributes();

@@ -79,15 +79,6 @@ when :py:func:`~prepare` is called.
 
     QgsPointCloudExpression( const QgsExpression &expression );
 
-    QgsPointCloudExpression( const QString &expr );
-%Docstring
-Creates a new expression based on the provided string.
-The string will immediately be parsed. :py:func:`~QgsPointCloudExpression.prepare` should
-be called before evaluation.
-
-.. versionadded:: 3.26
-%End
-
     QgsPointCloudExpression( const QgsPointCloudExpression &other );
 %Docstring
 Create a copy of this expression. This is preferred
@@ -198,11 +189,11 @@ Sets evaluation error (used internally by evaluation functions)
 .. versionadded:: 3.26
 %End
 
-    static bool checkExpression( const QString &text, const QgsPointCloudBlock *block, QString &errorMessage /Out/ );
+    static bool checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage /Out/ );
 %Docstring
 Tests whether a string is a valid expression.
 
-:param text: string to test
+:param expression: the :py:class:`QgsExpression` to test
 :param block: :py:class:`QgsPointCloudBlock` to be filtered
 
 :return: - ``True`` if string is a valid expression
@@ -211,7 +202,7 @@ Tests whether a string is a valid expression.
 .. versionadded:: 3.26
 %End
 
-    void setExpression( const QString &expression );
+    void setExpression( const QgsExpression &expression );
 %Docstring
 Set the expression string, will reset the whole internal structure.
 

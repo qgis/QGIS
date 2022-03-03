@@ -22,6 +22,7 @@
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudblock.h"
 #include "qgspointcloudexpression.h"
+#include "qgsexpression.h"
 
 
 
@@ -393,7 +394,8 @@ void TestQgsPointCloudExpression::testParsing()
   QFETCH( QString, string );
   QFETCH( bool, valid );
 
-  QgsPointCloudExpression exp( string );
+  QgsExpression ex( string );
+  QgsPointCloudExpression exp( ex );
 
   if ( exp.hasParserError() )
     qDebug() << "Parser error: " << exp.parserErrorString();
@@ -513,7 +515,8 @@ void TestQgsPointCloudExpression::testEvaluating()
   QFETCH( int, point_n );
   QFETCH( bool, valid );
 
-  QgsPointCloudExpression exp( string );
+  QgsExpression ex( string );
+  QgsPointCloudExpression exp( ex );
   exp.prepare( mBlock );
 
   QVERIFY( valid ? exp.evaluate( point_n ) != 0. : exp.evaluate( point_n ) == 0. );
