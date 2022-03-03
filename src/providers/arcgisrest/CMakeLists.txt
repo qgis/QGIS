@@ -16,9 +16,9 @@ if (WITH_GUI)
   )
   
   set(AFS_UIS
-    qgsarcgisrestsourcewidgetbase.ui
-    qgsarcgisservicesourceselectbase.ui
-    qgsnewarcgisrestconnectionbase.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisrestsourcewidgetbase.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisservicesourceselectbase.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsnewarcgisrestconnectionbase.ui
   )
 endif()
 
