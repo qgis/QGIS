@@ -128,9 +128,9 @@ Constructs a new vector tile layer
 
 
 
-    QgsVectorTileStructure &tileStructure();
+    QgsVectorTileMatrixSet &tileMatrixSet();
 %Docstring
-Returns the vector tile structure.
+Returns the vector tile matrix set.
 
 .. versionadded:: 3.22.6
 %End

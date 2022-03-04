@@ -325,12 +325,12 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
   {
     connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [ = ]( double scale )
     {
-      const int zoom = QgsVectorTileUtils::scaleToZoomLevel( scale, 0, 99 );
+      const int zoom = mVTLayer ? mVTLayer->tileStructure().scaleToZoomLevel( scale ) : QgsVectorTileUtils::scaleToZoomLevel( scale, 0, 99 );
       mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( zoom ) );
       if ( mProxyModel )
         mProxyModel->setCurrentZoom( zoom );
     } );
-    mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 ) ) );
+    mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( mVTLayer ? mVTLayer->tileStructure().scaleToZoomLevel( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 ) ) );
   }
 
   connect( mCheckVisibleOnly, &QCheckBox::toggled, this, [ = ]( bool filter )
@@ -360,7 +360,7 @@ void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
 
   if ( mMapCanvas )
   {
-    const int zoom = QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
+    const int zoom = mVTLayer ? mVTLayer->tileStructure().scaleToZoomLevel( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
     mProxyModel->setCurrentZoom( zoom );
   }
 
@@ -424,11 +424,11 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &prox
 
   if ( mMapCanvas )
   {
-    const int zoom = QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
+    const int zoom = mVTLayer ? mVTLayer->tileStructure().scaleToZoomLevel( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
     QList<QgsExpressionContextScope> scopes = context.additionalExpressionContextScopes();
     QgsExpressionContextScope tileScope;
     tileScope.setVariable( "zoom_level", zoom, true );
-    tileScope.setVariable( "vector_tile_zoom", QgsVectorTileUtils::scaleToZoom( mMapCanvas->scale() ), true );
+    tileScope.setVariable( "vector_tile_zoom", mVTLayer ? mVTLayer->tileStructure().scaleToZoom( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoom( mMapCanvas->scale() ), true );
     scopes << tileScope;
     context.setAdditionalExpressionContextScopes( scopes );
   }

@@ -27,7 +27,7 @@ class QgsVectorTileLabelProvider;
 #include "qgsvectortilerenderer.h"
 #include "qgsmapclippingregion.h"
 #include "qgshttpheaders.h"
-#include "qgsvectortilestructure.h"
+#include "qgsvectortilematrixset.h"
 
 /**
  * \ingroup core
@@ -99,7 +99,7 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     QList< QgsMapClippingRegion > mClippingRegions;
     double mLayerOpacity = 1.0;
 
-    QgsVectorTileStructure mTileStructure;
+    QgsVectorTileMatrixSet mTileStructure;
 
 };
 

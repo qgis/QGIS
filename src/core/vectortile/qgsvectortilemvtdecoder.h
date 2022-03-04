@@ -26,7 +26,7 @@ class QgsFeature;
 #include "vector_tile.pb.h"
 
 #include "qgsvectortilerenderer.h"
-#include "qgsvectortilestructure.h"
+#include "qgsvectortilematrixset.h"
 
 
 /**
@@ -42,7 +42,7 @@ class CORE_EXPORT QgsVectorTileMVTDecoder
     /**
      * Constructor for QgsVectorTileMVTDecoder, using the specified tile \a structure.
      */
-    QgsVectorTileMVTDecoder( const QgsVectorTileStructure &structure );
+    QgsVectorTileMVTDecoder( const QgsVectorTileMatrixSet &structure );
     ~QgsVectorTileMVTDecoder();
 
     //! Tries to decode raw tile data, returns true on success
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVectorTileMVTDecoder
   private:
     vector_tile::Tile tile;
     QgsTileXYZ mTileID;
-    QgsVectorTileStructure mStructure;
+    QgsVectorTileMatrixSet mStructure;
     QMap<QString, int> mLayerNameToIndex;
 };
 
