@@ -342,14 +342,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * Returns the snap matches whose vertices have been locked
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     QList< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; }
 
     /**
       * Removes all points from the locked snap vertex list
-      * \since QGIS 3.26
       * \param force Clears the list even if the constraints that use it are still locked.
+      * \since QGIS 3.26
       */
     void clearLockedSnapVertices( bool force = true );
 
@@ -742,7 +742,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Emitted whenever the soft line extension parameter is \a locked.
     * Could be used by widgets that must reflect the current advanced digitizing state.
     * \note unstable API (will likely change)
-    * \since QGIS 3.24
+    * \since QGIS 3.26
     */
     void softLockLineExtensionChanged( bool locked );
 
@@ -750,7 +750,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Emitted whenever the soft x/y extension parameter is \a locked.
     * Could be used by widgets that must reflect the current advanced digitizing state.
     * \note unstable API (will likely change)
-    * \since QGIS 3.24
+    * \since QGIS 3.26
     */
     void softLockXyChanged( bool locked );
 

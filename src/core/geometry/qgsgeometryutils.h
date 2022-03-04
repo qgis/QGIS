@@ -99,7 +99,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param linePoint1 The first point of the line
      * \param linePoint2 The second point of the line
      * \param epsilon The tolerance to use
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     static double distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon = 1e-7 );
 

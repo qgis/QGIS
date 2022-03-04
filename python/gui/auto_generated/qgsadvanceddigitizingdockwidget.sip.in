@@ -335,16 +335,16 @@ Returns the point locator match
 %Docstring
 Returns the snap matches whose vertices have been locked
 
-.. versionadded:: 3.24
+.. versionadded:: 3.26
 %End
 
     void clearLockedSnapVertices( bool force = true );
 %Docstring
 Removes all points from the locked snap vertex list
 
-.. versionadded:: 3.26
-
 :param force: Clears the list even if the constraints that use it are still locked.
+
+.. versionadded:: 3.26
 %End
 
     void clearPoints();
@@ -857,7 +857,7 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
    unstable API (will likely change)
 
-.. versionadded:: 3.24
+.. versionadded:: 3.26
 %End
 
     void softLockXyChanged( bool locked );
@@ -869,7 +869,7 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
    unstable API (will likely change)
 
-.. versionadded:: 3.24
+.. versionadded:: 3.26
 %End
 
 

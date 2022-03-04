@@ -73,7 +73,7 @@ class CORE_EXPORT QgsCadUtils
         /**
          * Designates whether the line extension constraint is currently soft locked
          * with the previous or next vertex of the locked one.
-         * \since QGIS 3.24
+         * \since QGIS 3.26
          */
         enum LineExtensionSide
         {
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsCadUtils
          * Point locator matches are stored instead of vertices to keep more context.
          *
          * \see lockedSnapVertices()
-         * \since QGIS 3.24
+         * \since QGIS 3.26
          */
         void setLockedSnapVertices( const QQueue< QgsPointLocator::Match > &lockedSnapVertices ) { mLockedSnapVertices = lockedSnapVertices; } SIP_SKIP;
 
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsCadUtils
          * Returns the queue of point locator matches that contain the locked vertices.
          *
          * \see setLockedSnapVertices()
-         * \since QGIS 3.24
+         * \since QGIS 3.26
          */
         QQueue< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; } SIP_SKIP;
 

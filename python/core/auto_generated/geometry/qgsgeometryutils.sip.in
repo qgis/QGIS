@@ -96,7 +96,7 @@ Returns the distance between a point and an infinite line.
 :param linePoint2: The second point of the line
 :param epsilon: The tolerance to use
 
-.. versionadded:: 3.24
+.. versionadded:: 3.26
 %End
 
     static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection /Out/ ) /HoldGIL/;
