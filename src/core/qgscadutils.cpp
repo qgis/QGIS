@@ -402,6 +402,27 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
         res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, horizontalPt0, horizontalPt1, point );
       }
     }
+    else if ( res.softLockLineExtension != QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex )
+    {
+      const QgsPointLocator::Match snap = ctx.lockedSnapVertices().last();
+      const QgsFeature feature = snap.layer()->getFeature( snap.featureId() );
+      const QgsGeometry geom = feature.geometry();
+
+
+      const QgsPointXY lineExtensionPt1 = snap.point();
+
+      QgsPointXY lineExtensionPt2;
+      if ( res.softLockLineExtension == QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex )
+      {
+        lineExtensionPt2 = QgsPointXY( geom.vertexAt( snap.vertexIndex() + 1 ) );
+      }
+      else
+      {
+        lineExtensionPt2 = QgsPointXY( geom.vertexAt( snap.vertexIndex() - 1 ) );
+      }
+
+      res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, lineExtensionPt1, lineExtensionPt2, point );
+    }
     else
     {
       const double dist = std::sqrt( point.sqrDist( previousPt ) );
