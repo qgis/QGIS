@@ -385,16 +385,17 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   // ---- Distance constraint
   if ( ctx.distanceConstraint.locked && ctx.cadPoints().count() >= 2 )
   {
-    if ( ctx.xConstraint.locked || ctx.yConstraint.locked )
+    if ( ctx.xConstraint.locked || ctx.yConstraint.locked
+         || !std::isnan( res.softLockX ) || !std::isnan( res.softLockY ) )
     {
       // perform both to detect errors in constraints
-      if ( ctx.xConstraint.locked )
+      if ( ctx.xConstraint.locked || !std::isnan( res.softLockX ) )
       {
         const QgsPointXY verticalPt0( point.x(), point.y() );
         const QgsPointXY verticalPt1( point.x(), point.y() + 1 );
         res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, verticalPt0, verticalPt1, point );
       }
-      if ( ctx.yConstraint.locked )
+      if ( ctx.yConstraint.locked || !std::isnan( res.softLockY ) )
       {
         const QgsPointXY horizontalPt0( point.x(), point.y() );
         const QgsPointXY horizontalPt1( point.x() + 1, point.y() );
