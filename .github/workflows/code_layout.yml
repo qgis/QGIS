@@ -129,6 +129,14 @@ jobs:
       - name: Doxygen Layout Test
         run: ./tests/code_layout/test_doxygen_layout.sh
 
+  settings_registry_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Settings Registries Test
+        run: ./tests/code_layout/test_settings_registry.sh
+
   indentation_check:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
