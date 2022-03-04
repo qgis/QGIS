@@ -31,7 +31,7 @@
 #include <QPointer>
 
 
-QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder( const QgsVectorTileStructure &structure )
+QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder( const QgsVectorTileMatrixSet &structure )
   : mStructure( structure )
 {}
 
@@ -90,10 +90,10 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
   QgsVectorTileFeatures features;
 
   const int numTiles = static_cast<int>( pow( 2, mTileID.zoomLevel() ) ); // assuming we won't ever go over 30 zoom levels
-  const double tileDX = ( mStructure.z0xMax() - mStructure.z0xMin() ) / numTiles;
-  const double tileDY = ( mStructure.z0yMax() - mStructure.z0yMin() ) / numTiles;
-  const double tileXMin = mStructure.z0xMin() + mTileID.column() * tileDX;
-  const double tileYMax = mStructure.z0yMax() - mTileID.row() * tileDY;
+  const double tileDX = ( mStructure.z0xMaximum() - mStructure.z0xMinimum() ) / numTiles;
+  const double tileDY = ( mStructure.z0yMaximum() - mStructure.z0yMinimum() ) / numTiles;
+  const double tileXMin = mStructure.z0xMinimum() + mTileID.column() * tileDX;
+  const double tileYMax = mStructure.z0yMaximum() - mTileID.row() * tileDY;
 
   for ( int layerNum = 0; layerNum < tile.layers_size(); layerNum++ )
   {
