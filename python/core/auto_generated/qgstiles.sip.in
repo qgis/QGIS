@@ -233,6 +233,11 @@ Defines a set of tile matrices for multiple zoom levels.
 
     virtual ~QgsTileMatrixSet();
 
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the matrix set is empty.
+%End
+
     void addGoogleCrs84QuadTiles( int minimumZoom = 0, int maximumZoom = 14 );
 %Docstring
 Adds tile matrices corresponding to the standard web mercator/GoogleCRS84Quad setup.

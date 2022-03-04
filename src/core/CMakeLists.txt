@@ -853,6 +853,7 @@ set(QGIS_CORE_SRCS
   vectortile/qgsvectortileprovidermetadata.cpp
   vectortile/qgsvectortileutils.cpp
   vectortile/qgsvectortilewriter.cpp
+  vectortile/qgsvtpktiles.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
@@ -1802,6 +1803,7 @@ set(QGIS_CORE_HDRS
   vectortile/qgsvectortilerenderer.h
   vectortile/qgsvectortileutils.h
   vectortile/qgsvectortilewriter.h
+  vectortile/qgsvtpktiles.h
 )
 
 set(QGIS_CORE_PRIVATE_HDRS

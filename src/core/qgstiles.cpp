@@ -128,6 +128,11 @@ QPointF QgsTileMatrix::mapToTileCoordinates( const QgsPointXY &mapPoint ) const
 // QgsTileMatrixSet
 //
 
+bool QgsTileMatrixSet::isEmpty() const
+{
+  return mTileMatrices.isEmpty();
+}
+
 void QgsTileMatrixSet::addGoogleCrs84QuadTiles( int minimumZoom, int maximumZoom )
 {
   if ( maximumZoom < minimumZoom )

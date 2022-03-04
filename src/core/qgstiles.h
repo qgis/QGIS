@@ -226,6 +226,11 @@ class CORE_EXPORT QgsTileMatrixSet
     virtual ~QgsTileMatrixSet() = default;
 
     /**
+     * Returns TRUE if the matrix set is empty.
+     */
+    bool isEmpty() const;
+
+    /**
      * Adds tile matrices corresponding to the standard web mercator/GoogleCRS84Quad setup.
      */
     void addGoogleCrs84QuadTiles( int minimumZoom = 0, int maximumZoom = 14 );

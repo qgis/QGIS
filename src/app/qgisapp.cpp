@@ -7527,6 +7527,21 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       }
     }
   }
+  else if ( fileName.endsWith( QStringLiteral( ".vtpk" ), Qt::CaseInsensitive ) )
+  {
+    // these are vector tiles
+    QUrlQuery uq;
+    uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "vtpk" ) );
+    uq.addQueryItem( QStringLiteral( "url" ), fileName );
+    const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+    std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
+    if ( vtLayer->isValid() )
+    {
+      postProcessAddedLayer( vtLayer.get() );
+      QgsProject::instance()->addMapLayer( vtLayer.release() );
+      return true;
+    }
+  }
 
   QList< QgsProviderSublayerModel::NonLayerItem > nonLayerItems;
   if ( QgsProjectStorage *ps = QgsApplication::projectStorageRegistry()->projectStorageFromUri( fileName ) )

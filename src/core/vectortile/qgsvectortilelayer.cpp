@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include "qgsvectortilelayerrenderer.h"
 #include "qgsmbtiles.h"
+#include "qgsvtpktiles.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelabeling.h"
@@ -126,6 +127,27 @@ bool QgsVectorTileLayer::loadDataSource()
     ct.setBallparkTransformsAreAppropriate( true );
     r = ct.transformBoundingBox( r );
     setExtent( r );
+  }
+  else if ( mSourceType == QLatin1String( "vtpk" ) )
+  {
+    QgsVtpkTiles reader( mSourcePath );
+    if ( !reader.open() )
+    {
+      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
+      return false;
+    }
+
+    const QVariantMap metadata = reader.metadata();
+    const QString format = metadata.value( QStringLiteral( "tileInfo" ) ).toMap().value( QStringLiteral( "format" ) ).toString();
+    if ( format != QLatin1String( "pbf" ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Cannot open VTPK for vector tiles. Format = " ) + format );
+      return false;
+    }
+
+    mMatrixSet = reader.matrixSet();
+    setCrs( mMatrixSet.crs() );
+    setExtent( reader.extent( transformContext() ) );
   }
   else
   {
@@ -467,6 +489,8 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
 
+  QVariantMap styleDefinition;
+  QgsMapBoxGlStyleConversionContext context;
   QString styleUrl;
   if ( !dsUri.param( QStringLiteral( "styleUrl" ) ).isEmpty() )
   {
@@ -479,7 +503,25 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
                + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString();
   }
 
-  if ( !styleUrl.isEmpty() )
+  if ( mSourceType == QLatin1String( "vtpk" ) )
+  {
+    QgsVtpkTiles reader( mSourcePath );
+    if ( !reader.open() )
+    {
+      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
+      return false;
+    }
+
+    styleDefinition = reader.styleDefinition();
+
+    const QVariantMap spriteDefinition = reader.spriteDefinition();
+    if ( !spriteDefinition.isEmpty() )
+    {
+      const QImage spriteImage = reader.spriteImage();
+      context.setSprites( spriteImage, spriteDefinition );
+    }
+  }
+  else if ( !styleUrl.isEmpty() )
   {
     QNetworkRequest request = QNetworkRequest( QUrl( styleUrl ) );
 
@@ -499,14 +541,7 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
     }
 
     const QgsNetworkReplyContent content = networkRequest.reply();
-    const QVariantMap styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
-
-    QgsMapBoxGlStyleConversionContext context;
-    // convert automatically from pixel sizes to millimeters, because pixel sizes
-    // are a VERY edge case in QGIS and don't play nice with hidpi map renders or print layouts
-    context.setTargetUnit( QgsUnitTypes::RenderMillimeters );
-    //assume source uses 96 dpi
-    context.setPixelSizeConversionFactor( 25.4 / 96.0 );
+    styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
 
     if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) )
     {
@@ -570,6 +605,15 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
           break;
       }
     }
+  }
+
+  if ( !styleDefinition.isEmpty() )
+  {
+    // convert automatically from pixel sizes to millimeters, because pixel sizes
+    // are a VERY edge case in QGIS and don't play nice with hidpi map renders or print layouts
+    context.setTargetUnit( QgsUnitTypes::RenderMillimeters );
+    //assume source uses 96 dpi
+    context.setPixelSizeConversionFactor( 25.4 / 96.0 );
 
     QgsMapBoxGlStyleConverter converter;
     if ( converter.convert( styleDefinition, &context ) != QgsMapBoxGlStyleConverter::Success )

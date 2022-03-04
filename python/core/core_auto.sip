@@ -695,6 +695,7 @@
 %Include auto_generated/vectortile/qgsvectortilematrixset.sip
 %Include auto_generated/vectortile/qgsvectortilerenderer.sip
 %Include auto_generated/vectortile/qgsvectortilewriter.sip
+%Include auto_generated/vectortile/qgsvtpktiles.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/symbology/qgsmasksymbollayer.sip
