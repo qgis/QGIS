@@ -34,6 +34,7 @@
 #include "qgsrange.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
+#include "qgspointcloudexpression.h"
 
 #define SIP_NO_FILE
 
@@ -310,6 +311,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsPointCloudAttributeCollection mAttributes; //! All native attributes stored in the file
     int mSpan;  //!< Number of points in one direction in a single node
     QString mSubsetString;  //!< String used to define a subset of the point cloud
+    QgsPointCloudExpression mFilterExpression;  //!< The filter expression to be evaluated when fetching node data
 };
 
 #endif // QGSPOINTCLOUDINDEX_H
