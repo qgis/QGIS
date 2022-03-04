@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 
 #include "qgsmaplayer.h"
-#include "qgsvectortilestructure.h"
+#include "qgsvectortilematrixset.h"
 
 class QgsVectorTileLabeling;
 class QgsVectorTileRenderer;
@@ -157,11 +157,11 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     // new methods
 
     /**
-     * Returns the vector tile structure.
+     * Returns the vector tile matrix set.
      *
      * \since QGIS 3.22.6
      */
-    QgsVectorTileStructure &tileStructure() { return mTileStructure; }
+    QgsVectorTileMatrixSet &tileMatrixSet() { return mMatrixSet; }
 
     //! Returns type of the data source
     QString sourceType() const { return mSourceType; }
@@ -169,9 +169,9 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     QString sourcePath() const { return mSourcePath; }
 
     //! Returns minimum zoom level at which source has any valid tiles (negative = unconstrained)
-    int sourceMinZoom() const { return mTileStructure.minimumZoom(); }
+    int sourceMinZoom() const { return mMatrixSet.minimumZoom(); }
     //! Returns maximum zoom level at which source has any valid tiles (negative = unconstrained)
-    int sourceMaxZoom() const { return mTileStructure.maximumZoom(); }
+    int sourceMaxZoom() const { return mMatrixSet.maximumZoom(); }
 
     /**
      * Fetches raw tile data for the give tile coordinates. If failed to fetch tile data,
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     //! URL/Path of the data source
     QString mSourcePath;
 
-    QgsVectorTileStructure mTileStructure;
+    QgsVectorTileMatrixSet mMatrixSet;
 
     //! Renderer assigned to the layer to draw map
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;

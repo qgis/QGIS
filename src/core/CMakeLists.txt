@@ -840,11 +840,11 @@ set(QGIS_CORE_SRCS
   vectortile/qgsvectortilelayer.cpp
   vectortile/qgsvectortilelayerrenderer.cpp
   vectortile/qgsvectortileloader.cpp
+  vectortile/qgsvectortilematrixset.cpp
   vectortile/qgsvectortilemvtdecoder.cpp
   vectortile/qgsvectortilemvtencoder.cpp
   vectortile/qgsvectortilemvtutils.cpp
   vectortile/qgsvectortileprovidermetadata.cpp
-  vectortile/qgsvectortilestructure.cpp
   vectortile/qgsvectortileutils.cpp
   vectortile/qgsvectortilewriter.cpp
 
@@ -1782,12 +1782,12 @@ set(QGIS_CORE_HDRS
   vectortile/qgsvectortilelayer.h
   vectortile/qgsvectortilelayerrenderer.h
   vectortile/qgsvectortileloader.h
+  vectortile/qgsvectortilematrixset.h
   vectortile/qgsvectortilemvtdecoder.h
   vectortile/qgsvectortilemvtencoder.h
   vectortile/qgsvectortilemvtutils.h
   vectortile/qgsvectortileprovidermetadata.h
   vectortile/qgsvectortilerenderer.h
-  vectortile/qgsvectortilestructure.h
   vectortile/qgsvectortileutils.h
   vectortile/qgsvectortilewriter.h
 )

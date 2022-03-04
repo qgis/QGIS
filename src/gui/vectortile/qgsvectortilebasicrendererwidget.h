@@ -65,7 +65,7 @@ class GUI_EXPORT QgsVectorTileBasicRendererWidget : public QgsMapLayerConfigWidg
     void cleanUpSymbolSelector( QgsPanelWidget *container );
 
   private:
-    QgsVectorTileLayer *mVTLayer = nullptr;
+    QPointer< QgsVectorTileLayer > mVTLayer;
     std::unique_ptr<QgsVectorTileBasicRenderer> mRenderer;
     QgsVectorTileBasicRendererListModel *mModel = nullptr;
     QgsVectorTileBasicRendererProxyModel *mProxyModel = nullptr;
