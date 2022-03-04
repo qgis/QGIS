@@ -71,6 +71,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingFillColorAlpha );
   addSettingsEntry( &settingsDigitizingLineGhost );
   addSettingsEntry( &settingsDigitizingDefaultZValue );
+  addSettingsEntry( &settingsDigitizingDefaultMValue );
   addSettingsEntry( &settingsDigitizingDefaultSnapEnabled );
   addSettingsEntry( &settingsDigitizingDefaultSnapMode );
   addSettingsEntry( &settingsDigitizingDefaultSnapType );
@@ -96,6 +97,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingOffsetCapStyle );
   addSettingsEntry( &settingsDigitizingOffsetShowAdvanced );
   addSettingsEntry( &settingsDigitizingTracingMaxFeatureCount );
+  addSettingsEntry( &settingsGpsBabelPath );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
