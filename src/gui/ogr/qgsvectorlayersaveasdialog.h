@@ -243,6 +243,15 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void mAttributeTable_itemChanged( QTableWidgetItem *item );
 
   private:
+
+    enum class ColumnIndex : int
+    {
+      Name = 0,
+      ExportName = 1,
+      Type = 2,
+      ExportAsDisplayedValue = 3
+    };
+
     void setup();
     QList< QPair< QLabel *, QWidget * > > createControls( const QMap<QString, QgsVectorFileWriter::Option *> &options );
 
@@ -252,8 +261,6 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsCoordinateReferenceSystem mLayerCrs;
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-    bool mAttributeTableItemChangedSlotEnabled;
-    bool mReplaceRawFieldValuesStateChangedSlotEnabled;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
     Options mOptions = AllOptions;
 };
