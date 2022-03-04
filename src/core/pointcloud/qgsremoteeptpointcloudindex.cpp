@@ -43,7 +43,6 @@
 #include "qgsapplication.h"
 #include "qgspointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
-#include "qgsexpression.h"
 
 ///@cond PRIVATE
 

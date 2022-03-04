@@ -23,9 +23,9 @@
 #include <QSet>
 
 #include "qgspointcloudexpressionnode.h"
+#include "qgsexpression.h"
 
 class QgsPointCloudExpressionPrivate;
-class QgsExpression;
 class QgsPointCloudBlock;
 
 /**
@@ -67,52 +67,13 @@ class CORE_EXPORT QgsPointCloudExpression
   public:
 
     /**
-     * Details about any parser errors that were found when parsing the expression.
+     * Create an expression using a string.
      */
-    struct CORE_EXPORT ParserError
-    {
-      enum ParserErrorType
-      {
-        Unknown = 0,  //!< Unknown error type.
-        FunctionUnknown = 1, //!< Function was unknown.
-        FunctionWrongArgs = 2, //!< Function was called with the wrong number of args.
-        FunctionInvalidParams = 3, //!< Function was called with invalid args.
-        FunctionNamedArgsError = 4 //!< Non named function arg used after named arg.
-      };
+    QgsPointCloudExpression( const QString &subset );
 
-      /**
-       * The type of parser error that was found.
-       */
-      ParserErrorType errorType = ParserErrorType::Unknown;
-
-      /**
-       * The message for the error at this location.
-       */
-      QString errorMsg;
-
-      /**
-       * The first line that contained the error in the parser.
-       * Depending on the error sometimes this doesn't mean anything.
-       */
-      int firstLine = 0;
-
-      /**
-       * The first column that contained the error in the parser.
-       * Depending on the error sometimes this doesn't mean anything.
-       */
-      int firstColumn = 0;
-
-      /**
-       * The last line that contained the error in the parser.
-       */
-      int lastLine = 0;
-
-      /**
-       * The last column that contained the error in the parser.
-       */
-      int lastColumn = 0;
-    };
-
+    /**
+     * Create an expression using an existing \a QgsExpression.
+     */
     QgsPointCloudExpression( const QgsExpression &expression );
 
     /**
@@ -166,7 +127,7 @@ class CORE_EXPORT QgsPointCloudExpression
     /**
      * Returns parser error details including location of error.
      */
-    QList<QgsPointCloudExpression::ParserError> parserErrors() const;
+    QList<QgsExpression::ParserError> parserErrors() const;
 
     /**
      * Returns the root node of the expression.
@@ -240,18 +201,9 @@ class CORE_EXPORT QgsPointCloudExpression
     void setEvalErrorString( const QString &str );
 
     /**
-     * Tests whether a string is a valid expression.
-     * \param expression the QgsExpression to test
-     * \param block QgsPointCloudBlock to be filtered
-     * \param errorMessage will be filled with any error message from the validation
-     * \returns TRUE if string is a valid expression
-     */
-    static bool checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage SIP_OUT );
-
-    /**
      * Set the expression string, will reset the whole internal structure.
      */
-    void setExpression( const QgsExpression &expression );
+    void setExpression( const QString &subset );
 
     /**
      * Returns the original, unmodified expression string.
@@ -267,6 +219,15 @@ class CORE_EXPORT QgsPointCloudExpression
      * expression() instead.
      */
     QString dump() const;
+
+    /**
+     * Tests whether a string is a valid expression.
+     * \param expression the QgsExpression to test
+     * \param block QgsPointCloudBlock to be filtered
+     * \param errorMessage will be filled with any error message from the validation
+     * \returns TRUE if string is a valid expression
+     */
+    static bool checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage SIP_OUT );
 
     //////
 

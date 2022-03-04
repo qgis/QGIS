@@ -19,7 +19,7 @@
 #include <QString>
 #include <memory>
 
-#include "qgspointcloudexpression.h"
+#include "qgsexpression.h"
 #include "qgspointcloudexpressionnode.h"
 
 ///@cond
@@ -57,7 +57,7 @@ class QgsPointCloudExpressionPrivate
     QString mParserErrorString;
     QString mEvalErrorString;
 
-    QList<QgsPointCloudExpression::ParserError> mParserErrors;
+    QList<QgsExpression::ParserError> mParserErrors;
 
     QString mExp;
 

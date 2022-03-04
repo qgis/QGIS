@@ -33,7 +33,7 @@
 #include "qgslogger.h"
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"
-#include "qgsexpression.h"
+#include "qgspointcloudexpression.h"
 
 ///@cond PRIVATE
 

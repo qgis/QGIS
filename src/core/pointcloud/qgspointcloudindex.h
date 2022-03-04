@@ -283,10 +283,10 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     /**
      * Sets the string used to define a subset of the point cloud.
      * \param subset The subset string to be used in a \a QgsPointCloudExpression
-     *
+     * \returns true if the expression is parsed with no errors, false otherwise
      * \since QGIS 3.26
      */
-    void setSubsetString( const QString &subset );
+    bool setSubsetString( const QString &subset );
 
     /**
      * Returns the string used to define a subset of the point cloud.

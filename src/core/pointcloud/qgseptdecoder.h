@@ -23,7 +23,6 @@
 #include "qgis_sip.h"
 #include "qgspointcloudblock.h"
 #include "qgspointcloudattribute.h"
-#include "qgspointcloudexpression.h"
 
 #include "laz-perf/io.hpp"
 #include "laz-perf/common/common.hpp"
@@ -32,6 +31,8 @@
 #define SIP_NO_FILE
 
 #include <QString>
+
+class QgsPointCloudExpression;
 
 namespace QgsEptDecoder
 {

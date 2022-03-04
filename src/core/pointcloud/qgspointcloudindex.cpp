@@ -26,7 +26,6 @@
 #include <QtDebug>
 
 #include "qgstiledownloadmanager.h"
-#include "qgsexpression.h"
 
 IndexedPointCloudNode::IndexedPointCloudNode():
   mD( -1 ),
@@ -256,11 +255,16 @@ int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
   return count;
 }
 
-void QgsPointCloudIndex::setSubsetString( const QString &subset )
+bool QgsPointCloudIndex::setSubsetString( const QString &subset )
 {
-  mSubsetString = subset;
-  QgsExpression expr( subset );
-  mFilterExpression.setExpression( expr );
+  mFilterExpression.setExpression( subset );
+  if ( mFilterExpression.hasParserError() )
+  {
+    mFilterExpression.setExpression( mSubsetString );
+    return false;
+  }
+  mSubsetString = mFilterExpression.dump();
+  return true;
 }
 
 QString QgsPointCloudIndex::subsetString() const

@@ -89,15 +89,24 @@ void QgsPointCloudExpressionNode::cloneTo( QgsPointCloudExpressionNode *target )
 
 QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpressionNode *expressionNode, QString &error )
 {
+  error.clear();
   if ( !expressionNode )
     return nullptr;
   switch ( expressionNode->nodeType() )
   {
     case QgsExpressionNode::NodeType::ntFunction:
+    {
+      error = QStringLiteral( "Functions are not supported in point cloud expressions" );
+      return nullptr;
+    }
     case QgsExpressionNode::NodeType::ntCondition:
+    {
+      error = QStringLiteral( "Conditional Statements are not supported in point cloud expressions" );
+      return nullptr;
+    }
     case QgsExpressionNode::NodeType::ntIndexOperator:
     {
-      error = QStringLiteral( "Unsupported node type" );
+      error = QStringLiteral( "Index operators are not supported in point cloud expressions" );
       return nullptr;
     }
     case QgsExpressionNode::NodeType::ntLiteral:
@@ -124,13 +133,11 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
       QgsPointCloudExpressionNode *opLeft = convert( n->opLeft(), error );
       if ( !opLeft )
       {
-        error = QStringLiteral( "Incompatible node" );
         return nullptr;
       }
       QgsPointCloudExpressionNode *opRight = convert( n->opRight(), error );
       if ( !opRight )
       {
-        error = QStringLiteral( "Incompatible node" );
         delete opLeft;
         return nullptr;
       }
@@ -147,7 +154,6 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
       QgsPointCloudExpressionNode *node = convert( n->node(), error );
       if ( !node )
       {
-        error = QStringLiteral( "Incompatible node" );
         return nullptr;
       }
       const bool notIn = n->isNotIn();
@@ -158,7 +164,6 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
         QgsPointCloudExpressionNode *convertedNode = convert( nd, error );
         if ( !convertedNode )
         {
-          error = QStringLiteral( "Incompatible node" );
           delete node;
           qDeleteAll( nodeList->list() );
           return nullptr;
@@ -175,7 +180,6 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
       QgsPointCloudExpressionNode *operand = convert( n->operand(), error );
       if ( !operand )
       {
-        error = QStringLiteral( "Incompatible node" );
         return nullptr;
       }
       return new QgsPointCloudExpressionNodeUnaryOperator( op, operand );

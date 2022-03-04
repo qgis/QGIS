@@ -53,31 +53,15 @@ when :py:func:`~prepare` is called.
 %End
   public:
 
-    struct ParserError
-    {
-      enum ParserErrorType
-      {
-        Unknown,
-        FunctionUnknown,
-        FunctionWrongArgs,
-        FunctionInvalidParams,
-        FunctionNamedArgsError
-      };
-
-      ParserErrorType errorType;
-
-      QString errorMsg;
-
-      int firstLine;
-
-      int firstColumn;
-
-      int lastLine;
-
-      int lastColumn;
-    };
+    QgsPointCloudExpression( const QString &subset );
+%Docstring
+Create an expression using a string.
+%End
 
     QgsPointCloudExpression( const QgsExpression &expression );
+%Docstring
+Create an expression using an existing ``:py:class:`QgsExpression```.
+%End
 
     QgsPointCloudExpression( const QgsPointCloudExpression &other );
 %Docstring
@@ -113,7 +97,7 @@ Returns ``True`` if an error occurred when parsing the input expression
 Returns parser error
 %End
 
-    QList<QgsPointCloudExpression::ParserError> parserErrors() const;
+    QList<QgsExpression::ParserError> parserErrors() const;
 %Docstring
 Returns parser error details including location of error.
 %End
@@ -163,18 +147,7 @@ Returns evaluation error
 Sets evaluation error (used internally by evaluation functions)
 %End
 
-    static bool checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage /Out/ );
-%Docstring
-Tests whether a string is a valid expression.
-
-:param expression: the :py:class:`QgsExpression` to test
-:param block: :py:class:`QgsPointCloudBlock` to be filtered
-
-:return: - ``True`` if string is a valid expression
-         - errorMessage: will be filled with any error message from the validation
-%End
-
-    void setExpression( const QgsExpression &expression );
+    void setExpression( const QString &subset );
 %Docstring
 Set the expression string, will reset the whole internal structure.
 %End
@@ -192,6 +165,17 @@ Returns an expression string, constructed from the internal
 abstract syntax tree. This does not contain any nice whitespace
 formatting or comments. In general it is preferable to use
 :py:func:`~QgsPointCloudExpression.expression` instead.
+%End
+
+    static bool checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage /Out/ );
+%Docstring
+Tests whether a string is a valid expression.
+
+:param expression: the :py:class:`QgsExpression` to test
+:param block: :py:class:`QgsPointCloudBlock` to be filtered
+
+:return: - ``True`` if string is a valid expression
+         - errorMessage: will be filled with any error message from the validation
 %End
 
 

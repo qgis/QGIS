@@ -306,7 +306,8 @@ bool QgsPointCloudDataProvider::setSubsetString( const QString &subset, bool upd
   if ( !i )
     return false;
 
-  i->setSubsetString( subset );
+  if ( !i->setSubsetString( subset ) )
+    return false;
   mSubsetString = subset;
   emit dataChanged();
   return true;
