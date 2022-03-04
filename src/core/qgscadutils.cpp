@@ -332,6 +332,20 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
             );
             point = QgsPointXY( intersection );
           }
+          else if ( angleLocked )
+          {
+            const double angleValue = angleValueDeg * M_PI / 180;
+            const double cosa = std::cos( angleValue );
+            const double sina = std::sin( angleValue );
+
+            QgsPoint intersection;
+            QgsGeometryUtils::lineIntersection(
+              QgsPoint( previousPt ), QgsVector( cosa, sina ),
+              QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
+              intersection
+            );
+            point = QgsPointXY( intersection );
+          }
           else
           {
             double angleValue = std::atan2( extensionPoint.y() - vertex.y(),
