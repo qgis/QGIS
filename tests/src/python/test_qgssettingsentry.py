@@ -10,8 +10,11 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+from qgis import core as qgis_core
 from qgis.core import Qgis, QgsSettings, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel
 from qgis.testing import start_app, unittest
+
+from qgis.PyQt.QtGui import QColor
 
 __author__ = 'Damiano Lombardi'
 __date__ = '02/04/2021'
@@ -33,7 +36,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
     def test_settings_entry_base(self):
         settingsKey = "settingsEntryBase/variantValue"
-        settingsKeyComplete = 'plugins/' + self.pluginName + "/" + settingsKey
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
 
         # Make sure settings does not exists
         QgsSettings().remove(settingsKeyComplete)
@@ -73,6 +76,27 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
         # Description
         self.assertEqual(settingsEntryVariant.description(), description)
+
+    def test_settings_plugin_key(self):
+        # be sure that the constructor in PyQGIS only creates keys with plugins prefix
+        settings_types = [x for x in dir(qgis_core) if x.startswith('QgsSettingsEntry') and not x.endswith('Base')]
+        hardcoded_types = {
+            'QgsSettingsEntryBool': True,
+            'QgsSettingsEntryColor': QColor(),
+            'QgsSettingsEntryDouble': 0.0,
+            'QgsSettingsEntryEnumFlag': QgsUnitTypes.LayoutMeters,
+            'QgsSettingsEntryInteger': 1,
+            'QgsSettingsEntryString': 'Hello',
+            'QgsSettingsEntryStringList': [],
+            'QgsSettingsEntryVariant': 1
+        }
+        self.assertEqual(settings_types, list(hardcoded_types.keys()))
+        for setting_type, default_value in hardcoded_types.items():
+            settings_key = "settings/key_{}".format(setting_type)
+            settings_key_complete = "plugins/{}/{}".format(self.pluginName, settings_key)
+            QgsSettings().remove(settings_key_complete)
+            settings_entry = eval('qgis_core.{}(settings_key, self.pluginName, default_value)'.format(setting_type))
+            self.assertEqual(settings_entry.key(), settings_key_complete)
 
     def test_settings_entry_base_default_value_override(self):
         settingsKey = "settingsEntryBase/defaultValueOverride/variantValue"
@@ -187,7 +211,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
     def test_settings_entry_stringlist(self):
         settingsKey = "settingsEntryStringList/stringListValue"
-        settingsKeyComplete = self.pluginName + "/" + settingsKey
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
 
         # Make sure settings does not exists
         QgsSettings().remove(settingsKeyComplete)
@@ -209,7 +233,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
     def test_settings_entry_bool(self):
         settingsKey = "settingsEntryBool/boolValue"
-        settingsKeyComplete = self.pluginName + "/" + settingsKey
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
 
         # Make sure settings does not exists
         QgsSettings().remove(settingsKeyComplete)
@@ -231,7 +255,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
     def test_settings_entry_integer(self):
         settingsKey = "settingsEntryInteger/integerValue"
-        settingsKeyComplete = self.pluginName + "/" + settingsKey
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
 
         # Make sure settings does not exists
         QgsSettings().remove(settingsKeyComplete)
@@ -259,7 +283,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
     def test_settings_entry_double(self):
         settingsKey = "settingsEntryDouble/doubleValue"
-        settingsKeyComplete = self.pluginName + "/" + settingsKey
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
 
         # Make sure settings does not exists
         QgsSettings().remove(settingsKeyComplete)

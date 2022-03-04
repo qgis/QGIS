@@ -197,8 +197,8 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryByReferenc
                                 const QString &section,
                                 const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_MAKE_PRIVATE
+  : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
     {
     }
 
@@ -256,8 +256,8 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
                           const QString &section,
                           bool defaultValue = false,
                           const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_MAKE_PRIVATE
+  : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
     {}
 
 #ifdef SIP_RUN
@@ -318,10 +318,10 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                              qlonglong minValue = std::numeric_limits<qlonglong>::min(),
-                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() )
-      : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
-      , mMinValue( minValue )
-      , mMaxValue( maxValue )
+                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() ) SIP_MAKE_PRIVATE
+  : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
+    , mMinValue( minValue )
+    , mMaxValue( maxValue )
     { }
 
 #ifdef SIP_RUN
@@ -416,11 +416,11 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             double minValue = std::numeric_limits<double>::lowest(),
                             double maxValue = std::numeric_limits<double>::max(),
-                            int displayDecimals = 1 )
-      : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
-      , mMinValue( minValue )
-      , mMaxValue( maxValue )
-      , mDisplayHintDecimals( displayDecimals )
+                            int displayDecimals = 1 ) SIP_MAKE_PRIVATE
+  : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
+    , mMinValue( minValue )
+    , mMaxValue( maxValue )
+    , mDisplayHintDecimals( displayDecimals )
     {}
 
 #ifdef SIP_RUN
@@ -526,8 +526,8 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
                            const QString &section,
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
-                           Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
+                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_MAKE_PRIVATE
+  : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
     {}
 
 #ifdef SIP_RUN
