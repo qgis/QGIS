@@ -280,7 +280,9 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   if ( !found )
     return nullptr;
 
-  const QSet<QString> expressionAttributes = mFilterExpression.referencedAttributes();
+  // create a copy of the expression to pass to the decoder
+  QgsPointCloudExpression filterExpression = mFilterExpression;
+  const QSet<QString> expressionAttributes = filterExpression.referencedAttributes();
   const QgsPointCloudAttributeCollection allAttributes = attributes();
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
 
@@ -298,17 +300,17 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   if ( mDataType == QLatin1String( "binary" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.bin" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressBinary( filename, allAttributes, requestAttributes, scale(), offset(), mFilterExpression );
+    return QgsEptDecoder::decompressBinary( filename, allAttributes, requestAttributes, scale(), offset(), filterExpression );
   }
   else if ( mDataType == QLatin1String( "zstandard" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.zst" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset(), mFilterExpression );
+    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset(), filterExpression );
   }
   else if ( mDataType == QLatin1String( "laszip" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressLaz( filename, allAttributes, requestAttributes, scale(), offset(), mFilterExpression );
+    return QgsEptDecoder::decompressLaz( filename, allAttributes, requestAttributes, scale(), offset(), filterExpression );
   }
   else
   {

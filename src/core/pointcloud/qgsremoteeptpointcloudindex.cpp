@@ -141,7 +141,9 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
     return nullptr;
   }
 
-  const auto expressionAttributes = mFilterExpression.referencedAttributes();
+  // create a copy of the expression to pass to the decoder
+  QgsPointCloudExpression filterExpression = mFilterExpression;
+  const auto expressionAttributes = filterExpression.referencedAttributes();
   const QgsPointCloudAttributeCollection allAttributes = attributes();
   QgsPointCloudAttributeCollection reqAttributes = request.attributes();
 
@@ -155,7 +157,7 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
         reqAttributes.push_back( *attr );
     }
   }
-  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, allAttributes, reqAttributes, scale(), offset(), mFilterExpression );
+  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, allAttributes, reqAttributes, scale(), offset(), filterExpression );
 }
 
 bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
