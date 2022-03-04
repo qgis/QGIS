@@ -82,7 +82,7 @@ int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, in
 
 QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *mvt, QgsTileXYZ tileID, const QString &layerName )
 {
-  QgsVectorTileMVTDecoder decoder( mvt->tileStructure() );
+  QgsVectorTileMVTDecoder decoder( mvt->tileMatrixSet() );
   decoder.decode( tileID, mvt->getRawTile( tileID ) );
   QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
   fieldNames << QStringLiteral( "_geom_type" );

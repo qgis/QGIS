@@ -447,8 +447,8 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
       }
     }
 
-    const int tileZoom = layer->tileStructure().scaleToZoomLevel( mCanvas->scale() );
-    const QgsTileMatrix tileMatrix = layer->tileStructure().tileMatrix( tileZoom );
+    const int tileZoom = layer->tileMatrixSet().scaleToZoomLevel( mCanvas->scale() );
+    const QgsTileMatrix tileMatrix = layer->tileMatrixSet().tileMatrix( tileZoom );
     const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
 
     for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
@@ -460,7 +460,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
         if ( data.isEmpty() )
           continue;  // failed to get data
 
-        QgsVectorTileMVTDecoder decoder( layer->tileStructure() );
+        QgsVectorTileMVTDecoder decoder( layer->tileMatrixSet() );
         if ( !decoder.decode( tileID, data ) )
           continue;  // failed to decode
 
