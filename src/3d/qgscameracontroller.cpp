@@ -480,6 +480,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     const float diffPitch = 0.2f * dy;
     const float diffYaw = - 0.2f * dx;
     rotateCamera( diffPitch, diffYaw );
+    updateCameraFromPose();
   }
   else if ( hasLeftButton && !hasShift && !hasCtrl )
   {
@@ -587,7 +588,6 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   }
 
   mMousePos = QPoint( mouse->x(), mouse->y() );
-  updateCameraFromPose();
 }
 
 void QgsCameraController::zoom( float factor )
