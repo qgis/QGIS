@@ -39,7 +39,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
   , mFeedback( new QgsFeedback )
   , mLayerOpacity( layer->opacity() )
-  , mTileStructure( layer->tileStructure() )
+  , mTileStructure( layer->tileMatrixSet() )
 {
 
   QgsDataSourceUri dsUri;
