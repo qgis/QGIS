@@ -574,6 +574,10 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     fieldNo++;
   }
 
+  // Add an empty item for M and Z field
+  cmbMField->addItem( QString() );
+  cmbZField->addItem( QString() );
+
   // Try resetting current values for column names
 
   cmbWktField->setCurrentIndex( cmbWktField->findText( columnWkt ) );
