@@ -679,7 +679,10 @@ void QgsVectorLayerSaveAsDialog::mUseAliasesForExportedName_stateChanged( int st
       {
         if ( mAttributeTable->item( i, static_cast<int>( ColumnIndex::ExportName ) )->text()
              != mAttributeTable->item( i, static_cast<int>( ColumnIndex::ExportName ) )->data( Qt::UserRole ).toString() )
+        {
           modifiedEntries = true;
+          break;
+        }
       }
 
       if ( modifiedEntries )
@@ -807,6 +810,15 @@ void QgsVectorLayerSaveAsDialog::mAttributeTable_itemChanged( QTableWidgetItem *
     break;
     case ColumnIndex::ExportName:
     {
+      // Check empty export name
+      if ( item->text().isEmpty() )
+      {
+        QMessageBox::warning( this,
+                              tr( "Empty export name" ),
+                              tr( "Empty export name are not allowed." ) );
+        return;
+      }
+
       // Rename eventually duplicated names
       QStringList names = attributesExportNames();
       while ( names.count( item->text() ) > 1 )
