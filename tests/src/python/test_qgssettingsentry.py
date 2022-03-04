@@ -33,10 +33,10 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
     def test_settings_entry_base(self):
         settingsKey = "settingsEntryBase/variantValue"
-        settingsKeyComplete = self.pluginName + "/" + settingsKey
+        settingsKeyComplete = 'plugins/' + self.pluginName + "/" + settingsKey
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         defaultValue = 42
         description = "Variant value for basic functionality test"
@@ -57,9 +57,6 @@ class TestQgsSettingsEntry(unittest.TestCase):
         settingsEntryVariant.remove()
         self.assertEqual(settingsEntryVariant.exists(), False)
 
-        # Section
-        self.assertEqual(settingsEntryVariant.section(), QgsSettings.Plugins)
-
         # DefaultValue
         self.assertEqual(settingsEntryVariant.defaultValueAsVariant(), defaultValue)
 
@@ -68,7 +65,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryVariant.valueAsVariant(), defaultValue)
         settingsEntryVariant.setValue(43)
         # Verify setValue using QgsSettings
-        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), 43)
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue), 43)
         self.assertEqual(settingsEntryVariant.valueAsVariant(), 43)
 
         # Settings type
@@ -79,10 +76,10 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
     def test_settings_entry_base_default_value_override(self):
         settingsKey = "settingsEntryBase/defaultValueOverride/variantValue"
-        settingsKeyComplete = self.pluginName + "/" + settingsKey
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         defaultValue = 42
         defaultValueOverride = 123
@@ -93,21 +90,21 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryVariant.value(), defaultValue)
 
         # Normal default value
-        self.assertEqual(settingsEntryVariant.value(None, False, defaultValueOverride), defaultValue)
+        self.assertEqual(settingsEntryVariant.value(), defaultValue)
 
         # Overridden default value
-        self.assertEqual(settingsEntryVariant.value(None, True, defaultValueOverride), defaultValueOverride)
+        self.assertEqual(settingsEntryVariant.valueWithDefaultOverride(defaultValueOverride), defaultValueOverride)
 
     def test_settings_entry_base_dynamic_key(self):
         settingsKeyDynamic = "settingsEntryBase/%1/variantValue"
         dynamicKeyPart1 = "first"
         dynamicKeyPart2 = "second"
-        settingsKeyComplete1 = self.pluginName + "/" + settingsKeyDynamic.replace("%1", dynamicKeyPart1)
-        settingsKeyComplete2 = self.pluginName + "/" + settingsKeyDynamic.replace("%1", dynamicKeyPart2)
+        settingsKeyComplete1 = "plugins/{}/{}".format(self.pluginName, settingsKeyDynamic).replace("%1", dynamicKeyPart1)
+        settingsKeyComplete2 = "plugins/{}/{}".format(self.pluginName, settingsKeyDynamic).replace("%1", dynamicKeyPart2)
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete1, QgsSettings.Plugins)
-        QgsSettings().remove(settingsKeyComplete2, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete1)
+        QgsSettings().remove(settingsKeyComplete2)
 
         defaultValue = 42
         settingsEntryVariantDynamic = QgsSettingsEntryVariant(settingsKeyDynamic, self.pluginName, defaultValue, "Variant value for dynamic key functionality test")
@@ -119,8 +116,8 @@ class TestQgsSettingsEntry(unittest.TestCase):
         # Get set values
         settingsEntryVariantDynamic.setValue(43, dynamicKeyPart1)
         settingsEntryVariantDynamic.setValue(44, dynamicKeyPart2)
-        self.assertEqual(QgsSettings().value(settingsKeyComplete1, defaultValue, section=QgsSettings.Plugins), 43)
-        self.assertEqual(QgsSettings().value(settingsKeyComplete2, defaultValue, section=QgsSettings.Plugins), 44)
+        self.assertEqual(QgsSettings().value(settingsKeyComplete1, defaultValue), 43)
+        self.assertEqual(QgsSettings().value(settingsKeyComplete2, defaultValue), 44)
         self.assertEqual(settingsEntryVariantDynamic.value(dynamicKeyPart1), 43)
         self.assertEqual(settingsEntryVariantDynamic.value(dynamicKeyPart2), 44)
 
@@ -128,11 +125,10 @@ class TestQgsSettingsEntry(unittest.TestCase):
         settingsKeyDynamic = "settingsEntryBase/%1/anotherPart_%2/variantValue"
         dynamicKeyPart1 = "first"
         dynamicKeyPart2 = "second"
-        settingsKeyComplete = self.pluginName + "/" + settingsKeyDynamic.replace("%1", dynamicKeyPart1)
-        settingsKeyComplete = settingsKeyComplete.replace("%2", dynamicKeyPart2)
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKeyDynamic).replace("%1", dynamicKeyPart1).replace("%2", dynamicKeyPart2)
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         defaultValue = 42
         settingsEntryVariantDynamic = QgsSettingsEntryVariant(settingsKeyDynamic, self.pluginName, defaultValue, "Variant value for dynamic multiple keys functionality test")
@@ -142,15 +138,15 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
         # Get set values
         settingsEntryVariantDynamic.setValue(43, [dynamicKeyPart1, dynamicKeyPart2])
-        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), 43)
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue), 43)
         self.assertEqual(settingsEntryVariantDynamic.value([dynamicKeyPart1, dynamicKeyPart2]), 43)
 
     def test_settings_entry_variant(self):
         settingsKey = "settingsEntryVariant/variantValue"
-        settingsKeyComplete = self.pluginName + "/" + settingsKey
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         defaultValue = 42
         description = "Variant value functionality test"
@@ -161,7 +157,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryVariant.valueAsVariant(), defaultValue)
         settingsEntryVariant.setValue("abc")
         # Verify setValue using QgsSettings
-        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), "abc")
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue), "abc")
         self.assertEqual(settingsEntryVariant.valueAsVariant(), "abc")
 
         # Settings type
@@ -169,10 +165,10 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
     def test_settings_entry_string(self):
         settingsKey = "settingsEntryString/stringValue"
-        settingsKeyComplete = self.pluginName + "/" + settingsKey
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         defaultValue = "abc"
         description = "String value functionality test"
@@ -183,7 +179,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryString.valueAsVariant(), defaultValue)
         settingsEntryString.setValue("xyz")
         # Verify setValue using QgsSettings
-        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), "xyz")
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue), "xyz")
         self.assertEqual(settingsEntryString.valueAsVariant(), "xyz")
 
         # Settings type
@@ -194,7 +190,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         settingsKeyComplete = self.pluginName + "/" + settingsKey
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         defaultValue = ["abc", "def"]
         description = "String list value functionality test"
@@ -205,7 +201,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryStringList.valueAsVariant(), defaultValue)
         settingsEntryStringList.setValue(["uvw", "xyz"])
         # Verify setValue using QgsSettings
-        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), ["uvw", "xyz"])
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue), ["uvw", "xyz"])
         self.assertEqual(settingsEntryStringList.valueAsVariant(), ["uvw", "xyz"])
 
         # Settings type
@@ -216,7 +212,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         settingsKeyComplete = self.pluginName + "/" + settingsKey
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         defaultValue = False
         description = "Bool value functionality test"
@@ -227,7 +223,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryBool.valueAsVariant(), defaultValue)
         settingsEntryBool.setValue(True)
         # Verify setValue using QgsSettings
-        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), True)
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue), True)
         self.assertEqual(settingsEntryBool.valueAsVariant(), True)
 
         # Settings type
@@ -238,7 +234,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         settingsKeyComplete = self.pluginName + "/" + settingsKey
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         defaultValue = 42
         description = "Integer value functionality test"
@@ -249,13 +245,13 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryInteger.valueAsVariant(), defaultValue)
         settingsEntryInteger.setValue(43)
         # Verify setValue using QgsSettings
-        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), 43)
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue), 43)
         self.assertEqual(settingsEntryInteger.valueAsVariant(), 43)
 
         # Set/Get negative value
         settingsEntryInteger.setValue(-42)
         # Verify setValue using QgsSettings
-        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), -42)
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue), -42)
         self.assertEqual(settingsEntryInteger.valueAsVariant(), -42)
 
         # Settings type
@@ -266,7 +262,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         settingsKeyComplete = self.pluginName + "/" + settingsKey
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         defaultValue = 3.14
         description = "Double value functionality test"
@@ -277,13 +273,13 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryDouble.valueAsVariant(), defaultValue)
         settingsEntryDouble.setValue(1.618)
         # Verify setValue using QgsSettings
-        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), 1.618)
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue), 1.618)
         self.assertEqual(settingsEntryDouble.valueAsVariant(), 1.618)
 
         # Set/Get negative value
         settingsEntryDouble.setValue(-273.15)
         # Verify setValue using QgsSettings
-        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue, section=QgsSettings.Plugins), -273.15)
+        self.assertEqual(QgsSettings().value(settingsKeyComplete, defaultValue), -273.15)
         self.assertEqual(settingsEntryDouble.valueAsVariant(), -273.15)
 
         # Settings type
@@ -291,10 +287,10 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
     def test_settings_entry_enum(self):
         settingsKey = "settingsEntryEnum/enumValue"
-        settingsKeyComplete = self.pluginName + "/" + settingsKey
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         defaultValue = QgsUnitTypes.LayoutMeters
         description = "Enum value functionality test"
@@ -306,11 +302,11 @@ class TestQgsSettingsEntry(unittest.TestCase):
         # Check set value
         success = settingsEntryEnum.setValue(QgsUnitTypes.LayoutFeet)
         self.assertEqual(success, True)
-        qgsSettingsValue = QgsSettings().enumValue(settingsKeyComplete, QgsUnitTypes.LayoutMeters, QgsSettings.Plugins)
+        qgsSettingsValue = QgsSettings().enumValue(settingsKeyComplete, QgsUnitTypes.LayoutMeters)
         self.assertEqual(qgsSettingsValue, QgsUnitTypes.LayoutFeet)
 
         # Check get value
-        QgsSettings().setEnumValue(settingsKeyComplete, QgsUnitTypes.LayoutPicas, QgsSettings.Plugins)
+        QgsSettings().setEnumValue(settingsKeyComplete, QgsUnitTypes.LayoutPicas)
         self.assertEqual(settingsEntryEnum.value(), QgsUnitTypes.LayoutPicas)
 
         # Check settings type
@@ -321,19 +317,19 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(success, False)
 
         # Current value should not have changed
-        qgsSettingsValue = QgsSettings().enumValue(settingsKeyComplete, QgsUnitTypes.LayoutMeters, QgsSettings.Plugins)
+        qgsSettingsValue = QgsSettings().enumValue(settingsKeyComplete, QgsUnitTypes.LayoutMeters)
         self.assertEqual(qgsSettingsValue, QgsUnitTypes.LayoutPicas)
 
     def test_settings_entry_flag(self):
         settingsKey = "settingsEntryFlag/flagValue"
-        settingsKeyComplete = self.pluginName + "/" + settingsKey
+        settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
 
         pointAndLine = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.LineLayer)
         pointAndPolygon = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.PolygonLayer)
         hasGeometry = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.HasGeometry)
 
         # Make sure settings does not exists
-        QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
+        QgsSettings().remove(settingsKeyComplete)
 
         description = "Flag value functionality test"
         settingsEntryFlag = QgsSettingsEntryEnumFlag(settingsKey, self.pluginName, pointAndLine, description)
@@ -344,11 +340,11 @@ class TestQgsSettingsEntry(unittest.TestCase):
         # Check set value
         success = settingsEntryFlag.setValue(hasGeometry)
         self.assertEqual(success, True)
-        qgsSettingsValue = QgsSettings().flagValue(settingsKeyComplete, pointAndLine, QgsSettings.Plugins)
+        qgsSettingsValue = QgsSettings().flagValue(settingsKeyComplete, pointAndLine)
         self.assertEqual(qgsSettingsValue, hasGeometry)
 
         # Check get value
-        QgsSettings().setValue(settingsKeyComplete, 'PointLayer|PolygonLayer', QgsSettings.Plugins)
+        QgsSettings().setValue(settingsKeyComplete, 'PointLayer|PolygonLayer')
         self.assertEqual(settingsEntryFlag.value(), pointAndPolygon)
 
         # Check settings type
