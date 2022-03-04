@@ -119,15 +119,17 @@ class TestQgsTiles(unittest.TestCase):
 
         self.assertAlmostEqual(matrix_set.scaleToZoom(776503144), 1, 5)
         self.assertEqual(matrix_set.scaleToZoom(1776503144), 1)
-        self.assertAlmostEqual(matrix_set.scaleToZoom(388251572), 2, 5)
-        self.assertAlmostEqual(matrix_set.scaleToZoom(288251572), 2.515, 2)
-        self.assertAlmostEqual(matrix_set.scaleToZoom(194125786), 3, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(388251572), 1, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(288251572), 1.515, 2)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(194125786), 2, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(188251572), 2.060519, 3)
         self.assertEqual(matrix_set.scaleToZoom(6503144), 3)
         self.assertEqual(matrix_set.scaleToZoomLevel(776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(1776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(76503144), 3)
-        self.assertEqual(matrix_set.scaleToZoomLevel(388251572), 2)
-        self.assertEqual(matrix_set.scaleToZoomLevel(298251572), 2)
+        self.assertEqual(matrix_set.scaleToZoomLevel(388251572), 1)
+        self.assertEqual(matrix_set.scaleToZoomLevel(298251572), 1)
+        self.assertEqual(matrix_set.scaleToZoomLevel(198251572), 2)
         self.assertEqual(matrix_set.scaleToZoomLevel(6503144), 3)
 
     def testTileMatrixSetGoogle(self):

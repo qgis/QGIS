@@ -201,6 +201,10 @@ double QgsTileMatrixSet::scaleToZoom( double scale ) const
   double scaleUnder = 0;
   double scaleOver = 0;
 
+  // TODO: it seems that map scale is double (is that because of high-dpi screen?)
+  // (this TODO was taken straight from QgsVectorTileUtils::scaleToZoom!)
+  scale *= 2;
+
   for ( auto it = mTileMatrices.constBegin(); it != mTileMatrices.constEnd(); ++it )
   {
     if ( it->scale() > scale && ( zoomUnder == -1 || zoomUnder < it->zoomLevel() ) )
