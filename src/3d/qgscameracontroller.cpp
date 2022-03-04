@@ -642,6 +642,8 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
     mCameraPose.setCenterPoint( newViewCenterWorld );
     updateCameraFromPose();
   }
+  mIsInZoomInState = false;
+  mCumulatedWheelY = 0;
 }
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
