@@ -201,6 +201,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
+
+    // !Enumeration of project states
+    enum ProjectState
+    {
+      NO_PROJECT,        // No project is loaded or has yet been loaded or a project has been closed
+      OPENING_PROJECT,   // A project is currently opening
+      OPENED_PROJECT,    // A project has completely been loaded
+      WRITING_PROJECT   // In writing state
+    };
+
     //! Constructor
     QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipBadLayers = false,
              bool skipVersionCheck = false, const QString &rootProfileLocation = QString(),
@@ -235,6 +245,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \returns TRUE if the file is successfully opened
      */
     bool openLayer( const QString &fileName, bool allowInteractive = false );
+
+    /**
+     * Returns the current project state: Whether a project is loading, loaded, closed, writing
+     * Used to regognize the current state for user communication especially during loading and saving.
+     */
+    ProjectState getProjectState();
 
     /**
      * Open the specified project file; prompt to save previous project if necessary.
@@ -2110,6 +2126,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
 
+    void setProjectState(ProjectState projectState );
+
     void postProcessAddedLayer( QgsMapLayer *layer );
 
     //! Open a vector tile layer - this is the generic function which takes all parameters
@@ -2549,6 +2567,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Flag to indicate an edits save/rollback for active layer is in progress
     bool mSaveRollbackInProgress = false;
+
+    ProjectState mprojectState;
 
     QgsPythonUtils *mPythonUtils = nullptr;
 

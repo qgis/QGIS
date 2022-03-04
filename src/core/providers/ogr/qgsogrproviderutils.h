@@ -443,6 +443,10 @@ class QgsOgrLayer
     //! Return an approximate feature count
     GIntBig GetApproxFeatureCount();
 
+    //! Return an approximate feature count
+    long long getTotalFeatureCount(QTextCodec *encoding=nullptr) const;
+
+
     //! Wrapper of OGR_L_GetLayerCount
     OGRErr GetExtent( OGREnvelope *psExtent, bool bForce );
 

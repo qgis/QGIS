@@ -146,6 +146,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     QByteArray quotedIdentifier( const QByteArray &field ) const;
 
+
   protected:
     //! Loads fields from input file to member attributeFields
     void loadFields();
