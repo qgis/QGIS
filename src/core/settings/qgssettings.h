@@ -80,14 +80,13 @@ class CORE_EXPORT QgsSettings : public QObject
     };
 
     /**
-     * Prefixes for the settings keys
+     * \ingroup core
+     * \brief Prefixes for the settings keys
      * \since QGIS 3.26
      */
-    class CORE_EXPORT Prefix SIP_SKIP
+    class Prefix SIP_SKIP
     {
       public:
-        Prefix() = default;
-
         static const inline char *CORE = "core";
         static const inline char *CORE_LAYOUT = "core/Layout";
         static const inline char *GEOMETRYVALIDATION = "geometry_validation";

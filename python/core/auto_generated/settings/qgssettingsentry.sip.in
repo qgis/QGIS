@@ -42,6 +42,8 @@ to validate set values and provide more accurate settings description for the gu
       sipType = NULL;
 %End
   public:
+
+
     QgsSettingsEntryBase( const QString &key,
                           const QString &section,
                           const QVariant &defaultValue = QVariant(),
