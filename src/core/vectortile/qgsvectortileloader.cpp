@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsmessagelog.h"
+#include "qgsziputils.h"
 
 #include "qgstiledownloadmanager.h"
 
@@ -231,7 +232,7 @@ QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMbTile
   }
 
   QByteArray data;
-  if ( !QgsMbTiles::decodeGzip( gzippedTileData, data ) )
+  if ( !QgsZipUtils::decodeGzip( gzippedTileData, data ) )
   {
     QgsDebugMsg( QStringLiteral( "Failed to decompress tile " ) + id.toString() );
     return QByteArray();
