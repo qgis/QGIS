@@ -92,6 +92,14 @@ class CORE_EXPORT QgsCoordinateUtils
      */
     Q_INVOKABLE static double dmsToDecimal( const QString &string, bool *ok = nullptr, bool *isEasting = nullptr );
 
+    /**
+     * Converts a decimal degree with suffix string to its raw decimal equivalent.
+     * \param string decimal degree to convert (must include a [N,S,E,W] suffix)
+     * \returns Double decimal value
+     * \since QGIS 3.26
+     */
+    Q_INVOKABLE static double degreeToDecimal( const QString &string, bool *ok = nullptr, bool *isEasting = nullptr );
+
 };
 
 
