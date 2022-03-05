@@ -142,6 +142,40 @@ QString QgsCoordinateUtils::formatExtentForProject( QgsProject *project, const Q
                                           QgsCoordinateUtils::formatCoordinateForProject( project, p2, destCrs, precision ) );
 }
 
+double QgsCoordinateUtils::degreeToDecimal( const QString &string, bool *ok, bool *isEasting )
+{
+  const QString negative( QStringLiteral( "swSW" ) );
+  const QString easting( QStringLiteral( "eEwW" ) );
+  double value = 0.0;
+  bool okValue = false;
+
+  if ( ok )
+  {
+    *ok = false;
+  }
+  else
+  {
+    ok = &okValue;
+  }
+
+  QRegularExpression degreeWithSuffix( QStringLiteral( "^\\s*([0-9\\-\\.]*)\\s*([NSEWnsew])\\s*$" ) );
+  QRegularExpressionMatch match = degreeWithSuffix.match( string );
+  if ( match.hasMatch() )
+  {
+    const QString suffix = match.captured( 2 );
+    value = std::abs( match.captured( 1 ).toDouble( ok ) );
+    if ( ok )
+    {
+      value *= ( negative.contains( suffix ) ? -1 : 1 );
+      if ( isEasting )
+      {
+        *isEasting = easting.contains( suffix );
+      }
+    }
+  }
+  return value;
+}
+
 double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *isEasting )
 {
   const QString negative( QStringLiteral( "swSW-" ) );
