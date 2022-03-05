@@ -45,7 +45,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   bool okY = false;
   double posX = 0.0;
   double posY = 0.0;
-  bool posIsDms = false;
+  bool posIsWgs84 = false;
   const QLocale locale;
 
   // Coordinates such as 106.8468,-6.3804
@@ -73,12 +73,28 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
   if ( !match.hasMatch() )
   {
+    // Check if the string is a pair of decimal degrees with [N,S,E,W] suffixes
+    separatorRx = QRegularExpression( QStringLiteral( "^\\s*([0-9\\-\\.]*\\s*[NSEWnsew])[\\s\\,]*([0-9\\-\\.]*\\s*[NSEWnsew])\\s*$" ) );
+    match = separatorRx.match( string.trimmed() );
+    if ( match.hasMatch() )
+    {
+      posIsWgs84 = true;
+      bool isEasting = false;
+      posX = QgsCoordinateUtils::degreeToDecimal( match.captured( 1 ), &okX, &isEasting );
+      posY = QgsCoordinateUtils::degreeToDecimal( match.captured( 2 ), &okY );
+      if ( !isEasting )
+        std::swap( posX, posY );
+    }
+  }
+
+  if ( !match.hasMatch() )
+  {
     // Check if the string is a pair of degree minute second
     separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.,]*[-+nsew]?)[,\\s]+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.,]*[-+nsew]?)$" ) );
     match = separatorRx.match( string.trimmed() );
     if ( match.hasMatch() )
     {
-      posIsDms = true;
+      posIsWgs84 = true;
       bool isEasting = false;
       posX = QgsCoordinateUtils::dmsToDecimal( match.captured( 1 ), &okX, &isEasting );
       posY = QgsCoordinateUtils::dmsToDecimal( match.captured( 3 ), &okY );
@@ -94,7 +110,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     data.insert( QStringLiteral( "point" ), point );
 
     const bool withinWgs84 = wgs84Crs.bounds().contains( point );
-    if ( !posIsDms && currentCrs != wgs84Crs )
+    if ( !posIsWgs84 && currentCrs != wgs84Crs )
     {
       QgsLocatorResult result;
       result.filter = this;
