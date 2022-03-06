@@ -841,8 +841,6 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   QgsPointCloudAttribute::DataType attributeType = QgsPointCloudAttribute::Float;
   int attributeOffset = 0;
   QgsClassificationPointCloud3DSymbol *symbol = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( context.symbol() );
-  bool prepareColor = false;
-  QHash< int, QColor > colors;
   if ( symbol )
   {
     int offset = 0;
@@ -869,19 +867,6 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
         attributeName = attr->name();
         attributeOffset = attributes.pointRecordSize();
         attributes.push_back( *attr );
-      }
-    }
-
-    prepareColor = symbol->renderAsTriangles();
-    if ( prepareColor )
-    {
-      const QgsPointCloudCategoryList categories = symbol->categoriesList();
-      for ( const QgsPointCloudCategory &category : categories )
-      {
-        if ( !category.renderState() )
-          continue;
-
-        colors.insert( category.value(), category.color() );
       }
     }
   }
@@ -933,44 +918,20 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     }
     const QgsVector3D point( x, y, z );
     const QgsVector3D p = context.map().mapToWorldCoordinates( point );
-
-    if ( prepareColor )
-    {
-      int iParam = 0;
-      if ( attrIsX )
-        iParam = int( x );
-      else if ( attrIsY )
-        iParam = int( y );
-      else if ( attrIsZ )
-        iParam = int( z );
-      else
-        context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
-
-      if ( filteredOutValues.contains( iParam ) )
-        continue;
-
-      const QColor &color = colors.value( iParam );
-      outNormal.colors.push_back( {float( color.redF() ), float( color.greenF() ), float( color.blueF() )} );
-    }
+    float iParam = 0.0f;
+    if ( attrIsX )
+      iParam = x;
+    else if ( attrIsY )
+      iParam = y;
+    else if ( attrIsZ )
+      iParam = z;
     else
-    {
-      float iParam = 0.0f;
-      if ( attrIsX )
-        iParam = x;
-      else if ( attrIsY )
-        iParam = y;
-      else if ( attrIsZ )
-        iParam = z;
-      else
-        context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
+      context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
 
-      if ( filteredOutValues.contains( ( int ) iParam ) )
-        continue;
-
-      outNormal.parameter.push_back( iParam );
-    }
-
+    if ( filteredOutValues.contains( ( int ) iParam ) )
+      continue;
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
+    outNormal.parameter.push_back( iParam );
   }
 }
 
@@ -979,14 +940,9 @@ void QgsClassificationPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *pa
   makeEntity( parent, context, outNormal, false );
 }
 
-
 Qt3DRender::QGeometry *QgsClassificationPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
 {
-  if ( data.colors.isEmpty() )
-    return new QgsColorRampPointCloud3DGeometry( parent, data, byteStride );
-  else
-    return new QgsRGBPointCloud3DGeometry( parent, data, byteStride );
+  return new QgsColorRampPointCloud3DGeometry( parent, data, byteStride );
 }
-
 
 /// @endcond
