@@ -98,7 +98,7 @@ def resetScriptFolder(folder):
     if os.path.exists(newFolder):
         return newFolder
 
-    QgsMessageLog.logMessage(QgsApplication.translate("loadAlgorithms", "Script folder {} does not exist").format(newFolder),
+    QgsMessageLog.logMessage(QgsApplication .translate("loadAlgorithms", "Script folder {} does not exist").format(newFolder),
                              QgsApplication.translate("loadAlgorithms", "Processing"),
                              Qgis.Warning)
 
@@ -110,7 +110,7 @@ def resetScriptFolder(folder):
     # isolate "QGIS3/profiles/"
     appIndex = -4
     profileIndex = -3
-    currentSettingPath = os.path.normpath(QgsApplication.qgisSettingsDirPath())
+    currentSettingPath = QgsApplication.qgisSettingsDirPath()
     paths = currentSettingPath.split(os.sep)
     commonSettingPath = os.path.join(paths[appIndex], paths[profileIndex])
 
@@ -126,7 +126,7 @@ def resetScriptFolder(folder):
         if not os.path.exists(newFolder):
             return None
 
-        QgsMessageLog.logMessage(QgsApplication.translate("loadAlgorithms", "Script folder changed into {}").format(newFolder),
+        QgsMessageLog.logMessage(QgsApplication .translate("loadAlgorithms", "Script folder changed into {}").format(newFolder),
                                  QgsApplication.translate("loadAlgorithms", "Processing"),
                                  Qgis.Warning)
 
