@@ -214,6 +214,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     Q_PROPERTY( QgsUnitTypes::DistanceUnit mapUnits READ mapUnits )
     Q_PROPERTY( bool isGeographic READ isGeographic )
+    Q_PROPERTY( QString authid READ authid )
+    Q_PROPERTY( QString description READ description )
 
   public:
 
