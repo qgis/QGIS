@@ -12,8 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QPainter>
-
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgcppoint.h"
 #include "qgscoordinatetransform.h"
