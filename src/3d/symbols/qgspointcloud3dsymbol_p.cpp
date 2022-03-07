@@ -221,10 +221,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   // Material
   Qt3DRender::QMaterial *mat = new Qt3DRender::QMaterial;
   if ( context.symbol() )
-  {
     context.symbol()->fillMaterial( mat );
-    mat->addParameter( new Qt3DRender::QParameter( "triangulate", !out.triangles.isEmpty() ) );
-  }
 
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( mat );
   shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/pointcloud.vert" ) ) ) );
@@ -253,6 +250,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
   technique->graphicsApiFilter()->setMajorVersion( 3 );
   technique->graphicsApiFilter()->setMinorVersion( 1 );
+  technique->addParameter( new Qt3DRender::QParameter( "triangulate", !out.triangles.isEmpty() ) );
 
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect;
   eff->addTechnique( technique );
@@ -268,10 +266,9 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   // cppcheck-suppress memleak
 }
 
-void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox )
+
+std::vector<double> QgsPointCloud3DSymbolHandler::getVertices( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox )
 {
-  if ( outNormal.positions.isEmpty() )
-    return;
 
   bool hasColorData = !outNormal.colors.empty();
   bool hasParameterData = !outNormal.parameter.empty();
@@ -298,6 +295,8 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
   PointData filteredExtraPointData;
 
   double span = pc->span();
+  //factor to take account of the density of the point to calculate extension of the bounding box
+  // with a usual value span = 128, bounding box is extended by 12.5 % on each side.
   double extraBoxFactor = 16 / span;
   double extraX = extraBoxFactor * bbox.xExtent();
   double extraZ = extraBoxFactor * bbox.zExtent();
@@ -331,102 +330,113 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
   outNormal.colors.append( filteredExtraPointData.colors );
   outNormal.parameter.append( filteredExtraPointData.parameter );
 
-  try
+  return vertices;
+}
+
+void QgsPointCloud3DSymbolHandler::calculateNormals( const std::vector<size_t> &triangles )
+{
+  QVector<QVector3D> normals( outNormal.positions.count(), QVector3D( 0.0, 0.0, 0.0 ) );
+  for ( size_t i = 0; i < triangles.size(); i += 3 )
   {
-    // Triangulation happens here
-    delaunator::Delaunator triangulation( vertices );
-
-    QVector<QVector3D> normals( outNormal.positions.count(), QVector3D( 0.0, 0.0, 0.0 ) );
-    const std::vector<size_t> &triangleIndexes = triangulation.triangles;
-    for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
+    QVector<QVector3D> triangleVertices( 3 );
+    for ( size_t j = 0; j < 3; ++j )
     {
-      QVector<QVector3D> triangleVertices( 3 );
-      for ( size_t j = 0; j < 3; ++j )
+      size_t vertIndex = triangles.at( i + j );
+      triangleVertices[j] = outNormal.positions.at( vertIndex );
+    }
+    //calculate normals
+    for ( size_t j = 0; j < 3; ++j )
+      normals[triangles.at( i + j )] += QVector3D::crossProduct(
+                                          triangleVertices.at( 1 ) - triangleVertices.at( 0 ),
+                                          triangleVertices.at( 2 ) - triangleVertices.at( 0 ) );
+  }
+
+  // Build now normals array
+  outNormal.normals.resize( ( outNormal.positions.count() ) * sizeof( float ) * 3 );
+  float *normPtr = reinterpret_cast<float *>( outNormal.normals.data() );
+  for ( int i = 0; i < normals.size(); ++i )
+  {
+    QVector3D normal = normals.at( i );
+    normal = normal.normalized();
+
+    *normPtr++ = normal.x();
+    *normPtr++ = normal.y();
+    *normPtr++ = normal.z();
+  }
+}
+
+void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &triangleIndexes, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox )
+{
+  outNormal.triangles.resize( triangleIndexes.size() * sizeof( quint32 ) );
+  quint32 *indexPtr = reinterpret_cast<quint32 *>( outNormal.triangles.data() );
+  size_t effective = 0;
+
+  bool horizontalFilter = context.symbol()->horizontalTriangleFilter();
+  bool verticalFilter = context.symbol()->verticalTriangleFilter();
+  float horizontalThreshold =  context.symbol()->horizontalFilterThreshold();
+  float verticalThreshold =  context.symbol()->verticalFilterThreshold();
+
+  for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
+  {
+    bool atLeastOneInBox = false;
+    bool horizontalSkip = false;
+    bool verticalSkip = false;
+    for ( size_t j = 0; j < 3; j++ )
+    {
+      QVector3D pos = outNormal.positions.at( triangleIndexes.at( i  + j ) );
+      atLeastOneInBox |= bbox.intersects( pos.x(), pos.y(), pos.z() );
+
+      if ( verticalFilter || horizontalFilter )
       {
-        size_t vertIndex = triangleIndexes.at( i + j );
-        triangleVertices[j] = outNormal.positions.at( vertIndex );
+        const QVector3D pos2 = outNormal.positions.at( triangleIndexes.at( i + ( j + 1 ) % 3 ) );
+
+        if ( verticalFilter )
+          verticalSkip |= std::fabs( pos.y() - pos2.y() ) > verticalThreshold;
+
+        if ( horizontalFilter && ! verticalSkip )
+        {
+          // filter only in the horizontal plan, it is a 2.5D triangulation.
+          horizontalSkip |= sqrt( std::pow( pos.x() - pos2.x(), 2 ) +
+                                  std::pow( pos.z() - pos2.z(), 2 ) ) > horizontalThreshold;
+        }
+
+        if ( horizontalSkip || verticalSkip )
+          break;
       }
-      //calculate normals
-      for ( size_t j = 0; j < 3; ++j )
-        normals[triangleIndexes.at( i + j )] += QVector3D::crossProduct(
-            triangleVertices.at( 1 ) - triangleVertices.at( 0 ),
-            triangleVertices.at( 2 ) - triangleVertices.at( 0 ) );
     }
-
-    // Build now normals array
-    outNormal.normals.resize( ( outNormal.positions.count() ) * sizeof( float ) * 3 );
-    float *normPtr = reinterpret_cast<float *>( outNormal.normals.data() );
-    for ( int i = 0; i < normals.size(); ++i )
+    if ( atLeastOneInBox && !horizontalSkip && !verticalSkip )
     {
-      QVector3D normal = normals.at( i );
-      normal = normal.normalized();
-
-      *normPtr++ = normal.x();
-      *normPtr++ = normal.y();
-      *normPtr++ = normal.z();
-    }
-
-    // We apply a filter on triangles to improve the rendering:
-    // - we keep only triangles that have a least one point in the bounding box
-    // - if option is selected, we don't keep triangle with side greater than a threshold
-
-    outNormal.triangles.resize( triangleIndexes.size() * sizeof( quint32 ) );
-    quint32 *indexPtr = reinterpret_cast<quint32 *>( outNormal.triangles.data() );
-    size_t effective = 0;
-
-    bool horizontalFilter = context.symbol()->horizontalTriangleFilter();
-    bool verticalFilter = context.symbol()->verticalTriangleFilter();
-    float horizontalThreshold =  context.symbol()->horizontalFilterThreshold();
-    float verticalThreshold =  context.symbol()->verticalFilterThreshold();
-
-    for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
-    {
-      bool atLeastOneInBox = false;
-      bool horizontalSkip = false;
-      bool verticalSkip = false;
       for ( size_t j = 0; j < 3; j++ )
       {
-        QVector3D pos = outNormal.positions.at( triangleIndexes.at( i  + j ) );
-        atLeastOneInBox |= bbox.intersects( pos.x(), pos.y(), pos.z() );
-
-        if ( verticalFilter || horizontalFilter )
-        {
-          const QVector3D pos2 = outNormal.positions.at( triangleIndexes.at( i + ( j + 1 ) % 3 ) );
-
-          if ( verticalFilter )
-            verticalSkip |= std::fabs( pos.y() - pos2.y() ) > verticalThreshold;
-
-          if ( horizontalFilter && ! verticalSkip )
-          {
-            // filter only in the horizontal plan, it is a 2.5D triangulation.
-            horizontalSkip |= sqrt( std::pow( pos.x() - pos2.x(), 2 ) +
-                                    std::pow( pos.z() - pos2.z(), 2 ) ) > horizontalThreshold;
-          }
-
-          if ( horizontalSkip || verticalSkip )
-            break;
-        }
+        size_t vertIndex = triangleIndexes.at( i + j );
+        *indexPtr++ = quint32( vertIndex );
       }
-      if ( atLeastOneInBox && !horizontalSkip && !verticalSkip )
-      {
-        for ( size_t j = 0; j < 3; j++ )
-        {
-          size_t vertIndex = triangleIndexes.at( i + j );
-          *indexPtr++ = quint32( vertIndex );
-        }
-        effective++;
-      }
+      effective++;
     }
+  }
 
-    if ( effective != 0 )
-    {
-      outNormal.triangles.resize( effective * 3 * sizeof( quint32 ) );
-    }
-    else
-    {
-      outNormal.triangles.clear();
-      outNormal.normals.clear();
-    }
+  if ( effective != 0 )
+  {
+    outNormal.triangles.resize( effective * 3 * sizeof( quint32 ) );
+  }
+  else
+  {
+    outNormal.triangles.clear();
+    outNormal.normals.clear();
+  }
+}
+
+void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox )
+{
+  if ( outNormal.positions.isEmpty() )
+    return;
+
+  // Triangulation happens here
+  std::unique_ptr<delaunator::Delaunator> triangulation;
+  try
+  {
+    std::vector<double> vertices = getVertices( pc, n, context, bbox );
+    triangulation.reset( new delaunator::Delaunator( vertices ) );
   }
   catch ( std::exception &e )
   {
@@ -434,7 +444,13 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
     QgsDebugMsgLevel( QStringLiteral( "Error with triangulation" ), 4 );
     outNormal = PointData();
     processNode( pc, n, context );
+    return;
   }
+
+  const std::vector<size_t> &triangleIndexes = triangulation->triangles;
+
+  calculateNormals( triangleIndexes );
+  filterTriangles( triangleIndexes, context, bbox );
 }
 
 QgsPointCloudBlock *QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )

@@ -145,7 +145,7 @@ void main(void)
   //Apply light
   if (triangulate)
   {
-      float ambianceFactor=0.15;
+      float ambianceFactor=0.15; //value defined empircally by visual check to avoid too dark scene
       vec3 diffuseColor;
       adModel(worldPosition, vertNorm, diffuseColor);
       color =vec4( color.xyz * (diffuseColor+ambianceFactor), 1 );
