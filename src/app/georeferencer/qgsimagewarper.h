@@ -61,10 +61,15 @@ class QgsImageWarper
     Q_ENUM( Result )
 
     /**
-     * Warp the file specified by "input" and write the resulting raster to the file "output".
-     * \param georefTransform Specified the warp transformation which should be applied to "input".
-     * \param resampling Specifies image resampling algorithm to use.
-     * \param useZeroAsTrans Specifies whether to mark transparent areas with a value of "zero".
+     * Warp the file specified by \a input and write the resulting raster to the file \a output.
+     * \param input input file name
+     * \param output output file name
+     * \param georefTransform specifies the warp transformation which should be applied to \a input.
+     * \param resampling specifies image resampling algorithm to use.
+     * \param useZeroAsTrans specifies whether to mark transparent areas with a value of "zero".
+     * \param compression image compression method
+     * \param crs output file CRS
+     * \param feedback optional feedback object
      * \param destResX The desired horizontal resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      * \param destResY The desired vertical resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      */
@@ -124,6 +129,16 @@ class QgsImageWarperTask : public QgsTask
 
     /**
      * Constructor for QgsImageWarperTask.
+     *
+     * \param input input file name
+     * \param output output file name
+     * \param georefTransform specifies the warp transformation which should be applied to \a input.
+     * \param resampling specifies image resampling algorithm to use.
+     * \param useZeroAsTrans specifies whether to mark transparent areas with a value of "zero".
+     * \param compression image compression method
+     * \param crs output file CRS
+     * \param destResX The desired horizontal resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
+     * \param destResY The desired vertical resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      */
     QgsImageWarperTask( const QString &input,
                         const QString &output,

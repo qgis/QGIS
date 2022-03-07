@@ -19,6 +19,7 @@
 #include "qgsgcpgeometrytransformer.h"
 #include "qgsfeaturesource.h"
 #include "qgsvectorlayer.h"
+
 #include <QObject>
 #include <QFileInfo>
 
