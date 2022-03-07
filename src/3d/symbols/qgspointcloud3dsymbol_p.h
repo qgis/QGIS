@@ -73,6 +73,7 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     // outputs
     PointData outNormal;  //!< Features that are not selected
 
+  private:
     //! Returns all vertices of the node \a n, and of its parents contained in \a bbox and in an extension of this box depending of the density of the points
     std::vector<double> getVertices( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox );
 
@@ -81,8 +82,10 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
 
     /**
      * Applies a filter on triangles to improve the rendering:
+     *
      * - keeps only triangles that have a least one point in the bounding box \a bbox
      * - if options are selected, skips triangles with horizontale or vertical size greater than a threshold
+     *
      * Must be used only in the method triangulate().
      */
     void filterTriangles( const std::vector<size_t> &triangleIndexes, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox );
