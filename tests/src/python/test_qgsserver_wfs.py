@@ -581,12 +581,21 @@ class TestQgsServerWFS(QgsServerTestBase):
         project_file = "test_project_wms_grouped_layers.qgs"
         self.wfs_request_compare("DescribeFeatureType", '1.0.0', "TYPENAME=as_areas&",
                                  'wfs_describeFeatureType_1_0_0_typename_as_areas', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.0.0', "TYPENAME=as_areas&OUTPUTFORMAT=XMLSCHEMA&",
+                                 'wfs_describeFeatureType_1_0_0_typename_as_areas', project_file=project_file)
+
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=as_areas&",
                                  'wfs_describeFeatureType_1_1_0_typename_as_areas', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=as_areas&OUTPUTFORMAT=XMLSCHEMA&",
+                                 'wfs_describeFeatureType_1_1_0_typename_as_areas', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=as_areas&OUTPUTFORMAT=text/xml; subtype=gml/3.1.1&",
+                                 'wfs_describeFeatureType_1_1_0_typename_as_areas', project_file=project_file)
+
         self.wfs_request_compare("DescribeFeatureType", '1.0.0', "",
                                  'wfs_describeFeatureType_1_0_0_typename_empty', project_file=project_file)
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "",
                                  'wfs_describeFeatureType_1_1_0_typename_empty', project_file=project_file)
+
         self.wfs_request_compare("DescribeFeatureType", '1.0.0', "TYPENAME=does_not_exist&",
                                  'wfs_describeFeatureType_1_0_0_typename_wrong', project_file=project_file)
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=does_not_exist&",
