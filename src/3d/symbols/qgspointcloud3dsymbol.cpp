@@ -572,7 +572,7 @@ QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
 void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
   const QgsColorRampShader mColorRampShader = colorRampShader();
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::ColorRamp );
+  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::Classification );
   mat->addParameter( renderingStyle );
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
   mat->addParameter( pointSizeParameter );

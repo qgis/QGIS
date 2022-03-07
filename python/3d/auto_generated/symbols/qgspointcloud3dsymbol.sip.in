@@ -37,7 +37,9 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
       //! Render the point cloud with a color ramp
       ColorRamp,
       //! Render the RGB colors of the point cloud
-      RgbRendering
+      RgbRendering,
+      //! Render the point cloud with classified colors
+      Classification
     };
 
     QgsPointCloud3DSymbol();

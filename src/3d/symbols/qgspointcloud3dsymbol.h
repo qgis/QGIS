@@ -51,7 +51,9 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
       //! Render the point cloud with a color ramp
       ColorRamp,
       //! Render the RGB colors of the point cloud
-      RgbRendering
+      RgbRendering,
+      //! Render the point cloud with classified colors
+      Classification
     };
 
     //! Constructor for QgsPointCloud3DSymbol

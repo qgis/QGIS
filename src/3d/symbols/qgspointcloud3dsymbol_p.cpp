@@ -22,6 +22,7 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudrequest.h"
+#include "qgscolorramptexture.h"
 #include "qgs3dmapsettings.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudblockrequest.h"

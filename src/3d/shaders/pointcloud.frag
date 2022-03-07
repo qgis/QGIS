@@ -3,13 +3,14 @@
 uniform bool triangulate;
 
 in float parameter;
+flat in int classParameter;
 
 in vec3 pointColor;
 in vec3 worldPosition; //used when points are triangulated
 in vec3 vertNorm; //used when points are triangulated
 out vec4 color;
 
-// Sets the redering style, 0: unique color, 1: color ramp shader of terrain, 2: color ramp shader of 2D rendering
+// Sets the redering style, 0: unique color, 1: color ramp shader of terrain, 2: color ramp shader of 2D rendering, 3 : RGB, 4 : Classification
 uniform int u_renderingStyle;
 // Sets the unique mesh color
 uniform vec3 u_singleColor;
@@ -86,10 +87,16 @@ vec4 exactColorRamp()
     vec4 colorRampLine = texelFetch( u_colorRampTexture, i, 0 );
     vec3 color=colorRampLine.yzw;
     float value=colorRampLine.x;
-    if ( abs( parameter - value ) < 0.01 )
+    if ( abs( float(parameter) - value ) < 0.01 )
       return vec4( color, 1.0f );
   }
   return vec4(0.0, 0.0, 0.0, 1.0f);
+}
+
+vec4 classification()
+{
+  vec4 colorRampLine = texelFetch( u_colorRampTexture, classParameter - 1, 0 );
+  return vec4(colorRampLine.yzw,1.0);
 }
 
 vec4 colorRamp()
@@ -130,6 +137,9 @@ void main(void)
   case 3: // RGB
     color = vec4(pointColor, 1.0f);
     break;
+  case 4: // classification
+    color = classification();
+    break;
   }
 
   //Apply light
@@ -138,7 +148,7 @@ void main(void)
       float ambianceFactor=0.15;
       vec3 diffuseColor;
       adModel(worldPosition, vertNorm, diffuseColor);
-      color = vec4(  color.xyz * (diffuseColor+ambianceFactor), 1 );
+      color =vec4( color.xyz * (diffuseColor+ambianceFactor), 1 );
   }
 
 }
