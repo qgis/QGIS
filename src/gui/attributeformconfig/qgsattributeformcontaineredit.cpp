@@ -52,9 +52,9 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mCollapsedExpressionWidget->setExpression( itemData.collapsedExpression()->expression() );
 
   // show label makes sense for group box, not for tabs
-  connect( mShowAsGroupBox, &QCheckBox::toggled, mShowLabelCheckBox, &QCheckBox::setEnabled );
-  connect( mShowAsGroupBox, &QCheckBox::toggled, mCollapsedCheckBox, &QCheckBox::setEnabled );
-  connect( mShowAsGroupBox, &QCheckBox::toggled, mControlCollapsedGroupBox, &QCheckBox::setEnabled );
+  connect( mShowAsGroupBox, &QCheckBox::stateChanged, mShowLabelCheckBox, &QCheckBox::setEnabled );
+  connect( mShowAsGroupBox, &QCheckBox::stateChanged, mCollapsedCheckBox, &QCheckBox::setEnabled );
+  connect( mShowAsGroupBox, &QCheckBox::stateChanged, mControlCollapsedGroupBox, &QCheckBox::setEnabled );
 }
 
 void QgsAttributeFormContainerEdit::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )

@@ -121,6 +121,7 @@ QgsAttributeEditorElement *QgsAttributeEditorContainer::clone( QgsAttributeEdito
   element->mColumnCount = mColumnCount;
   element->mVisibilityExpression = mVisibilityExpression;
   element->mCollapsed = mCollapsed;
+  element->mCollapsedExpression = mCollapsedExpression;
 
   return element;
 }
