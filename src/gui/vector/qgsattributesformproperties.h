@@ -160,9 +160,33 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         void setShowLabel( bool showLabel );
 
         QgsOptionalExpression visibilityExpression() const;
-        void setVisibilityExpression( const QgsOptionalExpression &collapsedExpression );
 
+        /**
+         * Sets the optional \a visibilityExpression that dynamically controls the visibility status of a container.
+         *
+         * \see visibilityExpression()
+         * \since QGIS 3.26
+         */
+        void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
+
+        /**
+         * Returns the optional expression that dynamically constrols the collapsed status of a group box container.
+         *
+         * \see collapsed()
+         * \see setCollapsed()
+         * \see setCollapsedExpression()
+         * \since QGIS 3.26
+         */
         QgsOptionalExpression collapsedExpression() const;
+
+        /**
+         * Sets the optional \a collapsedExpression that dynamically controls the collapsed status of a group box container.
+         *
+         * \see collapsed()
+         * \see setCollapsed()
+         * \see collapsedExpression()
+         * \since QGIS 3.26
+         */
         void setCollapsedExpression( const QgsOptionalExpression &collapsedExpression );
 
         RelationEditorConfiguration relationEditorConfiguration() const;
