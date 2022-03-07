@@ -259,7 +259,12 @@ namespace QgsWfs
     if ( f == Format::NONE &&
          request().compare( QLatin1String( "describefeaturetype" ), Qt::CaseInsensitive ) == 0 &&
          fStr.compare( QLatin1String( "xmlschema" ), Qt::CaseInsensitive ) == 0 )
-      f = Format::GML2;
+    {
+      if ( versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) )
+        return Format::GML3;
+      else
+        return Format::GML2;
+    }
 
     return f;
   }
