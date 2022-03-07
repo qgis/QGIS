@@ -155,6 +155,10 @@
   <tabstop>mShowLabelCheckBox</tabstop>
   <tabstop>mTitleLineEdit</tabstop>
   <tabstop>mColumnCountSpinBox</tabstop>
+  <tabstop>mControlVisibilityGroupBox</tabstop>
+  <tabstop>mShowAsGroupBox</tabstop>
+  <tabstop>mCollapsedCheckBox</tabstop>
+  <tabstop>mControlCollapsedGroupBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
  </tabstops>
  <resources/>
