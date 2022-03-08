@@ -210,6 +210,25 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QComboBox" name="cbo3DAxis">
+       <item>
+        <property name="text">
+         <string>Off</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>SRS</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>North-East-Up</string>
+        </property>
+       </item>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

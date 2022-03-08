@@ -38,7 +38,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   QgsMapSettings ms;
   ms.setDestinationCrs( QgsProject::instance()->crs() );
   ms.setLayers( visibleLayers );
-  const QgsRectangle fullExtent = ms.fullExtent();
+  const QgsRectangle fullExtent = visibleLayers.at( 0 )->extent();
 
   QgsRectangle extent = fullExtent;
   extent.scale( 1.3 );

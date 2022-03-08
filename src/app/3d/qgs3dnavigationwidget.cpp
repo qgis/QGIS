@@ -158,6 +158,16 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
   QObject::connect( mCameraInfoCheckBox, &QCheckBox::clicked, parent, [ = ]( bool enabled ) { mCameraInfo->setVisible( enabled ); } );
 }
 
+void Qgs3DNavigationWidget::updateAxisMode( const QString &modeStr )
+{
+  Qgs3DAxis::Mode m;
+  if ( modeStr.toUpper() == "SRS" ) m = Qgs3DAxis::Mode::SRS;
+  else if ( modeStr.toUpper().startsWith( "NORTH" ) ) m = Qgs3DAxis::Mode::NEU;
+  else m = Qgs3DAxis::Mode::OFF;
+  if ( mParent3DMapCanvas->get3DAxis() )
+    mParent3DMapCanvas->get3DAxis()->setMode( m );
+}
+
 void Qgs3DNavigationWidget::updateFromCamera()
 {
   // Make sure the angle is between 0 - 359
