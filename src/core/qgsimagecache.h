@@ -154,6 +154,7 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      * specified then the image will always be rendered at this size, regardless of the \a targetDpi.
      * \param frameNumber (since QGIS 3.26) specifies a frame number for image formats which support
      * animations. This should be set to -1 if not required.
+     * \param isMissing will be set to TRUE if returned image is the "broken" image placeholder
      *
      * \returns rendered image
      */
