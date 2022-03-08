@@ -353,12 +353,12 @@ void Qgs3DMapCanvas::onNavigationModeHotKeyPressed( QgsCameraController::Navigat
   mScene->cameraController()->setCameraNavigationMode( mode );
 }
 
-void Qgs3DMapCanvas::viewExtent( const QgsRectangle &extent )
+void Qgs3DMapCanvas::setViewFrom2DExtent( const QgsRectangle &extent )
 {
-  mScene->viewExtent( extent );
+  mScene->setViewFrom2DExtent( extent );
 }
 
-QgsRectangle Qgs3DMapCanvas::viewFrustum2DExtent()
+QVector<QgsPointXY> Qgs3DMapCanvas::viewFrustum2DExtent()
 {
   return mScene->viewFrustum2DExtent();
 }

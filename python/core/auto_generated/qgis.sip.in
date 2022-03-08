@@ -835,6 +835,14 @@ The development version
       Unknown,
     };
 
+    enum class ViewSyncMode
+    {
+      NoSync,
+      Sync3DTo2D,
+      Sync2DTo3D,
+      BothWaysSync
+    };
+
     enum class HistoryProviderBackend
     {
       LocalProfile,

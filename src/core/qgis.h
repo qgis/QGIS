@@ -1373,6 +1373,15 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( RendererUsage )
 
+    enum class ViewSyncMode : int
+    {
+      NoSync = 0, //! No syncronisation will happen
+      Sync3DTo2D = 1, //! Syncronize 3D view camera to the main map canvas extent
+      Sync2DTo3D = 2,  //! Update the 2D main canvas extent to include the viewed area from the 3D view
+      BothWaysSync = 3
+    };
+    Q_ENUM( ViewSyncMode )
+
     /**
      * History provider backends.
      *

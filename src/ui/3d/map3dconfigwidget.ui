@@ -94,7 +94,7 @@
            <string>Terrain settings</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mLayoutItem3DMap.svg</normaloff>:/images/themes/default/mLayoutItem3DMap.svg</iconset>
           </property>
          </item>
@@ -106,7 +106,7 @@
            <string>Lights settings</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mActionHighlightFeature.svg</normaloff>:/images/themes/default/mActionHighlightFeature.svg</iconset>
           </property>
          </item>
@@ -118,7 +118,7 @@
            <string>Shadow settings</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mIconShadow.svg</normaloff>:/images/themes/default/mIconShadow.svg</iconset>
           </property>
          </item>
@@ -130,7 +130,7 @@
            <string>Camera and skybox settings</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mIconCamera.svg</normaloff>:/images/themes/default/mIconCamera.svg</iconset>
           </property>
          </item>
@@ -147,7 +147,7 @@
            <string>Advanced settings</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/system.svg</normaloff>:/images/themes/default/propertyicons/system.svg</iconset>
           </property>
          </item>
@@ -184,7 +184,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>4</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -421,7 +421,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>98</width>
+                <width>77</width>
                 <height>43</height>
                </rect>
               </property>
@@ -595,8 +595,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>234</width>
-                <height>220</height>
+                <width>721</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -723,11 +723,31 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>707</width>
+                <width>710</width>
                 <height>584</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_7">
+               <item row="2" column="1">
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>Sync mode</string>
+                 </property>
+                </widget>
+               </item>
                <item row="0" column="1">
                 <widget class="QComboBox" name="mSyncModeComboBox">
                  <item>
@@ -747,23 +767,10 @@
                  </item>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <spacer name="verticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_3">
+               <item row="1" column="0" colspan="2">
+                <widget class="QCheckBox" name="mVisualizeExtentCheckBox">
                  <property name="text">
-                  <string>Sync mode</string>
+                  <string>Visualize viewed 3D area in main 2D map canvas</string>
                  </property>
                 </widget>
                </item>
@@ -797,7 +804,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>408</width>
+                <width>707</width>
                 <height>690</height>
                </rect>
               </property>
@@ -1199,9 +1206,6 @@
   <tabstop>mDebugDepthMapCornerComboBox</tabstop>
   <tabstop>mDebugDepthMapSizeSpinBox</tabstop>
  </tabstops>
- <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

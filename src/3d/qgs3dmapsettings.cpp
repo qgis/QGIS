@@ -84,6 +84,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
   , mViewSyncMode( other.mViewSyncMode )
+  , mVisualizeViewFrustum( other.mVisualizeViewFrustum )
   , mDebugShadowMapEnabled( other.mDebugShadowMapEnabled )
   , mDebugShadowMapCorner( other.mDebugShadowMapCorner )
   , mDebugShadowMapSize( other.mDebugShadowMapSize )
@@ -273,7 +274,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mEyeDomeLightingDistance = elemEyeDomeLighting.attribute( "eye-dome-lighting-distance", QStringLiteral( "1" ) ).toInt();
 
   QDomElement elemNavigationSync = elem.firstChildElement( QStringLiteral( "navigation-sync" ) );
-  mViewSyncMode = ( Qgs3DMapSettings::ViewSyncMode )( elemNavigationSync.attribute( QStringLiteral( "view-sync-mode" ), QStringLiteral( "0" ) ).toInt() );
+  mViewSyncMode = ( Qgis::ViewSyncMode )( elemNavigationSync.attribute( QStringLiteral( "view-sync-mode" ), QStringLiteral( "0" ) ).toInt() );
+  mVisualizeViewFrustum = elemNavigationSync.attribute( QStringLiteral( "view-frustum-visualization-enabled" ), QStringLiteral( "0" ) ).toInt();
 
   QDomElement elemDebugSettings = elem.firstChildElement( QStringLiteral( "debug-settings" ) );
   mDebugShadowMapEnabled = elemDebugSettings.attribute( QStringLiteral( "shadowmap-enabled" ), QStringLiteral( "0" ) ).toInt();
@@ -414,6 +416,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
 
   QDomElement elemNavigationSync = doc.createElement( QStringLiteral( "navigation-sync" ) );
   elemNavigationSync.setAttribute( QStringLiteral( "view-sync-mode" ), ( int )mViewSyncMode );
+  elemNavigationSync.setAttribute( QStringLiteral( "view-frustum-visualization-enabled" ), mVisualizeViewFrustum ? QStringLiteral( "0" ) : QStringLiteral( "1" ) );
   elem.appendChild( elemNavigationSync );
 
   QDomElement elemDebugSettings = doc.createElement( QStringLiteral( "debug-settings" ) );
@@ -879,10 +882,20 @@ void Qgs3DMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
   mRendererUsage = rendererUsage;
 }
 
-void Qgs3DMapSettings::setViewSyncMode( ViewSyncMode mode )
+void Qgs3DMapSettings::setViewSyncMode( Qgis::ViewSyncMode mode )
 {
   mViewSyncMode = mode;
 }
+
+void Qgs3DMapSettings::setViewFrustumVisualizationEnabled( bool enabled )
+{
+  if ( mVisualizeViewFrustum != enabled )
+  {
+    mVisualizeViewFrustum = enabled;
+    emit viewFrustumVisualizationEnabledChanged();
+  }
+}
+
 
 void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
 {

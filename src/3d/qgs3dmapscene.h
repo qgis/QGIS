@@ -86,14 +86,14 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      *
      * \since QGIS 3.26
      */
-    void viewExtent( const QgsRectangle &extent );
+    void setViewFrom2DExtent( const QgsRectangle &extent );
 
     /**
-     * Calculates the 2D extent viewed by the 3D camera
+     * Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed trapezoid
      *
      * \since QGIS 3.26
      */
-    QgsRectangle viewFrustum2DExtent();
+    QVector<QgsPointXY> viewFrustum2DExtent();
 
     //! Returns number of pending jobs of the terrain entity
     int terrainPendingJobsCount() const;
@@ -165,7 +165,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      *
      * \since QGIS 3.26
      */
-    void viewed2DExtentFrom3DChanged( QgsRectangle extent );
+    void viewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
 
   public slots:
     //! Updates the temporale entities

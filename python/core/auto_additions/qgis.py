@@ -1303,6 +1303,14 @@ Qgis.RendererUsage.__doc__ = 'Usage of the renderer.\n\n.. versionadded:: 3.24\n
 # --
 Qgis.RendererUsage.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.ViewSyncMode.NoSync.__doc__ = ""
+Qgis.ViewSyncMode.Sync3DTo2D.__doc__ = ""
+Qgis.ViewSyncMode.Sync2DTo3D.__doc__ = ""
+Qgis.ViewSyncMode.BothWaysSync.__doc__ = ""
+Qgis.ViewSyncMode.__doc__ = '\n\n' + '* ``NoSync``: ' + Qgis.ViewSyncMode.NoSync.__doc__ + '\n' + '* ``Sync3DTo2D``: ' + Qgis.ViewSyncMode.Sync3DTo2D.__doc__ + '\n' + '* ``Sync2DTo3D``: ' + Qgis.ViewSyncMode.Sync2DTo3D.__doc__ + '\n' + '* ``BothWaysSync``: ' + Qgis.ViewSyncMode.BothWaysSync.__doc__
+# --
+Qgis.ViewSyncMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.HistoryProviderBackend.LocalProfile.__doc__ = "Local profile"
 Qgis.HistoryProviderBackend.__doc__ = 'History provider backends.\n\n.. versionadded:: 3.24\n\n' + '* ``LocalProfile``: ' + Qgis.HistoryProviderBackend.LocalProfile.__doc__
 # --
