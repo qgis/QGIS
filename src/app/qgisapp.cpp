@@ -353,6 +353,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspythonrunner.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsquerybuilder.h"
+#include "qgspointcloudquerybuilder.h"
 #include "qgsrastercalcdialog.h"
 #include "qgsmeshcalculatordialog.h"
 #include "qgsrasterfilewriter.h"
@@ -12018,6 +12019,31 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
         }
       }
     }
+    QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
+    if ( pclayer )
+    {
+      QgsPointCloudQueryBuilder qb { pclayer };
+      qb.setSubsetString( pclayer->subsetString() );
+      qb.exec();
+      /*
+      // launch the query builder
+      std::unique_ptr<QgsSubsetStringEditorInterface> qb( QgsGui::subsetStringEditorProviderRegistry()->createDialog( vlayer, this ) );
+      QString subsetBefore = pclayer->subsetString();
+
+      // Set the sql in the query builder to the same in the prop dialog
+      // (in case the user has already changed it)
+      qb->setSubsetString( vlayer->subsetString() );
+      qb->exec();
+      // Open the query builder and refresh symbology if sql has changed
+      // Note: repaintRequested is emitted directly from QgsQueryBuilder
+      //       when the sql is set in the layer.
+      if ( qb->exec() && ( subsetBefore != qb->subsetString() ) && mLayerTreeView )
+      {
+        mLayerTreeView->refreshLayerSymbology( vlayer->id() );
+        activateDeactivateLayerRelatedActions( vlayer );
+      }
+      */
+    }
     return;
   }
 
@@ -15947,6 +15973,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
 
     case QgsMapLayerType::PointCloudLayer:
+    {
+      const QgsDataProvider *dprovider = layer->dataProvider();
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
       mActionLocalCumulativeCutStretch->setEnabled( false );
@@ -15957,7 +15985,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDecreaseContrast->setEnabled( false );
       mActionIncreaseGamma->setEnabled( false );
       mActionDecreaseGamma->setEnabled( false );
-      mActionLayerSubsetString->setEnabled( false );
+      mActionLayerSubsetString->setEnabled( dprovider && dprovider->supportsSubsetString() );
       mActionFeatureAction->setEnabled( false );
       mActionSelectFeatures->setEnabled( false );
       mActionSelectPolygon->setEnabled( false );
@@ -16013,7 +16041,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mDigitizingTechniqueManager->enableDigitizingTechniqueActions( false );
       enableMeshEditingTools( false );
       break;
-
+    }
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::GroupLayer:
       break;
