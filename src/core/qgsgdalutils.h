@@ -106,7 +106,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \warning The \a block must stay allocated for the lifetime of the returned gdal dataset.
      *
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( int pixelWidth, int pixelHeight, const QgsRectangle &extent, void *block,  GDALDataType dataType );
 
