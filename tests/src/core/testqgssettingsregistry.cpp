@@ -41,6 +41,10 @@ class TestQgsSettingsRegistry : public QObject
 {
     Q_OBJECT
 
+  private:
+    const QString mSettingsSection = QStringLiteral( "settingsEntryBool" );
+
+
   private slots:
     void getSettingsEntries();
     void getSettingsEntriesWithDynamicKeys();
@@ -49,54 +53,54 @@ class TestQgsSettingsRegistry : public QObject
 
 void TestQgsSettingsRegistry::getSettingsEntries()
 {
-  const QString settingsEntryBoolKey( QStringLiteral( "/qgis/testing/settingsEntryBool" ) );
-  QgsSettingsEntryBool settingsEntryBool( settingsEntryBoolKey, QgsSettings::NoSection, false );
-  const QString settingsEntryIntegerKey( QStringLiteral( "/qgis/testing/settingsEntryInteger" ) );
-  QgsSettingsEntryInteger settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
+  const QString settingsEntryBoolKey( QStringLiteral( "settingsEntryBool" ) );
+  QgsSettingsEntryBool settingsEntryBool( settingsEntryBoolKey, mSettingsSection, false );
+  const QString settingsEntryIntegerKey( QStringLiteral( "settingsEntryInteger" ) );
+  QgsSettingsEntryInteger settingsEntryInteger( settingsEntryIntegerKey, mSettingsSection, 123 );
 
-  const QString settingsEntryInexisting( QStringLiteral( "/qgis/testing/settingsEntryInexisting" ) );
+  const QString settingsEntryInexisting( QStringLiteral( "settingsEntryInexisting" ) );
 
   SettingsRegistryTest settingsRegistry;
   settingsRegistry.addSettingsEntry( nullptr ); // should not crash
   settingsRegistry.addSettingsEntry( &settingsEntryBool );
   settingsRegistry.addSettingsEntry( &settingsEntryInteger );
 
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryBoolKey ), &settingsEntryBool );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey ), &settingsEntryInteger );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryInexisting ), nullptr );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryBoolKey ) ), &settingsEntryBool );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryIntegerKey ) ), &settingsEntryInteger );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryInexisting ) ), nullptr );
 }
 
 void TestQgsSettingsRegistry::getSettingsEntriesWithDynamicKeys()
 {
-  QString settingsEntryBoolKey( QStringLiteral( "/qgis/testing/%1_settingsEntryBool" ) );
-  QgsSettingsEntryBool settingsEntryBool( settingsEntryBoolKey, QgsSettings::NoSection, false );
-  QString settingsEntryIntegerKey( QStringLiteral( "/qgis/testing/%1/settingsEntryInteger" ) );
-  QgsSettingsEntryInteger settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
-  QString settingsEntryDoubleKey( QStringLiteral( "/qgis/testing/%1/settingsEntryDouble_%2" ) );
-  QgsSettingsEntryDouble settingsEntryDouble( settingsEntryDoubleKey, QgsSettings::NoSection, 1.23 );
+  QString settingsEntryBoolKey( QStringLiteral( "%1_settingsEntryBool" ) );
+  QgsSettingsEntryBool settingsEntryBool( settingsEntryBoolKey, mSettingsSection, false );
+  QString settingsEntryIntegerKey( QStringLiteral( "%1/settingsEntryInteger" ) );
+  QgsSettingsEntryInteger settingsEntryInteger( settingsEntryIntegerKey, mSettingsSection, 123 );
+  QString settingsEntryDoubleKey( QStringLiteral( "%1/settingsEntryDouble_%2" ) );
+  QgsSettingsEntryDouble settingsEntryDouble( settingsEntryDoubleKey, mSettingsSection, 1.23 );
 
-  const QString settingsEntryInexisting( QStringLiteral( "/qgis/testing/settingsEntryInexisting%1" ) );
+  const QString settingsEntryInexisting( QStringLiteral( "settingsEntryInexisting%1" ) );
 
   SettingsRegistryTest settingsRegistry;
   settingsRegistry.addSettingsEntry( &settingsEntryBool );
   settingsRegistry.addSettingsEntry( &settingsEntryInteger );
   settingsRegistry.addSettingsEntry( &settingsEntryDouble );
 
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryBoolKey ), &settingsEntryBool );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryBoolKey.replace( QLatin1String( "%1" ), QLatin1String( "1st" ) ) ), &settingsEntryBool );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey ), &settingsEntryInteger );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey.replace( QLatin1String( "%1" ), QLatin1String( "Second" ) ) ), &settingsEntryInteger );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryDoubleKey ), &settingsEntryDouble );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryDoubleKey.replace( QLatin1String( "%1" ), QLatin1String( "1st" ) ).replace( QLatin1String( "%2" ), QLatin1String( "2nd" ) ) ), &settingsEntryDouble );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryInexisting ), nullptr );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryBoolKey ) ), &settingsEntryBool );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryBoolKey ).replace( QLatin1String( "%1" ), QLatin1String( "1st" ) ) ), &settingsEntryBool );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryIntegerKey ) ), &settingsEntryInteger );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryIntegerKey ).replace( QLatin1String( "%1" ), QLatin1String( "Second" ) ) ), &settingsEntryInteger );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryDoubleKey ) ), &settingsEntryDouble );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryDoubleKey ).replace( QLatin1String( "%1" ), QLatin1String( "1st" ) ).replace( QLatin1String( "%2" ), QLatin1String( "2nd" ) ) ), &settingsEntryDouble );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryInexisting ) ), nullptr );
 }
 
 void TestQgsSettingsRegistry::childRegistry()
 {
-  const QString settingsEntryBoolKey( QStringLiteral( "/qgis/testing/settingsEntryBool" ) );
-  QgsSettingsEntryBool settingsEntryBool( settingsEntryBoolKey, QgsSettings::NoSection, false );
-  const QString settingsEntryIntegerKey( QStringLiteral( "/qgis/testing/settingsEntryInteger" ) );
-  QgsSettingsEntryInteger settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
+  const QString settingsEntryBoolKey( QStringLiteral( "settingsEntryBool" ) );
+  QgsSettingsEntryBool settingsEntryBool( settingsEntryBoolKey, mSettingsSection, false );
+  const QString settingsEntryIntegerKey( QStringLiteral( "settingsEntryInteger" ) );
+  QgsSettingsEntryInteger settingsEntryInteger( settingsEntryIntegerKey, mSettingsSection, 123 );
 
   SettingsRegistryTest settingsRegistryChild;
   settingsRegistryChild.addSettingsEntry( &settingsEntryInteger );
@@ -107,10 +111,10 @@ void TestQgsSettingsRegistry::childRegistry()
   settingsRegistry.addSubRegistry( &settingsRegistryChild );
 
   // Search only in parent
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey, false ), nullptr );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryIntegerKey ), false ), nullptr );
 
   // Search including child registries
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey, true ), &settingsEntryInteger );
+  QCOMPARE( settingsRegistry.settingsEntry( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsEntryIntegerKey ), true ), &settingsEntryInteger );
 }
 
 QGSTEST_MAIN( TestQgsSettingsRegistry )

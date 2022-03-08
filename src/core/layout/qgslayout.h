@@ -660,7 +660,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
 #ifndef SIP_RUN
     //! Settings entry search path for templates
-    static const inline QgsSettingsEntryStringList settingsSearchPathForTemplates = QgsSettingsEntryStringList( QStringLiteral( "Layout/searchPathsForTemplates" ), QgsSettings::Core, QStringList(), QObject::tr( "Search path for templates" ) );
+    static const inline QgsSettingsEntryStringList settingsSearchPathForTemplates = QgsSettingsEntryStringList( QStringLiteral( "searchPathsForTemplates" ), QgsSettings::Prefix::CORE_LAYOUT, QStringList(), QObject::tr( "Search path for templates" ) );
 #endif
 
   public slots:
