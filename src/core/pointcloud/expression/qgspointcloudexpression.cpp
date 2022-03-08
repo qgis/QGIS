@@ -25,47 +25,17 @@ QgsPointCloudExpression::QgsPointCloudExpression()
 {
 }
 
-QgsPointCloudExpression::QgsPointCloudExpression( const QgsPointCloudExpression &other )
-  : d( other.d )
-{
-  d->ref.ref();
-}
-
 QgsPointCloudExpression::QgsPointCloudExpression( const QString &subsetString )
   : d( new QgsPointCloudExpressionPrivate )
 {
   QgsExpression expression( subsetString );
-  if ( expression.hasParserError() )
-  {
-    d->mRootNode = nullptr;
-    d->mParserErrorString = expression.parserErrorString();
-    d->mParserErrors = expression.parserErrors();
-  }
-  else
-  {
-    d->mRootNode = QgsPointCloudExpressionNode::convert( expression.rootNode(), d->mParserErrorString );
-    if ( !d->mParserErrorString.isEmpty() )
-      d->mParserErrors.append( QgsExpression::ParserError() );
-  }
-  d->mExp = expression.dump();
+  setExpression( expression );
 }
 
 QgsPointCloudExpression::QgsPointCloudExpression( const QgsExpression &expression )
   : d( new QgsPointCloudExpressionPrivate )
 {
-  if ( expression.hasParserError() )
-  {
-    d->mRootNode = nullptr;
-    d->mParserErrorString = expression.parserErrorString();
-    d->mParserErrors = expression.parserErrors();
-  }
-  else
-  {
-    d->mRootNode = QgsPointCloudExpressionNode::convert( expression.rootNode(), d->mParserErrorString );
-    if ( !d->mParserErrorString.isEmpty() )
-      d->mParserErrors.append( QgsExpression::ParserError() );
-  }
-  d->mExp = expression.dump();
+  setExpression( expression );
 }
 
 QgsPointCloudExpression::~QgsPointCloudExpression()
@@ -77,8 +47,12 @@ QgsPointCloudExpression::~QgsPointCloudExpression()
 
 void QgsPointCloudExpression::setExpression( const QString &subset )
 {
-  detach();
   QgsExpression expression( subset );
+  setExpression( expression );
+}
+
+void QgsPointCloudExpression::setExpression( const QgsExpression &expression )
+{
   if ( expression.hasParserError() )
   {
     d->mRootNode = nullptr;
@@ -94,6 +68,12 @@ void QgsPointCloudExpression::setExpression( const QString &subset )
   }
   d->mExp = expression;
   d->mIsPrepared = false;
+}
+
+QgsPointCloudExpression::QgsPointCloudExpression( const QgsPointCloudExpression &other )
+  : d( other.d )
+{
+  d->ref.ref();
 }
 
 QgsPointCloudExpression &QgsPointCloudExpression::operator=( const QgsPointCloudExpression &other )

@@ -515,8 +515,7 @@ void TestQgsPointCloudExpression::testEvaluating()
   QFETCH( int, point_n );
   QFETCH( bool, valid );
 
-  QgsExpression ex( string );
-  QgsPointCloudExpression exp( ex );
+  QgsPointCloudExpression exp( string );
   exp.prepare( mBlock );
 
   QVERIFY( valid ? exp.evaluate( point_n ) != 0. : exp.evaluate( point_n ) == 0. );

@@ -201,9 +201,14 @@ class CORE_EXPORT QgsPointCloudExpression
     void setEvalErrorString( const QString &str );
 
     /**
-     * Set the expression string, will reset the whole internal structure.
+     * Set the expression string
      */
     void setExpression( const QString &subset );
+
+    /**
+     * Set the expression to a \a QgsExpression.
+     */
+    void setExpression( const QgsExpression &expression );
 
     /**
      * Returns the original, unmodified expression string.

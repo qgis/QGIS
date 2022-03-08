@@ -149,7 +149,12 @@ Sets evaluation error (used internally by evaluation functions)
 
     void setExpression( const QString &subset );
 %Docstring
-Set the expression string, will reset the whole internal structure.
+Set the expression string
+%End
+
+    void setExpression( const QgsExpression &expression );
+%Docstring
+Set the expression to a ``:py:class:`QgsExpression```.
 %End
 
     QString expression() const;
