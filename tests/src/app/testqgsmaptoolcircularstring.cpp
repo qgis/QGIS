@@ -76,7 +76,7 @@ void TestQgsMapToolCircularString::initTestCase()
   mCanvas->setCurrentLayer( mLayer );
 
   mMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
-  mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::Shape );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
 //  mCanvas->setMapTool( mMapTool );
 }
 
@@ -93,7 +93,7 @@ void TestQgsMapToolCircularString::cleanup()
 
 void TestQgsMapToolCircularString::resetMapTool( QgsMapToolShapeMetadata *metadata )
 {
-  mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::CaptureTechnique::Shape );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
   mMapTool->setCurrentShapeMapTool( metadata ) ;
 }
 
@@ -102,7 +102,7 @@ void TestQgsMapToolCircularString::testAddCircularStringCurvePoint()
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
   mLayer->startEditing();
 
-  mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::CaptureTechnique::CircularString );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -180,20 +180,20 @@ void TestQgsMapToolCircularString::testAddCircularStringAfterClassicDigitizing()
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
   mLayer->startEditing();
 
-  mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::CaptureTechnique::StraightSegments );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
 
   TestQgsMapToolAdvancedDigitizingUtils utilsClassic( mMapTool );
   utilsClassic.mouseClick( 2, 1, Qt::LeftButton );
   utilsClassic.mouseClick( 2, 0, Qt::LeftButton );
   utilsClassic.mouseClick( 0, 0, Qt::LeftButton );
 
-  mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::CaptureTechnique::CircularString );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
 
   TestQgsMapToolAdvancedDigitizingUtils utilsCircular( mMapTool );
   utilsCircular.mouseClick( 1, 1, Qt::LeftButton );
   utilsCircular.mouseClick( 0, 2, Qt::LeftButton );
 
-  mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::CaptureTechnique::StraightSegments );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
   utilsClassic.mouseClick( 2, 2, Qt::LeftButton );
   utilsClassic.mouseClick( 4, 2, Qt::LeftButton );
 

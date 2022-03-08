@@ -33,7 +33,7 @@ class QgsMapToolCaptureAnnotationItem: public QgsMapToolCapture, public QgsCreat
     QgsMapTool *mapTool() override;
     QgsMapLayer *layer() const override;
     QgsMapToolCapture::Capabilities capabilities() const override;
-    bool supportsTechnique( CaptureTechnique technique ) const override;
+    bool supportsTechnique( Qgis::CaptureTechnique technique ) const override;
 
   protected:
 
