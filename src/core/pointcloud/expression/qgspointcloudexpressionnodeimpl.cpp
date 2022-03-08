@@ -513,6 +513,8 @@ QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator QgsPointCloudExpressio
       return boIntDiv;
     case QgsExpressionNodeBinaryOperator::BinaryOperator::boMod:
       return boMod;
+    case QgsExpressionNodeBinaryOperator::BinaryOperator::boPow:
+      return boPow;
 
     case QgsExpressionNodeBinaryOperator::BinaryOperator::boRegexp:
     case QgsExpressionNodeBinaryOperator::BinaryOperator::boLike:
@@ -522,7 +524,6 @@ QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator QgsPointCloudExpressio
     case QgsExpressionNodeBinaryOperator::BinaryOperator::boIs:
     case QgsExpressionNodeBinaryOperator::BinaryOperator::boIsNot:
     case QgsExpressionNodeBinaryOperator::BinaryOperator::boConcat:
-    case QgsExpressionNodeBinaryOperator::BinaryOperator::boPow:
       break;
   }
   return boNotImplemented;
