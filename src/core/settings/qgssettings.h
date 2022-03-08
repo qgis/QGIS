@@ -87,6 +87,7 @@ class CORE_EXPORT QgsSettings : public QObject
     class Prefix SIP_SKIP
     {
       public:
+        static const inline char *APP_GEOREFERENCER = "app/georeferencer";
         static const inline char *CORE = "core";
         static const inline char *CORE_LAYOUT = "core/Layout";
         static const inline char *GEOMETRYVALIDATION = "geometry_validation";
