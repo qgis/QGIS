@@ -397,13 +397,28 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QElapsedTimer childTime;
       childTime.start();
 
-      bool ok = false;
-      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
+      bool ok = childAlg->prepare( childParams, context, &modelFeedback );
       if ( !ok )
       {
         const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
         throw QgsProcessingException( error );
       }
+
+      QVariantMap results;
+      try
+      {
+        results = childAlg->runPrepared( childParams, context, &modelFeedback );
+      }
+      catch ( QgsProcessingException & )
+      {
+        const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
+        throw QgsProcessingException( error );
+      }
+
+      QVariantMap ppRes = childAlg->postProcess( context, &modelFeedback );
+      if ( !ppRes.isEmpty() )
+        results = ppRes;
+
       childResults.insert( childId, results );
 
       // look through child alg's outputs to determine whether any of these should be copied
