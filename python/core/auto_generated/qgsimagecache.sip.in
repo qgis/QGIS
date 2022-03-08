@@ -35,35 +35,32 @@ reuse without incurring the cost of resampling on every render.
 Constructor for QgsImageCache, with the specified ``parent`` object.
 %End
 
-    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache /Out/, bool blocking = false, double targetDpi = 96 );
+    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache /Out/, bool blocking = false, double targetDpi = 96, int frameNumber = -1);
 %Docstring
 Returns the specified ``path`` rendered as an image. If possible, a pre-existing cached
 version of the image will be used. If not, the image is fetched and resampled to the desired
 size, and then the result cached for subsequent lookups.
 
-``path`` may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+:param path: may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+:param size: dictates the target size of the image. An invalid size indicates the
+             original raster image size (with no resampling). A size in which the width or height is
+             set to zero will have the zeroed value automatically computed when keepAspectRatio is ``True``.
+:param keepAspectRatio: if ``True`` then the original raster aspect ratio will be maintained during
+                        any resampling operations.
+:param opacity: dictates the opacity of the image (between 0 and 1).
+:param blocking: if ``True``, forces to wait for loading before returning image. The content is loaded
+                 in the same thread to ensure provided the image. WARNING: the ``blocking`` parameter must NEVER
+                 be ``True`` from GUI based applications (like the main QGIS application) or crashes will result. Only for
+                 use in external scripts or QGIS server.
+:param targetDpi: (since QGIS 3.22) can be used to specify an explicit DPI to render the image
+                  at. This is used for some image formats (e.g. PDF) to ensure that content is rendered at the desired
+                  DPI. This argument is only used when an invalid ``size`` argument is specified. If a valid ``size`` is
+                  specified then the image will always be rendered at this size, regardless of the ``targetDpi``.
+:param frameNumber: (since QGIS 3.26) specifies a frame number for image formats which support
+                    animations. This should be set to -1 if not required.
 
-The ``size`` parameter dictates the target size of the image. An invalid size indicates the
-original raster image size (with no resampling). A size in which the width or height is
-set to zero will have the zeroed value automatically computed when keepAspectRatio is ``True``.
-
-If ``keepAspectRatio`` is ``True``, then the original raster aspect ratio will be maintained during
-any resampling operations.
-
-An ``opacity`` parameter dictates the opacity of the image.
-
-If the resultant raster was of a sufficiently small size to store in the cache, then ``fitsInCache``
-will be set to ``True``.
-
-The ``blocking`` boolean forces to wait for loading before returning image. The content is loaded
-in the same thread to ensure provided the image. WARNING: the ``blocking`` parameter must NEVER
-be ``True`` from GUI based applications (like the main QGIS application) or crashes will result. Only for
-use in external scripts or QGIS server.
-
-Since QGIS 3.22 the ``targetDpi`` argument can be used to specify an explicit DPI to render the image
-at. This is used for some image formats (e.g. PDF) to ensure that content is rendered at the desired
-DPI. This argument is only used when an invalid ``size`` argument is specified. If a valid ``size`` is
-specified then the image will always be rendered at this size, regardless of the ``targetDpi``.
+:return: - rendered image
+         - fitsInCache: will be set to ``True`` if the resultant raster was of a sufficiently small size to store in the cache
 %End
 
     QSize originalSize( const QString &path, bool blocking = false ) const;
@@ -81,6 +78,25 @@ be ``True`` from GUI based applications (like the main QGIS application) or cras
 use in external scripts or QGIS server.
 
 If the image could not be read then an invalid QSize is returned.
+%End
+
+    int totalFrameCount( const QString &path, bool blocking = false );
+%Docstring
+Returns the total frame count of the image at the specified ``path``.
+
+``path`` may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+
+If ``path`` is a remote file, then -1 may be returned while the image is in the process
+of being fetched.
+
+The ``blocking`` boolean forces to wait for loading before returning the frame count. The content is loaded
+in the same thread to ensure provided the original size. WARNING: the ``blocking`` parameter must NEVER
+be ``True`` from GUI based applications (like the main QGIS application) or crashes will result. Only for
+use in external scripts or QGIS server.
+
+If the image could not be read or is not an animated format then -1 is returned
+
+.. versionadded:: 3.26
 %End
 
   signals:
