@@ -33,14 +33,14 @@ QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
   mToolName = tr( "Fill ring" );
 }
 
-bool QgsMapToolFillRing::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+bool QgsMapToolFillRing::supportsTechnique( Qgis::CaptureTechnique technique ) const
 {
   switch ( technique )
   {
-    case QgsMapToolCapture::CaptureTechnique::StraightSegments:
-    case QgsMapToolCapture::CaptureTechnique::Streaming:
-    case QgsMapToolCapture::CaptureTechnique::CircularString:
-    case QgsMapToolCapture::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::StraightSegments:
+    case Qgis::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::CircularString:
+    case Qgis::CaptureTechnique::Shape:
       return true;
   }
   return false;

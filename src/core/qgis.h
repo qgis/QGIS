@@ -137,6 +137,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( DataType )
 
     /**
+     * Capture technique.
+     *
+     * \since QGIS 3.26
+     */
+    enum class CaptureTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapToolCapture, CaptureTechnique ) : int
+      {
+      StraightSegments, //!< Default capture mode - capture occurs with straight line segments
+      CircularString, //!< Capture in circular strings
+      Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
+      Shape, //!< Digitize shapes.
+    };
+    Q_ENUM( CaptureTechnique )
+
+    /**
      * Vector layer type flags.
      *
      * \since QGIS 3.24
