@@ -34,6 +34,7 @@ class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
 class QgsMapCanvas;
 class QgsDockableWidgetHelper;
+class QgsRubberBand;
 
 class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 {
@@ -86,7 +87,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
 
     void onMainMapCanvasExtentChanged();
-    void onViewed2DExtentFrom3DChanged( QgsRectangle extent );
+    void onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
+    void onViewFrustumVisualizationEnabledChanged();
 
   private:
     QString mCanvasName;
@@ -108,6 +110,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionEnableEyeDome = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
+    QgsRubberBand *mViewFrustumHighlight = nullptr;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

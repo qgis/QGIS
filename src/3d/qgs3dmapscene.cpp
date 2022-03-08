@@ -146,6 +146,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
 
+
   connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
     const QList<QgsMapLayer *> modelVectorLayers = mModelVectorLayers;
@@ -247,32 +248,56 @@ void Qgs3DMapScene::viewZoomFull()
   mCameraController->resetView( 1.5 * std::sqrt( a * a - side * side ) );  // assuming FOV being 45 degrees
 }
 
-void Qgs3DMapScene::viewExtent( const QgsRectangle &extent )
+void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
 {
   QgsPointXY center = extent.center();
-  QgsVector3D centerWrld = mMap.mapToWorldCoordinates( QVector3D( center.x(), center.y(), 0 ) );
+  QgsVector3D centerWorld = mMap.mapToWorldCoordinates( QVector3D( center.x(), center.y(), 0 ) );
   QgsVector3D p1 = mMap.mapToWorldCoordinates( QVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
   QgsVector3D p2 = mMap.mapToWorldCoordinates( QVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
 
-  float side = std::max( std::abs( p1.x() - p2.x() ), std::abs( p1.z() - p2.z() ) );
-  float a =  side / 2.0f / std::sin( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2.0f );
-  mCameraController->setViewFromTop( centerWrld.x(), centerWrld.z(), std::sqrt( a * a - side * side ) );
+  float xSide = std::abs( p1.x() - p2.x() );
+  float ySide = std::abs( p1.z() - p2.z() );
+  if ( xSide < ySide )
+  {
+    float fov = 2 * std::atan( std::tan( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2 ) * cameraController()->camera()->aspectRatio() );
+    float r = xSide / 2.0f / std::tan( fov / 2.0f );
+    mCameraController->setViewFromTop( centerWorld.x(), centerWorld.z(), r );
+  }
+  else
+  {
+    float fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
+    float r = ySide / 2.0f / std::tan( fov / 2.0f );
+    mCameraController->setViewFromTop( centerWorld.x(), centerWorld.z(), r );
+  }
 }
 
-QgsRectangle Qgs3DMapScene::viewFrustum2DExtent()
+QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent()
 {
-  QVector4D p = mCameraController->camera()->projectionMatrix() * mCameraController->camera()->viewMatrix() * mCameraController->camera()->viewCenter();
-  double maxDepth = p.z();// p.w();
+  Qt3DRender::QCamera *camera = mCameraController->camera();
   const QRect viewport = mCameraController->viewport();
-  QgsRectangle extent;
-  extent.setMinimal();
-  for ( int i = 0; i < 8; ++i )
+  QVector<QgsPointXY> extent;
+  QVector<int> pointsOrder = { 0, 1, 3, 2 };
+  for ( int i : pointsOrder )
   {
     const QPoint p( ( ( i >> 0 ) & 1 ) ? 0 : viewport.width(), ( ( i >> 1 ) & 1 ) ? 0 : viewport.height() );
-    const double depth = ( ( i >> 2 ) & 1 ) ? 0 : maxDepth;
-    QVector3D pWorld = Qgs3DUtils::screenPointToWorldPos( p, depth, viewport.size(), mCameraController->camera() );
-    QgsVector3D pMap = mMap.worldToMapCoordinates( pWorld );
-    extent.include( QgsPointXY( pMap.x(), pMap.y() ) );
+    QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( p, viewport.size(), camera );
+    QVector3D dir = ray.direction();
+    if ( dir.y() == 0.0 )
+      dir.setY( 0.0001 );
+    double t = - ray.origin().y() / dir.y();
+    if ( t < 0 )
+    {
+      // If the projected point is on the back of the camera we choose the farthest point in the front
+      t = camera->farPlane();
+    }
+    else
+    {
+      // If the projected point is on the front of the camera we choose the closest between it and farthest point in the front
+      t = std::min<float>( t, camera->farPlane() );
+    }
+    QVector3D planePoint = ray.origin() + t * dir;
+    QgsVector3D pMap = mMap.worldToMapCoordinates( planePoint );
+    extent.push_back( QgsPointXY( pMap.x(), pMap.y() ) );
   }
   return extent;
 }
@@ -385,7 +410,7 @@ void Qgs3DMapScene::onCameraChanged()
 
   onShadowSettingsChanged();
 
-  QgsRectangle extent2D = viewFrustum2DExtent();
+  QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
   emit viewed2DExtentFrom3DChanged( extent2D );
 }
 

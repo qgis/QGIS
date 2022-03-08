@@ -41,7 +41,7 @@ class QgsWindow3DEngine;
 class QgsPointXY;
 class Qgs3DNavigationWidget;
 class QgsTemporalController;
-
+class QgsRubberBand;
 
 class Qgs3DMapCanvas : public QWidget
 {
@@ -105,14 +105,14 @@ class Qgs3DMapCanvas : public QWidget
      *
      * \since QGIS 3.26
      */
-    void viewExtent( const QgsRectangle &extent );
+    void setViewFrom2DExtent( const QgsRectangle &extent );
 
     /**
-     * Calculates the 2D extent viewed by the 3D camera
+     * Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed trapezoid
      *
      * \since QGIS 3.26
      */
-    QgsRectangle viewFrustum2DExtent();
+    QVector<QgsPointXY> viewFrustum2DExtent();
 
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
@@ -131,7 +131,7 @@ class Qgs3DMapCanvas : public QWidget
      *
      * \since QGIS 3.26
      */
-    void viewed2DExtentFrom3DChanged( QgsRectangle extent );
+    void viewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
 
     /**
      * Emitted when the camera navigation \a speed is changed.

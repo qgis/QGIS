@@ -50,12 +50,14 @@
 #include "qgs3dmapexportsettings.h"
 
 #include "qgsdockablewidgethelper.h"
+#include "qgsrubberband.h"
 
 #include <QWidget>
 
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
   , mCanvasName( name )
+  , mViewFrustumHighlight( nullptr )
 {
   const QgsSettings setting;
 
@@ -230,6 +232,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
 {
   delete mDockableWidgetHelper;
+  if ( mViewFrustumHighlight )
+    delete mViewFrustumHighlight;
 }
 
 void Qgs3DMapCanvasWidget::resizeEvent( QResizeEvent *event )
@@ -322,6 +326,8 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   // Disable button for switching the map theme if the terrain generator is a mesh, or if there is no terrain
   mBtnMapThemes->setDisabled( !mCanvas->map()->terrainGenerator() || mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
+
+  connect( map, &Qgs3DMapSettings::viewFrustumVisualizationEnabledChanged, this, &Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged );
 }
 
 void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -331,6 +337,11 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasLayersChanged );
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
   connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged );
+
+  if ( mViewFrustumHighlight )
+    delete mViewFrustumHighlight;
+  mViewFrustumHighlight = new QgsRubberBand( canvas, QgsWkbTypes::PolygonGeometry );
+  mViewFrustumHighlight->setColor( QColor::fromRgba( qRgba( 0, 0, 255, 50 ) ) );
 }
 
 void Qgs3DMapCanvasWidget::resetView()
@@ -507,27 +518,50 @@ void Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged()
 {
   switch ( mCanvas->map()->viewSyncMode() )
   {
-    case Qgs3DMapSettings::NoSync:
+    case Qgis::ViewSyncMode::NoSync:
       break;
-    case Qgs3DMapSettings::Sync3DTo2D:
-      mCanvas->viewExtent( mMainCanvas->extent() );
+    case Qgis::ViewSyncMode::Sync3DTo2D:
+      mCanvas->setViewFrom2DExtent( mMainCanvas->extent() );
       break;
-    case Qgs3DMapSettings::Sync2DTo3D:
+    case Qgis::ViewSyncMode::Sync2DTo3D:
       break;
   }
 }
 
-void Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged( QgsRectangle extent )
+void Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent )
 {
   switch ( mCanvas->map()->viewSyncMode() )
   {
-    case Qgs3DMapSettings::NoSync:
+    case Qgis::ViewSyncMode::NoSync:
       break;
-    case Qgs3DMapSettings::Sync3DTo2D:
+    case Qgis::ViewSyncMode::Sync3DTo2D:
       break;
-    case Qgs3DMapSettings::Sync2DTo3D:
-      mMainCanvas->setExtent( extent );
+    case Qgis::ViewSyncMode::Sync2DTo3D:
+    {
+      QgsRectangle extentRect;
+      extentRect.setMinimal();
+      for ( QgsPointXY &pt : extent )
+      {
+        extentRect.include( pt );
+      }
+      mMainCanvas->setExtent( extentRect );
       mMainCanvas->refresh();
       break;
+    }
+  }
+
+  onViewFrustumVisualizationEnabledChanged();
+}
+
+void Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged()
+{
+  mViewFrustumHighlight->reset( QgsWkbTypes::PolygonGeometry );
+  if ( mCanvas->map()->viewFrustumVisualizationEnabled() )
+  {
+    for ( QgsPointXY &pt : mCanvas->viewFrustum2DExtent() )
+    {
+      mViewFrustumHighlight->addPoint( pt, false );
+    }
+    mViewFrustumHighlight->closePoints();
   }
 }
