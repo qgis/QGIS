@@ -42,6 +42,7 @@ class Qgs3DNavigationWidget : public QWidget, private Ui::Q3DNavigationWidget
      * Update the state of navigation widget from camera's state
      */
     void updateFromCamera();
+    void updateAxisMode( const QString &modeStr );
 
   signals:
     void sizeChanged( const QSize &newSize );

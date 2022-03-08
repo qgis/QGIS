@@ -319,6 +319,7 @@ if (WITH_3D)
     3d/qgs3danimationwidget.cpp
     3d/qgs3danimationexportdialog.cpp
     3d/qgs3dapputils.cpp
+    3d/qgs3daxis.cpp
     3d/qgs3dicongenerator.cpp
     3d/qgs3dmapcanvas.cpp
     3d/qgs3dmapconfigwidget.cpp

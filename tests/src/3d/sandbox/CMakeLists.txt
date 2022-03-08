@@ -25,6 +25,7 @@ include_directories(SYSTEM
 add_executable(qgis_3d_sandbox
   qgis_3d_sandbox.cpp
   ${CMAKE_SOURCE_DIR}/src/app/3d/qgs3dmapcanvas.cpp
+  ${CMAKE_SOURCE_DIR}/src/app/3d/qgs3daxis.cpp
   ${CMAKE_SOURCE_DIR}/src/app/3d/qgs3dnavigationwidget.cpp
 )
 # require c++17

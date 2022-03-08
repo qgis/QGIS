@@ -23,6 +23,7 @@
 #include "qgsrange.h"
 #include "qgscameracontroller.h"
 #include "qgsrectangle.h"
+#include "qgs3daxis.h"
 
 namespace Qt3DExtras
 {
@@ -84,6 +85,11 @@ class Qgs3DMapCanvas : public QWidget
     Qgs3DMapTool *mapTool() const { return mMapTool; }
 
     /**
+     * Returns the 3D engine.
+     */
+    QgsWindow3DEngine *engine() { return mEngine; }
+
+    /**
      * Sets the visibility of on-screen navigation widget.
      */
     void setOnScreenNavigationVisibility( bool visibility );
@@ -113,6 +119,13 @@ class Qgs3DMapCanvas : public QWidget
      * \since QGIS 3.26
      */
     QVector<QgsPointXY> viewFrustum2DExtent();
+
+    /**
+     * Returns the 3D axis object
+     *
+     * \since QGIS 3.26
+     */
+    Qgs3DAxis *get3DAxis() { return m3DAxis; };
 
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
@@ -172,6 +185,10 @@ class Qgs3DMapCanvas : public QWidget
     QgsTemporalController *mTemporalController = nullptr;
 
     QSplitter *mSplitter = nullptr;
+
+    Qgs3DAxis *m3DAxis = nullptr;
 };
+
+#include "qgswindow3dengine.h"
 
 #endif // QGS3DMAPCANVAS_H
