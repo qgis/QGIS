@@ -582,6 +582,7 @@ set(QGIS_GUI_SRCS
   qgspixmaplabel.cpp
   qgspluginmanagerinterface.cpp
   qgspointcloudattributecombobox.cpp
+  qgspointcloudquerybuilder.cpp
   qgspresetcolorrampdialog.cpp
   qgsprevieweffect.cpp
   qgsprojectionselectiondialog.cpp
@@ -838,6 +839,7 @@ set(QGIS_GUI_HDRS
   qgspixmaplabel.h
   qgspluginmanagerinterface.h
   qgspointcloudattributecombobox.h
+  qgspointcloudquerybuilder.h
   qgspresetcolorrampdialog.h
   qgsprevieweffect.h
   qgsprojectionselectiondialog.h
@@ -1383,6 +1385,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterlayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointcloudquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsqueryresultwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
