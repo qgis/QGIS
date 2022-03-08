@@ -118,6 +118,7 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
 
   private:
     void setExpressionToolTip( const QString &toolTip );
+    void copyFullExpressionValue();
     void refreshPreview();
 
     QgsVectorLayer *mLayer = nullptr;

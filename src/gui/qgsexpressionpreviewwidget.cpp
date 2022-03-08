@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qclipboard.h"
 #include "qgsexpressionpreviewwidget.h"
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
@@ -29,8 +30,11 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   mPreviewLabel->clear();
   mFeaturePickerWidget->setShowBrowserButtons( true );
 
+  mCopyPreviewButton->setToolTip( tr( "Copy expression value" ) );
+
   connect( mFeaturePickerWidget, &QgsFeaturePickerWidget::featureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
   connect( mPreviewLabel, &QLabel::linkActivated, this, &QgsExpressionPreviewWidget::linkActivated );
+  connect( mCopyPreviewButton, &QToolButton::clicked, this, &QgsExpressionPreviewWidget::copyFullExpressionValue );
 }
 
 void QgsExpressionPreviewWidget::setLayer( QgsVectorLayer *layer )
@@ -72,6 +76,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
   {
     mPreviewLabel->clear();
     mPreviewLabel->setStyleSheet( QString() );
+    mCopyPreviewButton->setDisabled( true );
     setExpressionToolTip( QString() );
     emit expressionParsed( false );
     mExpression = QgsExpression();
@@ -86,11 +91,11 @@ void QgsExpressionPreviewWidget::refreshPreview()
       // let the expression context handle this correctly
       mExpression.setGeomCalculator( &mDa );
     }
-
     const QVariant value = mExpression.evaluate( &mExpressionContext );
     const QString preview = QgsExpression::formatPreviewString( value );
     if ( !mExpression.hasEvalError() )
     {
+      mCopyPreviewButton->setEnabled( true );
       mPreviewLabel->setText( preview );
     }
 
@@ -127,6 +132,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
       emit expressionParsed( false );
       setParserError( mExpression.hasParserError() );
       setEvalError( mExpression.hasEvalError() );
+      mCopyPreviewButton->setDisabled( true );
     }
     else
     {
@@ -139,6 +145,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
       emit expressionParsed( true );
       setParserError( false );
       setEvalError( false );
+      mCopyPreviewButton->setEnabled( true );
     }
   }
 }
@@ -186,4 +193,12 @@ void QgsExpressionPreviewWidget::setEvalError( bool evalError )
 bool QgsExpressionPreviewWidget::evalError() const
 {
   return mEvalError;
+}
+
+void QgsExpressionPreviewWidget::copyFullExpressionValue()
+{
+  QClipboard *clipboard = QApplication::clipboard();
+  const QVariant value = mExpression.evaluate( &mExpressionContext );
+  QgsDebugMsg( QStringLiteral( "set clipboard: %1" ).arg( value.toString() ) );
+  clipboard->setText( value.toString() );
 }
