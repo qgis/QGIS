@@ -152,16 +152,18 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * the field value controlled by editor widgets. This property is ignored if the container is not
      * rendered as a group box.
      *
+     * \see setCollapsedExpression()
      * \since QGIS 3.26
      */
     QgsOptionalExpression collapsedExpression() const;
 
     /**
-     * The visibility expression is used in the attribute form to
+     * The collapsed expression is used in the attribute form to
      * set the collapsed status of the group box of this container based on an expression incorporating
      * the field value controlled by editor widgets. This property is ignored if the container is not
      * rendered as a group box.
      *
+     * \see collapsedExpression()
      * \since QGIS 3.26
      */
     void setCollapsedExpression( const QgsOptionalExpression &collapsedExpression );

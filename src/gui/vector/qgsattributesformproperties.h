@@ -170,7 +170,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 
         /**
-         * Returns the optional expression that dynamically constrols the collapsed status of a group box container.
+         * Returns the optional expression that dynamically controls the collapsed status of a group box container.
          *
          * \see collapsed()
          * \see setCollapsed()

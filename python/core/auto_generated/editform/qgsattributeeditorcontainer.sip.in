@@ -143,15 +143,19 @@ set the collapsed status of the group box container container based on an expres
 the field value controlled by editor widgets. This property is ignored if the container is not
 rendered as a group box.
 
+.. seealso:: :py:func:`setCollapsedExpression`
+
 .. versionadded:: 3.26
 %End
 
     void setCollapsedExpression( const QgsOptionalExpression &collapsedExpression );
 %Docstring
-The visibility expression is used in the attribute form to
+The collapsed expression is used in the attribute form to
 set the collapsed status of the group box of this container based on an expression incorporating
 the field value controlled by editor widgets. This property is ignored if the container is not
 rendered as a group box.
+
+.. seealso:: :py:func:`collapsedExpression`
 
 .. versionadded:: 3.26
 %End

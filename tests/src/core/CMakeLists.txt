@@ -172,6 +172,7 @@ set(TESTS
  testqgsspatialindexkdbush.cpp
  testqgssqliteexpressioncompiler.cpp
  testqgssqliteutils.cpp
+ testqgsrelation.cpp
  testqgsstatisticalsummary.cpp
  testqgsstoredexpressionmanager.cpp
  testqgsstringutils.cpp
@@ -203,7 +204,7 @@ set(TESTS
  testqgsweakrelation.cpp
  testqgsziputils.cpp
  testqobjectuniqueptr.cpp
- testziplayer.cpp
+ testziplayer.cpp 
 )
 
 if(WITH_QTWEBKIT)

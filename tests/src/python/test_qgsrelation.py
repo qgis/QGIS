@@ -196,6 +196,13 @@ class TestQgsRelation(unittest.TestCase):
         self.assertTrue(valid)
 
         # update style
+        # Note: the project is re-read because of a subtle bug with bidings involving
+        #
+        self.assertTrue(p.read(myPath))
+        relations = QgsProject.instance().relationManager().relations()
+        relation = relations[list(relations.keys())[0]]
+        referencedLayer = relation.referencedLayer()
+
         referencedLayer.styleManager().setCurrentStyle("custom")
 
         for l in p.mapLayers().values():
