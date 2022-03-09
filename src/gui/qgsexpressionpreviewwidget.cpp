@@ -31,6 +31,7 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   mFeaturePickerWidget->setShowBrowserButtons( true );
 
   mCopyPreviewButton->setToolTip( tr( "Copy expression value" ) );
+  mCopyPreviewButton->setAutoRaise( true );
 
   connect( mFeaturePickerWidget, &QgsFeaturePickerWidget::featureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
   connect( mPreviewLabel, &QLabel::linkActivated, this, &QgsExpressionPreviewWidget::linkActivated );
