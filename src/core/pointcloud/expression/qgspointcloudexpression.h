@@ -181,9 +181,10 @@ class CORE_EXPORT QgsPointCloudExpression
     /**
      * Evaluate the expression for one point.
      * \returns 0.0 for false or 1.0 for true.
-     * \param p point number within the block to evaluate
+     * \param pointIndex point number within the block to evaluate
+     * \note prepare() must me called for a specific block before this function can be used
      */
-    double evaluate( int p );
+    double evaluate( int pointIndex );
 
     /**
      * Returns TRUE if an error occurred when evaluating last input

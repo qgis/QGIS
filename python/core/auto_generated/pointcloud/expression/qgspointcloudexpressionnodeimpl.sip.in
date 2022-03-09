@@ -55,7 +55,7 @@ Returns the node the operator will operate upon.
 
     virtual bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual double evalNode( QgsPointCloudExpression *parent, int p );
+    virtual double evalNode( QgsPointCloudExpression *parent, int pointIndex );
 
     virtual QString dump() const;
 
@@ -149,7 +149,7 @@ Returns the node to the right of the operator.
 
     virtual bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual double evalNode( QgsPointCloudExpression *parent, int p );
+    virtual double evalNode( QgsPointCloudExpression *parent, int pointIndex );
 
     virtual QString dump() const;
 
@@ -219,7 +219,7 @@ Returns the list of nodes to search for matching values within.
 
     virtual bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual double evalNode( QgsPointCloudExpression *parent, int p );
+    virtual double evalNode( QgsPointCloudExpression *parent, int pointIndex );
 
     virtual QString dump() const;
 
@@ -264,7 +264,7 @@ The value of the literal.
 
     virtual bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual double evalNode( QgsPointCloudExpression *parent, int p );
+    virtual double evalNode( QgsPointCloudExpression *parent, int pointIndex );
 
     virtual QString dump() const;
 
@@ -316,7 +316,7 @@ The name of the column.
 
     virtual bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block );
 
-    virtual double evalNode( QgsPointCloudExpression *parent, int p );
+    virtual double evalNode( QgsPointCloudExpression *parent, int pointIndex );
 
     virtual QString dump() const;
 

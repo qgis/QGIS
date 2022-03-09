@@ -163,7 +163,7 @@ bool QgsPointCloudExpression::prepare( const QgsPointCloudBlock *block )
   return d->mRootNode->prepare( this, block );
 }
 
-double QgsPointCloudExpression::evaluate( int p )
+double QgsPointCloudExpression::evaluate( int pointIndex )
 {
   d->mEvalErrorString = QString();
   if ( !d->mRootNode )
@@ -172,7 +172,7 @@ double QgsPointCloudExpression::evaluate( int p )
     return 0;
   }
 
-  return d->mRootNode->eval( this, p );
+  return d->mRootNode->eval( this, pointIndex );
 }
 
 bool QgsPointCloudExpression::hasEvalError() const

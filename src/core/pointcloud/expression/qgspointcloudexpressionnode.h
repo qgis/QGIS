@@ -147,7 +147,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * This will return a cached value if it has been determined to be static
      * during the prepare() execution.
      */
-    double eval( QgsPointCloudExpression *parent, int p );
+    double eval( QgsPointCloudExpression *parent, int pointIndex );
 
     /**
      * Generate a clone of this node.
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Abstract virtual eval method
      * Errors are reported to the parent
      */
-    virtual double evalNode( QgsPointCloudExpression *parent, int p ) = 0;
+    virtual double evalNode( QgsPointCloudExpression *parent, int pointIndex ) = 0;
 
 };
 

@@ -123,13 +123,17 @@ Gets list of attributes referenced by the expression.
 
 
 
-    double evaluate( int p );
+    double evaluate( int pointIndex );
 %Docstring
 Evaluate the expression for one point.
 
 :return: 0.0 for false or 1.0 for true.
 
-:param p: point number within the block to evaluate
+:param pointIndex: point number within the block to evaluate
+
+.. note::
+
+   :py:func:`~QgsPointCloudExpression.prepare` must me called for a specific block before this function can be used
 %End
 
     bool hasEvalError() const;

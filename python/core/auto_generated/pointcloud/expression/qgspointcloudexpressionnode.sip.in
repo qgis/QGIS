@@ -123,7 +123,7 @@ The returned expression does not necessarily literally match
 the original expression, it's just guaranteed to behave the same way.
 %End
 
-    double eval( QgsPointCloudExpression *parent, int p );
+    double eval( QgsPointCloudExpression *parent, int pointIndex );
 %Docstring
 Evaluate this node for the given point and parent.
 This will return a cached value if it has been determined to be static
