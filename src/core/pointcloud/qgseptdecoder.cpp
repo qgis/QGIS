@@ -228,8 +228,7 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
     data, scale, offset
   );
 
-  const bool isEmptyFilterExpression = filterExpression.dump().isEmpty();
-  if ( !filterExpression.prepare( block ) && !isEmptyFilterExpression )
+  if ( !filterExpression.prepare( block ) && filterExpression.isValid() )
   {
     // skip processing if the expression cannot be prepared
     block->setPointCount( 0 );
@@ -250,7 +249,7 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
     }
 
     // check if point needs to be filtered out
-    if ( !isEmptyFilterExpression )
+    if ( filterExpression.isValid() )
     {
       // we're always evaluating the last written point in the buffer
       double eval = filterExpression.evaluate( i - skippedPoints );
@@ -505,8 +504,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   );
 
   int skippedPoints = 0;
-  const bool isEmptyFilterExpression = filterExpression.dump().isEmpty();
-  if ( !filterExpression.prepare( block ) && !isEmptyFilterExpression )
+  if ( !filterExpression.prepare( block ) && filterExpression.isValid() )
   {
     // skip processing if the expression cannot be prepared
     block->setPointCount( 0 );
@@ -621,7 +619,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     }
 
     // check if point needs to be filtered out
-    if ( !isEmptyFilterExpression )
+    if ( filterExpression.isValid() )
     {
       // we're always evaluating the last written point in the buffer
       double eval = filterExpression.evaluate( i - skippedPoints );

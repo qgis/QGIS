@@ -175,7 +175,6 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
     case QgsExpressionNode::NodeType::ntUnaryOperator:
     {
       const QgsExpressionNodeUnaryOperator *n = static_cast<const QgsExpressionNodeUnaryOperator *>( expressionNode );
-      // the UnaryOperators are identical between those classes, so it can be safely cast from QgsExpressionNodeUnaryOperator::UnaryOperator
       QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op;
       if ( !QgsPointCloudExpressionNodeUnaryOperator::convert( n->op(), op ) )
       {

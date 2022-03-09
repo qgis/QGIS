@@ -257,9 +257,9 @@ int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
 
 bool QgsPointCloudIndex::setSubsetString( const QString &subset )
 {
-  QString lastExpression = mFilterExpression;
+  const QString lastExpression = mFilterExpression;
   mFilterExpression.setExpression( subset );
-  if ( mFilterExpression.hasParserError() )
+  if ( mFilterExpression.hasParserError() && !subset.isEmpty() )
   {
     mFilterExpression.setExpression( lastExpression );
     return false;
