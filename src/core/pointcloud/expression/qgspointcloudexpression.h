@@ -71,11 +71,6 @@ class CORE_EXPORT QgsPointCloudExpression
     QgsPointCloudExpression( const QString &subset );
 
     /**
-     * Create an expression using an existing \a QgsExpression.
-     */
-    QgsPointCloudExpression( const QgsExpression &expression );
-
-    /**
      * Create a copy of this expression. This is preferred
      * over recreating an expression from a string since
      * it does not need to be re-parsed.
@@ -204,11 +199,6 @@ class CORE_EXPORT QgsPointCloudExpression
      * Set the expression string
      */
     void setExpression( const QString &subset );
-
-    /**
-     * Set the expression to a \a QgsExpression.
-     */
-    void setExpression( const QgsExpression &expression );
 
     /**
      * Returns the original, unmodified expression string.

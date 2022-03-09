@@ -58,11 +58,6 @@ when :py:func:`~prepare` is called.
 Create an expression using a string.
 %End
 
-    QgsPointCloudExpression( const QgsExpression &expression );
-%Docstring
-Create an expression using an existing ``:py:class:`QgsExpression```.
-%End
-
     QgsPointCloudExpression( const QgsPointCloudExpression &other );
 %Docstring
 Create a copy of this expression. This is preferred
@@ -154,11 +149,6 @@ Sets evaluation error (used internally by evaluation functions)
     void setExpression( const QString &subset );
 %Docstring
 Set the expression string
-%End
-
-    void setExpression( const QgsExpression &expression );
-%Docstring
-Set the expression to a ``:py:class:`QgsExpression```.
 %End
 
     QString expression() const;

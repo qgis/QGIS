@@ -32,12 +32,6 @@ QgsPointCloudExpression::QgsPointCloudExpression( const QString &subsetString )
   setExpression( expression );
 }
 
-QgsPointCloudExpression::QgsPointCloudExpression( const QgsExpression &expression )
-  : d( new QgsPointCloudExpressionPrivate )
-{
-  setExpression( expression );
-}
-
 QgsPointCloudExpression::~QgsPointCloudExpression()
 {
   Q_ASSERT( d );
@@ -48,11 +42,6 @@ QgsPointCloudExpression::~QgsPointCloudExpression()
 void QgsPointCloudExpression::setExpression( const QString &subset )
 {
   QgsExpression expression( subset );
-  setExpression( expression );
-}
-
-void QgsPointCloudExpression::setExpression( const QgsExpression &expression )
-{
   if ( expression.hasParserError() && !expression.dump().isEmpty() )
   {
     d->mRootNode = nullptr;
