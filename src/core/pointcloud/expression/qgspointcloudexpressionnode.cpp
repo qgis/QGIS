@@ -124,10 +124,10 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
     case QgsExpressionNode::NodeType::ntBinaryOperator:
     {
       const QgsExpressionNodeBinaryOperator *n = static_cast<const QgsExpressionNodeBinaryOperator *>( expressionNode );
-      QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op = QgsPointCloudExpressionNodeBinaryOperator::convert( n->op() );
-      if ( op == QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator::boNotImplemented )
+      QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op;
+      if ( !QgsPointCloudExpressionNodeBinaryOperator::convert( n->op(), op ) )
       {
-        error = QStringLiteral( "Unsupported operator" );
+        error = QStringLiteral( "Unsupported binary operator %1" ).arg( n->text() );
         return nullptr;
       }
       QgsPointCloudExpressionNode *opLeft = convert( n->opLeft(), error );
@@ -176,7 +176,12 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
     {
       const QgsExpressionNodeUnaryOperator *n = static_cast<const QgsExpressionNodeUnaryOperator *>( expressionNode );
       // the UnaryOperators are identical between those classes, so it can be safely cast from QgsExpressionNodeUnaryOperator::UnaryOperator
-      QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op = static_cast<QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator>( n->op() );
+      QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op;
+      if ( !QgsPointCloudExpressionNodeUnaryOperator::convert( n->op(), op ) )
+      {
+        error = QStringLiteral( "Unsupported unary operator %1" ).arg( n->text() );
+        return nullptr;
+      }
       QgsPointCloudExpressionNode *operand = convert( n->operand(), error );
       if ( !operand )
       {

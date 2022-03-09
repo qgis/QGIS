@@ -87,6 +87,8 @@ class CORE_EXPORT QgsPointCloudExpressionNodeUnaryOperator : public QgsPointClou
      */
     QString text() const;
 
+    static bool convert( const QgsExpressionNodeUnaryOperator::UnaryOperator source, QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator &target );
+
   private:
     UnaryOperator mOp;
     QgsPointCloudExpressionNode *mOperand = nullptr;
@@ -131,8 +133,15 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
       boMod,
       boPow,
 
-      // other operator not implemented in pointcloud expressions
-      boNotImplemented,
+      // other operators not implemented in pointcloud expressions
+      boRegexp,
+      boLike,
+      boILike,
+      boNotLike,
+      boNotILike,
+      boIs,
+      boIsNot,
+      boConcat,
     };
 
     /**
@@ -197,7 +206,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
      */
     QString text() const;
 
-    static BinaryOperator convert( const QgsExpressionNodeBinaryOperator::BinaryOperator op );
+    static bool convert( const QgsExpressionNodeBinaryOperator::BinaryOperator source, QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator &target );
 
   private:
     bool compare( double diff );

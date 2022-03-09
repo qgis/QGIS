@@ -72,6 +72,8 @@ Returns a the name of this operator without the operands.
 I.e. "NOT" or "-"
 %End
 
+    static bool convert( const QgsExpressionNodeUnaryOperator::UnaryOperator source, QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator &target );
+
 };
 
 class QgsPointCloudExpressionNodeBinaryOperator : QgsPointCloudExpressionNode
@@ -110,8 +112,15 @@ A binary expression operator, which operates on two values.
       boMod,
       boPow,
 
-      // other operator not implemented in pointcloud expressions
-      boNotImplemented,
+      // other operators not implemented in pointcloud expressions
+      boRegexp,
+      boLike,
+      boILike,
+      boNotLike,
+      boNotILike,
+      boIs,
+      boIsNot,
+      boConcat,
     };
 
     QgsPointCloudExpressionNodeBinaryOperator( QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op, QgsPointCloudExpressionNode *opLeft /Transfer/, QgsPointCloudExpressionNode *opRight /Transfer/ );
@@ -177,7 +186,7 @@ Returns a the name of this operator without the operands.
 I.e. "AND", "OR", ...
 %End
 
-    static BinaryOperator convert( const QgsExpressionNodeBinaryOperator::BinaryOperator op );
+    static bool convert( const QgsExpressionNodeBinaryOperator::BinaryOperator source, QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator &target );
 
 };
 
