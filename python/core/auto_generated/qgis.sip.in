@@ -835,13 +835,13 @@ The development version
       Unknown,
     };
 
-    enum class ViewSyncMode
+    enum class ViewSyncModeFlag
     {
-      NoSync,
       Sync3DTo2D,
       Sync2DTo3D,
-      BothWaysSync
     };
+    typedef QFlags<Qgis::ViewSyncModeFlag> ViewSyncModeFlags;
+
 
     enum class HistoryProviderBackend
     {

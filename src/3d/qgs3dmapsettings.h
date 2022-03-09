@@ -596,14 +596,14 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      *
      * \since QGIS 3.26
      */
-    Qgis::ViewSyncMode viewSyncMode() const { return mViewSyncMode; }
+    Qgis::ViewSyncModeFlags viewSyncMode() const { return mViewSyncMode; }
 
     /**
      * Sets the view sync mode (used to syncronize the 2D main map canvas and the 3D camera navigation)
      *
      * \since QGIS 3.26
      */
-    void setViewSyncMode( Qgis::ViewSyncMode mode );
+    void setViewSyncMode( Qgis::ViewSyncModeFlags mode );
 
     /**
      * Returns whether the camera's view frustum is visualized on the 2D map canvas
@@ -846,7 +846,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double mEyeDomeLightingStrength = 1000.0;
     int mEyeDomeLightingDistance = 1;
 
-    Qgis::ViewSyncMode mViewSyncMode = Qgis::ViewSyncMode::NoSync;
+    Qgis::ViewSyncModeFlags mViewSyncMode;
     bool mVisualizeViewFrustum = false;
 
     bool mDebugShadowMapEnabled = false;

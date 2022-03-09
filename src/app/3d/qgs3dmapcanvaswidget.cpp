@@ -516,37 +516,26 @@ void Qgs3DMapCanvasWidget::currentMapThemeRenamed( const QString &theme, const Q
 
 void Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged()
 {
-  switch ( mCanvas->map()->viewSyncMode() )
+  if ( mCanvas->map()->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) )
   {
-    case Qgis::ViewSyncMode::NoSync:
-      break;
-    case Qgis::ViewSyncMode::Sync3DTo2D:
-      mCanvas->setViewFrom2DExtent( mMainCanvas->extent() );
-      break;
-    case Qgis::ViewSyncMode::Sync2DTo3D:
-      break;
+    mCanvas->setViewFrom2DExtent( mMainCanvas->extent() );
   }
 }
 
 void Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent )
 {
-  switch ( mCanvas->map()->viewSyncMode() )
+  if ( mCanvas->map()->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) )
   {
-    case Qgis::ViewSyncMode::NoSync:
-      break;
-    case Qgis::ViewSyncMode::Sync3DTo2D:
-      break;
-    case Qgis::ViewSyncMode::Sync2DTo3D:
+    QgsRectangle extentRect;
+    extentRect.setMinimal();
+    for ( QgsPointXY &pt : extent )
     {
-      QgsRectangle extentRect;
-      extentRect.setMinimal();
-      for ( QgsPointXY &pt : extent )
-      {
-        extentRect.include( pt );
-      }
-      mMainCanvas->setExtent( extentRect );
+      extentRect.include( pt );
+    }
+    if ( !extentRect.isEmpty() && extentRect.isFinite() && !extentRect.isNull() )
+    {
+      whileBlocking( mMainCanvas )->setExtent( extentRect );
       mMainCanvas->refresh();
-      break;
     }
   }
 

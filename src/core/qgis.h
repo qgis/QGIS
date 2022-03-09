@@ -1361,7 +1361,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( AngularDirection )
 
     /**
-     *  Usage of the renderer.
+     * Usage of the renderer.
      *
      * \since QGIS 3.24
      */
@@ -1373,14 +1373,18 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( RendererUsage )
 
-    enum class ViewSyncMode : int
+    /**
+     * Syncronization of 2D map canvas and 3D view
+     *
+     * \since QGIS 3.26
+     */
+    enum class ViewSyncModeFlag : int
     {
-      NoSync = 0, //! No syncronisation will happen
-      Sync3DTo2D = 1, //! Syncronize 3D view camera to the main map canvas extent
-      Sync2DTo3D = 2,  //! Update the 2D main canvas extent to include the viewed area from the 3D view
-      BothWaysSync = 3
+      Sync3DTo2D = 1 << 0, //! Syncronize 3D view camera to the main map canvas extent
+      Sync2DTo3D = 1 << 1, //! Update the 2D main canvas extent to include the viewed area from the 3D view
     };
-    Q_ENUM( ViewSyncMode )
+    Q_ENUM( ViewSyncModeFlag )
+    Q_DECLARE_FLAGS( ViewSyncModeFlags, ViewSyncModeFlag )
 
     /**
      * History provider backends.

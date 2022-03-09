@@ -94,7 +94,7 @@
            <string>Terrain settings</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../../images/images.qrc">
             <normaloff>:/images/themes/default/mLayoutItem3DMap.svg</normaloff>:/images/themes/default/mLayoutItem3DMap.svg</iconset>
           </property>
          </item>
@@ -106,7 +106,7 @@
            <string>Lights settings</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../../images/images.qrc">
             <normaloff>:/images/themes/default/mActionHighlightFeature.svg</normaloff>:/images/themes/default/mActionHighlightFeature.svg</iconset>
           </property>
          </item>
@@ -118,7 +118,7 @@
            <string>Shadow settings</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../../images/images.qrc">
             <normaloff>:/images/themes/default/mIconShadow.svg</normaloff>:/images/themes/default/mIconShadow.svg</iconset>
           </property>
          </item>
@@ -130,7 +130,7 @@
            <string>Camera and skybox settings</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../../images/images.qrc">
             <normaloff>:/images/themes/default/mIconCamera.svg</normaloff>:/images/themes/default/mIconCamera.svg</iconset>
           </property>
          </item>
@@ -147,7 +147,7 @@
            <string>Advanced settings</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/system.svg</normaloff>:/images/themes/default/propertyicons/system.svg</iconset>
           </property>
          </item>
@@ -184,7 +184,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>5</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -728,7 +728,28 @@
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_7">
-               <item row="2" column="1">
+               <item row="0" column="0" colspan="2">
+                <widget class="QCheckBox" name="mSync2DTo3DCheckbox">
+                 <property name="text">
+                  <string>Synchronise main map canvas extent to 3D view visible area</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QCheckBox" name="mSync3DTo2DCheckbox">
+                 <property name="text">
+                  <string>Synchromise 3D view navigation to main map canvas extent</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" colspan="2">
+                <widget class="QCheckBox" name="mVisualizeExtentCheckBox">
+                 <property name="text">
+                  <string>Visualize viewed 3D area in main 2D map canvas</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0" colspan="2">
                 <spacer name="verticalSpacer">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -740,39 +761,6 @@
                   </size>
                  </property>
                 </spacer>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_3">
-                 <property name="text">
-                  <string>Sync mode</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QComboBox" name="mSyncModeComboBox">
-                 <item>
-                  <property name="text">
-                   <string>No sync</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Sync 3D camera to 2D main canvas extent</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Sync 2D map canvas extent to 3D viewing area</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="1" column="0" colspan="2">
-                <widget class="QCheckBox" name="mVisualizeExtentCheckBox">
-                 <property name="text">
-                  <string>Visualize viewed 3D area in main 2D map canvas</string>
-                 </property>
-                </widget>
                </item>
               </layout>
              </widget>
@@ -1206,6 +1194,9 @@
   <tabstop>mDebugDepthMapCornerComboBox</tabstop>
   <tabstop>mDebugDepthMapSizeSpinBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
