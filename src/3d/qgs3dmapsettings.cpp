@@ -272,7 +272,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mEyeDomeLightingDistance = elemEyeDomeLighting.attribute( "eye-dome-lighting-distance", QStringLiteral( "1" ) ).toInt();
 
   QDomElement elemNavigationSync = elem.firstChildElement( QStringLiteral( "navigation-sync" ) );
-  mViewSyncMode = ( Qgis::ViewSyncMode )( elemNavigationSync.attribute( QStringLiteral( "view-sync-mode" ), QStringLiteral( "0" ) ).toInt() );
+  mViewSyncMode = ( Qgis::ViewSyncModeFlags )( elemNavigationSync.attribute( QStringLiteral( "view-sync-mode" ), QStringLiteral( "0" ) ).toInt() );
   mVisualizeViewFrustum = elemNavigationSync.attribute( QStringLiteral( "view-frustum-visualization-enabled" ), QStringLiteral( "0" ) ).toInt();
 
   QDomElement elemDebugSettings = elem.firstChildElement( QStringLiteral( "debug-settings" ) );
@@ -833,7 +833,7 @@ void Qgs3DMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
   mRendererUsage = rendererUsage;
 }
 
-void Qgs3DMapSettings::setViewSyncMode( Qgis::ViewSyncMode mode )
+void Qgs3DMapSettings::setViewSyncMode( Qgis::ViewSyncModeFlags mode )
 {
   mViewSyncMode = mode;
 }
