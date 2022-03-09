@@ -138,6 +138,10 @@
           <property name="text">
            <string>Navigation sync</string>
           </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/sync_views.svg</normaloff>:/images/themes/default/sync_views.svg</iconset>
+          </property>
          </item>
          <item>
           <property name="text">
@@ -184,7 +188,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>4</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -421,8 +425,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>77</width>
-                <height>43</height>
+                <width>721</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -505,8 +509,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>149</width>
-                <height>43</height>
+                <width>721</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
