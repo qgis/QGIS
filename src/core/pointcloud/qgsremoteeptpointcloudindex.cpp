@@ -142,21 +142,9 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
 
   // create a copy of the expression to pass to the decoder
   QgsPointCloudExpression filterExpression = mFilterExpression;
-  const auto expressionAttributes = filterExpression.referencedAttributes();
-  const QgsPointCloudAttributeCollection allAttributes = attributes();
-  QgsPointCloudAttributeCollection reqAttributes = request.attributes();
-
-  for ( const auto &attribute : expressionAttributes )
-  {
-    if ( reqAttributes.indexOf( attribute ) == -1 )
-    {
-      int offset;
-      const auto attr = allAttributes.find( attribute, offset );
-      if ( attr )
-        reqAttributes.push_back( *attr );
-    }
-  }
-  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, allAttributes, reqAttributes, scale(), offset(), filterExpression );
+  QgsPointCloudAttributeCollection requestAttributes = request.attributes();
+  requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
+  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression );
 }
 
 bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const

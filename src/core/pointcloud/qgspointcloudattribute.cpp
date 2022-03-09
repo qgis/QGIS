@@ -146,6 +146,20 @@ void QgsPointCloudAttributeCollection::push_back( const QgsPointCloudAttribute &
   mSize += attribute.size();
 }
 
+void QgsPointCloudAttributeCollection::extend( const QgsPointCloudAttributeCollection &otherCollection, const QSet<QString> &matchingNames )
+{
+  for ( const auto &attributeName : matchingNames )
+  {
+    if ( indexOf( attributeName ) == -1 )
+    {
+      int offset;
+      const auto attr = otherCollection.find( attributeName, offset );
+      if ( attr )
+        push_back( *attr );
+    }
+  }
+}
+
 QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() const
 {
   return mAttributes;

@@ -23,6 +23,7 @@
 #include "qgsfields.h"
 #include <QString>
 #include <QVector>
+#include <QSet>
 
 #include "qgsvector3d.h"
 
@@ -138,6 +139,14 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );
     //! Adds extra attribute
     void push_back( const QgsPointCloudAttribute &attribute );
+
+    /**
+     *  Adds specific missing attributes from another QgsPointCloudAttributeCollection
+     * \param otherCollection a QgsPointCloudAttributeCollection with more attributes
+     * \param matchingNames the names of the attributes to be added
+     * \since QGIS 3.26
+     */
+    void extend( const QgsPointCloudAttributeCollection &otherCollection, const QSet<QString> &matchingNames );
 
     //! Returns all attributes
     QVector<QgsPointCloudAttribute> attributes() const;
