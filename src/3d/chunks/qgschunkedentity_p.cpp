@@ -19,6 +19,7 @@
 #include <QVector4D>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickTriangleEvent>
+#include <Qt3DRender/QBuffer>
 
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
@@ -175,11 +176,14 @@ void QgsChunkedEntity::update( const SceneState &state )
     ++disabled;
   }
 
+  double usedGpuMemory = QgsChunkedEntity::calculateEntityGpuMemorySize( this );
+
   // unload those that are over the limit for replacement
   // TODO: what to do when our cache is too small and nodes are being constantly evicted + loaded again
-  while ( mReplacementQueue->count() > mMaxLoadedChunks )
+  while ( usedGpuMemory > mGpuMemoryLimit )
   {
     QgsChunkListEntry *entry = mReplacementQueue->takeLast();
+    usedGpuMemory -= QgsChunkedEntity::calculateEntityGpuMemorySize( entry->chunk->entity() );
     entry->chunk->unloadChunk();  // also deletes the entry
     mActiveNodes.removeOne( entry->chunk );
     ++unloaded;
@@ -628,6 +632,21 @@ void QgsChunkedEntity::onPickEvent( Qt3DRender::QPickEvent *event )
   {
     emit pickedObject( event, fid );
   }
+}
+
+double QgsChunkedEntity::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
+{
+  long long usedGpuMemory = 0;
+  for ( Qt3DRender::QBuffer *buffer : entity->findChildren<Qt3DRender::QBuffer *>() )
+  {
+    usedGpuMemory += buffer->data().size();
+  }
+  for ( Qt3DRender::QTexture2D *tex : entity->findChildren<Qt3DRender::QTexture2D *>() )
+  {
+    // TODO : lift the assumption that the texture is RGBA
+    usedGpuMemory += tex->width() * tex->height() * 4;
+  }
+  return usedGpuMemory / 1024.0 / 1024.0;
 }
 
 /// @endcond
