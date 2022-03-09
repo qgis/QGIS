@@ -791,6 +791,13 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
       createMarkers( node->operand() );
       break;
     }
+    case QgsExpressionNode::NodeType::ntBetweenOperator:
+    {
+      const QgsExpressionNodeBetweenOperator *node = static_cast<const QgsExpressionNodeBetweenOperator *>( inNode );
+      createMarkers( node->lowerBound() );
+      createMarkers( node->higherBound() );
+      break;
+    }
     case QgsExpressionNode::NodeType::ntBinaryOperator:
     {
       const QgsExpressionNodeBinaryOperator *node = static_cast<const QgsExpressionNodeBinaryOperator *>( inNode );

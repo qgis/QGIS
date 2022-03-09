@@ -1816,11 +1816,9 @@ bool QgsExpressionNodeBetweenOperator::prepareNode( QgsExpression *parent, const
 
 QVariant QgsExpressionNodeBetweenOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  const QVariant nodeVal { mNode->eval( parent, context ) };
-  const QVariant lowerVal { mLowerBound->eval( parent, context ) };
-  const QVariant higherVal { mHigherBound->eval( parent, context ) };
-  // TODO: type casting
-  const bool res { static_cast<bool>( lowerVal.toString() <= nodeVal.toString() &&nodeVal.toString() <= higherVal.toString() ) };
+  QgsExpressionNodeBinaryOperator lowBound { QgsExpressionNodeBinaryOperator::BinaryOperator::boGE, mNode->clone(), mLowerBound->clone() };
+  QgsExpressionNodeBinaryOperator highBound { QgsExpressionNodeBinaryOperator::BinaryOperator::boLE, mNode->clone(), mHigherBound->clone() };
+  const bool res { lowBound.eval( parent, context ).toBool() &&highBound.eval( parent, context ).toBool() };
   return mNegate ? QVariant( ! res ) : QVariant( res );
 }
 
@@ -1891,6 +1889,21 @@ bool QgsExpressionNodeBetweenOperator::isStatic( QgsExpression *parent, const Qg
     return false;
 
   return true;
+}
+
+QgsExpressionNode *QgsExpressionNodeBetweenOperator::lowerBound() const
+{
+  return mLowerBound;
+}
+
+QgsExpressionNode *QgsExpressionNodeBetweenOperator::higherBound() const
+{
+  return mHigherBound;
+}
+
+bool QgsExpressionNodeBetweenOperator::negate() const
+{
+  return mNegate;
 }
 
 QgsExpressionNodeCondition::WhenThen::WhenThen( QgsExpressionNode *whenExp, QgsExpressionNode *thenExp )

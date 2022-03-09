@@ -101,11 +101,11 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QgsVectorLayer *layer, QWidget *pare
   operatorsList << QStringLiteral( ">" );
   operatorsList << QStringLiteral( ">=" );
   operatorsList << QStringLiteral( "<>" );
+  operatorsList << QStringLiteral( "BETWEEN" );
   operatorsList << QStringLiteral( "IS" );
   operatorsList << QStringLiteral( "IS NOT" );
   operatorsList << QStringLiteral( "IN" );
   operatorsList << QStringLiteral( "LIKE" );
-  operatorsList << QStringLiteral( "BETWEEN" );
   addOperators( operatorsList );
 
   mAggregatesCombo->hide();

@@ -307,6 +307,13 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
         return Fail;
     }
 
+    case QgsExpressionNode::ntBetweenOperator:
+    {
+      const QgsExpressionNodeBetweenOperator *n = static_cast<const QgsExpressionNodeBetweenOperator *>( node );
+      result = n->dump();
+      return Complete;
+    }
+
     case QgsExpressionNode::ntLiteral:
     {
       const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( node );

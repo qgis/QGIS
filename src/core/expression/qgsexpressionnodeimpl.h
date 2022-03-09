@@ -273,11 +273,19 @@ class CORE_EXPORT QgsExpressionNodeIndexOperator : public QgsExpressionNode
 
 };
 
+/**
+ * \brief SQL-like BETWEEN and NOT BETWEEN predicates.
+ * \ingroup core
+ * \since QGIS 3.26
+ */
 class CORE_EXPORT QgsExpressionNodeBetweenOperator: public QgsExpressionNode
 {
   public:
 
-    QgsExpressionNodeBetweenOperator( QgsExpressionNode *node SIP_TRANSFER, QgsExpressionNode *nodeLowerBound SIP_TRANSFER, QgsExpressionNode *nodeHigherBound SIP_TRANSFER, bool negate )
+    /**
+     * This node tests if the result of \a node is between the result of \a nodeLowerBound and \a nodeHigherBound. Optionally it can be inverted with \a negate which by default is FALSE.
+     */
+    QgsExpressionNodeBetweenOperator( QgsExpressionNode *node SIP_TRANSFER, QgsExpressionNode *nodeLowerBound SIP_TRANSFER, QgsExpressionNode *nodeHigherBound SIP_TRANSFER, bool negate = false )
       : mNode( node )
       , mLowerBound( nodeLowerBound )
       , mHigherBound( nodeHigherBound )
@@ -304,6 +312,21 @@ class CORE_EXPORT QgsExpressionNodeBetweenOperator: public QgsExpressionNode
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+    /**
+     * Returns the lower bound expression node of the range.
+     */
+    QgsExpressionNode *lowerBound() const;
+
+    /**
+     * Returns the higher bound expression node of the range.
+     */
+    QgsExpressionNode *higherBound() const;
+
+    /**
+     * Returns TRUE if the predicate is an exclusion test (NOT BETWEEN).
+     */
+    bool negate() const;
 
   private:
     QgsExpressionNode *mNode = nullptr;

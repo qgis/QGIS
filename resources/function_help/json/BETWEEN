@@ -1,0 +1,18 @@
+{
+  "name": "BETWEEN",
+  "type": "operator",
+  "groups": ["Operators"],
+  "description": "Returns 1 if value is within the specified range. To test for exclusion `NOT BETWEEN` can be used.",
+  "arguments": [{
+    "arg": "lower_bound AND higher_bound",
+    "description": "range bounds"
+  }],
+  "examples": [{
+    "expression": "'B' BETWEEN 'A' AND 'C'",
+    "returns": "1"
+  }, {
+    "expression": "'B' NOT BETWEEN 'A' AND 'C'",
+    "returns": "0"
+  }],
+  "tags": ["contained", "found"]
+}

@@ -275,6 +275,7 @@ void QgsExpressionTreeView::updateFunctionTree()
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( ">=" ), QStringLiteral( " >= " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "[]" ), QStringLiteral( "[ ]" ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "||" ), QStringLiteral( " || " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "BETWEEN" ), QStringLiteral( " BETWEEN " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IN" ), QStringLiteral( " IN " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "LIKE" ), QStringLiteral( " LIKE " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "ILIKE" ), QStringLiteral( " ILIKE " ) );

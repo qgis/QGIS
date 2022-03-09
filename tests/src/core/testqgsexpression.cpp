@@ -2087,8 +2087,18 @@ class TestQgsExpression: public QObject
       // Between
       QTest::newRow( "between chars" ) << QStringLiteral( "'b' between 'a' AND 'c'" ) << false << QVariant( true );
       QTest::newRow( "not between chars" ) << QStringLiteral( "'b' not between 'a' AND 'c'" ) << false << QVariant( false );
+      QTest::newRow( "between strings" ) << QStringLiteral( "'ab' between 'aa' AND 'ac'" ) << false << QVariant( true );
+      QTest::newRow( "not between strings" ) << QStringLiteral( "'ab' not between 'aa' AND 'ac'" ) << false << QVariant( false );
       QTest::newRow( "between ints" ) << QStringLiteral( "1 between 0 AND 2" ) << false << QVariant( true );
       QTest::newRow( "not between ints" ) << QStringLiteral( "1 not between 0 AND 2" ) << false << QVariant( false );
+      QTest::newRow( "between floats" ) << QStringLiteral( "1.01 between 1.0 AND 1.02" ) << false << QVariant( true );
+      QTest::newRow( "not between floats" ) << QStringLiteral( "1.01 not between 1.0 AND 1.02" ) << false << QVariant( false );
+      QTest::newRow( "between date" ) << QStringLiteral( "make_date(2010,9,8) between make_date(2009,9,8) AND make_date(2011,9,8)" ) << false << QVariant( true );
+      QTest::newRow( "not between date" ) << QStringLiteral( "make_date(2010,9,8) not between make_date(2009,9,8) AND make_date(2011,9,8)" ) << false << QVariant( false );
+      QTest::newRow( "between time" ) << QStringLiteral( "make_time(10,10,10) between make_time(9,10,10) AND make_time(11,10,10)" ) << false << QVariant( true );
+      QTest::newRow( "not between time" ) << QStringLiteral( "make_time(10,10,10) not between make_time(9,10,10) AND make_time(11,10,10)" ) << false << QVariant( false );
+      QTest::newRow( "between datetime" ) << QStringLiteral( "make_datetime(9,10,10,1,1,1) between make_datetime(9,10,10,1,1,0) AND make_datetime(9,10,10,1,1,2)" ) << false << QVariant( true );
+      QTest::newRow( "not between datetime" ) << QStringLiteral( "make_datetime(9,10,10,1,1,1) not between make_datetime(9,10,10,1,1,0) AND make_datetime(9,10,10,1,1,2)" ) << false << QVariant( false );
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
