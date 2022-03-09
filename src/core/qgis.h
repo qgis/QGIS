@@ -1340,7 +1340,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( RendererUsage )
 
     /**
-     * Syncronization of 2D map canvas and 3D view
+     * Synchronization of 2D map canvas and 3D view
      *
      * \since QGIS 3.26
      */
