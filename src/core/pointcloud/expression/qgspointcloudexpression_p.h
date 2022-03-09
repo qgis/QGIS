@@ -22,7 +22,7 @@
 #include "qgsexpression.h"
 #include "qgspointcloudexpressionnode.h"
 
-///@cond
+/// @cond PRIVATE
 
 /**
  * This class exists only for implicit sharing of QgsPointCloudExpression

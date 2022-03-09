@@ -209,46 +209,6 @@ bool QgsPointCloudExpressionNodeBinaryOperator::compare( double diff )
   }
 }
 
-qlonglong QgsPointCloudExpressionNodeBinaryOperator::computeInt( qlonglong x, qlonglong y )
-{
-  switch ( mOp )
-  {
-    case boPlus:
-      return x + y;
-    case boMinus:
-      return x - y;
-    case boMul:
-      return x * y;
-    case boDiv:
-      return x / y;
-    case boMod:
-      return x % y;
-    default:
-      Q_ASSERT( false );
-      return 0;
-  }
-}
-
-double QgsPointCloudExpressionNodeBinaryOperator::computeDouble( double x, double y )
-{
-  switch ( mOp )
-  {
-    case boPlus:
-      return x + y;
-    case boMinus:
-      return x - y;
-    case boMul:
-      return x * y;
-    case boDiv:
-      return x / y;
-    case boMod:
-      return std::fmod( x, y );
-    default:
-      Q_ASSERT( false );
-      return 0;
-  }
-}
-
 QgsPointCloudExpressionNode::NodeType QgsPointCloudExpressionNodeBinaryOperator::nodeType() const
 {
   return ntBinaryOperator;

@@ -19,7 +19,6 @@
 #include "qgis_core.h"
 #include <QMetaType>
 #include <QList>
-#include <QCoreApplication>
 #include <QSet>
 
 #include "qgspointcloudexpressionnode.h"

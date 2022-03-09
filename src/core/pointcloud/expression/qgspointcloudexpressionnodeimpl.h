@@ -201,8 +201,6 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
 
   private:
     bool compare( double diff );
-    qlonglong computeInt( qlonglong x, qlonglong y );
-    double computeDouble( double x, double y );
 
     BinaryOperator mOp;
     QgsPointCloudExpressionNode *mOpLeft = nullptr;
