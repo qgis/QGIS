@@ -42,7 +42,7 @@ QgsPointCloudExpression::~QgsPointCloudExpression()
 void QgsPointCloudExpression::setExpression( const QString &subset )
 {
   QgsExpression expression( subset );
-  if ( expression.hasParserError() && !expression.dump().isEmpty() )
+  if ( expression.hasParserError() && !subset.isEmpty() )
   {
     d->mRootNode = nullptr;
     d->mParserErrorString = expression.parserErrorString();
