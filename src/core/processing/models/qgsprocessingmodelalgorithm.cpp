@@ -397,7 +397,28 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QElapsedTimer childTime;
       childTime.start();
 
-      bool ok = childAlg->prepare( childParams, context, &modelFeedback );
+      bool ok = false;
+
+      QThread *modelThread = QThread::currentThread();
+
+      auto prepareOnMainThread = [modelThread, &ok, &childAlg, &childParams, &context, &modelFeedback]
+      {
+        Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->prepare() must be run on the main thread" );
+        ok = childAlg->prepare( childParams, context, &modelFeedback );
+        context.pushToThread( modelThread );
+      };
+
+      // Make sure we only run prepare steps on the main thread!
+      if ( modelThread == qApp->thread() )
+        ok = childAlg->prepare( childParams, context, &modelFeedback );
+      else
+      {
+        context.pushToThread( qApp->thread() );
+        QMetaObject::invokeMethod( qApp, prepareOnMainThread, Qt::BlockingQueuedConnection );
+      }
+
+      Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
+
       if ( !ok )
       {
         const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
@@ -407,7 +428,24 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QVariantMap results;
       try
       {
-        results = childAlg->runPrepared( childParams, context, &modelFeedback );
+        if ( childAlg->flags() & QgsProcessingAlgorithm::FlagNoThreading )
+        {
+          // child algorithm run step must be called on main thread
+          auto runOnMainThread = [modelThread, &context, &modelFeedback, &results, &childAlg, &childParams]
+          {
+            Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->runPrepared() must be run on the main thread" );
+            results = childAlg->runPrepared( childParams, context, &modelFeedback );
+            context.pushToThread( modelThread );
+          };
+
+          context.pushToThread( qApp->thread() );
+          QMetaObject::invokeMethod( qApp, runOnMainThread, Qt::BlockingQueuedConnection );
+        }
+        else
+        {
+          // safe to run on model thread
+          results = childAlg->runPrepared( childParams, context, &modelFeedback );
+        }
       }
       catch ( QgsProcessingException & )
       {
@@ -415,7 +453,27 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         throw QgsProcessingException( error );
       }
 
-      QVariantMap ppRes = childAlg->postProcess( context, &modelFeedback );
+      Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
+
+      QVariantMap ppRes;
+      auto postProcessOnMainThread = [modelThread, &ppRes, &childAlg, &context, &modelFeedback]
+      {
+        Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->postProcess() must be run on the main thread" );
+        ppRes = childAlg->postProcess( context, &modelFeedback );
+        context.pushToThread( modelThread );
+      };
+
+      // Make sure we only run postProcess steps on the main thread!
+      if ( modelThread == qApp->thread() )
+        ppRes = childAlg->postProcess( context, &modelFeedback );
+      else
+      {
+        context.pushToThread( qApp->thread() );
+        QMetaObject::invokeMethod( qApp, postProcessOnMainThread, Qt::BlockingQueuedConnection );
+      }
+
+      Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
+
       if ( !ppRes.isEmpty() )
         results = ppRes;
 
