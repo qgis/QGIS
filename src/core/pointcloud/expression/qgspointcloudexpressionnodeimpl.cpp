@@ -660,45 +660,9 @@ double QgsPointCloudExpressionNodeAttributeRef::evalNode( QgsPointCloudExpressio
   }
 
   const char *data = mBlock->data();
-  const QgsPointCloudAttribute::DataType type = mAttribute->type();
   const int offset = mBlock->attributes().pointRecordSize() * pointIndex + mOffset;
 
-  double val;
-  switch ( type )
-  {
-    case QgsPointCloudAttribute::UChar:
-    case QgsPointCloudAttribute::Char:
-      val = *( data + offset );
-      break;
-
-    case QgsPointCloudAttribute::UInt32:
-      val = *reinterpret_cast< const quint32 * >( data + offset );
-      break;
-    case QgsPointCloudAttribute::Int32:
-      val = *reinterpret_cast< const qint32 * >( data + offset );
-      break;
-
-    case QgsPointCloudAttribute::UInt64:
-      val = *reinterpret_cast< const quint64 * >( data + offset );
-      break;
-    case QgsPointCloudAttribute::Int64:
-      val = *reinterpret_cast< const qint64 * >( data + offset );
-      break;
-
-    case QgsPointCloudAttribute::Short:
-      val = *reinterpret_cast< const short * >( data + offset );
-      break;
-    case QgsPointCloudAttribute::UShort:
-      val = *reinterpret_cast< const unsigned short * >( data + offset );
-      break;
-
-    case QgsPointCloudAttribute::Float:
-      val = *reinterpret_cast< const float * >( data + offset );
-      break;
-    case QgsPointCloudAttribute::Double:
-      val = *reinterpret_cast< const double * >( data + offset );
-      break;
-  }
+  double val = mAttribute->convertValueToDouble( data + offset );
 
   if ( mAttribute->name().compare( QLatin1String( "X" ) ) == 0 )
     return val * mBlock->scale().x() + mBlock->offset().x();
@@ -707,7 +671,7 @@ double QgsPointCloudExpressionNodeAttributeRef::evalNode( QgsPointCloudExpressio
   if ( mAttribute->name().compare( QLatin1String( "Z" ) ) == 0 )
     return val * mBlock->scale().z() + mBlock->offset().z();
 
-  return val; // calculate the p's point respective attribute
+  return val; // calculate the pointIndex's point respective attribute
 }
 
 QgsPointCloudExpressionNode::NodeType QgsPointCloudExpressionNodeAttributeRef::nodeType() const

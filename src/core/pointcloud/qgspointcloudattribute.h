@@ -90,6 +90,13 @@ class CORE_EXPORT QgsPointCloudAttribute
     QString displayType() const;
 
     /**
+     * Returns the attribute's value as a double for data pointed to by \a ptr
+     *
+     * \since QGIS 3.26
+     */
+    double convertValueToDouble( const char *ptr ) const;
+
+    /**
      * Returns TRUE if the specified data \a type is numeric.
      */
     static bool isNumeric( DataType type );

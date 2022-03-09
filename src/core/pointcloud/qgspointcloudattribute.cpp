@@ -244,6 +244,13 @@ void _attribute( const char *data, std::size_t offset, QgsPointCloudAttribute::D
   }
 }
 
+double QgsPointCloudAttribute::convertValueToDouble( const char *ptr ) const
+{
+  double val;
+  _attribute( ptr, 0, mType, val );
+  return val;
+}
+
 void QgsPointCloudAttribute::getPointXYZ( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType,
     int yOffset, QgsPointCloudAttribute::DataType yType,
     int zOffset, QgsPointCloudAttribute::DataType zType,
