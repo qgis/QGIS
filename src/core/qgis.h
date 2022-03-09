@@ -1346,7 +1346,7 @@ class CORE_EXPORT Qgis
      */
     enum class ViewSyncModeFlag : int
     {
-      Sync3DTo2D = 1 << 0, //! Syncronize 3D view camera to the main map canvas extent
+      Sync3DTo2D = 1 << 0, //! SyncHronize 3D view camera to the main map canvas extent
       Sync2DTo3D = 1 << 1, //! Update the 2D main canvas extent to include the viewed area from the 3D view
     };
     Q_ENUM( ViewSyncModeFlag )
