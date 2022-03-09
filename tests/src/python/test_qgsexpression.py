@@ -315,7 +315,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
             "\n</pre>"
         )
         self.assertRegex(exp.evalErrorString(), regex)
-    
+
     def testBetween(self):
 
         e = QgsExpression()
