@@ -115,13 +115,13 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     /**
      * Sets the limit of the GPU memory used to render the entity
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     void setGpuMemoryLimit( double gpuMemoryLimit ) { mGpuMemoryLimit = gpuMemoryLimit; }
 
     /**
      * Returns the limit of the GPU memory used to render the entity in megabytes
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     double gpuMemoryLimit() const { return mGpuMemoryLimit; }
 
