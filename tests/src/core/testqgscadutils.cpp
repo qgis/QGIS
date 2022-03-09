@@ -44,6 +44,7 @@ class TestQgsCadUtils : public QObject
     void testAngle();
     void testCommonAngle();
     void testDistance();
+    void testLineExtension();
     void testEdge();
 
   private:
@@ -301,6 +302,137 @@ void TestQgsCadUtils::testDistance()
   const QgsCadUtils::AlignMapPointOutput res4 = QgsCadUtils::alignMapPoint( QgsPointXY( 25, 15 ), context );
   QVERIFY( res4.valid );
   QCOMPARE( res4.finalMapPoint, QgsPointXY( 30 - d, 20 - d ) );
+}
+
+void TestQgsCadUtils::testLineExtension()
+{
+  QgsCadUtils::AlignMapPointContext context( baseContext() );
+  context.mapUnitsPerPixel = 0.1;
+
+  // without no constraint
+  QgsCadUtils::AlignMapPointOutput result = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 20 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 45, 20 ) );
+
+  // only line extension
+  context.lineExtensionConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, 0 );
+
+  QgsFeature feature;
+  mLayerPolygon->getFeatures().nextFeature( feature );
+  QgsFeatureId featId = feature.id();
+
+  QQueue< QgsPointLocator::Match > lockedSnapVertices;
+  lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 10, 20 ), 1 ) );
+  lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 10, 20 ), 2 ) );
+  context.setLockedSnapVertices( lockedSnapVertices );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.5, 0 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 0 ) );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 50.5, 0 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 50.4, -0.2 ) );
+
+  // extension + x
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 0 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 0.2, 25.2 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 0, 25 ) );
+
+  // extension + rel x
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, -40 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 0, 30.2 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( -10, 30 ) );
+
+  // extension + y
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 25 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( -0.2, 25.2 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 0, 25 ) );
+
+  // extension + rel y
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, -30 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 70.2, -100 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 70, -10 ) );
+
+  // extension + x + y
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint();
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 0 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 0 ) );
+
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 11 );
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 0 );
+
+  // this time, the soft lock shouldn't be actived
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 0 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 11, 0 ) );
+
+  // extension + angle
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint();
+
+  context.angleConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, -45 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 40.2 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 40 ) );
+
+  // extension + common angle
+  context.angleConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.commonAngleConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 45 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 40.2 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockCommonAngle, 135.0 );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 40 ) );
+
+  // extension + distance ( without intersection )
+  context.commonAngleConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.distanceConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 10 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 42.0 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex );
+  QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 23.273, 27.399 ), 10e-3 );
+
+  // extension + distance ( with intersection )
+  context.distanceConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 30 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 42.0 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex );
+  QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 10, 42.361 ), 10e-3 );
+
+  // extension + distance + x
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 9.9 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 42.0 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex );
+  QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 9.9, 42.271 ), 10e-3 );
 }
 
 void TestQgsCadUtils::testEdge()
