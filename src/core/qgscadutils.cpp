@@ -315,22 +315,28 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
           if ( ctx.xConstraint.locked || !std::isnan( res.softLockX ) )
           {
             QgsPoint intersection;
-            QgsGeometryUtils::lineIntersection(
-              QgsPoint( point ), QgsVector( 0, 1 ),
-              QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
-              intersection
-            );
-            point = QgsPointXY( intersection );
+            const bool intersect = QgsGeometryUtils::lineIntersection(
+                                     QgsPoint( point ), QgsVector( 0, 1 ),
+                                     QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
+                                     intersection
+                                   );
+            if ( intersect )
+            {
+              point = QgsPointXY( intersection );
+            }
           }
           else if ( ctx.yConstraint.locked || !std::isnan( res.softLockY ) )
           {
             QgsPoint intersection;
-            QgsGeometryUtils::lineIntersection(
-              QgsPoint( point ), QgsVector( 1, 0 ),
-              QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
-              intersection
-            );
-            point = QgsPointXY( intersection );
+            const bool intersect = QgsGeometryUtils::lineIntersection(
+                                     QgsPoint( point ), QgsVector( 1, 0 ),
+                                     QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
+                                     intersection
+                                   );
+            if ( intersect )
+            {
+              point = QgsPointXY( intersection );
+            }
           }
           else if ( angleLocked )
           {
