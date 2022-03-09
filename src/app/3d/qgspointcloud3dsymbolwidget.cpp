@@ -123,7 +123,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
 
   mPointSizeSpinBox->setEnabled( !mTriangulateGroupBox->isChecked() );
   mHorizontalTriangleThresholdSpinBox->setEnabled( mHorizontalTriangleCheckBox->isChecked() );
-  mHorizontalTriangleThresholdSpinBox->setEnabled( mVerticalTriangleCheckBox->isChecked() );
+  mVerticalTriangleThresholdSpinBox->setEnabled( mVerticalTriangleCheckBox->isChecked() );
 
   if ( !symbol ) // if we have a symbol, this was already handled in setSymbol above
     rampAttributeChanged();
