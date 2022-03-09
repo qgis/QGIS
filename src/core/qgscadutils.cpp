@@ -62,6 +62,12 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
     res.edgeMatch = QgsPointLocator::Match();
   }
 
+  int numberOfHardLock = 0;
+  if ( ctx.xConstraint.locked ) ++numberOfHardLock;
+  if ( ctx.yConstraint.locked ) ++numberOfHardLock;
+  if ( ctx.angleConstraint.locked ) ++numberOfHardLock;
+  if ( ctx.distanceConstraint.locked ) ++numberOfHardLock;
+
   QgsPointXY previousPt, penultimatePt;
   if ( ctx.cadPoints().count() >= 2 )
     previousPt = ctx.cadPoint( 1 );
@@ -95,7 +101,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       }
     }
   }
-  else if ( ctx.xyVertexConstraint.locked )
+  else if ( numberOfHardLock < 2 && ctx.xyVertexConstraint.locked )
   {
     for ( QgsPointLocator::Match snapMatch : ctx.lockedSnapVertices() )
     {
@@ -138,7 +144,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       }
     }
   }
-  else if ( ctx.xyVertexConstraint.locked )
+  else if ( numberOfHardLock < 2 && ctx.xyVertexConstraint.locked )
   {
     for ( QgsPointLocator::Match snapMatch : ctx.lockedSnapVertices() )
     {
@@ -156,7 +162,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
   // *****************************
   // ---- Common Angle constraint
-  if ( !ctx.angleConstraint.locked && ctx.cadPoints().count() >= 2 && ctx.commonAngleConstraint.locked && ctx.commonAngleConstraint.value != 0 )
+  if ( numberOfHardLock < 2 && !ctx.angleConstraint.locked && ctx.cadPoints().count() >= 2 && ctx.commonAngleConstraint.locked && ctx.commonAngleConstraint.value != 0 )
   {
     const double commonAngle = ctx.commonAngleConstraint.value * M_PI / 180;
     // see if soft common angle constraint should be performed
@@ -293,7 +299,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   // *****************************
   // ---- Line Extension Constraint
 
-  if ( ctx.lineExtensionConstraint.locked && ctx.lockedSnapVertices().length() != 0 )
+  if ( numberOfHardLock < 2 && ctx.lineExtensionConstraint.locked && ctx.lockedSnapVertices().length() != 0 )
   {
     const QgsPointLocator::Match snap = ctx.lockedSnapVertices().last();
     const QgsPointXY extensionPoint = snap.point();
@@ -399,13 +405,33 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       {
         const QgsPointXY verticalPt0( point.x(), point.y() );
         const QgsPointXY verticalPt1( point.x(), point.y() + 1 );
-        res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, verticalPt0, verticalPt1, point );
+        const bool intersect = QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, verticalPt0, verticalPt1, point );
+
+        if ( ctx.xConstraint.locked )
+        {
+          res.valid &= intersect;
+        }
+        else if ( !intersect )
+        {
+          res.softLockX = std::numeric_limits<double>::quiet_NaN();
+          res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, previousPt, point, point );
+        }
       }
       if ( ctx.yConstraint.locked || !std::isnan( res.softLockY ) )
       {
         const QgsPointXY horizontalPt0( point.x(), point.y() );
         const QgsPointXY horizontalPt1( point.x() + 1, point.y() );
-        res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, horizontalPt0, horizontalPt1, point );
+        const bool intersect = QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, horizontalPt0, horizontalPt1, point );
+
+        if ( ctx.yConstraint.locked )
+        {
+          res.valid &= intersect;
+        }
+        else if ( !intersect )
+        {
+          res.softLockY = std::numeric_limits<double>::quiet_NaN();
+          res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, previousPt, point, point );
+        }
       }
     }
     else if ( res.softLockLineExtension != QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex )
@@ -427,7 +453,12 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
         lineExtensionPt2 = QgsPointXY( geom.vertexAt( snap.vertexIndex() - 1 ) );
       }
 
-      res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, lineExtensionPt1, lineExtensionPt2, point );
+      const bool intersect = QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, lineExtensionPt1, lineExtensionPt2, point );
+      if ( !intersect )
+      {
+        res.softLockLineExtension = QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex;
+        res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, previousPt, point, point );
+      }
     }
     else
     {
