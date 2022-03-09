@@ -592,14 +592,14 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setRendererUsage( Qgis::RendererUsage rendererUsage );
 
     /**
-     * Returns the view sync mode (used to syncronize the 2D main map canvas and the 3D camera navigation)
+     * Returns the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
      *
      * \since QGIS 3.26
      */
     Qgis::ViewSyncModeFlags viewSyncMode() const { return mViewSyncMode; }
 
     /**
-     * Sets the view sync mode (used to syncronize the 2D main map canvas and the 3D camera navigation)
+     * Sets the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
      *
      * \since QGIS 3.26
      */

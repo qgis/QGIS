@@ -623,14 +623,14 @@ Sets the renderer usage
 
     Qgis::ViewSyncModeFlags viewSyncMode() const;
 %Docstring
-Returns the view sync mode (used to syncronize the 2D main map canvas and the 3D camera navigation)
+Returns the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
 
 .. versionadded:: 3.26
 %End
 
     void setViewSyncMode( Qgis::ViewSyncModeFlags mode );
 %Docstring
-Sets the view sync mode (used to syncronize the 2D main map canvas and the 3D camera navigation)
+Sets the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
 
 .. versionadded:: 3.26
 %End

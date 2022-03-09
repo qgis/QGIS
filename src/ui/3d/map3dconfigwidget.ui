@@ -714,7 +714,7 @@
          <widget class="QWidget" name="mPage2DCanvasSync">
           <layout class="QGridLayout" name="gridLayout_4">
            <item row="0" column="0">
-            <widget class="QScrollArea" name="scrollArea">
+            <widget class="QgsScrollArea" name="scrollArea">
              <property name="widgetResizable">
               <bool>true</bool>
              </property>
