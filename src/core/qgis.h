@@ -55,6 +55,14 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
   GroupLayer, //!< Composite group layer. Added in QGIS 3.24
 };
 
+#ifndef SIP_RUN
+// qHash implementation for scoped enum type
+// https://gitlab.com/frostasm/programming-knowledge-base/-/snippets/20120
+#define QHASH_FOR_CLASS_ENUM(T) \
+  inline uint qHash(const T &t, uint seed) { \
+    return ::qHash(static_cast<typename std::underlying_type<T>::type>(t), seed); \
+  }
+#endif
 
 /**
  * \ingroup core
@@ -1574,6 +1582,8 @@ class CORE_EXPORT Qgis
      */
     static QString geosVersion();
 };
+
+QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )

@@ -122,7 +122,7 @@ void TestQgsMapToolEllipse::initTestCase()
   mCanvas->setLayers( layerList );
 
   mMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
-  mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::Shape );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
   mCanvas->setMapTool( mMapTool );
 
   initAttributs();
@@ -200,7 +200,7 @@ void TestQgsMapToolEllipse::cleanupTestCase()
 void TestQgsMapToolEllipse::resetMapTool( QgsMapToolShapeMetadata *metadata )
 {
   mMapTool->clean();
-  mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::Shape );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
   mMapTool->setCurrentShapeMapTool( metadata ) ;
 }
 

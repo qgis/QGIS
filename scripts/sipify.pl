@@ -835,6 +835,9 @@ while ($LINE_IDX < $LINE_COUNT){
     if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$/){
         next;
     }
+    if ($LINE =~ m/^\s*QHASH_FOR_CLASS_ENUM/){
+        next;
+    }
 
     # SIP_SKIP
     if ( $LINE =~ m/SIP_SKIP|SIP_PYTHON_SPECIAL_/ ){
