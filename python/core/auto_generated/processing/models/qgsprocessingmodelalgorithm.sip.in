@@ -52,8 +52,6 @@ Constructor for QgsProcessingModelAlgorithm.
 
     virtual QString helpUrl() const;
 
-    virtual Flags flags() const;
-
 
     virtual bool canExecute( QString *errorMessage /Out/ = 0 ) const;
 
