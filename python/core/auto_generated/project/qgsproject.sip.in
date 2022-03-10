@@ -1561,9 +1561,27 @@ additional information to the layer.
 Emitted when the project file has been written and closed.
 %End
 
-    void oldProjectVersionWarning( const QString & );
+ void oldProjectVersionWarning( const QString & ) /Deprecated/;
 %Docstring
 Emitted when an old project file is read.
+
+.. deprecated::
+   use :py:func:`~QgsProject.readVersionMismatchOccurred` instead.
+%End
+
+    void readVersionMismatchOccurred( const QString &fileVersion );
+%Docstring
+Emitted when a project is read and the version of QGIS used to save
+the project differs from the current QGIS version.
+
+The ``fileVersion`` argument indicates the version of QGIS used to save
+the project.
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 3.26
 %End
 
     void layerLoaded( int i, int n );
