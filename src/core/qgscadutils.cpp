@@ -414,6 +414,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
         else if ( !intersect )
         {
           res.softLockX = std::numeric_limits<double>::quiet_NaN();
+          res.softLockY = std::numeric_limits<double>::quiet_NaN(); // in the case of the 2 soft locks are activated
           res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, previousPt, point, point );
         }
       }
