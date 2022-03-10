@@ -27,83 +27,6 @@ Encapsulates properties of a vector tile matrix set, including tile origins and 
 Returns a vector tile structure corresponding to the standard web mercator/GoogleCRS84Quad setup.
 %End
 
-    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
-
-    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
-
-
-    double z0xMinimum() const;
-%Docstring
-Returns the minimum x coordinate for zoom level 0.
-
-This property is used when scaling raw vector tile coordinates.
-
-.. seealso:: :py:func:`setZ0xMinimum`
-%End
-
-    void setZ0xMinimum( double x );
-%Docstring
-Sets the minimum ``x`` coordinate for zoom level 0.
-
-This property is used when scaling raw vector tile coordinates.
-
-.. seealso:: :py:func:`z0xMinimum`
-%End
-
-    double z0xMaximum() const;
-%Docstring
-Returns the maximum x coordinate for zoom level 0.
-
-This property is used when scaling raw vector tile coordinates.
-
-.. seealso:: :py:func:`setZ0xMaximum`
-%End
-
-    void setZ0xMaximum( double x );
-%Docstring
-Sets the maximum ``x`` coordinate for zoom level 0.
-
-This property is used when scaling raw vector tile coordinates.
-
-.. seealso:: :py:func:`z0xMaximum`
-%End
-
-    double z0yMinimum() const;
-%Docstring
-Returns the minimum y coordinate for zoom level 0.
-
-This property is used when scaling raw vector tile coordinates.
-
-.. seealso:: :py:func:`setZ0yMinimum`
-%End
-
-    void setZ0yMinimum( double y );
-%Docstring
-Sets the minimum ``y`` coordinate for zoom level 0.
-
-This property is used when scaling raw vector tile coordinates.
-
-.. seealso:: :py:func:`z0yMinimum`
-%End
-
-    double z0yMaximum() const;
-%Docstring
-Returns the maximum y coordinate for zoom level 0.
-
-This property is used when scaling raw vector tile coordinates.
-
-.. seealso:: :py:func:`setZ0yMaximum`
-%End
-
-    void setZ0yMaximum( double y );
-%Docstring
-Sets the maximum ``y`` coordinate for zoom level 0.
-
-This property is used when scaling raw vector tile coordinates.
-
-.. seealso:: :py:func:`z0yMaximum`
-%End
-
     bool fromEsriJson( const QVariantMap &json );
 %Docstring
 Initializes the tile structure settings from an ESRI REST VectorTileService ``json`` map.
@@ -112,7 +35,6 @@ Initializes the tile structure settings from an ESRI REST VectorTileService ``js
 
    This same structure is utilized in ESRI vtpk archives in the root.json file.
 %End
-
 };
 
 /************************************************************************
