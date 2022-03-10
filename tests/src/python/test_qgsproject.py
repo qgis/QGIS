@@ -23,7 +23,8 @@ from tempfile import TemporaryDirectory
 
 import qgis  # NOQA
 
-from qgis.core import (QgsProject,
+from qgis.core import (Qgis,
+                       QgsProject,
                        QgsCoordinateTransformContext,
                        QgsProjectDirtyBlocker,
                        QgsApplication,
@@ -35,7 +36,9 @@ from qgis.core import (QgsProject,
                        QgsMapLayer,
                        QgsExpressionContextUtils,
                        QgsProjectColorScheme,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsFeature,
+                       QgsGeometry)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
@@ -727,7 +730,7 @@ class TestQgsProject(unittest.TestCase):
 
     def test_transactionsGroup(self):
         # Undefined transaction group (wrong provider key).
-        QgsProject.instance().setAutoTransaction(True)
+        QgsProject.instance().setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
         self.assertIsNone(noTg)
 
@@ -1416,6 +1419,99 @@ class TestQgsProject(unittest.TestCase):
         self.assertNotEqual(p, QgsProject.instance())
         QgsProject.setInstance(p)
         self.assertEqual(p, QgsProject.instance())
+
+    def testTransactionMode(self):
+        project = QgsProject()
+
+        # Default transaction mode disabled
+        self.assertEqual(project.transactionMode(), Qgis.TransactionMode.Disabled)
+
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
+        self.assertEqual(project.transactionMode(), Qgis.TransactionMode.AutomaticGroups)
+
+        project.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+        self.assertEqual(project.transactionMode(), Qgis.TransactionMode.BufferedGroups)
+
+        project.setTransactionMode(Qgis.TransactionMode.Disabled)
+        self.assertEqual(project.transactionMode(), Qgis.TransactionMode.Disabled)
+
+    def testEditBufferGroup(self):
+        project = QgsProject()
+        project.removeAllMapLayers()
+
+        l1 = createLayer('test')
+        project.addMapLayer(l1)
+        l2 = createLayer('test2')
+        project.addMapLayer(l2)
+
+        # TransactionMode disabled -> editBufferGroup is empty
+        self.assertEqual(len(project.editBufferGroup().layers()), 0)
+
+        # TransactionMode BufferedGroups -> all editable layers in group
+        project.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+        self.assertIn(l1, project.editBufferGroup().layers())
+        self.assertIn(l2, project.editBufferGroup().layers())
+
+        project.removeAllMapLayers()
+
+    def testStartEditingCommitRollBack(self):
+        project = QgsProject()
+        project.removeAllMapLayers()
+
+        layer_a = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+        layer_b = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+
+        project.addMapLayers([layer_a, layer_b])
+        project.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+
+        self.assertFalse(project.editBufferGroup().isEditing())
+
+        self.assertTrue(project.startEditing(layer_a))
+        self.assertTrue(project.editBufferGroup().isEditing())
+        self.assertTrue(layer_a.editBuffer())
+        self.assertTrue(layer_b.editBuffer())
+
+        success, commitErrors = project.commitChanges(False)
+        self.assertTrue(success)
+        self.assertTrue(project.editBufferGroup().isEditing())
+        self.assertTrue(layer_a.editBuffer())
+        self.assertTrue(layer_b.editBuffer())
+        success, commitErrors = project.commitChanges(True, layer_b)
+        self.assertTrue(success)
+        self.assertFalse(project.editBufferGroup().isEditing())
+        self.assertFalse(layer_a.editBuffer())
+        self.assertFalse(layer_b.editBuffer())
+
+        self.assertTrue(project.startEditing())
+        self.assertTrue(project.editBufferGroup().isEditing())
+
+        f = QgsFeature(layer_a.fields())
+        f.setAttribute('int', 123)
+        f.setGeometry(QgsGeometry.fromWkt('point(7 45)'))
+        self.assertTrue(layer_a.addFeatures([f]))
+        self.assertEqual(len(project.editBufferGroup().modifiedLayers()), 1)
+        self.assertIn(layer_a, project.editBufferGroup().modifiedLayers())
+
+        # Check feature in layer edit buffer but not in provider till commit
+        self.assertEqual(layer_a.featureCount(), 1)
+        self.assertEqual(layer_a.dataProvider().featureCount(), 0)
+
+        success, rollbackErrors = project.rollBack(False)
+        self.assertTrue(success)
+        self.assertTrue(project.editBufferGroup().isEditing())
+        self.assertEqual(layer_a.featureCount(), 0)
+
+        self.assertTrue(layer_a.addFeatures([f]))
+        self.assertEqual(layer_a.featureCount(), 1)
+        self.assertEqual(layer_a.dataProvider().featureCount(), 0)
+
+        success, commitErrors = project.commitChanges(True)
+        self.assertTrue(success)
+        self.assertFalse(project.editBufferGroup().isEditing())
+        self.assertEqual(layer_a.featureCount(), 1)
+        self.assertEqual(layer_a.dataProvider().featureCount(), 1)
+
+        project.removeAllMapLayers()
 
 
 if __name__ == '__main__':

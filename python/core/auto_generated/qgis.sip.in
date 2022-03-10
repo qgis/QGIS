@@ -856,6 +856,13 @@ The development version
       Glob,
     };
 
+    enum class TransactionMode
+    {
+      Disabled,
+      AutomaticGroups,
+      BufferedGroups,
+    };
+
     enum class AltitudeClamping
     {
       Absolute,

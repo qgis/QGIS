@@ -1,0 +1,103 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vector/qgsvectorlayereditbuffergroup.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsVectorLayerEditBufferGroup : QObject
+{
+%Docstring(signature="appended")
+The edit buffer group manages a group of edit buffers. Commands like commit and rollback are
+managed by the group invokes individual :py:func:`~addFeature`, :py:func:`~deleteFeature`, ... in the correct order
+across all contained edit buffers.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayereditbuffergroup.h"
+%End
+  public:
+
+    explicit QgsVectorLayerEditBufferGroup( QObject *parent = 0 );
+%Docstring
+Constructor for :py:class:`QgsEditBufferGroup`
+%End
+
+    void addLayer( QgsVectorLayer *layer );
+%Docstring
+Add a layer to this edit buffer group.
+%End
+
+    void clear();
+%Docstring
+Remove all layers from this edit buffer group
+%End
+
+    QSet<QgsVectorLayer *> layers() const;
+%Docstring
+Gets the set of layers currently managed by this edit buffer group.
+
+:return: Layer set
+%End
+
+    QSet<QgsVectorLayer *> modifiedLayers() const;
+%Docstring
+Gets the set of modified layers currently managed by this edit buffer group.
+
+:return: Layer set
+%End
+
+    bool startEditing();
+%Docstring
+Start editing
+
+:return: ``True`` on success
+%End
+
+    bool commitChanges( QStringList &commitErrors, bool stopEditing = true );
+%Docstring
+Attempts to commit any changes to disk.  Returns the result of the attempt.
+If a commit fails, the in-memory changes are left alone.
+
+This allows editing to continue if the commit failed on e.g. a
+disallowed value in a Postgres database - the user can re-edit and try
+again.
+
+The commits occur in distinct stages,
+(add attributes, add features, change attribute values, change
+geometries, delete features, delete attributes)
+so if a stage fails, it's difficult to roll back cleanly.
+Therefore any error message also includes which stage failed so
+that the user has some chance of repairing the damage cleanly.
+
+:return: ``True`` on success
+%End
+
+    bool rollBack( QStringList &rollbackErrors, bool stopEditing = true );
+%Docstring
+Stop editing and discard the edits
+
+:return: ``False`` if errors occurred during rollback
+%End
+
+    bool isEditing() const;
+%Docstring
+Returns ``True`` if the layers are in editing mode
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vector/qgsvectorlayereditbuffergroup.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

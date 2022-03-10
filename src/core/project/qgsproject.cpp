@@ -628,6 +628,76 @@ QgsPropertyCollection QgsProject::dataDefinedServerProperties() const
   return mDataDefinedServerProperties;
 }
 
+bool QgsProject::startEditing( QgsVectorLayer *vectorLayer )
+{
+  switch ( mTransactionMode )
+  {
+    case Qgis::TransactionMode::Disabled:
+    case Qgis::TransactionMode::AutomaticGroups:
+    {
+      if ( ! vectorLayer )
+        return false;
+      return vectorLayer->startEditing();
+    }
+    break;
+    case Qgis::TransactionMode::BufferedGroups:
+      return mEditBufferGroup.startEditing();
+      break;
+  }
+
+  return false;
+}
+
+bool QgsProject::commitChanges( QStringList &commitErrors, bool stopEditing, QgsVectorLayer *vectorLayer )
+{
+  switch ( mTransactionMode )
+  {
+    case Qgis::TransactionMode::Disabled:
+    case Qgis::TransactionMode::AutomaticGroups:
+    {
+      if ( ! vectorLayer )
+      {
+        commitErrors.append( tr( "Trying to commit changes without a layer specified. This only works if the transaction mode is buffered" ) );
+        return false;
+      }
+      bool success = vectorLayer->commitChanges();
+      commitErrors = vectorLayer->commitErrors();
+      return success;
+    }
+    break;
+    case Qgis::TransactionMode::BufferedGroups:
+      return mEditBufferGroup.commitChanges( commitErrors, stopEditing );
+      break;
+  }
+
+  return false;
+}
+
+bool QgsProject::rollBack( QStringList &rollbackErrors, bool stopEditing, QgsVectorLayer *vectorLayer )
+{
+  switch ( mTransactionMode )
+  {
+    case Qgis::TransactionMode::Disabled:
+    case Qgis::TransactionMode::AutomaticGroups:
+    {
+      if ( ! vectorLayer )
+      {
+        rollbackErrors.append( tr( "Trying to roll back changes without a layer specified. This only works if the transaction mode is buffered" ) );
+        return false;
+      }
+      bool success = vectorLayer->rollBack( stopEditing );
+      rollbackErrors = vectorLayer->commitErrors();
+      return success;
+    }
+    break;
+    case Qgis::TransactionMode::BufferedGroups:
+      return mEditBufferGroup.rollBack( rollbackErrors, stopEditing );
+      break;
+  }
+
+  return false;
+}
+
 void QgsProject::setFileName( const QString &name )
 {
   if ( name == mFile.fileName() )
@@ -820,7 +890,7 @@ void QgsProject::clear()
   mSaveVersion = QgsProjectVersion();
   mHomePath.clear();
   mCachedHomePath.clear();
-  mAutoTransaction = false;
+  mTransactionMode = Qgis::TransactionMode::Disabled;
   mEvaluateDefaultValues = false;
   mDirty = false;
   mTrustLayerMetadata = false;
@@ -1603,11 +1673,20 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
   emit metadataChanged();
 
-  element = doc->documentElement().firstChildElement( QStringLiteral( "autotransaction" ) );
-  if ( ! element.isNull() )
+  // Transaction mode
+  element = doc->documentElement().firstChildElement( QStringLiteral( "transaction" ) );
+  if ( !element.isNull() )
   {
-    if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
-      mAutoTransaction = true;
+    mTransactionMode = qgsEnumKeyToValue( element.attribute( QStringLiteral( "mode" ) ), Qgis::TransactionMode::Disabled );
+  }
+  else
+  {
+    // maybe older project => try read autotransaction
+    element = doc->documentElement().firstChildElement( QStringLiteral( "autotransaction" ) );
+    if ( ! element.isNull() )
+    {
+      mTransactionMode = static_cast<Qgis::TransactionMode>( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() );
+    }
   }
 
   element = doc->documentElement().firstChildElement( QStringLiteral( "evaluateDefaultValues" ) );
@@ -2075,54 +2154,27 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
 {
   const QMap<QString, QgsMapLayer *> existingMaps = mapLayers();
 
-  bool tgChanged = false;
-
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
-    if ( layer->isValid() )
+    if ( ! layer->isValid() )
+      return;
+
+    connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
+
+    // check if we have to update connections for layers with dependencies
+    for ( QMap<QString, QgsMapLayer *>::const_iterator it = existingMaps.cbegin(); it != existingMaps.cend(); ++it )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( vlayer )
+      const QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
+      if ( deps.contains( layer->id() ) )
       {
-        if ( autoTransaction() )
-        {
-          if ( QgsTransaction::supportsTransaction( vlayer ) )
-          {
-            const QString connString = QgsTransaction::connectionString( vlayer->source() );
-            const QString key = vlayer->providerType();
-
-            QgsTransactionGroup *tg = mTransactionGroups.value( qMakePair( key, connString ) );
-
-            if ( !tg )
-            {
-              tg = new QgsTransactionGroup();
-              mTransactionGroups.insert( qMakePair( key, connString ), tg );
-              tgChanged = true;
-            }
-            tg->addLayer( vlayer );
-          }
-        }
-        vlayer->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues() );
-      }
-
-      if ( tgChanged )
-        emit transactionGroupsChanged();
-
-      connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
-
-      // check if we have to update connections for layers with dependencies
-      for ( QMap<QString, QgsMapLayer *>::const_iterator it = existingMaps.cbegin(); it != existingMaps.cend(); ++it )
-      {
-        const QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
-        if ( deps.contains( layer->id() ) )
-        {
-          // reconnect to change signals
-          it.value()->setDependencies( deps );
-        }
+        // reconnect to change signals
+        it.value()->setDependencies( deps );
       }
     }
   }
+
+  updateTransactionGroups();
 
   if ( !mBlockSnappingUpdates && mSnappingConfig.addLayers( layers ) )
     emit snappingConfigChanged( mSnappingConfig );
@@ -2151,6 +2203,72 @@ void QgsProject::cleanTransactionGroups( bool force )
     }
   }
   if ( changed )
+    emit transactionGroupsChanged();
+}
+
+void QgsProject::updateTransactionGroups()
+{
+  switch ( mTransactionMode )
+  {
+    case Qgis::TransactionMode::Disabled:
+    {
+      cleanTransactionGroups( true );
+      return;
+    }
+    break;
+    case Qgis::TransactionMode::AutomaticGroups:
+    case Qgis::TransactionMode::BufferedGroups:
+      cleanTransactionGroups( false );
+      break;
+  }
+
+  mEditBufferGroup.clear();
+
+  bool tgChanged = false;
+  const auto constLayers = mapLayers().values();
+  for ( QgsMapLayer *layer : constLayers )
+  {
+    if ( ! layer->isValid() )
+      continue;
+
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( ! vlayer )
+      continue;
+
+    switch ( mTransactionMode )
+    {
+      case Qgis::TransactionMode::Disabled:
+        Q_ASSERT( false );
+        break;
+      case Qgis::TransactionMode::AutomaticGroups:
+      {
+        if ( QgsTransaction::supportsTransaction( vlayer ) )
+        {
+          const QString connString = QgsTransaction::connectionString( vlayer->source() );
+          const QString key = vlayer->providerType();
+
+          QgsTransactionGroup *tg = mTransactionGroups.value( qMakePair( key, connString ) );
+
+          if ( !tg )
+          {
+            tg = new QgsTransactionGroup();
+            mTransactionGroups.insert( qMakePair( key, connString ), tg );
+            tgChanged = true;
+          }
+          tg->addLayer( vlayer );
+        }
+      }
+      break;
+      case Qgis::TransactionMode::BufferedGroups:
+      {
+        if ( vlayer->supportsEditing() )
+          mEditBufferGroup.addLayer( vlayer );
+      }
+      break;
+    }
+  }
+
+  if ( tgChanged )
     emit transactionGroupsChanged();
 }
 
@@ -2327,8 +2445,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomElement titleNode = doc->createElement( QStringLiteral( "title" ) );
   qgisNode.appendChild( titleNode );
 
-  QDomElement transactionNode = doc->createElement( QStringLiteral( "autotransaction" ) );
-  transactionNode.setAttribute( QStringLiteral( "active" ), mAutoTransaction ? 1 : 0 );
+  QDomElement transactionNode = doc->createElement( QStringLiteral( "transaction" ) );
+  transactionNode.setAttribute( QStringLiteral( "mode" ), qgsEnumValueToKey( mTransactionMode ) );
   qgisNode.appendChild( transactionNode );
 
   QDomElement evaluateDefaultValuesNode = doc->createElement( QStringLiteral( "evaluateDefaultValues" ) );
@@ -3319,20 +3437,51 @@ QStringList QgsProject::nonIdentifiableLayers() const
 
 bool QgsProject::autoTransaction() const
 {
-  return mAutoTransaction;
+  return mTransactionMode == Qgis::TransactionMode::AutomaticGroups;
 }
 
 void QgsProject::setAutoTransaction( bool autoTransaction )
 {
-  if ( autoTransaction != mAutoTransaction )
-  {
-    mAutoTransaction = autoTransaction;
+  if ( autoTransaction
+       && mTransactionMode == Qgis::TransactionMode::AutomaticGroups )
+    return;
 
-    if ( autoTransaction )
-      onMapLayersAdded( mapLayers().values() );
-    else
-      cleanTransactionGroups( true );
+  if ( ! autoTransaction
+       && mTransactionMode == Qgis::TransactionMode::Disabled )
+    return;
+
+  if ( autoTransaction )
+    mTransactionMode = Qgis::TransactionMode::AutomaticGroups;
+  else
+    mTransactionMode = Qgis::TransactionMode::Disabled;
+
+  updateTransactionGroups();
+}
+
+Qgis::TransactionMode QgsProject::transactionMode() const
+{
+  return mTransactionMode;
+}
+
+bool QgsProject::setTransactionMode( Qgis::TransactionMode transactionMode )
+{
+  if ( transactionMode == mTransactionMode )
+    return true;
+
+  // Check that all layer are not in edit mode
+  const auto constLayers = mapLayers().values();
+  for ( QgsMapLayer *layer : constLayers )
+  {
+    if ( layer->isEditable() )
+    {
+      QgsLogger::warning( tr( "Transaction mode can be changed only if all layers are not editable." ) );
+      return false;
+    }
   }
+
+  mTransactionMode = transactionMode;
+  updateTransactionGroups();
+  return true;
 }
 
 QMap<QPair<QString, QString>, QgsTransactionGroup *> QgsProject::transactionGroups()
@@ -3639,6 +3788,11 @@ QMap<QString, QgsMapLayer *> QgsProject::mapLayers( const bool validOnly ) const
 QgsTransactionGroup *QgsProject::transactionGroup( const QString &providerKey, const QString &connString )
 {
   return mTransactionGroups.value( qMakePair( providerKey, connString ) );
+}
+
+QgsVectorLayerEditBufferGroup *QgsProject::editBufferGroup()
+{
+  return &mEditBufferGroup;
 }
 
 QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const

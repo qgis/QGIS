@@ -20,7 +20,8 @@ from datetime import datetime
 import qgis  # NOQA
 from osgeo import ogr
 from qgis.PyQt.QtCore import QVariant, QByteArray
-from qgis.core import (QgsProviderRegistry,
+from qgis.core import (Qgis,
+                       QgsProviderRegistry,
                        QgsDataSourceUri,
                        QgsVectorLayer,
                        QgsVectorDataProvider,
@@ -1716,7 +1717,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         # prepare a project with transactions enabled
         p = QgsProject()
-        p.setAutoTransaction(True)
+        p.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         p.addMapLayers([vl1, vl2])
 
         self.assertTrue(vl1.startEditing())
@@ -1788,7 +1789,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl2.featureCount(), 1)
 
         project = QgsProject()
-        project.setAutoTransaction(True)
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         project.addMapLayers([vl, vl2])
         project.setEvaluateDefaultValues(True)
 
