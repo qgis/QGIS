@@ -1593,8 +1593,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Emitted when an old project file is read.
+     *
+     * \deprecated use readVersionMismatchOccurred() instead.
      */
-    void oldProjectVersionWarning( const QString & );
+    Q_DECL_DEPRECATED void oldProjectVersionWarning( const QString & ) SIP_DEPRECATED;
+
+    /**
+     * Emitted when a project is read and the version of QGIS used to save
+     * the project differs from the current QGIS version.
+     *
+     * The \a fileVersion argument indicates the version of QGIS used to save
+     * the project.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    void readVersionMismatchOccurred( const QString &fileVersion );
 
     /**
      * Emitted when a layer from a projects was read.
