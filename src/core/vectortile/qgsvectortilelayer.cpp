@@ -290,8 +290,6 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
   mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
-
   // add provider node
   if ( mDataProvider )
   {
