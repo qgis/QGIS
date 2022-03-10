@@ -309,7 +309,7 @@ void TestQgsCadUtils::testLineExtension()
   QgsCadUtils::AlignMapPointContext context( baseContext() );
   context.mapUnitsPerPixel = 0.1;
 
-  // without no constraint
+  // without constraint
   QgsCadUtils::AlignMapPointOutput result = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 20 ), context );
   QVERIFY( result.valid );
   QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex );
@@ -382,7 +382,7 @@ void TestQgsCadUtils::testLineExtension()
   context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 11 );
   context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 0 );
 
-  // this time, the soft lock shouldn't be actived
+  // this time, the soft lock shouldn't be activated
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 0 ), context );
   QVERIFY( result.valid );
   QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex );
