@@ -1441,9 +1441,21 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     QgsProjectFileTransform projectFile( *doc, fileVersion );
 
     // Shows a warning when an old project file is read.
+    Q_NOWARN_DEPRECATED_PUSH
     emit oldProjectVersionWarning( fileVersion.text() );
+    Q_NOWARN_DEPRECATED_POP
+    emit readVersionMismatchOccurred( fileVersion.text() );
 
     projectFile.updateRevision( thisVersion );
+  }
+  else if ( fileVersion > thisVersion )
+  {
+    QgsLogger::warning( "Loading a file that was saved with a newer "
+                        "version of qgis (saved in " + fileVersion.text() +
+                        ", loaded in " + Qgis::version() +
+                        "). Problems may occur." );
+
+    emit readVersionMismatchOccurred( fileVersion.text() );
   }
 
   // start new project, just keep the file name and auxiliary storage
