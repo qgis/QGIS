@@ -1,9 +1,9 @@
 /***************************************************************************
-                qgsquerybuilder.cpp - Query Builder
-                     --------------------------------------
-               Date                 : 2004-11-19
-               Copyright            : (C) 2004 by Gary E.Sherman
-               Email                : sherman at mrcc.com
+    qgspointcloudquerybuilder.cpp  - Query builder for point cloud layers
+    -----------------------------
+    begin                : March 2022
+    copyright            : (C) 2022 by Stefanos Natsis
+    email                : uclaros at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
