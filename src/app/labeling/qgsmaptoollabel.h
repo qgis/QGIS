@@ -86,6 +86,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     QgsRubberBand *mFeatureRubberBand = nullptr;
     //! Shows label fixpoint (left/bottom by default)
     QgsRubberBand *mFixPointRubberBand = nullptr;
+    QgsRubberBand *mOffsetFromLineStartRubberBand = nullptr;
 
     struct APP_EXPORT LabelDetails
     {
@@ -202,6 +203,16 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol, int &pointCol ) const;
 
     /**
+     * Gets data defined curved offset of current label
+     * \param offset out: data defined curved offset
+     * \param offsetSuccess out: FALSE if attribute value is NULL
+     * \param curvedOffsetCol out: index of the curved offset column
+     * \returns FALSE if layer does not have data defined label curved offset enabled
+     * \since QGIS 3.26
+    */
+    bool currentLabelDataDefinedCurvedOffset( double &offset, bool &offsetSuccess, int &curvedOffsetCol ) const;
+
+    /**
      * Returns data defined rotation of current label
      * \param rotation out: rotation value
      * \param rotationSuccess out: FALSE if rotation value is NULL
@@ -219,6 +230,14 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * \returns TRUE if data defined position could be changed
      */
     bool changeCurrentLabelDataDefinedPosition( const QVariant &x, const QVariant &y );
+
+    /**
+     * Change the data defined curve offset current label
+     * \param curvedOffsetCol out: index of the curved offset
+     * \param x data defined offset
+     * \returns TRUE if data defined curved offset could be changed
+     */
+    bool changeCurrentLabelDataDefinedCurvedOffset( const QVariant &offset );
 
     /**
      * Returns data defined show/hide of a feature.
@@ -239,6 +258,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool isPinned();
 
     bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
+    bool labelOffsettable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &curvedOffsetCol ) const;
 
     bool createAuxiliaryFields( QgsPalIndexes &palIndexes );
     bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes ) const;

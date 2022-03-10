@@ -53,6 +53,7 @@ QgsMapToolLabel::~QgsMapToolLabel()
   delete mCalloutOtherPointsRubberBand;
   delete mFeatureRubberBand;
   delete mFixPointRubberBand;
+  delete mOffsetFromLineStartRubberBand;
 }
 
 void QgsMapToolLabel::deactivate()
@@ -216,6 +217,7 @@ void QgsMapToolLabel::createRubberBands()
 {
   delete mLabelRubberBand;
   delete mFeatureRubberBand;
+  delete mOffsetFromLineStartRubberBand;
 
   //label rubber band
   mLabelRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
@@ -238,6 +240,12 @@ void QgsMapToolLabel::createRubberBands()
       QgsGeometry geom = f.geometry();
       if ( !geom.isNull() )
       {
+
+        const int r = QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value();
+        const int g = QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value();
+        const int b = QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value();
+        const int a = QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value();
+
         if ( geom.type() == QgsWkbTypes::PolygonGeometry )
         {
           // for polygons, we don't want to fill the whole polygon itself with the rubber band
@@ -246,10 +254,13 @@ void QgsMapToolLabel::createRubberBands()
           // instead, just use the boundary of the polygon for the rubber band
           geom = QgsGeometry( geom.constGet()->boundary() );
         }
-        int r = QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value();
-        int g = QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value();
-        int b = QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value();
-        int a = QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value();
+        else if ( geom.type() == QgsWkbTypes::LineGeometry )
+        {
+          mOffsetFromLineStartRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PointGeometry );
+          mOffsetFromLineStartRubberBand->setColor( QColor( r, g, b, a ) );
+          mOffsetFromLineStartRubberBand->hide();
+        }
+
         mFeatureRubberBand = new QgsRubberBand( mCanvas, geom.type() );
         mFeatureRubberBand->setColor( QColor( r, g, b, a ) );
         mFeatureRubberBand->setToGeometry( geom, vlayer );
@@ -284,6 +295,8 @@ void QgsMapToolLabel::deleteRubberBands()
   mFeatureRubberBand = nullptr;
   delete mFixPointRubberBand;
   mFixPointRubberBand = nullptr;
+  delete mOffsetFromLineStartRubberBand;
+  mOffsetFromLineStartRubberBand = nullptr;
   cadDockWidget()->clear();
   cadDockWidget()->clearPoints();
 }
@@ -845,6 +858,39 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
   return true;
 }
 
+bool QgsMapToolLabel::currentLabelDataDefinedCurvedOffset( double &offset, bool &offsetSuccess, int &curvedOffsetCol ) const
+{
+
+  offsetSuccess = false;
+  QgsVectorLayer *vlayer = mCurrentLabel.layer;
+  QgsFeatureId featureId = mCurrentLabel.pos.featureId;
+
+  if ( ! vlayer )
+  {
+    return false;
+  }
+
+  if ( !labelOffsettable( vlayer, mCurrentLabel.settings, curvedOffsetCol ) )
+  {
+    return false;
+  }
+
+  QgsFeature f;
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+  {
+    return false;
+  }
+
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::CurvedOffset ) )
+  {
+    QgsAttributes attributes = f.attributes();
+    if ( !attributes.at( curvedOffsetCol ).isNull() )
+      offset = attributes.at( curvedOffsetCol ).toDouble( &offsetSuccess );
+  }
+
+  return true;
+}
+
 QgsMapToolLabel::PropertyStatus QgsMapToolLabel::labelRotatableStatus( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const
 {
   PropertyStatus status = PropertyStatus::DoesNotExist;
@@ -915,6 +961,30 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, 
 
     if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, x )
          || !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, y ) )
+      return false;
+  }
+
+  return true;
+}
+
+bool QgsMapToolLabel::changeCurrentLabelDataDefinedCurvedOffset( const QVariant &offset )
+{
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::CurvedOffset ) )
+  {
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    const QString curvedOffsetColName = dataDefinedColumnName( QgsPalLayerSettings::CurvedOffset, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const int curvedOffsetCol = mCurrentLabel.layer->fields().lookupField( curvedOffsetColName );
+
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, curvedOffsetCol, offset ) )
+      return false;
+  }
+  else
+  {
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    const QString curvedOffsetColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const int curvedOffsetCol = mCurrentLabel.layer->fields().lookupField( curvedOffsetColName );
+
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, curvedOffsetCol, offset ) )
       return false;
   }
 
@@ -1017,7 +1087,7 @@ bool QgsMapToolLabel::isPinned()
     double x, y;
     bool xSuccess, ySuccess;
 
-    if ( currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol, pointCol ) && xSuccess && ySuccess )
+    if ( currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol, pointCol ) )
       rc = true;
   }
 
@@ -1051,6 +1121,20 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
       return true;
   }
 
+  return false;
+}
+
+bool QgsMapToolLabel::labelOffsettable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &curvedOffsetCol ) const
+{
+  curvedOffsetCol = -1;
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::CurvedOffset ) )
+  {
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::CurvedOffset, settings, vlayer, status );
+    curvedOffsetCol = vlayer->fields().lookupField( pointColName );
+    if ( curvedOffsetCol >= 0 )
+      return true;
+  }
   return false;
 }
 

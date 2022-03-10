@@ -92,6 +92,8 @@ void QgsTextFormatWidget::initWidget()
   connect( mCoordYDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordYDDBtn_activated );
   connect( mCoordPointDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordPointDDBtn_changed );
   connect( mCoordPointDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordPointDDBtn_activated );
+  connect( mCurvedLineOffsetDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCurvedLineOffsetDDBtn_changed );
+  connect( mCurvedLineOffsetDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCurvedLineOffsetDDBtn_activated );
   connect( mShapeTypeCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged );
   connect( mShapeRotationCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeRotationCmbBx_currentIndexChanged );
   connect( mShapeSVGParamsBtn, &QPushButton::clicked, this, &QgsTextFormatWidget::mShapeSVGParamsBtn_clicked );
@@ -809,6 +811,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mCoordXDDBtn, QgsPalLayerSettings::PositionX );
   registerDataDefinedButton( mCoordYDDBtn, QgsPalLayerSettings::PositionY );
   registerDataDefinedButton( mCoordPointDDBtn, QgsPalLayerSettings::PositionPoint );
+  registerDataDefinedButton( mCurvedLineOffsetDDBtn, QgsPalLayerSettings::CurvedOffset );
   registerDataDefinedButton( mCoordAlignmentHDDBtn, QgsPalLayerSettings::Hali );
   registerDataDefinedButton( mCoordAlignmentVDDBtn, QgsPalLayerSettings::Vali );
   registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::LabelRotation );
@@ -1614,6 +1617,20 @@ void QgsTextFormatWidget::mCoordPointDDBtn_activated( bool isActive )
 
   mCoordXDDBtn->setActive( false );
   mCoordYDDBtn->setActive( false );
+}
+
+void QgsTextFormatWidget::mCurvedLineOffsetDDBtn_changed()
+{
+  // TODO: update something?
+}
+
+void QgsTextFormatWidget::mCurvedLineOffsetDDBtn_activated( bool isActive )
+{
+  if ( !isActive )
+    return;
+
+  mCurvedLineOffsetDDBtn->setActive( false );
+  mCurvedLineOffsetDDBtn->setActive( false );
 }
 
 void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int )
