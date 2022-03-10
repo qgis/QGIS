@@ -32,8 +32,8 @@ from qgis.core import (QgsProcessingOutputHtml,
                        QgsProcessingOutputString,
                        QgsProcessingOutputBoolean,
                        QgsProject,
-                       QgsProcessingMultiStepFeedback,
                        QgsScopedProxyProgressTask,
+                       QgsProcessingBatchFeedback,
                        QgsProcessingException)
 
 from qgis.gui import QgsProcessingAlgorithmDialogBase
@@ -49,17 +49,6 @@ from processing.tools.system import getTempFilename
 from processing.tools import dataobjects
 
 import codecs
-
-
-class BatchFeedback(QgsProcessingMultiStepFeedback):
-
-    def __init__(self, steps, feedback):
-        super().__init__(steps, feedback)
-        self.errors = []
-
-    def reportError(self, error: str, fatalError: bool = False):
-        self.errors.append(error)
-        super().reportError(error, fatalError)
 
 
 class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
@@ -117,7 +106,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             return
 
         task = QgsScopedProxyProgressTask(self.tr('Batch Processing - {0}').format(self.algorithm().displayName()))
-        multi_feedback = BatchFeedback(len(alg_parameters), feedback)
+        batch_feedback = QgsProcessingBatchFeedback(len(alg_parameters), feedback)
         feedback.progressChanged.connect(task.setProgress)
 
         algorithm_results = []
@@ -146,7 +135,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                         count + 1, len(alg_parameters)))
                 self.setInfo(self.tr('<b>Algorithm {0} starting&hellip;</b>').format(self.algorithm().displayName()),
                              escapeHtml=False)
-                multi_feedback.setCurrentStep(count)
+                batch_feedback.setCurrentStep(count)
 
                 parameters = self.algorithm().preprocessParameters(parameters)
 
@@ -161,8 +150,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 context = dataobjects.createContext(feedback)
 
                 alg_start_time = time.time()
-                multi_feedback.errors = []
-                results, ok = self.algorithm().run(parameters, context, multi_feedback)
+                results, ok = self.algorithm().run(parameters, context, batch_feedback)
                 if ok:
                     self.setInfo(
                         QCoreApplication.translate('BatchAlgorithmDialog', 'Algorithm {0} correctly executed…').format(
@@ -174,16 +162,16 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     feedback.pushInfo('')
                     algorithm_results.append({'parameters': parameters, 'results': results})
 
-                    handleAlgorithmResults(self.algorithm(), context, multi_feedback, False, parameters)
+                    handleAlgorithmResults(self.algorithm(), context, batch_feedback, False, parameters)
                 else:
-                    err = [e for e in multi_feedback.errors]
+                    task_errors = batch_feedback.popErrors()
                     self.setInfo(
                         QCoreApplication.translate('BatchAlgorithmDialog', 'Algorithm {0} failed…').format(
                             self.algorithm().displayName()), escapeHtml=False)
                     feedback.reportError(
                         self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - alg_start_time)),
                         fatalError=False)
-                    errors.append({'parameters': parameters, 'errors': err})
+                    errors.append({'parameters': parameters, 'errors': task_errors})
 
         feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
         if errors:

@@ -1,0 +1,52 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingbatch.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingBatchFeedback : QgsProcessingMultiStepFeedback
+{
+%Docstring(signature="appended")
+Processing feedback subclass for use when batch processing.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingbatch.h"
+%End
+  public:
+
+    QgsProcessingBatchFeedback( int tasks, QgsProcessingFeedback *feedback );
+%Docstring
+Constructor for QgsProcessingBatchFeedback, for a process with the specified
+number of ``tasks``. This feedback object will proxy calls
+to the specified ``feedback`` object.
+%End
+
+    virtual void reportError( const QString &error, bool fatalError = false );
+
+
+    QStringList popErrors();
+%Docstring
+Takes the current list of reported errors and clears the stored list of errors.
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingbatch.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
