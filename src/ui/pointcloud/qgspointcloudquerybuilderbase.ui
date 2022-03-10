@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <author>Gary Sherman</author>
- <comment>Query builder for vector layers</comment>
+ <author>Stefanos Natsis</author>
+ <comment>Query builder for point cloud layers</comment>
  <class>QgsPointCloudQueryBuilderBase</class>
  <widget class="QDialog" name="QgsPointCloudQueryBuilderBase">
   <property name="geometry">

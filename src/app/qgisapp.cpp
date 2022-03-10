@@ -12025,24 +12025,6 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
       QgsPointCloudQueryBuilder qb { pclayer };
       qb.setSubsetString( pclayer->subsetString() );
       qb.exec();
-      /*
-      // launch the query builder
-      std::unique_ptr<QgsSubsetStringEditorInterface> qb( QgsGui::subsetStringEditorProviderRegistry()->createDialog( vlayer, this ) );
-      QString subsetBefore = pclayer->subsetString();
-
-      // Set the sql in the query builder to the same in the prop dialog
-      // (in case the user has already changed it)
-      qb->setSubsetString( vlayer->subsetString() );
-      qb->exec();
-      // Open the query builder and refresh symbology if sql has changed
-      // Note: repaintRequested is emitted directly from QgsQueryBuilder
-      //       when the sql is set in the layer.
-      if ( qb->exec() && ( subsetBefore != qb->subsetString() ) && mLayerTreeView )
-      {
-        mLayerTreeView->refreshLayerSymbology( vlayer->id() );
-        activateDeactivateLayerRelatedActions( vlayer );
-      }
-      */
     }
     return;
   }
