@@ -37,7 +37,7 @@
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsFeatureExpressionValuesGatherer: public QThread
+class QgsFeatureExpressionValuesGatherer: public QThread
 {
     Q_OBJECT
 
