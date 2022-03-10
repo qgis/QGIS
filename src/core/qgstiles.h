@@ -294,10 +294,28 @@ class CORE_EXPORT QgsTileMatrixSet
      */
     virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+    /**
+     * Returns TRUE if the scale doubling hack used to match MapBox scale to tile zoom levels should be applied.
+     *
+     * The default is that this hack will be applied.
+     *
+     * \see setApplyTileScaleDoublingHack()
+     */
+    bool applyTileScaleDoublingHack() const { return mApplyTileScaleDoubleHack; }
+
+    /**
+     * Sets whether the scale doubling hack used to match MapBox scale to tile zoom levels should be applied.
+     *
+     * The default is that this hack will be applied.
+     *
+     * \see applyTileScaleDoublingHack()
+     */
+    void setApplyTileScaleDoublingHack( bool apply ) { mApplyTileScaleDoubleHack = apply; }
+
   private:
 
     QMap< int, QgsTileMatrix > mTileMatrices;
-
+    bool mApplyTileScaleDoubleHack = true;
 };
 
 #endif // QGSTILES_H
