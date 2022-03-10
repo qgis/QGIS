@@ -190,12 +190,12 @@ class OARecSearch(SearchBase):
 
         self.response = self.conn.response
 
-    def query_records(self, bbox=[], keywords=None, limit=10, offset=1):
+    def query_records(self, bbox=[], keywords=None, limit=10, offset=0):
 
         params = {
             'collection_id': self.record_collection,
             'limit': limit,
-            'startindex': offset,
+            'offset': offset
         }
 
         if keywords:
