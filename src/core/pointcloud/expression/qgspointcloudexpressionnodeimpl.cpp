@@ -193,16 +193,6 @@ double QgsPointCloudExpressionNodeBinaryOperator::evalNode( QgsPointCloudExpress
     case boLE:
     case boGE:
       return compare( vL - vR ) ? 1. : 0.;
-
-    case boRegexp:
-    case boLike:
-    case boILike:
-    case boNotLike:
-    case boNotILike:
-    case boIs:
-    case boIsNot:
-    case boConcat:
-      return std::numeric_limits<double>::quiet_NaN();
   }
   Q_ASSERT( false );
   return std::numeric_limits<double>::quiet_NaN();
@@ -273,16 +263,6 @@ int QgsPointCloudExpressionNodeBinaryOperator::precedence() const
 
     case boPow:
       return 6;
-
-    case boRegexp:
-    case boLike:
-    case boILike:
-    case boNotLike:
-    case boNotILike:
-    case boIs:
-    case boIsNot:
-    case boConcat:
-      break;
   }
   Q_ASSERT( false && "unexpected binary operator" );
   return -1;
@@ -311,16 +291,6 @@ bool QgsPointCloudExpressionNodeBinaryOperator::leftAssociative() const
 
     case boPow:
       return false;
-
-    case boRegexp:
-    case boLike:
-    case boILike:
-    case boNotLike:
-    case boNotILike:
-    case boIs:
-    case boIsNot:
-    case boConcat:
-      break;
   }
   Q_ASSERT( false && "unexpected binary operator" );
   return false;
@@ -469,14 +439,6 @@ bool QgsPointCloudExpressionNodeBinaryOperator::isStatic( QgsPointCloudExpressio
     case QgsPointCloudExpressionNodeBinaryOperator::boIntDiv:
     case QgsPointCloudExpressionNodeBinaryOperator::boMod:
     case QgsPointCloudExpressionNodeBinaryOperator::boPow:
-    case QgsPointCloudExpressionNodeBinaryOperator::boRegexp:
-    case QgsPointCloudExpressionNodeBinaryOperator::boLike:
-    case QgsPointCloudExpressionNodeBinaryOperator::boILike:
-    case QgsPointCloudExpressionNodeBinaryOperator::boNotLike:
-    case QgsPointCloudExpressionNodeBinaryOperator::boNotILike:
-    case QgsPointCloudExpressionNodeBinaryOperator::boIs:
-    case QgsPointCloudExpressionNodeBinaryOperator::boIsNot:
-    case QgsPointCloudExpressionNodeBinaryOperator::boConcat:
       break;
   }
 

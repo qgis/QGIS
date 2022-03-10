@@ -111,16 +111,6 @@ A binary expression operator, which operates on two values.
       boIntDiv,
       boMod,
       boPow,
-
-      // other operators not implemented in pointcloud expressions
-      boRegexp,
-      boLike,
-      boILike,
-      boNotLike,
-      boNotILike,
-      boIs,
-      boIsNot,
-      boConcat,
     };
 
     QgsPointCloudExpressionNodeBinaryOperator( QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op, QgsPointCloudExpressionNode *opLeft /Transfer/, QgsPointCloudExpressionNode *opRight /Transfer/ );

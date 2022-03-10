@@ -132,16 +132,6 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
       boIntDiv,
       boMod,
       boPow,
-
-      // other operators not implemented in pointcloud expressions
-      boRegexp,
-      boLike,
-      boILike,
-      boNotLike,
-      boNotILike,
-      boIs,
-      boIsNot,
-      boConcat,
     };
 
     /**
