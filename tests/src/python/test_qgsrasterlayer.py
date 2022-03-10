@@ -1638,6 +1638,21 @@ class TestQgsRasterLayerTransformContext(unittest.TestCase):
 
         self.assertTrue(checker.runTest("raster_data_defined_opacity"))
 
+    def test_read_xml_crash(self):
+        """Check if converting a raster from 1.8 to 2 works."""
+        path = os.path.join(unitTestDataPath('raster'),
+                            'raster-palette-crash2.tif')
+        layer = QgsRasterLayer(path, QFileInfo(path).baseName())
+        context = QgsReadWriteContext()
+        document = QDomDocument("style")
+        map_layers_element = document.createElement("maplayers")
+        map_layer_element = document.createElement("maplayer")
+        layer.writeLayerXml(map_layer_element, document, context)
+
+        num = 10
+        for _ in range(num):
+            layer.readLayerXml(map_layer_element, context)
+
 
 if __name__ == '__main__':
     unittest.main()
