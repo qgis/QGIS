@@ -23,32 +23,6 @@ QgsVectorTileMatrixSet QgsVectorTileMatrixSet::fromWebMercator()
 {
   QgsVectorTileMatrixSet res;
   res.addGoogleCrs84QuadTiles();
-  res.setZ0xMinimum( -20037508.3427892 );
-  res.setZ0xMaximum( 20037508.3427892 );
-  res.setZ0yMinimum( -20037508.3427892 );
-  res.setZ0yMaximum( 20037508.3427892 );
-  return res;
-}
-
-bool QgsVectorTileMatrixSet::readXml( const QDomElement &element, QgsReadWriteContext &context )
-{
-  if ( !QgsTileMatrixSet::readXml( element, context ) )
-    return false;
-
-  mZ0xMin = element.attribute( QStringLiteral( "z0xMin" ) ).toDouble();
-  mZ0xMax = element.attribute( QStringLiteral( "z0xMax" ) ).toDouble();
-  mZ0yMin = element.attribute( QStringLiteral( "z0yMin" ) ).toDouble();
-  mZ0yMax = element.attribute( QStringLiteral( "z0yMax" ) ).toDouble();
-  return true;
-}
-
-QDomElement QgsVectorTileMatrixSet::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
-{
-  QDomElement res = QgsTileMatrixSet::writeXml( document, context );
-  res.setAttribute( QStringLiteral( "z0xMin" ), qgsDoubleToString( mZ0xMin ) );
-  res.setAttribute( QStringLiteral( "z0xMax" ), qgsDoubleToString( mZ0xMax ) );
-  res.setAttribute( QStringLiteral( "z0yMin" ), qgsDoubleToString( mZ0yMin ) );
-  res.setAttribute( QStringLiteral( "z0yMax" ), qgsDoubleToString( mZ0yMax ) );
   return res;
 }
 
@@ -103,10 +77,5 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json )
     tm.setScale( lodMap.value( QStringLiteral( "scale" ) ).toDouble() );
     addMatrix( tm );
   }
-
-  mZ0xMin = originX;
-  mZ0yMax = originY;
-  mZ0xMax = originX + z0Dimension;
-  mZ0yMin = originY - z0Dimension;
   return true;
 }

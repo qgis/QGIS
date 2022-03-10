@@ -350,11 +350,11 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(vector_tile_set.minimumZoom(), 0)
         self.assertEqual(vector_tile_set.maximumZoom(), 14)
 
-        self.assertEqual(vector_tile_set.z0xMinimum(), -34655613.47869982)
-        self.assertEqual(vector_tile_set.z0xMaximum(), 34655613.47869982)
-        self.assertEqual(vector_tile_set.z0yMinimum(), -30836282.31264031)
-        self.assertEqual(vector_tile_set.z0yMaximum(), 38474944.64475933)
         self.assertEqual(vector_tile_set.crs().authid(), 'EPSG:3978')
+        self.assertAlmostEqual(vector_tile_set.tileMatrix(0).extent().xMinimum(), -34655613.47869982, 3)
+        self.assertAlmostEqual(vector_tile_set.tileMatrix(0).extent().yMinimum(), -30836282.31264031, 3)
+        self.assertAlmostEqual(vector_tile_set.tileMatrix(0).extent().xMaximum(), 34655613.47869982, 3)
+        self.assertAlmostEqual(vector_tile_set.tileMatrix(0).extent().yMaximum(), 38474944.64475933, 3)
 
         self.assertAlmostEqual(vector_tile_set.tileMatrix(0).scale(), 511647836.791828, 5)
         self.assertAlmostEqual(vector_tile_set.tileMatrix(1).scale(), 255823918.395914, 5)

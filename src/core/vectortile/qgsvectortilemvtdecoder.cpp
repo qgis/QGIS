@@ -90,10 +90,16 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
   QgsVectorTileFeatures features;
 
   const int numTiles = static_cast<int>( pow( 2, mTileID.zoomLevel() ) ); // assuming we won't ever go over 30 zoom levels
-  const double tileDX = ( mStructure.z0xMaximum() - mStructure.z0xMinimum() ) / numTiles;
-  const double tileDY = ( mStructure.z0yMaximum() - mStructure.z0yMinimum() ) / numTiles;
-  const double tileXMin = mStructure.z0xMinimum() + mTileID.column() * tileDX;
-  const double tileYMax = mStructure.z0yMaximum() - mTileID.row() * tileDY;
+
+  const double z0Width = mStructure.tileMatrix( 0 ).extent().width();
+  const double z0Height = mStructure.tileMatrix( 0 ).extent().height();
+  const double z0xMinimum = mStructure.tileMatrix( 0 ).extent().xMinimum();
+  const double z0yMaximum = mStructure.tileMatrix( 0 ).extent().yMaximum();
+
+  const double tileDX = z0Width / numTiles;
+  const double tileDY = z0Height / numTiles;
+  const double tileXMin = z0xMinimum + mTileID.column() * tileDX;
+  const double tileYMax = z0yMaximum - mTileID.row() * tileDY;
 
   for ( int layerNum = 0; layerNum < tile.layers_size(); layerNum++ )
   {
