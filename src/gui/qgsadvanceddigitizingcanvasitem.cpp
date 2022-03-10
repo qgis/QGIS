@@ -108,7 +108,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   }
 
   // Draw segment par/per input
-  if ( mAdvancedDigitizingDockWidget->betweenLineConstraint() != QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint && hasSnappedSegment )
+  if ( mAdvancedDigitizingDockWidget->betweenLineConstraint() != Qgis::BetweenLineConstraint::NoConstraint && hasSnappedSegment )
   {
     painter->setPen( mConstruction2Pen );
     painter->drawLine( snapSegmentPix1, snapSegmentPix2 );
@@ -223,7 +223,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   }
 
   // Draw constr
-  if ( mAdvancedDigitizingDockWidget->betweenLineConstraint() == QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint )
+  if ( mAdvancedDigitizingDockWidget->betweenLineConstraint() == Qgis::BetweenLineConstraint::NoConstraint )
   {
     if ( curPointExist && previousPointExist )
     {
@@ -249,7 +249,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
 
   auto lineExtensionSide = mAdvancedDigitizingDockWidget->lineExtensionSide();
   if ( mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() &&
-       lineExtensionSide != QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex &&
+       lineExtensionSide != Qgis::LineExtensionSide::NoVertex &&
        mAdvancedDigitizingDockWidget->lockedSnapVertices().length() )
   {
     painter->setPen( mLockedPen );
@@ -261,7 +261,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     const QgsGeometry geom = feature.geometry();
 
     QgsPoint vertex;
-    if ( lineExtensionSide == QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex )
+    if ( lineExtensionSide == Qgis::LineExtensionSide::BeforeVertex )
     {
       vertex = geom.vertexAt( snap.vertexIndex() - 1 );
     }

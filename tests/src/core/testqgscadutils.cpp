@@ -312,7 +312,7 @@ void TestQgsCadUtils::testLineExtension()
   // without constraint
   QgsCadUtils::AlignMapPointOutput result = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 20 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::NoVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( 45, 20 ) );
 
   // only line extension
@@ -329,12 +329,12 @@ void TestQgsCadUtils::testLineExtension()
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.5, 0 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::AfterVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 0 ) );
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 50.5, 0 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::BeforeVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( 50.4, -0.2 ) );
 
   // extension + x
@@ -342,7 +342,7 @@ void TestQgsCadUtils::testLineExtension()
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 0.2, 25.2 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::BeforeVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( 0, 25 ) );
 
   // extension + rel x
@@ -350,7 +350,7 @@ void TestQgsCadUtils::testLineExtension()
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 0, 30.2 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::BeforeVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( -10, 30 ) );
 
   // extension + y
@@ -359,7 +359,7 @@ void TestQgsCadUtils::testLineExtension()
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( -0.2, 25.2 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::BeforeVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( 0, 25 ) );
 
   // extension + rel y
@@ -367,7 +367,7 @@ void TestQgsCadUtils::testLineExtension()
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 70.2, -100 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::BeforeVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( 70, -10 ) );
 
   // extension + x + y
@@ -376,7 +376,7 @@ void TestQgsCadUtils::testLineExtension()
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 0 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::AfterVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 0 ) );
 
   context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 11 );
@@ -385,7 +385,7 @@ void TestQgsCadUtils::testLineExtension()
   // this time, the soft lock shouldn't be activated
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 0 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::NoVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( 11, 0 ) );
 
   // extension + angle
@@ -396,7 +396,7 @@ void TestQgsCadUtils::testLineExtension()
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 40.2 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::AfterVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 40 ) );
 
   // extension + common angle
@@ -406,7 +406,7 @@ void TestQgsCadUtils::testLineExtension()
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 40.2 ), context );
   QVERIFY( result.valid );
   QCOMPARE( result.softLockCommonAngle, 135.0 );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::AfterVertex );
   QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 40 ) );
 
   // extension + distance ( without intersection )
@@ -415,7 +415,7 @@ void TestQgsCadUtils::testLineExtension()
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 42.0 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::NoVertex );
   QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 23.273, 27.399 ), 10e-3 );
 
   // extension + distance ( with intersection )
@@ -423,7 +423,7 @@ void TestQgsCadUtils::testLineExtension()
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 42.0 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::AfterVertex );
   QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 10, 42.361 ), 10e-3 );
 
   // extension + distance + x
@@ -431,7 +431,7 @@ void TestQgsCadUtils::testLineExtension()
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 42.0 ), context );
   QVERIFY( result.valid );
-  QCOMPARE( result.softLockLineExtension, QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex );
+  QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::NoVertex );
   QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 9.9, 42.271 ), 10e-3 );
 }
 

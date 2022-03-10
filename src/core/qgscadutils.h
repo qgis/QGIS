@@ -69,19 +69,6 @@ class CORE_EXPORT QgsCadUtils
     class AlignMapPointOutput
     {
       public:
-
-        /**
-         * Designates whether the line extension constraint is currently soft locked
-         * with the previous or next vertex of the locked one.
-         * \since QGIS 3.26
-         */
-        enum LineExtensionSide
-        {
-          BeforeVertex,
-          AfterVertex,
-          NoVertex
-        };
-
         //! Whether the combination of constraints is actually valid
         bool valid;
 
@@ -103,7 +90,7 @@ class CORE_EXPORT QgsCadUtils
         //! Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)
         double softLockCommonAngle;
 
-        LineExtensionSide softLockLineExtension;
+        Qgis::LineExtensionSide softLockLineExtension;
         double softLockX;
         double softLockY;
     };

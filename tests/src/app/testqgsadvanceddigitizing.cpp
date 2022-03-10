@@ -659,14 +659,14 @@ void TestQgsAdvancedDigitizing::perpendicularConstraint()
   QCOMPARE( mAdvancedDigitizingDockWidget->currentPointV2(), QgsPoint( 0, 4 ) );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
-            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
+            Qgis::BetweenLineConstraint::NoConstraint );
 
   // digitizing a first vertex
   utils.mouseClick( 5, 5, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->lockBetweenLineConstraint( QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::Perpendicular );
+  mAdvancedDigitizingDockWidget->lockBetweenLineConstraint( Qgis::BetweenLineConstraint::Perpendicular );
   QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
-            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::Perpendicular );
+            Qgis::BetweenLineConstraint::Perpendicular );
 
   // select the previous digitized line
   utils.mouseClick( 0.1, 4, Qt::LeftButton );
@@ -1022,7 +1022,7 @@ void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
-            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
+            Qgis::BetweenLineConstraint::NoConstraint );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintX()->isLocked() );
@@ -1042,7 +1042,7 @@ void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
 
 
   QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
-            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
+            Qgis::BetweenLineConstraint::NoConstraint );
   QVERIFY( mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
   QVERIFY( mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
   QVERIFY( mAdvancedDigitizingDockWidget->constraintX()->isLocked() );
@@ -1059,7 +1059,7 @@ void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
 
   // all constraints should be deactivated
   QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
-            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
+            Qgis::BetweenLineConstraint::NoConstraint );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintX()->isLocked() );
@@ -1073,14 +1073,14 @@ void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
   mAdvancedDigitizingDockWidget->enableAction()->trigger();
 
   // enable another constraints
-  mAdvancedDigitizingDockWidget->lockBetweenLineConstraint( QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::Perpendicular );
+  mAdvancedDigitizingDockWidget->lockBetweenLineConstraint( Qgis::BetweenLineConstraint::Perpendicular );
   mAdvancedDigitizingDockWidget->mXyVertexAction->trigger();
   mAdvancedDigitizingDockWidget->mLineExtensionAction->trigger();
 
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
-            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::Perpendicular );
+            Qgis::BetweenLineConstraint::Perpendicular );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintX()->isLocked() );
@@ -1097,7 +1097,7 @@ void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
 
   // all constraints should be deactivated
   QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(),
-            QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint );
+            Qgis::BetweenLineConstraint::NoConstraint );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() );
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintX()->isLocked() );

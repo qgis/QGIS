@@ -69,16 +69,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     Q_FLAG( CadCapacities )
 
     /**
-     * Between line constraints which can be enabled
-     */
-    enum class BetweenLineConstraint SIP_MONKEYPATCH_SCOPEENUM : int
-    {
-      NoConstraint,  //!< No additional constraint
-      Perpendicular, //!< Perpendicular
-      Parallel       //!< Parallel
-    };
-
-    /**
      * Type of interaction to simulate when editing values from external widget
      * \note unstable API (will likely change)
      * \since QGIS 3.8
@@ -295,7 +285,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Returns the between line constraints which are used to place
      * perpendicular/parallel segments to snapped segments on the canvas
      */
-    BetweenLineConstraint betweenLineConstraint() const  { return mBetweenLineConstraint; }
+    Qgis::BetweenLineConstraint betweenLineConstraint() const  { return mBetweenLineConstraint; }
     //! Returns the \a CadConstraint on the angle
     const CadConstraint *constraintAngle() const  { return mAngleConstraint.get(); }
     //! Returns the \a CadConstraint on the distance
@@ -323,7 +313,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     const CadConstraint *constraintLineExtension() const { return mLineExtensionConstraint.get(); }
 
     //! Returns on which side of the constraint line extension point, the line was created
-    QgsCadUtils::AlignMapPointOutput::LineExtensionSide lineExtensionSide() const { return mSoftLockLineExtension; }
+    Qgis::LineExtensionSide lineExtensionSide() const { return mSoftLockLineExtension; }
 
     //! Returns the \a CadConstraint
     const CadConstraint *constraintXyVertex() const { return mXyVertexConstraint.get(); }
@@ -928,7 +918,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void updateCapacity( bool updateUIwithoutChange = false );
 
     //! defines the between line constraint to be used (no/parallel/perpendicular)
-    void lockBetweenLineConstraint( BetweenLineConstraint constraint );
+    void lockBetweenLineConstraint( Qgis::BetweenLineConstraint constraint );
 
     /**
      * Returns the first snapped segment. Will try to snap a segment using all layers
@@ -1007,7 +997,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr< CadConstraint > mMConstraint;
     std::unique_ptr< CadConstraint > mLineExtensionConstraint;
     std::unique_ptr< CadConstraint > mXyVertexConstraint;
-    BetweenLineConstraint mBetweenLineConstraint;
+    Qgis::BetweenLineConstraint mBetweenLineConstraint;
     double mCommonAngleConstraint; // if 0: do not snap to common angles
 
     // point list and current snap point / segment
@@ -1029,7 +1019,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QgsPointLocator::Match mLastSnapMatch;
 
     // Extra constraint context
-    QgsCadUtils::AlignMapPointOutput::LineExtensionSide mSoftLockLineExtension;
+    Qgis::LineExtensionSide mSoftLockLineExtension;
     double mSoftLockX;
     double mSoftLockY;
     QQueue< QgsPointLocator::Match > mLockedSnapVertices;

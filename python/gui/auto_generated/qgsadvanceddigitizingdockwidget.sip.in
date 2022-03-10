@@ -36,13 +36,6 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
     typedef QFlags<QgsAdvancedDigitizingDockWidget::CadCapacity> CadCapacities;
 
 
-    enum class BetweenLineConstraint
-    {
-      NoConstraint,
-      Perpendicular,
-      Parallel
-    };
-
     enum WidgetSetMode
     {
       ReturnPressed,
@@ -259,7 +252,7 @@ Sets whether M is enabled
 construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
 %End
 
-    BetweenLineConstraint betweenLineConstraint() const;
+    Qgis::BetweenLineConstraint betweenLineConstraint() const;
 %Docstring
 Returns the between line constraints which are used to place
 perpendicular/parallel segments to snapped segments on the canvas
@@ -304,7 +297,7 @@ Returns ``True`` if a constraint on a common angle is active
 Returns the ``CadConstraint``
 %End
 
-    QgsCadUtils::AlignMapPointOutput::LineExtensionSide lineExtensionSide() const;
+    Qgis::LineExtensionSide lineExtensionSide() const;
 %Docstring
 Returns on which side of the constraint line extension point, the line was created
 %End

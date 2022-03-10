@@ -42,7 +42,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   res.valid = true;
   res.softLockCommonAngle = -1;
 
-  res.softLockLineExtension = QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex;
+  res.softLockLineExtension = Qgis::LineExtensionSide::NoVertex;
   res.softLockX = std::numeric_limits<double>::quiet_NaN();
   res.softLockY = std::numeric_limits<double>::quiet_NaN();
 
@@ -382,13 +382,13 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       bool checked = checkLineExtension( geom.vertexAt( snap.vertexIndex() - 1 ) );
       if ( checked )
       {
-        res.softLockLineExtension = QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex;
+        res.softLockLineExtension = Qgis::LineExtensionSide::BeforeVertex;
       }
 
       checked = checkLineExtension( geom.vertexAt( snap.vertexIndex() + 1 ) );
       if ( checked )
       {
-        res.softLockLineExtension = QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex;
+        res.softLockLineExtension = Qgis::LineExtensionSide::AfterVertex;
       }
     }
   }
@@ -434,7 +434,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
         }
       }
     }
-    else if ( res.softLockLineExtension != QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex )
+    else if ( res.softLockLineExtension != Qgis::LineExtensionSide::NoVertex )
     {
       const QgsPointLocator::Match snap = ctx.lockedSnapVertices().last();
       const QgsFeature feature = snap.layer()->getFeature( snap.featureId() );
@@ -444,7 +444,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       const QgsPointXY lineExtensionPt1 = snap.point();
 
       QgsPointXY lineExtensionPt2;
-      if ( res.softLockLineExtension == QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex )
+      if ( res.softLockLineExtension == Qgis::LineExtensionSide::AfterVertex )
       {
         lineExtensionPt2 = QgsPointXY( geom.vertexAt( snap.vertexIndex() + 1 ) );
       }
@@ -456,7 +456,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       const bool intersect = QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, lineExtensionPt1, lineExtensionPt2, point );
       if ( !intersect )
       {
-        res.softLockLineExtension = QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex;
+        res.softLockLineExtension = Qgis::LineExtensionSide::NoVertex;
         res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, previousPt, point, point );
       }
     }

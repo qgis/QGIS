@@ -63,7 +63,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mLineExtensionConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
   mXyVertexConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
 
-  mBetweenLineConstraint = BetweenLineConstraint::NoConstraint;
+  mBetweenLineConstraint = Qgis::BetweenLineConstraint::NoConstraint;
 
   mMapCanvas->installEventFilter( this );
   mAngleLineEdit->installEventFilter( this );
@@ -441,15 +441,15 @@ void QgsAdvancedDigitizingDockWidget::betweenLineConstraintClicked( bool activat
 {
   if ( !activated )
   {
-    lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
+    lockBetweenLineConstraint( Qgis::BetweenLineConstraint::NoConstraint );
   }
   else if ( sender() == mParallelAction )
   {
-    lockBetweenLineConstraint( BetweenLineConstraint::Parallel );
+    lockBetweenLineConstraint( Qgis::BetweenLineConstraint::Parallel );
   }
   else if ( sender() == mPerpendicularAction )
   {
-    lockBetweenLineConstraint( BetweenLineConstraint::Perpendicular );
+    lockBetweenLineConstraint( Qgis::BetweenLineConstraint::Perpendicular );
   }
 }
 
@@ -546,7 +546,7 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
 {
   // release all locks except construction mode
 
-  lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
+  lockBetweenLineConstraint( Qgis::BetweenLineConstraint::NoConstraint );
 
   if ( releaseRepeatingLocks )
   {
@@ -793,7 +793,7 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
     // deactivate perpendicular/parallel if angle has been activated
     if ( constraint == mAngleConstraint.get() )
     {
-      lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
+      lockBetweenLineConstraint( Qgis::BetweenLineConstraint::NoConstraint );
     }
 
     // run a fake map mouse event to update the paint item
@@ -827,11 +827,11 @@ void QgsAdvancedDigitizingDockWidget::constraintFocusOut()
   updateConstraintValue( constraint, lineEdit->text(), true );
 }
 
-void QgsAdvancedDigitizingDockWidget::lockBetweenLineConstraint( BetweenLineConstraint constraint )
+void QgsAdvancedDigitizingDockWidget::lockBetweenLineConstraint( Qgis::BetweenLineConstraint constraint )
 {
   mBetweenLineConstraint = constraint;
-  mPerpendicularAction->setChecked( constraint == BetweenLineConstraint::Perpendicular );
-  mParallelAction->setChecked( constraint == BetweenLineConstraint::Parallel );
+  mPerpendicularAction->setChecked( constraint == Qgis::BetweenLineConstraint::Perpendicular );
+  mParallelAction->setChecked( constraint == Qgis::BetweenLineConstraint::Parallel );
 }
 
 void QgsAdvancedDigitizingDockWidget::lockParameterlessConstraint( bool activate /* default true */ )
@@ -931,7 +931,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 
   if ( !absoluteAngle )
   {
-    lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
+    lockBetweenLineConstraint( Qgis::BetweenLineConstraint::NoConstraint );
   }
 
   // absolute angle = azimuth, relative = from previous line
@@ -1259,7 +1259,7 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
 
 bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode )
 {
-  if ( mBetweenLineConstraint == BetweenLineConstraint::NoConstraint )
+  if ( mBetweenLineConstraint == Qgis::BetweenLineConstraint::NoConstraint )
   {
     return false;
   }
@@ -1281,7 +1281,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
     angle -= std::atan2( previousPt.y() - penultimatePt.y(), previousPt.x() - penultimatePt.x() );
   }
 
-  if ( mBetweenLineConstraint == BetweenLineConstraint::Perpendicular )
+  if ( mBetweenLineConstraint == Qgis::BetweenLineConstraint::Perpendicular )
   {
     angle += M_PI_2;
   }
@@ -1292,7 +1292,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   mAngleConstraint->setLockMode( lockMode );
   if ( lockMode == CadConstraint::HardLock )
   {
-    mBetweenLineConstraint = BetweenLineConstraint::NoConstraint;
+    mBetweenLineConstraint = Qgis::BetweenLineConstraint::NoConstraint;
   }
 
   return true;
@@ -1599,15 +1599,15 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 
         if ( !parallel && !perpendicular )
         {
-          lockBetweenLineConstraint( BetweenLineConstraint::Perpendicular );
+          lockBetweenLineConstraint( Qgis::BetweenLineConstraint::Perpendicular );
         }
         else if ( perpendicular )
         {
-          lockBetweenLineConstraint( BetweenLineConstraint::Parallel );
+          lockBetweenLineConstraint( Qgis::BetweenLineConstraint::Parallel );
         }
         else
         {
-          lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
+          lockBetweenLineConstraint( Qgis::BetweenLineConstraint::NoConstraint );
         }
         e->accept();
 
