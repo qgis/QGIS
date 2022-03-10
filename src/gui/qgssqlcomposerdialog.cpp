@@ -102,6 +102,7 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QgsVectorLayer *layer, QWidget *pare
   operatorsList << QStringLiteral( ">=" );
   operatorsList << QStringLiteral( "<>" );
   operatorsList << QStringLiteral( "BETWEEN" );
+  operatorsList << QStringLiteral( "NOT BETWEEN" );
   operatorsList << QStringLiteral( "IS" );
   operatorsList << QStringLiteral( "IS NOT" );
   operatorsList << QStringLiteral( "IN" );

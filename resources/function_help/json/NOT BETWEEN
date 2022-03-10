@@ -1,0 +1,18 @@
+{
+  "name": "NOT BETWEEN",
+  "type": "operator",
+  "groups": ["Operators"],
+  "description": "Returns 1 if value is not within the specified range.",
+  "arguments": [{
+    "arg": "lower_bound AND higher_bound",
+    "description": "range bounds"
+  }],
+  "examples": [{
+    "expression": "'B' NOT BETWEEN 'A' AND 'C'",
+    "returns": "0"
+  }, {
+    "expression": "1.0 NOT BETWEEN 1.1 AND 1.2",
+    "returns": "1"
+  }],
+  "tags": ["contained", "found"]
+}
