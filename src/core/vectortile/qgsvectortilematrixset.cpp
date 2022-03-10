@@ -17,6 +17,7 @@
 #include "qgstiles.h"
 #include "qgsvectortileutils.h"
 #include "qgsarcgisrestutils.h"
+#include "qgslogger.h"
 
 QgsVectorTileMatrixSet QgsVectorTileMatrixSet::fromWebMercator()
 {
@@ -59,6 +60,13 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json )
   const double originX = origin.value( QStringLiteral( "x" ) ).toDouble();
   const double originY = origin.value( QStringLiteral( "y" ) ).toDouble();
 
+  const int rows = tileInfo.value( QStringLiteral( "rows" ), QStringLiteral( "512" ) ).toInt();
+  const int cols = tileInfo.value( QStringLiteral( "cols" ), QStringLiteral( "512" ) ).toInt();
+  if ( rows != cols )
+  {
+    QgsDebugMsg( QStringLiteral( "row/col size mismatch: %1 vs %2 - tile misalignment may occur" ).arg( rows ).arg( cols ) );
+  }
+
   const QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::convertSpatialReference( tileInfo.value( QStringLiteral( "spatialReference" ) ).toMap() );
 
   const QVariantList lodList = tileInfo.value( QStringLiteral( "lods" ) ).toList();
@@ -71,7 +79,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json )
     const int level = lodMap.value( QStringLiteral( "level" ) ).toInt();
     if ( level == 0 )
     {
-      z0Dimension = lodMap.value( QStringLiteral( "resolution" ) ).toDouble() * 512;
+      z0Dimension = lodMap.value( QStringLiteral( "resolution" ) ).toDouble() * rows;
       foundLevel0 = true;
       break;
     }
