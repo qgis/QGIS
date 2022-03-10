@@ -17,6 +17,7 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudexpression.h"
 #include "qgsvectordataprovider.h"
 #include "qgsapplication.h"
 #include "qgshelp.h"
@@ -43,10 +44,12 @@ QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
+
+  // disable values widgets for now
+  groupBox2->setEnabled( false );
   connect( btnEqual, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnEqual_clicked );
   connect( btnLessThan, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnLessThan_clicked );
   connect( btnGreaterThan, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnGreaterThan_clicked );
-  connect( btnPct, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnPct_clicked );
   connect( btnIn, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnIn_clicked );
   connect( btnNotIn, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnNotIn_clicked );
   connect( lstFields, &QListView::clicked, this, &QgsPointCloudQueryBuilder::lstFields_clicked );
@@ -55,7 +58,6 @@ QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
   connect( btnGreaterEqual, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnGreaterEqual_clicked );
   connect( btnNotEqual, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnNotEqual_clicked );
   connect( btnAnd, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnAnd_clicked );
-  connect( btnNot, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnNot_clicked );
   connect( btnOr, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnOr_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPointCloudQueryBuilder::showHelp );
 
@@ -97,16 +99,10 @@ void QgsPointCloudQueryBuilder::showEvent( QShowEvent *event )
 
 void QgsPointCloudQueryBuilder::populateFields()
 {
-  /*
-  const QgsFields &fields = mLayer->fields();
+  const QgsFields &fields = mLayer->dataProvider()->index()->attributes().toFields();
   mTxtSql->setFields( fields );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )
-    {
-      // only consider native fields
-      continue;
-    }
     QStandardItem *myItem = new QStandardItem( fields.at( idx ).displayNameWithAlias() );
     myItem->setData( idx );
     myItem->setEditable( false );
@@ -115,7 +111,6 @@ void QgsPointCloudQueryBuilder::populateFields()
 
   // All fields get ... setup
   setupLstFieldsModel();
-  */
 }
 
 void QgsPointCloudQueryBuilder::setupLstFieldsModel()
@@ -139,43 +134,20 @@ void QgsPointCloudQueryBuilder::setupGuiViews()
 
 void QgsPointCloudQueryBuilder::test()
 {
-  /*
-  // test the sql statement to see if it works
-  // by counting the number of records that would be
-  // returned
-
-  if ( mLayer->setSubsetString( mTxtSql->text() ) )
-  {
-    const long long featureCount { mLayer->featureCount() };
-    // Check for errors
-    if ( featureCount < 0 )
-    {
-      QMessageBox::warning( this,
-                            tr( "Query Result" ),
-                            tr( "An error occurred when executing the query, please check the expression syntax." ) );
-    }
-    else
-    {
-      QMessageBox::information( this,
-                                tr( "Query Result" ),
-                                tr( "The where clause returned %n row(s).", "returned test rows", featureCount ) );
-    }
-  }
-  else if ( mLayer->dataProvider()->hasErrors() )
+  QgsPointCloudExpression expression( mTxtSql->text() );
+  if ( !expression.isValid() && !mTxtSql->text().isEmpty() )
   {
     QMessageBox::warning( this,
                           tr( "Query Result" ),
-                          tr( "An error occurred when executing the query." )
-                          + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
-    mLayer->dataProvider()->clearErrors();
+                          tr( "An error occurred while parsing the expression:\n%1" ).arg( expression.parserErrorString() ) );
   }
   else
   {
-    QMessageBox::warning( this,
-                          tr( "Query Result" ),
-                          tr( "An error occurred when executing the query." ) );
+    mLayer->setSubsetString( mTxtSql->text() );
+    QMessageBox::information( this,
+                              tr( "Query Result" ),
+                              tr( "The expression was successfully parsed." ) );
   }
-  */
 }
 
 void QgsPointCloudQueryBuilder::accept()
@@ -218,12 +190,6 @@ void QgsPointCloudQueryBuilder::btnGreaterThan_clicked()
   mTxtSql->setFocus();
 }
 
-void QgsPointCloudQueryBuilder::btnPct_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( "%" ) );
-  mTxtSql->setFocus();
-}
-
 void QgsPointCloudQueryBuilder::btnIn_clicked()
 {
   mTxtSql->insertText( QStringLiteral( " IN " ) );
@@ -256,10 +222,8 @@ void QgsPointCloudQueryBuilder::lstFields_clicked( const QModelIndex &index )
 
 void QgsPointCloudQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 {
-  /*
-  mTxtSql->insertText( '\"' + mLayer->fields().at( mModelFields->data( index, Qt::UserRole + 1 ).toInt() ).name() + '\"' );
+  mTxtSql->insertText( mModelFields->data( index ).toString() );
   mTxtSql->setFocus();
-  */
 }
 
 void QgsPointCloudQueryBuilder::btnLessEqual_clicked()
@@ -286,12 +250,6 @@ void QgsPointCloudQueryBuilder::btnAnd_clicked()
   mTxtSql->setFocus();
 }
 
-void QgsPointCloudQueryBuilder::btnNot_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " NOT " ) );
-  mTxtSql->setFocus();
-}
-
 void QgsPointCloudQueryBuilder::btnOr_clicked()
 {
   mTxtSql->insertText( QStringLiteral( " OR " ) );
@@ -311,7 +269,8 @@ void QgsPointCloudQueryBuilder::setDatasourceDescription( const QString &uri )
 
 void QgsPointCloudQueryBuilder::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
+  // TODO: No pointcloud help page yet
+  //QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
 }
 
 void QgsPointCloudQueryBuilder::saveQuery()
@@ -384,7 +343,7 @@ void QgsPointCloudQueryBuilder::loadQuery()
   const QString query = queryElem.text();
 
   //TODO: test if all the attributes are valid
-  const QgsExpression search( query );
+  const QgsPointCloudExpression search( query );
   if ( search.hasParserError() )
   {
     QMessageBox::critical( this, tr( "Query Result" ), search.parserErrorString() );
