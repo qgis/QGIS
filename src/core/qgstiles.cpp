@@ -201,9 +201,12 @@ double QgsTileMatrixSet::scaleToZoom( double scale ) const
   double scaleUnder = 0;
   double scaleOver = 0;
 
-  // TODO: it seems that map scale is double (is that because of high-dpi screen?)
-  // (this TODO was taken straight from QgsVectorTileUtils::scaleToZoom!)
-  scale *= 2;
+  if ( mApplyTileScaleDoubleHack )
+  {
+    // TODO: it seems that map scale is double (is that because of high-dpi screen?)
+    // (this TODO was taken straight from QgsVectorTileUtils::scaleToZoom!)
+    scale *= 2;
+  }
 
   for ( auto it = mTileMatrices.constBegin(); it != mTileMatrices.constEnd(); ++it )
   {
@@ -238,6 +241,8 @@ bool QgsTileMatrixSet::readXml( const QDomElement &element, QgsReadWriteContext 
 {
   mTileMatrices.clear();
 
+  mApplyTileScaleDoubleHack = element.attribute( QStringLiteral( "applyScaleDoubleHack" ), QStringLiteral( "1" ) ).toInt();
+
   const QDomNodeList children = element.childNodes();
   for ( int i = 0; i < children.size(); i++ )
   {
@@ -266,6 +271,7 @@ bool QgsTileMatrixSet::readXml( const QDomElement &element, QgsReadWriteContext 
 QDomElement QgsTileMatrixSet::writeXml( QDomDocument &document, const QgsReadWriteContext & ) const
 {
   QDomElement setElement = document.createElement( QStringLiteral( "matrixSet" ) );
+  setElement.setAttribute( QStringLiteral( "applyScaleDoubleHack" ), mApplyTileScaleDoubleHack ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   for ( auto it = mTileMatrices.constBegin(); it != mTileMatrices.constEnd(); ++it )
   {

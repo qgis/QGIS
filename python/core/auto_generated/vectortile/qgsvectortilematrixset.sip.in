@@ -35,6 +35,7 @@ Initializes the tile structure settings from an ESRI REST VectorTileService ``js
 
    This same structure is utilized in ESRI vtpk archives in the root.json file.
 %End
+
 };
 
 /************************************************************************
