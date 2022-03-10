@@ -74,20 +74,11 @@ Qgis.ARGB32_Premultiplied.__doc__ = "Color, alpha, red, green, blue, 4 bytes  th
 Qgis.DataType.__doc__ = 'Raster data types.\nThis is modified and extended copy of GDALDataType.\n\n' + '* ``UnknownDataType``: ' + Qgis.DataType.UnknownDataType.__doc__ + '\n' + '* ``Byte``: ' + Qgis.DataType.Byte.__doc__ + '\n' + '* ``UInt16``: ' + Qgis.DataType.UInt16.__doc__ + '\n' + '* ``Int16``: ' + Qgis.DataType.Int16.__doc__ + '\n' + '* ``UInt32``: ' + Qgis.DataType.UInt32.__doc__ + '\n' + '* ``Int32``: ' + Qgis.DataType.Int32.__doc__ + '\n' + '* ``Float32``: ' + Qgis.DataType.Float32.__doc__ + '\n' + '* ``Float64``: ' + Qgis.DataType.Float64.__doc__ + '\n' + '* ``CInt16``: ' + Qgis.DataType.CInt16.__doc__ + '\n' + '* ``CInt32``: ' + Qgis.DataType.CInt32.__doc__ + '\n' + '* ``CFloat32``: ' + Qgis.DataType.CFloat32.__doc__ + '\n' + '* ``CFloat64``: ' + Qgis.DataType.CFloat64.__doc__ + '\n' + '* ``ARGB32``: ' + Qgis.DataType.ARGB32.__doc__ + '\n' + '* ``ARGB32_Premultiplied``: ' + Qgis.DataType.ARGB32_Premultiplied.__doc__
 # --
 Qgis.DataType.baseClass = Qgis
-QgsMapToolCapture.CaptureTechnique = Qgis.CaptureTechnique
 # monkey patching scoped based enum
-QgsMapToolCapture.StraightSegments = Qgis.CaptureTechnique.StraightSegments
-QgsMapToolCapture.StraightSegments.is_monkey_patched = True
-QgsMapToolCapture.StraightSegments.__doc__ = "Default capture mode - capture occurs with straight line segments"
-QgsMapToolCapture.CircularString = Qgis.CaptureTechnique.CircularString
-QgsMapToolCapture.CircularString.is_monkey_patched = True
-QgsMapToolCapture.CircularString.__doc__ = "Capture in circular strings"
-QgsMapToolCapture.Streaming = Qgis.CaptureTechnique.Streaming
-QgsMapToolCapture.Streaming.is_monkey_patched = True
-QgsMapToolCapture.Streaming.__doc__ = "Streaming points digitizing mode (points are automatically added as the mouse cursor moves)."
-QgsMapToolCapture.Shape = Qgis.CaptureTechnique.Shape
-QgsMapToolCapture.Shape.is_monkey_patched = True
-QgsMapToolCapture.Shape.__doc__ = "Digitize shapes."
+Qgis.CaptureTechnique.StraightSegments.__doc__ = "Default capture mode - capture occurs with straight line segments"
+Qgis.CaptureTechnique.CircularString.__doc__ = "Capture in circular strings"
+Qgis.CaptureTechnique.Streaming.__doc__ = "Streaming points digitizing mode (points are automatically added as the mouse cursor moves)."
+Qgis.CaptureTechnique.Shape.__doc__ = "Digitize shapes."
 Qgis.CaptureTechnique.__doc__ = 'Capture technique.\n\n.. versionadded:: 3.26\n\n' + '* ``StraightSegments``: ' + Qgis.CaptureTechnique.StraightSegments.__doc__ + '\n' + '* ``CircularString``: ' + Qgis.CaptureTechnique.CircularString.__doc__ + '\n' + '* ``Streaming``: ' + Qgis.CaptureTechnique.Streaming.__doc__ + '\n' + '* ``Shape``: ' + Qgis.CaptureTechnique.Shape.__doc__
 # --
 Qgis.CaptureTechnique.baseClass = Qgis
