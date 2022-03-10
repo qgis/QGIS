@@ -4451,8 +4451,8 @@ void QgisApp::setupConnections()
            this, &QgisApp::fileOpenAfterLaunch );
 
   // Connect warning dialog from project reading
-  connect( QgsProject::instance(), &QgsProject::oldProjectVersionWarning,
-           this, &QgisApp::oldProjectVersionWarning );
+  connect( QgsProject::instance(), &QgsProject::readVersionMismatchOccurred,
+           this, &QgisApp::projectVersionMismatchOccurred );
   connect( QgsProject::instance(), &QgsProject::layerLoaded,
            this, [this]( int i, int n )
   {
@@ -16738,23 +16738,29 @@ void QgisApp::takeAppScreenShots( const QString &saveDirectory, const int catego
   ass.takePicturesOf( QgsAppScreenShots::Categories( categories ) );
 }
 
-// Slot that gets called when the project file was saved with an older
-// version of QGIS
-
-void QgisApp::oldProjectVersionWarning( const QString &oldVersion )
+void QgisApp::projectVersionMismatchOccurred( const QString &projectVersion )
 {
-  Q_UNUSED( oldVersion )
-  QgsSettings settings;
+  const QgsProjectVersion fileVersion( projectVersion );
+  const QgsProjectVersion thisVersion( Qgis::version() );
 
-  if ( settings.value( QStringLiteral( "qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() )
+  if ( thisVersion > fileVersion )
   {
-    QString smalltext = tr( "This project file was saved by QGIS version %1."
-                            " When saving this project file, QGIS will update it to version %2, "
-                            "possibly rendering it useless for older versions of QGIS." ).arg( oldVersion, Qgis::version() );
+    QgsSettings settings;
 
-    QString title = tr( "Project file is older" );
+    if ( settings.value( QStringLiteral( "qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() )
+    {
+      QString smalltext = tr( "This project file was saved by QGIS version %1."
+                              " When saving this project file, QGIS will update it to version %2, "
+                              "possibly rendering it useless for older versions of QGIS." ).arg( projectVersion, Qgis::version() );
 
-    visibleMessageBar()->pushMessage( title, smalltext );
+      QString title = tr( "Project file is older" );
+
+      visibleMessageBar()->pushMessage( title, smalltext );
+    }
+  }
+  else
+  {
+    visibleMessageBar()->pushWarning( QString(), tr( "This project file was created by a newer version of QGIS (%1) and could not be completely loaded." ).arg( projectVersion ) );
   }
 }
 
