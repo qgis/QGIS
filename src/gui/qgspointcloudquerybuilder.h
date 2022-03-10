@@ -14,9 +14,7 @@
  ***************************************************************************/
 #ifndef QGSPOINTCLOUDQUERYBUILDER_H
 #define QGSPOINTCLOUDQUERYBUILDER_H
-#include <map>
 #include "qgis_sip.h"
-#include <vector>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
@@ -34,12 +32,12 @@ class QgsCodeEditor;
  * \class QgsPointCloudQueryBuilder
  * \brief Query Builder for layers.
  *
- * The query builder allows interactive creation of a SQL for limiting the
- * features displayed in a vector layer.  The fields in the table are
- * displayed and sample values (or all values) can be viewed to aid in
- * constructing the query. A test function returns the number of features that
- * will be returned.
+ * The query builder allows interactive creation of an expression for limiting the
+ * points displayed in a point cloud layer.  The point attributes are displayed
+ * and sample values can be viewed to aid in constructing the expression.
+ * A test function checks that the typed expression is valid.
  *
+ * \since QGIS 3.26
  */
 class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterface, private Ui::QgsPointCloudQueryBuilderBase
 {
@@ -48,8 +46,8 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 
     /**
      * This constructor is used when the query builder is called from the
-     * vector layer properties dialog
-     * \param layer existing vector layer
+     * layer properties dialog
+     * \param layer existing point cloud layer
      * \param parent Parent widget
      * \param fl dialog flags
      */
@@ -72,7 +70,6 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 
     /**
      * Returns the code editor widget for the SQL.
-     * \since QGIS 3.18
      */
     QgsCodeEditor *codeEditorWidget() const;
     SIP_END
@@ -80,7 +77,6 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 
     /**
      * Returns the code editor widget for the SQL.
-     * \since QGIS 3.18
      */
     QWidget *codeEditorWidget() const;
     SIP_END
@@ -88,7 +84,6 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 
     /**
      * Returns the code editor widget for the SQL.
-     * \since QGIS 3.18
      */
     QgsCodeEditor *codeEditorWidget() const { return mTxtSql; }
 #endif
@@ -99,23 +94,17 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
     void clear();
 
     /**
-     * The default implementation tests that the constructed sql statement to
-     * see if the vector layer data provider likes it.
-     * The number of rows that would be returned is displayed in a message box.
-     * The test uses a "select count(*) from ..." query to test the SQL
-     * statement.
+     * Test if the typed expression is valid and can be used as a \a QgsPointCloudExpression
      */
     virtual void test();
 
     /**
-     * Save query to the XML file
-     * \since QGIS 3.16
+     * Save expression to the XML file
      */
     void saveQuery();
 
     /**
-     * Load query from the XML file
-     * \since QGIS 3.16
+     * Load expression from the XML file
      */
     void loadQuery();
 
@@ -125,7 +114,6 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
     void btnEqual_clicked();
     void btnLessThan_clicked();
     void btnGreaterThan_clicked();
-    void btnPct_clicked();
     void btnIn_clicked();
     void btnNotIn_clicked();
     void lstFields_clicked( const QModelIndex &index );
@@ -134,10 +122,8 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
     void btnGreaterEqual_clicked();
     void btnNotEqual_clicked();
     void btnAnd_clicked();
-    void btnNot_clicked();
     void btnOr_clicked();
     void layerSubsetStringChanged();
-
 
   private:
 
@@ -160,7 +146,7 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
     //! Previous field row to delete model
     int mPreviousFieldRow;
 
-    //! vector layer
+    //! the point cloud layer
     QgsPointCloudLayer *mLayer = nullptr;
 
     //! original subset string

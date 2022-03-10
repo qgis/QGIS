@@ -22,6 +22,7 @@
 #include "qgsquerybuilder.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgisapp.h"
 #include "qgsstringutils.h"
 
@@ -58,6 +59,10 @@ QString QgsLayerTreeViewFilterIndicatorProvider::tooltipText( QgsMapLayer *layer
   if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
     filter = rlayer->subsetString();
 
+  QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  if ( pclayer && pclayer->dataProvider() && pclayer->dataProvider()->supportsSubsetString() )
+    filter = pclayer->subsetString();
+
   if ( filter.isEmpty() )
     return QString();
 
@@ -81,6 +86,9 @@ void QgsLayerTreeViewFilterIndicatorProvider::connectSignals( QgsMapLayer *layer
   if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
     connect( rlayer, &QgsRasterLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
 
+  QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  if ( pclayer && pclayer->dataProvider() && pclayer->dataProvider()->supportsSubsetString() )
+    connect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
 }
 
 void QgsLayerTreeViewFilterIndicatorProvider::disconnectSignals( QgsMapLayer *layer )
@@ -93,6 +101,10 @@ void QgsLayerTreeViewFilterIndicatorProvider::disconnectSignals( QgsMapLayer *la
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
     disconnect( rlayer, &QgsRasterLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
+
+  QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  if ( pclayer && pclayer->dataProvider() && pclayer->dataProvider()->supportsSubsetString() )
+    disconnect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
 }
 
 bool QgsLayerTreeViewFilterIndicatorProvider::acceptLayer( QgsMapLayer *layer )
@@ -105,6 +117,10 @@ bool QgsLayerTreeViewFilterIndicatorProvider::acceptLayer( QgsMapLayer *layer )
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
     return ! rlayer->subsetString().isEmpty();
+
+  QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  if ( pclayer && pclayer->dataProvider() && pclayer->dataProvider()->supportsSubsetString() )
+    return ! pclayer->subsetString().isEmpty();
 
   return false;
 }

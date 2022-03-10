@@ -360,9 +360,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
       }
 
-      if ( rlayer &&
-           rlayer->dataProvider() &&
-           rlayer->dataProvider()->supportsSubsetString() )
+      if ( ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() ) ||
+           ( pcLayer && pcLayer->dataProvider() && pcLayer->dataProvider()->supportsSubsetString() ) )
       {
         menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
       }
