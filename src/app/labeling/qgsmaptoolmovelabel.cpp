@@ -34,6 +34,7 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigit
 
   mPalProperties << QgsPalLayerSettings::PositionX;
   mPalProperties << QgsPalLayerSettings::PositionY;
+  mPalProperties << QgsPalLayerSettings::CurvedOffset;
 
   mDiagramProperties << QgsDiagramLayerSettings::PositionX;
   mDiagramProperties << QgsDiagramLayerSettings::PositionY;
@@ -58,17 +59,52 @@ void QgsMapToolMoveLabel::deleteRubberBands()
 
 void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
+
   if ( mLabelRubberBand )
   {
     const QgsPointXY pointMapCoords = e->mapPoint();
-    const double offsetX = pointMapCoords.x() - mStartPointMapCoords.x();
-    const double offsetY = pointMapCoords.y() - mStartPointMapCoords.y();
-    mLabelRubberBand->setTranslationOffset( offsetX, offsetY );
-    mLabelRubberBand->updatePosition();
-    mLabelRubberBand->update();
-    mFixPointRubberBand->setTranslationOffset( offsetX, offsetY );
-    mFixPointRubberBand->updatePosition();
-    mFixPointRubberBand->update();
+
+    bool isCurved { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved };
+    if ( isCurved )
+    {
+      // Determine the closest point on the feature
+      const QgsFeatureId featureId = mCurrentLabel.pos.featureId;
+      if ( mCurrentLabel.layer )
+      {
+        const QgsFeature feature { mCurrentLabel.layer->getFeature( featureId ) };
+        const QgsGeometry pointMapGeometry { QgsGeometry::fromPointXY( pointMapCoords ) };
+        if ( feature.geometry().distance( pointMapGeometry ) / mCanvas->mapUnitsPerPixel() > 100.0 )
+        {
+          mCurrentLabel.settings.placement = QgsPalLayerSettings::Placement::Horizontal;
+          isCurved = false;
+          mOffsetFromLineStartRubberBand->hide();
+        }
+        else
+        {
+          mOffsetFromLineStartRubberBand->setToGeometry( feature.geometry().nearestPoint( pointMapGeometry ) );
+          mOffsetFromLineStartRubberBand->show();
+        }
+      }
+    }
+
+    if ( isCurved )
+    {
+      mLabelRubberBand->hide();
+      mFixPointRubberBand->hide();
+    }
+    else
+    {
+      const double offsetX = pointMapCoords.x() - mStartPointMapCoords.x();
+      const double offsetY = pointMapCoords.y() - mStartPointMapCoords.y();
+      mLabelRubberBand->setTranslationOffset( offsetX, offsetY );
+      mLabelRubberBand->updatePosition();
+      mLabelRubberBand->update();
+      mFixPointRubberBand->setTranslationOffset( offsetX, offsetY );
+      mFixPointRubberBand->updatePosition();
+      mFixPointRubberBand->update();
+      mLabelRubberBand->show();
+      mFixPointRubberBand->show();
+    }
   }
   else if ( mCalloutMoveRubberBand )
   {
@@ -92,7 +128,7 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
-  if ( !mLabelRubberBand && !mCalloutMoveRubberBand )
+  if ( !mLabelRubberBand && !mCalloutMoveRubberBand && !mOffsetFromLineStartRubberBand )
   {
     if ( e->button() != Qt::LeftButton )
       return;
@@ -182,9 +218,30 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      int xCol = -1, yCol = -1, pointCol = -1;
+      int xCol = -1, yCol = -1, pointCol = -1, curvedOffsetCol = -1;
 
-      if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
+      const bool isCurved { mCurrentLabel.settings.placement ==  QgsPalLayerSettings::Placement::Curved };
+
+      if ( isCurved && !mCurrentLabel.pos.isDiagram && !labelOffsettable( vlayer, mCurrentLabel.settings, pointCol ) )
+      {
+        QgsPalIndexes indexes;
+        if ( createAuxiliaryFields( indexes ) )
+          return;
+
+        if ( !labelOffsettable( vlayer, mCurrentLabel.settings, pointCol ) )
+        {
+          PropertyStatus status = PropertyStatus::DoesNotExist;
+          QString offsetColName = dataDefinedColumnName( QgsPalLayerSettings::CurvedOffset, mCurrentLabel.settings, vlayer, status );
+
+          if ( pointCol < 0 )
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label offset column “%1” does not exist in the layer" ).arg( offsetColName ) );
+          return;
+        }
+
+        curvedOffsetCol = indexes[ QgsPalLayerSettings::CurvedOffset ];
+
+      }
+      else if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
       {
         if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
         {
@@ -228,10 +285,11 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
       }
 
-      if ( xCol >= 0 && yCol >= 0 )
+      if ( ( isCurved && curvedOffsetCol >= 0 ) || ( xCol >= 0 && yCol >= 0 ) )
       {
-        const bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
-                                   && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
+        const bool usesAuxFields =
+          ( isCurved && curvedOffsetCol >= 0 && vlayer->fields().fieldOrigin( curvedOffsetCol ) == QgsFields::OriginJoin ) ||
+          ( vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin );
         if ( !usesAuxFields && !vlayer->isEditable() )
         {
           if ( vlayer->startEditing() )
@@ -258,7 +316,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       createRubberBands();
     }
   }
-  else
+  else // Second click
   {
     switch ( e->button() )
     {
@@ -295,12 +353,21 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         int xCol = -1;
         int yCol = -1;
         int pointCol = -1;
+        int curvedOffsetCol = -1;
         double xPosOrig = 0;
         double yPosOrig = 0;
+        double curvedOffsetOrig = 0;
         bool xSuccess = false;
         bool ySuccess = false;
+        bool curvedOffsetSuccess = false;
 
-        if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
+        const bool isCurved { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved };
+
+        if ( !isCalloutMove && isCurved && !currentLabelDataDefinedCurvedOffset( curvedOffsetOrig, curvedOffsetSuccess, curvedOffsetCol ) )
+        {
+          return;
+        }
+        else if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
         {
           return;
         }
@@ -309,111 +376,138 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           return;
         }
 
-        double xPosNew = 0;
-        double yPosNew = 0;
+        // Handle curved offset
+        if ( isCurved )
+        {
 
-        if ( !xSuccess || !ySuccess )
-        {
-          xPosNew = releaseCoords.x() - mClickOffsetX;
-          yPosNew = releaseCoords.y() - mClickOffsetY;
-        }
-        else
-        {
-          //transform to map crs first, because xdiff,ydiff are in map coordinates
-          const QgsMapSettings &ms = mCanvas->mapSettings();
-          const QgsPointXY transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPointXY( xPosOrig, yPosOrig ) );
-          xPosOrig = transformedPoint.x();
-          yPosOrig = transformedPoint.y();
-          xPosNew = xPosOrig + xdiff;
-          yPosNew = yPosOrig + ydiff;
-        }
-
-        //transform back to layer crs
-        if ( mCanvas )
-        {
-          const QgsMapSettings &s = mCanvas->mapSettings();
-          const QgsPointXY transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPointXY( xPosNew, yPosNew ) );
-          xPosNew = transformedPoint.x();
-          yPosNew = transformedPoint.y();
-        }
-
-        if ( !isCalloutMove )
-          vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
-        else
-          vlayer->beginEditCommand( tr( "Moved callout" ) );
-
-        bool success = false;
-        if ( !isCalloutMove
-             && mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
-        {
-          success = changeCurrentLabelDataDefinedPosition( xPosNew, yPosNew );
-        }
-        else
-        {
-          // Try to convert to the destination field type
-          QVariant xNewPos( xPosNew );
-          QVariant yNewPos( yPosNew );
-          if ( xCol < vlayer->fields().count() )
+          const QgsFeature feature { mCurrentLabel.layer->getFeature( featureId ) };
+          const QgsGeometry pointMapGeometry { QgsGeometry::fromPointXY( releaseCoords ) };
+          const QgsGeometry anchorPoint { feature.geometry().nearestPoint( pointMapGeometry ) };
+          const double offset { feature.geometry().lineLocatePoint( anchorPoint ) };
+          vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+          bool success = false;
+          if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::CurvedOffset ) )
           {
-            if ( ! vlayer->fields().at( xCol ).convertCompatible( xNewPos ) )
-            {
-              xNewPos = xPosNew; // revert and hope for the best
-            }
+            success = changeCurrentLabelDataDefinedCurvedOffset( offset );
           }
 
-          if ( yCol < vlayer->fields().count() )
+          if ( !success )
           {
-            if ( ! vlayer->fields().at( yCol ).convertCompatible( yNewPos ) )
+            if ( !vlayer->isEditable() )
             {
-              yNewPos = yPosNew; // revert and hope for the best
+              QgisApp::instance()->messageBar()->pushWarning( tr( "Move curved label offset" ), tr( "Layer “%1” must be editable in order to move labels from it" ).arg( vlayer->name() ) );
+              vlayer->endEditCommand();
             }
           }
-          success = vlayer->changeAttributeValue( featureId, xCol, xNewPos );
-          success = vlayer->changeAttributeValue( featureId, yCol, yNewPos ) && success;
         }
-
-        if ( !success )
+        else
         {
-          // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
-          // and the layer isn't in edit mode
-          if ( !vlayer->isEditable() )
+          double xPosNew = 0;
+          double yPosNew = 0;
+
+          if ( !xSuccess || !ySuccess )
           {
-            if ( !isCalloutMove )
-              QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Layer “%1” must be editable in order to move labels from it" ).arg( vlayer->name() ) );
-            else
-              QgisApp::instance()->messageBar()->pushWarning( tr( "Move Callout" ), tr( "Layer “%1” must be editable in order to move callouts from it" ).arg( vlayer->name() ) );
+            xPosNew = releaseCoords.x() - mClickOffsetX;
+            yPosNew = releaseCoords.y() - mClickOffsetY;
           }
           else
           {
-            if ( !isCalloutMove )
-              QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Error encountered while storing new label position" ) );
+            //transform to map crs first, because xdiff,ydiff are in map coordinates
+            const QgsMapSettings &ms = mCanvas->mapSettings();
+            const QgsPointXY transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPointXY( xPosOrig, yPosOrig ) );
+            xPosOrig = transformedPoint.x();
+            yPosOrig = transformedPoint.y();
+            xPosNew = xPosOrig + xdiff;
+            yPosNew = yPosOrig + ydiff;
+          }
+
+          //transform back to layer crs
+          if ( mCanvas )
+          {
+            const QgsMapSettings &s = mCanvas->mapSettings();
+            const QgsPointXY transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPointXY( xPosNew, yPosNew ) );
+            xPosNew = transformedPoint.x();
+            yPosNew = transformedPoint.y();
+          }
+
+          if ( !isCalloutMove )
+            vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+          else
+            vlayer->beginEditCommand( tr( "Moved callout" ) );
+
+          bool success = false;
+          if ( !isCalloutMove
+               && mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+          {
+            success = changeCurrentLabelDataDefinedPosition( xPosNew, yPosNew );
+          }
+          else
+          {
+            // Try to convert to the destination field type
+            QVariant xNewPos( xPosNew );
+            QVariant yNewPos( yPosNew );
+            if ( xCol < vlayer->fields().count() )
+            {
+              if ( ! vlayer->fields().at( xCol ).convertCompatible( xNewPos ) )
+              {
+                xNewPos = xPosNew; // revert and hope for the best
+              }
+            }
+
+            if ( yCol < vlayer->fields().count() )
+            {
+              if ( ! vlayer->fields().at( yCol ).convertCompatible( yNewPos ) )
+              {
+                yNewPos = yPosNew; // revert and hope for the best
+              }
+            }
+            success = vlayer->changeAttributeValue( featureId, xCol, xNewPos );
+            success = vlayer->changeAttributeValue( featureId, yCol, yNewPos ) && success;
+          }
+
+          if ( !success )
+          {
+            // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
+            // and the layer isn't in edit mode
+            if ( !vlayer->isEditable() )
+            {
+              if ( !isCalloutMove )
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Layer “%1” must be editable in order to move labels from it" ).arg( vlayer->name() ) );
+              else
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Move Callout" ), tr( "Layer “%1” must be editable in order to move callouts from it" ).arg( vlayer->name() ) );
+            }
             else
-              QgisApp::instance()->messageBar()->pushWarning( tr( "Move Callout" ), tr( "Error encountered while storing new callout position" ) );
+            {
+              if ( !isCalloutMove )
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Error encountered while storing new label position" ) );
+              else
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Move Callout" ), tr( "Error encountered while storing new callout position" ) );
+            }
+            vlayer->endEditCommand();
+            break;
+          }
+
+          // set rotation to that of label, if data-defined and no rotation set yet
+          // honor whether to preserve preexisting data on pin
+          // must come after setting x and y positions
+          if ( !isCalloutMove && !mCurrentLabel.pos.isDiagram
+               && !mCurrentLabel.pos.isPinned
+               && !currentLabelPreserveRotation() )
+          {
+            double defRot;
+            bool rSuccess;
+            int rCol;
+            if ( currentLabelDataDefinedRotation( defRot, rSuccess, rCol ) )
+            {
+              const double labelRot = mCurrentLabel.pos.rotation * 180 / M_PI;
+              vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rCol, labelRot );
+            }
           }
           vlayer->endEditCommand();
+
+          vlayer->triggerRepaint();
           break;
         }
-
-        // set rotation to that of label, if data-defined and no rotation set yet
-        // honor whether to preserve preexisting data on pin
-        // must come after setting x and y positions
-        if ( !isCalloutMove && !mCurrentLabel.pos.isDiagram
-             && !mCurrentLabel.pos.isPinned
-             && !currentLabelPreserveRotation() )
-        {
-          double defRot;
-          bool rSuccess;
-          int rCol;
-          if ( currentLabelDataDefinedRotation( defRot, rSuccess, rCol ) )
-          {
-            const double labelRot = mCurrentLabel.pos.rotation * 180 / M_PI;
-            vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rCol, labelRot );
-          }
-        }
-        vlayer->endEditCommand();
-
-        vlayer->triggerRepaint();
-        break;
       }
       default:
         break;

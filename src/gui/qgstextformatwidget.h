@@ -290,6 +290,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mCoordYDDBtn_activated( bool isActive );
     void mCoordPointDDBtn_changed();
     void mCoordPointDDBtn_activated( bool isActive );
+    void mCurvedLineOffsetDDBtn_changed();
+    void mCurvedLineOffsetDDBtn_activated( bool isActive );
     void mShapeTypeCmbBx_currentIndexChanged( int index );
     void mShapeRotationCmbBx_currentIndexChanged( int index );
     void mShapeSVGParamsBtn_clicked();
