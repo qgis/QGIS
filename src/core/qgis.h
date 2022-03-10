@@ -149,8 +149,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum class CaptureTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapToolCapture, CaptureTechnique ) : int
-      {
+    enum class CaptureTechnique : int
+    {
       StraightSegments, //!< Default capture mode - capture occurs with straight line segments
       CircularString, //!< Capture in circular strings
       Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).

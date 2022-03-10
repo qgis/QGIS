@@ -105,7 +105,7 @@ The development version
     };
 
     enum class CaptureTechnique
-      {
+    {
       StraightSegments,
       CircularString,
       Streaming,
