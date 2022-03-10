@@ -1293,12 +1293,11 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   return lPos.size();
 }
 
-std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *mapShape, const std::vector< double> &pathDistances, QgsTextRendererUtils::LabelLineDirection direction, const double offsetAlongLine, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints )
+std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *mapShape, const std::vector< double> &pathDistances, QgsTextRendererUtils::LabelLineDirection direction, const double offsetAlongLine, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints, bool uprightOnly )
 {
   const QgsPrecalculatedTextMetrics *metrics = qgis::down_cast< QgsTextLabelFeature * >( mLF )->textMetrics();
   Q_ASSERT( metrics );
 
-  const bool uprightOnly = onlyShowUprightLabels();
   const double maximumCharacterAngleInside = applyAngleConstraints ? std::fabs( qgis::down_cast< QgsTextLabelFeature *>( mLF )->maximumCharacterAngleInside() ) : -1;
   const double maximumCharacterAngleOutside = applyAngleConstraints ? std::fabs( qgis::down_cast< QgsTextLabelFeature *>( mLF )->maximumCharacterAngleOutside() ) : -1;
 
@@ -1426,6 +1425,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   const geos::unique_ptr originalPoint = mapShape->interpolatePoint( shapeLength * mLF->lineAnchorPercent() );
 
   std::vector< std::unique_ptr< LabelPosition >> positions;
+  std::unique_ptr< LabelPosition > backupPlacement;
   for ( PathOffset offset : { PositiveOffset, NoOffset, NegativeOffset } )
   {
     PointSet *currentMapShape = nullptr;
@@ -1508,17 +1508,34 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       // placements may need to be reversed if using map orientation and the line has right-to-left direction
       bool labeledLineSegmentIsRightToLeft = false;
       const QgsTextRendererUtils::LabelLineDirection direction = ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ? QgsTextRendererUtils::RespectPainterOrientation : QgsTextRendererUtils::FollowLineDirection;
-      std::unique_ptr< LabelPosition > labelPosition = curvedPlacementAtOffset( currentMapShape, pathDistances, direction, distanceAlongLineToStartCandidate, labeledLineSegmentIsRightToLeft, !singleCandidateOnly );
+      std::unique_ptr< LabelPosition > labelPosition = curvedPlacementAtOffset( currentMapShape, pathDistances, direction, distanceAlongLineToStartCandidate, labeledLineSegmentIsRightToLeft, !singleCandidateOnly,
+          onlyShowUprightLabels() && !singleCandidateOnly );
 
       if ( !labelPosition )
+      {
         continue;
+      }
+
+      bool isBackupPlacementOnly = false;
       if ( flags & QgsLabeling::LinePlacementFlag::MapOrientation )
       {
         if ( ( offset != NoOffset ) && !labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
-          continue;
+        {
+          if ( singleCandidateOnly && offset == PositiveOffset )
+            isBackupPlacementOnly = true;
+          else
+            continue;
+        }
         if ( ( offset != NoOffset ) && labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::BelowLine ) )
-          continue;
+        {
+          if ( singleCandidateOnly && offset == PositiveOffset )
+            isBackupPlacementOnly = true;
+          else
+            continue;
+        }
       }
+
+      backupPlacement.reset();
 
       // evaluate cost
       const double angleDiff = labelPosition->angleDifferential();
@@ -1579,7 +1596,12 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       }
 
       if ( p )
-        positions.emplace_back( std::move( p ) );
+      {
+        if ( isBackupPlacementOnly )
+          backupPlacement = std::move( p );
+        else
+          positions.emplace_back( std::move( p ) );
+      }
     }
   }
 
@@ -1587,6 +1609,9 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   {
     lPos.emplace_back( std::move( pos ) );
   }
+
+  if ( backupPlacement )
+    lPos.emplace_back( std::move( backupPlacement ) );
 
   return positions.size();
 }
