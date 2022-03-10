@@ -45,6 +45,7 @@ class TestQgsCadUtils : public QObject
     void testCommonAngle();
     void testDistance();
     void testLineExtension();
+    void testVertexConstrainst();
     void testEdge();
 
   private:
@@ -77,7 +78,7 @@ void TestQgsCadUtils::initTestCase()
 
   QgsPolygonXY polygon1;
   QgsPolylineXY polygon1exterior;
-  polygon1exterior << QgsPointXY( 10, 10 ) << QgsPointXY( 30, 10 ) << QgsPointXY( 10, 20 ) << QgsPointXY( 10, 10 );
+  polygon1exterior << QgsPointXY( 10, 10 ) << QgsPointXY( 20, 0 ) << QgsPointXY( 30, 10 ) << QgsPointXY( 10, 20 ) << QgsPointXY( 10, 10 );
   polygon1 << polygon1exterior;
   QgsFeature polygonF1;
   polygonF1.setGeometry( QgsGeometry::fromPolygonXY( polygon1 ) );
@@ -323,8 +324,8 @@ void TestQgsCadUtils::testLineExtension()
   QgsFeatureId featId = feature.id();
 
   QQueue< QgsPointLocator::Match > lockedSnapVertices;
-  lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 10, 20 ), 1 ) );
-  lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 10, 20 ), 2 ) );
+  lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 30, 10 ), 2 ) );
+  lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 10, 20 ), 3 ) );
   context.setLockedSnapVertices( lockedSnapVertices );
 
   result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.5, 0 ), context );
@@ -433,6 +434,139 @@ void TestQgsCadUtils::testLineExtension()
   QVERIFY( result.valid );
   QCOMPARE( result.softLockLineExtension, Qgis::LineExtensionSide::NoVertex );
   QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 9.9, 42.271 ), 10e-3 );
+}
+
+void TestQgsCadUtils::testVertexConstrainst()
+{
+  QgsCadUtils::AlignMapPointContext context( baseContext() );
+  context.mapUnitsPerPixel = 0.1;
+
+  // without constraint
+  QgsCadUtils::AlignMapPointOutput result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 0.2 ), context );
+  QVERIFY( result.valid );
+  QVERIFY( std::isnan( result.softLockX ) );
+  QVERIFY( std::isnan( result.softLockY ) );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 10.2, 0.2 ) );
+
+  // enable constraint
+  QgsFeature feature;
+  mLayerPolygon->getFeatures().nextFeature( feature );
+  QgsFeatureId featId = feature.id();
+
+  QQueue< QgsPointLocator::Match > lockedSnapVertices;
+  lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 20, 0 ), 1 ) );
+  lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 10, 20 ), 3 ) );
+  context.setLockedSnapVertices( lockedSnapVertices );
+
+  context.xyVertexConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 0 );
+
+  // align x
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 42.0 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockX, 10 );
+  QVERIFY( std::isnan( result.softLockY ) );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 42 ) );
+
+  // align y
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 59, 0.2 ), context );
+  QVERIFY( result.valid );
+  QVERIFY( std::isnan( result.softLockX ) );
+  QCOMPARE( result.softLockY, 0 );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 59, 0 ) );
+
+  // align x and y
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 0.2 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockX, 10 );
+  QCOMPARE( result.softLockY, 0 );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 0 ) );
+
+  // vertex + x
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 0 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 0.2 ), context );
+  QVERIFY( result.valid );
+  QVERIFY( std::isnan( result.softLockX ) );
+  QCOMPARE( result.softLockY, 0 );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 0, 0 ) );
+
+  // vertex + y
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 10 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 0.2 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockX, 10 );
+  QVERIFY( std::isnan( result.softLockY ) );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 10 ) );
+
+  // vertex + x on same coordinate
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 10 );
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint();
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 5 ), context );
+  QVERIFY( result.valid );
+  QVERIFY( std::isnan( result.softLockX ) );
+  QVERIFY( std::isnan( result.softLockY ) );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 10, 5 ) );
+
+  // vertex + y on same coordinate
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 0 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 0, 10 ), context );
+  QVERIFY( result.valid );
+  QVERIFY( std::isnan( result.softLockX ) );
+  QVERIFY( std::isnan( result.softLockY ) );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 0, 0 ) );
+
+  // vertex + x + y
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 9.8 );
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, -0.2 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10.2, 0.2 ), context );
+  QVERIFY( result.valid );
+  QVERIFY( std::isnan( result.softLockX ) );
+  QVERIFY( std::isnan( result.softLockY ) );
+  QCOMPARE( result.finalMapPoint, QgsPointXY( 9.8, -0.2 ) );
+
+  // vertex + distance
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint();
+
+  // almost on the intersection of 2 locked vertices
+  double distance = 28.0;
+  context.distanceConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, distance );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10, 2 ), context );
+  QVERIFY( result.valid );
+  QCOMPARE( result.softLockX, 10 );
+  QVERIFY( std::isnan( result.softLockY ) );
+  QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 10, 0.404 ), 10e-3 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 12, 0 ), context );
+  QVERIFY( result.valid );
+  QVERIFY( std::isnan( result.softLockX ) );
+  QCOMPARE( result.softLockY, 0 );
+  QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 10.404, 0 ), 10e-3 );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10, 0 ), context );
+  QVERIFY( result.valid );
+  QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 10, 0.404 ), 10e-3 );
+  double testDistance = QgsGeometryUtils::sqrDistance2D( QgsPoint( result.finalMapPoint ), context.cadPoint( 1 ) );
+  QCOMPARE( testDistance, std::pow( distance, 2 ) );
+
+  // vertex + distance (without intersection)
+  distance = 5.0;
+  context.distanceConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, distance );
+
+  result = QgsCadUtils::alignMapPoint( QgsPointXY( 10, 0 ), context );
+  QVERIFY( result.valid );
+  QVERIFY( std::isnan( result.softLockX ) );
+  QVERIFY( std::isnan( result.softLockY ) );
+  QGSCOMPARENEARPOINT( result.finalMapPoint, QgsPointXY( 26.464, 16.464 ), 10e-3 );
+  testDistance = QgsGeometryUtils::sqrDistance2D( QgsPoint( result.finalMapPoint ), context.cadPoint( 1 ) );
+  QCOMPARE( testDistance, std::pow( distance, 2 ) );
 }
 
 void TestQgsCadUtils::testEdge()
