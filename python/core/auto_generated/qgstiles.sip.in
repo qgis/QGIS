@@ -304,6 +304,24 @@ Reads the set from an XML ``element``.
 Writes the set to an XML element.
 %End
 
+    bool applyTileScaleDoublingHack() const;
+%Docstring
+Returns ``True`` if the scale doubling hack used to match MapBox scale to tile zoom levels should be applied.
+
+The default is that this hack will be applied.
+
+.. seealso:: :py:func:`setApplyTileScaleDoublingHack`
+%End
+
+    void setApplyTileScaleDoublingHack( bool apply );
+%Docstring
+Sets whether the scale doubling hack used to match MapBox scale to tile zoom levels should be applied.
+
+The default is that this hack will be applied.
+
+.. seealso:: :py:func:`applyTileScaleDoublingHack`
+%End
+
 };
 
 /************************************************************************

@@ -43,6 +43,7 @@ class CORE_EXPORT QgsVectorTileMatrixSet : public QgsTileMatrixSet
      * \note This same structure is utilized in ESRI vtpk archives in the root.json file.
      */
     bool fromEsriJson( const QVariantMap &json );
+
 };
 
 #endif // QGSVECTORTILEMATRIXSET_H

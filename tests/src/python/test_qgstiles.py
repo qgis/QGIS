@@ -63,6 +63,10 @@ class TestQgsTiles(unittest.TestCase):
 
     def testQgsTileMatrixSet(self):
         matrix_set = QgsTileMatrixSet()
+
+        # should be applied by default in order to match MapBox rendering of tiles
+        self.assertTrue(matrix_set.applyTileScaleDoublingHack())
+
         self.assertEqual(matrix_set.minimumZoom(), -1)
         self.assertEqual(matrix_set.maximumZoom(), -1)
         self.assertFalse(matrix_set.crs().isValid())
@@ -132,6 +136,25 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(matrix_set.scaleToZoomLevel(198251572), 2)
         self.assertEqual(matrix_set.scaleToZoomLevel(6503144), 3)
 
+        # disable scale doubling hack
+        matrix_set.setApplyTileScaleDoublingHack(False)
+        self.assertFalse(matrix_set.applyTileScaleDoublingHack())
+
+        self.assertAlmostEqual(matrix_set.scaleToZoom(776503144), 1, 5)
+        self.assertEqual(matrix_set.scaleToZoom(1776503144), 1)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(388251572), 2, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(288251572), 2.515, 2)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(194125786), 3, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(188251572), 3.0, 3)
+        self.assertEqual(matrix_set.scaleToZoom(6503144), 3)
+        self.assertEqual(matrix_set.scaleToZoomLevel(776503144), 1)
+        self.assertEqual(matrix_set.scaleToZoomLevel(1776503144), 1)
+        self.assertEqual(matrix_set.scaleToZoomLevel(76503144), 3)
+        self.assertEqual(matrix_set.scaleToZoomLevel(388251572), 2)
+        self.assertEqual(matrix_set.scaleToZoomLevel(298251572), 2)
+        self.assertEqual(matrix_set.scaleToZoomLevel(198251572), 3)
+        self.assertEqual(matrix_set.scaleToZoomLevel(6503144), 3)
+
     def testTileMatrixSetGoogle(self):
         matrix_set = QgsTileMatrixSet()
         matrix_set.addGoogleCrs84QuadTiles(1, 13)
@@ -176,15 +199,6 @@ class TestQgsTiles(unittest.TestCase):
 
     def testVectorTileMatrixSet(self):
         matrix_set = QgsVectorTileMatrixSet()
-        matrix_set.setZ0xMinimum(-1000)
-        matrix_set.setZ0xMaximum(1300)
-        matrix_set.setZ0yMinimum(3000)
-        matrix_set.setZ0yMaximum(4300)
-
-        self.assertEqual(matrix_set.z0xMinimum(), -1000)
-        self.assertEqual(matrix_set.z0xMaximum(), 1300)
-        self.assertEqual(matrix_set.z0yMinimum(), 3000)
-        self.assertEqual(matrix_set.z0yMaximum(), 4300)
 
         matrix_set.addMatrix(
             QgsTileMatrix.fromCustomDef(1, QgsCoordinateReferenceSystem('EPSG:4326'), QgsPointXY(1, 2), 1000, 4, 8))
@@ -200,11 +214,6 @@ class TestQgsTiles(unittest.TestCase):
         self.assertTrue(set2.readXml(res, QgsReadWriteContext()))
         self.assertEqual(set2.minimumZoom(), 1)
         self.assertEqual(set2.maximumZoom(), 3)
-
-        self.assertEqual(set2.z0xMinimum(), -1000)
-        self.assertEqual(set2.z0xMaximum(), 1300)
-        self.assertEqual(set2.z0yMinimum(), 3000)
-        self.assertEqual(set2.z0yMaximum(), 4300)
 
         self.assertEqual(set2.tileMatrix(1).crs().authid(), 'EPSG:4326')
         self.assertEqual(set2.tileMatrix(2).crs().authid(), 'EPSG:4326')
@@ -346,6 +355,10 @@ class TestQgsTiles(unittest.TestCase):
         vector_tile_set = QgsVectorTileMatrixSet()
         self.assertFalse(vector_tile_set.fromEsriJson({}))
         self.assertTrue(vector_tile_set.fromEsriJson(esri_metadata))
+
+        # we should NOT apply the tile scale doubling hack to ESRI tiles, otherwise our scales
+        # are double what ESRI use for the same tile sets
+        self.assertFalse(vector_tile_set.applyTileScaleDoublingHack())
 
         self.assertEqual(vector_tile_set.minimumZoom(), 0)
         self.assertEqual(vector_tile_set.maximumZoom(), 14)

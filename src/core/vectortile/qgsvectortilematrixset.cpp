@@ -28,6 +28,9 @@ QgsVectorTileMatrixSet QgsVectorTileMatrixSet::fromWebMercator()
 
 bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json )
 {
+  // doesn't apply to ESRI tile zoom levels
+  setApplyTileScaleDoublingHack( false );
+
   const QVariantMap tileInfo = json.value( QStringLiteral( "tileInfo" ) ).toMap();
 
   const QVariantMap origin = tileInfo.value( QStringLiteral( "origin" ) ).toMap();
