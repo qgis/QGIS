@@ -99,7 +99,7 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     QList< QgsMapClippingRegion > mClippingRegions;
     double mLayerOpacity = 1.0;
 
-    QgsVectorTileMatrixSet mTileStructure;
+    QgsVectorTileMatrixSet mTileMatrixSet;
 
 };
 
