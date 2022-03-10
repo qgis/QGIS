@@ -33,7 +33,7 @@ class QAction;
 class QToolButton;
 
 
-template class APP_EXPORT QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique>;
+template class QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique>;
 
 
 class APP_EXPORT QgsStreamDigitizingSettingsAction: public QWidgetAction
