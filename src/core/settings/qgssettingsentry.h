@@ -277,7 +277,7 @@ class CORE_EXPORT QgsSettingsEntryBase
  * \since QGIS 3.26
  */
 template<class T>
-class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
+class QgsSettingsEntryByReference : public QgsSettingsEntryBase
 {
   public:
 
@@ -410,7 +410,7 @@ class CORE_EXPORT QgsSettingsEntryByReference : public QgsSettingsEntryBase
  * \since QGIS 3.26
  */
 template<class T>
-class CORE_EXPORT QgsSettingsEntryByValue : public QgsSettingsEntryBase
+class QgsSettingsEntryByValue : public QgsSettingsEntryBase
 {
   public:
 
