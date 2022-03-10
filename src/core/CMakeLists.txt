@@ -217,6 +217,7 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessing.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
+  processing/qgsprocessingbatch.cpp
   processing/qgsprocessingcontext.cpp
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
@@ -1565,6 +1566,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingalgrunnertask.h
+  processing/qgsprocessingbatch.h
   processing/qgsprocessingcontext.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingoutputs.h
