@@ -536,8 +536,8 @@ void QgsRelationReferenceWidget::openForm()
     return;
 
   QgsAttributeEditorContext context( mEditorContext, mRelation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::StandaloneDialog );
-  QgsAttributeDialog attributeDialog( mReferencedLayer, new QgsFeature( feat ), true, this, true, context );
-  attributeDialog.exec();
+  QgsAttributeDialog *attributeDialog = new QgsAttributeDialog( mReferencedLayer, new QgsFeature( feat ), true, this, true, context );
+  attributeDialog->show();
 }
 
 void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent canvasExtent )
@@ -908,7 +908,7 @@ void QgsRelationReferenceWidget::entryAdded( const QgsFeature &feat )
     }
   }
 
-  if ( mEditorContext.vectorLayerTools()->addFeature( mReferencedLayer, attributes, f.geometry(), &f ) )
+  if ( mEditorContext.vectorLayerTools()->addFeature( mReferencedLayer, attributes, f.geometry(), &f, this, false, true ) )
   {
     QVariantList attrs;
     for ( const QString &fieldName : std::as_const( mReferencedFields ) )

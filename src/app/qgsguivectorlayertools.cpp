@@ -29,19 +29,19 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat ) const
+bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat, QWidget *parentWidget, bool showModal, bool hideParent ) const
 {
   QgsFeature *f = feat;
   if ( !feat )
     f = new QgsFeature();
 
   f->setGeometry( defaultGeometry );
-  QgsFeatureAction a( tr( "Add feature" ), *f, layer );
-  a.setForceSuppressFormPopup( forceSuppressFormPopup() );
-  const bool added = a.addFeature( defaultValues );
+  QgsFeatureAction *a = new QgsFeatureAction( tr( "Add feature" ), *f, layer, QString(), -1, parentWidget );
+  a->setForceSuppressFormPopup( forceSuppressFormPopup() );
+  connect( a, &QgsFeatureAction::addFeatureFinished, a, &QObject::deleteLater );
+  const bool added = a->addFeature( defaultValues, showModal, nullptr, hideParent );
   if ( !feat )
     delete f;
-
   return added;
 }
 
