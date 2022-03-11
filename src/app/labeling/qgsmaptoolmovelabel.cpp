@@ -399,7 +399,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           {
             if ( !vlayer->isEditable() )
             {
-              QgisApp::instance()->messageBar()->pushWarning( tr( "Move curved label offset" ), tr( "Layer “%1” must be editable in order to move labels from it" ).arg( vlayer->name() ) );
+              QgisApp::instance()->messageBar()->pushWarning( tr( "Move label anchor percent" ), tr( "Layer “%1” must be editable in order to move labels from it" ).arg( vlayer->name() ) );
               vlayer->endEditCommand();
             }
           }
