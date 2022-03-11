@@ -32,6 +32,7 @@ QgsAttributeEditorElement *QgsAttributeEditorRelation::clone( QgsAttributeEditor
   element->mNmRelationId = mNmRelationId;
   element->mLabel = mLabel;
   element->mRelationEditorConfig = mRelationEditorConfig;
+  element->mRelationWidgetTypeId = mRelationWidgetTypeId;
 
   return element;
 }
