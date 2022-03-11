@@ -1902,12 +1902,12 @@ if (WITH_EPT)
     )
 
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-      ${CMAKE_SOURCE_DIR}/external/laz-perf/charbuf.cpp
-      ${CMAKE_SOURCE_DIR}/external/laz-perf/filestream.cpp
-      ${CMAKE_SOURCE_DIR}/external/laz-perf/header.cpp
-      ${CMAKE_SOURCE_DIR}/external/laz-perf/lazperf.cpp
-      ${CMAKE_SOURCE_DIR}/external/laz-perf/readers.cpp
-      ${CMAKE_SOURCE_DIR}/external/laz-perf/vlr.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/charbuf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/filestream.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
     )
   endif()
 

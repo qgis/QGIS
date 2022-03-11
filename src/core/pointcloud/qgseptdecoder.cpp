@@ -27,10 +27,13 @@
 #include <iostream>
 #include <memory>
 #include <cstring>
+#include <QElapsedTimer>
 #include <QTemporaryFile>
 #include <string>
 
 #include <zstd.h>
+
+#include "lazperf/las.hpp"
 
 
 ///@cond PRIVATE
@@ -325,16 +328,17 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     return nullptr;
 
 #ifdef QGISDEBUG
-  const auto start = common::tick();
+  QElapsedTimer t;
+  t.start();
 #endif
 
-  laszip::io::reader::basic_file<FileType> f( file );
+  lazperf::reader::generic_file f( file );
 
-  const size_t count = f.get_header().point_count;
-  const QgsVector3D scale( f.get_header().scale.x, f.get_header().scale.y, f.get_header().scale.z );
-  const QgsVector3D offset( f.get_header().offset.x, f.get_header().offset.y, f.get_header().offset.z );
+  const size_t count = f.header().point_count;
+  const QgsVector3D scale( f.header().scale.x, f.header().scale.y, f.header().scale.z );
+  const QgsVector3D offset( f.header().offset.x, f.header().offset.y, f.header().offset.z );
 
-  QByteArray bufArray( f.get_header().point_record_length, 0 );
+  QByteArray bufArray( f.header().point_record_length, 0 );
   char *buf = bufArray.data();
 
   const size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
@@ -476,9 +480,9 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
-    const laszip::formats::las::point10 p = laszip::formats::packers<laszip::formats::las::point10>::unpack( buf );
-    const laszip::formats::las::gpstime gps = laszip::formats::packers<laszip::formats::las::gpstime>::unpack( buf + sizeof( laszip::formats::las::point10 ) );
-    const laszip::formats::las::rgb rgb = laszip::formats::packers<laszip::formats::las::rgb>::unpack( buf + sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) );
+    const lazperf::las::point10 p = lazperf::utils::unpack<lazperf::las::point10>( buf );
+    const lazperf::las::gpstime gps = lazperf::utils::unpack<lazperf::las::gpstime>( buf + sizeof( lazperf::las::point10 ) );
+    const lazperf::las::rgb rgb = lazperf::utils::unpack<lazperf::las::rgb>( buf + sizeof( lazperf::las::point10 ) + sizeof( lazperf::las::gpstime ) );
 
     for ( const RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
     {
@@ -582,8 +586,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   }
 
 #ifdef QGISDEBUG
-  const float t = common::since( start );
-  QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t.elapsed() / 1000. ), 2 );
 #endif
   QgsPointCloudBlock *block = new QgsPointCloudBlock(
     count,

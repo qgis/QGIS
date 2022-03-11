@@ -24,8 +24,8 @@
 #include "qgspointcloudblock.h"
 #include "qgspointcloudattribute.h"
 
-#include "laz-perf/io.hpp"
-#include "laz-perf/common/common.hpp"
+#include "lazperf/lazperf.hpp"
+#include "lazperf/readers.hpp"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -60,8 +60,8 @@ namespace QgsEptDecoder
 
     file.seekg( 0 );
 
-    laszip::io::reader::basic_file<FileType> f( file );
-    int point_record_length = f.get_header().point_record_length;
+    lazperf::reader::generic_file f( file );
+    int point_record_length = f.header().point_record_length;
 
     // Read VLR stuff
 
@@ -100,8 +100,8 @@ namespace QgsEptDecoder
     VlrHeader extraBytesVlrHeader;
     int extraBytesDescriptorsOffset = -1;
 
-    file.seekg( f.get_header().header_size );
-    for ( unsigned int i = 0; i < f.get_header().vlr_count && file.good() && !file.eof(); ++i )
+    file.seekg( f.header().header_size );
+    for ( unsigned int i = 0; i < f.header().vlr_count && file.good() && !file.eof(); ++i )
     {
       VlrHeader vlrHeader;
       file.read( ( char * )&vlrHeader, sizeof( VlrHeader ) );
@@ -109,7 +109,7 @@ namespace QgsEptDecoder
       if ( std::equal( vlrHeader.user_id, vlrHeader.user_id + 9, "LASF_Spec" ) && vlrHeader.record_id == 4 )
       {
         extraBytesVlrHeader = vlrHeader;
-        extraBytesDescriptorsOffset = f.get_header().header_size + sizeof( VlrHeader );
+        extraBytesDescriptorsOffset = f.header().header_size + sizeof( VlrHeader );
       }
     }
 
