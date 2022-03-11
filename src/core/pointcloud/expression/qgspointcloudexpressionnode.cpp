@@ -158,8 +158,8 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
       }
       const bool notIn = n->isNotIn();
       QgsPointCloudExpressionNode::NodeList *nodeList = new QgsPointCloudExpressionNode::NodeList; \
-      QList<QgsExpressionNode *> nNodeList = n->list()->list();
-      for ( const auto nd : nNodeList )
+      const QList<QgsExpressionNode *> nNodeList = n->list()->list();
+      for ( const QgsExpressionNode *nd : nNodeList )
       {
         QgsPointCloudExpressionNode *convertedNode = convert( nd, error );
         if ( !convertedNode )

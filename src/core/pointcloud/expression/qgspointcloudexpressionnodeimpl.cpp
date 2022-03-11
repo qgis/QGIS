@@ -683,11 +683,11 @@ double QgsPointCloudExpressionNodeAttributeRef::evalNode( QgsPointCloudExpressio
 
   double val = mAttribute->convertValueToDouble( data + offset );
 
-  if ( mAttribute->name().compare( QLatin1String( "X" ) ) == 0 )
+  if ( mAttribute->name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 )
     return val * mBlock->scale().x() + mBlock->offset().x();
-  if ( mAttribute->name().compare( QLatin1String( "Y" ) ) == 0 )
+  if ( mAttribute->name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 )
     return val * mBlock->scale().y() + mBlock->offset().y();
-  if ( mAttribute->name().compare( QLatin1String( "Z" ) ) == 0 )
+  if ( mAttribute->name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
     return val * mBlock->scale().z() + mBlock->offset().z();
 
   return val; // calculate the pointIndex's point respective attribute

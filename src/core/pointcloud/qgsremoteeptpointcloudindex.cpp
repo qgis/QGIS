@@ -141,7 +141,7 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
   }
 
   // we need to create a copy of the expression to pass to the decoder
-  // as the same QgsPointCloudExpression object mighgt be concurrently
+  // as the same QgsPointCloudExpression object might be concurrently
   // used on another thread, for example in a 3d view
   QgsPointCloudExpression filterExpression = mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();

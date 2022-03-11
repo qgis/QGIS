@@ -222,17 +222,18 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
   }
 
   int skippedPoints = 0;
-  QgsPointCloudBlock *block = new QgsPointCloudBlock(
-    count,
-    requestedAttributes,
-    data, scale, offset
-  );
+  std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
+        count,
+        requestedAttributes,
+        data, scale, offset
+      );
 
-  if ( !filterExpression.prepare( block ) && filterExpression.isValid() )
+  const bool filterIsValid = filterExpression.isValid();
+  if ( !filterExpression.prepare( block.get() ) && filterIsValid )
   {
     // skip processing if the expression cannot be prepared
     block->setPointCount( 0 );
-    return block;
+    return block.release();
   }
 
   // now loop through points
@@ -249,7 +250,7 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
     }
 
     // check if point needs to be filtered out
-    if ( filterExpression.isValid() )
+    if ( filterIsValid )
     {
       // we're always evaluating the last written point in the buffer
       double eval = filterExpression.evaluate( i - skippedPoints );
@@ -262,7 +263,7 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
     }
   }
   block->setPointCount( count - skippedPoints );
-  return block;
+  return block.release();
 }
 
 QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
@@ -497,18 +498,19 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     }
   }
 
-  QgsPointCloudBlock *block = new QgsPointCloudBlock(
-    count,
-    requestedAttributes,
-    data, scale, offset
-  );
+  std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
+        count,
+        requestedAttributes,
+        data, scale, offset
+      );
 
   int skippedPoints = 0;
-  if ( !filterExpression.prepare( block ) && filterExpression.isValid() )
+  const bool filterIsValid = filterExpression.isValid();
+  if ( !filterExpression.prepare( block.get() ) && filterIsValid )
   {
     // skip processing if the expression cannot be prepared
     block->setPointCount( 0 );
-    return block;
+    return block.release();
   }
   for ( size_t i = 0 ; i < count ; i ++ )
   {
@@ -619,7 +621,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     }
 
     // check if point needs to be filtered out
-    if ( filterExpression.isValid() )
+    if ( filterIsValid )
     {
       // we're always evaluating the last written point in the buffer
       double eval = filterExpression.evaluate( i - skippedPoints );
@@ -637,7 +639,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t ), 2 );
 #endif
   block->setPointCount( count - skippedPoints );
-  return block;
+  return block.release();
 }
 
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
