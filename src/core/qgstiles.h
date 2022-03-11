@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsreadwritecontext.h"
@@ -219,6 +220,7 @@ class CORE_EXPORT QgsTileMatrix
  */
 class CORE_EXPORT QgsTileMatrixSet
 {
+
   public:
 
     virtual ~QgsTileMatrixSet() = default;
@@ -295,27 +297,23 @@ class CORE_EXPORT QgsTileMatrixSet
     virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
-     * Returns TRUE if the scale doubling hack used to match MapBox scale to tile zoom levels should be applied.
+     * Returns the scale to tile zoom method.
      *
-     * The default is that this hack will be applied.
-     *
-     * \see setApplyTileScaleDoublingHack()
+     * \see setScaleToTileZoomMethod()
      */
-    bool applyTileScaleDoublingHack() const { return mApplyTileScaleDoubleHack; }
+    Qgis::ScaleToTileZoomLevelMethod scaleToTileZoomMethod() const { return mScaleToTileZoomMethod; }
 
     /**
-     * Sets whether the scale doubling hack used to match MapBox scale to tile zoom levels should be applied.
+     * Sets the scale to tile zoom method.
      *
-     * The default is that this hack will be applied.
-     *
-     * \see applyTileScaleDoublingHack()
+     * \see scaleToTileZoomMethod()
      */
-    void setApplyTileScaleDoublingHack( bool apply ) { mApplyTileScaleDoubleHack = apply; }
+    void setScaleToTileZoomMethod( Qgis::ScaleToTileZoomLevelMethod method ) { mScaleToTileZoomMethod = method; }
 
   private:
 
     QMap< int, QgsTileMatrix > mTileMatrices;
-    bool mApplyTileScaleDoubleHack = true;
+    Qgis::ScaleToTileZoomLevelMethod mScaleToTileZoomMethod = Qgis::ScaleToTileZoomLevelMethod::MapBox;
 };
 
 #endif // QGSTILES_H

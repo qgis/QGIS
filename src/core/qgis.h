@@ -1337,6 +1337,18 @@ class CORE_EXPORT Qgis
     Q_FLAG( TextRendererFlags )
 
     /**
+     * Available methods for converting map scales to tile zoom levels.
+     *
+     * \since QGIS 3.26
+     */
+    enum class ScaleToTileZoomLevelMethod : int
+    {
+      MapBox, //!< Uses a scale doubling approach to account for hi-DPI tiles, and rounds to the nearest tile level for the map scale
+      Esri, //!< No scale doubling, always rounds down when matching to available tile levels
+    };
+    Q_ENUM( ScaleToTileZoomLevelMethod );
+
+    /**
      * Angular directions.
      *
      * \since QGIS 3.24
