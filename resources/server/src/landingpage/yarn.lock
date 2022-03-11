@@ -2901,6 +2901,11 @@ chalk@^4.0.0, chalk@^4.1.0, chalk@^4.1.1, chalk@^4.1.2:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
+chalk@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.0.1.tgz#ca57d71e82bb534a296df63bbacc4a1c22b2a4b6"
+  integrity sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==
+
 chardet@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
@@ -8905,12 +8910,12 @@ webpack-dev-server@*, webpack-dev-server@^4.1.0:
     webpack-dev-middleware "^5.3.0"
     ws "^8.1.0"
 
-webpack-license-plugin@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/webpack-license-plugin/-/webpack-license-plugin-4.2.1.tgz#92ad642205c839706145f46f3692c249d7904e8b"
-  integrity sha512-T5Q6P1rI4RwkLpo0lryYyTBNyJ/R7aimQfC5uGpOV8q2bCb5/Q5YJUQp/7H9CPR7k7M46XzFOo9J4wwfX0ropQ==
+webpack-license-plugin@^4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/webpack-license-plugin/-/webpack-license-plugin-4.2.2.tgz#22a1171717cee770718e0d2c28e93a4b07d19bec"
+  integrity sha512-OfIdm659IKurEInKlBN6Sfzrh+MNKIWkChKKg+aDCoPf3Ok1OSXBDd2RKSbuUAtxjmdW2j6LUVZWnRYRnVdOxA==
   dependencies:
-    chalk "^4.1.0"
+    chalk "^5.0.1"
     get-npm-tarball-url "^2.0.1"
     lodash "^4.17.20"
     needle "^2.2.4"
