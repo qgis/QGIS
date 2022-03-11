@@ -17,7 +17,7 @@
     (c) 2014, Uday Verma, Hobu, Inc.
 
     This is free software; you can redistribute and/or modify it under the
-    terms of the GNU Lesser General Licence as published by the Free Software
+    terms of the Apache Public License 2.0 published by the Apache Software
     Foundation. See the COPYING file for more information.
 
     This software is distributed WITHOUT ANY WARRANTY and without even the
@@ -30,6 +30,7 @@
 
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include "lazperf.hpp"
@@ -48,6 +49,8 @@ struct LAZPERF_EXPORT vlr_header
     static vlr_header create(std::istream& in);
     void read(std::istream& in);
     void write(std::ostream& out) const;
+    void fill(const char *buf, size_t bufsize);
+    std::vector<char> data() const;
     static const int Size;
 };
 
@@ -62,6 +65,8 @@ struct LAZPERF_EXPORT evlr_header
     static evlr_header create(std::istream& in);
     void read(std::istream& in);
     void write(std::ostream& out) const;
+    void fill(const char *buf, size_t bufsize);
+    std::vector<char> data() const;
     static const int Size;
 };
 
@@ -115,12 +120,12 @@ public:
     bool valid() const;
     void read(std::istream& in);
     void write(std::ostream& out) const;
+    void fill(const char *buf, size_t bufsize);
+    std::vector<char> data() const;
     virtual uint64_t size() const;
     virtual vlr_header header() const;
     virtual evlr_header eheader() const;
 
-    // Deprecated.
-    std::vector<char> data() const;
     laz_vlr(const char *vlrdata);
 };
 
@@ -147,16 +152,19 @@ public:
     std::vector<ebfield> items;
 
     eb_vlr();
-    eb_vlr(int ebCount);
+    [[deprecated]] eb_vlr(int ebCount);
     virtual ~eb_vlr();
 
     static eb_vlr create(std::istream& in, int byteSize);
     void read(std::istream& in, int byteSize);
     void write(std::ostream& out) const;
+    void fill(const char *buf, size_t bufsize);
+    std::vector<char> data() const;
     virtual uint64_t size() const;
     virtual vlr_header header() const;
     virtual evlr_header eheader() const;
     void addField();
+    void addField(const ebfield& f);
 };
 
 struct LAZPERF_EXPORT wkt_vlr : public vlr
@@ -171,6 +179,8 @@ public:
     static wkt_vlr create(std::istream& in, int byteSize);
     void read(std::istream& in, int byteSize);
     void write(std::ostream& out) const;
+    void fill(const char *buf, size_t bufsize);
+    std::vector<char> data() const;
     virtual uint64_t size() const;
     virtual vlr_header header() const;
     virtual evlr_header eheader() const;
@@ -196,6 +206,8 @@ public:
     static copc_info_vlr create(std::istream& in);
     void read(std::istream& in);
     void write(std::ostream& out) const;
+    void fill(const char *buf, size_t bufsize);
+    std::vector<char> data() const;
     virtual uint64_t size() const;
     virtual vlr_header header() const;
     virtual evlr_header eheader() const;

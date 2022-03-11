@@ -45,7 +45,7 @@ namespace lazperf
 /**
   Buffer wrapper for input of binary data from a buffer.
 */
-class Extractor
+class LeExtractor
 {
 public:
     /**
@@ -54,9 +54,14 @@ public:
       \param buf  Buffer to extract from.
       \param size  Buffer size.
     */
-    Extractor(const char *buf, std::size_t size) : m_eback(buf),
+    LeExtractor(const char *buf, std::size_t size) : m_eback(buf),
         m_egptr(buf + size), m_gptr(buf)
     {}
+
+private:
+    const char *m_eback;  ///< Start of the buffer (name from std::streambuf)
+    const char *m_egptr;  ///< End of the buffer.
+    const char *m_gptr;   ///< Current get position.
 
 public:
     /**
@@ -111,17 +116,16 @@ public:
     {
         s = std::string(m_gptr, size);
         m_gptr += size;
-        while (--size)
+        while (size)
         {
+            size--;
             if (s[size] != '\0')
-                break;
-            else if (size == 0)
             {
-                s.clear();
+                s.resize(size + 1);
                 return;
             }
         }
-        s.resize(size + 1);
+        s.clear();
     }
 
     /**
@@ -171,38 +175,6 @@ public:
         memcpy(buf, m_gptr, size);
         m_gptr += size;
     }
-
-    virtual Extractor& operator >> (uint8_t& v) = 0;
-    virtual Extractor& operator >> (int8_t& v) = 0;
-    virtual Extractor& operator >> (uint16_t& v) = 0;
-    virtual Extractor& operator >> (int16_t& v) = 0;
-    virtual Extractor& operator >> (uint32_t& v) = 0;
-    virtual Extractor& operator >> (int32_t& v) = 0;
-    virtual Extractor& operator >> (uint64_t& v) = 0;
-    virtual Extractor& operator >> (int64_t& v) = 0;
-    virtual Extractor& operator >> (float& v) = 0;
-    virtual Extractor& operator >> (double& v) = 0;
-
-protected:
-    const char *m_eback;  ///< Start of the buffer (name from std::streambuf)
-    const char *m_egptr;  ///< End of the buffer.
-    const char *m_gptr;   ///< Current get position.
-};
-
-/**
-  Wrapper extraction of little-endian data from a buffer to host ordering.
-*/
-class LeExtractor : public Extractor
-{
-public:
-    /**
-      Construct extractor for a buffer.
-
-      \param buf  Buffer from which to extract.
-      \param size  Size of buffer.
-    */
-    LeExtractor(const char *buf, std::size_t size) : Extractor(buf, size)
-    {}
 
     /**
       Extract an unsigned byte from a buffer.
@@ -337,161 +309,6 @@ public:
     {
         memcpy(&v, m_gptr, sizeof(v));
         uint64_t tmp = le64toh(*(uint64_t *)(&v));
-        memcpy(&v, &tmp, sizeof(tmp));
-        m_gptr += sizeof(v);
-        return *this;
-    }
-};
-
-
-/**
-  Wrapper extraction of big-endian data from a buffer to host ordering.
-*/
-class BeExtractor : public Extractor
-{
-public:
-    /**
-      Construct extractor for a buffer.
-
-      \param buf  Buffer from which to extract.
-      \param size  Size of buffer.
-    */
-    BeExtractor(const char *buf, std::size_t size) : Extractor(buf, size)
-    {}
-
-    /**
-      Extract an unsigned byte from a buffer.
-
-      \param v  unsigned byte to extract to.
-      \return  This extractor.
-    */
-    BeExtractor& operator >> (uint8_t& v)
-    {
-        v = *(const uint8_t *)m_gptr++;
-        return *this;
-    }
-
-    /**
-      Extract a byte from a buffer.
-
-      \param v  byte to extract to.
-      \return  This extractor.
-    */
-    BeExtractor& operator >> (int8_t& v)
-    {
-        v = *(const int8_t *)m_gptr++;
-        return *this;
-    }
-
-    /**
-      Extract an unsigned short from a buffer.
-
-      \param v  unsigned short to extract to.
-      \return  This extractor.
-    */
-    BeExtractor& operator >> (uint16_t& v)
-    {
-        memcpy(&v, m_gptr, sizeof(v));
-        v = be16toh(v);
-        m_gptr += sizeof(v);
-        return *this;
-    }
-
-    /**
-      Extract a short from a buffer.
-
-      \param v  short to extract to.
-      \return  This extractor.
-    */
-    BeExtractor& operator >> (int16_t& v)
-    {
-        memcpy(&v, m_gptr, sizeof(v));
-        v = (int16_t)be16toh((uint16_t)v);
-        m_gptr += sizeof(v);
-        return *this;
-    }
-
-    /**
-      Extract an unsigned int from a buffer.
-
-      \param v  unsigned int to extract to.
-      \return  This extractor.
-    */
-    BeExtractor& operator >> (uint32_t& v)
-    {
-        memcpy(&v, m_gptr, sizeof(v));
-        v = be32toh(v);
-        m_gptr += sizeof(v);
-        return *this;
-    }
-
-    /**
-      Extract an int from a buffer.
-
-      \param v  int to extract to.
-      \return  This extractor.
-    */
-    BeExtractor& operator >> (int32_t& v)
-    {
-        memcpy(&v, m_gptr, sizeof(v));
-        v = (int32_t)be32toh((uint32_t)v);
-        m_gptr += sizeof(v);
-        return *this;
-    }
-
-    /**
-      Extract an unsigned long int from a buffer.
-
-      \param v  unsigned long int to extract to.
-      \return  This extractor.
-    */
-    BeExtractor& operator >> (uint64_t& v)
-    {
-        memcpy(&v, m_gptr, sizeof(v));
-        v = be64toh(v);
-        m_gptr += sizeof(v);
-        return *this;
-    }
-
-    /**
-      Extract a long int from a buffer.
-
-      \param v  long int to extract to.
-      \return  This extractor.
-    */
-    BeExtractor& operator >> (int64_t& v)
-    {
-        memcpy(&v, m_gptr, sizeof(v));
-        v = (int64_t)be64toh((uint64_t)v);
-        m_gptr += sizeof(v);
-        return *this;
-    }
-
-    /**
-      Extract a float from a buffer.
-
-      \param v  float to extract to.
-      \return  This extractor.
-    */
-    BeExtractor& operator >> (float& v)
-    {
-        memcpy(&v, m_gptr, sizeof(v));
-        uint32_t tmp = be32toh(*(uint32_t *)(&v));
-        memcpy(&v, &tmp, sizeof(tmp));
-        m_gptr += sizeof(v);
-        return *this;
-    }
-
-    /**
-      Extract a double from a buffer.
-
-      \param v  double to extract to.
-      \return  This extractor.
-    */
-    BeExtractor& operator >> (double& v)
-    {
-        memcpy(&v, m_gptr, sizeof(v));
-        uint64_t tmp = be64toh(*(uint64_t *)(&v));
         memcpy(&v, &tmp, sizeof(tmp));
         m_gptr += sizeof(v);
         return *this;

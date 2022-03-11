@@ -17,7 +17,7 @@
     (c) 2014, Uday Verma, Hobu, Inc.
 
     This is free software; you can redistribute and/or modify it under the
-    terms of the GNU Lesser General Licence as published by the Free Software
+    terms of the Apache Public License 2.0 published by the Apache Software
     Foundation. See the COPYING file for more information.
 
     This software is distributed WITHOUT ANY WARRANTY and without even the
@@ -52,7 +52,12 @@ void vlr_header::read(std::istream& in)
 {
     std::vector<char> buf(Size);
     in.read(buf.data(), buf.size());
-    LeExtractor s(buf.data(), buf.size());
+    fill(buf.data(), buf.size());
+}
+
+void vlr_header::fill(const char *buf, size_t bufsize)
+{
+    LeExtractor s(buf, bufsize);
 
     s >> reserved;
     s.get(user_id, 16);
@@ -62,6 +67,12 @@ void vlr_header::read(std::istream& in)
 
 void vlr_header::write(std::ostream& out) const
 {
+    std::vector<char> buf = data();
+    out.write(buf.data(), buf.size());
+}
+
+std::vector<char> vlr_header::data() const
+{
     std::vector<char> buf(Size);
     LeInserter s(buf.data(), buf.size());
 
@@ -70,7 +81,7 @@ void vlr_header::write(std::ostream& out) const
     s << record_id << data_length;
     s.put(description, 32);
 
-    out.write(buf.data(), buf.size());
+    return buf;
 }
 
 ///
@@ -88,7 +99,12 @@ void evlr_header::read(std::istream& in)
 {
     std::vector<char> buf(Size);
     in.read(buf.data(), buf.size());
-    LeExtractor s(buf.data(), buf.size());
+    fill(buf.data(), buf.size());
+}
+
+void evlr_header::fill(const char *buf, size_t bufsize)
+{
+    LeExtractor s(buf, bufsize);
 
     s >> reserved;
     s.get(user_id, 16);
@@ -98,6 +114,12 @@ void evlr_header::read(std::istream& in)
 
 void evlr_header::write(std::ostream& out) const
 {
+    std::vector<char> buf = data();
+    out.write(buf.data(), buf.size());
+}
+
+std::vector<char> evlr_header::data() const
+{
     std::vector<char> buf(Size);
     LeInserter s(buf.data(), buf.size());
 
@@ -106,7 +128,7 @@ void evlr_header::write(std::ostream& out) const
     s << record_id << data_length;
     s.put(description, 32);
 
-    out.write(buf.data(), buf.size());
+    return buf;
 }
 
 /// Index Record
@@ -245,7 +267,31 @@ void laz_vlr::read(std::istream& in)
     }
 }
 
+void laz_vlr::fill(const char *buf, size_t size)
+{
+    uint16_t num_items;
+
+    LeExtractor s(buf, size);
+    s >> compressor >> coder >> ver_major >> ver_minor >> revision >> options >>
+        chunk_size >> num_points >> num_bytes >> num_items;
+
+    items.clear();
+    for (int i = 0; i < num_items; i++)
+    {
+        laz_item item;
+
+        s >> item.type >> item.size >> item.version;
+        items.push_back(item);
+    }
+}
+
 void laz_vlr::write(std::ostream& out) const
+{
+    std::vector<char> buf = data();
+    out.write(buf.data(), buf.size());
+}
+
+std::vector<char> laz_vlr::data() const
 {
     std::vector<char> buf(size());
     LeInserter s(buf.data(), buf.size());
@@ -254,17 +300,8 @@ void laz_vlr::write(std::ostream& out) const
     s << chunk_size << num_points << num_bytes << (uint16_t)items.size();
     for (const laz_item& item : items)
         s << item.type << item.size << item.version;
-    out.write(buf.data(), buf.size());
-}
 
-// Deprecated
-std::vector<char> laz_vlr::data() const
-{
-    std::vector<char> v(size());
-    charbuf sbuf(v.data(), v.size());
-    std::ostream out(&sbuf);
-    write(out);
-    return v;
+    return buf;
 }
 
 // Deprecated
@@ -305,10 +342,15 @@ eb_vlr eb_vlr::create(std::istream& in, int byteSize)
 void eb_vlr::read(std::istream& in, int byteSize)
 {
     std::vector<char> buf(byteSize);
-    LeExtractor s(buf.data(), buf.size());
     in.read(buf.data(), buf.size());
+    fill(buf.data(), buf.size());
+}
 
-    int numItems = byteSize / 192;
+void eb_vlr::fill(const char *buf, size_t size)
+{
+    LeExtractor s(buf, size);
+
+    int numItems = size / 192;
     items.clear();
     for (int i = 0; i < numItems; ++i)
     {
@@ -335,6 +377,12 @@ void eb_vlr::read(std::istream& in, int byteSize)
 
 void eb_vlr::write(std::ostream& out) const
 {
+    std::vector<char> buf = data();
+    out.write(buf.data(), buf.size());
+}
+
+std::vector<char> eb_vlr::data() const
+{
     std::vector<char> buf(items.size() * 192);
     LeInserter s(buf.data(), buf.size());
 
@@ -356,8 +404,7 @@ void eb_vlr::write(std::ostream& out) const
             s << field.offset[i];
         s.put(field.description, 32);
     }
-
-    out.write(buf.data(), buf.size());
+    return buf;
 }
 
 void eb_vlr::addField()
@@ -365,6 +412,11 @@ void eb_vlr::addField()
     ebfield field;
 
     field.name = "FIELD_" + std::to_string(items.size());
+    items.push_back(field);
+}
+
+void eb_vlr::addField(const eb_vlr::ebfield& field)
+{
     items.push_back(field);
 }
 
@@ -405,12 +457,22 @@ void wkt_vlr::read(std::istream& in, int byteSize)
 {
     std::vector<char> buf(byteSize);
     in.read(buf.data(), buf.size());
-    wkt.assign(buf.data(), buf.size());
+    fill(buf.data(), buf.size());
+}
+
+void wkt_vlr::fill(const char *buf, size_t bufsize)
+{
+    wkt.assign(buf, bufsize);
 }
 
 void wkt_vlr::write(std::ostream& out) const
 {
     out.write(wkt.data(), wkt.size());
+}
+
+std::vector<char> wkt_vlr::data() const
+{
+    return std::vector<char>(wkt.data(), wkt.data() + wkt.size());
 }
 
 uint64_t wkt_vlr::size() const
@@ -448,26 +510,37 @@ void copc_info_vlr::read(std::istream& in)
 {
     std::vector<char> buf(size());
     in.read(buf.data(), buf.size());
-    LeExtractor s(buf.data(), buf.size());
+    fill(buf.data(), buf.size());
+}
+
+void copc_info_vlr::fill(const char *buf, size_t bufsize)
+{
+    LeExtractor s(buf, bufsize);
 
     s >> center_x >> center_y >> center_z >> halfsize >> spacing;
     s >> root_hier_offset >> root_hier_size;
-    s >> gpstime_minimum >> gpstime_minimum;
+    s >> gpstime_minimum >> gpstime_maximum;
     for (int i = 0; i < 11; ++i)
         s >> reserved[i];
 }
 
 void copc_info_vlr::write(std::ostream& out) const
 {
+    std::vector<char> buf = data();
+    out.write(buf.data(), buf.size());
+}
+
+std::vector<char> copc_info_vlr::data() const
+{
     std::vector<char> buf(size());
     LeInserter s(buf.data(), buf.size());
 
     s << center_x << center_y << center_z << halfsize << spacing;
     s << root_hier_offset << root_hier_size;
-    s << gpstime_minimum << gpstime_minimum;
+    s << gpstime_minimum << gpstime_maximum;
     for (int i = 0; i < 11; ++i)
         s << reserved[i];
-    out.write(buf.data(), buf.size());
+    return buf;
 }
 
 uint64_t copc_info_vlr::size() const

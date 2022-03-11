@@ -17,7 +17,7 @@
     (c) 2014, Uday Verma, Hobu, Inc.
 
     This is free software; you can redistribute and/or modify it under the
-    terms of the GNU Lesser General Licence as published by the Free Software
+    terms of the Apache Public License 2.0 published by the Apache Software
     Foundation. See the COPYING file for more information.
 
     This software is distributed WITHOUT ANY WARRANTY and without even the
@@ -358,11 +358,6 @@ void basic_file::Private::parseChunkTable()
     // This discards the last offset, which we don't care about. The last count is
     // never filled in.
     chunks.resize(chunk_table_header.chunk_count);
-    /**
-    for (auto& chunk : chunks)
-        std::cerr << "Count/offset = " << chunk.count << "/" << chunk.offset << "!\n";
-    std::cerr << "\n";
-    **/
 }
 
 void basic_file::Private::validateHeader()
