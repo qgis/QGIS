@@ -92,8 +92,8 @@ void QgsTextFormatWidget::initWidget()
   connect( mCoordYDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordYDDBtn_activated );
   connect( mCoordPointDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordPointDDBtn_changed );
   connect( mCoordPointDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordPointDDBtn_activated );
-  connect( mCurvedLineOffsetDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCurvedLineOffsetDDBtn_changed );
-  connect( mCurvedLineOffsetDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCurvedLineOffsetDDBtn_activated );
+  connect( mLineAnchorPercentDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mLineAnchorPercentDDBtn_changed );
+  connect( mLineAnchorPercentDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mLineAnchorPercentDDBtn_activated );
   connect( mShapeTypeCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged );
   connect( mShapeRotationCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeRotationCmbBx_currentIndexChanged );
   connect( mShapeSVGParamsBtn, &QPushButton::clicked, this, &QgsTextFormatWidget::mShapeSVGParamsBtn_clicked );
@@ -811,7 +811,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mCoordXDDBtn, QgsPalLayerSettings::PositionX );
   registerDataDefinedButton( mCoordYDDBtn, QgsPalLayerSettings::PositionY );
   registerDataDefinedButton( mCoordPointDDBtn, QgsPalLayerSettings::PositionPoint );
-  registerDataDefinedButton( mCurvedLineOffsetDDBtn, QgsPalLayerSettings::LineAnchorPercent );
+  registerDataDefinedButton( mLineAnchorPercentDDBtn, QgsPalLayerSettings::LineAnchorPercent );
   registerDataDefinedButton( mCoordAlignmentHDDBtn, QgsPalLayerSettings::Hali );
   registerDataDefinedButton( mCoordAlignmentVDDBtn, QgsPalLayerSettings::Vali );
   registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::LabelRotation );
@@ -1619,18 +1619,18 @@ void QgsTextFormatWidget::mCoordPointDDBtn_activated( bool isActive )
   mCoordYDDBtn->setActive( false );
 }
 
-void QgsTextFormatWidget::mCurvedLineOffsetDDBtn_changed()
+void QgsTextFormatWidget::mLineAnchorPercentDDBtn_changed()
 {
   // TODO: update something?
 }
 
-void QgsTextFormatWidget::mCurvedLineOffsetDDBtn_activated( bool isActive )
+void QgsTextFormatWidget::mLineAnchorPercentDDBtn_activated( bool isActive )
 {
   if ( !isActive )
     return;
 
-  mCurvedLineOffsetDDBtn->setActive( false );
-  mCurvedLineOffsetDDBtn->setActive( false );
+  mLineAnchorPercentDDBtn->setActive( false );
+  mLineAnchorPercentDDBtn->setActive( false );
 }
 
 void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int )
