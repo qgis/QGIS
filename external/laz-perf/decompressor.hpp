@@ -38,10 +38,12 @@
 #include <memory>
 #include <cassert>
 
-namespace laszip {
-	namespace decompressors {
+namespace lazperf
+{
+namespace decompressors
+{
 		struct integer {
-			integer(U32 bits = 16, U32 contexts = 1, U32 bits_high = 8, U32 range = 0):
+			integer(uint32_t bits = 16, uint32_t contexts = 1, uint32_t bits_high = 8, uint32_t range = 0):
 				bits(bits), contexts(contexts), bits_high(bits_high), range(range) {
 				if (range) { // the corrector's significant bits and range
 					corr_bits = 0;
@@ -56,32 +58,32 @@ namespace laszip {
 						corr_bits--;
 					}
 					// the corrector must fall into this interval
-					corr_min = -((I32)(corr_range/2));
+					corr_min = -((int32_t)(corr_range/2));
 					corr_max = corr_min + corr_range - 1;
 				}
 				else if (bits && bits < 32) {
 					corr_bits = bits;
 					corr_range = 1u << bits;
 					// the corrector must fall into this interval
-					corr_min = -((I32)(corr_range/2));
+					corr_min = -((int32_t)(corr_range/2));
 					corr_max = corr_min + corr_range - 1;
 				}
 				else {
 					corr_bits = 32;
 					corr_range = 0;
 					// the corrector must fall into this interval
-					corr_min = I32_MIN;
-					corr_max = I32_MAX;
+					corr_min = (std::numeric_limits<int32_t>::min)();
+					corr_max = (std::numeric_limits<int32_t>::max)();
 				}
 
 				k = 0;
 			}
 
 			void init() {
-				using laszip::models::arithmetic;
-				using laszip::models::arithmetic_bit;
+				using models::arithmetic;
+				using models::arithmetic_bit;
 
-				U32 i;
+				uint32_t i;
 
 				// maybe create the models
 				if (mBits.empty()) {
@@ -91,7 +93,7 @@ namespace laszip {
 #ifndef COMPRESS_ONLY_K
 					// mcorrector0 is already initialized
 					for (i = 1; i <= corr_bits; i++) {
-						U32 v = i <= bits_high ? 1 << i : 1 << bits_high;
+						uint32_t v = i <= bits_high ? 1 << i : 1 << bits_high;
 						mCorrector.push_back(arithmetic(v));
 					}
 #endif
@@ -101,10 +103,10 @@ namespace laszip {
 			template<
 				typename TDecoder
 			>
-			I32 decompress(TDecoder& dec, I32 pred, U32 context) {
-				I32 real = pred + readCorrector(dec, mBits[context]);
+			int32_t decompress(TDecoder& dec, int32_t pred, uint32_t context) {
+				int32_t real = pred + readCorrector(dec, mBits[context]);
 				if (real < 0) real += corr_range;
-				else if ((U32)(real) >= corr_range) real -= corr_range;
+				else if ((uint32_t)(real) >= corr_range) real -= corr_range;
 
 				return real;
 			}
@@ -115,8 +117,8 @@ namespace laszip {
 				typename TDecoder,
 				typename TEntroyModel
 			>
-			I32 readCorrector(TDecoder& dec, TEntroyModel& mBits) {
-				I32 c;
+			int32_t readCorrector(TDecoder& dec, TEntroyModel& mBits) {
+				int32_t c;
 
 				// decode within which interval the corrector is falling
 
@@ -198,26 +200,26 @@ namespace laszip {
 				return c;
 			}
 
-			U32 k;
+			uint32_t k;
 
-			U32 bits;
+			uint32_t bits;
 
-			U32 contexts;
-			U32 bits_high;
-			U32 range;
+			uint32_t contexts;
+			uint32_t bits_high;
+			uint32_t range;
 
-			U32 corr_bits;
-			U32 corr_range;
-			I32 corr_min;
-			I32 corr_max;
+			uint32_t corr_bits;
+			uint32_t corr_range;
+			int32_t corr_min;
+			int32_t corr_max;
 
 
-			std::vector<laszip::models::arithmetic> mBits;
+			std::vector<models::arithmetic> mBits;
 
-			laszip::models::arithmetic_bit mCorrector0;
-			std::vector<laszip::models::arithmetic> mCorrector;
+			models::arithmetic_bit mCorrector0;
+			std::vector<models::arithmetic> mCorrector;
 		};
-	}
-}
+} // namespace decompressors
+} // namespace lazperf
 
 #endif // __decompressor_hpp__

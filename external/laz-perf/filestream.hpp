@@ -1,19 +1,17 @@
 /*
 ===============================================================================
 
-  FILE:  excepts.hpp
-  
+  FILE:  filestream.hpp
+
   CONTENTS:
-    Exception types
+    Stream abstractions
 
   PROGRAMMERS:
 
-    martin.isenburg@rapidlasso.com  -  http://rapidlasso.com
     uday.karan@gmail.com - Hobu, Inc.
-  
+
   COPYRIGHT:
-  
-    (c) 2007-2014, martin isenburg, rapidlasso - tools to catch reality
+
     (c) 2014, Uday Verma, Hobu, Inc.
 
     This is free software; you can redistribute and/or modify it under the
@@ -22,26 +20,52 @@
 
     This software is distributed WITHOUT ANY WARRANTY and without even the
     implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  
+
   CHANGE HISTORY:
-  
+
 ===============================================================================
 */
 
-#ifndef __excepts_hpp__
-#define __excepts_hpp__
+#pragma once
 
-#include <stdexcept>
+#include <iostream>
+
+#include "lazperf.hpp"
 
 namespace lazperf
 {
 
-struct error : public std::runtime_error
+// Convenience class
+
+struct OutFileStream
 {
-    error(const std::string& what) : std::runtime_error(what)
-    {}
+public:
+    LAZPERF_EXPORT OutFileStream(std::ostream& out);
+
+    LAZPERF_EXPORT void putBytes(const unsigned char *c, size_t len);
+    LAZPERF_EXPORT OutputCb cb();
+
+private:
+    std::ostream& f_;
+};
+
+// Convenience class
+
+struct InFileStream
+{
+    struct Private;
+
+public:
+    LAZPERF_EXPORT InFileStream(std::istream& in);
+    LAZPERF_EXPORT ~InFileStream();
+
+    // This will force a fill on the next fetch.
+    LAZPERF_EXPORT void reset();
+    LAZPERF_EXPORT InputCb cb();
+
+private:
+    std::unique_ptr<Private> p_;
 };
 
 } // namespace lazperf
 
-#endif // __excepts_hpp__

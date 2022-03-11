@@ -1,11 +1,6 @@
 /*
 ===============================================================================
 
-  FILE:  excepts.hpp
-  
-  CONTENTS:
-    Exception types
-
   PROGRAMMERS:
 
     martin.isenburg@rapidlasso.com  -  http://rapidlasso.com
@@ -22,26 +17,55 @@
 
     This software is distributed WITHOUT ANY WARRANTY and without even the
     implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  
+
   CHANGE HISTORY:
-  
+
 ===============================================================================
 */
 
-#ifndef __excepts_hpp__
-#define __excepts_hpp__
-
-#include <stdexcept>
-
 namespace lazperf
 {
-
-struct error : public std::runtime_error
+namespace detail
 {
-    error(const std::string& what) : std::runtime_error(what)
-    {}
+
+class Rgb10Base
+{
+protected:
+    Rgb10Base();
+
+    bool have_last_;
+    las::rgb last;
+
+    models::arithmetic m_byte_used;
+    models::arithmetic m_rgb_diff_0;
+    models::arithmetic m_rgb_diff_1;
+    models::arithmetic m_rgb_diff_2;
+    models::arithmetic m_rgb_diff_3;
+    models::arithmetic m_rgb_diff_4;
+    models::arithmetic m_rgb_diff_5;
 };
 
-} // namespace lazperf
+class Rgb10Compressor : public Rgb10Base
+{
+public:
+    Rgb10Compressor(encoders::arithmetic<OutCbStream>&);
 
-#endif // __excepts_hpp__
+    const char *compress(const char *buf);
+
+private:
+    encoders::arithmetic<OutCbStream>& enc_;
+};
+
+class Rgb10Decompressor : public Rgb10Base
+{
+public:
+    Rgb10Decompressor(decoders::arithmetic<InCbStream>&);
+
+    char *decompress(char *buf);
+
+private:
+    decoders::arithmetic<InCbStream>& dec_;
+};
+
+} // namespace detail
+} // namespace lazperf

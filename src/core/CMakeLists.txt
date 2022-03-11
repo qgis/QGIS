@@ -1900,6 +1900,15 @@ if (WITH_EPT)
     # Use embedded laz-perf from external/laz-perf
     include_directories(SYSTEM
     )
+
+    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/laz-perf/charbuf.cpp
+      ${CMAKE_SOURCE_DIR}/external/laz-perf/filestream.cpp
+      ${CMAKE_SOURCE_DIR}/external/laz-perf/header.cpp
+      ${CMAKE_SOURCE_DIR}/external/laz-perf/lazperf.cpp
+      ${CMAKE_SOURCE_DIR}/external/laz-perf/readers.cpp
+      ${CMAKE_SOURCE_DIR}/external/laz-perf/vlr.cpp
+    )
   endif()
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2166,6 +2175,9 @@ if (WITH_EPT)
   target_link_libraries(qgis_core
     ${ZSTD_LIBRARY}
   )
+  if (LazPerf_FOUND)
+    target_link_libraries(qgis_core ${LazPerf_LIBRARY})
+  endif()
 endif()
 
 if (WITH_PDAL)
