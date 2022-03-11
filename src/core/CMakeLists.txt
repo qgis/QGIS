@@ -1908,6 +1908,14 @@ if (WITH_EPT)
       ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
       ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
       ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_gpstime10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_nir14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb14.cpp
     )
   endif()
 
