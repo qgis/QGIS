@@ -58,6 +58,15 @@ Returns the custom scale of the block.
 %Docstring
 Returns the custom offset of the block.
 %End
+
+    void setPointCount( int size );
+%Docstring
+Changes the number of points in the block.
+This is used in order to remove all points after point ``size``.
+If a ``size`` larger than ``pointCount``() is used, data for the new points will be uninitialized
+
+.. versionadded:: 3.26
+%End
 };
 
 

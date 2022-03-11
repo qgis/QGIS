@@ -252,3 +252,20 @@ int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
   mHierarchyMutex.unlock();
   return count;
 }
+
+bool QgsPointCloudIndex::setSubsetString( const QString &subset )
+{
+  const QString lastExpression = mFilterExpression;
+  mFilterExpression.setExpression( subset );
+  if ( mFilterExpression.hasParserError() && !subset.isEmpty() )
+  {
+    mFilterExpression.setExpression( lastExpression );
+    return false;
+  }
+  return true;
+}
+
+QString QgsPointCloudIndex::subsetString() const
+{
+  return mFilterExpression;
+}

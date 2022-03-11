@@ -508,7 +508,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
 
   const char *ptr = block->data();
   const int count = block->pointCount();
-  const std::size_t recordSize = attributes.pointRecordSize();
+  const std::size_t recordSize = block->attributes().pointRecordSize();
   const QgsVector3D blockScale = block->scale();
   const QgsVector3D blockOffset = block->offset();
   const double zValueScale = context.zValueScale();
@@ -631,7 +631,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
 
   const char *ptr = block->data();
   const int count = block->pointCount();
-  const std::size_t recordSize = attributes.pointRecordSize();
+  const std::size_t recordSize = block->attributes().pointRecordSize();
 
   const QgsVector3D blockScale = block->scale();
   const QgsVector3D blockOffset = block->offset();
@@ -736,7 +736,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
 
   const char *ptr = block->data();
   const int count = block->pointCount();
-  const std::size_t recordSize = attributes.pointRecordSize();
+  const std::size_t recordSize = block->attributes().pointRecordSize();
 
   const QgsVector3D blockScale = block->scale();
   const QgsVector3D blockOffset = block->offset();
@@ -899,7 +899,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
 
   const char *ptr = block->data();
   const int count = block->pointCount();
-  const std::size_t recordSize = attributes.pointRecordSize();
+  const std::size_t recordSize = block->attributes().pointRecordSize();
 
   const QgsVector3D blockScale = block->scale();
   const QgsVector3D blockOffset = block->offset();

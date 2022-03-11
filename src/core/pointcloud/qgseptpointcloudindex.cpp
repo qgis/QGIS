@@ -33,6 +33,7 @@
 #include "qgslogger.h"
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"
+#include "qgspointcloudexpression.h"
 
 ///@cond PRIVATE
 
@@ -279,20 +280,27 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   if ( !found )
     return nullptr;
 
+  // we need to create a copy of the expression to pass to the decoder
+  // as the same QgsPointCloudExpression object mighgt be concurrently
+  // used on another thread, for example in a 3d view
+  QgsPointCloudExpression filterExpression = mFilterExpression;
+  QgsPointCloudAttributeCollection requestAttributes = request.attributes();
+  requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
+
   if ( mDataType == QLatin1String( "binary" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.bin" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressBinary( filename, attributes(), request.attributes(), scale(), offset() );
+    return QgsEptDecoder::decompressBinary( filename, attributes(), requestAttributes, scale(), offset(), filterExpression );
   }
   else if ( mDataType == QLatin1String( "zstandard" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.zst" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset() );
+    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset(), filterExpression );
   }
   else if ( mDataType == QLatin1String( "laszip" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressLaz( filename, attributes(), request.attributes(), scale(), offset() );
+    return QgsEptDecoder::decompressLaz( filename, attributes(), requestAttributes, scale(), offset(), filterExpression );
   }
   else
   {

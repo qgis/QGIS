@@ -291,6 +291,43 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
         self.assertTrue(result)
 
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderFiltered(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudClassifiedRenderer()
+        renderer.setAttribute('Classification')
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.setSubsetString('NumberOfReturns > 1')
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_classified_render_filtered')
+        result = renderchecker.runTest('expected_classified_render_filtered')
+        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+        layer.setSubsetString('')
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_classified_render_unfiltered')
+        result = renderchecker.runTest('expected_classified_render_unfiltered')
+        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
 
 if __name__ == '__main__':
     unittest.main()
