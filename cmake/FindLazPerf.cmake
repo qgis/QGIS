@@ -11,7 +11,7 @@
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 FIND_PATH(LazPerf_INCLUDE_DIR
-  lazperf/lazpef.hpp
+  lazperf/lazperf.hpp
   "$ENV{LIB_DIR}/include"
   "$ENV{INCLUDE}"
   /usr/local/include
