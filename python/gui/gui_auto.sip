@@ -163,6 +163,7 @@
 %Include auto_generated/qgspixmaplabel.sip
 %Include auto_generated/qgspluginmanagerinterface.sip
 %Include auto_generated/qgspointcloudattributecombobox.sip
+%Include auto_generated/qgspointcloudquerybuilder.sip
 %Include auto_generated/qgspresetcolorrampdialog.sip
 %Include auto_generated/qgsprevieweffect.sip
 %Include auto_generated/qgsprojectionselectiondialog.sip

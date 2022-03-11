@@ -143,6 +143,19 @@ void QgsPointCloudQueryBuilder::test()
   }
   else
   {
+    const QSet<QString> attributes = expression.referencedAttributes();
+    int offset;
+    for ( const auto &attribute : attributes )
+    {
+      if ( mLayer->dataProvider() &&
+           !mLayer->dataProvider()->attributes().find( attribute, offset ) )
+      {
+        QMessageBox::warning( this,
+                              tr( "Query Result" ),
+                              tr( "\"%1\" not recognized as an available attribute." ).arg( attribute ) );
+        return;
+      }
+    }
     mLayer->setSubsetString( mTxtSql->text() );
     QMessageBox::information( this,
                               tr( "Query Result" ),
@@ -200,16 +213,6 @@ void QgsPointCloudQueryBuilder::btnNotIn_clicked()
 {
   mTxtSql->insertText( QStringLiteral( " NOT IN " ) );
   mTxtSql->setFocus();
-}
-
-QString QgsPointCloudQueryBuilder::sql() const
-{
-  return mTxtSql->text();
-}
-
-void QgsPointCloudQueryBuilder::setSql( const QString &sqlStatement )
-{
-  mTxtSql->setText( sqlStatement );
 }
 
 void QgsPointCloudQueryBuilder::lstFields_clicked( const QModelIndex &index )
