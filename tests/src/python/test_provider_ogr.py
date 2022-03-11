@@ -1219,7 +1219,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         """Test issue GH #39230, this is not really specific to GPKG"""
 
         project = QgsProject()
-        project.setAutoTransaction(True)
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         tmpfile = os.path.join(
             self.basetestpath, 'tempGeoPackageTransactionExpressionFields.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)

@@ -104,6 +104,14 @@ The development version
       ARGB32_Premultiplied
     };
 
+    enum class CaptureTechnique
+    {
+      StraightSegments,
+      CircularString,
+      Streaming,
+      Shape,
+    };
+
     enum class VectorLayerTypeFlag
     {
       SqlQuery
@@ -856,6 +864,13 @@ The development version
       Glob,
     };
 
+    enum class TransactionMode
+    {
+      Disabled,
+      AutomaticGroups,
+      BufferedGroups,
+    };
+
     enum class AltitudeClamping
     {
       Absolute,
@@ -933,6 +948,7 @@ GEOS string version linked
 .. versionadded:: 3.20
 %End
 };
+
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
 

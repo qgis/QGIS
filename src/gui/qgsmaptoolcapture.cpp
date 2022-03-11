@@ -94,15 +94,15 @@ QgsMapToolCapture::Capabilities QgsMapToolCapture::capabilities() const
   return QgsMapToolCapture::ValidateGeometries;
 }
 
-bool QgsMapToolCapture::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+bool QgsMapToolCapture::supportsTechnique( Qgis::CaptureTechnique technique ) const
 {
   switch ( technique )
   {
-    case CaptureTechnique::StraightSegments:
+    case Qgis::CaptureTechnique::StraightSegments:
       return true;
-    case CaptureTechnique::CircularString:
-    case CaptureTechnique::Streaming:
-    case CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::CircularString:
+    case Qgis::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::Shape:
       return false;
   }
   BUILTIN_UNREACHABLE
@@ -116,7 +116,7 @@ void QgsMapToolCapture::activate()
   mCanvas->snappingUtils()->addExtraSnapLayer( mExtraSnapLayer );
   QgsMapToolAdvancedDigitizing::activate();
 
-  if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
     mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
 }
 
@@ -129,7 +129,7 @@ void QgsMapToolCapture::deactivate()
 
   mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
 
-  if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
     mCurrentShapeMapTool->deactivate();
 
   QgsMapToolAdvancedDigitizing::deactivate();
@@ -365,27 +365,27 @@ QgsRubberBand *QgsMapToolCapture::takeRubberBand()
 void QgsMapToolCapture::setCircularDigitizingEnabled( bool enable )
 {
   if ( enable )
-    setCurrentCaptureTechnique( CaptureTechnique::CircularString );
+    setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
   else
-    setCurrentCaptureTechnique( CaptureTechnique::StraightSegments );
+    setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
 }
 
 void QgsMapToolCapture::setStreamDigitizingEnabled( bool enable )
 {
   if ( enable )
-    setCurrentCaptureTechnique( CaptureTechnique::Streaming );
+    setCurrentCaptureTechnique( Qgis::CaptureTechnique::Streaming );
   else
-    setCurrentCaptureTechnique( CaptureTechnique::StraightSegments );
+    setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
 }
 
-void QgsMapToolCapture::setCurrentCaptureTechnique( CaptureTechnique technique )
+void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique technique )
 {
   if ( mCurrentCaptureTechnique == technique )
     return;
 
   mStartNewCurve = true;
 
-  if ( mCurrentCaptureTechnique == CaptureTechnique::Shape && mCurrentShapeMapTool )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
   {
     mCurrentShapeMapTool->deactivate();
     clean();
@@ -393,17 +393,17 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( CaptureTechnique technique )
 
   switch ( technique )
   {
-    case QgsMapToolCapture::CaptureTechnique::StraightSegments:
+    case Qgis::CaptureTechnique::StraightSegments:
       mLineDigitizingType = QgsWkbTypes::LineString;
       break;
-    case QgsMapToolCapture::CaptureTechnique::CircularString:
+    case Qgis::CaptureTechnique::CircularString:
       mLineDigitizingType = QgsWkbTypes::CircularString;
       break;
-    case QgsMapToolCapture::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::Streaming:
       mLineDigitizingType = QgsWkbTypes::LineString;
       mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.value();
       break;
-    case QgsMapToolCapture::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::Shape:
       mLineDigitizingType = QgsWkbTypes::LineString;
       break;
 
@@ -414,7 +414,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( CaptureTechnique technique )
 
   mCurrentCaptureTechnique = technique;
 
-  if ( technique == CaptureTechnique::Shape && mCurrentShapeMapTool && isActive() )
+  if ( technique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool && isActive() )
   {
     clean();
     mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
@@ -427,14 +427,14 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
   {
     if ( shapeMapToolMetadata && mCurrentShapeMapTool->id() == shapeMapToolMetadata->id() )
       return;
-    if ( mCurrentCaptureTechnique == CaptureTechnique::Shape )
+    if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
       mCurrentShapeMapTool->deactivate();
     mCurrentShapeMapTool->deleteLater();
   }
 
   mCurrentShapeMapTool = shapeMapToolMetadata ? shapeMapToolMetadata->factory( this ) : nullptr;
 
-  if ( mCurrentCaptureTechnique == CaptureTechnique::Shape && isActive() )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && isActive() )
   {
     clean();
     mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
@@ -449,7 +449,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
-  if ( mCurrentCaptureTechnique == Shape )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
   {
     if ( !mCurrentShapeMapTool )
     {
@@ -476,7 +476,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       bool hasTrace = false;
 
-      if ( mCurrentCaptureTechnique == CaptureTechnique::Streaming )
+      if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Streaming )
       {
         if ( !mCaptureCurve.isEmpty() )
         {
@@ -517,7 +517,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         }
       }
 
-      if ( mCurrentCaptureTechnique != CaptureTechnique::Streaming && !hasTrace )
+      if ( mCurrentCaptureTechnique != Qgis::CaptureTechnique::Streaming && !hasTrace )
       {
         if ( mCaptureCurve.numPoints() > 0 )
         {
@@ -659,7 +659,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     return 2;
   }
 
-  if ( mCapturing && mCurrentCaptureTechnique == CaptureTechnique::Streaming && !mAllowAddingStreamingPoints )
+  if ( mCapturing && mCurrentCaptureTechnique == Qgis::CaptureTechnique::Streaming && !mAllowAddingStreamingPoints )
     return 0;
 
   QgsPoint layerPoint;
@@ -899,7 +899,7 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
 
 void QgsMapToolCapture::keyPressEvent( QKeyEvent *e )
 {
-  if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
   {
     mCurrentShapeMapTool->keyPressEvent( e );
     if ( e->isAccepted() )
@@ -915,7 +915,7 @@ void QgsMapToolCapture::keyPressEvent( QKeyEvent *e )
 
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
-    if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
+    if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
     {
       if ( !e->isAutoRepeat() )
       {
@@ -983,7 +983,7 @@ void QgsMapToolCapture::deleteTempRubberBand()
 void QgsMapToolCapture::clean()
 {
   stopCapturing();
-  if ( mCurrentCaptureTechnique == Shape && mCurrentShapeMapTool )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
     mCurrentShapeMapTool->clean();
 
   clearCurve();
@@ -1276,7 +1276,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   {
     bool digitizingFinished = false;
 
-    if ( mCurrentCaptureTechnique == Shape )
+    if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
     {
       if ( !mCurrentShapeMapTool )
       {

@@ -328,7 +328,6 @@ Returns the settings value for the ``dynamicKeyPartList`` and  with a ``defaultV
    use valueAsVariantWithDefaultOverride instead
 %End
 
-
     bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Set settings value.

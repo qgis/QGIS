@@ -611,7 +611,8 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   setValid( false ); // assume the layer is invalid until we determine otherwise
 
-  mPipe->remove( mDataProvider ); // deletes if exists
+  // deletes pipe elements (including data provider)
+  mPipe = std::make_unique< QgsRasterPipe >();
   mDataProvider = nullptr;
 
   // XXX should I check for and possibly delete any pre-existing providers?

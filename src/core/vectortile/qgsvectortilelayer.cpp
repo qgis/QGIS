@@ -32,6 +32,7 @@
 #include "qgsjsonutils.h"
 #include "qgspainting.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsarcgisrestutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -40,6 +41,8 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
   , mTransformContext( options.transformContext )
 {
+  mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
+
   mDataSource = uri;
 
   setValid( loadDataSource() );
@@ -64,6 +67,8 @@ bool QgsVectorTileLayer::loadDataSource()
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
 
+  setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
   mSourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
@@ -80,13 +85,12 @@ bool QgsVectorTileLayer::loadDataSource()
     }
 
     // online tiles
-    mSourceMinZoom = 0;
-    mSourceMaxZoom = 14;
+    mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
 
     if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
-      mSourceMinZoom = dsUri.param( QStringLiteral( "zmin" ) ).toInt();
+      mMatrixSet.dropMatricesOutsideZoomRange( dsUri.param( QStringLiteral( "zmin" ) ).toInt(), 99 );
     if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
-      mSourceMaxZoom = dsUri.param( QStringLiteral( "zmax" ) ).toInt();
+      mMatrixSet.dropMatricesOutsideZoomRange( 0, dsUri.param( QStringLiteral( "zmax" ) ).toInt() );
 
     setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
   }
@@ -111,10 +115,10 @@ bool QgsVectorTileLayer::loadDataSource()
     const int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );
     const int maxZoom = reader.metadataValue( QStringLiteral( "maxzoom" ) ).toInt( &maxZoomOk );
     if ( minZoomOk )
-      mSourceMinZoom = minZoom;
+      mMatrixSet.dropMatricesOutsideZoomRange( minZoom, 99 );
     if ( maxZoomOk )
-      mSourceMaxZoom = maxZoom;
-    QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mSourceMinZoom ).arg( mSourceMaxZoom ), 2 );
+      mMatrixSet.dropMatricesOutsideZoomRange( 0, maxZoom );
+    QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mMatrixSet.minimumZoom() ).arg( mMatrixSet.maximumZoom() ), 2 );
 
     QgsRectangle r = reader.extent();
     QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
@@ -128,8 +132,6 @@ bool QgsVectorTileLayer::loadDataSource()
     QgsDebugMsg( QStringLiteral( "Unknown source type: " ) + mSourceType );
     return false;
   }
-
-  setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
   const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
   const QgsDataProvider::ReadFlags flags;
@@ -188,18 +190,50 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
     return false;
   }
 
+  mMatrixSet.fromEsriJson( mArcgisLayerConfiguration );
+  setCrs( mMatrixSet.crs() );
+
   // if hardcoded zoom limits aren't specified, take them from the server
-  if ( !dataSourceUri.hasParam( QStringLiteral( "zmin" ) ) )
-    mSourceMinZoom = 0;
-  else
-    mSourceMinZoom = dataSourceUri.param( QStringLiteral( "zmin" ) ).toInt();
+  if ( dataSourceUri.hasParam( QStringLiteral( "zmin" ) ) )
+    mMatrixSet.dropMatricesOutsideZoomRange( dataSourceUri.param( QStringLiteral( "zmin" ) ).toInt(), 99 );
 
-  if ( !dataSourceUri.hasParam( QStringLiteral( "zmax" ) ) )
-    mSourceMaxZoom = mArcgisLayerConfiguration.value( QStringLiteral( "maxzoom" ) ).toInt();
-  else
-    mSourceMaxZoom = dataSourceUri.param( QStringLiteral( "zmax" ) ).toInt();
+  if ( dataSourceUri.hasParam( QStringLiteral( "zmax" ) ) )
+    mMatrixSet.dropMatricesOutsideZoomRange( 0, dataSourceUri.param( QStringLiteral( "zmax" ) ).toInt() );
 
-  setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
+  const QVariantMap fullExtent = mArcgisLayerConfiguration.value( QStringLiteral( "fullExtent" ) ).toMap();
+  if ( !fullExtent.isEmpty() )
+  {
+    const QgsRectangle fullExtentRect(
+      fullExtent.value( QStringLiteral( "xmin" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "ymin" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "xmax" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "ymax" ) ).toDouble()
+    );
+
+    const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( QStringLiteral( "spatialReference" ) ).toMap() );
+    const QgsCoordinateTransform extentTransform( fullExtentCrs, crs(), transformContext() );
+    try
+    {
+      setExtent( extentTransform.transformBoundingBox( fullExtentRect ) );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
+    }
+  }
+  else
+  {
+    // if no fullExtent specified in JSON, default to web mercator specs full extent
+    const QgsCoordinateTransform extentTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), crs(), transformContext() );
+    try
+    {
+      setExtent( extentTransform.transformBoundingBox( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) ) );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
+    }
+  }
 
   return true;
 }
@@ -234,6 +268,13 @@ bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 {
   setValid( loadDataSource() );
 
+  const QDomElement matrixSetElement = layerNode.firstChildElement( QStringLiteral( "matrixSet" ) );
+  if ( !matrixSetElement.isNull() )
+  {
+    mMatrixSet.readXml( matrixSetElement, context );
+    setCrs( mMatrixSet.crs() );
+  }
+
   QString errorMsg;
   if ( !readSymbology( layerNode, errorMsg, context ) )
     return false;
@@ -246,6 +287,8 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 {
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
+
+  mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
 
   // add provider node
   if ( mDataProvider )
@@ -702,7 +745,7 @@ QString QgsVectorTileLayer::htmlMetadata() const
 
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
-  const QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileID.zoomLevel() );
+  const QgsTileMatrix tileMatrix = mMatrixSet.tileMatrix( tileID.zoomLevel() );
   const QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
 
   QgsDataSourceUri dsUri;

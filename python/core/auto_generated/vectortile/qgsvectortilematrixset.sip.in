@@ -1,0 +1,47 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortilematrixset.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorTileMatrixSet : QgsTileMatrixSet
+{
+%Docstring(signature="appended")
+Encapsulates properties of a vector tile matrix set, including tile origins and scaling information.
+
+.. versionadded:: 3.22.6
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilematrixset.h"
+%End
+  public:
+
+    static QgsVectorTileMatrixSet fromWebMercator();
+%Docstring
+Returns a vector tile structure corresponding to the standard web mercator/GoogleCRS84Quad setup.
+%End
+
+    bool fromEsriJson( const QVariantMap &json );
+%Docstring
+Initializes the tile structure settings from an ESRI REST VectorTileService ``json`` map.
+
+.. note::
+
+   This same structure is utilized in ESRI vtpk archives in the root.json file.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortilematrixset.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

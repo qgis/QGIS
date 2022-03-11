@@ -47,9 +47,9 @@ class CORE_EXPORT QgsVectorTileUtils
   public:
 
     //! Returns a list of tiles in the given tile range
-    static QVector<QgsTileXYZ> tilesInRange( const QgsTileRange &range, int zoomLevel );
+    static QVector<QgsTileXYZ> tilesInRange( QgsTileRange range, int zoomLevel );
     //! Orders tile requests according to the distance from view center (given in tile matrix coords)
-    static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, const QPointF &center );
+    static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center );
 
     /**
      * Returns polygon (made by four corners of the tile) in screen coordinates
@@ -59,17 +59,25 @@ class CORE_EXPORT QgsVectorTileUtils
     static QPolygon tilePolygon( QgsTileXYZ id, const QgsCoordinateTransform &ct, const QgsTileMatrix &tm, const QgsMapToPixel &mtp );
 
     //! Returns QgsFields instance based on the set of field names
-    static QgsFields makeQgisFields( QSet<QString> flds );
+    static QgsFields makeQgisFields( const QSet<QString> &flds );
 
     /**
-     * Finds zoom level (assuming GoogleCRS84Quad tile matrix set) given map scale denominator.
+     * Finds zoom level given map scale denominator.
+     *
+     * The \a z0Scale argument gives the scale denominator at zoom level 0, where the default
+     * value corresponds to GoogleCRS84Quad tile matrix set
      *
      * \since QGIS 3.16
      */
-    static double scaleToZoom( double mapScale );
+    static double scaleToZoom( double mapScale, double z0Scale = 559082264.0287178 );
 
-    //! Finds best fitting zoom level (assuming GoogleCRS84Quad tile matrix set) given map scale denominator and allowed zoom level range
-    static int scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom );
+    /**
+     * Finds the best fitting zoom level given a map scale denominator and allowed zoom level range.
+     *
+     * The \a z0Scale argument gives the scale denominator at zoom level 0, where the default
+     * value corresponds to GoogleCRS84Quad tile matrix set.
+     */
+    static int scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom, double z0Scale = 559082264.0287178 );
     //! Returns a temporary vector layer for given sub-layer of tile in vector tile layer
     static QgsVectorLayer *makeVectorLayerForTile( QgsVectorTileLayer *mvt, QgsTileXYZ tileID, const QString &layerName );
     //! Returns formatted tile URL string replacing {x}, {y}, {z} placeholders (or {-y} instead of {y} for TMS convention)

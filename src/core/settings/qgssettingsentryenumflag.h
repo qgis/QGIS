@@ -31,7 +31,7 @@
  * \since QGIS 3.20
  */
 template <typename T>
-class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
+class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
 {
   public:
 

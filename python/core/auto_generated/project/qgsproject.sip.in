@@ -847,24 +847,56 @@ Gets the list of layers which currently should not be taken into account on map 
    use :py:func:`QgsMapLayer.setFlags()` instead
 %End
 
-    bool autoTransaction() const;
+ bool autoTransaction() const /Deprecated/;
 %Docstring
 Transactional editing means that on supported datasources (postgres databases) the edit state of
 all tables that originate from the same database are synchronized and executed in a server side
 transaction.
 
 .. versionadded:: 2.16
+
+.. deprecated::
+   QGIS 3.26 use transactionMode instead
 %End
 
-    void setAutoTransaction( bool autoTransaction );
+ void setAutoTransaction( bool autoTransaction ) /Deprecated/;
 %Docstring
 Transactional editing means that on supported datasources (postgres databases) the edit state of
 all tables that originate from the same database are synchronized and executed in a server side
 transaction.
 
-Make sure that this is only called when all layers are not in edit mode.
+.. warning::
+
+   Make sure that this is only called when all layers are not in edit mode.
 
 .. versionadded:: 2.16
+
+.. deprecated::
+   QGIS 3.26 use setTransactionMode instead
+%End
+
+    Qgis::TransactionMode transactionMode() const;
+%Docstring
+Returns the transaction mode
+
+.. seealso:: Qgis.TransactionMode
+
+.. versionadded:: 3.26
+%End
+
+    bool setTransactionMode( Qgis::TransactionMode transactionMode );
+%Docstring
+Set transaction mode
+
+:return: ``True`` if the transaction mode could be changed
+
+.. note::
+
+   Transaction mode can be changed only when all layers are not in edit mode.
+
+.. seealso:: Qgis.TransactionMode
+
+.. versionadded:: 3.26
 %End
 
 
@@ -875,6 +907,13 @@ Returns the matching transaction group from a provider key and connection string
 Returns ``None`` if a matching transaction group is not available.
 
 .. versionadded:: 3.2
+%End
+
+    QgsVectorLayerEditBufferGroup *editBufferGroup();
+%Docstring
+Returns the edit buffer group
+
+.. versionadded:: 3.26
 %End
 
     bool evaluateDefaultValues() const;
@@ -1575,9 +1614,27 @@ additional information to the layer.
 Emitted when the project file has been written and closed.
 %End
 
-    void oldProjectVersionWarning( const QString & );
+ void oldProjectVersionWarning( const QString & ) /Deprecated/;
 %Docstring
 Emitted when an old project file is read.
+
+.. deprecated::
+   use :py:func:`~QgsProject.readVersionMismatchOccurred` instead.
+%End
+
+    void readVersionMismatchOccurred( const QString &fileVersion );
+%Docstring
+Emitted when a project is read and the version of QGIS used to save
+the project differs from the current QGIS version.
+
+The ``fileVersion`` argument indicates the version of QGIS used to save
+the project.
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 3.26
 %End
 
     void layerLoaded( int i, int n );
@@ -1981,6 +2038,64 @@ Returns the data defined properties used for overrides in user defined server
 parameters
 
 .. versionadded:: 3.14
+%End
+
+    bool startEditing( QgsVectorLayer *vectorLayer = 0 );
+%Docstring
+Makes the layer editable.
+
+This starts an edit session on vectorLayer. Changes made in this edit session will not
+be made persistent until :py:func:`~QgsProject.commitChanges` is called, and can be reverted by calling
+:py:func:`~QgsProject.rollBack`.
+
+:return: ``True`` if the layer was successfully made editable, or ``False`` if the operation
+         failed (e.g. due to an underlying read-only data source, or lack of edit support
+         by the backend data provider).
+
+.. seealso:: :py:func:`commitChanges`
+
+.. seealso:: :py:func:`rollBack`
+
+
+.. versionadded:: 3.26
+%End
+
+    bool commitChanges( QStringList &commitErrors /Out/, bool stopEditing = true, QgsVectorLayer *vectorLayer = 0 );
+%Docstring
+Attempts to commit to the underlying data provider any buffered changes made since the
+last to call to :py:func:`~QgsProject.startEditing`.
+
+Returns the result of the attempt. If a commit fails (i.e. ``False`` is returned), the
+in-memory changes are left untouched and are not discarded. This allows editing to
+continue if the commit failed on e.g. a disallowed value in a Postgres
+database - the user can re-edit and try again.
+
+The commits occur in distinct stages,
+(add attributes, add features, change attribute values, change
+geometries, delete features, delete attributes)
+so if a stage fails, it can be difficult to roll back cleanly.
+Therefore any error message returned by commitErrors also includes which stage failed so
+that the user has some chance of repairing the damage cleanly.
+
+By setting ``stopEditing`` to ``False``, the layer will stay in editing mode.
+Otherwise the layer editing mode will be disabled if the commit is successful.
+
+.. seealso:: :py:func:`startEditing`
+
+.. seealso:: :py:func:`rollBack`
+
+.. versionadded:: 3.26
+%End
+
+    bool rollBack( QStringList &rollbackErrors /Out/, bool stopEditing = true, QgsVectorLayer *vectorLayer = 0 );
+%Docstring
+Stops a current editing operation on vectorLayer and discards any uncommitted edits.
+
+.. seealso:: :py:func:`startEditing`
+
+.. seealso:: :py:func:`commitChanges`
+
+.. versionadded:: 3.26
 %End
 
 };

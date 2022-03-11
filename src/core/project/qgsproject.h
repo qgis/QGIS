@@ -51,6 +51,7 @@
 #include "qgscolorscheme.h"
 #include "qgssettings.h"
 #include "qgspropertycollection.h"
+#include "qgsvectorlayereditbuffergroup.h"
 
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
@@ -890,19 +891,40 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * transaction.
      *
      * \since QGIS 2.16
+     * \deprecated QGIS 3.26 use transactionMode instead
      */
-    bool autoTransaction() const;
+    Q_DECL_DEPRECATED bool autoTransaction() const SIP_DEPRECATED;
 
     /**
      * Transactional editing means that on supported datasources (postgres databases) the edit state of
      * all tables that originate from the same database are synchronized and executed in a server side
      * transaction.
      *
-     * Make sure that this is only called when all layers are not in edit mode.
+     * \warning Make sure that this is only called when all layers are not in edit mode.
      *
      * \since QGIS 2.16
+     * \deprecated QGIS 3.26 use setTransactionMode instead
      */
-    void setAutoTransaction( bool autoTransaction );
+    Q_DECL_DEPRECATED void setAutoTransaction( bool autoTransaction ) SIP_DEPRECATED;
+
+    /**
+     * Returns the transaction mode
+     *
+     * \see Qgis::TransactionMode
+     * \since QGIS 3.26
+     */
+    Qgis::TransactionMode transactionMode() const;
+
+    /**
+     * Set transaction mode
+     *
+     * \returns TRUE if the transaction mode could be changed
+     *
+     * \note Transaction mode can be changed only when all layers are not in edit mode.
+     * \see Qgis::TransactionMode
+     * \since QGIS 3.26
+     */
+    bool setTransactionMode( Qgis::TransactionMode transactionMode );
 
     /**
      * Map of transaction groups
@@ -922,6 +944,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.2
      */
     QgsTransactionGroup *transactionGroup( const QString &providerKey, const QString &connString );
+
+    /**
+     * Returns the edit buffer group
+     *
+     * \since QGIS 3.26
+     */
+    QgsVectorLayerEditBufferGroup *editBufferGroup();
 
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
@@ -1611,8 +1640,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Emitted when an old project file is read.
+     *
+     * \deprecated use readVersionMismatchOccurred() instead.
      */
-    void oldProjectVersionWarning( const QString & );
+    Q_DECL_DEPRECATED void oldProjectVersionWarning( const QString & ) SIP_DEPRECATED;
+
+    /**
+     * Emitted when a project is read and the version of QGIS used to save
+     * the project differs from the current QGIS version.
+     *
+     * The \a fileVersion argument indicates the version of QGIS used to save
+     * the project.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    void readVersionMismatchOccurred( const QString &fileVersion );
 
     /**
      * Emitted when a layer from a projects was read.
@@ -1966,10 +2009,65 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsPropertyCollection dataDefinedServerProperties() const;
 
+    /**
+     * Makes the layer editable.
+     *
+     * This starts an edit session on vectorLayer. Changes made in this edit session will not
+     * be made persistent until commitChanges() is called, and can be reverted by calling
+     * rollBack().
+     *
+     * \returns TRUE if the layer was successfully made editable, or FALSE if the operation
+     * failed (e.g. due to an underlying read-only data source, or lack of edit support
+     * by the backend data provider).
+     *
+     * \see commitChanges()
+     * \see rollBack()
+     *
+     * \since QGIS 3.26
+     */
+    bool startEditing( QgsVectorLayer *vectorLayer = nullptr );
+
+    /**
+     * Attempts to commit to the underlying data provider any buffered changes made since the
+     * last to call to startEditing().
+     *
+     * Returns the result of the attempt. If a commit fails (i.e. FALSE is returned), the
+     * in-memory changes are left untouched and are not discarded. This allows editing to
+     * continue if the commit failed on e.g. a disallowed value in a Postgres
+     * database - the user can re-edit and try again.
+     *
+     * The commits occur in distinct stages,
+     * (add attributes, add features, change attribute values, change
+     * geometries, delete features, delete attributes)
+     * so if a stage fails, it can be difficult to roll back cleanly.
+     * Therefore any error message returned by commitErrors also includes which stage failed so
+     * that the user has some chance of repairing the damage cleanly.
+     *
+     * By setting \a stopEditing to FALSE, the layer will stay in editing mode.
+     * Otherwise the layer editing mode will be disabled if the commit is successful.
+     *
+     * \see startEditing()
+     * \see rollBack()
+     *
+     * \since QGIS 3.26
+     */
+    bool commitChanges( QStringList &commitErrors SIP_OUT, bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
+
+    /**
+     * Stops a current editing operation on vectorLayer and discards any uncommitted edits.
+     *
+     * \see startEditing()
+     * \see commitChanges()
+     *
+     * \since QGIS 3.26
+     */
+    bool rollBack( QStringList &rollbackErrors SIP_OUT, bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
+
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
     void onMapLayersRemoved( const QList<QgsMapLayer *> &layers );
     void cleanTransactionGroups( bool force = false );
+    void updateTransactionGroups();
 
   private:
 
@@ -2077,6 +2175,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup *> mTransactionGroups;
 
+    QgsVectorLayerEditBufferGroup mEditBufferGroup;
+
     std::unique_ptr<QgsMapThemeCollection> mMapThemeCollection;
 
     std::unique_ptr<QgsLabelingEngineSettings> mLabelingEngineSettings;
@@ -2107,7 +2207,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QColor mSelectionColor;
 
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
-    bool mAutoTransaction = false;       // transaction grouped editing
+    Qgis::TransactionMode mTransactionMode = Qgis::TransactionMode::Disabled; // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
     bool mDirty = false;                 // project has been modified since it has been read or saved

@@ -4313,8 +4313,8 @@ void QgisApp::setupConnections()
            this, &QgisApp::fileOpenAfterLaunch );
 
   // Connect warning dialog from project reading
-  connect( QgsProject::instance(), &QgsProject::oldProjectVersionWarning,
-           this, &QgisApp::oldProjectVersionWarning );
+  connect( QgsProject::instance(), &QgsProject::readVersionMismatchOccurred,
+           this, &QgisApp::projectVersionMismatchOccurred );
   connect( QgsProject::instance(), &QgsProject::layerLoaded,
            this, [this]( int i, int n )
   {
@@ -8558,25 +8558,29 @@ void QgisApp::labelingFontNotFound( QgsVectorLayer *vlayer, const QString &fontf
   messageBar()->pushItem( fontMsg );
 }
 
-void QgisApp::commitError( QgsVectorLayer *vlayer )
+void QgisApp::commitError( QgsVectorLayer *vlayer, const QStringList &commitErrorsList )
 {
-  const QStringList commitErrors = vlayer->commitErrors();
-  if ( !vlayer->allowCommit() && commitErrors.empty() )
+  QStringList commitErrors = commitErrorsList;
+  if ( vlayer && commitErrors.isEmpty() )
+    commitErrors = vlayer->commitErrors();
+
+  if ( vlayer && !vlayer->allowCommit() && commitErrors.empty() )
   {
     return;
   }
 
+  const QString messageText = vlayer ? tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
+                              : tr( "Could not commit changes" );
+
   QgsMessageViewer *mv = new QgsMessageViewer();
   mv->setWindowTitle( tr( "Commit Errors" ) );
-  mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
+  mv->setMessageAsPlainText( messageText
                              + "\n\n"
                              + tr( "Errors: %1\n" ).arg( commitErrors.join( QLatin1String( "\n  " ) ) )
                            );
 
   QToolButton *showMore = new QToolButton();
-  // store pointer to vlayer in data of QAction
   QAction *act = new QAction( showMore );
-  act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
   act->setText( tr( "Show more" ) );
   showMore->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
   showMore->setCursor( Qt::PointingHandCursor );
@@ -8589,7 +8593,7 @@ void QgisApp::commitError( QgsVectorLayer *vlayer )
   // no timeout set, since notice needs attention and is only shown first time layer is labeled
   QgsMessageBarItem *errorMsg = new QgsMessageBarItem(
     tr( "Commit errors" ),
-    tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ),
+    messageText,
     showMore,
     Qgis::MessageLevel::Warning,
     0,
@@ -11305,52 +11309,43 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
 
   bool res = true;
 
-  QString connString = QgsTransaction::connectionString( vlayer->source() );
-  QString key = vlayer->providerType();
-
-  QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups = QgsProject::instance()->transactionGroups();
-  QMap< QPair< QString, QString>, QgsTransactionGroup *>::iterator tIt = transactionGroups .find( qMakePair( key, connString ) );
-  QgsTransactionGroup *tg = ( tIt != transactionGroups.end() ? tIt.value() : nullptr );
-
-  bool isModified = false;
-
   // Assume changes if: a) the layer reports modifications or b) its transaction group was modified
-  QString modifiedLayerNames;
-  bool hasSeveralModifiedLayers = false;
-  if ( tg && tg->layers().contains( vlayer ) && tg->modified() )
+  QSet<QgsVectorLayer *> modifiedLayers;
+  switch ( QgsProject::instance()->transactionMode() )
   {
-    isModified = true;
-    std::vector<QString> vectModifiedLayerNames;
-    if ( vlayer->isModified() )
+    case Qgis::TransactionMode::Disabled:
     {
-      vectModifiedLayerNames.push_back( vlayer->name() );
+      if ( vlayer->isModified() )
+        modifiedLayers.insert( vlayer );
     }
-    for ( QgsVectorLayer *iterLayer : tg->layers() )
+    break;
+    case Qgis::TransactionMode::AutomaticGroups:
     {
-      if ( iterLayer != vlayer && iterLayer->isModified() )
+      QString connString = QgsTransaction::connectionString( vlayer->source() );
+      QString key = vlayer->providerType();
+
+      QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups = QgsProject::instance()->transactionGroups();
+      QMap< QPair< QString, QString>, QgsTransactionGroup *>::iterator tIt = transactionGroups .find( qMakePair( key, connString ) );
+      QgsTransactionGroup *tg = ( tIt != transactionGroups.end() ? tIt.value() : nullptr );
+
+      if ( tg && tg->layers().contains( vlayer ) && tg->modified() )
       {
-        vectModifiedLayerNames.push_back( iterLayer->name() );
+        if ( vlayer->isModified() )
+          modifiedLayers.insert( vlayer );
+        const QSet<QgsVectorLayer *> transactionGroupLayers = tg->layers();
+        for ( QgsVectorLayer *iterLayer : transactionGroupLayers )
+        {
+          if ( iterLayer != vlayer && iterLayer->isModified() )
+            modifiedLayers.insert( iterLayer );
+        }
       }
     }
-    if ( vectModifiedLayerNames.size() == 1 )
-    {
-      modifiedLayerNames = vectModifiedLayerNames[0];
-    }
-    else if ( vectModifiedLayerNames.size() == 2 )
-    {
-      modifiedLayerNames = tr( "%1 and %2" ).arg( vectModifiedLayerNames[0] ).arg( vectModifiedLayerNames[1] );
-    }
-    else if ( vectModifiedLayerNames.size() > 2 )
-    {
-      modifiedLayerNames = tr( "%1, %2, …" ).arg( vectModifiedLayerNames[0] ).arg( vectModifiedLayerNames[1] );
-    }
-    hasSeveralModifiedLayers = vectModifiedLayerNames.size() > 1;
+    break;
+    case Qgis::TransactionMode::BufferedGroups:
+      modifiedLayers = QgsProject::instance()->editBufferGroup()->modifiedLayers();
+      break;
   }
-  else if ( vlayer->isModified() )
-  {
-    isModified  = true;
-    modifiedLayerNames = vlayer->name();
-  }
+
 
   if ( !vlayer->isEditable() && !vlayer->readOnly() )
   {
@@ -11364,7 +11359,7 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
       return false;
     }
 
-    vlayer->startEditing();
+    QgsProject::instance()->startEditing( vlayer );
 
     QString markerType = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle.value();
     bool markSelectedOnly = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected.value();
@@ -11376,15 +11371,23 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
       vlayer->triggerRepaint();
     }
   }
-  else if ( isModified )
+  else if ( modifiedLayers.size() > 0 )
   {
     QMessageBox::StandardButtons buttons = QMessageBox::Save | QMessageBox::Discard;
     if ( allowCancel )
       buttons |= QMessageBox::Cancel;
 
+    QString modifiedLayerNames;
+    if ( modifiedLayers.size() == 1 )
+      modifiedLayerNames = ( *modifiedLayers.constBegin() )->name();
+    else if ( modifiedLayers.size() == 2 )
+      modifiedLayerNames = tr( "%1 and %2" ).arg( ( *modifiedLayers.constBegin() )->name(), ( * ++modifiedLayers.constBegin() )->name() );
+    else if ( modifiedLayers.size() > 2 )
+      modifiedLayerNames = tr( "%1, %2, …" ).arg( ( *modifiedLayers.constBegin() )->name(), ( * ++modifiedLayers.constBegin() )->name() );
+
     switch ( QMessageBox::question( nullptr,
                                     tr( "Stop Editing" ),
-                                    hasSeveralModifiedLayers ?
+                                    modifiedLayers.size() > 0 ?
                                     tr( "Do you want to save the changes to layers %1?" ).arg( modifiedLayerNames ) :
                                     tr( "Do you want to save the changes to layer %1?" ).arg( modifiedLayerNames ),
                                     buttons ) )
@@ -11394,11 +11397,13 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
         break;
 
       case QMessageBox::Save:
+      {
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
-        if ( !vlayer->commitChanges() )
+        QStringList commitErrors;
+        if ( !QgsProject::instance()->commitChanges( commitErrors, true, vlayer ) )
         {
-          commitError( vlayer );
+          commitError( vlayer, commitErrors );
           // Leave the in-memory editing state alone,
           // to give the user a chance to enter different values
           // and try the commit again later
@@ -11408,17 +11413,20 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
         vlayer->triggerRepaint();
 
         QApplication::restoreOverrideCursor();
-        break;
+      }
+      break;
 
       case QMessageBox::Discard:
       {
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
         QgsCanvasRefreshBlocker refreshBlocker;
-        if ( !vlayer->rollBack() )
+
+        QStringList rollBackErrors;
+        if ( ! QgsProject::instance()->rollBack( rollBackErrors, true, vlayer ) )
         {
           visibleMessageBar()->pushMessage( tr( "Error" ),
-                                            tr( "Problems during roll back" ),
+                                            tr( "Problems during roll back: '%1'" ).arg( rollBackErrors.join( " / " ) ),
                                             Qgis::MessageLevel::Critical );
           res = false;
         }
@@ -11436,7 +11444,10 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
   else //layer not modified
   {
     QgsCanvasRefreshBlocker refreshBlocker;
-    vlayer->rollBack();
+
+    QStringList rollBackErrors;
+    QgsProject::instance()->rollBack( rollBackErrors, true, vlayer );
+
     res = true;
     vlayer->triggerRepaint();
   }
@@ -11607,10 +11618,12 @@ void QgisApp::saveVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
   if ( vlayer == activeLayer() )
     mSaveRollbackInProgress = true;
 
-  if ( !vlayer->commitChanges( !leaveEditable ) )
+
+  QStringList commitErrors;
+  if ( !QgsProject::instance()->commitChanges( commitErrors, !leaveEditable, vlayer ) )
   {
     mSaveRollbackInProgress = false;
-    commitError( vlayer );
+    commitError( vlayer, commitErrors );
   }
 
   if ( triggerRepaint )
@@ -11673,7 +11686,8 @@ void QgisApp::cancelVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bo
     mSaveRollbackInProgress = true;
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( !vlayer->rollBack( !leaveEditable ) )
+  QStringList rollbackErrors;
+  if ( ! QgsProject::instance()->rollBack( rollbackErrors, !leaveEditable, vlayer ) )
   {
     mSaveRollbackInProgress = false;
     QMessageBox::warning( nullptr,
@@ -11681,7 +11695,7 @@ void QgisApp::cancelVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bo
                           tr( "Could not %1 changes to layer %2\n\nErrors: %3\n" )
                           .arg( leaveEditable ? tr( "rollback" ) : tr( "cancel" ),
                                 vlayer->name(),
-                                vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
+                                rollbackErrors.join( QLatin1String( "\n  " ) ) ) );
   }
 
   if ( leaveEditable )
@@ -16416,23 +16430,29 @@ void QgisApp::takeAppScreenShots( const QString &saveDirectory, const int catego
   ass.takePicturesOf( QgsAppScreenShots::Categories( categories ) );
 }
 
-// Slot that gets called when the project file was saved with an older
-// version of QGIS
-
-void QgisApp::oldProjectVersionWarning( const QString &oldVersion )
+void QgisApp::projectVersionMismatchOccurred( const QString &projectVersion )
 {
-  Q_UNUSED( oldVersion )
-  QgsSettings settings;
+  const QgsProjectVersion fileVersion( projectVersion );
+  const QgsProjectVersion thisVersion( Qgis::version() );
 
-  if ( settings.value( QStringLiteral( "qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() )
+  if ( thisVersion > fileVersion )
   {
-    QString smalltext = tr( "This project file was saved by QGIS version %1."
-                            " When saving this project file, QGIS will update it to version %2, "
-                            "possibly rendering it useless for older versions of QGIS." ).arg( oldVersion, Qgis::version() );
+    QgsSettings settings;
 
-    QString title = tr( "Project file is older" );
+    if ( settings.value( QStringLiteral( "qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() )
+    {
+      QString smalltext = tr( "This project file was saved by QGIS version %1."
+                              " When saving this project file, QGIS will update it to version %2, "
+                              "possibly rendering it useless for older versions of QGIS." ).arg( projectVersion, Qgis::version() );
 
-    visibleMessageBar()->pushMessage( title, smalltext );
+      QString title = tr( "Project file is older" );
+
+      visibleMessageBar()->pushMessage( title, smalltext );
+    }
+  }
+  else
+  {
+    visibleMessageBar()->pushWarning( QString(), tr( "This project file was created by a newer version of QGIS (%1) and could not be completely loaded." ).arg( projectVersion ) );
   }
 }
 
