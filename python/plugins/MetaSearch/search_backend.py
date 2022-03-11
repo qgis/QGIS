@@ -190,12 +190,15 @@ class OARecSearch(SearchBase):
 
         self.response = self.conn.response
 
-    def query_records(self, bbox=[], keywords=None, limit=10, offset=0):
+    def query_records(self, bbox=[], keywords=None, limit=10, offset=1):
+        # set zero-based offset (default MetaSearch behaviour is CSW-based
+        # offset of 1
+        offset2 = offset - 1
 
         params = {
             'collection_id': self.record_collection,
             'limit': limit,
-            'offset': offset
+            'offset': offset2
         }
 
         if keywords:
