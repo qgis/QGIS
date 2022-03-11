@@ -304,22 +304,18 @@ Reads the set from an XML ``element``.
 Writes the set to an XML element.
 %End
 
-    bool applyTileScaleDoublingHack() const;
+    Qgis::ScaleToTileZoomLevelMethod scaleToTileZoomMethod() const;
 %Docstring
-Returns ``True`` if the scale doubling hack used to match MapBox scale to tile zoom levels should be applied.
+Returns the scale to tile zoom method.
 
-The default is that this hack will be applied.
-
-.. seealso:: :py:func:`setApplyTileScaleDoublingHack`
+.. seealso:: :py:func:`setScaleToTileZoomMethod`
 %End
 
-    void setApplyTileScaleDoublingHack( bool apply );
+    void setScaleToTileZoomMethod( Qgis::ScaleToTileZoomLevelMethod method );
 %Docstring
-Sets whether the scale doubling hack used to match MapBox scale to tile zoom levels should be applied.
+Sets the scale to tile zoom method.
 
-The default is that this hack will be applied.
-
-.. seealso:: :py:func:`applyTileScaleDoublingHack`
+.. seealso:: :py:func:`scaleToTileZoomMethod`
 %End
 
 };

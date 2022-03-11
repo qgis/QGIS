@@ -759,6 +759,12 @@ The development version
     typedef QFlags<Qgis::TextRendererFlag> TextRendererFlags;
 
 
+    enum class ScaleToTileZoomLevelMethod
+    {
+      MapBox,
+      Esri,
+    };
+
     enum class AngularDirection
       {
       Clockwise,

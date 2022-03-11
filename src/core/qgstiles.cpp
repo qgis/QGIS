@@ -201,11 +201,17 @@ double QgsTileMatrixSet::scaleToZoom( double scale ) const
   double scaleUnder = 0;
   double scaleOver = 0;
 
-  if ( mApplyTileScaleDoubleHack )
+  switch ( mScaleToTileZoomMethod )
   {
-    // TODO: it seems that map scale is double (is that because of high-dpi screen?)
-    // (this TODO was taken straight from QgsVectorTileUtils::scaleToZoom!)
-    scale *= 2;
+    case Qgis::ScaleToTileZoomLevelMethod::MapBox:
+    {
+      // TODO: it seems that map scale is double (is that because of high-dpi screen?)
+      // (this TODO was taken straight from QgsVectorTileUtils::scaleToZoom!)
+      scale *= 2;
+      break;
+    }
+    case Qgis::ScaleToTileZoomLevelMethod::Esri:
+      break;
   }
 
   for ( auto it = mTileMatrices.constBegin(); it != mTileMatrices.constEnd(); ++it )
@@ -232,7 +238,16 @@ double QgsTileMatrixSet::scaleToZoom( double scale ) const
 
 int QgsTileMatrixSet::scaleToZoomLevel( double scale ) const
 {
-  int tileZoom = static_cast<int>( round( scaleToZoom( scale ) ) );
+  int tileZoom = 0;
+  switch ( mScaleToTileZoomMethod )
+  {
+    case Qgis::ScaleToTileZoomLevelMethod::MapBox:
+      tileZoom = static_cast<int>( round( scaleToZoom( scale ) ) );
+      break;
+    case Qgis::ScaleToTileZoomLevelMethod::Esri:
+      tileZoom = static_cast<int>( floor( scaleToZoom( scale ) ) );
+      break;
+  }
 
   return std::clamp( tileZoom, minimumZoom(), maximumZoom() );
 }
@@ -241,7 +256,7 @@ bool QgsTileMatrixSet::readXml( const QDomElement &element, QgsReadWriteContext 
 {
   mTileMatrices.clear();
 
-  mApplyTileScaleDoubleHack = element.attribute( QStringLiteral( "applyScaleDoubleHack" ), QStringLiteral( "1" ) ).toInt();
+  mScaleToTileZoomMethod = qgsEnumKeyToValue( element.attribute( QStringLiteral( "scaleToZoomMethod" ) ), Qgis::ScaleToTileZoomLevelMethod::MapBox );
 
   const QDomNodeList children = element.childNodes();
   for ( int i = 0; i < children.size(); i++ )
@@ -271,7 +286,7 @@ bool QgsTileMatrixSet::readXml( const QDomElement &element, QgsReadWriteContext 
 QDomElement QgsTileMatrixSet::writeXml( QDomDocument &document, const QgsReadWriteContext & ) const
 {
   QDomElement setElement = document.createElement( QStringLiteral( "matrixSet" ) );
-  setElement.setAttribute( QStringLiteral( "applyScaleDoubleHack" ), mApplyTileScaleDoubleHack ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  setElement.setAttribute( QStringLiteral( "scaleToZoomMethod" ), qgsEnumValueToKey( mScaleToTileZoomMethod ) );
 
   for ( auto it = mTileMatrices.constBegin(); it != mTileMatrices.constEnd(); ++it )
   {
