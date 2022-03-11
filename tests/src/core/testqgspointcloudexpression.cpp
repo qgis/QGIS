@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QString>
 #include <QVector>
+#include <QByteArray>
 
 #include "qgstest.h"
 #include "qgsapplication.h"
@@ -116,6 +117,7 @@ class TestQgsPointCloudExpression: public QObject
     void testParsing();
     void testEvaluating_data();
     void testEvaluating();
+    void testBlockResize();
 
   private:
     QString mTestDataDir;
@@ -517,6 +519,36 @@ void TestQgsPointCloudExpression::testEvaluating()
   exp.prepare( mBlock );
 
   QVERIFY( valid ? exp.evaluate( point_n ) != 0. : exp.evaluate( point_n ) == 0. );
+}
+
+void TestQgsPointCloudExpression::testBlockResize()
+{
+  int pointCount = mBlock->pointCount();
+  const char *ptr = mBlock->data();
+  const int recordSize = mBlock->attributes().pointRecordSize();
+  QByteArray data( ptr, pointCount * recordSize );
+
+  // can enlarge, data is unchanged
+  mBlock->setPointCount( pointCount + 1 );
+  QCOMPARE( mBlock->pointCount(), pointCount + 1 );
+  QCOMPARE( QByteArray( ptr, pointCount * recordSize ), data );
+
+  // when shrunk, data is unchanged
+  mBlock->setPointCount( pointCount - 1 );
+  QCOMPARE( mBlock->pointCount(), pointCount - 1 );
+  data.resize( ( pointCount - 1 ) * recordSize );
+  QCOMPARE( QByteArray( ptr, mBlock->pointCount() * recordSize ), data );
+
+  // cannot go negative, nothing changes
+  mBlock->setPointCount( -1 );
+  QCOMPARE( mBlock->pointCount(), pointCount - 1 );
+  QCOMPARE( QByteArray( ptr, mBlock->pointCount() * recordSize ), data );
+
+  // can be empty
+  mBlock->setPointCount( 0 );
+  QCOMPARE( mBlock->pointCount(), 0 );
+  data.resize( 0 );
+  QCOMPARE( QByteArray( ptr, mBlock->pointCount() * recordSize ), data );
 }
 
 QGSTEST_MAIN( TestQgsPointCloudExpression )
