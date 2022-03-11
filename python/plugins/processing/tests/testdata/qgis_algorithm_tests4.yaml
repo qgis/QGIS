@@ -884,7 +884,7 @@ tests:
       DATETIME_FIELD: date
       DBSCAN*: false
       EPS: 5.0
-      EPS2: 86400000.0
+      EPS2: 86400000000.0
       FIELD_NAME: CLUSTER_ID
       INPUT:
         name: custom/points_with_date.shp
