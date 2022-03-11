@@ -262,6 +262,18 @@ bool QgsPointCloudIndex::setSubsetString( const QString &subset )
     mFilterExpression.setExpression( lastExpression );
     return false;
   }
+
+  // fail if expression references unknown attributes
+  int offset;
+  const QSet<QString> attributes = mFilterExpression.referencedAttributes();
+  for ( const QString &attribute : attributes )
+  {
+    if ( !mAttributes.find( attribute, offset ) )
+    {
+      mFilterExpression.setExpression( lastExpression );
+      return false;
+    }
+  }
   return true;
 }
 

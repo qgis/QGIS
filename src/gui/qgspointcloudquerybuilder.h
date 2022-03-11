@@ -56,14 +56,8 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 
     void showEvent( QShowEvent *event ) override;
 
-    //! Returns the sql statement entered in the dialog.
-    QString sql() const;
-
-    //! Set the sql statement to display in the dialog.
-    void setSql( const QString &sqlStatement );
-
-    QString subsetString() const override { return sql(); }
-    void setSubsetString( const QString &subsetString ) override { setSql( subsetString ); }
+    QString subsetString() const override { return mTxtSql->text(); }
+    void setSubsetString( const QString &subsetString ) override { mTxtSql->setText( subsetString ); }
 
 #ifdef SIP_RUN
     SIP_IF_FEATURE( HAVE_QSCI_SIP )
