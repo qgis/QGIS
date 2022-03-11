@@ -20,7 +20,8 @@ from qgis.core import (
     QgsPointXY,
     QgsTileMatrixSet,
     QgsVectorTileMatrixSet,
-    QgsReadWriteContext
+    QgsReadWriteContext,
+    Qgis
 )
 from qgis.testing import start_app, unittest
 
@@ -65,7 +66,7 @@ class TestQgsTiles(unittest.TestCase):
         matrix_set = QgsTileMatrixSet()
 
         # should be applied by default in order to match MapBox rendering of tiles
-        self.assertTrue(matrix_set.applyTileScaleDoublingHack())
+        self.assertEqual(matrix_set.scaleToTileZoomMethod(), Qgis.ScaleToTileZoomLevelMethod.MapBox)
 
         self.assertEqual(matrix_set.minimumZoom(), -1)
         self.assertEqual(matrix_set.maximumZoom(), -1)
@@ -136,9 +137,9 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(matrix_set.scaleToZoomLevel(198251572), 2)
         self.assertEqual(matrix_set.scaleToZoomLevel(6503144), 3)
 
-        # disable scale doubling hack
-        matrix_set.setApplyTileScaleDoublingHack(False)
-        self.assertFalse(matrix_set.applyTileScaleDoublingHack())
+        # with ESRI scale to zoom handling
+        matrix_set.setScaleToTileZoomMethod(Qgis.ScaleToTileZoomLevelMethod.Esri)
+        self.assertEqual(matrix_set.scaleToTileZoomMethod(), Qgis.ScaleToTileZoomLevelMethod.Esri)
 
         self.assertAlmostEqual(matrix_set.scaleToZoom(776503144), 1, 5)
         self.assertEqual(matrix_set.scaleToZoom(1776503144), 1)
@@ -152,7 +153,7 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(matrix_set.scaleToZoomLevel(76503144), 3)
         self.assertEqual(matrix_set.scaleToZoomLevel(388251572), 2)
         self.assertEqual(matrix_set.scaleToZoomLevel(298251572), 2)
-        self.assertEqual(matrix_set.scaleToZoomLevel(198251572), 3)
+        self.assertEqual(matrix_set.scaleToZoomLevel(198251572), 2)
         self.assertEqual(matrix_set.scaleToZoomLevel(6503144), 3)
 
     def testTileMatrixSetGoogle(self):
@@ -358,7 +359,7 @@ class TestQgsTiles(unittest.TestCase):
 
         # we should NOT apply the tile scale doubling hack to ESRI tiles, otherwise our scales
         # are double what ESRI use for the same tile sets
-        self.assertFalse(vector_tile_set.applyTileScaleDoublingHack())
+        self.assertEqual(vector_tile_set.scaleToTileZoomMethod(), Qgis.ScaleToTileZoomLevelMethod.Esri)
 
         self.assertEqual(vector_tile_set.minimumZoom(), 0)
         self.assertEqual(vector_tile_set.maximumZoom(), 14)
