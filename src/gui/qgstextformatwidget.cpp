@@ -811,7 +811,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mCoordXDDBtn, QgsPalLayerSettings::PositionX );
   registerDataDefinedButton( mCoordYDDBtn, QgsPalLayerSettings::PositionY );
   registerDataDefinedButton( mCoordPointDDBtn, QgsPalLayerSettings::PositionPoint );
-  registerDataDefinedButton( mCurvedLineOffsetDDBtn, QgsPalLayerSettings::CurvedOffset );
+  registerDataDefinedButton( mCurvedLineOffsetDDBtn, QgsPalLayerSettings::LineAnchorPercent );
   registerDataDefinedButton( mCoordAlignmentHDDBtn, QgsPalLayerSettings::Hali );
   registerDataDefinedButton( mCoordAlignmentVDDBtn, QgsPalLayerSettings::Vali );
   registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::LabelRotation );

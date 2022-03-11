@@ -34,7 +34,7 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigit
 
   mPalProperties << QgsPalLayerSettings::PositionX;
   mPalProperties << QgsPalLayerSettings::PositionY;
-  mPalProperties << QgsPalLayerSettings::CurvedOffset;
+  mPalProperties << QgsPalLayerSettings::LineAnchorPercent;
 
   mDiagramProperties << QgsDiagramLayerSettings::PositionX;
   mDiagramProperties << QgsDiagramLayerSettings::PositionY;
@@ -64,8 +64,8 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     const QgsPointXY pointMapCoords = e->mapPoint();
 
-    bool isCurved { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved };
-    if ( isCurved )
+    bool isCurvedOrLine { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line };
+    if ( isCurvedOrLine )
     {
       // Determine the closest point on the feature
       const QgsFeatureId featureId = mCurrentLabel.pos.featureId;
@@ -76,7 +76,7 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         if ( feature.geometry().distance( pointMapGeometry ) / mCanvas->mapUnitsPerPixel() > 100.0 )
         {
           mCurrentLabel.settings.placement = QgsPalLayerSettings::Placement::Horizontal;
-          isCurved = false;
+          isCurvedOrLine = false;
           mOffsetFromLineStartRubberBand->hide();
         }
         else
@@ -87,7 +87,7 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       }
     }
 
-    if ( isCurved )
+    if ( isCurvedOrLine )
     {
       mLabelRubberBand->hide();
       mFixPointRubberBand->hide();
@@ -218,27 +218,27 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      int xCol = -1, yCol = -1, pointCol = -1, curvedOffsetCol = -1;
+      int xCol = -1, yCol = -1, pointCol = -1, lineAnchorPercentCol = -1;
 
-      const bool isCurved { mCurrentLabel.settings.placement ==  QgsPalLayerSettings::Placement::Curved };
+      bool isCurvedOrLine { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line };
 
-      if ( isCurved && !mCurrentLabel.pos.isDiagram && !labelOffsettable( vlayer, mCurrentLabel.settings, pointCol ) )
+      if ( isCurvedOrLine && !mCurrentLabel.pos.isDiagram && !labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, pointCol ) )
       {
         QgsPalIndexes indexes;
         if ( createAuxiliaryFields( indexes ) )
           return;
 
-        if ( !labelOffsettable( vlayer, mCurrentLabel.settings, pointCol ) )
+        if ( !labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, pointCol ) )
         {
           PropertyStatus status = PropertyStatus::DoesNotExist;
-          QString offsetColName = dataDefinedColumnName( QgsPalLayerSettings::CurvedOffset, mCurrentLabel.settings, vlayer, status );
+          QString offsetColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorPercent, mCurrentLabel.settings, vlayer, status );
 
           if ( pointCol < 0 )
             QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label offset column “%1” does not exist in the layer" ).arg( offsetColName ) );
           return;
         }
 
-        curvedOffsetCol = indexes[ QgsPalLayerSettings::CurvedOffset ];
+        lineAnchorPercentCol = indexes[ QgsPalLayerSettings::LineAnchorPercent ];
 
       }
       else if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
@@ -285,10 +285,10 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
       }
 
-      if ( ( isCurved && curvedOffsetCol >= 0 ) || ( xCol >= 0 && yCol >= 0 ) )
+      if ( ( isCurvedOrLine && lineAnchorPercentCol >= 0 ) || ( xCol >= 0 && yCol >= 0 ) )
       {
         const bool usesAuxFields =
-          ( isCurved && curvedOffsetCol >= 0 && vlayer->fields().fieldOrigin( curvedOffsetCol ) == QgsFields::OriginJoin ) ||
+          ( isCurvedOrLine && lineAnchorPercentCol >= 0 && vlayer->fields().fieldOrigin( lineAnchorPercentCol ) == QgsFields::OriginJoin ) ||
           ( vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin );
         if ( !usesAuxFields && !vlayer->isEditable() )
         {
@@ -353,17 +353,17 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         int xCol = -1;
         int yCol = -1;
         int pointCol = -1;
-        int curvedOffsetCol = -1;
+        int lineAnchorPercentCol = -1;
         double xPosOrig = 0;
         double yPosOrig = 0;
-        double curvedOffsetOrig = 0;
+        double lineAnchorPercentOrig = 0;
         bool xSuccess = false;
         bool ySuccess = false;
-        bool curvedOffsetSuccess = false;
+        bool lineAnchorPercentSuccess = false;
 
-        const bool isCurved { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved };
+        bool isCurvedOrLine { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line };
 
-        if ( !isCalloutMove && isCurved && !currentLabelDataDefinedCurvedOffset( curvedOffsetOrig, curvedOffsetSuccess, curvedOffsetCol ) )
+        if ( !isCalloutMove && isCurvedOrLine && !currentLabelDataDefinedLineAnchorPercent( lineAnchorPercentOrig, lineAnchorPercentSuccess, lineAnchorPercentCol ) )
         {
           return;
         }
@@ -377,18 +377,18 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         }
 
         // Handle curved offset
-        if ( isCurved )
+        if ( isCurvedOrLine )
         {
 
           const QgsFeature feature { mCurrentLabel.layer->getFeature( featureId ) };
           const QgsGeometry pointMapGeometry { QgsGeometry::fromPointXY( releaseCoords ) };
           const QgsGeometry anchorPoint { feature.geometry().nearestPoint( pointMapGeometry ) };
-          const double offset { feature.geometry().lineLocatePoint( anchorPoint ) };
+          const double offset { feature.geometry().lineLocatePoint( anchorPoint ) / feature.geometry().length() };
           vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
           bool success = false;
-          if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::CurvedOffset ) )
+          if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
           {
-            success = changeCurrentLabelDataDefinedCurvedOffset( offset );
+            success = changeCurrentLabelDataDefinedLineAnchorPercent( offset );
           }
 
           if ( !success )
@@ -398,6 +398,19 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
               QgisApp::instance()->messageBar()->pushWarning( tr( "Move curved label offset" ), tr( "Layer “%1” must be editable in order to move labels from it" ).arg( vlayer->name() ) );
               vlayer->endEditCommand();
             }
+          }
+          else
+          {
+            // Set positions to NULL
+            if ( currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
+            {
+              changeCurrentLabelDataDefinedPosition( QVariant(), QVariant() );
+              vlayer->changeAttributeValue( featureId, xCol, QVariant() );
+              vlayer->changeAttributeValue( featureId, yCol, QVariant() );
+              // TODO: Do we need to check for success here? The layer was already checked for editable state.
+            }
+            vlayer->endEditCommand();
+            vlayer->triggerRepaint();
           }
         }
         else
@@ -440,6 +453,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
                && mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
           {
             success = changeCurrentLabelDataDefinedPosition( xPosNew, yPosNew );
+            changeCurrentLabelDataDefinedLineAnchorPercent( QVariant() );
           }
           else
           {
@@ -561,6 +575,7 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
 
         // delete the stored label/callout position
         const bool isCalloutMove = !mCurrentCallout.layerID.isEmpty();
+        const bool isCurvedOrLine { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line };
         QgsVectorLayer *vlayer = !isCalloutMove ? mCurrentLabel.layer : qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( mCurrentCallout.layerID ) );
         const QgsFeatureId featureId = !isCalloutMove ? mCurrentLabel.pos.featureId : mCurrentCallout.featureId;
         if ( vlayer )
@@ -568,12 +583,19 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
           int xCol = -1;
           int yCol = -1;
           int pointCol = -1;
+          int lineAnchorPercentCol = -1;
           double xPosOrig = 0;
           double yPosOrig = 0;
+          double lineAnchorPercentOrig = 0;
+          bool lineAnchorPercentSuccess = false;
           bool xSuccess = false;
           bool ySuccess = false;
 
-          if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
+          if ( !isCalloutMove && isCurvedOrLine && ! currentLabelDataDefinedLineAnchorPercent( lineAnchorPercentOrig, lineAnchorPercentSuccess, lineAnchorPercentCol ) )
+          {
+            break;
+          }
+          else if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
           {
             break;
           }
@@ -582,28 +604,48 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
             break;
           }
 
-          vlayer->beginEditCommand( !isCalloutMove ? tr( "Delete Label Position" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) : tr( "Delete Callout Position" ) );
-          bool success = vlayer->changeAttributeValue( featureId, xCol, QVariant() );
-          success = vlayer->changeAttributeValue( featureId, yCol, QVariant() ) && success;
-          if ( !success )
+          if ( !isCalloutMove && isCurvedOrLine )
           {
-            // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
-            // and the layer isn't in edit mode
-            if ( !vlayer->isEditable() )
+            vlayer->beginEditCommand( tr( "Delete Label Anchor Percent '%1'" ).arg( currentLabelText( 24 ) ) );
+            bool success = vlayer->changeAttributeValue( featureId, lineAnchorPercentCol, QVariant() );
+            if ( !success )
             {
-              if ( !isCalloutMove )
-                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Position" ), tr( "Layer “%1” must be editable in order to remove stored label positions" ).arg( vlayer->name() ) );
+              // if the edit command fails, it's likely because the label anchor percent is being stored in a physical field (not a auxiliary one!)
+              // and the layer isn't in edit mode
+              if ( !vlayer->isEditable() )
+              {
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Anchor Percent" ), tr( "Layer “%1” must be editable in order to remove stored label anchor percent" ).arg( vlayer->name() ) );
+              }
               else
-                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Callout Position" ), tr( "Layer “%1” must be editable in order to remove stored callout positions" ).arg( vlayer->name() ) );
+              {
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Label Anchor Percent" ), tr( "Error encountered while removing stored label anchor percent" ) );
+              }
             }
-            else
+          }
+          else
+          {
+            vlayer->beginEditCommand( !isCalloutMove ? tr( "Delete Label Position" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) : tr( "Delete Callout Position" ) );
+            bool success = vlayer->changeAttributeValue( featureId, xCol, QVariant() );
+            success = vlayer->changeAttributeValue( featureId, yCol, QVariant() ) && success;
+            if ( !success )
             {
-              if ( !isCalloutMove )
-                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Position" ), tr( "Error encountered while removing stored label position" ) );
+              // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
+              // and the layer isn't in edit mode
+              if ( !vlayer->isEditable() )
+              {
+                if ( !isCalloutMove )
+                  QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Position" ), tr( "Layer “%1” must be editable in order to remove stored label positions" ).arg( vlayer->name() ) );
+                else
+                  QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Callout Position" ), tr( "Layer “%1” must be editable in order to remove stored callout positions" ).arg( vlayer->name() ) );
+              }
               else
-                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Callout Position" ), tr( "Error encountered while removing stored callout position" ) );
+              {
+                if ( !isCalloutMove )
+                  QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Position" ), tr( "Error encountered while removing stored label position" ) );
+                else
+                  QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Callout Position" ), tr( "Error encountered while removing stored callout position" ) );
+              }
             }
-
           }
           vlayer->endEditCommand();
           deleteRubberBands();

@@ -219,7 +219,6 @@ Contains settings for how a map layer will be labeled.
       PositionX,
       PositionY,
       PositionPoint,
-      CurvedOffset,
       Hali,
       Vali,
       Rotation,
