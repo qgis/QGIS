@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define SIP_NO_FILE
+
 #ifndef QGSPOINTCLOUDEXPRESSION_H
 #define QGSPOINTCLOUDEXPRESSION_H
 
@@ -30,20 +32,6 @@ class QgsPointCloudBlock;
 /**
  * \ingroup core
  * \brief Class for parsing and evaluation of expressions for pointcloud filtering.
- *
- * Usage:
- * \code{.py}
- *   exp = QgsPointCloudExpression("Z > 10 and Classification in (1, 3, 5)")
- *   block = QgsPointCloudBlock( ... )
- *   if exp.hasParserError():
- *       # show error message with parserErrorString() and exit
- *   exp.prepare( block )
- *   result = exp.evaluate( pointNumber )
- *   if exp.hasEvalError():
- *       # show error message with evalErrorString()
- *   else:
- *       # examine the result
- * \endcode
  *
  * \section evaluation Evaluation result
  *
@@ -87,7 +75,7 @@ class CORE_EXPORT QgsPointCloudExpression
     /**
      * Automatically convert this expression to a string where requested.
      */
-    operator QString() const SIP_SKIP;
+    operator QString() const;
 
     /**
      * Create an empty expression.
@@ -141,19 +129,13 @@ class CORE_EXPORT QgsPointCloudExpression
      */
     QSet<QString> referencedAttributes() const;
 
-#ifndef SIP_RUN
-
     /**
      * Returns a list of all nodes which are used in this expression
-     *
-     * \note not available in Python bindings
      */
     QList<const QgsPointCloudExpressionNode *> nodes( ) const;
 
     /**
      * Returns a list of all nodes of the given class which are used in this expression
-     *
-     * \note not available in Python bindings
      */
     template <class T>
     QList<const T *> findNodes( ) const
@@ -168,7 +150,6 @@ class CORE_EXPORT QgsPointCloudExpression
       }
       return lst;
     }
-#endif
 
     // evaluation
 
@@ -222,27 +203,15 @@ class CORE_EXPORT QgsPointCloudExpression
      * \param errorMessage will be filled with any error message from the validation
      * \returns TRUE if string is a valid expression
      */
-    static bool checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage SIP_OUT );
-
-    //////
-
-#ifdef SIP_RUN
-    SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = QStringLiteral( "<QgsPointCloudExpression: '%1'>" ).arg( sipCpp->expression() );
-    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
-#endif
+    static bool checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage );
 
   private:
 
     /**
      * Helper for implicit sharing. When called will create
      * a new deep copy of this expression.
-     *
-     * \note not available in Python bindings
      */
-    void detach() SIP_SKIP;
+    void detach();
 
     QgsPointCloudExpressionPrivate *d = nullptr;
 

@@ -81,12 +81,6 @@ This will be used when the full datatype with details has to displayed to the us
 .. seealso:: :py:func:`type`
 %End
 
-    double convertValueToDouble( const char *ptr ) const;
-%Docstring
-Returns the attribute's value as a double for data pointed to by ``ptr``
-
-.. versionadded:: 3.26
-%End
 
     static bool isNumeric( DataType type );
 %Docstring

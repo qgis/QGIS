@@ -92,9 +92,10 @@ class CORE_EXPORT QgsPointCloudAttribute
     /**
      * Returns the attribute's value as a double for data pointed to by \a ptr
      *
+     * \note Not available in Python binding
      * \since QGIS 3.26
      */
-    double convertValueToDouble( const char *ptr ) const;
+    double convertValueToDouble( const char *ptr ) const SIP_SKIP;
 
     /**
      * Returns TRUE if the specified data \a type is numeric.

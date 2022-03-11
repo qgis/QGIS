@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#define SIP_NO_FILE
 
 #ifndef QGSPOINTCLOUDEXPRESSIONNODE_H
 #define QGSPOINTCLOUDEXPRESSIONNODE_H
@@ -35,34 +36,8 @@ class QgsExpressionNode;
  *
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
+class CORE_EXPORT QgsPointCloudExpressionNode
 {
-
-#ifdef SIP_RUN
-    SIP_CONVERT_TO_SUBCLASS_CODE
-    switch ( sipCpp->nodeType() )
-    {
-      case QgsPointCloudExpressionNode::ntUnaryOperator:
-        sipType = sipType_QgsPointCloudExpressionNodeUnaryOperator;
-        break;
-      case QgsPointCloudExpressionNode::ntBinaryOperator:
-        sipType = sipType_QgsPointCloudExpressionNodeBinaryOperator;
-        break;
-      case QgsExpressionNode::ntInOperator:
-        sipType = sipType_QgsExpressionNodeInOperator;
-        break;
-      case QgsPointCloudExpressionNode::ntLiteral:
-        sipType = sipType_QgsPointCloudExpressionNodeLiteral;
-        break;
-      case QgsPointCloudExpressionNode::ntAttributeRef:
-        sipType = sipType_QgsPointCloudExpressionNodeAttributeRef;
-        break;
-      default:
-        sipType = 0;
-        break;
-    }
-    SIP_END
-#endif
 
     Q_DECLARE_TR_FUNCTIONS( QgsPointCloudExpressionNode )
 
@@ -88,7 +63,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
       public:
         virtual ~NodeList();
         //! Takes ownership of the provided node
-        void append( QgsPointCloudExpressionNode *node SIP_TRANSFER ) { mList.append( node ); mNameList.append( QString() ); }
+        void append( QgsPointCloudExpressionNode *node ) { mList.append( node ); mNameList.append( QString() ); }
 
         /**
          * Returns the number of nodes in the list.
@@ -111,7 +86,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
         QStringList names() const { return mNameList; }
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
-        QgsPointCloudExpressionNode::NodeList *clone() const SIP_FACTORY;
+        QgsPointCloudExpressionNode::NodeList *clone() const;
 
         /**
          * Returns a string dump of the expression node.
@@ -171,10 +146,8 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
 
     /**
      * Returns a list of all nodes which are used in this expression.
-     *
-     * \note not available in Python bindings
      */
-    virtual QList<const QgsPointCloudExpressionNode *> nodes( ) const = 0; SIP_SKIP
+    virtual QList<const QgsPointCloudExpressionNode *> nodes( ) const = 0;
 
     /**
      * Returns TRUE if this node can be evaluated for a static value. This is used during
@@ -251,14 +224,8 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
     /**
      * Copies the members of this node to the node provided in \a target.
      * Needs to be called by all subclasses as part of their clone() implementation.
-     *
-     * \note Not available in python bindings, QgsPointCloudExpression::Node is not
-     * going to be subclassed from python. If that's what you are looking
-     * for, look into writing a custom python expression function.
      */
-    void cloneTo( QgsPointCloudExpressionNode *target ) const SIP_SKIP;
-
-#ifndef SIP_RUN
+    void cloneTo( QgsPointCloudExpressionNode *target ) const;
 
     /**
      * TRUE if the node has a static, precalculated value.
@@ -269,8 +236,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode SIP_ABSTRACT
      * Contains the static, precalculated value for the node if mHasCachedValue is TRUE.
      */
     mutable double mCachedStaticValue;
-
-#endif
 
   private:
 
