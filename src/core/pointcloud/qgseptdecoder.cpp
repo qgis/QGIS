@@ -477,12 +477,15 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     }
   }
 
+  lazperf::las::point10 p;
+  lazperf::las::gpstime gps;
+  lazperf::las::rgb rgb;
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
-    const lazperf::las::point10 p = lazperf::utils::unpack<lazperf::las::point10>( buf );
-    const lazperf::las::gpstime gps = lazperf::utils::unpack<lazperf::las::gpstime>( buf + sizeof( lazperf::las::point10 ) );
-    const lazperf::las::rgb rgb = lazperf::utils::unpack<lazperf::las::rgb>( buf + sizeof( lazperf::las::point10 ) + sizeof( lazperf::las::gpstime ) );
+    p.unpack( buf );
+    gps.unpack( buf + sizeof( lazperf::las::point10 ) );
+    rgb.unpack( buf + sizeof( lazperf::las::point10 ) + sizeof( lazperf::las::gpstime ) );
 
     for ( const RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
     {
