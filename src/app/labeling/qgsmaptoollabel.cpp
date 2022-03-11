@@ -858,10 +858,10 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
   return true;
 }
 
-bool QgsMapToolLabel::currentLabelDataDefinedCurvedOffset( double &offset, bool &offsetSuccess, int &curvedOffsetCol ) const
+bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &offset, bool &lineAnchorPercentSuccess, int &lineAnchorPercentCol ) const
 {
 
-  offsetSuccess = false;
+  lineAnchorPercentSuccess = false;
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
   QgsFeatureId featureId = mCurrentLabel.pos.featureId;
 
@@ -870,7 +870,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedCurvedOffset( double &offset, bool 
     return false;
   }
 
-  if ( !labelOffsettable( vlayer, mCurrentLabel.settings, curvedOffsetCol ) )
+  if ( !labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, lineAnchorPercentCol ) )
   {
     return false;
   }
@@ -881,11 +881,11 @@ bool QgsMapToolLabel::currentLabelDataDefinedCurvedOffset( double &offset, bool 
     return false;
   }
 
-  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::CurvedOffset ) )
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
   {
     QgsAttributes attributes = f.attributes();
-    if ( !attributes.at( curvedOffsetCol ).isNull() )
-      offset = attributes.at( curvedOffsetCol ).toDouble( &offsetSuccess );
+    if ( !attributes.at( lineAnchorPercentCol ).isNull() )
+      offset = attributes.at( lineAnchorPercentCol ).toDouble( &lineAnchorPercentSuccess );
   }
 
   return true;
@@ -967,24 +967,24 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, 
   return true;
 }
 
-bool QgsMapToolLabel::changeCurrentLabelDataDefinedCurvedOffset( const QVariant &offset )
+bool QgsMapToolLabel::changeCurrentLabelDataDefinedLineAnchorPercent( const QVariant &lineAnchorPercent )
 {
-  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::CurvedOffset ) )
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
-    const QString curvedOffsetColName = dataDefinedColumnName( QgsPalLayerSettings::CurvedOffset, mCurrentLabel.settings, mCurrentLabel.layer, status );
-    const int curvedOffsetCol = mCurrentLabel.layer->fields().lookupField( curvedOffsetColName );
+    const QString lineAnchorPercentColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorPercent, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const int lineAnchorPercentCol = mCurrentLabel.layer->fields().lookupField( lineAnchorPercentColName );
 
-    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, curvedOffsetCol, offset ) )
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorPercentCol, lineAnchorPercent ) )
       return false;
   }
   else
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
-    const QString curvedOffsetColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer, status );
-    const int curvedOffsetCol = mCurrentLabel.layer->fields().lookupField( curvedOffsetColName );
+    const QString lineAnchorPercentColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const int lineAnchorPercentCol = mCurrentLabel.layer->fields().lookupField( lineAnchorPercentColName );
 
-    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, curvedOffsetCol, offset ) )
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorPercentCol, lineAnchorPercent ) )
       return false;
   }
 
@@ -1124,15 +1124,15 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   return false;
 }
 
-bool QgsMapToolLabel::labelOffsettable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &curvedOffsetCol ) const
+bool QgsMapToolLabel::labelAnchorPercentMovable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol ) const
 {
-  curvedOffsetCol = -1;
-  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::CurvedOffset ) )
+  lineAnchorPercentCol = -1;
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
-    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::CurvedOffset, settings, vlayer, status );
-    curvedOffsetCol = vlayer->fields().lookupField( pointColName );
-    if ( curvedOffsetCol >= 0 )
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorPercent, settings, vlayer, status );
+    lineAnchorPercentCol = vlayer->fields().lookupField( pointColName );
+    if ( lineAnchorPercentCol >= 0 )
       return true;
   }
   return false;

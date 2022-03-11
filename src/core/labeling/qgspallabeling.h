@@ -322,7 +322,6 @@ class CORE_EXPORT QgsPalLayerSettings
       PositionX = 9, //!< X-coordinate data defined label position
       PositionY = 10, //!< Y-coordinate data defined label position
       PositionPoint = 114, //!< Point-coordinate data defined label position
-      CurvedOffset = 116, //!< Offset from start for curved lines (since QGIS 3.26)
       Hali = 11, //!< Horizontal alignment for data defined label position (Left, Center, Right)
       Vali = 12, //!< Vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       Rotation = 14, //!< Label rotation (deprecated, for old project compatibility only)

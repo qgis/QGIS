@@ -203,14 +203,14 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol, int &pointCol ) const;
 
     /**
-     * Gets data defined curved offset of current label
-     * \param offset out: data defined curved offset
+     * Gets data defined line anchor percent of current label
+     * \param offset out: data defined line anchor percent
      * \param offsetSuccess out: FALSE if attribute value is NULL
-     * \param curvedOffsetCol out: index of the curved offset column
+     * \param lineAnchorPercentCol out: index of the line anchor percent column
      * \returns FALSE if layer does not have data defined label curved offset enabled
      * \since QGIS 3.26
     */
-    bool currentLabelDataDefinedCurvedOffset( double &offset, bool &offsetSuccess, int &curvedOffsetCol ) const;
+    bool currentLabelDataDefinedLineAnchorPercent( double &lineAnchorPercent, bool &lineAnchorPercentSuccess, int &lineAnchorPercentOffsetCol ) const;
 
     /**
      * Returns data defined rotation of current label
@@ -224,7 +224,6 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
 
     /**
      * Change the data defined position of current label
-     * \param rCol out: index of the rotation column
      * \param x data defined x-coordinate
      * \param y data defined y-coordinate
      * \returns TRUE if data defined position could be changed
@@ -232,12 +231,11 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool changeCurrentLabelDataDefinedPosition( const QVariant &x, const QVariant &y );
 
     /**
-     * Change the data defined curve offset current label
-     * \param curvedOffsetCol out: index of the curved offset
-     * \param x data defined offset
+     * Change the data defined line anchor percent of current label
+     * \param anchorPercent data defined line anchor percent
      * \returns TRUE if data defined curved offset could be changed
      */
-    bool changeCurrentLabelDataDefinedCurvedOffset( const QVariant &offset );
+    bool changeCurrentLabelDataDefinedLineAnchorPercent( const QVariant &lineAnchorPercent );
 
     /**
      * Returns data defined show/hide of a feature.
@@ -258,7 +256,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool isPinned();
 
     bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
-    bool labelOffsettable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &curvedOffsetCol ) const;
+    bool labelAnchorPercentMovable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol ) const;
 
     bool createAuxiliaryFields( QgsPalIndexes &palIndexes );
     bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes ) const;
