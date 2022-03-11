@@ -325,14 +325,25 @@ class QgsSettingsEntryByReference : public QgsSettingsEntryBase
      * Returns the settings value for the \a dynamicKeyPart and  with a \a defaultValueOverride
      * \deprecated since QGIS 3.26 use valueAsVariantWithDefaultOverride instead
      */
-    Q_DECL_DEPRECATED T value( const QString &dynamicKeyPart, bool useDefaultValueOverride, const T &defaultValueOverride ) const SIP_DEPRECATED { Q_NOWARN_DEPRECATED_PUSH return this->convertFromVariant( valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ) ); Q_NOWARN_DEPRECATED_POP}
+    Q_DECL_DEPRECATED T value( const QString &dynamicKeyPart, bool useDefaultValueOverride, const T &defaultValueOverride ) const SIP_DEPRECATED
+    {
+      if ( useDefaultValueOverride )
+        return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );
+      else
+        return this->convertFromVariant( valueAsVariant( dynamicKeyPart ) );
+    }
 
     /**
      * Returns the settings value for the \a dynamicKeyPartList and  with a \a defaultValueOverride
      * \deprecated since QGIS 3.26 use valueAsVariantWithDefaultOverride instead
      */
-    Q_DECL_DEPRECATED T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const T &defaultValueOverride ) const SIP_DEPRECATED { Q_NOWARN_DEPRECATED_PUSH return this->convertFromVariant( valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ) ); Q_NOWARN_DEPRECATED_POP}
-
+    Q_DECL_DEPRECATED T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const T &defaultValueOverride ) const SIP_DEPRECATED
+    {
+      if ( useDefaultValueOverride )
+        return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPartList ) );
+      else
+        return this->convertFromVariant( valueAsVariant( dynamicKeyPartList ) );
+    }
 
     /**
      * Set settings value.
@@ -455,13 +466,25 @@ class QgsSettingsEntryByValue : public QgsSettingsEntryBase
      * Returns the settings value for the \a dynamicKeyPart and  with a \a defaultValueOverride
      * \deprecated since QGIS 3.26 use valueWithDefaultOverride instead
      */
-    Q_DECL_DEPRECATED T value( const QString &dynamicKeyPart, bool useDefaultValueOverride, T defaultValueOverride ) const SIP_DEPRECATED { Q_NOWARN_DEPRECATED_PUSH return this->convertFromVariant( valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ) ); Q_NOWARN_DEPRECATED_POP}
+    Q_DECL_DEPRECATED T value( const QString &dynamicKeyPart, bool useDefaultValueOverride, T defaultValueOverride ) const SIP_DEPRECATED
+    {
+      if ( useDefaultValueOverride )
+        return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );
+      else
+        return this->convertFromVariant( valueAsVariant( dynamicKeyPart ) );
+    }
 
     /**
      * Returns the settings value for the \a dynamicKeyPartList and  with a \a defaultValueOverride
      * \deprecated since QGIS 3.26 use valueWithDefaultOverride instead
      */
-    Q_DECL_DEPRECATED T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, T defaultValueOverride ) const  SIP_DEPRECATED { Q_NOWARN_DEPRECATED_PUSH return this->convertFromVariant( valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ) ); Q_NOWARN_DEPRECATED_POP}
+    Q_DECL_DEPRECATED T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, T defaultValueOverride ) const  SIP_DEPRECATED
+    {
+      if ( useDefaultValueOverride )
+        return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPartList ) );
+      else
+        return this->convertFromVariant( valueAsVariant( dynamicKeyPartList ) );
+    }
 
     /**
      * Set settings value.
