@@ -72,8 +72,10 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       if ( mCurrentLabel.layer )
       {
         const QgsFeature feature { mCurrentLabel.layer->getFeature( featureId ) };
-        const QgsGeometry pointMapGeometry { QgsGeometry::fromPointXY( pointMapCoords ) };
-        if ( feature.geometry().distance( pointMapGeometry ) / mCanvas->mapUnitsPerPixel() > 100.0 )
+        const QgsMapSettings &ms = mCanvas->mapSettings();
+        const QgsPointXY pointMapTransformed = ms.mapToLayerCoordinates( mCurrentLabel.layer, pointMapCoords );
+        const QgsGeometry pointMapGeometry = QgsGeometry::fromPointXY( pointMapTransformed );
+        if ( feature.geometry().distance( QgsGeometry::fromPointXY( pointMapCoords ) ) / mCanvas->mapUnitsPerPixel() > 100.0 )
         {
           mCurrentLabel.settings.placement = QgsPalLayerSettings::Placement::Horizontal;
           isCurvedOrLine = false;
@@ -381,14 +383,16 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         {
 
           const QgsFeature feature { mCurrentLabel.layer->getFeature( featureId ) };
-          const QgsGeometry pointMapGeometry { QgsGeometry::fromPointXY( releaseCoords ) };
+          const QgsMapSettings &ms = mCanvas->mapSettings();
+          const QgsPointXY pointMapTransformed = ms.mapToLayerCoordinates( mCurrentLabel.layer, releaseCoords );
+          const QgsGeometry pointMapGeometry = QgsGeometry::fromPointXY( pointMapTransformed );
           const QgsGeometry anchorPoint { feature.geometry().nearestPoint( pointMapGeometry ) };
-          const double offset { feature.geometry().lineLocatePoint( anchorPoint ) / feature.geometry().length() };
+          const double lineAnchorPercent { feature.geometry().lineLocatePoint( anchorPoint ) / feature.geometry().length() };
           vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
           bool success = false;
           if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
           {
-            success = changeCurrentLabelDataDefinedLineAnchorPercent( offset );
+            success = changeCurrentLabelDataDefinedLineAnchorPercent( lineAnchorPercent );
           }
 
           if ( !success )
