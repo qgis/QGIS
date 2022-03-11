@@ -107,8 +107,8 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
     else
     {
       setColumnWidth( i, horizontalHeader()->defaultSectionSize() );
-      columns.insert( columnConfig.name, i );
     }
+    columns.insert( columnConfig.name, i );
     i++;
   }
   mConfig = config;
