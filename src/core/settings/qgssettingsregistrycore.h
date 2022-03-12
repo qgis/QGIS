@@ -36,7 +36,6 @@ template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> SIP_
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::JoinStyle> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsUnitTypes::LayoutUnit> SIP_SKIP;
-template class CORE_EXPORT QgsSettingsEntryEnumFlag< class QFlags<enum QgsMapLayerProxyModel::Filter> > SIP_SKIP;
 #endif
 
 
