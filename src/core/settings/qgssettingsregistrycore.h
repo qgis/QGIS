@@ -28,17 +28,6 @@
 #include "qgsgeometry.h"
 #include "qgsmaplayerproxymodel.h"
 
-#ifdef _MSC_VER
-#include "qgsunittypes.h"
-
-template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::SnappingType> SIP_SKIP;
-template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> SIP_SKIP;
-template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::JoinStyle> SIP_SKIP;
-template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> SIP_SKIP;
-template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsUnitTypes::LayoutUnit> SIP_SKIP;
-#endif
-
-
 /**
  * \ingroup core
  * \class QgsSettingsRegistryCore
