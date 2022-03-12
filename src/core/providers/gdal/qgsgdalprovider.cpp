@@ -557,6 +557,9 @@ QString QgsGdalProvider::htmlMetadata()
       QStringList categories = QgsOgrUtils::cStringListToQStringList( GDALcategories );
       myMetadata += QgsHtmlUtils::buildBulletList( categories );
     }
+    QStringList scaleOffset;
+    scaleOffset << QStringLiteral( "Scale: %1, Offset: %2" ).arg( bandScale( i ) ).arg( bandOffset( i ) );
+    myMetadata += QgsHtmlUtils::buildBulletList( scaleOffset );
     myMetadata += QLatin1String( "</td></tr>" );
   }
 
