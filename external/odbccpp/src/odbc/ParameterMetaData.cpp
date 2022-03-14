@@ -4,6 +4,8 @@
 #include <odbc/internal/Macros.h>
 #include <odbc/internal/Odbc.h>
 //------------------------------------------------------------------------------
+namespace qgs {
+//------------------------------------------------------------------------------
 namespace odbc {
 //------------------------------------------------------------------------------
 ParameterMetaData::ParameterMetaData(PreparedStatement* ps)
@@ -74,3 +76,5 @@ bool ParameterMetaData::isNullable(unsigned short paramIndex)
 }
 //------------------------------------------------------------------------------
 } // namespace odbc
+//------------------------------------------------------------------------------
+} // namespace qgs

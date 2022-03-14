@@ -37,11 +37,11 @@ class QgsHanaResultSet
     friend class QgsHanaConnection;
 
   private:
-    QgsHanaResultSet( odbc::ResultSetRef &&resultSet );
+    QgsHanaResultSet( qgs::odbc::ResultSetRef &&resultSet );
 
   public:
-    static QgsHanaResultSetRef create( odbc::PreparedStatementRef &stmt );
-    static QgsHanaResultSetRef create( odbc::StatementRef &stmt, const QString &sql );
+    static QgsHanaResultSetRef create( qgs::odbc::PreparedStatementRef &stmt );
+    static QgsHanaResultSetRef create( qgs::odbc::StatementRef &stmt, const QString &sql );
 
     void close();
     bool next();
@@ -53,11 +53,11 @@ class QgsHanaResultSet
     QVariant getValue( unsigned short columnIndex );
     QgsGeometry getGeometry( unsigned short columnIndex );
 
-    odbc::ResultSetMetaDataUnicode &getMetadata() { return *mMetadata; }
+    qgs::odbc::ResultSetMetaDataUnicode &getMetadata() { return *mMetadata; }
 
   private:
-    odbc::ResultSetRef mResultSet;
-    odbc::ResultSetMetaDataUnicodeRef mMetadata;
+    qgs::odbc::ResultSetRef mResultSet;
+    qgs::odbc::ResultSetMetaDataUnicodeRef mMetadata;
 };
 
 #endif // QGSHANARESULTSET_H

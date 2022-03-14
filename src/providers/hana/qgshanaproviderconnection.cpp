@@ -32,6 +32,8 @@
 
 #include <chrono>
 
+using namespace qgs::odbc;
+
 QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )
   , mNumColumns( mResultSet->getMetadata().getColumnCount() )
@@ -269,12 +271,12 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
   try
   {
 
-    odbc::PreparedStatementRef stmt = conn->prepareStatement( sql );
+    PreparedStatementRef stmt = conn->prepareStatement( sql );
     bool isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
     if ( isQuery )
     {
       QgsHanaResultSetRef rs = conn->executeQuery( sql );
-      odbc::ResultSetMetaDataUnicode &md = rs->getMetadata();
+      ResultSetMetaDataUnicode &md = rs->getMetadata();
       QueryResult ret( std::make_shared<QgsHanaProviderResultIterator>( std::move( rs ) ) );
       unsigned short numColumns = md.getColumnCount();
       for ( unsigned short i = 1; i <= numColumns; ++i )

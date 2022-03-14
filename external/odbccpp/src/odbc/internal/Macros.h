@@ -6,27 +6,27 @@
 #define EXEC_DBC(function, handle, ...)                                        \
     do {                                                                       \
         SQLRETURN rc = function(handle, ##__VA_ARGS__);                        \
-        ::odbc::Exception::checkForError(rc, SQL_HANDLE_DBC, handle);          \
+        ::qgs::odbc::Exception::checkForError(rc, SQL_HANDLE_DBC, handle);     \
     } while (false)
 //------------------------------------------------------------------------------
 #define EXEC_ENV(function, handle, ...)                                        \
     do {                                                                       \
         SQLRETURN rc = function(handle, ##__VA_ARGS__);                        \
-        ::odbc::Exception::checkForError(rc, SQL_HANDLE_ENV, handle);          \
+        ::qgs::odbc::Exception::checkForError(rc, SQL_HANDLE_ENV, handle);     \
     } while (false)
 
 //------------------------------------------------------------------------------
 #define EXEC_STMT(function, handle, ...)                                       \
     do {                                                                       \
         SQLRETURN rc = function(handle, ##__VA_ARGS__);                        \
-        ::odbc::Exception::checkForError(rc, SQL_HANDLE_STMT, handle);         \
+        ::qgs::odbc::Exception::checkForError(rc, SQL_HANDLE_STMT, handle);    \
     } while (false)
 //------------------------------------------------------------------------------
 #define ODBC_FAIL(msg)                                                         \
     do {                                                                       \
         ::std::ostringstream out;                                              \
         out << msg;                                                            \
-        throw ::odbc::Exception(out.str());                                    \
+        throw ::qgs::odbc::Exception(out.str());                               \
     } while (false)
 //------------------------------------------------------------------------------
 #define ODBC_CHECK(condition, msg)                                             \
@@ -34,7 +34,7 @@
         if (!(condition)) {                                                    \
             ::std::ostringstream out;                                          \
             out << msg;                                                        \
-            throw ::odbc::Exception(out.str());                                \
+            throw ::qgs::odbc::Exception(out.str());                           \
         }                                                                      \
     } while (false)
 //------------------------------------------------------------------------------

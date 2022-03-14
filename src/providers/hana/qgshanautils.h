@@ -44,28 +44,28 @@ class QgsHanaUtils
 
     static QString toString( QgsUnitTypes::DistanceUnit unit );
 
-    static QString toQString( const odbc::NString &str );
-    static QString toQString( const odbc::String &str );
-    static QVariant toVariant( const odbc::Boolean &value );
-    static QVariant toVariant( const odbc::Byte &value );
-    static QVariant toVariant( const odbc::UByte &value );
-    static QVariant toVariant( const odbc::Short &value );
-    static QVariant toVariant( const odbc::UShort &value );
-    static QVariant toVariant( const odbc::Int &value );
-    static QVariant toVariant( const odbc::UInt &value );
-    static QVariant toVariant( const odbc::Long &value );
-    static QVariant toVariant( const odbc::ULong &value );
-    static QVariant toVariant( const odbc::Float &value );
-    static QVariant toVariant( const odbc::Double &value );
-    static QVariant toVariant( const odbc::Date &value );
-    static QVariant toVariant( const odbc::Time &value );
-    static QVariant toVariant( const odbc::Timestamp &value );
-    static QVariant toVariant( const odbc::String &value );
-    static QVariant toVariant( const odbc::NString &value );
-    static QVariant toVariant( const odbc::Binary &value );
+    static QString toQString( const qgs::odbc::NString &str );
+    static QString toQString( const qgs::odbc::String &str );
+    static QVariant toVariant( const qgs::odbc::Boolean &value );
+    static QVariant toVariant( const qgs::odbc::Byte &value );
+    static QVariant toVariant( const qgs::odbc::UByte &value );
+    static QVariant toVariant( const qgs::odbc::Short &value );
+    static QVariant toVariant( const qgs::odbc::UShort &value );
+    static QVariant toVariant( const qgs::odbc::Int &value );
+    static QVariant toVariant( const qgs::odbc::UInt &value );
+    static QVariant toVariant( const qgs::odbc::Long &value );
+    static QVariant toVariant( const qgs::odbc::ULong &value );
+    static QVariant toVariant( const qgs::odbc::Float &value );
+    static QVariant toVariant( const qgs::odbc::Double &value );
+    static QVariant toVariant( const qgs::odbc::Date &value );
+    static QVariant toVariant( const qgs::odbc::Time &value );
+    static QVariant toVariant( const qgs::odbc::Timestamp &value );
+    static QVariant toVariant( const qgs::odbc::String &value );
+    static QVariant toVariant( const qgs::odbc::NString &value );
+    static QVariant toVariant( const qgs::odbc::Binary &value );
 
     static const char16_t *toUtf16( const QString &sql );
-    static QgsWkbTypes::Type toWkbType( const odbc::String &type, const odbc::Int &hasZ, const odbc::Int &hasM );
+    static QgsWkbTypes::Type toWkbType( const qgs::odbc::String &type, const qgs::odbc::Int &hasZ, const qgs::odbc::Int &hasM );
     static QVersionNumber toHANAVersion( const QString &dbVersion );
     static int toPlanarSRID( int srid );
     static bool convertField( QgsField &field );
