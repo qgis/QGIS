@@ -1818,8 +1818,8 @@ QVariant QgsExpressionNodeBetweenOperator::evalNode( QgsExpression *parent, cons
 {
   QgsExpressionNodeBinaryOperator lowBound { QgsExpressionNodeBinaryOperator::BinaryOperator::boGE, mNode->clone(), mLowerBound->clone() };
   QgsExpressionNodeBinaryOperator highBound { QgsExpressionNodeBinaryOperator::BinaryOperator::boLE, mNode->clone(), mHigherBound->clone() };
-  const QVariant lowBoundValue { lowBound.eval( parent, context ) };
-  const QVariant highBoundValue { highBound.eval( parent, context ) };
+  const QVariant lowBoundValue = lowBound.eval( parent, context );
+  const QVariant highBoundValue = highBound.eval( parent, context );
   if ( lowBoundValue.isNull() || highBoundValue.isNull() )
   {
     return QVariant();
