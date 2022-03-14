@@ -39,7 +39,7 @@
 #include "qgsgui.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
-  : QTableView( parent )
+  : QgsTableView( parent )
 {
   const QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "BetterAttributeTable/geometry" ) ).toByteArray() );
