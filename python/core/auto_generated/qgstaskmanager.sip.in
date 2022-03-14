@@ -48,6 +48,7 @@ clean up and terminate at the earliest possible convenience.
     {
       CanCancel,
       CancelWithoutPrompt,
+      Hidden,
       AllFlags,
     };
     typedef QFlags<QgsTask::Flag> Flags;
@@ -430,9 +431,11 @@ Returns a list of the active (queued or running) tasks.
 .. seealso:: :py:func:`countActiveTasks`
 %End
 
-    int countActiveTasks() const;
+    int countActiveTasks( bool includeHidden = true ) const;
 %Docstring
 Returns the number of active (queued or running) tasks.
+
+The ``includeHidden`` argument dictates whether hidden tasks should be shown.
 
 .. seealso:: :py:func:`activeTasks`
 
