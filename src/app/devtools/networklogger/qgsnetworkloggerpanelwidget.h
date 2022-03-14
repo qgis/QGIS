@@ -56,6 +56,11 @@ class QgsNetworkLoggerTreeView: public QTreeView
      */
     void setShowTimeouts( bool show );
 
+    /**
+     * Sets whether requests served directly from cache are shown
+     */
+    void setShowCached( bool show );
+
   private slots:
     void itemExpanded( const QModelIndex &index );
     void contextMenu( QPoint point );
