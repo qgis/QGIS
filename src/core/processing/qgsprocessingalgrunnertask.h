@@ -42,13 +42,13 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
      * Constructor for QgsProcessingAlgRunnerTask. Takes an \a algorithm, algorithm \a parameters
      * and processing \a context.
      *
-     * Since QGIS 3.26, the \a hidden argument allows creation of a task hidden from the QGIS GUI.
+     * Since QGIS 3.26, the \a flags argument allows control over task flags.
      */
     QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm,
                                 const QVariantMap &parameters,
                                 QgsProcessingContext &context,
                                 QgsProcessingFeedback *feedback = nullptr,
-                                bool hidden = false );
+                                QgsTask::Flags flags = QgsTask::CanCancel );
 
     void cancel() override;
 
