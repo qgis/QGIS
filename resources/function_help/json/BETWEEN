@@ -11,8 +11,8 @@
     "expression": "'B' BETWEEN 'A' AND 'C'",
     "returns": "1"
   }, {
-    "expression": "'B' NOT BETWEEN 'A' AND 'C'",
-    "returns": "0"
+    "expression": "2 BETWEEN 1 AND 3",
+    "returns": "1"
   }],
   "tags": ["contained", "found"]
 }
