@@ -204,7 +204,7 @@ set(TESTS
  testqgsweakrelation.cpp
  testqgsziputils.cpp
  testqobjectuniqueptr.cpp
- testziplayer.cpp 
+ testziplayer.cpp
 )
 
 if(WITH_QTWEBKIT)

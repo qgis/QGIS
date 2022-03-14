@@ -138,9 +138,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         void setShowAsGroupBox( bool showAsGroupBox );
 
         /**
-         * For containers rendedered a group box returns if this group box is collapsed.
+         * For group box containers  returns if this group box is collapsed.
          *
-         * \returns TRUE if the group box, FALSE otherwise.
+         * \returns TRUE if the group box is collapsed, FALSE otherwise.
          * \see collapsed()
          * \see setCollapsed()
          * \since QGIS 3.26
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         bool collapsed() const { return mCollapsed; };
 
         /**
-         * For containers rendedered a group box sets if this group box is \a collapsed.
+         * For group box containers  sets if this group box is \a collapsed.
          *
          * \see collapsed()
          * \see setCollapsed()

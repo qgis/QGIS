@@ -2701,8 +2701,7 @@ void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expres
   if ( collapsedExpression.isValid() && ! collapsedExpression.hasEvalError() && newCollapsedState != isCollapsed )
   {
 
-    QgsCollapsibleGroupBoxBasic *collapsibleGroupBox { qobject_cast<QgsCollapsibleGroupBoxBasic *>( widget ) };
-    if ( collapsibleGroupBox )
+    if ( QgsCollapsibleGroupBoxBasic * collapsibleGroupBox { qobject_cast<QgsCollapsibleGroupBoxBasic *>( widget ) } )
     {
       collapsibleGroupBox->setCollapsed( newCollapsedState );
       isCollapsed = newCollapsedState;

@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgssettings.cpp
+     testqgsrelation.cpp
      --------------------------------------
     Date                 : 8.03.2022
     Copyright            : (C) 2022 by Alessandro Pasotti
