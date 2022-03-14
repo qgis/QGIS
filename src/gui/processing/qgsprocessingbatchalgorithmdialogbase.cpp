@@ -112,7 +112,7 @@ void QgsProcessingBatchAlgorithmDialogBase::executeNext()
   mCurrentStepTimer.restart();
   if ( !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNoThreading ) )
   {
-    QgsProcessingAlgRunnerTask *task = new QgsProcessingAlgRunnerTask( algorithm(), mCurrentParameters, *mTaskContext, mBatchFeedback.get(), true );
+    QgsProcessingAlgRunnerTask *task = new QgsProcessingAlgRunnerTask( algorithm(), mCurrentParameters, *mTaskContext, mBatchFeedback.get(), QgsTask::CanCancel | QgsTask::Hidden );
     if ( task->algorithmCanceled() )
       onTaskComplete( false, {} );
     else
