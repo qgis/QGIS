@@ -316,6 +316,7 @@ class QgsNetworkLoggerRequestGroup final : public QgsNetworkLoggerGroup
     QByteArray mData;
     Status mStatus = Status::Pending;
     bool mHasSslErrors = false;
+    bool mReplyFromCache = false;
     QList< QPair< QString, QString > > mHeaders;
     QgsNetworkLoggerRequestDetailsGroup *mDetailsGroup = nullptr;
     QgsNetworkLoggerReplyGroup *mReplyGroup = nullptr;
