@@ -26,10 +26,13 @@ class QgsProcessingAlgRunnerTask : QgsTask
     QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm,
                                 const QVariantMap &parameters,
                                 QgsProcessingContext &context,
-                                QgsProcessingFeedback *feedback = 0 );
+                                QgsProcessingFeedback *feedback = 0,
+                                bool hidden = false );
 %Docstring
 Constructor for QgsProcessingAlgRunnerTask. Takes an ``algorithm``, algorithm ``parameters``
 and processing ``context``.
+
+Since QGIS 3.26, the ``hidden`` argument allows creation of a task hidden from the QGIS GUI.
 %End
 
     virtual void cancel();
