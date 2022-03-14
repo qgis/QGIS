@@ -85,6 +85,10 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
   public slots:
     void accept() override;
     void reject() override;
+
+    /**
+     * Clears the typed expression
+     */
     void clear();
 
     /**
@@ -101,8 +105,6 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
      * Load expression from the XML file
      */
     void loadQuery();
-
-    void setDatasourceDescription( const QString &uri );
 
   private slots:
     void btnEqual_clicked();
