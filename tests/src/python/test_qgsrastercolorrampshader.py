@@ -46,6 +46,15 @@ class TestQgsRasterColorRampShader(unittest.TestCase):
         self.assertEqual(shaderRamp.color2(), gradientRamp.color2())
         self.assertEqual(shaderRamp.stops(), gradientRamp.stops())
 
+    def testTwoClassesDiscrete(self):
+        shader = QgsColorRampShader(0, 100, None, QgsColorRampShader.Discrete)
+        item1 = QgsColorRampShader.ColorRampItem(50, QColor(0, 0, 0))
+        item2 = QgsColorRampShader.ColorRampItem(float("inf"), QColor(255, 255, 255))
+        shader.setColorRampItemList([item1, item2, item3])
+        shaderRamp = shader.createColorRamp()
+
+        color = shader.shade(50)
+        print(color)
 
 if __name__ == '__main__':
     unittest.main()
