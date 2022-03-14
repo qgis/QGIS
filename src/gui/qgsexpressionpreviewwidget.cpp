@@ -30,7 +30,7 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   setupUi( this );
   mPreviewLabel->clear();
   mPreviewLabel->setContextMenuPolicy( Qt::ActionsContextMenu );
-  mCopyPreviewAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ), "Copy expression value", this );
+  mCopyPreviewAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ), tr( "Copy expression value" ), this );
   mPreviewLabel->addAction( mCopyPreviewAction );
   mFeaturePickerWidget->setShowBrowserButtons( true );
 
@@ -166,7 +166,15 @@ void QgsExpressionPreviewWidget::setExpressionToolTip( const QString &toolTip )
     return;
 
   mToolTip = toolTip;
-  mPreviewLabel->setToolTip( mToolTip );
+  QString copyToolTip = tr( "right-click to copy" );
+  if ( toolTip.isEmpty() )
+  {
+    mPreviewLabel->setToolTip( copyToolTip );
+  }
+  else
+  {
+    mPreviewLabel->setToolTip( mToolTip + " (" + copyToolTip + ")" );
+  }
   emit toolTipChanged( mToolTip );
 }
 

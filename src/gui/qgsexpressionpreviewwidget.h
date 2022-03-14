@@ -115,11 +115,10 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
     void linkActivated( const QString & );
     void setEvalError( bool evalError );
     void setParserError( bool parserError );
-
+    void copyFullExpressionValue();
 
   private:
     void setExpressionToolTip( const QString &toolTip );
-    void copyFullExpressionValue();
     void refreshPreview();
 
     QgsVectorLayer *mLayer = nullptr;
