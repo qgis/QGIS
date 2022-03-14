@@ -432,6 +432,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
             context.pushToThread( modelThread );
           };
 
+          if ( feedback && !skipGenericLogging && modelThread != qApp->thread() )
+            feedback->pushWarning( QObject::tr( "Algorithm “%1” cannot be run in a background thread, switching to main thread for this step" ).arg( childAlg->displayName() ) );
+
           context.pushToThread( qApp->thread() );
           QMetaObject::invokeMethod( qApp, runOnMainThread, Qt::BlockingQueuedConnection );
         }
