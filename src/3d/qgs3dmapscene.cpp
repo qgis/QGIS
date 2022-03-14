@@ -283,7 +283,7 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent()
     QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( p, viewport.size(), camera );
     QVector3D dir = ray.direction();
     if ( dir.y() == 0.0 )
-      dir.setY( 0.0001 );
+      dir.setY( 0.000001 );
     double t = - ray.origin().y() / dir.y();
     if ( t < 0 )
     {

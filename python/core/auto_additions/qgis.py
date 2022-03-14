@@ -1289,9 +1289,9 @@ Qgis.RendererUsage.__doc__ = 'Usage of the renderer.\n\n.. versionadded:: 3.24\n
 # --
 Qgis.RendererUsage.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.ViewSyncModeFlag.Sync3DTo2D.__doc__ = ""
-Qgis.ViewSyncModeFlag.Sync2DTo3D.__doc__ = ""
-Qgis.ViewSyncModeFlag.__doc__ = 'Syncronization of 2D map canvas and 3D view\n\n.. versionadded:: 3.26\n\n' + '* ``Sync3DTo2D``: ' + Qgis.ViewSyncModeFlag.Sync3DTo2D.__doc__ + '\n' + '* ``Sync2DTo3D``: ' + Qgis.ViewSyncModeFlag.Sync2DTo3D.__doc__
+Qgis.ViewSyncModeFlag.Sync3DTo2D.__doc__ = "Synchronize 3D view camera to the main map canvas extent"
+Qgis.ViewSyncModeFlag.Sync2DTo3D.__doc__ = "Update the 2D main canvas extent to include the viewed area from the 3D view"
+Qgis.ViewSyncModeFlag.__doc__ = 'Synchronization of 2D map canvas and 3D view\n\n.. versionadded:: 3.26\n\n' + '* ``Sync3DTo2D``: ' + Qgis.ViewSyncModeFlag.Sync3DTo2D.__doc__ + '\n' + '* ``Sync2DTo3D``: ' + Qgis.ViewSyncModeFlag.Sync2DTo3D.__doc__
 # --
 Qgis.ViewSyncModeFlag.baseClass = Qgis
 # monkey patching scoped based enum
