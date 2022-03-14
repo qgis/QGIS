@@ -23,7 +23,7 @@
 /**
  * \class QgsTableView
  * \ingroup gui
- * \brief A QTableView subclass with QGIS specifc tweaks and improvements.
+ * \brief A QTableView subclass with QGIS specific tweaks and improvements.
  *
  * QgsTableView should be used instead of QTableView widgets.
  * In most cases the use is identical, however QgsTableView

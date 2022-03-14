@@ -11,7 +11,7 @@
 class QgsTableView : QTableView
 {
 %Docstring(signature="appended")
-A QTableView subclass with QGIS specifc tweaks and improvements.
+A QTableView subclass with QGIS specific tweaks and improvements.
 
 :py:class:`QgsTableView` should be used instead of QTableView widgets.
 In most cases the use is identical, however :py:class:`QgsTableView`
