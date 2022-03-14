@@ -818,4 +818,13 @@ bool QgsVectorTileDataProvider::isValid() const
 {
   return true;
 }
+
+bool QgsVectorTileDataProvider::renderInPreview( const PreviewContext &context )
+{
+  // Vector tiles by design are very CPU light to render, so we are much more permissive here compared
+  // with other layer types. (Generally if a vector tile layer has taken more than a few milliseconds to render it's
+  // a result of network requests, and the tile manager class handles these gracefully for us)
+  return context.lastRenderingTimeMs <= 1000;
+}
+
 ///@endcond
