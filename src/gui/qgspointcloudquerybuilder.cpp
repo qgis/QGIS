@@ -265,11 +265,6 @@ void QgsPointCloudQueryBuilder::clear()
   mLayer->setSubsetString( QString() );
 }
 
-void QgsPointCloudQueryBuilder::setDatasourceDescription( const QString &uri )
-{
-  lblDataUri->setText( uri );
-}
-
 void QgsPointCloudQueryBuilder::showHelp()
 {
   // TODO: No pointcloud help page yet

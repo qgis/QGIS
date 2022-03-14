@@ -62,7 +62,11 @@ Returns the code editor widget for the SQL.
 
     virtual void reject();
 
+
     void clear();
+%Docstring
+Clears the typed expression
+%End
 
     virtual void test();
 %Docstring
@@ -78,8 +82,6 @@ Save expression to the XML file
 %Docstring
 Load expression from the XML file
 %End
-
-    void setDatasourceDescription( const QString &uri );
 
 };
 /************************************************************************
