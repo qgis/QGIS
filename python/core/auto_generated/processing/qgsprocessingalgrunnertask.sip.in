@@ -35,6 +35,13 @@ and processing ``context``.
     virtual void cancel();
 
 
+    bool algorithmCanceled();
+%Docstring
+Returns ``True`` if the algorithm was canceled.
+
+.. versionadded:: 3.26
+%End
+
   signals:
 
     void executed( bool successful, const QVariantMap &results );

@@ -49,6 +49,13 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
 
     void cancel() override;
 
+    /**
+     * Returns TRUE if the algorithm was canceled.
+     *
+     * \since QGIS 3.26
+     */
+    bool algorithmCanceled() { return isCanceled(); }
+
   signals:
 
     /**
