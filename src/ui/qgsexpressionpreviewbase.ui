@@ -89,17 +89,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QToolButton" name="mCopyPreviewButton">
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>
@@ -111,9 +100,6 @@
    <header>qgsfeaturepickerwidget.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -17,6 +17,7 @@
 #define QGSEXPRESSIONPREVIEWWIDGET_H
 
 #include <QWidget>
+#include <QAction>
 
 #include "ui_qgsexpressionpreviewbase.h"
 
@@ -130,6 +131,7 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
     bool mParserError = true;
     QString mExpressionText;
     QgsExpression mExpression;
+    QAction *mCopyPreviewAction = nullptr;
 };
 
 #endif // QGSEXPRESSIONPREVIEWWIDGET_H

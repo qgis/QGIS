@@ -30,17 +30,13 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   setupUi( this );
   mPreviewLabel->clear();
   mPreviewLabel->setContextMenuPolicy( Qt::ActionsContextMenu );
-  QAction *copyAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ), "Copy expression value", this );
-  mPreviewLabel->addAction( copyAction );
+  mCopyPreviewAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ), "Copy expression value", this );
+  mPreviewLabel->addAction( mCopyPreviewAction );
   mFeaturePickerWidget->setShowBrowserButtons( true );
-
-  mCopyPreviewButton->setToolTip( tr( "Copy expression value" ) );
-  mCopyPreviewButton->setAutoRaise( true );
 
   connect( mFeaturePickerWidget, &QgsFeaturePickerWidget::featureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
   connect( mPreviewLabel, &QLabel::linkActivated, this, &QgsExpressionPreviewWidget::linkActivated );
-  connect( mCopyPreviewButton, &QToolButton::clicked, this, &QgsExpressionPreviewWidget::copyFullExpressionValue );
-  connect( copyAction, &QAction::triggered, this, &QgsExpressionPreviewWidget::copyFullExpressionValue );
+  connect( mCopyPreviewAction, &QAction::triggered, this, &QgsExpressionPreviewWidget::copyFullExpressionValue );
 }
 
 void QgsExpressionPreviewWidget::setLayer( QgsVectorLayer *layer )
@@ -82,7 +78,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
   {
     mPreviewLabel->clear();
     mPreviewLabel->setStyleSheet( QString() );
-    mCopyPreviewButton->setDisabled( true );
+    mCopyPreviewAction->setEnabled( false );
     setExpressionToolTip( QString() );
     emit expressionParsed( false );
     mExpression = QgsExpression();
@@ -101,8 +97,8 @@ void QgsExpressionPreviewWidget::refreshPreview()
     const QString preview = QgsExpression::formatPreviewString( value );
     if ( !mExpression.hasEvalError() )
     {
-      mCopyPreviewButton->setEnabled( true );
       mPreviewLabel->setText( preview );
+      mCopyPreviewAction->setEnabled( true );
     }
 
     if ( mExpression.hasParserError() || mExpression.hasEvalError() )
@@ -138,7 +134,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
       emit expressionParsed( false );
       setParserError( mExpression.hasParserError() );
       setEvalError( mExpression.hasEvalError() );
-      mCopyPreviewButton->setDisabled( true );
+      mCopyPreviewAction->setEnabled( false );
     }
     else
     {
@@ -151,7 +147,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
       emit expressionParsed( true );
       setParserError( false );
       setEvalError( false );
-      mCopyPreviewButton->setEnabled( true );
+      mCopyPreviewAction->setEnabled( true );
     }
   }
 }
