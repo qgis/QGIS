@@ -104,6 +104,11 @@ void QgsNetworkLoggerTreeView::setShowTimeouts( bool show )
   mProxyModel->setShowTimeouts( show );
 }
 
+void QgsNetworkLoggerTreeView::setShowCached( bool show )
+{
+  mProxyModel->setShowCached( show );
+}
+
 void QgsNetworkLoggerTreeView::itemExpanded( const QModelIndex &index )
 {
   // if the item is a QgsNetworkLoggerRequestGroup item, open all children (show ALL info of it)
@@ -171,11 +176,13 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
 
   mActionShowTimeouts->setChecked( true );
   mActionShowSuccessful->setChecked( true );
+  mActionShowCached->setChecked( true );
   mActionRecord->setChecked( mLogger->isLogging() );
 
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, mTreeView, &QgsNetworkLoggerTreeView::setFilterString );
   connect( mActionShowTimeouts, &QAction::toggled, mTreeView, &QgsNetworkLoggerTreeView::setShowTimeouts );
   connect( mActionShowSuccessful, &QAction::toggled, mTreeView, &QgsNetworkLoggerTreeView::setShowSuccessful );
+  connect( mActionShowCached, &QAction::toggled, mTreeView, &QgsNetworkLoggerTreeView::setShowCached );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsNetworkLogger::clear );
   connect( mActionRecord, &QAction::toggled, this, [ = ]( bool enabled )
   {
@@ -219,6 +226,7 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
 
   settingsMenu->addAction( mActionShowSuccessful );
   settingsMenu->addAction( mActionShowTimeouts );
+  settingsMenu->addAction( mActionShowCached );
 
   mToolbar->addSeparator();
   QCheckBox *disableCacheCheck = new QCheckBox( tr( "Disable cache" ) );
