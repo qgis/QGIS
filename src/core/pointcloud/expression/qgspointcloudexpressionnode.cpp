@@ -99,6 +99,11 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
       error = QStringLiteral( "Functions are not supported in point cloud expressions" );
       return nullptr;
     }
+    case QgsExpressionNode::NodeType::ntBetweenOperator:
+    {
+      error = QStringLiteral( "Between predicate is not supported in point cloud expressions" );
+      return nullptr;
+    }
     case QgsExpressionNode::NodeType::ntCondition:
     {
       error = QStringLiteral( "Conditional Statements are not supported in point cloud expressions" );
