@@ -53,7 +53,6 @@ class TestQgsRasterColorRampShader(unittest.TestCase):
         item1 = QgsColorRampShader.ColorRampItem(50, QColor(0, 0, 0))
         item2 = QgsColorRampShader.ColorRampItem(float("inf"), QColor(255, 255, 255))
         shader.setColorRampItemList([item1, item2])
-        shaderRamp = shader.createColorRamp()
 
         color1 = shader.shade(50)
         self.assertEqual(color1[1:4], (0, 0, 0))
