@@ -117,7 +117,7 @@ class TestQgsProcessingAlgRunner(unittest.TestCase):
         # alg which can't be canceled
         task = QgsProcessingAlgRunnerTask(nonthread_safe_alg, {}, context=context, feedback=feedback)
         self.assertEqual(task.flags(), QgsTask.Flags())
-        # we clear the CanCancel flag automatically, since the algorithm itself cannot be cancelled
+        # we clear the CanCancel flag automatically, since the algorithm itself cannot be canceled
         task = QgsProcessingAlgRunnerTask(nonthread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.CanCancel)
         self.assertEqual(task.flags(), QgsTask.Flags())
 
