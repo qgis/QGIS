@@ -27,7 +27,7 @@
 #include "qgsgcplistmodel.h"
 
 QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
-  : QTableView( parent )
+  : QgsTableView( parent )
   , mGCPListModel( new QgsGCPListModel( this ) )
   , mDmsAndDdDelegate( new QgsDmsAndDdDelegate( this ) )
   , mCoordDelegate( new QgsCoordDelegate( this ) )

@@ -15,7 +15,7 @@
 #ifndef QGS_GCP_LIST_WIDGET_H
 #define QGS_GCP_LIST_WIDGET_H
 
-#include <QTableView>
+#include "qgstableview.h"
 
 class QgsDoubleSpinBoxDelegate;
 class QgsDmsAndDdDelegate;
@@ -29,7 +29,7 @@ class QgsPointXY;
 class QgsCoordinateReferenceSystem;
 class QgsCoordinateTransformContext;
 
-class QgsGCPListWidget : public QTableView
+class QgsGCPListWidget : public QgsTableView
 {
     Q_OBJECT
   public:
