@@ -416,7 +416,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
 
   QDomElement elemNavigationSync = doc.createElement( QStringLiteral( "navigation-sync" ) );
   elemNavigationSync.setAttribute( QStringLiteral( "view-sync-mode" ), ( int )mViewSyncMode );
-  elemNavigationSync.setAttribute( QStringLiteral( "view-frustum-visualization-enabled" ), mVisualizeViewFrustum ? QStringLiteral( "0" ) : QStringLiteral( "1" ) );
+  elemNavigationSync.setAttribute( QStringLiteral( "view-frustum-visualization-enabled" ), mVisualizeViewFrustum ? 1 : 0 );
   elem.appendChild( elemNavigationSync );
 
   QDomElement elemDebugSettings = doc.createElement( QStringLiteral( "debug-settings" ) );

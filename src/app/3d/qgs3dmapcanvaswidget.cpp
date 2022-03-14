@@ -534,8 +534,15 @@ void Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> ex
     }
     if ( !extentRect.isEmpty() && extentRect.isFinite() && !extentRect.isNull() )
     {
-      whileBlocking( mMainCanvas )->setExtent( extentRect );
-      mMainCanvas->refresh();
+      if ( mCanvas->map()->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) )
+      {
+        whileBlocking( mMainCanvas )->setExtent( extentRect );
+        mMainCanvas->refresh();
+      }
+      else
+      {
+        mMainCanvas->setExtent( extentRect );
+      }
     }
   }
 
