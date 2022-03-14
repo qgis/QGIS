@@ -557,12 +557,11 @@ QString QgsGdalProvider::htmlMetadata()
       QStringList categories = QgsOgrUtils::cStringListToQStringList( GDALcategories );
       myMetadata += QgsHtmlUtils::buildBulletList( categories );
     }
-    QStringList scaleOffset;
-    scaleOffset << QStringLiteral( "Scale: %1, Offset: %2" ).arg( bandScale( i ) ).arg( bandOffset( i ) );
-    myMetadata += QgsHtmlUtils::buildBulletList( QStringList{ {
-           QObject::tr("Scale: %1").arg( bandScale( i ) ),
-           QObject::tr("Offset: %1").arg( bandOffset( i ) ),
-    }) );
+    myMetadata += QgsHtmlUtils::buildBulletList( QStringList(
+    {
+      QObject::tr( "Scale: %1" ).arg( bandScale( i ) ),
+      QObject::tr( "Offset: %1" ).arg( bandOffset( i ) ),
+    } ) );
     myMetadata += QLatin1String( "</td></tr>" );
   }
 
