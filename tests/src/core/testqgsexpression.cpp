@@ -2099,6 +2099,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "not between time" ) << QStringLiteral( "make_time(10,10,10) not between make_time(9,10,10) AND make_time(11,10,10)" ) << false << QVariant( false );
       QTest::newRow( "between datetime" ) << QStringLiteral( "make_datetime(9,10,10,1,1,1) between make_datetime(9,10,10,1,1,0) AND make_datetime(9,10,10,1,1,2)" ) << false << QVariant( true );
       QTest::newRow( "not between datetime" ) << QStringLiteral( "make_datetime(9,10,10,1,1,1) not between make_datetime(9,10,10,1,1,0) AND make_datetime(9,10,10,1,1,2)" ) << false << QVariant( false );
+      QTest::newRow( "between nulls" ) << QStringLiteral( "'b' between NULL AND 'c'" ) << false << QVariant( );
+      QTest::newRow( "between nulls 2" ) << QStringLiteral( "'b' between NULL AND NULL" ) << false << QVariant( );
+      QTest::newRow( "between nulls 3" ) << QStringLiteral( "NULL between 'a' AND 'c'" ) << false << QVariant( );
+      QTest::newRow( "between nulls 4" ) << QStringLiteral( "'b' between 'a' AND NULL" ) << false << QVariant( );
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )

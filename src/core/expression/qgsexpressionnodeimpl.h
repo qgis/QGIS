@@ -283,7 +283,7 @@ class CORE_EXPORT QgsExpressionNodeBetweenOperator: public QgsExpressionNode
   public:
 
     /**
-     * This node tests if the result of \a node is between the result of \a nodeLowerBound and \a nodeHigherBound. Optionally it can be inverted with \a negate which by default is FALSE.
+     * This node tests if the result of \a node is between the result of \a nodeLowerBound and \a nodeHigherBound nodes. Optionally it can be inverted with \a negate which by default is FALSE.
      */
     QgsExpressionNodeBetweenOperator( QgsExpressionNode *node SIP_TRANSFER, QgsExpressionNode *nodeLowerBound SIP_TRANSFER, QgsExpressionNode *nodeHigherBound SIP_TRANSFER, bool negate = false )
       : mNode( node )

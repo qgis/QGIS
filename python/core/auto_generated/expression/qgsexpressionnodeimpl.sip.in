@@ -265,7 +265,7 @@ SQL-like BETWEEN and NOT BETWEEN predicates.
 
     QgsExpressionNodeBetweenOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode *nodeLowerBound /Transfer/, QgsExpressionNode *nodeHigherBound /Transfer/, bool negate = false );
 %Docstring
-This node tests if the result of ``node`` is between the result of ``nodeLowerBound`` and ``nodeHigherBound``. Optionally it can be inverted with ``negate`` which by default is ``False``.
+This node tests if the result of ``node`` is between the result of ``nodeLowerBound`` and ``nodeHigherBound`` nodes. Optionally it can be inverted with ``negate`` which by default is ``False``.
 %End
 
     ~QgsExpressionNodeBetweenOperator();
