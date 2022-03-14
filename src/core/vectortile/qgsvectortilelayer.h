@@ -254,6 +254,7 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     QString description() const override;
     QgsRectangle extent() const override;
     bool isValid() const override;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
 };
 ///@endcond
