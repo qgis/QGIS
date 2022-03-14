@@ -778,6 +778,10 @@ class TestSelectiveMasking(unittest.TestCase):
         self.map_settings.setDpiTarget(300)
         self.check_renderings(self.map_settings, "different_dpi_target")
 
+        # test with high dpi screen
+        self.map_settings.setDevicePixelRatio(2)
+        self.check_renderings(self.map_settings, "different_dpi_target_hdpi")
+
 
 if __name__ == '__main__':
     start_app()
