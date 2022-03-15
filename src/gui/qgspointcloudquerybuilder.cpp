@@ -22,15 +22,12 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileDialog>
-#include <QInputDialog>
 #include <QListView>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QTextStream>
 
 
-// constructor used when the query builder must make its own
-// connection to the database
 QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
     QWidget *parent, Qt::WindowFlags fl )
   : QgsSubsetStringEditorInterface( parent, fl )
@@ -86,7 +83,6 @@ void QgsPointCloudQueryBuilder::showEvent( QShowEvent *event )
   mTxtSql->setFocus();
   QDialog::showEvent( event );
 }
-
 
 void QgsPointCloudQueryBuilder::setupGuiViews()
 {
