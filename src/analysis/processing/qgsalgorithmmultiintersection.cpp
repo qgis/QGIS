@@ -52,8 +52,8 @@ QString QgsMultiIntersectionAlgorithm::groupId() const
 
 QString QgsMultiIntersectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and Overlay layers. "
-                      "Features in the output Intersection layer are assigned the attributes of the overlapping features "
+  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and all Overlay layers. "
+                      "Features in the output layer are assigned the attributes of the overlapping features "
                       "from both the Input and Overlay layers." );
 }
 
