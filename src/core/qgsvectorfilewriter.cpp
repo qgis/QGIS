@@ -3093,9 +3093,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
     for ( int attrIdx : std::as_const( details.attributes ) )
     {
       QgsField field = details.sourceFields.at( attrIdx );
-      if ( !options.attributesExportNames.isEmpty() &&
-           field.name() != options.attributesExportNames.at( attrIdx ) )
-        field.setName( options.attributesExportNames.at( attrIdx ) );
+      field.setName( options.attributesExportNames.value( attrIdx, field.name() ) );
       details.outputFields.append( field );
     }
   }
