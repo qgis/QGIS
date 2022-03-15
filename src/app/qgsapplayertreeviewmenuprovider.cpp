@@ -740,27 +740,31 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
       }
 
-      QAction *notes = new QAction( QgsLayerNotesUtils::layerHasNotes( layer ) ? tr( "Edit Layer Notes…" ) : tr( "Add Layer Notes…" ), menu );
-      connect( notes, &QAction::triggered, this, [layer ]
+      // Actions for layer notes
+      if ( layer )
       {
-        QgsLayerNotesManager::editLayerNotes( layer, QgisApp::instance() );
-      } );
-      menu->addAction( notes );
-      if ( QgsLayerNotesUtils::layerHasNotes( layer ) )
-      {
-        QAction *notes = new QAction( tr( "Remove Layer Notes" ), menu );
+        QAction *notes = new QAction( QgsLayerNotesUtils::layerHasNotes( layer ) ? tr( "Edit Layer Notes…" ) : tr( "Add Layer Notes…" ), menu );
         connect( notes, &QAction::triggered, this, [layer ]
         {
-          if ( QMessageBox::question( QgisApp::instance(),
-                                      tr( "Remove Layer Notes" ),
-                                      tr( "Are you sure you want to remove all notes for the layer “%1”?" ).arg( layer->name() ),
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
-          {
-            QgsLayerNotesUtils::removeNotes( layer );
-            QgsProject::instance()->setDirty( true );
-          }
+          QgsLayerNotesManager::editLayerNotes( layer, QgisApp::instance() );
         } );
         menu->addAction( notes );
+        if ( QgsLayerNotesUtils::layerHasNotes( layer ) )
+        {
+          QAction *notes = new QAction( tr( "Remove Layer Notes" ), menu );
+          connect( notes, &QAction::triggered, this, [layer ]
+          {
+            if ( QMessageBox::question( QgisApp::instance(),
+                                        tr( "Remove Layer Notes" ),
+                                        tr( "Are you sure you want to remove all notes for the layer “%1”?" ).arg( layer->name() ),
+                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+            {
+              QgsLayerNotesUtils::removeNotes( layer );
+              QgsProject::instance()->setDirty( true );
+            }
+          } );
+          menu->addAction( notes );
+        }
       }
 
       if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
