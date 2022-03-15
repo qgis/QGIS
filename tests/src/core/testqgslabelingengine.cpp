@@ -1687,6 +1687,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbove()
   settings.labelPerPart = false;
   settings.upsidedownLabels = QgsPalLayerSettings::UpsideDownLabels::ShowAll;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
 
@@ -1756,6 +1757,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownBelow()
   settings.lineSettings().setLineAnchorPercent( 0.05 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::BelowLine | QgsLabeling::LinePlacementFlag::MapOrientation );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
@@ -3793,6 +3795,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
@@ -3840,6 +3843,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
 
   settings.lineSettings().setLineAnchorPercent( 0.3 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job3( mapSettings );
   job3.start();
@@ -3924,6 +3928,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
 
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setLineAnchorPercent( 0.0 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job3( mapSettings );
   job3.start();
@@ -3933,6 +3938,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_start" ), img, 20 ) );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job4( mapSettings );
   job4.start();
@@ -3959,6 +3965,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontal()
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
@@ -4023,6 +4030,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
