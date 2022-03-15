@@ -76,7 +76,9 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     const QString value = properties.valueAsString( QgsPalLayerSettings::LineAnchorTextPoint, context, QString(), &ok ).trimmed();
     if ( ok )
     {
-      if ( value.compare( QLatin1String( "start" ), Qt::CaseInsensitive ) == 0 )
+      if ( value.compare( QLatin1String( "follow" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorTextPoint = AnchorTextPoint::FollowPlacement;
+      else if ( value.compare( QLatin1String( "start" ), Qt::CaseInsensitive ) == 0 )
         mAnchorTextPoint = AnchorTextPoint::StartOfText;
       else if ( value.compare( QLatin1String( "center" ), Qt::CaseInsensitive ) == 0 )
         mAnchorTextPoint = AnchorTextPoint::CenterOfText;

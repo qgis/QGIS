@@ -806,6 +806,8 @@ std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::u
       break;
   }
 
+  const QgsLabelLineSettings::AnchorTextPoint textPoint = mLF->lineAnchorTextPoint();
+
   double candidateCenterX, candidateCenterY;
   int i = 0;
   while ( currentDistanceAlongLine <= totalLineLength )
@@ -822,7 +824,7 @@ std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::u
     cost /= 1000;  // < 0, 0.0005 >
 
     double labelX = 0;
-    switch ( mLF->lineAnchorTextPoint() )
+    switch ( textPoint )
     {
       case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
         labelX = candidateCenterX;
@@ -832,6 +834,9 @@ std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::u
         break;
       case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
         labelX = candidateCenterX - labelWidth;
+        break;
+      case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+        // not possible here
         break;
     }
     lPos.emplace_back( std::make_unique< LabelPosition >( i, labelX, candidateCenterY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, false, LabelPosition::QuadrantOver ) );
@@ -938,6 +943,8 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     return 0; //createCandidatesAlongLineNearMidpoint will be more appropriate
   }
 
+  const QgsLabelLineSettings::AnchorTextPoint textPoint = mLF->lineAnchorTextPoint();
+
   const std::size_t candidateTargetCount = maximumLineCandidates();
   double lineStepDistance = ( totalLineLength - labelWidth ); // distance to move along line with each candidate
   lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / candidateTargetCount );
@@ -997,7 +1004,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
 
       const double labelCenter = currentDistanceAlongLine + labelWidth / 2.0;
       double labelTextAnchor = 0;
-      switch ( mLF->lineAnchorTextPoint() )
+      switch ( textPoint )
       {
         case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
           labelTextAnchor = currentDistanceAlongLine;
@@ -1007,6 +1014,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
           break;
         case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
           labelTextAnchor = currentDistanceAlongLine + labelWidth;
+          break;
+        case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+          // not possible here
           break;
       }
 
@@ -1133,6 +1143,8 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   double lineStepDistance = ( totalLineLength - labelWidth ); // distance to move along line with each candidate
   double currentDistanceAlongLine = 0;
 
+  const QgsLabelLineSettings::AnchorTextPoint textPoint = mLF->lineAnchorTextPoint();
+
   const std::size_t candidateTargetCount = maximumLineCandidates();
 
   if ( totalLineLength > labelWidth )
@@ -1159,7 +1171,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
       break;
 
     case QgsLabelLineSettings::AnchorType::Strict:
-      switch ( mLF->lineAnchorTextPoint() )
+      switch ( textPoint )
       {
         case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
           currentDistanceAlongLine = std::min( lineAnchorPoint, totalLineLength * 0.99 - labelWidth );
@@ -1169,6 +1181,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
           break;
         case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
           currentDistanceAlongLine = std::min( lineAnchorPoint - labelWidth, totalLineLength * 0.99 - labelWidth );
+          break;
+        case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+          // not possible here
           break;
       }
       lineStepDistance = -1;
@@ -1212,7 +1227,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
 
     // penalize positions which are further from the line's anchor point
     double textAnchorPoint = 0;
-    switch ( mLF->lineAnchorTextPoint() )
+    switch ( textPoint )
     {
       case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
         textAnchorPoint = currentDistanceAlongLine;
@@ -1222,6 +1237,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
         break;
       case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
         textAnchorPoint = currentDistanceAlongLine + labelWidth;
+        break;
+      case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+        // not possible here
         break;
     }
     double costCenter = std::fabs( lineAnchorPoint - textAnchorPoint ) / totalLineLength; // <0, 0.5>
@@ -1482,16 +1500,19 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
         break;
 
       case QgsLabelLineSettings::AnchorType::Strict:
-        switch ( mLF->lineAnchorTextPoint() )
+        switch ( textPoint )
         {
           case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
-            distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint, 0.0, totalDistance * 0.99 );
+            distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint, 0.0, totalDistance * 0.999 );
             break;
           case QgsLabelLineSettings::AnchorTextPoint::CenterOfText:
-            distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint - getLabelWidth() / 2, 0.0, totalDistance * 0.99 - getLabelWidth() );
+            distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint - getLabelWidth() / 2, 0.0, totalDistance * 0.999 - getLabelWidth() / 2 );
             break;
           case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
-            distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint - getLabelWidth(), 0.0, totalDistance * 0.99 ) ;
+            distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint - getLabelWidth(), 0.0, totalDistance * 0.999 - getLabelWidth() ) ;
+            break;
+          case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+            // not possible here
             break;
         }
         singleCandidateOnly = true;
@@ -1553,7 +1574,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
       // penalize positions which are further from the line's anchor point
       double labelTextAnchor = 0;
-      switch ( mLF->lineAnchorTextPoint() )
+      switch ( textPoint )
       {
         case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
           labelTextAnchor = distanceAlongLineToStartCandidate;
@@ -1563,6 +1584,9 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
           break;
         case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
           labelTextAnchor = distanceAlongLineToStartCandidate + getLabelWidth();
+          break;
+        case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+          // not possible here
           break;
       }
       double costCenter = std::fabs( lineAnchorPoint - labelTextAnchor ) / totalDistance; // <0, 0.5>

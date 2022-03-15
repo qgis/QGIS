@@ -52,6 +52,7 @@ a "perimeter" style mode).
       StartOfText,
       CenterOfText,
       EndOfText,
+      FollowPlacement,
     };
 
     QgsLabeling::LinePlacementFlags placementFlags() const;

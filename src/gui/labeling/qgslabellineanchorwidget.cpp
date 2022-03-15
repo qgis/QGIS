@@ -36,6 +36,7 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
   mAnchorTypeComboBox->addItem( tr( "Preferred Placement Hint" ), static_cast< int >( QgsLabelLineSettings::AnchorType::HintOnly ) );
   mAnchorTypeComboBox->addItem( tr( "Strict" ), static_cast< int >( QgsLabelLineSettings::AnchorType::Strict ) );
 
+  mAnchorTextPointComboBox->addItem( tr( "Automatic" ), static_cast< int >( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement ) );
   mAnchorTextPointComboBox->addItem( tr( "Start of Text" ), static_cast< int >( QgsLabelLineSettings::AnchorTextPoint::StartOfText ) );
   mAnchorTextPointComboBox->addItem( tr( "Center of Text" ), static_cast< int >( QgsLabelLineSettings::AnchorTextPoint::CenterOfText ) );
   mAnchorTextPointComboBox->addItem( tr( "End of Text" ), static_cast< int >( QgsLabelLineSettings::AnchorTextPoint::EndOfText ) );
@@ -169,6 +170,9 @@ void QgsLabelLineAnchorWidget::updateAnchorTextPointHint()
       break;
     case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
       hint = tr( "Labels are placed so that the end of their text is placed at the anchor point." );
+      break;
+    case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+      hint = tr( "The text justification is determined based on the anchor point. Anchors close to the start of the line will use the start of the text, anchors close to the end will use the end of the text, and central values will use the center of the text." );
       break;
   }
   mAnchorTextPointHintLabel->setText( hint );

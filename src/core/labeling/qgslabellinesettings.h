@@ -85,6 +85,7 @@ class CORE_EXPORT QgsLabelLineSettings
       StartOfText, //!< Anchor using start of text
       CenterOfText, //!< Anchor using center of text
       EndOfText, //!< Anchor using end of text
+      FollowPlacement, //!< Automatically set the anchor point based on the lineAnchorPercent() value. Values <25% will use the start of text, values > 75% will use the end of text, and values in between will use the center of the text
     };
     Q_ENUM( AnchorTextPoint )
 
@@ -379,7 +380,7 @@ class CORE_EXPORT QgsLabelLineSettings
     double mLineAnchorPercent = 0.5;
     AnchorType mAnchorType = AnchorType::HintOnly;
     AnchorClipping mAnchorClipping = AnchorClipping::UseVisiblePartsOfLine;
-    AnchorTextPoint mAnchorTextPoint = AnchorTextPoint::CenterOfText;
+    AnchorTextPoint mAnchorTextPoint = AnchorTextPoint::FollowPlacement;
 };
 
 #endif // QGSLABELLINESETTINGS_H

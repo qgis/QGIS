@@ -478,7 +478,7 @@ class CORE_EXPORT QgsLabelFeature
      *
      * \since QGIS 3.26
      */
-    QgsLabelLineSettings::AnchorTextPoint lineAnchorTextPoint() const { return mAnchorTextPoint; }
+    QgsLabelLineSettings::AnchorTextPoint lineAnchorTextPoint() const;
 
     /**
      * Sets the line anchor text \a point, which dictates which part of the label text
