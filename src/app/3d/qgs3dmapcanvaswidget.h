@@ -108,6 +108,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QToolButton *mBtnMapThemes = nullptr;
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
+    QAction *mActionSync2DNavTo3D = nullptr;
+    QAction *mActionSync3DNavTo2D = nullptr;
+    QAction *mShowFrustumPolyogon = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QgsRubberBand *mViewFrustumHighlight = nullptr;
