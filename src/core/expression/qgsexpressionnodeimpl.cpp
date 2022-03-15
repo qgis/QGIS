@@ -1828,9 +1828,9 @@ QVariant QgsExpressionNodeBetweenOperator::evalNode( QgsExpression *parent, cons
   const QVariant lowBoundValue = lowBound.eval( parent, context );
   const bool lowBoundBool { lowBoundValue.toBool() };
 
-  if ( ! lowBoundValue.isNull() && lowBoundBool == mNegate )
+  if ( ! lowBoundValue.isNull() && ! lowBoundBool )
   {
-    return QVariant( false );
+    return QVariant( mNegate );
   }
 
   QgsExpressionNodeBinaryOperator highBound { QgsExpressionNodeBinaryOperator::BinaryOperator::boLE, nodeValNode.clone(), mHigherBound->clone() };
@@ -1859,9 +1859,9 @@ QVariant QgsExpressionNodeBetweenOperator::evalNode( QgsExpression *parent, cons
 
   }
 
-  if ( ! highBoundValue.isNull() && highBoundBool == mNegate )
+  if ( ! highBoundValue.isNull() && ! highBoundBool )
   {
-    return QVariant( false );
+    return QVariant( mNegate );
   }
 
   const bool res { lowBoundBool &&highBoundBool };

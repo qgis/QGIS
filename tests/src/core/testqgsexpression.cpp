@@ -2088,6 +2088,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "between chars" ) << QStringLiteral( "'b' between 'a' AND 'c'" ) << false << QVariant( true );
       QTest::newRow( "between chars false" ) << QStringLiteral( "'c' between 'a' AND 'b'" ) << false << QVariant( false );
       QTest::newRow( "not between chars" ) << QStringLiteral( "'b' not between 'a' AND 'c'" ) << false << QVariant( false );
+      QTest::newRow( "not between chars true" ) << QStringLiteral( "'a' not between 'b' AND 'c'" ) << false << QVariant( true );
       QTest::newRow( "between chars bounds" ) << QStringLiteral( "'b' between 'b' AND 'c'" ) << false << QVariant( true );
       QTest::newRow( "not between chars bounds" ) << QStringLiteral( "'b' not between 'b' AND 'c'" ) << false << QVariant( false );
       QTest::newRow( "between strings" ) << QStringLiteral( "'ab' between 'aa' AND 'ac'" ) << false << QVariant( true );
