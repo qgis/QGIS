@@ -13,13 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspointcloudquerybuilder.h"
-#include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudexpression.h"
-#include "qgsvectordataprovider.h"
-#include "qgsapplication.h"
 #include "qgshelp.h"
 #include "qgsgui.h"
 
@@ -29,7 +25,6 @@
 #include <QInputDialog>
 #include <QListView>
 #include <QMessageBox>
-#include <QRegExp>
 #include <QPushButton>
 #include <QTextStream>
 
@@ -39,21 +34,22 @@
 QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
     QWidget *parent, Qt::WindowFlags fl )
   : QgsSubsetStringEditorInterface( parent, fl )
-  , mPreviousFieldRow( -1 )
   , mLayer( layer )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  // disable values widgets for now
-  groupBox2->setEnabled( false );
+  setupGuiViews();
+  populateAttributes();
+
+  connect( lstAttributes->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsPointCloudQueryBuilder::lstAttributes_currentChanged );
+  connect( lstAttributes, &QListView::doubleClicked, this, &QgsPointCloudQueryBuilder::lstAttributes_doubleClicked );
+  connect( lstValues, &QListView::doubleClicked, this, &QgsPointCloudQueryBuilder::lstValues_doubleClicked );
   connect( btnEqual, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnEqual_clicked );
   connect( btnLessThan, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnLessThan_clicked );
   connect( btnGreaterThan, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnGreaterThan_clicked );
   connect( btnIn, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnIn_clicked );
   connect( btnNotIn, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnNotIn_clicked );
-  connect( lstFields, &QListView::clicked, this, &QgsPointCloudQueryBuilder::lstFields_clicked );
-  connect( lstFields, &QListView::doubleClicked, this, &QgsPointCloudQueryBuilder::lstFields_doubleClicked );
   connect( btnLessEqual, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnLessEqual_clicked );
   connect( btnGreaterEqual, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnGreaterEqual_clicked );
   connect( btnNotEqual, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnNotEqual_clicked );
@@ -79,16 +75,10 @@ QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
   pbn->setToolTip( tr( "Load query from QQF file" ) );
   connect( pbn, &QAbstractButton::clicked, this, &QgsPointCloudQueryBuilder::loadQuery );
 
-  setupGuiViews();
-
   mOrigSubsetString = layer->subsetString();
-  connect( layer, &QgsPointCloudLayer::subsetStringChanged, this, &QgsPointCloudQueryBuilder::layerSubsetStringChanged );
-  layerSubsetStringChanged();
 
   lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
   mTxtSql->setText( mOrigSubsetString );
-
-  populateFields();
 }
 
 void QgsPointCloudQueryBuilder::showEvent( QShowEvent *event )
@@ -97,39 +87,178 @@ void QgsPointCloudQueryBuilder::showEvent( QShowEvent *event )
   QDialog::showEvent( event );
 }
 
-void QgsPointCloudQueryBuilder::populateFields()
+
+void QgsPointCloudQueryBuilder::setupGuiViews()
+{
+  //Initialize the models
+  mModelAttributes = new QStandardItemModel();
+  mModelValues = new QStandardItemModel();
+
+  // Modes
+  lstAttributes->setViewMode( QListView::ListMode );
+  lstValues->setViewMode( QListView::ListMode );
+  lstAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
+  lstValues->setSelectionBehavior( QAbstractItemView::SelectRows );
+  lstAttributes->setEditTriggers( QAbstractItemView::NoEditTriggers );
+  lstValues->setEditTriggers( QAbstractItemView::NoEditTriggers );
+  // Performance tip since Qt 4.1
+  lstAttributes->setUniformItemSizes( true );
+  lstValues->setUniformItemSizes( true );
+  // Colored rows
+  lstAttributes->setAlternatingRowColors( true );
+  lstValues->setAlternatingRowColors( true );
+
+  lstAttributes->setModel( mModelAttributes );
+  lstValues->setModel( mModelValues );
+}
+
+void QgsPointCloudQueryBuilder::populateAttributes()
 {
   const QgsFields &fields = mLayer->dataProvider()->index()->attributes().toFields();
   mTxtSql->setFields( fields );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QStandardItem *myItem = new QStandardItem( fields.at( idx ).displayNameWithAlias() );
-    myItem->setData( idx );
-    myItem->setEditable( false );
-    mModelFields->insertRow( mModelFields->rowCount(), myItem );
+    mModelAttributes->insertRow( mModelAttributes->rowCount(), myItem );
+  }
+}
+
+void QgsPointCloudQueryBuilder::lstAttributes_currentChanged( const QModelIndex &current, const QModelIndex &previous )
+{
+  Q_UNUSED( previous )
+
+  mModelValues->clear();
+  const QString attribute = current.data().toString();
+  if ( attribute.compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
+  {
+    const QMap<int, QString> codes = QgsPointCloudDataProvider::translatedLasClassificationCodes();
+    for ( int i = 0; i <= 18; ++i )
+    {
+      QStandardItem *item = new QStandardItem( QString( "%1: %2" ).arg( i ).arg( codes.value( i ) ) );
+      item->setData( i, Qt::UserRole );
+      mModelValues->insertRow( mModelValues->rowCount(), item );
+    }
+  }
+  else
+  {
+    QVariant minimum = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Min );
+    QVariant maximum = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Max );
+    QVariant mean = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Mean );
+    QVariant stddev = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::StDev );
+
+    QStandardItem *item1 = new QStandardItem( QLatin1String( "Minimum: %1" ).arg( minimum.toString() ) );
+    item1->setData( minimum, Qt::UserRole );
+    mModelValues->insertRow( mModelValues->rowCount(), item1 );
+    QStandardItem *tem2 = new QStandardItem( QLatin1String( "Maximum: %1" ).arg( maximum.toString() ) );
+    tem2->setData( maximum, Qt::UserRole );
+    mModelValues->insertRow( mModelValues->rowCount(), tem2 );
+    QStandardItem *item3 = new QStandardItem( QLatin1String( "Mean: %1" ).arg( mean.toString() ) );
+    item3->setData( mean, Qt::UserRole );
+    mModelValues->insertRow( mModelValues->rowCount(), item3 );
+    QStandardItem *item4 = new QStandardItem( QLatin1String( "StdDev: %1" ).arg( stddev.toString() ) );
+    item4->setData( stddev, Qt::UserRole );
+    mModelValues->insertRow( mModelValues->rowCount(), item4 );
+  }
+}
+
+void QgsPointCloudQueryBuilder::lstAttributes_doubleClicked( const QModelIndex &index )
+{
+  mTxtSql->insertText( QLatin1String( "%1 " ).arg( mModelAttributes->data( index ).toString() ) );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
+{
+  mTxtSql->insertText( QLatin1String( "%1 " ).arg( mModelValues->data( index, Qt::UserRole ).toString() ) );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::btnEqual_clicked()
+{
+  mTxtSql->insertText( QStringLiteral( "= " ) );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::btnLessThan_clicked()
+{
+  mTxtSql->insertText( QStringLiteral( "< " ) );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::btnGreaterThan_clicked()
+{
+  mTxtSql->insertText( QStringLiteral( "> " ) );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::btnIn_clicked()
+{
+  mTxtSql->insertText( QStringLiteral( "IN () " ) );
+  int i, j;
+  mTxtSql->getCursorPosition( &i, &j );
+  mTxtSql->setCursorPosition( i, j - 2 );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::btnNotIn_clicked()
+{
+  mTxtSql->insertText( QStringLiteral( "NOT IN () " ) );
+  int i, j;
+  mTxtSql->getCursorPosition( &i, &j );
+  mTxtSql->setCursorPosition( i, j - 2 );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::btnLessEqual_clicked()
+{
+  mTxtSql->insertText( QStringLiteral( "<= " ) );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::btnGreaterEqual_clicked()
+{
+  mTxtSql->insertText( QStringLiteral( ">= " ) );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::btnNotEqual_clicked()
+{
+  mTxtSql->insertText( QStringLiteral( "!= " ) );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::btnAnd_clicked()
+{
+  mTxtSql->insertText( QStringLiteral( "AND " ) );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::btnOr_clicked()
+{
+  mTxtSql->insertText( QStringLiteral( "OR " ) );
+  mTxtSql->setFocus();
+}
+
+void QgsPointCloudQueryBuilder::accept()
+{
+  if ( mTxtSql->text() != mOrigSubsetString )
+  {
+    if ( !mLayer->setSubsetString( mTxtSql->text() ) )
+    {
+      QMessageBox::warning( this, tr( "Query Result" ), tr( "Error in query. The subset string could not be set." ) );
+      return;
+    }
   }
 
-  // All fields get ... setup
-  setupLstFieldsModel();
+  QDialog::accept();
 }
 
-void QgsPointCloudQueryBuilder::setupLstFieldsModel()
+void QgsPointCloudQueryBuilder::reject()
 {
-  lstFields->setModel( mModelFields );
-}
+  if ( mLayer->subsetString() != mOrigSubsetString )
+    mLayer->setSubsetString( mOrigSubsetString );
 
-void QgsPointCloudQueryBuilder::setupGuiViews()
-{
-  //Initialize the models
-  mModelFields = new QStandardItemModel();
-
-  // Modes
-  lstFields->setViewMode( QListView::ListMode );
-  lstFields->setSelectionBehavior( QAbstractItemView::SelectRows );
-  // Performance tip since Qt 4.1
-  lstFields->setUniformItemSizes( true );
-  // Colored rows
-  lstFields->setAlternatingRowColors( true );
+  QDialog::reject();
 }
 
 void QgsPointCloudQueryBuilder::test()
@@ -161,102 +290,6 @@ void QgsPointCloudQueryBuilder::test()
                               tr( "Query Result" ),
                               tr( "The expression was successfully parsed." ) );
   }
-}
-
-void QgsPointCloudQueryBuilder::accept()
-{
-  if ( mTxtSql->text() != mOrigSubsetString )
-  {
-    if ( !mLayer->setSubsetString( mTxtSql->text() ) )
-    {
-      QMessageBox::warning( this, tr( "Query Result" ), tr( "Error in query. The subset string could not be set." ) );
-      return;
-    }
-  }
-
-  QDialog::accept();
-}
-
-void QgsPointCloudQueryBuilder::reject()
-{
-  if ( mLayer->subsetString() != mOrigSubsetString )
-    mLayer->setSubsetString( mOrigSubsetString );
-
-  QDialog::reject();
-}
-
-void QgsPointCloudQueryBuilder::btnEqual_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " = " ) );
-  mTxtSql->setFocus();
-}
-
-void QgsPointCloudQueryBuilder::btnLessThan_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " < " ) );
-  mTxtSql->setFocus();
-}
-
-void QgsPointCloudQueryBuilder::btnGreaterThan_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " > " ) );
-  mTxtSql->setFocus();
-}
-
-void QgsPointCloudQueryBuilder::btnIn_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " IN " ) );
-  mTxtSql->setFocus();
-}
-
-void QgsPointCloudQueryBuilder::btnNotIn_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " NOT IN " ) );
-  mTxtSql->setFocus();
-}
-
-void QgsPointCloudQueryBuilder::lstFields_clicked( const QModelIndex &index )
-{
-  if ( mPreviousFieldRow != index.row() )
-  {
-    mPreviousFieldRow = index.row();
-  }
-}
-
-void QgsPointCloudQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
-{
-  mTxtSql->insertText( mModelFields->data( index ).toString() );
-  mTxtSql->setFocus();
-}
-
-void QgsPointCloudQueryBuilder::btnLessEqual_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " <= " ) );
-  mTxtSql->setFocus();
-}
-
-void QgsPointCloudQueryBuilder::btnGreaterEqual_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " >= " ) );
-  mTxtSql->setFocus();
-}
-
-void QgsPointCloudQueryBuilder::btnNotEqual_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " != " ) );
-  mTxtSql->setFocus();
-}
-
-void QgsPointCloudQueryBuilder::btnAnd_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " AND " ) );
-  mTxtSql->setFocus();
-}
-
-void QgsPointCloudQueryBuilder::btnOr_clicked()
-{
-  mTxtSql->insertText( QStringLiteral( " OR " ) );
-  mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::clear()
@@ -350,10 +383,4 @@ void QgsPointCloudQueryBuilder::loadQuery()
 
   mTxtSql->clear();
   mTxtSql->insertText( query );
-}
-
-void QgsPointCloudQueryBuilder::layerSubsetStringChanged()
-{
-  if ( mIgnoreLayerSubsetStringChangedSignal )
-    return;
 }

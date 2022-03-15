@@ -16,7 +16,6 @@
 #define QGSPOINTCLOUDQUERYBUILDER_H
 #include "qgis_sip.h"
 #include <QStandardItemModel>
-#include <QSortFilterProxyModel>
 #include <QStandardItem>
 #include <QModelIndex>
 #include "ui_qgspointcloudquerybuilderbase.h"
@@ -107,26 +106,26 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
     void loadQuery();
 
   private slots:
+    void lstAttributes_currentChanged( const QModelIndex &current, const QModelIndex &previous );
+    void lstAttributes_doubleClicked( const QModelIndex &index );
+    void lstValues_doubleClicked( const QModelIndex &index );
     void btnEqual_clicked();
     void btnLessThan_clicked();
     void btnGreaterThan_clicked();
     void btnIn_clicked();
     void btnNotIn_clicked();
-    void lstFields_clicked( const QModelIndex &index );
-    void lstFields_doubleClicked( const QModelIndex &index );
     void btnLessEqual_clicked();
     void btnGreaterEqual_clicked();
     void btnNotEqual_clicked();
     void btnAnd_clicked();
     void btnOr_clicked();
-    void layerSubsetStringChanged();
 
   private:
 
     /**
-     * Populate the field list for the selected table
+     * Populate the attribute list for the selected layer
      */
-    void populateFields();
+    void populateAttributes();
 
     void showHelp();
 
@@ -134,22 +133,18 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
      * Setup models for listviews
      */
     void setupGuiViews();
-    void setupLstFieldsModel();
 
     // private members
-    //! Model for fields ListView
-    QStandardItemModel *mModelFields = nullptr;
-    //! Previous field row to delete model
-    int mPreviousFieldRow;
+    //! Model for attributes ListView
+    QStandardItemModel *mModelAttributes = nullptr;
+    //! Model for values ListView
+    QStandardItemModel *mModelValues = nullptr;
 
     //! the point cloud layer
     QgsPointCloudLayer *mLayer = nullptr;
 
     //! original subset string
     QString mOrigSubsetString;
-
-    //! whether to ignore subsetStringChanged() signal from the layer
-    bool mIgnoreLayerSubsetStringChangedSignal = false;
 
     friend class TestQgsPointCloudQueryBuilder;
 };
