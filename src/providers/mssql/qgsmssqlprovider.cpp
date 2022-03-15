@@ -401,6 +401,7 @@ void QgsMssqlProvider::loadFields()
   {
     const QString colName = query.value( QStringLiteral( "COLUMN_NAME" ) ).toString();
     const QString sqlTypeName = query.value( QStringLiteral( "TYPE_NAME" ) ).toString();
+    bool columnIsIdentity = false;
 
     // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
     // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
@@ -418,6 +419,7 @@ void QgsMssqlProvider::loadFields()
       {
         mPrimaryKeyType = PktInt;
         mPrimaryKeyAttrs << mAttributeFields.size();
+        columnIsIdentity = true;
         isIdentity = true;
       }
       else if ( sqlTypeName == QLatin1String( "int" ) || sqlTypeName == QLatin1String( "bigint" ) )
@@ -474,12 +476,23 @@ void QgsMssqlProvider::loadFields()
         constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
       field.setConstraints( constraints );
 
+      if ( columnIsIdentity )
+      {
+        field.setReadOnly( true );
+      }
+
       mAttributeFields.append( field );
 
       // Default value
       if ( !query.value( QStringLiteral( "COLUMN_DEF" ) ).isNull() )
       {
         mDefaultValues.insert( i, query.value( QStringLiteral( "COLUMN_DEF" ) ).toString() );
+      }
+      else if ( columnIsIdentity )
+      {
+        // identity column types don't report a default value clause in the COLUMN_DEF attribute. So we need to fake
+        // one, so that we can correctly indicate that the database is responsible for populating this column.
+        mDefaultValues.insert( i, QStringLiteral( "Autogenerate" ) );
       }
 
       ++i;
