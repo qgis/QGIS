@@ -50,9 +50,9 @@ QString QgsMultiDifferenceAlgorithm::groupId() const
 
 QString QgsMultiDifferenceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the one or many Overlay layer(s). "
-                      "For each overlay layer difference calculated between the result of previous difference operation and this overlay layer. "
-                      "Input layer features that partially overlap feature(s) in the Overlay layer are split along those features' boundary "
+  return QObject::tr( "This algorithm extracts features from the Input layer that fall completely outside or only partially overlap the features from any of the Overlay layer(s). "
+                      "For each overlay layer the difference is calculated between the result of all previous difference operations and this overlay layer. "
+                      "Input layer features that partially overlap feature(s) in the Overlay layers are split along those features' boundary "
                       "and only the portions outside the Overlay layer features are retained." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "Attributes are not modified, although properties such as area or length of the features will "
