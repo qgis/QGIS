@@ -14,11 +14,11 @@
  ***************************************************************************/
 #ifndef QGSPOINTCLOUDQUERYBUILDER_H
 #define QGSPOINTCLOUDQUERYBUILDER_H
-#include "qgis_sip.h"
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QModelIndex>
 #include "ui_qgspointcloudquerybuilderbase.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
 #include "qgssubsetstringeditorinterface.h"
@@ -32,8 +32,8 @@ class QgsCodeEditor;
  * \brief Query Builder for layers.
  *
  * The query builder allows interactive creation of an expression for limiting the
- * points displayed in a point cloud layer.  The point attributes are displayed
- * and sample values can be viewed to aid in constructing the expression.
+ * points displayed in a point cloud layer. The point attributes are displayed and
+ * value ranges can be viewed to aid in constructing the expression.
  * A test function checks that the typed expression is valid.
  *
  * \since QGIS 3.26
@@ -58,42 +58,20 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
     QString subsetString() const override { return mTxtSql->text(); }
     void setSubsetString( const QString &subsetString ) override { mTxtSql->setText( subsetString ); }
 
-#ifdef SIP_RUN
-    SIP_IF_FEATURE( HAVE_QSCI_SIP )
-
-    /**
-     * Returns the code editor widget for the SQL.
-     */
-    QgsCodeEditor *codeEditorWidget() const;
-    SIP_END
-    SIP_IF_FEATURE( !HAVE_QSCI_SIP )
-
-    /**
-     * Returns the code editor widget for the SQL.
-     */
-    QWidget *codeEditorWidget() const;
-    SIP_END
-#else
-
-    /**
-     * Returns the code editor widget for the SQL.
-     */
-    QgsCodeEditor *codeEditorWidget() const { return mTxtSql; }
-#endif
 
   public slots:
     void accept() override;
     void reject() override;
 
     /**
-     * Clears the typed expression
-     */
-    void clear();
-
-    /**
      * Test if the typed expression is valid and can be used as a \a QgsPointCloudExpression
      */
     virtual void test();
+
+    /**
+     * Clears the typed expression
+     */
+    void clear();
 
     /**
      * Save expression to the XML file
@@ -122,21 +100,18 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 
   private:
 
-    /**
-     * Populate the attribute list for the selected layer
-     */
+    //! Populate the attribute list for the selected layer
     void populateAttributes();
 
     void showHelp();
 
-    /**
-     * Setup models for listviews
-     */
+    //! Setup models for listviews
     void setupGuiViews();
 
     // private members
     //! Model for attributes ListView
     QStandardItemModel *mModelAttributes = nullptr;
+
     //! Model for values ListView
     QStandardItemModel *mModelValues = nullptr;
 

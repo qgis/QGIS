@@ -13,8 +13,8 @@ class QgsPointCloudQueryBuilder : QgsSubsetStringEditorInterface
 Query Builder for layers.
 
 The query builder allows interactive creation of an expression for limiting the
-points displayed in a point cloud layer.  The point attributes are displayed
-and sample values can be viewed to aid in constructing the expression.
+points displayed in a point cloud layer. The point attributes are displayed and
+value ranges can be viewed to aid in constructing the expression.
 A test function checks that the typed expression is valid.
 
 .. versionadded:: 3.26
@@ -42,20 +42,6 @@ layer properties dialog
     virtual QString subsetString() const;
     virtual void setSubsetString( const QString &subsetString );
 
-%If (HAVE_QSCI_SIP)
-
-    QgsCodeEditor *codeEditorWidget() const;
-%Docstring
-Returns the code editor widget for the SQL.
-%End
-%End
-%If (!HAVE_QSCI_SIP)
-
-    QWidget *codeEditorWidget() const;
-%Docstring
-Returns the code editor widget for the SQL.
-%End
-%End
 
   public slots:
     virtual void accept();
@@ -63,14 +49,14 @@ Returns the code editor widget for the SQL.
     virtual void reject();
 
 
-    void clear();
-%Docstring
-Clears the typed expression
-%End
-
     virtual void test();
 %Docstring
 Test if the typed expression is valid and can be used as a ``:py:class:`QgsPointCloudExpression```
+%End
+
+    void clear();
+%Docstring
+Clears the typed expression
 %End
 
     void saveQuery();
