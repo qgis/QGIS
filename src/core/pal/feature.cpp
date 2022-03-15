@@ -1356,10 +1356,10 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( totalRepeats() > 1 )
     allowOverrun = false;
 
-  // label overrun should NEVER exceed the label length (or labels would sit off in space).
+  // unless in strict mode, label overrun should NEVER exceed the label length (or labels would sit off in space).
   // in fact, let's require that a minimum of 5% of the label text has to sit on the feature,
   // as we don't want a label sitting right at the start or end corner of a line
-  double overrun = std::min( mLF->overrunDistance(), totalCharacterWidth * 0.95 );
+  double overrun = mLF->lineAnchorType() == QgsLabelLineSettings::AnchorType::HintOnly ? std::min( mLF->overrunDistance(), totalCharacterWidth * 0.95 ) : mLF->overrunDistance();
   if ( totalCharacterWidth > shapeLength )
   {
     if ( !allowOverrun || shapeLength < totalCharacterWidth - 2 * overrun )
@@ -1368,6 +1368,10 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       return 0;
     }
   }
+
+  // calculate the anchor point for the original line shape as a GEOS point.
+  // this must be done BEFORE we account for overrun by extending the shape!
+  const geos::unique_ptr originalPoint = mapShape->interpolatePoint( shapeLength * mLF->lineAnchorPercent() );
 
   if ( allowOverrun && overrun > 0 )
   {
@@ -1421,8 +1425,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     }
   }
 
-  // calculate the anchor point for the original line shape as a GEOS point
-  const geos::unique_ptr originalPoint = mapShape->interpolatePoint( shapeLength * mLF->lineAnchorPercent() );
+  const QgsLabelLineSettings::AnchorTextPoint textPoint = mLF->lineAnchorTextPoint();
 
   std::vector< std::unique_ptr< LabelPosition >> positions;
   std::unique_ptr< LabelPosition > backupPlacement;
