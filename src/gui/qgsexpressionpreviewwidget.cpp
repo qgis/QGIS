@@ -30,7 +30,7 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   setupUi( this );
   mPreviewLabel->clear();
   mPreviewLabel->setContextMenuPolicy( Qt::ActionsContextMenu );
-  mCopyPreviewAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ), tr( "Copy expression value" ), this );
+  mCopyPreviewAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ), tr( "Copy Expression Value" ), this );
   mPreviewLabel->addAction( mCopyPreviewAction );
   mFeaturePickerWidget->setShowBrowserButtons( true );
 
