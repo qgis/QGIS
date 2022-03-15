@@ -24,6 +24,9 @@ a "perimeter" style mode).
 #include "qgslabellinesettings.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum class DirectionSymbolPlacement
     {

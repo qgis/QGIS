@@ -38,6 +38,8 @@ class QgsExpressionContext;
  */
 class CORE_EXPORT QgsLabelLineSettings
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -49,6 +51,7 @@ class CORE_EXPORT QgsLabelLineSettings
       SymbolAbove, //!< Place direction symbols on above label
       SymbolBelow //!< Place direction symbols on below label
     };
+    Q_ENUM( DirectionSymbolPlacement )
 
     /**
      * Line anchor types
@@ -58,6 +61,7 @@ class CORE_EXPORT QgsLabelLineSettings
       HintOnly, //!< Line anchor is a hint for preferred placement only, but other placements close to the hint are permitted
       Strict, //!< Line anchor is a strict placement, and other placements are not permitted
     };
+    Q_ENUM( AnchorType )
 
     /**
      * Clipping behavior for line anchor calculation.
@@ -69,6 +73,7 @@ class CORE_EXPORT QgsLabelLineSettings
       UseVisiblePartsOfLine, //!< Only visible parts of lines are considered when calculating the line anchor for labels
       UseEntireLine, //!< Entire original feature line geometry is used when calculating the line anchor for labels
     };
+    Q_ENUM( AnchorClipping )
 
     /**
      * Anchor point of label text.
@@ -81,6 +86,7 @@ class CORE_EXPORT QgsLabelLineSettings
       CenterOfText, //!< Anchor using center of text
       EndOfText, //!< Anchor using end of text
     };
+    Q_ENUM( AnchorTextPoint )
 
     /**
      * Returns the line placement flags, which dictate how line labels can be placed
