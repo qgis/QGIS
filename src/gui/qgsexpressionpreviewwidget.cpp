@@ -166,14 +166,13 @@ void QgsExpressionPreviewWidget::setExpressionToolTip( const QString &toolTip )
     return;
 
   mToolTip = toolTip;
-  QString copyToolTip = tr( "right-click to copy" );
   if ( toolTip.isEmpty() )
   {
-    mPreviewLabel->setToolTip( copyToolTip );
+    mPreviewLabel->setToolTip( tr( "Right-click to copy" ) );
   }
   else
   {
-    mPreviewLabel->setToolTip( mToolTip + " (" + copyToolTip + ")" );
+    mPreviewLabel->setToolTip( tr("%1 (right-click to copy)" ).arg( mToolTip ) );
   }
   emit toolTipChanged( mToolTip );
 }
