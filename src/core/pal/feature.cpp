@@ -1386,7 +1386,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     case QgsLabelLineSettings::AnchorType::Strict:
       // in strict mode, we force sufficient overrun to ensure label will always "fit", even if it's placed
       // so that the label start sits right on the end of the line OR the label end sits right on the start of the line
-      overrun = std::max( mLF->overrunDistance(), totalCharacterWidth );
+      overrun = std::max( mLF->overrunDistance(), totalCharacterWidth * 1.05 );
       break;
   }
 
