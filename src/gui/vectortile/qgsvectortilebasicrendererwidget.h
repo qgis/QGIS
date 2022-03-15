@@ -85,6 +85,9 @@ class QgsVectorTileBasicRendererListModel : public QAbstractListModel
     {
       MinZoom = Qt::UserRole + 1,
       MaxZoom,
+      Label,
+      Layer,
+      Filter
     };
 
     QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent = nullptr );
@@ -118,12 +121,14 @@ class QgsVectorTileBasicRendererProxyModel : public QSortFilterProxyModel
 
     void setCurrentZoom( int zoom );
     void setFilterVisible( bool enabled );
+    void setFilterString( const QString &string );
 
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
 
     bool mFilterVisible = false;
+    QString mFilterString;
     int mCurrentZoom = -1;
 };
 

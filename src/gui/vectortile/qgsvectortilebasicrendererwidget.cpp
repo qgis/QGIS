@@ -117,6 +117,15 @@ QVariant QgsVectorTileBasicRendererListModel::data( const QModelIndex &index, in
     case MaxZoom:
       return style.maxZoomLevel();
 
+    case Label:
+      return style.styleName();
+
+    case Layer:
+      return style.layerName();
+
+    case Filter:
+      return style.filterExpression();
+
   }
   return QVariant();
 }
@@ -312,6 +321,10 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
   setupUi( this );
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
+  mFilterLineEdit->setShowClearButton( true );
+  mFilterLineEdit->setShowSearchIcon( true );
+  mFilterLineEdit->setPlaceholderText( tr( "Filter rules" ) );
+
   QMenu *menuAddRule = new QMenu( btnAddRule );
   menuAddRule->addAction( tr( "Marker" ), this, [this] { addStyle( QgsWkbTypes::PointGeometry ); } );
   menuAddRule->addAction( tr( "Line" ), this, [this] { addStyle( QgsWkbTypes::LineGeometry ); } );
@@ -338,6 +351,11 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
   connect( mCheckVisibleOnly, &QCheckBox::toggled, this, [ = ]( bool filter )
   {
     mProxyModel->setFilterVisible( filter );
+  } );
+
+  connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    mProxyModel->setFilterString( text );
   } );
 
   setLayer( layer );
@@ -528,19 +546,38 @@ void QgsVectorTileBasicRendererProxyModel::setFilterVisible( bool enabled )
   invalidateFilter();
 }
 
+void QgsVectorTileBasicRendererProxyModel::setFilterString( const QString &string )
+{
+  mFilterString = string;
+  invalidateFilter();
+}
+
 bool QgsVectorTileBasicRendererProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mCurrentZoom < 0 || !mFilterVisible )
-    return true;
+  if ( mCurrentZoom >= 0 && mFilterVisible )
+  {
+    const int rowMinZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicRendererListModel::MinZoom ).toInt();
+    const int rowMaxZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicRendererListModel::MaxZoom ).toInt();
 
-  const int rowMinZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicRendererListModel::MinZoom ).toInt();
-  const int rowMaxZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicRendererListModel::MaxZoom ).toInt();
+    if ( rowMinZoom >= 0 && rowMinZoom > mCurrentZoom )
+      return false;
 
-  if ( rowMinZoom >= 0 && rowMinZoom > mCurrentZoom )
-    return false;
+    if ( rowMaxZoom >= 0 && rowMaxZoom < mCurrentZoom )
+      return false;
+  }
 
-  if ( rowMaxZoom >= 0 && rowMaxZoom < mCurrentZoom )
-    return false;
+  if ( !mFilterString.isEmpty() )
+  {
+    const QString name = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicRendererListModel::Label ).toString();
+    const QString layer = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicRendererListModel::Layer ).toString();
+    const QString filter = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicRendererListModel::Filter ).toString();
+    if ( !name.contains( mFilterString, Qt::CaseInsensitive )
+         && !layer.contains( mFilterString, Qt::CaseInsensitive )
+         && !filter.contains( mFilterString, Qt::CaseInsensitive ) )
+    {
+      return false;
+    }
+  }
 
   return true;
 }
