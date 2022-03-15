@@ -1816,19 +1816,57 @@ bool QgsExpressionNodeBetweenOperator::prepareNode( QgsExpression *parent, const
 
 QVariant QgsExpressionNodeBetweenOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  QgsExpressionNodeBinaryOperator lowBound { QgsExpressionNodeBinaryOperator::BinaryOperator::boGE, mNode->clone(), mLowerBound->clone() };
-  QgsExpressionNodeBinaryOperator highBound { QgsExpressionNodeBinaryOperator::BinaryOperator::boLE, mNode->clone(), mHigherBound->clone() };
-  const QVariant lowBoundValue = lowBound.eval( parent, context );
-  const QVariant highBoundValue = highBound.eval( parent, context );
-  if ( lowBoundValue.isNull() || highBoundValue.isNull() )
+  const QVariant nodeVal = mNode->eval( parent, context );
+  if ( nodeVal.isNull() )
   {
     return QVariant();
   }
-  else
+
+  const QgsExpressionNodeLiteral nodeValNode { nodeVal };
+
+  QgsExpressionNodeBinaryOperator lowBound { QgsExpressionNodeBinaryOperator::BinaryOperator::boGE, nodeValNode.clone(), mLowerBound->clone() };
+  const QVariant lowBoundValue = lowBound.eval( parent, context );
+  const bool lowBoundBool { lowBoundValue.toBool() };
+
+  if ( ! lowBoundValue.isNull() && lowBoundBool == mNegate )
   {
-    const bool res { lowBoundValue.toBool() &&highBoundValue.toBool() };
-    return mNegate ? QVariant( ! res ) : QVariant( res );
+    return QVariant( false );
   }
+
+  QgsExpressionNodeBinaryOperator highBound { QgsExpressionNodeBinaryOperator::BinaryOperator::boLE, nodeValNode.clone(), mHigherBound->clone() };
+  const QVariant highBoundValue = highBound.eval( parent, context );
+
+  if ( lowBoundValue.isNull() && highBoundValue.isNull() )
+  {
+    return QVariant();
+  }
+
+  const bool highBoundBool { highBoundValue.toBool() };
+
+  // We already checked if both are nulls
+  if ( lowBoundValue.isNull() || highBoundValue.isNull() )
+  {
+
+    // In this case we can return a boolean
+    if ( ( lowBoundValue.isNull() && ! highBoundBool ) ||
+         ( highBoundValue.isNull() && ! lowBoundBool ) )
+    {
+      return QVariant( mNegate );
+    }
+
+    // Indetermined
+    return QVariant();
+
+  }
+
+  if ( ! highBoundValue.isNull() && highBoundBool == mNegate )
+  {
+    return QVariant( false );
+  }
+
+  const bool res { lowBoundBool &&highBoundBool };
+  return mNegate ? QVariant( ! res ) : QVariant( res );
+
 }
 
 QString QgsExpressionNodeBetweenOperator::dump() const

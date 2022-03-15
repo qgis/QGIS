@@ -2,17 +2,17 @@
   "name": "BETWEEN",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Returns 1 if value is within the specified range. To test for exclusion `NOT BETWEEN` can be used.",
+  "description": "Returns TRUE if value is within the specified range. The range is considered inclusive of the bounds. To test for exclusion `NOT BETWEEN` can be used.",
   "arguments": [{
     "arg": "lower_bound AND higher_bound",
     "description": "range bounds"
   }],
   "examples": [{
     "expression": "'B' BETWEEN 'A' AND 'C'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "2 BETWEEN 1 AND 3",
-    "returns": "1"
+    "returns": "TRUE"
   }],
   "tags": ["contained", "found"]
 }
