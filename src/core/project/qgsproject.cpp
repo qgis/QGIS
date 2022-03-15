@@ -660,7 +660,7 @@ bool QgsProject::commitChanges( QStringList &commitErrors, bool stopEditing, Qgs
         commitErrors.append( tr( "Trying to commit changes without a layer specified. This only works if the transaction mode is buffered" ) );
         return false;
       }
-      bool success = vectorLayer->commitChanges();
+      bool success = vectorLayer->commitChanges( stopEditing );
       commitErrors = vectorLayer->commitErrors();
       return success;
     }
