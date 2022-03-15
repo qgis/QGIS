@@ -17,14 +17,13 @@
 #define QGSEXPRESSIONPREVIEWWIDGET_H
 
 #include <QWidget>
-#include <QAction>
 
 #include "ui_qgsexpressionpreviewbase.h"
 
 #include "qgis_gui.h"
 #include "qgsdistancearea.h"
 
-
+class QAction;
 class QgsVectorLayer;
 
 /**
