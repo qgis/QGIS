@@ -235,6 +235,34 @@ void TestQgsMeshEditor::createTopologicMesh()
   QVERIFY( checkFacesAround( topologicMesh, 5, {3} ) );
 
   QVERIFY( topologicMesh.checkConsistency() == QgsMeshEditingError() );
+
+  QgsMeshVertexCirculator circulator0( topologicMesh, 0 );
+  QVERIFY( circulator0.isValid() );
+  QCOMPARE( circulator0.degree(), 2 );
+
+  QgsMeshVertexCirculator circulator1( topologicMesh, 1 );
+  QVERIFY( circulator1.isValid() );
+  QCOMPARE( circulator1.degree(), 3 );
+
+  QgsMeshVertexCirculator circulator2( topologicMesh, 2 );
+  QVERIFY( circulator2.isValid() );
+  QCOMPARE( circulator2.degree(), 3 );
+
+  QgsMeshVertexCirculator circulator3( topologicMesh, 3 );
+  QVERIFY( circulator3.isValid() );
+  QCOMPARE( circulator3.degree(), 4 );
+
+  QgsMeshVertexCirculator circulator4( topologicMesh, 4 );
+  QVERIFY( circulator4.isValid() );
+  QCOMPARE( circulator4.degree(), 4 );
+
+  QgsMeshVertexCirculator circulator5( topologicMesh, 5 );
+  QVERIFY( circulator5.isValid() );
+  QCOMPARE( circulator5.degree(), 2 );
+
+  QgsMeshVertexCirculator circulator6( topologicMesh, 6 ); //no vertices with index 6
+  QVERIFY( !circulator6.isValid() );
+  QCOMPARE( circulator6.degree(), 0 );
 }
 
 void TestQgsMeshEditor::editTopologicMesh()
