@@ -1545,7 +1545,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       bool labeledLineSegmentIsRightToLeft = false;
       const QgsTextRendererUtils::LabelLineDirection direction = ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ? QgsTextRendererUtils::RespectPainterOrientation : QgsTextRendererUtils::FollowLineDirection;
       std::unique_ptr< LabelPosition > labelPosition = curvedPlacementAtOffset( currentMapShape, pathDistances, direction, distanceAlongLineToStartCandidate, labeledLineSegmentIsRightToLeft, !singleCandidateOnly,
-          onlyShowUprightLabels() && !singleCandidateOnly );
+          onlyShowUprightLabels() && ( !singleCandidateOnly || !( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ) );
 
       if ( !labelPosition )
       {
