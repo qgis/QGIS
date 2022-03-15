@@ -568,10 +568,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
       }
     }
 
-    {
-      const QSignalBlocker signalBlockerReplaceRawFieldValues( mReplaceRawFieldValues );
-      mReplaceRawFieldValues->setChecked( checkReplaceRawFieldValues );
-    }
+    whileBlocking( mReplaceRawFieldValues )->setChecked( checkReplaceRawFieldValues );
     mReplaceRawFieldValues->setEnabled( selectAllFields );
     mReplaceRawFieldValues->setVisible( foundFieldThatCanBeExportedAsDisplayedValue );
 
@@ -692,8 +689,7 @@ void QgsVectorLayerSaveAsDialog::mUseAliasesForExportedName_stateChanged( int st
                                     tr( "Some names where modified and will be overridden. Do you want to continue?" ) )
              == QMessageBox::No )
         {
-          const QSignalBlocker signalBlockerCheckbox( mUseAliasesForExportedName );
-          mUseAliasesForExportedName->setCheckState( Qt::PartiallyChecked );
+          whileBlocking( mUseAliasesForExportedName )->setCheckState( Qt::PartiallyChecked );
           return;
         }
       }
@@ -723,8 +719,7 @@ void QgsVectorLayerSaveAsDialog::mUseAliasesForExportedName_stateChanged( int st
                                     tr( "Some names where modified and will be overridden. Do you want to continue?" ) )
              == QMessageBox::No )
         {
-          const QSignalBlocker signalBlockerCheckbox( mUseAliasesForExportedName );
-          mUseAliasesForExportedName->setCheckState( Qt::PartiallyChecked );
+          whileBlocking( mUseAliasesForExportedName )->setCheckState( Qt::PartiallyChecked );
           return;
         }
       }
