@@ -155,6 +155,34 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
   mOptionsMenu->addAction( mActionEnableEyeDome );
 
+  mActionSync2DNavTo3D = new QAction( tr( "Sync 2D Navigation to 3D Navigation" ) );
+  mActionSync2DNavTo3D->setCheckable( true );
+  connect( mActionSync2DNavTo3D, &QAction::triggered, this, [ = ]( bool enabled )
+  {
+    Qgis::ViewSyncModeFlags syncMode = mCanvas->map()->viewSyncMode();
+    syncMode.setFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D, enabled );
+    mCanvas->map()->setViewSyncMode( syncMode );
+  } );
+  mOptionsMenu->addAction( mActionSync2DNavTo3D );
+
+  mActionSync3DNavTo2D = new QAction( tr( "Sync 2D Navigation to 3D Navigation" ) );
+  mActionSync3DNavTo2D->setCheckable( true );
+  connect( mActionSync3DNavTo2D, &QAction::triggered, this, [ = ]( bool enabled )
+  {
+    Qgis::ViewSyncModeFlags syncMode = mCanvas->map()->viewSyncMode();
+    syncMode.setFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D, enabled );
+    mCanvas->map()->setViewSyncMode( syncMode );
+  } );
+  mOptionsMenu->addAction( mActionSync3DNavTo2D );
+
+  mShowFrustumPolyogon = new QAction( tr( "Show 3D view frustum in main map canvas" ) );
+  mShowFrustumPolyogon->setCheckable( true );
+  connect( mShowFrustumPolyogon, &QAction::triggered, this, [ = ]( bool enabled )
+  {
+    mCanvas->map()->setViewFrustumVisualizationEnabled( enabled );
+  } );
+  mOptionsMenu->addAction( mShowFrustumPolyogon );
+
   mOptionsMenu->addSeparator();
 
   QAction *configureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
@@ -315,6 +343,9 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
+  whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
+  whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
+  whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );
 
   mCanvas->setMap( map );
 
@@ -412,6 +443,9 @@ void Qgs3DMapCanvasWidget::configure()
 
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
+  whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
+  whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
+  whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );
 }
 
 void Qgs3DMapCanvasWidget::exportScene()
