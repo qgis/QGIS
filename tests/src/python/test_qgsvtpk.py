@@ -25,8 +25,28 @@ start_app()
 
 class TestQgsVtpk(unittest.TestCase):
 
+    def testOpenInvalid(self):
+        """
+        Test opening an invalid path
+        """
+        tiles = QgsVtpkTiles(unitTestDataPath() + '/xxx.vtpk')
+        self.assertEqual(tiles.metadata(), {})
+        self.assertEqual(tiles.styleDefinition(), {})
+        self.assertEqual(tiles.spriteDefinition(), {})
+        self.assertTrue(tiles.spriteImage().isNull())
+        self.assertFalse(tiles.open())
+        self.assertEqual(tiles.metadata(), {})
+        self.assertEqual(tiles.styleDefinition(), {})
+        self.assertEqual(tiles.spriteDefinition(), {})
+        self.assertTrue(tiles.spriteImage().isNull())
+
     def testOpen(self):
         tiles = QgsVtpkTiles(unitTestDataPath() + '/testvtpk.vtpk')
+        self.assertEqual(tiles.metadata(), {})
+        self.assertEqual(tiles.styleDefinition(), {})
+        self.assertEqual(tiles.spriteDefinition(), {})
+        self.assertTrue(tiles.spriteImage().isNull())
+
         self.assertTrue(tiles.open())
         self.assertEqual(tiles.metadata(),
                          {'capabilities': 'TilesOnly', 'copyrightText': 'Map credits', 'currentVersion': 10.91,
@@ -53,6 +73,22 @@ class TestQgsVtpk(unittest.TestCase):
                                        'spatialReference': {'latestWkid': 3857, 'wkid': 102100}},
                           'tiles': ['tile/{z}/{y}/{x}.pbf'], 'type': 'indexedVector'}
                          )
+
+        self.assertEqual(tiles.styleDefinition(), {'glyphs': '../fonts/{fontstack}/{range}.pbf', 'layers': [
+            {'id': 'polys', 'layout': {}, 'paint': {'fill-color': '#B6FCFB', 'fill-outline-color': '#6E6E6E'},
+             'source': 'esri', 'source-layer': 'polys', 'type': 'fill'},
+            {'id': 'lines', 'layout': {'line-cap': 'round', 'line-join': 'round'},
+             'paint': {'line-color': '#4C993A', 'line-width': 1.33333}, 'source': 'esri', 'source-layer': 'lines',
+             'type': 'line'}, {'id': 'points', 'layout': {}, 'paint': {'circle-color': '#A16F33', 'circle-radius': 2.2,
+                                                                       'circle-stroke-color': '#000000',
+                                                                       'circle-stroke-width': 0.933333},
+                               'source': 'esri', 'source-layer': 'points', 'type': 'circle'}], 'sources': {
+            'esri': {'attribution': 'Map credits', 'bounds': [-180, -85.0511, 180, 85.0511], 'maxzoom': 4, 'minzoom': 0,
+                     'scheme': 'xyz', 'type': 'vector', 'url': '../../'}}, 'sprite': '../sprites/sprite', 'version': 8})
+        # this file doesn't actually have any sprites...
+        self.assertEqual(tiles.spriteDefinition(), {})
+        self.assertEqual(tiles.spriteImage().width(), 120)
+        self.assertEqual(tiles.spriteImage().height(), 120)
 
         self.assertEqual(tiles.matrixSet().minimumZoom(), 0)
         self.assertEqual(tiles.matrixSet().maximumZoom(), 4)
@@ -81,6 +117,20 @@ class TestQgsVtpk(unittest.TestCase):
         self.assertEqual(layer.sourcePath(), unitTestDataPath() + '/testvtpk.vtpk')
         self.assertEqual(layer.sourceMinZoom(), 0)
         self.assertEqual(layer.sourceMaxZoom(), 4)
+
+        self.assertTrue(layer.loadDefaultStyle())
+
+        # make sure style was loaded
+        self.assertEqual(len(layer.renderer().styles()), 3)
+        self.assertEqual(layer.renderer().style(0).styleName(), 'polys')
+        style = layer.renderer().style(0)
+        self.assertEqual(style.symbol().color().name(), '#b6fcfb')
+        self.assertEqual(layer.renderer().style(1).styleName(), 'lines')
+        style = layer.renderer().style(1)
+        self.assertEqual(style.symbol().color().name(), '#4c993a')
+        self.assertEqual(layer.renderer().style(2).styleName(), 'points')
+        style = layer.renderer().style(2)
+        self.assertEqual(style.symbol().color().name(), '#a16f33')
 
 
 if __name__ == '__main__':
