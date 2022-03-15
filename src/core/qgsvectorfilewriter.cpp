@@ -3092,9 +3092,16 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
   {
     for ( int attrIdx : std::as_const( details.attributes ) )
     {
-      QgsField field = details.sourceFields.at( attrIdx );
-      field.setName( options.attributesExportNames.value( attrIdx, field.name() ) );
-      details.outputFields.append( field );
+      if ( details.sourceFields.exists( attrIdx ) )
+      {
+        QgsField field = details.sourceFields.at( attrIdx );
+        field.setName( options.attributesExportNames.value( attrIdx, field.name() ) );
+        details.outputFields.append( field );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "No such source field with index '%1' available." ).arg( attrIdx ) );
+      }
     }
   }
 
