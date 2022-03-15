@@ -42,6 +42,18 @@ GO
 DROP TABLE IF EXISTS qgis_test.[constraints];
 GO
 
+DROP TABLE IF EXISTS qgis_test.[edit_data];
+GO
+
+DROP TABLE IF EXISTS qgis_test.[layer_extent_in_geometry_table];
+GO
+
+DROP TABLE IF EXISTS qgis_test.[test_complex_pk_name];
+GO
+
+DROP TABLE IF EXISTS qgis_test.[test_identity];
+GO
+
 DROP SCHEMA qgis_test;
 GO
 
