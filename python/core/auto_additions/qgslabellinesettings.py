@@ -22,6 +22,7 @@ QgsLabelLineSettings.AnchorClipping.baseClass = QgsLabelLineSettings
 QgsLabelLineSettings.AnchorTextPoint.StartOfText.__doc__ = "Anchor using start of text"
 QgsLabelLineSettings.AnchorTextPoint.CenterOfText.__doc__ = "Anchor using center of text"
 QgsLabelLineSettings.AnchorTextPoint.EndOfText.__doc__ = "Anchor using end of text"
+QgsLabelLineSettings.AnchorTextPoint.FollowPlacement.__doc__ = "Automatically set the anchor point based on the lineAnchorPercent() value. Values <25% will use the start of text, values > 75% will use the end of text, and values in between will use the center of the text"
 QgsLabelLineSettings.AnchorTextPoint.__doc__ = 'Anchor point of label text.\n\n.. versionadded:: 3.26\n\n' + '* ``StartOfText``: ' + QgsLabelLineSettings.AnchorTextPoint.StartOfText.__doc__ + '\n' + '* ``CenterOfText``: ' + QgsLabelLineSettings.AnchorTextPoint.CenterOfText.__doc__ + '\n' + '* ``EndOfText``: ' + QgsLabelLineSettings.AnchorTextPoint.EndOfText.__doc__ + '\n' + '* ``FollowPlacement``: ' + QgsLabelLineSettings.AnchorTextPoint.FollowPlacement.__doc__
 # --
 QgsLabelLineSettings.AnchorTextPoint.baseClass = QgsLabelLineSettings
