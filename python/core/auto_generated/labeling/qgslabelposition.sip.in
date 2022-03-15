@@ -83,6 +83,8 @@ Constructor for QgsLabelPosition
     QString providerID;
 
     bool isUnplaced;
+
+    long long groupedLabelId;
 };
 
 /************************************************************************
