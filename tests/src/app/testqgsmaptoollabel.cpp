@@ -297,7 +297,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
-      // defaults to bottom left
+      // defaults to half center
       QgsMapToolLabel::LabelAlignment labelAlignment = tool->currentAlignment();
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::HalfCenter );
 
