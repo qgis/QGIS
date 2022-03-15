@@ -63,14 +63,14 @@ QgsMapToolCapture::Capabilities QgsMapToolCaptureAnnotationItem::capabilities() 
   return SupportsCurves;
 }
 
-bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique technique ) const
+bool QgsMapToolCaptureAnnotationItem::supportsTechnique( Qgis::CaptureTechnique technique ) const
 {
   switch ( technique )
   {
-    case CaptureTechnique::StraightSegments:
-    case CaptureTechnique::CircularString:
-    case CaptureTechnique::Streaming:
-    case CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::StraightSegments:
+    case Qgis::CaptureTechnique::CircularString:
+    case Qgis::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::Shape:
       return true;
   }
   BUILTIN_UNREACHABLE

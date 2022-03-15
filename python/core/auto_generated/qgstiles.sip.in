@@ -117,22 +117,46 @@ Returns a tile matrix for the usual web mercator
                                         const QgsPointXY &z0TopLeftPoint, double z0Dimension,
                                         int z0MatrixWidth = 1, int z0MatrixHeight = 1 );
 %Docstring
-Returns a tile matrix for a specific CRS, top left point, zoom level 0 dimension in CRS units
+Returns a tile matrix for a specific CRS, top left point, zoom level 0 dimension in CRS units.
+
+The ``z0Dimension`` argument must specify the dimension (width or height, in map units) of the root tiles in zoom level 0.
 %End
 
-    static QgsTileMatrix fromTileMatrix( const int &zoomLevel, const QgsTileMatrix &tileMatrix );
+    static QgsTileMatrix fromTileMatrix( int zoomLevel, const QgsTileMatrix &tileMatrix );
 %Docstring
 Returns a tile matrix based on another one
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
-Returns the authority identifier for the CRS of the tile matrix
+Returns the crs of the tile matrix.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the ``crs`` of the tile matrix.
+
+.. seealso:: :py:func:`crs`
+
+.. versionadded:: 3.22.6
 %End
 
     int zoomLevel() const;
 %Docstring
-Returns zoom level of the tile matrix
+Returns the zoom level of the tile matrix.
+
+.. seealso:: :py:func:`setZoomLevel`
+%End
+
+    void setZoomLevel( int level );
+%Docstring
+Sets the zoom ``level`` of the tile matrix.
+
+.. seealso:: :py:func:`zoomLevel`
+
+.. versionadded:: 3.22.6
 %End
 
     int matrixWidth() const;
@@ -152,7 +176,18 @@ Returns extent of the tile matrix
 
     double scale() const;
 %Docstring
-Returns scale denominator of the tile matrix
+Returns scale denominator of the tile matrix.
+
+.. seealso:: :py:func:`setScale`
+%End
+
+    void setScale( double scale );
+%Docstring
+Sets the scale denominator of the tile matrix.
+
+.. seealso:: :py:func:`scale`
+
+.. versionadded:: 3.22.6
 %End
 
     QgsRectangle tileExtent( QgsTileXYZ id ) const;
@@ -178,6 +213,109 @@ Returns row/column coordinates (floating point number) from the given point in m
     bool isRootTileMatrix() const;
 %Docstring
 Returns the root status of the tile matrix (zoom level == 0)
+%End
+
+};
+
+
+class QgsTileMatrixSet
+{
+%Docstring(signature="appended")
+Defines a set of tile matrices for multiple zoom levels.
+
+.. versionadded:: 3.22.6
+%End
+
+%TypeHeaderCode
+#include "qgstiles.h"
+%End
+  public:
+
+    virtual ~QgsTileMatrixSet();
+
+    void addGoogleCrs84QuadTiles( int minimumZoom = 0, int maximumZoom = 14 );
+%Docstring
+Adds tile matrices corresponding to the standard web mercator/GoogleCRS84Quad setup.
+%End
+
+    QgsTileMatrix tileMatrix( int zoom ) const;
+%Docstring
+Returns the tile matrix corresponding to the specified ``zoom``.
+%End
+
+    void addMatrix( const QgsTileMatrix &matrix );
+%Docstring
+Adds a ``matrix`` to the set.
+
+Any existing matrix with the same :py:func:`QgsTileMatrix.zoomLevel()` will be replaced.
+%End
+
+    int minimumZoom() const;
+%Docstring
+Returns the minimum zoom level for tiles present in the set.
+
+.. seealso:: :py:func:`maximumZoom`
+%End
+
+    int maximumZoom() const;
+%Docstring
+Returns the maximum zoom level for tiles present in the set.
+
+.. seealso:: :py:func:`minimumZoom`
+%End
+
+    void dropMatricesOutsideZoomRange( int minimumZoom, int maximumZoom );
+%Docstring
+Deletes any existing matrices which fall outside the zoom range specified
+by ``minimumZoom`` to ``maximumZoom``, inclusive.
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the coordinate reference system associated with the tiles.
+
+In the case of a tile set containing mixed CRS at different zoom levels
+this method will return the crs of the minimum zoom tile matrix.
+%End
+
+    double scaleToZoom( double scale ) const;
+%Docstring
+Calculates a fractional zoom level given a map ``scale`` denominator.
+
+The zoom level will be linearly interpolated between zoom levels present in the set.
+%End
+
+    int scaleToZoomLevel( double scale ) const;
+%Docstring
+Finds the best fitting (integer) zoom level given a map ``scale`` denominator.
+
+Values are constrained to the zoom levels between :py:func:`~QgsTileMatrixSet.minimumZoom` and :py:func:`~QgsTileMatrixSet.maximumZoom`.
+%End
+
+    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+%Docstring
+Reads the set from an XML ``element``.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes the set to an XML element.
+%End
+
+    Qgis::ScaleToTileZoomLevelMethod scaleToTileZoomMethod() const;
+%Docstring
+Returns the scale to tile zoom method.
+
+.. seealso:: :py:func:`setScaleToTileZoomMethod`
+%End
+
+    void setScaleToTileZoomMethod( Qgis::ScaleToTileZoomLevelMethod method );
+%Docstring
+Sets the scale to tile zoom method.
+
+.. seealso:: :py:func:`scaleToTileZoomMethod`
 %End
 
 };

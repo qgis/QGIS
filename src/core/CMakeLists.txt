@@ -217,6 +217,7 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessing.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
+  processing/qgsprocessingbatch.cpp
   processing/qgsprocessingcontext.cpp
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
@@ -729,6 +730,10 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudrendererregistry.cpp
   pointcloud/qgspointcloudrgbrenderer.cpp
 
+  pointcloud/expression/qgspointcloudexpression.cpp
+  pointcloud/expression/qgspointcloudexpressionnode.cpp
+  pointcloud/expression/qgspointcloudexpressionnodeimpl.cpp
+
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
   labeling/qgslabelingenginesettings.cpp
@@ -817,6 +822,7 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayercache.cpp
   vector/qgsvectorlayerdiagramprovider.cpp
   vector/qgsvectorlayereditbuffer.cpp
+  vector/qgsvectorlayereditbuffergroup.cpp
   vector/qgsvectorlayereditpassthrough.cpp
   vector/qgsvectorlayereditutils.cpp
   vector/qgsvectorlayerelevationproperties.cpp
@@ -840,6 +846,7 @@ set(QGIS_CORE_SRCS
   vectortile/qgsvectortilelayer.cpp
   vectortile/qgsvectortilelayerrenderer.cpp
   vectortile/qgsvectortileloader.cpp
+  vectortile/qgsvectortilematrixset.cpp
   vectortile/qgsvectortilemvtdecoder.cpp
   vectortile/qgsvectortilemvtencoder.cpp
   vectortile/qgsvectortilemvtutils.cpp
@@ -1501,6 +1508,10 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudrendererregistry.h
   pointcloud/qgspointcloudrgbrenderer.h
 
+  pointcloud/expression/qgspointcloudexpression.h
+  pointcloud/expression/qgspointcloudexpressionnode.h
+  pointcloud/expression/qgspointcloudexpressionnodeimpl.h
+
   proj/qgscelestialbody.h
   proj/qgscoordinatereferencesystem.h
   proj/qgscoordinatereferencesystemregistry.h
@@ -1555,6 +1566,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingalgrunnertask.h
+  processing/qgsprocessingbatch.h
   processing/qgsprocessingcontext.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingoutputs.h
@@ -1757,6 +1769,7 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayercache.h
   vector/qgsvectorlayerdiagramprovider.h
   vector/qgsvectorlayereditbuffer.h
+  vector/qgsvectorlayereditbuffergroup.h
   vector/qgsvectorlayereditpassthrough.h
   vector/qgsvectorlayereditutils.h
   vector/qgsvectorlayerelevationproperties.h
@@ -1781,6 +1794,7 @@ set(QGIS_CORE_HDRS
   vectortile/qgsvectortilelayer.h
   vectortile/qgsvectortilelayerrenderer.h
   vectortile/qgsvectortileloader.h
+  vectortile/qgsvectortilematrixset.h
   vectortile/qgsvectortilemvtdecoder.h
   vectortile/qgsvectortilemvtencoder.h
   vectortile/qgsvectortilemvtutils.h
@@ -1899,6 +1913,23 @@ if (WITH_EPT)
   else()
     # Use embedded laz-perf from external/laz-perf
     include_directories(SYSTEM
+    )
+
+    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/lazperf/charbuf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/filestream.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_gpstime10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_nir14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb14.cpp
     )
   endif()
 
@@ -2019,6 +2050,7 @@ target_include_directories(qgis_core PUBLIC
   numericformats
   pal
   pointcloud
+  pointcloud/expression
   processing
   processing/models
   proj
@@ -2166,6 +2198,9 @@ if (WITH_EPT)
   target_link_libraries(qgis_core
     ${ZSTD_LIBRARY}
   )
+  if (LazPerf_FOUND)
+    target_link_libraries(qgis_core ${LazPerf_LIBRARY})
+  endif()
 endif()
 
 if (WITH_PDAL)

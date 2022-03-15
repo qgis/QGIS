@@ -40,16 +40,16 @@ QgsMapToolCapture::Capabilities QgsMapToolAddPart::capabilities() const
   return QgsMapToolCapture::SupportsCurves | QgsMapToolCapture::ValidateGeometries;
 }
 
-bool QgsMapToolAddPart::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+bool QgsMapToolAddPart::supportsTechnique( Qgis::CaptureTechnique technique ) const
 {
   switch ( technique )
   {
-    case QgsMapToolCapture::CaptureTechnique::StraightSegments:
-    case QgsMapToolCapture::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::StraightSegments:
+    case Qgis::CaptureTechnique::Streaming:
       return true;
 
-    case QgsMapToolCapture::CaptureTechnique::CircularString:
-    case QgsMapToolCapture::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::CircularString:
+    case Qgis::CaptureTechnique::Shape:
       return mode() != QgsMapToolCapture::CapturePoint;
   }
   return false;

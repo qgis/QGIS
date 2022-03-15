@@ -26,7 +26,7 @@ class APP_EXPORT QgsMapToolFillRing: public QgsMapToolCapture
     Q_OBJECT
   public:
     QgsMapToolFillRing( QgsMapCanvas *canvas );
-    bool supportsTechnique( CaptureTechnique technique ) const override;
+    bool supportsTechnique( Qgis::CaptureTechnique technique ) const override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:

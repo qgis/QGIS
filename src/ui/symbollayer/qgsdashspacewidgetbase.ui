@@ -62,6 +62,30 @@
      </column>
     </widget>
    </item>
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Pattern length</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="mPatternLengthLabel">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextBrowserInteraction</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -69,7 +93,9 @@
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
+ <connections/>
 </ui>

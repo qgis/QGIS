@@ -169,6 +169,32 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     void setRenderer( QgsPointCloudRenderer *renderer SIP_TRANSFER );
 
+    /**
+     * Sets the string used to define a subset of the layer
+     * \param subset The subset string to be used in a \a QgsPointCloudExpression
+     * \returns TRUE, when setting the subset string was successful, FALSE otherwise
+     *
+     * \since QGIS 3.26
+     */
+    bool setSubsetString( const QString &subset );
+
+    /**
+     * Returns the string used to define a subset of the layer.
+     * \returns The subset string or null QString if not implemented by the provider
+     *
+     * \since QGIS 3.26
+     */
+    QString subsetString() const;
+
+  signals:
+
+    /**
+     * Emitted when the layer's subset string has changed.
+     *
+     * \since QGIS 3.26
+     */
+    void subsetStringChanged();
+
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;

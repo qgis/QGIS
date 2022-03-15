@@ -383,6 +383,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      */
     static QString formatStringForLog( const QString &string );
 
+    /**
+     * Returns TRUE if the dialog is all finalized and can be safely deleted.
+     *
+     * \since QGIS 3.26
+     */
+    virtual bool isFinalized();
+
   signals:
 
     /**
@@ -404,6 +411,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      */
     virtual void runAlgorithm();
 
+    /**
+     * Called when an algorithm task has completed.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void algExecuted( bool successful, const QVariantMap &results );
+
   private slots:
 
     void openHelp();
@@ -412,7 +426,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     void splitterChanged( int pos, int index );
     void mTabWidget_currentChanged( int index );
     void linkClicked( const QUrl &url );
-    void algExecuted( bool successful, const QVariantMap &results );
     void taskTriggered( QgsTask *task );
     void closeClicked();
 

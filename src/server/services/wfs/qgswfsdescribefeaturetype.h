@@ -26,9 +26,18 @@
 #include <QDomDocument>
 #include <QDomElement>
 
+#include "qgsserverinterface.h"
+#include "qgswfsparameters.h"
+
 namespace QgsWfs
 {
-  void setSchemaLayer( QDomElement &parentElement, QDomDocument &doc, const QgsVectorLayer *layer );
+
+  /**
+  * Returns the GML geometry type.
+  */
+  QString getGmlGeometryType( const QgsVectorLayer *layer, QgsWfsParameters::Format format );
+
+  void setSchemaLayer( QDomElement &parentElement, QDomDocument &doc, const QgsVectorLayer *layer, QgsWfsParameters::Format format );
 
   /**
    * Create get capabilities document
@@ -45,4 +54,3 @@ namespace QgsWfs
 } // namespace QgsWfs
 
 #endif
-

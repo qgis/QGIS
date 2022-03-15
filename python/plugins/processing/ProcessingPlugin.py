@@ -366,7 +366,6 @@ class ProcessingPlugin(QObject):
 
             if as_batch:
                 dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
-                dlg.setAttribute(Qt.WA_DeleteOnClose)
                 dlg.show()
                 dlg.exec_()
             else:

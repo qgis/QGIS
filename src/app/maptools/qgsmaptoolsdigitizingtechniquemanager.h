@@ -33,9 +33,6 @@ class QAction;
 class QToolButton;
 
 
-template class APP_EXPORT QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique>;
-
-
 class APP_EXPORT QgsStreamDigitizingSettingsAction: public QWidgetAction
 {
     Q_OBJECT
@@ -53,10 +50,10 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
 {
     Q_OBJECT
   public:
-    static const inline  QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique> settingsDigitizingTechnique = QgsSettingsEntryEnumFlag<QgsMapToolCapture::CaptureTechnique>( QStringLiteral( "/qgis/digitizing/technique" ), QgsSettings::NoSection, QgsMapToolCapture::CaptureTechnique::StraightSegments, QObject::tr( "Current digitizing technique" ), Qgis::SettingsOption::SaveFormerValue ) SIP_SKIP;
+    static const inline  QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> settingsDigitizingTechnique = QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique>( QStringLiteral( "technique" ), QgsSettings::Prefix::QGIS_DIGITIZING, Qgis::CaptureTechnique::StraightSegments, QObject::tr( "Current digitizing technique" ), Qgis::SettingsOption::SaveFormerValue ) SIP_SKIP;
 
-    static const inline QgsSettingsEntryString settingMapToolShapeDefaultForShape = QgsSettingsEntryString( QStringLiteral( "/qgis/digitizing/shape-map-tools/%1/default" ), QgsSettings::NoSection, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
-    static const inline QgsSettingsEntryString settingMapToolShapeCurrent = QgsSettingsEntryString( QStringLiteral( "/qgis/digitizing/shape-map-tools/current" ), QgsSettings::NoSection, QString(), QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
+    static const inline QgsSettingsEntryString settingMapToolShapeDefaultForShape = QgsSettingsEntryString( QStringLiteral( "%1/default" ), QgsSettings::Prefix::QGIS_DIGITIZING_SHAPEMAPTOOLS, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
+    static const inline QgsSettingsEntryString settingMapToolShapeCurrent = QgsSettingsEntryString( QStringLiteral( "current" ), QgsSettings::Prefix::QGIS_DIGITIZING_SHAPEMAPTOOLS, QString(), QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
 
     QgsMapToolsDigitizingTechniqueManager( QObject *parent );
     ~QgsMapToolsDigitizingTechniqueManager();
@@ -68,11 +65,11 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
 
 
   private slots:
-    void setCaptureTechnique( QgsMapToolCapture::CaptureTechnique technique, bool alsoSetShapeTool = true );
+    void setCaptureTechnique( Qgis::CaptureTechnique technique, bool alsoSetShapeTool = true );
     void setShapeTool( const QString &shapeToolId );
 
   private:
-    QMap<QgsMapToolCapture::CaptureTechnique, QAction *> mTechniqueActions;
+    QMap<Qgis::CaptureTechnique, QAction *> mTechniqueActions;
     QHash<QString, QAction *> mShapeActions;
     QMap<QgsMapToolShapeAbstract::ShapeCategory, QToolButton *> mShapeCategoryButtons;
 

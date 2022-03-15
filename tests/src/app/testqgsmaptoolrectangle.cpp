@@ -83,7 +83,7 @@ void TestQgsMapToolRectangle::initTestCase()
   mCanvas->setCurrentLayer( mLayer );
 
   mMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
-  mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::Shape );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
   mCanvas->setMapTool( mMapTool );
 }
 

@@ -168,6 +168,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mAreaUnitsCombo->addItem( tr( "Square Degrees" ), QgsUnitTypes::AreaSquareDegrees );
   mAreaUnitsCombo->addItem( tr( "Map Units" ), QgsUnitTypes::AreaUnknownUnit );
 
+  mTransactionModeComboBox->addItem( tr( "Local Edit Buffer" ), static_cast< int >( Qgis::TransactionMode::Disabled ) );
+  mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Edits are buffered locally and sent to the provider when toggling layer editing mode." ), Qt::ToolTipRole );
+  mTransactionModeComboBox->addItem( tr( "Automatic Transaction Groups" ), static_cast< int >( Qgis::TransactionMode::AutomaticGroups ) );
+  mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Automatic transactional editing means that on supported datasources (postgres databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction." ), Qt::ToolTipRole );
+  mTransactionModeComboBox->addItem( tr( "Buffered Transaction Groups" ), static_cast< int >( Qgis::TransactionMode::BufferedGroups ) );
+  mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is executed within a single transaction on all layers (per provider)." ), Qt::ToolTipRole );
+
   projectionSelector->setShowNoProjection( true );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsProjectProperties::apply );
@@ -242,8 +249,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   {
     if ( layer->isEditable() )
     {
-      mAutoTransaction->setEnabled( false );
-      mAutoTransaction->setToolTip( tr( "Layers are in edit mode. Stop edit mode on all layers to toggle transactional editing." ) );
+      mTransactionModeComboBox->setEnabled( false );
+      mTransactionModeComboBox->setToolTip( tr( "Layers are in edit mode. Stop edit mode on all layers to toggle transactional editing." ) );
     }
   }
 
@@ -258,7 +265,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mStartDateTimeEdit->setDateTime( range.begin() );
   mEndDateTimeEdit->setDateTime( range.end() );
 
-  mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
   mProjectFileLineEdit->setText( QDir::toNativeSeparators( !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath() ) );
   mProjectHomeLineEdit->setShowClearButton( true );
@@ -958,7 +964,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
   mRelationManagerDlg->setLayers( vectorLayers );
 
-  mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
+  mTransactionModeComboBox->setCurrentIndex( mTransactionModeComboBox->findData( static_cast<int>( QgsProject::instance()->transactionMode() ) ) );
   mEvaluateDefaultValues->setChecked( QgsProject::instance()->evaluateDefaultValues() );
   mTrustProjectCheckBox->setChecked( QgsProject::instance()->trustLayerMetadata() );
 
@@ -1091,7 +1097,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setPresetHomePath( QDir::fromNativeSeparators( mProjectHomeLineEdit->text() ) );
 
   // DB-related options
-  QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
+  QgsProject::instance()->setTransactionMode( mTransactionModeComboBox->currentData().value<Qgis::TransactionMode>() );
   QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
   QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
 

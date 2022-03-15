@@ -135,6 +135,35 @@ Ownership of ``renderer`` is transferred to the layer.
 .. seealso:: :py:func:`renderer`
 %End
 
+    bool setSubsetString( const QString &subset );
+%Docstring
+Sets the string used to define a subset of the layer
+
+:param subset: The subset string to be used in a ``:py:class:`QgsPointCloudExpression```
+
+:return: ``True``, when setting the subset string was successful, ``False`` otherwise
+
+.. versionadded:: 3.26
+%End
+
+    QString subsetString() const;
+%Docstring
+Returns the string used to define a subset of the layer.
+
+:return: The subset string or null QString if not implemented by the provider
+
+.. versionadded:: 3.26
+%End
+
+  signals:
+
+    void subsetStringChanged();
+%Docstring
+Emitted when the layer's subset string has changed.
+
+.. versionadded:: 3.26
+%End
+
   private:
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 };

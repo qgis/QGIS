@@ -113,6 +113,15 @@ QVariant QgsVectorTileBasicLabelingListModel::data( const QModelIndex &index, in
     case MaxZoom:
       return style.maxZoomLevel();
 
+    case Label:
+      return style.styleName();
+
+    case Layer:
+      return style.layerName();
+
+    case Filter:
+      return style.filterExpression();
+
   }
   return QVariant();
 }
@@ -309,6 +318,10 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
   setupUi( this );
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
+  mFilterLineEdit->setShowClearButton( true );
+  mFilterLineEdit->setShowSearchIcon( true );
+  mFilterLineEdit->setPlaceholderText( tr( "Filter rules" ) );
+
   QMenu *menuAddRule = new QMenu( btnAddRule );
   menuAddRule->addAction( tr( "Marker" ), this, [this] { addStyle( QgsWkbTypes::PointGeometry ); } );
   menuAddRule->addAction( tr( "Line" ), this, [this] { addStyle( QgsWkbTypes::LineGeometry ); } );
@@ -325,17 +338,22 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
   {
     connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [ = ]( double scale )
     {
-      const int zoom = QgsVectorTileUtils::scaleToZoomLevel( scale, 0, 99 );
+      const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( scale ) : QgsVectorTileUtils::scaleToZoomLevel( scale, 0, 99 );
       mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( zoom ) );
       if ( mProxyModel )
         mProxyModel->setCurrentZoom( zoom );
     } );
-    mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 ) ) );
+    mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 ) ) );
   }
 
   connect( mCheckVisibleOnly, &QCheckBox::toggled, this, [ = ]( bool filter )
   {
     mProxyModel->setFilterVisible( filter );
+  } );
+
+  connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    mProxyModel->setFilterString( text );
   } );
 
   setLayer( layer );
@@ -360,7 +378,7 @@ void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
 
   if ( mMapCanvas )
   {
-    const int zoom = QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
+    const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
     mProxyModel->setCurrentZoom( zoom );
   }
 
@@ -424,11 +442,11 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &prox
 
   if ( mMapCanvas )
   {
-    const int zoom = QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
+    const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
     QList<QgsExpressionContextScope> scopes = context.additionalExpressionContextScopes();
     QgsExpressionContextScope tileScope;
     tileScope.setVariable( "zoom_level", zoom, true );
-    tileScope.setVariable( "vector_tile_zoom", QgsVectorTileUtils::scaleToZoom( mMapCanvas->scale() ), true );
+    tileScope.setVariable( "vector_tile_zoom", mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoom( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoom( mMapCanvas->scale() ), true );
     scopes << tileScope;
     context.setAdditionalExpressionContextScopes( scopes );
   }
@@ -547,19 +565,38 @@ void QgsVectorTileBasicLabelingProxyModel::setFilterVisible( bool enabled )
   invalidateFilter();
 }
 
+void QgsVectorTileBasicLabelingProxyModel::setFilterString( const QString &string )
+{
+  mFilterString = string;
+  invalidateFilter();
+}
+
 bool QgsVectorTileBasicLabelingProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mCurrentZoom < 0 || !mFilterVisible )
-    return true;
+  if ( mCurrentZoom >= 0 && mFilterVisible )
+  {
+    const int rowMinZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicLabelingListModel::MinZoom ).toInt();
+    const int rowMaxZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicLabelingListModel::MaxZoom ).toInt();
 
-  const int rowMinZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicLabelingListModel::MinZoom ).toInt();
-  const int rowMaxZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicLabelingListModel::MaxZoom ).toInt();
+    if ( rowMinZoom >= 0 && rowMinZoom > mCurrentZoom )
+      return false;
 
-  if ( rowMinZoom >= 0 && rowMinZoom > mCurrentZoom )
-    return false;
+    if ( rowMaxZoom >= 0 && rowMaxZoom < mCurrentZoom )
+      return false;
+  }
 
-  if ( rowMaxZoom >= 0 && rowMaxZoom < mCurrentZoom )
-    return false;
+  if ( !mFilterString.isEmpty() )
+  {
+    const QString name = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicLabelingListModel::Label ).toString();
+    const QString layer = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicLabelingListModel::Layer ).toString();
+    const QString filter = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicLabelingListModel::Filter ).toString();
+    if ( !name.contains( mFilterString, Qt::CaseInsensitive )
+         && !layer.contains( mFilterString, Qt::CaseInsensitive )
+         && !filter.contains( mFilterString, Qt::CaseInsensitive ) )
+    {
+      return false;
+    }
+  }
 
   return true;
 }

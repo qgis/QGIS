@@ -335,6 +335,13 @@ Formats an input ``string`` for display in the log tab.
 .. versionadded:: 3.0.1
 %End
 
+    virtual bool isFinalized();
+%Docstring
+Returns ``True`` if the dialog is all finalized and can be safely deleted.
+
+.. versionadded:: 3.26
+%End
+
   signals:
 
     void algorithmFinished( bool successful, const QVariantMap &result );
@@ -354,6 +361,13 @@ Called when the algorithm has finished executing.
     virtual void runAlgorithm();
 %Docstring
 Called when the dialog's algorithm should be run. Must be overridden by subclasses.
+%End
+
+    virtual void algExecuted( bool successful, const QVariantMap &results );
+%Docstring
+Called when an algorithm task has completed.
+
+.. versionadded:: 3.26
 %End
 
 };

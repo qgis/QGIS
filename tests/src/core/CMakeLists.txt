@@ -40,6 +40,7 @@ set(TESTS
  testqgsconnectionpool.cpp
  testqgscoordinatereferencesystemregistry.cpp
  testqgscoordinatetransform.cpp
+ testqgscoordinateutils.cpp
  testqgscopyfiletask.cpp
  testqgscredentials.cpp
  testqgscurve.cpp
@@ -136,6 +137,7 @@ set(TESTS
  testqgspainteffectregistry.cpp
  testqgspallabeling.cpp
  testqgspointcloudattribute.cpp
+ testqgspointcloudexpression.cpp
  testqgspointcloudrendererregistry.cpp
  testqgspointlocator.cpp
  testqgspointpatternfillsymbol.cpp
@@ -171,6 +173,7 @@ set(TESTS
  testqgsspatialindexkdbush.cpp
  testqgssqliteexpressioncompiler.cpp
  testqgssqliteutils.cpp
+ testqgsrelation.cpp
  testqgsstatisticalsummary.cpp
  testqgsstoredexpressionmanager.cpp
  testqgsstringutils.cpp

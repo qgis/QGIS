@@ -92,12 +92,6 @@ QString QgsProcessingModelAlgorithm::helpUrl() const
   return mHelpContent.value( QStringLiteral( "HELP_URL" ) ).toString();
 }
 
-QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
-{
-  // TODO - check child algorithms, if they all support threading, then the model supports threading...
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
-}
-
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error ) const
 {
   error.clear();
@@ -398,12 +392,88 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       childTime.start();
 
       bool ok = false;
-      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
+
+      QThread *modelThread = QThread::currentThread();
+
+      auto prepareOnMainThread = [modelThread, &ok, &childAlg, &childParams, &context, &modelFeedback]
+      {
+        Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->prepare() must be run on the main thread" );
+        ok = childAlg->prepare( childParams, context, &modelFeedback );
+        context.pushToThread( modelThread );
+      };
+
+      // Make sure we only run prepare steps on the main thread!
+      if ( modelThread == qApp->thread() )
+        ok = childAlg->prepare( childParams, context, &modelFeedback );
+      else
+      {
+        context.pushToThread( qApp->thread() );
+        QMetaObject::invokeMethod( qApp, prepareOnMainThread, Qt::BlockingQueuedConnection );
+      }
+
+      Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
+
       if ( !ok )
       {
         const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
         throw QgsProcessingException( error );
       }
+
+      QVariantMap results;
+      try
+      {
+        if ( childAlg->flags() & QgsProcessingAlgorithm::FlagNoThreading )
+        {
+          // child algorithm run step must be called on main thread
+          auto runOnMainThread = [modelThread, &context, &modelFeedback, &results, &childAlg, &childParams]
+          {
+            Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->runPrepared() must be run on the main thread" );
+            results = childAlg->runPrepared( childParams, context, &modelFeedback );
+            context.pushToThread( modelThread );
+          };
+
+          if ( feedback && !skipGenericLogging && modelThread != qApp->thread() )
+            feedback->pushWarning( QObject::tr( "Algorithm “%1” cannot be run in a background thread, switching to main thread for this step" ).arg( childAlg->displayName() ) );
+
+          context.pushToThread( qApp->thread() );
+          QMetaObject::invokeMethod( qApp, runOnMainThread, Qt::BlockingQueuedConnection );
+        }
+        else
+        {
+          // safe to run on model thread
+          results = childAlg->runPrepared( childParams, context, &modelFeedback );
+        }
+      }
+      catch ( QgsProcessingException & )
+      {
+        const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
+        throw QgsProcessingException( error );
+      }
+
+      Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
+
+      QVariantMap ppRes;
+      auto postProcessOnMainThread = [modelThread, &ppRes, &childAlg, &context, &modelFeedback]
+      {
+        Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->postProcess() must be run on the main thread" );
+        ppRes = childAlg->postProcess( context, &modelFeedback );
+        context.pushToThread( modelThread );
+      };
+
+      // Make sure we only run postProcess steps on the main thread!
+      if ( modelThread == qApp->thread() )
+        ppRes = childAlg->postProcess( context, &modelFeedback );
+      else
+      {
+        context.pushToThread( qApp->thread() );
+        QMetaObject::invokeMethod( qApp, postProcessOnMainThread, Qt::BlockingQueuedConnection );
+      }
+
+      Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
+
+      if ( !ppRes.isEmpty() )
+        results = ppRes;
+
       childResults.insert( childId, results );
 
       // look through child alg's outputs to determine whether any of these should be copied

@@ -1859,7 +1859,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void labelingFontNotFound( QgsVectorLayer *vlayer, const QString &fontfamily );
 
     //! Alerts user when commit errors occurred
-    void commitError( QgsVectorLayer *vlayer );
+    void commitError( QgsVectorLayer *vlayer, const QStringList &commitErrorsList = QStringList() );
 
     //! Opens the labeling dialog for a layer when called from labelingFontNotFound alert
     void labelingDialogFontNotFound( QAction *act );
@@ -1885,8 +1885,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! add Python cnosole at start up
     void initPythonConsoleOptions();
 
-    //! Shows a warning when an old project file is read.
-    void oldProjectVersionWarning( const QString & );
+    //! Shows a warning when an older/newer project file is read.
+    void projectVersionMismatchOccurred( const QString &projectVersion );
 
     //! Toggle map tips on/off
     void toggleMapTips( bool enabled );

@@ -24,13 +24,15 @@
 #include "qgspointcloudblock.h"
 #include "qgspointcloudattribute.h"
 
-#include "laz-perf/io.hpp"
-#include "laz-perf/common/common.hpp"
+#include "lazperf/lazperf.hpp"
+#include "lazperf/readers.hpp"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
 #include <QString>
+
+class QgsPointCloudExpression;
 
 namespace QgsEptDecoder
 {
@@ -42,12 +44,12 @@ namespace QgsEptDecoder
     int offset;
   };
 
-  QgsPointCloudBlock *decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset );
-  QgsPointCloudBlock *decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset );
-  QgsPointCloudBlock *decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset );
-  QgsPointCloudBlock *decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset );
-  QgsPointCloudBlock *decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset );
-  QgsPointCloudBlock *decompressLaz( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset );
+  QgsPointCloudBlock *decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression );
+  QgsPointCloudBlock *decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression );
+  QgsPointCloudBlock *decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression );
+  QgsPointCloudBlock *decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression );
+  QgsPointCloudBlock *decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression );
+  QgsPointCloudBlock *decompressLaz( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression );
 
   //! Returns the list of extrabytes attributes with their type, size and offsets represented in the LAS file
   template<typename FileType>
@@ -60,8 +62,8 @@ namespace QgsEptDecoder
 
     file.seekg( 0 );
 
-    laszip::io::reader::basic_file<FileType> f( file );
-    int point_record_length = f.get_header().point_record_length;
+    lazperf::reader::generic_file f( file );
+    int point_record_length = f.header().point_record_length;
 
     // Read VLR stuff
 
@@ -100,8 +102,8 @@ namespace QgsEptDecoder
     VlrHeader extraBytesVlrHeader;
     int extraBytesDescriptorsOffset = -1;
 
-    file.seekg( f.get_header().header_size );
-    for ( unsigned int i = 0; i < f.get_header().vlr_count && file.good() && !file.eof(); ++i )
+    file.seekg( f.header().header_size );
+    for ( unsigned int i = 0; i < f.header().vlr_count && file.good() && !file.eof(); ++i )
     {
       VlrHeader vlrHeader;
       file.read( ( char * )&vlrHeader, sizeof( VlrHeader ) );
@@ -109,7 +111,7 @@ namespace QgsEptDecoder
       if ( std::equal( vlrHeader.user_id, vlrHeader.user_id + 9, "LASF_Spec" ) && vlrHeader.record_id == 4 )
       {
         extraBytesVlrHeader = vlrHeader;
-        extraBytesDescriptorsOffset = f.get_header().header_size + sizeof( VlrHeader );
+        extraBytesDescriptorsOffset = f.header().header_size + sizeof( VlrHeader );
       }
     }
 

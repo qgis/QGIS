@@ -31,7 +31,6 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudrequest.h"
-#include "qgscolorramptexture.h"
 #include "qgspointcloud3dsymbol_p.h"
 
 #include <QtConcurrent>
@@ -82,7 +81,8 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [pc, pcNode, this]
+  const QgsAABB bbox = node->bbox();
+  const QFuture<void> future = QtConcurrent::run( [pc, pcNode, bbox, this]
   {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
 
@@ -91,7 +91,10 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
       QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
       return;
     }
+
     mHandler->processNode( pc, pcNode, mContext );
+    if ( mContext.symbol()->renderAsTriangles() )
+      mHandler->triangulate( pc, pcNode, mContext, bbox );
   } );
 
   // emit finished() as soon as the handler is populated with features
@@ -223,11 +226,15 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map,
+    const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol,
+    float maximumScreenSpaceError, bool showBoundingBoxes,
+    double zValueScale, double zValueOffset,
+    int pointBudget )
   : QgsChunkedEntity( maximumScreenSpaceError,
                       new QgsPointCloudLayerChunkLoaderFactory( map, coordinateTransform, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
 {
-  setUsingAdditiveStrategy( true );
+  setUsingAdditiveStrategy( !symbol->renderAsTriangles() );
   setShowBoundingBoxes( showBoundingBoxes );
 }
 

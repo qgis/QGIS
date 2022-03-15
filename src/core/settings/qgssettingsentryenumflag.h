@@ -31,7 +31,7 @@
  * \since QGIS 3.20
  */
 template <typename T>
-class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
+class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
 {
   public:
 
@@ -46,7 +46,7 @@ class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
      * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
      * \note for Python bindings, a custom implementation is achieved in Python directly
      */
-    QgsSettingsEntryEnumFlag( const QString &key, QgsSettings::Section section, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
+    QgsSettingsEntryEnumFlag( const QString &key, const QString &section, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
       : QgsSettingsEntryByValue<T>( key,
                                     section,
                                     QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),

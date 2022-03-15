@@ -560,6 +560,10 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   // As we ignore blank fields we need to map original index
   // of selected fields to index in combo box.
 
+  // Add an empty item for M and Z field
+  cmbMField->addItem( QString() );
+  cmbZField->addItem( QString() );
+
   int fieldNo = 0;
   for ( int i = 0; i < fieldList.size(); i++ )
   {

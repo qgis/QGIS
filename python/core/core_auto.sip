@@ -507,6 +507,7 @@
 %Include auto_generated/processing/qgsprocessing.sip
 %Include auto_generated/processing/qgsprocessingalgorithm.sip
 %Include auto_generated/processing/qgsprocessingalgrunnertask.sip
+%Include auto_generated/processing/qgsprocessingbatch.sip
 %Include auto_generated/processing/qgsprocessingcontext.sip
 %Include auto_generated/processing/qgsprocessingfeedback.sip
 %Include auto_generated/processing/qgsprocessingoutputs.sip
@@ -672,6 +673,7 @@
 %Include auto_generated/vector/qgsvectorlayer.sip
 %Include auto_generated/vector/qgsvectorlayercache.sip
 %Include auto_generated/vector/qgsvectorlayereditbuffer.sip
+%Include auto_generated/vector/qgsvectorlayereditbuffergroup.sip
 %Include auto_generated/vector/qgsvectorlayereditpassthrough.sip
 %Include auto_generated/vector/qgsvectorlayereditutils.sip
 %Include auto_generated/vector/qgsvectorlayerelevationproperties.sip
@@ -690,6 +692,7 @@
 %Include auto_generated/vectortile/qgsvectortilebasicrenderer.sip
 %Include auto_generated/vectortile/qgsvectortilelabeling.sip
 %Include auto_generated/vectortile/qgsvectortilelayer.sip
+%Include auto_generated/vectortile/qgsvectortilematrixset.sip
 %Include auto_generated/vectortile/qgsvectortilerenderer.sip
 %Include auto_generated/vectortile/qgsvectortilewriter.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip

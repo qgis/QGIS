@@ -265,6 +265,11 @@ class QgsNetworkLoggerRequestGroup final : public QgsNetworkLoggerGroup
     QUrl url() const { return mUrl; }
 
     /**
+     * Returns TRUE if the request was served directly from local cache.
+     */
+    bool replyFromCache() const { return mReplyFromCache; }
+
+    /**
      * Called to set the \a reply associated with the request.
      *
      * Will automatically create children encapsulating the reply details.
@@ -316,6 +321,7 @@ class QgsNetworkLoggerRequestGroup final : public QgsNetworkLoggerGroup
     QByteArray mData;
     Status mStatus = Status::Pending;
     bool mHasSslErrors = false;
+    bool mReplyFromCache = false;
     QList< QPair< QString, QString > > mHeaders;
     QgsNetworkLoggerRequestDetailsGroup *mDetailsGroup = nullptr;
     QgsNetworkLoggerReplyGroup *mReplyGroup = nullptr;

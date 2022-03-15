@@ -229,7 +229,7 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
         self.assertTrue(valuesModel)
 
         layer = QgsVectorLayer(
-            "None?field=myarray:string[]&field=mystr:string&field=myint:integer",
+            "None?field=myarray:string[]&field=mystr:string&field=myint:integer&field=myintarray:int[]&field=mydoublearray:double[]",
             "arraylayer", "memory")
 
         self.assertTrue(layer.isValid())
@@ -237,17 +237,17 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
         # add some features, one has invalid geometry
         pr = layer.dataProvider()
         f1 = QgsFeature(1)
-        f1.setAttributes([["one 'item'", 'B'], "another 'item'", 0])
+        f1.setAttributes([["one 'item'", 'B'], "another 'item'", 0, [1, 2], [1.1, 2.1]])
         f2 = QgsFeature(2)
-        f2.setAttributes([['C'], "", 1])
+        f2.setAttributes([['C'], "", 1, [3, 4], [-0.1, 2.0]])
         f3 = QgsFeature(3)
-        f3.setAttributes([[], "test", 2])
+        f3.setAttributes([[], "test", 2, [], []])
         f4 = QgsFeature(4)
         self.assertTrue(pr.addFeatures([f1, f2, f3, f4]))
 
         w.setLayer(layer)
 
-        # test array
+        # test string array
         items = w.expressionTree().findExpressions("myarray")
         self.assertEqual(len(items), 1)
         currentIndex = w.expressionTree().model().mapFromSource(items[0].index())
@@ -296,6 +296,40 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
                                  ("1", "1"),
                                  ("2", "2"),
                                  ("NULL [NULL]", "NULL")])
+
+        # test int array
+        items = w.expressionTree().findExpressions("myintarray")
+        self.assertEqual(len(items), 1)
+        currentIndex = w.expressionTree().model().mapFromSource(items[0].index())
+        self.assertTrue(currentIndex.isValid())
+        w.expressionTree().setCurrentIndex(currentIndex)
+        self.assertTrue(w.expressionTree().currentItem())
+
+        w.loadAllValues()
+
+        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.UserRole + 1)) for i in range(4)])
+        self.assertEqual(datas, [(" [array()]", "array()"),
+                                 ("1, 2 [array(1, 2)]", "array(1, 2)"),
+                                 ("3, 4 [array(3, 4)]", "array(3, 4)"),
+                                 ("NULL [NULL]", "NULL"),
+                                 ])
+
+        # test double array
+        items = w.expressionTree().findExpressions("mydoublearray")
+        self.assertEqual(len(items), 1)
+        currentIndex = w.expressionTree().model().mapFromSource(items[0].index())
+        self.assertTrue(currentIndex.isValid())
+        w.expressionTree().setCurrentIndex(currentIndex)
+        self.assertTrue(w.expressionTree().currentItem())
+
+        w.loadAllValues()
+
+        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.UserRole + 1)) for i in range(4)])
+        self.assertEqual(datas, [(" [array()]", "array()"),
+                                 ("-0.1, 2 [array(-0.1, 2)]", "array(-0.1, 2)"),
+                                 ("1.1, 2.1 [array(1.1, 2.1)]", "array(1.1, 2.1)"),
+                                 ("NULL [NULL]", "NULL"),
+                                 ])
 
 
 if __name__ == '__main__':

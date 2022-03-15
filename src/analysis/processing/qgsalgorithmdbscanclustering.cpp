@@ -272,7 +272,7 @@ void QgsDbscanClusteringAlgorithm::stdbscan( const std::size_t minSize,
     {
       index.within( point, eps1, [&within, pointId = feat.id(), &idToDateTime, &eps2]( const QgsSpatialIndexKDBushData & data )
       {
-        if ( idToDateTime.empty() || ( idToDateTime[ data.id ].isValid() && std::abs( idToDateTime[ pointId ].secsTo( idToDateTime[ data.id ] ) ) <= eps2 ) )
+        if ( idToDateTime.empty() || ( idToDateTime[ data.id ].isValid() && std::abs( idToDateTime[ pointId ].msecsTo( idToDateTime[ data.id ] ) ) <= eps2 ) )
           within.insert( data );
       } );
       if ( within.size() < minSize )
@@ -316,7 +316,7 @@ void QgsDbscanClusteringAlgorithm::stdbscan( const std::size_t minSize,
       std::unordered_set< QgsSpatialIndexKDBushData, KDBushDataHashById, KDBushDataEqualById > within2;
       index.within( point2, eps1, [&within2, point2Id = j.id, &idToDateTime, &eps2]( const QgsSpatialIndexKDBushData & data )
       {
-        if ( idToDateTime.empty() || ( idToDateTime[ data.id ].isValid() && std::abs( idToDateTime[ point2Id ].secsTo( idToDateTime[ data.id ] ) ) <= eps2 ) )
+        if ( idToDateTime.empty() || ( idToDateTime[ data.id ].isValid() && std::abs( idToDateTime[ point2Id ].msecsTo( idToDateTime[ data.id ] ) ) <= eps2 ) )
           within2.insert( data );
       } );
 

@@ -51,7 +51,9 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
       //! Render the point cloud with a color ramp
       ColorRamp,
       //! Render the RGB colors of the point cloud
-      RgbRendering
+      RgbRendering,
+      //! Render the point cloud with classified colors
+      Classification
     };
 
     //! Constructor for QgsPointCloud3DSymbol
@@ -83,8 +85,107 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     //! Used to fill material object with necessary QParameters (and consequently opengl uniforms)
     virtual void fillMaterial( Qt3DRender::QMaterial *material ) = 0 SIP_SKIP;
 
+    /**
+     * Returns whether points are triangulated to render solid surface
+     *
+     * \since QGIS 3.26
+     */
+    bool renderAsTriangles() const;
+
+    /**
+     * Sets whether points are triangulated to render solid surface
+     *
+     * \since QGIS 3.26
+     */
+    void setRenderAsTriangles( bool asTriangles );
+
+    /**
+     * Returns whether triangles are filtered by horizontal size for rendering. If the triangles are horizontally filtered by size,
+     * triangles with a horizontal side size greater than a threshold value will not be rendered, see horizontalFilterThreshold().
+     *
+     * \since QGIS 3.26
+     */
+    bool horizontalTriangleFilter() const;
+
+    /**
+     * Sets whether whether triangles are filtered by horizontal size for rendering. If the triangles are horizontally filtered by size,
+     * triangles with a horizontal side size greater than a threshold value will not be rendered, see setHorizontalFilterThreshold().
+     *
+     * \since QGIS 3.26
+     */
+    void setHorizontalTriangleFilter( bool horizontalTriangleFilter );
+
+    /**
+     * Returns the threshold horizontal size value for filtering triangles. If the triangles are horizontally filtered by size,
+     * triangles with a horizontal side size greater than a threshold value will not be rendered, see horizontalTriangleFilter().
+     *
+     * \since QGIS 3.26
+     */
+    float horizontalFilterThreshold() const;
+
+    /**
+     * Sets the threshold horizontal size value for filtering triangles. If the triangles are horizontally filtered by size,
+     * triangles with a horizontal side size greater than a threshold value will not be rendered, see setHorizontalTriangleFilter().
+     *
+     * \since QGIS 3.26
+     */
+    void setHorizontalFilterThreshold( float horizontalFilterThreshold );
+
+    /**
+     * Returns whether triangles are filtered by vertical height for rendering. If the triangles are vertically filtered, triangles with a vertical height greater
+     * than a threshold value will not be rendered, see verticalFilterThreshold().
+     *
+     * \since QGIS 3.26
+     */
+    bool verticalTriangleFilter() const;
+
+    /**
+     * Sets whether triangles are filtered by vertical height for rendering. If the triangles are vertically filtered, triangles with a vertical height greater
+     * than a threshold value will not be rendered, see setVerticalFilterThreshold().
+     *
+     * \since QGIS 3.26
+     */
+    void setVerticalTriangleFilter( bool verticalTriangleFilter );
+
+    /**
+     * Returns the threshold vertical height value for filtering triangles. If the triangles are filtered vertically, triangles with a vertical height greater
+     * than this threshold value will not be rendered, see verticalTriangleFilter().
+     *
+     * \since QGIS 3.26
+     */
+    float verticalFilterThreshold() const;
+
+    /**
+     * Sets the threshold vertical height value for filtering triangles. If the triangles are filtered vertically, triangles with a vertical height greater
+     * than this threshold value will not be rendered, see setVerticalTriangleFilter().
+     *
+     * \since QGIS 3.26
+     */
+    void setVerticalFilterThreshold( float verticalFilterThreshold );
+
   protected:
     float mPointSize = 2.0;
+    bool mRenderAsTriangles = false;
+    bool mHorizontalTriangleFilter = false;
+    float mHorizontalFilterThreshold = 10.0;
+    bool mVerticalTriangleFilter = false;
+    float mVerticalFilterThreshold = 10.0;
+
+    /**
+     * Writes symbol configuration of this class to the given DOM element
+     *
+     * \since QGIS 3.26
+     */
+    void writeBaseXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Reads symbol configuration of this class from the given DOM element
+     *
+     * \since QGIS 3.26
+     */
+    void readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    void copyBaseSettings( QgsAbstract3DSymbol *destination ) const override;
 };
 
 /**

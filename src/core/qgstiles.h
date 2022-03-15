@@ -19,8 +19,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsreadwritecontext.h"
 
 /**
  * \ingroup core
@@ -107,19 +109,47 @@ class CORE_EXPORT QgsTileMatrix
     //! Returns a tile matrix for the usual web mercator
     static QgsTileMatrix fromWebMercator( int zoomLevel );
 
-    //! Returns a tile matrix for a specific CRS, top left point, zoom level 0 dimension in CRS units
+    /**
+     * Returns a tile matrix for a specific CRS, top left point, zoom level 0 dimension in CRS units.
+     *
+     * The \a z0Dimension argument must specify the dimension (width or height, in map units) of the root tiles in zoom level 0.
+     */
     static QgsTileMatrix fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs,
                                         const QgsPointXY &z0TopLeftPoint, double z0Dimension,
                                         int z0MatrixWidth = 1, int z0MatrixHeight = 1 );
 
     //! Returns a tile matrix based on another one
-    static QgsTileMatrix fromTileMatrix( const int &zoomLevel, const QgsTileMatrix &tileMatrix );
+    static QgsTileMatrix fromTileMatrix( int zoomLevel, const QgsTileMatrix &tileMatrix );
 
-    //! Returns the authority identifier for the CRS of the tile matrix
+    /**
+     * Returns the crs of the tile matrix.
+     *
+     * \see setCrs()
+     */
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
-    //! Returns zoom level of the tile matrix
+    /**
+     * Sets the \a crs of the tile matrix.
+     *
+     * \see crs()
+     * \since QGIS 3.22.6
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs;}
+
+    /**
+     * Returns the zoom level of the tile matrix.
+     *
+     * \see setZoomLevel()
+     */
     int zoomLevel() const { return mZoomLevel; }
+
+    /**
+     * Sets the zoom \a level of the tile matrix.
+     *
+     * \see zoomLevel()
+     * \since QGIS 3.22.6
+     */
+    void setZoomLevel( int level ) { mZoomLevel = level; }
 
     //! Returns number of columns of the tile matrix
     int matrixWidth() const { return mMatrixWidth; }
@@ -130,8 +160,20 @@ class CORE_EXPORT QgsTileMatrix
     //! Returns extent of the tile matrix
     QgsRectangle extent() const { return mExtent; }
 
-    //! Returns scale denominator of the tile matrix
+    /**
+     * Returns scale denominator of the tile matrix.
+     *
+     * \see setScale()
+     */
     double scale() const { return mScaleDenom; }
+
+    /**
+     * Sets the scale denominator of the tile matrix.
+     *
+     * \see scale()
+     * \since QGIS 3.22.6
+     */
+    void setScale( double scale ) { mScaleDenom = scale; }
 
     //! Returns extent of the given tile in this matrix
     QgsRectangle tileExtent( QgsTileXYZ id ) const;
@@ -165,6 +207,113 @@ class CORE_EXPORT QgsTileMatrix
     double mTileXSpan;
     //! Height of a single tile in map units (derived from extent and matrix size)
     double mTileYSpan;
+
+    friend class QgsTileMatrixSet;
+};
+
+
+/**
+ * \ingroup core
+ * \brief Defines a set of tile matrices for multiple zoom levels.
+ *
+ * \since QGIS 3.22.6
+ */
+class CORE_EXPORT QgsTileMatrixSet
+{
+
+  public:
+
+    virtual ~QgsTileMatrixSet() = default;
+
+    /**
+     * Adds tile matrices corresponding to the standard web mercator/GoogleCRS84Quad setup.
+     */
+    void addGoogleCrs84QuadTiles( int minimumZoom = 0, int maximumZoom = 14 );
+
+    /**
+     * Returns the tile matrix corresponding to the specified \a zoom.
+     */
+    QgsTileMatrix tileMatrix( int zoom ) const;
+
+    /**
+     * Adds a \a matrix to the set.
+     *
+     * Any existing matrix with the same QgsTileMatrix::zoomLevel() will be replaced.
+     */
+    void addMatrix( const QgsTileMatrix &matrix );
+
+    /**
+     * Returns the minimum zoom level for tiles present in the set.
+     *
+     * \see maximumZoom()
+     */
+    int minimumZoom() const;
+
+    /**
+     * Returns the maximum zoom level for tiles present in the set.
+     *
+     * \see minimumZoom()
+     */
+    int maximumZoom() const;
+
+    /**
+     * Deletes any existing matrices which fall outside the zoom range specified
+     * by \a minimumZoom to \a maximumZoom, inclusive.
+     */
+    void dropMatricesOutsideZoomRange( int minimumZoom, int maximumZoom );
+
+    /**
+     * Returns the coordinate reference system associated with the tiles.
+     *
+     * In the case of a tile set containing mixed CRS at different zoom levels
+     * this method will return the crs of the minimum zoom tile matrix.
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Calculates a fractional zoom level given a map \a scale denominator.
+     *
+     * The zoom level will be linearly interpolated between zoom levels present in the set.
+     */
+    double scaleToZoom( double scale ) const;
+
+    /**
+     * Finds the best fitting (integer) zoom level given a map \a scale denominator.
+     *
+     * Values are constrained to the zoom levels between minimumZoom() and maximumZoom().
+     */
+    int scaleToZoomLevel( double scale ) const;
+
+    /**
+     * Reads the set from an XML \a element.
+     *
+     * \see writeXml()
+     */
+    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+
+    /**
+     * Writes the set to an XML element.
+     */
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Returns the scale to tile zoom method.
+     *
+     * \see setScaleToTileZoomMethod()
+     */
+    Qgis::ScaleToTileZoomLevelMethod scaleToTileZoomMethod() const { return mScaleToTileZoomMethod; }
+
+    /**
+     * Sets the scale to tile zoom method.
+     *
+     * \see scaleToTileZoomMethod()
+     */
+    void setScaleToTileZoomMethod( Qgis::ScaleToTileZoomLevelMethod method ) { mScaleToTileZoomMethod = method; }
+
+  private:
+
+    QMap< int, QgsTileMatrix > mTileMatrices;
+    Qgis::ScaleToTileZoomLevelMethod mScaleToTileZoomMethod = Qgis::ScaleToTileZoomLevelMethod::MapBox;
 };
 
 #endif // QGSTILES_H

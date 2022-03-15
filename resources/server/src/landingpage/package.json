@@ -30,7 +30,7 @@
     "vue-cli-plugin-vuetify": "~2.4.5",
     "vue-template-compiler": "^2.6.14",
     "vuetify-loader": "^1.7.3",
-    "webpack-license-plugin": "^4.2.1"
+    "webpack-license-plugin": "^4.2.2"
   },
   "eslintConfig": {
     "root": true,

@@ -27,7 +27,11 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     Q_OBJECT
 
   public:
-    QgsTransformSettingsDialog( const QString &raster, const QString &output, QWidget *parent = nullptr );
+
+    static const inline QgsSettingsEntryString settingLastDestinationFolder = QgsSettingsEntryString( QStringLiteral( "last-destination-folder" ), QgsSettings::Prefix::APP_GEOREFERENCER, QString(), QObject::tr( "Last used folder for georeferencer destination files" ) );
+    static const inline QgsSettingsEntryString settingLastPdfFolder = QgsSettingsEntryString( QStringLiteral( "last-pdf-folder" ), QgsSettings::Prefix::APP_GEOREFERENCER, QString(), QObject::tr( "Last used folder for georeferencer PDF report files" ) );
+
+    QgsTransformSettingsDialog( QgsMapLayerType type, const QString &source, const QString &output, QWidget *parent = nullptr );
 
     /**
      * Sets the selected target \a crs.
@@ -49,10 +53,100 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
      */
     void setCreateWorldFileOnly( bool enabled );
 
-    void getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
-                               QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
-                               QString &raster, QString &pdfMapFile, QString &pdfReportFile, bool &saveGcpPoints, bool &zt, bool &loadInQgis,
-                               double &resX, double &resY );
+    /**
+     * Returns the selected transform method.
+     */
+    QgsGcpTransformerInterface::TransformMethod transformMethod() const;
+
+    /**
+     * Sets the selected transform method.
+     */
+    void setTransformMethod( QgsGcpTransformerInterface::TransformMethod method );
+
+    /**
+     * Returns the selected resampling method.
+     */
+    QgsImageWarper::ResamplingMethod resamplingMethod() const;
+
+    /**
+     * Sets the selected resampling method.
+     */
+    void setResamplingMethod( QgsImageWarper::ResamplingMethod method );
+
+    /**
+     * Returns the selected compression method.
+     */
+    QString compressionMethod() const;
+
+    /**
+     * Sets the selected compression \a method.
+     */
+    void setCompressionMethod( const QString &method );
+
+    /**
+     * Returns the destination filename.
+     */
+    QString destinationFilename() const;
+
+    /**
+     * Returns the filename for the PDF report.
+     */
+    QString pdfReportFilename() const;
+
+    /**
+     * Sets the \a filename for the PDF report.
+     */
+    void setPdfReportFilename( const QString &filename );
+
+    /**
+     * Returns the filename for the PDF map.
+     */
+    QString pdfMapFilename() const;
+
+    /**
+     * Sets the \a filename for the PDF map.
+     */
+    void setPdfMapFilename( const QString &filename );
+
+    /**
+     * Returns TRUE if GCP points should be automatically saved.
+     */
+    bool saveGcpPoints() const;
+
+    /**
+     * Sets whether GCP points should be automatically saved.
+     */
+    void setSaveGcpPoints( bool save );
+
+    /**
+     * Returns TRUE if the use zero for transparent option is checked.
+     */
+    bool useZeroForTransparent() const;
+
+    /**
+     * Sets whether the use zero for transparent option is checked.
+     */
+    void setUseZeroForTransparent( bool enabled );
+
+    /**
+     * Returns TRUE if the load result in project option is checked.
+     */
+    bool loadInProject() const;
+
+    /**
+     * Sets whether the load result in project option is checked.
+     */
+    void setLoadInProject( bool enabled );
+
+    /**
+     * Retrieves the output resolution set in the dialog.
+     */
+    void outputResolution( double &resX, double &resY );
+
+    /**
+     * Sets the output resolution shown in the dialog.
+     */
+    void setOutputResolution( double resX, double resY );
 
   protected:
     void accept() override;
@@ -63,9 +157,10 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     void showHelp();
 
   private:
-    QString generateModifiedRasterFileName( const QString &raster );
+    QString generateModifiedFileName( const QString &filename );
 
-    QString mSourceRasterFile;
+    QgsMapLayerType mType = QgsMapLayerType::RasterLayer;
+    QString mSourceFile;
 };
 
 #endif // QGSTRANSFORMSETTINGSDIALOG_H
