@@ -1377,7 +1377,19 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   // unless in strict mode, label overrun should NEVER exceed the label length (or labels would sit off in space).
   // in fact, let's require that a minimum of 5% of the label text has to sit on the feature,
   // as we don't want a label sitting right at the start or end corner of a line
-  double overrun = mLF->lineAnchorType() == QgsLabelLineSettings::AnchorType::HintOnly ? std::min( mLF->overrunDistance(), totalCharacterWidth * 0.95 ) : mLF->overrunDistance();
+  double overrun = 0;
+  switch ( mLF->lineAnchorType() )
+  {
+    case QgsLabelLineSettings::AnchorType::HintOnly:
+      overrun = std::min( mLF->overrunDistance(), totalCharacterWidth * 0.95 );
+      break;
+    case QgsLabelLineSettings::AnchorType::Strict:
+      // in strict mode, we force sufficient overrun to ensure label will always "fit", even if it's placed
+      // so that the label start sits right on the end of the line OR the label end sits right on the start of the line
+      overrun = std::max( mLF->overrunDistance(), totalCharacterWidth );
+      break;
+  }
+
   if ( totalCharacterWidth > shapeLength )
   {
     if ( !allowOverrun || shapeLength < totalCharacterWidth - 2 * overrun )
