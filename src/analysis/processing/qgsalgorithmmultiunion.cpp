@@ -68,7 +68,7 @@ QgsProcessingAlgorithm *QgsMultiUnionAlgorithm::createInstance() const
 void QgsMultiUnionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "OVERLAYS" ), QObject::tr( "Overlay layers" ), QgsProcessing::TypeVector, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "OVERLAYS" ), QObject::tr( "Overlay layers" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true ) );
 
   std::unique_ptr< QgsProcessingParameterString > prefix = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
   prefix->setFlags( prefix->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
@@ -124,9 +124,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
   else
   {
     QgsProcessingMultiStepFeedback multiStepFeedback( totalLayerCount, feedback );
-
-    QString id = QStringLiteral( "memory:" );
-    QgsVectorLayer *unionLayer;
+    QgsVectorLayer *unionLayer = nullptr;
     QgsFields fields;
 
     long i = 0;
@@ -146,6 +144,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
 
       if ( i == 0 )
       {
+        QString id = QStringLiteral( "memory:" );
         fields = QgsProcessingUtils::combineFields( sourceA->fields(), overlayLayer->fields(), overlayFieldsPrefix );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
         ok = makeUnion( *sourceA, *overlayLayer, *sink, context, &multiStepFeedback );
@@ -172,6 +171,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
       }
       else
       {
+        QString id = QStringLiteral( "memory:" );
         fields = QgsProcessingUtils::combineFields( unionLayer->fields(), overlayLayer->fields(), overlayFieldsPrefix );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
         ok = makeUnion( *unionLayer, *overlayLayer, *sink, context, &multiStepFeedback );

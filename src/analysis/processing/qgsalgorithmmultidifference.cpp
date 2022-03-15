@@ -68,7 +68,7 @@ QgsProcessingAlgorithm *QgsMultiDifferenceAlgorithm::createInstance() const
 void QgsMultiDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "OVERLAYS" ), QObject::tr( "Overlay layers" ), QgsProcessing::TypeVector ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "OVERLAYS" ), QObject::tr( "Overlay layers" ), QgsProcessing::TypeVectorAnyGeometry ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Difference" ) ) );
 }
 
@@ -120,9 +120,7 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
   else
   {
     QgsProcessingMultiStepFeedback multiStepFeedback( totalLayerCount, feedback );
-
-    QString id = QStringLiteral( "memory:" );
-    QgsVectorLayer *differenceLayer;
+    QgsVectorLayer *differenceLayer = nullptr;
 
     long i = 0;
     for ( QgsMapLayer *layer : layers )
@@ -142,6 +140,7 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
       count = 0;
       if ( i == 0 )
       {
+        QString id = QStringLiteral( "memory:" );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, sourceA->fields(), geometryType, crs ) );
         QgsOverlayUtils::difference( *sourceA, *overlayLayer, *sink, context, &multiStepFeedback, count, sourceA->featureCount(), QgsOverlayUtils::OutputA );
 
@@ -160,6 +159,7 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
       }
       else
       {
+        QString id = QStringLiteral( "memory:" );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, differenceLayer->fields(), geometryType, crs ) );
         QgsOverlayUtils::difference( *differenceLayer, *overlayLayer, *sink, context, &multiStepFeedback, count, differenceLayer->featureCount(), QgsOverlayUtils::OutputA );
 

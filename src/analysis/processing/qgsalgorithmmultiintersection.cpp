@@ -65,7 +65,7 @@ QgsProcessingAlgorithm *QgsMultiIntersectionAlgorithm::createInstance() const
 void QgsMultiIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "OVERLAYS" ), QObject::tr( "Overlay layers" ), QgsProcessing::TypeVector ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "OVERLAYS" ), QObject::tr( "Overlay layers" ), QgsProcessing::TypeVectorAnyGeometry ) );
 
   std::unique_ptr< QgsProcessingParameterString > prefix = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
   prefix->setFlags( prefix->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
@@ -134,9 +134,7 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
   else
   {
     QgsProcessingMultiStepFeedback multiStepFeedback( totalLayerCount, feedback );
-
-    QString id = QStringLiteral( "memory:" );
-    QgsVectorLayer *intersectionLayer;
+    QgsVectorLayer *intersectionLayer = nullptr;
 
     long i = 0;
     for ( QgsMapLayer *layer : layers )
@@ -164,6 +162,7 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
                          QgsProcessingUtils::indicesToFields( fieldIndicesB, overlayLayer->fields() ),
                          overlayFieldsPrefix );
 
+        QString id = QStringLiteral( "memory:" );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, outputFields, geometryType, crs ) );
         QgsOverlayUtils::intersection( *sourceA, *overlayLayer, *sink, context, &multiStepFeedback, count, sourceA->featureCount(), fieldIndicesA, fieldIndicesB );
 
@@ -198,6 +197,7 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
                          QgsProcessingUtils::indicesToFields( fieldIndicesB, overlayLayer->fields() ),
                          overlayFieldsPrefix );
 
+        QString id = QStringLiteral( "memory:" );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, outputFields, geometryType, crs ) );
         QgsOverlayUtils::intersection( *intersectionLayer, *overlayLayer, *sink, context, &multiStepFeedback, count, intersectionLayer->featureCount(), fieldIndicesA, fieldIndicesB );
 
