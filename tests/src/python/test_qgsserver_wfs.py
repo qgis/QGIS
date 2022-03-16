@@ -27,7 +27,6 @@ import urllib.error
 from qgis.server import QgsServerRequest
 
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
@@ -548,6 +547,11 @@ class TestQgsServerWFS(QgsServerTestBase):
 
         self.wfs_request_compare(
             "GetFeature", '1.1.0', "SRSNAME=urn:ogc:def:crs:EPSG::4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0')
+
+    def test_get_feature_srsname_empty(self):
+        """Test GetFeature with an empty SRSNAME."""
+        self.wfs_request_compare(
+            "GetFeature", '1.1.0', "TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0_srsname')
 
     def test_getFeature_EXP_FILTER_regression_20927(self):
         """Test expressions with EXP_FILTER"""
