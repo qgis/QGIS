@@ -96,12 +96,15 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( const QgsRectangle &currentExt
 
   mExpressionTextEdit->setCurrentFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
 
+  mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   if ( meshLayer )
   {
-    mExtentGroupBox->setOriginalExtent( meshLayer->extent(), meshLayer->dataProvider()->crs() );
-    mExtentGroupBox->setOutputExtentFromOriginal();
+    mExtentGroupBox->setOutputExtentFromLayer( meshLayer );
   }
-  mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
+  else
+  {
+    mExtentGroupBox->setOutputExtentFromCurrent();
+  }
 
   repopulateTimeCombos();
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );

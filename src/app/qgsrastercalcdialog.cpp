@@ -88,13 +88,10 @@ QgsRasterCalcDialog::QgsRasterCalcDialog(
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   if ( rasterLayer )
   {
-    mExtentGroupBox->setOriginalExtent( rasterLayer->extent(), rasterLayer->dataProvider()->crs() );
-    mExtentGroupBox->setOutputExtentFromOriginal();
-
+    mExtentGroupBox->setOutputExtentFromLayer( rasterLayer );
     mExtentGroupBox->setOutputCrs( outputCrs() );
     mExtentSizeSet = true;
   }
-
 
   //add supported output formats
   insertAvailableOutputFormats();
