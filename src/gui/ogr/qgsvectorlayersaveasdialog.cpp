@@ -686,7 +686,7 @@ void QgsVectorLayerSaveAsDialog::mUseAliasesForExportedName_stateChanged( int st
       {
         if ( QMessageBox::question( this,
                                     tr( "Modified names" ),
-                                    tr( "Some names where modified and will be overridden. Do you want to continue?" ) )
+                                    tr( "Some names were modified and will be overridden. Do you want to continue?" ) )
              == QMessageBox::No )
         {
           whileBlocking( mUseAliasesForExportedName )->setCheckState( Qt::PartiallyChecked );
@@ -716,7 +716,7 @@ void QgsVectorLayerSaveAsDialog::mUseAliasesForExportedName_stateChanged( int st
       {
         if ( QMessageBox::question( this,
                                     tr( "Modified names" ),
-                                    tr( "Some names where modified and will be overridden. Do you want to continue?" ) )
+                                    tr( "Some names were modified and will be overridden. Do you want to continue?" ) )
              == QMessageBox::No )
         {
           whileBlocking( mUseAliasesForExportedName )->setCheckState( Qt::PartiallyChecked );
