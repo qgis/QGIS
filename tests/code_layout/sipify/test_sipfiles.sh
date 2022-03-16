@@ -6,9 +6,9 @@ srcdir=$(dirname $0)/../../
 
 DIR=$(git -C ${srcdir} rev-parse --show-toplevel)
 
-# GNU prefix command for mac os support (gsed, gsplit)
+# GNU prefix command for bsd/mac os support (gsed, gsplit)
 GP=
-if [[ "$OSTYPE" =~ darwin* ]]; then
+if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
   GP=g
 fi
 
