@@ -2288,6 +2288,20 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.selectByExpression('"Heading"=95', QgsVectorLayer.RemoveFromSelection)
         self.assertEqual(set(layer.selectedFeatureIds()), set([]))
 
+        # test using specific expression context
+        layer.selectByExpression('"Class"=@class and "Heading" > @low_heading and "Heading" <@high_heading', QgsVectorLayer.SetSelection)
+        # default built context won't have variables used in the expression
+        self.assertFalse(layer.selectedFeatureIds())
+
+        context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+        context.lastScope().setVariable('class', 'B52')
+        context.lastScope().setVariable('low_heading', 10)
+        context.lastScope().setVariable('high_heading', 70)
+        # using custom context should allow the expression to be evaluated correctly
+        layer.selectByExpression('"Class"=@class and "Heading" > @low_heading and "Heading" <@high_heading',
+                                 QgsVectorLayer.SetSelection, context)
+        self.assertCountEqual(layer.selectedFeatureIds(), [10, 11])
+
     def testSelectByRect(self):
         """ Test selecting by rectangle """
         layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
