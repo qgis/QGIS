@@ -150,6 +150,11 @@ bool QgsMaskMarkerSymbolLayer::usesMapUnits() const
          || ( mSymbol && mSymbol->usesMapUnits() );
 }
 
+QColor QgsMaskMarkerSymbolLayer::color() const
+{
+  return QColor();
+}
+
 void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {
   if ( !context.renderContext().painter() )

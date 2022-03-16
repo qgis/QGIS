@@ -1258,6 +1258,7 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    QColor color() const override;
 
   protected:
     QString mPath;
@@ -1308,6 +1309,7 @@ class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolL
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    QColor color() const override;
 
     /**
      * Returns the gradient color mode, which controls how gradient color stops are created.
