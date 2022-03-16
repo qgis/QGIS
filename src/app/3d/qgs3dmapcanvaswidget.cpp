@@ -155,7 +155,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
   mOptionsMenu->addAction( mActionEnableEyeDome );
 
-  mActionSync2DNavTo3D = new QAction( tr( "Sync 2D Navigation to 3D Navigation" ) );
+  mActionSync2DNavTo3D = new QAction( tr( "2D Map View Follows 3D Camera" ), this );
   mActionSync2DNavTo3D->setCheckable( true );
   connect( mActionSync2DNavTo3D, &QAction::triggered, this, [ = ]( bool enabled )
   {
@@ -165,7 +165,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
   mOptionsMenu->addAction( mActionSync2DNavTo3D );
 
-  mActionSync3DNavTo2D = new QAction( tr( "Sync 2D Navigation to 3D Navigation" ) );
+  mActionSync3DNavTo2D = new QAction( tr( "3D Camera Follows 2D Map View" ), this );
   mActionSync3DNavTo2D->setCheckable( true );
   connect( mActionSync3DNavTo2D, &QAction::triggered, this, [ = ]( bool enabled )
   {
@@ -175,7 +175,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
   mOptionsMenu->addAction( mActionSync3DNavTo2D );
 
-  mShowFrustumPolyogon = new QAction( tr( "Show 3D view frustum in main map canvas" ) );
+  mShowFrustumPolyogon = new QAction( tr( "Show Visible Camera Area in 2D Map View" ), this );
   mShowFrustumPolyogon->setCheckable( true );
   connect( mShowFrustumPolyogon, &QAction::triggered, this, [ = ]( bool enabled )
   {
