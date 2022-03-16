@@ -40,7 +40,7 @@
 #include "odbc/ResultSetMetaDataUnicode.h"
 #include "odbc/Statement.h"
 
-using namespace qgs::odbc;
+using namespace NS_ODBC;
 
 namespace
 {

@@ -41,7 +41,7 @@
 #include "odbc/ResultSet.h"
 #include "odbc/ResultSetMetaDataUnicode.h"
 
-using namespace qgs::odbc;
+using namespace NS_ODBC;
 using namespace std;
 
 namespace
@@ -246,7 +246,7 @@ namespace
         else
         {
           QTime t = value.toTime();
-          stmt->setTime( paramIndex, makeNullable<qgs::odbc::time>( t.hour(), t.minute(), t.second() ) );
+          stmt->setTime( paramIndex, makeNullable<NS_ODBC::time>( t.hour(), t.minute(), t.second() ) );
         }
         break;
       case SQLDataTypes::Timestamp:
@@ -258,7 +258,7 @@ namespace
           QDateTime dt = value.toDateTime();
           QDate d = dt.date();
           QTime t = dt.time();
-          stmt->setTimestamp( paramIndex, makeNullable<qgs::odbc::timestamp>( d.year(),
+          stmt->setTimestamp( paramIndex, makeNullable<NS_ODBC::timestamp>( d.year(),
                               d.month(), d.day(), t.hour(), t.minute(), t.second(), t.msec() ) );
         }
         break;
@@ -776,7 +776,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           ResultSetRef rsIdentity = stmtIdentityValue->executeQuery();
           if ( rsIdentity->next() )
           {
-            qgs::odbc::Long id = rsIdentity->getLong( 1 );
+            NS_ODBC::Long id = rsIdentity->getLong( 1 );
             if ( !id.isNull() )
               feature.setId( static_cast<QgsFeatureId>( *id ) );
           }

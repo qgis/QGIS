@@ -32,7 +32,7 @@
 
 #include <chrono>
 
-using namespace qgs::odbc;
+using namespace NS_ODBC;
 
 QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )

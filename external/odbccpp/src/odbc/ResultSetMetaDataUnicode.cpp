@@ -7,9 +7,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace qgs {
-//------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 ResultSetMetaDataUnicode::ResultSetMetaDataUnicode(StatementBase* stmt)
     : ResultSetMetaDataBase(stmt)
@@ -78,6 +76,4 @@ u16string ResultSetMetaDataUnicode::getStringColAttribute(
     return u16string(&buffer[0]);
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
-//------------------------------------------------------------------------------
-} // namespace qgs
+NS_ODBC_END

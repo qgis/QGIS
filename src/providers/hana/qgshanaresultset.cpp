@@ -24,7 +24,7 @@
 #include "odbc/PreparedStatement.h"
 #include "odbc/Statement.h"
 
-using namespace qgs::odbc;
+using namespace NS_ODBC;
 
 QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )

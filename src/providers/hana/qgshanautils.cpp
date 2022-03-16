@@ -22,7 +22,7 @@
 #include <QTime>
 #include <QDateTime>
 
-using namespace qgs::odbc;
+using namespace NS_ODBC;
 
 namespace
 {

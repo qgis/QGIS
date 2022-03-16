@@ -1,11 +1,10 @@
 #ifndef ODBC_FORWARDS_H_INCLUDED
 #define ODBC_FORWARDS_H_INCLUDED
 //------------------------------------------------------------------------------
+#include <odbc/Config.h>
 #include <odbc/RefCounted.h>
 //------------------------------------------------------------------------------
-namespace qgs {
-//------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 class Connection;
 class DatabaseMetaData;
@@ -36,8 +35,6 @@ typedef Reference<StatementBase> StatementBaseRef;
 typedef Reference<Statement> StatementRef;
 typedef Reference<ValueBuffer> ValueBufferRef;
 //------------------------------------------------------------------------------
-} // namespace odbc
-//------------------------------------------------------------------------------
-} // namespace qgs
+NS_ODBC_END
 //------------------------------------------------------------------------------
 #endif
