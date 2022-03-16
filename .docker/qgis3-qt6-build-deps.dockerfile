@@ -1,4 +1,6 @@
-FROM fedora:34 as single
+ARG DISTRO_VERSION=36
+
+FROM fedora:${DISTRO_VERSION} as single
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
 RUN dnf -y install \
@@ -13,12 +15,18 @@ RUN dnf -y install \
     git \
     gdal-devel \
     geos-devel \
+    grass \
+    grass-devel \
     gsl-devel \
     libpq-devel \
     libspatialite-devel \
+    libxml2-devel \
     libzip-devel \
     libzstd-devel \
+    netcdf-devel \
     ninja-build \
+    ocl-icd-devel \
+    PDAL-devel \
     proj-devel \
     protobuf-devel \
     protobuf-lite-devel \

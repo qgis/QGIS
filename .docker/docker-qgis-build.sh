@@ -52,6 +52,12 @@ if [[ ${PATCH_QT_3D} == "true" ]]; then
   )
 fi
 
+if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
+  CMAKE_EXTRA_ARGS+=(
+    "-DGRASS_PREFIX$( grass --config version | cut -b 1 )=$( grass --config path )"
+  )
+fi
+
 cmake \
  -GNinja \
  -DUSE_CCACHE=OFF \
@@ -62,7 +68,8 @@ cmake \
  -DWITH_QUICK=${WITH_QUICK} \
  -DWITH_3D=${WITH_3D} \
  -DWITH_STAGED_PLUGINS=ON \
- -DWITH_GRASS=OFF \
+ -DWITH_GRASS7=${WITH_GRASS7} \
+ -DWITH_GRASS8=${WITH_GRASS8} \
  -DSUPPRESS_QT_WARNINGS=ON \
  -DENABLE_TESTS=ON \
  -DENABLE_MODELTEST=${WITH_QT5} \
@@ -82,7 +89,7 @@ cmake \
  -DWITH_SERVER=${WITH_QT5} \
  -DWITH_SERVER_LANDINGPAGE_WEBAPP=${WITH_QT5} \
  -DWITH_ORACLE=${WITH_QT5} \
- -DWITH_PDAL=${WITH_QT5} \
+ -DWITH_PDAL=ON \
  -DWITH_QT5SERIALPORT=${WITH_QT5} \
  -DWITH_QTWEBKIT=${WITH_QT5} \
  -DWITH_OAUTH2_PLUGIN=${WITH_QT5} \
