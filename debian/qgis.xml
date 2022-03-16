@@ -12,7 +12,7 @@
     </magic>
     <glob pattern="*.qgs"/>
   </mime-type>
-  
+
   <mime-type type="application/x-qgis-project-container">
     <comment>QGIS Project</comment>
     <comment xml:lang="de">QGIS-Projekt</comment>
@@ -32,7 +32,7 @@
     </magic>
     <glob pattern="*.qml"/>
   </mime-type>
-  
+
   <mime-type type="application/x-qgis-layer-definition">
     <comment>QGIS layer definition</comment>
     <comment xml:lang="de">QGIS-Layerdefinition</comment>
@@ -67,11 +67,11 @@
               <match type="big32" offset="16" value="0">
                 <match type="big32" offset="20" value="0">
                   <match type="big32" offset="28" value="1000"/>
-		</match>
+                </match>
               </match>
-	    </match>
-	  </match>
-	</match>
+            </match>
+          </match>
+        </match>
       </match>
     </magic>
     <glob pattern="*.shp"/>
@@ -130,7 +130,7 @@
                 <match type="byte" offset="13" value="10">
                   <match type="byte" offset="14" value="135">
                     <match type="byte" offset="13" value="10"/>
-		  </match>
+                  </match>
                 </match>
               </match>
             </match>
