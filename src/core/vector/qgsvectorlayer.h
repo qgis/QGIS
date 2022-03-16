@@ -770,11 +770,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param expression expression to evaluate to select features
      * \param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
+     * \param context since QGIS 3.26, specifies an optional expression context to use when selecting features. If not specified a default one will be built.
      * \see selectByRect()
      * \see selectByIds()
      * \since QGIS 2.16
      */
-    Q_INVOKABLE void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
+    Q_INVOKABLE void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection, QgsExpressionContext *context = nullptr );
 
     /**
      * Selects matching features using a list of feature IDs. Will emit the

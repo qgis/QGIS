@@ -110,6 +110,7 @@
 #include <QRegularExpression>
 
 #include <limits>
+#include <optional>
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -493,16 +494,21 @@ void QgsVectorLayer::selectByRect( QgsRectangle &rect, Qgis::SelectBehavior beha
   selectByIds( newSelection, behavior );
 }
 
-void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::SelectBehavior behavior )
+void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::SelectBehavior behavior, QgsExpressionContext *context )
 {
   QgsFeatureIds newSelection;
 
-  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
+  std::optional< QgsExpressionContext > defaultContext;
+  if ( !context )
+  {
+    defaultContext.emplace( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
+    context = &defaultContext.value();
+  }
 
   if ( behavior == Qgis::SelectBehavior::SetSelection || behavior == Qgis::SelectBehavior::AddToSelection )
   {
     QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( expression )
-                                .setExpressionContext( context )
+                                .setExpressionContext( *context )
                                 .setFlags( QgsFeatureRequest::NoGeometry )
                                 .setNoAttributes();
 
@@ -522,7 +528,7 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
   else if ( behavior == Qgis::SelectBehavior::IntersectSelection || behavior == Qgis::SelectBehavior::RemoveFromSelection )
   {
     QgsExpression exp( expression );
-    exp.prepare( &context );
+    exp.prepare( context );
 
     QgsFeatureIds oldSelection = selectedFeatureIds();
     QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( oldSelection );
@@ -536,8 +542,8 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
     QgsFeature feat;
     while ( features.nextFeature( feat ) )
     {
-      context.setFeature( feat );
-      bool matches = exp.evaluate( &context ).toBool();
+      context->setFeature( feat );
+      bool matches = exp.evaluate( context ).toBool();
 
       if ( matches && behavior == Qgis::SelectBehavior::IntersectSelection )
       {

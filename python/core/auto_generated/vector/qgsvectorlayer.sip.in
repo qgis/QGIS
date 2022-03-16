@@ -661,13 +661,14 @@ Selects features found within the search rectangle (in layer's coordinates)
 .. seealso:: :py:func:`selectByIds`
 %End
 
-    void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
+    void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection, QgsExpressionContext *context = 0 );
 %Docstring
 Selects matching features using an expression.
 
 :param expression: expression to evaluate to select features
 :param behavior: selection type, allows adding to current selection, removing
                  from selection, etc.
+:param context: since QGIS 3.26, specifies an optional expression context to use when selecting features. If not specified a default one will be built.
 
 .. seealso:: :py:func:`selectByRect`
 
