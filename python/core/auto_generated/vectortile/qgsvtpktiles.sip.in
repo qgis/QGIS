@@ -62,6 +62,11 @@ Returns the VTPK sprites definitions.
 Returns the VTPK sprite image, if it exists.
 %End
 
+    QgsLayerMetadata layerMetadata() const;
+%Docstring
+Reads layer metadata from the VTPK file.
+%End
+
     QgsVectorTileMatrixSet matrixSet() const;
 %Docstring
 Returns the vector tile matrix set representing the tiles.

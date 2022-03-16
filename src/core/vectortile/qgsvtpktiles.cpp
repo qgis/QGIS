@@ -22,10 +22,12 @@
 #include "qgsarcgisrestutils.h"
 #include "qgsmbtiles.h"
 #include "qgsziputils.h"
+#include "qgslayermetadata.h"
 
 #include <QFile>
 #include <QImage>
-
+#include <QDomDocument>
+#include <QTextDocumentFragment>
 #include "zip.h"
 #include <iostream>
 
@@ -237,6 +239,93 @@ QImage QgsVtpkTiles::spriteImage() const
   }
 
   return QImage();
+}
+
+QgsLayerMetadata QgsVtpkTiles::layerMetadata() const
+{
+  if ( !mZip )
+    return QgsLayerMetadata();
+
+  const char *name = "esriinfo/iteminfo.xml";
+  struct zip_stat stat;
+  zip_stat_init( &stat );
+  zip_stat( mZip, name, 0, &stat );
+
+  const size_t len = stat.size;
+  QByteArray buf( len, Qt::Uninitialized );
+
+  QgsLayerMetadata metadata;
+  //Read the compressed file
+  zip_file *file = zip_fopen( mZip, name, 0 );
+  if ( zip_fread( file, buf.data(), len ) != -1 )
+  {
+    zip_fclose( file );
+    file = nullptr;
+
+    QDomDocument doc;
+    QString errorMessage;
+    int errorLine = 0;
+    int errorColumn = 0;
+    if ( !doc.setContent( buf, false, &errorMessage, &errorLine, &errorColumn ) )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Error reading layer metadata (line %1, col %2): %3" ).arg( errorLine ).arg( errorColumn ).arg( errorMessage ) );
+    }
+    else
+    {
+      metadata.setType( QStringLiteral( "dataset" ) );
+
+      const QDomElement infoElement = doc.firstChildElement( QStringLiteral( "ESRI_ItemInformation" ) );
+
+      const QDomElement guidElement = infoElement.firstChildElement( QStringLiteral( "guid" ) );
+      metadata.setIdentifier( guidElement.text() );
+
+      const QDomElement nameElement = infoElement.firstChildElement( QStringLiteral( "name" ) );
+      metadata.setTitle( nameElement.text() );
+
+      const QDomElement descriptionElement = infoElement.firstChildElement( QStringLiteral( "description" ) );
+      metadata.setAbstract( QTextDocumentFragment::fromHtml( descriptionElement.text() ).toPlainText() );
+
+      const QDomElement tagsElement = infoElement.firstChildElement( QStringLiteral( "tags" ) );
+
+      const QStringList rawTags = tagsElement.text().split( ',' );
+      QStringList tags;
+      tags.reserve( rawTags.size() );
+      for ( const QString &tag : rawTags )
+        tags.append( tag.trimmed() );
+      metadata.addKeywords( QStringLiteral( "keywords" ), tags );
+
+      const QDomElement accessInformationElement = infoElement.firstChildElement( QStringLiteral( "accessinformation" ) );
+      metadata.setRights( { accessInformationElement.text() } );
+
+      const QDomElement licenseInfoElement = infoElement.firstChildElement( QStringLiteral( "licenseinfo" ) );
+      metadata.setLicenses( { QTextDocumentFragment::fromHtml( licenseInfoElement.text() ).toPlainText() } );
+
+      const QDomElement extentElement = infoElement.firstChildElement( QStringLiteral( "extent" ) );
+      const double xMin = extentElement.firstChildElement( QStringLiteral( "xmin" ) ).text().toDouble();
+      const double xMax = extentElement.firstChildElement( QStringLiteral( "xmax" ) ).text().toDouble();
+      const double yMin = extentElement.firstChildElement( QStringLiteral( "ymin" ) ).text().toDouble();
+      const double yMax = extentElement.firstChildElement( QStringLiteral( "ymax" ) ).text().toDouble();
+
+      QgsCoordinateReferenceSystem crs = matrixSet().crs();
+
+      QgsLayerMetadata::SpatialExtent spatialExtent;
+      spatialExtent.bounds = QgsBox3d( QgsRectangle( xMin, yMin, xMax, yMax ) );
+      spatialExtent.extentCrs = QgsCoordinateReferenceSystem( "EPSG:4326" );
+      QgsLayerMetadata::Extent extent;
+      extent.setSpatialExtents( { spatialExtent } );
+      metadata.setExtent( extent );
+      metadata.setCrs( crs );
+
+      return metadata;
+    }
+  }
+  else
+  {
+    zip_fclose( file );
+    file = nullptr;
+    QgsMessageLog::logMessage( QObject::tr( "Error reading layer metadata: '%1'" ).arg( zip_strerror( mZip ) ) );
+  }
+  return metadata;
 }
 
 QgsVectorTileMatrixSet QgsVtpkTiles::matrixSet() const

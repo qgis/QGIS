@@ -26,6 +26,7 @@
 class QImage;
 class QgsRectangle;
 class QgsVectorTileMatrixSet;
+class QgsLayerMetadata;
 
 /**
  * \ingroup core
@@ -74,6 +75,11 @@ class CORE_EXPORT QgsVtpkTiles
      * Returns the VTPK sprite image, if it exists.
      */
     QImage spriteImage() const;
+
+    /**
+     * Reads layer metadata from the VTPK file.
+     */
+    QgsLayerMetadata layerMetadata() const;
 
     /**
      * Returns the vector tile matrix set representing the tiles.
