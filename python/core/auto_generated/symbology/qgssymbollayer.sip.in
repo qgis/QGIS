@@ -198,38 +198,95 @@ when desired.
 
     virtual QColor color() const;
 %Docstring
-The fill color.
+Returns the "representative" color of the symbol layer.
+
+Depending on the symbol layer type, this will have different meaning. For instance, a line
+symbol layer will generally return the stroke color of the layer, while a fill symbol layer
+will return the "fill" color instead of stroke.
+
+Some symbol layer types will return an invalid QColor if they have no representative
+color associated (e.g. raster image based symbol layers).
+
+.. seealso:: :py:func:`setColor`
+
+.. seealso:: :py:func:`strokeColor`
+
+.. seealso:: :py:func:`fillColor`
 %End
 
     virtual void setColor( const QColor &color );
 %Docstring
-The fill color.
+Sets the "representative" color for the symbol layer.
+
+Depending on the symbol layer type, this will have different meaning. For instance, a line
+symbol layer will generally set the stroke color of the layer, while a fill symbol layer
+will set the "fill" color instead of stroke.
+
+.. seealso:: :py:func:`color`
+
+.. seealso:: :py:func:`setStrokeColor`
+
+.. seealso:: :py:func:`setFillColor`
 %End
 
     virtual void setStrokeColor( const QColor &color );
 %Docstring
-Set stroke color. Supported by marker and fill layers.
+Sets the stroke ``color`` for the symbol layer.
+
+This property is not supported by all symbol layer types, only those with a stroke component.
+
+.. seealso:: :py:func:`strokeColor`
+
+.. seealso:: :py:func:`setColor`
+
+.. seealso:: :py:func:`setFillColor`
 
 .. versionadded:: 2.1
 %End
 
     virtual QColor strokeColor() const;
 %Docstring
-Gets stroke color. Supported by marker and fill layers.
+Returns the stroke color for the symbol layer.
+
+This property is not supported by all symbol layer types, only those with a stroke component. Symbol
+layers without a stroke component will return an invalid QColor.
+
+.. seealso:: :py:func:`setStrokeColor`
+
+.. seealso:: :py:func:`color`
+
+.. seealso:: :py:func:`fillColor`
 
 .. versionadded:: 2.1
 %End
 
     virtual void setFillColor( const QColor &color );
 %Docstring
-Set fill color. Supported by marker and fill layers.
+Sets the fill ``color`` for the symbol layer.
+
+This property is not supported by all symbol layer types, only those with a fill component.
+
+.. seealso:: :py:func:`fillColor`
+
+.. seealso:: :py:func:`setColor`
+
+.. seealso:: :py:func:`setStrokeColor`
 
 .. versionadded:: 2.1
 %End
 
     virtual QColor fillColor() const;
 %Docstring
-Gets fill color. Supported by marker and fill layers.
+Returns the fill color for the symbol layer.
+
+This property is not supported by all symbol layer types, only those with a fill component. Symbol
+layers without a fill component will return an invalid QColor.
+
+.. seealso:: :py:func:`setFillColor`
+
+.. seealso:: :py:func:`color`
+
+.. seealso:: :py:func:`strokeColor`
 
 .. versionadded:: 2.1
 %End

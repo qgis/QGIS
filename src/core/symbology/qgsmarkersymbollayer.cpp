@@ -3134,6 +3134,11 @@ bool QgsRasterMarkerSymbolLayer::usesMapUnits() const
          || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
+QColor QgsRasterMarkerSymbolLayer::color() const
+{
+  return QColor();
+}
+
 void QgsRasterMarkerSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   QgsMarkerSymbolLayer::setMapUnitScale( scale );

@@ -823,13 +823,13 @@ Used internally when reading/writing symbols.
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 
-
     virtual QVariantMap properties() const;
-
 
     virtual QgsRasterMarkerSymbolLayer *clone() const /Factory/;
 
     virtual bool usesMapUnits() const;
+
+    virtual QColor color() const;
 
 
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
