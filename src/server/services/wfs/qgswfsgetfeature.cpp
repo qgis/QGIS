@@ -1223,16 +1223,9 @@ namespace QgsWfs
           QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( rect, doc, srsName, invertAxis, prec );
           if ( !envElem.isNull() )
           {
-            if ( crs.isValid() )
+            if ( crs.isValid() && srsName.isEmpty() )
             {
-              if ( mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) )
-              {
-                envElem.setAttribute( QStringLiteral( "srsName" ), srsName );
-              }
-              else
-              {
-                envElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
-              }
+              envElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
             }
             bbElem.appendChild( envElem );
             doc.appendChild( bbElem );
@@ -1506,9 +1499,13 @@ namespace QgsWfs
           QDomElement bbElem = doc.createElement( QStringLiteral( "gml:boundedBy" ) );
           QDomElement boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, params.srsName, params.hasAxisInverted, prec );
 
-          if ( crs.isValid() )
+          if ( crs.isValid() && params.srsName.isEmpty() )
           {
-            boxElem.setAttribute( QStringLiteral( "srsName" ), params.srsName );
+            boxElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
+            gmlElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
+          }
+          else if ( !params.srsName.isEmpty() )
+          {
             gmlElem.setAttribute( QStringLiteral( "srsName" ), params.srsName );
           }
 
