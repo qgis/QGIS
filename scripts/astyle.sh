@@ -16,7 +16,7 @@
 
 # sort by version option
 SV=V
-if [[ "$OSTYPE" =~ darwin* ]]; then
+if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
 	SV=n
 fi
 
