@@ -38,6 +38,8 @@ class QgsExpressionContext;
  */
 class CORE_EXPORT QgsLabelLineSettings
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -49,6 +51,7 @@ class CORE_EXPORT QgsLabelLineSettings
       SymbolAbove, //!< Place direction symbols on above label
       SymbolBelow //!< Place direction symbols on below label
     };
+    Q_ENUM( DirectionSymbolPlacement )
 
     /**
      * Line anchor types
@@ -58,6 +61,7 @@ class CORE_EXPORT QgsLabelLineSettings
       HintOnly, //!< Line anchor is a hint for preferred placement only, but other placements close to the hint are permitted
       Strict, //!< Line anchor is a strict placement, and other placements are not permitted
     };
+    Q_ENUM( AnchorType )
 
     /**
      * Clipping behavior for line anchor calculation.
@@ -69,6 +73,21 @@ class CORE_EXPORT QgsLabelLineSettings
       UseVisiblePartsOfLine, //!< Only visible parts of lines are considered when calculating the line anchor for labels
       UseEntireLine, //!< Entire original feature line geometry is used when calculating the line anchor for labels
     };
+    Q_ENUM( AnchorClipping )
+
+    /**
+     * Anchor point of label text.
+     *
+     * \since QGIS 3.26
+     */
+    enum class AnchorTextPoint : int
+    {
+      StartOfText, //!< Anchor using start of text
+      CenterOfText, //!< Anchor using center of text
+      EndOfText, //!< Anchor using end of text
+      FollowPlacement, //!< Automatically set the anchor point based on the lineAnchorPercent() value. Values <25% will use the start of text, values > 75% will use the end of text, and values in between will use the center of the text
+    };
+    Q_ENUM( AnchorTextPoint )
 
     /**
      * Returns the line placement flags, which dictate how line labels can be placed
@@ -261,6 +280,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * the end of the line.
      *
      * \see setLineAnchorPercent()
+     * \see anchorTextPoint()
      * \see anchorType()
      * \see anchorClipping()
      */
@@ -275,6 +295,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * the end of the line.
      *
      * \see lineAnchorPercent()
+     * \see setAnchorTextPoint()
      * \see setAnchorType()
      * \see setAnchorClipping()
      */
@@ -324,6 +345,26 @@ class CORE_EXPORT QgsLabelLineSettings
      */
     void setAnchorClipping( AnchorClipping clipping ) { mAnchorClipping = clipping; }
 
+    /**
+     * Returns the line anchor text point, which dictates which part of the label text
+     * should be placed at the lineAnchorPercent().
+     *
+     * \see setAnchorTextPoint()
+     *
+     * \since QGIS 3.26
+     */
+    AnchorTextPoint anchorTextPoint() const { return mAnchorTextPoint; }
+
+    /**
+     * Sets the line anchor text \a point, which dictates which part of the label text
+     * should be placed at the lineAnchorPercent().
+     *
+     * \see anchorTextPoint()
+     *
+     * \since QGIS 3.26
+     */
+    void setAnchorTextPoint( AnchorTextPoint point ) { mAnchorTextPoint = point; }
+
   private:
     QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
     bool mMergeLines = false;
@@ -339,6 +380,7 @@ class CORE_EXPORT QgsLabelLineSettings
     double mLineAnchorPercent = 0.5;
     AnchorType mAnchorType = AnchorType::HintOnly;
     AnchorClipping mAnchorClipping = AnchorClipping::UseVisiblePartsOfLine;
+    AnchorTextPoint mAnchorTextPoint = AnchorTextPoint::FollowPlacement;
 };
 
 #endif // QGSLABELLINESETTINGS_H

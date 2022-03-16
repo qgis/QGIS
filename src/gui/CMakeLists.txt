@@ -288,6 +288,10 @@ set(QGIS_GUI_SRCS
 
   locator/qgslocatorwidget.cpp
 
+  maptools/qgsmaptoolshapeabstract.cpp
+  maptools/qgsmaptoolcapturelayergeometry.cpp
+  maptools/qgsmaptoolshaperegistry.cpp
+
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
   mesh/qgsmeshdatasetgrouptreewidget.cpp
@@ -319,12 +323,14 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingaggregatewidgetwrapper.cpp
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgorithmdialogbase.cpp
+  processing/qgsprocessingbatchalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
   processing/qgsprocessingfeaturesourceoptionswidget.cpp
   processing/qgsprocessingfieldmapwidgetwrapper.cpp
   processing/qgsprocessingguiregistry.cpp
+  processing/qgsprocessinghelpeditorwidget.cpp
   processing/qgsprocessinghistoryprovider.cpp
   processing/qgsprocessingmaplayercombobox.cpp
   processing/qgsprocessingmatrixmodelerwidget.cpp
@@ -476,6 +482,7 @@ set(QGIS_GUI_SRCS
   qgsfieldmappingwidget.cpp
   qgsfieldmappingmodel.cpp
   qgsfeaturelistcombobox.cpp
+  qgsfielddomainwidget.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
   qgsfilecontentsourcelineedit.cpp
@@ -622,6 +629,7 @@ set(QGIS_GUI_SRCS
   qgsstatusbar.cpp
   qgssymbolbutton.cpp
   qgssymbollayerselectionwidget.cpp
+  qgstableview.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
@@ -727,6 +735,7 @@ set(QGIS_GUI_HDRS
   qgsfeaturelistcombobox.h
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
+  qgsfielddomainwidget.h
   qgsfieldexpressionwidget.h
   qgsfieldmappingwidget.h
   qgsfieldmappingmodel.h
@@ -881,6 +890,7 @@ set(QGIS_GUI_HDRS
   qgssubstitutionlistwidget.h
   qgssymbolbutton.h
   qgssymbollayerselectionwidget.h
+  qgstableview.h
   qgstablewidgetbase.h
   qgstablewidgetitem.h
   qgstabwidget.h
@@ -1117,6 +1127,10 @@ set(QGIS_GUI_HDRS
 
   locator/qgslocatorwidget.h
 
+  maptools/qgsmaptoolshapeabstract.h
+  maptools/qgsmaptoolcapturelayergeometry.h
+  maptools/qgsmaptoolshaperegistry.h
+
   mesh/qgsmeshlayerproperties.h
   mesh/qgsrenderermeshpropertieswidget.h
   mesh/qgsmeshdatasetgrouptreeview.h
@@ -1148,6 +1162,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingaggregatewidgetwrapper.h
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
+  processing/qgsprocessingbatchalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
   processing/qgsprocessingdxflayerswidgetwrapper.h
   processing/qgsprocessingenummodelerwidget.h
@@ -1155,6 +1170,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingfieldmapwidgetwrapper.h
   processing/qgsprocessinggui.h
   processing/qgsprocessingguiregistry.h
+  processing/qgsprocessinghelpeditorwidget.h
   processing/qgsprocessinghistoryprovider.h
   processing/qgsprocessingmaplayercombobox.h
   processing/qgsprocessingmatrixmodelerwidget.h
@@ -1467,6 +1483,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
   ${CMAKE_SOURCE_DIR}/src/gui/locator
+  ${CMAKE_SOURCE_DIR}/src/gui/maptools
   ${CMAKE_SOURCE_DIR}/src/gui/mesh
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr

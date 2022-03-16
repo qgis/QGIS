@@ -25,14 +25,18 @@
 
 import warnings
 
+import owslib
 from owslib.fes import BBox, PropertyIsLike
-from owslib.ogcapi.records import Records
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=ResourceWarning)
     warnings.filterwarnings("ignore", category=ImportWarning)
     from owslib.csw import CatalogueServiceWeb  # spellok
 
+if owslib.__version__ < '0.25':
+    OWSLIB_OAREC_SUPPORTED = False
+else:
+    OWSLIB_OAREC_SUPPORTED = True
 
 CATALOG_TYPES = [
     'OGC CSW 2.0.2',
@@ -81,7 +85,8 @@ class CSW202Search(SearchBase):
         self.record_info_template = 'record_metadata_dc.html'
         self.constraints = []
 
-        self.conn = CatalogueServiceWeb(self.url, timeout=self.timeout,  # spellok
+        self.conn = CatalogueServiceWeb(self.url,  # spellok
+                                        timeout=self.timeout,
                                         username=self.username,
                                         password=self.password,
                                         auth=self.auth)
@@ -152,6 +157,12 @@ class CSW202Search(SearchBase):
 
 class OARecSearch(SearchBase):
     def __init__(self, url, timeout, auth):
+        try:
+            from owslib.ogcapi.records import Records
+        except ModuleNotFoundError:
+            # OWSLIB_OAREC_SUPPORTED already set to False
+            pass
+
         super().__init__(url, timeout, auth)
 
         self.type = CATALOG_TYPES[1]
@@ -244,6 +255,8 @@ def get_catalog_service(url, catalog_type, timeout, username, password,
     if catalog_type in [None, CATALOG_TYPES[0]]:
         return CSW202Search(url, timeout, username, password, auth)
     elif catalog_type == CATALOG_TYPES[1]:
+        if not OWSLIB_OAREC_SUPPORTED:
+            raise ValueError("OGC API - Records requires OWSLib 0.25 or above")
         return OARecSearch(url, timeout, auth)
 
 

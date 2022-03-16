@@ -68,6 +68,7 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   else
   {
     const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
+    sym->setDefaultPropertiesFromLayer( layer );
     widgetSymbol->setSymbol( sym.get(), layer );
   }
 }

@@ -56,4 +56,34 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
         mAnchorClipping = AnchorClipping::UseEntireLine;
     }
   }
+
+  if ( properties.isActive( QgsPalLayerSettings::LineAnchorType ) )
+  {
+    bool ok = false;
+    const QString value = properties.valueAsString( QgsPalLayerSettings::LineAnchorType, context, QString(), &ok ).trimmed();
+    if ( ok )
+    {
+      if ( value.compare( QLatin1String( "hint" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorType = AnchorType::HintOnly;
+      else if ( value.compare( QLatin1String( "strict" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorType = AnchorType::Strict;
+    }
+  }
+
+  if ( properties.isActive( QgsPalLayerSettings::LineAnchorTextPoint ) )
+  {
+    bool ok = false;
+    const QString value = properties.valueAsString( QgsPalLayerSettings::LineAnchorTextPoint, context, QString(), &ok ).trimmed();
+    if ( ok )
+    {
+      if ( value.compare( QLatin1String( "follow" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorTextPoint = AnchorTextPoint::FollowPlacement;
+      else if ( value.compare( QLatin1String( "start" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorTextPoint = AnchorTextPoint::StartOfText;
+      else if ( value.compare( QLatin1String( "center" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorTextPoint = AnchorTextPoint::CenterOfText;
+      else if ( value.compare( QLatin1String( "end" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorTextPoint = AnchorTextPoint::EndOfText;
+    }
+  }
 }

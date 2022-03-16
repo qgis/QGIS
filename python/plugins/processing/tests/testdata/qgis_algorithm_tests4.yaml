@@ -884,7 +884,7 @@ tests:
       DATETIME_FIELD: date
       DBSCAN*: false
       EPS: 5.0
-      EPS2: 86400000.0
+      EPS2: 86400000000.0
       FIELD_NAME: CLUSTER_ID
       INPUT:
         name: custom/points_with_date.shp
@@ -2849,6 +2849,25 @@ tests:
     results:
       OUTPUT:
         name: expected/shortest_line_point_to_line_4326_to_3857.shp
+        type: vector
+
+  - algorithm: native:joinattributestable
+    name: Test native:joinattributestable with name conflict, fix for issue 47650
+    params:
+      DISCARD_NONMATCHING: true
+      FIELD: UNIDAD_CONSTRUCCION_ID
+      FIELD_2: ID_2
+      INPUT:
+        name: custom/join_attributes_table_base_table.gml|layername=join_attributes_table_base_table
+        type: vector
+      INPUT_2:
+        name: custom/join_attributes_table_secondary_table.gml|layername=join_attributes_table_secondary_table
+        type: vector
+      METHOD: 0
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_attributes_table_issue_47650.gml
         type: vector
 
 # See ../README.md for a description of the file format

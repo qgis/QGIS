@@ -34,6 +34,7 @@
 #include "qgsmessagebaritem.h"
 #include "qgspanelwidget.h"
 #include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessinghelpeditorwidget.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>
@@ -149,6 +150,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionSnapSelected, &QAction::triggered, mView, &QgsModelGraphicsView::snapSelected );
   connect( mActionValidate, &QAction::triggered, this, &QgsModelDesignerDialog::validate );
   connect( mActionReorderInputs, &QAction::triggered, this, &QgsModelDesignerDialog::reorderInputs );
+  connect( mActionEditHelp, &QAction::triggered, this, &QgsModelDesignerDialog::editHelp );
   connect( mReorderInputsButton, &QPushButton::clicked, this, &QgsModelDesignerDialog::reorderInputs );
 
   mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), false ).toBool() );
@@ -926,6 +928,19 @@ void QgsModelDesignerDialog::setPanelVisibility( bool hidden )
   }
 }
 
+void QgsModelDesignerDialog::editHelp()
+{
+  QgsProcessingHelpEditorDialog dialog( this );
+  dialog.setWindowTitle( tr( "Edit Model Help" ) );
+  dialog.setAlgorithm( mModel.get() );
+  if ( dialog.exec() )
+  {
+    beginUndoCommand( tr( "Edit Model Help" ) );
+    mModel->setHelpContent( dialog.helpContent() );
+    endUndoCommand();
+  }
+}
+
 void QgsModelDesignerDialog::validate()
 {
   QStringList issues;
@@ -1083,7 +1098,7 @@ void QgsModelChildDependenciesWidget::showDialog()
 
 void QgsModelChildDependenciesWidget::updateSummaryText()
 {
-  mLineEdit->setText( tr( "%1 dependencies selected" ).arg( mValue.count() ) );
+  mLineEdit->setText( tr( "%n dependencies selected", nullptr, mValue.count() ) );
 }
 
 ///@endcond

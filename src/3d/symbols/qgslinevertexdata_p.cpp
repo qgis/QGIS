@@ -32,7 +32,7 @@ QgsLineVertexData::QgsLineVertexData()
   vertices << QVector3D();
 }
 
-void QgsLineVertexData::init( Qgs3DTypes::AltitudeClamping clamping, Qgs3DTypes::AltitudeBinding binding, float height, const Qgs3DMapSettings *map )
+void QgsLineVertexData::init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DMapSettings *map )
 {
   altClamping = clamping;
   altBinding = binding;
@@ -107,8 +107,14 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
     indexes << vertices.count();  // add the following vertex (for adjacency)
 
   QgsPoint centroid;
-  if ( altBinding == Qgs3DTypes::AltBindCentroid )
-    centroid = lineString.centroid();
+  switch ( altBinding )
+  {
+    case Qgis::AltitudeBinding::Vertex:
+      break;
+    case Qgis::AltitudeBinding::Centroid:
+      centroid = lineString.centroid();
+      break;
+  }
 
   for ( int i = 0; i < lineString.vertexCount(); ++i )
   {
@@ -128,8 +134,14 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
 void QgsLineVertexData::addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset )
 {
   QgsPoint centroid;
-  if ( altBinding == Qgs3DTypes::AltBindCentroid )
-    centroid = lineString.centroid();
+  switch ( altBinding )
+  {
+    case Qgis::AltitudeBinding::Vertex:
+      break;
+    case Qgis::AltitudeBinding::Centroid:
+      centroid = lineString.centroid();
+      break;
+  }
 
   for ( int i = 0; i < lineString.vertexCount(); ++i )
   {

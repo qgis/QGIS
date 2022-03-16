@@ -26,6 +26,7 @@
 #include <QObject>
 
 class QgsFeedback;
+class QgsFieldDomain;
 
 /**
  * \brief The QgsAbstractDatabaseProviderConnection class provides common functionality
@@ -498,6 +499,10 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       DeleteField = 1 << 19,                          //!< Can delete an existing field/column
       DeleteFieldCascade = 1 << 20,                   //!< Can delete an existing field/column with cascade
       AddField = 1 << 21,                             //!< Can add a new field/column
+      ListFieldDomains = 1 << 22,                     //!< Can return a list of field domain names via fieldDomainNames() (since QGIS 3.26)
+      RetrieveFieldDomain = 1 << 23,                  //!< Can retrieve field domain details from provider via fieldDomain() (since QGIS 3.26)
+      SetFieldDomain = 1 << 24,                       //!< Can set the domain for an existing field via setFieldDomainName() (since QGIS 3.26)
+      AddFieldDomain = 1 << 25,                       //!< Can add new field domains to the database via addFieldDomain() (since QGIS 3.26)
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -805,6 +810,56 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     * \since QGIS 3.22
     */
     virtual QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
+
+    /**
+     * Returns a list of field domain names present on the provider.
+     *
+     * This is supported on providers with the Capability::ListFieldDomains capability only.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     *
+     * \see fieldDomain()
+     * \since QGIS 3.26
+     */
+    virtual QStringList fieldDomainNames() const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns the field domain with the specified \a name from the provider.
+     *
+     * The caller takes ownership of the return object. Will return NULLPTR if no matching field domain is found.
+     *
+     * This is supported on providers with the Capability::RetrieveFieldDomain capability only.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     *
+     * \see fieldDomainNames()
+     * \since QGIS 3.26
+     */
+    virtual QgsFieldDomain *fieldDomain( const QString &name ) const SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
+
+    /**
+     * Sets the field domain name for the existing field with the specified name.
+     *
+     * \param fieldName name of the field to be modified
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param tableName name of the table
+     * \param domainName name of the domain to set for the field. Must be an existing field domain (see fieldDomainNames()). Set to an empty string to remove a previously set domain.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.26
+     */
+    virtual void setFieldDomainName( const QString &fieldName, const QString &schema, const QString &tableName, const QString &domainName ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Adds a new field \a domain to the database.
+     *
+     * \param domain field domain to add
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.26
+     */
+    virtual void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
 
   protected:
 

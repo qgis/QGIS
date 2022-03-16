@@ -75,6 +75,14 @@ Qgis.DataType.__doc__ = 'Raster data types.\nThis is modified and extended copy 
 # --
 Qgis.DataType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.CaptureTechnique.StraightSegments.__doc__ = "Default capture mode - capture occurs with straight line segments"
+Qgis.CaptureTechnique.CircularString.__doc__ = "Capture in circular strings"
+Qgis.CaptureTechnique.Streaming.__doc__ = "Streaming points digitizing mode (points are automatically added as the mouse cursor moves)."
+Qgis.CaptureTechnique.Shape.__doc__ = "Digitize shapes."
+Qgis.CaptureTechnique.__doc__ = 'Capture technique.\n\n.. versionadded:: 3.26\n\n' + '* ``StraightSegments``: ' + Qgis.CaptureTechnique.StraightSegments.__doc__ + '\n' + '* ``CircularString``: ' + Qgis.CaptureTechnique.CircularString.__doc__ + '\n' + '* ``Streaming``: ' + Qgis.CaptureTechnique.Streaming.__doc__ + '\n' + '* ``Shape``: ' + Qgis.CaptureTechnique.Shape.__doc__
+# --
+Qgis.CaptureTechnique.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.VectorLayerTypeFlag.SqlQuery.__doc__ = "SQL query layer"
 Qgis.VectorLayerTypeFlag.__doc__ = 'Vector layer type flags.\n\n.. versionadded:: 3.24\n\n' + '* ``SqlQuery``: ' + Qgis.VectorLayerTypeFlag.SqlQuery.__doc__
 # --
@@ -137,6 +145,85 @@ QgsSymbol.ScaleDiameter.__doc__ = "Calculate scale by the diameter"
 Qgis.ScaleMethod.__doc__ = 'Scale methods\n\n.. versionadded:: 3.20\n\n' + '* ``ScaleArea``: ' + Qgis.ScaleMethod.ScaleArea.__doc__ + '\n' + '* ``ScaleDiameter``: ' + Qgis.ScaleMethod.ScaleDiameter.__doc__
 # --
 Qgis.ScaleMethod.baseClass = Qgis
+QgsSettingsEntryBase.SettingsType = Qgis.SettingsType
+# monkey patching scoped based enum
+QgsSettingsEntryBase.Variant = Qgis.SettingsType.Variant
+QgsSettingsEntryBase.Variant.is_monkey_patched = True
+QgsSettingsEntryBase.Variant.__doc__ = "Generic variant"
+QgsSettingsEntryBase.String = Qgis.SettingsType.String
+QgsSettingsEntryBase.String.is_monkey_patched = True
+QgsSettingsEntryBase.String.__doc__ = "String"
+QgsSettingsEntryBase.StringList = Qgis.SettingsType.StringList
+QgsSettingsEntryBase.StringList.is_monkey_patched = True
+QgsSettingsEntryBase.StringList.__doc__ = "List of strings"
+QgsSettingsEntryBase.Bool = Qgis.SettingsType.Bool
+QgsSettingsEntryBase.Bool.is_monkey_patched = True
+QgsSettingsEntryBase.Bool.__doc__ = "Boolean"
+QgsSettingsEntryBase.Integer = Qgis.SettingsType.Integer
+QgsSettingsEntryBase.Integer.is_monkey_patched = True
+QgsSettingsEntryBase.Integer.__doc__ = "Integer"
+QgsSettingsEntryBase.Double = Qgis.SettingsType.Double
+QgsSettingsEntryBase.Double.is_monkey_patched = True
+QgsSettingsEntryBase.Double.__doc__ = "Double precision number"
+QgsSettingsEntryBase.EnumFlag = Qgis.SettingsType.EnumFlag
+QgsSettingsEntryBase.EnumFlag.is_monkey_patched = True
+QgsSettingsEntryBase.EnumFlag.__doc__ = "Enum or Flag"
+QgsSettingsEntryBase.Color = Qgis.SettingsType.Color
+QgsSettingsEntryBase.Color.is_monkey_patched = True
+QgsSettingsEntryBase.Color.__doc__ = "Color"
+Qgis.SettingsType.__doc__ = 'Types of settings entries\n\n.. versionadded:: 3.26\n\n' + '* ``Variant``: ' + Qgis.SettingsType.Variant.__doc__ + '\n' + '* ``String``: ' + Qgis.SettingsType.String.__doc__ + '\n' + '* ``StringList``: ' + Qgis.SettingsType.StringList.__doc__ + '\n' + '* ``Bool``: ' + Qgis.SettingsType.Bool.__doc__ + '\n' + '* ``Integer``: ' + Qgis.SettingsType.Integer.__doc__ + '\n' + '* ``Double``: ' + Qgis.SettingsType.Double.__doc__ + '\n' + '* ``EnumFlag``: ' + Qgis.SettingsType.EnumFlag.__doc__ + '\n' + '* ``Color``: ' + Qgis.SettingsType.Color.__doc__
+# --
+Qgis.SettingsType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SettingsOption.SaveFormerValue.__doc__ = ""
+Qgis.SettingsOption.__doc__ = 'Settings options\n\n.. versionadded:: 3.26\n\n' + '* ``SaveFormerValue``: ' + Qgis.SettingsOption.SaveFormerValue.__doc__
+# --
+Qgis.SettingsOption.baseClass = Qgis
+Qgis.SettingsOptions.baseClass = Qgis
+SettingsOptions = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsSnappingConfig.SnappingMode = Qgis.SnappingMode
+# monkey patching scoped based enum
+QgsSnappingConfig.ActiveLayer = Qgis.SnappingMode.ActiveLayer
+QgsSnappingConfig.ActiveLayer.is_monkey_patched = True
+QgsSnappingConfig.ActiveLayer.__doc__ = "On the active layer"
+QgsSnappingConfig.AllLayers = Qgis.SnappingMode.AllLayers
+QgsSnappingConfig.AllLayers.is_monkey_patched = True
+QgsSnappingConfig.AllLayers.__doc__ = "On all vector layers"
+QgsSnappingConfig.AdvancedConfiguration = Qgis.SnappingMode.AdvancedConfiguration
+QgsSnappingConfig.AdvancedConfiguration.is_monkey_patched = True
+QgsSnappingConfig.AdvancedConfiguration.__doc__ = "On a per layer configuration basis"
+Qgis.SnappingMode.__doc__ = 'SnappingMode defines on which layer the snapping is performed\n\n.. versionadded:: 3.26\n\n' + '* ``ActiveLayer``: ' + Qgis.SnappingMode.ActiveLayer.__doc__ + '\n' + '* ``AllLayers``: ' + Qgis.SnappingMode.AllLayers.__doc__ + '\n' + '* ``AdvancedConfiguration``: ' + Qgis.SnappingMode.AdvancedConfiguration.__doc__
+# --
+Qgis.SnappingMode.baseClass = Qgis
+QgsSnappingConfig.SnappingTypes = Qgis.SnappingType
+# monkey patching scoped based enum
+QgsSnappingConfig.NoSnapFlag = Qgis.SnappingType.NoSnap
+QgsSnappingConfig.NoSnapFlag.is_monkey_patched = True
+QgsSnappingConfig.NoSnapFlag.__doc__ = "No snapping"
+QgsSnappingConfig.VertexFlag = Qgis.SnappingType.Vertex
+QgsSnappingConfig.VertexFlag.is_monkey_patched = True
+QgsSnappingConfig.VertexFlag.__doc__ = "On vertices"
+QgsSnappingConfig.SegmentFlag = Qgis.SnappingType.Segment
+QgsSnappingConfig.SegmentFlag.is_monkey_patched = True
+QgsSnappingConfig.SegmentFlag.__doc__ = "On segments"
+QgsSnappingConfig.AreaFlag = Qgis.SnappingType.Area
+QgsSnappingConfig.AreaFlag.is_monkey_patched = True
+QgsSnappingConfig.AreaFlag.__doc__ = "On Area"
+QgsSnappingConfig.CentroidFlag = Qgis.SnappingType.Centroid
+QgsSnappingConfig.CentroidFlag.is_monkey_patched = True
+QgsSnappingConfig.CentroidFlag.__doc__ = "On centroid"
+QgsSnappingConfig.MiddleOfSegmentFlag = Qgis.SnappingType.MiddleOfSegment
+QgsSnappingConfig.MiddleOfSegmentFlag.is_monkey_patched = True
+QgsSnappingConfig.MiddleOfSegmentFlag.__doc__ = "On Middle segment"
+QgsSnappingConfig.LineEndpointFlag = Qgis.SnappingType.LineEndpoint
+QgsSnappingConfig.LineEndpointFlag.is_monkey_patched = True
+QgsSnappingConfig.LineEndpointFlag.__doc__ = "Start or end points of lines, or first vertex in polygon rings only (since QGIS 3.20)"
+Qgis.SnappingType.__doc__ = 'SnappingTypeFlag defines on what object the snapping is performed\n\n.. versionadded:: 3.26\n\n' + '* ``NoSnapFlag``: ' + Qgis.SnappingType.NoSnap.__doc__ + '\n' + '* ``VertexFlag``: ' + Qgis.SnappingType.Vertex.__doc__ + '\n' + '* ``SegmentFlag``: ' + Qgis.SnappingType.Segment.__doc__ + '\n' + '* ``AreaFlag``: ' + Qgis.SnappingType.Area.__doc__ + '\n' + '* ``CentroidFlag``: ' + Qgis.SnappingType.Centroid.__doc__ + '\n' + '* ``MiddleOfSegmentFlag``: ' + Qgis.SnappingType.MiddleOfSegment.__doc__ + '\n' + '* ``LineEndpointFlag``: ' + Qgis.SnappingType.LineEndpoint.__doc__
+# --
+Qgis.SnappingType.baseClass = Qgis
+QgsSnappingConfig.SnappingTypeFlag = Qgis.SnappingTypes
+Qgis.SnappingTypes.baseClass = Qgis
+SnappingTypes = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsSymbol.RenderHint = Qgis.SymbolRenderHint
 # monkey patching scoped based enum
 QgsSymbol.DynamicRotation = Qgis.SymbolRenderHint.DynamicRotation
@@ -237,7 +324,10 @@ QgsDataItem.Delete.__doc__ = "Item can be deleted"
 QgsDataItem.ItemRepresentsFile = Qgis.BrowserItemCapability.ItemRepresentsFile
 QgsDataItem.ItemRepresentsFile.is_monkey_patched = True
 QgsDataItem.ItemRepresentsFile.__doc__ = "Item's path() directly represents a file on disk (since QGIS 3.22)"
-Qgis.BrowserItemCapability.__doc__ = 'Browser item capabilities.\n\n.. versionadded:: 3.20\n\n' + '* ``NoCapabilities``: ' + Qgis.BrowserItemCapability.NoCapabilities.__doc__ + '\n' + '* ``SetCrs``: ' + Qgis.BrowserItemCapability.SetCrs.__doc__ + '\n' + '* ``Fertile``: ' + Qgis.BrowserItemCapability.Fertile.__doc__ + '\n' + '* ``Fast``: ' + Qgis.BrowserItemCapability.Fast.__doc__ + '\n' + '* ``Collapse``: ' + Qgis.BrowserItemCapability.Collapse.__doc__ + '\n' + '* ``Rename``: ' + Qgis.BrowserItemCapability.Rename.__doc__ + '\n' + '* ``Delete``: ' + Qgis.BrowserItemCapability.Delete.__doc__ + '\n' + '* ``ItemRepresentsFile``: ' + Qgis.BrowserItemCapability.ItemRepresentsFile.__doc__
+QgsDataItem.RefreshChildrenWhenItemIsRefreshed = Qgis.BrowserItemCapability.RefreshChildrenWhenItemIsRefreshed
+QgsDataItem.RefreshChildrenWhenItemIsRefreshed.is_monkey_patched = True
+QgsDataItem.RefreshChildrenWhenItemIsRefreshed.__doc__ = "When the item is refreshed, all its populated children will also be refreshed in turn (since QGIS 3.26)"
+Qgis.BrowserItemCapability.__doc__ = 'Browser item capabilities.\n\n.. versionadded:: 3.20\n\n' + '* ``NoCapabilities``: ' + Qgis.BrowserItemCapability.NoCapabilities.__doc__ + '\n' + '* ``SetCrs``: ' + Qgis.BrowserItemCapability.SetCrs.__doc__ + '\n' + '* ``Fertile``: ' + Qgis.BrowserItemCapability.Fertile.__doc__ + '\n' + '* ``Fast``: ' + Qgis.BrowserItemCapability.Fast.__doc__ + '\n' + '* ``Collapse``: ' + Qgis.BrowserItemCapability.Collapse.__doc__ + '\n' + '* ``Rename``: ' + Qgis.BrowserItemCapability.Rename.__doc__ + '\n' + '* ``Delete``: ' + Qgis.BrowserItemCapability.Delete.__doc__ + '\n' + '* ``ItemRepresentsFile``: ' + Qgis.BrowserItemCapability.ItemRepresentsFile.__doc__ + '\n' + '* ``RefreshChildrenWhenItemIsRefreshed``: ' + Qgis.BrowserItemCapability.RefreshChildrenWhenItemIsRefreshed.__doc__
 # --
 Qgis.BrowserItemCapability.baseClass = Qgis
 QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
@@ -671,9 +761,15 @@ Qgis.FileOperationFlag.__doc__ = 'File operation flags.\n\n.. versionadded:: 3.2
 Qgis.FileOperationFlag.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ = "Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22."
-Qgis.MapLayerProperty.__doc__ = 'Generic map layer properties.\n\n.. versionadded:: 3.22\n\n' + '* ``UsersCannotToggleEditing``: ' + Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__
+Qgis.MapLayerProperty.IsBasemapLayer.__doc__ = "Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest. Since QGIS 3.26."
+Qgis.MapLayerProperty.__doc__ = 'Generic map layer properties.\n\n.. versionadded:: 3.22\n\n' + '* ``UsersCannotToggleEditing``: ' + Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ + '\n' + '* ``IsBasemapLayer``: ' + Qgis.MapLayerProperty.IsBasemapLayer.__doc__
 # --
 Qgis.MapLayerProperty.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DataProviderFlag.IsBasemapSource.__doc__ = "Associated source should be considered a 'basemap' layer. See Qgis::MapLayerProperty::IsBasemapLayer."
+Qgis.DataProviderFlag.__doc__ = 'Generic data provider flags.\n\n.. versionadded:: 3.26\n\n' + '* ``IsBasemapSource``: ' + Qgis.DataProviderFlag.IsBasemapSource.__doc__
+# --
+Qgis.DataProviderFlag.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box will vary depending on map scale"
 Qgis.AnnotationItemFlag.__doc__ = 'Flags for annotation items.\n\n.. versionadded:: 3.22\n\n' + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__
@@ -1182,6 +1278,12 @@ Qgis.TextRendererFlag.__doc__ = 'Flags which control the behavior of rendering t
 Qgis.TextRendererFlag.baseClass = Qgis
 Qgis.TextRendererFlags.baseClass = Qgis
 TextRendererFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.ScaleToTileZoomLevelMethod.MapBox.__doc__ = "Uses a scale doubling approach to account for hi-DPI tiles, and rounds to the nearest tile level for the map scale"
+Qgis.ScaleToTileZoomLevelMethod.Esri.__doc__ = "No scale doubling, always rounds down when matching to available tile levels"
+Qgis.ScaleToTileZoomLevelMethod.__doc__ = 'Available methods for converting map scales to tile zoom levels.\n\n.. versionadded:: 3.26\n\n' + '* ``MapBox``: ' + Qgis.ScaleToTileZoomLevelMethod.MapBox.__doc__ + '\n' + '* ``Esri``: ' + Qgis.ScaleToTileZoomLevelMethod.Esri.__doc__
+# --
+Qgis.ScaleToTileZoomLevelMethod.baseClass = Qgis
 QgsCurve.Orientation = Qgis.AngularDirection
 # monkey patching scoped based enum
 QgsCurve.Clockwise = Qgis.AngularDirection.Clockwise
@@ -1218,3 +1320,44 @@ QgsCoordinateReferenceSystem.FormatProj.__doc__ = "Proj string format"
 Qgis.CrsDefinitionFormat.__doc__ = 'CRS definition formats.\n\n.. versionadded:: 3.24\n\n' + '* ``FormatWkt``: ' + Qgis.CrsDefinitionFormat.Wkt.__doc__ + '\n' + '* ``FormatProj``: ' + Qgis.CrsDefinitionFormat.Proj.__doc__
 # --
 Qgis.CrsDefinitionFormat.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.FieldDomainSplitPolicy.DefaultValue.__doc__ = "Use default field value"
+Qgis.FieldDomainSplitPolicy.Duplicate.__doc__ = "Duplicate original value"
+Qgis.FieldDomainSplitPolicy.GeometryRatio.__doc__ = "New values are computed by the ratio of their area/length compared to the area/length of the original feature"
+Qgis.FieldDomainSplitPolicy.__doc__ = 'Split policy for field domains.\n\nWhen a feature is split into multiple parts, defines how the value of attributes\nfollowing the domain are computed.\n\n.. versionadded:: 3.26\n\n' + '* ``DefaultValue``: ' + Qgis.FieldDomainSplitPolicy.DefaultValue.__doc__ + '\n' + '* ``Duplicate``: ' + Qgis.FieldDomainSplitPolicy.Duplicate.__doc__ + '\n' + '* ``GeometryRatio``: ' + Qgis.FieldDomainSplitPolicy.GeometryRatio.__doc__
+# --
+Qgis.FieldDomainSplitPolicy.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.FieldDomainMergePolicy.DefaultValue.__doc__ = "Use default field value"
+Qgis.FieldDomainMergePolicy.Sum.__doc__ = "Sum of values"
+Qgis.FieldDomainMergePolicy.GeometryWeighted.__doc__ = "New values are computed as the weighted average of the source values"
+Qgis.FieldDomainMergePolicy.__doc__ = 'Merge policy for field domains.\n\nWhen a feature is built by merging multiple features, defines how the value of\nattributes following the domain are computed.\n\n.. versionadded:: 3.26\n\n' + '* ``DefaultValue``: ' + Qgis.FieldDomainMergePolicy.DefaultValue.__doc__ + '\n' + '* ``Sum``: ' + Qgis.FieldDomainMergePolicy.Sum.__doc__ + '\n' + '* ``GeometryWeighted``: ' + Qgis.FieldDomainMergePolicy.GeometryWeighted.__doc__
+# --
+Qgis.FieldDomainMergePolicy.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.FieldDomainType.Coded.__doc__ = "Coded field domain"
+Qgis.FieldDomainType.Range.__doc__ = "Numeric range field domain (min/max)"
+Qgis.FieldDomainType.Glob.__doc__ = "Glob string pattern field domain"
+Qgis.FieldDomainType.__doc__ = 'Types of field domain\n\n.. versionadded:: 3.26\n\n' + '* ``Coded``: ' + Qgis.FieldDomainType.Coded.__doc__ + '\n' + '* ``Range``: ' + Qgis.FieldDomainType.Range.__doc__ + '\n' + '* ``Glob``: ' + Qgis.FieldDomainType.Glob.__doc__
+# --
+Qgis.FieldDomainType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.TransactionMode.Disabled.__doc__ = "Edits are buffered locally and sent to the provider when toggling layer editing mode."
+Qgis.TransactionMode.AutomaticGroups.__doc__ = "Automatic transactional editing means that on supported datasources (postgres and geopackage databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction."
+Qgis.TransactionMode.BufferedGroups.__doc__ = "Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is executed within a single transaction on all layers (per provider)."
+Qgis.TransactionMode.__doc__ = 'Transaction mode.\n\n.. versionadded:: 3.26\n\n' + '* ``Disabled``: ' + Qgis.TransactionMode.Disabled.__doc__ + '\n' + '* ``AutomaticGroups``: ' + Qgis.TransactionMode.AutomaticGroups.__doc__ + '\n' + '* ``BufferedGroups``: ' + Qgis.TransactionMode.BufferedGroups.__doc__
+# --
+Qgis.TransactionMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AltitudeClamping.Absolute.__doc__ = "Elevation is taken directly from feature and is independent of terrain height (final elevation = feature elevation)"
+Qgis.AltitudeClamping.Relative.__doc__ = "Elevation is relative to terrain height (final elevation = terrain elevation + feature elevation)"
+Qgis.AltitudeClamping.Terrain.__doc__ = "Elevation is clamped to terrain (final elevation = terrain elevation)"
+Qgis.AltitudeClamping.__doc__ = 'Altitude clamping.\n\n.. versionadded:: 3.26\n\n' + '* ``Absolute``: ' + Qgis.AltitudeClamping.Absolute.__doc__ + '\n' + '* ``Relative``: ' + Qgis.AltitudeClamping.Relative.__doc__ + '\n' + '* ``Terrain``: ' + Qgis.AltitudeClamping.Terrain.__doc__
+# --
+Qgis.AltitudeClamping.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AltitudeBinding.Vertex.__doc__ = "Clamp every vertex of feature"
+Qgis.AltitudeBinding.Centroid.__doc__ = "Clamp just centroid of feature"
+Qgis.AltitudeBinding.__doc__ = 'Altitude binding.\n\n.. versionadded:: 3.26\n\n' + '* ``Vertex``: ' + Qgis.AltitudeBinding.Vertex.__doc__ + '\n' + '* ``Centroid``: ' + Qgis.AltitudeBinding.Centroid.__doc__
+# --
+Qgis.AltitudeBinding.baseClass = Qgis

@@ -74,6 +74,10 @@ namespace QgsWms
     QString mFont;
     float mBufferSize = 0;
     QColor mBufferColor;
+    double mLabelRotation = 0;
+    double mLabelDistance = 2; //label distance from feature in mm
+    QString mHali; //horizontal alignment
+    QString mVali; //vertical alignment
   };
 
   struct QgsWmsParametersComposerMap
@@ -162,6 +166,10 @@ namespace QgsWms
         HIGHLIGHT_LABELCOLOR,
         HIGHLIGHT_LABELBUFFERCOLOR,
         HIGHLIGHT_LABELBUFFERSIZE,
+        HIGHLIGHT_LABEL_ROTATION,
+        HIGHLIGHT_LABEL_DISTANCE,
+        HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT,
+        HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT,
         WMS_PRECISION,
         TRANSPARENT,
         BGCOLOR,
@@ -1150,6 +1158,30 @@ namespace QgsWms
        * \throws QgsBadRequestException
        */
       QList<QColor> highlightLabelBufferColorAsColor() const;
+
+      /**
+       * Returns HIGHLIGHT_LABEL_ROTATION as a list of double.
+       * \returns highlight label rotation
+       */
+      QList<double> highlightLabelRotation() const;
+
+      /**
+       * Returns HIGHLIGHT_LABEL_DISTANCE as a list of double.
+       * \returns highlight label distance
+       */
+      QList<double> highlightLabelDistance() const;
+
+      /**
+       * Returns HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT as a list of string.
+       * \returns highlight label horizontal alignment strings
+       */
+      QStringList highlightLabelHorizontalAlignment() const;
+
+      /**
+       * Returns HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT as a list of string.
+       * \returns highlight label vertical alignment strings
+       */
+      QStringList highlightLabelVerticalAlignment() const;
 
       /**
        * Returns WMS_PRECISION parameter or an empty string if not defined.

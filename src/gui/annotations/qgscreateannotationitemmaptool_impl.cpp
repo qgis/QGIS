@@ -38,7 +38,7 @@
 QgsMapToolCaptureAnnotationItem::QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolCapture( canvas, cadDockWidget, mode )
 {
-
+  mToolName = tr( "Annotation tool" );
 }
 
 QgsCreateAnnotationItemMapToolHandler *QgsMapToolCaptureAnnotationItem::handler()
@@ -63,12 +63,18 @@ QgsMapToolCapture::Capabilities QgsMapToolCaptureAnnotationItem::capabilities() 
   return SupportsCurves;
 }
 
-bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique ) const
+bool QgsMapToolCaptureAnnotationItem::supportsTechnique( Qgis::CaptureTechnique technique ) const
 {
-  return true;
+  switch ( technique )
+  {
+    case Qgis::CaptureTechnique::StraightSegments:
+    case Qgis::CaptureTechnique::CircularString:
+    case Qgis::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::Shape:
+      return true;
+  }
+  BUILTIN_UNREACHABLE
 }
-
-
 
 
 //
@@ -155,49 +161,23 @@ QgsCreateLineItemMapTool::QgsCreateLineItemMapTool( QgsMapCanvas *canvas, QgsAdv
   mHandler = new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget, this );
 }
 
-void QgsCreateLineItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsCreateLineItemMapTool::lineCaptured( const QgsCurve *line )
 {
-  //add point to list and to rubber band
-  if ( e->button() == Qt::LeftButton )
+  // do it!
+  std::unique_ptr< QgsAbstractGeometry > geometry( line->simplifiedTypeRef()->clone() );
+  if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
   {
-    const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
-    if ( error == 2 )
-    {
-      //problem with coordinate transformation
-      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
-      return;
-    }
+    std::unique_ptr< QgsAnnotationLineItem > createdItem = std::make_unique< QgsAnnotationLineItem >( qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
 
-    startCapturing();
-  }
-  else if ( e->button() == Qt::RightButton )
-  {
-    deleteTempRubberBand();
+    std::unique_ptr< QgsLineSymbol > lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsLineSymbol >( QStringLiteral( "line_annotation_item" ) );
+    if ( !lineSymbol )
+      lineSymbol.reset( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) ) );
+    createdItem->setSymbol( lineSymbol.release() );
 
-    //find out bounding box of mCaptureList
-    if ( size() < 1 )
-    {
-      stopCapturing();
-      return;
-    }
+    // set reference scale to match canvas scale, but don't enable it by default for marker items
+    createdItem->setSymbologyReferenceScale( canvas()->scale() );
 
-    // do it!
-    std::unique_ptr< QgsAbstractGeometry > geometry( captureCurve()->simplifiedTypeRef()->clone() );
-    if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
-    {
-      std::unique_ptr< QgsAnnotationLineItem > createdItem = std::make_unique< QgsAnnotationLineItem >( qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
-
-      std::unique_ptr< QgsLineSymbol > lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsLineSymbol >( QStringLiteral( "line_annotation_item" ) );
-      if ( !lineSymbol )
-        lineSymbol.reset( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) ) );
-      createdItem->setSymbol( lineSymbol.release() );
-
-      // set reference scale to match canvas scale, but don't enable it by default for marker items
-      createdItem->setSymbologyReferenceScale( canvas()->scale() );
-
-      mHandler->pushCreatedItem( createdItem.release() );
-    }
-    stopCapturing();
+    mHandler->pushCreatedItem( createdItem.release() );
   }
 }
 
@@ -211,52 +191,24 @@ QgsCreatePolygonItemMapTool::QgsCreatePolygonItemMapTool( QgsMapCanvas *canvas, 
   mHandler = new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget, this );
 }
 
-void QgsCreatePolygonItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygon )
 {
-  //add point to list and to rubber band
-  if ( e->button() == Qt::LeftButton )
+  std::unique_ptr< QgsAbstractGeometry > geometry( polygon->exteriorRing()->simplifiedTypeRef()->clone() );
+  if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
   {
-    const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
-    if ( error == 2 )
-    {
-      //problem with coordinate transformation
-      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
-      return;
-    }
+    std::unique_ptr< QgsCurvePolygon > newPolygon = std::make_unique< QgsCurvePolygon >();
+    newPolygon->setExteriorRing( qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
+    std::unique_ptr< QgsAnnotationPolygonItem > createdItem = std::make_unique< QgsAnnotationPolygonItem >( newPolygon.release() );
 
-    startCapturing();
-  }
-  else if ( e->button() == Qt::RightButton )
-  {
-    deleteTempRubberBand();
+    std::unique_ptr< QgsFillSymbol > fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsFillSymbol >( QStringLiteral( "polygon_annotation_item" ) );
+    if ( !fillSymbol )
+      fillSymbol.reset( qgis::down_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) ) );
+    createdItem->setSymbol( fillSymbol.release() );
 
-    //find out bounding box of mCaptureList
-    if ( size() < 1 )
-    {
-      stopCapturing();
-      return;
-    }
+    // set reference scale to match canvas scale, but don't enable it by default for marker items
+    createdItem->setSymbologyReferenceScale( canvas()->scale() );
 
-    closePolygon();
-
-    std::unique_ptr< QgsAbstractGeometry > geometry( captureCurve()->simplifiedTypeRef()->clone() );
-    if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
-    {
-      std::unique_ptr< QgsCurvePolygon > newPolygon = std::make_unique< QgsCurvePolygon >();
-      newPolygon->setExteriorRing( qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
-      std::unique_ptr< QgsAnnotationPolygonItem > createdItem = std::make_unique< QgsAnnotationPolygonItem >( newPolygon.release() );
-
-      std::unique_ptr< QgsFillSymbol > fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsFillSymbol >( QStringLiteral( "polygon_annotation_item" ) );
-      if ( !fillSymbol )
-        fillSymbol.reset( qgis::down_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) ) );
-      createdItem->setSymbol( fillSymbol.release() );
-
-      // set reference scale to match canvas scale, but don't enable it by default for marker items
-      createdItem->setSymbologyReferenceScale( canvas()->scale() );
-
-      mHandler->pushCreatedItem( createdItem.release() );
-    }
-    stopCapturing();
+    mHandler->pushCreatedItem( createdItem.release() );
   }
 }
 

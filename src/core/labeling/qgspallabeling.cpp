@@ -226,6 +226,8 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::OverrunDistance, QgsPropertyDefinition( "OverrunDistance", QObject::tr( "Overrun distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsPalLayerSettings::LineAnchorPercent, QgsPropertyDefinition( "LineAnchorPercent", QObject::tr( "Line anchor percentage, as fraction from 0.0 to 1.0" ), QgsPropertyDefinition::Double0To1, origin ) },
     { QgsPalLayerSettings::LineAnchorClipping, QgsPropertyDefinition( "LineAnchorClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor clipping mode" ), QObject::tr( "string " ) + QStringLiteral( "[<b>visible</b>|<b>entire</b>]" ), origin ) },
+    { QgsPalLayerSettings::LineAnchorType, QgsPropertyDefinition( "LineAnchorType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor type" ), QObject::tr( "string " ) + QStringLiteral( "[<b>hint</b>|<b>strict</b>]" ), origin ) },
+    { QgsPalLayerSettings::LineAnchorTextPoint, QgsPropertyDefinition( "LineAnchorTextPoint", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor text point" ), QObject::tr( "string " ) + QStringLiteral( "[<b>follow</b>|<b>start</b>|<b>center</b>|<b>end</b>]" ), origin ) },
     { QgsPalLayerSettings::Priority, QgsPropertyDefinition( "Priority", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Label priority" ), QObject::tr( "double [0.0-10.0]" ), origin ) },
     { QgsPalLayerSettings::IsObstacle, QgsPropertyDefinition( "IsObstacle", QObject::tr( "Feature is a label obstacle" ), QgsPropertyDefinition::Boolean, origin ) },
     { QgsPalLayerSettings::ObstacleFactor, QgsPropertyDefinition( "ObstacleFactor", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Obstacle factor" ), QObject::tr( "double [0.0-10.0]" ), origin ) },
@@ -1086,6 +1088,8 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   mLineSettings.setLineAnchorPercent( placementElem.attribute( QStringLiteral( "lineAnchorPercent" ), QStringLiteral( "0.5" ) ).toDouble() );
   mLineSettings.setAnchorType( static_cast< QgsLabelLineSettings::AnchorType >( placementElem.attribute( QStringLiteral( "lineAnchorType" ), QStringLiteral( "0" ) ).toInt() ) );
   mLineSettings.setAnchorClipping( static_cast< QgsLabelLineSettings::AnchorClipping >( placementElem.attribute( QStringLiteral( "lineAnchorClipping" ), QStringLiteral( "0" ) ).toInt() ) );
+  // when reading the anchor text point we default to center mode, to keep same result as for proejcts created in < 3.26
+  mLineSettings.setAnchorTextPoint( qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "lineAnchorTextPoint" ) ), QgsLabelLineSettings::AnchorTextPoint::CenterOfText ) );
 
   geometryGenerator = placementElem.attribute( QStringLiteral( "geometryGenerator" ) );
   geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
@@ -1242,6 +1246,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "lineAnchorPercent" ), mLineSettings.lineAnchorPercent() );
   placementElem.setAttribute( QStringLiteral( "lineAnchorType" ), static_cast< int >( mLineSettings.anchorType() ) );
   placementElem.setAttribute( QStringLiteral( "lineAnchorClipping" ), static_cast< int >( mLineSettings.anchorClipping() ) );
+  placementElem.setAttribute( QStringLiteral( "lineAnchorTextPoint" ), qgsEnumValueToKey( mLineSettings.anchorTextPoint() ) );
 
   placementElem.setAttribute( QStringLiteral( "geometryGenerator" ), geometryGenerator );
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorEnabled" ), geometryGeneratorEnabled );
@@ -2627,6 +2632,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   labelFeature->setOverrunSmoothDistance( overrunSmoothDist );
   labelFeature->setLineAnchorPercent( lineSettings.lineAnchorPercent() );
   labelFeature->setLineAnchorType( lineSettings.anchorType() );
+  labelFeature->setLineAnchorTextPoint( lineSettings.anchorTextPoint() );
   labelFeature->setLabelAllParts( labelAll );
   labelFeature->setOriginalFeatureCrs( context.coordinateTransform().sourceCrs() );
   labelFeature->setMinimumSize( minimumSize );

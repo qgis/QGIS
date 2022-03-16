@@ -129,9 +129,8 @@ class ModelerParameterDefinitionDialog(QDialog):
 
         # If child algorithm output is mandatory, disable checkbox
         if isinstance(self.param, QgsProcessingDestinationParameter):
-            provider_name, child_name, output_name = self.param.name().split(':')
-            child = self.alg.childAlgorithms()['{}:{}'.format(provider_name, child_name)]
-            model_output = child.modelOutput(output_name)
+            child = self.alg.childAlgorithms()[self.param.metadata()['_modelChildId']]
+            model_output = child.modelOutput(self.param.metadata()['_modelChildOutputName'])
             param_def = child.algorithm().parameterDefinition(model_output.childOutputName())
             if not (param_def.flags() & QgsProcessingParameterDefinition.FlagOptional):
                 self.requiredCheck.setEnabled(False)
@@ -198,17 +197,11 @@ class ModelerParameterDefinitionDialog(QDialog):
             QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                 self.tr('Invalid parameter name'))
             return
-        if self.param is None:
-            validChars = \
-                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-            safeName = ''.join(c for c in description if c in validChars)
-            name = safeName.lower()
-            i = 2
-            while self.alg.parameterDefinition(name):
-                name = safeName.lower() + str(i)
-                i += 1
-        else:
-            name = self.param.name()
+
+        validChars = \
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        safeName = ''.join(c for c in description if c in validChars)
+        name = safeName.lower()
 
         # Destination parameter
         if (isinstance(self.param, QgsProcessingParameterFeatureSink)):

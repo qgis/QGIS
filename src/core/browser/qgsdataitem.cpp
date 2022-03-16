@@ -366,6 +366,11 @@ void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
         // The child cannot createChildren() itself
         mChildren.value( index )->refresh( child->children() );
       }
+      else if ( mChildren.value( index )->state() == Qgis::BrowserItemState::Populated
+                && ( child->capabilities2() & Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed ) )
+      {
+        mChildren.value( index )->refresh();
+      }
 
       child->deleteLater();
       continue;

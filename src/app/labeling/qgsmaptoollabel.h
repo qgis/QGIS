@@ -141,7 +141,26 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     */
     QString currentLabelText( int trunc = 0 );
 
-    void currentAlignment( QString &hali, QString &vali );
+    enum class LabelAlignment
+    {
+      TopLeft,
+      TopCenter,
+      TopRight,
+      HalfLeft,
+      HalfCenter,
+      HalfRight,
+      BottomLeft,
+      BottomCenter,
+      BottomRight,
+      BaseLeft,
+      BaseCenter,
+      BaseRight,
+      CapLeft,
+      CapCenter,
+      CapRight
+    };
+
+    LabelAlignment currentAlignment();
 
     /**
      * Gets vector feature for current label pos

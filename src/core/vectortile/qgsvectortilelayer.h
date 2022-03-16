@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 
 #include "qgsmaplayer.h"
+#include "qgsvectortilematrixset.h"
 
 class QgsVectorTileLabeling;
 class QgsVectorTileRenderer;
@@ -132,6 +133,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
                          StyleCategories categories = AllStyleCategories ) const override;
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
+    Qgis::MapLayerProperties properties() const override;
 
     /**
      * Loads the default style for the layer, and returns TRUE if the style was
@@ -154,15 +156,22 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     // new methods
 
+    /**
+     * Returns the vector tile matrix set.
+     *
+     * \since QGIS 3.22.6
+     */
+    QgsVectorTileMatrixSet &tileMatrixSet() { return mMatrixSet; }
+
     //! Returns type of the data source
     QString sourceType() const { return mSourceType; }
     //! Returns URL/path of the data source (syntax different to each data source type)
     QString sourcePath() const { return mSourcePath; }
 
     //! Returns minimum zoom level at which source has any valid tiles (negative = unconstrained)
-    int sourceMinZoom() const { return mSourceMinZoom; }
+    int sourceMinZoom() const { return mMatrixSet.minimumZoom(); }
     //! Returns maximum zoom level at which source has any valid tiles (negative = unconstrained)
-    int sourceMaxZoom() const { return mSourceMaxZoom; }
+    int sourceMaxZoom() const { return mMatrixSet.maximumZoom(); }
 
     /**
      * Fetches raw tile data for the give tile coordinates. If failed to fetch tile data,
@@ -202,10 +211,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     QString mSourceType;
     //! URL/Path of the data source
     QString mSourcePath;
-    //! Minimum zoom level at which source has any valid tiles (negative = unconstrained)
-    int mSourceMinZoom = -1;
-    //! Maximum zoom level at which source has any valid tiles (negative = unconstrained)
-    int mSourceMaxZoom = -1;
+
+    QgsVectorTileMatrixSet mMatrixSet;
 
     //! Renderer assigned to the layer to draw map
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;
@@ -247,6 +254,7 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     QString description() const override;
     QgsRectangle extent() const override;
     bool isValid() const override;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
 };
 ///@endcond

@@ -42,6 +42,9 @@ QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &wri
   , mFeedback( new QgsRasterBlockFeedback() )
   , mTransformContext( transformContext )
 {
+  QgsRenderContext renderContext;
+  renderContext.setRendererUsage( Qgis::RendererUsage::Export );
+  mFeedback->setRenderContext( renderContext );
 }
 
 QgsRasterFileWriterTask::~QgsRasterFileWriterTask() = default;

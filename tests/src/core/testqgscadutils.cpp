@@ -88,8 +88,8 @@ void TestQgsCadUtils::initTestCase()
 
   QgsSnappingConfig snapConfig;
   snapConfig.setEnabled( true );
-  snapConfig.setMode( QgsSnappingConfig::AllLayers );
-  snapConfig.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ) );
+  snapConfig.setMode( Qgis::SnappingMode::AllLayers );
+  snapConfig.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) );
   snapConfig.setTolerance( 1.0 );
 
   mMapSettings.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
@@ -241,7 +241,7 @@ void TestQgsCadUtils::testCommonAngle()
 void TestQgsCadUtils::testDistance()
 {
   QgsCadUtils::AlignMapPointContext context( baseContext() );
-
+  const double distance = 5.0;
   // without distance constraint
   const QgsCadUtils::AlignMapPointOutput res0 = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 20 ), context );
   QVERIFY( res0.valid );
@@ -249,13 +249,13 @@ void TestQgsCadUtils::testDistance()
   QCOMPARE( res0.finalMapPoint, QgsPointXY( 45, 20 ) );
 
   // dist
-  context.distanceConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, 5 );
+  context.distanceConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, distance );
   const QgsCadUtils::AlignMapPointOutput res1 = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 20 ), context );
   QVERIFY( res1.valid );
   QCOMPARE( res1.finalMapPoint, QgsPointXY( 35, 20 ) );
 
   // dist+x
-  const double d = 5 * sqrt( 2 ) / 2.;   // sine/cosine of 45 times radius of our distance constraint
+  const double d = distance * sqrt( 2 ) / 2.;   // sine/cosine of 45 times radius of our distance constraint
   const double expectedX1 = 30 + d;
   const double expectedY1 = 20 + d;
   context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, expectedX1 );
@@ -267,6 +267,12 @@ void TestQgsCadUtils::testDistance()
   context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 1000 );
   const QgsCadUtils::AlignMapPointOutput res2x = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 25 ), context );
   QVERIFY( !res2x.valid );
+
+  // dist+rel x
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, 0 );
+  const QgsCadUtils::AlignMapPointOutput res2r = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 25 ), context );
+  QVERIFY( res2r.valid );
+  QCOMPARE( res2r.finalMapPoint, QgsPointXY( 30, 20 + distance ) );
 
   // dist+y
   const double expectedX2 = 30 + d;
@@ -281,6 +287,13 @@ void TestQgsCadUtils::testDistance()
   context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 1000 );
   const QgsCadUtils::AlignMapPointOutput res3x = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 15 ), context );
   QVERIFY( !res3x.valid );
+
+  // dist+rel y
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, 0 );
+  const QgsCadUtils::AlignMapPointOutput res3r = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 15 ), context );
+  QVERIFY( res3r.valid );
+  QCOMPARE( res3r.finalMapPoint, QgsPointXY( 30 + distance, 20 ) );
 
   // dist+angle
   context.yConstraint = QgsCadUtils::AlignMapPointConstraint();

@@ -11,7 +11,7 @@
 
 
 
-class QgsAttributeTableView : QTableView
+class QgsAttributeTableView : QgsTableView
 {
 %Docstring(signature="appended")
 Provides a table view of features of a :py:class:`QgsVectorLayer`.

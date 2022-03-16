@@ -34,7 +34,7 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
   , mTableName( tableName )
   , mConnectionUri( connectionUri )
 {
-  mCapabilities |= ( Qgis::BrowserItemCapability::Fertile | Qgis::BrowserItemCapability::Collapse );
+  mCapabilities |= ( Qgis::BrowserItemCapability::Fertile | Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed );
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
   if ( md )
   {
@@ -202,5 +202,19 @@ QIcon QgsFieldItem::icon()
     return QgsFields::iconForFieldType( mField.subType() );
   }
   return icon;
+}
+
+bool QgsFieldItem::equal( const QgsDataItem *other )
+{
+  if ( type() != other->type() )
+  {
+    return false;
+  }
+
+  const QgsFieldItem *o = qobject_cast<const QgsFieldItem *>( other );
+  if ( !o )
+    return false;
+
+  return ( mPath == o->mPath && mName == o->mName && mField == o->mField );
 }
 

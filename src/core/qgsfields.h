@@ -195,6 +195,22 @@ class CORE_EXPORT  QgsFields
     % End
 #endif
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __getitem__( const QString &name ) const SIP_TYPEHINT( QgsField );
+    % MethodCode
+    const int fieldIdx = sipCpp->lookupField( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = sipConvertFromType( new QgsField( sipCpp->at( fieldIdx ) ), sipType_QgsField, Py_None );
+    }
+    % End
+#endif
+
 #ifndef SIP_RUN
 
     /**

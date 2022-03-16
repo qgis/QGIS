@@ -1,0 +1,111 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsfielddomainsitem.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsFieldDomainsItem : QgsDataItem
+{
+%Docstring(signature="appended")
+Contains a collection of field domain items.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfielddomainsitem.h"
+%End
+  public:
+
+    QgsFieldDomainsItem( QgsDataItem *parent /TransferThis/,
+                         const QString &path,
+                         const QString &connectionUri,
+                         const QString &providerKey );
+%Docstring
+Constructor for QgsFieldDomainsItem, with the specified ``parent`` item.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but :py:class:`QgsDataItem` items pointing to different logical locations should always use a different item ``path``.
+The ``connectionUri`` argument is the connection part of the layer URI that it is used internally to create
+a connection and retrieve fields information.
+The ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
+%End
+
+    ~QgsFieldDomainsItem();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsFieldDomainsItem: %1>" ).arg( sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QVector<QgsDataItem *> createChildren();
+
+
+    virtual QIcon icon();
+
+
+    QString connectionUri() const;
+%Docstring
+Returns the connection URI
+%End
+
+};
+
+
+class QgsFieldDomainItem : QgsDataItem
+{
+%Docstring(signature="appended")
+A browser item representing a field domain.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfielddomainsitem.h"
+%End
+  public:
+
+    QgsFieldDomainItem( QgsDataItem *parent /TransferThis/,
+                        QgsFieldDomain *domain /Transfer/ );
+%Docstring
+Constructor for QgsFieldDomainItem, with the specified ``parent`` item and ``domain``.
+
+Ownership of ``domain`` is transferred to the item.
+
+.. note::
+
+   parent item must be a :py:class:`QgsFieldDomainsItem`.
+%End
+
+    ~QgsFieldDomainItem();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsFieldDomainItem: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QIcon icon();
+
+
+    const QgsFieldDomain *fieldDomain();
+%Docstring
+Returns the associated field domain.
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsfielddomainsitem.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

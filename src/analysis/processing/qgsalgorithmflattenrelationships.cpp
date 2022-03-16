@@ -89,7 +89,7 @@ bool QgsFlattenRelationshipsAlgorithm::prepareAlgorithm( const QVariantMap &para
 
   const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
   if ( relations.size() > 1 )
-    throw QgsProcessingException( QObject::tr( "Found %1 relations. This algorithm currently supports only a single relation." ).arg( relations.size() ) );
+    throw QgsProcessingException( QObject::tr( "Found %n relation(s). This algorithm currently supports only a single relation.", nullptr, relations.size() ) );
   else if ( relations.empty() )
     throw QgsProcessingException( QObject::tr( "No relations found." ) );
 

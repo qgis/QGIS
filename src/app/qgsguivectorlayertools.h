@@ -40,10 +40,14 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      * \param layer           The layer to which the feature should be added
      * \param defaultValues   Default values for the feature to add
      * \param defaultGeometry A default geometry to add to the feature
+     * \param feat            A pointer to the feature
+     * \param parentWidget    The widget calling this function to be passed to the used dialog
+     * \param showModal       If the used dialog should be modal or not
+     * \param hideParent      If the parent widget should be hidden, when the used dialog is opened
      *
      * \returns                TRUE in case of success, FALSE if the operation failed/was aborted
      */
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat = nullptr ) const override;
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const override;
 
     /**
      * This should be called, whenever a vector layer should be switched to edit mode. If successful

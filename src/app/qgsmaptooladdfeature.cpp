@@ -37,8 +37,8 @@
 
 #include <QSettings>
 
-QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
-  : QgsMapToolDigitizeFeature( canvas, QgisApp::instance()->cadDockWidget(), mode )
+QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
+  : QgsMapToolDigitizeFeature( canvas, cadDockWidget, mode )
   , mCheckGeometryType( true )
 {
   setLayer( canvas->currentLayer() );
@@ -46,6 +46,11 @@ QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mo
   mToolName = tr( "Add feature" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddFeature::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddFeature::stopCapturing );
+}
+
+QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
+  : QgsMapToolAddFeature( canvas, QgisApp::instance()->cadDockWidget(), mode )
+{
 }
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal )
@@ -61,10 +66,10 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature 
   return res;
 }
 
-void QgsMapToolAddFeature::digitized( const QgsFeature &f )
+void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  const bool res = addFeature( vlayer, f, false );
+  const bool res = addFeature( vlayer, feature, false );
 
   if ( res )
   {
@@ -86,7 +91,7 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
           //can only add topological points if background layer is editable...
           if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
           {
-            vl->addTopologicalPoints( f.geometry() );
+            vl->addTopologicalPoints( feature.geometry() );
           }
         }
       }
@@ -98,10 +103,10 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
       {
         if ( sm.at( i ).layer() )
         {
-          sm.at( i ).layer()->addTopologicalPoints( f.geometry().vertexAt( i ) );
+          sm.at( i ).layer()->addTopologicalPoints( feature.geometry().vertexAt( i ) );
         }
       }
-      vlayer->addTopologicalPoints( f.geometry() );
+      vlayer->addTopologicalPoints( feature.geometry() );
     }
   }
 }

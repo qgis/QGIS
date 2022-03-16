@@ -392,6 +392,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
               mOgrGeometryTypeFilter,
               mOpenOptions );
 
+  // to be called only after mFilePath has been set
+  invalidateNetworkCache();
+
   if ( uri.contains( QLatin1String( "authcfg" ) ) )
   {
     QRegularExpression authcfgRe( QStringLiteral( " authcfg='([^']+)'" ) );
@@ -437,6 +440,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
   bool supportsDateTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" );
   bool supportsBinary = false;
+  bool supportIntegerList = false;
+  bool supportInteger64List = false;
+  bool supportRealList = false;
   bool supportsStringList = false;
   const char *pszDataTypes = nullptr;
   if ( mOgrOrigLayer )
@@ -452,6 +458,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
     supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
     supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
     supportsBinary = CSLFindString( papszTokens, "Binary" ) >= 0;
+    supportIntegerList = CSLFindString( papszTokens, "IntegerList" ) >= 0;
+    supportInteger64List = CSLFindString( papszTokens, "Integer64List" ) >= 0;
+    supportRealList = CSLFindString( papszTokens, "RealList" ) >= 0;
     supportsStringList = CSLFindString( papszTokens, "StringList" ) >= 0;
     CSLDestroy( papszTokens );
   }
@@ -484,6 +493,21 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   {
     nativeTypes
         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), QStringLiteral( "binary" ), QVariant::ByteArray );
+  }
+  if ( supportIntegerList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int );
+  }
+  if ( supportInteger64List )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+  }
+  if ( supportRealList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double );
   }
   if ( supportsStringList )
   {
@@ -817,78 +841,12 @@ void QgsOgrProvider::loadFields()
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
   {
     OGRFieldDefnH fldDef = fdef.GetFieldDefn( i );
-    OGRFieldType ogrType = OGR_Fld_GetType( fldDef );
-    OGRFieldSubType ogrSubType = OFSTNone;
+    const OGRFieldType ogrType = OGR_Fld_GetType( fldDef );
+    const OGRFieldSubType ogrSubType = OGR_Fld_GetSubType( fldDef );
 
-    QVariant::Type varType;
+    QVariant::Type varType = QVariant::Invalid;
     QVariant::Type varSubType = QVariant::Invalid;
-    switch ( ogrType )
-    {
-      case OFTInteger:
-        if ( OGR_Fld_GetSubType( fldDef ) == OFSTBoolean )
-        {
-          varType = QVariant::Bool;
-          ogrSubType = OFSTBoolean;
-        }
-        else
-          varType = QVariant::Int;
-        break;
-      case OFTInteger64:
-        varType = QVariant::LongLong;
-        break;
-      case OFTReal:
-        varType = QVariant::Double;
-        break;
-      case OFTDate:
-        varType = QVariant::Date;
-        break;
-      case OFTTime:
-        varType = QVariant::Time;
-        break;
-      case OFTDateTime:
-        varType = QVariant::DateTime;
-        break;
-
-      case OFTBinary:
-        varType = QVariant::ByteArray;
-        break;
-
-      case OFTString:
-        if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
-        {
-          ogrSubType = OFSTJSON;
-          varType = QVariant::Map;
-          varSubType = QVariant::String;
-        }
-        else
-        {
-          varType = QVariant::String;
-        }
-        break;
-
-      case OFTStringList:
-        varType = QVariant::StringList;
-        varSubType = QVariant::String;
-        break;
-
-      case OFTIntegerList:
-        varType = QVariant::List;
-        varSubType = QVariant::Int;
-        break;
-
-      case OFTRealList:
-        varType = QVariant::List;
-        varSubType = QVariant::Double;
-        break;
-
-      case OFTInteger64List:
-        varType = QVariant::List;
-        varSubType = QVariant::LongLong;
-        break;
-
-      default:
-        varType = QVariant::String; // other unsupported, leave it as a string
-    }
+    QgsOgrUtils::ogrFieldTypeToQVariantType( ogrType, ogrSubType, varType, varSubType );
 
     //TODO: fix this hack
 #ifdef ANDROID
@@ -973,6 +931,10 @@ void QgsOgrProvider::loadFields()
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
     if ( const char *domainName = OGR_Fld_GetDomainName( fldDef ) )
     {
+      QgsFieldConstraints constraints = newField.constraints();
+      constraints.setDomainName( domainName );
+      newField.setConstraints( constraints );
+
       // dataset retains ownership of domain!
       if ( OGRFieldDomainH domain = GDALDatasetGetFieldDomain( ds, domainName ) )
       {
@@ -3450,7 +3412,6 @@ void QgsOgrProvider::open( OpenMode mode )
   QgsDebugMsgLevel( "mLayerIndex: " + QString::number( mLayerIndex ), 3 );
   QgsDebugMsgLevel( "mLayerName: " + mLayerName, 3 );
   QgsDebugMsgLevel( "mSubsetString: " + mSubsetString, 3 );
-  CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
   CPLSetConfigOption( "GPX_ELE_AS_25D", "YES" );  // use GPX elevation as z values
   CPLSetConfigOption( "LIBKML_RESOLVE_STYLE", "YES" );  // resolve kml style urls from style tables to feature style strings
   if ( !CPLGetConfigOption( "OSM_USE_CUSTOM_INDEXING", nullptr ) )
@@ -3684,8 +3645,21 @@ void QgsOgrProvider::close()
   invalidateCachedExtent( false );
 }
 
+void QgsOgrProvider::invalidateNetworkCache()
+{
+  if ( mFilePath.startsWith( QLatin1String( "/vsicurl/" ) )  ||
+       mFilePath.startsWith( QLatin1String( "/vsis3/" ) ) ||
+       mFilePath.startsWith( QLatin1String( "/vsigs/" ) ) ||
+       mFilePath.startsWith( QLatin1String( "/vsiaz/" ) ) )
+  {
+    QgsDebugMsgLevel( QString( "Invalidating cache for %1" ).arg( mFilePath ), 3 );
+    VSICurlPartialClearCache( mFilePath.toUtf8().constData() );
+  }
+}
+
 void QgsOgrProvider::reloadProviderData()
 {
+  invalidateNetworkCache();
   mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
   bool wasValid = mValid;
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );

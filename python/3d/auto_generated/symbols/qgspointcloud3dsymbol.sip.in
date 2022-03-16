@@ -37,7 +37,9 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
       //! Render the point cloud with a color ramp
       ColorRamp,
       //! Render the RGB colors of the point cloud
-      RgbRendering
+      RgbRendering,
+      //! Render the point cloud with classified colors
+      Classification
     };
 
     QgsPointCloud3DSymbol();
@@ -72,7 +74,102 @@ Sets the point size
 Returns the byte stride for the geometries used to for the vertex buffer
 %End
 
+    bool renderAsTriangles() const;
+%Docstring
+Returns whether points are triangulated to render solid surface
+
+.. versionadded:: 3.26
+%End
+
+    void setRenderAsTriangles( bool asTriangles );
+%Docstring
+Sets whether points are triangulated to render solid surface
+
+.. versionadded:: 3.26
+%End
+
+    bool horizontalTriangleFilter() const;
+%Docstring
+Returns whether triangles are filtered by horizontal size for rendering. If the triangles are horizontally filtered by size,
+triangles with a horizontal side size greater than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.horizontalFilterThreshold`.
+
+.. versionadded:: 3.26
+%End
+
+    void setHorizontalTriangleFilter( bool horizontalTriangleFilter );
+%Docstring
+Sets whether whether triangles are filtered by horizontal size for rendering. If the triangles are horizontally filtered by size,
+triangles with a horizontal side size greater than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setHorizontalFilterThreshold`.
+
+.. versionadded:: 3.26
+%End
+
+    float horizontalFilterThreshold() const;
+%Docstring
+Returns the threshold horizontal size value for filtering triangles. If the triangles are horizontally filtered by size,
+triangles with a horizontal side size greater than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.horizontalTriangleFilter`.
+
+.. versionadded:: 3.26
+%End
+
+    void setHorizontalFilterThreshold( float horizontalFilterThreshold );
+%Docstring
+Sets the threshold horizontal size value for filtering triangles. If the triangles are horizontally filtered by size,
+triangles with a horizontal side size greater than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setHorizontalTriangleFilter`.
+
+.. versionadded:: 3.26
+%End
+
+    bool verticalTriangleFilter() const;
+%Docstring
+Returns whether triangles are filtered by vertical height for rendering. If the triangles are vertically filtered, triangles with a vertical height greater
+than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.verticalFilterThreshold`.
+
+.. versionadded:: 3.26
+%End
+
+    void setVerticalTriangleFilter( bool verticalTriangleFilter );
+%Docstring
+Sets whether triangles are filtered by vertical height for rendering. If the triangles are vertically filtered, triangles with a vertical height greater
+than a threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setVerticalFilterThreshold`.
+
+.. versionadded:: 3.26
+%End
+
+    float verticalFilterThreshold() const;
+%Docstring
+Returns the threshold vertical height value for filtering triangles. If the triangles are filtered vertically, triangles with a vertical height greater
+than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.verticalTriangleFilter`.
+
+.. versionadded:: 3.26
+%End
+
+    void setVerticalFilterThreshold( float verticalFilterThreshold );
+%Docstring
+Sets the threshold vertical height value for filtering triangles. If the triangles are filtered vertically, triangles with a vertical height greater
+than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSymbol.setVerticalTriangleFilter`.
+
+.. versionadded:: 3.26
+%End
+
   protected:
+
+    void writeBaseXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes symbol configuration of this class to the given DOM element
+
+.. versionadded:: 3.26
+%End
+
+    void readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads symbol configuration of this class from the given DOM element
+
+.. versionadded:: 3.26
+%End
+
+    virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
+
 };
 
 class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol

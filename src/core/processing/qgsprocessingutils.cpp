@@ -1114,6 +1114,9 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   if ( !outputs.isEmpty() )
     s += QStringLiteral( "<h2>" ) + QObject::tr( "Outputs" ) + QStringLiteral( "</h2>\n" ) + outputs;
 
+  if ( !map.value( QStringLiteral( "EXAMPLES" ) ).toString().isEmpty() )
+    s += QStringLiteral( "<h2>%1</h2>\n<p>%2</p>" ).arg( QObject::tr( "Examples" ), getText( QStringLiteral( "EXAMPLES" ) ) );
+
   s += QLatin1String( "<br>" );
   if ( !map.value( QStringLiteral( "ALG_CREATOR" ) ).toString().isEmpty() )
     s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Algorithm author:" ) + QStringLiteral( " " ) + getText( QStringLiteral( "ALG_CREATOR" ) ) + QStringLiteral( "</p>" );
@@ -1249,7 +1252,7 @@ QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const Qgs
     {
       int idx = 2;
       QString newName = newField.name() + '_' + QString::number( idx );
-      while ( usedNames.contains( newName.toLower() ) )
+      while ( usedNames.contains( newName.toLower() ) || fieldsB.indexOf( newName ) != -1 )
       {
         idx++;
         newName = newField.name() + '_' + QString::number( idx );
@@ -1519,9 +1522,9 @@ bool QgsProcessingFeatureSink::addFeatures( QgsFeatureList &features, QgsFeature
   {
     const QString error = lastError();
     if ( !error.isEmpty() )
-      mContext.feedback()->reportError( QObject::tr( "%1 feature(s) could not be written to %2: %3" ).arg( features.count() ).arg( mSinkName, error ) );
+      mContext.feedback()->reportError( QObject::tr( "%n feature(s) could not be written to %1: %2", nullptr, features.count() ).arg( mSinkName, error ) );
     else
-      mContext.feedback()->reportError( QObject::tr( "%1 feature(s) could not be written to %2" ).arg( features.count() ).arg( mSinkName ) );
+      mContext.feedback()->reportError( QObject::tr( "%n feature(s) could not be written to %1", nullptr, features.count() ).arg( mSinkName ) );
   }
   return result;
 }

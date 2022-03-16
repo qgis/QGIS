@@ -1,5 +1,80 @@
 Change history for the QGIS Project
 
+# What's new in Version 3.24 'Tisler'?
+
+This release has following new features:
+
+- User Interface: Retrieve map extents directly from layout maps and bookmarks
+- User Interface: Easier creation of custom coordinate reference systems
+- Symbology: Marker/hash line: offsets along line by "percent" of line length (and negative offsets!)
+- Symbology: Control whether first/last vertex placements apply to every part of multi-part geometries
+- Symbology: Marker/hash line "on vertices" placement option replaced by "on inner vertices"
+- Symbology: Placement options in marker and hash line symbol layers are now checkboxes instead of mutually exclusive buttons
+- Symbology: Control the color model used when interpolating  gradient ramps
+- Symbology: Resizable thumbnails in the style manager dialog
+- Symbology: "Lineburst" symbols
+- Symbology: "Raster Line" symbols
+- Symbology: Choice of clipping behaviour for line pattern fills
+- Symbology: Improved rendering of line pattern fills
+- Symbology: Rotation angle for point pattern fills
+- Symbology: Randomized point offsets for point pattern fills
+- Symbology: Coordinate reference mode setting for line pattern and point pattern fill symbol layers
+- Symbology: Control marker clipping for point pattern fills
+- Symbology: Expression functions for creating triangular/square/curved waves
+- Labelling: "Percentage" units for text buffer size, shadow offset and blur radius
+- Labelling: Data defined label positions by point geometries
+- Labelling: Stretched text for labels and text formats
+- Rendering: Rendering layers as groups
+- Rendering: Support for "Line pattern" when converting Mapbox GL vector tile layer styles
+- Rendering: Support background styles for Mapbox GL-styled vector tile layers
+- 3D Features: Respect Z ordering when rendering point clouds in 2D
+- 3D Features: Dock/Undock 3D views
+- 3D Features: 3D map view manager
+- 3D Features: Improved camera navigation
+- Print Layouts: Full text rendering capabilities for layout text labels
+- Expressions: geometry_type function
+- Expressions: Overlay intersects sort by intersection size
+- Expressions: Show all layer field names when building expressions
+- Expressions: represent_attributes function
+- Expressions: Optional minimum overlap area and circle radius for overlay_intersection
+- Expressions: map_prefix_keys function
+- Expressions: densify_by_count and densify_by_distance functions
+- Expressions: Rotate parts of multi-part geometries independently with "rotate" expression function
+- Expressions: apply_dash_pattern function
+- Expressions: scale function
+- Expressions: Filter by multiple attributes for get_feature function
+- Data Management: Multiedit support for relation editor
+- Metadata and Metasearch: Support for OGC API - Records in MetaSearch
+- Forms and Widgets: Form submit actions with HTTP POST
+- Forms and Widgets: New button to open attribute table on filtered features
+- Analysis Tools: Add roundness method to curve polygon
+- Processing: Extract labels algorithm
+- Processing: Optional output extent parameter for the GDAL Raster Calculator algorithm
+- Processing: Optional extent parameter for the GDAL clip raster by mask algorithm
+- Processing: Processing history rework
+- Processing: Advanced actions in Processing dialogs
+- Processing: Single file exports from Atlas to PDF algorithm
+- Processing: Project Models are shown in the Project menu
+- Processing: Add point cloud destination parameter and output to Processing
+- Processing: Array field support
+- Application and Project Options: qgis_process --no-python argument
+- Application and Project Options: Suppress "bad layers" handler on startup
+- Application and Project Options: Parameter values for qgis_process can be specified as a JSON object via stdin
+- Application and Project Options: Run Python script algorithms directly via qgis_process
+- Data Providers: Friendlier errors from XYZ raster tiles, WMS  and vector tiles
+- Data Providers: Add out-of-the-box connection to Mapzen Global Terrain tiles
+- Data Providers: HMAC SHA256 auth method for MapTiler
+- Data Providers: Template parameter {usage} for XYZ raster and vector tiles
+- Data Providers: Convert WMTS/XYZ raster tiles to terrain (DEM)
+- Data Providers: Array field types for scratch layers
+- Data Providers: JSON field types for new GeoPackage layers
+- Data Providers: Delimited text type overrides and other improvements
+- Data Providers: New authentication method for HTTP header based authentication
+- Data Providers: Expose secondary PostGIS geometry columns as referenced geometries
+- QGIS Server: Allow better control of the response flow chain from server filters
+-
+
+
 # What's new in Version 3.22 'Białowieża'?
 
 This release has following new features:

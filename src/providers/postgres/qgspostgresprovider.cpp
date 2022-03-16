@@ -4842,17 +4842,14 @@ QString  QgsPostgresProvider::description() const
   {
     QgsPostgresResult result;
 
+    /* TODO: expose a cached QgsPostgresConn::version() ? */
     result = lConnectionRO->PQexec( QStringLiteral( "SELECT version()" ) );
     if ( result.PQresultStatus() == PGRES_TUPLES_OK )
     {
       pgVersion = result.PQgetvalue( 0, 0 );
     }
 
-    result = lConnectionRO->PQexec( QStringLiteral( "SELECT postgis_version()" ) );
-    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-    {
-      postgisVersion = result.PQgetvalue( 0, 0 );
-    }
+    postgisVersion = lConnectionRO->postgisVersion();
   }
   else
   {
@@ -5321,7 +5318,7 @@ bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString
   errorCause.clear();
 
   QgsDataSourceUri dsUri( uri );
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
   if ( !conn )
   {
     errorCause = QObject::tr( "Connection to database failed" );
@@ -5549,7 +5546,7 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
   QgsDataSourceUri dsUri( uri );
   QString selectQmlQuery;
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -5629,7 +5626,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
   errCause.clear();
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
@@ -5749,7 +5746,7 @@ QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, const QSt
 {
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );

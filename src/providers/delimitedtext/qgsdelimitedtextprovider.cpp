@@ -909,13 +909,13 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
   if ( ! csvtMessage.isEmpty() )
     warnings.append( csvtMessage );
   if ( nBadFormatRecords > 0 )
-    warnings.append( tr( "%1 records discarded due to invalid format" ).arg( nBadFormatRecords ) );
+    warnings.append( tr( "%n record(s) discarded due to invalid format", nullptr, nBadFormatRecords ) );
   if ( nEmptyGeometry > 0 )
-    warnings.append( tr( "%1 records have missing geometry definitions" ).arg( nEmptyGeometry ) );
+    warnings.append( tr( "%n record(s) have missing geometry definitions", nullptr, nEmptyGeometry ) );
   if ( nInvalidGeometry > 0 )
-    warnings.append( tr( "%1 records discarded due to invalid geometry definitions" ).arg( nInvalidGeometry ) );
+    warnings.append( tr( "%n record(s) discarded due to invalid geometry definitions", nullptr, nInvalidGeometry ) );
   if ( nIncompatibleGeometry > 0 )
-    warnings.append( tr( "%1 records discarded due to incompatible geometry types" ).arg( nIncompatibleGeometry ) );
+    warnings.append( tr( "%n record(s) discarded due to incompatible geometry types", nullptr, nIncompatibleGeometry ) );
 
   reportErrors( warnings );
 
@@ -1193,7 +1193,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
       for ( int i = 0; i < mInvalidLines.size(); ++i )
         QgsMessageLog::logMessage( mInvalidLines.at( i ), tag );
       if ( mNExtraInvalidLines > 0 )
-        QgsMessageLog::logMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ), tag );
+        QgsMessageLog::logMessage( tr( "There are %n additional error(s) in the file", nullptr, mNExtraInvalidLines ), tag );
     }
 
     // Display errors in a dialog...
@@ -1213,7 +1213,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
         for ( int i = 0; i < mInvalidLines.size(); ++i )
           output->appendMessage( mInvalidLines.at( i ) );
         if ( mNExtraInvalidLines > 0 )
-          output->appendMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ) );
+          output->appendMessage( tr( "There are %n additional error(s) in the file", nullptr, mNExtraInvalidLines ) );
       }
       output->showMessage();
     }

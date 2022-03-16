@@ -22,6 +22,9 @@ Model based algorithm with processing.
 #include "qgsprocessingmodelalgorithm.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     QgsProcessingModelAlgorithm( const QString &name = QString(), const QString &group = QString(), const QString &groupId = QString() );
 %Docstring
@@ -48,8 +51,6 @@ Constructor for QgsProcessingModelAlgorithm.
     virtual QString shortDescription() const;
 
     virtual QString helpUrl() const;
-
-    virtual Flags flags() const;
 
 
     virtual bool canExecute( QString *errorMessage /Out/ = 0 ) const;
@@ -245,6 +246,15 @@ is deleted.
 .. seealso:: :py:func:`addModelParameter`
 
 .. seealso:: :py:func:`updateModelParameter`
+%End
+
+    void changeParameterName( const QString &oldName, const QString &newName );
+%Docstring
+Changes a model parameter's internal name from ``oldName`` to ``newName``.
+
+This method will automatically update all model components to relink using the new name.
+
+.. versionadded:: 3.26
 %End
 
     bool childAlgorithmsDependOnParameter( const QString &name ) const;
@@ -565,6 +575,14 @@ run through the designer.
 
 .. versionadded:: 3.14
 %End
+
+    const QgsProcessingParameterDefinition *modelParameterFromChildIdAndOutputName( const QString &childId, const QString &childOutputName ) const;
+%Docstring
+Given a child algorithm ID and output name, attempts to match it to a parameter definition from the overall model.
+
+.. versionadded:: 3.26
+%End
+
 
   protected:
 

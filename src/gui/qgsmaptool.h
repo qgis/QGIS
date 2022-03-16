@@ -261,6 +261,9 @@ class GUI_EXPORT QgsMapTool : public QObject
      */
     virtual bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event );
 
+    //! Transforms a \a point from screen coordinates to map coordinates.
+    QgsPointXY toMapCoordinates( QPoint point );
+
   signals:
     //! emit a message
     void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
@@ -282,9 +285,6 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Constructor takes a map canvas as a parameter.
     QgsMapTool( QgsMapCanvas *canvas SIP_TRANSFERTHIS );
-
-    //! Transforms a \a point from screen coordinates to map coordinates.
-    QgsPointXY toMapCoordinates( QPoint point );
 
     /**
      * Transforms a \a point from map coordinates to \a layer coordinates.

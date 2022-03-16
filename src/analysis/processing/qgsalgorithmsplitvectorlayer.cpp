@@ -148,7 +148,7 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
       count += 1;
     }
 
-    feedback->pushInfo( QObject::tr( "Added %1 features to layer" ).arg( count ) );
+    feedback->pushInfo( QObject::tr( "Added %n feature(s) to layer", nullptr, count ) );
     outputLayers << fileName;
 
     current += 1;

@@ -27,9 +27,9 @@
 #include "qgsmaptooladdfeature.h"
 
 #include "testqgsmaptoolutils.h"
-#include "qgsmaptoolcircle2points.h"
-#include "qgsmaptoolcircle3points.h"
-#include "qgsmaptoolcirclecenterpoint.h"
+#include "qgsmaptoolshapecircle2points.h"
+#include "qgsmaptoolshapecircle3points.h"
+#include "qgsmaptoolshapecirclecenterpoint.h"
 
 
 class TestQgsMapToolCircle : public QObject
@@ -47,8 +47,10 @@ class TestQgsMapToolCircle : public QObject
     void testCircle();
 
   private:
+    void resetMapTool( QgsMapToolShapeMetadata *metadata );
+
     QgisApp *mQgisApp = nullptr;
-    QgsMapToolCapture *mParentTool = nullptr;
+    QgsMapToolCapture *mMapTool = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     std::map<QString, std::unique_ptr<QgsVectorLayer>> mVectorLayerMap = {};
 
@@ -96,19 +98,19 @@ void TestQgsMapToolCircle::initTestCase()
   // make testing layers
   QList<QgsMapLayer *> layerList;
 
-  mVectorLayerMap["XY"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line " ), QStringLiteral( "memory" ) );
+  mVectorLayerMap["XY"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurve?crs=EPSG:27700" ), QStringLiteral( "layer line " ), QStringLiteral( "memory" ) );
   QVERIFY( mVectorLayerMap["XY"]->isValid() );
   layerList << mVectorLayerMap["XY"].get();
 
-  mVectorLayerMap["XYZ"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  mVectorLayerMap["XYZ"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurveZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
   QVERIFY( mVectorLayerMap["XYZ"]->isValid() );
   layerList << mVectorLayerMap["XYZ"].get();
 
-  mVectorLayerMap["XYM"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringM?crs=EPSG:27700" ), QStringLiteral( "layer line M" ), QStringLiteral( "memory" ) );
+  mVectorLayerMap["XYM"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurveM?crs=EPSG:27700" ), QStringLiteral( "layer line M" ), QStringLiteral( "memory" ) );
   QVERIFY( mVectorLayerMap["XYM"]->isValid() );
   layerList << mVectorLayerMap["XYM"].get();
 
-  mVectorLayerMap["XYZM"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZM?crs=EPSG:27700" ), QStringLiteral( "layer line ZM" ), QStringLiteral( "memory" ) );
+  mVectorLayerMap["XYZM"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurveZM?crs=EPSG:27700" ), QStringLiteral( "layer line ZM" ), QStringLiteral( "memory" ) );
   QVERIFY( mVectorLayerMap["XYZM"]->isValid() );
   layerList << mVectorLayerMap["XYZM"].get();
 
@@ -116,7 +118,9 @@ void TestQgsMapToolCircle::initTestCase()
   QgsProject::instance()->addMapLayers( layerList );
   mCanvas->setLayers( layerList );
 
-  mParentTool = new QgsMapToolAddFeature( mCanvas, QgsMapToolCapture::CaptureLine );
+  mMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
+  mCanvas->setMapTool( mMapTool );
 
   initAttributs();
 }
@@ -168,21 +172,27 @@ void TestQgsMapToolCircle::initAttributs()
 
 void TestQgsMapToolCircle::cleanupTestCase()
 {
-
-  for ( QString coordinate : mCoordinateList )
+  for ( const QString &coordinate : std::as_const( mCoordinateList ) )
   {
     mVectorLayerMap[coordinate].reset();
   }
+  delete mMapTool;
   QgsApplication::exitQgis();
 }
 
+void TestQgsMapToolCircle::resetMapTool( QgsMapToolShapeMetadata *metadata )
+{
+  mMapTool->clean();
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
+  mMapTool->setCurrentShapeMapTool( metadata ) ;
+}
 
 QgsFeatureId TestQgsMapToolCircle::drawCircleFrom2Points()
 {
-  QgsMapToolCircle2Points mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  QgsMapToolShapeCircle2PointsMetadata md;
+  resetMapTool( &md );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 0, 2 );
   utils.mouseClick( 0, 2, Qt::RightButton );
@@ -192,10 +202,10 @@ QgsFeatureId TestQgsMapToolCircle::drawCircleFrom2Points()
 
 QgsFeatureId TestQgsMapToolCircle::drawCircleFrom2PointsWithDeletedVertex()
 {
-  QgsMapToolCircle2Points mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  QgsMapToolShapeCircle2PointsMetadata md;
+  resetMapTool( &md );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 4, 1, Qt::LeftButton );
   utils.keyClick( Qt::Key_Backspace );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -207,10 +217,10 @@ QgsFeatureId TestQgsMapToolCircle::drawCircleFrom2PointsWithDeletedVertex()
 
 QgsFeatureId TestQgsMapToolCircle::drawCircleFrom3Points()
 {
-  QgsMapToolCircle3Points mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  QgsMapToolShapeCircle3PointsMetadata md;
+  resetMapTool( &md );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseMove( 1, 1 );
@@ -221,10 +231,10 @@ QgsFeatureId TestQgsMapToolCircle::drawCircleFrom3Points()
 
 QgsFeatureId TestQgsMapToolCircle::drawCircleFrom3PointsWithDeletedVertex()
 {
-  QgsMapToolCircle3Points mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  QgsMapToolShapeCircle3PointsMetadata md;
+  resetMapTool( &md );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 4, 1, Qt::LeftButton );
   utils.keyClick( Qt::Key_Backspace );
@@ -237,10 +247,10 @@ QgsFeatureId TestQgsMapToolCircle::drawCircleFrom3PointsWithDeletedVertex()
 
 QgsFeatureId TestQgsMapToolCircle::drawCircleFromCenterPoint()
 {
-  QgsMapToolCircleCenterPoint mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  QgsMapToolShapeCircleCenterPointMetadata md;
+  resetMapTool( &md );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 0, 2 );
   utils.mouseClick( 0, 2, Qt::RightButton );
@@ -250,10 +260,10 @@ QgsFeatureId TestQgsMapToolCircle::drawCircleFromCenterPoint()
 
 QgsFeatureId TestQgsMapToolCircle::drawCircleFromCenterPointWithDeletedVertex()
 {
-  QgsMapToolCircleCenterPoint mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  QgsMapToolShapeCircleCenterPointMetadata md;
+  resetMapTool( &md );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 4, 1, Qt::LeftButton );
   utils.keyClick( Qt::Key_Backspace );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -281,12 +291,12 @@ void TestQgsMapToolCircle::testCircle_data()
 
   QString rowStringName;
 
-  for ( QString coordinate : mCoordinateList )
+  for ( const QString &coordinate : std::as_const( mCoordinateList ) )
   {
     mLayer = mVectorLayerMap[coordinate].get();
     mCanvas->setCurrentLayer( mLayer );
 
-    for ( QString drawMethod : mDrawingCircleMethods )
+    for ( const QString &drawMethod : std::as_const( mDrawingCircleMethods ) )
     {
       mLayer->startEditing();
       newFid = mDrawFunctionPtrMap[drawMethod]();

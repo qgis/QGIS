@@ -8,7 +8,7 @@
 
 
 
-class QgsMapToolDigitizeFeature : QgsMapToolCapture
+class QgsMapToolDigitizeFeature : QgsMapToolCaptureLayerGeometry
 {
 %Docstring(signature="appended")
 This tool digitizes geometry of new point/line/polygon features on already existing vector layers
@@ -34,7 +34,7 @@ QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
 
     virtual QgsMapToolCapture::Capabilities capabilities() const;
 
-    virtual bool supportsTechnique( CaptureTechnique technique ) const;
+    virtual bool supportsTechnique( Qgis::CaptureTechnique technique ) const;
 
 
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
@@ -61,7 +61,7 @@ Emitted whenever the digitizing has been successfully completed
 :param feature: the new digitized feature
 %End
 
-    void digitizingFinished( );
+    void digitizingFinished();
 %Docstring
 Emitted whenever the digitizing has been ended without digitizing
 any feature
@@ -83,6 +83,13 @@ Check if CaptureMode matches layer type. Default is ``True``.
 .. versionadded:: 3.0
 %End
 
+  private:
+    virtual void featureDigitized( const QgsFeature &feature );
+%Docstring
+Called when the feature has been digitized
+
+.. versionadded:: 3.26
+%End
 };
 
 /************************************************************************

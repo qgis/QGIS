@@ -27,6 +27,12 @@ QgsResidualPlotItem::QgsResidualPlotItem( QgsLayout *layout )
   setBackgroundEnabled( false );
 }
 
+QgsResidualPlotItem::~QgsResidualPlotItem()
+{
+  qDeleteAll( mGCPList );
+  mGCPList.clear();
+}
+
 QgsLayoutItem::Flags QgsResidualPlotItem::itemFlags() const
 {
   return QgsLayoutItem::FlagOverridesPaint;
@@ -58,7 +64,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   QgsGCPList::const_iterator gcpIt = mGCPList.constBegin();
   for ( ; gcpIt != mGCPList.constEnd(); ++gcpIt )
   {
-    const QgsPointXY gcpCoords = ( *gcpIt )->pixelCoords();
+    const QgsPointXY gcpCoords = ( *gcpIt )->sourcePoint();
     const double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     const double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
 
@@ -86,7 +92,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   gcpIt = mGCPList.constBegin();
   for ( ; gcpIt != mGCPList.constEnd(); ++gcpIt )
   {
-    const QgsPointXY gcpCoords = ( *gcpIt )->pixelCoords();
+    const QgsPointXY gcpCoords = ( *gcpIt )->sourcePoint();
     const double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     const double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
     if ( ( *gcpIt )->isEnabled() )
@@ -151,6 +157,17 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
     painter->setBrush( Qt::NoBrush );
     painter->setRenderHint( QPainter::Antialiasing, true );
     painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  }
+}
+
+void QgsResidualPlotItem::setGCPList( const QgsGCPList &list )
+{
+  qDeleteAll( mGCPList );
+  mGCPList.clear();
+
+  for ( const QgsGeorefDataPoint *pt : list )
+  {
+    mGCPList.append( new QgsGeorefDataPoint( *pt ) );
   }
 }
 

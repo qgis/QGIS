@@ -19,8 +19,6 @@
 
 #include "qgsxmlutils.h"
 
-#include "qgssettings.h"
-
 QgsGeometryOptions::QgsGeometryOptions()
 {
   mGeometryChecks = settingsGeometryValidationDefaultChecks.value().split( ',' ) ;

@@ -43,6 +43,8 @@ class TestQgsPointCloudAttribute: public QObject
     void testVariantType();
     void testIsNumeric();
     void testCollection();
+    void testCollectionFindCaseInsensitive();
+    void testCollevtionExtend();
     void testToFields();
 
   private:
@@ -186,6 +188,84 @@ void TestQgsPointCloudAttribute::testCollection()
   QCOMPARE( offset, 4 );
   QCOMPARE( collection2.find( QStringLiteral( "at3" ), offset )->name(), QStringLiteral( "at3" ) );
   QCOMPARE( offset, 6 );
+}
+
+void TestQgsPointCloudAttribute::testCollectionFindCaseInsensitive()
+{
+  int offset = 0;
+  const QgsPointCloudAttributeCollection collection( QVector< QgsPointCloudAttribute >()
+      << QgsPointCloudAttribute( QStringLiteral( "at1" ), QgsPointCloudAttribute::DataType::Float )
+      << QgsPointCloudAttribute( QStringLiteral( "at2" ), QgsPointCloudAttribute::DataType::Short )
+      << QgsPointCloudAttribute( QStringLiteral( "AT3" ), QgsPointCloudAttribute::DataType::Double ) );
+  QCOMPARE( collection.attributes().size(), 3 );
+  QCOMPARE( collection.count(), 3 );
+  QCOMPARE( collection.attributes().at( 0 ).name(), QStringLiteral( "at1" ) );
+  QCOMPARE( collection.attributes().at( 1 ).name(), QStringLiteral( "at2" ) );
+  QCOMPARE( collection.attributes().at( 2 ).name(), QStringLiteral( "AT3" ) );
+  QCOMPARE( collection.pointRecordSize(), 14 );
+  QVERIFY( !collection.find( QStringLiteral( "test" ), offset ) );
+  QCOMPARE( collection.find( QStringLiteral( "At1" ), offset )->name(), QStringLiteral( "at1" ) );
+  QCOMPARE( offset, 0 );
+  QCOMPARE( collection.find( QStringLiteral( "aT2" ), offset )->name(), QStringLiteral( "at2" ) );
+  QCOMPARE( offset, 4 );
+  QCOMPARE( collection.find( QStringLiteral( "aT3" ), offset )->name(), QStringLiteral( "AT3" ) );
+  QCOMPARE( offset, 6 );
+}
+
+void TestQgsPointCloudAttribute::testCollevtionExtend()
+{
+  int offset = 0;
+  QgsPointCloudAttributeCollection collection( QVector< QgsPointCloudAttribute >()
+      << QgsPointCloudAttribute( QStringLiteral( "at1" ), QgsPointCloudAttribute::DataType::Float )
+      << QgsPointCloudAttribute( QStringLiteral( "at2" ), QgsPointCloudAttribute::DataType::Short )
+      << QgsPointCloudAttribute( QStringLiteral( "at3" ), QgsPointCloudAttribute::DataType::Double ) );
+  const QgsPointCloudAttributeCollection collection2( QVector< QgsPointCloudAttribute >()
+      << QgsPointCloudAttribute( QStringLiteral( "at1" ), QgsPointCloudAttribute::DataType::Float )
+      << QgsPointCloudAttribute( QStringLiteral( "at2" ), QgsPointCloudAttribute::DataType::Short )
+      << QgsPointCloudAttribute( QStringLiteral( "at3" ), QgsPointCloudAttribute::DataType::Double )
+      << QgsPointCloudAttribute( QStringLiteral( "at4" ), QgsPointCloudAttribute::DataType::Float )
+      << QgsPointCloudAttribute( QStringLiteral( "at5" ), QgsPointCloudAttribute::DataType::Short ) );
+
+  collection.extend( collection2, QSet<QString>() );
+  QCOMPARE( collection.attributes().size(), 3 );
+  QCOMPARE( collection.count(), 3 );
+  QCOMPARE( collection.attributes().at( 0 ).name(), QStringLiteral( "at1" ) );
+  QCOMPARE( collection.attributes().at( 1 ).name(), QStringLiteral( "at2" ) );
+  QCOMPARE( collection.attributes().at( 2 ).name(), QStringLiteral( "at3" ) );
+  QCOMPARE( collection.pointRecordSize(), 14 );
+  QVERIFY( !collection.find( QStringLiteral( "test" ), offset ) );
+  QCOMPARE( collection.find( QStringLiteral( "at1" ), offset )->name(), QStringLiteral( "at1" ) );
+  QCOMPARE( offset, 0 );
+  QCOMPARE( collection.find( QStringLiteral( "at2" ), offset )->name(), QStringLiteral( "at2" ) );
+  QCOMPARE( offset, 4 );
+  QCOMPARE( collection.find( QStringLiteral( "at3" ), offset )->name(), QStringLiteral( "at3" ) );
+  QCOMPARE( offset, 6 );
+
+  collection.extend( collection2, QSet<QString>() << QStringLiteral( "at4" ) );
+  QCOMPARE( collection.attributes().size(), 4 );
+  QCOMPARE( collection.count(), 4 );
+  QVERIFY( !collection.find( QStringLiteral( "at5" ), offset ) );
+  QCOMPARE( collection.find( QStringLiteral( "at1" ), offset )->name(), QStringLiteral( "at1" ) );
+  QCOMPARE( offset, 0 );
+  QCOMPARE( collection.find( QStringLiteral( "at2" ), offset )->name(), QStringLiteral( "at2" ) );
+  QCOMPARE( offset, 4 );
+  QCOMPARE( collection.find( QStringLiteral( "at3" ), offset )->name(), QStringLiteral( "at3" ) );
+  QCOMPARE( offset, 6 );
+  QCOMPARE( collection.find( QStringLiteral( "at4" ), offset )->name(), QStringLiteral( "at4" ) );
+  QCOMPARE( offset, 14 );
+
+  collection.extend( collection2, QSet<QString>() << QStringLiteral( "at4" ) << QStringLiteral( "at5" ) << QStringLiteral( "at6" ) );
+  QCOMPARE( collection.attributes().size(), 5 );
+  QCOMPARE( collection.count(), 5 );
+  QVERIFY( !collection.find( QStringLiteral( "at6" ), offset ) );
+  QCOMPARE( collection.find( QStringLiteral( "at1" ), offset )->name(), QStringLiteral( "at1" ) );
+  QCOMPARE( offset, 0 );
+  QCOMPARE( collection.find( QStringLiteral( "at2" ), offset )->name(), QStringLiteral( "at2" ) );
+  QCOMPARE( offset, 4 );
+  QCOMPARE( collection.find( QStringLiteral( "at3" ), offset )->name(), QStringLiteral( "at3" ) );
+  QCOMPARE( offset, 6 );
+  QCOMPARE( collection.find( QStringLiteral( "at4" ), offset )->name(), QStringLiteral( "at4" ) );
+  QCOMPARE( collection.find( QStringLiteral( "at5" ), offset )->name(), QStringLiteral( "at5" ) );
 }
 
 void TestQgsPointCloudAttribute::testToFields()

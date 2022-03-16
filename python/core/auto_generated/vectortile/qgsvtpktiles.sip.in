@@ -1,0 +1,102 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvtpktiles.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsVtpkTiles
+{
+%Docstring(signature="appended")
+Utility class for reading and writing ESRI VTPK files.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsvtpktiles.h"
+%End
+  public:
+    explicit QgsVtpkTiles( const QString &filename );
+%Docstring
+Constructs VTPK reader (but it does not open the file yet)
+%End
+
+    ~QgsVtpkTiles();
+
+    bool open();
+%Docstring
+Tries to open the file, returns true on success
+%End
+
+    bool isOpen() const;
+%Docstring
+Returns whether the VTPK file is currently opened
+%End
+
+    QVariantMap metadata() const;
+%Docstring
+Returns the VTPK metadata.
+
+This method returns the contents of the "root.json" file.
+%End
+
+    QVariantMap styleDefinition() const;
+%Docstring
+Returns the VTPK style definition.
+%End
+
+    QVariantMap spriteDefinition() const;
+%Docstring
+Returns the VTPK sprites definitions.
+%End
+
+    QImage spriteImage() const;
+%Docstring
+Returns the VTPK sprite image, if it exists.
+%End
+
+    QgsLayerMetadata layerMetadata() const;
+%Docstring
+Reads layer metadata from the VTPK file.
+%End
+
+    QgsVectorTileMatrixSet matrixSet() const;
+%Docstring
+Returns the vector tile matrix set representing the tiles.
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the coordinate reference system of the tiles.
+%End
+
+    QgsRectangle extent( const QgsCoordinateTransformContext &context ) const;
+%Docstring
+Returns bounding box from metadata, given in the tiles :py:func:`~QgsVtpkTiles.crs`.
+%End
+
+    QByteArray tileData( int z, int x, int y );
+%Docstring
+Returns the raw tile data for the matching tile.
+%End
+
+  private:
+    //! QgsVtpkTiles cannot be copied
+    QgsVtpkTiles( const QgsVtpkTiles &other );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvtpktiles.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

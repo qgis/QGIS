@@ -363,7 +363,7 @@ void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )
   mZLabel->setEnabled( enable );
   mZLineEdit->setEnabled( enable );
   if ( mZLineEdit->isEnabled() )
-    mZLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultZValue(), 'f', 6 ) );
+    mZLineEdit->setText( QLocale().toString( QgsMapToolEdit::defaultZValue(), 'f', 6 ) );
   else
     mZLineEdit->clear();
   mLockZButton->setEnabled( enable );
@@ -376,7 +376,7 @@ void QgsAdvancedDigitizingDockWidget::setEnabledM( bool enable )
   mMLabel->setEnabled( enable );
   mMLineEdit->setEnabled( enable );
   if ( mMLineEdit->isEnabled() )
-    mMLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultMValue(), 'f', 6 ) );
+    mMLineEdit->setText( QLocale().toString( QgsMapToolEdit::defaultMValue(), 'f', 6 ) );
   else
     mMLineEdit->clear();
   mLockMButton->setEnabled( enable );
@@ -490,7 +490,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
   }
 }
 
-QgsMapLayer *QgsAdvancedDigitizingDockWidget::targetLayer()
+QgsMapLayer *QgsAdvancedDigitizingDockWidget::targetLayer() const
 {
   if ( QgsMapToolAdvancedDigitizing *advancedTool = qobject_cast< QgsMapToolAdvancedDigitizing * >( mMapCanvas->mapTool() ) )
   {
@@ -616,9 +616,37 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
     QgsExpression expr( inputValue );
     const QVariant result = expr.evaluate();
     if ( expr.hasEvalError() )
+    {
       ok = false;
+      QString inputValueC { inputValue };
+
+      // First: try removing group separator
+      if ( inputValue.contains( QLocale().groupSeparator() ) )
+      {
+        inputValueC.remove( QLocale().groupSeparator() );
+        QgsExpression exprC( inputValueC );
+        const QVariant resultC = exprC.evaluate();
+        if ( ! exprC.hasEvalError() )
+        {
+          value = resultC.toDouble( &ok );
+        }
+      }
+
+      // Second: be nice with non-dot locales
+      if ( !ok && QLocale().decimalPoint() != QChar( '.' ) && inputValueC.contains( QLocale().decimalPoint() ) )
+      {
+        QgsExpression exprC( inputValueC .replace( QLocale().decimalPoint(), QChar( '.' ) ) );
+        const QVariant resultC = exprC.evaluate();
+        if ( ! exprC.hasEvalError() )
+        {
+          value = resultC.toDouble( &ok );
+        }
+      }
+    }
     else
+    {
       value = result.toDouble( &ok );
+    }
     return value;
   }
 }
@@ -749,15 +777,16 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 {
   CadCapacities newCapacities = CadCapacities();
   const bool isGeographic = mMapCanvas->mapSettings().destinationCrs().isGeographic();
-  if ( !isGeographic )
-    newCapacities |= Distance;
 
   // first point is the mouse point (it doesn't count)
   if ( mCadPointList.count() > 1 )
   {
     newCapacities |=  RelativeCoordinates;
     if ( !isGeographic )
+    {
       newCapacities |= AbsoluteAngle;
+      newCapacities |= Distance;
+    }
   }
   if ( mCadPointList.count() > 2 )
   {
@@ -905,8 +934,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
    * Ensure that Z and M are passed
    * It will be dropped as needed later.
    */
-  point.setZ( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
-  point.setM( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
+  point.setZ( QgsMapToolEdit::defaultZValue() );
+  point.setM( QgsMapToolEdit::defaultMValue() );
 
   /*
    * Constraints are applied in 2D, they are always called when using the tool
@@ -914,14 +943,19 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
    * a Z value.
    * To get the value we use the snapPoint method. However, we only apply it
    * when the snapped point corresponds to the constrained point or on an edge
-   * if the topological editing is activated.
+   * if the topological editing is activated. Also, we don't apply it if
+   * the point is not linked to a layer.
    */
   e->setMapPoint( point );
   mSnapMatch = context.snappingUtils->snapToMap( point, nullptr, true );
-  if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( point == mSnapMatch.point() ) ) || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
+  if ( mSnapMatch.layer() )
   {
-    e->snapPoint();
-    point = mSnapMatch.interpolatedPoint();
+    if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( point == mSnapMatch.point() ) )
+         || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
+    {
+      e->snapPoint();
+      point = mSnapMatch.interpolatedPoint( mMapCanvas->mapSettings().destinationCrs() );
+    }
   }
 
   /*
@@ -1044,8 +1078,8 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
   const QgsSnappingConfig canvasConfig = snappingUtils->config();
   QgsSnappingConfig localConfig = snappingUtils->config();
 
-  localConfig.setMode( QgsSnappingConfig::AllLayers );
-  localConfig.setTypeFlag( QgsSnappingConfig::SegmentFlag );
+  localConfig.setMode( Qgis::SnappingMode::AllLayers );
+  localConfig.setTypeFlag( Qgis::SnappingType::Segment );
   snappingUtils->setConfig( localConfig );
 
   match = snappingUtils->snapToMap( originalMapPoint, nullptr, true );
@@ -1435,13 +1469,11 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 
 void QgsAdvancedDigitizingDockWidget::enable()
 {
+  // most of theses lines can be moved to updateCapacity
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsAdvancedDigitizingDockWidget::enable, Qt::UniqueConnection );
   if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
   {
-    mAngleLineEdit->setEnabled( false );
     mAngleLineEdit->setToolTip( tr( "Angle constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
-
-    mDistanceLineEdit->setEnabled( false );
     mDistanceLineEdit->setToolTip( tr( "Distance constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
 
     mLabelX->setText( tr( "Long" ) );
@@ -1455,7 +1487,6 @@ void QgsAdvancedDigitizingDockWidget::enable()
     mAngleLineEdit->setToolTip( "<b>" + tr( "Angle" ) + "</b><br>(" + tr( "press a for quick access" ) + ")" );
     mAngleLineEdit->setToolTip( QString() );
 
-    mDistanceLineEdit->setEnabled( true );
     mDistanceLineEdit->setToolTip( "<b>" + tr( "Distance" ) + "</b><br>(" + tr( "press d for quick access" ) + ")" );
 
     mLabelX->setText( tr( "x" ) );
@@ -1464,6 +1495,8 @@ void QgsAdvancedDigitizingDockWidget::enable()
     mXConstraint->setPrecision( 6 );
     mYConstraint->setPrecision( 6 );
   }
+
+  updateCapacity();
 
   mEnableAction->setEnabled( true );
   mErrorLabel->hide();

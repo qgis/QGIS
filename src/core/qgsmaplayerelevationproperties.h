@@ -41,6 +41,8 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
 {
 #ifdef SIP_RUN
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsvectorlayerelevationproperties.h"
 #endif
 
     Q_OBJECT
@@ -50,6 +52,14 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     if ( qobject_cast<QgsPointCloudLayerElevationProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsPointCloudLayerElevationProperties;
+    }
+    else if ( qobject_cast<QgsVectorLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsVectorLayerElevationProperties;
+    }
+    else if ( qobject_cast<QgsRasterLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterLayerElevationProperties;
     }
     else
     {
@@ -111,12 +121,64 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      */
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
+    /**
+     * Returns the z offset, which is a fixed offset amount which should be added to z values from
+     * the layer.
+     *
+     * \note Any scaling specified via zScale() is applied before any offset value specified via zOffset()
+     *
+     * \see setZOffset()
+     */
+    double zOffset() const { return mZOffset; }
+
+    /**
+     * Sets the z \a offset, which is a fixed offset amount which will be added to z values from
+     * the layer.
+     *
+     * \note Any scaling specified via zScale() is applied before any offset value specified via zOffset()
+     *
+     * \see zOffset()
+     */
+    void setZOffset( double offset ) { mZOffset = offset; }
+
+    /**
+     * Returns the z scale, which is a scaling factor which should be applied to z values from
+     * the layer.
+     *
+     * This can be used to correct or manually adjust for incorrect elevation values in a layer, such
+     * as conversion of elevation values in feet to meters.
+     *
+     * \note Any scaling specified via zScale() is applied before any offset value specified via zOffset()
+     *
+     * \see setZScale()
+     */
+    double zScale() const { return mZScale; }
+
+    /**
+     * Sets the z \a scale, which is a scaling factor which will be applied to z values from
+     * the layer.
+     *
+     * This can be used to correct or manually adjust for incorrect elevation values in a layer, such
+     * as conversion of elevation values in feet to meters.
+     *
+     * \note Any scaling specified via zScale() is applied before any offset value specified via zOffset()
+     *
+     * \see zScale()
+     */
+    void setZScale( double scale ) { mZScale = scale; }
+
   signals:
 
     /**
      * Emitted when the elevation properties have changed.
      */
     void changed();
+
+  protected:
+    //! Z scale
+    double mZScale = 1.0;
+    //! Z offset
+    double mZOffset = 0.0;
 };
 
 #endif // QGSMAPLAYERELEVATIONPROPERTIES_H

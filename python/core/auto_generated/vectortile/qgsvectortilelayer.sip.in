@@ -115,6 +115,8 @@ Constructs a new vector tile layer
 
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
 
+    virtual Qgis::MapLayerProperties properties() const;
+
 
 
     virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );
@@ -127,6 +129,13 @@ Constructs a new vector tile layer
     virtual QString htmlMetadata() const;
 
 
+
+    QgsVectorTileMatrixSet &tileMatrixSet();
+%Docstring
+Returns the vector tile matrix set.
+
+.. versionadded:: 3.22.6
+%End
 
     QString sourceType() const;
 %Docstring

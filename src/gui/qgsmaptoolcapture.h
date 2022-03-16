@@ -34,11 +34,17 @@ class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
 class QgsMapToolCaptureRubberBand;
+class QgsCurvePolygon;
+class QgsMapToolShapeAbstract;
+class QgsMapToolShapeMetadata;
 
 
 /**
  * \ingroup gui
- * \class QgsMapToolCapture
+ * QgsMapToolCapture is a base class capable of capturing point, lines and polygons.
+ * The tool supports different techniques: straight segments, curves, streaming and shapes
+ * Once the the geometry is captured the virtual private handler geometryCaptured is called
+ * as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptured)
  */
 class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 {
@@ -53,18 +59,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
       CapturePoint,   //!< Capture points
       CaptureLine,    //!< Capture lines
       CapturePolygon  //!< Capture polygons
-    };
-
-    /**
-     * Capture technique.
-     *
-     * \since QGIS 3.20
-     */
-    enum CaptureTechnique
-    {
-      StraightSegments, //!< Default capture mode - capture occurs with straight line segments
-      CircularString, //!< Capture in circular strings
-      Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves). Since QGIS 3.20.
     };
 
     //! Specific capabilities of the tool
@@ -92,7 +86,20 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * \since QGIS 3.20
      */
-    virtual bool supportsTechnique( CaptureTechnique technique ) const;
+    virtual bool supportsTechnique( Qgis::CaptureTechnique technique ) const;
+
+    /**
+     * Sets the current capture if it is supported by the map tool
+     * \since QGIS 3.26
+     */
+    void setCurrentCaptureTechnique( Qgis::CaptureTechnique technique );
+
+    /**
+     * Sets the current shape tool
+     * \see QgsMapToolShapeRegistry
+     * \since QGIS 3.26
+     */
+    void setCurrentShapeMapTool( const QgsMapToolShapeMetadata *shapeMapToolMetadata ) SIP_SKIP;
 
     void activate() override;
     void deactivate() override;
@@ -129,6 +136,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QList<QgsPointLocator::Match> snappingMatches() const;
 
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     /**
      * Intercept key events like Esc or Del to delete the last point
@@ -152,15 +160,47 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QgsRubberBand *takeRubberBand() SIP_FACTORY;
 
+    /**
+     * Creates a QgsPoint with ZM support if necessary (according to the
+     * WkbType of the current layer). If the point is snapped, then the Z
+     * value is derived from the snapped point.
+     *
+     * \param e A mouse event
+     *
+     * \returns a point with ZM support if necessary
+     *
+     * \since QGIS 3.0
+     */
+    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
+
+    /**
+     * Creates a QgsPoint with ZM support if necessary (according to the
+     * WkbType of the current layer).
+     *
+     * \param point A point in 2D
+     *
+     * \returns a point with ZM support if necessary
+     *
+     * \since QGIS 3.0
+     */
+    QgsPoint mapPoint( const QgsPointXY &point ) const;
+
+    // TODO QGIS 4.0 returns an enum instead of a magic constant
+
   public slots:
-    //! Enable the digitizing with curve
-    void setCircularDigitizingEnabled( bool enable );
+
+    /**
+     * Enable the digitizing with curve
+     * \deprecated since QGIS 3.26 use setCurrentCaptureTechnique() instead
+     */
+    Q_DECL_DEPRECATED void setCircularDigitizingEnabled( bool enable ) SIP_DEPRECATED;
 
     /**
      * Toggles the stream digitizing mode.
      * \since QGIS 3.20
+    * \deprecated since QGIS 3.26 use setCurrentCaptureTechnique() instead
      */
-    void setStreamDigitizingEnabled( bool enable );
+    Q_DECL_DEPRECATED void setStreamDigitizingEnabled( bool enable ) SIP_DEPRECATED;
 
   private slots:
     void addError( const QgsGeometry::Error &error );
@@ -206,33 +246,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * \since QGIS 2.14
      */
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
-
-    /**
-     * Creates a QgsPoint with ZM support if necessary (according to the
-     * WkbType of the current layer). If the point is snapped, then the Z
-     * value is took from the snapped point.
-     *
-     * \param e A mouse event
-     *
-     * \returns a point with ZM support if necessary
-     *
-     * \since QGIS 3.0
-     */
-    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
-
-    /**
-     * Creates a QgsPoint with ZM support if necessary (according to the
-     * WkbType of the current layer).
-     *
-     * \param point A point in 2D
-     *
-     * \returns a point with ZM support if necessary
-     *
-     * \since QGIS 3.0
-     */
-    QgsPoint mapPoint( const QgsPointXY &point ) const;
-
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
 
     /**
      * Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
@@ -320,6 +333,35 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void stopCapturing();
 
   private:
+
+    /**
+     * Called when the geometry is captured
+     * A more specific handler is also called afterwards (pointCaptured, lineCaptured or polygonCaptured)
+     * \since QGIS 3.26
+     */
+    virtual void geometryCaptured( const QgsGeometry &geometry ) {Q_UNUSED( geometry )} SIP_FORCE
+
+    /**
+     * Called when a point is captured
+     * geometryCaptured is called just before
+     * \since QGIS 3.26
+     */
+    virtual void pointCaptured( const QgsPoint &point ) {Q_UNUSED( point )} SIP_FORCE
+
+    /**
+     * Called when a line is captured
+     * geometryCaptured is called just before
+     * \since QGIS 3.26
+     */
+    virtual void lineCaptured( const QgsCurve *line ) {Q_UNUSED( line )} SIP_FORCE
+
+    /**
+     * Called when a polygon is captured
+     * geometryCaptured is called just before
+     * \since QGIS 3.26
+     */
+    virtual void polygonCaptured( const QgsCurvePolygon *polygon ) {Q_UNUSED( polygon )} SIP_FORCE
+
     //! whether tracing has been requested by the user
     bool tracingEnabled();
     //! first point that will be used as a start of the trace
@@ -335,7 +377,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! Reset the
     void resetRubberBand();
 
-  private:
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
@@ -382,9 +423,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QgsPointXY mTracingStartPoint;
 
     //! Used to store the state of digitizing type (linear or circular)
-    QgsWkbTypes::Type mDigitizingType = QgsWkbTypes::LineString;
+    QgsWkbTypes::Type mLineDigitizingType = QgsWkbTypes::LineString;
 
-    bool mStreamingEnabled = false;
+    Qgis::CaptureTechnique mCurrentCaptureTechnique = Qgis::CaptureTechnique::StraightSegments;
+
+    QgsMapToolShapeAbstract *mCurrentShapeMapTool = nullptr;
+
     bool mAllowAddingStreamingPoints = false;
     int mStreamingToleranceInPixels = 1;
 
@@ -393,6 +437,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mIgnoreSubsequentAutoRepeatUndo = false;
 
     friend class TestQgsMapToolCapture;
+
 
 };
 

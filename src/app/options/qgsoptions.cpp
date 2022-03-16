@@ -1161,24 +1161,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //default snap mode
   mSnappingEnabledDefault->setChecked( QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value() );
 
-  for ( QgsSnappingConfig::SnappingTypes type :
-        {
-          QgsSnappingConfig::NoSnapFlag,
-          QgsSnappingConfig::VertexFlag,
-          QgsSnappingConfig::SegmentFlag,
-          QgsSnappingConfig::CentroidFlag,
-          QgsSnappingConfig::MiddleOfSegmentFlag,
-          QgsSnappingConfig::LineEndpointFlag,
-          QgsSnappingConfig::AreaFlag,
-        } )
+  for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
   {
-    mDefaultSnapModeComboBox->addItem( QgsSnappingConfig::snappingTypeFlagToIcon( type ),
-                                       QgsSnappingConfig::snappingTypeFlagToString( type ),
-                                       type );
+    mDefaultSnapTypeComboBox->addItem( QgsSnappingConfig::snappingTypeToIcon( type ),
+                                       QgsSnappingConfig::snappingTypeToString( type ),
+                                       QVariant::fromValue( type ) );
   }
 
-  QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
-  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( static_cast<int>( defaultSnapMode ) ) );
+  Qgis::SnappingTypes defaultSnapType = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
+  mDefaultSnapTypeComboBox->setCurrentIndex( mDefaultSnapTypeComboBox->findData( static_cast<int>( defaultSnapType ) ) );
   mDefaultSnappingToleranceSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value() );
   mDefaultSnappingToleranceSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.defaultValue() );
   mSearchRadiusVertexEditSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value() );
@@ -1885,7 +1876,7 @@ void QgsOptions::saveOptions()
 
   //default snap mode
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.setValue( mSnappingEnabledDefault->isChecked() );
-  QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.setValue( static_cast<QgsSnappingConfig::SnappingTypes>( mDefaultSnapModeComboBox->currentData().toInt() ) );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.setValue( static_cast<Qgis::SnappingType>( mDefaultSnapTypeComboBox->currentData().toInt() ) );
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.setValue( mDefaultSnappingToleranceSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.setValue( mSearchRadiusVertexEditSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.setValue(
@@ -2185,6 +2176,7 @@ void QgsOptions::addCustomEnvVarRow( const QString &varName, const QString &varV
   varApplyCmbBx->addItem( tr( "Unset" ), QVariant( "unset" ) );
   varApplyCmbBx->addItem( tr( "Prepend" ), QVariant( "prepend" ) );
   varApplyCmbBx->addItem( tr( "Append" ), QVariant( "append" ) );
+  varApplyCmbBx->addItem( tr( "Skip" ), QVariant( "skip" ) );
   varApplyCmbBx->setCurrentIndex( varApply.isEmpty() ? 0 : varApplyCmbBx->findData( QVariant( varApply ) ) );
 
   QFont cbf = varApplyCmbBx->font();

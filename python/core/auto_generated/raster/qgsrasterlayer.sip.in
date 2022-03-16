@@ -291,6 +291,8 @@ Returns a list with classification items (Text and color).
 
     virtual QString htmlMetadata() const;
 
+    virtual Qgis::MapLayerProperties properties() const;
+
 
     QPixmap paletteAsPixmap( int bandNumber = 1 );
 %Docstring
@@ -418,6 +420,8 @@ to be drawn outside the data extent.
 %End
 
     virtual QgsMapLayerTemporalProperties *temporalProperties();
+
+    virtual QgsMapLayerElevationProperties *elevationProperties();
 
 
   public slots:

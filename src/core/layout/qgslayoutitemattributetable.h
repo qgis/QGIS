@@ -357,6 +357,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 
     QList< QList< QgsConditionalStyle > > mConditionalStyles;
     QList< QgsFeature > mFeatures;
+    QMap<QString, QVariant> mLayerCache;
 
     struct Cell
     {

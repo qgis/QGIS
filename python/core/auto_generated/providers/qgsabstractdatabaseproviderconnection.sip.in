@@ -349,6 +349,10 @@ This information is calculated from the geometry columns types.
       DeleteField,
       DeleteFieldCascade,
       AddField,
+      ListFieldDomains,
+      RetrieveFieldDomain,
+      SetFieldDomain,
+      AddFieldDomain,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -691,6 +695,60 @@ The default implementation returns an list of common reserved words under the
 Subclasses should add provider- and/or connection- specific words.
 
 .. versionadded:: 3.22
+%End
+
+    virtual QStringList fieldDomainNames() const throw( QgsProviderConnectionException );
+%Docstring
+Returns a list of field domain names present on the provider.
+
+This is supported on providers with the Capability.ListFieldDomains capability only.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. seealso:: :py:func:`fieldDomain`
+
+.. versionadded:: 3.26
+%End
+
+    virtual QgsFieldDomain *fieldDomain( const QString &name ) const throw( QgsProviderConnectionException ) /Factory/;
+%Docstring
+Returns the field domain with the specified ``name`` from the provider.
+
+The caller takes ownership of the return object. Will return ``None`` if no matching field domain is found.
+
+This is supported on providers with the Capability.RetrieveFieldDomain capability only.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. seealso:: :py:func:`fieldDomainNames`
+
+.. versionadded:: 3.26
+%End
+
+    virtual void setFieldDomainName( const QString &fieldName, const QString &schema, const QString &tableName, const QString &domainName ) const throw( QgsProviderConnectionException );
+%Docstring
+Sets the field domain name for the existing field with the specified name.
+
+:param fieldName: name of the field to be modified
+:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param tableName: name of the table
+:param domainName: name of the domain to set for the field. Must be an existing field domain (see :py:func:`~QgsAbstractDatabaseProviderConnection.fieldDomainNames`). Set to an empty string to remove a previously set domain.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.26
+%End
+
+    virtual void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const throw( QgsProviderConnectionException );
+%Docstring
+Adds a new field ``domain`` to the database.
+
+:param domain: field domain to add
+:param schema: name of the schema (schema is ignored if not supported by the backend).
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.26
 %End
 
   protected:

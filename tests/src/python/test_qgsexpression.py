@@ -70,6 +70,11 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         vals = [val for val in values if val != NULL]
         return sum(vals) / len(vals)
 
+    @qgsfunction(group='testing', register=False)
+    def raise_exception(feature, parent):
+        # an undefined variable
+        foo  # noqa: F821
+
     def tearDown(self):
         QgsExpression.unregisterFunction('testfun')
 
@@ -290,6 +295,26 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         e.setExpression("foo = 1")
         self.assertTrue(e.isValid())
         self.assertEqual(len(e.referencedAttributeIndexes(QgsFields())), 0)
+
+    def testSuccessfulEvaluationReturnsNoEvalErrorString(self):
+        exp = QgsExpression("True is False")  # the result does not matter
+        self.assertEqual(exp.evalErrorString(), "")
+
+    def testExceptionDuringEvalReturnsTraceback(self):
+        QgsExpression.registerFunction(self.raise_exception)
+        exp = QgsExpression('raise_exception()')
+        result = exp.evaluate()
+        # The file paths and line offsets are dynamic
+        regex = (
+            "name 'foo' is not defined:<pre>Traceback \\(most recent call last\\):\n"
+            "  File \".*qgsfunction.py\", line [0-9]+, in func\n"
+            "    return self.function\\(\\*values\\)\n"
+            "  File \".*test_qgsexpression.py\", line [0-9]+, in raise_exception\n"
+            "    foo  # noqa: F821\n"
+            "NameError: name \'foo\' is not defined"
+            "\n</pre>"
+        )
+        self.assertRegex(exp.evalErrorString(), regex)
 
 
 if __name__ == "__main__":

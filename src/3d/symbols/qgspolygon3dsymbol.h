@@ -47,6 +47,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const override;
+    void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer ) override;
 
     /**
      * Creates a new QgsPolygon3DSymbol.
@@ -56,14 +57,14 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     static QgsAbstract3DSymbol *create() SIP_FACTORY;
 
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
-    Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
+    Qgis::AltitudeClamping altitudeClamping() const { return mAltClamping; }
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
-    void setAltitudeClamping( Qgs3DTypes::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
+    void setAltitudeClamping( Qgis::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
     //! Returns method that determines how altitude is bound to individual vertices
-    Qgs3DTypes::AltitudeBinding altitudeBinding() const { return mAltBinding; }
+    Qgis::AltitudeBinding altitudeBinding() const { return mAltBinding; }
     //! Sets method that determines how altitude is bound to individual vertices
-    void setAltitudeBinding( Qgs3DTypes::AltitudeBinding altBinding ) { mAltBinding = altBinding; }
+    void setAltitudeBinding( Qgis::AltitudeBinding altBinding ) { mAltBinding = altBinding; }
 
     //! Returns height (altitude) of the symbol (in map units)
     float height() const { return mHeight; }
@@ -164,9 +165,9 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
 
   private:
     //! how to handle altitude of vector features
-    Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
+    Qgis::AltitudeClamping mAltClamping = Qgis::AltitudeClamping::Relative;
     //! how to handle clamping of vertices of individual features
-    Qgs3DTypes::AltitudeBinding mAltBinding = Qgs3DTypes::AltBindCentroid;
+    Qgis::AltitudeBinding mAltBinding = Qgis::AltitudeBinding::Centroid;
 
     float mHeight = 0.0f;           //!< Base height of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)

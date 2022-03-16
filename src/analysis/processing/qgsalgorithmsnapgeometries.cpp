@@ -161,7 +161,7 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
   {
     // input layer == reference layer
     const int modified = QgsGeometrySnapperSingleSource::run( *source, *sink, tolerance, feedback );
-    feedback->pushInfo( QObject::tr( "Snapped %1 geometries." ).arg( modified ) );
+    feedback->pushInfo( QObject::tr( "Snapped %n geometries.", nullptr, modified ) );
   }
   else
   {

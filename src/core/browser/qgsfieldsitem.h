@@ -134,8 +134,14 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
 
     QIcon icon() override;
 
-    //QgsField field() const;
+    /**
+     * Returns the field definition.
+     *
+     * \since QGIS 3.26
+     */
+    QgsField field() const { return mField; }
 
+    bool equal( const QgsDataItem *other ) override;
 
   private:
 

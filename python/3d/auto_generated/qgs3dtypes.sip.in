@@ -25,18 +25,6 @@ Defines enumerations and other auxiliary types for QGIS 3D
 #include "qgs3dtypes.h"
 %End
   public:
-    enum AltitudeClamping
-    {
-      AltClampAbsolute,
-      AltClampRelative,
-      AltClampTerrain,
-    };
-
-    enum AltitudeBinding
-    {
-      AltBindVertex,
-      AltBindCentroid,
-    };
 
     enum CullingMode
     {

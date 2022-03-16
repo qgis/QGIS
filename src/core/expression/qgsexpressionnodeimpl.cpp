@@ -1067,10 +1067,20 @@ QgsExpressionNodeFunction::QgsExpressionNodeFunction( int fnIndex, QgsExpression
   : mFnIndex( fnIndex )
 {
   const QgsExpressionFunction::ParameterList &functionParams = QgsExpression::QgsExpression::Functions()[mFnIndex]->parameters();
-  if ( !args || functionParams.isEmpty() )
+  if ( functionParams.isEmpty() )
   {
-    // no QgsExpressionFunction::Parameters, or function does not support them
+    // function does not support parameters
     mArgs = args;
+  }
+  else if ( !args )
+  {
+    // no arguments specified, but function has parameters. Build a list of default parameter values for the arguments list.
+    mArgs = new NodeList();
+    for ( const QgsExpressionFunction::Parameter &param : functionParams )
+    {
+      // insert default value for QgsExpressionFunction::Parameter
+      mArgs->append( new QgsExpressionNodeLiteral( param.defaultValue() ) );
+    }
   }
   else
   {

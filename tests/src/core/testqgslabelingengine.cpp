@@ -100,8 +100,11 @@ class TestQgsLabelingEngine : public QObject
     void testClipping();
     void testLineAnchorParallel();
     void testLineAnchorParallelConstraints();
+    void testLineAnchorDataDefinedType();
     void testLineAnchorCurved();
     void testLineAnchorCurvedConstraints();
+    void testLineAnchorCurvedOverrun();
+    void testLineAnchorCurvedStrictAllUpsideDown();
     void testLineAnchorHorizontal();
     void testLineAnchorHorizontalConstraints();
     void testLineAnchorClipping();
@@ -1686,6 +1689,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbove()
   settings.labelPerPart = false;
   settings.upsidedownLabels = QgsPalLayerSettings::UpsideDownLabels::ShowAll;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
 
@@ -1755,6 +1759,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownBelow()
   settings.lineSettings().setLineAnchorPercent( 0.05 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::BelowLine | QgsLabeling::LinePlacementFlag::MapOrientation );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
@@ -3704,6 +3709,188 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
 
   img = job4.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_end" ), img, 20 ) );
+
+  settings.fieldName = QStringLiteral( "'XXXXX'" );
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setLineAnchorPercent( 0.20 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job5( mapSettings );
+  job5.start();
+  job5.waitForFinished();
+
+  img = job5.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_20_center" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job6( mapSettings );
+  job6.start();
+  job6.waitForFinished();
+
+  img = job6.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_20_start" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job7( mapSettings );
+  job7.start();
+  job7.waitForFinished();
+
+  img = job7.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_20_end" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job8( mapSettings );
+  job8.start();
+  job8.waitForFinished();
+
+  img = job8.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_20_start" ), img, 20 ) );
+
+  settings.lineSettings().setLineAnchorPercent( 0.40 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job9( mapSettings );
+  job9.start();
+  job9.waitForFinished();
+
+  img = job9.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_40_center" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job10( mapSettings );
+  job10.start();
+  job10.waitForFinished();
+
+  img = job10.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_40_start" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job11( mapSettings );
+  job11.start();
+  job11.waitForFinished();
+
+  img = job11.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_40_end" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job12( mapSettings );
+  job12.start();
+  job12.waitForFinished();
+
+  img = job12.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_40_center" ), img, 20 ) );
+
+  settings.lineSettings().setLineAnchorPercent( 0.80 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job13( mapSettings );
+  job13.start();
+  job13.waitForFinished();
+
+  img = job13.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_80_center" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job14( mapSettings );
+  job14.start();
+  job14.waitForFinished();
+
+  img = job14.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_80_start" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job15( mapSettings );
+  job15.start();
+  job15.waitForFinished();
+
+  img = job15.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_80_end" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job16( mapSettings );
+  job16.start();
+  job16.waitForFinished();
+
+  img = job16.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_80_end" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLineAnchorDataDefinedType()
+{
+  // test data defined line anchor types
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::Line;
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
+  settings.labelPerPart = false;
+  settings.lineSettings().setLineAnchorPercent( 0.0 );
+  // override hint by strict!
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LineAnchorType, QgsProperty::fromExpression( QStringLiteral( "'strict'" ) ) );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000000, 190010 5000010, 190190 5000010, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 10 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  // engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_start" ), img, 20 ) );
+
+  // override strict by hint
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LineAnchorType, QgsProperty::fromExpression( QStringLiteral( "'hi' || 'nt'" ) ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job3( mapSettings );
+  job3.start();
+  job3.waitForFinished();
+
+  img = job3.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_hint_anchor_start" ), img, 20 ) );
 }
 
 void TestQgsLabelingEngine::testLineAnchorCurved()
@@ -3723,6 +3910,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
@@ -3770,6 +3958,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
 
   settings.lineSettings().setLineAnchorPercent( 0.3 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job3( mapSettings );
   job3.start();
@@ -3854,6 +4043,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
 
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setLineAnchorPercent( 0.0 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job3( mapSettings );
   job3.start();
@@ -3863,6 +4053,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_start" ), img, 20 ) );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job4( mapSettings );
   job4.start();
@@ -3870,6 +4061,247 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
 
   img = job4.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_end" ), img, 20 ) );
+
+  settings.fieldName = QStringLiteral( "'XXXXX'" );
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setLineAnchorPercent( 0.20 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job5( mapSettings );
+  job5.start();
+  job5.waitForFinished();
+
+  img = job5.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_20_center" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job6( mapSettings );
+  job6.start();
+  job6.waitForFinished();
+
+  img = job6.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_20_start" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job7( mapSettings );
+  job7.start();
+  job7.waitForFinished();
+
+  img = job7.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_20_end" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job8( mapSettings );
+  job8.start();
+  job8.waitForFinished();
+
+  img = job8.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_20_start" ), img, 20 ) );
+
+  settings.lineSettings().setLineAnchorPercent( 0.40 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job9( mapSettings );
+  job9.start();
+  job9.waitForFinished();
+
+  img = job9.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_40_center" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job10( mapSettings );
+  job10.start();
+  job10.waitForFinished();
+
+  img = job10.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_40_start" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job11( mapSettings );
+  job11.start();
+  job11.waitForFinished();
+
+  img = job11.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_40_end" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job12( mapSettings );
+  job12.start();
+  job12.waitForFinished();
+
+  img = job12.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_40_center" ), img, 20 ) );
+
+  settings.lineSettings().setLineAnchorPercent( 0.80 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job13( mapSettings );
+  job13.start();
+  job13.waitForFinished();
+
+  img = job13.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_80_center" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job14( mapSettings );
+  job14.start();
+  job14.waitForFinished();
+
+  img = job14.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_80_start" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job15( mapSettings );
+  job15.start();
+  job15.waitForFinished();
+
+  img = job15.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_80_end" ), img, 20 ) );
+
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job16( mapSettings );
+  job16.start();
+  job16.waitForFinished();
+
+  img = job16.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_80_end" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLineAnchorCurvedOverrun()
+{
+  // strict anchor type should imply sufficient overrun to fit label in, regardless of where it's placed
+  // test line label anchor with parallel labels
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'XXXX'" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::Curved;
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
+  settings.labelPerPart = false;
+
+  settings.lineSettings().setLineAnchorPercent( 0.0 );
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000000, 190010 5000010, 190190 5000010, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 100 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  // engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_overrun_start" ), img, 20 ) );
+
+  settings.lineSettings().setLineAnchorPercent( 1.0 );
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_overrun_end" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLineAnchorCurvedStrictAllUpsideDown()
+{
+  // test curved labels with strict placement, when no upright candidates can be generated
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'XXXX'" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::Curved;
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
+  settings.labelPerPart = false;
+  settings.upsidedownLabels = QgsPalLayerSettings::Upright;
+
+  settings.lineSettings().setLineAnchorPercent( 0.5 );
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190088.74697824331815355 4999955.67284447979182005, 190121.74456083800760098 5000011.17647058796137571, 190090.26994359385571443 5000072.94117647036910057)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 100 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  // engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_all_upside_down" ), img, 20 ) );
 }
 
 void TestQgsLabelingEngine::testLineAnchorHorizontal()
@@ -3889,6 +4321,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontal()
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
@@ -3953,6 +4386,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );

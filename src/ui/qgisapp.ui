@@ -222,6 +222,7 @@
     <addaction name="mAddLayerMenu"/>
     <addaction name="mActionEmbedLayers"/>
     <addaction name="mActionAddLayerDefinition"/>
+    <addaction name="mActionShowGeoreferencer"/>
     <addaction name="separator"/>
     <addaction name="mActionCopyStyle"/>
     <addaction name="mActionPasteStyle"/>
@@ -299,7 +300,6 @@
     </property>
     <addaction name="mActionShowRasterCalculator"/>
     <addaction name="mActionShowAlignRasterTool"/>
-    <addaction name="mActionShowGeoreferencer"/>
    </widget>
    <widget class="QMenu" name="mVectorMenu">
     <property name="title">
@@ -332,42 +332,6 @@
      </property>
      <addaction name="mActionPasteAsNewVector"/>
      <addaction name="mActionPasteAsNewMemoryVector"/>
-    </widget>
-    <widget class="QMenu" name="mMenuCircle">
-     <property name="title">
-      <string>Add Circle</string>
-     </property>
-     <addaction name="mActionCircle2Points"/>
-     <addaction name="mActionCircle3Points"/>
-     <addaction name="mActionCircle3Tangents"/>
-     <addaction name="mActionCircle2TangentsPoint"/>
-     <addaction name="mActionCircleCenterPoint"/>
-    </widget>
-    <widget class="QMenu" name="mMenuEllipse">
-     <property name="title">
-      <string>Add Ellipse</string>
-     </property>
-     <addaction name="mActionEllipseCenter2Points"/>
-     <addaction name="mActionEllipseCenterPoint"/>
-     <addaction name="mActionEllipseExtent"/>
-     <addaction name="mActionEllipseFoci"/>
-    </widget>
-    <widget class="QMenu" name="mMenuRectangle">
-     <property name="title">
-      <string>Add Rectangle</string>
-     </property>
-     <addaction name="mActionRectangleExtent"/>
-     <addaction name="mActionRectangleCenterPoint"/>
-     <addaction name="mActionRectangle3PointsDistance"/>
-     <addaction name="mActionRectangle3PointsProjected"/>
-    </widget>
-    <widget class="QMenu" name="mMenuRegularPolygon">
-     <property name="title">
-      <string>Add Regular Polygon</string>
-     </property>
-     <addaction name="mActionRegularPolygonCenterPoint"/>
-     <addaction name="mActionRegularPolygonCenterCorner"/>
-     <addaction name="mActionRegularPolygon2Points"/>
     </widget>
     <widget class="QMenu" name="mMenuAnnotation">
      <property name="title">
@@ -419,12 +383,6 @@
     <addaction name="mMenuSelect"/>
     <addaction name="separator"/>
     <addaction name="mActionAddFeature"/>
-    <addaction name="mActionCircularStringCurvePoint"/>
-    <addaction name="mActionCircularStringRadius"/>
-    <addaction name="mMenuCircle"/>
-    <addaction name="mMenuRectangle"/>
-    <addaction name="mMenuRegularPolygon"/>
-    <addaction name="mMenuEllipse"/>
     <addaction name="mMenuAnnotation"/>
     <addaction name="separator"/>
     <addaction name="mMenuEditAttributes"/>
@@ -2891,36 +2849,6 @@ Shift+click to snap rotation to 45 degree steps.</string>
     <string>Align Rasters…</string>
    </property>
   </action>
-  <action name="mActionCircularStringCurvePoint">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircularStringCurvePoint.svg</normaloff>:/images/themes/default/mActionCircularStringCurvePoint.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Circular String</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Circular String</string>
-   </property>
-  </action>
-  <action name="mActionCircularStringRadius">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircularStringRadius.svg</normaloff>:/images/themes/default/mActionCircularStringRadius.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Circular String by Radius</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Circular String by Radius</string>
-   </property>
-  </action>
   <action name="mActionReportaBug">
    <property name="text">
     <string>Report an Issue</string>
@@ -3031,231 +2959,6 @@ Shift+click to snap rotation to 45 degree steps.</string>
     <string>Ctrl+L</string>
    </property>
   </action>
-  <action name="mActionCircle2Points">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircle2Points.svg</normaloff>:/images/themes/default/mActionCircle2Points.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Circle from &amp;2 Points</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Circle from 2 Points</string>
-   </property>
-  </action>
-  <action name="mActionCircle3Points">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircle3Points.svg</normaloff>:/images/themes/default/mActionCircle3Points.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Circle from &amp;3 Points</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Circle from 3 Points</string>
-   </property>
-  </action>
-  <action name="mActionCircleCenterPoint">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircleCenterPoint.svg</normaloff>:/images/themes/default/mActionCircleCenterPoint.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Add Circle by a Center Point and Another Point</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Circle by a Center Point and Another Point</string>
-   </property>
-  </action>
-  <action name="mActionEllipseCenter2Points">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionEllipseCenter2Points.svg</normaloff>:/images/themes/default/mActionEllipseCenter2Points.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Add Ellipse from Center and 2 Points</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Ellipse from Center and 2 Points</string>
-   </property>
-  </action>
-  <action name="mActionEllipseCenterPoint">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionEllipseCenterPoint.svg</normaloff>:/images/themes/default/mActionEllipseCenterPoint.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Ellipse from &amp;Center and a Point</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Ellipse from center and a point</string>
-   </property>
-  </action>
-  <action name="mActionEllipseExtent">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionEllipseExtent.svg</normaloff>:/images/themes/default/mActionEllipseExtent.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Ellipse from &amp;Extent</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Ellipse from Extent</string>
-   </property>
-  </action>
-  <action name="mActionEllipseFoci">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionEllipseFoci.svg</normaloff>:/images/themes/default/mActionEllipseFoci.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Ellipse from &amp;Foci</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Ellipse from Foci</string>
-   </property>
-  </action>
-  <action name="mActionRectangleExtent">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRectangleExtent.svg</normaloff>:/images/themes/default/mActionRectangleExtent.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Add Rectangle from Extent</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Rectangle from Extent</string>
-   </property>
-  </action>
-  <action name="mActionRectangleCenterPoint">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRectangleCenter.svg</normaloff>:/images/themes/default/mActionRectangleCenter.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add &amp;Rectangle from Center and a Point</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Rectangle from Center and a Point</string>
-   </property>
-  </action>
-  <action name="mActionRegularPolygonCenterPoint">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRegularPolygonCenterPoint.svg</normaloff>:/images/themes/default/mActionRegularPolygonCenterPoint.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Add Regular Polygon from Center and a Point</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Regular Polygon from Center and a Point</string>
-   </property>
-  </action>
-  <action name="mActionRegularPolygon2Points">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRegularPolygon2Points.svg</normaloff>:/images/themes/default/mActionRegularPolygon2Points.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add &amp;Regular Polygon from 2 Points</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Regular Polygon from 2 Points</string>
-   </property>
-  </action>
-  <action name="mActionCircle3Tangents">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircle3Tangents.svg</normaloff>:/images/themes/default/mActionCircle3Tangents.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add &amp;Circle from 3 Tangents</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Circle from 3 Tangents</string>
-   </property>
-  </action>
-  <action name="mActionRectangle3PointsDistance">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRectangle3PointsDistance.svg</normaloff>:/images/themes/default/mActionRectangle3PointsDistance.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Rectangle &amp;from 3 Points (Distance from 2nd and 3rd point)</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Rectangle from 3 Points (Distance from 2nd and 3rd Point)</string>
-   </property>
-  </action>
-  <action name="mActionCircle2TangentsPoint">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircle2TangentsPoint.svg</normaloff>:/images/themes/default/mActionCircle2TangentsPoint.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Circle &amp;from 2 Tangents and a Point</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Circle from 2 Tangents and a Point</string>
-   </property>
-  </action>
-  <action name="mActionRegularPolygonCenterCorner">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRegularPolygonCenterCorner.svg</normaloff>:/images/themes/default/mActionRegularPolygonCenterCorner.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Regular &amp;Polygon from Center and a Corner</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Regular Polygon from Center and a Corner</string>
-   </property>
-  </action>
   <action name="mActionShowLayoutManager">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -3352,21 +3055,6 @@ Alt+click to select vertices by polygon.
 Shift+click/drag to add vertices to selection.
 Ctrl+click/drag to remove vertices from selection.
 Shift+R to enable range selection.</string>
-   </property>
-  </action>
-  <action name="mActionRectangle3PointsProjected">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRectangle3PointsProjected.svg</normaloff>:/images/themes/default/mActionRectangle3PointsProjected.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Rectangle &amp;from 3 Points (Distance from projected point on segment p1 and p2)</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Rectangle from 3 Points (Distance from Projected Point on Segment p1 and p2)</string>
    </property>
   </action>
   <action name="mActionShowMeshCalculator">
@@ -3627,6 +3315,30 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   <action name="mActionManage3DMapViews">
    <property name="text">
     <string>Manage 3D Map Views</string>
+   </property>
+  </action>
+  <action name="mActionDigitizeWithSegment">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeWithSegment.svg</normaloff>:/images/themes/default/mActionDigitizeWithSegment.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize with Segment</string>
+   </property>
+  </action>
+  <action name="mActionDigitizeShape">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeShape.svg</normaloff>:/images/themes/default/mActionDigitizeShape.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize Shape</string>
    </property>
   </action>
  </widget>

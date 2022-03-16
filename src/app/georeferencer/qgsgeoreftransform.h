@@ -18,6 +18,7 @@
 #define QGSGEOREFTRANSFORM_H
 
 #include <gdal_alg.h>
+#include "qgis_app.h"
 #include "qgspoint.h"
 #include "qgsgcptransformer.h"
 #include "qgsrasterchangecoords.h"
@@ -33,7 +34,7 @@
  * Delegates to concrete implementations of \ref QgsGeorefInterface. For exception safety,
  * this is preferred over using the subclasses directly.
  */
-class QgsGeorefTransform : public QgsGcpTransformerInterface
+class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
 {
   public:
 
@@ -44,21 +45,33 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
     /**
      * Switches the used transform type to the given parametrisation.
      */
-    void selectTransformParametrisation( TransformMethod parametrisation );
+    void setMethod( TransformMethod parametrisation );
 
     /**
-     * Setting the mRasterChangeCoords for change type coordinate(map for pixel).
+     * Loads an existing raster image so that the source pixel to source layer conversion
+     * can be correctly initialized.
      */
-    void setRasterChangeCoords( const QString &fileRaster );
+    void loadRaster( const QString &fileRaster );
 
-    //! \returns Whether has Coordinate Reference Systems in image
-    bool hasCrs() const { return mRasterChangeCoords.hasCrs(); }
+    //! \returns Whether has image already has existing georeference
+    bool hasExistingGeoreference() const { return mRasterChangeCoords.hasExistingGeoreference(); }
 
-    //! \returns Coordinates of image
-    QgsPointXY toColumnLine( const QgsPointXY &pntMap ) { return mRasterChangeCoords.toColumnLine( pntMap ); }
+    /**
+     * Returns the pixel coordinate from the source image given a layer coordinate from the source image.
+     * \see toSourceCoordinate()
+     */
+    QgsPointXY toSourcePixel( const QgsPointXY &pntMap ) const { return mRasterChangeCoords.toColumnLine( pntMap ); }
 
-    //! \returns Bounding box of image(transform to coordinate of Map or Image )
-    QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel ) { return mRasterChangeCoords.getBoundingBox( rect, toPixel ); }
+    /**
+     * Returns the layer coordinate from the source image given a pixel coordinate from the source image.
+     * \see toSourcePixel()
+     */
+    QgsPointXY toSourceCoordinate( const QgsPointXY &pixel ) const;
+
+    /**
+     * Transforms a bounding box of the source image from source coordinates to source pixels or vice versa.
+     */
+    QgsRectangle transformSourceExtent( const QgsRectangle &rect, bool toPixel ) const { return mRasterChangeCoords.transformExtent( rect, toPixel ); }
 
     //! \brief The transform parametrisation currently in use.
     TransformMethod transformParametrisation() const;
@@ -109,8 +122,7 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
     QgsGeorefTransform( const QgsGeorefTransform &other );
     QgsGeorefTransform &operator= ( const QgsGeorefTransform & ) = delete;
 
-    // convenience wrapper around GDALTransformerFunc
-    bool gdal_transform( const QgsPointXY &src, QgsPointXY &dst, int dstToSrc ) const;
+    bool transformPrivate( const QgsPointXY &src, QgsPointXY &dst, bool inverseTransform ) const;
 
     QVector<QgsPointXY> mSourceCoordinates;
     QVector<QgsPointXY> mDestinationCoordinates;
@@ -121,6 +133,8 @@ class QgsGeorefTransform : public QgsGcpTransformerInterface
     TransformMethod mTransformParametrisation = TransformMethod::InvalidTransform;
     bool mParametersInitialized = false;
     QgsRasterChangeCoords mRasterChangeCoords;
+
+    friend class TestQgsGeoreferencer;
 };
 
 #endif //QGSGEOREFTRANSFORM_H

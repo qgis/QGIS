@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilemvtencoder.h"
 #include "qgsvectortileutils.h"
+#include "qgsziputils.h"
 
 #include <nlohmann/json.hpp>
 
@@ -217,7 +218,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
         else  // mbtiles
         {
           QByteArray gzipTileData;
-          QgsMbTiles::encodeGzip( tileData, gzipTileData );
+          QgsZipUtils::encodeGzip( tileData, gzipTileData );
           int rowTMS = pow( 2, tileID.zoomLevel() ) - tileID.row() - 1;
           mbtiles->setTileData( tileID.zoomLevel(), tileID.column(), rowTMS, gzipTileData );
         }

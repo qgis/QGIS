@@ -7606,7 +7606,7 @@ void TestProcessingGui::testProviderConnectionWrapper()
 {
   // register some connections
   QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
-  QgsAbstractProviderConnection *conn = md->createConnection( QStringLiteral( "test uri" ), QVariantMap() );
+  QgsAbstractProviderConnection *conn = md->createConnection( QStringLiteral( "test uri.gpkg" ), QVariantMap() );
   md->saveConnection( conn, QStringLiteral( "aa" ) );
   md->saveConnection( conn, QStringLiteral( "bb" ) );
 

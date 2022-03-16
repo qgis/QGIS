@@ -30,20 +30,6 @@
 class _3D_EXPORT Qgs3DTypes
 {
   public:
-    //! how to handle altitude of vector features
-    enum AltitudeClamping
-    {
-      AltClampAbsolute,   //!< Z_final = z_geometry
-      AltClampRelative,   //!< Z_final = z_terrain + z_geometry
-      AltClampTerrain,    //!< Z_final = z_terrain
-    };
-
-    //! how to handle clamping of vertices of individual features
-    enum AltitudeBinding
-    {
-      AltBindVertex,      //!< Clamp every vertex of feature
-      AltBindCentroid,    //!< Clamp just centroid of feature
-    };
 
     //! Triangle culling mode
     enum CullingMode

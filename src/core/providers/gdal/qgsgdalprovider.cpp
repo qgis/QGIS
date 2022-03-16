@@ -557,6 +557,11 @@ QString QgsGdalProvider::htmlMetadata()
       QStringList categories = QgsOgrUtils::cStringListToQStringList( GDALcategories );
       myMetadata += QgsHtmlUtils::buildBulletList( categories );
     }
+    myMetadata += QgsHtmlUtils::buildBulletList( QStringList(
+    {
+      QObject::tr( "Scale: %1" ).arg( bandScale( i ) ),
+      QObject::tr( "Offset: %1" ).arg( bandOffset( i ) ),
+    } ) );
     myMetadata += QLatin1String( "</td></tr>" );
   }
 
@@ -2999,18 +3004,28 @@ void QgsGdalProvider::initBaseDataset()
   {
     QgsLogger::warning( QStringLiteral( "Creating Warped VRT." ) );
 
+    gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
+    // Add alpha band to the output VRT dataset if there's no way for GDAL to
+    // respresent the fact that some pixels should be transparent (in the empty regions
+    // when the raster is rotated). For example, this fixes the issue for RGB rasters
+    // (with no alpha channel) or single-band raster without "no data" value set.
+    if ( GDALGetMaskFlags( GDALGetRasterBand( mGdalBaseDataset, 1 ) ) == GMF_ALL_VALID )
+    {
+      psWarpOptions->nDstAlphaBand = GDALGetRasterCount( mGdalBaseDataset ) + 1;
+    }
+
     if ( GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
     {
       mGdalDataset =
         QgsGdalUtils::rpcAwareAutoCreateWarpedVrt( mGdalBaseDataset, nullptr, nullptr,
-            GRA_NearestNeighbour, 0.2, nullptr );
+            GRA_NearestNeighbour, 0.2, psWarpOptions.get() );
       mGdalTransformerArg = QgsGdalUtils::rpcAwareCreateTransformer( mGdalBaseDataset );
     }
     else
     {
       mGdalDataset =
         GDALAutoCreateWarpedVRT( mGdalBaseDataset, nullptr, nullptr,
-                                 GRA_NearestNeighbour, 0.2, nullptr );
+                                 GRA_NearestNeighbour, 0.2, psWarpOptions.get() );
     }
 
     if ( !mGdalDataset )

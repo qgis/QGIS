@@ -24,6 +24,8 @@
 #include "qgs3dexportobject.h"
 #include "qgs3dsceneexporter.h"
 #include "qgsmarkersymbol.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerelevationproperties.h"
 
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
@@ -117,6 +119,15 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 QList<QgsWkbTypes::GeometryType> QgsPoint3DSymbol::compatibleGeometryTypes() const
 {
   return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::PointGeometry;
+}
+
+void QgsPoint3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer )
+{
+  const QgsVectorLayerElevationProperties *props = qgis::down_cast< const QgsVectorLayerElevationProperties * >( const_cast< QgsVectorLayer *>( layer )->elevationProperties() );
+
+  mAltClamping = props->clamping();
+  mTransform.data()[13] = static_cast< float >( props->zOffset() );
+  mShapeProperties[QStringLiteral( "length" )] = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
 }
 
 QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape )

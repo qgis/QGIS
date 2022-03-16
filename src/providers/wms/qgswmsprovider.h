@@ -232,6 +232,8 @@ class QgsWmsProvider final: public QgsRasterDataProvider
      */
     void setConnectionName( QString const &connName );
 
+    Qgis::DataProviderFlags flags() const override;
+
     bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
@@ -298,6 +300,9 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
     QList< double > nativeResolutions() const override;
     QgsLayerMetadata layerMetadata() const override;
+    bool enableProviderResampling( bool enable ) override { mProviderResamplingEnabled = enable; return true; }
+    bool setZoomedInResamplingMethod( ResamplingMethod method ) override { mZoomedInResamplingMethod = method; return true; }
+    bool setZoomedOutResamplingMethod( ResamplingMethod method ) override { mZoomedOutResamplingMethod = method; return true; }
 
     // Statistics could be available if the provider has a converter from colors to other value type, the returned statistics depend on the converter
     QgsRasterBandStats bandStatistics( int bandNo,
@@ -374,7 +379,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     //! In case of MBTiles layer, setup capabilities from its metadata
     bool setupMBTilesCapabilities( const QString &uri );
 
-    QImage *draw( QgsRectangle const   &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback );
+    QImage *draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRectangle &effectiveExtent, double &sourceResolution, QgsRasterBlockFeedback *feedback );
 
     /**
      * Try to get best extent for the layer in given CRS. Returns true on success, false otherwise (layer not found, invalid CRS, transform failed)
@@ -629,12 +634,24 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     Q_OBJECT
   public:
 
-    QgsWmsTiledImageDownloadHandler( const QString &providerUri, const QgsWmsAuthorization &auth, int reqNo, const QgsWmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback *feedback );
+    QgsWmsTiledImageDownloadHandler( const QString &providerUri,
+                                     const QgsWmsAuthorization &auth,
+                                     int reqNo,
+                                     const QgsWmsProvider::TileRequests &requests,
+                                     QImage *image,
+                                     const QgsRectangle &viewExtent,
+                                     double sourceResolution,
+                                     bool resamplingEnabled,
+                                     bool smoothPixmapTransform,
+                                     QgsRasterBlockFeedback *feedback );
     ~QgsWmsTiledImageDownloadHandler() override;
 
     void downloadBlocking();
 
     QString error() const;
+
+    QgsRectangle effectiveViewExtent() const;
+    double sourceResolution() const;
 
   protected slots:
     void tileReplyFinished();
@@ -671,6 +688,10 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     QgsRasterBlockFeedback *mFeedback = nullptr;
 
     QString mError;
+
+    QgsRectangle mEffectiveViewExtent;
+    double mSourceResolution = -1;
+    bool mResamplingEnabled = false;
 };
 
 

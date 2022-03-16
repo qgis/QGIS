@@ -52,10 +52,13 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param defaultValues   Default values for the feature to add
      * \param defaultGeometry A default geometry to add to the feature
      * \param feature         Updated feature after adding will be written back to this
+     * \param parentWidget    The widget calling this function to be passed to the used dialog
+     * \param showModal       If the used dialog should be modal or not
+     * \param hideParent      If the parent widget should be hidden, when the used dialog is opened
      * \returns                TRUE in case of success, FALSE if the operation failed/was aborted
      *
      */
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr ) const = 0;
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const = 0;
 
     // TODO QGIS 4: remove const qualifier
 

@@ -28,6 +28,7 @@
 #include "cpl_string.h"
 
 class QgsCoordinateReferenceSystem;
+class QgsFieldDomain;
 
 class QTextCodec;
 
@@ -171,6 +172,13 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.20
      */
     static QVariant OGRFieldtoVariant( const OGRField *value, OGRFieldType type );
+
+    /**
+     * Converts a QVariant to an OGRField value.
+     *
+     * \since QGIS 3.26
+     */
+    static std::unique_ptr<OGRField> variantToOGRField( const QVariant &value );
 
     /**
      * Reads an OGR feature and converts it to a QgsFeature.
@@ -353,6 +361,63 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.20
      */
     static std::unique_ptr< QgsSymbol > symbolFromStyleString( const QString &string, Qgis::SymbolType type ) SIP_FACTORY;
+
+    /**
+     * Converts an OGR field type and sub type to the best matching QVariant::Type equivalent.
+     *
+     * \param ogrType OGR field type
+     * \param ogrSubType OGR field sub type
+     * \param variantType will be set to matching QVariant type
+     * \param variantSubType will be set to matching QVariant sub type, for list, map and other complex OGR field types.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static void ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubType ogrSubType, QVariant::Type &variantType, QVariant::Type &variantSubType ) SIP_SKIP;
+
+    /**
+     * Converts an QVariant type to the best matching OGR field type and sub type.
+     *
+     * \param variantType QVariant field type
+     * \param ogrType will be set to matching OGR type
+     * \param ogrSubType will be set to matching OGR sub type
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static void variantTypeToOgrFieldType( QVariant::Type variantType, OGRFieldType &ogrType, OGRFieldSubType &ogrSubType ) SIP_SKIP;
+
+    /**
+     * Converts a string to a variant, using the provider OGR field \a type and \a subType to determine the most appropriate
+     * variant type.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static QVariant stringToVariant( OGRFieldType type, OGRFieldSubType subType, const QString &string ) SIP_SKIP;
+
+#ifndef SIP_RUN
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+
+    /**
+     * Converts an OGR field domain definition to a QgsFieldDomain equivalent.
+     *
+     * \note Requires GDAL >= 3.3
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static std::unique_ptr< QgsFieldDomain > convertFieldDomain( OGRFieldDomainH domain );
+
+    /**
+     * Converts a QGIS field domain definition to an OGR field domain equivalent.
+     *
+     * \note Requires GDAL >= 3.3
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static OGRFieldDomainH convertFieldDomain( const QgsFieldDomain *domain );
+#endif
+#endif
 };
 
 #endif // QGSOGRUTILS_H

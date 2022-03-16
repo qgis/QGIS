@@ -488,10 +488,21 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
         , isVisible( true )
       {}
 
+      ContainerInformation( QWidget *widget, const QgsExpression &visibilityExpression, bool collapsed, const QgsExpression &collapsedExpression )
+        : widget( widget )
+        , expression( visibilityExpression )
+        , isVisible( true )
+        , isCollapsed( collapsed )
+        , collapsedExpression( collapsedExpression )
+      {}
+
+
       QgsTabWidget *tabWidget = nullptr;
       QWidget *widget = nullptr;
       QgsExpression expression;
       bool isVisible;
+      bool isCollapsed = false;
+      QgsExpression collapsedExpression;
 
       void apply( QgsExpressionContext *expressionContext );
     };
@@ -502,8 +513,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void reloadIcon( const QString &file, const QString &tooltip, QSvgWidget *sw );
 
-    // Contains information about tabs and groupboxes, their visibility state visibility conditions
-    QVector<ContainerInformation *> mContainerVisibilityInformation;
+    // Contains information about tabs and groupboxes, their visibility/collapsed state conditions
+    QVector<ContainerInformation *> mContainerVisibilityCollapsedInformation;
     QMap<QString, QVector<ContainerInformation *> > mContainerInformationDependency;
 
     // Variables below are used for Python

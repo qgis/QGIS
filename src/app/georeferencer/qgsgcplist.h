@@ -18,23 +18,86 @@
 
 #include <QList>
 #include <QVector>
+#include "qgis_app.h"
+#include "qgsunittypes.h"
 
 class QgsGeorefDataPoint;
+class QgsGcpPoint;
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;
+class QgsCoordinateTransformContext;
+class QgsGeorefTransform;
 
-// what is better use inherid or agrigate QList?
-class QgsGCPList : public QList<QgsGeorefDataPoint *>
+/**
+ * A container for GCP data points.
+ *
+ * The container does NOT own the points -- they have to be manually deleted elsewhere!!
+ */
+class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
 {
   public:
     QgsGCPList() = default;
-    QgsGCPList( const QgsGCPList &list );
+    QgsGCPList( const QgsGCPList &list ) = delete;
+    QgsGCPList &operator =( const QgsGCPList &list ) = delete;
 
-    void createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords, const QgsCoordinateReferenceSystem targetCrs );
-    int size() const;
-    int sizeAll() const;
+    /**
+     * Creates vectors of source and destination points, where the destination points are all transformed to the
+     * specified \a targetCrs.
+     */
+    void createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints,
+                           const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
 
-    QgsGCPList &operator =( const QgsGCPList &list );
+    /**
+     * Returns the count of currently enabled data points.
+     */
+    int countEnabledPoints() const;
+
+    /**
+     * Updates the stored residual sizes for points in the list.
+     *
+     * \param georefTransform transformation to use for residual calculation
+     * \param targetCrs georeference output CRS
+     * \param context transform context
+     * \param residualUnit units for residual calculation. Supported values are QgsUnitTypes::RenderPixels or QgsUnitTypes::RenderMapUnits
+     */
+    void updateResiduals( QgsGeorefTransform *georefTransform,
+                          const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context,
+                          QgsUnitTypes::RenderUnit residualUnit );
+
+    /**
+     * Returns the container as a list of GCP points.
+     */
+    QList< QgsGcpPoint > asPoints() const;
+
+    /**
+     * Saves the GCPs to a text file.
+     *
+     * \param filePath destination file path
+     * \param targetCrs target CRS for destination points
+     * \param context transform context
+     * \param error will be set to a descriptive error message if saving fails
+     *
+     * \returns TRUE on success
+     */
+    bool saveGcps( const QString &filePath,
+                   const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context,
+                   QString &error ) const;
+
+    /**
+     * Loads GCPs from a text file.
+     *
+     * \param filePath source file path
+     * \param defaultDestinationCrs default CRS to use for destination points if no destination CRS information is present in text file.
+     * \param actualDestinationCrs will be set to actual destination CRS for points, which is either the CRS information from the text file OR the defaultDestinationCrs
+     * \param error will be set to a descriptive error message if loading fails
+     *
+     * \returns TRUE on success
+     */
+    static QList< QgsGcpPoint > loadGcps( const QString &filePath,
+                                          const QgsCoordinateReferenceSystem &defaultDestinationCrs,
+                                          QgsCoordinateReferenceSystem &actualDestinationCrs,
+                                          QString &error );
+
 };
 
 #endif

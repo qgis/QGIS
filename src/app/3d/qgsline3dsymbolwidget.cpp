@@ -71,8 +71,8 @@ QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
   sym->setWidth( spinWidth->value() );
   sym->setHeight( spinHeight->value() );
   sym->setExtrusionHeight( spinExtrusion->value() );
-  sym->setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
-  sym->setAltitudeBinding( static_cast<Qgs3DTypes::AltitudeBinding>( cboAltBinding->currentIndex() ) );
+  sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+  sym->setAltitudeBinding( static_cast<Qgis::AltitudeBinding>( cboAltBinding->currentIndex() ) );
   sym->setRenderAsSimpleLines( chkSimpleLines->isChecked() );
   sym->setMaterial( widgetMaterial->settings() );
   return sym.release();

@@ -70,6 +70,7 @@ if (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/libplyxx.h
     ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/libplyxx/libplyxx_internal.h
     ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/textio.h
+    ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   )
 
   if(HDF5_FOUND)
@@ -107,10 +108,12 @@ if (WITH_INTERNAL_MDAL)
     set(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_grib.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_h2i.cpp
     )
     set(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_grib.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_h2i.hpp
     )
     set (HAVE_GDAL TRUE)
   endif()

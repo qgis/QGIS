@@ -33,6 +33,7 @@
 #include "qgsrasterrendererwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
 #include "qgspointcloudlayer.h"
@@ -157,6 +158,8 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   if ( mCurrentLayer )
   {
     disconnect( mCurrentLayer, &QgsMapLayer::styleChanged, this, &QgsLayerStylingWidget::updateCurrentWidgetLayer );
+    disconnect( mCurrentLayer->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsLayerStylingWidget::emitLayerStyleChanged );
+    disconnect( mCurrentLayer->styleManager(), &QgsMapLayerStyleManager::styleRenamed, this, &QgsLayerStylingWidget::emitLayerStyleRenamed );
   }
 
   if ( !layer || !layer->isSpatial() || !QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
@@ -165,6 +168,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
     mLastStyleXml.clear();
     mCurrentLayer = nullptr;
+    emitLayerStyleChanged( QString() );
     return;
   }
 
@@ -180,6 +184,8 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   mUndoWidget->setUndoStack( layer->undoStackStyles() );
 
   connect( mCurrentLayer, &QgsMapLayer::styleChanged, this, &QgsLayerStylingWidget::updateCurrentWidgetLayer );
+  connect( mCurrentLayer->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsLayerStylingWidget::emitLayerStyleChanged );
+  connect( mCurrentLayer->styleManager(), &QgsMapLayerStyleManager::styleRenamed, this, &QgsLayerStylingWidget::emitLayerStyleRenamed );
 
   int lastPage = mOptionsListWidget->currentIndex().row();
   mOptionsListWidget->blockSignals( true );
@@ -300,6 +306,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   mLastStyleXml = doc.createElement( QStringLiteral( "style" ) );
   doc.appendChild( mLastStyleXml );
   mCurrentLayer->writeStyle( mLastStyleXml, doc, errorMsg, QgsReadWriteContext() );
+  emit layerStyleChanged( mCurrentLayer->styleManager()->currentStyle() );
 }
 
 void QgsLayerStylingWidget::apply()
@@ -791,6 +798,12 @@ void QgsLayerStylingWidget::pushUndoItem( const QString &name, bool triggerRepai
   mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, name, rootNode, mLastStyleXml, triggerRepaint ) );
   // Override the last style on the stack
   mLastStyleXml = rootNode.cloneNode();
+}
+
+
+void QgsLayerStylingWidget::emitLayerStyleRenamed()
+{
+  emit layerStyleChanged( mCurrentLayer->styleManager()->currentStyle() );
 }
 
 

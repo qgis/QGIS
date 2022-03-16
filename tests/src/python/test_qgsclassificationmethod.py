@@ -70,6 +70,26 @@ class TestQgsClassificationMethods(unittest.TestCase):
 
         self.assertEqual(len(m.classes(vl, 'value', 4)), 4)
 
+    def testQgsClassificationLogarithmicCloseMinimum(self):
+        """See issue GH #45454: Incorrect scale range legend after applying
+        logarithmic graduated symbology to a vector layer"""
+
+        values = [0.009900019065438,
+                  0.010851322017611,
+                  0.01755707784994,
+                  0.031925433036994,
+                  0.046422733606398]
+
+        vl = createMemoryLayer(values)
+
+        m = QgsClassificationLogarithmic()
+        r = m.classes(vl, 'value', 4)
+
+        classes = [(c.lowerBound(), c.upperBound()) for c in r]
+
+        for l, h in classes:
+            self.assertLess(l, h)
+
     def testQgsClassificationLogarithmic_FilterZeroNeg(self):
         values = [-2, 0, 1, 7, 66, 555, 4444]
         vl = createMemoryLayer(values)

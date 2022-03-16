@@ -44,6 +44,8 @@ Constructor for QgsPolygon3DSymbol
 
     virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
 
+    virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
+
 
     static QgsAbstract3DSymbol *create() /Factory/;
 %Docstring
@@ -52,20 +54,20 @@ Creates a new QgsPolygon3DSymbol.
 Caller takes ownership of the returned symbol.
 %End
 
-    Qgs3DTypes::AltitudeClamping altitudeClamping() const;
+    Qgis::AltitudeClamping altitudeClamping() const;
 %Docstring
 Returns method that determines altitude (whether to clamp to feature to terrain)
 %End
-    void setAltitudeClamping( Qgs3DTypes::AltitudeClamping altClamping );
+    void setAltitudeClamping( Qgis::AltitudeClamping altClamping );
 %Docstring
 Sets method that determines altitude (whether to clamp to feature to terrain)
 %End
 
-    Qgs3DTypes::AltitudeBinding altitudeBinding() const;
+    Qgis::AltitudeBinding altitudeBinding() const;
 %Docstring
 Returns method that determines how altitude is bound to individual vertices
 %End
-    void setAltitudeBinding( Qgs3DTypes::AltitudeBinding altBinding );
+    void setAltitudeBinding( Qgis::AltitudeBinding altBinding );
 %Docstring
 Sets method that determines how altitude is bound to individual vertices
 %End

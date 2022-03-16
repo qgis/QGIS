@@ -234,7 +234,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
 
   if ( matched > 0 )
   {
-    feedback->pushInfo( QObject::tr( "Matched %1 categories to symbols from file." ).arg( matched ) );
+    feedback->pushInfo( QObject::tr( "Matched %n categories to symbols from file.", nullptr, matched ) );
   }
   else
   {
@@ -243,7 +243,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
 
   if ( !unmatchedCategories.empty() )
   {
-    feedback->pushInfo( QObject::tr( "\n%1 categories could not be matched:" ).arg( unmatchedCategories.count() ) );
+    feedback->pushInfo( QObject::tr( "\n%n categorie(s) could not be matched:", nullptr, unmatchedCategories.count() ) );
     std::sort( unmatchedCategories.begin(), unmatchedCategories.end() );
     for ( const QVariant &cat : std::as_const( unmatchedCategories ) )
     {
@@ -260,7 +260,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
 
   if ( !unmatchedSymbols.empty() )
   {
-    feedback->pushInfo( QObject::tr( "\n%1 symbols in style were not matched:" ).arg( unmatchedSymbols.count() ) );
+    feedback->pushInfo( QObject::tr( "\n%n symbol(s) in style were not matched:", nullptr, unmatchedSymbols.count() ) );
     std::sort( unmatchedSymbols.begin(), unmatchedSymbols.end() );
     for ( const QString &name : std::as_const( unmatchedSymbols ) )
     {

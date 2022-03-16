@@ -29,7 +29,7 @@
 #include "qgslabelsink.h"
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
 
 
 class QgsLabelingEngine;
@@ -427,7 +427,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 
 #ifndef SIP_RUN
     //! Settings entry log canvas refresh event
-    static const inline QgsSettingsEntryBool settingsLogCanvasRefreshEvent = QgsSettingsEntryBool( QStringLiteral( "Map/logCanvasRefreshEvent" ), QgsSettings::NoSection, false );
+    static const inline QgsSettingsEntryBool settingsLogCanvasRefreshEvent = QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettings::Prefix::MAP, false );
 #endif
 
   signals:

@@ -49,10 +49,13 @@ class APP_EXPORT QgsFeatureAction : public QAction
      * and override with values in defaultAttributes if provided.
      *
      * \param defaultAttributes  Provide some default attributes here if desired.
+     * \param scope              Scope of the expression
+     * \param showModal          If the used dialog should be modal or not
+     * \param hideParent         If the parent widget should be hidden, when the used dialog is opened
      *
      * \returns TRUE if feature was added if showModal is true. If showModal is FALSE, returns TRUE in every case
      */
-    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr );
+    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr, bool hideParent = false );
 
     /**
      * Sets whether to force suppression of the attribute form popup after creating a new feature.
@@ -79,6 +82,8 @@ class APP_EXPORT QgsFeatureAction : public QAction
 
   private slots:
     void onFeatureSaved( const QgsFeature &feature );
+    void unhideParentWidget();
+    void hideParentWidget();
 
   private:
     QgsAttributeDialog *newDialog( bool cloneFeature );

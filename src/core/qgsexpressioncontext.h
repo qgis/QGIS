@@ -327,6 +327,39 @@ class CORE_EXPORT QgsExpressionContextScope
     void removeFeature() { mHasFeature = false; mFeature = QgsFeature(); }
 
     /**
+     * Returns TRUE if the scope has a geometry associated with it.
+     * \see geometry()
+     * \since QGIS 3.24
+     */
+    bool hasGeometry() const { return mHasGeometry; }
+
+    /**
+     * Sets the geometry associated with the scope.
+     * \see setGeometry()
+     * \see hasGeometry()
+     * \since QGIS 3.24
+     */
+    QgsGeometry geometry() const { return mGeometry; }
+
+    /**
+     * Convenience function for setting a \a geometry for the scope. Any existing
+     * geometry set by the scope will be overwritten.
+
+     * \see removeGeometry()
+     * \see geometry()
+     * \since QGIS 3.24
+     */
+    void setGeometry( const QgsGeometry &geometry ) { mHasGeometry = true; mGeometry = geometry; }
+
+    /**
+     * Removes any geometry associated with the scope.
+     * \see setGeometry()
+     * \see hasGeometry()
+     * \since QGIS 3.24
+     */
+    void removeGeometry() { mHasGeometry = false; mGeometry = QgsGeometry(); }
+
+    /**
      * Convenience function for setting a fields for the scope. Any existing
      * fields set by the scope will be overwritten.
      * \param fields fields for scope
@@ -353,6 +386,8 @@ class CORE_EXPORT QgsExpressionContextScope
     QHash<QString, QgsScopedExpressionFunction * > mFunctions;
     bool mHasFeature = false;
     QgsFeature mFeature;
+    bool mHasGeometry = false;
+    QgsGeometry mGeometry;
 };
 
 /**
@@ -649,6 +684,30 @@ class CORE_EXPORT QgsExpressionContext
      * \see setFeature
      */
     QgsFeature feature() const;
+
+    /**
+     * Convenience function for setting a \a geometry for the context. The geometry
+     * will be set within the last scope of the context, so will override any
+     * existing geometries within the context.
+
+     * \see geometry()
+     * \since QGIS 3.24
+     */
+    void setGeometry( const QgsGeometry &geometry );
+
+    /**
+     * Returns TRUE if the context has a geometry associated with it.
+     * \see geometry()
+     * \since QGIS 3.24
+     */
+    bool hasGeometry() const;
+
+    /**
+     * Convenience function for retrieving the geometry for the context, if set.
+     * \see setGeometry()
+     * \since QGIS 3.24
+     */
+    QgsGeometry geometry() const;
 
     /**
      * Convenience function for setting a fields for the context. The fields

@@ -672,69 +672,133 @@ Returns the Hide Deselected Layers action.
     virtual QAction *actionCheckQgisVersion() = 0;
     virtual QAction *actionAbout() = 0;
 
-    virtual QAction *actionCircle2Points()  = 0;
+
+ virtual QAction *actionCircle2Points() /Deprecated/;
 %Docstring
 Returns the native add circle from 2 points action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionCircle3Points()  = 0;
+
+ virtual QAction *actionCircle3Points() /Deprecated/;
 %Docstring
 Returns the native add circle from 3 points action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionCircle3Tangents()  = 0;
+
+ virtual QAction *actionCircle3Tangents() /Deprecated/;
 %Docstring
 Returns the native add circle from 3 tangents action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionCircle2TangentsPoint()  = 0;
+
+ virtual QAction *actionCircle2TangentsPoint() /Deprecated/;
 %Docstring
 Returns the native add circle from 2 tangents and a point action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionCircleCenterPoint()  = 0;
+
+ virtual QAction *actionCircleCenterPoint() /Deprecated/;
 %Docstring
 Returns the native add circle from center action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionEllipseCenter2Points()  = 0;
+
+ virtual QAction *actionEllipseCenter2Points() /Deprecated/;
 %Docstring
 Returns the native add ellipse from center and 2 points action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionEllipseCenterPoint()  = 0;
+
+ virtual QAction *actionEllipseCenterPoint() /Deprecated/;
 %Docstring
 Returns the native add ellipse from center and a point action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionEllipseExtent()  = 0;
+
+ virtual QAction *actionEllipseExtent() /Deprecated/;
 %Docstring
 Returns the native add ellipse from an extent action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionEllipseFoci()  = 0;
+
+ virtual QAction *actionEllipseFoci() /Deprecated/;
 %Docstring
 Returns the native add ellipse from foci action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionRectangleCenterPoint()  = 0;
+
+ virtual QAction *actionRectangleCenterPoint() /Deprecated/;
 %Docstring
 Returns the native add rectangle from center and a point action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionRectangleExtent()  = 0;
+
+ virtual QAction *actionRectangleExtent() /Deprecated/;
 %Docstring
 Returns the native add rectangle from extent action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionRectangle3PointsDistance()  = 0;
+
+ virtual QAction *actionRectangle3PointsDistance() /Deprecated/;
 %Docstring
 Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionRectangle3PointsProjected()  = 0;
+
+ virtual QAction *actionRectangle3PointsProjected() /Deprecated/;
 %Docstring
 Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionRegularPolygon2Points()  = 0;
+
+ virtual QAction *actionRegularPolygon2Points() /Deprecated/;
 %Docstring
 Returns the native add regular polygon from 2 points action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionRegularPolygonCenterPoint()  = 0;
+
+ virtual QAction *actionRegularPolygonCenterPoint() /Deprecated/;
 %Docstring
 Returns the native add regular polygon from center and a point action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
-    virtual QAction *actionRegularPolygonCenterCorner()  = 0;
+
+ virtual QAction *actionRegularPolygonCenterCorner() /Deprecated/;
 %Docstring
 Returns the native add regular polygon from center and a corner action. Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
+
+.. deprecated:: QGIS 3.26
+   shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
 
     virtual QgsVectorLayerTools *vectorLayerTools() = 0;

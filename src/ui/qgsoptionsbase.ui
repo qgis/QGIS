@@ -4672,9 +4672,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </widget>
                   </item>
                   <item row="1" column="0">
-                   <widget class="QLabel" name="mDefaultSnapModeLabel">
+                   <widget class="QLabel" name="mDefaultSnapTypeLabel">
                     <property name="text">
-                     <string>Default snap mode</string>
+                     <string>Default snapping type</string>
                     </property>
                    </widget>
                   </item>
@@ -4692,7 +4692,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </spacer>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QComboBox" name="mDefaultSnapModeComboBox">
+                   <widget class="QComboBox" name="mDefaultSnapTypeComboBox">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6275,7 +6275,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mFillColorToolButton</tabstop>
   <tabstop>mLineGhostCheckBox</tabstop>
   <tabstop>mSnappingEnabledDefault</tabstop>
-  <tabstop>mDefaultSnapModeComboBox</tabstop>
+  <tabstop>mDefaultSnapTypeComboBox</tabstop>
   <tabstop>mDefaultSnappingToleranceSpinBox</tabstop>
   <tabstop>mDefaultSnappingToleranceComboBox</tabstop>
   <tabstop>mSearchRadiusVertexEditSpinBox</tabstop>

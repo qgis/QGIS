@@ -64,6 +64,9 @@ Item {
   //! Emitted when a release happens after a long press
   signal longPressReleased()
 
+  //! Emitted when user does some interaction with map canvas (pan, zoom)
+  signal userInteractedWithMap()
+
   /**
    * Freezes the map canvas refreshes.
    *
@@ -78,6 +81,8 @@ Item {
   function freeze(id) {
     mapCanvasWrapper.__freezecount[id] = true
     mapCanvasWrapper.freeze = true
+
+    userInteractedWithMap()
   }
 
   function unfreeze(id) {
@@ -329,6 +334,8 @@ Item {
       {
         zoomOut(point.position)
       }
+
+      userInteractedWithMap()
     }
   }
 }

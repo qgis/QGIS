@@ -14,6 +14,12 @@
 
 class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 {
+%Docstring(signature="appended")
+:py:class:`QgsMapToolCapture` is a base class capable of capturing point, lines and polygons.
+The tool supports different techniques: straight segments, curves, streaming and shapes
+Once the the geometry is captured the virtual private handler geometryCaptured is called
+as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptured)
+%End
 
 %TypeHeaderCode
 #include "qgsmaptoolcapture.h"
@@ -26,13 +32,6 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
       CapturePoint,
       CaptureLine,
       CapturePolygon
-    };
-
-    enum CaptureTechnique
-    {
-      StraightSegments,
-      CircularString,
-      Streaming,
     };
 
     enum Capability
@@ -57,12 +56,20 @@ constructor
 Returns flags containing the supported capabilities
 %End
 
-    virtual bool supportsTechnique( CaptureTechnique technique ) const;
+    virtual bool supportsTechnique( Qgis::CaptureTechnique technique ) const;
 %Docstring
 Returns ``True`` if the tool supports the specified capture ``technique``.
 
 .. versionadded:: 3.20
 %End
+
+    void setCurrentCaptureTechnique( Qgis::CaptureTechnique technique );
+%Docstring
+Sets the current capture if it is supported by the map tool
+
+.. versionadded:: 3.26
+%End
+
 
     virtual void activate();
 
@@ -104,6 +111,8 @@ Returns a list of matches for each point on the captureCurve.
 
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
+
 
     virtual void keyPressEvent( QKeyEvent *e );
 
@@ -132,17 +141,52 @@ transfers ownership to the caller.
 .. versionadded:: 3.8
 %End
 
-  public slots:
-    void setCircularDigitizingEnabled( bool enable );
+    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
 %Docstring
-Enable the digitizing with curve
+Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
+WkbType of the current layer). If the point is snapped, then the Z
+value is derived from the snapped point.
+
+:param e: A mouse event
+
+:return: a point with ZM support if necessary
+
+
+.. versionadded:: 3.0
 %End
 
-    void setStreamDigitizingEnabled( bool enable );
+    QgsPoint mapPoint( const QgsPointXY &point ) const;
+%Docstring
+Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
+WkbType of the current layer).
+
+:param point: A point in 2D
+
+:return: a point with ZM support if necessary
+
+
+.. versionadded:: 3.0
+%End
+
+
+  public slots:
+
+ void setCircularDigitizingEnabled( bool enable ) /Deprecated/;
+%Docstring
+Enable the digitizing with curve
+
+.. deprecated:: QGIS 3.26
+   use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead
+%End
+
+ void setStreamDigitizingEnabled( bool enable ) /Deprecated/;
 %Docstring
 Toggles the stream digitizing mode.
 
 .. versionadded:: 3.20
+
+.. deprecated:: QGIS 3.26
+   use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead
 %End
 
   protected:
@@ -186,34 +230,6 @@ CRS as the current layer.
 
 .. versionadded:: 2.14
 %End
-
-    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
-%Docstring
-Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
-WkbType of the current layer). If the point is snapped, then the Z
-value is took from the snapped point.
-
-:param e: A mouse event
-
-:return: a point with ZM support if necessary
-
-
-.. versionadded:: 3.0
-%End
-
-    QgsPoint mapPoint( const QgsPointXY &point ) const;
-%Docstring
-Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
-WkbType of the current layer).
-
-:param point: A point in 2D
-
-:return: a point with ZM support if necessary
-
-
-.. versionadded:: 3.0
-%End
-
 
     int addVertex( const QgsPointXY &point );
 %Docstring
@@ -310,6 +326,35 @@ Close an open polygon
 Stop capturing
 %End
 
+  private:
+    virtual void geometryCaptured( const QgsGeometry &geometry );
+%Docstring
+Called when the geometry is captured
+A more specific handler is also called afterwards (pointCaptured, lineCaptured or polygonCaptured)
+
+.. versionadded:: 3.26
+%End
+    virtual void pointCaptured( const QgsPoint &point );
+%Docstring
+Called when a point is captured
+geometryCaptured is called just before
+
+.. versionadded:: 3.26
+%End
+    virtual void lineCaptured( const QgsCurve *line );
+%Docstring
+Called when a line is captured
+geometryCaptured is called just before
+
+.. versionadded:: 3.26
+%End
+    virtual void polygonCaptured( const QgsCurvePolygon *polygon );
+%Docstring
+Called when a polygon is captured
+geometryCaptured is called just before
+
+.. versionadded:: 3.26
+%End
 };
 
 QFlags<QgsMapToolCapture::Capability> operator|(QgsMapToolCapture::Capability f1, QFlags<QgsMapToolCapture::Capability> f2);

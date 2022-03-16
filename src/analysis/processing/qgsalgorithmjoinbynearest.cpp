@@ -273,7 +273,7 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
 
       if ( nearest.count() > neighbors + ( sameSourceAndTarget ? 1 : 0 ) )
       {
-        feedback->pushInfo( QObject::tr( "Multiple matching features found at same distance from search feature, found %1 features instead of %2" ).arg( nearest.count() - ( sameSourceAndTarget ? 1 : 0 ) ).arg( neighbors ) );
+        feedback->pushInfo( QObject::tr( "Multiple matching features found at same distance from search feature, found %n feature(s) instead of %1", nullptr, nearest.count() - ( sameSourceAndTarget ? 1 : 0 ) ).arg( neighbors ) );
       }
       QgsFeature out;
       out.setGeometry( f.geometry() );

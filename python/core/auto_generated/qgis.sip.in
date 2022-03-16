@@ -104,6 +104,14 @@ The development version
       ARGB32_Premultiplied
     };
 
+    enum class CaptureTechnique
+    {
+      StraightSegments,
+      CircularString,
+      Streaming,
+      Shape,
+    };
+
     enum class VectorLayerTypeFlag
     {
       SqlQuery
@@ -139,6 +147,45 @@ The development version
       ScaleArea,
       ScaleDiameter
     };
+
+    enum class SettingsType
+      {
+      Variant,
+      String,
+      StringList,
+      Bool,
+      Integer,
+      Double,
+      EnumFlag,
+      Color
+    };
+
+    enum class SettingsOption
+    {
+      SaveFormerValue,
+    };
+    typedef QFlags<Qgis::SettingsOption> SettingsOptions;
+
+
+    enum class SnappingMode
+      {
+      ActiveLayer,
+      AllLayers,
+      AdvancedConfiguration,
+    };
+
+    enum class SnappingType
+      {
+      NoSnap,
+      Vertex,
+      Segment,
+      Area,
+      Centroid,
+      MiddleOfSegment,
+      LineEndpoint,
+    };
+    typedef QFlags<Qgis::SnappingType> SnappingTypes;
+
 
     enum class SymbolRenderHint
       {
@@ -199,6 +246,7 @@ The development version
       Rename,
       Delete,
       ItemRepresentsFile,
+      RefreshChildrenWhenItemIsRefreshed,
     };
     typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
 
@@ -485,8 +533,17 @@ The development version
     enum class MapLayerProperty
     {
       UsersCannotToggleEditing,
+      IsBasemapLayer,
     };
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
+
+
+
+    enum class DataProviderFlag
+    {
+      IsBasemapSource,
+    };
+    typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
 
     enum class AnnotationItemFlag
@@ -759,6 +816,12 @@ The development version
     typedef QFlags<Qgis::TextRendererFlag> TextRendererFlags;
 
 
+    enum class ScaleToTileZoomLevelMethod
+    {
+      MapBox,
+      Esri,
+    };
+
     enum class AngularDirection
       {
       Clockwise,
@@ -784,6 +847,47 @@ The development version
       {
       Wkt,
       Proj,
+    };
+
+    enum class FieldDomainSplitPolicy
+    {
+      DefaultValue,
+      Duplicate,
+      GeometryRatio,
+    };
+
+    enum class FieldDomainMergePolicy
+    {
+      DefaultValue,
+      Sum,
+      GeometryWeighted,
+    };
+
+    enum class FieldDomainType
+    {
+      Coded,
+      Range,
+      Glob,
+    };
+
+    enum class TransactionMode
+    {
+      Disabled,
+      AutomaticGroups,
+      BufferedGroups,
+    };
+
+    enum class AltitudeClamping
+    {
+      Absolute,
+      Relative,
+      Terrain,
+    };
+
+    enum class AltitudeBinding
+    {
+      Vertex,
+      Centroid,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -851,6 +955,7 @@ GEOS string version linked
 %End
 };
 
+
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
 
 QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
@@ -890,6 +995,12 @@ QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags
 QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
 
 QFlags<Qgis::HistoryProviderBackend> operator|(Qgis::HistoryProviderBackend f1, QFlags<Qgis::HistoryProviderBackend> f2);
+
+QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis::MapLayerProperty> f2);
+
+QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
+
+QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
 
 
 
@@ -949,6 +1060,7 @@ Returns a double ``number``, rounded (as close as possible) to the specified num
 
 .. versionadded:: 3.0
 %End
+
 
 
 

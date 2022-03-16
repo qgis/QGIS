@@ -47,6 +47,7 @@ class QgsRasterPipe;
 class QgsRasterResampleFilter;
 class QgsBrightnessContrastFilter;
 class QgsHueSaturationFilter;
+class QgsRasterLayerElevationProperties;
 
 class QImage;
 class QPixmap;
@@ -344,6 +345,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool isSpatial() const override { return true; }
 
     QString htmlMetadata() const override;
+    Qgis::MapLayerProperties properties() const override;
 
     /**
      * Returns a 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
@@ -466,6 +468,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool ignoreExtents() const;
 
     QgsMapLayerTemporalProperties *temporalProperties() override;
+    QgsMapLayerElevationProperties *elevationProperties() override;
 
   public slots:
     void showStatusMessage( const QString &message );
@@ -550,6 +553,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     //! Pointer to temporal properties
     QgsRasterLayerTemporalProperties *mTemporalProperties = nullptr;
+
+    QgsRasterLayerElevationProperties *mElevationProperties = nullptr;
 
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;

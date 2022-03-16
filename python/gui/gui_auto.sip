@@ -73,6 +73,7 @@
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfeatureselectiondlg.sip
 %Include auto_generated/qgsfieldcombobox.sip
+%Include auto_generated/qgsfielddomainwidget.sip
 %Include auto_generated/qgsfieldexpressionwidget.sip
 %Include auto_generated/qgsfieldmappingwidget.sip
 %Include auto_generated/qgsfieldmappingmodel.sip
@@ -210,6 +211,7 @@
 %Include auto_generated/qgssublayersdialog.sip
 %Include auto_generated/qgssubstitutionlistwidget.sip
 %Include auto_generated/qgssymbolbutton.sip
+%Include auto_generated/qgstableview.sip
 %Include auto_generated/qgstablewidgetbase.sip
 %Include auto_generated/qgstablewidgetitem.sip
 %Include auto_generated/qgstabwidget.sip
@@ -354,6 +356,7 @@
 %Include auto_generated/layout/qgslayoutviewtooltemporarymousepan.sip
 %Include auto_generated/layout/qgslayoutviewtoolzoom.sip
 %Include auto_generated/locator/qgslocatorwidget.sip
+%Include auto_generated/maptools/qgsmaptoolcapturelayergeometry.sip
 %Include auto_generated/mesh/qgsmeshlayerproperties.sip
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
@@ -364,6 +367,7 @@
 %Include auto_generated/processing/qgsprocessingaggregatewidgets.sip
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
+%Include auto_generated/processing/qgsprocessingbatchalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessinggui.sip
 %Include auto_generated/processing/qgsprocessingguiregistry.sip
 %Include auto_generated/processing/qgsprocessinghistoryprovider.sip

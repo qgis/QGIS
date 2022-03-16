@@ -55,6 +55,14 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
   GroupLayer, //!< Composite group layer. Added in QGIS 3.24
 };
 
+#ifndef SIP_RUN
+// qHash implementation for scoped enum type
+// https://gitlab.com/frostasm/programming-knowledge-base/-/snippets/20120
+#define QHASH_FOR_CLASS_ENUM(T) \
+  inline uint qHash(const T &t, uint seed) { \
+    return ::qHash(static_cast<typename std::underlying_type<T>::type>(t), seed); \
+  }
+#endif
 
 /**
  * \ingroup core
@@ -137,6 +145,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( DataType )
 
     /**
+     * Capture technique.
+     *
+     * \since QGIS 3.26
+     */
+    enum class CaptureTechnique : int
+    {
+      StraightSegments, //!< Default capture mode - capture occurs with straight line segments
+      CircularString, //!< Capture in circular strings
+      Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
+      Shape, //!< Digitize shapes.
+    };
+    Q_ENUM( CaptureTechnique )
+
+    /**
      * Vector layer type flags.
      *
      * \since QGIS 3.24
@@ -199,6 +221,66 @@ class CORE_EXPORT Qgis
       ScaleDiameter  //!< Calculate scale by the diameter
     };
     Q_ENUM( ScaleMethod )
+
+    /**
+     * Types of settings entries
+     * \since QGIS 3.26
+     */
+    enum class SettingsType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSettingsEntryBase, SettingsType ) : int
+      {
+      Variant, //!< Generic variant
+      String, //!< String
+      StringList, //!< List of strings
+      Bool, //!< Boolean
+      Integer, //!< Integer
+      Double, //!< Double precision number
+      EnumFlag, //!< Enum or Flag
+      Color //!< Color
+    };
+    Q_ENUM( SettingsType )
+
+    /**
+     * Settings options
+     * \since QGIS 3.26
+     */
+    enum class SettingsOption : int
+    {
+      SaveFormerValue = 1 << 1, //<! Save the former value of the settings
+    };
+    Q_ENUM( SettingsOption )
+    Q_DECLARE_FLAGS( SettingsOptions, SettingsOption )
+    Q_FLAG( SettingsOptions )
+
+    /**
+     * SnappingMode defines on which layer the snapping is performed
+     * \since QGIS 3.26
+     */
+    enum class SnappingMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSnappingConfig, SnappingMode ) : int
+      {
+      ActiveLayer = 1, //!< On the active layer
+      AllLayers = 2, //!< On all vector layers
+      AdvancedConfiguration = 3, //!< On a per layer configuration basis
+    };
+    Q_ENUM( SnappingMode )
+
+    /**
+     * SnappingTypeFlag defines on what object the snapping is performed
+     * \since QGIS 3.26
+     */
+    enum class SnappingType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSnappingConfig, SnappingTypes ) : int
+      {
+      NoSnap SIP_MONKEYPATCH_COMPAT_NAME( NoSnapFlag ) = 0, //!< No snapping
+      Vertex SIP_MONKEYPATCH_COMPAT_NAME( VertexFlag ) = 1 << 0, //!< On vertices
+      Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentFlag ) = 1 << 1, //!< On segments
+      Area SIP_MONKEYPATCH_COMPAT_NAME( AreaFlag ) = 1 << 2, //!< On Area
+      Centroid SIP_MONKEYPATCH_COMPAT_NAME( CentroidFlag ) = 1 << 3, //!< On centroid
+      MiddleOfSegment SIP_MONKEYPATCH_COMPAT_NAME( MiddleOfSegmentFlag ) = 1 << 4, //!< On Middle segment
+      LineEndpoint SIP_MONKEYPATCH_COMPAT_NAME( LineEndpointFlag ) = 1 << 5, //!< Start or end points of lines, or first vertex in polygon rings only (since QGIS 3.20)
+    };
+    Q_ENUM( SnappingType )
+    //! Snapping types
+    Q_DECLARE_FLAGS( SnappingTypes, SnappingType ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSnappingConfig, SnappingTypeFlag )
+    Q_FLAG( SnappingTypes )
 
     /**
      * \brief Flags controlling behavior of symbols during rendering
@@ -300,6 +382,7 @@ class CORE_EXPORT Qgis
       Rename = 1 << 4, //!< Item can be renamed
       Delete = 1 << 5, //!< Item can be deleted
       ItemRepresentsFile = 1 << 6, //!< Item's path() directly represents a file on disk (since QGIS 3.22)
+      RefreshChildrenWhenItemIsRefreshed = 1 << 7, //!< When the item is refreshed, all its populated children will also be refreshed in turn (since QGIS 3.26)
     };
     Q_ENUM( BrowserItemCapability )
     //! Browser item capabilities
@@ -777,10 +860,25 @@ class CORE_EXPORT Qgis
     enum class MapLayerProperty : int
     {
       UsersCannotToggleEditing = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22.
+      IsBasemapLayer = 1 << 1, //!< Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest. Since QGIS 3.26.
     };
     //! Map layer properties
     Q_DECLARE_FLAGS( MapLayerProperties, MapLayerProperty )
     Q_ENUM( MapLayerProperty )
+
+
+    /**
+     * Generic data provider flags.
+     *
+     * \since QGIS 3.26
+     */
+    enum class DataProviderFlag : int
+    {
+      IsBasemapSource = 1 << 1, //!< Associated source should be considered a 'basemap' layer. See Qgis::MapLayerProperty::IsBasemapLayer.
+    };
+    //! Data provider flags
+    Q_DECLARE_FLAGS( DataProviderFlags, DataProviderFlag )
+    Q_ENUM( DataProviderFlag )
 
     /**
      * Flags for annotation items.
@@ -1239,6 +1337,18 @@ class CORE_EXPORT Qgis
     Q_FLAG( TextRendererFlags )
 
     /**
+     * Available methods for converting map scales to tile zoom levels.
+     *
+     * \since QGIS 3.26
+     */
+    enum class ScaleToTileZoomLevelMethod : int
+    {
+      MapBox, //!< Uses a scale doubling approach to account for hi-DPI tiles, and rounds to the nearest tile level for the map scale
+      Esri, //!< No scale doubling, always rounds down when matching to available tile levels
+    };
+    Q_ENUM( ScaleToTileZoomLevelMethod );
+
+    /**
      * Angular directions.
      *
      * \since QGIS 3.24
@@ -1288,6 +1398,89 @@ class CORE_EXPORT Qgis
       Proj SIP_MONKEYPATCH_COMPAT_NAME( FormatProj ), //!< Proj string format
     };
     Q_ENUM( CrsDefinitionFormat )
+
+    /**
+     * Split policy for field domains.
+     *
+     * When a feature is split into multiple parts, defines how the value of attributes
+     * following the domain are computed.
+     *
+     * \since QGIS 3.26
+     */
+    enum class FieldDomainSplitPolicy : int
+    {
+      DefaultValue, //!< Use default field value
+      Duplicate, //!< Duplicate original value
+      GeometryRatio, //!< New values are computed by the ratio of their area/length compared to the area/length of the original feature
+    };
+    Q_ENUM( FieldDomainSplitPolicy )
+
+    /**
+     * Merge policy for field domains.
+     *
+     * When a feature is built by merging multiple features, defines how the value of
+     * attributes following the domain are computed.
+     *
+     * \since QGIS 3.26
+     */
+    enum class FieldDomainMergePolicy : int
+    {
+      DefaultValue, //!< Use default field value
+      Sum, //!< Sum of values
+      GeometryWeighted, //!< New values are computed as the weighted average of the source values
+    };
+    Q_ENUM( FieldDomainMergePolicy )
+
+    /**
+     * Types of field domain
+     *
+     * \since QGIS 3.26
+     */
+    enum class FieldDomainType : int
+    {
+      Coded, //!< Coded field domain
+      Range, //!< Numeric range field domain (min/max)
+      Glob, //!< Glob string pattern field domain
+    };
+    Q_ENUM( FieldDomainType )
+
+    /**
+     * Transaction mode.
+     *
+     * \since QGIS 3.26
+     */
+    enum class TransactionMode : int
+    {
+      Disabled = 0, //!< Edits are buffered locally and sent to the provider when toggling layer editing mode.
+      AutomaticGroups = 1, //!< Automatic transactional editing means that on supported datasources (postgres and geopackage databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction.
+      BufferedGroups = 2, //!< Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is executed within a single transaction on all layers (per provider).
+    };
+    Q_ENUM( TransactionMode )
+
+    /**
+     * Altitude clamping.
+     *
+     * \since QGIS 3.26
+     */
+    enum class AltitudeClamping : int
+    {
+      Absolute, //!< Elevation is taken directly from feature and is independent of terrain height (final elevation = feature elevation)
+      Relative, //!< Elevation is relative to terrain height (final elevation = terrain elevation + feature elevation)
+      Terrain, //!< Elevation is clamped to terrain (final elevation = terrain elevation)
+    };
+    Q_ENUM( AltitudeClamping )
+
+    /**
+     * Altitude binding.
+     *
+     * \since QGIS 3.26
+     */
+    enum class AltitudeBinding : int
+    {
+      Vertex, //!< Clamp every vertex of feature
+      Centroid, //!< Clamp just centroid of feature
+    };
+    Q_ENUM( AltitudeBinding )
 
     /**
      * Identify search radius in mm
@@ -1402,6 +1595,8 @@ class CORE_EXPORT Qgis
     static QString geosVersion();
 };
 
+QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
+
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
@@ -1422,6 +1617,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::HistoryProviderBackends )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerProperties )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 
 
 // hack to workaround warnings when casting void pointers
@@ -1681,6 +1879,22 @@ namespace std
 #endif
 
 /**
+ * Returns a list all enum entries.
+ * The enum must have been declared using Q_ENUM or Q_FLAG.
+ */
+template<class T> const QList<T> qgsEnumList() SIP_SKIP
+{
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  QList<T> enumList;
+  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  {
+    enumList.append( static_cast<T>( metaEnum.value( idx ) ) );
+  }
+  return enumList;
+}
+
+/**
  * Returns a map of all enum entries.
  * The map has the enum values (int) as keys and the enum keys (QString) as values.
  * The enum must have been declared using Q_ENUM or Q_FLAG.
@@ -1692,35 +1906,45 @@ template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
   QMap<T, QString> enumMap;
   for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
   {
-    const char *enumKey = metaEnum.key( idx );
-    enumMap.insert( static_cast<T>( metaEnum.keyToValue( enumKey ) ), QString( enumKey ) );
+    enumMap.insert( static_cast<T>( metaEnum.value( idx ) ), QString( metaEnum.key( idx ) ) );
   }
   return enumMap;
 }
 
 /**
  * Returns the value for the given key of an enum.
+ * If \a returnOk is given, it defines if the value could be converted to the key
  * \since QGIS 3.6
  */
-template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
+template<class T> QString qgsEnumValueToKey( const T &value, bool *returnOk = nullptr ) SIP_SKIP
 {
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
-  return QString::fromUtf8( metaEnum.valueToKey( static_cast<int>( value ) ) );
+  const char *key = metaEnum.valueToKey( static_cast<int>( value ) );
+  if ( returnOk )
+  {
+    *returnOk = key ? true : false;
+  }
+  return QString::fromUtf8( key );
 }
 
 /**
  * Returns the value corresponding to the given \a key of an enum.
  * If the key is invalid, it will return the \a defaultValue.
  * If \a tryValueAsKey is TRUE, it will try to convert the string key to an enum value
+ * If \a returnOk is given, it defines if the key could be converted to the value or if it had returned the default
  * \since QGIS 3.6
  */
-template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue, bool tryValueAsKey = true ) SIP_SKIP
+template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue, bool tryValueAsKey = true,  bool *returnOk = nullptr ) SIP_SKIP
 {
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   bool ok = false;
   T v = static_cast<T>( metaEnum.keyToValue( key.toUtf8().data(), &ok ) );
+  if ( returnOk )
+  {
+    *returnOk = ok;
+  }
   if ( ok )
   {
     return v;
@@ -1734,6 +1958,10 @@ template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue
       const int intValue = key.toInt( &canConvert );
       if ( canConvert && metaEnum.valueToKey( intValue ) )
       {
+        if ( returnOk )
+        {
+          *returnOk = true;
+        }
         return static_cast<T>( intValue );
       }
     }
@@ -1743,30 +1971,68 @@ template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue
 
 /**
  * Returns the value for the given keys of a flag.
+ * If \a returnOk is given, it defines if the value could be converted to the keys
  * \since QGIS 3.16
  */
-template<class T> QString qgsFlagValueToKeys( const T &value ) SIP_SKIP
+template<class T> QString qgsFlagValueToKeys( const T &value, bool *returnOk = nullptr ) SIP_SKIP
 {
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
-  return QString::fromUtf8( metaEnum.valueToKeys( static_cast<int>( value ) ) );
+  int intValue = static_cast<int>( value );
+  const QByteArray ba = metaEnum.valueToKeys( intValue );
+  // check that the int value does correspond to a flag
+  // see https://stackoverflow.com/a/68495949/1548052
+  const int intValueCheck = metaEnum.keysToValue( ba );
+  bool ok = intValue == intValueCheck;
+  if ( returnOk )
+    *returnOk = ok;
+  return ok ? QString::fromUtf8( ba ) : QString();
 }
 
 /**
  * Returns the value corresponding to the given \a keys of a flag.
  * If the keys are invalid, it will return the \a defaultValue.
+ * If \a tryValueAsKey is TRUE, it will try to convert the string key to an enum value.
+ * If \a returnOk is given, it defines if the key could be converted to the value or if it had returned the default
  * \since QGIS 3.16
  */
-template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultValue ) SIP_SKIP
+template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultValue, bool tryValueAsKey = true,  bool *returnOk = nullptr ) SIP_SKIP
 {
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   bool ok = false;
   T v = static_cast<T>( metaEnum.keysToValue( keys.toUtf8().constData(), &ok ) );
+  if ( returnOk )
+  {
+    *returnOk = ok;
+  }
   if ( ok )
+  {
     return v;
+  }
   else
-    return defaultValue;
+  {
+    // if conversion has failed, try with conversion from int value
+    if ( tryValueAsKey )
+    {
+      bool canConvert = false;
+      const int intValue = keys.toInt( &canConvert );
+      if ( canConvert )
+      {
+        const QByteArray keys = metaEnum.valueToKeys( intValue );
+        const int intValueCheck = metaEnum.keysToValue( keys );
+        if ( intValue == intValueCheck )
+        {
+          if ( returnOk )
+          {
+            *returnOk = true;
+          }
+          return T( intValue );
+        }
+      }
+    }
+  }
+  return defaultValue;
 }
 
 

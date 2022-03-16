@@ -26,6 +26,7 @@ class QString;
 
 class QgsReadWriteContext;
 class Qgs3DSceneExporter;
+
 namespace Qt3DCore { class QEntity; } SIP_SKIP
 
 
@@ -90,12 +91,19 @@ class CORE_EXPORT QgsAbstract3DSymbol
      */
     virtual bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const SIP_SKIP;
 
+    /**
+     * Sets default properties for the symbol based on a layer's configuration.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
+
   protected:
 
     /**
      * Copies base class settings from this object to a \a destination object.
      */
-    void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
+    virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
     QgsPropertyCollection mDataDefinedProperties;
 
   private:

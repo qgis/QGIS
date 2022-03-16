@@ -47,8 +47,11 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
      * when resizing.
      *
      * The \a targetDpi argument is ignored if \a size is a valid size.
+     *
+     * The \a frameNumber argument specifies a frame number for image formats which support animations. This should be
+     * set to -1 if not required.
      */
-    QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio, double opacity, double targetDpi ) ;
+    QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio, double opacity, double targetDpi, int frameNumber ) ;
 
     //! Rendered image size
     QSize size;
@@ -75,6 +78,20 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
      * \since QGIS 3.22
      */
     double targetDpi = 96;
+
+    /**
+     * Frame number
+     *
+     * \since QGIS 3.26
+     */
+    int frameNumber = -1;
+
+    /**
+     * Total frame count in source image
+     *
+     * \since QGIS 3.26
+     */
+    int totalFrameCount = -1;
 
     int dataSize() const override;
     void dump() const override;
@@ -119,35 +136,29 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      * version of the image will be used. If not, the image is fetched and resampled to the desired
      * size, and then the result cached for subsequent lookups.
      *
-     * \a path may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
-     *
-     * The \a size parameter dictates the target size of the image. An invalid size indicates the
+     * \param path may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+     * \param size dictates the target size of the image. An invalid size indicates the
      * original raster image size (with no resampling). A size in which the width or height is
      * set to zero will have the zeroed value automatically computed when keepAspectRatio is TRUE.
-     *
-     * If \a keepAspectRatio is TRUE, then the original raster aspect ratio will be maintained during
+     * \param keepAspectRatio if TRUE then the original raster aspect ratio will be maintained during
      * any resampling operations.
-     *
-     * An \a opacity parameter dictates the opacity of the image.
-     *
-     * If the resultant raster was of a sufficiently small size to store in the cache, then \a fitsInCache
-     * will be set to TRUE.
-     *
-     * The \a blocking boolean forces to wait for loading before returning image. The content is loaded
+     * \param opacity dictates the opacity of the image (between 0 and 1).
+     * \param fitsInCache will be set to TRUE if the resultant raster was of a sufficiently small size to store in the cache
+     * \param blocking if TRUE, forces to wait for loading before returning image. The content is loaded
      * in the same thread to ensure provided the image. WARNING: the \a blocking parameter must NEVER
      * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
      * use in external scripts or QGIS server.
-     *
-     * Since QGIS 3.22 the \a targetDpi argument can be used to specify an explicit DPI to render the image
+     * \param targetDpi (since QGIS 3.22) can be used to specify an explicit DPI to render the image
      * at. This is used for some image formats (e.g. PDF) to ensure that content is rendered at the desired
      * DPI. This argument is only used when an invalid \a size argument is specified. If a valid \a size is
      * specified then the image will always be rendered at this size, regardless of the \a targetDpi.
+     * \param frameNumber (since QGIS 3.26) specifies a frame number for image formats which support
+     * animations. This should be set to -1 if not required.
+     * \param isMissing will be set to TRUE if returned image is the "broken" image placeholder
+     *
+     * \returns rendered image
      */
-#ifndef SIP_RUN
-    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false, double targetDpi = 96, bool *isMissing = nullptr );
-#else
-    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false, double targetDpi = 96 );
-#endif
+    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false, double targetDpi = 96, int frameNumber = -1, bool *isMissing SIP_PYARGREMOVE = nullptr );
 
     /**
      * Returns the original size (in pixels) of the image at the specified \a path.
@@ -166,6 +177,25 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      */
     QSize originalSize( const QString &path, bool blocking = false ) const;
 
+    /**
+     * Returns the total frame count of the image at the specified \a path.
+     *
+     * \a path may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+     *
+     * If \a path is a remote file, then -1 may be returned while the image is in the process
+     * of being fetched.
+     *
+     * The \a blocking boolean forces to wait for loading before returning the frame count. The content is loaded
+     * in the same thread to ensure provided the original size. WARNING: the \a blocking parameter must NEVER
+     * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
+     * use in external scripts or QGIS server.
+     *
+     * If the image could not be read or is not an animated format then -1 is returned
+     *
+     * \since QGIS 3.26
+     */
+    int totalFrameCount( const QString &path, bool blocking = false );
+
   signals:
 
     /**
@@ -175,7 +205,11 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
   private:
 
-    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, bool &isBroken, bool blocking = false ) const;
+    QImage pathAsImagePrivate( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount );
+
+    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, bool blocking = false ) const;
+
+    static QImage getFrameFromReader( QImageReader &reader, int frameNumber );
 
     //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;

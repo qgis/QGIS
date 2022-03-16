@@ -9,7 +9,6 @@ usr/lib/qgis/plugins/libauthmethod_apiheader.so
 usr/lib/qgis/plugins/libauthmethod_maptilerhmacsha256.so
 usr/lib/qgis/plugins/libprovider_arcgisfeatureserver.so
 usr/lib/qgis/plugins/libprovider_arcgismapserver.so
-usr/lib/qgis/plugins/libprovider_db2.so
 usr/lib/qgis/plugins/libprovider_delimitedtext.so
 usr/lib/qgis/plugins/libprovider_geonode.so
 usr/lib/qgis/plugins/libprovider_gpx.so

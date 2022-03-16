@@ -2062,6 +2062,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "from_base64 NULL" ) << QStringLiteral( "from_base64(NULL)" ) << false << QVariant();
       QTest::newRow( "from_base64" ) << QStringLiteral( "from_base64('UUdJUw==')" ) << false << QVariant( QByteArray( QString( "QGIS" ).toLocal8Bit() ) );
       QTest::newRow( "uuid()" ) << QStringLiteral( "regexp_match( uuid(), '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')" ) << false << QVariant( 1 );
+      QTest::newRow( "$uuid alias" ) << QStringLiteral( "regexp_match( $uuid, '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')" ) << false << QVariant( 1 );
       QTest::newRow( "uuid('WithBraces')" ) << QStringLiteral( "regexp_match( uuid('WithBraces'), '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')" ) << false << QVariant( 1 );
       QTest::newRow( "uuid('WithoutBraces')" ) << QStringLiteral( "regexp_match( uuid('WithoutBraces'), '([a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12})')" ) << false << QVariant( 1 );
       QTest::newRow( "uuid('Id128')" ) << QStringLiteral( "regexp_match( uuid('Id128'), '([a-zA-Z\\\\d]{32})')" ) << false << QVariant( 1 );
@@ -2325,14 +2326,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "get_feature 1" ) << "get_feature('test','col1',10)" << true << 1;
       QTest::newRow( "get_feature 2" ) << "get_feature('test','col2','test1')" << true << 1;
       QTest::newRow( "get_feature 3" ) << "get_feature('test','col1',11)" << true << 2;
-      QTest::newRow( "get_feature 4" ) << "get_feature('test','col2','test2')" << true << 2;
+      QTest::newRow( "get_feature 4" ) << "get_feature('test',attribute:= 'col2',value:='test2')" << true << 2;
       QTest::newRow( "get_feature 5" ) << "get_feature('test','col1',3)" << true << 3;
       QTest::newRow( "get_feature 6" ) << "get_feature('test','col2','test3')" << true << 3;
-      QTest::newRow( "get_feature 7" ) << "get_feature('test','col1',41)" << true << 4;
+      QTest::newRow( "get_feature 7" ) << "get_feature('test',attribute:= 'col1',value:= 41)" << true << 4;
       QTest::newRow( "get_feature 8" ) << "get_feature('test','col2','test4')" << true << 4;
 
       //by layer id
-      QTest::newRow( "get_feature 3" ) << QStringLiteral( "get_feature('%1','col1',11)" ).arg( mMemoryLayer->id() ) << true << 2;
+      QTest::newRow( "get_feature 3" ) << QStringLiteral( "get_feature('%1',attribute:= 'col1',value:= 11)" ).arg( mMemoryLayer->id() ) << true << 2;
       QTest::newRow( "get_feature 4" ) << QStringLiteral( "get_feature('%1','col2','test2')" ).arg( mMemoryLayer->id() ) << true << 2;
 
       //no matching features
@@ -2345,12 +2346,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "get_feature_by_id" ) << "get_feature_by_id('test', 1)" << true << 1;
 
       // multi-param
-      QTest::newRow( "get_feature multi1" ) << "get_feature('test',map('col1','11','col2','test2'))" << true << 2;
-      QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1',3,'col2','test3'))" << true << 3;
+      QTest::newRow( "get_feature multi1" ) << "get_feature('test',attribute:= map('col1','11','col2','test2'))" << true << 2;
+      QTest::newRow( "get_feature multi2" ) << "get_feature('test',attribute:= map('col1',3,'col2','test3'))" << true << 3;
       QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1','41','datef',to_date('2022-09-23')))" << true << 4;
 
       // multi-param no match
-      QTest::newRow( "get_feature no match-multi1" ) << "get_feature('test',map('col1','col2'),'no match!')" << false << -1;
+      QTest::newRow( "get_feature no match-multi1" ) << "get_feature('test',attribute:= map('col1','col2'),value:='no match!')" << false << -1;
       QTest::newRow( "get_feature no match-multi2" ) << "get_feature('test',map('col2','10','col4','test3'))" << false << -1;
       QTest::newRow( "get_feature no match-multi2" ) << "get_feature('test',map('col1',10,'datef',to_date('2021-09-24')))" << false << -1;
 
@@ -3091,6 +3092,28 @@ class TestQgsExpression: public QObject
       QCOMPARE( out, result );
     }
 
+    void testGeometryFromContext()
+    {
+      QgsExpressionContext context;
+
+      QgsExpression exp( QStringLiteral( "geom_to_wkt($geometry)" ) );
+      QCOMPARE( exp.evaluate( &context ).toString(), QString() );
+
+      // the $geometry function refers to the feature's geometry usually
+      QgsFeature feature;
+      feature.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 3, 4 ) ) );
+      context.setFeature( feature );
+
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (3 4)" ) );
+
+      // the $geometry function should prefer to get the geometry directly from the context if it's available
+      context.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) );
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (1 2)" ) );
+
+      context.scope( 0 )->removeGeometry();
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (3 4)" ) );
+    }
+
     void eval_geometry_calc()
     {
       QgsPolylineXY polyline, polygon_ring;
@@ -3727,6 +3750,22 @@ class TestQgsExpression: public QObject
       builderExpected << QVariant();
       QCOMPARE( QgsExpression( "array('hello', 'world', NULL)" ).evaluate( &context ), QVariant( builderExpected ) );
 
+      // operators
+      QCOMPARE( QgsExpression( "\"strings\" = array('one', 'two')" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "\"strings\" = array('two', 'one')" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "\"strings\" = array('one')" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "\"strings\" = array('one', 'two', 'three')" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "\"strings\" = 'one'" ).evaluate( &context ), QVariant() );
+      QCOMPARE( QgsExpression( "\"strings\" = 5" ).evaluate( &context ), QVariant() );
+      QCOMPARE( QgsExpression( "array('one', 'two') = \"strings\"" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array('two', 'one') = \"strings\"" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array('one') = \"strings\"" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array('one', 'two', 'three') = \"strings\"" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "\"strings\" <> array('one', 'two')" ).evaluate( &context ), QVariant( false ) );
+      QCOMPARE( QgsExpression( "\"strings\" <> array('two', 'one')" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "\"strings\" <> array('one')" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "\"strings\" <> array('one', 'two', 'three')" ).evaluate( &context ), QVariant( true ) );
+
       QCOMPARE( QgsExpression( "array_length(\"strings\")" ).evaluate( &context ), QVariant( 2 ) );
 
       QCOMPARE( QgsExpression( "array_all(array(1,2,3), array(2,3))" ).evaluate( &context ), QVariant( true ) );
@@ -4062,6 +4101,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::quotedValue( QVariant(), QVariant::String ), QString( "NULL" ) );
       QVariantList array = QVariantList() << QVariant( 1 ) << QVariant( "a" ) << QVariant();
       QCOMPARE( QgsExpression::quotedValue( array ), QString( "array( 1, 'a', NULL )" ) );
+      QCOMPARE( QgsExpression::quotedValue( QStringList( { QStringLiteral( "abc" ), QStringLiteral( "def" )} ) ), QString( "array( 'abc', 'def' )" ) );
     }
 
     void reentrant()

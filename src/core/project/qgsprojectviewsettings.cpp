@@ -83,7 +83,17 @@ QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
   else
   {
     const QList< QgsMapLayer * > layers = mProject->mapLayers( true ).values();
-    return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( layers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
+
+    QList< QgsMapLayer * > nonBaseMapLayers;
+    std::copy_if( layers.begin(), layers.end(),
+                  std::back_inserter( nonBaseMapLayers ),
+    []( const QgsMapLayer * layer ) { return !( layer->properties() & Qgis::MapLayerProperty::IsBasemapLayer ); } );
+
+    // unless ALL layers from the project are basemap layers, we exclude these by default as their extent won't be useful for the project.
+    if ( !nonBaseMapLayers.empty( ) )
+      return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( nonBaseMapLayers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
+    else
+      return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( layers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
   }
 }
 

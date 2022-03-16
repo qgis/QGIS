@@ -28,6 +28,7 @@
 #include <qgsstyle.h>
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsrasterlayer.h"
+#include "qgshillshaderenderer.h"
 
 /**
  * \ingroup UnitTests
@@ -235,6 +236,13 @@ class TestQgsWmsProvider: public QObject
       QCOMPARE( encodedUri, uriString );
     }
 
+    void testXyzIsBasemap()
+    {
+      // test that xyz tile layers are considered basemap layers
+      QgsRasterLayer layer( QStringLiteral( "type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ), QString(), QStringLiteral( "wms" ) );
+      QCOMPARE( layer.properties(), Qgis::MapLayerProperties( Qgis::MapLayerProperty::IsBasemapLayer ) );
+    }
+
     void testOsmMetadata()
     {
       // test that we auto-populate openstreetmap tile metadata
@@ -299,6 +307,38 @@ class TestQgsWmsProvider: public QObject
       mapSettings.setOutputDpi( 96 );
       mapSettings.setDpiTarget( 48 );
       QVERIFY( imageCheck( "terrarium_terrain", mapSettings ) );
+    }
+
+    void testResampling()
+    {
+      QString dataDir( TEST_DATA_DIR );
+
+      QgsXyzConnection xyzConn;
+      xyzConn.url = QUrl::fromLocalFile( dataDir + QStringLiteral( "/maptiler_terrain_rgb.png" ) ).toString();
+      xyzConn.interpretation = QStringLiteral( "maptilerterrain" );
+      QgsRasterLayer layer( xyzConn.encodedUri(), "terrain", "wms" );
+      QVERIFY( layer.isValid() );
+      QVERIFY( layer.dataProvider()->dataType( 1 ) == Qgis::DataType::Float32 );
+
+      QVERIFY( layer.dataProvider()->enableProviderResampling( true ) );
+      QVERIFY( layer.dataProvider()->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic ) );
+      QVERIFY( layer.dataProvider()->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic ) );
+      layer.setResamplingStage( Qgis::RasterResamplingStage::Provider );
+      std::unique_ptr<QgsHillshadeRenderer> hillshade = std::make_unique<QgsHillshadeRenderer>( layer.dataProvider(), 1, 315, 45 );
+      hillshade->setZFactor( 0.0005 );
+      layer.setRenderer( hillshade.release() );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setLayers( QList<QgsMapLayer *>() << &layer );
+      QgsRectangle layerExtent = layer.extent();
+      mapSettings.setExtent( QgsRectangle( layerExtent.xMinimum() + 1000,
+                                           layerExtent.yMinimum() + 1000,
+                                           layerExtent.xMinimum() + 1000 + layerExtent.width() / 3000000,
+                                           layerExtent.yMinimum() + 1000 + layerExtent.height() / 3000000 ) );
+      mapSettings.setOutputSize( QSize( 400, 400 ) );
+      mapSettings.setOutputDpi( 96 );
+      mapSettings.setDpiTarget( 48 );
+      QVERIFY( imageCheck( "cubic_resampling", mapSettings ) );
     }
 
     bool imageCheck( const QString &testType, QgsMapSettings &mapSettings )

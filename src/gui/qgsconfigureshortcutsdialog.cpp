@@ -255,7 +255,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   const bool localeOverrideFlag = QgsApplication::settingsLocaleOverrideFlag.value();
   if ( localeOverrideFlag )
   {
-    currentLocale = QgsApplication::settingsLocaleUserLocale.value( QString(), true, "en_US" );
+    currentLocale = QgsApplication::settingsLocaleUserLocale.valueWithDefaultOverride( "en_US" );
   }
   else // use QGIS locale
   {

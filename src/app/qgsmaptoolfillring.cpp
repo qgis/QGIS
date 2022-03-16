@@ -33,13 +33,14 @@ QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
   mToolName = tr( "Fill ring" );
 }
 
-bool QgsMapToolFillRing::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+bool QgsMapToolFillRing::supportsTechnique( Qgis::CaptureTechnique technique ) const
 {
   switch ( technique )
   {
-    case QgsMapToolCapture::StraightSegments:
-    case QgsMapToolCapture::Streaming:
-    case QgsMapToolCapture::CircularString:
+    case Qgis::CaptureTechnique::StraightSegments:
+    case Qgis::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::CircularString:
+    case Qgis::CaptureTechnique::Shape:
       return true;
   }
   return false;
@@ -47,113 +48,78 @@ bool QgsMapToolFillRing::supportsTechnique( QgsMapToolCapture::CaptureTechnique 
 
 void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-
+  QgsVectorLayer *vlayer = getCheckLayer();
   if ( !vlayer )
-  {
-    notifyNotVectorLayer();
     return;
-  }
 
-  if ( !vlayer->isEditable() )
-  {
-    notifyNotEditableLayer();
-    return;
-  }
-
-  if ( e->button() == Qt::LeftButton && QApplication::keyboardModifiers() == Qt::ShiftModifier && !isCapturing() )
+  if ( e->button() == Qt::LeftButton && QApplication::keyboardModifiers() == Qt::ShiftModifier )
   {
     // left button with shift fills an existing ring
-  }
-  else if ( e->button() == Qt::LeftButton )
-  {
-    // add point to list and to rubber band
-
-    const int error = addVertex( e->mapPoint() );
-    if ( error == 2 )
-    {
-      // problem with coordinate transformation
-      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
-      return;
-    }
-
-    startCapturing();
-    return;
-  }
-  else if ( e->button() != Qt::RightButton || !isCapturing() )
-  {
-    return;
-  }
-
-  QgsGeometry g;
-  QgsFeatureId fid;
-
-  if ( isCapturing() )
-  {
-    deleteTempRubberBand();
-
-    closePolygon();
-
-    vlayer->beginEditCommand( tr( "Ring added and filled" ) );
-
-    const QgsPointSequence pointList = pointsZM();
-
-    const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( pointList, &fid );
-
-    // AP: this is all dead code:
-    //todo: open message box to communicate errors
-    if ( addRingReturnCode != Qgis::GeometryOperationResult::Success )
-    {
-      QString errorMessage;
-      if ( addRingReturnCode == Qgis::GeometryOperationResult::InvalidInputGeometryType )
-      {
-        errorMessage = tr( "a problem with geometry type occurred" );
-      }
-      else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingNotClosed )
-      {
-        errorMessage = tr( "the inserted Ring is not closed" );
-      }
-      else if ( addRingReturnCode ==  Qgis::GeometryOperationResult::AddRingNotValid )
-      {
-        errorMessage = tr( "the inserted Ring is not a valid geometry" );
-      }
-      else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingCrossesExistingRings )
-      {
-        errorMessage = tr( "the inserted Ring crosses existing rings" );
-      }
-      else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingNotInExistingFeature )
-      {
-        errorMessage = tr( "the inserted Ring is not contained in a feature" );
-      }
-      else
-      {
-        errorMessage = tr( "an unknown error occurred" );
-      }
-      emit messageEmitted( tr( "could not add ring: %1." ).arg( errorMessage ), Qgis::MessageLevel::Critical );
-      vlayer->destroyEditCommand();
-
-      return;
-    }
-
-    const QgsLineString ext( pointList );
-    std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >( );
-    polygon->setExteriorRing( ext.clone() );
-    g = QgsGeometry( std::move( polygon ) );
+    fillRingUnderPoint( e->mapPoint() );
   }
   else
   {
-    vlayer->beginEditCommand( tr( "Ring filled" ) );
-
-    g = ringUnderPoint( e->mapPoint(), fid );
-
-    if ( fid == -1 )
-    {
-      emit messageEmitted( tr( "No ring found to fill." ), Qgis::MessageLevel::Critical );
-      vlayer->destroyEditCommand();
-      return;
-    }
+    QgsMapToolCapture::cadCanvasReleaseEvent( e );
   }
+}
+
+void QgsMapToolFillRing::polygonCaptured( const QgsCurvePolygon *polygon )
+{
+  QgsVectorLayer *vlayer = getCheckLayer();
+  if ( !vlayer )
+    return;
+
+  QgsFeatureId fid;
+
+  vlayer->beginEditCommand( tr( "Ring added and filled" ) );
+
+  const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( polygon->exteriorRing()->clone(), &fid );
+
+  // AP: this is all dead code:
+  //todo: open message box to communicate errors
+  if ( addRingReturnCode != Qgis::GeometryOperationResult::Success )
+  {
+    QString errorMessage;
+    if ( addRingReturnCode == Qgis::GeometryOperationResult::InvalidInputGeometryType )
+    {
+      errorMessage = tr( "a problem with geometry type occurred" );
+    }
+    else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingNotClosed )
+    {
+      errorMessage = tr( "the inserted Ring is not closed" );
+    }
+    else if ( addRingReturnCode ==  Qgis::GeometryOperationResult::AddRingNotValid )
+    {
+      errorMessage = tr( "the inserted Ring is not a valid geometry" );
+    }
+    else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingCrossesExistingRings )
+    {
+      errorMessage = tr( "the inserted Ring crosses existing rings" );
+    }
+    else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingNotInExistingFeature )
+    {
+      errorMessage = tr( "the inserted Ring is not contained in a feature" );
+    }
+    else
+    {
+      errorMessage = tr( "an unknown error occurred" );
+    }
+    emit messageEmitted( tr( "could not add ring: %1." ).arg( errorMessage ), Qgis::MessageLevel::Critical );
+    vlayer->destroyEditCommand();
+
+    return;
+  }
+
+  createFeature( QgsGeometry( polygon->clone() ), fid );
+}
+
+
+void QgsMapToolFillRing::createFeature( const QgsGeometry &geometry, QgsFeatureId fid )
+{
+
+  QgsVectorLayer *vlayer = getCheckLayer();
+  if ( !vlayer )
+    return;
 
   QgsExpressionContext context = vlayer->createExpressionContext();
 
@@ -163,7 +129,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   if ( fit.nextFeature( f ) )
   {
     //create QgsFeature with wkb representation
-    QgsFeature ft = QgsVectorLayerUtils::createFeature( vlayer, g, f.attributes().toMap(), &context );
+    QgsFeature ft = QgsVectorLayerUtils::createFeature( vlayer, geometry, f.attributes().toMap(), &context );
 
     bool res = false;
     if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
@@ -190,16 +156,16 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       vlayer->destroyEditCommand();
     }
   }
-
-  if ( isCapturing() )
-    stopCapturing();
 }
 
 // TODO refactor - shamelessly copied from QgsMapToolDeleteRing::ringUnderPoint
-QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureId &fid )
+void QgsMapToolFillRing::fillRingUnderPoint( const QgsPointXY &p )
 {
-  //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsFeatureId fid;
+
+  QgsVectorLayer *vlayer = getCheckLayer();
+  if ( !vlayer )
+    return;
 
   //There is no clean way to find if we are inside the ring of a feature,
   //so we iterate over all the features visible in the canvas
@@ -246,5 +212,33 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
       }
     }
   }
-  return ringGeom;
+
+  if ( fid == -1 )
+  {
+    emit messageEmitted( tr( "No ring found to fill." ), Qgis::MessageLevel::Critical );
+    vlayer->destroyEditCommand();
+    return;
+  }
+
+  vlayer->beginEditCommand( tr( "Ring filled" ) );
+  createFeature( ringGeom, fid );
+}
+
+QgsVectorLayer *QgsMapToolFillRing::getCheckLayer()
+{
+  //check if we operate on a vector layer
+  QgsVectorLayer *layer = currentVectorLayer();
+  if ( !layer )
+  {
+    notifyNotVectorLayer();
+    return nullptr;
+  }
+
+  if ( !layer->isEditable() )
+  {
+    notifyNotEditableLayer();
+    return nullptr;
+  }
+
+  return layer;
 }

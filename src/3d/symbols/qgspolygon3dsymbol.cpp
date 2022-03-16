@@ -22,6 +22,8 @@
 #include "qgs3d.h"
 #include "qgsmaterialregistry.h"
 #include "qgs3dsceneexporter.h"
+#include "qgsvectorlayerelevationproperties.h"
+#include "qgsvectorlayer.h"
 
 QgsPolygon3DSymbol::QgsPolygon3DSymbol()
   : mMaterial( std::make_unique< QgsPhongMaterialSettings >() )
@@ -120,6 +122,16 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
 QList<QgsWkbTypes::GeometryType> QgsPolygon3DSymbol::compatibleGeometryTypes() const
 {
   return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::PolygonGeometry;
+}
+
+void QgsPolygon3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer )
+{
+  const QgsVectorLayerElevationProperties *props = qgis::down_cast< const QgsVectorLayerElevationProperties * >( const_cast< QgsVectorLayer *>( layer )->elevationProperties() );
+
+  mAltClamping = props->clamping();
+  mAltBinding = props->binding();
+  mExtrusionHeight = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
+  mHeight = static_cast< float >( props->zOffset() );
 }
 
 QgsAbstract3DSymbol *QgsPolygon3DSymbol::create()

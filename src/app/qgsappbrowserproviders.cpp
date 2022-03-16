@@ -27,6 +27,7 @@
 #include "qgsstylemanagerdialog.h"
 #include "qgsguiutils.h"
 #include "qgsfileutils.h"
+#include "qgsnewnamedialog.h"
 
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -1089,7 +1090,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       else
       {
         if ( QMessageBox::question( nullptr, QObject::tr( "Delete Spatial Bookmarks" ),
-                                    QObject::tr( "Are you sure you want to delete the %1 selected bookmarks?" ).arg( ids.count() ),
+                                    QObject::tr( "Are you sure you want to delete the %n selected bookmark(s)?", nullptr, ids.count() ),
                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
           return;
 
@@ -1112,6 +1113,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       }
     }
 
+    // Export bookmarks
     QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
     connect( exportBookmarks, &QAction::triggered, this, [ = ]
     {
@@ -1129,6 +1131,29 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     menu->addAction( addBookmarkToGroup );
     menu->addSeparator();
 
+    // Rename bookmark group
+    QAction *renameBookmarkGroup = new QAction( tr( "Rename Bookmark Group…" ), menu );
+    const QString groupName = groupItem->group();
+    connect( renameBookmarkGroup, &QAction::triggered, this, [groupName, manager]
+    {
+      QStringList existingGroupNames = manager->groups();
+      existingGroupNames.removeOne( groupName );
+      QgsNewNameDialog dlg(
+        tr( "bookmark group “%1”" ).arg( groupName ),
+        groupName,
+        QStringList(),
+        existingGroupNames
+      );
+      dlg.setWindowTitle( tr( "Rename Bookmark Group" ) );
+      dlg.setOverwriteEnabled( true );
+      dlg.setConflictingNameWarning( tr( "Group name already exists, overwriting will merge the bookmark groups." ) );
+      if ( dlg.exec() != QDialog::Accepted || dlg.name() == groupName )
+        return;
+      manager->renameGroup( groupName, dlg.name() );
+    } );
+    menu->addAction( renameBookmarkGroup );
+
+    // Delete bookmark group
     QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Bookmark Group" ) : tr( "Delete Bookmark Groups" ), menu );
     connect( actionDelete, &QAction::triggered, this, [selectedItems, groups, manager]
     {
@@ -1148,7 +1173,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       else
       {
         if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark Groups" ),
-                                    QObject::tr( "Are you sure you want to delete the %1 selected bookmark groups? This will delete all bookmarks in these groups." ).arg( groups.count() ),
+                                    QObject::tr( "Are you sure you want to delete the %n selected bookmark group(s)? This will delete all bookmarks in these groups.", nullptr, groups.count() ),
                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
           return;
 

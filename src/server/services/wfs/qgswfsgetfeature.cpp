@@ -185,6 +185,15 @@ namespace QgsWfs
       }
     }
 
+    // check if all typename are valid
+    for ( const QString &typeName : typeNameList )
+    {
+      if ( !mapLayerMap.contains( typeName ) )
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "TypeName '%1' could not be found" ).arg( typeName ) );
+      }
+    }
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
@@ -204,11 +213,6 @@ namespace QgsWfs
     {
       getFeatureQuery &query = *qIt;
       QString typeName = query.typeName;
-
-      if ( !mapLayerMap.contains( typeName ) )
-      {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "TypeName '%1' unknown" ).arg( typeName ) );
-      }
 
       QgsMapLayer *layer = mapLayerMap[typeName];
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -557,7 +561,9 @@ namespace QgsWfs
         }
 
         // each Feature requested by FEATUREID can have each own property list
-        QString key = QStringLiteral( "%1(%2)" ).arg( typeName, propertyName );
+        // use colon that is replaced in typenames because typenames can be used
+        // as XML tag name
+        const QString key = QStringLiteral( "%1:%2" ).arg( typeName, propertyName );
         QStringList fids;
         if ( fidsMap.contains( key ) )
         {
@@ -578,13 +584,9 @@ namespace QgsWfs
         QString key = fidsMapIt.key();
 
         //Extract TypeName and PropertyName from key
-        QRegExp rx( "([^()]+)\\(([^()]+)\\)" );
-        if ( rx.indexIn( key, 0 ) == -1 )
-        {
-          throw QgsRequestNotWellFormedException( QStringLiteral( "Error getting properties for FEATUREID" ) );
-        }
-        QString typeName = rx.cap( 1 );
-        QString propertyName = rx.cap( 2 );
+        // separated by colon
+        const QString typeName = key.section( ':', 0, 0 );
+        const QString propertyName = key.section( ':', 1, 1 );
 
         getFeatureQuery query;
         query.typeName = typeName;
@@ -1221,16 +1223,9 @@ namespace QgsWfs
           QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( rect, doc, srsName, invertAxis, prec );
           if ( !envElem.isNull() )
           {
-            if ( crs.isValid() )
+            if ( crs.isValid() && srsName.isEmpty() )
             {
-              if ( mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) )
-              {
-                envElem.setAttribute( QStringLiteral( "srsName" ), srsName );
-              }
-              else
-              {
-                envElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
-              }
+              envElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
             }
             bbElem.appendChild( envElem );
             doc.appendChild( bbElem );
@@ -1504,9 +1499,13 @@ namespace QgsWfs
           QDomElement bbElem = doc.createElement( QStringLiteral( "gml:boundedBy" ) );
           QDomElement boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, params.srsName, params.hasAxisInverted, prec );
 
-          if ( crs.isValid() )
+          if ( crs.isValid() && params.srsName.isEmpty() )
           {
-            boxElem.setAttribute( QStringLiteral( "srsName" ), params.srsName );
+            boxElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
+            gmlElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
+          }
+          else if ( !params.srsName.isEmpty() )
+          {
             gmlElem.setAttribute( QStringLiteral( "srsName" ), params.srsName );
           }
 
@@ -1619,6 +1618,3 @@ namespace QgsWfs
   } // namespace
 
 } // namespace QgsWfs
-
-
-

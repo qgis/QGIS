@@ -452,7 +452,6 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setLineAnchorPercent( double percent ) { mLineAnchorPercent = percent; }
 
-
     /**
      * Returns the line anchor type, which dictates how the lineAnchorPercent() setting is
      * handled.
@@ -470,6 +469,26 @@ class CORE_EXPORT QgsLabelFeature
      * \see setLineAnchorPercent()
      */
     void setLineAnchorType( QgsLabelLineSettings::AnchorType type ) { mLineAnchorType = type; }
+
+    /**
+     * Returns the line anchor text point, which dictates which part of the label text
+     * should be placed at the lineAnchorPercent().
+     *
+     * \see setLineAnchorTextPoint()
+     *
+     * \since QGIS 3.26
+     */
+    QgsLabelLineSettings::AnchorTextPoint lineAnchorTextPoint() const;
+
+    /**
+     * Sets the line anchor text \a point, which dictates which part of the label text
+     * should be placed at the lineAnchorPercent().
+     *
+     * \see lineAnchorTextPoint()
+     *
+     * \since QGIS 3.26
+     */
+    void setLineAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint point ) { mAnchorTextPoint = point; }
 
     /**
      * Returns TRUE if all parts of the feature should be labeled.
@@ -619,6 +638,7 @@ class CORE_EXPORT QgsLabelFeature
 
     double mLineAnchorPercent = 0.5;
     QgsLabelLineSettings::AnchorType mLineAnchorType = QgsLabelLineSettings::AnchorType::HintOnly;
+    QgsLabelLineSettings::AnchorTextPoint mAnchorTextPoint = QgsLabelLineSettings::AnchorTextPoint::CenterOfText;
 
     QgsCoordinateReferenceSystem mOriginalFeatureCrs;
 

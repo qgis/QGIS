@@ -155,7 +155,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   const bool hasselection = vl->selectedFeatureCount() > 0;
   mOnlyUpdateSelectedCheckBox->setChecked( mCanChangeAttributeValue && hasselection );
   mOnlyUpdateSelectedCheckBox->setEnabled( mCanChangeAttributeValue && hasselection );
-  mOnlyUpdateSelectedCheckBox->setText( tr( "Only update %1 selected features" ).arg( vl->selectedFeatureCount() ) );
+  mOnlyUpdateSelectedCheckBox->setText( tr( "Only update %n selected feature(s)", nullptr, vl->selectedFeatureCount() ) );
 
   builder->initWithLayer( vl, expContext, QStringLiteral( "fieldcalc" ) );
 

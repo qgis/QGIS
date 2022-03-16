@@ -798,6 +798,7 @@ class TestQgsProcessing: public QObject
     void parameterType();
     void sourceTypeToString_data();
     void sourceTypeToString();
+    void formatHelp();
 
   private:
 
@@ -11570,6 +11571,17 @@ void TestQgsProcessing::sourceTypeToString()
 
   const QgsProcessing::SourceType sourceType = static_cast< QgsProcessing::SourceType >( type );
   QCOMPARE( QgsProcessing::sourceTypeToString( sourceType ), expected );
+}
+
+void TestQgsProcessing::formatHelp()
+{
+  QVariantMap help;
+  DummyAlgorithm a( "alg1" );
+  QCOMPARE( QgsProcessingUtils::formatHelpMapAsHtml( help, &a ), QStringLiteral( "<html><body><p></p>\n<br></body></html>" ) );
+
+  // add examples
+  help.insert( QStringLiteral( "EXAMPLES" ), QStringLiteral( "aabbcc" ) );
+  QCOMPARE( QgsProcessingUtils::formatHelpMapAsHtml( help, &a ), QStringLiteral( "<html><body><p></p>\n<h2>Examples</h2>\n<p>aabbcc</p><br></body></html>" ) );
 }
 
 

@@ -1,0 +1,64 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlayerelevationproperties.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterLayerElevationProperties : QgsMapLayerElevationProperties
+{
+%Docstring(signature="appended")
+Raster layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlayerelevationproperties.h"
+%End
+  public:
+
+    QgsRasterLayerElevationProperties( QObject *parent /TransferThis/ );
+%Docstring
+Constructor for QgsRasterLayerElevationProperties, with the specified ``parent`` object.
+%End
+
+    virtual bool hasElevation() const;
+
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
+
+    virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+
+
+    bool isEnabled() const;
+%Docstring
+Returns ``True`` if the elevation properties are enabled, i.e. the raster layer values represent an elevation surface.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the elevation properties are enabled, i.e. the raster layer values represent an elevation surface.
+
+.. seealso:: :py:func:`isEnabled`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlayerelevationproperties.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

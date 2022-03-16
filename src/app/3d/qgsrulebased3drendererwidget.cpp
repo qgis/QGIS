@@ -107,7 +107,9 @@ void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
 
 void QgsRuleBased3DRendererWidget::addRule()
 {
-  QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
+  std::unique_ptr< QgsAbstract3DSymbol > newSymbol( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
+  newSymbol->setDefaultPropertiesFromLayer( mLayer );
+  QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( newSymbol.release() );
 
   QgsRuleBased3DRenderer::Rule *current = currentRule();
   if ( current )
@@ -570,6 +572,7 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   {
     groupSymbol->setChecked( false );
     mSymbol.reset( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
+    mSymbol->setDefaultPropertiesFromLayer( layer );
   }
 
   mSymbolWidget = new QgsSymbol3DWidget( layer, this );
