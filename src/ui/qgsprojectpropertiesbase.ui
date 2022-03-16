@@ -2605,7 +2605,11 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox"/>
+                        <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox">
+                         <property name="maximum">
+                          <number>1024</number>
+                         </property>
+                        </widget>
                        </item>
                       </layout>
                      </item>
