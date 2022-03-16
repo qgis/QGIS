@@ -825,6 +825,71 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertEqual(result[1].value(), 2345.6)
         self.assertEqual(result[2].value(), 3456.7)
 
+    def test_legend_key_to_expression(self):
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute('field_name')
+
+        exp, ok = renderer.legendKeyToExpression('xxxx', None)
+        self.assertFalse(ok)
+
+        # no categories
+        exp, ok = renderer.legendKeyToExpression('0', None)
+        self.assertFalse(ok)
+
+        symbol_a = createMarkerSymbol()
+        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a'))
+        symbol_b = createMarkerSymbol()
+        renderer.addCategory(QgsRendererCategory(5, symbol_b, 'b'))
+        symbol_c = createMarkerSymbol()
+        renderer.addCategory(QgsRendererCategory(5.5, symbol_c, 'c', False))
+        symbol_d = createMarkerSymbol()
+        renderer.addCategory(QgsRendererCategory(['d', 'e'], symbol_d, 'de'))
+
+        exp, ok = renderer.legendKeyToExpression('0', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, "field_name = 'a'")
+
+        exp, ok = renderer.legendKeyToExpression('1', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, "field_name = 5")
+
+        exp, ok = renderer.legendKeyToExpression('2', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, "field_name = 5.5")
+
+        exp, ok = renderer.legendKeyToExpression('3', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, "field_name IN ('d', 'e')")
+
+        layer = QgsVectorLayer("Point?field=field_name:double&field=fldint:integer", "addfeat", "memory")
+        # with layer
+        exp, ok = renderer.legendKeyToExpression('3', layer)
+        self.assertTrue(ok)
+        self.assertEqual(exp, "\"field_name\" IN ('d', 'e')")
+
+        # with expression as attribute
+        renderer.setClassAttribute('upper("field_name")')
+
+        exp, ok = renderer.legendKeyToExpression('0', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """upper("field_name") = 'a'""")
+
+        exp, ok = renderer.legendKeyToExpression('1', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """upper("field_name") = 5""")
+
+        exp, ok = renderer.legendKeyToExpression('2', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """upper("field_name") = 5.5""")
+
+        exp, ok = renderer.legendKeyToExpression('3', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """upper("field_name") IN ('d', 'e')""")
+
+        exp, ok = renderer.legendKeyToExpression('3', layer)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """upper("field_name") IN ('d', 'e')""")
+
 
 if __name__ == "__main__":
     unittest.main()

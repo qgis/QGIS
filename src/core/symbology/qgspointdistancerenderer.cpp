@@ -292,6 +292,14 @@ QSet< QString > QgsPointDistanceRenderer::legendKeysForFeature( const QgsFeature
   return mRenderer->legendKeysForFeature( feature, context );
 }
 
+QString QgsPointDistanceRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const
+{
+  ok = false;
+  if ( !mRenderer )
+    return QString();
+  return mRenderer->legendKeyToExpression( key, layer, ok );
+}
+
 bool QgsPointDistanceRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
