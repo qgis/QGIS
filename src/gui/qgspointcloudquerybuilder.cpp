@@ -137,23 +137,29 @@ void QgsPointCloudQueryBuilder::lstAttributes_currentChanged( const QModelIndex 
   }
   else
   {
-    QVariant minimum = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Min );
-    QVariant maximum = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Max );
-    QVariant mean = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Mean );
-    QVariant stddev = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::StDev );
+    QVariant value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Min );
+    QString valueString = value.isNull() ? QLatin1String( "n/a" ) : value.toString();
+    QStandardItem *item = new QStandardItem( QLatin1String( "Minimum: %1" ).arg( valueString ) );
+    item->setData( value, Qt::UserRole );
+    mModelValues->insertRow( mModelValues->rowCount(), item );
 
-    QStandardItem *item1 = new QStandardItem( QLatin1String( "Minimum: %1" ).arg( minimum.toString() ) );
-    item1->setData( minimum, Qt::UserRole );
-    mModelValues->insertRow( mModelValues->rowCount(), item1 );
-    QStandardItem *tem2 = new QStandardItem( QLatin1String( "Maximum: %1" ).arg( maximum.toString() ) );
-    tem2->setData( maximum, Qt::UserRole );
-    mModelValues->insertRow( mModelValues->rowCount(), tem2 );
-    QStandardItem *item3 = new QStandardItem( QLatin1String( "Mean: %1" ).arg( mean.toString() ) );
-    item3->setData( mean, Qt::UserRole );
-    mModelValues->insertRow( mModelValues->rowCount(), item3 );
-    QStandardItem *item4 = new QStandardItem( QLatin1String( "StdDev: %1" ).arg( stddev.toString() ) );
-    item4->setData( stddev, Qt::UserRole );
-    mModelValues->insertRow( mModelValues->rowCount(), item4 );
+    value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Max );
+    valueString = value.isNull() ? QLatin1String( "n/a" ) : value.toString();
+    item = new QStandardItem( QLatin1String( "Maximum: %1" ).arg( valueString ) );
+    item->setData( value, Qt::UserRole );
+    mModelValues->insertRow( mModelValues->rowCount(), item );
+
+    value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Mean );
+    valueString = value.isNull() ? QLatin1String( "n/a" ) : value.toString();
+    item = new QStandardItem( QLatin1String( "Mean: %1" ).arg( valueString ) );
+    item->setData( value, Qt::UserRole );
+    mModelValues->insertRow( mModelValues->rowCount(), item );
+
+    value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::StDev );
+    valueString = value.isNull() ? QLatin1String( "n/a" ) : value.toString();
+    item = new QStandardItem( QLatin1String( "StdDev: %1" ).arg( valueString ) );
+    item->setData( value, Qt::UserRole );
+    mModelValues->insertRow( mModelValues->rowCount(), item );
   }
 }
 
