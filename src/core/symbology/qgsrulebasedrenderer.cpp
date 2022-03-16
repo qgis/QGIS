@@ -1159,10 +1159,10 @@ QString QgsRuleBasedRenderer::legendKeyToExpression( const QString &key, QgsVect
         ruleParts.append( rule->filterExpression() );
 
       if ( !qgsDoubleNear( rule->minimumScale(), 0.0 ) )
-        ruleParts.append( QStringLiteral( "@map_scale >= %1" ).arg( rule->minimumScale() ) );
+        ruleParts.append( QStringLiteral( "@map_scale <= %1" ).arg( rule->minimumScale() ) );
 
       if ( !qgsDoubleNear( rule->maximumScale(), 0.0 ) )
-        ruleParts.append( QStringLiteral( "@map_scale <= %1" ).arg( rule->maximumScale() ) );
+        ruleParts.append( QStringLiteral( "@map_scale >= %1" ).arg( rule->maximumScale() ) );
 
       if ( !ruleParts.empty() )
       {
