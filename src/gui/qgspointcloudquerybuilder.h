@@ -63,6 +63,8 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
     void accept() override;
     void reject() override;
 
+  private slots:
+
     /**
      * Test if the typed expression is valid and can be used as a \a QgsPointCloudExpression
      */
@@ -83,7 +85,6 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
      */
     void loadQuery();
 
-  private slots:
     void lstAttributes_currentChanged( const QModelIndex &current, const QModelIndex &previous );
     void lstAttributes_doubleClicked( const QModelIndex &index );
     void lstValues_doubleClicked( const QModelIndex &index );
@@ -103,8 +104,6 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
     //! Populate the attribute list for the selected layer
     void populateAttributes();
 
-    void showHelp();
-
     //! Setup models for listviews
     void setupGuiViews();
 
@@ -120,7 +119,5 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 
     //! original subset string
     QString mOrigSubsetString;
-
-    friend class TestQgsPointCloudQueryBuilder;
 };
 #endif //QGSPOINTCLOUDQUERYBUILDER_H

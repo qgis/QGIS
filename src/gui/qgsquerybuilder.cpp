@@ -466,13 +466,19 @@ void QgsQueryBuilder::showHelp()
 
 void QgsQueryBuilder::saveQuery()
 {
+  const bool ok = saveQueryToFile( mTxtSql->text() );
+  Q_UNUSED( ok )
+}
+
+bool QgsQueryBuilder::saveQueryToFile( const QString &subset )
+{
   QgsSettings s;
   const QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
   //save as qqf (QGIS query file)
   QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save Query to File" ), lastQueryFileDir, tr( "Query files (*.qqf *.QQF)" ) );
   if ( saveFileName.isNull() )
   {
-    return;
+    return false;
   }
 
   if ( !saveFileName.endsWith( QLatin1String( ".qqf" ), Qt::CaseInsensitive ) )
@@ -484,12 +490,12 @@ void QgsQueryBuilder::saveQuery()
   if ( !saveFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QMessageBox::critical( nullptr, tr( "Save Query to File" ), tr( "Could not open file for writing." ) );
-    return;
+    return false ;
   }
 
   QDomDocument xmlDoc;
   QDomElement queryElem = xmlDoc.createElement( QStringLiteral( "Query" ) );
-  const QDomText queryTextNode = xmlDoc.createTextNode( mTxtSql->text() );
+  const QDomText queryTextNode = xmlDoc.createTextNode( subset );
   queryElem.appendChild( queryTextNode );
   xmlDoc.appendChild( queryElem );
 
@@ -498,9 +504,20 @@ void QgsQueryBuilder::saveQuery()
 
   const QFileInfo fi( saveFile );
   s.setValue( QStringLiteral( "/UI/lastQueryFileDir" ), fi.absolutePath() );
+  return true;
 }
 
 void QgsQueryBuilder::loadQuery()
+{
+  QString subset;
+  if ( loadQueryFromFile( subset ) )
+  {
+    mTxtSql->clear();
+    mTxtSql->insertText( subset );
+  }
+}
+
+bool QgsQueryBuilder::loadQueryFromFile( QString &subset )
 {
   const QgsSettings s;
   const QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
@@ -508,41 +525,31 @@ void QgsQueryBuilder::loadQuery()
   const QString queryFileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Query from File" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
   if ( queryFileName.isNull() )
   {
-    return;
+    return false;
   }
 
   QFile queryFile( queryFileName );
   if ( !queryFile.open( QIODevice::ReadOnly ) )
   {
     QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "Could not open file for reading." ) );
-    return;
+    return false;
   }
   QDomDocument queryDoc;
   if ( !queryDoc.setContent( &queryFile ) )
   {
     QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "File is not a valid xml document." ) );
-    return;
+    return false;
   }
 
   const QDomElement queryElem = queryDoc.firstChildElement( QStringLiteral( "Query" ) );
   if ( queryElem.isNull() )
   {
     QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "File is not a valid query document." ) );
-    return;
+    return false;
   }
 
-  const QString query = queryElem.text();
-
-  //TODO: test if all the attributes are valid
-  const QgsExpression search( query );
-  if ( search.hasParserError() )
-  {
-    QMessageBox::critical( this, tr( "Query Result" ), search.parserErrorString() );
-    return;
-  }
-
-  mTxtSql->clear();
-  mTxtSql->insertText( query );
+  subset = queryElem.text();
+  return true;
 }
 
 void QgsQueryBuilder::layerSubsetStringChanged()
