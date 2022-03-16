@@ -8,9 +8,7 @@
     <alias type="application/x-qgis"/>
     <icon name="qgis-qgs"/>
     <magic priority="50">
-      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
-        <match type="string" offset="0:256" value="&lt;qgis projectname"/>
-      </match>
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis"/>
     </magic>
     <glob pattern="*.qgs"/>
   </mime-type>
@@ -21,11 +19,6 @@
     <sub-class-of type="application/zip"/>
     <alias type="application/x-qgis"/>
     <icon name="qgis-qgs"/>
-    <magic priority="50">
-      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
-        <match type="string" offset="0:256" value="&lt;qgis projectname"/>
-      </match>
-    </magic>
     <glob pattern="*.qgz"/>
   </mime-type>
 
@@ -34,10 +27,8 @@
     <comment xml:lang="de">QGIS-Layereinstellungen</comment>
     <sub-class-of type="application/xml"/>
     <icon name="qgis-qml"/>
-    <magic priority="50">
-      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
-        <match type="string" offset="0:256" value="&lt;qgis version"/>
-      </match>
+    <magic priority="80">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis"/>
     </magic>
     <glob pattern="*.qml"/>
   </mime-type>
@@ -48,9 +39,7 @@
     <sub-class-of type="application/xml"/>
     <icon name="qgis-qlr"/>
     <magic priority="50">
-      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
-        <match type="string" offset="0:256" value="&lt;qgis version"/>
-      </match>
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis-layer-definition"/>
     </magic>
     <glob pattern="*.qlr"/>
   </mime-type>
@@ -61,9 +50,7 @@
     <sub-class-of type="application/xml"/>
     <icon name="qgis-qpt"/>
     <magic priority="50">
-      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
-        <match type="string" offset="0:256" value="&lt;qgis version"/>
-      </match>
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis"/>
     </magic>
     <glob pattern="*.qpt"/>
   </mime-type>
