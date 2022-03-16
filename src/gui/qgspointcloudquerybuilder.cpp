@@ -18,6 +18,7 @@
 #include "qgspointcloudexpression.h"
 #include "qgshelp.h"
 #include "qgsgui.h"
+#include "qgsquerybuilder.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -52,7 +53,6 @@ QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
   connect( btnNotEqual, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnNotEqual_clicked );
   connect( btnAnd, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnAnd_clicked );
   connect( btnOr, &QPushButton::clicked, this, &QgsPointCloudQueryBuilder::btnOr_clicked );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPointCloudQueryBuilder::showHelp );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
@@ -294,89 +294,18 @@ void QgsPointCloudQueryBuilder::clear()
   mLayer->setSubsetString( QString() );
 }
 
-void QgsPointCloudQueryBuilder::showHelp()
-{
-  // TODO: No pointcloud help page yet
-  //QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
-}
-
 void QgsPointCloudQueryBuilder::saveQuery()
 {
-  QgsSettings s;
-  const QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
-  //save as qqf (QGIS query file)
-  QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save Query to File" ), lastQueryFileDir, tr( "Query files (*.qqf *.QQF)" ) );
-  if ( saveFileName.isNull() )
-  {
-    return;
-  }
-
-  if ( !saveFileName.endsWith( QLatin1String( ".qqf" ), Qt::CaseInsensitive ) )
-  {
-    saveFileName += QLatin1String( ".qqf" );
-  }
-
-  QFile saveFile( saveFileName );
-  if ( !saveFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-  {
-    QMessageBox::critical( nullptr, tr( "Save Query to File" ), tr( "Could not open file for writing." ) );
-    return;
-  }
-
-  QDomDocument xmlDoc;
-  QDomElement queryElem = xmlDoc.createElement( QStringLiteral( "Query" ) );
-  const QDomText queryTextNode = xmlDoc.createTextNode( mTxtSql->text() );
-  queryElem.appendChild( queryTextNode );
-  xmlDoc.appendChild( queryElem );
-
-  QTextStream fileStream( &saveFile );
-  xmlDoc.save( fileStream, 2 );
-
-  const QFileInfo fi( saveFile );
-  s.setValue( QStringLiteral( "/UI/lastQueryFileDir" ), fi.absolutePath() );
+  const bool ok = QgsQueryBuilder::saveQueryToFile( mTxtSql->text() );
+  Q_UNUSED( ok )
 }
 
 void QgsPointCloudQueryBuilder::loadQuery()
 {
-  const QgsSettings s;
-  const QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
-
-  const QString queryFileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Query from File" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
-  if ( queryFileName.isNull() )
+  QString subset;
+  if ( QgsQueryBuilder::loadQueryFromFile( subset ) )
   {
-    return;
+    mTxtSql->clear();
+    mTxtSql->insertText( subset );
   }
-
-  QFile queryFile( queryFileName );
-  if ( !queryFile.open( QIODevice::ReadOnly ) )
-  {
-    QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "Could not open file for reading." ) );
-    return;
-  }
-  QDomDocument queryDoc;
-  if ( !queryDoc.setContent( &queryFile ) )
-  {
-    QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "File is not a valid xml document." ) );
-    return;
-  }
-
-  const QDomElement queryElem = queryDoc.firstChildElement( QStringLiteral( "Query" ) );
-  if ( queryElem.isNull() )
-  {
-    QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "File is not a valid query document." ) );
-    return;
-  }
-
-  const QString query = queryElem.text();
-
-  //TODO: test if all the attributes are valid
-  const QgsPointCloudExpression search( query );
-  if ( search.hasParserError() )
-  {
-    QMessageBox::critical( this, tr( "Query Result" ), search.parserErrorString() );
-    return;
-  }
-
-  mTxtSql->clear();
-  mTxtSql->insertText( query );
 }

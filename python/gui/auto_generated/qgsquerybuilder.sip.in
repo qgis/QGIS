@@ -70,6 +70,20 @@ Returns the code editor widget for the SQL.
 %End
 %End
 
+    static bool saveQueryToFile( const QString &subset );
+%Docstring
+Save query to the XML file
+
+.. versionadded:: 3.26
+%End
+
+    static bool loadQueryFromFile( QString &subset );
+%Docstring
+Load query from the XML file
+
+.. versionadded:: 3.26
+%End
+
   public slots:
     virtual void accept();
 

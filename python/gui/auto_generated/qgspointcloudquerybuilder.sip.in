@@ -49,26 +49,6 @@ layer properties dialog
     virtual void reject();
 
 
-    virtual void test();
-%Docstring
-Test if the typed expression is valid and can be used as a ``:py:class:`QgsPointCloudExpression```
-%End
-
-    void clear();
-%Docstring
-Clears the typed expression
-%End
-
-    void saveQuery();
-%Docstring
-Save expression to the XML file
-%End
-
-    void loadQuery();
-%Docstring
-Load expression from the XML file
-%End
-
 };
 /************************************************************************
  * This file has been generated automatically from                      *
