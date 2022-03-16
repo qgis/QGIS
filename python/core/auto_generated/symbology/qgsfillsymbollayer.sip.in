@@ -965,6 +965,8 @@ Used internally when reading/writing symbols.
 
     virtual bool usesMapUnits() const;
 
+    virtual QColor color() const;
+
 
     virtual QgsSymbol *subSymbol();
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );

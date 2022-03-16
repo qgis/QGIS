@@ -58,7 +58,8 @@ from qgis.core import (QgsGeometry,
                        QgsSymbol,
                        Qgis,
                        QgsSymbolLayer,
-                       QgsProperty
+                       QgsProperty,
+                       QgsRasterFillSymbolLayer
                        )
 
 from qgis.testing import unittest, start_app
@@ -170,6 +171,29 @@ class TestQgsSymbol(unittest.TestCase):
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.PolygonGeometry), QgsSymbol.Fill)
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.NullGeometry), QgsSymbol.Hybrid)
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.UnknownGeometry), QgsSymbol.Hybrid)
+
+    def testColor(self):
+        """
+        Test QgsSymbol.color() logic
+        """
+        symbol = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': '#ffffff'})
+        self.assertEqual(symbol.color().name(), '#ff00ff')
+
+        # insert a new first layer, symbol color should be taken from that layer
+        second_fill = QgsSimpleFillSymbolLayer(QColor(0, 255, 0))
+        symbol.insertSymbolLayer(0, second_fill)
+        self.assertEqual(symbol.color().name(), '#00ff00')
+
+        # lock the first layer -- locked color layers are ignored, so symbol color should come from second layer
+        second_fill.setLocked(True)
+        self.assertEqual(symbol.color().name(), '#ff00ff')
+
+        # add a symbol layer which does not have colors (raster fill)
+        raster_fill = QgsRasterFillSymbolLayer()
+        symbol.insertSymbolLayer(0, raster_fill)
+        self.assertFalse(raster_fill.color().isValid())
+        # raster fill does not have a valid color, so should be ignored and the 3rd symbol layer color will be returned
+        self.assertEqual(symbol.color().name(), '#ff00ff')
 
     def testFlags(self):
         """
