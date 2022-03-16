@@ -133,6 +133,10 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
       flags |= QgsDataProvider::FlagTrustDataSource;
     }
     setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
+    const QDomNode subset = layerNode.namedItem( QStringLiteral( "subset" ) );
+    const QString subsetText = subset.toElement().text();
+    if ( !subsetText.isEmpty() )
+      setSubsetString( subsetText );
   }
 
   if ( !isValid() )
@@ -153,6 +157,13 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::PointCloudLayer ) );
 
+  if ( !subsetString().isEmpty() )
+  {
+    QDomElement subset = doc.createElement( QStringLiteral( "subset" ) );
+    const QDomText subsetText = doc.createTextNode( subsetString() );
+    subset.appendChild( subsetText );
+    layerNode.appendChild( subset );
+  }
   if ( mDataProvider )
   {
     QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
