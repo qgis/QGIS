@@ -987,11 +987,16 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   // check if the format is really supported otherwise use first supported format
   if ( !( QgsRasterDataProvider::identifyFormatToCapability( format ) & capabilities ) )
   {
-    if ( capabilities & QgsRasterInterface::IdentifyFeature ) format = QgsRaster::IdentifyFormatFeature;
-    else if ( capabilities & QgsRasterInterface::IdentifyValue ) format = QgsRaster::IdentifyFormatValue;
-    else if ( capabilities & QgsRasterInterface::IdentifyHtml ) format = QgsRaster::IdentifyFormatHtml;
-    else if ( capabilities & QgsRasterInterface::IdentifyText ) format = QgsRaster::IdentifyFormatText;
-    else return false;
+    if ( capabilities & QgsRasterInterface::IdentifyFeature )
+      format = QgsRaster::IdentifyFormatFeature;
+    else if ( capabilities & QgsRasterInterface::IdentifyValue )
+      format = QgsRaster::IdentifyFormatValue;
+    else if ( capabilities & QgsRasterInterface::IdentifyHtml )
+      format = QgsRaster::IdentifyFormatHtml;
+    else if ( capabilities & QgsRasterInterface::IdentifyText )
+      format = QgsRaster::IdentifyFormatText;
+    else
+      return false;
   }
 
   QgsRasterIdentifyResult identifyResult;

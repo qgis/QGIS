@@ -55,18 +55,22 @@ QgsRasterResampleFilter *QgsRasterResampleFilter::clone() const
 
 int QgsRasterResampleFilter::bandCount() const
 {
-  if ( mOn ) return 1;
+  if ( mOn )
+    return 1;
 
-  if ( mInput ) return mInput->bandCount();
+  if ( mInput )
+    return mInput->bandCount();
 
   return 0;
 }
 
 Qgis::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
 {
-  if ( mOn ) return Qgis::DataType::ARGB32_Premultiplied;
+  if ( mOn )
+    return Qgis::DataType::ARGB32_Premultiplied;
 
-  if ( mInput ) return mInput->dataType( bandNo );
+  if ( mInput )
+    return mInput->dataType( bandNo );
 
   return Qgis::DataType::UnknownDataType;
 }

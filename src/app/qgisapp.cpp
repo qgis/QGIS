@@ -2079,7 +2079,8 @@ void QgisApp::dropEvent( QDropEvent *event )
       bool handled = false;
 
       // give custom drop handlers first priority at handling the file
-      const QVector<QPointer<QgsCustomDropHandler >> handlers = mCustomDropHandlers;
+      const QVector<QPointer<QgsCustomDropHandler >>
+          handlers = mCustomDropHandlers;
       for ( QgsCustomDropHandler *handler : handlers )
       {
         if ( handler && handler->handleFileDrop( file ) )
@@ -2810,7 +2811,8 @@ void QgisApp::createActions()
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
     if ( !vlayer )
     {
-      visibleMessageBar()->pushMessage(
+      visibleMessageBar()
+      ->pushMessage(
         tr( "No active vector layer" ),
         tr( "To reselect features, choose a vector layer in the legend." ),
         Qgis::MessageLevel::Info );
@@ -3049,7 +3051,8 @@ void QgisApp::createActions()
   // we can't set the shortcut these actions, because we need to restrict their context to the canvas and it's children..
   for ( QWidget *widget :
         {
-          static_cast< QWidget * >( mMapCanvas ),
+          static_cast< QWidget * >
+          ( mMapCanvas ),
           static_cast< QWidget * >( mLayerTreeView )
         } )
   {
@@ -6629,7 +6632,8 @@ void QgisApp::showRasterCalculator()
     for ( const auto &r : QgsRasterCalculatorEntry::rasterEntries() )
     {
       if ( ( ! rLayerDictionaryRef.contains( r.ref ) ) ||
-           uniqueRasterUriTmp.contains( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) ) ) continue;
+           uniqueRasterUriTmp.contains( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) ) )
+        continue;
       uniqueRasterUriTmp.insert( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) );
 
       QgsRasterDataProvider::VirtualRasterInputLayers projectRLayer;

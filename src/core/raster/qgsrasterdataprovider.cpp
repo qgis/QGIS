@@ -90,8 +90,10 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     providerYRes = extent().height() / ySize();
     tmpXRes = std::max( providerXRes, xRes );
     tmpYRes = std::max( providerYRes, yRes );
-    if ( qgsDoubleNear( tmpXRes, xRes ) ) tmpXRes = xRes;
-    if ( qgsDoubleNear( tmpYRes, yRes ) ) tmpYRes = yRes;
+    if ( qgsDoubleNear( tmpXRes, xRes ) )
+      tmpXRes = xRes;
+    if ( qgsDoubleNear( tmpYRes, yRes ) )
+      tmpYRes = yRes;
   }
   else
   {
@@ -479,10 +481,14 @@ QString QgsRasterDataProvider::identifyFormatLabel( QgsRaster::IdentifyFormat fo
 
 QgsRaster::IdentifyFormat QgsRasterDataProvider::identifyFormatFromName( const QString &formatName )
 {
-  if ( formatName == QLatin1String( "Value" ) ) return QgsRaster::IdentifyFormatValue;
-  if ( formatName == QLatin1String( "Text" ) ) return QgsRaster::IdentifyFormatText;
-  if ( formatName == QLatin1String( "Html" ) ) return QgsRaster::IdentifyFormatHtml;
-  if ( formatName == QLatin1String( "Feature" ) ) return QgsRaster::IdentifyFormatFeature;
+  if ( formatName == QLatin1String( "Value" ) )
+    return QgsRaster::IdentifyFormatValue;
+  if ( formatName == QLatin1String( "Text" ) )
+    return QgsRaster::IdentifyFormatText;
+  if ( formatName == QLatin1String( "Html" ) )
+    return QgsRaster::IdentifyFormatHtml;
+  if ( formatName == QLatin1String( "Feature" ) )
+    return QgsRaster::IdentifyFormatFeature;
   return QgsRaster::IdentifyFormatUndefined;
 }
 
@@ -656,13 +662,15 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   if ( ! query.hasQueryItem( QStringLiteral( "crs" ) ) )
   {
     QgsDebugMsg( "crs is missing" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
   if ( ! components.crs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) ) )
   {
     QgsDebugMsg( "failed to create crs" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
 
@@ -670,14 +678,16 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   if ( ! query.hasQueryItem( QStringLiteral( "extent" ) ) )
   {
     QgsDebugMsg( "extent is missing" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
   QStringList pointValuesList = query.queryItemValue( QStringLiteral( "extent" ) ).split( ',' );
   if ( pointValuesList.size() != 4 )
   {
     QgsDebugMsg( "the extent is not correct" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
   components.extent = QgsRectangle( pointValuesList.at( 0 ).toDouble(), pointValuesList.at( 1 ).toDouble(),
@@ -686,7 +696,8 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   if ( ! query.hasQueryItem( QStringLiteral( "width" ) ) )
   {
     QgsDebugMsg( "width is missing" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
   bool flagW;
@@ -694,14 +705,16 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   if ( !flagW ||  components.width < 0 )
   {
     QgsDebugMsg( "invalid or negative width input" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
 
   if ( ! query.hasQueryItem( QStringLiteral( "height" ) ) )
   {
     QgsDebugMsg( "height is missing" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
   bool flagH;
@@ -709,14 +722,16 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   if ( !flagH ||  components.height < 0 )
   {
     QgsDebugMsg( "invalid or negative width input" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
 
   if ( ! query.hasQueryItem( QStringLiteral( "formula" ) ) )
   {
     QgsDebugMsg( "formula is missing" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
   components.formula = query.queryItemValue( QStringLiteral( "formula" ) );
@@ -736,7 +751,8 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
     if ( rLayer.uri.isNull() || rLayer.provider.isNull() )
     {
       QgsDebugMsg( "One or more raster information are missing" );
-      if ( ok ) *ok = false;
+      if ( ok )
+        *ok = false;
       return components;
     }
 
@@ -744,7 +760,8 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
 
   }
 
-  if ( ok ) *ok = true;
+  if ( ok )
+    *ok = true;
   return components;
 }
 

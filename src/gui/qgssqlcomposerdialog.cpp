@@ -469,8 +469,10 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list,
     {
       for ( int i = 0; i < f.argumentList.size(); i++ )
       {
-        if ( f.minArgs >= 0 && i >= f.minArgs ) entryText += QLatin1Char( '[' );
-        if ( i > 0 ) entryText += QLatin1String( ", " );
+        if ( f.minArgs >= 0 && i >= f.minArgs )
+          entryText += QLatin1Char( '[' );
+        if ( i > 0 )
+          entryText += QLatin1String( ", " );
         if ( f.argumentList[i].name == QLatin1String( "number" ) && !f.argumentList[i].type.isEmpty() )
         {
           entryText += sanitizeType( f.argumentList[i].type );
@@ -486,7 +488,8 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list,
             entryText += sanitizedType;
           }
         }
-        if ( f.minArgs >= 0 && i >= f.minArgs ) entryText += QLatin1Char( ']' );
+        if ( f.minArgs >= 0 && i >= f.minArgs )
+          entryText += QLatin1Char( ']' );
       }
       if ( entryText.size() > 60 )
       {

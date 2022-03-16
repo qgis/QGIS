@@ -2377,13 +2377,19 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::reshapeGeometry( const QgsLineStri
 {
   if ( !mGeos || mGeometry->dimension() == 0 )
   {
-    if ( errorCode ) { *errorCode = InvalidBaseGeometry; }
+    if ( errorCode )
+    {
+      *errorCode = InvalidBaseGeometry;
+    }
     return nullptr;
   }
 
   if ( reshapeWithLine.numPoints() < 2 )
   {
-    if ( errorCode ) { *errorCode = InvalidInput; }
+    if ( errorCode )
+    {
+      *errorCode = InvalidInput;
+    }
     return nullptr;
   }
 
@@ -2465,7 +2471,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::reshapeGeometry( const QgsLineStri
       delete[] newGeoms;
       if ( !newMultiGeom )
       {
-        if ( errorCode ) { *errorCode = EngineError; }
+        if ( errorCode )
+        {
+          *errorCode = EngineError;
+        }
         return nullptr;
       }
 

@@ -222,9 +222,12 @@ namespace QgsRayCastingUtils
     box b( aabb );
 
     // intersection() does not like yMin==yMax (excludes borders)
-    if ( b.min[0] == b.max[0] ) b.max[0] += 0.1;
-    if ( b.min[1] == b.max[1] ) b.max[1] += 0.1;
-    if ( b.min[2] == b.max[2] ) b.max[2] += 0.1;
+    if ( b.min[0] == b.max[0] )
+      b.max[0] += 0.1;
+    if ( b.min[1] == b.max[1] )
+      b.max[1] += 0.1;
+    if ( b.min[2] == b.max[2] )
+      b.max[2] += 0.1;
 
     return intersection( b, ray( r ) );
   }

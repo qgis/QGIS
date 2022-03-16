@@ -184,7 +184,8 @@ TestQgsWcsPublicServers::Server TestQgsWcsPublicServers::getServer( const QStrin
 {
   for ( const Server &server : std::as_const( mServers ) )
   {
-    if ( server.url == url ) return server;
+    if ( server.url == url )
+      return server;
   }
   return Server();
 }
@@ -347,7 +348,8 @@ void TestQgsWcsPublicServers::test()
       for ( QgsWcsCoverageSummary myCoverage : myCoverages )
       {
         QgsDebugMsg( "coverage: " + myCoverage.identifier );
-        if ( !mCoverage.isEmpty() && myCoverage.identifier != mCoverage ) continue;
+        if ( !mCoverage.isEmpty() && myCoverage.identifier != mCoverage )
+          continue;
         myCoverageFound = true;
 
         // Go in steps to get more success/errors
@@ -362,7 +364,8 @@ void TestQgsWcsPublicServers::test()
         }
 
         myCoverageCount++;
-        if ( myCoverageCount > mMaxCoverages ) break;
+        if ( myCoverageCount > mMaxCoverages )
+          break;
 
 
         QString myPath = myVersionDirPath + '/' + myCoverage.identifier;
@@ -480,7 +483,8 @@ void TestQgsWcsPublicServers::test()
                 {
                   double value = myBlock->value( row, col );
                   QString valueStr = QString::number( value );
-                  if ( !myValues.contains( valueStr ) ) myValues.insert( valueStr );
+                  if ( !myValues.contains( valueStr ) )
+                    myValues.insert( valueStr );
                 }
               }
               delete myBlock;
@@ -495,7 +499,8 @@ void TestQgsWcsPublicServers::test()
               for ( int col = 0; col < myWidth; col++ )
               {
                 QRgb color = myImage.pixel( col, row );
-                if ( !myColors.contains( color ) ) myColors.insert( color );
+                if ( !myColors.contains( color ) )
+                  myColors.insert( color );
               }
             }
             QgsDebugMsg( QStringLiteral( "%1 colors" ).arg( myColors.size() ) );
@@ -624,7 +629,8 @@ void TestQgsWcsPublicServers::report()
         myVersionDir.setNameFilters( filters );
         for ( const QString &myLogFileName : myVersionDir.entryList( QDir::Files ) )
         {
-          if ( myLogFileName == QLatin1String( "version.log" ) ) continue;
+          if ( myLogFileName == QLatin1String( "version.log" ) )
+            continue;
           myVersionCoverageCount++;
           myCoverageCount++;
 
@@ -741,12 +747,16 @@ void TestQgsWcsPublicServers::report()
                                  QStringLiteral( "<b>Warnings: %1</b><br><br>" ).arg( myVersionWarnCount ) );
         myServerReport += myVersionReport;
       }
-      if ( myVersionErrCount > 0 ) myServerErr = true;
-      if ( myVersionWarnCount > 0 ) myServerWarn = true;
+      if ( myVersionErrCount > 0 )
+        myServerErr = true;
+      if ( myVersionWarnCount > 0 )
+        myServerWarn = true;
     } // versions
     myReport += myServerReport;
-    if ( myServerErr ) myServerErrCount++;
-    if ( myServerWarn ) myServerWarnCount++;
+    if ( myServerErr )
+      myServerErrCount++;
+    if ( myServerWarn )
+      myServerWarnCount++;
   } // servers
 
   QString mySettings = QgsApplication::showSettings();

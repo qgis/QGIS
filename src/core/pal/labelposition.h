@@ -196,7 +196,8 @@ namespace pal
       {
         probFeat = probFid;
         id = lpId;
-        if ( mNextPart ) mNextPart->setProblemIds( probFid, lpId );
+        if ( mNextPart )
+          mNextPart->setProblemIds( probFid, lpId );
       }
 
       /**

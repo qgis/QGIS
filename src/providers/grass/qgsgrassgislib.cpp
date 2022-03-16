@@ -457,7 +457,8 @@ QgsGrassGisLib::Raster QgsGrassGisLib::raster( QString name )
 
   for ( Raster raster : mRasters )
   {
-    if ( raster.name == name ) return raster;
+    if ( raster.name == name )
+      return raster;
   }
 
   QString providerKey;
@@ -596,7 +597,8 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
   raster.provider = QgsRasterDataProvider::create( providerKey, dataSource, outputFormat, nBands, type, mColumns, mRows, geoTransform, mCrs );
   if ( !raster.provider || !raster.provider->isValid() )
   {
-    if ( raster.provider ) delete raster.provider;
+    if ( raster.provider )
+      delete raster.provider;
     fatal( "Cannot create output data source: " + dataSource );
   }
 
@@ -653,7 +655,8 @@ RASTER_MAP_TYPE GRASS_LIB_EXPORT G_get_raster_map_type( int fd )
 int GRASS_LIB_EXPORT G_raster_map_is_fp( const char *name, const char *mapset )
 {
   RASTER_MAP_TYPE type = QgsGrassGisLib::instance()->G_raster_map_type( name, mapset );
-  if ( type == FCELL_TYPE || type == DCELL_TYPE ) return 1;
+  if ( type == FCELL_TYPE || type == DCELL_TYPE )
+    return 1;
   return 0;
 }
 
@@ -766,7 +769,8 @@ int QgsGrassGisLib::readRasterRow( int fd, void *buf, int row, RASTER_MAP_TYPE d
   // TODO: use cached block with more rows
   Raster raster = mRasters.value( fd );
   //if ( !raster.provider ) return -1;
-  if ( !raster.input ) return -1;
+  if ( !raster.input )
+    return -1;
 
   // Create extent for current row
   QgsRectangle blockRect = mExtent;
@@ -779,7 +783,8 @@ int QgsGrassGisLib::readRasterRow( int fd, void *buf, int row, RASTER_MAP_TYPE d
   blockRect.setYMinimum( yMax - yRes );
 
   QgsRasterBlock *block = raster.input->block( raster.band, blockRect, mColumns, 1 );
-  if ( !block ) return -1;
+  if ( !block )
+    return -1;
 
   Qgis::DataType requestedType = qgisRasterType( data_type );
 
@@ -1103,8 +1108,10 @@ double GRASS_LIB_EXPORT G_database_units_to_meters_factor( void )
 
 int QgsGrassGisLib::beginCalculations( void )
 {
-  if ( !mCrs.isValid() ) return 0;
-  if ( !mCrs.isGeographic() ) return 1; // planimetric
+  if ( !mCrs.isValid() )
+    return 0;
+  if ( !mCrs.isGeographic() )
+    return 1; // planimetric
   return 2; // non-planimetric
 }
 

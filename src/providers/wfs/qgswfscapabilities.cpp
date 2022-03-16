@@ -128,7 +128,8 @@ class CPLXMLTreeUniquePointer
     //! Destructor
     ~CPLXMLTreeUniquePointer()
     {
-      if ( the_data_ ) CPLDestroyXMLNode( the_data_ );
+      if ( the_data_ )
+        CPLDestroyXMLNode( the_data_ );
     }
 
     /**

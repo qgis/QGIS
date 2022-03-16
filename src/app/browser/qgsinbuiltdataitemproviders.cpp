@@ -146,13 +146,15 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     const QString newFile = QgsNewVectorLayerDialog::execAndCreateLayer( error, QgisApp::instance(), dir.filePath( QStringLiteral( "new_layer.shp" ) ), &enc, QgsProject::instance()->defaultCrsForNewLayers() );
     if ( !newFile.isEmpty() )
     {
-      context.messageBar()->pushSuccess( tr( "New ShapeFile" ), tr( "Created <a href=\"%1\">%2</a>" ).arg(
-                                           QUrl::fromLocalFile( newFile ).toString(), QDir::toNativeSeparators( newFile ) ) );
+      context.messageBar()
+      ->pushSuccess( tr( "New ShapeFile" ), tr( "Created <a href=\"%1\">%2</a>" ).arg(
+                       QUrl::fromLocalFile( newFile ).toString(), QDir::toNativeSeparators( newFile ) ) );
       item->refresh();
     }
     else if ( !error.isEmpty() )
     {
-      context.messageBar()->pushCritical( tr( "New ShapeFile" ), tr( "Layer creation failed: %1" ).arg( error ) );
+      context.messageBar()
+      ->pushCritical( tr( "New ShapeFile" ), tr( "Layer creation failed: %1" ).arg( error ) );
     }
   } );
   newMenu->addAction( createShp );
@@ -829,7 +831,8 @@ void QgsProjectHomeItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     QString newPath = QFileDialog::getExistingDirectory( QgisApp::instance(), tr( "Select Project Home Directory" ), oldHome );
     if ( !newPath.isEmpty() )
     {
-      QgsProject::instance()->setPresetHomePath( newPath );
+      QgsProject::instance()
+      ->setPresetHomePath( newPath );
     }
   } );
 
@@ -860,7 +863,8 @@ void QgsFavoritesItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     QString directory = QFileDialog::getExistingDirectory( QgisApp::instance(), tr( "Add Directory to Favorites" ) );
     if ( !directory.isEmpty() )
     {
-      QgisApp::instance()->browserModel()->addFavoriteDirectory( directory );
+      QgisApp::instance()
+      ->browserModel()->addFavoriteDirectory( directory );
     }
   } );
   menu->addAction( addAction );
@@ -1147,7 +1151,8 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       }
       else if ( context.messageBar() )
       {
-        context.messageBar()->pushWarning( tr( "Extract Symbols" ), tr( "Could not read project file" ) );
+        context.messageBar()
+        ->pushWarning( tr( "Extract Symbols" ), tr( "Could not read project file" ) );
       }
     } );
     menu->addAction( extractAction );
@@ -1371,7 +1376,8 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
 
             if ( msgbox.exec() == QMessageBox::Ok )
             {
-              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection>
+              conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
               try
               {
                 conn2->deleteField( itemName, fieldsItem->schema(), fieldsItem->tableName(), supportsCascade && cb->isChecked() );

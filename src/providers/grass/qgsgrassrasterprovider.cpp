@@ -684,7 +684,8 @@ double QgsGrassRasterValue::value( double x, double y, bool *ok )
   QStringList list = str.trimmed().split( ':' );
   if ( list.size() == 2 )
   {
-    if ( list[1] == QLatin1String( "error" ) ) return value;
+    if ( list[1] == QLatin1String( "error" ) )
+      return value;
     value = list[1].toDouble( ok );
   }
   return value;

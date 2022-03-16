@@ -372,8 +372,10 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
     const double w = QgsTextRenderer::textWidth( *context, mTextOnSymbolTextFormat, QStringList() << mTextOnSymbolLabel );
     const double h = QgsTextRenderer::textHeight( *context, mTextOnSymbolTextFormat, QStringList() << mTextOnSymbolLabel, QgsTextRenderer::Point );
     int wInt = ceil( w ), hInt = ceil( h );
-    if ( wInt > minSz.width() ) minSz.setWidth( wInt );
-    if ( hInt > minSz.height() ) minSz.setHeight( hInt );
+    if ( wInt > minSz.width() )
+      minSz.setWidth( wInt );
+    if ( hInt > minSz.height() )
+      minSz.setHeight( hInt );
   }
 
   return minSz;

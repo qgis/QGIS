@@ -106,7 +106,8 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       QgsField subField = field;
       subField.setType( field.subType() );
       subField.setSubType( QVariant::Invalid );
-      if ( !convertField( subField ) ) return false;
+      if ( !convertField( subField ) )
+        return false;
       fieldType = QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX + subField.typeName() + QgsSpatiaLiteConnection::SPATIALITE_ARRAY_SUFFIX;
       fieldSize = subField.length();
       fieldPrec = subField.precision();

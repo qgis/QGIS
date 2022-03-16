@@ -133,7 +133,8 @@ void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, co
 
   QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, newProps );
 
-  if ( mSymbol ) mSymbol->toSld( doc, ruleElem, newProps );
+  if ( mSymbol )
+    mSymbol->toSld( doc, ruleElem, newProps );
 }
 
 QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context ) const

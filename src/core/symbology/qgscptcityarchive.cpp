@@ -1691,7 +1691,8 @@ QMimeData *QgsCptCityBrowserModel::mimeData( const QModelIndexList &indexes ) co
     if ( index.isValid() )
     {
       QgsCptCityDataItem *ptr = ( QgsCptCityDataItem * ) index.internalPointer();
-      if ( ptr->type() != QgsCptCityDataItem::Layer ) continue;
+      if ( ptr->type() != QgsCptCityDataItem::Layer )
+        continue;
       QgsLayerItem *layer = ( QgsLayerItem * ) ptr;
       lst.append( QgsMimeDataUtils::Uri( ayer ) );
     }

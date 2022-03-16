@@ -158,8 +158,10 @@ bool QgsMeshMemoryDataProvider::addMeshFacesOrEdges( const QString &def )
       QgsMeshEdge edge;
       edge.first = vertices[0].toInt();
       edge.second = vertices[1].toInt();
-      if ( !checkVertexId( edge.first ) ) return false;
-      if ( !checkVertexId( edge.second ) ) return false;
+      if ( !checkVertexId( edge.first ) )
+        return false;
+      if ( !checkVertexId( edge.second ) )
+        return false;
       edges.push_back( edge );
     }
     else
@@ -168,7 +170,8 @@ bool QgsMeshMemoryDataProvider::addMeshFacesOrEdges( const QString &def )
       for ( int j = 0; j < vertices.size(); ++j )
       {
         const int vertex_id = vertices[j].toInt();
-        if ( !checkVertexId( vertex_id ) ) return false;
+        if ( !checkVertexId( vertex_id ) )
+          return false;
         face.push_back( vertex_id );
       }
       faces.push_back( face );

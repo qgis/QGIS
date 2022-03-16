@@ -21,7 +21,7 @@
 #include "qgisapp.h"
 #include "qgsmaptoolcapture.h"
 
-QgsMapToolShapeRegularPolygonAbstract::QgsMapToolShapeRegularPolygonAbstract(const QString &id, QgsMapToolCapture *parentTool )
+QgsMapToolShapeRegularPolygonAbstract::QgsMapToolShapeRegularPolygonAbstract( const QString &id, QgsMapToolCapture *parentTool )
   : QgsMapToolShapeAbstract( id, parentTool )
 {
 }

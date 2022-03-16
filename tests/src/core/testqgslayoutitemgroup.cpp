@@ -61,7 +61,8 @@ class TestQgsLayoutItemGroup : public QObject
 // private
 void TestQgsLayoutItemGroup::dumpUndoStack( const QUndoStack &us, QString prefix ) const
 {
-  if ( ! prefix.isEmpty() ) prefix += QLatin1String( ": " );
+  if ( ! prefix.isEmpty() )
+    prefix += QLatin1String( ": " );
   for ( int i = 0; i < us.count(); ++i )
   {
     QgsDebugMsg( QStringLiteral( "%4US %1: %2%3" )

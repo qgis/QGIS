@@ -63,7 +63,8 @@ class TestQgsPostgresConn: public QObject
       if ( ! _connection )
       {
         const char *connstring = getenv( "QGIS_PGTEST_DB" );
-        if ( NULL == connstring ) connstring = "service=qgis_test";
+        if ( NULL == connstring )
+          connstring = "service=qgis_test";
         _connection = QgsPostgresConn::connectDb( connstring, true );
         assert( _connection );
       }
@@ -77,7 +78,8 @@ class TestQgsPostgresConn: public QObject
     }
     void cleanupTestCase() // will be called after the last testfunction was executed.
     {
-      if ( this->_connection ) this->_connection->unref();
+      if ( this->_connection )
+        this->_connection->unref();
     }
 
     void quotedValueHstore()

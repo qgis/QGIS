@@ -117,7 +117,8 @@ QList<int> QgsSingleBandColorDataRenderer::usesBands() const
 bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface *input )
 {
   // Renderer can only work with numerical values in at least 1 band
-  if ( !input ) return false;
+  if ( !input )
+    return false;
 
   if ( !mOn )
   {

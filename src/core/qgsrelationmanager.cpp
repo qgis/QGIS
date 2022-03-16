@@ -280,7 +280,8 @@ static bool hasRelationWithEqualDefinition( const QList<QgsRelation> &existingRe
 {
   for ( const QgsRelation &cur : std::as_const( existingRelations ) )
   {
-    if ( cur.hasEqualDefinition( relation ) ) return true;
+    if ( cur.hasEqualDefinition( relation ) )
+      return true;
   }
   return false;
 }

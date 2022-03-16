@@ -50,7 +50,8 @@ bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, 
 {
   const int grid_x1 = std::round( ( x1 - gridOriginX ) * gridInverseSizeXY );
   const int grid_x2 = std::round( ( x2 - gridOriginX ) * gridInverseSizeXY );
-  if ( grid_x1 != grid_x2 ) return false;
+  if ( grid_x1 != grid_x2 )
+    return false;
 
   const int grid_y1 = std::round( ( y1 - gridOriginY ) * gridInverseSizeXY );
   const int grid_y2 = std::round( ( y2 - gridOriginY ) * gridInverseSizeXY );

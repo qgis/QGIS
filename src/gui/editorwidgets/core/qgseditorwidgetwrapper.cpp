@@ -281,8 +281,10 @@ QString QgsEditorWidgetWrapper::constraintFailureReason() const
 
 bool QgsEditorWidgetWrapper::isInTable( const QWidget *parent )
 {
-  if ( !parent ) return false;
-  if ( qobject_cast<const QTableView *>( parent ) ) return true;
+  if ( !parent )
+    return false;
+  if ( qobject_cast<const QTableView *>( parent ) )
+    return true;
   return isInTable( parent->parentWidget() );
 }
 

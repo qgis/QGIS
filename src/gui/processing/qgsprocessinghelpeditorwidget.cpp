@@ -60,7 +60,8 @@ QgsProcessingHelpEditorWidget::QgsProcessingHelpEditorWidget( QWidget *parent )
   {
     if ( !mCurrentName.isEmpty() )
     {
-      mHelpContent[ mCurrentName] = mTextEdit->toPlainText();
+      mHelpContent[ mCurrentName]
+      = mTextEdit->toPlainText();
       updateHtmlView();
     }
   } );

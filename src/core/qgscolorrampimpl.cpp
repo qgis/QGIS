@@ -635,13 +635,20 @@ QgsColorRamp *QgsLimitedRandomColorRamp::create( const QVariantMap &props )
   int satMin = DEFAULT_RANDOM_SAT_MIN, satMax = DEFAULT_RANDOM_SAT_MAX;
   int valMin = DEFAULT_RANDOM_VAL_MIN, valMax = DEFAULT_RANDOM_VAL_MAX;
 
-  if ( props.contains( QStringLiteral( "count" ) ) ) count = props[QStringLiteral( "count" )].toInt();
-  if ( props.contains( QStringLiteral( "hueMin" ) ) ) hueMin = props[QStringLiteral( "hueMin" )].toInt();
-  if ( props.contains( QStringLiteral( "hueMax" ) ) ) hueMax = props[QStringLiteral( "hueMax" )].toInt();
-  if ( props.contains( QStringLiteral( "satMin" ) ) ) satMin = props[QStringLiteral( "satMin" )].toInt();
-  if ( props.contains( QStringLiteral( "satMax" ) ) ) satMax = props[QStringLiteral( "satMax" )].toInt();
-  if ( props.contains( QStringLiteral( "valMin" ) ) ) valMin = props[QStringLiteral( "valMin" )].toInt();
-  if ( props.contains( QStringLiteral( "valMax" ) ) ) valMax = props[QStringLiteral( "valMax" )].toInt();
+  if ( props.contains( QStringLiteral( "count" ) ) )
+    count = props[QStringLiteral( "count" )].toInt();
+  if ( props.contains( QStringLiteral( "hueMin" ) ) )
+    hueMin = props[QStringLiteral( "hueMin" )].toInt();
+  if ( props.contains( QStringLiteral( "hueMax" ) ) )
+    hueMax = props[QStringLiteral( "hueMax" )].toInt();
+  if ( props.contains( QStringLiteral( "satMin" ) ) )
+    satMin = props[QStringLiteral( "satMin" )].toInt();
+  if ( props.contains( QStringLiteral( "satMax" ) ) )
+    satMax = props[QStringLiteral( "satMax" )].toInt();
+  if ( props.contains( QStringLiteral( "valMin" ) ) )
+    valMin = props[QStringLiteral( "valMin" )].toInt();
+  if ( props.contains( QStringLiteral( "valMax" ) ) )
+    valMax = props[QStringLiteral( "valMax" )].toInt();
 
   return new QgsLimitedRandomColorRamp( count, hueMin, hueMax, satMin, satMax, valMin, valMax );
 }

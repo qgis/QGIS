@@ -833,7 +833,8 @@ void QgsVectorLayerProperties::apply()
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
     simplifyHints |= QgsVectorSimplifyMethod::GeometrySimplification;
-    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
+    if ( mSimplifyDrawingSpinBox->value() > 1 )
+      simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
   }
   QgsVectorSimplifyMethod simplifyMethod = mLayer->simplifyMethod();
   simplifyMethod.setSimplifyHints( simplifyHints );

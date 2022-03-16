@@ -33,7 +33,8 @@ void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
 {
   for ( int i = 0; i < faceIndex.size(); i += 3 )
   {
-    if ( i + 2 >= faceIndex.size() ) continue;
+    if ( i + 2 >= faceIndex.size() )
+      continue;
     // skip invalid triangles
     if ( faceIndex[i] == faceIndex[i + 1] || faceIndex[i + 1] == faceIndex[i + 2] || faceIndex[i] == faceIndex[i + 2] )
       continue;
@@ -61,7 +62,8 @@ void Qgs3DExportObject::setupFaces( const QVector<uint> &facesIndexes )
 void Qgs3DExportObject::setupLine( const QVector<uint> &lineIndexes )
 {
   Q_UNUSED( lineIndexes );
-  for ( int i = 0; i < mVertexPosition.size(); i += 3 ) mIndexes << i / 3 + 1;
+  for ( int i = 0; i < mVertexPosition.size(); i += 3 )
+    mIndexes << i / 3 + 1;
 }
 
 void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer )
@@ -85,7 +87,8 @@ void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
 {
-  if ( mType != TriangularFaces ) return;
+  if ( mType != TriangularFaces )
+    return;
   for ( const unsigned int vertice : mIndexes )
   {
     const int heightIndex = ( vertice - 1 ) * 3 + 1;
@@ -167,7 +170,8 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   else if ( mType == LineStrip )
   {
     out << "l";
-    for ( const int i : mIndexes ) out << " " << getVertexIndex( i );
+    for ( const int i : mIndexes )
+      out << " " << getVertexIndex( i );
     out << "\n";
   }
   else if ( mType == Points )
@@ -182,7 +186,8 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
 QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &folderPath )
 {
   QString materialName = mName + "_material";
-  if ( mMaterialParameters.size() == 0 && ( mTexturesUV.size() == 0 || mTextureImage.isNull() ) ) return QString();
+  if ( mMaterialParameters.size() == 0 && ( mTexturesUV.size() == 0 || mTextureImage.isNull() ) )
+    return QString();
   mtlOut << "newmtl " << materialName << "\n";
   if ( mTexturesUV.size() != 0 && !mTextureImage.isNull() )
   {

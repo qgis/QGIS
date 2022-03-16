@@ -1589,7 +1589,8 @@ void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
   {
     for ( const QString &file : std::as_const( files ) )
     {
-      const QVector<QPointer<QgsLayoutCustomDropHandler >> handlers = QgisApp::instance()->customLayoutDropHandlers();
+      const QVector<QPointer<QgsLayoutCustomDropHandler >>
+          handlers = QgisApp::instance()->customLayoutDropHandlers();
       for ( QgsLayoutCustomDropHandler *handler : handlers )
       {
         if ( handler && handler->handleFileDrop( iface(), layoutPoint, file ) )

@@ -55,13 +55,15 @@ void QgsRasterNuller::setNoData( int bandNo, const QgsRasterRangeList &noData )
 
 int QgsRasterNuller::bandCount() const
 {
-  if ( mInput ) return mInput->bandCount();
+  if ( mInput )
+    return mInput->bandCount();
   return 0;
 }
 
 Qgis::DataType QgsRasterNuller::dataType( int bandNo ) const
 {
-  if ( mInput ) return mInput->dataType( bandNo );
+  if ( mInput )
+    return mInput->dataType( bandNo );
   return Qgis::DataType::UnknownDataType;
 }
 

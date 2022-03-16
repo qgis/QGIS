@@ -68,7 +68,8 @@ void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocum
 void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext & )
 {
   Q_UNUSED( doc )
-  if ( elem.isNull() ) return;
+  if ( elem.isNull() )
+    return;
 
   if ( !QgsFontUtils::setFromXmlChildNode( mFont, elem, QStringLiteral( "styleFont" ) ) )
   {

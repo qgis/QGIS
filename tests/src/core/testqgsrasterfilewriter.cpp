@@ -102,7 +102,8 @@ void TestQgsRasterFileWriter::writeTest()
   for ( const QString &rasterName : rasterNames )
   {
     const bool ok = writeTest( "raster/" + rasterName );
-    if ( !ok ) allOK = false;
+    if ( !ok )
+      allOK = false;
   }
 
   QVERIFY( allOK );
@@ -120,7 +121,8 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
       myRasterFileInfo.completeBaseName() ) );
   qDebug() << rasterName <<  " metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
 
-  if ( !mpRasterLayer->isValid() ) return false;
+  if ( !mpRasterLayer->isValid() )
+    return false;
 
   // Open provider only (avoid layer)?
   QgsRasterDataProvider *provider = mpRasterLayer->dataProvider();

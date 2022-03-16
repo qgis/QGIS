@@ -1649,8 +1649,10 @@ void QgsIdentifyResultsDialog::updateViewModes()
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
     QTreeWidgetItem *item = lstResults->topLevelItem( i );
-    if ( vectorLayer( item ) ) vectorCount++;
-    else if ( rasterLayer( item ) ) rasterCount++;
+    if ( vectorLayer( item ) )
+      vectorCount++;
+    else if ( rasterLayer( item ) )
+      rasterCount++;
   }
 
   lblViewMode->setEnabled( rasterCount > 0 );

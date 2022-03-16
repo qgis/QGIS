@@ -315,7 +315,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
     if ( !path.isEmpty() )
     {
-      QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
+      QgsGui::nativePlatformInterface()
+      ->openFileExplorerAndSelectFile( path );
     }
 
   } );
@@ -989,7 +990,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   for ( const QString &qmFile : qmFileList )
   {
     // Ignore the 'en' translation file, already added as 'en_US'.
-    if ( qmFile.compare( QLatin1String( "qgis_en.qm" ) ) == 0 ) continue;
+    if ( qmFile.compare( QLatin1String( "qgis_en.qm" ) ) == 0 )
+      continue;
 
     QString qmFileName = qmFile;
     QString l = qmFileName.remove( QStringLiteral( "qgis_" ) ).remove( QStringLiteral( ".qm" ) );

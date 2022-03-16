@@ -26,7 +26,8 @@
 float _normalizedAngle( float x )
 {
   x = std::fmod( x, 360 );
-  if ( x < 0 ) x += 360;
+  if ( x < 0 )
+    x += 360;
   return x;
 }
 
@@ -45,7 +46,8 @@ void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, Func1 slot )
     }
     if ( lst.isEmpty() )
     {
-      menu->addAction( QObject::tr( "No 3D maps defined" ) )->setEnabled( false );
+      menu->addAction( QObject::tr( "No 3D maps defined" ) )
+      ->setEnabled( false );
     }
   } );
 }

@@ -541,7 +541,8 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         int line = Vect_get_node_line( mSource->map(), lid, i );
         QgsDebugMsg( "cancel" );
-        if ( i > 0 ) lines += QLatin1Char( ',' );
+        if ( i > 0 )
+          lines += QLatin1Char( ',' );
         lines += QString::number( line );
       }
       feature.setAttribute( 1, lines );

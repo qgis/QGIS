@@ -670,9 +670,12 @@ void QgsLayerTreeModel::setLegendMapViewData( double mapUnitsPerPixel, int dpi, 
 
 void QgsLayerTreeModel::legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale ) const
 {
-  if ( mapUnitsPerPixel ) *mapUnitsPerPixel = mLegendMapViewMupp;
-  if ( dpi ) *dpi = mLegendMapViewDpi;
-  if ( scale ) *scale = mLegendMapViewScale;
+  if ( mapUnitsPerPixel )
+    *mapUnitsPerPixel = mLegendMapViewMupp;
+  if ( dpi )
+    *dpi = mLegendMapViewDpi;
+  if ( scale )
+    *scale = mLegendMapViewScale;
 }
 
 QMap<QString, QString> QgsLayerTreeModel::layerStyleOverrides() const

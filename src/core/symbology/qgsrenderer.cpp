@@ -421,7 +421,8 @@ QgsSymbolList QgsFeatureRenderer::symbolsForFeature( const QgsFeature &feature, 
 {
   QgsSymbolList lst;
   QgsSymbol *s = symbolForFeature( feature, context );
-  if ( s ) lst.append( s );
+  if ( s )
+    lst.append( s );
   return lst;
 }
 
@@ -435,7 +436,8 @@ QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( const QgsFeature &f
 {
   QgsSymbolList lst;
   QgsSymbol *s = originalSymbolForFeature( feature, context );
-  if ( s ) lst.append( s );
+  if ( s )
+    lst.append( s );
   return lst;
 }
 

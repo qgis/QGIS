@@ -870,7 +870,8 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 
   for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
-    if ( !layer ) continue;
+    if ( !layer )
+      continue;
 
     if ( mType == Ogr && layer->type() == QgsMapLayerType::VectorLayer )
     {

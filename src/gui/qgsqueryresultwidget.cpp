@@ -473,7 +473,10 @@ void QgsConnectionsApiFetcher::fetchTokens()
         const QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables = mConnection->tables( schema );
         for ( const QgsAbstractDatabaseProviderConnection::TableProperty &table : std::as_const( tables ) )
         {
-          if ( mStopFetching ) { return; }
+          if ( mStopFetching )
+          {
+            return;
+          }
           tableNames.push_back( table.tableName() );
         }
         emit tokensReady( tableNames );
@@ -496,11 +499,17 @@ void QgsConnectionsApiFetcher::fetchTokens()
         try
         {
           const QgsFields fields( mConnection->fields( schema, table ) );
-          if ( mStopFetching ) { return; }
+          if ( mStopFetching )
+          {
+            return;
+          }
           for ( const auto &field : std::as_const( fields ) )
           {
             fieldNames.push_back( field.name() );
-            if ( mStopFetching ) { return; }
+            if ( mStopFetching )
+            {
+              return;
+            }
           }
           emit tokensReady( fieldNames );
         }

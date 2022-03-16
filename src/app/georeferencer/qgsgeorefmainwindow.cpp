@@ -1555,7 +1555,8 @@ bool QgsGeoreferencerMainWindow::georeferenceRaster()
     if ( mLoadInQgis )
     {
       const QString layerSource = mCreateWorldFileOnly ? mFileName : mModifiedFileName;
-      QgisApp::instance()->addRasterLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), QStringLiteral( "gdal" ) );
+      QgisApp::instance()
+      ->addRasterLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), QStringLiteral( "gdal" ) );
     }
 
     loop.quit();
@@ -1637,7 +1638,8 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
     mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Vector layer was successfully georeferenced." ), Qgis::MessageLevel::Success );
     if ( mLoadInQgis )
     {
-      QgisApp::instance()->addVectorLayer( mModifiedFileName, QFileInfo( mModifiedFileName ).completeBaseName(), QStringLiteral( "ogr" ) );
+      QgisApp::instance()
+      ->addVectorLayer( mModifiedFileName, QFileInfo( mModifiedFileName ).completeBaseName(), QStringLiteral( "ogr" ) );
     }
 
     loop.quit();

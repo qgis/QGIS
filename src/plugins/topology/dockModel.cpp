@@ -52,7 +52,8 @@ QVariant DockModel::headerData( int section, Qt::Orientation orientation, int ro
       return mHeader[section];
     }
   }
-  else return QVariant();
+  else
+    return QVariant();
 }
 
 QVariant DockModel::data( const QModelIndex &index, int role ) const

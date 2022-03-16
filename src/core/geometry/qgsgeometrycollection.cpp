@@ -152,7 +152,8 @@ bool QgsGeometryCollection::removeDuplicateNodes( double epsilon, bool useZValue
   bool result = false;
   for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
-    if ( geom->removeDuplicateNodes( epsilon, useZValues ) ) result = true;
+    if ( geom->removeDuplicateNodes( epsilon, useZValues ) )
+      result = true;
   }
   return result;
 }

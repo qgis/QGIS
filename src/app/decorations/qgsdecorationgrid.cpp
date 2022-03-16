@@ -401,7 +401,8 @@ static bool clipByRect( QLineF &line, const QPolygonF &rect )
       }
     }
   }
-  if ( intersectionList.size() < 2 ) return false; // no intersection
+  if ( intersectionList.size() < 2 )
+    return false; // no intersection
 
   line = QLineF( intersectionList.at( 0 ), intersectionList.at( 1 ) );
   return true;

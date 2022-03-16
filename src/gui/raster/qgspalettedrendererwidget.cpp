@@ -788,7 +788,8 @@ QMimeData *QgsPalettedRendererModel::mimeData( const QModelIndexList &indexes ) 
 bool QgsPalettedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex & )
 {
   Q_UNUSED( column )
-  if ( action != Qt::MoveAction ) return true;
+  if ( action != Qt::MoveAction )
+    return true;
 
   if ( !data->hasFormat( QStringLiteral( "application/x-qgspalettedrenderermodel" ) ) )
     return false;

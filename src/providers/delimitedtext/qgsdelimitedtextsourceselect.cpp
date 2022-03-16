@@ -214,7 +214,8 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
   // at startup, fetch the last used delimiter and directory from
   // settings
   QString key = mSettingsKey;
-  if ( ! subkey.isEmpty() ) key.append( '/' ).append( subkey );
+  if ( ! subkey.isEmpty() )
+    key.append( '/' ).append( subkey );
 
   // and how to use the delimiter
   const QString delimiterType = settings.value( key + "/delimiterType", "" ).toString();
@@ -233,15 +234,18 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
   swFileFormat->setCurrentIndex( bgFileFormat->checkedId() );
 
   const QString encoding = settings.value( key + "/encoding", "" ).toString();
-  if ( ! encoding.isEmpty() ) cmbEncoding->setCurrentIndex( cmbEncoding->findText( encoding ) );
+  if ( ! encoding.isEmpty() )
+    cmbEncoding->setCurrentIndex( cmbEncoding->findText( encoding ) );
   const QString delimiters = settings.value( key + "/delimiters", "" ).toString();
-  if ( ! delimiters.isEmpty() ) setSelectedChars( delimiters );
+  if ( ! delimiters.isEmpty() )
+    setSelectedChars( delimiters );
 
   txtQuoteChars->setText( settings.value( key + "/quoteChars", "\"" ).toString() );
   txtEscapeChars->setText( settings.value( key + "/escapeChars", "\"" ).toString() );
 
   const QString regexp = settings.value( key + "/delimiterRegexp", "" ).toString();
-  if ( ! regexp.isEmpty() ) txtDelimiterRegexp->setText( regexp );
+  if ( ! regexp.isEmpty() )
+    txtDelimiterRegexp->setText( regexp );
 
   rowCounter->setValue( settings.value( key + "/startFrom", 0 ).toInt() );
   cbxUseHeader->setChecked( settings.value( key + "/useHeader", "true" ) != "false" );
@@ -258,9 +262,12 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
   if ( loadGeomSettings )
   {
     const QString geomColumnType = settings.value( key + "/geomColumnType", "xy" ).toString();
-    if ( geomColumnType == QLatin1String( "xy" ) ) geomTypeXY->setChecked( true );
-    else if ( geomColumnType == QLatin1String( "wkt" ) ) geomTypeWKT->setChecked( true );
-    else geomTypeNone->setChecked( true );
+    if ( geomColumnType == QLatin1String( "xy" ) )
+      geomTypeXY->setChecked( true );
+    else if ( geomColumnType == QLatin1String( "wkt" ) )
+      geomTypeWKT->setChecked( true );
+    else
+      geomTypeNone->setChecked( true );
     cbxXyDms->setChecked( settings.value( key + "/xyDms", "false" ) == "true" );
     swGeomType->setCurrentIndex( bgGeomType->checkedId() );
     const QString authid = settings.value( key + "/crs", "" ).toString();
@@ -277,7 +284,8 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool sav
 {
   QgsSettings settings;
   QString key = mSettingsKey;
-  if ( ! subkey.isEmpty() ) key.append( '/' ).append( subkey );
+  if ( ! subkey.isEmpty() )
+    key.append( '/' ).append( subkey );
   settings.setValue( key + "/encoding", cmbEncoding->currentText() );
   settings.setValue( key + "/geometry", saveGeometry() );
 
@@ -305,8 +313,10 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool sav
   if ( saveGeomSettings )
   {
     QString geomColumnType = QStringLiteral( "none" );
-    if ( geomTypeXY->isChecked() ) geomColumnType = QStringLiteral( "xy" );
-    if ( geomTypeWKT->isChecked() ) geomColumnType = QStringLiteral( "wkt" );
+    if ( geomTypeXY->isChecked() )
+      geomColumnType = QStringLiteral( "xy" );
+    if ( geomTypeWKT->isChecked() )
+      geomColumnType = QStringLiteral( "wkt" );
     settings.setValue( key + "/geomColumnType", geomColumnType );
     settings.setValue( key + "/xyDms", cbxXyDms->isChecked() ? "true" : "false" );
     if ( crsGeometry->crs().isValid() )
@@ -319,17 +329,20 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool sav
 
 void QgsDelimitedTextSourceSelect::loadSettingsForFile( const QString &filename )
 {
-  if ( filename.isEmpty() ) return;
+  if ( filename.isEmpty() )
+    return;
   const QFileInfo fi( filename );
   const QString filetype = fi.suffix();
   // Don't expect to change settings if not changing file type
-  if ( filetype != mLastFileType ) loadSettings( fi.suffix(), true );
+  if ( filetype != mLastFileType )
+    loadSettings( fi.suffix(), true );
   mLastFileType = filetype;
 }
 
 void QgsDelimitedTextSourceSelect::saveSettingsForFile( const QString &filename )
 {
-  if ( filename.isEmpty() ) return;
+  if ( filename.isEmpty() )
+    return;
   const QFileInfo fi( filename );
   saveSettings( fi.suffix(), true );
 }
@@ -408,15 +421,21 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   while ( counter < mExampleRowCount )
   {
     const QgsDelimitedTextFile::Status status = mFile->nextRecord( values );
-    if ( status == QgsDelimitedTextFile::RecordEOF ) break;
-    if ( status != QgsDelimitedTextFile::RecordOk ) { mBadRowCount++; continue; }
+    if ( status == QgsDelimitedTextFile::RecordEOF )
+      break;
+    if ( status != QgsDelimitedTextFile::RecordOk )
+    {
+      mBadRowCount++;
+      continue;
+    }
     counter++;
 
 
     // Look at count of non-blank fields
 
     int nv = values.size();
-    while ( nv > 0 && values[nv - 1].isEmpty() ) nv--;
+    while ( nv > 0 && values[nv - 1].isEmpty() )
+      nv--;
 
     if ( isEmpty.size() < nv )
     {
@@ -569,7 +588,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   {
     const QString field = fieldList[i];
     // skip empty field names
-    if ( field.isEmpty() ) continue;
+    if ( field.isEmpty() )
+      continue;
     cmbXField->addItem( field );
     cmbYField->addItem( field );
     cmbZField->addItem( field );
@@ -601,7 +621,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   {
     for ( int i = 0; i < fieldList.size(); i++ )
     {
-      if ( ! isValidWkt[i] ) continue;
+      if ( ! isValidWkt[i] )
+        continue;
       const int index = cmbWktField->findText( fieldList[i] );
       if ( index >= 0 )
       {
@@ -638,7 +659,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString &xname, const QString &yname )
 {
   // If fields already set, then nothing to do
-  if ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) return true;
+  if ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 )
+    return true;
 
   // Try and find a valid field name matching the x field
   int indexX = -1;
@@ -648,10 +670,13 @@ bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<boo
   {
     // Only interested in number fields containing the xname string
     // that are in the X combo box
-    if ( ! isValidNumber[i] ) continue;
-    if ( ! fields[i].contains( xname, Qt::CaseInsensitive ) ) continue;
+    if ( ! isValidNumber[i] )
+      continue;
+    if ( ! fields[i].contains( xname, Qt::CaseInsensitive ) )
+      continue;
     indexX = cmbXField->findText( fields[i] );
-    if ( indexX < 0 ) continue;
+    if ( indexX < 0 )
+      continue;
 
     // Now look for potential y fields, like xname with x replaced with y
     const QString xfield( fields[i] );
@@ -659,23 +684,29 @@ bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<boo
     while ( true )
     {
       const int pos = xfield.indexOf( xname, from, Qt::CaseInsensitive );
-      if ( pos < 0 ) break;
+      if ( pos < 0 )
+        break;
       from = pos + 1;
       const QString yfield = xfield.mid( 0, pos ) + yname + xfield.mid( pos + xname.size() );
-      if ( ! fields.contains( yfield, Qt::CaseInsensitive ) ) continue;
+      if ( ! fields.contains( yfield, Qt::CaseInsensitive ) )
+        continue;
       for ( int iy = 0; iy < fields.size(); iy++ )
       {
-        if ( ! isValidNumber[iy] ) continue;
-        if ( iy == i ) continue;
+        if ( ! isValidNumber[iy] )
+          continue;
+        if ( iy == i )
+          continue;
         if ( fields[iy].compare( yfield, Qt::CaseInsensitive ) == 0 )
         {
           indexY = cmbYField->findText( fields[iy] );
           break;
         }
       }
-      if ( indexY >= 0 ) break;
+      if ( indexY >= 0 )
+        break;
     }
-    if ( indexY >= 0 ) break;
+    if ( indexY >= 0 )
+      break;
   }
   if ( indexY >= 0 )
   {

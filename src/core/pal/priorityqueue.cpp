@@ -155,7 +155,8 @@ void PriorityQueue::sort()
 {
   int i;
   int pi = 2;
-  while ( size > pi ) pi *= 2;
+  while ( size > pi )
+    pi *= 2;
 
   i = pi / 2 - 2;
 

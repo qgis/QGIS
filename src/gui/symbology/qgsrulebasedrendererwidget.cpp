@@ -671,7 +671,8 @@ void QgsRuleBasedRendererWidget::countFeatures()
       const auto constFeatureRuleList = featureRuleList;
       for ( QgsRuleBasedRenderer::Rule *duplicateRule : constFeatureRuleList )
       {
-        if ( duplicateRule == rule ) continue;
+        if ( duplicateRule == rule )
+          continue;
         countMap[rule].duplicateCountMap[duplicateRule] += 1;
       }
     }

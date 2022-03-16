@@ -67,7 +67,8 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
 
   QString status = sourceModel()->data( index, PLUGIN_STATUS_ROLE ).toString();
   const QString statusexp = sourceModel()->data( index, PLUGIN_STATUSEXP_ROLE ).toString();
-  if ( status.endsWith( 'Z' ) ) status.chop( 1 );
+  if ( status.endsWith( 'Z' ) )
+    status.chop( 1 );
   if ( ! mAcceptedStatuses.isEmpty()
        && ! mAcceptedStatuses.contains( QStringLiteral( "invalid" ) )
        && !( mAcceptedStatuses.contains( status ) || mAcceptedStatuses.contains( statusexp ) ) )

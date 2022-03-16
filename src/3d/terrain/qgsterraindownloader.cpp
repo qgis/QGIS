@@ -85,7 +85,8 @@ double QgsTerrainDownloader::findBestTileResolution( double requestedMupp )
       break;
   }
 
-  if ( zoom > 15 ) zoom = 15;
+  if ( zoom > 15 )
+    zoom = 15;
   const double finalMupp = mXSpan / ( 256 * ( 1 << zoom ) );
   return finalMupp;
 }

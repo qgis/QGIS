@@ -864,7 +864,8 @@ QModelIndex QgsOptionsProxyModel::pageNumberToSourceIndex( int page ) const
         if ( pagesRemaining == 0 )
           return currentIndex;
 
-        else pagesRemaining--;
+        else
+          pagesRemaining--;
       }
 
       const QModelIndex res = traversePages( currentIndex );

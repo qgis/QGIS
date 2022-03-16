@@ -1809,7 +1809,8 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
     QgsGeometry faceGeometrie;
     if ( faceList.count() == 1 )
     {
-      const QgsMeshFace &face = mCurrentLayer->nativeMesh()->face( faceList.at( 0 ) );
+      const QgsMeshFace &face = mCurrentLayer->nativeMesh()
+      ->face( faceList.at( 0 ) );
       const int faceSize = face.size();
       QVector<QgsPointXY> faceVertices( faceSize );
       for ( int j = 0; j < faceSize; ++j )

@@ -1006,7 +1006,8 @@ void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px,
   i = 0;
   if ( dl >= 0 )
   {
-    while ( i < nbPoints && ad[i] <= dl ) i++;
+    while ( i < nbPoints && ad[i] <= dl )
+      i++;
     i--;
   }
 

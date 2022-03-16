@@ -960,7 +960,8 @@ void QgsModelDesignerDialog::validate()
       QString longMessage = tr( "<p>This model is not valid:</p>" ) + QStringLiteral( "<ul>" );
       for ( const QString &issue : issues )
       {
-        longMessage += QStringLiteral( "<li>%1</li>" ).arg( issue );
+        longMessage += QStringLiteral( "<li>%1</li>" )
+        .arg( issue );
       }
       longMessage += QLatin1String( "</ul>" );
 

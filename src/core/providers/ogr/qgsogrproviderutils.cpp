@@ -657,7 +657,8 @@ QString createFilters( const QString &type )
 
 
     // cleanup
-    if ( sFileFilters.endsWith( QLatin1String( ";;" ) ) ) sFileFilters.chop( 2 );
+    if ( sFileFilters.endsWith( QLatin1String( ";;" ) ) )
+      sFileFilters.chop( 2 );
 
     QgsDebugMsgLevel( "myFileFilters: " + sFileFilters, 2 );
   }

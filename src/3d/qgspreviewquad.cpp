@@ -80,7 +80,8 @@ QgsPreviewQuadMaterial::QgsPreviewQuadMaterial( Qt3DRender::QAbstractTexture *te
   addParameter( mTextureParameter );
   addParameter( mCenterTextureCoords );
   addParameter( mSizeTextureCoords );
-  for ( Qt3DRender::QParameter *parameter : additionalShaderParameters ) addParameter( parameter );
+  for ( Qt3DRender::QParameter *parameter : additionalShaderParameters )
+    addParameter( parameter );
 
   mEffect = new Qt3DRender::QEffect;
 

@@ -1129,7 +1129,8 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
 QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLayer *layer )
 {
   QVector<const QgsChunkNode *> chunks;
-  if ( !mLayerEntities.contains( layer ) ) return chunks;
+  if ( !mLayerEntities.contains( layer ) )
+    return chunks;
   if ( QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( mLayerEntities[ layer ] ) )
   {
     for ( QgsChunkNode *n : c->activeNodes() )

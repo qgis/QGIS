@@ -228,13 +228,15 @@ typedef QgsDataProvider *classFactoryFunction_t( const QString *, const QgsDataP
 
 int QgsRasterLayer::bandCount() const
 {
-  if ( !mDataProvider ) return 0;
+  if ( !mDataProvider )
+    return 0;
   return mDataProvider->bandCount();
 }
 
 QString QgsRasterLayer::bandName( int bandNo ) const
 {
-  if ( !mDataProvider ) return QString();
+  if ( !mDataProvider )
+    return QString();
   return mDataProvider->generateBandName( bandNo );
 }
 
@@ -1188,13 +1190,17 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 
   if ( rendererType == QLatin1String( "singlebandgray" ) )
   {
-    if ( myEnhancements.first() ) myGrayRenderer->setContrastEnhancement( myEnhancements.takeFirst() );
+    if ( myEnhancements.first() )
+      myGrayRenderer->setContrastEnhancement( myEnhancements.takeFirst() );
   }
   else if ( rendererType == QLatin1String( "multibandcolor" ) )
   {
-    if ( myEnhancements.first() ) myMultiBandRenderer->setRedContrastEnhancement( myEnhancements.takeFirst() );
-    if ( myEnhancements.first() ) myMultiBandRenderer->setGreenContrastEnhancement( myEnhancements.takeFirst() );
-    if ( myEnhancements.first() ) myMultiBandRenderer->setBlueContrastEnhancement( myEnhancements.takeFirst() );
+    if ( myEnhancements.first() )
+      myMultiBandRenderer->setRedContrastEnhancement( myEnhancements.takeFirst() );
+    if ( myEnhancements.first() )
+      myMultiBandRenderer->setGreenContrastEnhancement( myEnhancements.takeFirst() );
+    if ( myEnhancements.first() )
+      myMultiBandRenderer->setBlueContrastEnhancement( myEnhancements.takeFirst() );
   }
 
   //delete all remaining unused enhancements
@@ -2114,7 +2120,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
       closeDataProvider();
       init();
       setDataProvider( mProviderKey );
-      if ( !isValid() ) return false;
+      if ( !isValid() )
+        return false;
     }
   }
 #endif
@@ -2171,7 +2178,8 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   for ( int i = 0; i < mPipe->size(); i++ )
   {
     QgsRasterInterface *interface = mPipe->at( i );
-    if ( !interface ) continue;
+    if ( !interface )
+      continue;
     interface->writeXml( document, pipeElement );
   }
 
@@ -2603,13 +2611,15 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
 
 int QgsRasterLayer::width() const
 {
-  if ( !mDataProvider ) return 0;
+  if ( !mDataProvider )
+    return 0;
   return mDataProvider->xSize();
 }
 
 int QgsRasterLayer::height() const
 {
-  if ( !mDataProvider ) return 0;
+  if ( !mDataProvider )
+    return 0;
   return mDataProvider->ySize();
 }
 

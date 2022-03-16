@@ -49,13 +49,25 @@ struct TriangleCoords
 #define FLOAT3_TO_VECTOR(x)  QVector3D( data[0], -data[2], data[1] )
 
     pts[0] = FLOAT3_TO_VECTOR( data ); data += 3;
-    if ( withNormal ) { normals[0] = FLOAT3_TO_VECTOR( data ); data += 3; }
+    if ( withNormal )
+    {
+      normals[0] = FLOAT3_TO_VECTOR( data );
+      data += 3;
+    }
 
     pts[1] = FLOAT3_TO_VECTOR( data ); data += 3;
-    if ( withNormal ) { normals[1] = FLOAT3_TO_VECTOR( data ); data += 3; }
+    if ( withNormal )
+    {
+      normals[1] = FLOAT3_TO_VECTOR( data );
+      data += 3;
+    }
 
     pts[2] = FLOAT3_TO_VECTOR( data ); data += 3;
-    if ( withNormal ) { normals[2] = FLOAT3_TO_VECTOR( data ); data += 3; }
+    if ( withNormal )
+    {
+      normals[2] = FLOAT3_TO_VECTOR( data );
+      data += 3;
+    }
   }
 
   //! Compares two triangles

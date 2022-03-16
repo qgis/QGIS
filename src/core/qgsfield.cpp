@@ -315,8 +315,10 @@ QString QgsField::displayString( const QVariant &v ) const
         }
         else
         {
-          if ( dotPosition < 0 ) precision = 0;
-          else precision = s.length() - dotPosition - 1;
+          if ( dotPosition < 0 )
+            precision = 0;
+          else
+            precision = s.length() - dotPosition - 1;
 
           if ( -1 < v.toDouble() && v.toDouble() < 1 )
           {

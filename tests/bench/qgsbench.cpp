@@ -225,8 +225,10 @@ void QgsBench::render()
     {
       avg[t] += mTimes.at( i )[t];
 
-      if ( i == 0 || mTimes.at( i )[t] < min[t] ) min[t] = mTimes.at( i )[t];
-      if ( i == 0 || mTimes.at( i )[t] > max[t] ) max[t] = mTimes.at( i )[t];
+      if ( i == 0 || mTimes.at( i )[t] < min[t] )
+        min[t] = mTimes.at( i )[t];
+      if ( i == 0 || mTimes.at( i )[t] > max[t] )
+        max[t] = mTimes.at( i )[t];
     }
     avg[t] /= mTimes.size();
   }
@@ -240,7 +242,8 @@ void QgsBench::render()
       {
         const double d = std::fabs( avg[t] - mTimes.at( i )[t] );
         stdev[t] += std::pow( d, 2 );
-        if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
+        if ( i == 0 || d > maxdev[t] )
+          maxdev[t] = d;
       }
 
       stdev[t] = std::sqrt( stdev[t] / mTimes.size() );

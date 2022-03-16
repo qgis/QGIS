@@ -87,8 +87,10 @@ static int compare_by_envarea( const void *g1, const void *g2 )
   double n1 = f1->envarea;
   double n2 = f2->envarea;
 
-  if ( n1 < n2 ) return 1;
-  if ( n1 > n2 ) return -1;
+  if ( n1 < n2 )
+    return 1;
+  if ( n1 > n2 )
+    return -1;
   return 0;
 }
 
@@ -293,7 +295,8 @@ static GEOSGeometry *LWGEOM_GEOS_getPointN( const GEOSGeometry *g_in, uint32_t n
       {
         const GEOSGeometry *g = GEOSGetGeometryN_r( handle, g_in, gn );
         ret = LWGEOM_GEOS_getPointN( g, n );
-        if ( ret ) return ret;
+        if ( ret )
+          return ret;
       }
       break;
     }
@@ -301,12 +304,14 @@ static GEOSGeometry *LWGEOM_GEOS_getPointN( const GEOSGeometry *g_in, uint32_t n
     case GEOS_POLYGON:
     {
       ret = LWGEOM_GEOS_getPointN( GEOSGetExteriorRing_r( handle, g_in ), n );
-      if ( ret ) return ret;
+      if ( ret )
+        return ret;
       for ( gn = 0; gn < GEOSGetNumInteriorRings_r( handle, g_in ); ++gn )
       {
         const GEOSGeometry *g = GEOSGetInteriorRingN_r( handle, g_in, gn );
         ret = LWGEOM_GEOS_getPointN( g, n );
-        if ( ret ) return ret;
+        if ( ret )
+          return ret;
       }
       break;
     }
@@ -319,23 +324,34 @@ static GEOSGeometry *LWGEOM_GEOS_getPointN( const GEOSGeometry *g_in, uint32_t n
   }
 
   seq_in = GEOSGeom_getCoordSeq_r( handle, g_in );
-  if ( ! seq_in ) return nullptr;
-  if ( ! GEOSCoordSeq_getSize_r( handle, seq_in, &sz ) ) return nullptr;
-  if ( ! sz ) return nullptr;
+  if ( ! seq_in )
+    return nullptr;
+  if ( ! GEOSCoordSeq_getSize_r( handle, seq_in, &sz ) )
+    return nullptr;
+  if ( ! sz )
+    return nullptr;
 
-  if ( ! GEOSCoordSeq_getDimensions_r( handle, seq_in, &dims ) ) return nullptr;
+  if ( ! GEOSCoordSeq_getDimensions_r( handle, seq_in, &dims ) )
+    return nullptr;
 
   seq_out = GEOSCoordSeq_create_r( handle, 1, dims );
-  if ( ! seq_out ) return nullptr;
+  if ( ! seq_out )
+    return nullptr;
 
-  if ( ! GEOSCoordSeq_getX_r( handle, seq_in, n, &val ) ) return nullptr;
-  if ( ! GEOSCoordSeq_setX_r( handle, seq_out, n, val ) ) return nullptr;
-  if ( ! GEOSCoordSeq_getY_r( handle, seq_in, n, &val ) ) return nullptr;
-  if ( ! GEOSCoordSeq_setY_r( handle, seq_out, n, val ) ) return nullptr;
+  if ( ! GEOSCoordSeq_getX_r( handle, seq_in, n, &val ) )
+    return nullptr;
+  if ( ! GEOSCoordSeq_setX_r( handle, seq_out, n, val ) )
+    return nullptr;
+  if ( ! GEOSCoordSeq_getY_r( handle, seq_in, n, &val ) )
+    return nullptr;
+  if ( ! GEOSCoordSeq_setY_r( handle, seq_out, n, val ) )
+    return nullptr;
   if ( dims > 2 )
   {
-    if ( ! GEOSCoordSeq_getZ_r( handle, seq_in, n, &val ) ) return nullptr;
-    if ( ! GEOSCoordSeq_setZ_r( handle, seq_out, n, val ) ) return nullptr;
+    if ( ! GEOSCoordSeq_getZ_r( handle, seq_in, n, &val ) )
+      return nullptr;
+    if ( ! GEOSCoordSeq_setZ_r( handle, seq_out, n, val ) )
+      return nullptr;
   }
 
   return GEOSGeom_createPoint_r( handle, seq_out );

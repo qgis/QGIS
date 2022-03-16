@@ -211,7 +211,8 @@ bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore:
       for ( Qt3DRender::QMesh *mesh : meshes )
       {
         Qgs3DExportObject *object = exporter->processGeometryRenderer( mesh, objectNamePrefix );
-        if ( object == nullptr ) continue;
+        if ( object == nullptr )
+          continue;
         object->setSmoothEdges( exporter->smoothEdges() );
         object->setupMaterial( material() );
         exporter->mObjects << object;
@@ -222,8 +223,10 @@ bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore:
   else if ( shape() == QgsPoint3DSymbol::Billboard )
   {
     Qgs3DExportObject *obj = exporter->processPoints( entity, objectNamePrefix );
-    if ( obj != nullptr ) exporter->mObjects << obj;
-    if ( obj != nullptr ) return true;
+    if ( obj != nullptr )
+      exporter->mObjects << obj;
+    if ( obj != nullptr )
+      return true;
   }
   else
   {

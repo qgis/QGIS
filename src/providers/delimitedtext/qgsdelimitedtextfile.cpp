@@ -39,7 +39,8 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   mDefaultFieldRegexp.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
   // The default type is CSV
   setTypeCSV();
-  if ( ! url.isNull() ) setFromUrl( url );
+  if ( ! url.isNull() )
+    setFromUrl( url );
 
   // For tests
   const QString bufferSizeStr( getenv( "QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE" ) );
@@ -269,9 +270,12 @@ QUrl QgsDelimitedTextFile::url()
   }
   if ( mType == DelimTypeCSV )
   {
-    if ( mDelimChars != QLatin1String( "," ) ) query.addQueryItem( QStringLiteral( "delimiter" ), encodeChars( mDelimChars ) );
-    if ( mQuoteChar != QLatin1String( "\"" ) ) query.addQueryItem( QStringLiteral( "quote" ), encodeChars( mQuoteChar ) );
-    if ( mEscapeChar != QLatin1String( "\"" ) ) query.addQueryItem( QStringLiteral( "escape" ), encodeChars( mEscapeChar ) );
+    if ( mDelimChars != QLatin1String( "," ) )
+      query.addQueryItem( QStringLiteral( "delimiter" ), encodeChars( mDelimChars ) );
+    if ( mQuoteChar != QLatin1String( "\"" ) )
+      query.addQueryItem( QStringLiteral( "quote" ), encodeChars( mQuoteChar ) );
+    if ( mEscapeChar != QLatin1String( "\"" ) )
+      query.addQueryItem( QStringLiteral( "escape" ), encodeChars( mEscapeChar ) );
   }
   if ( mSkipLines > 0 )
   {
@@ -317,9 +321,12 @@ void QgsDelimitedTextFile::setUseWatcher( bool useWatcher )
 
 QString QgsDelimitedTextFile::type()
 {
-  if ( mType == DelimTypeWhitespace ) return QStringLiteral( "whitespace" );
-  if ( mType == DelimTypeCSV ) return QStringLiteral( "csv" );
-  if ( mType == DelimTypeRegexp ) return QStringLiteral( "regexp" );
+  if ( mType == DelimTypeWhitespace )
+    return QStringLiteral( "whitespace" );
+  if ( mType == DelimTypeCSV )
+    return QStringLiteral( "csv" );
+  if ( mType == DelimTypeRegexp )
+    return QStringLiteral( "regexp" );
   return QStringLiteral( "csv" );
 }
 
@@ -416,7 +423,8 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     bool nameOk = true;
     const int fieldNo = mFieldNames.size() + 1;
     name = name.trimmed();
-    if ( name.length() > mMaxNameLength ) name = name.mid( 0, mMaxNameLength );
+    if ( name.length() > mMaxNameLength )
+      name = name.mid( 0, mMaxNameLength );
 
     // If the name is empty then reset it to default name
     if ( name.length() == 0 )
@@ -446,9 +454,11 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
         suffix++;
         name = basename.arg( suffix );
         // Not OK if it is already in the name list
-        if ( mFieldNames.contains( name, Qt::CaseInsensitive ) ) continue;
+        if ( mFieldNames.contains( name, Qt::CaseInsensitive ) )
+          continue;
         // Not OK if it is already in proposed names
-        if ( names.contains( name, Qt::CaseInsensitive ) ) continue;
+        if ( names.contains( name, Qt::CaseInsensitive ) )
+          continue;
         break;
       }
     }
@@ -461,7 +471,8 @@ QStringList &QgsDelimitedTextFile::fieldNames()
 {
   // If not yet opened then reset file to read column headers
   //
-  if ( mUseHeader && ! mFile ) reset();
+  if ( mUseHeader && ! mFile )
+    reset();
   // If have read more fields than field names, then append field names
   // to match the field count (will only happen if parsed some records)
   if ( mMaxFieldCount > mFieldNames.size() )
@@ -478,7 +489,8 @@ int QgsDelimitedTextFile::fieldIndex( const QString &name )
 {
   // If not yet opened then reset file to read column headers
   //
-  if ( mUseHeader && ! mFile ) reset();
+  if ( mUseHeader && ! mFile )
+    reset();
   // Try to determine the field based on a default field name, includes
   // Field_### and simple integer fields.
   if ( const QRegularExpressionMatch match = mDefaultFieldRegexp.match( name ); match.capturedStart() == 0 )
@@ -487,7 +499,8 @@ int QgsDelimitedTextFile::fieldIndex( const QString &name )
   }
   for ( int i = 0; i < mFieldNames.size(); i++ )
   {
-    if ( mFieldNames[i].compare( name, Qt::CaseInsensitive ) == 0 ) return i;
+    if ( mFieldNames[i].compare( name, Qt::CaseInsensitive ) == 0 )
+      return i;
   }
   return -1;
 
@@ -495,10 +508,12 @@ int QgsDelimitedTextFile::fieldIndex( const QString &name )
 
 bool QgsDelimitedTextFile::setNextRecordId( long nextRecordId )
 {
-  if ( ! mFile ) reset();
+  if ( ! mFile )
+    reset();
 
   mHoldCurrentRecord = nextRecordId == mRecordLineNumber;
-  if ( mHoldCurrentRecord ) return true;
+  if ( mHoldCurrentRecord )
+    return true;
   return setNextLineNumber( nextRecordId );
 }
 
@@ -520,14 +535,16 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextRecord( QStringList &reco
     // Find the first non-blank line to read
     QString buffer;
     status = nextLine( buffer, true );
-    if ( status != RecordOk ) return RecordEOF;
+    if ( status != RecordOk )
+      return RecordEOF;
 
     mCurrentRecord.clear();
     mRecordLineNumber = mLineNumber;
     if ( mRecordNumber >= 0 )
     {
       mRecordNumber++;
-      if ( mRecordNumber > mMaxRecordNumber ) mMaxRecordNumber = mRecordNumber;
+      if ( mRecordNumber > mMaxRecordNumber )
+        mMaxRecordNumber = mRecordNumber;
     }
     status = ( this->*mParser )( buffer, mCurrentRecord );
   }
@@ -541,7 +558,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextRecord( QStringList &reco
 QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
 {
   // Make sure the file is valid open
-  if ( ! isValid() || ! open() ) return InvalidDefinition;
+  if ( ! isValid() || ! open() )
+    return InvalidDefinition;
 
   // Reset the file pointer
   mFile->seek( 0 );
@@ -555,7 +573,8 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
   for ( int i = mSkipLines; i-- > 0; )
   {
     QString ignoredContent;
-    if ( nextLine( ignoredContent ) == RecordEOF ) return RecordEOF;
+    if ( nextLine( ignoredContent ) == RecordEOF )
+      return RecordEOF;
   }
   // Read the column names
   Status result = RecordOk;
@@ -565,7 +584,8 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
     result = nextRecord( names );
     setFieldNames( names );
   }
-  if ( result == RecordOk ) mRecordNumber = 0;
+  if ( result == RecordOk )
+    mRecordNumber = 0;
   return result;
 }
 
@@ -574,7 +594,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
   if ( ! mFile )
   {
     const Status status = reset();
-    if ( status != RecordOk ) return status;
+    if ( status != RecordOk )
+      return status;
   }
   if ( mLineNumber == 0 )
   {
@@ -665,7 +686,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
       }
     }
     mLineNumber++;
-    if ( skipBlank && buffer.isEmpty() ) continue;
+    if ( skipBlank && buffer.isEmpty() )
+      continue;
     return RecordOk;
   }
 
@@ -675,7 +697,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
 
 bool QgsDelimitedTextFile::setNextLineNumber( long nextLineNumber )
 {
-  if ( ! mFile ) return false;
+  if ( ! mFile )
+    return false;
   if ( mLineNumber > nextLineNumber - 1 )
   {
     mRecordNumber = -1;
@@ -685,7 +708,8 @@ bool QgsDelimitedTextFile::setNextLineNumber( long nextLineNumber )
   QString buffer;
   while ( mLineNumber < nextLineNumber - 1 )
   {
-    if ( nextLine( buffer, false ) != RecordOk ) return false;
+    if ( nextLine( buffer, false ) != RecordOk )
+      return false;
   }
   return true;
 
@@ -693,15 +717,18 @@ bool QgsDelimitedTextFile::setNextLineNumber( long nextLineNumber )
 
 void QgsDelimitedTextFile::appendField( QStringList &record, QString field, bool quoted )
 {
-  if ( mMaxFields > 0 && record.size() >= mMaxFields ) return;
+  if ( mMaxFields > 0 && record.size() >= mMaxFields )
+    return;
   if ( quoted )
   {
     record.append( field );
   }
   else
   {
-    if ( mTrimFields ) field = field.trimmed();
-    if ( !( mDiscardEmptyFields && field.isEmpty() ) ) record.append( field );
+    if ( mTrimFields )
+      field = field.trimmed();
+    if ( !( mDiscardEmptyFields && field.isEmpty() ) )
+      record.append( field );
   }
   // Keep track of maximum number of non-empty fields in a record
   if ( record.size() > mMaxFieldCount && ! field.isEmpty() )
@@ -767,7 +794,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
     pos = matchPos + matchLen;
 
     // Quit loop if we have enough fields.
-    if ( mMaxFields > 0 && fields.size() >= mMaxFields ) break;
+    if ( mMaxFields > 0 && fields.size() >= mMaxFields )
+      break;
   }
   return RecordOk;
 }
@@ -833,7 +861,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
       const bool isQuoteChar = mQuoteChar.contains( c );
       isQuote = quoted ? c == quoteChar : isQuoteChar;
       isEscape = mEscapeChar.contains( c );
-      if ( isQuoteChar && isEscape ) isEscape = isQuote;
+      if ( isQuoteChar && isEscape )
+        isEscape = isQuote;
     }
 
     // Start or end of quote ...
@@ -895,7 +924,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
     // after the end..
     else if ( c.isSpace() )
     {
-      if ( ! ended ) field.append( c );
+      if ( ! ended )
+        field.append( c );
     }
     // Other chars permitted if not after quoted field
     else

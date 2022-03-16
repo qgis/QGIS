@@ -61,7 +61,8 @@ bool QgsListModel::valid() const
   for ( QVariantList::const_iterator it = mLines.constBegin(); it != mLines.constEnd(); ++it )
   {
     QVariant cur = *it;
-    if ( !cur.convert( mSubType ) ) return false;
+    if ( !cur.convert( mSubType ) )
+      return false;
   }
   return true;
 }

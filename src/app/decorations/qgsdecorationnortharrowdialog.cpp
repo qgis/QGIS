@@ -91,7 +91,8 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
     svgDlg.svgSelector()->setSvgPath( mSvgPathLineEdit->text().trimmed() );
     if ( svgDlg.exec() == QDialog::Accepted )
     {
-      const QString svgPath = svgDlg.svgSelector()->currentSvgPath();
+      const QString svgPath = svgDlg.svgSelector()
+      ->currentSvgPath();
       if ( !svgPath.isEmpty() )
       {
         updateSvgPath( svgPath );

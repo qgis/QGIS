@@ -637,7 +637,8 @@ QSizeF QgsLegendRenderer::drawTitle( QgsRenderContext &context, double top, Qt::
 
 double QgsLegendRenderer::spaceAboveGroup( const LegendComponentGroup &group )
 {
-  if ( group.components.isEmpty() ) return 0;
+  if ( group.components.isEmpty() )
+    return 0;
 
   LegendComponent component = group.components.first();
 

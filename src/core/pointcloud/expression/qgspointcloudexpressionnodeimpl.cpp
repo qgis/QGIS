@@ -53,8 +53,10 @@ QString QgsPointCloudExpressionNode::NodeList::dump() const
   bool first = true;
   for ( QgsPointCloudExpressionNode *n : mList )
   {
-    if ( !first ) msg += QLatin1String( ", " );
-    else first = false;
+    if ( !first )
+      msg += QLatin1String( ", " );
+    else
+      first = false;
     msg += n->dump();
   }
   return msg;

@@ -73,12 +73,14 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
   compareRow( QStringLiteral( "Extent" ), verifiedProvider->extent().toString(), expectedProvider->extent().toString(), mReport, verifiedProvider->extent() == expectedProvider->extent() );
 
-  if ( verifiedProvider->extent() != expectedProvider->extent() ) ok = false;
+  if ( verifiedProvider->extent() != expectedProvider->extent() )
+    ok = false;
 
 
   mReport += QLatin1String( "</table>\n" );
 
-  if ( !ok ) return false;
+  if ( !ok )
+    return false;
 
   bool allOk = true;
   for ( int band = 1; band <= expectedProvider->bandCount(); band++ )

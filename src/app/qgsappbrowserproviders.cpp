@@ -1050,7 +1050,8 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       }
       catch ( QgsCsException & )
       {
-        context.messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to project CRS." ) );
+        context.messageBar()
+        ->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to project CRS." ) );
       }
     } );
     menu->addAction( actionZoom );

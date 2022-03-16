@@ -301,8 +301,10 @@ QString QgsSQLStatement::NodeList::dump() const
   const auto constMList = mList;
   for ( Node *n : constMList )
   {
-    if ( !first ) msg += QLatin1String( ", " );
-    else first = false;
+    if ( !first )
+      msg += QLatin1String( ", " );
+    else
+      first = false;
     msg += n->dump();
   }
   return msg;

@@ -657,7 +657,8 @@ QgsCoordinateReferenceSystem QgsRasterLayerSaveAsDialog::outputCrs()
 
 QgsRasterLayerSaveAsDialog::Mode QgsRasterLayerSaveAsDialog::mode() const
 {
-  if ( mRenderedModeRadioButton->isChecked() ) return RenderedImageMode;
+  if ( mRenderedModeRadioButton->isChecked() )
+    return RenderedImageMode;
   return RawDataMode;
 }
 
@@ -673,9 +674,11 @@ void QgsRasterLayerSaveAsDialog::mAddNoDataManuallyToolButton_clicked()
 
 void QgsRasterLayerSaveAsDialog::mLoadTransparentNoDataToolButton_clicked()
 {
-  if ( !mRasterLayer->renderer() ) return;
+  if ( !mRasterLayer->renderer() )
+    return;
   const QgsRasterTransparency *rasterTransparency = mRasterLayer->renderer()->rasterTransparency();
-  if ( !rasterTransparency ) return;
+  if ( !rasterTransparency )
+    return;
 
   const auto constTransparentSingleValuePixelList = rasterTransparency->transparentSingleValuePixelList();
   for ( const QgsRasterTransparency::TransparentSingleValuePixel &transparencyPixel : constTransparentSingleValuePixelList )
@@ -748,7 +751,8 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
   Q_UNUSED( text )
 
   QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
-  if ( !lineEdit ) return;
+  if ( !lineEdit )
+    return;
   int row = -1;
   int column = -1;
   for ( int r = 0; r < mNoDataTableWidget->rowCount(); r++ )
@@ -762,14 +766,16 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
         break;
       }
     }
-    if ( row != -1 ) break;
+    if ( row != -1 )
+      break;
   }
   QgsDebugMsg( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ) );
 
   if ( column == 0 )
   {
     QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, 1 ) );
-    if ( !toLineEdit ) return;
+    if ( !toLineEdit )
+      return;
     bool toChanged = mNoDataToEdited.value( row );
     QgsDebugMsg( QStringLiteral( "toChanged = %1" ).arg( toChanged ) );
     if ( !toChanged )
@@ -873,7 +879,8 @@ double QgsRasterLayerSaveAsDialog::noDataCellValue( int row, int column ) const
 void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )
 {
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, column ) );
-  if ( !lineEdit ) return;
+  if ( !lineEdit )
+    return;
 
   int width = std::max( lineEdit->fontMetrics().boundingRect( lineEdit->text() ).width() + 10, 100 );
   width = std::max( width, mNoDataTableWidget->columnWidth( column ) );

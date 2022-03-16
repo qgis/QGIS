@@ -522,7 +522,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbScanItemsInBrowser->addItem( tr( "Check File Contents" ), "contents" ); // 0
   cmbScanItemsInBrowser->addItem( tr( "Check Extension" ), "extension" );    // 1
   int index = cmbScanItemsInBrowser->findData( mSettings->value( QStringLiteral( "/qgis/scanItemsInBrowser2" ), QString() ) );
-  if ( index == -1 ) index = 1;
+  if ( index == -1 )
+    index = 1;
   cmbScanItemsInBrowser->setCurrentIndex( index );
 
   // Scan for contents of compressed files (.zip) in browser dock
@@ -532,7 +533,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbScanZipInBrowser->addItem( tr( "Basic Scan" ), QVariant( "basic" ) );
   cmbScanZipInBrowser->addItem( tr( "Full Scan" ), QVariant( "full" ) );
   index = cmbScanZipInBrowser->findData( mSettings->value( QStringLiteral( "/qgis/scanZipInBrowser2" ), QString() ) );
-  if ( index == -1 ) index = 1;
+  if ( index == -1 )
+    index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
   mCheckMonitorDirectories->setChecked( mSettings->value( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), true ).toBool() );
@@ -1714,7 +1716,8 @@ void QgsOptions::saveOptions()
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
     simplifyHints |= QgsVectorSimplifyMethod::GeometrySimplification;
-    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
+    if ( mSimplifyDrawingSpinBox->value() > 1 )
+      simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
   }
   mSettings->setEnumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), simplifyHints );
   mSettings->setEnumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), ( QgsVectorSimplifyMethod::SimplifyHints )mSimplifyAlgorithmComboBox->currentData().toInt() );
@@ -2143,7 +2146,8 @@ QStringList QgsOptions::i18nList()
     QString myFileName = myIterator.next();
 
     // Ignore the 'en' translation file, already added as 'en_US'.
-    if ( myFileName.compare( QLatin1String( "qgis_en.qm" ) ) == 0 ) continue;
+    if ( myFileName.compare( QLatin1String( "qgis_en.qm" ) ) == 0 )
+      continue;
 
     myList << myFileName.remove( QStringLiteral( "qgis_" ) ).remove( QStringLiteral( ".qm" ) );
   }

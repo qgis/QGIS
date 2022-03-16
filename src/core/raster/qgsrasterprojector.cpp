@@ -50,14 +50,16 @@ QgsRasterProjector *QgsRasterProjector::clone() const
 
 int QgsRasterProjector::bandCount() const
 {
-  if ( mInput ) return mInput->bandCount();
+  if ( mInput )
+    return mInput->bandCount();
 
   return 0;
 }
 
 Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 {
-  if ( mInput ) return mInput->dataType( bandNo );
+  if ( mInput )
+    return mInput->dataType( bandNo );
 
   return Qgis::DataType::UnknownDataType;
 }
@@ -546,10 +548,14 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
   // For now silently correct limits to avoid crashes
   // TODO: review
   // should not happen
-  if ( *srcRow >= mSrcRows ) return false;
-  if ( *srcRow < 0 ) return false;
-  if ( *srcCol >= mSrcCols ) return false;
-  if ( *srcCol < 0 ) return false;
+  if ( *srcRow >= mSrcRows )
+    return false;
+  if ( *srcRow < 0 )
+    return false;
+  if ( *srcCol >= mSrcCols )
+    return false;
+  if ( *srcCol < 0 )
+    return false;
 
   return true;
 }
@@ -603,10 +609,14 @@ bool ProjectorData::approximateSrcRowCol( int destRow, int destCol, int *srcRow,
   // For now silently correct limits to avoid crashes
   // TODO: review
   // should not happen
-  if ( *srcRow >= mSrcRows ) return false;
-  if ( *srcRow < 0 ) return false;
-  if ( *srcCol >= mSrcCols ) return false;
-  if ( *srcCol < 0 ) return false;
+  if ( *srcRow >= mSrcRows )
+    return false;
+  if ( *srcRow < 0 )
+    return false;
+  if ( *srcCol >= mSrcCols )
+    return false;
+  if ( *srcCol < 0 )
+    return false;
 
   return true;
 }
@@ -889,7 +899,8 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     for ( int j = 0; j < width; ++j )
     {
       const bool inside = pd.srcRowCol( i, j, &srcRow, &srcCol );
-      if ( !inside ) continue; // we have everything set to no data
+      if ( !inside )
+        continue; // we have everything set to no data
 
       const qgssize srcIndex = static_cast< qgssize >( srcRow ) * pd.srcCols() + srcCol;
 

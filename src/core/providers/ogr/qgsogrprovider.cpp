@@ -3356,7 +3356,8 @@ void QgsOgrProvider::recalculateFeatureCount() const
       {
         OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
         gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
-        if ( gType == flattenGeomTypeFilter ) mFeaturesCounted++;
+        if ( gType == flattenGeomTypeFilter )
+          mFeaturesCounted++;
       }
     }
     mOgrLayer->ResetReading();

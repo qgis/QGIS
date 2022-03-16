@@ -80,7 +80,8 @@ void QgsCategorizedSymbolRendererModel::setRenderer( QgsCategorizedSymbolRendere
 
 void QgsCategorizedSymbolRendererModel::addCategory( const QgsRendererCategory &cat )
 {
-  if ( !mRenderer ) return;
+  if ( !mRenderer )
+    return;
   const int idx = mRenderer->categories().size();
   beginInsertRows( QModelIndex(), idx, idx );
   mRenderer->addCategory( cat );
@@ -398,9 +399,11 @@ bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt:
 {
   Q_UNUSED( row )
   Q_UNUSED( column )
-  if ( action != Qt::MoveAction ) return true;
+  if ( action != Qt::MoveAction )
+    return true;
 
-  if ( !data->hasFormat( mMimeFormat ) ) return false;
+  if ( !data->hasFormat( mMimeFormat ) )
+    return false;
 
   QByteArray encodedData = data->data( mMimeFormat );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
@@ -416,21 +419,25 @@ bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt:
   int to = parent.row();
   // to is -1 if dragged outside items, i.e. below any item,
   // then move to the last position
-  if ( to == -1 ) to = mRenderer->categories().size(); // out of rang ok, will be decreased
+  if ( to == -1 )
+    to = mRenderer->categories().size(); // out of rang ok, will be decreased
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
     QgsDebugMsg( QStringLiteral( "move %1 to %2" ).arg( rows[i] ).arg( to ) );
     int t = to;
     // moveCategory first removes and then inserts
-    if ( rows[i] < t ) t--;
+    if ( rows[i] < t )
+      t--;
     mRenderer->moveCategory( rows[i], t );
     // current moved under another, shift its index up
     for ( int j = 0; j < i; j++ )
     {
-      if ( to < rows[j] && rows[i] > rows[j] ) rows[j] += 1;
+      if ( to < rows[j] && rows[i] > rows[j] )
+        rows[j] += 1;
     }
     // removed under 'to' so the target shifted down
-    if ( rows[i] < to ) to--;
+    if ( rows[i] < to )
+      to--;
   }
   emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->categories().size(), 0 ) );
   emit rowsMoved();
@@ -490,7 +497,8 @@ void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement elem
     opt.rect.setLeft( 0 );
     // draw always as line above, because we move item to that index
     opt.rect.setHeight( 0 );
-    if ( widget ) opt.rect.setRight( widget->width() );
+    if ( widget )
+      opt.rect.setRight( widget->width() );
     QProxyStyle::drawPrimitive( element, &opt, painter, widget );
     return;
   }
@@ -1099,7 +1107,8 @@ void QgsCategorizedSymbolRendererWidget::deleteAllCategories()
 
 void QgsCategorizedSymbolRendererWidget::addCategory()
 {
-  if ( !mModel ) return;
+  if ( !mModel )
+    return;
   QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   const QgsRendererCategory cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );

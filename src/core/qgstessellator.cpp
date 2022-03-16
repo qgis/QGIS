@@ -526,9 +526,12 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
   const float detectionDelta = qDegreesToRadians( 10.0f );
   int facade = 0;
-  if ( radsBetwwenUpNormal > M_PI_2 - detectionDelta && radsBetwwenUpNormal < M_PI_2 + detectionDelta ) facade = 1;
-  else if ( radsBetwwenUpNormal > - M_PI_2 - detectionDelta && radsBetwwenUpNormal < -M_PI_2 + detectionDelta ) facade = 1;
-  else facade = 2;
+  if ( radsBetwwenUpNormal > M_PI_2 - detectionDelta && radsBetwwenUpNormal < M_PI_2 + detectionDelta )
+    facade = 1;
+  else if ( radsBetwwenUpNormal > - M_PI_2 - detectionDelta && radsBetwwenUpNormal < -M_PI_2 + detectionDelta )
+    facade = 1;
+  else
+    facade = 2;
 
   if ( pCount == 4 && polygon.numInteriorRings() == 0 && ( mTessellatedFacade & facade ) )
   {

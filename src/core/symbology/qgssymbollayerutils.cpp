@@ -117,21 +117,28 @@ QString QgsSymbolLayerUtils::encodeSldFontStyle( QFont::Style style )
 
 QFont::Style QgsSymbolLayerUtils::decodeSldFontStyle( const QString &str )
 {
-  if ( str == QLatin1String( "normal" ) ) return QFont::StyleNormal;
-  if ( str == QLatin1String( "italic" ) ) return QFont::StyleItalic;
-  if ( str == QLatin1String( "oblique" ) ) return QFont::StyleOblique;
+  if ( str == QLatin1String( "normal" ) )
+    return QFont::StyleNormal;
+  if ( str == QLatin1String( "italic" ) )
+    return QFont::StyleItalic;
+  if ( str == QLatin1String( "oblique" ) )
+    return QFont::StyleOblique;
   return QFont::StyleNormal;
 }
 
 QString QgsSymbolLayerUtils::encodeSldFontWeight( int weight )
 {
-  if ( weight == 50 ) return QStringLiteral( "normal" );
-  if ( weight == 75 ) return QStringLiteral( "bold" );
+  if ( weight == 50 )
+    return QStringLiteral( "normal" );
+  if ( weight == 75 )
+    return QStringLiteral( "bold" );
 
   // QFont::Weight is between 0 and 99
   // CSS font-weight is between 100 and 900
-  if ( weight < 0 ) return QStringLiteral( "100" );
-  if ( weight > 99 ) return QStringLiteral( "900" );
+  if ( weight < 0 )
+    return QStringLiteral( "100" );
+  if ( weight > 99 )
+    return QStringLiteral( "900" );
   return QString::number( weight * 800 / 99 + 100 );
 }
 
@@ -144,8 +151,10 @@ int QgsSymbolLayerUtils::decodeSldFontWeight( const QString &str )
 
   // CSS font-weight is between 100 and 900
   // QFont::Weight is between 0 and 99
-  if ( weight > 900 ) return 99;
-  if ( weight < 100 ) return 0;
+  if ( weight > 900 )
+    return 99;
+  if ( weight < 100 )
+    return 0;
   return ( weight - 100 ) * 99 / 800;
 }
 
@@ -172,12 +181,18 @@ QString QgsSymbolLayerUtils::encodePenStyle( Qt::PenStyle style )
 
 Qt::PenStyle QgsSymbolLayerUtils::decodePenStyle( const QString &str )
 {
-  if ( str == QLatin1String( "no" ) ) return Qt::NoPen;
-  if ( str == QLatin1String( "solid" ) ) return Qt::SolidLine;
-  if ( str == QLatin1String( "dash" ) ) return Qt::DashLine;
-  if ( str == QLatin1String( "dot" ) ) return Qt::DotLine;
-  if ( str == QLatin1String( "dash dot" ) ) return Qt::DashDotLine;
-  if ( str == QLatin1String( "dash dot dot" ) ) return Qt::DashDotDotLine;
+  if ( str == QLatin1String( "no" ) )
+    return Qt::NoPen;
+  if ( str == QLatin1String( "solid" ) )
+    return Qt::SolidLine;
+  if ( str == QLatin1String( "dash" ) )
+    return Qt::DashLine;
+  if ( str == QLatin1String( "dot" ) )
+    return Qt::DotLine;
+  if ( str == QLatin1String( "dash dot" ) )
+    return Qt::DashDotLine;
+  if ( str == QLatin1String( "dash dot dot" ) )
+    return Qt::DashDotDotLine;
   return Qt::SolidLine;
 }
 
@@ -225,9 +240,12 @@ QString QgsSymbolLayerUtils::encodeSldLineJoinStyle( Qt::PenJoinStyle style )
 
 Qt::PenJoinStyle QgsSymbolLayerUtils::decodeSldLineJoinStyle( const QString &str )
 {
-  if ( str == QLatin1String( "bevel" ) ) return Qt::BevelJoin;
-  if ( str == QLatin1String( "mitre" ) ) return Qt::MiterJoin;  //#spellok
-  if ( str == QLatin1String( "round" ) ) return Qt::RoundJoin;
+  if ( str == QLatin1String( "bevel" ) )
+    return Qt::BevelJoin;
+  if ( str == QLatin1String( "mitre" ) )
+    return Qt::MiterJoin;  //#spellok
+  if ( str == QLatin1String( "round" ) )
+    return Qt::RoundJoin;
   return Qt::BevelJoin;
 }
 
@@ -248,9 +266,12 @@ QString QgsSymbolLayerUtils::encodePenCapStyle( Qt::PenCapStyle style )
 
 Qt::PenCapStyle QgsSymbolLayerUtils::decodePenCapStyle( const QString &str )
 {
-  if ( str == QLatin1String( "square" ) ) return Qt::SquareCap;
-  if ( str == QLatin1String( "flat" ) ) return Qt::FlatCap;
-  if ( str == QLatin1String( "round" ) ) return Qt::RoundCap;
+  if ( str == QLatin1String( "square" ) )
+    return Qt::SquareCap;
+  if ( str == QLatin1String( "flat" ) )
+    return Qt::FlatCap;
+  if ( str == QLatin1String( "round" ) )
+    return Qt::RoundCap;
   return Qt::SquareCap;
 }
 
@@ -271,9 +292,12 @@ QString QgsSymbolLayerUtils::encodeSldLineCapStyle( Qt::PenCapStyle style )
 
 Qt::PenCapStyle QgsSymbolLayerUtils::decodeSldLineCapStyle( const QString &str )
 {
-  if ( str == QLatin1String( "square" ) ) return Qt::SquareCap;
-  if ( str == QLatin1String( "butt" ) ) return Qt::FlatCap;
-  if ( str == QLatin1String( "round" ) ) return Qt::RoundCap;
+  if ( str == QLatin1String( "square" ) )
+    return Qt::SquareCap;
+  if ( str == QLatin1String( "butt" ) )
+    return Qt::FlatCap;
+  if ( str == QLatin1String( "round" ) )
+    return Qt::RoundCap;
   return Qt::SquareCap;
 }
 
@@ -318,21 +342,36 @@ QString QgsSymbolLayerUtils::encodeBrushStyle( Qt::BrushStyle style )
 
 Qt::BrushStyle QgsSymbolLayerUtils::decodeBrushStyle( const QString &str )
 {
-  if ( str == QLatin1String( "solid" ) ) return Qt::SolidPattern;
-  if ( str == QLatin1String( "horizontal" ) ) return Qt::HorPattern;
-  if ( str == QLatin1String( "vertical" ) ) return Qt::VerPattern;
-  if ( str == QLatin1String( "cross" ) ) return Qt::CrossPattern;
-  if ( str == QLatin1String( "b_diagonal" ) ) return Qt::BDiagPattern;
-  if ( str == QLatin1String( "f_diagonal" ) ) return Qt::FDiagPattern;
-  if ( str == QLatin1String( "diagonal_x" ) ) return Qt::DiagCrossPattern;
-  if ( str == QLatin1String( "dense1" ) ) return Qt::Dense1Pattern;
-  if ( str == QLatin1String( "dense2" ) ) return Qt::Dense2Pattern;
-  if ( str == QLatin1String( "dense3" ) ) return Qt::Dense3Pattern;
-  if ( str == QLatin1String( "dense4" ) ) return Qt::Dense4Pattern;
-  if ( str == QLatin1String( "dense5" ) ) return Qt::Dense5Pattern;
-  if ( str == QLatin1String( "dense6" ) ) return Qt::Dense6Pattern;
-  if ( str == QLatin1String( "dense7" ) ) return Qt::Dense7Pattern;
-  if ( str == QLatin1String( "no" ) ) return Qt::NoBrush;
+  if ( str == QLatin1String( "solid" ) )
+    return Qt::SolidPattern;
+  if ( str == QLatin1String( "horizontal" ) )
+    return Qt::HorPattern;
+  if ( str == QLatin1String( "vertical" ) )
+    return Qt::VerPattern;
+  if ( str == QLatin1String( "cross" ) )
+    return Qt::CrossPattern;
+  if ( str == QLatin1String( "b_diagonal" ) )
+    return Qt::BDiagPattern;
+  if ( str == QLatin1String( "f_diagonal" ) )
+    return Qt::FDiagPattern;
+  if ( str == QLatin1String( "diagonal_x" ) )
+    return Qt::DiagCrossPattern;
+  if ( str == QLatin1String( "dense1" ) )
+    return Qt::Dense1Pattern;
+  if ( str == QLatin1String( "dense2" ) )
+    return Qt::Dense2Pattern;
+  if ( str == QLatin1String( "dense3" ) )
+    return Qt::Dense3Pattern;
+  if ( str == QLatin1String( "dense4" ) )
+    return Qt::Dense4Pattern;
+  if ( str == QLatin1String( "dense5" ) )
+    return Qt::Dense5Pattern;
+  if ( str == QLatin1String( "dense6" ) )
+    return Qt::Dense6Pattern;
+  if ( str == QLatin1String( "dense7" ) )
+    return Qt::Dense7Pattern;
+  if ( str == QLatin1String( "no" ) )
+    return Qt::NoBrush;
   return Qt::SolidPattern;
 }
 
@@ -375,12 +414,18 @@ QString QgsSymbolLayerUtils::encodeSldBrushStyle( Qt::BrushStyle style )
 
 Qt::BrushStyle QgsSymbolLayerUtils::decodeSldBrushStyle( const QString &str )
 {
-  if ( str == QLatin1String( "horline" ) ) return Qt::HorPattern;
-  if ( str == QLatin1String( "line" ) ) return Qt::VerPattern;
-  if ( str == QLatin1String( "cross" ) ) return Qt::CrossPattern;
-  if ( str == QLatin1String( "slash" ) ) return Qt::BDiagPattern;
-  if ( str == QLatin1String( "backshash" ) ) return Qt::FDiagPattern;
-  if ( str == QLatin1String( "x" ) ) return Qt::DiagCrossPattern;
+  if ( str == QLatin1String( "horline" ) )
+    return Qt::HorPattern;
+  if ( str == QLatin1String( "line" ) )
+    return Qt::VerPattern;
+  if ( str == QLatin1String( "cross" ) )
+    return Qt::CrossPattern;
+  if ( str == QLatin1String( "slash" ) )
+    return Qt::BDiagPattern;
+  if ( str == QLatin1String( "backshash" ) )
+    return Qt::FDiagPattern;
+  if ( str == QLatin1String( "x" ) )
+    return Qt::DiagCrossPattern;
 
   if ( str.startsWith( QLatin1String( "brush://" ) ) )
     return decodeBrushStyle( str.mid( 8 ) );
@@ -851,18 +896,30 @@ Qgis::ScaleMethod QgsSymbolLayerUtils::decodeScaleMethod( const QString &str )
 
 QPainter::CompositionMode QgsSymbolLayerUtils::decodeBlendMode( const QString &s )
 {
-  if ( s.compare( QLatin1String( "Lighten" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Lighten;
-  if ( s.compare( QLatin1String( "Screen" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Screen;
-  if ( s.compare( QLatin1String( "Dodge" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_ColorDodge;
-  if ( s.compare( QLatin1String( "Addition" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Plus;
-  if ( s.compare( QLatin1String( "Darken" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Darken;
-  if ( s.compare( QLatin1String( "Multiply" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Multiply;
-  if ( s.compare( QLatin1String( "Burn" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_ColorBurn;
-  if ( s.compare( QLatin1String( "Overlay" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Overlay;
-  if ( s.compare( QLatin1String( "SoftLight" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_SoftLight;
-  if ( s.compare( QLatin1String( "HardLight" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_HardLight;
-  if ( s.compare( QLatin1String( "Difference" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Difference;
-  if ( s.compare( QLatin1String( "Subtract" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Exclusion;
+  if ( s.compare( QLatin1String( "Lighten" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_Lighten;
+  if ( s.compare( QLatin1String( "Screen" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_Screen;
+  if ( s.compare( QLatin1String( "Dodge" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_ColorDodge;
+  if ( s.compare( QLatin1String( "Addition" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_Plus;
+  if ( s.compare( QLatin1String( "Darken" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_Darken;
+  if ( s.compare( QLatin1String( "Multiply" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_Multiply;
+  if ( s.compare( QLatin1String( "Burn" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_ColorBurn;
+  if ( s.compare( QLatin1String( "Overlay" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_Overlay;
+  if ( s.compare( QLatin1String( "SoftLight" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_SoftLight;
+  if ( s.compare( QLatin1String( "HardLight" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_HardLight;
+  if ( s.compare( QLatin1String( "Difference" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_Difference;
+  if ( s.compare( QLatin1String( "Subtract" ), Qt::CaseInsensitive ) == 0 )
+    return QPainter::CompositionMode_Exclusion;
   return QPainter::CompositionMode_SourceOver; // "Normal"
 }
 
@@ -4367,7 +4424,8 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, con
   {
     unsigned int i, pointCount = points.count();
     QgsPolylineXY polyline( pointCount );
-    for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPointXY( points[i].x(), points[i].y() );
+    for ( i = 0; i < pointCount; ++i )
+      polyline[i] = QgsPointXY( points[i].x(), points[i].y() );
     QgsGeometry geom = QgsGeometry::fromPolygonXY( QgsPolygonXY() << polyline );
     if ( !geom.isNull() )
     {
@@ -4377,7 +4435,8 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, con
         {
           pointCount = ( *ringIt ).count();
           QgsPolylineXY polyline( pointCount );
-          for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPointXY( ( *ringIt )[i].x(), ( *ringIt )[i].y() );
+          for ( i = 0; i < pointCount; ++i )
+            polyline[i] = QgsPointXY( ( *ringIt )[i].x(), ( *ringIt )[i].y() );
           geom.addRing( polyline );
         }
       }

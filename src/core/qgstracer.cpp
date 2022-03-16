@@ -738,7 +738,8 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
   init();  // does nothing if the graph exists already
   if ( !mGraph )
   {
-    if ( error ) *error = ErrTooManyFeatures;
+    if ( error )
+      *error = ErrTooManyFeatures;
     return QVector<QgsPointXY>();
   }
 
@@ -750,12 +751,14 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
 
   if ( v1 == -1 )
   {
-    if ( error ) *error = ErrPoint1;
+    if ( error )
+      *error = ErrPoint1;
     return QVector<QgsPointXY>();
   }
   if ( v2 == -1 )
   {
-    if ( error ) *error = ErrPoint2;
+    if ( error )
+      *error = ErrPoint2;
     return QVector<QgsPointXY>();
   }
 

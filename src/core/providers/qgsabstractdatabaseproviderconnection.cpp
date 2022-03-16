@@ -1284,7 +1284,8 @@ void QgsAbstractDatabaseProviderConnection::addFieldDomain( const QgsFieldDomain
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {
   QString n = mTableName;
-  if ( mGeometryColumnCount > 1 ) n += '.' + mGeometryColumn;
+  if ( mGeometryColumnCount > 1 )
+    n += '.' + mGeometryColumn;
   return n;
 }
 

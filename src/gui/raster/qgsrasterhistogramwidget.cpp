@@ -307,8 +307,10 @@ static int getBinCount( QgsRasterInterface *rasterInterface,
   {
     const double srcXRes = extent.width() / rasterInterface->xSize();
     const double srcYRes = extent.height() / rasterInterface->ySize();
-    if ( xRes < srcXRes ) xRes = srcXRes;
-    if ( yRes < srcYRes ) yRes = srcYRes;
+    if ( xRes < srcXRes )
+      xRes = srcXRes;
+    if ( yRes < srcYRes )
+      yRes = srcYRes;
   }
 
   const int histogramWidth = static_cast <int>( extent.width() / xRes );
@@ -1037,7 +1039,8 @@ void QgsRasterHistogramWidget::btnHistoMax_toggled()
 // this is sensitive and may not always be correct, needs more testing
 QString findClosestTickVal( double target, const QwtScaleDiv *scale, int div = 100 )
 {
-  if ( !scale ) return QString();
+  if ( !scale )
+    return QString();
 
   QList< double > minorTicks = scale->ticks( QwtScaleDiv::MinorTick );
   QList< double > majorTicks = scale->ticks( QwtScaleDiv::MajorTick );

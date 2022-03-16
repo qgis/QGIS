@@ -106,12 +106,14 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
   if ( left < tree->usedSize )
   {
     leftarea = ( ( areanode * )treearray[left] )->area;
-    if ( parentarea > leftarea ) swap = left;
+    if ( parentarea > leftarea )
+      swap = left;
   }
   if ( right < tree->usedSize )
   {
     rightarea = ( ( areanode * )treearray[right] )->area;
-    if ( rightarea < parentarea && rightarea < leftarea ) swap = right;
+    if ( rightarea < parentarea && rightarea < leftarea )
+      swap = right;
   }
   if ( swap > parent )
   {
@@ -123,7 +125,8 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
     treearray[swap] = tmp;
     // Update reference
     ( ( areanode * )treearray[swap] )->treeindex = swap;
-    if ( swap < tree->usedSize ) down( tree, arealist, swap );
+    if ( swap < tree->usedSize )
+      down( tree, arealist, swap );
   }
 }
 

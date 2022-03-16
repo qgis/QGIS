@@ -284,7 +284,8 @@ void QgsNewsFeedParser::fetchImageForEntry( const QgsNewsFeedParser::Entry &entr
     } );
     if ( findIter != mEntries.end() )
     {
-      const int entryIndex = static_cast< int >( std::distance( mEntries.begin(), findIter ) );
+      const int entryIndex = static_cast< int >
+      ( std::distance( mEntries.begin(), findIter ) );
 
       QImage img = QImage::fromData( fetcher->reply()->readAll() );
 

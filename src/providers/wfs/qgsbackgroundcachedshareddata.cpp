@@ -282,7 +282,8 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
-      if ( failedSql.isEmpty() ) failedSql = sql;
+      if ( failedSql.isEmpty() )
+        failedSql = sql;
       ret = false;
     }
 
@@ -291,7 +292,8 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
-      if ( failedSql.isEmpty() ) failedSql = sql;
+      if ( failedSql.isEmpty() )
+        failedSql = sql;
       ret = false;
     }
 
@@ -300,7 +302,8 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
-      if ( failedSql.isEmpty() ) failedSql = sql;
+      if ( failedSql.isEmpty() )
+        failedSql = sql;
       ret = false;
     }
 
@@ -312,7 +315,8 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
-      if ( failedSql.isEmpty() ) failedSql = sql;
+      if ( failedSql.isEmpty() )
+        failedSql = sql;
       ret = false;
     }
 
@@ -323,7 +327,8 @@ bool QgsBackgroundCachedSharedData::createCache()
       if ( rc != SQLITE_OK )
       {
         QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
-        if ( failedSql.isEmpty() ) failedSql = sql;
+        if ( failedSql.isEmpty() )
+          failedSql = sql;
         ret = false;
       }
     }

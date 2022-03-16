@@ -104,7 +104,8 @@ void QgsWCSSourceSelect::populateLayerList()
 QString QgsWCSSourceSelect::selectedIdentifier()
 {
   const QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 ) return QString(); // should not happen
+  if ( selectionList.size() < 1 )
+    return QString(); // should not happen
   QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
   QgsDebugMsg( " identifier = " + identifier );
   return identifier;
@@ -115,7 +116,10 @@ void QgsWCSSourceSelect::addButtonClicked()
   QgsDataSourceUri uri = mUri;
 
   const QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return; }
+  if ( identifier.isEmpty() )
+  {
+    return;
+  }
 
   uri.setParam( QStringLiteral( "identifier" ), identifier );
 
@@ -154,7 +158,10 @@ void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 {
 
   const QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return; }
+  if ( identifier.isEmpty() )
+  {
+    return;
+  }
 
   mCapabilities.describeCoverage( identifier );
 
@@ -214,10 +221,16 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
 {
 
   const QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return QStringList(); }
+  if ( identifier.isEmpty() )
+  {
+    return QStringList();
+  }
 
   const QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
-  if ( !c.valid ) { return QStringList(); }
+  if ( !c.valid )
+  {
+    return QStringList();
+  }
 
   QgsDebugMsg( "supportedFormat = " + c.supportedFormat.join( "," ) );
   return c.supportedFormat;
@@ -226,10 +239,16 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
 QStringList QgsWCSSourceSelect::selectedLayersCrses()
 {
   const QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return QStringList(); }
+  if ( identifier.isEmpty() )
+  {
+    return QStringList();
+  }
 
   const QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
-  if ( !c.valid ) { return QStringList(); }
+  if ( !c.valid )
+  {
+    return QStringList();
+  }
 
   return c.supportedCrs;
 }
@@ -238,10 +257,16 @@ QStringList QgsWCSSourceSelect::selectedLayersTimes()
 {
 
   const QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return QStringList(); }
+  if ( identifier.isEmpty() )
+  {
+    return QStringList();
+  }
 
   const QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
-  if ( !c.valid ) { return QStringList(); }
+  if ( !c.valid )
+  {
+    return QStringList();
+  }
 
   QgsDebugMsg( "times = " + c.times.join( "," ) );
   return c.times;

@@ -98,7 +98,8 @@ void QgsGrassOptions::mGisbaseBrowseButton_clicked()
   gisbase = QFileDialog::getExistingDirectory(
               nullptr, QObject::tr( "Choose GRASS installation path (GISBASE)" ), gisbase,
               QFileDialog::DontUseNativeDialog );
-  if ( !gisbase.isEmpty() )gisbaseChanged();
+  if ( !gisbase.isEmpty() )
+    gisbaseChanged();
   {
     mGisbaseLineEdit->setText( gisbase );
   }

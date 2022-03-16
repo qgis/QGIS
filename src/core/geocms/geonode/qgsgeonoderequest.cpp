@@ -61,7 +61,8 @@ void QgsGeoNodeRequest::fetchLayers()
     if ( !mParsingLayers )
     {
       mParsingLayers = true;
-      QList<QgsGeoNodeRequest::ServiceLayerDetail> layers;
+      QList<QgsGeoNodeRequest::ServiceLayerDetail>
+      layers;
       if ( mError.isEmpty() )
       {
         layers = parseLayers( lastResponse() );

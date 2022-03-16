@@ -105,7 +105,8 @@ void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &
     currentVal = expression->evaluate( &expressionContext ).toDouble();
     values.push_back( currentVal );
     valSum += currentVal;
-    if ( currentVal ) valCount++;
+    if ( currentVal )
+      valCount++;
   }
 
   //draw the slices

@@ -97,7 +97,8 @@ void QgsGraduatedSymbolRendererModel::setRenderer( QgsGraduatedSymbolRenderer *r
 
 void QgsGraduatedSymbolRendererModel::addClass( QgsSymbol *symbol )
 {
-  if ( !mRenderer ) return;
+  if ( !mRenderer )
+    return;
   int idx = mRenderer->ranges().size();
   beginInsertRows( QModelIndex(), idx, idx );
   mRenderer->addClass( symbol );
@@ -150,7 +151,8 @@ Qt::DropActions QgsGraduatedSymbolRendererModel::supportedDropActions() const
 
 QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || !mRenderer ) return QVariant();
+  if ( !index.isValid() || !mRenderer )
+    return QVariant();
 
   const QgsRendererRange range = mRenderer->ranges().value( index.row() );
 
@@ -165,7 +167,8 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
       case 1:
       {
         int decimalPlaces = mRenderer->classificationMethod()->labelPrecision() + 2;
-        if ( decimalPlaces < 0 ) decimalPlaces = 0;
+        if ( decimalPlaces < 0 )
+          decimalPlaces = 0;
         return QString( QLocale().toString( range.lowerValue(), 'f', decimalPlaces ) + " - " + QLocale().toString( range.upperValue(), 'f', decimalPlaces ) );
       }
       case 2:
@@ -300,9 +303,11 @@ bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::D
 {
   Q_UNUSED( row )
   Q_UNUSED( column )
-  if ( action != Qt::MoveAction ) return true;
+  if ( action != Qt::MoveAction )
+    return true;
 
-  if ( !data->hasFormat( mMimeFormat ) ) return false;
+  if ( !data->hasFormat( mMimeFormat ) )
+    return false;
 
   QByteArray encodedData = data->data( mMimeFormat );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
@@ -318,21 +323,25 @@ bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::D
   int to = parent.row();
   // to is -1 if dragged outside items, i.e. below any item,
   // then move to the last position
-  if ( to == -1 ) to = mRenderer->ranges().size(); // out of rang ok, will be decreased
+  if ( to == -1 )
+    to = mRenderer->ranges().size(); // out of rang ok, will be decreased
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
     QgsDebugMsg( QStringLiteral( "move %1 to %2" ).arg( rows[i] ).arg( to ) );
     int t = to;
     // moveCategory first removes and then inserts
-    if ( rows[i] < t ) t--;
+    if ( rows[i] < t )
+      t--;
     mRenderer->moveClass( rows[i], t );
     // current moved under another, shift its index up
     for ( int j = 0; j < i; j++ )
     {
-      if ( to < rows[j] && rows[i] > rows[j] ) rows[j] += 1;
+      if ( to < rows[j] && rows[i] > rows[j] )
+        rows[j] += 1;
     }
     // removed under 'to' so the target shifted down
-    if ( rows[i] < to ) to--;
+    if ( rows[i] < to )
+      to--;
   }
   emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
   emit rowsMoved();
@@ -397,7 +406,8 @@ void QgsGraduatedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement elemen
     opt.rect.setLeft( 0 );
     // draw always as line above, because we move item to that index
     opt.rect.setHeight( 0 );
-    if ( widget ) opt.rect.setRight( widget->width() );
+    if ( widget )
+      opt.rect.setRight( widget->width() );
     QProxyStyle::drawPrimitive( element, &opt, painter, widget );
     return;
   }
@@ -1206,7 +1216,8 @@ void QgsGraduatedSymbolRendererWidget::changeRange( int rangeIdx )
   // Add arbitrary 2 to number of decimal places to retain a bit extra.
   // Ensures users can see if legend is not completely honest!
   int decimalPlaces = mRenderer->classificationMethod()->labelPrecision() + 2;
-  if ( decimalPlaces < 0 ) decimalPlaces = 0;
+  if ( decimalPlaces < 0 )
+    decimalPlaces = 0;
   dialog.setLowerValue( QLocale().toString( range.lowerValue(), 'f', decimalPlaces ) );
   dialog.setUpperValue( QLocale().toString( range.upperValue(), 'f', decimalPlaces ) );
 

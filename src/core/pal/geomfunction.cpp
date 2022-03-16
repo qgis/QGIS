@@ -54,7 +54,8 @@ void heapsort( std::vector< int > &sid, int *id, const std::vector< double > &x,
     else
     {
       n--;
-      if ( n == 0 ) return;
+      if ( n == 0 )
+        return;
       tx = sid[n];
       sid[n] = sid[0];
     }
@@ -101,7 +102,8 @@ void heapsort2( int *x, double *heap, std::size_t N )
     else
     {
       n--;
-      if ( n == 0 ) return;
+      if ( n == 0 )
+        return;
       t = heap[n];
       tx = x[n];
       heap[n] = heap[0];

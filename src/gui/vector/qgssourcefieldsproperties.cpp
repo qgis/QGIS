@@ -164,7 +164,8 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case QgsFields::OriginExpression:
-        if ( i == 7 ) continue;
+        if ( i == 7 )
+          continue;
         mFieldsList->item( row, i )->setBackground( expressionColor );
         break;
 

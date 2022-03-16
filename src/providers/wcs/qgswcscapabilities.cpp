@@ -326,7 +326,8 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
     return false;
   }
 
-  if ( coverage->described && ! forceRefresh ) return true;
+  if ( coverage->described && ! forceRefresh )
+    return true;
 
   QString url = getDescribeCoverageUrl( coverage->identifier );
 
@@ -472,7 +473,8 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
   }
 #endif
 
-  if ( ! convertToDom( xml ) ) return false;
+  if ( ! convertToDom( xml ) )
+    return false;
 
   QDomElement documentElement = mCapabilitiesDom.documentElement();
 
@@ -587,7 +589,8 @@ QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement &element, 
   QList<QDomElement> list;
 
   QStringList names = path.split( '.' );
-  if ( names.isEmpty() ) return list;
+  if ( names.isEmpty() )
+    return list;
   QString name = names.value( 0 );
   names.removeFirst();
 
@@ -632,7 +635,8 @@ QStringList QgsWcsCapabilities::domElementsTexts( const QDomElement &element, co
 QDomElement QgsWcsCapabilities::domElement( const QDomElement &element, const QString &path )
 {
   QStringList names = path.split( '.' );
-  if ( names.isEmpty() ) return QDomElement();
+  if ( names.isEmpty() )
+    return QDomElement();
 
   QDomElement firstChildElement = firstChild( element, names.value( 0 ) );
   if ( names.size() == 1 || firstChildElement.isNull() )
@@ -819,7 +823,8 @@ bool QgsWcsCapabilities::convertToDom( QByteArray const &xml )
 bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsWcsCoverageSummary *coverage )
 {
   QgsDebugMsg( "coverage->identifier = " + coverage->identifier );
-  if ( ! convertToDom( xml ) ) return false;
+  if ( ! convertToDom( xml ) )
+    return false;
 
   QDomElement documentElement = mCapabilitiesDom.documentElement();
 
@@ -842,7 +847,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   QDomElement coverageOfferingElement = firstChild( documentElement, QStringLiteral( "CoverageOffering" ) );
 
-  if ( coverageOfferingElement.isNull() ) return false;
+  if ( coverageOfferingElement.isNull() )
+    return false;
   QDomElement supportedCRSsElement = firstChild( coverageOfferingElement, QStringLiteral( "supportedCRSs" ) );
 
   // requestResponseCRSs and requestCRSs + responseCRSs are alternatives
@@ -999,7 +1005,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsWcsCoverageSummary *coverage )
 {
   QgsDebugMsg( "coverage->identifier = " + coverage->identifier );
-  if ( ! convertToDom( xml ) ) return false;
+  if ( ! convertToDom( xml ) )
+    return false;
 
   QDomElement documentElement = mCapabilitiesDom.documentElement();
 
@@ -1035,7 +1042,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     QList<double> low = parseDoubles( domElementText( el, QStringLiteral( "LowerCorner" ) ) );
     QList<double> high = parseDoubles( domElementText( el, QStringLiteral( "UpperCorner" ) ) );
 
-    if ( low.size() != 2 && high.size() != 2 ) continue;
+    if ( low.size() != 2 && high.size() != 2 )
+      continue;
 
     if ( el.attribute( QStringLiteral( "crs" ) ) == QLatin1String( "urn:ogc:def:crs:OGC::imageCRS" ) )
     {
@@ -1293,7 +1301,8 @@ void QgsWcsCapabilities::showMessageBox( const QString &title, const QString &te
 QgsWcsCoverageSummary QgsWcsCapabilities::coverage( QString const &identifier )
 {
   QgsWcsCoverageSummary *coverageSummaryPointer = coverageSummary( identifier );
-  if ( coverageSummaryPointer ) return *coverageSummaryPointer;
+  if ( coverageSummaryPointer )
+    return *coverageSummaryPointer;
 
   QgsWcsCoverageSummary coverageSummary;
   initCoverageSummary( coverageSummary );

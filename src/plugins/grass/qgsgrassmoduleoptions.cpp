@@ -798,7 +798,8 @@ bool QgsGrassModuleStandardOptions::requestsRegion()
 {
   QgsDebugMsgLevel( "called.", 4 );
 
-  if ( mDirect ) return true;
+  if ( mDirect )
+    return true;
 
   for ( int i = 0; i < mParams.size(); i++ )
   {

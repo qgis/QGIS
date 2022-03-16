@@ -93,7 +93,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       }
       for ( int i = 0; i < mColorRampItemList.count(); ++i )
       {
-        if ( mColorRampItemList.at( i ) != other.mColorRampItemList.at( i ) ) return false;
+        if ( mColorRampItemList.at( i ) != other.mColorRampItemList.at( i ) )
+          return false;
       }
       return true;
     }

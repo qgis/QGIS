@@ -93,7 +93,8 @@ QString QgsRendererRange::label() const
 
 void QgsRendererRange::setSymbol( QgsSymbol *s )
 {
-  if ( mSymbol.get() != s ) mSymbol.reset( s );
+  if ( mSymbol.get() != s )
+    mSymbol.reset( s );
 }
 
 void QgsRendererRange::setLabel( const QString &label )

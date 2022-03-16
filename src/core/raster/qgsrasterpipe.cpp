@@ -113,10 +113,12 @@ bool QgsRasterPipe::insert( int idx, QgsRasterInterface *interface )
 
 bool QgsRasterPipe::replace( int idx, QgsRasterInterface *interface )
 {
-  if ( !interface ) return false;
+  if ( !interface )
+    return false;
 
   QgsDebugMsgLevel( QStringLiteral( "replace by %1 at %2" ).arg( typeid( *interface ).name() ).arg( idx ), 4 );
-  if ( !checkBounds( idx ) ) return false;
+  if ( !checkBounds( idx ) )
+    return false;
 
   // make a copy of pipe to test connection, we test the connections
   // of the whole pipe, because the types and band numbers may change
@@ -333,7 +335,8 @@ bool QgsRasterPipe::remove( int idx )
 
 bool QgsRasterPipe::remove( QgsRasterInterface *interface )
 {
-  if ( !interface ) return false;
+  if ( !interface )
+    return false;
 
   return remove( mInterfaces.indexOf( interface ) );
 }

@@ -492,12 +492,18 @@ static inline uint outcode( QVector4D v )
   // TODO: optimise this with assembler - according to D&P this can
   // be done in one line of assembler on some platforms
   uint code = 0;
-  if ( v.x() < -v.w() ) code |= 0x01;
-  if ( v.x() > v.w() )  code |= 0x02;
-  if ( v.y() < -v.w() ) code |= 0x04;
-  if ( v.y() > v.w() )  code |= 0x08;
-  if ( v.z() < -v.w() ) code |= 0x10;
-  if ( v.z() > v.w() )  code |= 0x20;
+  if ( v.x() < -v.w() )
+    code |= 0x01;
+  if ( v.x() > v.w() )
+    code |= 0x02;
+  if ( v.y() < -v.w() )
+    code |= 0x04;
+  if ( v.y() > v.w() )
+    code |= 0x08;
+  if ( v.z() < -v.w() )
+    code |= 0x10;
+  if ( v.z() > v.w() )
+    code |= 0x20;
   return code;
 }
 
@@ -640,8 +646,10 @@ void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin,
     for ( auto vit = g.vertices_begin(); vit != g.vertices_end(); ++vit )
     {
       const double z = ( *vit ).z();
-      if ( z < zMin ) zMin = z;
-      if ( z > zMax ) zMax = z;
+      if ( z < zMin )
+        zMin = z;
+      if ( z > zMax )
+        zMax = z;
     }
   }
 

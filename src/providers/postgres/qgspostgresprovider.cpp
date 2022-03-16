@@ -516,7 +516,8 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
   QString whereClause;
 
   QString aliased;
-  if ( alias ) aliased = QStringLiteral( "%1." ).arg( alias );
+  if ( alias )
+    aliased = QStringLiteral( "%1." ).arg( alias );
 
   switch ( mPrimaryKeyType )
   {
@@ -1416,7 +1417,8 @@ void QgsPostgresProvider::setEditorWidgets()
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
   for ( int i = 0; i < result.PQntuples(); ++i )
   {
-    if ( result.PQgetisnull( i, 2 ) ) continue; // config can be null and it's OK
+    if ( result.PQgetisnull( i, 2 ) )
+      continue; // config can be null and it's OK
 
     const QString &configTxt = result.PQgetvalue( i, 2 );
     const QString &type = result.PQgetvalue( i, 1 );
@@ -1814,7 +1816,8 @@ bool QgsPostgresProvider::determinePrimaryKey()
 /* static */
 QStringList QgsPostgresProvider::parseUriKey( const QString &key )
 {
-  if ( key.isEmpty() ) return QStringList();
+  if ( key.isEmpty() )
+    return QStringList();
 
   QStringList cols;
 
@@ -4081,7 +4084,8 @@ bool QgsPostgresProvider::getGeometryDetails()
         detectedType += QLatin1String( "ZM" );
 
       QString ds = result.PQgetvalue( 0, 1 );
-      if ( ds != QLatin1String( "0" ) ) detectedSrid = ds;
+      if ( ds != QLatin1String( "0" ) )
+        detectedSrid = ds;
       mSpatialColType = SctGeometry;
     }
     else
@@ -4104,9 +4108,11 @@ bool QgsPostgresProvider::getGeometryDetails()
       if ( result.PQntuples() == 1 )
       {
         QString dt = result.PQgetvalue( 0, 0 );
-        if ( dt != "GEOMETRY" ) detectedType = dt;
+        if ( dt != "GEOMETRY" )
+          detectedType = dt;
         QString ds = result.PQgetvalue( 0, 1 );
-        if ( ds != "0" ) detectedSrid = ds;
+        if ( ds != "0" )
+          detectedSrid = ds;
         mSpatialColType = SctGeography;
       }
       else
@@ -4386,7 +4392,8 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
     case QVariant::List:
     {
       QgsField sub( QString(), field.subType(), QString(), fieldSize, fieldPrec );
-      if ( !convertField( sub, nullptr ) ) return false;
+      if ( !convertField( sub, nullptr ) )
+        return false;
       fieldType = "_" + sub.typeName();
       fieldPrec = 0;
       break;
@@ -4567,7 +4574,8 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
           }
         }
       }
-      if ( type.isEmpty() ) type = QStringLiteral( "serial" );
+      if ( type.isEmpty() )
+        type = QStringLiteral( "serial" );
       else
       {
         // if the pk field's type is one of the postgres integer types,
@@ -4981,8 +4989,10 @@ QVariant QgsPostgresProvider::parseMultidimensionalArray( const QString &txt )
     {
       ++i;
 
-      if ( text.at( i ) == '}' && !escaped ) openedBrackets--;
-      else if ( text.at( i ) == '{' && !escaped ) openedBrackets++;
+      if ( text.at( i ) == '}' && !escaped )
+        openedBrackets--;
+      else if ( text.at( i ) == '{' && !escaped )
+        openedBrackets++;
 
       escaped = !escaped ? text.at( i ) == '\\' : false;
     }

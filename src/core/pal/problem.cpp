@@ -122,7 +122,8 @@ void Problem::reduce()
               {
                 if ( candidatesAreConflicting( lp2, lp ) )
                 {
-                  const_cast< LabelPosition * >( lp )->decrementNumOverlaps();
+                  const_cast< LabelPosition * >
+                  ( lp )->decrementNumOverlaps();
                   lp2->decrementNumOverlaps();
                 }
 
@@ -626,7 +627,8 @@ void Problem::chainSearch( QgsRenderContext & )
           {
             if ( candidatesAreConflicting( old, lp ) )
             {
-              ok[lp->getProblemFeatureId()] = false;
+              ok[lp->getProblemFeatureId()]
+              = false;
             }
 
             return true;

@@ -637,7 +637,8 @@ bool QgsCurvePolygon::removeDuplicateNodes( double epsilon, bool useZValues )
   }
   for ( QgsCurve *ring : std::as_const( mInteriorRings ) )
   {
-    if ( cleanRing( ring ) ) result = true;
+    if ( cleanRing( ring ) )
+      result = true;
   }
   return result;
 }

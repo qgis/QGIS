@@ -23,7 +23,8 @@ QgsOgrConnPool *QgsOgrConnPool::sInstance = nullptr;
 // static public
 QgsOgrConnPool *QgsOgrConnPool::instance()
 {
-  if ( ! sInstance ) sInstance = new QgsOgrConnPool();
+  if ( ! sInstance )
+    sInstance = new QgsOgrConnPool();
   return sInstance;
 }
 

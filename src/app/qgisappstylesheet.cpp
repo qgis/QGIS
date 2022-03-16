@@ -97,11 +97,17 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   // QgisApp-wide font
   const QString fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toString();
   QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
-  if ( fontSize.isEmpty() ) { return; }
+  if ( fontSize.isEmpty() )
+  {
+    return;
+  }
 
   const QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
   QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
-  if ( fontFamily.isEmpty() ) { return; }
+  if ( fontFamily.isEmpty() )
+  {
+    return;
+  }
 
   const QString defaultSize = QString::number( mDefaultFont.pointSize() );
   const QString defaultFamily = mDefaultFont.family();

@@ -1140,7 +1140,8 @@ int QgsMeshLayer::meshVertexCount() const
     return mMeshEditor->validVerticesCount();
   else if ( mDataProvider )
     return mDataProvider->vertexCount();
-  else return 0;
+  else
+    return 0;
 }
 
 int QgsMeshLayer::meshFaceCount() const
@@ -1149,7 +1150,8 @@ int QgsMeshLayer::meshFaceCount() const
     return mMeshEditor->validFacesCount();
   else if ( mDataProvider )
     return mDataProvider->faceCount();
-  else return 0;
+  else
+    return 0;
 }
 
 int QgsMeshLayer::meshEdgeCount() const
@@ -1158,7 +1160,8 @@ int QgsMeshLayer::meshEdgeCount() const
     return mNativeMesh->edgeCount();
   else if ( mDataProvider )
     return mDataProvider->edgeCount();
-  else return 0;
+  else
+    return 0;
 }
 
 void QgsMeshLayer::updateActiveDatasetGroups()

@@ -427,7 +427,8 @@ QStringList QgsRasterCalcNode::referencedLayerNames()
   QStringList rasterRef = this->cleanRasterReferences();
   for ( const auto &i : rasterRef )
   {
-    if ( referencedRasters.contains( i.mid( 0, i.lastIndexOf( "@" ) ) ) ) continue;
+    if ( referencedRasters.contains( i.mid( 0, i.lastIndexOf( "@" ) ) ) )
+      continue;
     referencedRasters << i.mid( 0, i.lastIndexOf( "@" ) );
   }
 

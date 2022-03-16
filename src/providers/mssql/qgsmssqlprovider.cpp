@@ -3097,7 +3097,8 @@ QString QgsMssqlProvider::whereClauseFid( QgsFeatureId featureId )
 /* static */
 QStringList QgsMssqlProvider::parseUriKey( const QString &key )
 {
-  if ( key.isEmpty() ) return QStringList();
+  if ( key.isEmpty() )
+    return QStringList();
 
   QStringList cols;
 

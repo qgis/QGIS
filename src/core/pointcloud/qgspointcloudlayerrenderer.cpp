@@ -312,7 +312,8 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
         }
         finishedLoadingBlock[ i ] = true;
         // If all blocks are loaded, exit the event loop
-        if ( !finishedLoadingBlock.contains( false ) ) loop.exit();
+        if ( !finishedLoadingBlock.contains( false ) )
+          loop.exit();
       } );
     }
     // Wait for all point cloud nodes to finish loading

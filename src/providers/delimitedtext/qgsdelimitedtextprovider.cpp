@@ -91,10 +91,14 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   if ( query.hasQueryItem( QStringLiteral( "geomType" ) ) )
   {
     const QString gtype = query.queryItemValue( QStringLiteral( "geomType" ) ).toLower();
-    if ( gtype == QLatin1String( "point" ) ) mGeometryType = QgsWkbTypes::PointGeometry;
-    else if ( gtype == QLatin1String( "line" ) ) mGeometryType = QgsWkbTypes::LineGeometry;
-    else if ( gtype == QLatin1String( "polygon" ) ) mGeometryType = QgsWkbTypes::PolygonGeometry;
-    else if ( gtype == QLatin1String( "none " ) ) mGeometryType = QgsWkbTypes::NullGeometry;
+    if ( gtype == QLatin1String( "point" ) )
+      mGeometryType = QgsWkbTypes::PointGeometry;
+    else if ( gtype == QLatin1String( "line" ) )
+      mGeometryType = QgsWkbTypes::LineGeometry;
+    else if ( gtype == QLatin1String( "polygon" ) )
+      mGeometryType = QgsWkbTypes::PolygonGeometry;
+    else if ( gtype == QLatin1String( "none " ) )
+      mGeometryType = QgsWkbTypes::NullGeometry;
   }
 
   if ( mGeometryType != QgsWkbTypes::NullGeometry )
@@ -158,7 +162,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     QgsDebugMsgLevel( "subset is: " + subset, 2 );
   }
 
-  if ( query.hasQueryItem( QStringLiteral( "quiet" ) ) ) mShowInvalidLines = false;
+  if ( query.hasQueryItem( QStringLiteral( "quiet" ) ) )
+    mShowInvalidLines = false;
 
   // Parse and store user-defined field types and boolean literals
   const QList<QPair<QString, QString> > queryItems { query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded ) };
@@ -211,10 +216,13 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   // Look for a file with the same name as the data file, but an extra 't' or 'T' at the end
   QStringList types;
   QFileInfo csvtInfo( filename + 't' );
-  if ( ! csvtInfo.exists() ) csvtInfo.setFile( filename + 'T' );
-  if ( ! csvtInfo.exists() ) return types;
+  if ( ! csvtInfo.exists() )
+    csvtInfo.setFile( filename + 'T' );
+  if ( ! csvtInfo.exists() )
+    return types;
   QFile csvtFile( csvtInfo.filePath() );
-  if ( ! csvtFile.open( QIODevice::ReadOnly ) ) return types;
+  if ( ! csvtFile.open( QIODevice::ReadOnly ) )
+    return types;
 
 
   // If anything goes wrong here, just ignore it, as the file
@@ -228,11 +236,13 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   {
     QTextStream csvtStream( &csvtFile );
     strTypeList = csvtStream.readLine();
-    if ( strTypeList.isEmpty() ) return types;
+    if ( strTypeList.isEmpty() )
+      return types;
     QString extra = csvtStream.readLine();
     while ( ! extra.isNull() )
     {
-      if ( ! extra.isEmpty() ) return types;
+      if ( ! extra.isEmpty() )
+        return types;
       extra = csvtStream.readLine();
     }
   }
@@ -253,7 +263,10 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   if ( !match.hasMatch() )
   {
     // Looks like this was supposed to be a CSVT file, so report bad formatted string
-    if ( message ) { *message = tr( "File type string in %1 is not correctly formatted" ).arg( csvtInfo.fileName() ); }
+    if ( message )
+    {
+      *message = tr( "File type string in %1 is not correctly formatted" ).arg( csvtInfo.fileName() );
+    }
     return types;
   }
 

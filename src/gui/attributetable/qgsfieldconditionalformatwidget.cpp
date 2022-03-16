@@ -105,7 +105,8 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
     }
     if ( rowRadio->isChecked() )
     {
-      mLayer->conditionalStyles()->setRowStyles( styles );
+      mLayer->conditionalStyles()
+      ->setRowStyles( styles );
     }
     reloadStyles();
     emit rulesUpdated( fieldName );

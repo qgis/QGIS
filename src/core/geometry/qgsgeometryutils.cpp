@@ -553,7 +553,8 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections(
   {
     const QgsPoint pi = geom->vertexAt( QgsVertexId( part, ring, i ) );
     const QgsPoint pj = geom->vertexAt( QgsVertexId( part, ring, j ) );
-    if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < tolerance * tolerance ) continue;
+    if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < tolerance * tolerance )
+      continue;
 
     // Don't test neighboring edges
     const int start = j + 1;
@@ -565,7 +566,8 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections(
 
       QgsPoint inter;
       bool intersection = false;
-      if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, intersection, tolerance ) ) continue;
+      if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, intersection, tolerance ) )
+        continue;
 
       SelfIntersection s;
       s.segment1 = i;
@@ -1007,7 +1009,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   {
     double angle = a3 - a1;
     // angle == 0 when full circle
-    if ( angle <= 0 ) angle += M_PI * 2;
+    if ( angle <= 0 )
+      angle += M_PI * 2;
 
     /* Number of segments in output */
     const int segs = ceil( angle / increment );
@@ -1068,7 +1071,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   {
     std::reverse( stringPoints.begin(), stringPoints.end() );
   }
-  if ( ! points.empty() && stringPoints.front() == points.back() ) stringPoints.pop_front();
+  if ( ! points.empty() && stringPoints.front() == points.back() )
+    stringPoints.pop_front();
   points.append( stringPoints );
 }
 
@@ -1684,7 +1688,8 @@ double QgsGeometryUtils::skewLinesDistance( const QgsVector3D &P1, const QgsVect
   const QgsVector3D u1 = P12 - P1;
   const QgsVector3D u2 = P22 - P2;
   QgsVector3D u3 = QgsVector3D::crossProduct( u1, u2 );
-  if ( u3.length() == 0 ) return 1;
+  if ( u3.length() == 0 )
+    return 1;
   u3.normalize();
   const QgsVector3D dir = P1 - P2;
   return std::fabs( ( QgsVector3D::dotProduct( dir, u3 ) ) ); // u3 is already normalized

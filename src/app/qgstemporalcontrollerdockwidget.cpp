@@ -122,7 +122,8 @@ void QgsTemporalControllerDockWidget::exportAnimation()
     progressDialog.hide();
     if ( !success )
     {
-      QgisApp::instance()->messageBar()->pushMessage( tr( "Export Animation" ), error, Qgis::MessageLevel::Critical );
+      QgisApp::instance()
+      ->messageBar()->pushMessage( tr( "Export Animation" ), error, Qgis::MessageLevel::Critical );
     }
     else
     {

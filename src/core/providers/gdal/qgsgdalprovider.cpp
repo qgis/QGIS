@@ -1611,7 +1611,8 @@ Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
   if ( mMaskBandExposedAsAlpha && bandNo == mBandCount )
     return dataTypeFromGdal( GDT_Byte );
 
-  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return Qgis::DataType::UnknownDataType;
+  if ( bandNo <= 0 || bandNo > mGdalDataType.count() )
+    return Qgis::DataType::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo - 1] );
 }
@@ -2640,7 +2641,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   fileFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
 
   // cleanup
-  if ( fileFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileFiltersString.chop( 2 );
+  if ( fileFiltersString.endsWith( QLatin1String( ";;" ) ) )
+    fileFiltersString.chop( 2 );
 
   QgsDebugMsgLevel( "Raster filter list built: " + fileFiltersString, 2 );
   QgsDebugMsgLevel( "Raster extension list built: " + extensions.join( ' ' ), 2 );
@@ -2755,10 +2757,14 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
   double *pdfMean = &dfMean;
   double *pdfStdDev = &dfStdDev;
 
-  if ( !( stats & QgsRasterBandStats::Min ) ) pdfMin = nullptr;
-  if ( !( stats & QgsRasterBandStats::Max ) ) pdfMax = nullptr;
-  if ( !( stats & QgsRasterBandStats::Mean ) ) pdfMean = nullptr;
-  if ( !( stats & QgsRasterBandStats::StdDev ) ) pdfStdDev = nullptr;
+  if ( !( stats & QgsRasterBandStats::Min ) )
+    pdfMin = nullptr;
+  if ( !( stats & QgsRasterBandStats::Max ) )
+    pdfMax = nullptr;
+  if ( !( stats & QgsRasterBandStats::Mean ) )
+    pdfMean = nullptr;
+  if ( !( stats & QgsRasterBandStats::StdDev ) )
+    pdfStdDev = nullptr;
 
   CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, true, pdfMin, pdfMax, pdfMean, pdfStdDev );
 

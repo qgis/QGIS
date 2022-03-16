@@ -71,7 +71,8 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
   mValid = false;
   mCachedMemFilename = QStringLiteral( "/vsimem/qgis/wcs/%0.dat" ).arg( reinterpret_cast<std::uintptr_t>( this ) );
 
-  if ( !parseUri( uri ) ) return;
+  if ( !parseUri( uri ) )
+    return;
 
   // GetCapabilities and DescribeCoverage
   // TODO(?): do only DescribeCoverage to avoid one request
@@ -116,7 +117,8 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
   }
 
   // We cannot continue without format, it is required
-  if ( mFormat.isEmpty() ) return;
+  if ( mFormat.isEmpty() )
+    return;
 
   // It could happen (usually not with current QgsWCSSourceSelect if at least
   // one CRS is available) that crs is not set in uri, in that case we
@@ -341,11 +343,15 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
   if ( mHasSize )
   {
     // This is taken from GDAL, how they come to these numbers?
-    if ( mWidth > 1800 ) mXBlockSize = 1024;
-    else mXBlockSize = mWidth;
+    if ( mWidth > 1800 )
+      mXBlockSize = 1024;
+    else
+      mXBlockSize = mWidth;
 
-    if ( mHeight > 900 ) mYBlockSize = 512;
-    else mYBlockSize = mHeight;
+    if ( mHeight > 900 )
+      mYBlockSize = 512;
+    else
+      mYBlockSize = mHeight;
   }
 
   mValid = true;
@@ -684,7 +690,8 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
     }
   }
 
-  if ( mInvertAxisOrientation ) changeXY = !changeXY;
+  if ( mInvertAxisOrientation )
+    changeXY = !changeXY;
 
   const double xRes = viewExtent.width() / pixelWidth;
   const double yRes = viewExtent.height() / pixelHeight;
@@ -1369,7 +1376,8 @@ QString QgsWcsProvider::htmlMetadata()
   {
     metadata += coverageMetadata( c );
     count++;
-    if ( count >= 100 ) break;
+    if ( count >= 100 )
+      break;
   }
   metadata += QLatin1String( "</table>" );
   if ( count < mCapabilities.coverages().size() )
@@ -1650,7 +1658,8 @@ QMap<QString, QString> QgsWcsProvider::supportedMimes()
 
     const QString mimeType = GDALGetMetadataItem( driver, "DMD_MIMETYPE", "" );
 
-    if ( mimeType.isEmpty() ) continue;
+    if ( mimeType.isEmpty() )
+      continue;
 
     desc = desc.isEmpty() ? mimeType : desc;
 

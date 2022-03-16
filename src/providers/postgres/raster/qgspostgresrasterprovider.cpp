@@ -1892,7 +1892,8 @@ bool QgsPostgresRasterProvider::loadFields()
 /* static */
 QStringList QgsPostgresRasterProvider::parseUriKey( const QString &key )
 {
-  if ( key.isEmpty() ) return QStringList();
+  if ( key.isEmpty() )
+    return QStringList();
 
   QStringList cols;
 

@@ -614,8 +614,10 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
   fileMeshDatasetFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
 
   // cleanup
-  if ( fileMeshFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileMeshFiltersString.chop( 2 );
-  if ( fileMeshDatasetFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileMeshDatasetFiltersString.chop( 2 );
+  if ( fileMeshFiltersString.endsWith( QLatin1String( ";;" ) ) )
+    fileMeshFiltersString.chop( 2 );
+  if ( fileMeshDatasetFiltersString.endsWith( QLatin1String( ";;" ) ) )
+    fileMeshDatasetFiltersString.chop( 2 );
 
   QgsDebugMsgLevel( "Mesh filter list built: " + fileMeshFiltersString, 2 );
   QgsDebugMsgLevel( "Mesh dataset filter list built: " + fileMeshDatasetFiltersString, 2 );

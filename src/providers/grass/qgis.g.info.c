@@ -320,8 +320,10 @@ int main( int argc, char **argv )
           }
           if ( ! Rast_is_null_value( ptr, rast_type ) )
           {
-            if ( val < min ) min = val;
-            if ( val > max ) max = val;
+            if ( val < min )
+              min = val;
+            if ( val > max )
+              max = val;
             sum += val;
             count++;
             squares_sum += val * val;

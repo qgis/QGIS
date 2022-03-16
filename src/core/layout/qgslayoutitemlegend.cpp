@@ -615,7 +615,8 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
     mSettings.setTitleAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "titleAlignment" ) ).toInt() ) );
   }
   int colCount = itemElem.attribute( QStringLiteral( "columnCount" ), QStringLiteral( "1" ) ).toInt();
-  if ( colCount < 1 ) colCount = 1;
+  if ( colCount < 1 )
+    colCount = 1;
   mColumnCount = colCount;
   mSettings.setColumnCount( mColumnCount );
   mSettings.setSplitLayer( itemElem.attribute( QStringLiteral( "splitLayer" ), QStringLiteral( "0" ) ).toInt() == 1 );
@@ -632,12 +633,18 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
       style.readXml( styleElem, doc, context );
       const QString name = styleElem.attribute( QStringLiteral( "name" ) );
       QgsLegendStyle::Style s;
-      if ( name == QLatin1String( "title" ) ) s = QgsLegendStyle::Title;
-      else if ( name == QLatin1String( "group" ) ) s = QgsLegendStyle::Group;
-      else if ( name == QLatin1String( "subgroup" ) ) s = QgsLegendStyle::Subgroup;
-      else if ( name == QLatin1String( "symbol" ) ) s = QgsLegendStyle::Symbol;
-      else if ( name == QLatin1String( "symbolLabel" ) ) s = QgsLegendStyle::SymbolLabel;
-      else continue;
+      if ( name == QLatin1String( "title" ) )
+        s = QgsLegendStyle::Title;
+      else if ( name == QLatin1String( "group" ) )
+        s = QgsLegendStyle::Group;
+      else if ( name == QLatin1String( "subgroup" ) )
+        s = QgsLegendStyle::Subgroup;
+      else if ( name == QLatin1String( "symbol" ) )
+        s = QgsLegendStyle::Symbol;
+      else if ( name == QLatin1String( "symbolLabel" ) )
+        s = QgsLegendStyle::SymbolLabel;
+      else
+        continue;
       setStyle( s, style );
     }
   }

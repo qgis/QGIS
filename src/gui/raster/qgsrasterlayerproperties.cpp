@@ -1197,10 +1197,12 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
 {
   QgsDebugMsgLevel( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ), 3 );
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
-  if ( !provider ) return;
+  if ( !provider )
+    return;
 
   QgsRasterRenderer *renderer = mRendererWidget->renderer();
-  if ( !renderer ) return;
+  if ( !renderer )
+    return;
   int nBands = renderer->usesBands().size();
 
   QLineEdit *lineEdit = new QLineEdit();
@@ -1253,7 +1255,8 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
 void QgsRasterLayerProperties::setTransparencyCellValue( int row, int column, double value )
 {
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( mRasterTransparencyWidget->tableTransparency->cellWidget( row, column ) );
-  if ( !lineEdit ) return;
+  if ( !lineEdit )
+    return;
   double v = QgsRasterBlock::printValue( value ).toDouble();
   lineEdit->setText( QLocale().toString( v, 'g' ) );
   lineEdit->adjustSize();
@@ -1274,7 +1277,8 @@ double QgsRasterLayerProperties::transparencyCellValue( int row, int column )
 void QgsRasterLayerProperties::adjustTransparencyCellWidth( int row, int column )
 {
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( mRasterTransparencyWidget->tableTransparency->cellWidget( row, column ) );
-  if ( !lineEdit ) return;
+  if ( !lineEdit )
+    return;
 
   int width = std::max( lineEdit->fontMetrics().boundingRect( lineEdit->text() ).width() + 10, 100 );
   width = std::max( width, mRasterTransparencyWidget->tableTransparency->columnWidth( column ) );
@@ -1295,7 +1299,8 @@ void QgsRasterLayerProperties::transparencyCellTextEdited( const QString &text )
   if ( nBands == 1 )
   {
     QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
-    if ( !lineEdit ) return;
+    if ( !lineEdit )
+      return;
     int row = -1;
     int column = -1;
     for ( int r = 0; r < mRasterTransparencyWidget->tableTransparency->rowCount(); r++ )
@@ -1309,14 +1314,16 @@ void QgsRasterLayerProperties::transparencyCellTextEdited( const QString &text )
           break;
         }
       }
-      if ( row != -1 ) break;
+      if ( row != -1 )
+        break;
     }
     QgsDebugMsgLevel( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ), 3 );
 
     if ( column == 0 )
     {
       QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( mRasterTransparencyWidget->tableTransparency->cellWidget( row, 1 ) );
-      if ( !toLineEdit ) return;
+      if ( !toLineEdit )
+        return;
       bool toChanged = mTransparencyToEdited.value( row );
       QgsDebugMsgLevel( QStringLiteral( "toChanged = %1" ).arg( toChanged ), 3 );
       if ( !toChanged )

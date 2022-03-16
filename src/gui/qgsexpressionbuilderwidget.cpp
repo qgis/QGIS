@@ -405,7 +405,8 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
   for ( const QString &name : constFiles )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
-    if ( info.baseName() == QLatin1String( "__init__" ) ) continue;
+    if ( info.baseName() == QLatin1String( "__init__" ) )
+      continue;
     QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.svg" ) ), info.baseName() );
     cmbFileNames->addItem( item );
   }

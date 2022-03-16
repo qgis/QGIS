@@ -85,8 +85,10 @@ QVariantList QgsPostgresStringUtils::parseArray( const QString &string )
       {
         ++i;
 
-        if ( subarray.at( i ) == '}' && !escaped ) openedBrackets--;
-        else if ( subarray.at( i ) == '{' && !escaped ) openedBrackets++;
+        if ( subarray.at( i ) == '}' && !escaped )
+          openedBrackets--;
+        else if ( subarray.at( i ) == '{' && !escaped )
+          openedBrackets++;
 
         escaped = !escaped ? subarray.at( i ) == '\\' : false;
       }

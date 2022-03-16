@@ -79,7 +79,8 @@ class TestStyle : public QObject
 
     static bool compareItemLists( QList<QgsColorRampShader::ColorRampItem> &itemsList1, QList<QgsColorRampShader::ColorRampItem> &itemsList2 )
     {
-      if ( itemsList1.size() != itemsList2.size() ) return false;
+      if ( itemsList1.size() != itemsList2.size() )
+        return false;
       for ( int i = 0; i < itemsList1.size(); ++i )
       {
         if ( itemsList1[i].value != itemsList2[i].value )

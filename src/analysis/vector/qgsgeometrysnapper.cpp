@@ -317,8 +317,10 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, const do
   }
   snapPoint = minDistPoint < tolerance * tolerance ? snapPoint : nullptr;
   snapSegment = minDistSegment < tolerance * tolerance ? snapSegment : nullptr;
-  if ( pSnapPoint ) *pSnapPoint = snapPoint;
-  if ( pSnapSegment ) *pSnapSegment = snapSegment;
+  if ( pSnapPoint )
+    *pSnapPoint = snapPoint;
+  if ( pSnapSegment )
+    *pSnapSegment = snapSegment;
   return minDistPoint < minDistSegment ? static_cast<QgsSnapIndex::SnapItem *>( snapPoint ) : static_cast<QgsSnapIndex::SnapItem *>( snapSegment );
 }
 

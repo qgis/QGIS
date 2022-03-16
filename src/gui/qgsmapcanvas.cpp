@@ -1045,7 +1045,8 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     selector.setCrs( QgsCoordinateReferenceSystem( customCrsString ) );
     if ( selector.exec() )
     {
-      QgsSettings().setValue( QStringLiteral( "qgis/custom_coordinate_crs" ), selector.crs().authid().isEmpty() ? selector.crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : selector.crs().authid() );
+      QgsSettings()
+      .setValue( QStringLiteral( "qgis/custom_coordinate_crs" ), selector.crs().authid().isEmpty() ? selector.crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : selector.crs().authid() );
     }
   } );
   copyCoordinateMenu->addAction( setCustomCrsAction );
@@ -1984,7 +1985,8 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent *e )
       {
         mMapTool->keyReleaseEvent( e );
       }
-      else e->ignore();
+      else
+        e->ignore();
 
       QgsDebugMsgLevel( "Ignoring key release: " + QString::number( e->key() ), 2 );
   }

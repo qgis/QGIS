@@ -104,7 +104,8 @@ void QgsRendererCategory::setValue( const QVariant &value )
 
 void QgsRendererCategory::setSymbol( QgsSymbol *s )
 {
-  if ( mSymbol.get() != s ) mSymbol.reset( s );
+  if ( mSymbol.get() != s )
+    mSymbol.reset( s );
 }
 
 void QgsRendererCategory::setLabel( const QString &label )
@@ -370,7 +371,8 @@ void QgsCategorizedSymbolRenderer::deleteAllCategories()
 
 void QgsCategorizedSymbolRenderer::moveCategory( int from, int to )
 {
-  if ( from < 0 || from >= mCategories.size() || to < 0 || to >= mCategories.size() ) return;
+  if ( from < 0 || from >= mCategories.size() || to < 0 || to >= mCategories.size() )
+    return;
   mCategories.move( from, to );
 }
 
@@ -976,8 +978,10 @@ QString QgsCategorizedSymbolRenderer::displayString( const QVariant &v, int prec
           }
           else
           {
-            if ( dotPosition < 0 ) precision = 0;
-            else precision = s.length() - dotPosition - 1;
+            if ( dotPosition < 0 )
+              precision = 0;
+            else
+              precision = s.length() - dotPosition - 1;
 
             if ( -1 < v.toDouble() && v.toDouble() < 1 )
             {

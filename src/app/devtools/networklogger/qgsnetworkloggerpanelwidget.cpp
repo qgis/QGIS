@@ -63,7 +63,8 @@ QgsNetworkLoggerTreeView::QgsNetworkLoggerTreeView( QgsNetworkLogger *logger, QW
     if ( mLogger->rowCount() > ( QgsNetworkLogger::MAX_LOGGED_REQUESTS * 1.2 ) ) // 20 % more as buffer
     {
       // never trim expanded nodes
-      const int toTrim = mLogger->rowCount() - QgsNetworkLogger::MAX_LOGGED_REQUESTS;
+      const int toTrim = mLogger->rowCount()
+      - QgsNetworkLogger::MAX_LOGGED_REQUESTS;
       int trimmed = 0;
       QList< int > rowsToTrim;
       rowsToTrim.reserve( toTrim );

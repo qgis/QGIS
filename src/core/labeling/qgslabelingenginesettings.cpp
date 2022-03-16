@@ -36,11 +36,16 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
   mMaxPolygonCandidatesPerCmSquared = prj->readDoubleEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygonPerCM" ), 2.5, &saved );
 
   mFlags = Flags();
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), false, &saved ) ) mFlags |= DrawCandidates;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), false, &saved ) ) mFlags |= DrawLabelRectOnly;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), false, &saved ) ) mFlags |= UseAllLabels;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), true, &saved ) ) mFlags |= UsePartialCandidates;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawUnplaced" ), false, &saved ) ) mFlags |= DrawUnplacedLabels;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), false, &saved ) )
+    mFlags |= DrawCandidates;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), false, &saved ) )
+    mFlags |= DrawLabelRectOnly;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), false, &saved ) )
+    mFlags |= UseAllLabels;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), true, &saved ) )
+    mFlags |= UsePartialCandidates;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawUnplaced" ), false, &saved ) )
+    mFlags |= DrawUnplacedLabels;
 
   mDefaultTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
   // if users have disabled the older PAL "DrawOutlineLabels" setting, respect that

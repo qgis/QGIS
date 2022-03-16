@@ -25,7 +25,8 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
   {
     if ( mLayer && mLayer->isValid() )
     {
-      const int newBand = currentIndex() >= 0 ? currentData().toInt() : -1 ;
+      const int newBand = currentIndex()
+      >= 0 ? currentData().toInt() : -1 ;
       if ( newBand != mPrevBand )
       {
         emit bandChanged( currentIndex() >= 0 ? currentData().toInt() : -1 );

@@ -83,7 +83,8 @@ void QgsMapOverviewCanvas::paintEvent( QPaintEvent *pe )
 
 void QgsMapOverviewCanvas::drawExtentRect()
 {
-  if ( !mMapCanvas ) return;
+  if ( !mMapCanvas )
+    return;
 
   const QgsRectangle &extent = mMapCanvas->extent();
 
@@ -336,7 +337,8 @@ QgsPanningWidget::QgsPanningWidget( QWidget *parent )
 
 void QgsPanningWidget::setPolygon( const QPolygon &p )
 {
-  if ( p == mPoly ) return;
+  if ( p == mPoly )
+    return;
   mPoly = p;
 
   //ensure polygon is closed

@@ -43,7 +43,8 @@ class BackgroundRequest : public QThread
         switch ( op )
         {
           case QNetworkAccessManager::GetOperation:
-            mReply = QgsNetworkAccessManager::instance()->get( mRequest );
+            mReply = QgsNetworkAccessManager::instance()
+            ->get( mRequest );
             break;
 
           case QNetworkAccessManager::PostOperation:

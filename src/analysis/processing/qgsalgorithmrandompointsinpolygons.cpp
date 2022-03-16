@@ -304,7 +304,8 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         // Local first (if larger than global)
         if ( minDistanceForThisFeature != 0 && mMinDistanceGlobal < minDistanceForThisFeature && localIndexPoints > 0 )
         {
-          const QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( newPoint, 1, minDistanceForThisFeature );
+          const QList<QgsFeatureId>
+          neighbors = localIndex.nearestNeighbor( newPoint, 1, minDistanceForThisFeature );
           //if ( totNPoints > 0 && !neighbors.empty() )
           if ( !neighbors.empty() )
           {
@@ -314,7 +315,8 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         // The global
         if ( mMinDistanceGlobal != 0.0 && indexPoints > 0 )
         {
-          const QList<QgsFeatureId> neighbors = globalIndex.nearestNeighbor( newPoint, 1, mMinDistanceGlobal );
+          const QList<QgsFeatureId>
+          neighbors = globalIndex.nearestNeighbor( newPoint, 1, mMinDistanceGlobal );
           //if ( totNPoints > 0 && !neighbors.empty() )
           if ( !neighbors.empty() )
           {

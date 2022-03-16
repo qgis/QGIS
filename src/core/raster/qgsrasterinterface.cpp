@@ -66,8 +66,10 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
     {
       const double srcXRes = extent().width() / xSize();
       const double srcYRes = extent().height() / ySize();
-      if ( xRes < srcXRes ) xRes = srcXRes;
-      if ( yRes < srcYRes ) yRes = srcYRes;
+      if ( xRes < srcXRes )
+        xRes = srcXRes;
+      if ( yRes < srcYRes )
+        yRes = srcYRes;
     }
     QgsDebugMsgLevel( QStringLiteral( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ), 4 );
 
@@ -96,7 +98,8 @@ bool QgsRasterInterface::hasStatistics( int bandNo,
                                         int sampleSize )
 {
   QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 stats = %2 sampleSize = %3" ).arg( bandNo ).arg( stats ).arg( sampleSize ), 4 );
-  if ( mStatistics.isEmpty() ) return false;
+  if ( mStatistics.isEmpty() )
+    return false;
 
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, bandNo, stats, extent, sampleSize );
@@ -195,7 +198,8 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
         myRasterBandStats.sum += myValue;
         myRasterBandStats.elementCount++;
 
-        if ( !std::isfinite( myValue ) ) continue; // inf
+        if ( !std::isfinite( myValue ) )
+          continue; // inf
 
         if ( myFirstIterationFlag )
         {
@@ -313,8 +317,10 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
     {
       const double srcXRes = extent().width() / xSize();
       const double srcYRes = extent().height() / ySize();
-      if ( xRes < srcXRes ) xRes = srcXRes;
-      if ( yRes < srcYRes ) yRes = srcYRes;
+      if ( xRes < srcXRes )
+        xRes = srcXRes;
+      if ( yRes < srcYRes )
+        yRes = srcYRes;
     }
     QgsDebugMsgLevel( QStringLiteral( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ), 4 );
 
@@ -384,7 +390,8 @@ bool QgsRasterInterface::hasHistogram( int bandNo,
   QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 binCount = %2 minimum = %3 maximum = %4 sampleSize = %5" ).arg( bandNo ).arg( binCount ).arg( minimum ).arg( maximum ).arg( sampleSize ), 4 );
   // histogramDefaults() needs statistics if minimum or maximum is NaN ->
   // do other checks which don't need statistics before histogramDefaults()
-  if ( mHistograms.isEmpty() ) return false;
+  if ( mHistograms.isEmpty() )
+    return false;
 
   QgsRasterHistogram myHistogram;
   initHistogram( myHistogram, bandNo, binCount, minimum, maximum, extent, sampleSize, includeOutOfRange );
@@ -496,8 +503,10 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
         {
           continue;
         }
-        if ( myBinIndex < 0 ) myBinIndex = 0;
-        if ( myBinIndex > ( myBinCount - 1 ) ) myBinIndex = myBinCount - 1;
+        if ( myBinIndex < 0 )
+          myBinIndex = 0;
+        if ( myBinIndex > ( myBinCount - 1 ) )
+          myBinIndex = myBinCount - 1;
 
         myHistogram.histogramVector[myBinIndex] += 1;
         myHistogram.nonNullCount++;

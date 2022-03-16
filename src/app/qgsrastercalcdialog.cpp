@@ -402,7 +402,8 @@ void QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked( QListWidgetI
 {
   mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
   //to enable the "ok" button if someone checks the virtual provider checkbox before adding a valid expression,
-  if ( expressionValid() && useVirtualProvider() ) setAcceptButtonState();
+  if ( expressionValid() && useVirtualProvider() )
+    setAcceptButtonState();
 }
 
 void QgsRasterCalcDialog::mPlusPushButton_clicked()

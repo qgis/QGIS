@@ -584,7 +584,8 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
   else
   {
     QgsDebugMsg( QStringLiteral( "No config files found in: %1" ).arg( configdir.path() ) );
-    if ( ok ) *ok = res;
+    if ( ok )
+      *ok = res;
     return configs;
   }
 
@@ -623,7 +624,8 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
     configs << config;
   }
 
-  if ( ok ) *ok = true;
+  if ( ok )
+    *ok = true;
   return configs;
 }
 

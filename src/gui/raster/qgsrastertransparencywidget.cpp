@@ -191,7 +191,8 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
   if ( nBands == 1 )
   {
     QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
-    if ( !lineEdit ) return;
+    if ( !lineEdit )
+      return;
     int row = -1;
     int column = -1;
     for ( int r = 0; r < tableTransparency->rowCount(); r++ )
@@ -205,14 +206,16 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
           break;
         }
       }
-      if ( row != -1 ) break;
+      if ( row != -1 )
+        break;
     }
     QgsDebugMsg( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ) );
 
     if ( column == 0 )
     {
       QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, 1 ) );
-      if ( !toLineEdit ) return;
+      if ( !toLineEdit )
+        return;
       const bool toChanged = mTransparencyToEdited.value( row );
       QgsDebugMsg( QStringLiteral( "toChanged = %1" ).arg( toChanged ) );
       if ( !toChanged )
@@ -247,7 +250,8 @@ void QgsRasterTransparencyWidget::pbnAddValuesManually_clicked()
   tableTransparency->insertRow( tableTransparency->rowCount() );
 
   int n = renderer->usesBands().size();
-  if ( n == 1 ) n++;
+  if ( n == 1 )
+    n++;
 
   for ( int i = 0; i < n; i++ )
   {
@@ -705,10 +709,12 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
 {
   QgsDebugMsg( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ) );
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
-  if ( !provider ) return;
+  if ( !provider )
+    return;
 
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
-  if ( !renderer ) return;
+  if ( !renderer )
+    return;
   const int nBands = renderer->usesBands().size();
 
   QLineEdit *lineEdit = new QLineEdit();
@@ -763,7 +769,8 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
 void QgsRasterTransparencyWidget::adjustTransparencyCellWidth( int row, int column )
 {
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
-  if ( !lineEdit ) return;
+  if ( !lineEdit )
+    return;
 
   int width = std::max( lineEdit->fontMetrics().boundingRect( lineEdit->text() ).width() + 10, 100 );
   width = std::max( width, tableTransparency->columnWidth( column ) );

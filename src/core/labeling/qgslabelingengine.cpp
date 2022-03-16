@@ -109,7 +109,8 @@ QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
 
     if ( providerA && providerB )
     {
-      return providerA->settings().zIndex < providerB->settings().zIndex ;
+      return providerA->settings()
+      .zIndex < providerB->settings().zIndex ;
     }
     return false;
   } );
@@ -123,7 +124,8 @@ QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
 
     if ( providerA && providerB )
     {
-      return providerA->settings().zIndex < providerB->settings().zIndex ;
+      return providerA->settings()
+      .zIndex < providerB->settings().zIndex ;
     }
     return false;
   } );
@@ -155,7 +157,8 @@ QStringList QgsLabelingEngine::participatingLayerIds() const
 
     if ( providerA && providerB )
     {
-      return providerA->settings().zIndex < providerB->settings().zIndex ;
+      return providerA->settings()
+      .zIndex < providerB->settings().zIndex ;
     }
     return false;
   } );
@@ -169,7 +172,8 @@ QStringList QgsLabelingEngine::participatingLayerIds() const
 
     if ( providerA && providerB )
     {
-      return providerA->settings().zIndex < providerB->settings().zIndex ;
+      return providerA->settings()
+      .zIndex < providerB->settings().zIndex ;
     }
     return false;
   } );

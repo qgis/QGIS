@@ -158,7 +158,8 @@ bool QgsPolygon3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCor
   for ( Qt3DRender::QGeometryRenderer *r : renderers )
   {
     Qgs3DExportObject *object = exporter->processGeometryRenderer( r, objectNamePrefix );
-    if ( object == nullptr ) continue;
+    if ( object == nullptr )
+      continue;
     exporter->processEntityMaterial( entity, object );
     exporter->mObjects.push_back( object );
   }

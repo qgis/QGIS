@@ -94,7 +94,8 @@ struct QgsPostgresLayerProperty
   QString defaultName() const
   {
     QString n = tableName;
-    if ( nSpCols > 1 ) n += '.' + geometryColName;
+    if ( nSpCols > 1 )
+      n += '.' + geometryColName;
     return n;
   }
 

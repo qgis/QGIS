@@ -288,10 +288,14 @@ bool QgsAlignRaster::checkInputParameters()
     else
     {
       // use intersection of rects
-      if ( extent.xMinimum() > finalExtent[0] ) finalExtent[0] = extent.xMinimum();
-      if ( extent.yMinimum() > finalExtent[1] ) finalExtent[1] = extent.yMinimum();
-      if ( extent.xMaximum() < finalExtent[2] ) finalExtent[2] = extent.xMaximum();
-      if ( extent.yMaximum() < finalExtent[3] ) finalExtent[3] = extent.yMaximum();
+      if ( extent.xMinimum() > finalExtent[0] )
+        finalExtent[0] = extent.xMinimum();
+      if ( extent.yMinimum() > finalExtent[1] )
+        finalExtent[1] = extent.yMinimum();
+      if ( extent.xMaximum() < finalExtent[2] )
+        finalExtent[2] = extent.xMaximum();
+      if ( extent.yMaximum() < finalExtent[3] )
+        finalExtent[3] = extent.yMaximum();
     }
   }
 
@@ -306,10 +310,14 @@ bool QgsAlignRaster::checkInputParameters()
     const double clipY0 = floor_with_tolerance( ( mClipExtent[1] - mGridOffsetY ) / mCellSizeY ) * mCellSizeY + mGridOffsetY;
     const double clipX1 = ceil_with_tolerance( ( mClipExtent[2] - clipX0 ) / mCellSizeX ) * mCellSizeX + clipX0;
     const double clipY1 = ceil_with_tolerance( ( mClipExtent[3] - clipY0 ) / mCellSizeY ) * mCellSizeY + clipY0;
-    if ( clipX0 > finalExtent[0] ) finalExtent[0] = clipX0;
-    if ( clipY0 > finalExtent[1] ) finalExtent[1] = clipY0;
-    if ( clipX1 < finalExtent[2] ) finalExtent[2] = clipX1;
-    if ( clipY1 < finalExtent[3] ) finalExtent[3] = clipY1;
+    if ( clipX0 > finalExtent[0] )
+      finalExtent[0] = clipX0;
+    if ( clipY0 > finalExtent[1] )
+      finalExtent[1] = clipY0;
+    if ( clipX1 < finalExtent[2] )
+      finalExtent[2] = clipX1;
+    if ( clipY1 < finalExtent[3] )
+      finalExtent[3] = clipY1;
   }
 
   // align to grid - shrink the rect if necessary

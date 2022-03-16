@@ -44,7 +44,8 @@ int QgsGmlFeatureClass::fieldIndex( const QString &name )
 {
   for ( int i = 0; i < mFields.size(); i++ )
   {
-    if ( mFields[i].name() == name ) return i;
+    if ( mFields[i].name() == name )
+      return i;
   }
   return -1;
 }
@@ -120,7 +121,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
 {
   //QgsDebugMsg("typeName = " + typeName );
   const QDomElement complexTypeElement = domElement( element, QStringLiteral( "complexType" ), QStringLiteral( "name" ), typeName );
-  if ( complexTypeElement.isNull() ) return false;
+  if ( complexTypeElement.isNull() )
+    return false;
 
   // extension or restriction
   QDomElement extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.extension" ) );
@@ -128,7 +130,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
   {
     extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.restriction" ) );
   }
-  if ( extrest.isNull() ) return false;
+  if ( extrest.isNull() )
+    return false;
 
   const QString extrestName = extrest.attribute( QStringLiteral( "base" ) );
   if ( extrestName == QLatin1String( "gml:AbstractFeatureType" ) )
@@ -140,7 +143,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
   else
   {
     // Get attributes from extrest
-    if ( !xsdFeatureClass( element, stripNS( extrestName ), featureClass ) ) return false;
+    if ( !xsdFeatureClass( element, stripNS( extrestName ), featureClass ) )
+      return false;
   }
 
   // Supported geometry types
@@ -237,14 +241,16 @@ QString QgsGmlSchema::xsdComplexTypeGmlBaseType( const QDomElement &element, con
 {
   //QgsDebugMsg("name = " + name );
   const QDomElement complexTypeElement = domElement( element, QStringLiteral( "complexType" ), QStringLiteral( "name" ), name );
-  if ( complexTypeElement.isNull() ) return QString();
+  if ( complexTypeElement.isNull() )
+    return QString();
 
   QDomElement extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.extension" ) );
   if ( extrest.isNull() )
   {
     extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.restriction" ) );
   }
-  if ( extrest.isNull() ) return QString();
+  if ( extrest.isNull() )
+    return QString();
 
   const QString extrestName = extrest.attribute( QStringLiteral( "base" ) );
   if ( extrestName.startsWith( QLatin1String( "gml:" ) ) )
@@ -266,7 +272,8 @@ QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const 
   QList<QDomElement> list;
 
   QStringList names = path.split( '.' );
-  if ( names.isEmpty() ) return list;
+  if ( names.isEmpty() )
+    return list;
   const QString name = names.value( 0 );
   names.removeFirst();
 
@@ -556,12 +563,14 @@ QStringList QgsGmlSchema::typeNames() const
 
 QList<QgsField> QgsGmlSchema::fields( const QString &typeName )
 {
-  if ( mFeatureClassMap.count( typeName ) == 0 ) return QList<QgsField>();
+  if ( mFeatureClassMap.count( typeName ) == 0 )
+    return QList<QgsField>();
   return mFeatureClassMap[typeName].fields();
 }
 
 QStringList QgsGmlSchema::geometryAttributes( const QString &typeName )
 {
-  if ( mFeatureClassMap.count( typeName ) == 0 ) return QStringList();
+  if ( mFeatureClassMap.count( typeName ) == 0 )
+    return QStringList();
   return mFeatureClassMap[typeName].geometryAttributes();
 }

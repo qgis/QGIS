@@ -259,7 +259,8 @@ class CORE_EXPORT QgsRasterBlock
     */
     QRgb color( int row, int column ) const SIP_HOLDGIL
     {
-      if ( !mImage ) return NO_DATA_COLOR;
+      if ( !mImage )
+        return NO_DATA_COLOR;
 
       return mImage->pixel( column, row );
     }
@@ -770,7 +771,8 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
 
 inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize index, double value ) SIP_SKIP
 {
-  if ( !data ) return;
+  if ( !data )
+    return;
 
   switch ( type )
   {
