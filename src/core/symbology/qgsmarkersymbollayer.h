@@ -748,11 +748,10 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QString layerType() const override;
 
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
-
     QVariantMap properties() const override;
-
     QgsRasterMarkerSymbolLayer *clone() const override SIP_FACTORY;
     bool usesMapUnits() const override;
+    QColor color() const override;
 
     /**
      * Calculates the marker aspect ratio between width and height.

@@ -838,6 +838,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsRasterFillSymbolLayer *clone() const override SIP_FACTORY;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
     bool usesMapUnits() const override;
+    QColor color() const override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
     QgsSymbol *subSymbol() override { return nullptr; }

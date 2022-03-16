@@ -4341,6 +4341,11 @@ bool QgsRasterFillSymbolLayer::usesMapUnits() const
          || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
+QColor QgsRasterFillSymbolLayer::color() const
+{
+  return QColor();
+}
+
 void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )
 {
   mImageFilePath = imagePath;
