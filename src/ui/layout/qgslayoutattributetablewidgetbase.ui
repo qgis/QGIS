@@ -412,7 +412,7 @@
           <item row="9" column="0" colspan="2">
            <widget class="QCheckBox" name="mUseConditionalStylingCheckBox">
             <property name="text">
-             <string>Apply layer conditional styling colors</string>
+             <string>Apply layer conditional styling rules</string>
             </property>
            </widget>
           </item>
