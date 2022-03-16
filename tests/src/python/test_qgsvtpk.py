@@ -110,6 +110,26 @@ class TestQgsVtpk(unittest.TestCase):
         tile_data = tiles.tileData(0, 0, 0)
         self.assertEqual(tile_data.length(), 1202)
 
+    def testLayerMetadata(self):
+        tiles = QgsVtpkTiles(unitTestDataPath() + '/testvtpk.vtpk')
+        # no crash
+        _ = tiles.layerMetadata()
+
+        self.assertTrue(tiles.open())
+        layer_metadata = tiles.layerMetadata()
+        self.assertEqual(layer_metadata.identifier(), 'FD610B57-9B73-48E5-A7E5-DA07C8D2C245')
+        self.assertEqual(layer_metadata.title(), 'testvtpk')
+        self.assertEqual(layer_metadata.abstract(), 'Map description')
+        self.assertEqual(layer_metadata.keywords(), {'keywords': ['tile tags']})
+        self.assertEqual(layer_metadata.rights(), ['Map credits'])
+        self.assertEqual(layer_metadata.licenses(), ['Map use limitations'])
+        self.assertEqual(layer_metadata.crs().authid(), 'EPSG:3857')
+        self.assertEqual(layer_metadata.extent().spatialExtents()[0].bounds.xMinimum(), -179.999988600592)
+        self.assertEqual(layer_metadata.extent().spatialExtents()[0].bounds.xMaximum(), 179.999988540844)
+        self.assertEqual(layer_metadata.extent().spatialExtents()[0].bounds.yMinimum(), -85.0511277912625)
+        self.assertEqual(layer_metadata.extent().spatialExtents()[0].bounds.yMaximum(), 85.0511277912625)
+        self.assertEqual(layer_metadata.extent().spatialExtents()[0].extentCrs.authid(), 'EPSG:4326')
+
     def testVectorTileLayer(self):
         layer = QgsVectorTileLayer('type=vtpk&url={}'.format(unitTestDataPath() + '/testvtpk.vtpk'), 'tiles')
         self.assertTrue(layer.isValid())
@@ -131,6 +151,10 @@ class TestQgsVtpk(unittest.TestCase):
         self.assertEqual(layer.renderer().style(2).styleName(), 'points')
         style = layer.renderer().style(2)
         self.assertEqual(style.symbol().color().name(), '#a16f33')
+
+        self.assertTrue(layer.loadDefaultMetadata())
+        # make sure metadata was loaded
+        self.assertEqual(layer.metadata().identifier(), 'FD610B57-9B73-48E5-A7E5-DA07C8D2C245')
 
 
 if __name__ == '__main__':

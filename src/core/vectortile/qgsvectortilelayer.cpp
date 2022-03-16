@@ -662,6 +662,21 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
     resultFlag = true;
     return QString();
   }
+  else if ( mSourceType == QLatin1String( "vtpk" ) )
+  {
+    QgsVtpkTiles reader( mSourcePath );
+    if ( !reader.open() )
+    {
+      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
+      resultFlag = false;
+    }
+    else
+    {
+      setMetadata( reader.layerMetadata() );
+      resultFlag = true;
+    }
+    return QString();
+  }
   else
   {
     QgsMapLayer::loadDefaultMetadata( resultFlag );
