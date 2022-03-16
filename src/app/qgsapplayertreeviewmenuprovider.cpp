@@ -793,6 +793,44 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
     {
       // symbology item
       QgsMapLayer *layer = QgsLayerTree::toLayer( node->layerNode() )->layer();
+
+      const QString layerId = symbolNode->layerNode()->layerId();
+      const QString ruleKey = symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+
+      if ( layer && layer->type() == QgsMapLayerType::VectorLayer )
+      {
+        QAction *selectMatching = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelected.svg" ) ), tr( "Select Features" ), menu );
+        menu->addAction( selectMatching );
+        menu->addSeparator();
+        connect( selectMatching, &QAction::triggered, this, [layerId, ruleKey ]
+        {
+          if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
+          {
+            bool ok = false;
+            const QString filterExp = layer->renderer() ? layer->renderer()->legendKeyToExpression( ruleKey, layer, ok ) : QString();
+            if ( ok )
+            {
+              QgsExpressionContext context = QgisApp::instance()->mapCanvas()->mapSettings().expressionContext();
+              layer->selectByExpression( filterExp, Qgis::SelectBehavior::SetSelection, &context );
+
+              int count = layer->selectedFeatureCount();
+              if ( count > 0 )
+              {
+                QgisApp::instance()->messageBar()->pushMessage( QString(),
+                    tr( "%n matching feature(s) selected", "matching features", count ),
+                    Qgis::MessageLevel::Info );
+              }
+              else
+              {
+                QgisApp::instance()->messageBar()->pushMessage( QString(),
+                    tr( "No matching features found" ),
+                    Qgis::MessageLevel::Info );
+              }
+            }
+          }
+        } );
+      }
+
       if ( layer && layer->type() == QgsMapLayerType::VectorLayer && symbolNode->symbol() )
       {
         QgsColorWheel *colorWheel = new QgsColorWheel( menu );
@@ -821,9 +859,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         menu->addSeparator();
       }
-
-      const QString layerId = symbolNode->layerNode()->layerId();
-      const QString ruleKey = symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
 
       if ( layer && layer->type() == QgsMapLayerType::VectorLayer )
       {
