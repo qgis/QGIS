@@ -70,8 +70,9 @@ namespace QgsEptDecoder
     std::vector<char> ebData = f.vlrData( "LASF_Spec", 4 );
     lazperf::eb_vlr ebVlr;
     ebVlr.fill( ebData.data(), ebData.size() );
-    for ( lazperf::eb_vlr::ebfield field : ebVlr.items )
+    for ( std::vector<lazperf::eb_vlr::ebfield>::reverse_iterator it = ebVlr.items.rbegin(); it != ebVlr.items.rend(); ++it )
     {
+      lazperf::eb_vlr::ebfield &field = *it;
       ExtraBytesAttributeDetails ebAtrr;
       ebAtrr.attribute = QString::fromStdString( field.name );
       switch ( field.data_type )
