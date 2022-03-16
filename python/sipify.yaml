@@ -7,5 +7,4 @@ class_headerfile:
 
 
 no_export_macro:
-  - QgsRange
-  - QgsTemporalRange
+

@@ -17,12 +17,10 @@
 #include "qgssettingsentryimpl.h"
 
 
-
 Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
 {
   return Qgis::SettingsType::Variant;
 }
-
 
 
 bool QgsSettingsEntryString::checkValue( const QString &value ) const
@@ -95,11 +93,11 @@ bool QgsSettingsEntryBool::convertFromVariant( const QVariant &value ) const
   return value.toBool();
 }
 
+
 Qgis::SettingsType QgsSettingsEntryBool::settingsType() const
 {
   return Qgis::SettingsType::Bool;
 }
-
 
 
 bool QgsSettingsEntryInteger::checkValue( qlonglong value ) const

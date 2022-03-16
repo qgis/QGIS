@@ -78,11 +78,6 @@ class CORE_EXPORT QgsMbTiles
      */
     void setTileData( int z, int x, int y, const QByteArray &data );
 
-    //! Decodes gzip byte stream, returns true on success. Useful for reading vector tiles.
-    static bool decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut );
-    //! Encodes gzip byte stream, returns true on success. Useful for writing vector tiles.
-    static bool encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut );
-
   private:
     QString mFilename;
     sqlite3_database_unique_ptr mDatabase;

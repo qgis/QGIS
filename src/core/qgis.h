@@ -55,6 +55,14 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
   GroupLayer, //!< Composite group layer. Added in QGIS 3.24
 };
 
+#ifndef SIP_RUN
+// qHash implementation for scoped enum type
+// https://gitlab.com/frostasm/programming-knowledge-base/-/snippets/20120
+#define QHASH_FOR_CLASS_ENUM(T) \
+  inline uint qHash(const T &t, uint seed) { \
+    return ::qHash(static_cast<typename std::underlying_type<T>::type>(t), seed); \
+  }
+#endif
 
 /**
  * \ingroup core
@@ -135,6 +143,20 @@ class CORE_EXPORT Qgis
       ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
     };
     Q_ENUM( DataType )
+
+    /**
+     * Capture technique.
+     *
+     * \since QGIS 3.26
+     */
+    enum class CaptureTechnique : int
+    {
+      StraightSegments, //!< Default capture mode - capture occurs with straight line segments
+      CircularString, //!< Capture in circular strings
+      Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
+      Shape, //!< Digitize shapes.
+    };
+    Q_ENUM( CaptureTechnique )
 
     /**
      * Vector layer type flags.
@@ -1315,6 +1337,18 @@ class CORE_EXPORT Qgis
     Q_FLAG( TextRendererFlags )
 
     /**
+     * Available methods for converting map scales to tile zoom levels.
+     *
+     * \since QGIS 3.26
+     */
+    enum class ScaleToTileZoomLevelMethod : int
+    {
+      MapBox, //!< Uses a scale doubling approach to account for hi-DPI tiles, and rounds to the nearest tile level for the map scale
+      Esri, //!< No scale doubling, always rounds down when matching to available tile levels
+    };
+    Q_ENUM( ScaleToTileZoomLevelMethod );
+
+    /**
      * Angular directions.
      *
      * \since QGIS 3.24
@@ -1409,6 +1443,19 @@ class CORE_EXPORT Qgis
       Glob, //!< Glob string pattern field domain
     };
     Q_ENUM( FieldDomainType )
+
+    /**
+     * Transaction mode.
+     *
+     * \since QGIS 3.26
+     */
+    enum class TransactionMode : int
+    {
+      Disabled = 0, //!< Edits are buffered locally and sent to the provider when toggling layer editing mode.
+      AutomaticGroups = 1, //!< Automatic transactional editing means that on supported datasources (postgres and geopackage databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction.
+      BufferedGroups = 2, //!< Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is executed within a single transaction on all layers (per provider).
+    };
+    Q_ENUM( TransactionMode )
 
     /**
      * Altitude clamping.
@@ -1547,6 +1594,8 @@ class CORE_EXPORT Qgis
      */
     static QString geosVersion();
 };
+
+QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )

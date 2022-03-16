@@ -141,9 +141,23 @@ QgsPointCloudAttributeCollection::QgsPointCloudAttributeCollection( const QVecto
 
 void QgsPointCloudAttributeCollection::push_back( const QgsPointCloudAttribute &attribute )
 {
-  mCachedAttributes.insert( attribute.name(), CachedAttributeData( mAttributes.size(), mSize ) );
+  mCachedAttributes.insert( attribute.name().toUpper(), CachedAttributeData( mAttributes.size(), mSize ) );
   mAttributes.push_back( attribute );
   mSize += attribute.size();
+}
+
+void QgsPointCloudAttributeCollection::extend( const QgsPointCloudAttributeCollection &otherCollection, const QSet<QString> &matchingNames )
+{
+  for ( const auto &attributeName : matchingNames )
+  {
+    if ( indexOf( attributeName ) == -1 )
+    {
+      int offset;
+      const auto attr = otherCollection.find( attributeName, offset );
+      if ( attr )
+        push_back( *attr );
+    }
+  }
 }
 
 QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() const
@@ -153,7 +167,7 @@ QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() c
 
 const QgsPointCloudAttribute *QgsPointCloudAttributeCollection::find( const QString &attributeName, int &offset ) const
 {
-  const auto it = mCachedAttributes.constFind( attributeName );
+  const auto it = mCachedAttributes.constFind( attributeName.toUpper() );
   if ( it != mCachedAttributes.constEnd() )
   {
     offset = it->offset;
@@ -166,7 +180,7 @@ const QgsPointCloudAttribute *QgsPointCloudAttributeCollection::find( const QStr
 
 int QgsPointCloudAttributeCollection::indexOf( const QString &name ) const
 {
-  const auto it = mCachedAttributes.constFind( name );
+  const auto it = mCachedAttributes.constFind( name.toUpper() );
   if ( it != mCachedAttributes.constEnd() )
   {
     return it->index;
@@ -228,6 +242,13 @@ void _attribute( const char *data, std::size_t offset, QgsPointCloudAttribute::D
       value = *reinterpret_cast< const double * >( data + offset );
       break;
   }
+}
+
+double QgsPointCloudAttribute::convertValueToDouble( const char *ptr ) const
+{
+  double val;
+  _attribute( ptr, 0, mType, val );
+  return val;
 }
 
 void QgsPointCloudAttribute::getPointXYZ( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType,

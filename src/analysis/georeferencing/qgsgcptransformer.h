@@ -32,6 +32,8 @@
 */
 class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -48,6 +50,7 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
       Projective, //!< Projective
       InvalidTransform = 65535 //!< Invalid transform
     };
+    Q_ENUM( TransformMethod )
 
     //! Constructor for QgsGcpTransformerInterface
     QgsGcpTransformerInterface() = default;

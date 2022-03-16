@@ -103,7 +103,7 @@ class CORE_EXPORT QgsAbstract3DSymbol
     /**
      * Copies base class settings from this object to a \a destination object.
      */
-    void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
+    virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
     QgsPropertyCollection mDataDefinedProperties;
 
   private:

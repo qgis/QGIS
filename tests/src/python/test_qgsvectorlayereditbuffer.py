@@ -14,7 +14,8 @@ import os
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant, QTemporaryDir
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.core import (QgsVectorLayer,
+from qgis.core import (Qgis,
+                       QgsVectorLayer,
                        QgsFeature,
                        QgsProject,
                        QgsGeometry,
@@ -414,7 +415,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
     def testTransactionGroup(self):
         """Test that the buffer works the same when used in transaction and when not"""
 
-        def _test(autoTransaction):
+        def _test(transactionMode):
             """Test buffer methods within and without transactions
 
             - create a feature
@@ -448,7 +449,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
             self.assertTrue(layer_a.isValid())
 
             project = QgsProject()
-            project.setAutoTransaction(autoTransaction)
+            project.setTransactionMode(transactionMode)
             project.addMapLayers([layer_a])
 
             ###########################################
@@ -511,14 +512,18 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
             spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
             layer_a.undoStack().undo()
             # This is because QgsVectorLayerUndoCommandChangeAttribute plural
-            if not autoTransaction:
+            if transactionMode != Qgis.TransactionMode.AutomaticGroups:
                 layer_a.undoStack().undo()
             f = next(layer_a.getFeatures())
             self.assertEqual(f.attribute('int'), 123)
             self.assertEqual(f.attribute('int2'), None)
             self.assertEqual(len(spy_attribute_changed), 2)
-            self.assertEqual(spy_attribute_changed[1 if autoTransaction else 0], [f.id(), 2, None])
-            self.assertEqual(spy_attribute_changed[0 if autoTransaction else 1], [f.id(), 1, 123])
+            if transactionMode == Qgis.TransactionMode.AutomaticGroups:
+                self.assertEqual(spy_attribute_changed[1], [f.id(), 2, None])
+                self.assertEqual(spy_attribute_changed[0], [f.id(), 1, 123])
+            else:
+                self.assertEqual(spy_attribute_changed[0], [f.id(), 2, None])
+                self.assertEqual(spy_attribute_changed[1], [f.id(), 1, 123])
 
             # Change geometry
             f = next(layer_a.getFeatures())
@@ -591,11 +596,15 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
             spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
             layer_a.undoStack().undo()
             # This is because QgsVectorLayerUndoCommandChangeAttribute plural
-            if not autoTransaction:
+            if transactionMode != Qgis.TransactionMode.AutomaticGroups:
                 layer_a.undoStack().undo()
             self.assertEqual(len(spy_attribute_changed), 2)
-            self.assertEqual(spy_attribute_changed[0 if autoTransaction else 1], [1, 1, 123])
-            self.assertEqual(spy_attribute_changed[1 if autoTransaction else 0], [1, 2, None])
+            if transactionMode == Qgis.TransactionMode.AutomaticGroups:
+                self.assertEqual(spy_attribute_changed[0], [1, 1, 123])
+                self.assertEqual(spy_attribute_changed[1], [1, 2, None])
+            else:
+                self.assertEqual(spy_attribute_changed[1], [1, 1, 123])
+                self.assertEqual(spy_attribute_changed[0], [1, 2, None])
             f = next(layer_a.getFeatures())
             self.assertEqual(f.attributes(), [1, 123, None])
             self.assertEqual(buffer.changedAttributeValues(), {})
@@ -722,7 +731,8 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
             #############################################
             # Try hard to make this fail for transactions
-            if autoTransaction:
+            if (transactionMode == Qgis.TransactionMode.AutomaticGroups
+                    or transactionMode == Qgis.TransactionMode.BufferedGroups):
                 self.assertTrue(layer_a.commitChanges())
                 self.assertTrue(layer_a.startEditing())
                 f = next(layer_a.getFeatures())
@@ -780,8 +790,9 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
                 f = next(layer_a.getFeatures())
                 self.assertEqual(f.attribute(2), None)
 
-        _test(False)
-        _test(True)
+        _test(Qgis.TransactionMode.Disabled)
+        _test(Qgis.TransactionMode.AutomaticGroups)
+        _test(Qgis.TransactionMode.BufferedGroups)
 
 
 if __name__ == '__main__':

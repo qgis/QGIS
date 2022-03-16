@@ -263,14 +263,14 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       // perform both to detect errors in constraints
       if ( ctx.xConstraint.locked )
       {
-        const QgsPointXY verticalPt0( ctx.xConstraint.value, point.y() );
-        const QgsPointXY verticalPt1( ctx.xConstraint.value, point.y() + 1 );
+        const QgsPointXY verticalPt0( point.x(), point.y() );
+        const QgsPointXY verticalPt1( point.x(), point.y() + 1 );
         res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, verticalPt0, verticalPt1, point );
       }
       if ( ctx.yConstraint.locked )
       {
-        const QgsPointXY horizontalPt0( point.x(), ctx.yConstraint.value );
-        const QgsPointXY horizontalPt1( point.x() + 1, ctx.yConstraint.value );
+        const QgsPointXY horizontalPt0( point.x(), point.y() );
+        const QgsPointXY horizontalPt1( point.x() + 1, point.y() );
         res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, horizontalPt0, horizontalPt1, point );
       }
     }

@@ -47,6 +47,7 @@ class QNetworkReply;
 class QEventLoop;
 
 class QgsMbTiles;
+class QgsVtpkTiles;
 
 class QgsTileDownloadManagerReply;
 
@@ -78,6 +79,9 @@ class QgsVectorTileLoader : public QObject
                                        const QgsHttpHeaders &headers );
     //! Returns raw tile data for a single tile loaded from MBTiles file
     static QByteArray loadFromMBTiles( const QgsTileXYZ &id, QgsMbTiles &mbTileReader );
+
+    //! Returns raw tile data for a single tile loaded from VTPK file
+    static QByteArray loadFromVtpk( const QgsTileXYZ &id, QgsVtpkTiles &vtpkTileReader );
 
     //
     // non-static stuff

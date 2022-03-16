@@ -65,6 +65,7 @@ static bool setGlobalSettingsPath( QString path );
       Gps,
     };
 
+
     explicit QgsSettings( const QString &organization,
                           const QString &application = QString(), QObject *parent = 0 );
 %Docstring

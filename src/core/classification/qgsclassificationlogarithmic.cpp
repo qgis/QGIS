@@ -94,15 +94,27 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, do
   }
 
   // get the min/max in log10 scale
-  const double logMin = std::floor( std::log10( positiveMinimum ) );
+  const double actualLogMin { std::log10( positiveMinimum ) };
+  double logMin = std::floor( actualLogMin );
   const double logMax = std::ceil( std::log10( maximum ) );
 
   // calculate pretty breaks
-  breaks.append( QgsSymbolLayerUtils::prettyBreaks( logMin, logMax, nclasses ) );
+  QList<double> prettyBreaks { QgsSymbolLayerUtils::prettyBreaks( logMin, logMax, nclasses ) };
+
+  // If case the first class greater than the actual log min increase the minimum log
+  while ( ! prettyBreaks.isEmpty() && prettyBreaks.first() < actualLogMin )
+  {
+    logMin += 1.0;
+    prettyBreaks = QgsSymbolLayerUtils::prettyBreaks( logMin, logMax, nclasses );
+  }
+
+  breaks.append( prettyBreaks );
 
   // create the value
   for ( int i = 0; i < breaks.count(); i++ )
+  {
     breaks[i] = std::pow( 10, breaks.at( i ) );
+  }
 
   return breaks;
 }
@@ -121,7 +133,7 @@ QString QgsClassificationLogarithmic::valueToLabel( double value ) const
     }
     else
     {
-      return QString( QStringLiteral( "10^%1" ) ).arg( std::log10( value ) );
+      return QString( QStringLiteral( "10^%L1" ) ).arg( std::log10( value ) );
     }
   }
 }
@@ -142,7 +154,7 @@ QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double u
       break;
   }
 
-  return labelFormat().arg( lowerLabel ).arg( upperLabel );
+  return labelFormat().arg( lowerLabel, upperLabel );
 }
 
 bool QgsClassificationLogarithmic::valuesRequired() const

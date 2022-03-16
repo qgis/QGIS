@@ -232,6 +232,7 @@ my $topush = join(" ", @topush);
 print "Push dry-run...\n";
 run( "git push -n --follow-tags origin $topush", "push dry run failed" );
 print "Now manually push and upload the tar balls:\n\tgit push --follow-tags origin $topush\n\trsync qgis-$version.tar.bz2* ssh.qgis.org:/var/www/downloads/\n";
+print "Update version-ltr.txt rewrite rule on website\n" if $doltr;
 unless($dopoint) {
 	print "Create new transifex branch and push the translations.\n";
 	print "Update the versions and release name in release spreadsheet.\n";

@@ -316,6 +316,12 @@ void QgsNetworkLoggerProxyModel::setShowTimeouts( bool show )
   invalidateFilter();
 }
 
+void QgsNetworkLoggerProxyModel::setShowCached( bool show )
+{
+  mShowCached = show;
+  invalidateFilter();
+}
+
 bool QgsNetworkLoggerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
   QgsNetworkLoggerNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
@@ -325,6 +331,8 @@ bool QgsNetworkLoggerProxyModel::filterAcceptsRow( int source_row, const QModelI
          & !mShowSuccessful )
       return false;
     else if ( request->status() == QgsNetworkLoggerRequestGroup::Status::TimeOut && !mShowTimeouts )
+      return false;
+    else if ( request->replyFromCache() && !mShowCached )
       return false;
     return mFilterString.isEmpty() || request->url().url().contains( mFilterString, Qt::CaseInsensitive );
   }

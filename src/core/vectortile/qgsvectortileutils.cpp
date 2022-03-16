@@ -48,7 +48,7 @@ QPolygon QgsVectorTileUtils::tilePolygon( QgsTileXYZ id, const QgsCoordinateTran
   return path;
 }
 
-QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
+QgsFields QgsVectorTileUtils::makeQgisFields( const QSet<QString> &flds )
 {
   QgsFields fields;
   QStringList fieldsSorted = qgis::setToList( flds );
@@ -60,17 +60,17 @@ QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
   return fields;
 }
 
-double QgsVectorTileUtils::scaleToZoom( double mapScale )
+double QgsVectorTileUtils::scaleToZoom( double mapScale, double z0Scale )
 {
-  double s0 = 559082264.0287178;   // scale denominator at zoom level 0 of GoogleCRS84Quad
+  double s0 = z0Scale;
   double tileZoom2 = log( s0 / mapScale ) / log( 2 );
   tileZoom2 -= 1;   // TODO: it seems that map scale is double (is that because of high-dpi screen?)
   return tileZoom2;
 }
 
-int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom )
+int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom, double z0Scale )
 {
-  int tileZoom = static_cast<int>( round( scaleToZoom( mapScale ) ) );
+  int tileZoom = static_cast<int>( round( scaleToZoom( mapScale, z0Scale ) ) );
 
   if ( tileZoom < sourceMinZoom )
     tileZoom = sourceMinZoom;
@@ -82,7 +82,7 @@ int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, in
 
 QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *mvt, QgsTileXYZ tileID, const QString &layerName )
 {
-  QgsVectorTileMVTDecoder decoder;
+  QgsVectorTileMVTDecoder decoder( mvt->tileMatrixSet() );
   decoder.decode( tileID, mvt->getRawTile( tileID ) );
   QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
   fieldNames << QStringLiteral( "_geom_type" );
@@ -112,7 +112,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
   vl->dataProvider()->addAttributes( fields.toList() );
   vl->updateFields();
   bool res = vl->dataProvider()->addFeatures( featuresList );
-  Q_UNUSED( res );
+  Q_UNUSED( res )
   Q_ASSERT( res );
   Q_ASSERT( featuresList.count() == vl->featureCount() );
   vl->updateExtents();
@@ -149,7 +149,7 @@ bool QgsVectorTileUtils::checkXYZUrlTemplate( const QString &url )
 struct LessThanTileRequest
 {
   QPointF center;  //!< Center in tile matrix (!) coordinates
-  bool operator()( const QgsTileXYZ &req1, const QgsTileXYZ &req2 )
+  bool operator()( QgsTileXYZ req1, QgsTileXYZ req2 )
   {
     QPointF p1( req1.column() + 0.5, req1.row() + 0.5 );
     QPointF p2( req2.column() + 0.5, req2.row() + 0.5 );
@@ -160,7 +160,7 @@ struct LessThanTileRequest
   }
 };
 
-QVector<QgsTileXYZ> QgsVectorTileUtils::tilesInRange( const QgsTileRange &range, int zoomLevel )
+QVector<QgsTileXYZ> QgsVectorTileUtils::tilesInRange( QgsTileRange range, int zoomLevel )
 {
   QVector<QgsTileXYZ> tiles;
   for ( int tileRow = range.startRow(); tileRow <= range.endRow(); ++tileRow )
@@ -173,7 +173,7 @@ QVector<QgsTileXYZ> QgsVectorTileUtils::tilesInRange( const QgsTileRange &range,
   return tiles;
 }
 
-void QgsVectorTileUtils::sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, const QPointF &center )
+void QgsVectorTileUtils::sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center )
 {
   LessThanTileRequest cmp;
   cmp.center = center;

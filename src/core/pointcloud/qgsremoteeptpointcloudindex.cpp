@@ -42,6 +42,7 @@
 #include "qgsfileutils.h"
 #include "qgsapplication.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudexpression.h"
 
 ///@cond PRIVATE
 
@@ -139,7 +140,13 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
     return nullptr;
   }
 
-  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), request.attributes(), scale(), offset() );
+  // we need to create a copy of the expression to pass to the decoder
+  // as the same QgsPointCloudExpression object might be concurrently
+  // used on another thread, for example in a 3d view
+  QgsPointCloudExpression filterExpression = mFilterExpression;
+  QgsPointCloudAttributeCollection requestAttributes = request.attributes();
+  requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
+  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression );
 }
 
 bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const

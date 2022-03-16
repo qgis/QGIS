@@ -45,19 +45,18 @@ to validate set values and provide more accurate settings description for the gu
 
 
     QgsSettingsEntryBase( const QString &key,
-                          const QString &pluginName,
+                          const QString &section,
                           const QVariant &defaultValue = QVariant(),
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
 Constructor for QgsSettingsEntryBase.
-This constructor is intended to be used from plugins.
 
 The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
+The ``section`` argument specifies the section.
 The ``defaultValue`` argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+The ``options`` argument specifies the options for the settings entry.
 %End
 
     virtual ~QgsSettingsEntryBase();
@@ -127,9 +126,12 @@ Removes the settings from the underlying QSettings.
 The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
-    QgsSettings::Section section() const;
+ QgsSettings::Section section() const;
 %Docstring
 Returns settings section. The settings section of the parent group is returned if available.
+
+.. deprecated:: QGIS 3.26
+   the key is entirely self-defined
 %End
 
  virtual bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const /Deprecated/;
@@ -268,22 +270,20 @@ Base abstract class for settings entry which are passed by reference
 %End
   public:
 
-
     QgsSettingsEntryByReference( const QString &key,
-                                 const QString &pluginName,
+                                 const QString &section,
                                  const T &defaultValue,
                                  const QString &description = QString(),
                                  Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
 Constructor for QgsSettingsEntryByReference.
-This constructor is intended to be used from plugins.
 
 The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
 The ``defaultValue`` argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 The ``options`` arguments specifies the options for the settings entry.
 %End
+
 
     virtual Qgis::SettingsType settingsType() const = 0;
 
@@ -327,7 +327,6 @@ Returns the settings value for the ``dynamicKeyPartList`` and  with a ``defaultV
 .. deprecated:: QGIS 3.26
    use valueAsVariantWithDefaultOverride instead
 %End
-
 
     bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
@@ -405,17 +404,12 @@ Base abstract class for settings entry which are passed by value
   public:
 
 
-    QgsSettingsEntryByValue( const QString &key,
-                             const QString &pluginName,
-                             T defaultValue,
-                             const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+    QgsSettingsEntryByValue( const QString &key, const QString &section, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
 Constructor for QgsSettingsEntryByValue.
-This constructor is intended to be used from plugins.
 
 The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
+The ``section`` argument specifies the section.
 The ``defaultValue`` argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 The ``options`` arguments specifies the options for the settings entry.

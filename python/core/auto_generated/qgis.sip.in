@@ -104,6 +104,14 @@ The development version
       ARGB32_Premultiplied
     };
 
+    enum class CaptureTechnique
+    {
+      StraightSegments,
+      CircularString,
+      Streaming,
+      Shape,
+    };
+
     enum class VectorLayerTypeFlag
     {
       SqlQuery
@@ -808,6 +816,12 @@ The development version
     typedef QFlags<Qgis::TextRendererFlag> TextRendererFlags;
 
 
+    enum class ScaleToTileZoomLevelMethod
+    {
+      MapBox,
+      Esri,
+    };
+
     enum class AngularDirection
       {
       Clockwise,
@@ -854,6 +868,13 @@ The development version
       Coded,
       Range,
       Glob,
+    };
+
+    enum class TransactionMode
+    {
+      Disabled,
+      AutomaticGroups,
+      BufferedGroups,
     };
 
     enum class AltitudeClamping
@@ -933,6 +954,7 @@ GEOS string version linked
 .. versionadded:: 3.20
 %End
 };
+
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
 

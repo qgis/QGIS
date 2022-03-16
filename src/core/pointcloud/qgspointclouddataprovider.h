@@ -278,6 +278,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * If no matching precalculated statistic is available then an invalid variant will be returned.
      */
     virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+
 #else
 
     /**
@@ -306,6 +307,10 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     }
     % End
 #endif
+
+    bool supportsSubsetString() const override { return true; }
+    QString subsetString() const override;
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
 
     /**
      * Returns the map of LAS classification code to untranslated string value, corresponding to the ASPRS Standard
@@ -346,6 +351,9 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
+
+    //! String used to define a subset of the layer
+    QString mSubsetString;
 };
 
 #endif // QGSMESHDATAPROVIDER_H

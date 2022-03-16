@@ -797,7 +797,7 @@ class QgsMeshVerticesElevationDataset: public QgsMeshDataset
  *
  * \since QGIS 3.22
  */
-class QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGroup
+class CORE_EXPORT QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGroup
 {
   public:
     //! Constructor with a \a name and linked to \a mesh

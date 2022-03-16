@@ -23,3 +23,19 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 
 from qgis.PyQt import QtCore
 from qgis._gui import *
+from qgis._core import Qgis
+
+# monkey patching scoped based enum
+QgsMapToolCapture.CaptureTechnique = Qgis.CaptureTechnique
+QgsMapToolCapture.StraightSegments = Qgis.CaptureTechnique.StraightSegments
+QgsMapToolCapture.StraightSegments.is_monkey_patched = True
+QgsMapToolCapture.StraightSegments.__doc__ = "Default capture mode - capture occurs with straight line segments"
+QgsMapToolCapture.CircularString = Qgis.CaptureTechnique.CircularString
+QgsMapToolCapture.CircularString.is_monkey_patched = True
+QgsMapToolCapture.CircularString.__doc__ = "Capture in circular strings"
+QgsMapToolCapture.Streaming = Qgis.CaptureTechnique.Streaming
+QgsMapToolCapture.Streaming.is_monkey_patched = True
+QgsMapToolCapture.Streaming.__doc__ = "Streaming points digitizing mode (points are automatically added as the mouse cursor moves)."
+QgsMapToolCapture.Shape = Qgis.CaptureTechnique.Shape
+QgsMapToolCapture.Shape.is_monkey_patched = True
+QgsMapToolCapture.Shape.__doc__ = "Digitize shapes."

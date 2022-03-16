@@ -337,6 +337,7 @@ class CORE_EXPORT QgsPalLayerSettings
       LineAnchorPercent = 111, //!< Portion along line at which labels should be anchored (since QGIS 3.16)
       LineAnchorClipping = 112, //!< Clipping mode for line anchor calculation (since QGIS 3.20)
       LineAnchorType = 115, //!< Line anchor type (since QGIS 3.26)
+      LineAnchorTextPoint = 116, //!< Line anchor text point (since QGIS 3.26)
 
       // rendering
       ScaleVisibility = 23,

@@ -10,7 +10,7 @@ if (WITH_GUI)
     qgsdelimitedtextsourceselect.cpp
   )
 
-  set(DTEXT_UIS qgsdelimitedtextsourceselectbase.ui)
+  set(DTEXT_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgsdelimitedtextsourceselectbase.ui)
 endif()
 
 # static library

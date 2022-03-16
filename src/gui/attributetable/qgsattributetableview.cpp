@@ -39,7 +39,7 @@
 #include "qgsgui.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
-  : QTableView( parent )
+  : QgsTableView( parent )
 {
   const QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "BetterAttributeTable/geometry" ) ).toByteArray() );
@@ -107,8 +107,8 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
     else
     {
       setColumnWidth( i, horizontalHeader()->defaultSectionSize() );
-      columns.insert( columnConfig.name, i );
     }
+    columns.insert( columnConfig.name, i );
     i++;
   }
   mConfig = config;

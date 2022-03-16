@@ -323,6 +323,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingaggregatewidgetwrapper.cpp
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgorithmdialogbase.cpp
+  processing/qgsprocessingbatchalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
@@ -628,6 +629,7 @@ set(QGIS_GUI_SRCS
   qgsstatusbar.cpp
   qgssymbolbutton.cpp
   qgssymbollayerselectionwidget.cpp
+  qgstableview.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
@@ -888,6 +890,7 @@ set(QGIS_GUI_HDRS
   qgssubstitutionlistwidget.h
   qgssymbolbutton.h
   qgssymbollayerselectionwidget.h
+  qgstableview.h
   qgstablewidgetbase.h
   qgstablewidgetitem.h
   qgstabwidget.h
@@ -1159,6 +1162,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingaggregatewidgetwrapper.h
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
+  processing/qgsprocessingbatchalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
   processing/qgsprocessingdxflayerswidgetwrapper.h
   processing/qgsprocessingenummodelerwidget.h

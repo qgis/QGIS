@@ -46,7 +46,7 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 
 #ifndef SIP_RUN
     //! Settings entry respect screen dpi
-    static const inline QgsSettingsEntryBool settingsRespectScreenDPI = QgsSettingsEntryBool( QStringLiteral( "qgis/respect_screen_dpi" ), QgsSettings::Gui, false );
+    static const inline QgsSettingsEntryBool settingsRespectScreenDPI = QgsSettingsEntryBool( QStringLiteral( "respect_screen_dpi" ), QgsSettings::Prefix::GUI_QGIS, false );
 #endif
 
 };

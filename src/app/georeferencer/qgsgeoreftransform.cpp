@@ -26,12 +26,12 @@
 
 QgsGeorefTransform::QgsGeorefTransform( const QgsGeorefTransform &other )
 {
-  selectTransformParametrisation( other.mTransformParametrisation );
+  setMethod( other.mTransformParametrisation );
 }
 
 QgsGeorefTransform::QgsGeorefTransform( TransformMethod parametrisation )
 {
-  selectTransformParametrisation( parametrisation );
+  setMethod( parametrisation );
 }
 
 QgsGeorefTransform::QgsGeorefTransform() = default;
@@ -43,7 +43,7 @@ QgsGeorefTransform::TransformMethod QgsGeorefTransform::transformParametrisation
   return mTransformParametrisation;
 }
 
-void QgsGeorefTransform::selectTransformParametrisation( TransformMethod parametrisation )
+void QgsGeorefTransform::setMethod( TransformMethod parametrisation )
 {
   if ( parametrisation != mTransformParametrisation )
   {

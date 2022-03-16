@@ -211,6 +211,7 @@
 %Include auto_generated/qgssublayersdialog.sip
 %Include auto_generated/qgssubstitutionlistwidget.sip
 %Include auto_generated/qgssymbolbutton.sip
+%Include auto_generated/qgstableview.sip
 %Include auto_generated/qgstablewidgetbase.sip
 %Include auto_generated/qgstablewidgetitem.sip
 %Include auto_generated/qgstabwidget.sip
@@ -366,6 +367,7 @@
 %Include auto_generated/processing/qgsprocessingaggregatewidgets.sip
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
+%Include auto_generated/processing/qgsprocessingbatchalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessinggui.sip
 %Include auto_generated/processing/qgsprocessingguiregistry.sip
 %Include auto_generated/processing/qgsprocessinghistoryprovider.sip

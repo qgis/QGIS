@@ -96,7 +96,7 @@ Sets default properties for the symbol based on a layer's configuration.
 
   protected:
 
-    void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
+    virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
 %Docstring
 Copies base class settings from this object to a ``destination`` object.
 %End

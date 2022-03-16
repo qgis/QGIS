@@ -234,6 +234,7 @@ Contains settings for how a map layer will be labeled.
       LineAnchorPercent,
       LineAnchorClipping,
       LineAnchorType,
+      LineAnchorTextPoint,
 
       // rendering
       ScaleVisibility,

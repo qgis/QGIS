@@ -1252,7 +1252,7 @@ QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const Qgs
     {
       int idx = 2;
       QString newName = newField.name() + '_' + QString::number( idx );
-      while ( usedNames.contains( newName.toLower() ) )
+      while ( usedNames.contains( newName.toLower() ) || fieldsB.indexOf( newName ) != -1 )
       {
         idx++;
         newName = newField.name() + '_' + QString::number( idx );

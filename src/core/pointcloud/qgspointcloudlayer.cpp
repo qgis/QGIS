@@ -58,6 +58,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
   }
 
   setLegend( QgsMapLayerLegend::defaultPointCloudLegend( this ) );
+  connect( this, &QgsPointCloudLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
 }
 
 QgsPointCloudLayer::~QgsPointCloudLayer() = default;
@@ -650,4 +651,34 @@ void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
   mRenderer.reset( renderer );
   emit rendererChanged();
   emitStyleChanged();
+}
+
+bool QgsPointCloudLayer::setSubsetString( const QString &subset )
+{
+  if ( !isValid() || !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    setCustomProperty( QStringLiteral( "storedSubsetString" ), subset );
+    return false;
+  }
+  else if ( subset == mDataProvider->subsetString() )
+    return true;
+
+  bool res = mDataProvider->setSubsetString( subset );
+  if ( res )
+  {
+    emit subsetStringChanged();
+    triggerRepaint();
+  }
+  return res;
+}
+
+QString QgsPointCloudLayer::subsetString() const
+{
+  if ( !isValid() || !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    return customProperty( QStringLiteral( "storedSubsetString" ) ).toString();
+  }
+  return mDataProvider->subsetString();
 }

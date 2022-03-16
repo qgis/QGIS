@@ -50,15 +50,15 @@ QgsMapToolCapture::Capabilities QgsMapToolDigitizeFeature::capabilities() const
   return QgsMapToolCapture::SupportsCurves | QgsMapToolCapture::ValidateGeometries;
 }
 
-bool QgsMapToolDigitizeFeature::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+bool QgsMapToolDigitizeFeature::supportsTechnique( Qgis::CaptureTechnique technique ) const
 {
   switch ( technique )
   {
-    case QgsMapToolCapture::CaptureTechnique::StraightSegments:
+    case Qgis::CaptureTechnique::StraightSegments:
       return true;
-    case QgsMapToolCapture::CaptureTechnique::CircularString:
-    case QgsMapToolCapture::CaptureTechnique::Streaming:
-    case QgsMapToolCapture::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::CircularString:
+    case Qgis::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::Shape:
       return mode() != QgsMapToolCapture::CapturePoint;
   }
   return false;

@@ -43,7 +43,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = QgsMapToolCapture::CaptureNone );
 
     QgsMapToolCapture::Capabilities capabilities() const override;
-    bool supportsTechnique( CaptureTechnique technique ) const override;
+    bool supportsTechnique( Qgis::CaptureTechnique technique ) const override;
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
      * Called when the feature has been digitized.
      * \param geometry the digitized geometry
      */
-    void layerGeometryCaptured( const QgsGeometry &geometry ) override FINAL;
+    void layerGeometryCaptured( const QgsGeometry &geometry ) FINAL;
 
     /**
      * Called when the feature has been digitized
