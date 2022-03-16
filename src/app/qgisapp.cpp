@@ -10462,16 +10462,18 @@ void QgisApp::mergeSelectedFeatures()
 
   vl->beginEditCommand( tr( "Merged features" ) );
 
-  //create new feature
-  QgsFeature newFeature = QgsVectorLayerUtils::createFeature( vl, unionGeom, newAttributes );
-
+  // Delete other features
+  QgsFeatureId mainFeature = d.mainFeatureId();
+  featureIdsAfter.remove( mainFeature );
   QgsFeatureIds::const_iterator feature_it = featureIdsAfter.constBegin();
   for ( ; feature_it != featureIdsAfter.constEnd(); ++feature_it )
   {
     vl->deleteFeature( *feature_it );
   }
 
-  vl->addFeature( newFeature );
+  // Modify merge feature
+  vl->changeGeometry( mainFeature, unionGeom );
+  vl->changeAttributeValues( mainFeature, newAttributes );
 
   vl->endEditCommand();
 
