@@ -127,7 +127,7 @@ QStringList QgsSQLiteExpressionCompiler::sqlArgumentsFromFunctionName( const QSt
   QStringList args( fnArgs );
   if ( fnName == QLatin1String( "make_datetime" ) )
   {
-    args = QStringList( QStringLiteral( "'%1-%2-%3T%4:%5:%6Z'" ).arg( args[0].rightJustified( 4, '0' ) )
+    args = QStringList( QStringLiteral( "'%1-%2-%3T%4:%5:%6'" ).arg( args[0].rightJustified( 4, '0' ) )
                         .arg( args[1].rightJustified( 2, '0' ) )
                         .arg( args[2].rightJustified( 2, '0' ) )
                         .arg( args[3].rightJustified( 2, '0' ) )
