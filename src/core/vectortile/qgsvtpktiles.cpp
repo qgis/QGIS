@@ -276,6 +276,8 @@ QgsLayerMetadata QgsVtpkTiles::layerMetadata() const
 
       const QDomElement infoElement = doc.firstChildElement( QStringLiteral( "ESRI_ItemInformation" ) );
 
+      metadata.setLanguage( infoElement.attribute( QStringLiteral( "Culture" ) ) );
+
       const QDomElement guidElement = infoElement.firstChildElement( QStringLiteral( "guid" ) );
       metadata.setIdentifier( guidElement.text() );
 

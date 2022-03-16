@@ -117,6 +117,7 @@ class TestQgsVtpk(unittest.TestCase):
 
         self.assertTrue(tiles.open())
         layer_metadata = tiles.layerMetadata()
+        self.assertEqual(layer_metadata.language(), 'en-AU')
         self.assertEqual(layer_metadata.identifier(), 'FD610B57-9B73-48E5-A7E5-DA07C8D2C245')
         self.assertEqual(layer_metadata.title(), 'testvtpk')
         self.assertEqual(layer_metadata.abstract(), 'Map description')
