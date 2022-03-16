@@ -347,6 +347,8 @@ create renderer from XML element
 
     virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
+    virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const;
+
 
     QgsSymbol *sourceSymbol();
 %Docstring

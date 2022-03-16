@@ -157,6 +157,19 @@ class TestQgsMergedFeatureRenderer(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('lines_categorized_subrenderer', 'lines_categorized_subrenderer', map_settings))
 
+    def test_legend_key_to_expression(self):
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        sub_renderer = QgsSingleSymbolRenderer(sym1)
+
+        renderer = QgsMergedFeatureRenderer(sub_renderer)
+
+        exp, ok = renderer.legendKeyToExpression('0', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'TRUE')
+
+        exp, ok = renderer.legendKeyToExpression('xxxx', None)
+        self.assertFalse(ok)
+
     def imageCheck(self, name, reference_image, map_settings):
         map_settings.setOutputDpi(96)
         self.report += "<h2>Render {}</h2>\n".format(name)

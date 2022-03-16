@@ -429,6 +429,20 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertTrue(res)
         self._tearDown(layer)
 
+    def test_legend_key_to_expression(self):
+        sym1 = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        sub_renderer = QgsSingleSymbolRenderer(sym1)
+
+        renderer = QgsPointDisplacementRenderer()
+        renderer.setEmbeddedRenderer(sub_renderer)
+
+        exp, ok = renderer.legendKeyToExpression('0', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'TRUE')
+
+        exp, ok = renderer.legendKeyToExpression('xxxx', None)
+        self.assertFalse(ok)
+
     def testUsedAttributes(self):
         layer, renderer, mapsettings = self._setUp()
         ctx = QgsRenderContext.fromMapSettings(mapsettings)
