@@ -665,6 +665,30 @@ QgsConditionalStyle QgsLayoutItemAttributeTable::conditionalCellStyle( int row, 
   return mConditionalStyles.at( row ).at( column );
 }
 
+QgsTextFormat QgsLayoutItemAttributeTable::textFormatForCell( int row, int column ) const
+{
+  QgsTextFormat format = mContentTextFormat;
+
+  const QgsConditionalStyle style = conditionalCellStyle( row, column );
+  if ( style.isValid() )
+  {
+    // apply conditional style formatting to text format
+    const QFont styleFont = style.font();
+    if ( styleFont != QFont() )
+    {
+      QFont newFont = format.font();
+      // we want to keep all the other font settings, like word/letter spacing
+      newFont.setFamily( styleFont.family() );
+      newFont.setStyleName( styleFont.styleName() );
+      newFont.setStrikeOut( styleFont.strikeOut() );
+      newFont.setUnderline( styleFont.underline() );
+      format.setFont( newFont );
+    }
+  }
+
+  return format;
+}
+
 QgsExpressionContextScope *QgsLayoutItemAttributeTable::scopeForCell( int row, int column ) const
 {
   std::unique_ptr< QgsExpressionContextScope >scope( QgsLayoutTable::scopeForCell( row, column ) );
