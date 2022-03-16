@@ -3525,6 +3525,11 @@ double QgsRasterLineSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) co
   return ( mWidth / 2.0 ) + mOffset;
 }
 
+QColor QgsRasterLineSymbolLayer::color() const
+{
+  return QColor();
+}
+
 
 //
 // QgsLineburstSymbolLayer
@@ -3760,6 +3765,11 @@ QgsMapUnitScale QgsLineburstSymbolLayer::mapUnitScale() const
 double QgsLineburstSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
 {
   return ( mWidth / 2.0 ) + mOffset;
+}
+
+QColor QgsLineburstSymbolLayer::color() const
+{
+  return QColor();
 }
 
 QgsColorRamp *QgsLineburstSymbolLayer::colorRamp()
