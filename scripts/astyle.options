@@ -10,6 +10,7 @@
 --max-instatement-indent=40
 --min-conditional-indent=-1
 --suffix=none
+--break-one-line-headers
 --break-after-logical
 --style=allman
 --align-pointer=name
