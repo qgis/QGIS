@@ -108,6 +108,8 @@ class TestQgsVectorFileWriter: public QObject
     void testExportToGpxMultiLineString();
     //! Test https://github.com/qgis/QGIS/issues/29819
     void testExportToGpxMultiLineStringForceRoute();
+    //! Test export using custom field names
+    void testExportCustomFieldNames();
 
   private:
     // a little util fn used by all tests
@@ -682,6 +684,25 @@ void TestQgsVectorFileWriter::testExportToGpxMultiLineStringForceRoute()
                     QStringLiteral( "routes" ),
                     QStringLiteral( "test" ),
                     QStringList() << QStringLiteral( "FORCE_GPX_ROUTE=YES" ) );
+}
+
+void TestQgsVectorFileWriter::testExportCustomFieldNames()
+{
+  QgsVectorFileWriter::PreparedWriterDetails details;
+  QgsVectorFileWriter::SaveVectorOptions options;
+  QgsVectorLayer ml( "Point?field=firstfield:int&field=secondfield:int", "test", "memory" );
+  QgsFeature ft( ml.fields( ) );
+  ft.setAttribute( 0, 4 );
+  ft.setAttribute( 1, -10 );
+  ml.dataProvider()->addFeature( ft );
+  QVERIFY( ml.isValid() );
+  options.driverName = "GPKG";
+  options.layerName = "test";
+  options.attributesExportNames << "firstfield" << "customfieldname";
+  QString newFilename;
+  QgsVectorFileWriter::prepareWriteAsVectorFormat( &ml, options, details );
+  QCOMPARE( details.outputFields.at( 0 ).name(), "firstfield" );
+  QCOMPARE( details.outputFields.at( 1 ).name(), "customfieldname" );
 }
 
 QGSTEST_MAIN( TestQgsVectorFileWriter )
