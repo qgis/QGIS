@@ -47,6 +47,8 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsMergeAttributesDialog() override;
 
+    QgsFeatureId mainFeatureId() const;
+
     QgsAttributes mergedAttributes() const;
 
     /**
@@ -102,6 +104,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void createRubberBandForFeature( QgsFeatureId featureId );
 
     QgsFeatureList mFeatureList;
+    QgsFeatureId mMainFeatureId = FID_NULL;
     QgsVectorLayer *mVectorLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     //! Item that highlights the selected feature in the merge table

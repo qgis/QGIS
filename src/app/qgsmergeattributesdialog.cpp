@@ -108,6 +108,11 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
       break;
   }
 
+  if ( !mFeatureList.isEmpty() )
+    mMainFeatureId = mFeatureList.first().id();
+  else
+    mMainFeatureId = FID_NULL;
+
   connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
   connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
 
@@ -126,6 +131,11 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog()
 QgsMergeAttributesDialog::~QgsMergeAttributesDialog()
 {
   delete mSelectionRubberBand;
+}
+
+QgsFeatureId QgsMergeAttributesDialog::mainFeatureId() const
+{
+  return mMainFeatureId;
 }
 
 void QgsMergeAttributesDialog::setAttributeTableConfig( const QgsAttributeTableConfig &config )
@@ -463,6 +473,8 @@ void QgsMergeAttributesDialog::setAllAttributesFromFeature( QgsFeatureId feature
       currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
     }
   }
+
+  mMainFeatureId = featureId;
 }
 
 QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary::Statistic stat )
