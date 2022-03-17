@@ -178,7 +178,24 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   projectionSelector->setShowNoProjection( true );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsProjectProperties::apply );
-  connect( this, &QDialog::accepted, this, &QgsProjectProperties::apply );
+
+  // disconnect default connection setup by initOptionsBase for accepting dialog, and insert logic
+  // to validate widgets before allowing dialog to be closed
+  disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mOptButtonBox, &QDialogButtonBox::accepted, this, [ = ]
+  {
+    for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
+    {
+      if ( !widget->isValid() )
+      {
+        setCurrentPage( widget->objectName() );
+        return;
+      }
+    }
+    apply();
+    accept();
+  } );
+
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [ = ]
   {
     if ( mBlockCrsUpdates || !projectionSelector->hasValidSelection() )
@@ -1023,6 +1040,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     if ( !page )
       continue;
 
+    page->setObjectName( factory->title() );
+
     mAdditionalProjectPropertiesWidgets << page;
     mOptionsStackedWidget->addWidget( page );
   }
@@ -1067,6 +1086,15 @@ QgsExpressionContext QgsProjectProperties::createExpressionContext() const
 
 void QgsProjectProperties::apply()
 {
+  for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
+  {
+    if ( !widget->isValid() )
+    {
+      setCurrentPage( widget->objectName() );
+      return;
+    }
+  }
+
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "RenderMapTile" ), QStringLiteral( "/" ), mMapTileRenderingCheckBox->isChecked() );
 
