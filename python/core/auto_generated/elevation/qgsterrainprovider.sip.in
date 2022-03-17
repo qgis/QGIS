@@ -67,6 +67,13 @@ Returns a DOM element representing the state of the terrain provider.
 Returns the unique type ID string for the provider.
 %End
 
+    virtual QgsAbstractTerrainProvider *clone() const = 0 /Factory/;
+%Docstring
+Creates a clone of the provider and returns the new object.
+
+Ownership is transferred to the caller.
+%End
+
     virtual QgsCoordinateReferenceSystem crs() const = 0;
 %Docstring
 Returns the native coordinate reference system of the terrain provider.
@@ -102,6 +109,8 @@ A terrain provider where the terrain is a simple flat surface.
 
     virtual double heightAt( double x, double y ) const;
 
+    virtual QgsFlatTerrainProvider *clone() const /Factory/;
+
 };
 
 class QgsRasterDemTerrainProvider : QgsAbstractTerrainProvider
@@ -128,6 +137,8 @@ A terrain provider where the terrain source is a raster DEM layer.
     virtual QgsCoordinateReferenceSystem crs() const;
 
     virtual double heightAt( double x, double y ) const;
+
+    virtual QgsRasterDemTerrainProvider *clone() const /Factory/;
 
 
     void setLayer( QgsRasterLayer *layer );
@@ -172,6 +183,8 @@ A terrain provider that uses the Z values of a mesh layer to build a terrain sur
     virtual QgsCoordinateReferenceSystem crs() const;
 
     virtual double heightAt( double x, double y ) const;
+
+    virtual QgsMeshTerrainProvider *clone() const /Factory/;
 
 
     void setLayer( QgsMeshLayer *layer );

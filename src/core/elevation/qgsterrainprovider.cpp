@@ -53,6 +53,11 @@ double QgsFlatTerrainProvider::heightAt( double, double ) const
   return 0;
 }
 
+QgsFlatTerrainProvider *QgsFlatTerrainProvider::clone() const
+{
+  return new QgsFlatTerrainProvider( *this );
+}
+
 
 //
 //  QgsRasterDemTerrainProvider
@@ -110,6 +115,11 @@ double QgsRasterDemTerrainProvider::heightAt( double x, double y ) const
     return mRasterLayer->dataProvider()->sample( QgsPointXY( x, y ), 1 );
   else
     return 0;
+}
+
+QgsRasterDemTerrainProvider *QgsRasterDemTerrainProvider::clone() const
+{
+  return new QgsRasterDemTerrainProvider( *this );
 }
 
 void QgsRasterDemTerrainProvider::setLayer( QgsRasterLayer *layer )
@@ -177,6 +187,11 @@ double QgsMeshTerrainProvider::heightAt( double x, double y ) const
   Q_UNUSED( x )
   Q_UNUSED( y )
   return 0;
+}
+
+QgsMeshTerrainProvider *QgsMeshTerrainProvider::clone() const
+{
+  return new QgsMeshTerrainProvider( *this );
 }
 
 void QgsMeshTerrainProvider::setLayer( QgsMeshLayer *layer )
