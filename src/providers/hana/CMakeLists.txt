@@ -82,19 +82,11 @@ target_compile_features(provider_hana PRIVATE cxx_std_17)
 target_compile_features(provider_hana_a PRIVATE cxx_std_17)
 
 target_compile_definitions(provider_hana
-    PUBLIC
-        ODBC_STATIC
-        "NS_ODBC=qgs::odbc"
-        "NS_ODBC_START=namespace qgs { namespace odbc {"
-        "NS_ODBC_END=} }"
-)
+    PRIVATE
+        $<TARGET_PROPERTY:odbccpp_static,INTERFACE_COMPILE_DEFINITIONS>)
 target_compile_definitions(provider_hana_a
-    PUBLIC
-        ODBC_STATIC
-        "NS_ODBC=qgs::odbc"
-        "NS_ODBC_START=namespace qgs { namespace odbc {"
-        "NS_ODBC_END=} }"
-)
+    PRIVATE
+        $<TARGET_PROPERTY:odbccpp_static,INTERFACE_COMPILE_DEFINITIONS>)
 
 target_link_libraries(provider_hana
   qgis_core
