@@ -135,8 +135,7 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
         {
           QString value;
           QVariant variant = attributes.at( idx );
-          bool useJSONFromVariant = variant.canConvert( QVariant::StringList ) || variant.canConvert( QVariant::List ) || variant.canConvert( QVariant::Map );
-          useJSONFromVariant = useJSONFromVariant && ( variant.type() != QVariant::String ); // String is convertible to StringList, but we want to use toString for String variant
+          const bool useJSONFromVariant = variant.type() == QVariant::StringList || variant.type() == QVariant::List || variant.type() == QVariant::Map;
 
           if ( useJSONFromVariant )
           {
