@@ -172,6 +172,9 @@ tests:
       OUTPUT:
         name: expected/valid.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: qgis:checkvalidity
     name: Check validity polygon ring self intersection
@@ -1977,6 +1980,9 @@ tests:
       OUTPUT:
         name: expected/extract_by_extent_clip.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:assignprojection
     name: Assign projection

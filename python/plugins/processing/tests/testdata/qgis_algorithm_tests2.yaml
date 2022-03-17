@@ -1395,6 +1395,7 @@ tests:
         compare:
           geometry:
             precision: 5
+            normalize: True
           fields:
             id: skip
             id2: skip
