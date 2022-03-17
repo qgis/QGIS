@@ -1629,15 +1629,15 @@ QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area,
     pt1 = hull->vertexAt( vertexId );
   }
 
+  QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
+  minBounds.rotate( angle, QgsPointXY( pt0.x(), pt0.y() ) );
+
   if ( width > height )
   {
     width = minRect.height();
     height = minRect.width();
     angle = angle + 90.0;
   }
-
-  QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
-  minBounds.rotate( angle, QgsPointXY( pt0.x(), pt0.y() ) );
 
   // constrain angle to 0 - 180
   if ( angle > 180.0 )
