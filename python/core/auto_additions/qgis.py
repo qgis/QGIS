@@ -1371,13 +1371,21 @@ Qgis.BetweenLineConstraint.Perpendicular.__doc__ = "Perpendicular"
 Qgis.Parallel = Qgis.BetweenLineConstraint.Parallel
 Qgis.Parallel.is_monkey_patched = True
 Qgis.BetweenLineConstraint.Parallel.__doc__ = "Parallel"
-Qgis.BetweenLineConstraint.__doc__ = 'Between line constraints which can be enabled\n\n' + '* ``NoConstraint``: ' + Qgis.BetweenLineConstraint.NoConstraint.__doc__ + '\n' + '* ``Perpendicular``: ' + Qgis.BetweenLineConstraint.Perpendicular.__doc__ + '\n' + '* ``Parallel``: ' + Qgis.BetweenLineConstraint.Parallel.__doc__
+Qgis.BetweenLineConstraint.__doc__ = 'Between line constraints which can be enabled\n\n.. versionadded:: 3.26\n\n' + '* ``NoConstraint``: ' + Qgis.BetweenLineConstraint.NoConstraint.__doc__ + '\n' + '* ``Perpendicular``: ' + Qgis.BetweenLineConstraint.Perpendicular.__doc__ + '\n' + '* ``Parallel``: ' + Qgis.BetweenLineConstraint.Parallel.__doc__
 # --
 Qgis.BetweenLineConstraint.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.LineExtensionSide.BeforeVertex.__doc__ = ""
-Qgis.LineExtensionSide.AfterVertex.__doc__ = ""
-Qgis.LineExtensionSide.NoVertex.__doc__ = ""
+Qgis.LineExtensionSide.BeforeVertex.__doc__ = "Lock to previous vertex"
+Qgis.LineExtensionSide.AfterVertex.__doc__ = "Lock to next vertex"
+Qgis.LineExtensionSide.NoVertex.__doc__ = "Don't lock to vertex"
 Qgis.LineExtensionSide.__doc__ = 'Designates whether the line extension constraint is currently soft locked\nwith the previous or next vertex of the locked one.\n\n.. versionadded:: 3.26\n\n' + '* ``BeforeVertex``: ' + Qgis.LineExtensionSide.BeforeVertex.__doc__ + '\n' + '* ``AfterVertex``: ' + Qgis.LineExtensionSide.AfterVertex.__doc__ + '\n' + '* ``NoVertex``: ' + Qgis.LineExtensionSide.NoVertex.__doc__
 # --
 Qgis.LineExtensionSide.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide.__doc__ = "If set, default values for fields will be evaluated on the provider side when features from the project are created instead of when they are committed."
+Qgis.ProjectFlag.TrustStoredLayerStatistics.__doc__ = "If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider."
+Qgis.ProjectFlag.__doc__ = 'Flags which control the behavior of :py:class:`QgsProjects`.\n\n.. versionadded:: 3.26\n\n' + '* ``EvaluateDefaultValuesOnProviderSide``: ' + Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide.__doc__ + '\n' + '* ``TrustStoredLayerStatistics``: ' + Qgis.ProjectFlag.TrustStoredLayerStatistics.__doc__
+# --
+Qgis.ProjectFlag.baseClass = Qgis
+Qgis.ProjectFlags.baseClass = Qgis
+ProjectFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module

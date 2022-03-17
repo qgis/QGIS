@@ -901,8 +901,16 @@ The development version
     {
       BeforeVertex,
       AfterVertex,
-      NoVertex
+      NoVertex,
     };
+
+    enum class ProjectFlag
+    {
+      EvaluateDefaultValuesOnProviderSide,
+      TrustStoredLayerStatistics,
+    };
+    typedef QFlags<Qgis::ProjectFlag> ProjectFlags;
+
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
