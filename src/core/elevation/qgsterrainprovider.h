@@ -149,10 +149,13 @@ class CORE_EXPORT QgsAbstractTerrainProvider
      */
     QgsAbstractTerrainProvider() = default;
 
+#ifndef SIP_RUN
+
     /**
      * Copy constructor
      */
     QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other );
+#endif
 
     /**
      * Writes common properties to a DOM \a element.
@@ -169,6 +172,12 @@ class CORE_EXPORT QgsAbstractTerrainProvider
 
     //! Offset amount
     double mOffset = 0.0;
+
+  private:
+
+#ifdef SIP_RUN
+    QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other );
+#endif
 
 };
 

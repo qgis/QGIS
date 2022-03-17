@@ -130,10 +130,6 @@ Returns the vertical ``offset`` value, used for adjusting the heights from the t
 Constructor for QgsAbstractTerrainProvider.
 %End
 
-    QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other );
-%Docstring
-Copy constructor
-%End
 
     void writeCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
 %Docstring
@@ -147,6 +143,8 @@ Reads common properties from a DOM ``element``.
 
 
 
+  private:
+    QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other );
 };
 
 
