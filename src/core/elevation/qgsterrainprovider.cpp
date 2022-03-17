@@ -79,6 +79,8 @@ void QgsRasterDemTerrainProvider::resolveReferences( const QgsProject *project )
 bool QgsRasterDemTerrainProvider::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
   const QDomElement terrainElement = element.firstChildElement( QStringLiteral( "TerrainProvider" ) );
+  if ( terrainElement.isNull() )
+    return false;
 
   QString layerId = terrainElement.attribute( QStringLiteral( "layer" ) );
   QString layerName = terrainElement.attribute( QStringLiteral( "layerName" ) );
@@ -111,10 +113,16 @@ double QgsRasterDemTerrainProvider::heightAt( double x, double y ) const
 {
   // TODO -- may want to use a more efficient approach here, i.e. requesting whole
   // blocks upfront instead of multiple sample calls
-  if ( mRasterLayer->isValid() )
-    return mRasterLayer->dataProvider()->sample( QgsPointXY( x, y ), 1 );
-  else
-    return 0;
+  if ( mRasterLayer && mRasterLayer->isValid() )
+  {
+    bool ok = false;
+    const double res = mRasterLayer->dataProvider()->sample( QgsPointXY( x, y ), 1, &ok );
+
+    if ( ok )
+      return res;
+  }
+
+  return 0;
 }
 
 QgsRasterDemTerrainProvider *QgsRasterDemTerrainProvider::clone() const
@@ -153,6 +161,8 @@ void QgsMeshTerrainProvider::resolveReferences( const QgsProject *project )
 bool QgsMeshTerrainProvider::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
   const QDomElement terrainElement = element.firstChildElement( QStringLiteral( "TerrainProvider" ) );
+  if ( terrainElement.isNull() )
+    return false;
 
   QString layerId = terrainElement.attribute( QStringLiteral( "layer" ) );
   QString layerName = terrainElement.attribute( QStringLiteral( "layerName" ) );
