@@ -184,6 +184,7 @@ This setting dictates which layers are to be rendered using their 3D rendering c
 %End
 
 
+
     void setTerrainVerticalScale( double zScale );
 %Docstring
 Sets vertical scale (exaggeration) of terrain
