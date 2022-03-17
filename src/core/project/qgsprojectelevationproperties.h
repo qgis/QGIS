@@ -26,7 +26,7 @@
 class QDomElement;
 class QgsReadWriteContext;
 class QDomDocument;
-class QgsAbstractProjectTerrainProvider;
+class QgsAbstractTerrainProvider;
 class QgsProject;
 
 /**
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      *
      * \see setTerrainProvider()
      */
-    QgsAbstractProjectTerrainProvider *terrainProvider();
+    QgsAbstractTerrainProvider *terrainProvider();
 
     /**
      * Sets the project's terrain \a provider.
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      *
      * \see terrainProvider()
      */
-    void setTerrainProvider( QgsAbstractProjectTerrainProvider *provider SIP_TRANSFER );
+    void setTerrainProvider( QgsAbstractTerrainProvider *provider SIP_TRANSFER );
 
     /**
      * Sets the terrain elevation \a offset (used to move the terrain up or down by a fixed amount).
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
 
   private:
 
-    std::unique_ptr< QgsAbstractProjectTerrainProvider > mTerrainProvider;
+    std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
     double mOffset = 0;
     double mScale = 1;
 

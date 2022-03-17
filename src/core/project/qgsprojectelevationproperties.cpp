@@ -16,7 +16,7 @@
  ***************************************************************************/
 #include "qgsprojectelevationproperties.h"
 #include "qgis.h"
-#include "qgsprojectterrainprovider.h"
+#include "qgsterrainprovider.h"
 
 #include <QDomElement>
 
@@ -86,12 +86,12 @@ QDomElement QgsProjectElevationProperties::writeXml( QDomDocument &document, con
   return element;
 }
 
-QgsAbstractProjectTerrainProvider *QgsProjectElevationProperties::terrainProvider()
+QgsAbstractTerrainProvider *QgsProjectElevationProperties::terrainProvider()
 {
   return mTerrainProvider.get();
 }
 
-void QgsProjectElevationProperties::setTerrainProvider( QgsAbstractProjectTerrainProvider *provider )
+void QgsProjectElevationProperties::setTerrainProvider( QgsAbstractTerrainProvider *provider )
 {
   if ( mTerrainProvider.get() == provider )
     return;
