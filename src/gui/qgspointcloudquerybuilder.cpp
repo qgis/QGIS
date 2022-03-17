@@ -138,26 +138,26 @@ void QgsPointCloudQueryBuilder::lstAttributes_currentChanged( const QModelIndex 
   else
   {
     QVariant value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Min );
-    QString valueString = value.isNull() ? QLatin1String( "n/a" ) : value.toString();
-    QStandardItem *item = new QStandardItem( QLatin1String( "Minimum: %1" ).arg( valueString ) );
+    QString valueString = value.isNull() ? tr( "n/a" ) : value.toString();
+    QStandardItem *item = new QStandardItem( tr( "Minimum: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );
 
     value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Max );
-    valueString = value.isNull() ? QLatin1String( "n/a" ) : value.toString();
-    item = new QStandardItem( QLatin1String( "Maximum: %1" ).arg( valueString ) );
+    valueString = value.isNull() ? tr( "n/a" ) : value.toString();
+    item = new QStandardItem( tr( "Maximum: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );
 
     value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Mean );
-    valueString = value.isNull() ? QLatin1String( "n/a" ) : value.toString();
-    item = new QStandardItem( QLatin1String( "Mean: %1" ).arg( valueString ) );
+    valueString = value.isNull() ? tr( "n/a" ) : value.toString();
+    item = new QStandardItem( tr( "Mean: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );
 
     value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::StDev );
-    valueString = value.isNull() ? QLatin1String( "n/a" ) : value.toString();
-    item = new QStandardItem( QLatin1String( "StdDev: %1" ).arg( valueString ) );
+    valueString = value.isNull() ? tr( "n/a" ) : value.toString();
+    item = new QStandardItem( tr( "StdDev: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );
   }
