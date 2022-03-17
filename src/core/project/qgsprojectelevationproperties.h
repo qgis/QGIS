@@ -86,38 +86,6 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      */
     void setTerrainProvider( QgsAbstractTerrainProvider *provider SIP_TRANSFER );
 
-    /**
-     * Sets the terrain elevation \a offset (used to move the terrain up or down by a fixed amount).
-     *
-     * \see terrainOffset()
-     */
-    void setTerrainOffset( double offset );
-
-    /**
-     * Returns the offset of the terrain (used to move the terrain up or down by a fixed amount).
-     *
-     *\see setTerrainOffset()
-     */
-    double terrainOffset() const { return mOffset; }
-
-    /**
-     * Sets the vertical \a scale of the terrain.
-     *
-     * \note Any scaling specified via setTerrainScale() is applied before any offset value specified via terrainOffset().
-     *
-     * \see terrainScale()
-     */
-    void setTerrainScale( double scale );
-
-    /**
-     * Returns the vertical scale of the terrain.
-     *
-     * \note Any scaling specified via terrainScale() is applied before any offset value specified via terrainOffset().
-     *
-     * \see setTerrainScale()
-     */
-    double terrainScale() const { return mScale; }
-
   signals:
 
     /**
@@ -128,8 +96,6 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
   private:
 
     std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
-    double mOffset = 0;
-    double mScale = 1;
 
 };
 

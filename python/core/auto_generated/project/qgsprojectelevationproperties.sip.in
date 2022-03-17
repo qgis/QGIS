@@ -69,42 +69,6 @@ Ownership of ``provider`` is transferred to this object.
 .. seealso:: :py:func:`terrainProvider`
 %End
 
-    void setTerrainOffset( double offset );
-%Docstring
-Sets the terrain elevation ``offset`` (used to move the terrain up or down by a fixed amount).
-
-.. seealso:: :py:func:`terrainOffset`
-%End
-
-    double terrainOffset() const;
-%Docstring
-Returns the offset of the terrain (used to move the terrain up or down by a fixed amount).
-
-.. seealso:: :py:func:`setTerrainOffset`
-%End
-
-    void setTerrainScale( double scale );
-%Docstring
-Sets the vertical ``scale`` of the terrain.
-
-.. note::
-
-   Any scaling specified via :py:func:`~QgsProjectElevationProperties.setTerrainScale` is applied before any offset value specified via :py:func:`~QgsProjectElevationProperties.terrainOffset`.
-
-.. seealso:: :py:func:`terrainScale`
-%End
-
-    double terrainScale() const;
-%Docstring
-Returns the vertical scale of the terrain.
-
-.. note::
-
-   Any scaling specified via :py:func:`~QgsProjectElevationProperties.terrainScale` is applied before any offset value specified via :py:func:`~QgsProjectElevationProperties.terrainOffset`.
-
-.. seealso:: :py:func:`setTerrainScale`
-%End
-
   signals:
 
     void changed();
