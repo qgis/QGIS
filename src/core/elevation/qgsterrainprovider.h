@@ -105,6 +105,66 @@ class CORE_EXPORT QgsAbstractTerrainProvider
      */
     virtual double heightAt( double x, double y ) const = 0;
 
+    /**
+     * Returns the vertical scale factor, which can be used to exaggerate vertical heights.
+     *
+     * \see setScale()
+     * \see offset()
+    */
+    double scale() const { return mScale; }
+
+    /**
+     * Sets the vertical \a scale factor, which can be used to exaggerate vertical heights.
+     *
+     * \see scale()
+     * \see setOffset()
+    */
+    void setScale( double scale ) { mScale = scale; }
+
+    /**
+     * Returns the vertical offset value, used for adjusting the heights from the terrain provider.
+     *
+     * \see setOffset()
+     * \see scale()
+    */
+    double offset() const { return mOffset; }
+
+    /**
+     * Returns the vertical \a offset value, used for adjusting the heights from the terrain provider
+     *
+     * \see offset()
+     * \see setScale()
+    */
+    void setOffset( double offset ) { mOffset = offset; }
+
+  protected:
+
+    /**
+     * Constructor for QgsAbstractTerrainProvider.
+     */
+    QgsAbstractTerrainProvider() = default;
+
+    /**
+     * Copy constructor
+     */
+    QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other );
+
+    /**
+     * Writes common properties to a DOM \a element.
+     */
+    void writeCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Reads common properties from a DOM \a element.
+     */
+    void readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+
+    //! Scale factor
+    double mScale = 1.0;
+
+    //! Offset amount
+    double mOffset = 0.0;
+
 };
 
 
@@ -117,6 +177,12 @@ class CORE_EXPORT QgsAbstractTerrainProvider
 class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractTerrainProvider
 {
   public:
+
+    /**
+     * Constructor for QgsFlatTerrainProvider.
+     */
+    QgsFlatTerrainProvider() = default;
+
     QString type() const override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
@@ -134,6 +200,11 @@ class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractTerrainProvider
 class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvider
 {
   public:
+
+    /**
+     * Constructor for QgsRasterDemTerrainProvider.
+     */
+    QgsRasterDemTerrainProvider() = default;
 
     QString type() const override;
     void resolveReferences( const QgsProject *project ) override;
@@ -174,6 +245,11 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
 class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
 {
   public:
+
+    /**
+     * Constructor for QgsMeshTerrainProvider.
+     */
+    QgsMeshTerrainProvider() = default;
 
     QString type() const override;
     void resolveReferences( const QgsProject *project ) override;

@@ -23,6 +23,25 @@ void QgsAbstractTerrainProvider::resolveReferences( const QgsProject * )
 
 }
 
+QgsAbstractTerrainProvider::QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other )
+  : mScale( other.mScale )
+  , mOffset( other.mOffset )
+{
+
+}
+
+void QgsAbstractTerrainProvider::writeCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
+{
+  element.setAttribute( QStringLiteral( "offset" ), qgsDoubleToString( mOffset ) );
+  element.setAttribute( QStringLiteral( "scale" ), qgsDoubleToString( mScale ) );
+}
+
+void QgsAbstractTerrainProvider::readCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
+{
+  mOffset = element.attribute( QStringLiteral( "offset" ) ).toDouble();
+  mScale = element.attribute( QStringLiteral( "scale" ) ).toDouble();
+}
+
 //
 // QgsFlatTerrainProvider
 //
@@ -32,14 +51,20 @@ QString QgsFlatTerrainProvider::type() const
   return QStringLiteral( "flat" );
 }
 
-bool QgsFlatTerrainProvider::readXml( const QDomElement &, const QgsReadWriteContext & )
+bool QgsFlatTerrainProvider::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
+  const QDomElement terrainElement = element.firstChildElement( QStringLiteral( "TerrainProvider" ) );
+  if ( terrainElement.isNull() )
+    return false;
+
+  readCommonProperties( terrainElement, context );
   return true;
 }
 
-QDomElement QgsFlatTerrainProvider::writeXml( QDomDocument &document, const QgsReadWriteContext & ) const
+QDomElement QgsFlatTerrainProvider::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QDomElement element = document.createElement( QStringLiteral( "TerrainProvider" ) );
+  writeCommonProperties( element, context );
   return element;
 }
 
@@ -50,7 +75,7 @@ QgsCoordinateReferenceSystem QgsFlatTerrainProvider::crs() const
 
 double QgsFlatTerrainProvider::heightAt( double, double ) const
 {
-  return 0;
+  return mOffset;
 }
 
 QgsFlatTerrainProvider *QgsFlatTerrainProvider::clone() const
@@ -76,7 +101,7 @@ void QgsRasterDemTerrainProvider::resolveReferences( const QgsProject *project )
   mRasterLayer.resolve( project );
 }
 
-bool QgsRasterDemTerrainProvider::readXml( const QDomElement &element, const QgsReadWriteContext & )
+bool QgsRasterDemTerrainProvider::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement terrainElement = element.firstChildElement( QStringLiteral( "TerrainProvider" ) );
   if ( terrainElement.isNull() )
@@ -88,10 +113,11 @@ bool QgsRasterDemTerrainProvider::readXml( const QDomElement &element, const Qgs
   QString layerProvider = terrainElement.attribute( QStringLiteral( "layerProvider" ) );
   mRasterLayer = _LayerRef<QgsRasterLayer>( layerId, layerName, layerSource, layerProvider );
 
+  readCommonProperties( terrainElement, context );
   return true;
 }
 
-QDomElement QgsRasterDemTerrainProvider::writeXml( QDomDocument &document, const QgsReadWriteContext & ) const
+QDomElement QgsRasterDemTerrainProvider::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QDomElement element = document.createElement( QStringLiteral( "TerrainProvider" ) );
   if ( mRasterLayer )
@@ -101,6 +127,8 @@ QDomElement QgsRasterDemTerrainProvider::writeXml( QDomDocument &document, const
     element.setAttribute( QStringLiteral( "layerSource" ), mRasterLayer.source );
     element.setAttribute( QStringLiteral( "layerProvider" ), mRasterLayer.provider );
   }
+
+  writeCommonProperties( element, context );
   return element;
 }
 
@@ -119,7 +147,7 @@ double QgsRasterDemTerrainProvider::heightAt( double x, double y ) const
     const double res = mRasterLayer->dataProvider()->sample( QgsPointXY( x, y ), 1, &ok );
 
     if ( ok )
-      return res;
+      return res * mScale + mOffset;
   }
 
   return std::numeric_limits<double>::quiet_NaN();
@@ -158,7 +186,7 @@ void QgsMeshTerrainProvider::resolveReferences( const QgsProject *project )
   mMeshLayer.resolve( project );
 }
 
-bool QgsMeshTerrainProvider::readXml( const QDomElement &element, const QgsReadWriteContext & )
+bool QgsMeshTerrainProvider::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement terrainElement = element.firstChildElement( QStringLiteral( "TerrainProvider" ) );
   if ( terrainElement.isNull() )
@@ -170,10 +198,11 @@ bool QgsMeshTerrainProvider::readXml( const QDomElement &element, const QgsReadW
   QString layerProvider = terrainElement.attribute( QStringLiteral( "layerProvider" ) );
   mMeshLayer = _LayerRef<QgsMeshLayer>( layerId, layerName, layerSource, layerProvider );
 
+  readCommonProperties( terrainElement, context );
   return true;
 }
 
-QDomElement QgsMeshTerrainProvider::writeXml( QDomDocument &document, const QgsReadWriteContext & ) const
+QDomElement QgsMeshTerrainProvider::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QDomElement element = document.createElement( QStringLiteral( "TerrainProvider" ) );
   if ( mMeshLayer )
@@ -183,6 +212,8 @@ QDomElement QgsMeshTerrainProvider::writeXml( QDomDocument &document, const QgsR
     element.setAttribute( QStringLiteral( "layerSource" ), mMeshLayer.source );
     element.setAttribute( QStringLiteral( "layerProvider" ), mMeshLayer.provider );
   }
+
+  writeCommonProperties( element, context );
   return element;
 }
 
