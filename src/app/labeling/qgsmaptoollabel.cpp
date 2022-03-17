@@ -1329,11 +1329,26 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
 
   mHoverRubberBand->show();
   mHoverRubberBand->reset( QgsWkbTypes::LineGeometry );
-  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 0 ) );
-  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 1 ) );
-  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 2 ) );
-  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 3 ) );
-  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 0 ) );
+  if ( const QgsLabelingResults *labelingResults = mCanvas->labelingResults( false ) )
+  {
+    if ( labelPos.groupedLabelId != 0 )
+    {
+      // if it's a curved label, we need to highlight ALL characters
+      const QList< QgsLabelPosition > allPositions = labelingResults->groupedLabelPositions( labelPos.groupedLabelId );
+      for ( const QgsLabelPosition &position : allPositions )
+      {
+        mHoverRubberBand->addGeometry( position.labelGeometry );
+      }
+    }
+    else
+    {
+      mHoverRubberBand->addGeometry( labelPos.labelGeometry );
+    }
+  }
+  else
+  {
+    mHoverRubberBand->addGeometry( labelPos.labelGeometry );
+  }
   QgisApp::instance()->statusBarIface()->showMessage( tr( "Label “%1” in %2" ).arg( labelPos.labelText, mCurrentHoverLabel.layer->name() ), 2000 );
 }
 
