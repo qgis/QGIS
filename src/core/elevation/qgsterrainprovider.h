@@ -87,6 +87,13 @@ class CORE_EXPORT QgsAbstractTerrainProvider
     virtual QString type() const = 0;
 
     /**
+     * Creates a clone of the provider and returns the new object.
+     *
+     * Ownership is transferred to the caller.
+     */
+    virtual QgsAbstractTerrainProvider *clone() const = 0 SIP_FACTORY;
+
+    /**
      * Returns the native coordinate reference system of the terrain provider.
      */
     virtual QgsCoordinateReferenceSystem crs() const = 0;
@@ -113,6 +120,7 @@ class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractTerrainProvider
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
     QgsCoordinateReferenceSystem crs() const override;
     double heightAt( double x, double y ) const override;
+    QgsFlatTerrainProvider *clone() const override SIP_FACTORY;
 };
 
 /**
@@ -131,6 +139,7 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
     QgsCoordinateReferenceSystem crs() const override;
     double heightAt( double x, double y ) const override;
+    QgsRasterDemTerrainProvider *clone() const override SIP_FACTORY;
 
     /**
      * Sets the raster \a layer with elevation model to be used as the terrain source.
@@ -170,6 +179,7 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
     QgsCoordinateReferenceSystem crs() const override;
     double heightAt( double x, double y ) const override;
+    QgsMeshTerrainProvider *clone() const override SIP_FACTORY;
 
     /**
      * Sets the mesh \a layer to be used as the terrain source.
