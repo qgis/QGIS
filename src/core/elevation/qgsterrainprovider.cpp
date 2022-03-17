@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsprojectterrainprovider.cpp
+                         qgsterrainprovider.cpp
                          ---------------
     begin                : February 2022
     copyright            : (C) 2022 by Nyall Dawson
@@ -14,11 +14,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsprojectterrainprovider.h"
+#include "qgsterrainprovider.h"
 
-QgsAbstractProjectTerrainProvider::~QgsAbstractProjectTerrainProvider() = default;
+QgsAbstractTerrainProvider::~QgsAbstractTerrainProvider() = default;
 
-void QgsAbstractProjectTerrainProvider::resolveReferences( const QgsProject * )
+void QgsAbstractTerrainProvider::resolveReferences( const QgsProject * )
 {
 
 }

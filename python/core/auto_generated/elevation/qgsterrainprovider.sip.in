@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/project/qgsprojectterrainprovider.h                         *
+ * src/core/elevation/qgsterrainprovider.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,16 +10,16 @@
 
 
 
-class QgsAbstractProjectTerrainProvider
+class QgsAbstractTerrainProvider
 {
 %Docstring(signature="appended")
-Abstract base class for project terrain providers
+Abstract base class for terrain providers
 
 .. versionadded:: 3.26
 %End
 
 %TypeHeaderCode
-#include "qgsprojectterrainprovider.h"
+#include "qgsterrainprovider.h"
 %End
 %ConvertToSubClassCode
     if ( sipCpp->type().compare( QLatin1String( "flat" ) ) == 0 )
@@ -41,7 +41,7 @@ Abstract base class for project terrain providers
 %End
   public:
 
-    virtual ~QgsAbstractProjectTerrainProvider();
+    virtual ~QgsAbstractTerrainProvider();
 
     virtual void resolveReferences( const QgsProject *project );
 %Docstring
@@ -74,22 +74,22 @@ Returns the native coordinate reference system of the terrain provider.
 
     virtual double heightAt( double x, double y ) const = 0;
 %Docstring
-Returns the height at the point (x,y) in the terrain provider's native :py:func:`~QgsAbstractProjectTerrainProvider.crs`.
+Returns the height at the point (x,y) in the terrain provider's native :py:func:`~QgsAbstractTerrainProvider.crs`.
 %End
 
 };
 
 
-class QgsFlatTerrainProvider : QgsAbstractProjectTerrainProvider
+class QgsFlatTerrainProvider : QgsAbstractTerrainProvider
 {
 %Docstring(signature="appended")
-A project terrain provider where the terrain is a simple flat surface.
+A terrain provider where the terrain is a simple flat surface.
 
 .. versionadded:: 3.26
 %End
 
 %TypeHeaderCode
-#include "qgsprojectterrainprovider.h"
+#include "qgsterrainprovider.h"
 %End
   public:
     virtual QString type() const;
@@ -104,16 +104,16 @@ A project terrain provider where the terrain is a simple flat surface.
 
 };
 
-class QgsRasterDemTerrainProvider : QgsAbstractProjectTerrainProvider
+class QgsRasterDemTerrainProvider : QgsAbstractTerrainProvider
 {
 %Docstring(signature="appended")
-A project terrain provider where the terrain source is a raster DEM layer.
+A terrain provider where the terrain source is a raster DEM layer.
 
 .. versionadded:: 3.26
 %End
 
 %TypeHeaderCode
-#include "qgsprojectterrainprovider.h"
+#include "qgsterrainprovider.h"
 %End
   public:
 
@@ -148,16 +148,16 @@ Returns the raster layer with elevation model to be used as the terrain source.
 };
 
 
-class QgsMeshTerrainProvider : QgsAbstractProjectTerrainProvider
+class QgsMeshTerrainProvider : QgsAbstractTerrainProvider
 {
 %Docstring(signature="appended")
-A project terrain provider that uses the Z values of a mesh layer to build a terrain surface.
+A terrain provider that uses the Z values of a mesh layer to build a terrain surface.
 
 .. versionadded:: 3.26
 %End
 
 %TypeHeaderCode
-#include "qgsprojectterrainprovider.h"
+#include "qgsterrainprovider.h"
 %End
   public:
 
@@ -193,7 +193,7 @@ Returns the mesh layer to be used as the terrain source.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/project/qgsprojectterrainprovider.h                         *
+ * src/core/elevation/qgsterrainprovider.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

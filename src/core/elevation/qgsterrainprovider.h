@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsprojectterrainprovider.h
+                         qgsterrainprovider.h
                          ---------------
     begin                : February 2022
     copyright            : (C) 2022 by Nyall Dawson
@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSPROJECTTERRAINPROVIDER_H
-#define QGSPROJECTTERRAINPROVIDER_H
+#ifndef QGSTERRAINPROVIDER_H
+#define QGSTERRAINPROVIDER_H
 
 #include "qgis_core.h"
 #include "qgsrange.h"
@@ -31,12 +31,12 @@ class QgsReadWriteContext;
 class QDomDocument;
 
 /**
- * \brief Abstract base class for project terrain providers
+ * \brief Abstract base class for terrain providers
  *
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsAbstractProjectTerrainProvider
+class CORE_EXPORT QgsAbstractTerrainProvider
 {
 
 #ifdef SIP_RUN
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsAbstractProjectTerrainProvider
 
   public:
 
-    virtual ~QgsAbstractProjectTerrainProvider();
+    virtual ~QgsAbstractTerrainProvider();
 
     /**
      * Resolves reference to layers from stored layer ID (if it has not been resolved already)
@@ -100,12 +100,12 @@ class CORE_EXPORT QgsAbstractProjectTerrainProvider
 
 
 /**
- * \brief A project terrain provider where the terrain is a simple flat surface.
+ * \brief A terrain provider where the terrain is a simple flat surface.
  *
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractProjectTerrainProvider
+class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractTerrainProvider
 {
   public:
     QString type() const override;
@@ -116,12 +116,12 @@ class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractProjectTerrainProvi
 };
 
 /**
- * \brief A project terrain provider where the terrain source is a raster DEM layer.
+ * \brief A terrain provider where the terrain source is a raster DEM layer.
  *
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractProjectTerrainProvider
+class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvider
 {
   public:
 
@@ -155,12 +155,12 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractProjectTerrain
 
 
 /**
- * \brief A project terrain provider that uses the Z values of a mesh layer to build a terrain surface.
+ * \brief A terrain provider that uses the Z values of a mesh layer to build a terrain surface.
  *
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractProjectTerrainProvider
+class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
 {
   public:
 
@@ -191,4 +191,4 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractProjectTerrainProvi
 
 };
 
-#endif // QGSPROJECTTERRAINPROVIDER_H
+#endif // QGSTERRAINPROVIDER_H

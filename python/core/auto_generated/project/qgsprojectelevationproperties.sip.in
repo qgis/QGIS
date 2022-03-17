@@ -53,14 +53,14 @@ Returns a DOM element representing the properties.
 .. seealso:: :py:func:`readXml`
 %End
 
-    QgsAbstractProjectTerrainProvider *terrainProvider();
+    QgsAbstractTerrainProvider *terrainProvider();
 %Docstring
 Returns the project's terrain provider.
 
 .. seealso:: :py:func:`setTerrainProvider`
 %End
 
-    void setTerrainProvider( QgsAbstractProjectTerrainProvider *provider /Transfer/ );
+    void setTerrainProvider( QgsAbstractTerrainProvider *provider /Transfer/ );
 %Docstring
 Sets the project's terrain ``provider``.
 

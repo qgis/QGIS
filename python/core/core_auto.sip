@@ -268,6 +268,7 @@
 %Include auto_generated/editform/qgsattributeeditorrelation.sip
 %Include auto_generated/editform/qgsattributeeditorhtmlelement.sip
 %Include auto_generated/editform/qgsattributeeditorqmlelement.sip
+%Include auto_generated/elevation/qgsterrainprovider.sip
 %Include auto_generated/externalstorage/qgsexternalstorage.sip
 %Include auto_generated/externalstorage/qgsexternalstorageregistry.sip
 %Include auto_generated/effects/qgsblureffect.sip
@@ -531,7 +532,6 @@
 %Include auto_generated/project/qgsprojectservervalidator.sip
 %Include auto_generated/project/qgsprojectstorage.sip
 %Include auto_generated/project/qgsprojectstorageregistry.sip
-%Include auto_generated/project/qgsprojectterrainprovider.sip
 %Include auto_generated/project/qgsprojecttimesettings.sip
 %Include auto_generated/project/qgsprojecttranslator.sip
 %Include auto_generated/project/qgsprojectutils.sip
