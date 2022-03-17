@@ -184,6 +184,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //
 
     /**
+     * Configures the map's terrain settings directly from a project's elevation \a properties.
+     *
+     * \since QGIS 3.26
+     */
+    void configureTerrainFromProject( QgsProjectElevationProperties *properties, const QgsRectangle &fullExtent ) SIP_SKIP;
+
+    /**
      * Sets vertical scale (exaggeration) of terrain
      * (1 = true scale, > 1 = hills get more pronounced)
      */

@@ -13894,10 +13894,7 @@ void QgisApp::new3DMapCanvas()
     map->setPathResolver( QgsProject::instance()->pathResolver() );
     map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
 
-    QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-    flatTerrain->setCrs( map->crs() );
-    flatTerrain->setExtent( fullExtent );
-    map->setTerrainGenerator( flatTerrain );
+    map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), fullExtent );
 
     // new scenes default to a single directional light
     map->setDirectionalLights( QList<QgsDirectionalLightSettings>() << QgsDirectionalLightSettings() );
