@@ -11,6 +11,7 @@ __date__ = '17/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import os
+import math
 
 import qgis  # NOQA
 
@@ -56,7 +57,7 @@ class TestQgsTerrainProviders(unittest.TestCase):
 
         # without layer assigned
         self.assertFalse(provider.crs().isValid())
-        self.assertEqual(provider.heightAt(1, 2), 0)
+        self.assertTrue(math.isnan(provider.heightAt(1, 2)))
 
         # add raster layer to project
         p = QgsProject()
@@ -68,8 +69,9 @@ class TestQgsTerrainProviders(unittest.TestCase):
         self.assertEqual(provider.layer(), rl)
 
         self.assertEqual(provider.crs().authid(), 'EPSG:4326')
-        self.assertEqual(provider.heightAt(1, 2), 0)
         self.assertEqual(provider.heightAt(106.4105, -6.6341), 11.0)
+        # outside of raster extent
+        self.assertTrue(math.isnan(provider.heightAt(1, 2)))
 
         clone = provider.clone()
         self.assertIsInstance(clone, QgsRasterDemTerrainProvider)
@@ -100,7 +102,7 @@ class TestQgsTerrainProviders(unittest.TestCase):
 
         # without layer assigned
         self.assertFalse(provider.crs().isValid())
-        self.assertEqual(provider.heightAt(1, 2), 0)
+        self.assertTrue(math.isnan(provider.heightAt(1, 2)))
 
         # add mesh layer to project
         p = QgsProject()

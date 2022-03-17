@@ -82,6 +82,8 @@ Returns the native coordinate reference system of the terrain provider.
     virtual double heightAt( double x, double y ) const = 0;
 %Docstring
 Returns the height at the point (x,y) in the terrain provider's native :py:func:`~QgsAbstractTerrainProvider.crs`.
+
+Returns NaN if the height could not be obtained at the specified point.
 %End
 
 };

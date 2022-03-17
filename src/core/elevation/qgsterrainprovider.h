@@ -100,6 +100,8 @@ class CORE_EXPORT QgsAbstractTerrainProvider
 
     /**
      * Returns the height at the point (x,y) in the terrain provider's native crs().
+     *
+     * Returns NaN if the height could not be obtained at the specified point.
      */
     virtual double heightAt( double x, double y ) const = 0;
 
