@@ -1497,6 +1497,8 @@ class CORE_EXPORT Qgis
 
     /**
      * Between line constraints which can be enabled
+     *
+     * \since QGIS 3.26
      */
     enum class BetweenLineConstraint SIP_MONKEYPATCH_SCOPEENUM : int
     {
@@ -1513,11 +1515,25 @@ class CORE_EXPORT Qgis
      */
     enum class LineExtensionSide : int
     {
-      BeforeVertex,
-      AfterVertex,
-      NoVertex
+      BeforeVertex, //!< Lock to previous vertex
+      AfterVertex, //!< Lock to next vertex
+      NoVertex, //!< Don't lock to vertex
     };
     Q_ENUM( LineExtensionSide )
+
+    /**
+     * Flags which control the behavior of QgsProjects.
+     *
+     * \since QGIS 3.26
+     */
+    enum class ProjectFlag : int
+    {
+      EvaluateDefaultValuesOnProviderSide = 1 << 0, //!< If set, default values for fields will be evaluated on the provider side when features from the project are created instead of when they are committed.
+      TrustStoredLayerStatistics = 1 << 1, //!< If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider.
+    };
+    Q_ENUM( ProjectFlag )
+    Q_DECLARE_FLAGS( ProjectFlags, ProjectFlag )
+    Q_FLAG( ProjectFlags )
 
     /**
      * Identify search radius in mm

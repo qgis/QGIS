@@ -982,8 +982,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mRelationManagerDlg->setLayers( vectorLayers );
 
   mTransactionModeComboBox->setCurrentIndex( mTransactionModeComboBox->findData( static_cast<int>( QgsProject::instance()->transactionMode() ) ) );
-  mEvaluateDefaultValues->setChecked( QgsProject::instance()->evaluateDefaultValues() );
-  mTrustProjectCheckBox->setChecked( QgsProject::instance()->trustLayerMetadata() );
+  mEvaluateDefaultValues->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide );
+  mTrustProjectCheckBox->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::TrustStoredLayerStatistics );
 
   // Variables editor
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
@@ -1126,8 +1126,8 @@ void QgsProjectProperties::apply()
 
   // DB-related options
   QgsProject::instance()->setTransactionMode( mTransactionModeComboBox->currentData().value<Qgis::TransactionMode>() );
-  QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
-  QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
+  QgsProject::instance()->setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide, mEvaluateDefaultValues->isChecked() );
+  QgsProject::instance()->setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics, mTrustProjectCheckBox->isChecked() );
 
   // Time settings
   QDateTime start = mStartDateTimeEdit->dateTime();

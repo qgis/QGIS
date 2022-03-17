@@ -189,7 +189,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     // checkPkUnicity has only effect on views and materialized views, so we can safely disable it
     if ( layerProperty.isView || layerProperty.isMaterializedView )
     {
-      checkPkUnicityItem->setCheckState( QgsProject::instance( )->trustLayerMetadata() ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
+      checkPkUnicityItem->setCheckState( ( QgsProject::instance( )->flags() & Qgis::ProjectFlag::TrustStoredLayerStatistics ) ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
       checkPkUnicityItem->setToolTip( headerData( Columns::DbtmCheckPkUnicity, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
     }
     else
