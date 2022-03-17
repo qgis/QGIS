@@ -122,7 +122,7 @@ double QgsRasterDemTerrainProvider::heightAt( double x, double y ) const
       return res;
   }
 
-  return 0;
+  return std::numeric_limits<double>::quiet_NaN();
 }
 
 QgsRasterDemTerrainProvider *QgsRasterDemTerrainProvider::clone() const
@@ -196,7 +196,7 @@ double QgsMeshTerrainProvider::heightAt( double x, double y ) const
   // TODO
   Q_UNUSED( x )
   Q_UNUSED( y )
-  return 0;
+  return std::numeric_limits<double>::quiet_NaN();
 }
 
 QgsMeshTerrainProvider *QgsMeshTerrainProvider::clone() const
