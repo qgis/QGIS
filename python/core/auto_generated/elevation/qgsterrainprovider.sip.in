@@ -43,6 +43,7 @@ Abstract base class for terrain providers
 
     virtual ~QgsAbstractTerrainProvider();
 
+
     virtual void resolveReferences( const QgsProject *project );
 %Docstring
 Resolves reference to layers from stored layer ID (if it has not been resolved already)

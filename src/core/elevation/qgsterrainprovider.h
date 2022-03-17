@@ -65,6 +65,11 @@ class CORE_EXPORT QgsAbstractTerrainProvider
     virtual ~QgsAbstractTerrainProvider();
 
     /**
+     * QgsAbstractTerrainProvider cannot be assigned.
+     */
+    QgsAbstractTerrainProvider &operator=( const QgsAbstractTerrainProvider &other ) = delete;
+
+    /**
      * Resolves reference to layers from stored layer ID (if it has not been resolved already)
      */
     virtual void resolveReferences( const QgsProject *project );
