@@ -188,7 +188,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>5</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -214,8 +214,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>342</width>
-                <height>283</height>
+                <width>722</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -425,8 +425,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>721</width>
-                <height>604</height>
+                <width>77</width>
+                <height>43</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -509,8 +509,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>721</width>
-                <height>604</height>
+                <width>149</width>
+                <height>43</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -599,8 +599,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>721</width>
-                <height>604</height>
+                <width>234</width>
+                <height>220</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -727,7 +727,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>710</width>
+                <width>711</width>
                 <height>584</height>
                </rect>
               </property>
@@ -735,21 +735,21 @@
                <item row="0" column="0" colspan="2">
                 <widget class="QCheckBox" name="mSync2DTo3DCheckbox">
                  <property name="text">
-                  <string>Synchronise main map canvas extent to 3D view visible area</string>
+                  <string>2D Map View Follows 3D Camera</string>
                  </property>
                 </widget>
                </item>
                <item row="1" column="0">
                 <widget class="QCheckBox" name="mSync3DTo2DCheckbox">
                  <property name="text">
-                  <string>Synchromise 3D view navigation to main map canvas extent</string>
+                  <string>3D Camera Follows 2D Map View</string>
                  </property>
                 </widget>
                </item>
                <item row="2" column="0" colspan="2">
                 <widget class="QCheckBox" name="mVisualizeExtentCheckBox">
                  <property name="text">
-                  <string>Visualize viewed 3D area in main 2D map canvas</string>
+                  <string>Show Visible Camera Area in 2D Map View</string>
                  </property>
                 </widget>
                </item>
@@ -796,7 +796,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>707</width>
+                <width>708</width>
                 <height>690</height>
                </rect>
               </property>
