@@ -165,13 +165,13 @@ void QgsPointCloudQueryBuilder::lstAttributes_currentChanged( const QModelIndex 
 
 void QgsPointCloudQueryBuilder::lstAttributes_doubleClicked( const QModelIndex &index )
 {
-  mTxtSql->insertText( QLatin1String( "%1 " ).arg( mModelAttributes->data( index ).toString() ) );
+  mTxtSql->insertText( QStringLiteral( "%1 " ).arg( mModelAttributes->data( index ).toString() ) );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 {
-  mTxtSql->insertText( QLatin1String( "%1 " ).arg( mModelValues->data( index, Qt::UserRole ).toString() ) );
+  mTxtSql->insertText( QStringLiteral( "%1 " ).arg( mModelValues->data( index, Qt::UserRole ).toString() ) );
   mTxtSql->setFocus();
 }
 
