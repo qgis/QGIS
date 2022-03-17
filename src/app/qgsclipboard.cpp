@@ -134,13 +134,17 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
         for ( int idx = 0; idx < attributes.count(); ++idx )
         {
           QString value;
-          if ( attributes.at( idx ).canConvert( QVariant::String ) )
+          QVariant variant = attributes.at( idx );
+          bool useJSONFromVariant = variant.canConvert( QVariant::StringList ) || variant.canConvert( QVariant::List ) || variant.canConvert( QVariant::Map );
+          useJSONFromVariant = useJSONFromVariant && ( variant.type() != QVariant::String ); // String is convertible to StringList, but we want to use toString for String variant
+
+          if ( useJSONFromVariant )
           {
-            value = attributes.at( idx ).toString();
+            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attributes.at( idx ) ).dump() );
           }
           else
           {
-            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attributes.at( idx ) ).dump() );
+            value = attributes.at( idx ).toString();
           }
 
           if ( value.contains( '\n' ) || value.contains( '\t' ) )
@@ -149,13 +153,13 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
           {
             textFields += value;
           }
-          if ( attributes.at( idx ).canConvert( QVariant::String ) )
+          if ( useJSONFromVariant )
           {
-            value = attributes.at( idx ).toString();
+            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attributes.at( idx ) ).dump() );
           }
           else
           {
-            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attributes.at( idx ) ).dump() );
+            value = attributes.at( idx ).toString();
           }
           value.replace( '\n', QLatin1String( "<br>" ) ).replace( '\t', QLatin1String( "&emsp;" ) );
           htmlFields += QStringLiteral( "<td>%1</td>" ).arg( value );
