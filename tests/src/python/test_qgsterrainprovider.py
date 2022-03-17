@@ -45,8 +45,25 @@ class TestQgsTerrainProviders(unittest.TestCase):
 
         self.assertEqual(provider.heightAt(1, 2), 0)
 
+        provider.setOffset(5)
+        self.assertEqual(provider.heightAt(1, 2), 5)
+
         clone = provider.clone()
         self.assertIsInstance(clone, QgsFlatTerrainProvider)
+        self.assertEqual(clone.offset(), 5)
+
+        # via xml
+        doc = QDomDocument("testdoc")
+
+        context = QgsReadWriteContext()
+        parent_elem = doc.createElement('test')
+        element = provider.writeXml(doc, context)
+        parent_elem.appendChild(element)
+
+        from_xml = QgsRasterDemTerrainProvider()
+        self.assertTrue(from_xml.readXml(parent_elem, context))
+
+        self.assertEqual(from_xml.offset(), 5)
 
     def testRasterDemProvider(self):
         """
@@ -73,9 +90,17 @@ class TestQgsTerrainProviders(unittest.TestCase):
         # outside of raster extent
         self.assertTrue(math.isnan(provider.heightAt(1, 2)))
 
+        provider.setOffset(5)
+        self.assertEqual(provider.offset(), 5)
+        provider.setScale(3)
+        self.assertEqual(provider.scale(), 3)
+        self.assertEqual(provider.heightAt(106.4105, -6.6341), 11 * 3 + 5)
+
         clone = provider.clone()
         self.assertIsInstance(clone, QgsRasterDemTerrainProvider)
         self.assertEqual(clone.layer(), rl)
+        self.assertEqual(clone.offset(), 5)
+        self.assertEqual(clone.scale(), 3)
 
         # via xml
         doc = QDomDocument("testdoc")
@@ -87,6 +112,9 @@ class TestQgsTerrainProviders(unittest.TestCase):
 
         from_xml = QgsRasterDemTerrainProvider()
         self.assertTrue(from_xml.readXml(parent_elem, context))
+
+        self.assertEqual(from_xml.offset(), 5)
+        self.assertEqual(from_xml.scale(), 3)
 
         # layer won't be resolved till we resolve references from project
         self.assertFalse(from_xml.layer())
@@ -117,9 +145,16 @@ class TestQgsTerrainProviders(unittest.TestCase):
         # self.assertEqual(provider.heightAt(1,2), 0)
         # self.assertEqual(provider.heightAt(106.4105,-6.6341), 11.0)
 
+        provider.setOffset(5)
+        self.assertEqual(provider.offset(), 5)
+        provider.setScale(3)
+        self.assertEqual(provider.scale(), 3)
+
         clone = provider.clone()
         self.assertIsInstance(clone, QgsMeshTerrainProvider)
         self.assertEqual(clone.layer(), mesh_layer)
+        self.assertEqual(clone.offset(), 5)
+        self.assertEqual(clone.scale(), 3)
 
         # via xml
         doc = QDomDocument("testdoc")
@@ -131,6 +166,9 @@ class TestQgsTerrainProviders(unittest.TestCase):
 
         from_xml = QgsMeshTerrainProvider()
         self.assertTrue(from_xml.readXml(parent_elem, context))
+
+        self.assertEqual(from_xml.offset(), 5)
+        self.assertEqual(from_xml.scale(), 3)
 
         # layer won't be resolved till we resolve references from project
         self.assertFalse(from_xml.layer())
