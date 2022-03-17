@@ -43,9 +43,6 @@ void QgsProjectElevationProperties::resolveReferences( const QgsProject *project
 
 bool QgsProjectElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  mOffset = element.attribute( QStringLiteral( "offset" ), QStringLiteral( "0" ) ).toDouble();
-  mScale = element.attribute( QStringLiteral( "scale" ), QStringLiteral( "1" ) ).toDouble();
-
   const QDomElement providerElement = element.firstChildElement( QStringLiteral( "terrainProvider" ) );
   if ( !providerElement.isNull() )
   {
@@ -73,8 +70,6 @@ bool QgsProjectElevationProperties::readXml( const QDomElement &element, const Q
 QDomElement QgsProjectElevationProperties::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QDomElement element = document.createElement( QStringLiteral( "ElevationProperties" ) );
-  element.setAttribute( QStringLiteral( "offset" ), qgsDoubleToString( mOffset ) );
-  element.setAttribute( QStringLiteral( "scale" ), qgsDoubleToString( mScale ) );
 
   if ( mTerrainProvider )
   {
@@ -97,23 +92,5 @@ void QgsProjectElevationProperties::setTerrainProvider( QgsAbstractTerrainProvid
     return;
 
   mTerrainProvider.reset( provider );
-  emit changed();
-}
-
-void QgsProjectElevationProperties::setTerrainOffset( double offset )
-{
-  if ( qgsDoubleNear( mOffset, offset ) )
-    return;
-
-  mOffset = offset;
-  emit changed();
-}
-
-void QgsProjectElevationProperties::setTerrainScale( double scale )
-{
-  if ( qgsDoubleNear( mScale, scale ) )
-    return;
-
-  mScale = scale;
   emit changed();
 }
