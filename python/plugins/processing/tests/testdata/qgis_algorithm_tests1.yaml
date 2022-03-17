@@ -759,6 +759,32 @@ tests:
           geometry:
             precision: 7
 
+  - algorithm: native:dissolve
+    name: Dissolve separate disjoint
+    params:
+      INPUT:
+        name: custom/overlapping_polys.geojson
+        type: vector
+      SEPARATE_DISJOINT: true
+    results:
+      OUTPUT:
+        name: expected/dissolve_disjoint.geojson
+        type: vector
+
+  - algorithm: native:dissolve
+    name: Dissolve separate disjoint with classes
+    params:
+      FIELD:
+      - class
+      INPUT:
+        name: custom/overlapping_polys.geojson
+        type: vector
+      SEPARATE_DISJOINT: true
+    results:
+      OUTPUT:
+        name: expected/dissolve_disjoint_by_class.geojson
+        type: vector
+
   - algorithm: native:buffer
     name: Basic polygon buffer
     params:
