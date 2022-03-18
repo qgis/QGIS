@@ -1371,6 +1371,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "main angle line" ) << "round(main_angle( geom_from_wkt('LINESTRING (-1 2, 9 12)') ))" << false << QVariant( 45 );
       QTest::newRow( "main angle not geom" ) << "main_angle('g')" << true << QVariant();
       QTest::newRow( "main angle null" ) << "main_angle(NULL)" << false << QVariant();
+      QTest::newRow( "main angle edge case 2" ) << "round(main_angle( geom_from_wkt('MULTIPOLYGON(((-57 -30, -56.5 -30, -56 -30, -55.5 -30, -55.5 -29.6667, -55.5 -29.333, -55.5 -29, -56 -29, -56.5 -29, -57 -29, -57 -29.3333, -57 -29.6666, -57 -30)))')))" << false << QVariant( 90 );
       QTest::newRow( "sinuosity not geom" ) << "sinuosity('g')" << true << QVariant();
       QTest::newRow( "sinuosity null" ) << "sinuosity(NULL)" << false << QVariant();
       QTest::newRow( "sinuosity point" ) << "sinuosity(geom_from_wkt('POINT(1 2)'))" << true << QVariant();
