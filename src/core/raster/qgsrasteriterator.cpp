@@ -35,6 +35,45 @@ QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input )
   }
 }
 
+QgsRectangle QgsRasterIterator::subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth, int &subRegionHeight, int &subRegionLeft, int &subRegionTop )
+{
+  const double xRes = rasterExtent.width() / rasterWidth;
+  const double yRes = rasterExtent.height() / rasterHeight;
+
+  int top = 0;
+  int bottom = rasterHeight - 1;
+  int left = 0;
+  int right = rasterWidth - 1;
+
+  if ( subRegion.yMaximum() < rasterExtent.yMaximum() )
+  {
+    top = static_cast< int >( std::floor( ( rasterExtent.yMaximum() - subRegion.yMaximum() ) / yRes ) );
+  }
+  if ( subRegion.yMinimum() > rasterExtent.yMinimum() )
+  {
+    bottom = static_cast< int >( std::ceil( ( rasterExtent.yMaximum() - subRegion.yMinimum() ) / yRes ) - 1 );
+  }
+
+  if ( subRegion.xMinimum() > rasterExtent.xMinimum() )
+  {
+    left = static_cast< int >( std::floor( ( subRegion.xMinimum() - rasterExtent.xMinimum() ) / xRes ) );
+  }
+  if ( subRegion.xMaximum() < rasterExtent.xMaximum() )
+  {
+    right = static_cast< int >( std::ceil( ( subRegion.xMaximum() - rasterExtent.xMinimum() ) / xRes ) - 1 );
+  }
+
+  subRegionWidth = right - left + 1;
+  subRegionHeight = bottom - top + 1;
+  subRegionLeft = left;
+  subRegionTop = top;
+
+  return QgsRectangle( rasterExtent.xMinimum() + ( left * xRes ),
+                       rasterExtent.yMaximum() - ( ( top + subRegionHeight ) * yRes ),
+                       rasterExtent.xMinimum() + ( ( left + subRegionWidth ) * xRes ),
+                       rasterExtent.yMaximum() - ( top * yRes ) );
+}
+
 void QgsRasterIterator::startRasterRead( int bandNumber, qgssize nCols, qgssize nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback )
 {
   if ( !mInput )
