@@ -35,9 +35,9 @@ QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool,
     bool useMapCrs )
   : mFeaturePool( pool )
   , mFeature( feature )
+  , mGeometry( feature.geometry() )
   , mMapCrs( useMapCrs )
 {
-  mGeometry = feature.geometry();
   const QgsCoordinateTransform transform( pool->crs(), context->mapCrs, context->transformContext );
   if ( useMapCrs && context->mapCrs.isValid() && !transform.isShortCircuited() )
   {
@@ -98,11 +98,11 @@ QgsGeometryCheckerUtils::LayerFeatures::iterator::iterator( const QStringList::c
 }
 
 QgsGeometryCheckerUtils::LayerFeatures::iterator::iterator( const QgsGeometryCheckerUtils::LayerFeatures::iterator &rh )
+  : mLayerIt( rh.mLayerIt )
+  , mFeatureIt( rh.mFeatureIt )
+  , mParent( rh.mParent )
+  , mCurrentFeature( std::make_unique<LayerFeature>( *rh.mCurrentFeature.get() ) )
 {
-  mLayerIt = rh.mLayerIt;
-  mFeatureIt = rh.mFeatureIt;
-  mParent = rh.mParent;
-  mCurrentFeature = std::make_unique<LayerFeature>( *rh.mCurrentFeature.get() );
 }
 
 bool QgsGeometryCheckerUtils::LayerFeature::useMapCrs() const
