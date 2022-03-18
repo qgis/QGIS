@@ -702,12 +702,12 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
 
   if ( shared && sHandles.contains( dbPath ) )
   {
-    QgsDebugMsg( QStringLiteral( "Using cached connection for %1" ).arg( dbPath ) );
+    QgsDebugMsgLevel( QStringLiteral( "Using cached connection for %1" ).arg( dbPath ), 2 );
     sHandles[dbPath]->ref++;
     return sHandles[dbPath];
   }
 
-  QgsDebugMsg( QStringLiteral( "New sqlite connection for " ) + dbPath );
+  QgsDebugMsgLevel( QStringLiteral( "New sqlite connection for " ) + dbPath, 2 );
   spatialite_database_unique_ptr database;
   if ( database.open_v2( dbPath, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nullptr ) )
   {
@@ -732,7 +732,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   // activating Foreign Key constraints
   ( void )sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
 
-  QgsDebugMsg( QStringLiteral( "Connection to the database was successful" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Connection to the database was successful" ), 2 );
 
   QgsSqliteHandle *handle = new QgsSqliteHandle( std::move( database ), dbPath, shared );
   if ( shared )

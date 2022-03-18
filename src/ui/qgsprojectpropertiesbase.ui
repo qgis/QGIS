@@ -1473,37 +1473,7 @@
          </widget>
          <widget class="QWidget" name="mTab_DataSources">
           <layout class="QGridLayout" name="mTab_DataSourcesGridLayout">
-           <item row="1" column="0" colspan="3">
-            <widget class="QCheckBox" name="mEvaluateDefaultValues">
-             <property name="toolTip">
-              <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres, GPKG, spatialite and oracle.</string>
-             </property>
-             <property name="text">
-              <string>Evaluate default values on provider side</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="mTransactionModeLabel">
-             <property name="text">
-              <string>Transaction mode</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0" colspan="3">
-            <widget class="QCheckBox" name="mTrustProjectCheckBox">
-             <property name="toolTip">
-              <string>Speed up project loading by skipping data checks in PostgreSQL layers. Useful in QGIS server context or project with huge database views or materialized views.</string>
-             </property>
-             <property name="text">
-              <string>Trust project when data source has no metadata</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QComboBox" name="mTransactionModeComboBox"/>
-           </item>
-           <item row="3" column="0" colspan="3">
+           <item row="1" column="0" colspan="2">
             <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -1512,12 +1482,9 @@
               </sizepolicy>
              </property>
              <property name="title">
-              <string>Layers Capabilities</string>
+              <string>Layer Capabilities</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_19">
-              <property name="verticalSpacing">
-               <number>0</number>
-              </property>
               <item row="3" column="1">
                <spacer name="horizontalSpacer_5">
                 <property name="orientation">
@@ -1570,18 +1537,60 @@
              </layout>
             </widget>
            </item>
-           <item row="0" column="2">
-            <spacer name="horizontalSpacer_9">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+           <item row="0" column="0" colspan="2">
+            <widget class="QGroupBox" name="groupBox_3">
+             <property name="title">
+              <string>Editing Behavior</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="0" column="1">
+               <widget class="QComboBox" name="mTransactionModeComboBox"/>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="mTransactionModeLabel">
+                <property name="text">
+                 <string>Transaction mode</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" colspan="2">
+               <widget class="QCheckBox" name="mEvaluateDefaultValues">
+                <property name="toolTip">
+                 <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres, GPKG, spatialite and oracle.</string>
+                </property>
+                <property name="text">
+                 <string>Evaluate default values on provider side</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" colspan="2">
+               <widget class="QCheckBox" name="mCheckRememberEditStatus">
+                <property name="text">
+                 <string>Remember editable layer status between sessions</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QGroupBox" name="groupBox_8">
+             <property name="title">
+              <string>Advanced Settings</string>
              </property>
-            </spacer>
+             <layout class="QGridLayout" name="gridLayout_13">
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="mTrustProjectCheckBox">
+                <property name="toolTip">
+                 <string>Speed up project loading by skipping data checks in PostgreSQL layers. Useful in QGIS server context or project with huge database views or materialized views.</string>
+                </property>
+                <property name="text">
+                 <string>Trust project when data source has no metadata</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -3361,12 +3370,14 @@
   <tabstop>mButtonPasteColors</tabstop>
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
+  <tabstop>mTransactionModeComboBox</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
-  <tabstop>mTrustProjectCheckBox</tabstop>
+  <tabstop>mCheckRememberEditStatus</tabstop>
   <tabstop>mLayerCapabilitiesTree</tabstop>
   <tabstop>mLayerCapabilitiesToggleSelectionButton</tabstop>
   <tabstop>mShowSpatialLayersCheckBox</tabstop>
   <tabstop>mLayerCapabilitiesTreeFilterLineEdit</tabstop>
+  <tabstop>mTrustProjectCheckBox</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>grpPythonMacros</tabstop>
   <tabstop>scrollArea_5</tabstop>

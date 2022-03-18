@@ -908,6 +908,7 @@ The development version
     {
       EvaluateDefaultValuesOnProviderSide,
       TrustStoredLayerStatistics,
+      RememberLayerEditStatusBetweenSessions,
     };
     typedef QFlags<Qgis::ProjectFlag> ProjectFlags;
 
