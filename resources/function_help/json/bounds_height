@@ -12,7 +12,7 @@
     "returns": "height of bounding box of the current feature's geometry"
   }, {
     "expression": "bounds_height(geom_from_wkt('Polygon((1 1, 0 0, -1 1, 1 1))'))",
-    "returns": "1"
+    "returns": "TRUE"
   }],
   "tags": ["box", "spatial", "reference", "calculations", "system", "height", "bounding"]
 }

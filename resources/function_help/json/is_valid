@@ -2,7 +2,7 @@
   "name": "is_valid",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns true if a geometry is valid; if it is well-formed in 2D according to the OGC rules.",
+  "description": "Returns TRUE if a geometry is valid; if it is well-formed in 2D according to the OGC rules.",
   "arguments": [{
     "arg": "geometry",
     "description": "a geometry"

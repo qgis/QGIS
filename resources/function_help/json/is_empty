@@ -2,7 +2,7 @@
   "name": "is_empty",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns true if a geometry is empty (without coordinates), false if the geometry is not empty and NULL if there is no geometry. See also is_empty_or_null.",
+  "description": "Returns TRUE if a geometry is empty (without coordinates), false if the geometry is not empty and NULL if there is no geometry. See also is_empty_or_null.",
   "arguments": [{
     "arg": "geometry",
     "description": "a geometry"

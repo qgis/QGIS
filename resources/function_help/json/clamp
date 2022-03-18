@@ -20,11 +20,11 @@
   }, {
     "expression": "clamp(1,0,10)",
     "returns": "1",
-    "note": "<i>input</i> is less than minimum value of 1, so function returns 1"
+    "note": "<i>input</i> is less than minimum value of 1, so function Returns 1"
   }, {
     "expression": "clamp(1,11,10)",
     "returns": "10",
-    "note": "<i>input</i> is greater than maximum value of 10, so function returns 10"
+    "note": "<i>input</i> is greater than maximum value of 10, so function Returns 10"
   }],
   "tags": ["specified", "restricts", "input", "range"]
 }

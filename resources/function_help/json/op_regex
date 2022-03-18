@@ -12,16 +12,16 @@
   }],
   "examples": [{
     "expression": "'hello' ~ 'll'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'hello' ~ '^ll'",
-    "returns": "0"
+    "returns": "FALSE"
   }, {
     "expression": "'hello' ~ 'llo$'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'abc123' ~ '\\\\\\\\d+'",
-    "returns": "1"
+    "returns": "TRUE"
   }],
   "tags": ["white", "space", "regular", "performs", "backslash", "characters", "escaped", "character", "expression", "match"]
 }

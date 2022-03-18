@@ -12,10 +12,10 @@
   }],
   "examples": [{
     "expression": "array_find(array('a', 'b', 'c'), 'b')",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "array_find(array('a', 'b', 'c', 'b'), 'b')",
-    "returns": "1"
+    "returns": "TRUE"
   }],
   "tags": ["array", "found", "first", "lowest", "index"]
 }

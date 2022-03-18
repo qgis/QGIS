@@ -2,7 +2,7 @@
   "name": "is_multipart",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns true if the geometry is of Multi type.",
+  "description": "Returns TRUE if the geometry is of Multi type.",
   "arguments": [{
     "arg": "geometry",
     "description": "a geometry"

@@ -12,7 +12,7 @@
     "returns": "3.14159"
   }, {
     "expression": "radians(57.2958)",
-    "returns": "1"
+    "returns": "TRUE"
   }],
   "tags": ["converts", "degrees", "radians"]
 }

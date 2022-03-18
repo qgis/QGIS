@@ -2,7 +2,7 @@
   "name": "disjoint",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Tests whether geometries do not spatially intersect. Returns true if the geometries do not share any space together.",
+  "description": "Tests whether geometries do not spatially intersect. Returns TRUE if the geometries do not share any space together.",
   "arguments": [{
     "arg": "geometry1",
     "description": "a geometry"

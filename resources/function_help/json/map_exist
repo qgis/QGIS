@@ -2,7 +2,7 @@
   "name": "map_exist",
   "type": "function",
   "groups": ["Maps"],
-  "description": "Returns true if the given key exists in the map.",
+  "description": "Returns TRUE if the given key exists in the map.",
   "arguments": [{
     "arg": "map",
     "description": "a map"
