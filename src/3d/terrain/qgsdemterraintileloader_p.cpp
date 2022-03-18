@@ -153,7 +153,7 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 
 QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution, const QgsCoordinateTransformContext &transformContext )
   : mDtm( dtm )
-  , mClonedProvider( dtm ? ( QgsRasterDataProvider * )dtm->dataProvider()->clone() : nullptr )
+  , mClonedProvider( dtm ? static_cast<QgsRasterDataProvider *>( dtm->dataProvider()->clone() ) : nullptr )
   , mTilingScheme( tilingScheme )
   , mResolution( resolution )
   , mLastJobId( 0 )

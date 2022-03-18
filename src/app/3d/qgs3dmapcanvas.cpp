@@ -219,7 +219,7 @@ void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, f
   mScene->cameraController()->setViewFromTop( worldX, -worldY, distance, rotation );
 }
 
-void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileFormat )
+void Qgs3DMapCanvas::saveAsImage( const QString &fileName, const QString &fileFormat )
 {
   if ( !fileName.isEmpty() )
   {

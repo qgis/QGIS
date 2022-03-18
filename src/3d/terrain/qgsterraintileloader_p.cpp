@@ -74,7 +74,6 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
     {
       Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = new Qt3DExtras::QDiffuseSpecularMaterial;
       diffuseMapMaterial->setDiffuse( QVariant::fromValue( texture ) );
-      material = diffuseMapMaterial;
       diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
       diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
       diffuseMapMaterial->setShininess( shadingMaterial.shininess() );

@@ -555,14 +555,14 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     {
       double f = ( double )( mMousePos.y() - mDragButtonClickPos.y() ) / ( double )( mViewport.height() - mDragButtonClickPos.y() );
       f = std::max( 0.0, std::min( 1.0, f ) );
-      f = 1 - ( std::exp( -2 * f ) - 1 ) / ( std::exp( -2 ) - 1 );
+      f = 1 - ( std::expm1( -2 * f ) ) / ( std::expm1( -2 ) );
       dist = dist * f;
     }
     else // zoom out
     {
       double f = 1 - ( double )( mMousePos.y() ) / ( double )( mDragButtonClickPos.y() );
       f = std::max( 0.0, std::min( 1.0, f ) );
-      f = ( std::exp( 2 * f ) - 1 ) / ( std::exp( 2 ) - 1 );
+      f = ( std::expm1( 2 * f ) ) / ( std::expm1( 2 ) );
       dist = dist + 2 * dist * f;
     }
 
