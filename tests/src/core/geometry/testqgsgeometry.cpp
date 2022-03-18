@@ -2183,6 +2183,12 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
   QString resultTestWKT = QStringLiteral( "Polygon ((635.86 -420.08, 552.66 -134.85, 153.5 -251.27, 236.69 -536.51, 635.86 -420.08))" );
   QCOMPARE( result.asWkt( 2 ), resultTestWKT );
 
+  // Issue https://github.com/qgis/QGIS/issues/47726
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon (((-57 -30, -56.5 -30, -56 -30, -55.5 -30, -55.5 -29.6667, -55.5 -29.333, -55.5 -29, -56 -29, -56.5 -29, -57 -29, -57 -29.3333, -57 -29.6666, -57 -30)))" ) );
+  result = geomTest.orientedMinimumBoundingBox( );
+  QString resultTestWKT = QStringLiteral( "Polygon ((-57 -30, -55.5 -30, -55.5 -29, -57 -29, -57 -30))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+
 }
 void TestQgsGeometry::minimalEnclosingCircle()
 {
