@@ -1,0 +1,46 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsabstractprofilesource.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAbstractProfileSource
+{
+%Docstring(signature="appended")
+Interface for classes which can generate elevation profiles.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsabstractprofilesource.h"
+%End
+  public:
+
+    virtual ~QgsAbstractProfileSource();
+
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) = 0 /Factory/;
+%Docstring
+Given a profile ``request``, returns a new profile generator ready for generating
+elevation profiles.
+
+The caller takes ownership of the returned generator.
+
+May return ``None`` if the source cannot generate a profile at this time.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsabstractprofilesource.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

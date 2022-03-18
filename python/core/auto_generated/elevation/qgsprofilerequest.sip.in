@@ -53,7 +53,7 @@ The coordinate reference system of the ``curve`` is set via :py:func:`~QgsProfil
 .. seealso:: :py:func:`profileCurve`
 %End
 
-    QgsCurve *profileCurve();
+    QgsCurve *profileCurve() const;
 %Docstring
 Returns the cross section profile curve, which represents the line along which the profile should be generated.
 
@@ -129,7 +129,7 @@ Ownership of ``provider`` is transferred to the request.
 .. seealso:: :py:func:`terrainProvider`
 %End
 
-    QgsAbstractTerrainProvider *terrainProvider();
+    QgsAbstractTerrainProvider *terrainProvider() const;
 %Docstring
 Returns the terrain provider.
 

@@ -78,7 +78,7 @@ class CORE_EXPORT QgsProfileRequest
      *
      * \see setProfileCurve()
      */
-    QgsCurve *profileCurve();
+    QgsCurve *profileCurve() const;
 
     /**
      * Sets the desired Coordinate Reference System (\a crs) for the profile.
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsProfileRequest
      *
      * \see setTerrainProvider()
      */
-    QgsAbstractTerrainProvider *terrainProvider();
+    QgsAbstractTerrainProvider *terrainProvider() const;
 
   private:
 

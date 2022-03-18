@@ -1,0 +1,80 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsabstractprofilegenerator.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAbstractProfileGenerator
+{
+%Docstring(signature="appended")
+Abstract base class for objects which generate elevation profiles.
+
+The generation is typically done in a background
+thread, so it is necessary to keep all structures required for generating the
+profile away from the original profile source because it may change at any time.
+
+Because the data needs to be copied (to avoid the need for locking),
+it is highly desirable to use copy-on-write where possible. This way,
+the overhead of copying (both memory and CPU) will be kept low.
+Qt containers and various Qt classes use implicit sharing.
+
+The scenario will be:
+
+# elevation profile job (doing preparation in the GUI thread) calls
+  :py:func:`QgsAbstractProfileSource.createProfileGenerator()` and gets an instance of this class.
+  The instance is initialized at that point and should not need
+  additional calls to the source.
+# profile job (still in GUI thread) stores the generator for later use.
+# profile job (in worker thread) calls :py:func:`QgsAbstractProfileGenerator.generateProfile()`
+# profile job (again in GUI thread) will check :py:func:`~errors` and report them
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsabstractprofilegenerator.h"
+%End
+  public:
+
+    virtual ~QgsAbstractProfileGenerator();
+
+    virtual bool generateProfile() = 0;
+%Docstring
+Generate the profile (based on data stored in the class).
+
+Returns ``True`` if the profile was generated successfully (i.e. the generation
+was not canceled early).
+%End
+
+    struct Result
+    {
+      double distance;
+      double height;
+    };
+
+    QList< QgsAbstractProfileGenerator::Result > results() const;
+%Docstring
+Temporary method to return results.
+%End
+
+    QList< QgsPoint > rawPoints() const;
+%Docstring
+Temporary method to return results.
+%End
+
+  protected:
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsabstractprofilegenerator.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
