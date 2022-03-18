@@ -920,7 +920,7 @@ int main( int argc, char *argv[] )
   // As suggested by Qt documentation at:
   //   - https://doc.qt.io/qt-5/qtwebengine.html
   //   - https://code.qt.io/cgit/qt/qtwebengine.git/plain/src/webenginewidgets/api/qtwebenginewidgetsglobal.cpp
-#if defined(QT_OS_WIN) && !defined(QT_NO_OPENGL)
+#if !defined(QT_NO_OPENGL)
   QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
 #endif
 
