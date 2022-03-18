@@ -70,6 +70,11 @@ class CORE_EXPORT QgsAbstractTerrainProvider
     QgsAbstractTerrainProvider &operator=( const QgsAbstractTerrainProvider &other ) = delete;
 
     /**
+     * Returns TRUE if the provider is equal to \a other.
+     */
+    virtual bool equals( const QgsAbstractTerrainProvider *other ) const = 0;
+
+    /**
      * Resolves reference to layers from stored layer ID (if it has not been resolved already)
      */
     virtual void resolveReferences( const QgsProject *project );
@@ -203,6 +208,7 @@ class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractTerrainProvider
     QgsCoordinateReferenceSystem crs() const override;
     double heightAt( double x, double y ) const override;
     QgsFlatTerrainProvider *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractTerrainProvider *other ) const override;
 };
 
 /**
@@ -227,6 +233,7 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
     QgsCoordinateReferenceSystem crs() const override;
     double heightAt( double x, double y ) const override;
     QgsRasterDemTerrainProvider *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractTerrainProvider *other ) const override;
 
     /**
      * Sets the raster \a layer with elevation model to be used as the terrain source.
@@ -272,6 +279,7 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
     QgsCoordinateReferenceSystem crs() const override;
     double heightAt( double x, double y ) const override;
     QgsMeshTerrainProvider *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractTerrainProvider *other ) const override;
 
     /**
      * Sets the mesh \a layer to be used as the terrain source.

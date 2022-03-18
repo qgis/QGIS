@@ -83,6 +83,16 @@ QgsFlatTerrainProvider *QgsFlatTerrainProvider::clone() const
   return new QgsFlatTerrainProvider( *this );
 }
 
+bool QgsFlatTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) const
+{
+  if ( other->type() != type() )
+    return false;
+
+  const QgsFlatTerrainProvider *otherTerrain = qgis::down_cast< const QgsFlatTerrainProvider * >( other );
+
+  return qgsDoubleNear( otherTerrain->offset(), mOffset );
+}
+
 
 //
 //  QgsRasterDemTerrainProvider
@@ -156,6 +166,20 @@ double QgsRasterDemTerrainProvider::heightAt( double x, double y ) const
 QgsRasterDemTerrainProvider *QgsRasterDemTerrainProvider::clone() const
 {
   return new QgsRasterDemTerrainProvider( *this );
+}
+
+bool QgsRasterDemTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) const
+{
+  if ( other->type() != type() )
+    return false;
+
+  const QgsRasterDemTerrainProvider *otherTerrain = qgis::down_cast< const QgsRasterDemTerrainProvider * >( other );
+  if ( !qgsDoubleNear( otherTerrain->offset(), mOffset )
+       || !qgsDoubleNear( otherTerrain->scale(), mScale )
+       || mRasterLayer.get() != otherTerrain->layer() )
+    return false;
+
+  return true;
 }
 
 void QgsRasterDemTerrainProvider::setLayer( QgsRasterLayer *layer )
@@ -233,6 +257,20 @@ double QgsMeshTerrainProvider::heightAt( double x, double y ) const
 QgsMeshTerrainProvider *QgsMeshTerrainProvider::clone() const
 {
   return new QgsMeshTerrainProvider( *this );
+}
+
+bool QgsMeshTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) const
+{
+  if ( other->type() != type() )
+    return false;
+
+  const QgsMeshTerrainProvider *otherTerrain = qgis::down_cast< const QgsMeshTerrainProvider * >( other );
+  if ( !qgsDoubleNear( otherTerrain->offset(), mOffset )
+       || !qgsDoubleNear( otherTerrain->scale(), mScale )
+       || mMeshLayer.get() != otherTerrain->layer() )
+    return false;
+
+  return true;
 }
 
 void QgsMeshTerrainProvider::setLayer( QgsMeshLayer *layer )
