@@ -225,7 +225,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Qgis::ProjectFlags flags() const { return mFlags; }
 
     /**
-     * Sets the project's \a flags, which dictate the behavior of the project..
+     * Sets the project's \a flags, which dictate the behavior of the project.
      *
      * \see flags()
      * \see setFlag()
