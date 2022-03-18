@@ -89,7 +89,7 @@ QgsProfileRequest &QgsProfileRequest::setProfileCurve( QgsCurve *curve )
   return *this;
 }
 
-QgsCurve *QgsProfileRequest::profileCurve()
+QgsCurve *QgsProfileRequest::profileCurve() const
 {
   return mCurve.get();
 }
@@ -128,7 +128,7 @@ QgsProfileRequest &QgsProfileRequest::setTerrainProvider( QgsAbstractTerrainProv
   return *this;
 }
 
-QgsAbstractTerrainProvider *QgsProfileRequest::terrainProvider()
+QgsAbstractTerrainProvider *QgsProfileRequest::terrainProvider() const
 {
   return mTerrainProvider.get();
 }
