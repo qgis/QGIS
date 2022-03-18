@@ -26,6 +26,7 @@
 #include <QJsonDocument>
 #include <QHttpMultiPart>
 #include <QMimeDatabase>
+#include <QApplication>
 
 #include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
@@ -67,6 +68,9 @@ void QgsAction::run( QgsVectorLayer *layer, const QgsFeature &feature, const Qgs
 
 void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
 {
+
+  // Show busy in case the form subit is slow
+  QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QUrl url{ expandedAction };
 
@@ -228,6 +232,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
       QgsMessageLog::logMessage( reply->errorString(), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
     }
     reply->deleteLater();
+    QApplication::restoreOverrideCursor( );
   } );
 
 }
@@ -244,7 +249,10 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
   QgsExpressionContext context( expressionContext );
   context << scope;
 
+  // Show busy in case the expression evaluation is slow
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   const QString expandedAction = QgsExpression::replaceExpressionText( mCommand, &context );
+  QApplication::restoreOverrideCursor();
 
   if ( mType == QgsAction::OpenUrl )
   {
@@ -257,7 +265,6 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
   else if ( mType == QgsAction::SubmitUrlEncoded || mType == QgsAction::SubmitUrlMultipart )
   {
     handleFormSubmitAction( expandedAction );
-
   }
   else if ( mType == QgsAction::GenericPython )
   {
