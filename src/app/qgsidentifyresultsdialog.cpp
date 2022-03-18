@@ -1511,7 +1511,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     mActionPopup->addAction( tr( "Copy Attribute Value" ), this, &QgsIdentifyResultsDialog::copyAttributeValue );
     mActionPopup->addAction( tr( "Copy Feature Attributes" ), this, &QgsIdentifyResultsDialog::copyFeatureAttributes );
 
-    mActionPopup->addAction( tr( "Select Features by Attribute" ), this, &QgsIdentifyResultsDialog::selectFeatureByAttribute );
+    mActionPopup->addAction( tr( "Select Features by Attribute Value" ), this, &QgsIdentifyResultsDialog::selectFeatureByAttribute );
 
     if ( item->parent() == featItem && item->childCount() == 0 )
     {
