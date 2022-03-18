@@ -5017,8 +5017,13 @@ class TestProcessingFeedback : public QgsProcessingFeedback
     {
       errors << error;
     }
+    void pushWarning( const QString &warning ) override
+    {
+      warnings << warning;
+    }
 
     QStringList errors;
+    QStringList warnings;
 
 };
 
@@ -5073,21 +5078,21 @@ void TestQgsProcessingAlgsPt1::raiseWarning()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
+  QCOMPARE( feedback.warnings, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
 
   parameters.insert( QStringLiteral( "CONDITION" ), QStringLiteral( "FALSE" ) );
-  feedback.errors.clear();
+  feedback.warnings.clear();
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( feedback.errors, QStringList() );
+  QCOMPARE( feedback.warnings, QStringList() );
 
   parameters.insert( QStringLiteral( "CONDITION" ), QStringLiteral( "TRUE" ) );
-  feedback.errors.clear();
+  feedback.warnings.clear();
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
+  QCOMPARE( feedback.warnings, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
 }
 
 void TestQgsProcessingAlgsPt1::randomFloatingPointDistributionRaster_data()
