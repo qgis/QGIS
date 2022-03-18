@@ -127,7 +127,7 @@ Returns the project's title.
 
     Qgis::ProjectFlags flags() const;
 %Docstring
-Returns the project's flags, which dictate the behavior of the project..
+Returns the project's flags, which dictate the behavior of the project.
 
 .. seealso:: :py:func:`setFlags`
 
