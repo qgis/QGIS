@@ -1483,6 +1483,30 @@ class CORE_EXPORT Qgis
     Q_ENUM( AltitudeBinding )
 
     /**
+     * Between line constraints which can be enabled
+     */
+    enum class BetweenLineConstraint SIP_MONKEYPATCH_SCOPEENUM : int
+    {
+      NoConstraint,  //!< No additional constraint
+      Perpendicular, //!< Perpendicular
+      Parallel       //!< Parallel
+    };
+    Q_ENUM( BetweenLineConstraint )
+
+    /**
+     * Designates whether the line extension constraint is currently soft locked
+     * with the previous or next vertex of the locked one.
+     * \since QGIS 3.26
+     */
+    enum class LineExtensionSide : int
+    {
+      BeforeVertex,
+      AfterVertex,
+      NoVertex
+    };
+    Q_ENUM( LineExtensionSide )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

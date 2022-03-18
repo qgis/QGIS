@@ -56,6 +56,8 @@
       <addaction name="mSettingsAction"/>
       <addaction name="separator"/>
       <addaction name="mToggleFloaterAction"/>
+      <addaction name="separator"/>
+      <addaction name="mConstructionAction"/>
      </widget>
     </item>
     <item>
@@ -628,6 +630,18 @@
     <string>Toggle Floater</string>
    </property>
   </action>
+  <action name="mConstructionAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/algorithms/mAlgorithmExtractVertices.svg</normaloff>:/images/themes/default/algorithms/mAlgorithmExtractVertices.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Construction</string>
+   </property>
+   <property name="toolTip">
+    <string>Construction</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -663,6 +677,7 @@
   <tabstop>mRepeatingLockMButton</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

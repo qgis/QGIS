@@ -239,6 +239,22 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
   return dist;
 }
 
+double QgsGeometryUtils::distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon )
+{
+  const double area = std::abs(
+                        ( linePoint1.x() - linePoint2.x() ) * ( point.y() - linePoint2.y() ) -
+                        ( linePoint1.y() - linePoint2.y() ) * ( point.x() - linePoint2.x() )
+                      );
+
+  const double length = std::sqrt(
+                          std::pow( linePoint1.x() - linePoint2.x(), 2 ) +
+                          std::pow( linePoint1.y() - linePoint2.y(), 2 )
+                        );
+
+  const double distance = area / length;
+  return qgsDoubleNear( distance, 0.0, epsilon ) ? 0.0 : distance;
+}
+
 bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection )
 {
   const double d = v1.y() * v2.x() - v1.x() * v2.y();

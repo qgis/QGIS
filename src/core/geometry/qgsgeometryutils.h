@@ -94,6 +94,16 @@ class CORE_EXPORT QgsGeometryUtils
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon ) SIP_HOLDGIL;
 
     /**
+     * Returns the distance between a point and an infinite line.
+     * \param point The point to find the distance to the line
+     * \param linePoint1 The first point of the line
+     * \param linePoint2 The second point of the line
+     * \param epsilon The tolerance to use
+     * \since QGIS 3.26
+     */
+    static double distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon = 1e-7 );
+
+    /**
      * Computes the intersection between two lines. Z dimension is
      * supported and is retrieved from the first 3D point amongst \a p1 and
      * \a p2.

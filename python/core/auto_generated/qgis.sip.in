@@ -890,6 +890,20 @@ The development version
       Centroid,
     };
 
+    enum class BetweenLineConstraint
+    {
+      NoConstraint,
+      Perpendicular,
+      Parallel
+    };
+
+    enum class LineExtensionSide
+    {
+      BeforeVertex,
+      AfterVertex,
+      NoVertex
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

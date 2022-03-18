@@ -1361,3 +1361,23 @@ Qgis.AltitudeBinding.Centroid.__doc__ = "Clamp just centroid of feature"
 Qgis.AltitudeBinding.__doc__ = 'Altitude binding.\n\n.. versionadded:: 3.26\n\n' + '* ``Vertex``: ' + Qgis.AltitudeBinding.Vertex.__doc__ + '\n' + '* ``Centroid``: ' + Qgis.AltitudeBinding.Centroid.__doc__
 # --
 Qgis.AltitudeBinding.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.NoConstraint = Qgis.BetweenLineConstraint.NoConstraint
+Qgis.NoConstraint.is_monkey_patched = True
+Qgis.BetweenLineConstraint.NoConstraint.__doc__ = "No additional constraint"
+Qgis.Perpendicular = Qgis.BetweenLineConstraint.Perpendicular
+Qgis.Perpendicular.is_monkey_patched = True
+Qgis.BetweenLineConstraint.Perpendicular.__doc__ = "Perpendicular"
+Qgis.Parallel = Qgis.BetweenLineConstraint.Parallel
+Qgis.Parallel.is_monkey_patched = True
+Qgis.BetweenLineConstraint.Parallel.__doc__ = "Parallel"
+Qgis.BetweenLineConstraint.__doc__ = 'Between line constraints which can be enabled\n\n' + '* ``NoConstraint``: ' + Qgis.BetweenLineConstraint.NoConstraint.__doc__ + '\n' + '* ``Perpendicular``: ' + Qgis.BetweenLineConstraint.Perpendicular.__doc__ + '\n' + '* ``Parallel``: ' + Qgis.BetweenLineConstraint.Parallel.__doc__
+# --
+Qgis.BetweenLineConstraint.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LineExtensionSide.BeforeVertex.__doc__ = ""
+Qgis.LineExtensionSide.AfterVertex.__doc__ = ""
+Qgis.LineExtensionSide.NoVertex.__doc__ = ""
+Qgis.LineExtensionSide.__doc__ = 'Designates whether the line extension constraint is currently soft locked\nwith the previous or next vertex of the locked one.\n\n.. versionadded:: 3.26\n\n' + '* ``BeforeVertex``: ' + Qgis.LineExtensionSide.BeforeVertex.__doc__ + '\n' + '* ``AfterVertex``: ' + Qgis.LineExtensionSide.AfterVertex.__doc__ + '\n' + '* ``NoVertex``: ' + Qgis.LineExtensionSide.NoVertex.__doc__
+# --
+Qgis.LineExtensionSide.baseClass = Qgis
