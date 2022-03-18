@@ -20,7 +20,9 @@ from qgis.core import (
     QgsLineString,
     QgsProfileRequest,
     QgsCoordinateReferenceSystem,
-    QgsCoordinateTransformContext
+    QgsCoordinateTransformContext,
+    QgsFlatTerrainProvider,
+    QgsMeshTerrainProvider
 )
 
 from qgis.PyQt.QtXml import QDomDocument
@@ -49,12 +51,19 @@ class TestQgsProfileRequest(unittest.TestCase):
         self.assertEqual(req.transformContext().calculateCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
                                                                              QgsCoordinateReferenceSystem('EPSG:4283')), proj_string)
 
+        terrain = QgsFlatTerrainProvider()
+        terrain.setOffset(5)
+        req.setTerrainProvider(terrain)
+        self.assertEqual(req.terrainProvider().offset(), 5)
+
         copy = QgsProfileRequest(req)
         self.assertEqual(copy.profileCurve().asWkt(), 'LineString (1 2, 3 4)')
         self.assertEqual(copy.crs().authid(), 'EPSG:3857')
         self.assertEqual(copy.tolerance(), 5)
         self.assertEqual(copy.transformContext().calculateCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
                                                                               QgsCoordinateReferenceSystem('EPSG:4283')), proj_string)
+        self.assertIsInstance(copy.terrainProvider(), QgsFlatTerrainProvider)
+        self.assertEqual(copy.terrainProvider().offset(), 5)
 
     def testEquality(self):
         """
@@ -94,6 +103,23 @@ class TestQgsProfileRequest(unittest.TestCase):
         req.setTolerance(5)
         self.assertNotEqual(req, req2)
         req2.setTolerance(5)
+        self.assertEqual(req, req2)
+
+        terrain = QgsFlatTerrainProvider()
+        terrain.setOffset(5)
+        req.setTerrainProvider(terrain)
+        self.assertNotEqual(req, req2)
+
+        req2.setTerrainProvider(QgsMeshTerrainProvider())
+        self.assertNotEqual(req, req2)
+
+        req.setTerrainProvider(None)
+        self.assertNotEqual(req, req2)
+
+        req.setTerrainProvider(QgsFlatTerrainProvider())
+        self.assertNotEqual(req, req2)
+
+        req.setTerrainProvider(QgsMeshTerrainProvider())
         self.assertEqual(req, req2)
 
 
