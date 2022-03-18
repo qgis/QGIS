@@ -858,10 +858,16 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
   return true;
 }
 
-bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &offset, bool &lineAnchorPercentSuccess, int &lineAnchorPercentCol ) const
+bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnchorPercent, bool &lineAnchorPercentSuccess, int &lineAnchorPercentCol,
+    QString &lineAnchorClipping, bool &lineAnchorClippingSuccess, int &lineAnchorClippingCol,
+    QString &lineAnchorType, bool &lineAnchorTypeSuccess, int &lineAnchorTypeCol,
+    QString &lineAnchorTextPoint, bool &lineAnchorTextPointSuccess, int &lineAnchorTextPointCol ) const
 {
 
   lineAnchorPercentSuccess = false;
+  lineAnchorClippingSuccess = true;
+  lineAnchorTypeSuccess = true;
+  lineAnchorTextPointSuccess = true;
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
   QgsFeatureId featureId = mCurrentLabel.pos.featureId;
 
@@ -870,7 +876,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &offset, 
     return false;
   }
 
-  if ( !labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, lineAnchorPercentCol ) )
+  if ( !labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, lineAnchorPercentCol, lineAnchorClippingCol, lineAnchorTypeCol, lineAnchorTextPointCol ) )
   {
     return false;
   }
@@ -881,11 +887,50 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &offset, 
     return false;
   }
 
+  QgsAttributes attributes = f.attributes();
+
   if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
   {
-    QgsAttributes attributes = f.attributes();
     if ( !attributes.at( lineAnchorPercentCol ).isNull() )
-      offset = attributes.at( lineAnchorPercentCol ).toDouble( &lineAnchorPercentSuccess );
+    {
+      lineAnchorPercent = attributes.at( lineAnchorPercentCol ).toDouble( &lineAnchorPercentSuccess );
+    }
+  }
+
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorClipping ) )
+  {
+    if ( !attributes.at( lineAnchorClippingCol ).isNull() )
+    {
+      lineAnchorClipping = attributes.at( lineAnchorClippingCol ).toString();
+    }
+    else
+    {
+      lineAnchorClippingSuccess = false;
+    }
+  }
+
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorType ) )
+  {
+    if ( !attributes.at( lineAnchorTypeCol ).isNull() )
+    {
+      lineAnchorType = attributes.at( lineAnchorTypeCol ).toString();
+    }
+    else
+    {
+      lineAnchorTypeSuccess = false;
+    }
+  }
+
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorTextPoint ) )
+  {
+    if ( !attributes.at( lineAnchorTextPointCol ).isNull() )
+    {
+      lineAnchorTextPoint = attributes.at( lineAnchorTextPointCol ).toString();
+    }
+    else
+    {
+      lineAnchorTextPointSuccess = false;
+    }
   }
 
   return true;
@@ -977,6 +1022,26 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedLineAnchorPercent( const QVar
 
     if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorPercentCol, lineAnchorPercent ) )
       return false;
+
+    // Also set the other anchor properties
+    const QString lineAnchorClippingColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorClipping, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const int lineAnchorClippingCol = mCurrentLabel.layer->fields().lookupField( lineAnchorClippingColName );
+
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorClippingCol, QStringLiteral( "entire" ) ) )
+      return false;
+
+    const QString lineAnchorTypeColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorType, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const int lineAnchorTypeCol = mCurrentLabel.layer->fields().lookupField( lineAnchorTypeColName );
+
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorTypeCol, QStringLiteral( "strict" ) ) )
+      return false;
+
+    const QString lineAnchorTextPointColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorTextPoint, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const int lineAnchorTextPointCol = mCurrentLabel.layer->fields().lookupField( lineAnchorTextPointColName );
+
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorTextPointCol, QStringLiteral( "start" ) ) )
+      return false;
+
   }
   else
   {
@@ -1124,18 +1189,60 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   return false;
 }
 
-bool QgsMapToolLabel::labelAnchorPercentMovable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol ) const
+bool QgsMapToolLabel::labelAnchorPercentMovable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol, int &lineAnchorClippingCol,  int &lineAnchorTypeCol,  int &lineAnchorTextPointCol ) const
 {
   lineAnchorPercentCol = -1;
+  lineAnchorClippingCol = -1;
+  lineAnchorTypeCol = -1;
+  lineAnchorTextPointCol = -1;
+
+  bool ret { true };
+
   if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
-    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorPercent, settings, vlayer, status );
-    lineAnchorPercentCol = vlayer->fields().lookupField( pointColName );
-    if ( lineAnchorPercentCol >= 0 )
-      return true;
+    QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorPercent, settings, vlayer, status );
+    lineAnchorPercentCol = vlayer->fields().lookupField( colName );
+    if ( lineAnchorPercentCol < 0 )
+      return false;
+    else
+      ret =  true;
   }
-  return false;
+
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorClipping ) )
+  {
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorClipping, settings, vlayer, status );
+    lineAnchorClippingCol = vlayer->fields().lookupField( colName );
+    if ( lineAnchorClippingCol < 0 )
+      return false;
+    else
+      ret =  true;
+  }
+
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorType ) )
+  {
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorType, settings, vlayer, status );
+    lineAnchorTypeCol = vlayer->fields().lookupField( colName );
+    if ( lineAnchorTypeCol < 0 )
+      return false;
+    else
+      ret =  true;
+  }
+
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorTextPoint ) )
+  {
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorTextPoint, settings, vlayer, status );
+    lineAnchorTextPointCol = vlayer->fields().lookupField( colName );
+    if ( lineAnchorTextPointCol < 0 )
+      return false;
+    else
+      ret =  true;
+  }
+
+  return ret;
 }
 
 bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
