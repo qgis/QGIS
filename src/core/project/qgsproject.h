@@ -215,7 +215,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString title() const;
 
     /**
-     * Returns the project's flags, which dictate the behavior of the project..
+     * Returns the project's flags, which dictate the behavior of the project.
      *
      * \see setFlags()
      * \see setFlag()
