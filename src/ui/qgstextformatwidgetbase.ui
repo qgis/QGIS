@@ -4083,9 +4083,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-924</y>
+                       <y>-936</y>
                        <width>475</width>
-                       <height>1402</height>
+                       <height>1374</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5418,140 +5418,14 @@ font-style: italic;</string>
                          <string notr="true">labelplacementgroup</string>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_4">
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="mCoordLabel">
-                           <property name="text">
-                            <string>Coordinate</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1">
-                          <layout class="QHBoxLayout" name="horizontalLayout_22">
-                           <item>
-                            <widget class="QLabel" name="mCoordXLabel">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>X</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QgsPropertyOverrideButton" name="mCoordXDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLabel" name="mCoordYLabel">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>Y</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QgsPropertyOverrideButton" name="mCoordYDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <spacer name="horizontalSpacer_6">
-                             <property name="orientation">
-                              <enum>Qt::Horizontal</enum>
-                             </property>
-                             <property name="sizeHint" stdset="0">
-                              <size>
-                               <width>40</width>
-                               <height>20</height>
-                              </size>
-                             </property>
-                            </spacer>
-                           </item>
-                          </layout>
-                         </item>
-                         <item row="1" column="0">
-                          <widget class="QLabel" name="label_44">
-                           <property name="text">
-                            <string>Point</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="1">
-                          <layout class="QHBoxLayout" name="horizontalLayout_15">
-                           <item>
-                            <widget class="QgsPropertyOverrideButton" name="mCoordPointDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <spacer name="horizontalSpacer_22">
-                             <property name="orientation">
-                              <enum>Qt::Horizontal</enum>
-                             </property>
-                             <property name="sizeHint" stdset="0">
-                              <size>
-                               <width>0</width>
-                               <height>20</height>
-                              </size>
-                             </property>
-                            </spacer>
-                           </item>
-                          </layout>
-                         </item>
                          <item row="2" column="0">
-                          <widget class="QLabel" name="label_47">
-                           <property name="text">
-                            <string>Anchoring</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="1">
-                          <layout class="QHBoxLayout" name="horizontalLayout_18">
-                           <item>
-                            <widget class="QgsPropertyOverrideButton" name="mLineAnchorPercentDDBtn">
-                             <property name="text">
-                              <string>...</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <spacer name="horizontalSpacer_24">
-                             <property name="orientation">
-                              <enum>Qt::Horizontal</enum>
-                             </property>
-                             <property name="sizeHint" stdset="0">
-                              <size>
-                               <width>40</width>
-                               <height>20</height>
-                              </size>
-                             </property>
-                            </spacer>
-                           </item>
-                          </layout>
-                         </item>
-                         <item row="3" column="0">
                           <widget class="QLabel" name="mCoordAlignmentLabel">
                            <property name="text">
                             <string>Alignment</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="3" column="1">
+                         <item row="2" column="1">
                           <widget class="QFrame" name="mCoordAlignmentFrame">
                            <layout class="QHBoxLayout" name="horizontalLayout_27">
                             <property name="leftMargin">
@@ -5622,14 +5496,45 @@ font-style: italic;</string>
                            </layout>
                           </widget>
                          </item>
-                         <item row="4" column="0">
+                         <item row="3" column="0">
                           <widget class="QLabel" name="mCoordRotationLabel">
                            <property name="text">
                             <string>Rotation</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="4" column="1">
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="label_44">
+                           <property name="text">
+                            <string>Point</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1">
+                          <layout class="QHBoxLayout" name="horizontalLayout_15">
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mCoordPointDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="horizontalSpacer_22">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>0</width>
+                               <height>20</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
+                         </item>
+                         <item row="3" column="1">
                           <layout class="QHBoxLayout" name="horizontalLayout_25">
                            <item>
                             <widget class="QgsPropertyOverrideButton" name="mCoordRotationDDBtn">
@@ -5656,6 +5561,70 @@ font-style: italic;</string>
                               <bool>true</bool>
                              </property>
                             </widget>
+                           </item>
+                          </layout>
+                         </item>
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="mCoordLabel">
+                           <property name="text">
+                            <string>Coordinate</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="1">
+                          <layout class="QHBoxLayout" name="horizontalLayout_22">
+                           <item>
+                            <widget class="QLabel" name="mCoordXLabel">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="text">
+                              <string>X</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mCoordXDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="mCoordYLabel">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="text">
+                              <string>Y</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mCoordYDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="horizontalSpacer_6">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>40</width>
+                               <height>20</height>
+                              </size>
+                             </property>
+                            </spacer>
                            </item>
                           </layout>
                          </item>
@@ -6978,7 +6947,6 @@ font-style: italic;</string>
   <tabstop>mCoordXDDBtn</tabstop>
   <tabstop>mCoordYDDBtn</tabstop>
   <tabstop>mCoordPointDDBtn</tabstop>
-  <tabstop>mLineAnchorPercentDDBtn</tabstop>
   <tabstop>mCoordAlignmentHDDBtn</tabstop>
   <tabstop>mCoordAlignmentVDDBtn</tabstop>
   <tabstop>mCoordRotationDDBtn</tabstop>

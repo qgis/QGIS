@@ -203,23 +203,22 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol, int &pointCol ) const;
 
     /**
-     * Gets data defined line anchor percent of current label
-     * \param offset out: data defined line anchor percent
-     * \param offsetSuccess out: FALSE if attribute value is NULL
-     * \param lineAnchorPercentCol out: index of the line anchor percent column
-     * \returns FALSE if layer does not have data defined label curved offset enabled
-     * \since QGIS 3.26
-    */
-    bool currentLabelDataDefinedLineAnchorPercent( double &lineAnchorPercent, bool &lineAnchorPercentSuccess, int &lineAnchorPercentOffsetCol ) const;
+     * Label anchor
+     */
+    bool currentLabelDataDefinedLineAnchorPercent(
+      double &lineAnchorPercent, bool &lineAnchorPercentSuccess, int &lineAnchorPercentCol,
+      QString &lineAnchorClipping, bool &lineAnchorClippingSuccess, int &lineAnchorClippingCol,
+      QString &lineAnchorType, bool &lineAnchorTypeSuccess, int &lineAnchorTypeCol,
+      QString &lineAnchorTextPoint, bool &lineAnchorTextPointSuccess, int &lineAnchorTextPointCol ) const;
 
     /**
-     * Returns data defined rotation of current label
-     * \param rotation out: rotation value
-     * \param rotationSuccess out: FALSE if rotation value is NULL
-     * \param rCol out: index of the rotation column
-     * \param ignoreXY ignore that x and y are required to be data-defined
-     * \returns TRUE if data defined rotation is enabled on the layer
-     */
+    * Returns data defined rotation of current label
+    * \param rotation out: rotation value
+    * \param rotationSuccess out: FALSE if rotation value is NULL
+    * \param rCol out: index of the rotation column
+    * \param ignoreXY ignore that x and y are required to be data-defined
+    * \returns TRUE if data defined rotation is enabled on the layer
+    */
     bool currentLabelDataDefinedRotation( double &rotation, bool &rotationSuccess, int &rCol, bool ignoreXY = false ) const;
 
     /**
@@ -256,7 +255,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool isPinned();
 
     bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
-    bool labelAnchorPercentMovable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol ) const;
+    bool labelAnchorPercentMovable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol, int &lineAnchorClippingCol, int &lineAnchorTypeCol, int &lineAnchorTextPointCol ) const;
 
     bool createAuxiliaryFields( QgsPalIndexes &palIndexes );
     bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes ) const;

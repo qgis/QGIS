@@ -35,6 +35,9 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigit
   mPalProperties << QgsPalLayerSettings::PositionX;
   mPalProperties << QgsPalLayerSettings::PositionY;
   mPalProperties << QgsPalLayerSettings::LineAnchorPercent;
+  mPalProperties << QgsPalLayerSettings::LineAnchorClipping;
+  mPalProperties << QgsPalLayerSettings::LineAnchorType;
+  mPalProperties << QgsPalLayerSettings::LineAnchorTextPoint;
 
   mDiagramProperties << QgsDiagramLayerSettings::PositionX;
   mDiagramProperties << QgsDiagramLayerSettings::PositionY;
@@ -220,27 +223,50 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      int xCol = -1, yCol = -1, pointCol = -1, lineAnchorPercentCol = -1;
+      int xCol = -1, yCol = -1, pointCol = -1, lineAnchorPercentCol = -1, lineAnchorClippingCol = -1, lineAnchorTypeCol = -1, lineAnchorTextPointCol = -1;
 
       bool isCurvedOrLine { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line };
 
-      if ( isCurvedOrLine && !mCurrentLabel.pos.isDiagram && !labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, pointCol ) )
+      if ( isCurvedOrLine && !mCurrentLabel.pos.isDiagram && ! labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, lineAnchorPercentCol, lineAnchorClippingCol, lineAnchorTypeCol, lineAnchorTextPointCol ) )
       {
         QgsPalIndexes indexes;
         if ( createAuxiliaryFields( indexes ) )
           return;
 
-        if ( !labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, pointCol ) )
+        if ( !labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, lineAnchorPercentCol, lineAnchorClippingCol, lineAnchorTypeCol, lineAnchorTextPointCol ) )
         {
-          PropertyStatus status = PropertyStatus::DoesNotExist;
-          QString offsetColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorPercent, mCurrentLabel.settings, vlayer, status );
-
-          if ( pointCol < 0 )
-            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label offset column “%1” does not exist in the layer" ).arg( offsetColName ) );
+          if ( lineAnchorPercentCol < 0 )
+          {
+            PropertyStatus status = PropertyStatus::DoesNotExist;
+            QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorPercent, mCurrentLabel.settings, vlayer, status );
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label anchor percent column “%1” does not exist in the layer" ).arg( colName ) );
+          }
+          if ( lineAnchorClippingCol < 0 )
+          {
+            PropertyStatus status = PropertyStatus::DoesNotExist;
+            QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorClipping, mCurrentLabel.settings, vlayer, status );
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label anchor clipping column “%1” does not exist in the layer" ).arg( colName ) );
+          }
+          if ( lineAnchorTypeCol < 0 )
+          {
+            PropertyStatus status = PropertyStatus::DoesNotExist;
+            QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorType, mCurrentLabel.settings, vlayer, status );
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label anchor type column “%1” does not exist in the layer" ).arg( colName ) );
+          }
+          if ( lineAnchorTextPointCol < 0 )
+          {
+            PropertyStatus status = PropertyStatus::DoesNotExist;
+            QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorTextPoint, mCurrentLabel.settings, vlayer, status );
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label anchor text point column “%1” does not exist in the layer" ).arg( colName ) );
+          }
           return;
         }
 
         lineAnchorPercentCol = indexes[ QgsPalLayerSettings::LineAnchorPercent ];
+        // TODO?
+        //lineAnchorClippingCol = indexes[ QgsPalLayerSettings::LineAnchorClipping];
+        //lineAnchorTypeCol = indexes[ QgsPalLayerSettings::LineAnchorType];
+        //lineAnchorTextPointCol = indexes[ QgsPalLayerSettings::LineAnchorTextPoint];
 
       }
       else if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
@@ -356,16 +382,28 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         int yCol = -1;
         int pointCol = -1;
         int lineAnchorPercentCol = -1;
+        int lineAnchorClippingCol = -1;
+        int lineAnchorTypeCol = -1;
+        int lineAnchorTextPointCol = -1;
         double xPosOrig = 0;
         double yPosOrig = 0;
         double lineAnchorPercentOrig = 0;
+        QString lineAnchorClippingOrig;
+        QString lineAnchorTypeOrig;
+        QString lineAnchorTextPointOrig;
         bool xSuccess = false;
         bool ySuccess = false;
         bool lineAnchorPercentSuccess = false;
+        bool lineAnchorClippingSuccess = false;
+        bool lineAnchorTypeSuccess = false;
+        bool lineAnchorTextPointSuccess = false;
 
         bool isCurvedOrLine { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line };
 
-        if ( !isCalloutMove && isCurvedOrLine && !currentLabelDataDefinedLineAnchorPercent( lineAnchorPercentOrig, lineAnchorPercentSuccess, lineAnchorPercentCol ) )
+        if ( !isCalloutMove && isCurvedOrLine && !currentLabelDataDefinedLineAnchorPercent( lineAnchorPercentOrig, lineAnchorPercentSuccess, lineAnchorPercentCol,
+             lineAnchorClippingOrig, lineAnchorClippingSuccess, lineAnchorClippingCol,
+             lineAnchorTypeOrig, lineAnchorTypeSuccess, lineAnchorTypeCol,
+             lineAnchorTextPointOrig,  lineAnchorTextPointSuccess, lineAnchorTextPointCol ) )
         {
           return;
         }
@@ -390,6 +428,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           const double lineAnchorPercent { feature.geometry().lineLocatePoint( anchorPoint ) / feature.geometry().length() };
           vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
           bool success = false;
+
           if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
           {
             success = changeCurrentLabelDataDefinedLineAnchorPercent( lineAnchorPercent );
@@ -588,14 +627,26 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
           int yCol = -1;
           int pointCol = -1;
           int lineAnchorPercentCol = -1;
+          int lineAnchorClippingCol = -1;
+          int lineAnchorTypeCol = -1;
+          int lineAnchorTextPointCol = -1;
+          QString lineAnchorClippingOrig;
+          QString lineAnchorTypeOrig;
+          QString lineAnchorTextPointOrig;
+          bool lineAnchorPercentSuccess = false;
+          bool lineAnchorClippingSuccess = false;
+          bool lineAnchorTypeSuccess = false;
+          bool lineAnchorTextPointSuccess = false;
           double xPosOrig = 0;
           double yPosOrig = 0;
           double lineAnchorPercentOrig = 0;
-          bool lineAnchorPercentSuccess = false;
           bool xSuccess = false;
           bool ySuccess = false;
 
-          if ( !isCalloutMove && isCurvedOrLine && ! currentLabelDataDefinedLineAnchorPercent( lineAnchorPercentOrig, lineAnchorPercentSuccess, lineAnchorPercentCol ) )
+          if ( !isCalloutMove && isCurvedOrLine && ! currentLabelDataDefinedLineAnchorPercent( lineAnchorPercentOrig, lineAnchorPercentSuccess, lineAnchorPercentCol,
+               lineAnchorClippingOrig, lineAnchorClippingSuccess, lineAnchorClippingCol,
+               lineAnchorTypeOrig, lineAnchorTypeSuccess, lineAnchorTypeCol,
+               lineAnchorTextPointOrig,  lineAnchorTextPointSuccess, lineAnchorTextPointCol ) )
           {
             break;
           }
@@ -612,6 +663,27 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
           {
             vlayer->beginEditCommand( tr( "Delete Label Anchor Percent '%1'" ).arg( currentLabelText( 24 ) ) );
             bool success = vlayer->changeAttributeValue( featureId, lineAnchorPercentCol, QVariant() );
+
+            if ( success )
+            {
+              success = success && vlayer->changeAttributeValue( featureId, lineAnchorPercentCol, QVariant() );
+            }
+
+            if ( success )
+            {
+              success = success && vlayer->changeAttributeValue( featureId, lineAnchorClippingCol, QVariant() );
+            }
+
+            if ( success )
+            {
+              success = success && vlayer->changeAttributeValue( featureId, lineAnchorTypeCol, QVariant() );
+            }
+
+            if ( success )
+            {
+              success = success && vlayer->changeAttributeValue( featureId, lineAnchorTextPointCol, QVariant() );
+            }
+
             if ( !success )
             {
               // if the edit command fails, it's likely because the label anchor percent is being stored in a physical field (not a auxiliary one!)
