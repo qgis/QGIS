@@ -12,7 +12,7 @@
 
 typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
-class QgsRasterLayer : QgsMapLayer
+class QgsRasterLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 
@@ -106,6 +106,9 @@ created for the same data source and renderer is cloned too.
 
 .. versionadded:: 3.0
 %End
+
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
+
 
     enum ColorShadingAlgorithm
     {
