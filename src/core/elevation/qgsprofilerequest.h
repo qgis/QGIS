@@ -24,6 +24,7 @@
 #include <memory>
 
 class QgsCurve;
+class QgsAbstractTerrainProvider;
 
 /**
  * \brief Encapsulates properties and constraints relating to fetching elevation profiles from different sources.
@@ -137,6 +138,22 @@ class CORE_EXPORT QgsProfileRequest
      */
     double tolerance() const { return mTolerance; }
 
+    /**
+     * Sets the terrain \a provider.
+     *
+     * Ownership of \a provider is transferred to the request.
+     *
+     * \see terrainProvider()
+     */
+    QgsProfileRequest &setTerrainProvider( QgsAbstractTerrainProvider *provider SIP_TRANSFER );
+
+    /**
+     * Returns the terrain provider.
+     *
+     * \see setTerrainProvider()
+     */
+    QgsAbstractTerrainProvider *terrainProvider();
+
   private:
 
     std::unique_ptr< QgsCurve> mCurve;
@@ -144,6 +161,9 @@ class CORE_EXPORT QgsProfileRequest
     QgsCoordinateTransformContext mTransformContext;
 
     double mTolerance = 0;
+
+    std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
+
 };
 
 #endif // QGSPROFILEREQUEST_H

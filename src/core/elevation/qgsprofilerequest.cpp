@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgsprofilerequest.h"
 #include "qgscurve.h"
+#include "qgsterrainprovider.h"
 
 QgsProfileRequest::QgsProfileRequest( QgsCurve *curve )
   : mCurve( curve )
@@ -30,6 +31,7 @@ QgsProfileRequest::QgsProfileRequest( const QgsProfileRequest &other )
   , mCrs( other.mCrs )
   , mTransformContext( other.mTransformContext )
   , mTolerance( other.mTolerance )
+  , mTerrainProvider( other.mTerrainProvider ? other.mTerrainProvider->clone() : nullptr )
 {
 
 }
@@ -40,6 +42,7 @@ QgsProfileRequest &QgsProfileRequest::operator=( const QgsProfileRequest &other 
   mCrs = other.mCrs;
   mTransformContext = other.mTransformContext;
   mTolerance = other.mTolerance;
+  mTerrainProvider.reset( other.mTerrainProvider ? other.mTerrainProvider->clone() : nullptr );
   return *this;
 }
 
@@ -58,6 +61,17 @@ bool QgsProfileRequest::operator==( const QgsProfileRequest &other ) const
   else if ( mCurve && other.mCurve )
   {
     if ( !mCurve->equals( *other.mCurve ) )
+      return false;
+  }
+
+  if ( ( mTerrainProvider && !other.mTerrainProvider )
+       || ( !mTerrainProvider && other.mTerrainProvider ) )
+  {
+    return false;
+  }
+  else if ( mTerrainProvider && other.mTerrainProvider )
+  {
+    if ( !mTerrainProvider->equals( other.mTerrainProvider.get() ) )
       return false;
   }
 
@@ -106,5 +120,16 @@ QgsProfileRequest &QgsProfileRequest::setTolerance( double tolerance )
 {
   mTolerance = tolerance;
   return *this;
+}
+
+QgsProfileRequest &QgsProfileRequest::setTerrainProvider( QgsAbstractTerrainProvider *provider )
+{
+  mTerrainProvider.reset( provider );
+  return *this;
+}
+
+QgsAbstractTerrainProvider *QgsProfileRequest::terrainProvider()
+{
+  return mTerrainProvider.get();
 }
 

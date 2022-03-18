@@ -120,6 +120,22 @@ ignore this tolerance if it is not appropriate for the particular source.
 .. seealso:: :py:func:`setTolerance`
 %End
 
+    QgsProfileRequest &setTerrainProvider( QgsAbstractTerrainProvider *provider /Transfer/ );
+%Docstring
+Sets the terrain ``provider``.
+
+Ownership of ``provider`` is transferred to the request.
+
+.. seealso:: :py:func:`terrainProvider`
+%End
+
+    QgsAbstractTerrainProvider *terrainProvider();
+%Docstring
+Returns the terrain provider.
+
+.. seealso:: :py:func:`setTerrainProvider`
+%End
+
 };
 
 /************************************************************************
