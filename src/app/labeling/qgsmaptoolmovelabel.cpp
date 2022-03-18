@@ -565,6 +565,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           vlayer->triggerRepaint();
           break;
         }
+        break;
       }
       default:
         break;
