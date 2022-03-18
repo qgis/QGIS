@@ -65,6 +65,16 @@ class TestQgsTerrainProviders(unittest.TestCase):
 
         self.assertEqual(from_xml.offset(), 5)
 
+        # test equals
+        provider1 = QgsFlatTerrainProvider()
+        provider2 = QgsFlatTerrainProvider()
+        self.assertTrue(provider1.equals(provider2))
+        self.assertFalse(provider1.equals(QgsRasterDemTerrainProvider()))
+        provider1.setOffset(1)
+        self.assertFalse(provider1.equals(provider2))
+        provider2.setOffset(1)
+        self.assertTrue(provider1.equals(provider2))
+
     def testRasterDemProvider(self):
         """
         Test QgsRasterDemTerrainProvider
@@ -121,6 +131,24 @@ class TestQgsTerrainProviders(unittest.TestCase):
         from_xml.resolveReferences(p)
         self.assertEqual(from_xml.layer(), rl)
 
+        # test equals
+        provider1 = QgsRasterDemTerrainProvider()
+        provider2 = QgsRasterDemTerrainProvider()
+        self.assertTrue(provider1.equals(provider2))
+        self.assertFalse(provider1.equals(QgsFlatTerrainProvider()))
+        provider1.setOffset(1)
+        self.assertFalse(provider1.equals(provider2))
+        provider2.setOffset(1)
+        self.assertTrue(provider1.equals(provider2))
+        provider1.setScale(11)
+        self.assertFalse(provider1.equals(provider2))
+        provider2.setScale(11)
+        self.assertTrue(provider1.equals(provider2))
+        provider1.setLayer(rl)
+        self.assertFalse(provider1.equals(provider2))
+        provider2.setLayer(rl)
+        self.assertTrue(provider1.equals(provider2))
+
     def testMeshProvider(self):
         """
         Test QgsMeshTerrainProvider
@@ -174,6 +202,24 @@ class TestQgsTerrainProviders(unittest.TestCase):
         self.assertFalse(from_xml.layer())
         from_xml.resolveReferences(p)
         self.assertEqual(from_xml.layer(), mesh_layer)
+
+        # test equals
+        provider1 = QgsMeshTerrainProvider()
+        provider2 = QgsMeshTerrainProvider()
+        self.assertTrue(provider1.equals(provider2))
+        self.assertFalse(provider1.equals(QgsFlatTerrainProvider()))
+        provider1.setOffset(1)
+        self.assertFalse(provider1.equals(provider2))
+        provider2.setOffset(1)
+        self.assertTrue(provider1.equals(provider2))
+        provider1.setScale(11)
+        self.assertFalse(provider1.equals(provider2))
+        provider2.setScale(11)
+        self.assertTrue(provider1.equals(provider2))
+        provider1.setLayer(mesh_layer)
+        self.assertFalse(provider1.equals(provider2))
+        provider2.setLayer(mesh_layer)
+        self.assertTrue(provider1.equals(provider2))
 
 
 if __name__ == '__main__':
