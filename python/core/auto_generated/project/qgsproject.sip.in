@@ -138,7 +138,7 @@ Returns the project's flags, which dictate the behavior of the project.
 
     void setFlags( Qgis::ProjectFlags flags );
 %Docstring
-Sets the project's ``flags``, which dictate the behavior of the project..
+Sets the project's ``flags``, which dictate the behavior of the project.
 
 .. seealso:: :py:func:`flags`
 
