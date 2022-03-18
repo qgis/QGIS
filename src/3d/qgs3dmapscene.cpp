@@ -432,7 +432,7 @@ void removeQLayerComponentsFromHierarchy( Qt3DCore::QEntity *entity )
   }
 }
 
-void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt3DRender::QLayer *> layers )
+void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt3DRender::QLayer *> &layers )
 {
   for ( Qt3DRender::QLayer *layer : layers )
     entity->addComponent( layer );

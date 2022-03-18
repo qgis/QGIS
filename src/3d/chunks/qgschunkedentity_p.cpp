@@ -292,7 +292,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
   QVector<ResidencyRequest> residencyRequests;
 
   using slotItem = std::pair<QgsChunkNode *, float>;
-  auto cmp_funct = []( slotItem & p1, slotItem & p2 )
+  auto cmp_funct = []( const slotItem & p1, const slotItem & p2 )
   {
     return p1.second <= p2.second;
   };
