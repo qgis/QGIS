@@ -414,7 +414,11 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                     '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')',
                     'to_time("time") >= make_time(12, 14, 14)',
                     'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
-                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')'
+                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                    'dt BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
+                    'dt NOT BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
+                    '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                    '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)'
                     ])
 
     def partiallyCompiledFilters(self):

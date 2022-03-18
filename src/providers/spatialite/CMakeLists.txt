@@ -14,6 +14,7 @@ set(SPATIALITE_SRCS
   qgsspatialitetablemodel.cpp
   qgsspatialiteproviderconnection.cpp
   qgsspatialitetransaction.cpp
+  qgsspatialiteexpressioncompiler.cpp
 )
 
 if (WITH_GUI)

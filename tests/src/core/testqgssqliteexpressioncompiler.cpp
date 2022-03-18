@@ -111,6 +111,10 @@ void TestQgsSQLiteExpressionCompiler::testCompiler()
   const QgsExpression nilike( QStringLiteral( "'a' not ilike 'A'" ) );
   QCOMPARE( compiler.compile( &nilike ), QgsSqlExpressionCompiler::Result::Complete );
   QCOMPARE( compiler.result(), QStringLiteral( "lower('a') NOT LIKE lower('A') ESCAPE '\\'" ) );
+
+  const QgsExpression nbetween( QStringLiteral( "'b' between 'a' and 'c'" ) );
+  QCOMPARE( compiler.compile( &nbetween ), QgsSqlExpressionCompiler::Result::Complete );
+  QCOMPARE( compiler.result(), QStringLiteral( "'b' BETWEEN 'a' AND 'c'" ) );
 }
 
 void TestQgsSQLiteExpressionCompiler::testPreparedCachedNodes()

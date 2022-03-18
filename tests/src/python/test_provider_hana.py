@@ -187,7 +187,9 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             '"date" >= make_date(2020, 5, 4)',
             '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
             '"time" >= make_time(12, 14, 14)',
-            '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'
+            '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
+            'dt BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
+            'dt NOT BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
         ])
         return filters
 

@@ -159,6 +159,7 @@ class FeatureSourceTestCase(object):
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
     def runGetFeatureTests(self, source):
+
         self.assertEqual(len([f for f in source.getFeatures()]), 5)
         self.assert_query(source, 'name ILIKE \'QGIS\'', [])
         self.assert_query(source, '"name" IS NULL', [5])
@@ -300,6 +301,17 @@ class FeatureSourceTestCase(object):
         self.assert_query(source,
                           'intersects($geometry,geom_from_gml( \'<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-72.2,66.1 -65.2,66.1 -65.2,72.0 -72.2,72.0 -72.2,66.1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>\'))',
                           [1, 2])
+
+        # between/not between
+        self.assert_query(source, 'cnt BETWEEN -200 AND 200', [1, 2, 5])
+        self.assert_query(source, 'cnt NOT BETWEEN 100 AND 200', [3, 4, 5])
+
+        if self.treat_datetime_as_string():
+            self.assert_query(source, """dt BETWEEN format_date(make_datetime(2020, 5, 3, 12, 13, 14),  'yyyy-MM-dd hh:mm:ss') AND format_date(make_datetime(2020, 5, 4, 12, 14, 14), 'yyyy-MM-dd hh:mm:ss')""", [1, 2, 5])
+            self.assert_query(source, """dt NOT BETWEEN format_date(make_datetime(2020, 5, 3, 12, 13, 14), 'yyyy-MM-dd hh:mm:ss') AND format_date(make_datetime(2020, 5, 4, 12, 14, 14), 'yyyy-MM-dd hh:mm:ss')""", [4])
+        else:
+            self.assert_query(source, 'dt BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)', [1, 2, 5])
+            self.assert_query(source, 'dt NOT BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)', [4])
 
         # datetime
         if self.treat_datetime_as_string():
