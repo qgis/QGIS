@@ -1395,6 +1395,16 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     brokenNodes.push_back( layerElem );
   }
 
+  const bool wasEditable = layerElem.attribute( QStringLiteral( "editable" ), QStringLiteral( "0" ) ).toInt();
+  if ( wasEditable )
+  {
+    mapLayer->setCustomProperty( QStringLiteral( "_layer_was_editable" ), true );
+  }
+  else
+  {
+    mapLayer->removeCustomProperty( QStringLiteral( "_layer_was_editable" ) );
+  }
+
   // It should be safe to delete the layer now if layer was stored, because all the store
   // had to to was to reset the data source in case the validity changed.
   if ( ! layerWasStored )
@@ -1986,6 +1996,19 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
       QgsMessageLog::logMessage( tr( "Error saving translated project with locale prefix %1" ).arg( newFileName ), QObject::tr( "Project translation" ), Qgis::MessageLevel::Critical );
     }
   }
+
+  // lastly, make any previously editable layers editable
+  const QMap<QString, QgsMapLayer *> loadedLayers = mapLayers();
+  for ( auto it = loadedLayers.constBegin(); it != loadedLayers.constEnd(); ++it )
+  {
+    if ( it.value()->isValid() && it.value()->customProperty( QStringLiteral( "_layer_was_editable" ) ).toBool() )
+    {
+      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( it.value() ) )
+        vl->startEditing();
+      it.value()->removeCustomProperty( QStringLiteral( "_layer_was_editable" ) );
+    }
+  }
+
   return true;
 }
 
@@ -2342,13 +2365,17 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
     // have to try to update joins for all layers now - a previously added layer may be dependent on this newly
     // added layer for joins
     const QVector<QgsVectorLayer *> vectorLayers = layers<QgsVectorLayer *>();
-    const auto constVectorLayers = vectorLayers;
-    for ( QgsVectorLayer *layer : constVectorLayers )
+    for ( QgsVectorLayer *layer : vectorLayers )
     {
       // TODO: should be only done later - and with all layers (other layers may have referenced this layer)
       layer->resolveReferences( this );
-    }
 
+      if ( layer->isValid() && layer->customProperty( QStringLiteral( "_layer_was_editable" ) ).toBool() )
+      {
+        layer->startEditing();
+        layer->removeCustomProperty( QStringLiteral( "_layer_was_editable" ) );
+      }
+    }
     return true;
   }
   return false;
@@ -2534,7 +2561,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   emit writeProject( *doc );
 
   // within top level node save list of layers
-  const QMap<QString, QgsMapLayer *> &layers = mapLayers();
+  const QMap<QString, QgsMapLayer *> layers = mapLayers();
 
   QDomElement annotationLayerNode = doc->createElement( QStringLiteral( "main-annotation-layer" ) );
   mMainAnnotationLayer->writeLayerXml( annotationLayerNode, *doc, context );
@@ -2562,6 +2589,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
           // general layer metadata
           maplayerElem = doc->createElement( QStringLiteral( "maplayer" ) );
           ml->writeLayerXml( maplayerElem, *doc, context );
+
+          if ( ml->isEditable() && ( mFlags & Qgis::ProjectFlag::RememberLayerEditStatusBetweenSessions ) )
+            maplayerElem.setAttribute( QStringLiteral( "editable" ), QStringLiteral( "1" ) );
         }
         else if ( ! ml->originalXmlProperties().isEmpty() )
         {
