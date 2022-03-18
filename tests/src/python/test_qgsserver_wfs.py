@@ -592,6 +592,15 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=does_not_exist&",
                                  'wfs_describeFeatureType_1_1_0_typename_wrong', project_file=project_file)
 
+    def test_GetFeature_with_cdata(self):
+        """ Test GetFeature with CDATA."""
+        self.wfs_request_compare(
+            "GetFeature",
+            "1.0.0",
+            "TYPENAME=test_layer_wfs_cdata_lines&",
+            'wfs_getfeature_cdata',
+            project_file="test_layer_wfs_cdata.qgs")
+
     def test_describeFeatureTypeVirtualFields(self):
         """Test DescribeFeatureType with virtual fields: bug GH-29767"""
 
