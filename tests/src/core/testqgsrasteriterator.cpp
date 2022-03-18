@@ -40,6 +40,7 @@ class TestQgsRasterIterator : public QObject
 
     void testBasic();
     void testNoBlock();
+    void testSubRegion();
 
   private:
 
@@ -351,6 +352,76 @@ void TestQgsRasterIterator::testNoBlock()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( !it.next( 1, nCols, nRows, topLeftCol, topLeftRow, blockExtent ) );
+}
+
+void TestQgsRasterIterator::testSubRegion()
+{
+  QgsRasterDataProvider *provider = mpRasterLayer->dataProvider();
+
+  QGSCOMPARENEAR( provider->extent().xMinimum(), 497470, 0.001 );
+  QGSCOMPARENEAR( provider->extent().yMinimum(), 7050585, 0.001 );
+  QGSCOMPARENEAR( provider->extent().xMaximum(), 498190, 0.001 );
+  QGSCOMPARENEAR( provider->extent().yMaximum(), 7051130, 0.001 );
+  QCOMPARE( provider->xSize(), 7200 );
+  QCOMPARE( provider->ySize(), 5450 );
+
+  int subRectWidth = 0;
+  int subRectHeight = 0;
+  int subRectTop = 0;
+  int subRectLeft = 0;
+  // sub region is whole of raster extent
+  QgsRectangle subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(),
+                         QgsRectangle( 497470, 7050585, 498190, 7051130 ),
+                         subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  QCOMPARE( subRect.xMinimum(), 497470 );
+  QCOMPARE( subRect.yMinimum(), 7050585 );
+  QCOMPARE( subRect.xMaximum(), 498190 );
+  QCOMPARE( subRect.yMaximum(), 7051130 );
+  QCOMPARE( subRectWidth, 7200 );
+  QCOMPARE( subRectHeight, 5450 );
+  QCOMPARE( subRectLeft, 0 );
+  QCOMPARE( subRectTop, 0 );
+
+  // sub region extends outside of raster extent, should be clipped back to raster extent
+  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(),
+                                          QgsRectangle( 497370, 7050385, 498390, 7051330 ),
+                                          subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  QCOMPARE( subRect.xMinimum(), 497470 );
+  QCOMPARE( subRect.yMinimum(), 7050585 );
+  QCOMPARE( subRect.xMaximum(), 498190 );
+  QCOMPARE( subRect.yMaximum(), 7051130 );
+  QCOMPARE( subRectWidth, 7200 );
+  QCOMPARE( subRectHeight, 5450 );
+  QCOMPARE( subRectLeft, 0 );
+  QCOMPARE( subRectTop, 0 );
+
+  // sub rect inside raster extent
+  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(),
+                                          QgsRectangle( 497970.01, 7050985.05, 498030.95, 7051030.75 ),
+                                          subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  QCOMPARE( subRect.xMinimum(), 497970 );
+  QCOMPARE( subRect.yMinimum(), 7050985.0 );
+  QCOMPARE( subRect.xMaximum(), 498031 );
+  QCOMPARE( subRect.yMaximum(), 7051030.8 );
+
+  QCOMPARE( subRectWidth, 610 );
+  QCOMPARE( subRectHeight, 458 );
+  QCOMPARE( subRectLeft, 5000 );
+  QCOMPARE( subRectTop, 992 );
+
+  // sub rect JUST inside raster extent
+  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(),
+                                          QgsRectangle( 497370.001, 7050385.001, 498389.99999, 7051329.9999 ),
+                                          subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  QCOMPARE( subRect.xMinimum(), 497470 );
+  QCOMPARE( subRect.yMinimum(), 7050585 );
+  QCOMPARE( subRect.xMaximum(), 498190 );
+  QCOMPARE( subRect.yMaximum(), 7051130 );
+  QCOMPARE( subRectWidth, 7200 );
+  QCOMPARE( subRectHeight, 5450 );
+  QCOMPARE( subRectLeft, 0 );
+  QCOMPARE( subRectTop, 0 );
+
 }
 
 
