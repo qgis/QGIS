@@ -60,6 +60,7 @@ email                : tim at linfiniti.com
 #include "qgsmaplayerfactory.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterlayerelevationproperties.h"
+#include "qgsrasterlayerprofilegenerator.h"
 
 #include <cmath>
 #include <cstdio>
@@ -174,6 +175,14 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   layer->pipe()->setDataDefinedProperties( mPipe->dataDefinedProperties() );
 
   return layer;
+}
+
+QgsAbstractProfileGenerator *QgsRasterLayer::createProfileGenerator( const QgsProfileRequest &request )
+{
+  if ( !mElevationProperties->isEnabled() )
+    return nullptr;
+
+  return new QgsRasterLayerProfileGenerator( this, request );
 }
 
 //////////////////////////////////////////////////////////

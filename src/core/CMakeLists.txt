@@ -665,6 +665,7 @@ set(QGIS_CORE_SRCS
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrasterlayerelevationproperties.cpp
+  raster/qgsrasterlayerprofilegenerator.cpp
   raster/qgsrasterlayerrenderer.cpp
   raster/qgsrasterlayertemporalproperties.cpp
   raster/qgsrasterminmaxorigin.cpp
@@ -1676,6 +1677,7 @@ set(QGIS_CORE_HDRS
   raster/qgsrasteriterator.h
   raster/qgsrasterlayer.h
   raster/qgsrasterlayerelevationproperties.h
+  raster/qgsrasterlayerprofilegenerator.h
   raster/qgsrasterlayerrenderer.h
   raster/qgsrasterlayertemporalproperties.h
   raster/qgsrasterminmaxorigin.h
