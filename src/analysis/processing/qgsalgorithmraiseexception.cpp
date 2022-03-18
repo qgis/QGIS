@@ -173,7 +173,7 @@ QVariantMap QgsRaiseWarningAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   const QString warning = parameterAsString( parameters, QStringLiteral( "MESSAGE" ), context );
-  feedback->reportError( warning );
+  feedback->pushWarning( warning );
   return QVariantMap();
 }
 
