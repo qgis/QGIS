@@ -2240,7 +2240,8 @@ Acts on all layers.</string>
      <normaloff>:/images/themes/default/mActionOffsetCurve.svg</normaloff>:/images/themes/default/mActionOffsetCurve.svg</iconset>
    </property>
    <property name="text">
-    <string>Offset Curve</string>
+    <string>Offset Curve
+Holding Ctrl (Cmd) copies</string>
    </property>
   </action>
   <action name="mActionCopyStyle">
