@@ -168,9 +168,9 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
   {
     if ( !authdb.open() )
     {
-      const char *err = QT_TR_NOOP( "Opening of authentication db FAILED" );
+      QString err = tr( "Opening of authentication db FAILED : %1" ).arg( authdb.lastError().text() );
       QgsDebugMsg( err );
-      emit messageOut( tr( err ), authManTag(), CRITICAL );
+      emit messageOut( err, authManTag(), CRITICAL );
     }
   }
 

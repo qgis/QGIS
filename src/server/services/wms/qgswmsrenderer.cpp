@@ -309,6 +309,11 @@ namespace QgsWms
       throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
                                     QgsWmsParameter::TEMPLATE );
     }
+    else if ( QgsServerProjectUtils::wmsRestrictedComposers( *mProject ).contains( templateName ) )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    mWmsParameters[QgsWmsParameter::TEMPLATE ] );
+    }
 
     // check template
     const QgsLayoutManager *lManager = mProject->layoutManager();

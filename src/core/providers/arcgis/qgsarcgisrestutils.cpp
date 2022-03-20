@@ -374,18 +374,33 @@ QgsAbstractGeometry *QgsArcGisRestUtils::convertGeometry( const QVariantMap &geo
 
 QgsCoordinateReferenceSystem QgsArcGisRestUtils::convertSpatialReference( const QVariantMap &spatialReferenceMap )
 {
+  QgsCoordinateReferenceSystem crs;
+
   QString spatialReference = spatialReferenceMap[QStringLiteral( "latestWkid" )].toString();
   if ( spatialReference.isEmpty() )
     spatialReference = spatialReferenceMap[QStringLiteral( "wkid" )].toString();
-  if ( spatialReference.isEmpty() )
-    spatialReference = spatialReferenceMap[QStringLiteral( "wkt" )].toString();
-  else
-    spatialReference = QStringLiteral( "EPSG:%1" ).arg( spatialReference );
-  QgsCoordinateReferenceSystem crs;
-  crs.createFromString( spatialReference );
+
+  // prefer using authority/id wherever we can
+  if ( !spatialReference.isEmpty() )
+  {
+    crs.createFromString( QStringLiteral( "EPSG:%1" ).arg( spatialReference ) );
+    if ( !crs.isValid() )
+    {
+      // Try as an ESRI auth
+      crs.createFromString( QStringLiteral( "ESRI:%1" ).arg( spatialReference ) );
+    }
+  }
+  else if ( !spatialReferenceMap[QStringLiteral( "wkt" )].toString().isEmpty() )
+  {
+    // otherwise fallback to WKT
+    crs.createFromWkt( spatialReferenceMap[QStringLiteral( "wkt" )].toString() );
+  }
+
   if ( !crs.isValid() )
   {
-    // If not spatial reference, just use WGS84
+    // If no spatial reference, just use WGS84
+    // TODO -- this needs further investigation! Most ESRI server services default to 3857, so that would likely be
+    // a safer fallback to use...
     crs.createFromString( QStringLiteral( "EPSG:4326" ) );
   }
   return crs;

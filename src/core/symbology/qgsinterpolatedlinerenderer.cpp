@@ -74,13 +74,14 @@ void QgsInterpolatedLineRenderer::renderInDeviceCoordinates( double valueColor1,
     Q_ASSERT( breakColors.count() == breakValues.count() );
     for ( int i = 0; i < breakValues.count(); ++i )
     {
-      double value = breakValues.at( i );
-      double width = context.convertToPainterUnits( mStrokeWidth.strokeWidth( value ), mStrokeWidthUnit );
+      const bool widthIsInverted { valueWidth1 > valueWidth2 };
+      const double value = breakValues.at( i );
+      const double width = context.convertToPainterUnits( mStrokeWidth.strokeWidth( widthIsInverted ? mStrokeWidth.maximumValue() - value : value ), mStrokeWidthUnit );
       QPen pen( mSelected ? selectedColor : breakColors.at( i ) );
       pen.setWidthF( width );
       pen.setCapStyle( Qt::PenCapStyle::RoundCap );
       painter->setPen( pen );
-      QPointF point = p1 + dir * ( value - valueColor1 ) / ( valueColor2 - valueColor1 );
+      const QPointF point = p1 + dir * ( value - valueColor1 ) / ( valueColor2 - valueColor1 );
       painter->drawPoint( point );
     }
   }

@@ -27,7 +27,6 @@ import urllib.error
 from qgis.server import QgsServerRequest
 
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
@@ -130,6 +129,31 @@ class TestQgsServerWFS(QgsServerTestBase):
             ),
             header, body
         )
+
+    def test_getfeature_invalid_typename(self):
+        project = self.testdata_path + "test_project_wfs.qgs"
+
+        # a single invalid typename
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "invalid"
+        }.items())])
+        header, body = self._execute_request(qs)
+
+        self.assertTrue(b"TypeName 'invalid' could not be found" in body)
+
+        # an invalid typename preceded by a valid one
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "testlayer,invalid"
+        }.items())])
+        header, body = self._execute_request(qs)
+
+        self.assertTrue(b"TypeName 'invalid' could not be found" in body)
 
     def test_getfeature(self):
 
@@ -506,11 +530,28 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.wfs_request_compare(
             "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_0_0_featureid_0')
 
+        # with multiple feature ids
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0,testlayer.2", 'wfs_getFeature_1_0_0_featureid_02')
+
+        # with layer name Testing Layer (copy)
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=Testing_Layer_(copy)&FEATUREID=Testing_Layer_(copy).0", 'wfs_getFeature_1_0_0_featureid_0_testing')
+
+        # with propertynanme *
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0&PROPERTYNAME=*", 'wfs_getFeature_1_0_0_featureid_0')
+
     def test_getFeatureFeature11urn(self):
         """Test GetFeature with SRSNAME urn:ogc:def:crs:EPSG::4326"""
 
         self.wfs_request_compare(
             "GetFeature", '1.1.0', "SRSNAME=urn:ogc:def:crs:EPSG::4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0')
+
+    def test_get_feature_srsname_empty(self):
+        """Test GetFeature with an empty SRSNAME."""
+        self.wfs_request_compare(
+            "GetFeature", '1.1.0', "TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0_srsname')
 
     def test_getFeature_EXP_FILTER_regression_20927(self):
         """Test expressions with EXP_FILTER"""
@@ -550,6 +591,15 @@ class TestQgsServerWFS(QgsServerTestBase):
                                  'wfs_describeFeatureType_1_0_0_typename_wrong', project_file=project_file)
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=does_not_exist&",
                                  'wfs_describeFeatureType_1_1_0_typename_wrong', project_file=project_file)
+
+    def test_GetFeature_with_cdata(self):
+        """ Test GetFeature with CDATA."""
+        self.wfs_request_compare(
+            "GetFeature",
+            "1.0.0",
+            "TYPENAME=test_layer_wfs_cdata_lines&",
+            'wfs_getfeature_cdata',
+            project_file="test_layer_wfs_cdata.qgs")
 
     def test_describeFeatureTypeVirtualFields(self):
         """Test DescribeFeatureType with virtual fields: bug GH-29767"""

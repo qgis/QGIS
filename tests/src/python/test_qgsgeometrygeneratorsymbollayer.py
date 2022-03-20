@@ -47,7 +47,11 @@ from qgis.core import (
     QgsCoordinateTransform,
     QgsArrowSymbolLayer,
     QgsFeature,
-    QgsGeometry
+    QgsGeometry,
+    QgsFontMarkerSymbolLayer,
+    QgsFontUtils,
+    QgsSymbolLayer,
+    QgsProperty
 )
 
 from qgis.testing import start_app, unittest
@@ -407,6 +411,78 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_geometrygenerator_subsymbol')
         res = renderchecker.runTest('geometrygenerator_subsymbol')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def test_geometry_function(self):
+        """
+        The $geometry function used in a subsymbol should refer to the generated geometry
+        """
+        points = QgsVectorLayer('Point?crs=epsg:4326', 'Points', 'memory')
+        self.assertTrue(points.isValid())
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt('Point(1 2)'))
+        points.dataProvider().addFeature(f)
+
+        font = QgsFontUtils.getStandardTestFont('Bold')
+        font_marker = QgsFontMarkerSymbolLayer(font.family(), 'x', 16)
+        font_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter, QgsProperty.fromExpression('geom_to_wkt($geometry)'))
+        subsymbol = QgsMarkerSymbol()
+        subsymbol.changeSymbolLayer(0, font_marker)
+
+        parent_generator = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'translate($geometry, 1, 2)'})
+        parent_generator.setSymbolType(QgsSymbol.Marker)
+
+        parent_generator.setSubSymbol(subsymbol)
+
+        geom_symbol = QgsMarkerSymbol()
+        geom_symbol.changeSymbolLayer(0, parent_generator)
+        points.renderer().setSymbol(geom_symbol)
+
+        mapsettings = QgsMapSettings(self.mapsettings)
+        mapsettings.setExtent(QgsRectangle(0, 0, 5, 5))
+        mapsettings.setLayers([points])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_function_geometry')
+        res = renderchecker.runTest('geometrygenerator_function_geometry')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def test_feature_geometry(self):
+        """
+        The geometry($currentfeature) expression used in a subsymbol should refer to the original FEATURE geometry
+        """
+        points = QgsVectorLayer('Point?crs=epsg:4326', 'Points', 'memory')
+        self.assertTrue(points.isValid())
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt('Point(1 2)'))
+        points.dataProvider().addFeature(f)
+
+        font = QgsFontUtils.getStandardTestFont('Bold')
+        font_marker = QgsFontMarkerSymbolLayer(font.family(), 'x', 16)
+        font_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter, QgsProperty.fromExpression('geom_to_wkt(geometry($currentfeature))'))
+        subsymbol = QgsMarkerSymbol()
+        subsymbol.changeSymbolLayer(0, font_marker)
+
+        parent_generator = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'translate($geometry, 1, 2)'})
+        parent_generator.setSymbolType(QgsSymbol.Marker)
+
+        parent_generator.setSubSymbol(subsymbol)
+
+        geom_symbol = QgsMarkerSymbol()
+        geom_symbol.changeSymbolLayer(0, parent_generator)
+        points.renderer().setSymbol(geom_symbol)
+
+        mapsettings = QgsMapSettings(self.mapsettings)
+        mapsettings.setExtent(QgsRectangle(0, 0, 5, 5))
+        mapsettings.setLayers([points])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_feature_geometry')
+        res = renderchecker.runTest('geometrygenerator_feature_geometry')
         self.report += renderchecker.report()
         self.assertTrue(res)
 

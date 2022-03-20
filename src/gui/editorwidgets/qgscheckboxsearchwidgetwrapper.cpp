@@ -43,7 +43,7 @@ QVariant QgsCheckboxSearchWidgetWrapper::value() const
   QVariant v;
 
   if ( mCheckBox )
-    v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
+    v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ), true ) : config( QStringLiteral( "UncheckedState" ), false );
 
   return v;
 }
@@ -82,6 +82,7 @@ QString QgsCheckboxSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
     case QVariant::Double:
     case QVariant::LongLong:
     case QVariant::ULongLong:
+    case QVariant::Bool:
     {
       if ( flags & EqualTo )
         return fieldName + '=' + v.toString();

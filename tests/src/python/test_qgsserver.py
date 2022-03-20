@@ -77,7 +77,10 @@ class QgsServerTestBase(unittest.TestCase):
         for diff in difflib.unified_diff([l.decode('utf8') for l in expected_lines], [l.decode('utf8') for l in response_lines]):
             diffs.append(diff)
 
-        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!\n{}\n{}".format(msg, '\n'.join(diffs)))
+        self.assertEqual(
+            len(expected_lines),
+            len(response_lines),
+            "Expected and response have different number of lines!\n{}\n{}\nWe got :\n{}".format(msg, '\n'.join(diffs), '\n'.join([i.decode("utf-8") for i in response_lines])))
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()

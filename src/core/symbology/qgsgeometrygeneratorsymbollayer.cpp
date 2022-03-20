@@ -305,7 +305,7 @@ bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol 
   return true;
 }
 
-QgsGeometry QgsGeometryGeneratorSymbolLayer::evaluateGeometryInPainterUnits( const QgsGeometry &input, const QgsFeature &feature, const QgsRenderContext &renderContext, QgsExpressionContext &expressionContext ) const
+QgsGeometry QgsGeometryGeneratorSymbolLayer::evaluateGeometryInPainterUnits( const QgsGeometry &input, const QgsFeature &, const QgsRenderContext &renderContext, QgsExpressionContext &expressionContext ) const
 {
   QgsGeometry drawGeometry( input );
   // step 1 - scale the draw geometry from PAINTER units to target units (e.g. millimeters)
@@ -314,11 +314,9 @@ QgsGeometry QgsGeometryGeneratorSymbolLayer::evaluateGeometryInPainterUnits( con
   drawGeometry.transform( painterToTargetUnits );
 
   // step 2 - set the feature to use the new scaled geometry, and inject it into the expression context
-  QgsFeature f( feature );
-  f.setGeometry( drawGeometry );
   QgsExpressionContextScope *generatorScope = new QgsExpressionContextScope();
   QgsExpressionContextScopePopper popper( expressionContext, generatorScope );
-  generatorScope->setFeature( f );
+  generatorScope->setGeometry( drawGeometry );
 
   // step 3 - evaluate the new generated geometry.
   QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
@@ -483,8 +481,8 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
   }
 
   QgsExpressionContextScope *subSymbolExpressionContextScope = mSymbol->symbolRenderContext()->expressionContextScope();
-
-  subSymbolExpressionContextScope->setFeature( f );
+  // override the $geometry value for all subsymbols -- this should be the generated geometry
+  subSymbolExpressionContextScope->setGeometry( f.geometry() );
 
   const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );

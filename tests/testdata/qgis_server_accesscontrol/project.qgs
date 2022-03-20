@@ -3223,7 +3223,9 @@ def my_form_open(dialog, layer, feature):
     <layer id="db_point_145d6432_dfc6_4c59_a8c5_2e802b29bc66"/>
   </layerorder>
   <properties>
-    <WMSRestrictedComposers type="QStringList"/>
+    <WMSRestrictedComposers type="QStringList">
+      <value>excluded</value>
+    </WMSRestrictedComposers>
     <WMSContactMail type="QString"></WMSContactMail>
     <WMSServiceTitle type="QString">QGIS Server test</WMSServiceTitle>
     <WMSRequestDefinedDataSources type="bool">false</WMSRequestDefinedDataSources>
