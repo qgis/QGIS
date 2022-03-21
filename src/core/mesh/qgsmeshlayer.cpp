@@ -43,6 +43,7 @@
 #include "qgsmesheditor.h"
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmeshlayerprofilegenerator.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -1397,6 +1398,11 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
     mRendererCache.reset( new QgsMeshLayerRendererCache() );
 
   return new QgsMeshLayerRenderer( this, rendererContext );
+}
+
+QgsAbstractProfileGenerator *QgsMeshLayer::createProfileGenerator( const QgsProfileRequest &request )
+{
+  return new QgsMeshLayerProfileGenerator( this, request );
 }
 
 bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,

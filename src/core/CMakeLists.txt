@@ -702,6 +702,7 @@ set(QGIS_CORE_SRCS
   mesh/qgsmeshdatasetgroupstore.cpp
   mesh/qgsmeshlayer.cpp
   mesh/qgsmeshlayerinterpolator.cpp
+  mesh/qgsmeshlayerprofilegenerator.cpp
   mesh/qgsmeshlayerrenderer.cpp
   mesh/qgsmeshlayertemporalproperties.cpp
   mesh/qgsmeshlayerutils.cpp
@@ -1471,6 +1472,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshdatasetgroupstore.h
   mesh/qgsmeshlayer.h
   mesh/qgsmeshlayerinterpolator.h
+  mesh/qgsmeshlayerprofilegenerator.h
   mesh/qgsmeshlayerrenderer.h
   mesh/qgsmeshlayertemporalproperties.h
   mesh/qgsmeshlayerutils.h

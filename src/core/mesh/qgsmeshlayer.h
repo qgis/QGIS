@@ -28,6 +28,7 @@
 #include "qgsmeshtimesettings.h"
 #include "qgsmeshsimplificationsettings.h"
 #include "qgscoordinatetransform.h"
+#include "qgsabstractprofilesource.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -93,7 +94,7 @@ class QgsMeshEditor;
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
+class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSource
 {
     Q_OBJECT
   public:
@@ -175,6 +176,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
     bool readSymbology( const QDomNode &node, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
