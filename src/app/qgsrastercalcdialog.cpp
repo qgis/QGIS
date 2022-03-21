@@ -23,6 +23,7 @@
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsmapcanvas.h"
 
 #include "cpl_string.h"
 #include "gdal.h"
@@ -31,11 +32,10 @@
 #include <QFontDatabase>
 
 QgsRasterCalcDialog::QgsRasterCalcDialog(
-  const QgsRectangle &currentExtent,
-  const QgsCoordinateReferenceSystem &currentCrs,
   QgsRasterLayer *rasterLayer,
+  QgsMapCanvas *mapCanvas,
   QWidget *parent,
-  Qt::WindowFlags f ): QDialog( parent, f ), mCurrentExtent( currentExtent ), mCurrentCrs( currentCrs )
+  Qt::WindowFlags f ): QDialog( parent, f ), mMapCanvas( mapCanvas )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -85,7 +85,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog(
   mCrsSelector->setShowAccuracyWarnings( true );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
+  mExtentGroupBox->setCurrentExtent( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs() );
   if ( rasterLayer )
   {
     mExtentGroupBox->setOutputExtentFromLayer( rasterLayer );

@@ -23,6 +23,8 @@
 #include "qgshelp.h"
 #include "qgis_app.h"
 
+class QgsMapCanvas;
+
 //! A dialog to enter a raster calculation expression
 class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcDialogBase
 {
@@ -36,9 +38,8 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
      * \param f window flags
      */
     QgsRasterCalcDialog(
-      const QgsRectangle &currentExtent,
-      const QgsCoordinateReferenceSystem &currentCrs,
       QgsRasterLayer *rasterLayer = nullptr,
+      QgsMapCanvas *mapCanvas = nullptr,
       QWidget *parent = nullptr,
       Qt::WindowFlags f = Qt::WindowFlags() );
 
@@ -108,8 +109,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void mConditionalStatButton_clicked();
 
   private:
-    QgsRectangle mCurrentExtent;
-    QgsCoordinateReferenceSystem mCurrentCrs;
+    QgsMapCanvas *mMapCanvas;
 
     //! Sets the extent and size of the output a layer
     void setExtentSize( const QgsRasterLayer *layer );

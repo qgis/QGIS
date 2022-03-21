@@ -6604,9 +6604,7 @@ void QgisApp::newGpxLayer()
 void QgisApp::showRasterCalculator()
 {
   QgsRasterCalcDialog d(
-    mMapCanvas->extent(),
-    mMapCanvas->mapSettings().destinationCrs(),
-    qobject_cast<QgsRasterLayer *>( activeLayer() ),
+    qobject_cast<QgsRasterLayer *>( activeLayer() ),    mMapCanvas,
     this );
   if ( d.exec() != QDialog::Accepted )
   {
