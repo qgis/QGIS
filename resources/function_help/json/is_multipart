@@ -12,7 +12,7 @@
     "returns": "true"
   }, {
     "expression": "is_multipart(geom_from_wkt('POINT (0 0)'))",
-    "returns": "false"
+    "returns": "FALSE"
   }],
   "tags": ["type", "multi"]
 }

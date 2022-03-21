@@ -12,13 +12,13 @@
     "returns": "true"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'))",
-    "returns": "false"
+    "returns": "FALSE"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('LINESTRING EMPTY'))",
     "returns": "true"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('POINT(7 4)'))",
-    "returns": "false"
+    "returns": "FALSE"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('POINT EMPTY'))",
     "returns": "true"

@@ -12,7 +12,7 @@
     "returns": "true"
   }, {
     "expression": "is_valid(geom_from_wkt('LINESTRING(0 0)'))",
-    "returns": "false"
+    "returns": "FALSE"
   }],
   "tags": ["rules", "valid", "ogc", "according", "formed"]
 }

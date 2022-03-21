@@ -15,7 +15,7 @@
     "returns": "true"
   }, {
     "expression": "disjoint( geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ), geom_from_wkt( 'POINT(4 4)' ))",
-    "returns": "false"
+    "returns": "FALSE"
   }],
   "tags": ["share", "intersect", "tests", "space"]
 }

@@ -9,7 +9,7 @@
   }],
   "examples": [{
     "expression": "is_directory('/home/qgis/data/country_boundaries.shp')",
-    "returns": "false"
+    "returns": "FALSE"
   }, {
     "expression": "is_directory('/home/qgis/data/')",
     "returns": "true"

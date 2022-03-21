@@ -15,7 +15,7 @@
     "returns": "true"
   }, {
     "expression": "array_all(array(1,2,3),array(1,2,4))",
-    "returns": "false"
+    "returns": "FALSE"
   }],
   "tags": ["array", "contains", "compare", "search"]
 }

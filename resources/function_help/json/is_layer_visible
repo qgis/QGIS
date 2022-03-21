@@ -9,7 +9,7 @@
   }],
   "examples": [{
     "expression": "is_layer_visible('baseraster')",
-    "returns": "True"
+    "returns": "TRUE"
   }],
   "tags": ["specified", "visible"]
 }
