@@ -23,6 +23,7 @@
 #include "qgsmaplayerref.h"
 #include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
+#include "qgstriangularmesh.h"
 
 #include <QObject>
 
@@ -309,9 +310,10 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
     QgsMeshLayer *layer() const;
 
   private:
+    QgsMeshTerrainProvider( const QgsMeshTerrainProvider &other );
 
     _LayerRef<QgsMeshLayer> mMeshLayer;
-
+    QgsTriangularMesh mTriangularMesh;
 };
 
 #endif // QGSTERRAINPROVIDER_H
