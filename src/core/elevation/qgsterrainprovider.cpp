@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsterrainprovider.h"
+#include <QThread>
 
 QgsAbstractTerrainProvider::~QgsAbstractTerrainProvider() = default;
 
@@ -83,6 +84,12 @@ QgsFlatTerrainProvider *QgsFlatTerrainProvider::clone() const
   return new QgsFlatTerrainProvider( *this );
 }
 
+void QgsFlatTerrainProvider::prepare()
+{
+  Q_ASSERT_X( QThread::currentThread() == QCoreApplication::instance()->thread(), "QgsFlatTerrainProvider::prepare", "prepare() must be called from the main thread" );
+
+}
+
 bool QgsFlatTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) const
 {
   if ( other->type() != type() )
@@ -144,21 +151,27 @@ QDomElement QgsRasterDemTerrainProvider::writeXml( QDomDocument &document, const
 
 QgsCoordinateReferenceSystem QgsRasterDemTerrainProvider::crs() const
 {
-  return mRasterLayer ? mRasterLayer->crs() : QgsCoordinateReferenceSystem();
+  return mRasterProvider ? mRasterProvider->crs()
+         : ( mRasterLayer ? mRasterLayer->crs() : QgsCoordinateReferenceSystem() );
 }
 
 double QgsRasterDemTerrainProvider::heightAt( double x, double y ) const
 {
   // TODO -- may want to use a more efficient approach here, i.e. requesting whole
   // blocks upfront instead of multiple sample calls
-  if ( mRasterLayer && mRasterLayer->isValid() )
+  bool ok = false;
+  double res = std::numeric_limits<double>::quiet_NaN();
+  if ( mRasterProvider )
   {
-    bool ok = false;
-    const double res = mRasterLayer->dataProvider()->sample( QgsPointXY( x, y ), 1, &ok );
-
-    if ( ok )
-      return res * mScale + mOffset;
+    res = mRasterProvider->sample( QgsPointXY( x, y ), 1, &ok );
   }
+  else if ( QThread::currentThread() == QCoreApplication::instance()->thread() && mRasterLayer && mRasterLayer->isValid() )
+  {
+    res = mRasterLayer->dataProvider()->sample( QgsPointXY( x, y ), 1, &ok );
+  }
+
+  if ( ok )
+    return res * mScale + mOffset;
 
   return std::numeric_limits<double>::quiet_NaN();
 }
@@ -182,6 +195,14 @@ bool QgsRasterDemTerrainProvider::equals( const QgsAbstractTerrainProvider *othe
   return true;
 }
 
+void QgsRasterDemTerrainProvider::prepare()
+{
+  Q_ASSERT_X( QThread::currentThread() == QCoreApplication::instance()->thread(), "QgsRasterDemTerrainProvider::prepare", "prepare() must be called from the main thread" );
+
+  if ( mRasterLayer && mRasterLayer->isValid() )
+    mRasterProvider.reset( mRasterLayer->dataProvider()->clone() );
+}
+
 void QgsRasterDemTerrainProvider::setLayer( QgsRasterLayer *layer )
 {
   mRasterLayer.setLayer( layer );
@@ -190,6 +211,13 @@ void QgsRasterDemTerrainProvider::setLayer( QgsRasterLayer *layer )
 QgsRasterLayer *QgsRasterDemTerrainProvider::layer() const
 {
   return mRasterLayer.get();
+}
+
+QgsRasterDemTerrainProvider::QgsRasterDemTerrainProvider( const QgsRasterDemTerrainProvider &other )
+  : QgsAbstractTerrainProvider( other )
+  , mRasterLayer( other.mRasterLayer )
+{
+
 }
 
 
@@ -271,6 +299,12 @@ bool QgsMeshTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) c
     return false;
 
   return true;
+}
+
+void QgsMeshTerrainProvider::prepare()
+{
+  Q_ASSERT_X( QThread::currentThread() == QCoreApplication::instance()->thread(), "QgsMeshTerrainProvider::prepare", "prepare() must be called from the main thread" );
+
 }
 
 void QgsMeshTerrainProvider::setLayer( QgsMeshLayer *layer )

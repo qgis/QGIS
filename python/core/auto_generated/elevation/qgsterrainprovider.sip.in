@@ -80,6 +80,14 @@ Creates a clone of the provider and returns the new object.
 Ownership is transferred to the caller.
 %End
 
+    virtual void prepare() = 0 /Factory/;
+%Docstring
+Called on the main thread prior to accessing the provider from a background thread.
+
+Subclasses must implement suitable logic in order to prepare for thread-safe calculation of
+terrain heights on background threads.
+%End
+
     virtual QgsCoordinateReferenceSystem crs() const = 0;
 %Docstring
 Returns the native coordinate reference system of the terrain provider.
@@ -183,6 +191,8 @@ Constructor for QgsFlatTerrainProvider.
 
     virtual QgsFlatTerrainProvider *clone() const /Factory/;
 
+    virtual void prepare();
+
     virtual bool equals( const QgsAbstractTerrainProvider *other ) const;
 
 };
@@ -220,6 +230,8 @@ Constructor for QgsRasterDemTerrainProvider.
     virtual QgsRasterDemTerrainProvider *clone() const /Factory/;
 
     virtual bool equals( const QgsAbstractTerrainProvider *other ) const;
+
+    virtual void prepare();
 
 
     void setLayer( QgsRasterLayer *layer );
@@ -273,6 +285,8 @@ Constructor for QgsMeshTerrainProvider.
     virtual QgsMeshTerrainProvider *clone() const /Factory/;
 
     virtual bool equals( const QgsAbstractTerrainProvider *other ) const;
+
+    virtual void prepare();
 
 
     void setLayer( QgsMeshLayer *layer );

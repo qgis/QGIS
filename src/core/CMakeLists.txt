@@ -837,6 +837,7 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayerexporter.cpp
   vector/qgsvectorlayerjoinbuffer.cpp
   vector/qgsvectorlayerjoininfo.cpp
+  vector/qgsvectorlayerprofilegenerator.cpp
   vector/qgsvectorlayerrenderer.cpp
   vector/qgsvectorlayertemporalproperties.cpp
   vector/qgsvectorlayertools.cpp
@@ -1793,6 +1794,7 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayerfeatureiterator.h
   vector/qgsvectorlayerjoinbuffer.h
   vector/qgsvectorlayerjoininfo.h
+  vector/qgsvectorlayerprofilegenerator.h
   vector/qgsvectorlayerrenderer.h
   vector/qgsvectorlayertemporalproperties.h
   vector/qgsvectorlayertools.h

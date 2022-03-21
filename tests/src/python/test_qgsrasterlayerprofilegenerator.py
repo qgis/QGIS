@@ -60,7 +60,8 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         generator = rl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
 
-        results = {r.distance: r.height for r in generator.results()}
+        r = generator.takeResults()
+        results = r.distanceToHeightMap()
         first_point = min(results.keys())
         last_point = max(results.keys())
         self.assertEqual(results[first_point], 154)
