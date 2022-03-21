@@ -103,6 +103,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;
+    QgsRectangle mExtent;
 
     std::unique_ptr< QgsVectorLayerFeatureSource > mSource;
 
