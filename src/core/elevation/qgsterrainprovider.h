@@ -236,6 +236,11 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
      */
     QgsRasterDemTerrainProvider() = default;
 
+#ifndef SIP_RUN
+    //! QgsRasterDemTerrainProvider cannot be assigned
+    const QgsRasterDemTerrainProvider *operator=( const QgsRasterDemTerrainProvider &other ) = delete;
+#endif
+
     QString type() const override;
     void resolveReferences( const QgsProject *project ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
@@ -284,6 +289,11 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
      * Constructor for QgsMeshTerrainProvider.
      */
     QgsMeshTerrainProvider() = default;
+
+#ifndef SIP_RUN
+    //! QgsMeshTerrainProvider cannot be assigned
+    const QgsMeshTerrainProvider *operator=( const QgsMeshTerrainProvider &other ) = delete;
+#endif
 
     QString type() const override;
     void resolveReferences( const QgsProject *project ) override;
