@@ -15,6 +15,7 @@
 
 #include "qgsextentgroupbox.h"
 #include "qgsextentwidget.h"
+#include "qgsmaplayer.h"
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
