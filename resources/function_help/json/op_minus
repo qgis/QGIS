@@ -12,7 +12,7 @@
   }],
   "examples": [{
     "expression": "5 - 4",
-    "returns": "TRUE"
+    "returns": "1"
   }, {
     "expression": "5 - NULL",
     "returns": "NULL"
