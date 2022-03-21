@@ -6734,9 +6734,9 @@ void QgisApp::showMeshCalculator()
     return;
   }
   QgsMeshCalculatorDialog d(
-    mMapCanvas->extent(),
-    mMapCanvas->mapSettings().destinationCrs(),
+
     meshLayer,
+    mMapCanvas,
     this );
   if ( d.exec() == QDialog::Accepted )
   {

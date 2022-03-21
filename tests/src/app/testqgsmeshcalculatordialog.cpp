@@ -86,9 +86,7 @@ void TestQgsMeshCalculatorDialog::testCalc()
     QSKIP( "This test is disabled on Travis CI environment" );
 
   std::unique_ptr< QgsMeshCalculatorDialog > dialog( new QgsMeshCalculatorDialog(
-        mQgisApp->mapCanvas()->extent(),
-        mQgisApp->mapCanvas()->mapSettings().destinationCrs(),
-        mpMeshLayer ) );
+        mpMeshLayer, mQgisApp->mapCanvas() ) );
 
   const int groupCount = mpMeshLayer->dataProvider()->datasetGroupCount();
 

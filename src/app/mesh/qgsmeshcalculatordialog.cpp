@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsgdalutils.h"
+#include "qgsmapcanvas.h"
 #include "qgsmeshcalculatordialog.h"
 #include "qgsproject.h"
 #include "qgsmeshcalcnode.h"
@@ -39,10 +40,9 @@
 #include <QFontDatabase>
 #include <QMap>
 
-QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( const QgsRectangle &currentExtent,
-    const QgsCoordinateReferenceSystem &currentCrs, QgsMeshLayer *meshLayer, QWidget *parent, Qt::WindowFlags f )
+QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f ),
-    mLayer( meshLayer ), mCurrentExtent( currentExtent ), mCurrentCrs( currentCrs )
+    mLayer( meshLayer ), mMapCanvas( mapCanvas )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -96,7 +96,7 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( const QgsRectangle &currentExt
 
   mExpressionTextEdit->setCurrentFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
 
-  mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
+  mExtentGroupBox->setCurrentExtent( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs() );
   if ( meshLayer )
   {
     mExtentGroupBox->setOutputExtentFromLayer( meshLayer );

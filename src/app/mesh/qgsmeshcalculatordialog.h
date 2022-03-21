@@ -22,6 +22,8 @@
 #include "qgsmeshcalculator.h"
 #include "qgis_app.h"
 
+class QgsMapCanvas;
+
 //! A dialog to enter a mesh calculation expression
 class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCalculatorDialogBase
 {
@@ -35,9 +37,8 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
      * \param f window flags
      */
     QgsMeshCalculatorDialog(
-      const QgsRectangle &currentExtent,
-      const QgsCoordinateReferenceSystem &currentCrs,
       QgsMeshLayer *meshLayer = nullptr,
+      QgsMapCanvas *mapCanvas = nullptr,
       QWidget *parent = nullptr,
       Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsMeshCalculatorDialog();
@@ -129,8 +130,7 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
     QgsMeshLayer *mLayer;
     QHash<QString, QgsMeshDriverMetadata> mMeshDrivers;
     QStringList mVariableNames;
-    QgsRectangle mCurrentExtent;
-    QgsCoordinateReferenceSystem mCurrentCrs;
+    QgsMapCanvas *mMapCanvas;
 
     friend class TestQgsMeshCalculatorDialog;
 };
