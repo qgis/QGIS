@@ -1975,7 +1975,7 @@ void QgsAttributeForm::init()
       boxLayout->addWidget( closeButton );
     }
 
-    layout->addWidget( mSearchButtonBox );
+    layout->addWidget( mSearchButtonBox, layout->rowCount(), 0, 1, layout->columnCount() );
   }
   mSearchButtonBox->setVisible( mMode == QgsAttributeEditorContext::SearchMode );
 
