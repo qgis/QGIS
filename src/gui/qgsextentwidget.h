@@ -238,6 +238,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
 
     /**
      * Emitted when the layer selected is changed
+     * \since QGIS 3.26
      */
     void selectedLayerChanged( QgsMapLayer *layer );
 

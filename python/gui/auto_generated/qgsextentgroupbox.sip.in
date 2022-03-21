@@ -218,6 +218,8 @@ Emitted when the widget's extent is changed.
     void selectedLayerChanged( QgsMapLayer *layer );
 %Docstring
 Emitted when the layer selected is changed
+
+.. versionadded:: 3.26
 %End
 
 

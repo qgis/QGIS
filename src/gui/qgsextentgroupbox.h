@@ -214,6 +214,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
 
     /**
      * Emitted when the layer selected is changed
+     * \since QGIS 3.26
      */
     void selectedLayerChanged( QgsMapLayer *layer );
 
