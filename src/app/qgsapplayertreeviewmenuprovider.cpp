@@ -52,6 +52,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsxmlutils.h"
 #include "qgsmeshlayer.h"
+#include "qgsmapcanvasutils.h"
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
@@ -807,9 +808,15 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
           {
             bool ok = false;
-            const QString filterExp = layer->renderer() ? layer->renderer()->legendKeyToExpression( ruleKey, layer, ok ) : QString();
+            QString filterExp = layer->renderer() ? layer->renderer()->legendKeyToExpression( ruleKey, layer, ok ) : QString();
             if ( ok )
             {
+              const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( QgisApp::instance()->mapCanvas(), layer );
+              if ( canvasFilter == QLatin1String( "FALSE" ) )
+                return;
+              else if ( !canvasFilter.isEmpty() )
+                filterExp = QStringLiteral( "(%1) AND (%2)" ).arg( filterExp, canvasFilter );
+
               QgsExpressionContext context = QgisApp::instance()->mapCanvas()->mapSettings().expressionContext();
               layer->selectByExpression( filterExp, Qgis::SelectBehavior::SetSelection, &context );
 
