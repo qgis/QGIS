@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsterrainprovider.h"
+#include "qgsmeshlayerutils.h"
 #include <QThread>
 
 QgsAbstractTerrainProvider::~QgsAbstractTerrainProvider() = default;
@@ -276,10 +277,21 @@ QgsCoordinateReferenceSystem QgsMeshTerrainProvider::crs() const
 
 double QgsMeshTerrainProvider::heightAt( double x, double y ) const
 {
-  // TODO
-  Q_UNUSED( x )
-  Q_UNUSED( y )
-  return std::numeric_limits<double>::quiet_NaN();
+  if ( mTriangularMesh.vertices().empty() && mMeshLayer && QThread::currentThread() == QCoreApplication::instance()->thread() )
+    const_cast< QgsMeshTerrainProvider * >( this )->prepare(); // auto prepare if we are on main thread and haven't already!
+
+  const QgsPointXY point( x, y );
+  const int faceIndex = mTriangularMesh.faceIndexForPoint_v2( point );
+  if ( faceIndex < 0 || faceIndex >= mTriangularMesh.triangles().count() )
+    return std::numeric_limits<float>::quiet_NaN();
+
+  const QgsMeshFace &face = mTriangularMesh.triangles().at( faceIndex );
+
+  const QgsPoint p1 = mTriangularMesh.vertices().at( face.at( 0 ) );
+  const QgsPoint p2 = mTriangularMesh.vertices().at( face.at( 1 ) );
+  const QgsPoint p3 = mTriangularMesh.vertices().at( face.at( 2 ) );
+
+  return QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, p1.z(), p2.z(), p3.z(), point );
 }
 
 QgsMeshTerrainProvider *QgsMeshTerrainProvider::clone() const
@@ -304,7 +316,11 @@ bool QgsMeshTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) c
 void QgsMeshTerrainProvider::prepare()
 {
   Q_ASSERT_X( QThread::currentThread() == QCoreApplication::instance()->thread(), "QgsMeshTerrainProvider::prepare", "prepare() must be called from the main thread" );
-
+  if ( mMeshLayer )
+  {
+    mMeshLayer->updateTriangularMesh();
+    mTriangularMesh = *mMeshLayer->triangularMesh();
+  }
 }
 
 void QgsMeshTerrainProvider::setLayer( QgsMeshLayer *layer )
@@ -315,4 +331,11 @@ void QgsMeshTerrainProvider::setLayer( QgsMeshLayer *layer )
 QgsMeshLayer *QgsMeshTerrainProvider::layer() const
 {
   return mMeshLayer.get();
+}
+
+QgsMeshTerrainProvider::QgsMeshTerrainProvider( const QgsMeshTerrainProvider &other )
+  : QgsAbstractTerrainProvider( other )
+  , mMeshLayer( other.mMeshLayer )
+{
+
 }

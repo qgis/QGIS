@@ -24,7 +24,8 @@ from qgis.core import (
     QgsProject,
     QgsRasterLayer,
     QgsMeshLayer,
-    QgsReadWriteContext
+    QgsReadWriteContext,
+    QgsCoordinateReferenceSystem
 )
 from qgis.testing import start_app, unittest
 
@@ -162,16 +163,17 @@ class TestQgsTerrainProviders(unittest.TestCase):
 
         # add mesh layer to project
         p = QgsProject()
-        mesh_layer = QgsMeshLayer(os.path.join(unitTestDataPath(), 'mesh', 'quad_flower.2dm'), 'mesh', 'mdal')
+        mesh_layer = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')
+        mesh_layer.setCrs(QgsCoordinateReferenceSystem('EPSG:27700'))
         self.assertTrue(mesh_layer.isValid())
         p.addMapLayer(mesh_layer)
 
         provider.setLayer(mesh_layer)
         self.assertEqual(provider.layer(), mesh_layer)
+        self.assertEqual(provider.crs().authid(), 'EPSG:27700')
 
-        # not implemented yet
-        # self.assertEqual(provider.heightAt(1,2), 0)
-        # self.assertEqual(provider.heightAt(106.4105,-6.6341), 11.0)
+        self.assertTrue(math.isnan(provider.heightAt(1, 2)))
+        self.assertAlmostEqual(provider.heightAt(321695.2, 129990.5), 89.49743150684921, 5)
 
         provider.setOffset(5)
         self.assertEqual(provider.offset(), 5)
