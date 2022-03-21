@@ -1191,58 +1191,26 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
 
 bool QgsMapToolLabel::labelAnchorPercentMovable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol, int &lineAnchorClippingCol,  int &lineAnchorTypeCol,  int &lineAnchorTextPointCol ) const
 {
-  lineAnchorPercentCol = -1;
-  lineAnchorClippingCol = -1;
-  lineAnchorTypeCol = -1;
-  lineAnchorTextPointCol = -1;
 
-  bool ret { true };
-
-  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
+  auto checkProperty = [ & ]( const QgsPalLayerSettings::Property & property, int &col ) -> bool
   {
-    PropertyStatus status = PropertyStatus::DoesNotExist;
-    QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorPercent, settings, vlayer, status );
-    lineAnchorPercentCol = vlayer->fields().lookupField( colName );
-    if ( lineAnchorPercentCol < 0 )
-      return false;
+    if ( settings.dataDefinedProperties().isActive( property ) )
+    {
+      PropertyStatus status = PropertyStatus::DoesNotExist;
+      QString colName = dataDefinedColumnName( property, settings, vlayer, status );
+      col = vlayer->fields().lookupField( colName );
+      return col >= 0;
+    }
     else
-      ret =  true;
-  }
-
-  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorClipping ) )
-  {
-    PropertyStatus status = PropertyStatus::DoesNotExist;
-    QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorClipping, settings, vlayer, status );
-    lineAnchorClippingCol = vlayer->fields().lookupField( colName );
-    if ( lineAnchorClippingCol < 0 )
+    {
       return false;
-    else
-      ret =  true;
-  }
+    }
+  };
 
-  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorType ) )
-  {
-    PropertyStatus status = PropertyStatus::DoesNotExist;
-    QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorType, settings, vlayer, status );
-    lineAnchorTypeCol = vlayer->fields().lookupField( colName );
-    if ( lineAnchorTypeCol < 0 )
-      return false;
-    else
-      ret =  true;
-  }
-
-  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorTextPoint ) )
-  {
-    PropertyStatus status = PropertyStatus::DoesNotExist;
-    QString colName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorTextPoint, settings, vlayer, status );
-    lineAnchorTextPointCol = vlayer->fields().lookupField( colName );
-    if ( lineAnchorTextPointCol < 0 )
-      return false;
-    else
-      ret =  true;
-  }
-
-  return ret;
+  return checkProperty( QgsPalLayerSettings::LineAnchorPercent, lineAnchorPercentCol )
+         && checkProperty( QgsPalLayerSettings::LineAnchorClipping, lineAnchorClippingCol )
+         && checkProperty( QgsPalLayerSettings::LineAnchorType, lineAnchorTypeCol )
+         && checkProperty( QgsPalLayerSettings::LineAnchorTextPoint, lineAnchorTextPointCol );
 }
 
 bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
