@@ -215,6 +215,7 @@ A terrain provider where the terrain source is a raster DEM layer.
 Constructor for QgsRasterDemTerrainProvider.
 %End
 
+
     virtual QString type() const;
 
     virtual void resolveReferences( const QgsProject *project );
@@ -269,6 +270,7 @@ A terrain provider that uses the Z values of a mesh layer to build a terrain sur
 %Docstring
 Constructor for QgsMeshTerrainProvider.
 %End
+
 
     virtual QString type() const;
 
