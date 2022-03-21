@@ -64,6 +64,7 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   , mSourceCrs( layer->crs() )
   , mTargetCrs( request.crs() )
   , mTransformContext( request.transformContext() )
+  , mExtent( layer->extent() )
   , mSource( std::make_unique< QgsVectorLayerFeatureSource >( layer ) )
   , mOffset( layer->elevationProperties()->zOffset() )
   , mScale( layer->elevationProperties()->zScale() )
@@ -101,6 +102,10 @@ bool QgsVectorLayerProfileGenerator::generateProfile()
     return false;
   }
 
+  const QgsRectangle profileCurveBoundingBox = mTransformedCurve->boundingBox();
+  if ( !profileCurveBoundingBox.intersects( mExtent ) )
+    return false;
+
   mResults = std::make_unique< QgsVectorLayerProfileResults >();
 
   switch ( QgsWkbTypes::geometryType( mWkbType ) )
@@ -108,18 +113,15 @@ bool QgsVectorLayerProfileGenerator::generateProfile()
     case QgsWkbTypes::PointGeometry:
       if ( !generateProfileForPoints() )
         return false;
-
       break;
-  }
 
-  const QgsRectangle profileCurveBoundingBox = mTransformedCurve->boundingBox();
-  //if ( !profileCurveBoundingBox.intersects( mRasterProvider->extent() ) )
-  //  return false;
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      return false;
+  }
 
   std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( mTransformedCurve.get() ) );
   curveEngine->prepareGeometry();
-
-
 
   // convert x/y values back to distance/height values
   QgsGeos originalCurveGeos( mProfileCurve.get() );
