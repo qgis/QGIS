@@ -23,6 +23,43 @@
 
 #include "qgspoint.h"
 
+class QgsGeometry;
+
+/**
+ * \brief Abstract base class for storage of elevation profiles.
+ *
+ * \ingroup core
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsAbstractProfileResults
+{
+  public:
+
+    virtual ~QgsAbstractProfileResults();
+
+    /**
+     * Returns the unique string identifier for the results type.
+     */
+    virtual QString type() const = 0;
+
+    /**
+     * Returns the map of distance (chainage) to height.
+     */
+    virtual QHash< double, double > distanceToHeightMap() const = 0;
+
+    /**
+     * Returns a list of sampled points, with their calculated elevation
+     * as the point z value.
+     */
+    virtual QgsPointSequence sampledPoints() const = 0;
+
+    /**
+     * Returns a list of geometries representing the calculated elevation results.
+     */
+    virtual QVector< QgsGeometry > asGeometries() const = 0;
+
+};
+
 /**
  * \brief Abstract base class for objects which generate elevation profiles.
  *
@@ -63,26 +100,12 @@ class CORE_EXPORT QgsAbstractProfileGenerator
      */
     virtual bool generateProfile() = 0;
 
-    // Temporary class only!
-    struct CORE_EXPORT Result
-    {
-      double distance;
-      double height;
-    };
-
     /**
-     * Temporary method to return results.
+     * Takes results from the generator.
+     *
+     * Ownership is transferred to the caller.
      */
-    QList< QgsAbstractProfileGenerator::Result > results() const { return mResults; }
-
-    /**
-     * Temporary method to return results.
-     */
-    QList< QgsPoint > rawPoints() const { return mRawPoints; }
-
-  protected:
-    QList< QgsPoint > mRawPoints;
-    QList< Result > mResults;
+    virtual QgsAbstractProfileResults *takeResults() = 0 SIP_TRANSFERBACK;
 
 };
 

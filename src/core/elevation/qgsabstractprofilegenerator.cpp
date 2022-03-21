@@ -17,3 +17,5 @@
 #include "qgsabstractprofilegenerator.h"
 
 QgsAbstractProfileGenerator::~QgsAbstractProfileGenerator() = default;
+
+QgsAbstractProfileResults::~QgsAbstractProfileResults() = default;

@@ -9,6 +9,45 @@
 
 
 
+
+class QgsAbstractProfileResults
+{
+%Docstring(signature="appended")
+Abstract base class for storage of elevation profiles.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsabstractprofilegenerator.h"
+%End
+  public:
+
+    virtual ~QgsAbstractProfileResults();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the unique string identifier for the results type.
+%End
+
+    virtual QHash< double, double > distanceToHeightMap() const = 0;
+%Docstring
+Returns the map of distance (chainage) to height.
+%End
+
+    virtual QgsPointSequence sampledPoints() const = 0;
+%Docstring
+Returns a list of sampled points, with their calculated elevation
+as the point z value.
+%End
+
+    virtual QVector< QgsGeometry > asGeometries() const = 0;
+%Docstring
+Returns a list of geometries representing the calculated elevation results.
+%End
+
+};
+
 class QgsAbstractProfileGenerator
 {
 %Docstring(signature="appended")
@@ -31,7 +70,7 @@ The scenario will be:
   additional calls to the source.
 # profile job (still in GUI thread) stores the generator for later use.
 # profile job (in worker thread) calls :py:func:`QgsAbstractProfileGenerator.generateProfile()`
-# profile job (again in GUI thread) will check :py:func:`~errors` and report them
+# profile job (again in GUI thread) will check :py:func:`~QgsAbstractProfileResults.errors` and report them
 
 .. versionadded:: 3.26
 %End
@@ -51,23 +90,12 @@ Returns ``True`` if the profile was generated successfully (i.e. the generation
 was not canceled early).
 %End
 
-    struct Result
-    {
-      double distance;
-      double height;
-    };
-
-    QList< QgsAbstractProfileGenerator::Result > results() const;
+    virtual QgsAbstractProfileResults *takeResults() = 0 /TransferBack/;
 %Docstring
-Temporary method to return results.
-%End
+Takes results from the generator.
 
-    QList< QgsPoint > rawPoints() const;
-%Docstring
-Temporary method to return results.
+Ownership is transferred to the caller.
 %End
-
-  protected:
 
 };
 

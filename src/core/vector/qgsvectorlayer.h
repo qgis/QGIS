@@ -42,6 +42,7 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontextscopegenerator.h"
 #include "qgsexpressioncontext.h"
+#include "qgsabstractprofilesource.h"
 
 class QPainter;
 class QImage;
@@ -389,7 +390,7 @@ typedef QSet<int> QgsAttributeIds;
  *
  * \see QgsVectorLayerUtils()
  */
-class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsFeatureSink, public QgsFeatureSource
+class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsFeatureSink, public QgsFeatureSource, public QgsAbstractProfileSource
 {
     Q_OBJECT
 
@@ -627,6 +628,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     const QgsVectorDataProvider *dataProvider() const FINAL SIP_SKIP;
     QgsMapLayerTemporalProperties *temporalProperties() override;
     QgsMapLayerElevationProperties *elevationProperties() override;
+    QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     /**
      * Sets the text \a encoding of the data provider.

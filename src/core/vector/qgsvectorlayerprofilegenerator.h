@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsrasterlayerprofilegenerator.h
+                         qgsvectorlayerprofilegenerator.h
                          ---------------
     begin                : March 2022
     copyright            : (C) 2022 by Nyall Dawson
@@ -14,37 +14,40 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSRASTERLAYERPROFILEGENERATOR_H
-#define QGSRASTERLAYERPROFILEGENERATOR_H
+#ifndef QGSVECTORLAYERPROFILEGENERATOR_H
+#define QGSVECTORLAYERPROFILEGENERATOR_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgscoordinatetransform.h"
 
 #include <memory>
 
 class QgsProfileRequest;
 class QgsCurve;
-class QgsRasterLayer;
-class QgsRasterDataProvider;
-
+class QgsVectorLayer;
+class QgsVectorLayerFeatureSource;
+class QgsAbstractTerrainProvider;
 
 #define SIP_NO_FILE
 
+
 /**
- * \brief Implementation of QgsAbstractProfileResults for raster layers.
+ * \brief Implementation of QgsAbstractProfileResults for vector layers.
  *
  * \note Not available in Python bindings
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileResults
+class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResults
 {
 
   public:
 
+    // Temporary class only!
     struct Result
     {
       double distance;
@@ -53,6 +56,7 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileResult
 
     QgsPointSequence rawPoints;
     QList< Result > results;
+    QVector< QgsGeometry > geometries;
 
     QString type() const override;
     QHash< double, double > distanceToHeightMap() const override;
@@ -60,48 +64,62 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileResult
     QVector< QgsGeometry > asGeometries() const override;
 };
 
+
 /**
- * \brief Implementation of QgsAbstractProfileGenerator for raster layers.
+ * \brief Implementation of QgsAbstractProfileGenerator for vector layers.
  *
  * \note Not available in Python bindings
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileGenerator
+class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGenerator
 {
 
   public:
 
     /**
-     * Constructor for QgsRasterLayerProfileGenerator.
+     * Constructor for QgsVectorLayerProfileGenerator.
      */
-    QgsRasterLayerProfileGenerator( QgsRasterLayer *layer, const QgsProfileRequest &request );
+    QgsVectorLayerProfileGenerator( QgsVectorLayer *layer, const QgsProfileRequest &request );
 
-    ~QgsRasterLayerProfileGenerator() override;
+    ~QgsVectorLayerProfileGenerator() override;
 
     bool generateProfile() override;
     QgsAbstractProfileResults *takeResults() override;
 
   private:
 
+    bool generateProfileForPoints();
+
+    double featureZToHeight( double x, double y, double z );
+
     std::unique_ptr< QgsCurve > mProfileCurve;
+    std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
+
+    std::unique_ptr< QgsCurve > mTransformedCurve;
+    double mTolerance = 0;
+
 
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;
 
+    std::unique_ptr< QgsVectorLayerFeatureSource > mSource;
+
     double mOffset = 0;
     double mScale = 1;
+    Qgis::AltitudeClamping mClamping = Qgis::AltitudeClamping::Terrain;
+    Qgis::AltitudeBinding mBinding = Qgis::AltitudeBinding::Centroid;
+    bool mExtrusionEnabled = false;
+    double mExtrusionHeight = 0;
 
-    std::unique_ptr< QgsRasterDataProvider > mRasterProvider;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QgsCoordinateTransform mLayerToTargetTransform;
+    QgsCoordinateTransform mTargetToTerrainProviderTransform;
 
-    std::unique_ptr< QgsRasterLayerProfileResults > mResults;
-
-    int mBand = 1;
-    double mRasterUnitsPerPixelX = 1;
-    double mRasterUnitsPerPixelY = 1;
+    std::unique_ptr< QgsVectorLayerProfileResults > mResults;
 
 
 };
 
-#endif // QGSRASTERLAYERPROFILEGENERATOR_H
+#endif // QGSVECTORLAYERPROFILEGENERATOR_H

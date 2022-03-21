@@ -23,6 +23,45 @@
 #include "qgsgeometryengine.h"
 #include "qgsgeos.h"
 
+//
+// QgsRasterLayerProfileResults
+//
+
+QString QgsRasterLayerProfileResults::type() const
+{
+  return QStringLiteral( "raster" );
+}
+
+QHash<double, double> QgsRasterLayerProfileResults::distanceToHeightMap() const
+{
+  QHash<double, double> res;
+  for ( const Result &r : results )
+  {
+    res.insert( r.distance, r.height );
+  }
+  return res;
+}
+
+QgsPointSequence QgsRasterLayerProfileResults::sampledPoints() const
+{
+  return rawPoints;
+}
+
+QVector<QgsGeometry> QgsRasterLayerProfileResults::asGeometries() const
+{
+  QVector<QgsGeometry> res;
+  res.reserve( rawPoints.size() );
+  for ( const QgsPoint &point : rawPoints )
+    res.append( QgsGeometry( point.clone() ) );
+
+  return res;
+}
+
+
+//
+// QgsRasterLayerProfileGenerator
+//
+
 QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *layer, const QgsProfileRequest &request )
   : mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mSourceCrs( layer->crs() )
@@ -59,6 +98,8 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
   const QgsRectangle profileCurveBoundingBox = transformedCurve->boundingBox();
   if ( !profileCurveBoundingBox.intersects( mRasterProvider->extent() ) )
     return false;
+
+  mResults = std::make_unique< QgsRasterLayerProfileResults >();
 
   std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );
   curveEngine->prepareGeometry();
@@ -136,7 +177,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
         {
           continue;
         }
-        mRawPoints.append( pixel );
+        mResults->rawPoints.append( pixel );
       }
       currentY -= mRasterUnitsPerPixelY;
     }
@@ -145,17 +186,22 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
   // convert x/y values back to distance/height values
   QgsGeos originalCurveGeos( mProfileCurve.get() );
   originalCurveGeos.prepareGeometry();
-  mResults.reserve( mRawPoints.size() );
+  mResults->results.reserve( mResults->rawPoints.size() );
   QString lastError;
-  for ( const QgsPoint &pixel : std::as_const( mRawPoints ) )
+  for ( const QgsPoint &pixel : std::as_const( mResults->rawPoints ) )
   {
     const double distance = originalCurveGeos.lineLocatePoint( pixel, &lastError );
 
-    Result res;
+    QgsRasterLayerProfileResults::Result res;
     res.distance = distance;
     res.height = pixel.z();
-    mResults.push_back( res );
+    mResults->results.push_back( res );
   }
 
   return true;
+}
+
+QgsAbstractProfileResults *QgsRasterLayerProfileGenerator::takeResults()
+{
+  return mResults.release();
 }

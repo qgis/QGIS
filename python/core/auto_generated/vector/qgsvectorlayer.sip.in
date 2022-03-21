@@ -18,7 +18,7 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 Represents a vector layer which manages a vector based data sets.
@@ -512,6 +512,8 @@ Uses :py:class:`QgsExpression`
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 
     virtual QgsMapLayerElevationProperties *elevationProperties();
+
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
 
     void setProviderEncoding( const QString &encoding );

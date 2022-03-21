@@ -104,6 +104,14 @@ class CORE_EXPORT QgsAbstractTerrainProvider
     virtual QgsAbstractTerrainProvider *clone() const = 0 SIP_FACTORY;
 
     /**
+     * Called on the main thread prior to accessing the provider from a background thread.
+     *
+     * Subclasses must implement suitable logic in order to prepare for thread-safe calculation of
+     * terrain heights on background threads.
+     */
+    virtual void prepare() = 0 SIP_FACTORY;
+
+    /**
      * Returns the native coordinate reference system of the terrain provider.
      */
     virtual QgsCoordinateReferenceSystem crs() const = 0;
@@ -208,6 +216,7 @@ class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractTerrainProvider
     QgsCoordinateReferenceSystem crs() const override;
     double heightAt( double x, double y ) const override;
     QgsFlatTerrainProvider *clone() const override SIP_FACTORY;
+    void prepare() override;
     bool equals( const QgsAbstractTerrainProvider *other ) const override;
 };
 
@@ -234,6 +243,7 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
     double heightAt( double x, double y ) const override;
     QgsRasterDemTerrainProvider *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractTerrainProvider *other ) const override;
+    void prepare() override;
 
     /**
      * Sets the raster \a layer with elevation model to be used as the terrain source.
@@ -251,8 +261,10 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
 
 
   private:
+    QgsRasterDemTerrainProvider( const QgsRasterDemTerrainProvider &other );
 
     _LayerRef<QgsRasterLayer> mRasterLayer;
+    std::unique_ptr< QgsRasterDataProvider > mRasterProvider;
 
 };
 
@@ -280,6 +292,7 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
     double heightAt( double x, double y ) const override;
     QgsMeshTerrainProvider *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractTerrainProvider *other ) const override;
+    void prepare() override;
 
     /**
      * Sets the mesh \a layer to be used as the terrain source.

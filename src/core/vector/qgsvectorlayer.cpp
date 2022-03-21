@@ -89,6 +89,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsfeaturerenderergenerator.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsvectorlayerprofilegenerator.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -681,6 +682,11 @@ QgsMapLayerTemporalProperties *QgsVectorLayer::temporalProperties()
 QgsMapLayerElevationProperties *QgsVectorLayer::elevationProperties()
 {
   return mElevationProperties;
+}
+
+QgsAbstractProfileGenerator *QgsVectorLayer::createProfileGenerator( const QgsProfileRequest &request )
+{
+  return new QgsVectorLayerProfileGenerator( this, request );
 }
 
 void QgsVectorLayer::setProviderEncoding( const QString &encoding )
