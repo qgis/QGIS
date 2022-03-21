@@ -157,6 +157,7 @@ class TestQgsProcessingAlgsPt1: public QObject
 
     void raiseException();
     void raiseWarning();
+    void raiseMessage();
 
     void randomFloatingPointDistributionRaster_data();
     void randomFloatingPointDistributionRaster();
@@ -5021,9 +5022,14 @@ class TestProcessingFeedback : public QgsProcessingFeedback
     {
       warnings << warning;
     }
+    void pushInfo( const QString &message ) override
+    {
+      messages << message;
+    }
 
     QStringList errors;
     QStringList warnings;
+    QStringList messages;
 
 };
 
@@ -5093,6 +5099,40 @@ void TestQgsProcessingAlgsPt1::raiseWarning()
   QVERIFY( ok );
 
   QCOMPARE( feedback.warnings, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
+}
+
+void TestQgsProcessingAlgsPt1::raiseMessage()
+{
+  TestProcessingFeedback feedback;
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:raisemessage" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "MESSAGE" ), QStringLiteral( "nothing screwed up boy, congrats" ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( feedback.messages, QStringList() << QStringLiteral( "nothing screwed up boy, congrats" ) );
+
+  parameters.insert( QStringLiteral( "CONDITION" ), QStringLiteral( "FALSE" ) );
+  feedback.messages.clear();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( feedback.messages, QStringList() );
+
+  parameters.insert( QStringLiteral( "CONDITION" ), QStringLiteral( "TRUE" ) );
+  feedback.messages.clear();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( feedback.messages, QStringList() << QStringLiteral( "nothing screwed up boy, congrats" ) );
 }
 
 void TestQgsProcessingAlgsPt1::randomFloatingPointDistributionRaster_data()
