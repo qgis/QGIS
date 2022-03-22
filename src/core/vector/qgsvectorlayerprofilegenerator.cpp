@@ -408,11 +408,11 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     QgsTessellator t( bounds, false, false, false, false );
     t.addPolygon( *clampedPolygon, 0 );
 
-    QgsGeometry tesselation( t.asMultiPolygon() );
-    tesselation.translate( bounds.xMinimum(), bounds.yMinimum() );
+    QgsGeometry tessellation( t.asMultiPolygon() );
+    tessellation.translate( bounds.xMinimum(), bounds.yMinimum() );
 
     // iterate through the tesselation, finding triangles which intersect the line
-    const int numTriangles = qgsgeometry_cast< const QgsMultiPolygon * >( tesselation.constGet() )->numGeometries();
+    const int numTriangles = qgsgeometry_cast< const QgsMultiPolygon * >( tessellation.constGet() )->numGeometries();
     for ( int i = 0; i < numTriangles; ++i )
     {
       const QgsPolygon *triangle = qgsgeometry_cast< const QgsPolygon * >( qgsgeometry_cast< const QgsMultiPolygon * >( tesselation.constGet() )->geometryN( i ) );
