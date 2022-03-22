@@ -53,6 +53,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * \param flags window flags
      */
     QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
+    ~QgsAttributeTableDialog() override;
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -218,7 +219,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void viewModeChanged( QgsAttributeEditorContext::Mode mode );
     void formFilterSet( const QString &filter, QgsAttributeForm::FilterType type );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
-    void toggleDockMode( bool docked );
     void updateLayerModifiedActions();
 
   private:
@@ -237,17 +237,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QList< QPointer< QgsVectorLayer> > mReferencingLayers;
 
     friend class TestQgsAttributeTable;
-};
-
-
-class QgsAttributeTableDock : public QgsDockWidget
-{
-    Q_OBJECT
-
-  public:
-    QgsAttributeTableDock( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
-
-    void closeEvent( QCloseEvent *ev ) override;
 };
 
 
