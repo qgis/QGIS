@@ -75,6 +75,7 @@
 #include <QWhatsThis>
 #include <QWidgetAction>
 #include <mutex>
+#include <QWindow>
 
 #include "qgssettingsregistrycore.h"
 #include "qgsnetworkaccessmanager.h"
@@ -16612,6 +16613,36 @@ void QgisApp::writeProject( QDomDocument &doc )
 
   QgsProject::instance()->writeEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ), static_cast< bool >( layerTreeView()->layerTreeModel()->legendFilterMapSettings() ) );
 
+  if ( QgsProject::instance()->flags() & Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions )
+  {
+    // save attribute tables
+    QDomElement attributeTablesElement = doc.createElement( QStringLiteral( "attributeTables" ) );
+
+    QSet< QgsAttributeTableDialog * > storedDialogs;
+    auto saveDialog = [&storedDialogs, &attributeTablesElement, &doc]( QgsAttributeTableDialog * attributeTableDialog )
+    {
+      if ( storedDialogs.contains( attributeTableDialog ) )
+        return;
+
+      QgsDebugMsg( attributeTableDialog->windowTitle() );
+      const QDomElement tableElement = attributeTableDialog->writeXml( doc );
+      attributeTablesElement.appendChild( tableElement );
+      storedDialogs.insert( attributeTableDialog );
+    };
+
+    const QList<QWidget * > topLevelWidgets = QgsApplication::topLevelWidgets();
+    for ( QWidget *widget : topLevelWidgets )
+    {
+      QList< QgsAttributeTableDialog * > dialogChildren = widget->findChildren< QgsAttributeTableDialog * >();
+      for ( QgsAttributeTableDialog *attributeTableDialog : dialogChildren )
+      {
+        saveDialog( attributeTableDialog );
+      }
+    }
+
+    qgisNode.appendChild( attributeTablesElement );
+  }
+
   // Save the position of the map view docks
   QDomElement mapViewNode = doc.createElement( QStringLiteral( "mapViewDocks" ) );
   const auto dockWidgets = findChildren< QgsMapCanvasDockWidget * >();
@@ -16761,6 +16792,29 @@ void QgisApp::readProject( const QDomDocument &doc )
     read3DMapViewSettings( mapCanvas3D, viewConfig );
   }
 #endif
+
+  if ( QgsProject::instance()->flags() & Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions )
+  {
+    // restore attribute tables
+    const QDomElement attributeTablesElement = doc.documentElement().firstChildElement( QStringLiteral( "attributeTables" ) );
+    const QDomNodeList attributeTableNodes = attributeTablesElement.elementsByTagName( QStringLiteral( "attributeTable" ) );
+    for ( int i = 0; i < attributeTableNodes.size(); ++i )
+    {
+      const QDomElement attributeTableElement = attributeTableNodes.at( i ).toElement();
+      const QString layerId = attributeTableElement.attribute( QStringLiteral( "layer" ) );
+      if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
+      {
+        if ( layer->isValid() )
+        {
+          bool initiallyDocked = attributeTableElement.attribute( QStringLiteral( "isDocked" ), QStringLiteral( "0" ) ).toInt() == 1;
+          const QgsAttributeTableFilterModel::FilterMode filterMode = qgsEnumKeyToValue( attributeTableElement.attribute( QStringLiteral( "filterMode" ) ), QgsAttributeTableFilterModel::ShowAll );
+
+          QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( layer, filterMode, nullptr, Qt::Window, &initiallyDocked );
+          dialog->readXml( attributeTableElement );
+        }
+      }
+    }
+  }
 
   // unfreeze all new views at once. We don't do this as they are created since additional
   // views which may exist in project could rearrange the docks and cause the canvases to resize

@@ -76,6 +76,25 @@ QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
   return expContext;
 }
 
+QDomElement QgsAttributeTableDialog::writeXml( QDomDocument &document )
+{
+  QDomElement element = document.createElement( QStringLiteral( "attributeTable" ) );
+  mDockableWidgetHelper->writeXml( element );
+
+  element.setAttribute( QStringLiteral( "layer" ), mLayer ? mLayer->id() : QString() );
+  element.setAttribute( QStringLiteral( "filterMode" ), qgsEnumValueToKey( mMainView->filterMode() ) );
+  element.setAttribute( QStringLiteral( "view" ), qgsEnumValueToKey( mMainView->view() ) );
+
+  return element;
+}
+
+void QgsAttributeTableDialog::readXml( const QDomElement &element )
+{
+  mDockableWidgetHelper->readXml( element );
+
+  mMainView->setView( qgsEnumKeyToValue( element.attribute( QStringLiteral( "view" ) ), QgsDualView::ViewMode::AttributeTable ) );
+}
+
 void QgsAttributeTableDialog::updateMultiEditButtonState()
 {
   if ( ! mLayer || ( mLayer->editFormConfig().layout() == QgsEditFormConfig::EditorLayout::UiFileLayout ) )
@@ -89,7 +108,7 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
   }
 }
 
-QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags )
+QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags, bool *initiallyDocked )
   : QDialog( parent, flags )
   , mLayer( layer )
 
@@ -142,12 +161,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     settings.value( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ) ) == QStringLiteral( "attributeForm" )
     ? mActionAddFeatureViaAttributeForm->icon()
     : mActionAddFeatureViaAttributeTable->icon() );
-
-  const QgsFields fields = mLayer->fields();
-  for ( const QgsField &field : fields )
-  {
-    mVisibleFields.append( field.name() );
-  }
 
   // Fix selection color on losing focus (Windows)
   setStyleSheet( QgisApp::instance()->styleSheet() );
@@ -256,9 +269,9 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   // info from table to application
   connect( this, &QgsAttributeTableDialog::saveEdits, this, [ = ] { QgisApp::instance()->saveEdits(); } );
 
-  const bool isDocked = settings.value( QStringLiteral( "qgis/dockAttributeTable" ), false ).toBool();
+  const bool isDocked = initiallyDocked ? *initiallyDocked : settings.value( QStringLiteral( "qgis/dockAttributeTable" ), false ).toBool();
   mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, windowTitle(), this, QgisApp::instance(),
-      Qt::BottomDockWidgetArea,  QStringList(), true, QStringLiteral( "Windows/BetterAttributeTable/geometry" ) );
+      Qt::BottomDockWidgetArea,  QStringList(), !initiallyDocked, QStringLiteral( "Windows/BetterAttributeTable/geometry" ) );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, [ = ]()
   {
     close();

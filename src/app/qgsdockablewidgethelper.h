@@ -51,7 +51,7 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
 
     //! Reads the dimensions of both the dock widget and the top level window
     void writeXml( QDomElement &viewDom );
-    void readXml( QDomElement &viewDom );
+    void readXml( const QDomElement &viewDom );
 
     //! Sets the widget placed inside the dock widget or the window
     void setWidget( QWidget *widget );

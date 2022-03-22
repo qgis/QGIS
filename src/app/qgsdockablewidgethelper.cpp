@@ -96,7 +96,7 @@ void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
   viewDom.setAttribute( QStringLiteral( "d_height" ), mDialogGeometry.height() );
 }
 
-void QgsDockableWidgetHelper::readXml( QDomElement &viewDom )
+void QgsDockableWidgetHelper::readXml( const QDomElement &viewDom )
 {
   {
     int x = viewDom.attribute( QStringLiteral( "d_x" ), QStringLiteral( "0" ) ).toInt();
