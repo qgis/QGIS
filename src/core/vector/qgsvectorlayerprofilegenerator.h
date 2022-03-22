@@ -32,6 +32,8 @@ class QgsVectorLayer;
 class QgsVectorLayerFeatureSource;
 class QgsAbstractTerrainProvider;
 class QgsGeos;
+class QgsLineString;
+class QgsPolygon;
 
 #define SIP_NO_FILE
 
@@ -92,8 +94,13 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
 
     bool generateProfileForPoints();
     bool generateProfileForLines();
+    bool generateProfileForPolygons();
 
+    double terrainHeight( double x, double y );
     double featureZToHeight( double x, double y, double z );
+
+    void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid );
+    bool clampAltitudes( QgsPolygon *polygon );
 
     std::unique_ptr< QgsCurve > mProfileCurve;
     std::unique_ptr< QgsGeos > mProfileCurveEngine;
