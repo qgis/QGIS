@@ -207,8 +207,8 @@ class Repositories(QObject):
 
     def urlParams(self) -> str:
         """ return GET parameters to be added to every request """
-        # Strip down the point release segment from the version string
-        return "?qgis={}".format(re.sub(r'\.\d*$', '', pyQgisVersion()))
+        # Add full version string as value for the qgis key
+        return "?qgis={}".format(pyQgisVersion())
 
     def setRepositoryData(self, reposName: str, key: str, value):
         """ write data to the mRepositories dict """
