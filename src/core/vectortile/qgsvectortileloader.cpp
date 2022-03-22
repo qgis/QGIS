@@ -170,7 +170,7 @@ QString QgsVectorTileLoader::error() const
 
 //////
 
-QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QString &sourceType, const QString &sourcePath, const QgsTileMatrix &tileMatrix, const QPointF &viewCenter, const QgsTileRange &range, const QString &authid, const QgsHttpHeaders &headers )
+QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QString &sourceType, const QString &sourcePath, const QgsTileMatrix &tileMatrix, const QPointF &viewCenter, const QgsTileRange &range, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback )
 {
   QList<QgsVectorTileRawData> rawTiles;
 
@@ -183,11 +183,17 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
     Q_ASSERT( res );
   }
 
+  if ( feedback && feedback->isCanceled() )
+    return {};
+
   QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, tileMatrix.zoomLevel() );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
-    QByteArray rawData = isUrl ? loadFromNetwork( id, tileMatrix, sourcePath, authid, headers ) : loadFromMBTiles( id, mbReader );
+    if ( feedback && feedback->isCanceled() )
+      return rawTiles;
+
+    QByteArray rawData = isUrl ? loadFromNetwork( id, tileMatrix, sourcePath, authid, headers, feedback ) : loadFromMBTiles( id, mbReader, feedback );
     if ( !rawData.isEmpty() )
     {
       rawTiles.append( QgsVectorTileRawData( id, rawData ) );
@@ -196,7 +202,7 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   return rawTiles;
 }
 
-QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers )
+QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback )
 {
   QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
   QNetworkRequest nr;
@@ -207,7 +213,7 @@ QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const Qgs
   QgsBlockingNetworkRequest req;
   req.setAuthCfg( authid );
   QgsDebugMsgLevel( QStringLiteral( "Blocking request: " ) + url, 2 );
-  QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
+  QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr, false, feedback );
   if ( errCode != QgsBlockingNetworkRequest::NoError )
   {
     QgsDebugMsg( QStringLiteral( "Request failed: " ) + url );
@@ -219,7 +225,7 @@ QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const Qgs
 }
 
 
-QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMbTiles &mbTileReader )
+QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMbTiles &mbTileReader, QgsFeedback *feedback )
 {
   // MBTiles uses TMS specs with Y starting at the bottom while XYZ uses Y starting at the top
   int rowTMS = pow( 2, id.zoomLevel() ) - id.row() - 1;
@@ -229,6 +235,9 @@ QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMbTile
     QgsDebugMsg( QStringLiteral( "Failed to get tile " ) + id.toString() );
     return QByteArray();
   }
+
+  if ( feedback && feedback->isCanceled() )
+    return QByteArray();
 
   QByteArray data;
   if ( !QgsMbTiles::decodeGzip( gzippedTileData, data ) )
