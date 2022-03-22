@@ -32,6 +32,8 @@ endif()
 
 set(UNTWINE_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/BuPyramid.cpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/bu/CopcSupport.cpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/bu/OctantInfo.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/Processor.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PyramidManager.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/Stats.cpp
@@ -44,6 +46,7 @@ set(UNTWINE_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Reprocessor.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Writer.cpp
 
+  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Las.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/MapFile.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ProgressWriter.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ThreadPool.cpp
@@ -52,6 +55,7 @@ set(UNTWINE_SRCS
 
 set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/BuPyramid.hpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/bu/CopcSupport.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/FileInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/OctantInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PointAccessor.hpp
@@ -72,6 +76,7 @@ set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Common.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/FileDimInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/GridKey.hpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Las.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/MapFile.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Point.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ProgressWriter.hpp
@@ -88,6 +93,27 @@ set(UNTWINE_INCLUDE_DIRS
   ${CMAKE_SOURCE_DIR}/untwine/api
   ${CMAKE_BINARY_DIR}/untwine
 )
+
+if (NOT LazPerf_FOUND)
+  set(UNTWINE_SRCS
+    ${UNTWINE_SRCS}
+    ${CMAKE_SOURCE_DIR}/external/lazperf/charbuf.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/filestream.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/writers.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_gpstime10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_nir14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb14.cpp
+  )
+endif()
 
 ########################################################
 # Build
@@ -112,6 +138,13 @@ target_link_libraries (untwine
   Threads::Threads
 )
 target_include_directories(untwine PRIVATE ${UNTWINE_INCLUDE_DIRS})
+
+if (LazPerf_FOUND)
+  # Use system laz-perf
+  target_include_directories(untwine PRIVATE ${LazPerf_INCLUDE_DIR})
+else()
+  target_include_directories(untwine PRIVATE ${CMAKE_SOURCE_DIR}/external)
+endif()
 
 add_library (provider_pdal MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 

@@ -1,5 +1,5 @@
 /*****************************************************************************
- *   Copyright (c) 2020, Hobu, Inc. (info@hobu.co)                           *
+ *   Copyright (c) 2021, Hobu, Inc. (info@hobu.co)                           *
  *                                                                           *
  *   All rights reserved.                                                    *
  *                                                                           *
@@ -10,47 +10,12 @@
  *                                                                           *
  ****************************************************************************/
 
-
-#pragma once
-
-#include <string>
-#include <unordered_map>
-#include <vector>
-
-#include "PyramidManager.hpp"
-
-namespace pdal
-{
-    class ProgramArgs;
-}
+#include <pdal/Dimension.hpp>
 
 namespace untwine
 {
 
-struct Options;
-class ProgressWriter;
+const pdal::Dimension::IdList& pdrfDims(int pdrf);
+const pdal::Dimension::IdList& extentDims(int pdrf);
 
-namespace bu
-{
-
-class FileInfo;
-
-class BuPyramid
-{
-public:
-    BuPyramid(BaseInfo& common);
-    void run(ProgressWriter& progress);
-
-private:
-    void getInputFiles();
-    void readBaseInfo();
-    size_t queueWork();
-    void writeInfo();
-
-    BaseInfo m_b;
-    PyramidManager m_manager;
-    std::unordered_map<VoxelKey, FileInfo> m_allFiles;
-};
-
-} // namespace bu
 } // namespace untwine

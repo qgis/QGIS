@@ -55,8 +55,7 @@ public:
         m_bounds.maxz = m_bounds.minz + m_zWidth;
 
         // Determine spacing between points.
-//        m_spacing = minWidth() / 128.0;
-        m_spacing = maxWidth() / 128.0;
+        m_spacing = maxWidth() / CellCount;
 
         // Make the spacing smaller than what we expect as the final spacing since we're
         // going to select points from the grid for the parent.

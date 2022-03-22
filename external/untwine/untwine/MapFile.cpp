@@ -30,11 +30,6 @@
 
 #include "MapFile.hpp"
 
-#ifdef _MSC_VER
-#include <io.h>
-#include <fcntl.h>
-#endif
-
 namespace untwine
 {
 
