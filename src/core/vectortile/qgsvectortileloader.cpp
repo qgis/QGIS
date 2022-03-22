@@ -242,7 +242,6 @@ QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMbTile
   QByteArray gzippedTileData = mbTileReader.tileData( id.zoomLevel(), id.column(), rowTMS );
   if ( gzippedTileData.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Failed to get tile " ) + id.toString() );
     return QByteArray();
   }
 
@@ -265,7 +264,6 @@ QByteArray QgsVectorTileLoader::loadFromVtpk( const QgsTileXYZ &id, QgsVtpkTiles
   QByteArray tileData = vtpkTileReader.tileData( id.zoomLevel(), id.column(), id.row() );
   if ( tileData.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Failed to get tile " ) + id.toString() );
     return QByteArray();
   }
   return tileData;
