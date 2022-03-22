@@ -95,17 +95,22 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
       // first do the field names
       if ( format == AttributesWithWKT )
       {
-        textFields += QLatin1String( "wkt_geom" );
-        htmlFields += QLatin1String( "<td>wkt_geom</td>" );
+        // only include the "wkt_geom" field IF we have other fields -- otherwise it's redundant and we should just set the clipboard to WKT text directly
+        if ( !mFeatureFields.isEmpty() )
+          textFields += QStringLiteral( "wkt_geom" );
+
+        htmlFields += QStringLiteral( "<td>wkt_geom</td>" );
       }
 
-      const auto constMFeatureFields = mFeatureFields;
-      for ( const QgsField &field : constMFeatureFields )
+      textFields.reserve( mFeatureFields.size() );
+      htmlFields.reserve( mFeatureFields.size() );
+      for ( const QgsField &field : mFeatureFields )
       {
         textFields += field.name();
         htmlFields += QStringLiteral( "<td>%1</td>" ).arg( field.name() );
       }
-      textLines += textFields.join( QLatin1Char( '\t' ) );
+      if ( !textFields.empty() )
+        textLines += textFields.join( QLatin1Char( '\t' ) );
       htmlLines += htmlFields.join( QString() );
       textFields.clear();
       htmlFields.clear();
