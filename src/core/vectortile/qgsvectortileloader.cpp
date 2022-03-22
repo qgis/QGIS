@@ -187,7 +187,12 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
     return {};
 
   QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, tileMatrix.zoomLevel() );
-  QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
+
+  // if a tile matrix results in a HUGE number of tile requests, we skip the sort -- it can be expensive
+  if ( tiles.size() < 10000 )
+    QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
+
+  rawTiles.reserve( tiles.size() );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
     if ( feedback && feedback->isCanceled() )
