@@ -24,7 +24,7 @@ namespace bu
 class FileInfo
 {
 public:
-    FileInfo(const std::string& filename, size_t numPoints) :
+    FileInfo(const std::string& filename, int numPoints) :
         m_filename(filename), m_numPoints(numPoints)
     {}
 

@@ -73,7 +73,7 @@ void Grid::resetLevel(int level)
 {
     // We have to have at least level 1 or things break when sampling.
     m_maxLevel = (std::max)(level, 1);
-    m_gridSize = (int)std::pow(2, level);
+    m_gridSize = (int)std::pow(2, m_maxLevel);
 
     if (m_cubic)
     {

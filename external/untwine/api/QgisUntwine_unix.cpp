@@ -125,16 +125,34 @@ uint32_t readString(int fd, std::string& s)
 
 void QgisUntwine::readPipe() const
 {
+    int32_t msgId;
+
     // Read messages until the pipe has been drained.
     while (true)
     {
-        ssize_t size = read(m_progressFd, &m_percent, sizeof(m_percent));
+        ssize_t size = read(m_progressFd, &msgId, sizeof(msgId));
         // If we didn't read the full size, just return.
         if (size != sizeof(m_percent))
             return;
 
-        // Read the string, waiting as necessary.
-        if (readString(m_progressFd, m_progressMsg) != 0)
+        if (msgId == ProgressMsg)
+        {
+            ssize_t size = read(m_progressFd, &m_percent, sizeof(m_percent));
+            // If we didn't read the full size, just return.
+            if (size != sizeof(m_percent))
+                break;
+
+            // Read the string, waiting as necessary.
+            if (readString(m_progressFd, m_progressMsg) != 0)
+                break;
+        }
+        else if (msgId == ErrorMsg)
+        {
+            // Read the error string, waiting as necessary.
+            if (readString(m_progressFd, m_errorMsg) != 0)
+                break;
+        }
+        else
             break;
     }
 }
