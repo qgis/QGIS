@@ -28,7 +28,7 @@ void BuPyramid::run(ProgressWriter& progress)
 {
     getInputFiles();
     size_t count = queueWork();
-    
+
     progress.setPercent(.6);
     progress.setIncrement(.4 / count);
     m_manager.setProgress(&progress);
@@ -65,7 +65,6 @@ void BuPyramid::writeInfo()
 
     std::ofstream out(m_b.opts.outputName + "/ept.json");
     int maxdigits = std::numeric_limits<double>::max_digits10;
-    int basedigits = out.precision();
 
     out << "{\n";
 
