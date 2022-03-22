@@ -232,7 +232,6 @@ QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMbTile
   QByteArray gzippedTileData = mbTileReader.tileData( id.zoomLevel(), id.column(), rowTMS );
   if ( gzippedTileData.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Failed to get tile " ) + id.toString() );
     return QByteArray();
   }
 
