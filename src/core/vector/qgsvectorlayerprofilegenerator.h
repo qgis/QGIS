@@ -31,6 +31,7 @@ class QgsCurve;
 class QgsVectorLayer;
 class QgsVectorLayerFeatureSource;
 class QgsAbstractTerrainProvider;
+class QgsGeos;
 
 #define SIP_NO_FILE
 
@@ -90,10 +91,13 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
   private:
 
     bool generateProfileForPoints();
+    bool generateProfileForLines();
 
     double featureZToHeight( double x, double y, double z );
 
     std::unique_ptr< QgsCurve > mProfileCurve;
+    std::unique_ptr< QgsGeos > mProfileCurveEngine;
+
     std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
 
     std::unique_ptr< QgsCurve > mTransformedCurve;

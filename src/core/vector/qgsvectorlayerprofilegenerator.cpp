@@ -108,6 +108,9 @@ bool QgsVectorLayerProfileGenerator::generateProfile()
 
   mResults = std::make_unique< QgsVectorLayerProfileResults >();
 
+  mProfileCurveEngine.reset( new QgsGeos( mProfileCurve.get() ) );
+  mProfileCurveEngine->prepareGeometry();
+
   switch ( QgsWkbTypes::geometryType( mWkbType ) )
   {
     case QgsWkbTypes::PointGeometry:
@@ -115,22 +118,23 @@ bool QgsVectorLayerProfileGenerator::generateProfile()
         return false;
       break;
 
+    case QgsWkbTypes::LineGeometry:
+      if ( !generateProfileForLines() )
+        return false;
+
+      break;
+
     case QgsWkbTypes::UnknownGeometry:
     case QgsWkbTypes::NullGeometry:
       return false;
   }
 
-  std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( mTransformedCurve.get() ) );
-  curveEngine->prepareGeometry();
-
   // convert x/y values back to distance/height values
-  QgsGeos originalCurveGeos( mProfileCurve.get() );
-  originalCurveGeos.prepareGeometry();
   mResults->results.reserve( mResults->rawPoints.size() );
   QString lastError;
   for ( const QgsPoint &pixel : std::as_const( mResults->rawPoints ) )
   {
-    const double distance = originalCurveGeos.lineLocatePoint( pixel, &lastError );
+    const double distance = mProfileCurveEngine->lineLocatePoint( pixel, &lastError );
 
     QgsVectorLayerProfileResults::Result res;
     res.distance = distance;
@@ -152,6 +156,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
   QgsFeatureRequest request;
   request.setDestinationCrs( mTargetCrs, mTransformContext );
   request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), mTolerance );
+  request.setNoAttributes();
 
   auto processPoint = [this]( const QgsPoint * point )
   {
@@ -184,6 +189,73 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
     else
     {
       processPoint( qgsgeometry_cast< const QgsPoint * >( g.constGet() ) );
+    }
+  }
+  return true;
+}
+
+bool QgsVectorLayerProfileGenerator::generateProfileForLines()
+{
+  // get features from layer
+  QgsFeatureRequest request;
+  request.setDestinationCrs( mTargetCrs, mTransformContext );
+  request.setFilterRect( mProfileCurve->boundingBox() );
+  request.setNoAttributes();
+
+  auto processCurve = [this]( const QgsCurve * curve )
+  {
+    QString error;
+    std::unique_ptr< QgsAbstractGeometry > intersection( mProfileCurveEngine->intersection( curve, &error ) );
+    if ( !intersection )
+      return;
+
+    QgsGeos curveGeos( curve );
+    curveGeos.prepareGeometry();
+
+    for ( auto it = intersection->const_parts_begin(); it != intersection->const_parts_end(); ++it )
+    {
+      if ( const QgsPoint *intersectionPoint = qgsgeometry_cast< const QgsPoint * >( *it ) )
+      {
+        // unfortunately we need to do some work to interpolate the z value for the line -- GEOS doesn't give us this
+        const double distance = curveGeos.lineLocatePoint( *intersectionPoint, &error );
+        std::unique_ptr< QgsPoint > interpolatedPoint( curve->interpolatePoint( distance ) );
+
+        const double height = featureZToHeight( interpolatedPoint->x(), interpolatedPoint->y(), interpolatedPoint->z() );
+        mResults->rawPoints.append( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
+        if ( mExtrusionEnabled )
+        {
+          mResults->geometries.append( QgsGeometry( new QgsLineString( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ),
+                                       QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height + mExtrusionHeight ) ) ) );
+        }
+        else
+        {
+          mResults->geometries.append( QgsGeometry( new QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) ) );
+        }
+      }
+    }
+  };
+
+  QgsFeature feature;
+  QgsFeatureIterator it = mSource->getFeatures( request );
+  while ( it.nextFeature( feature ) )
+  {
+    if ( !mProfileCurveEngine->intersects( feature.geometry().constGet() ) )
+      continue;
+
+    const QgsGeometry g = feature.geometry();
+    if ( g.isMultipart() )
+    {
+      for ( auto it = g.const_parts_begin(); it != g.const_parts_end(); ++it )
+      {
+        if ( !mProfileCurveEngine->intersects( *it ) )
+          continue;
+
+        processCurve( qgsgeometry_cast< const QgsCurve * >( *it ) );
+      }
+    }
+    else
+    {
+      processCurve( qgsgeometry_cast< const QgsCurve * >( g.constGet() ) );
     }
   }
   return true;
