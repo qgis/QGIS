@@ -108,11 +108,6 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
       break;
   }
 
-  if ( !mFeatureList.isEmpty() )
-    mMainFeatureId = mFeatureList.first().id();
-  else
-    mMainFeatureId = FID_NULL;
-
   connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
   connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
 
@@ -131,11 +126,6 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog()
 QgsMergeAttributesDialog::~QgsMergeAttributesDialog()
 {
   delete mSelectionRubberBand;
-}
-
-QgsFeatureId QgsMergeAttributesDialog::mainFeatureId() const
-{
-  return mMainFeatureId;
 }
 
 void QgsMergeAttributesDialog::setAttributeTableConfig( const QgsAttributeTableConfig &config )
@@ -190,7 +180,8 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     mFieldToColumnMap[ mFields.at( idx ).name() ] = col;
 
     QComboBox *cb = createMergeComboBox( mFields.at( idx ).type() );
-    if ( mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    if ( ! mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mFields.fieldOriginIndex( idx ) ) &&
+         mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
     {
       cb->setCurrentIndex( cb->findData( "skip" ) );
     }
@@ -464,7 +455,8 @@ void QgsMergeAttributesDialog::setAllAttributesFromFeature( QgsFeatureId feature
     if ( !currentComboBox )
       continue;
 
-    if ( mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    if ( ! mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mVectorLayer->fields().fieldOriginIndex( i ) ) &&
+         mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
     {
       currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "skip" ) ) );
     }
@@ -473,8 +465,6 @@ void QgsMergeAttributesDialog::setAllAttributesFromFeature( QgsFeatureId feature
       currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
     }
   }
-
-  mMainFeatureId = featureId;
 }
 
 QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary::Statistic stat )

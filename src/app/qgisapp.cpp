@@ -10342,12 +10342,19 @@ void QgisApp::mergeSelectedFeatures()
   QgsAttributes attrs = d.mergedAttributes();
   QgsAttributeMap newAttributes;
   QString errorMessage;
+  QgsFeatureId mergeFeatureId = FID_NULL;
   for ( int i = 0; i < attrs.count(); ++i )
   {
     QVariant val = attrs.at( i );
     bool isDefaultValue = vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
                           vl->dataProvider() &&
                           vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( i ) ) == val;
+    bool isPrimaryKey =  vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
+                         vl->dataProvider() &&
+                         vl->dataProvider()->pkAttributeIndexes().contains( vl->fields().fieldOriginIndex( i ) );
+
+    if ( isPrimaryKey && !isDefaultValue )
+      mergeFeatureId = val.toLongLong();
 
     // convert to destination data type
     if ( !isDefaultValue && !vl->fields().at( i ).convertCompatible( val, &errorMessage ) )
@@ -10362,18 +10369,37 @@ void QgisApp::mergeSelectedFeatures()
 
   vl->beginEditCommand( tr( "Merged features" ) );
 
+  QgsFeature mergeFeature;
+  if ( mergeFeatureId == FID_NULL )
+  {
+    // Create new feature
+    mergeFeature = QgsVectorLayerUtils::createFeature( vl, unionGeom, newAttributes );
+  }
+  else
+  {
+    // Merge into existing feature
+    featureIdsAfter.remove( mergeFeatureId );
+  }
+
   // Delete other features
-  QgsFeatureId mainFeature = d.mainFeatureId();
-  featureIdsAfter.remove( mainFeature );
   QgsFeatureIds::const_iterator feature_it = featureIdsAfter.constBegin();
   for ( ; feature_it != featureIdsAfter.constEnd(); ++feature_it )
   {
     vl->deleteFeature( *feature_it );
   }
 
-  // Modify merge feature
-  vl->changeGeometry( mainFeature, unionGeom );
-  vl->changeAttributeValues( mainFeature, newAttributes );
+
+  if ( mergeFeatureId == FID_NULL )
+  {
+    // Add the new feature
+    vl->addFeature( mergeFeature );
+  }
+  else
+  {
+    // Modify merge feature
+    vl->changeGeometry( mergeFeatureId, unionGeom );
+    vl->changeAttributeValues( mergeFeatureId, newAttributes );
+  }
 
   vl->endEditCommand();
 
