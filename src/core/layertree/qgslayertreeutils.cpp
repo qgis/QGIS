@@ -472,7 +472,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerBelow( QgsLayerTreeGroup *group
   }
   // insert the new layer
   QgsLayerTreeGroup *parent = static_cast<QgsLayerTreeGroup *>( inTree->parent() ) ? static_cast<QgsLayerTreeGroup *>( inTree->parent() ) : group;
-  return parent->insertLayer( idx, layerToInsert );
+  return parent->insertLayer( idx + 1, layerToInsert );
 }
 
 static void _collectMapLayers( const QList<QgsLayerTreeNode *> &nodes, QSet<QgsMapLayer *> &layersSet )
