@@ -29,6 +29,8 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   setupUi( this );
   setWindowTitle( tr( "Uh-oh!" ) );
 
+  connect( mUserFeedbackText, &QPlainTextEdit::textChanged, this, &QgsCrashDialog::userFeedbackText_textChanged );
+
   mCrashHeaderMessage->setText( tr( "QGIS ended unexpectedly" ) );
   connect( mReloadQGISButton, &QPushButton::clicked, this, &QgsCrashDialog::reloadQGIS );
   connect( mCopyReportButton, &QPushButton::clicked, this, &QgsCrashDialog::createBugReport );
@@ -98,7 +100,7 @@ void QgsCrashDialog::showReportWidget()
 {
 }
 
-void QgsCrashDialog::on_mUserFeedbackText_textChanged()
+void QgsCrashDialog::userFeedbackText_textChanged()
 {
   mCopyReportButton->setEnabled( !mUserFeedbackText->toPlainText().isEmpty()
                                  || ( mPythonFault.cause != QgsCrashReport::LikelyPythonFaultCause::NotPython
