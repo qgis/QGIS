@@ -17,18 +17,24 @@
 
 #include "qgsdockwidget.h"
 #include "qgsapplication.h"
-
+#include "qgisapp.h"
 #include <QLayout>
+#include <QAction>
 
-QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow )
+QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow,
+    Qt::DockWidgetArea defaultDockArea,
+    const QStringList &tabifyWith,
+    bool raiseTab, const QString &windowGeometrySettingsKey )
   : QObject( nullptr )
   , mWidget( widget )
   , mDialogGeometry( 0, 0, 0, 0 )
-  , mDockGeometry( QRect() )
-  , mIsDockFloating( true )
-  , mDockArea( Qt::RightDockWidgetArea )
+  , mIsDockFloating( defaultDockArea == Qt::DockWidgetArea::NoDockWidgetArea )
+  , mDockArea( defaultDockArea == Qt::DockWidgetArea::NoDockWidgetArea ? Qt::DockWidgetArea::RightDockWidgetArea : defaultDockArea )
   , mWindowTitle( windowTitle )
   , mOwnerWindow( ownerWindow )
+  , mTabifyWith( tabifyWith )
+  , mRaiseTab( raiseTab )
+  , mWindowGeometrySettingsKey( windowGeometrySettingsKey )
 {
   toggleDockMode( isDocked );
 }
@@ -51,6 +57,11 @@ QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
   if ( mDialog )
   {
     mDialogGeometry = mDialog->geometry();
+
+    if ( !mWindowGeometrySettingsKey.isEmpty() )
+    {
+      QgsSettings().setValue( mWindowGeometrySettingsKey, mDialog->saveGeometry() );
+    }
 
     mDialog->layout()->removeWidget( mWidget );
     mDialog->deleteLater();
@@ -152,6 +163,10 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
 
   if ( mDialog )
   {
+    // going from window -> dock, so save current window geometry
+    if ( !mWindowGeometrySettingsKey.isEmpty() )
+      QgsSettings().setValue( mWindowGeometrySettingsKey, mDialog->saveGeometry() );
+
     mDialogGeometry = mDialog->geometry();
 
     mDialog->layout()->removeWidget( mWidget );
@@ -190,10 +205,19 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins( 0, 0, 0, 0 );
     vl->addWidget( mWidget );
-    if ( mDialogGeometry.isEmpty() )
-      mDialog->setGeometry( mDockGeometry );
+
+    if ( !mWindowGeometrySettingsKey.isEmpty() )
+    {
+      QgsSettings settings;
+      mDialog->restoreGeometry( settings.value( mWindowGeometrySettingsKey ).toByteArray() );
+    }
     else
-      mDialog->setGeometry( mDialogGeometry );
+    {
+      if ( !mDockGeometry.isEmpty() )
+        mDialog->setGeometry( mDockGeometry );
+      else if ( !mDialogGeometry.isEmpty() )
+        mDialog->setGeometry( mDialogGeometry );
+    }
     mDialog->setLayout( vl );
     mDialog->raise();
     mDialog->show();
@@ -204,6 +228,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
       emit closed();
     } );
   }
+  emit dockModeToggled( docked );
 }
 
 void QgsDockableWidgetHelper::setWindowTitle( const QString &title )
@@ -223,12 +248,20 @@ void QgsDockableWidgetHelper::setupDockWidget()
 {
   if ( !mDock )
     return;
+
   mDock->setFloating( mIsDockFloating );
   if ( mDockGeometry.isEmpty() )
   {
     mDockGeometry = QRect( static_cast< int >( mWidget->rect().width() * 0.75 ), static_cast< int >( mWidget->rect().height() * 0.5 ), 400, 400 );
   }
-  mOwnerWindow->addDockWidget( mDockArea, mDock );
+  if ( mRaiseTab )
+  {
+    QgisApp::instance()->addTabifiedDockWidget( mDockArea, mDock, mTabifyWith, mRaiseTab );
+  }
+  else
+  {
+    mOwnerWindow->addDockWidget( mDockArea, mDock );
+  }
   QgsApplication::processEvents(); // required to resize properly!
   mDock->setGeometry( mDockGeometry );
 }
@@ -243,4 +276,16 @@ QToolButton *QgsDockableWidgetHelper::createDockUndockToolButton()
 
   connect( toggleButton, &QToolButton::toggled, this, &QgsDockableWidgetHelper::toggleDockMode );
   return toggleButton;
+}
+
+QAction *QgsDockableWidgetHelper::createDockUndockAction( const QString &title, QWidget *parent )
+{
+  QAction *toggleAction = new QAction( title, parent );
+  toggleAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mDockify.svg" ) ) );
+  toggleAction->setCheckable( true );
+  toggleAction->setChecked( mIsDocked );
+  toggleAction->setEnabled( true );
+
+  connect( toggleAction, &QAction::toggled, this, &QgsDockableWidgetHelper::toggleDockMode );
+  return toggleAction;
 }
