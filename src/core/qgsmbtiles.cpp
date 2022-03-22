@@ -162,7 +162,8 @@ QByteArray QgsMbTiles::tileData( int z, int x, int y )
 
   if ( preparedStatement.step() != SQLITE_ROW )
   {
-    QgsDebugMsg( QStringLiteral( "MBTile not found: z=%1 x=%2 y=%3" ).arg( z ).arg( x ).arg( y ) );
+    // this is not entirely unexpected -- user may have just requested a tile outside of the extent of the mbtiles package
+    QgsDebugMsgLevel( QStringLiteral( "MBTile not found: z=%1 x=%2 y=%3" ).arg( z ).arg( x ).arg( y ), 2 );
     return QByteArray();
   }
 
