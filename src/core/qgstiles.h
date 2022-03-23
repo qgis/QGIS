@@ -24,6 +24,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsreadwritecontext.h"
 
+class QgsRenderContext;
+
 /**
  * \ingroup core
  * \brief Stores coordinates of a tile in a tile matrix set. Tile matrix is identified
@@ -288,6 +290,25 @@ class CORE_EXPORT QgsTileMatrixSet
      * Values are constrained to the zoom levels between minimumZoom() and maximumZoom().
      */
     int scaleToZoomLevel( double scale ) const;
+
+    /**
+     * Calculates the correct scale to use for the tiles when rendered using the specified render \a context.
+     *
+     * \since QGIS 3.26
+     */
+    double scaleForRenderContext( const QgsRenderContext &context ) const;
+
+    /**
+     * Calculates the correct scale to use for the tiles when rendered using the specified map properties.
+     *
+     * \since QGIS 3.26
+     */
+    double calculateTileScaleForMap( double actualMapScale,
+                                     const QgsCoordinateReferenceSystem &mapCrs,
+                                     const QgsRectangle &mapExtent,
+                                     const QSize mapSize,
+                                     const double mapDpi
+                                   ) const;
 
     /**
      * Reads the set from an XML \a element.
