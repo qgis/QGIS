@@ -359,6 +359,18 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
 
   lazperf::reader::generic_file f( file );
 
+  // output file formats from entwine/untwine:
+  // - older versions write LAZ 1.2 files with point format 3
+  // - newer versions write LAZ 1.4 files with point formats 6, 7 or 8
+
+  int lasPointFormat = f.header().pointFormat();
+  if ( lasPointFormat != 3 && lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
+  {
+    QgsDebugMsg( QStringLiteral( "Unexpected point format record (%1) - only 3, 6, 7, 8 are supported" ).arg( lasPointFormat ) );
+    return nullptr;
+  }
+  bool isLas14 = ( lasPointFormat == 6 || lasPointFormat == 7 || lasPointFormat == 8 );
+
   const size_t count = f.header().point_count;
   const QgsVector3D scale( f.header().scale.x, f.header().scale.y, f.header().scale.z );
   const QgsVector3D offset( f.header().offset.x, f.header().offset.y, f.header().offset.z );
@@ -517,62 +529,83 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     return block.release();
   }
 
-  lazperf::las::point10 p;
+  lazperf::las::point10 p10;
   lazperf::las::gpstime gps;
   lazperf::las::rgb rgb;
+  lazperf::las::point14 p14;
 
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
-    p.unpack( buf );
-    gps.unpack( buf + sizeof( lazperf::las::point10 ) );
-    rgb.unpack( buf + sizeof( lazperf::las::point10 ) + sizeof( lazperf::las::gpstime ) );
 
+    // LAS 1.2 file support
+    if ( lasPointFormat == 3 )   // base + gps time + rgb
+    {
+      p10.unpack( buf );
+      gps.unpack( buf + sizeof( lazperf::las::point10 ) );
+      rgb.unpack( buf + sizeof( lazperf::las::point10 ) + sizeof( lazperf::las::gpstime ) );
+    }
+    // LAS 1.4 file support
+    else if ( lasPointFormat == 6 )  // base (includes gps time)
+    {
+      p14.unpack( buf );
+    }
+    else if ( lasPointFormat == 7 ) // base + rgb
+    {
+      p14.unpack( buf );
+      rgb.unpack( buf + sizeof( lazperf::las::point14 ) );
+    }
+    else if ( lasPointFormat == 8 ) //  base + rgb + near infra red
+    {
+      p14.unpack( buf );
+      rgb.unpack( buf + sizeof( lazperf::las::point14 ) );
+      // TODO: load NIR channel - need some testing data!
+    }
 
     for ( const RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
     {
       switch ( requestedAttribute.attribute )
       {
         case LazAttribute::X:
-          _storeToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, p.x );
+          _storeToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.x() : p10.x );
           break;
         case LazAttribute::Y:
-          _storeToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, p.y );
+          _storeToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.y() : p10.y );
           break;
         case LazAttribute::Z:
-          _storeToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, p.z );
+          _storeToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.z() : p10.z );
           break;
         case LazAttribute::Classification:
-          _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, p.classification );
+          _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.classification() : p10.classification );
           break;
         case LazAttribute::Intensity:
-          _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, p.intensity );
+          _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.intensity() : p10.intensity );
           break;
         case LazAttribute::ReturnNumber:
-          _storeToStream<unsigned char>( dataBuffer,  outputOffset, requestedAttribute.type, p.return_number );
+          _storeToStream<unsigned char>( dataBuffer,  outputOffset, requestedAttribute.type, isLas14 ? p14.returnNum() : p10.return_number );
           break;
         case LazAttribute::NumberOfReturns:
-          _storeToStream<unsigned char>( dataBuffer,  outputOffset, requestedAttribute.type, p.number_of_returns_of_given_pulse );
+          _storeToStream<unsigned char>( dataBuffer,  outputOffset, requestedAttribute.type, isLas14 ? p14.numReturns() : p10.number_of_returns_of_given_pulse );
           break;
         case LazAttribute::ScanDirectionFlag:
-          _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, p.scan_direction_flag );
+          _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.scanDirFlag() : p10.scan_direction_flag );
           break;
         case LazAttribute::EdgeOfFlightLine:
-          _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, p.edge_of_flight_line );
+          _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.eofFlag() : p10.edge_of_flight_line );
           break;
         case LazAttribute::ScanAngleRank:
-          _storeToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, p.scan_angle_rank );
+          _storeToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.scanAngle() : p10.scan_angle_rank );
           break;
         case LazAttribute::UserData:
-          _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, p.user_data );
+          _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.userData() : p10.user_data );
           break;
         case LazAttribute::PointSourceId:
-          _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, p.point_source_ID );
+          _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.pointSourceID() : p10.point_source_ID );
           break;
         case LazAttribute::GpsTime:
           // lazperf internally stores gps value as int64 field, but in fact it is a double value
           _storeToStream<double>( dataBuffer, outputOffset, requestedAttribute.type,
-                                  *reinterpret_cast<const double *>( reinterpret_cast<const void *>( &gps.value ) ) );
+                                  isLas14 ? p14.gpsTime() : *reinterpret_cast<const double *>( reinterpret_cast<const void *>( &gps.value ) ) );
           break;
         case LazAttribute::Red:
           _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.r );
