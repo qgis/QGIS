@@ -22,7 +22,8 @@ from qgis.core import (
     Qgis,
     QgsRasterDemTerrainProvider,
     QgsFeature,
-    QgsGeometry
+    QgsGeometry,
+    QgsCoordinateTransformContext
 )
 from qgis.testing import start_app, unittest
 
@@ -32,6 +33,17 @@ start_app()
 
 
 class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
+
+    def create_transform_context(self):
+        context = QgsCoordinateTransformContext()
+        # ensure grids are never used, so that we have a common transformation result
+        context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:27700'),
+                                       QgsCoordinateReferenceSystem('EPSG:4326'),
+                                       '+proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1')
+        context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:27700'),
+                                       QgsCoordinateReferenceSystem('EPSG:3857'),
+                                       '+proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84')
+        return context
 
     def testPointGenerationAbsolute(self):
         vl = QgsVectorLayer(os.path.join(unitTestDataPath(), '3d', 'points_with_z.shp'), 'trees')
@@ -43,15 +55,14 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347557.39478182751918212 6632716.59644229710102081, -346435.3875386503059417 6632277.86440025269985199, -346234.1061912341392599 6632242.03022097796201706, -346185.31071307259844616 6632150.53869942482560873)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
 
         generator = vl.createProfileGenerator(req)
         self.assertIsNotNone(generator)
         # the request did not have the crs of the linestring set, so the whole linestring falls outside the vector extent
-
-        # TODO
-        # self.assertFalse(generator.generateProfile())
+        self.assertFalse(generator.generateProfile())
 
         # set correct crs for linestring and re-try
         req.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
@@ -62,23 +73,27 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
         self.assertFalse(results.distanceToHeightMap())
 
-        req.setTolerance(20)
+        req.setTolerance(90)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
         self.assertEqual(results.distanceToHeightMap(),
-                         {167.60402625236236: 274.0, 22.897466329720825: 274.0, 1159.1281061593656: 232.75000000000003,
-                          1171.6873910420782: 235.5, 1197.5553515228498: 241.0, 1245.704759018164: 227.25,
-                          1291.0771889584548: 221.75})
+                         {31.204980351872074: 274.0,
+                          175.61729584080234: 274.0,
+                          1159.1146435170476: 232.75000000000003,
+                          1172.305587759698: 235.5,
+                          1213.405985779005: 241.0,
+                          1223.1786436735406: 227.25,
+                          1242.5349752853108: 221.75})
 
         # lower tolerance
-        req.setTolerance(4.5)
+        req.setTolerance(15)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
         self.assertEqual(results.distanceToHeightMap(),
-                         {167.60402625236236: 274.0, 1171.6873910420782: 235.5, 1197.5553515228498: 241.0})
+                         {31.204980351872074: 274.0, 175.61729584080234: 274.0, 1242.5349752853108: 221.75})
 
     def testPointGenerationTerrain(self):
         """
@@ -96,8 +111,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347557.39478182751918212 6632716.59644229710102081, -346435.3875386503059417 6632277.86440025269985199, -346234.1061912341392599 6632242.03022097796201706, -346185.31071307259844616 6632150.53869942482560873)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
         terrain_provider = QgsRasterDemTerrainProvider()
         terrain_provider.setLayer(rl)
         terrain_provider.setScale(0.3)
@@ -112,13 +128,13 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
         self.assertFalse(results.distanceToHeightMap())
 
-        req.setTolerance(4.5)
+        req.setTolerance(15)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
         self.assertEqual(results.distanceToHeightMap(),
-                         {167.60402625236236: 69.5, 1171.6873910420782: 58.99999999999999, 1197.5553515228498: 60.5})
+                         {1242.5349752853108: 55.24999999999999, 175.61729584080234: 69.5, 31.204980351872074: 69.5})
 
     def testPointGenerationRelative(self):
         """
@@ -136,8 +152,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347557.39478182751918212 6632716.59644229710102081, -346435.3875386503059417 6632277.86440025269985199, -346234.1061912341392599 6632242.03022097796201706, -346185.31071307259844616 6632150.53869942482560873)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
         terrain_provider = QgsRasterDemTerrainProvider()
         terrain_provider.setLayer(rl)
         terrain_provider.setScale(0.3)
@@ -152,12 +169,12 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
         self.assertFalse(results.distanceToHeightMap())
 
-        req.setTolerance(4.5)
+        req.setTolerance(15)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
         self.assertEqual(results.distanceToHeightMap(),
-                         {167.60402625236236: 333.5, 1171.6873910420782: 284.5, 1197.5553515228498: 291.5})
+                         {175.61729584080234: 333.5, 31.204980351872074: 333.5, 1242.5349752853108: 267.0})
 
     def testPointGenerationRelativeExtrusion(self):
         """
@@ -177,8 +194,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347557.39478182751918212 6632716.59644229710102081, -346435.3875386503059417 6632277.86440025269985199, -346234.1061912341392599 6632242.03022097796201706, -346185.31071307259844616 6632150.53869942482560873)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
         terrain_provider = QgsRasterDemTerrainProvider()
         terrain_provider.setLayer(rl)
         terrain_provider.setScale(0.3)
@@ -189,17 +207,17 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
 
-        req.setTolerance(4.5)
+        req.setTolerance(15)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
         self.assertEqual(results.distanceToHeightMap(),
-                         {167.60402625236236: 333.5, 1171.6873910420782: 284.5, 1197.5553515228498: 291.5})
+                         {31.204980351872074: 333.5, 1242.5349752853108: 267.0, 175.61729584080234: 333.5})
 
         self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
-                              ['LineStringZ (-347535.1 6632740.6 333.5, -347535.1 6632740.6 340.5)',
-                               'LineStringZ (-346578.2 6632450.9 284.5, -346578.2 6632450.9 291.5)',
-                               'LineStringZ (-346552.5 6632448.8 291.5, -346552.5 6632448.8 298.5)'])
+                              ['LineStringZ (-347395 6632649.6 333.5, -347395 6632649.6 340.5)',
+                               'LineStringZ (-347533.4 6632692.2 333.5, -347533.4 6632692.2 340.5)',
+                               'LineStringZ (-346399.2 6632265.6 267, -346399.2 6632265.6 274)'])
 
     def testPointGenerationMultiPoint(self):
         vl = QgsVectorLayer('MultipointZ?crs=EPSG:27700', 'trees', 'memory')
@@ -215,16 +233,17 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347557.39478182751918212 6632716.59644229710102081, -346435.3875386503059417 6632277.86440025269985199, -346234.1061912341392599 6632242.03022097796201706, -346185.31071307259844616 6632150.53869942482560873)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
         req.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
-        req.setTolerance(20)
+        req.setTolerance(110)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
 
         results = generator.takeResults()
         self.assertEqual(results.distanceToHeightMap(),
-                         {1158.036781085277: 232.75, 1171.3215208424097: 235.5, 1196.7677444714948: 241.0})
+                         {1158.2304956260512: 232.75, 1172.40455579941: 235.5, 1196.5363452145862: 241.0})
 
     def testLineGenerationAbsolute(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
@@ -246,8 +265,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346576.99897185183363035 6632367.38372825458645821, -346396.02439485350623727 6632344.35087973903864622, -346374.34608158958144486 6632220.09952207934111357)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
 
         generator = vl.createProfileGenerator(req)
         self.assertIsNotNone(generator)
@@ -262,9 +282,12 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
 
         self.assertEqual(results.distanceToHeightMap(),
-                         {1108.6091142774105: 46.0657436711823, 1170.8608501804001: 50.35685788534323,
-                          1261.837923505105: 51.45554352378668, 499.14451783650344: 26.272194098518074,
-                          1032.846388258636: 47.24575163804771, 1060.026172715397: 41.43036484322663})
+                         {675.1684145141339: 27.70645009298969,
+                          1195.7261736364783: 47.5,
+                          1223.14555388009: 41.35889507024898,
+                          1271.9773334822953: 46.20504701630924,
+                          1339.4210174889402: 50.48114999645996,
+                          1444.3849616357052: 51.759809184132266})
 
     def testLineGenerationTerrain(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
@@ -286,8 +309,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346576.99897185183363035 6632367.38372825458645821, -346396.02439485350623727 6632344.35087973903864622, -346374.34608158958144486 6632220.09952207934111357)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
 
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
         self.assertTrue(rl.isValid())
@@ -304,8 +328,12 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
 
         self.assertEqual(results.distanceToHeightMap(),
-                         {1060.026172715397: 50.0, 1170.8608501804001: 58.25, 499.14451783650344: 65.75,
-                          1261.837923505105: 56.0, 1108.6091142774105: 53.75, 1032.846388258636: 49.25})
+                         {675.1684145141339: 66.5,
+                          1195.7261736364783: 49.25,
+                          1223.14555388009: 50.0,
+                          1271.9773334822953: 53.75,
+                          1339.4210174889402: 58.25,
+                          1444.3849616357052: 58.25})
 
     def testLineGenerationRelative(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
@@ -327,8 +355,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346576.99897185183363035 6632367.38372825458645821, -346396.02439485350623727 6632344.35087973903864622, -346374.34608158958144486 6632220.09952207934111357)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
 
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
         self.assertTrue(rl.isValid())
@@ -345,9 +374,12 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
 
         self.assertEqual(results.distanceToHeightMap(),
-                         {1170.8608501804001: 98.60685788534323, 1108.6091142774105: 89.81574367118229,
-                          1261.837923505105: 97.45554352378669, 1060.026172715397: 81.43036484322663,
-                          499.14451783650344: 82.02219409851807, 1032.846388258636: 86.49575163804771})
+                         {675.1684145141339: 84.20645009298968,
+                          1195.7261736364783: 86.75,
+                          1223.14555388009: 81.35889507024898,
+                          1271.9773334822953: 89.95504701630924,
+                          1339.4210174889402: 98.73114999645995,
+                          1444.3849616357052: 100.00980918413227})
 
     def testLineGenerationRelativeExtrusion(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
@@ -371,8 +403,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346576.99897185183363035 6632367.38372825458645821, -346396.02439485350623727 6632344.35087973903864622, -346374.34608158958144486 6632220.09952207934111357)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
 
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
         self.assertTrue(rl.isValid())
@@ -389,17 +422,20 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
 
         self.assertEqual(results.distanceToHeightMap(),
-                         {1170.8608501804001: 98.60685788534323, 1108.6091142774105: 89.81574367118229,
-                          1261.837923505105: 97.45554352378669, 1060.026172715397: 81.43036484322663,
-                          499.14451783650344: 82.02219409851807, 1032.846388258636: 86.49575163804771})
+                         {675.1684145141339: 84.20645009298968,
+                          1195.7261736364783: 86.75,
+                          1223.14555388009: 81.35889507024898,
+                          1271.9773334822953: 89.95504701630924,
+                          1339.4210174889402: 98.73114999645995,
+                          1444.3849616357052: 100.00980918413227})
 
         self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
-                              ['LineStringZ (-346689.8 6632456.6 81.4, -346689.8 6632456.6 88.4)',
-                               'LineStringZ (-346641.4 6632452.4 89.8, -346641.4 6632452.4 96.8)',
-                               'LineStringZ (-346579.4 6632447.1 98.6, -346579.4 6632447.1 105.6)',
-                               'LineStringZ (-346536.6 6632386.8 97.5, -346536.6 6632386.8 104.5)',
-                               'LineStringZ (-346716.9 6632459.1 86.5, -346716.9 6632459.1 93.5)',
-                               'LineStringZ (-347221.2 6632633.7 82, -347221.2 6632633.7 89)'])
+                              ['LineStringZ (-346549.8 6632363.9 81.4, -346549.8 6632363.9 88.4)',
+                               'LineStringZ (-346501.4 6632357.8 90, -346501.4 6632357.8 97)',
+                               'LineStringZ (-346434.5 6632349.2 98.7, -346434.5 6632349.2 105.7)',
+                               'LineStringZ (-346384.6 6632279.1 100, -346384.6 6632279.1 107)',
+                               'LineStringZ (-346577 6632367.4 86.8, -346577 6632367.4 93.8)',
+                               'LineStringZ (-347062.8 6632554.4 84.2, -347062.8 6632554.4 91.2)'])
 
     def testPolygonGenerationAbsolute(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
@@ -421,8 +457,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347701.59207547508412972 6632766.96282589063048363, -346577.00878971704514697 6632369.7371364813297987, -346449.93654899462126195 6632331.81857067719101906, -346383.52035177784273401 6632216.85897350125014782)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
 
         generator = vl.createProfileGenerator(req)
         self.assertIsNotNone(generator)
@@ -437,13 +474,13 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
 
         self.assertEqual(results.distanceToHeightMap(),
-                         {884.1318765564429: 15.000000000000002, 919.3431683416284: 17.5,
-                          1033.7715194706846: 20.000000000000004, 915.7825093365038: 14.999999999999998,
-                          1029.4609990659083: 20.00000000006354, 1342.1465639888847: 22.5,
-                          1027.2108421957003: 20.000000000101235, 921.5565012488089: 17.50000000021578,
-                          905.8450977646135: 15.0, 912.2596841546431: 15.0, 931.6676768014222: 17.5,
-                          1039.0310942115923: 20.0000000001776, 890.4232520687127: 15.0, 882.5230631598915: 15.0,
-                          1334.3459450808623: 22.5, 1338.3733883565753: 22.50000000008145})
+                         {1091.050975197242: 17.5, 1458.0510356287868: 22.5, 1041.8041573127368: 15.00000000005435,
+                          1455.5664105271528: 22.5, 1078.8767262330548: 17.500000000114444,
+                          1073.1444106265596: 15.000000000000002, 1074.7628177661902: 15.000000000066002,
+                          1189.8045074975971: 20.0, 1192.6759052370603: 20.0, 1199.1613070433625: 20.0,
+                          1049.5116207692483: 15.0, 1070.2424986452713: 15.0, 1042.4134358789584: 15.0,
+                          1186.794337106119: 20.00000000002537, 1449.9579176794757: 22.5,
+                          1083.907732300975: 17.50000000051386})
 
     def testPolygonGenerationTerrain(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
@@ -465,8 +502,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347701.59207547508412972 6632766.96282589063048363, -346577.00878971704514697 6632369.7371364813297987, -346449.93654899462126195 6632331.81857067719101906, -346383.52035177784273401 6632216.85897350125014782)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
 
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
         self.assertTrue(rl.isValid())
@@ -483,13 +521,12 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
 
         self.assertEqual(results.distanceToHeightMap(),
-                         {1342.1465639888847: 53.0, 915.7825093365038: 55.24999999999999,
-                          921.5565012488089: 54.500000000672, 1334.3459450808623: 53.0,
-                          1338.3733883565753: 53.00000000019186, 884.1318765564429: 55.25, 1033.7715194706846: 49.25,
-                          919.3431683416284: 54.5, 1029.4609990659083: 49.25000000015647,
-                          1027.2108421957003: 49.25000000024929, 905.8450977646135: 55.25,
-                          912.2596841546431: 55.25000000000001, 931.6676768014222: 54.5, 890.4232520687127: 55.25,
-                          882.5230631598915: 55.24999999999999, 1039.0310942115923: 49.25000000043733})
+                         {1186.794337106119: 49.25000000006248, 1189.8045074975971: 49.25, 1192.6759052370603: 49.25,
+                          1449.9579176794757: 53.0, 1041.8041573127368: 55.25000000020018, 1199.1613070433625: 49.25,
+                          1074.7628177661902: 55.25000000024312, 1078.8767262330548: 54.50000000035641,
+                          1455.5664105271528: 53.0, 1049.5116207692483: 55.25, 1073.1444106265596: 55.25,
+                          1091.050975197242: 54.5, 1458.0510356287868: 53.0, 1042.4134358789584: 55.24999999999999,
+                          1070.2424986452713: 55.25, 1083.907732300975: 54.500000001600306})
 
     def testPolygonGenerationRelative(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
@@ -511,8 +548,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347701.59207547508412972 6632766.96282589063048363, -346577.00878971704514697 6632369.7371364813297987, -346449.93654899462126195 6632331.81857067719101906, -346383.52035177784273401 6632216.85897350125014782)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
 
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
         self.assertTrue(rl.isValid())
@@ -529,25 +567,25 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
 
         self.assertEqual(results.distanceToHeightMap(),
-                         {1027.2108421957003: 59.250000000299906, 915.7825093365038: 60.24999999999999,
-                          882.5230631598915: 60.25, 905.8450977646135: 60.25000000000001, 1334.3459450808623: 65.5,
-                          919.3431683416284: 62.0, 931.6676768014222: 62.00000000000001, 884.1318765564429: 60.25,
-                          1029.4609990659083: 59.25000000018824, 912.2596841546431: 60.25,
-                          1039.0310942115923: 59.250000000526136, 1342.1465639888847: 65.5,
-                          921.5565012488089: 62.00000000076449, 890.4232520687127: 60.25, 1033.7715194706846: 59.25,
-                          1338.3733883565753: 65.50000000023711})
+                         {1458.0510356287868: 65.5, 1199.1613070433625: 59.25, 1449.9579176794757: 65.5,
+                          1042.4134358789584: 60.24999999999999, 1070.2424986452713: 60.25,
+                          1192.6759052370603: 59.24999999999999, 1078.8767262330548: 62.00000000040546,
+                          1083.907732300975: 62.000000001820524, 1091.050975197242: 62.0, 1049.5116207692483: 60.25,
+                          1041.8041573127368: 60.2500000002183, 1073.1444106265596: 60.25,
+                          1074.7628177661902: 60.25000000026512, 1455.5664105271528: 65.5,
+                          1186.794337106119: 59.25000000007516, 1189.8045074975971: 59.25})
 
         self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
-                              ['LineStringZ (-346857.4 6632507.8 60.3, -346851.4 6632505.7 60.3)',
-                               'LineStringZ (-346858.9 6632508.3 60.3, -346857.4 6632507.8 60.3)',
-                               'LineStringZ (-346830.8 6632498.6 60.3, -346827.5 6632497.4 60.2)',
-                               'LineStringZ (-346836.9 6632500.7 60.3, -346830.8 6632498.6 60.3)',
-                               'LineStringZ (-346824.1 6632496.3 62, -346822 6632495.5 62)',
-                               'LineStringZ (-346822 6632495.5 62, -346812.5 6632492.2 62)',
-                               'LineStringZ (-346722.2 6632461 59.3, -346720.1 6632460.3 59.3)',
-                               'LineStringZ (-346720.1 6632460.3 59.3, -346716 6632458.8 59.3, -346710.7 6632458.4 59.3)',
-                               'LineStringZ (-346523.8 6632315.5 65.5, -346523.1 6632311.5 65.5)',
-                               'LineStringZ (-346523.1 6632311.5 65.5, -346522.4 6632307.8 65.5)'])
+                              ['LineStringZ (-346718.7 6632419.8 60.3, -346712 6632417.4 60.3)',
+                               'LineStringZ (-346719.3 6632420 60.3, -346718.7 6632419.8 60.2)',
+                               'LineStringZ (-346689.7 6632409.5 60.3, -346688.2 6632409 60.3)',
+                               'LineStringZ (-346692.5 6632410.5 60.3, -346689.7 6632409.5 60.3)',
+                               'LineStringZ (-346684.3 6632407.6 62, -346679.6 6632406 62)',
+                               'LineStringZ (-346679.6 6632406 62, -346672.8 6632403.6 62)',
+                               'LineStringZ (-346582.6 6632371.7 59.3, -346579.7 6632370.7 59.3)',
+                               'LineStringZ (-346579.7 6632370.7 59.3, -346577 6632369.7 59.2, -346570.8 6632367.9 59.3)',
+                               'LineStringZ (-346387.6 6632223.9 65.5, -346384.8 6632219 65.5)',
+                               'LineStringZ (-346384.8 6632219 65.5, -346383.5 6632216.9 65.5)'])
 
     def testPolygonGenerationRelativeExtrusion(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
@@ -571,8 +609,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            'LineString (-347692.88994020794052631 6632796.97473032586276531, -346715.98066368483705446 6632458.84484416991472244, -346546.9152928851544857 6632444.29659010842442513, -346522.40419847227167338 6632307.79493184108287096)')
+            'LineString (-347701.59207547508412972 6632766.96282589063048363, -346577.00878971704514697 6632369.7371364813297987, -346449.93654899462126195 6632331.81857067719101906, -346383.52035177784273401 6632216.85897350125014782)')
         req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
 
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
         self.assertTrue(rl.isValid())
@@ -589,26 +628,25 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
 
         self.assertEqual(results.distanceToHeightMap(),
-                         {1027.2108421957003: 59.250000000299906, 915.7825093365038: 60.24999999999999,
-                          882.5230631598915: 60.25, 905.8450977646135: 60.25000000000001, 1334.3459450808623: 65.5,
-                          919.3431683416284: 62.0, 931.6676768014222: 62.00000000000001, 884.1318765564429: 60.25,
-                          1029.4609990659083: 59.25000000018824, 912.2596841546431: 60.25,
-                          1039.0310942115923: 59.250000000526136, 1342.1465639888847: 65.5,
-                          921.5565012488089: 62.00000000076449, 890.4232520687127: 60.25, 1033.7715194706846: 59.25,
-                          1338.3733883565753: 65.50000000023711})
+                         {1042.4134358789584: 60.24999999999999, 1074.7628177661902: 60.25000000026512,
+                          1192.6759052370603: 59.24999999999999, 1186.794337106119: 59.25000000007516,
+                          1078.8767262330548: 62.00000000040546, 1091.050975197242: 62.0, 1458.0510356287868: 65.5,
+                          1449.9579176794757: 65.5, 1083.907732300975: 62.000000001820524, 1199.1613070433625: 59.25,
+                          1455.5664105271528: 65.5, 1041.8041573127368: 60.2500000002183, 1189.8045074975971: 59.25,
+                          1049.5116207692483: 60.25, 1073.1444106265596: 60.25, 1070.2424986452713: 60.25})
 
         self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
                               [
-                                  'PolygonZ ((-346857.4 6632507.8 60.3, -346851.4 6632505.7 60.3, -346851.4 6632505.7 67.3, -346857.4 6632507.8 67.3, -346857.4 6632507.8 60.3))',
-                                  'PolygonZ ((-346858.9 6632508.3 60.3, -346857.4 6632507.8 60.3, -346857.4 6632507.8 67.3, -346858.9 6632508.3 67.3, -346858.9 6632508.3 60.3))',
-                                  'PolygonZ ((-346830.8 6632498.6 60.3, -346827.5 6632497.4 60.2, -346827.5 6632497.4 67.3, -346830.8 6632498.6 67.3, -346830.8 6632498.6 60.3))',
-                                  'PolygonZ ((-346836.9 6632500.7 60.3, -346830.8 6632498.6 60.3, -346830.8 6632498.6 67.3, -346836.9 6632500.7 67.3, -346836.9 6632500.7 60.3))',
-                                  'PolygonZ ((-346824.1 6632496.3 62, -346822 6632495.5 62, -346822 6632495.5 69, -346824.1 6632496.3 69, -346824.1 6632496.3 62))',
-                                  'PolygonZ ((-346822 6632495.5 62, -346812.5 6632492.2 62, -346812.5 6632492.2 69, -346822 6632495.5 69, -346822 6632495.5 62))',
-                                  'PolygonZ ((-346722.2 6632461 59.3, -346720.1 6632460.3 59.3, -346720.1 6632460.3 66.3, -346722.2 6632461 66.3, -346722.2 6632461 59.3))',
-                                  'PolygonZ ((-346720.1 6632460.3 59.3, -346716 6632458.8 59.3, -346710.7 6632458.4 59.3, -346710.7 6632458.4 66.3, -346716 6632458.8 66.3, -346720.1 6632460.3 66.3, -346720.1 6632460.3 59.3))',
-                                  'PolygonZ ((-346523.8 6632315.5 65.5, -346523.1 6632311.5 65.5, -346523.1 6632311.5 72.5, -346523.8 6632315.5 72.5, -346523.8 6632315.5 65.5))',
-                                  'PolygonZ ((-346523.1 6632311.5 65.5, -346522.4 6632307.8 65.5, -346522.4 6632307.8 72.5, -346523.1 6632311.5 72.5, -346523.1 6632311.5 65.5))'])
+                                  'PolygonZ ((-346718.7 6632419.8 60.3, -346712 6632417.4 60.3, -346712 6632417.4 67.3, -346718.7 6632419.8 67.3, -346718.7 6632419.8 60.3))',
+                                  'PolygonZ ((-346719.3 6632420 60.3, -346718.7 6632419.8 60.2, -346718.7 6632419.8 67.3, -346719.3 6632420 67.3, -346719.3 6632420 60.3))',
+                                  'PolygonZ ((-346689.7 6632409.5 60.3, -346688.2 6632409 60.3, -346688.2 6632409 67.3, -346689.7 6632409.5 67.3, -346689.7 6632409.5 60.3))',
+                                  'PolygonZ ((-346692.5 6632410.5 60.3, -346689.7 6632409.5 60.3, -346689.7 6632409.5 67.3, -346692.5 6632410.5 67.3, -346692.5 6632410.5 60.3))',
+                                  'PolygonZ ((-346684.3 6632407.6 62, -346679.6 6632406 62, -346679.6 6632406 69, -346684.3 6632407.6 69, -346684.3 6632407.6 62))',
+                                  'PolygonZ ((-346679.6 6632406 62, -346672.8 6632403.6 62, -346672.8 6632403.6 69, -346679.6 6632406 69, -346679.6 6632406 62))',
+                                  'PolygonZ ((-346582.6 6632371.7 59.3, -346579.7 6632370.7 59.3, -346579.7 6632370.7 66.3, -346582.6 6632371.7 66.3, -346582.6 6632371.7 59.3))',
+                                  'PolygonZ ((-346579.7 6632370.7 59.3, -346577 6632369.7 59.2, -346570.8 6632367.9 59.3, -346570.8 6632367.9 66.3, -346577 6632369.7 66.3, -346579.7 6632370.7 66.3, -346579.7 6632370.7 59.3))',
+                                  'PolygonZ ((-346387.6 6632223.9 65.5, -346384.8 6632219 65.5, -346384.8 6632219 72.5, -346387.6 6632223.9 72.5, -346387.6 6632223.9 65.5))',
+                                  'PolygonZ ((-346384.8 6632219 65.5, -346383.5 6632216.9 65.5, -346383.5 6632216.9 72.5, -346384.8 6632219 72.5, -346384.8 6632219 65.5))'])
 
 
 if __name__ == '__main__':
