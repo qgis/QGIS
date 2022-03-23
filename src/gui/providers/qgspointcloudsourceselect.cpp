@@ -78,6 +78,10 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       // auto determine preferred provider for each path
 
       const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
+      for ( QgsProviderRegistry::ProviderCandidateDetails p : preferredProviders )
+      {
+        qDebug() << p.metadata()->key();
+      }
       // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
       if ( preferredProviders.empty() )
         continue;

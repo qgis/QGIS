@@ -286,6 +286,8 @@ if(WITH_CORE)
 
   set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
 
+  set (WITH_COPC TRUE CACHE BOOL "Determines whether Cloud Optimized Point Cloud (COPC) support should be built")
+
   set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   mark_as_advanced(WITH_THREAD_LOCAL)
 
@@ -416,6 +418,15 @@ if(WITH_CORE)
       message(STATUS "Using embedded laz-perf")
     endif()
     set(HAVE_EPT TRUE)  # used in qgsconfig.h
+  endif()
+
+  if (WITH_COPC)  # COPC provider
+    find_package(ZSTD REQUIRED) # for decompression of point clouds
+    find_package(LazPerf) # for decompression of point clouds
+    if (NOT LazPerf_FOUND)
+      message(STATUS "Using embedded laz-perf")
+    endif()
+    set(HAVE_COPC TRUE)  # used in qgsconfig.h
   endif()
 
   if (WITH_PDAL)

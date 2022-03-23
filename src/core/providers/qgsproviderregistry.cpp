@@ -39,6 +39,10 @@
 #include "providers/ept/qgseptprovider.h"
 #endif
 
+#ifdef HAVE_COPC
+#include "providers/copc/qgscopcprovider.h"
+#endif
+
 #include "qgsruntimeprofiler.h"
 #include "qgsfileutils.h"
 
@@ -197,7 +201,13 @@ void QgsProviderRegistry::init()
     mProviders[ pc->key() ] = pc;
   }
 #endif
-
+#ifdef HAVE_COPC
+  {
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create COPC point cloud provider" ) );
+    QgsProviderMetadata *pc = new QgsCopcProviderMetadata();
+    mProviders[ pc->key() ] = pc;
+  }
+#endif
   registerUnusableUriHandler( new PdalUnusableUriHandlerInterface() );
 
 #ifdef HAVE_STATIC_PROVIDERS
