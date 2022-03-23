@@ -1,0 +1,23 @@
+"3D":
+  - any: ['src/3d/**/*']
+
+"Annotations":
+  - any: ['src/core/annotations/**/*']
+
+"DB Manager":
+  - any: ['python/plugins/db_manager/**/*']
+
+"Locator":
+  - any: ['src/core/locator/**/*']
+
+"Metasearch":
+  - any: ['python/plugins/MetaSearch/**/*']
+
+"PostGIS data provider":
+  - any: ['src/providers/postgres/**/*']
+
+"Server":
+  - any: ['src/server/**/*']
+
+"Vector tiles":
+  - any: ['src/core/vectortile/**/*']
