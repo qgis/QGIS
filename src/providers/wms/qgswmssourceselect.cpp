@@ -986,31 +986,26 @@ void QgsWMSSourceSelect::updateButtons()
     }
   }
 
-  if ( leLayerName->text().isEmpty() || leLayerName->text() == mLastLayerName )
+  if ( addButton()->isEnabled() )
   {
-    if ( addButton()->isEnabled() )
+    if ( !lstTilesets->selectedItems().isEmpty() )
     {
-      if ( !lstTilesets->selectedItems().isEmpty() )
-      {
-        QTableWidgetItem *item = lstTilesets->selectedItems().first();
-        mLastLayerName = item->data( Qt::UserRole + 5 ).toString();
-        if ( mLastLayerName.isEmpty() )
-          mLastLayerName = item->data( Qt::UserRole + 0 ).toString();
-        leLayerName->setText( mLastLayerName );
-      }
-      else
-      {
-        QStringList layers, styles, titles;
-        collectSelectedLayers( layers, styles, titles );
-        mLastLayerName = titles.join( QLatin1Char( '/' ) );
-        leLayerName->setText( mLastLayerName );
-      }
+      QTableWidgetItem *item = lstTilesets->selectedItems().first();
+      QString tileLayerName = item->data( Qt::UserRole + 5 ).toString();
+      if ( tileLayerName.isEmpty() )
+        tileLayerName = item->data( Qt::UserRole + 0 ).toString();
+      leLayerName->setText( tileLayerName );
     }
     else
     {
-      mLastLayerName.clear();
-      leLayerName->setText( mLastLayerName );
+      QStringList layers, styles, titles;
+      collectSelectedLayers( layers, styles, titles );
+      leLayerName->setText( titles.join( QLatin1Char( '/' ) ) );
     }
+  }
+  else
+  {
+    leLayerName->setText( "" );
   }
 }
 
