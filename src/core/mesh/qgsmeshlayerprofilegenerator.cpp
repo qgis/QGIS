@@ -146,17 +146,6 @@ QgsAbstractProfileResults *QgsMeshLayerProfileGenerator::takeResults()
 
 double QgsMeshLayerProfileGenerator::heightAt( double x, double y )
 {
-  const QgsPointXY point( x, y );
-  const int faceIndex = mTriangularMesh.faceIndexForPoint_v2( point );
-  if ( faceIndex < 0 || faceIndex >= mTriangularMesh.triangles().count() )
-    return std::numeric_limits<float>::quiet_NaN();
-
-  const QgsMeshFace &face = mTriangularMesh.triangles().at( faceIndex );
-
-  const QgsPoint p1 = mTriangularMesh.vertices().at( face.at( 0 ) );
-  const QgsPoint p2 = mTriangularMesh.vertices().at( face.at( 1 ) );
-  const QgsPoint p3 = mTriangularMesh.vertices().at( face.at( 2 ) );
-
-  return QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, p1.z(), p2.z(), p3.z(), point );
+  return QgsMeshLayerUtils::interpolateZForPoint( mTriangularMesh, x, y );
 }
 
