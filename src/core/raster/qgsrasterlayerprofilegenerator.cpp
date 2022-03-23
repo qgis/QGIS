@@ -71,6 +71,7 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
   , mScale( layer->elevationProperties()->zScale() )
   , mRasterUnitsPerPixelX( layer->rasterUnitsPerPixelX() )
   , mRasterUnitsPerPixelY( layer->rasterUnitsPerPixelY() )
+  , mStepDistance( request.stepDistance() )
 {
   mRasterProvider.reset( layer->dataProvider()->clone() );
 }
@@ -103,6 +104,20 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
 
   std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );
   curveEngine->prepareGeometry();
+
+  QSet< QgsPointXY > profilePoints;
+  if ( !std::isnan( mStepDistance ) )
+  {
+    // if specific step distance specified, use this to generate points along the curve
+    QgsGeometry densifiedCurve( mProfileCurve->clone() );
+    densifiedCurve = densifiedCurve.densifyByDistance( mStepDistance );
+    densifiedCurve.transform( rasterToTargetTransform, Qgis::TransformDirection::Reverse );
+    profilePoints.reserve( densifiedCurve.constGet()->nCoordinates() );
+    for ( auto it = densifiedCurve.vertices_begin(); it != densifiedCurve.vertices_end(); ++it )
+    {
+      profilePoints.insert( *it );
+    }
+  }
 
   // calculate the portion of the raster which actually covers the curve
   int subRegionWidth = 0;
@@ -150,36 +165,83 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
 
     bool isNoData = false;
 
-    double currentY = blockExtent.yMaximum() - 0.5 * mRasterUnitsPerPixelY;
-    for ( int row = 0; row < blockRows; ++row )
+    // there's two potential code paths we use here, depending on if we want to sample at every pixel, or if we only want to
+    // sample at specific points
+    if ( !std::isnan( mStepDistance ) )
     {
-      double currentX = blockExtent.xMinimum() + 0.5 * mRasterUnitsPerPixelX;
-      for ( int col = 0; col < blockColumns; ++col, currentX += mRasterUnitsPerPixelX )
+      auto it = profilePoints.begin();
+      while ( it != profilePoints.end() )
       {
-        const double val = block->valueAndNoData( row, col, isNoData );
-        if ( isNoData )
-          continue;
-
-        // does pixel intersect curve?
-        QgsGeometry pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - halfPixelSizeX,
-                                        currentY - halfPixelSizeY,
-                                        currentX + halfPixelSizeX,
-                                        currentY + halfPixelSizeY ) );
-        if ( !curveEngine->intersects( pixelRectGeometry.constGet() ) )
-          continue;
-
-        QgsPoint pixel( currentX, currentY, val * mScale + mOffset );
-        try
+        // convert point to a pixel and sample, if it's in this block
+        if ( blockExtent.contains( *it ) )
         {
-          pixel.transform( rasterToTargetTransform );
+          const int row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) / mRasterUnitsPerPixelY ) ), 0, blockRows - 1 );
+          const int col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ),  0, blockColumns - 1 );
+          double val = block->valueAndNoData( row, col, isNoData );
+          if ( !isNoData )
+          {
+            val = val * mScale + mOffset;
+          }
+          else
+          {
+            val = std::numeric_limits<double>::quiet_NaN();
+          }
+
+          QgsPoint pixel( it->x(), it->y(), val );
+          try
+          {
+            pixel.transform( rasterToTargetTransform );
+          }
+          catch ( QgsCsException & )
+          {
+            continue;
+          }
+          mResults->rawPoints.append( pixel );
+
+          it = profilePoints.erase( it );
         }
-        catch ( QgsCsException & )
+        else
         {
-          continue;
+          it++;
         }
-        mResults->rawPoints.append( pixel );
       }
-      currentY -= mRasterUnitsPerPixelY;
+
+      if ( profilePoints.isEmpty() )
+        break; // all done!
+    }
+    else
+    {
+      double currentY = blockExtent.yMaximum() - 0.5 * mRasterUnitsPerPixelY;
+      for ( int row = 0; row < blockRows; ++row )
+      {
+        double currentX = blockExtent.xMinimum() + 0.5 * mRasterUnitsPerPixelX;
+        for ( int col = 0; col < blockColumns; ++col, currentX += mRasterUnitsPerPixelX )
+        {
+          const double val = block->valueAndNoData( row, col, isNoData );
+          if ( isNoData )
+            continue;
+
+          // does pixel intersect curve?
+          QgsGeometry pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - halfPixelSizeX,
+                                          currentY - halfPixelSizeY,
+                                          currentX + halfPixelSizeX,
+                                          currentY + halfPixelSizeY ) );
+          if ( !curveEngine->intersects( pixelRectGeometry.constGet() ) )
+            continue;
+
+          QgsPoint pixel( currentX, currentY, val * mScale + mOffset );
+          try
+          {
+            pixel.transform( rasterToTargetTransform );
+          }
+          catch ( QgsCsException & )
+          {
+            continue;
+          }
+          mResults->rawPoints.append( pixel );
+        }
+        currentY -= mRasterUnitsPerPixelY;
+      }
     }
   }
 
