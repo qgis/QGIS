@@ -1949,6 +1949,55 @@ if (WITH_EPT)
   add_definitions( -DWITH_EPT )
 endif()
 
+if (WITH_COPC)
+  include_directories(providers/copc)
+
+  include_directories(SYSTEM
+    ${ZSTD_INCLUDE_DIR}
+  )
+
+  if (LazPerf_FOUND)
+    # Use system laz-perf
+    include_directories(SYSTEM
+      ${LazPerf_INCLUDE_DIR}
+    )
+  else()
+    # Use embedded laz-perf from external/laz-perf
+    include_directories(SYSTEM
+    )
+
+    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/lazperf/charbuf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/filestream.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_gpstime10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_nir14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb14.cpp
+    )
+  endif()
+
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      providers/copc/qgscopcprovider.cpp
+      pointcloud/qgseptdecoder.cpp
+      pointcloud/qgscopcpointcloudindex.cpp
+  )
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+      providers/copc/qgscopcprovider.h
+      pointcloud/qgseptdecoder.h
+      pointcloud/qgscopcpointcloudindex.h
+  )
+
+  add_definitions( -DWITH_COPC )
+endif()
+
 if (APPLE)
   # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds
   include_directories(SYSTEM
@@ -2083,6 +2132,11 @@ if (WITH_EPT)
     ${CMAKE_SOURCE_DIR}/src/core/providers/ept)
 endif()
 
+if (WITH_COPC)
+  target_include_directories(qgis_core PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/core/providers/copc)
+endif()
+
 GENERATE_EXPORT_HEADER(
   qgis_core
   BASE_NAME CORE
@@ -2195,6 +2249,15 @@ if (WITH_QT6)
 endif()
 
 if (WITH_EPT)
+  target_link_libraries(qgis_core
+    ${ZSTD_LIBRARY}
+  )
+  if (LazPerf_FOUND)
+    target_link_libraries(qgis_core ${LazPerf_LIBRARY})
+  endif()
+endif()
+
+if (WITH_COPC)
   target_link_libraries(qgis_core
     ${ZSTD_LIBRARY}
   )

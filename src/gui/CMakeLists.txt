@@ -1424,6 +1424,15 @@ if (WITH_EPT)
   )
 endif()
 
+if (WITH_COPC)
+  set(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}
+    providers/copc/qgscopcproviderguimetadata.cpp
+  )
+  set(QGIS_GUI_HDRS ${QGIS_GUI_HDRS}
+    providers/copc/qgscopcproviderguimetadata.h
+  )
+endif()
+
 
 # disable deprecation warnings for classes re-exporting deprecated methods
 if(MSVC)
@@ -1506,6 +1515,12 @@ target_include_directories(qgis_gui PUBLIC
 if (WITH_EPT)
   target_include_directories(qgis_gui PUBLIC
     ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
+  )
+endif()
+
+if (WITH_COPC)
+  target_include_directories(qgis_gui PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/gui/providers/copc
   )
 endif()
 

@@ -262,7 +262,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsDoubleRange nodeZRange( const IndexedPointCloudNode &node ) const;
 
     //! Returns node's error in map units (used to determine in whether the node has enough detail for the current view)
-    float nodeError( const IndexedPointCloudNode &n ) const;
+    virtual float nodeError( const IndexedPointCloudNode &n ) const;
 
     //! Returns scale
     QgsVector3D scale() const;
