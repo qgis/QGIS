@@ -340,12 +340,25 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
   {
     connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [ = ]( double scale )
     {
-      const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( scale ) : QgsVectorTileUtils::scaleToZoomLevel( scale, 0, 99 );
+      const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
+      const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(),
+                               mapSettings.destinationCrs(),
+                               mapSettings.visibleExtent(),
+                               mapSettings.outputSize(),
+                               mapSettings.outputDpi() ) : scale;
+      const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
       mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( zoom ) );
       if ( mProxyModel )
         mProxyModel->setCurrentZoom( zoom );
     } );
-    mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 ) ) );
+
+    const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
+    const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(),
+                             mapSettings.destinationCrs(),
+                             mapSettings.visibleExtent(),
+                             mapSettings.outputSize(),
+                             mapSettings.outputDpi() ) : mMapCanvas->scale();
+    mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 ) ) );
   }
 
   connect( mCheckVisibleOnly, &QCheckBox::toggled, this, [ = ]( bool filter )
@@ -380,7 +393,13 @@ void QgsVectorTileBasicRendererWidget::setLayer( QgsVectorTileLayer *layer )
 
   if ( mMapCanvas )
   {
-    const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
+    const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
+    const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(),
+                             mapSettings.destinationCrs(),
+                             mapSettings.visibleExtent(),
+                             mapSettings.outputSize(),
+                             mapSettings.outputDpi() ) : mMapCanvas->scale();
+    const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
     mProxyModel->setCurrentZoom( zoom );
   }
 
@@ -446,7 +465,13 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
 
   if ( mMapCanvas )
   {
-    const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( mMapCanvas->scale() ) : QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
+    const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
+    const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(),
+                             mapSettings.destinationCrs(),
+                             mapSettings.visibleExtent(),
+                             mapSettings.outputSize(),
+                             mapSettings.outputDpi() ) : mMapCanvas->scale();
+    const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
     QList<QgsExpressionContextScope> scopes = context.additionalExpressionContextScopes();
     QgsExpressionContextScope tileScope;
     tileScope.setVariable( "zoom_level", zoom, true );

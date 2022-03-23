@@ -82,10 +82,11 @@ bool QgsVectorTileLayerRenderer::render()
   QElapsedTimer tTotal;
   tTotal.start();
 
+  const double tileRenderScale = mTileMatrixSet.scaleForRenderContext( ctx );
   QgsDebugMsgLevel( QStringLiteral( "Vector tiles rendering extent: " ) + ctx.extent().toString( -1 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Vector tiles map scale 1 : %1" ).arg( ctx.rendererScale() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles map scale 1 : %1" ).arg( tileRenderScale ), 2 );
 
-  mTileZoom = mTileMatrixSet.scaleToZoomLevel( ctx.rendererScale() );
+  mTileZoom = mTileMatrixSet.scaleToZoomLevel( tileRenderScale );
   QgsDebugMsgLevel( QStringLiteral( "Vector tiles zoom level: %1" ).arg( mTileZoom ), 2 );
 
   mTileMatrix = mTileMatrixSet.tileMatrix( mTileZoom );
@@ -149,7 +150,7 @@ bool QgsVectorTileLayerRenderer::render()
   // add @zoom_level variable which can be used in styling
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Tiles" ) ); // will be deleted by popper
   scope->setVariable( QStringLiteral( "zoom_level" ), mTileZoom, true );
-  scope->setVariable( QStringLiteral( "vector_tile_zoom" ), mTileMatrixSet.scaleToZoom( ctx.rendererScale() ), true );
+  scope->setVariable( QStringLiteral( "vector_tile_zoom" ), mTileMatrixSet.scaleToZoom( tileRenderScale ), true );
   const QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
 
   mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
