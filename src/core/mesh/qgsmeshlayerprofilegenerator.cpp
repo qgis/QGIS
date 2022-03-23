@@ -107,8 +107,6 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
   {
     QgsPoint point = ( *it );
     const double height = heightAt( point.x(), point.y() );
-    if ( std::isnan( height ) )
-      continue;
 
     try
     {
