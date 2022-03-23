@@ -218,8 +218,6 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
         for ( int col = 0; col < blockColumns; ++col, currentX += mRasterUnitsPerPixelX )
         {
           const double val = block->valueAndNoData( row, col, isNoData );
-          if ( isNoData )
-            continue;
 
           // does pixel intersect curve?
           QgsGeometry pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - halfPixelSizeX,
@@ -229,7 +227,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
           if ( !curveEngine->intersects( pixelRectGeometry.constGet() ) )
             continue;
 
-          QgsPoint pixel( currentX, currentY, val * mScale + mOffset );
+          QgsPoint pixel( currentX, currentY, isNoData ? std::numeric_limits<double>::quiet_NaN() : val * mScale + mOffset );
           try
           {
             pixel.transform( rasterToTargetTransform );
