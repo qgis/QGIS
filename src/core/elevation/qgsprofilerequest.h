@@ -155,6 +155,36 @@ class CORE_EXPORT QgsProfileRequest
      */
     QgsAbstractTerrainProvider *terrainProvider() const;
 
+    /**
+     * Sets the profile step \a distance (in crs() units).
+     *
+     * This value determines the approximate distance between sampled points along the profileCurve().
+     * Depending on the sources sampled, smaller step distances may be used in some circumstances.
+     * Effectively, this value is the "smallest permissible maximum distance between sampled points".
+     *
+     * Smaller distances will take longer to calculate.
+     *
+     * A NaN \a distance value will cause an appropriate step distance to be automatically calculated.
+     *
+     * \see stepDistance()
+     */
+    QgsProfileRequest &setStepDistance( double distance );
+
+    /**
+     * Returns the profile step distance (in crs() units).
+     *
+     * This value determines the approximate distance between sampled points along the profileCurve().
+     * Depending on the sources sampled, smaller step distances may be used in some circumstances.
+     * Effectively, this value is the "smallest permissible maximum distance between sampled points".
+     *
+     * Smaller distances will take longer to calculate.
+     *
+     * A NaN distance value indicates that an appropriate step distance will be automatically calculated.
+     *
+     * \see setStepDistance()
+     */
+    double stepDistance() const { return mStepDistance; }
+
   private:
 
     std::unique_ptr< QgsCurve> mCurve;
@@ -162,6 +192,8 @@ class CORE_EXPORT QgsProfileRequest
     QgsCoordinateTransformContext mTransformContext;
 
     double mTolerance = 0;
+
+    double mStepDistance = std::numeric_limits<float>::quiet_NaN();
 
     std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
 

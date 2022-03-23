@@ -39,9 +39,10 @@ class TestQgsProfileRequest(unittest.TestCase):
         req = QgsProfileRequest(QgsLineString([[1, 2], [3, 4]]))
         self.assertEqual(req.profileCurve().asWkt(), 'LineString (1 2, 3 4)')
 
-        req.setCrs(QgsCoordinateReferenceSystem('EPSG:3857')).setTolerance(5)
+        req.setCrs(QgsCoordinateReferenceSystem('EPSG:3857')).setTolerance(5).setStepDistance(15)
         self.assertEqual(req.crs().authid(), 'EPSG:3857')
         self.assertEqual(req.tolerance(), 5)
+        self.assertEqual(req.stepDistance(), 15)
 
         proj_string = '+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1'
         transform_context = QgsCoordinateTransformContext()
@@ -60,6 +61,7 @@ class TestQgsProfileRequest(unittest.TestCase):
         self.assertEqual(copy.profileCurve().asWkt(), 'LineString (1 2, 3 4)')
         self.assertEqual(copy.crs().authid(), 'EPSG:3857')
         self.assertEqual(copy.tolerance(), 5)
+        self.assertEqual(copy.stepDistance(), 15)
         self.assertEqual(copy.transformContext().calculateCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
                                                                               QgsCoordinateReferenceSystem('EPSG:4283')), proj_string)
         self.assertIsInstance(copy.terrainProvider(), QgsFlatTerrainProvider)
@@ -103,6 +105,11 @@ class TestQgsProfileRequest(unittest.TestCase):
         req.setTolerance(5)
         self.assertNotEqual(req, req2)
         req2.setTolerance(5)
+        self.assertEqual(req, req2)
+
+        req.setStepDistance(15)
+        self.assertNotEqual(req, req2)
+        req2.setStepDistance(15)
         self.assertEqual(req, req2)
 
         terrain = QgsFlatTerrainProvider()
