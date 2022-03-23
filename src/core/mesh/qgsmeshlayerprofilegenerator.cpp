@@ -66,6 +66,7 @@ QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer,
   , mSourceCrs( layer->crs() )
   , mTargetCrs( request.crs() )
   , mTransformContext( request.transformContext() )
+  , mStepDistance( request.stepDistance() )
 {
   layer->updateTriangularMesh();
   mTriangularMesh = *layer->triangularMesh();
@@ -96,7 +97,11 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
 
   // we don't currently have any method to determine line->mesh intersection points, so for now we just sample at about 100(?) points over the line
   const double curveLength = transformedCurve.length();
-  transformedCurve.densifyByDistance( curveLength / 100 );
+
+  if ( !std::isnan( mStepDistance ) )
+    transformedCurve = transformedCurve.densifyByDistance( mStepDistance );
+  else
+    transformedCurve = transformedCurve.densifyByDistance( curveLength / 100 );
 
   for ( auto it = transformedCurve.vertices_begin(); it != transformedCurve.vertices_end(); ++it )
   {
