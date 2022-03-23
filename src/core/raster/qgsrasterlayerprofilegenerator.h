@@ -101,6 +101,7 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileGene
     double mRasterUnitsPerPixelX = 1;
     double mRasterUnitsPerPixelY = 1;
 
+    double mStepDistance = std::numeric_limits<double>::quiet_NaN();
 
 };
 

@@ -96,7 +96,7 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileGenera
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;
 
-    double mStepDistance = std::numeric_limits<float>::quiet_NaN();
+    double mStepDistance = std::numeric_limits<double>::quiet_NaN();
 
     QgsTriangularMesh mTriangularMesh;
 
