@@ -136,6 +136,36 @@ Returns the terrain provider.
 .. seealso:: :py:func:`setTerrainProvider`
 %End
 
+    QgsProfileRequest &setStepDistance( double distance );
+%Docstring
+Sets the profile step ``distance`` (in :py:func:`~QgsProfileRequest.crs` units).
+
+This value determines the approximate distance between sampled points along the :py:func:`~QgsProfileRequest.profileCurve`.
+Depending on the sources sampled, smaller step distances may be used in some circumstances.
+Effectively, this value is the "smallest permissible maximum distance between sampled points".
+
+Smaller distances will take longer to calculate.
+
+A NaN ``distance`` value will cause an appropriate step distance to be automatically calculated.
+
+.. seealso:: :py:func:`stepDistance`
+%End
+
+    double stepDistance() const;
+%Docstring
+Returns the profile step distance (in :py:func:`~QgsProfileRequest.crs` units).
+
+This value determines the approximate distance between sampled points along the :py:func:`~QgsProfileRequest.profileCurve`.
+Depending on the sources sampled, smaller step distances may be used in some circumstances.
+Effectively, this value is the "smallest permissible maximum distance between sampled points".
+
+Smaller distances will take longer to calculate.
+
+A NaN distance value indicates that an appropriate step distance will be automatically calculated.
+
+.. seealso:: :py:func:`setStepDistance`
+%End
+
 };
 
 /************************************************************************

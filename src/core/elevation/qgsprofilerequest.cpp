@@ -31,6 +31,7 @@ QgsProfileRequest::QgsProfileRequest( const QgsProfileRequest &other )
   , mCrs( other.mCrs )
   , mTransformContext( other.mTransformContext )
   , mTolerance( other.mTolerance )
+  , mStepDistance( other.mStepDistance )
   , mTerrainProvider( other.mTerrainProvider ? other.mTerrainProvider->clone() : nullptr )
 {
 
@@ -42,6 +43,7 @@ QgsProfileRequest &QgsProfileRequest::operator=( const QgsProfileRequest &other 
   mCrs = other.mCrs;
   mTransformContext = other.mTransformContext;
   mTolerance = other.mTolerance;
+  mStepDistance = other.mStepDistance;
   mTerrainProvider.reset( other.mTerrainProvider ? other.mTerrainProvider->clone() : nullptr );
   return *this;
 }
@@ -49,6 +51,7 @@ QgsProfileRequest &QgsProfileRequest::operator=( const QgsProfileRequest &other 
 bool QgsProfileRequest::operator==( const QgsProfileRequest &other ) const
 {
   if ( !qgsDoubleNear( mTolerance, other.mTolerance )
+       || !qgsDoubleNear( mStepDistance, other.mStepDistance )
        || mCrs != other.mCrs
        || !( mTransformContext == other.mTransformContext ) )
     return false;
@@ -131,5 +134,11 @@ QgsProfileRequest &QgsProfileRequest::setTerrainProvider( QgsAbstractTerrainProv
 QgsAbstractTerrainProvider *QgsProfileRequest::terrainProvider() const
 {
   return mTerrainProvider.get();
+}
+
+QgsProfileRequest &QgsProfileRequest::setStepDistance( double distance )
+{
+  mStepDistance = distance;
+  return *this;
 }
 
