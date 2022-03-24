@@ -47,7 +47,7 @@ class TestQgsPointCloud3DRendering : public QObject
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void testPointCloudSingleColor();
-    void testPointCloudAttributeByRamp();
+//    void testPointCloudAttributeByRamp();
     void testPointCloudRgb();
     void testPointCloudClassification();
     void testPointCloudSyncedTo2D();
@@ -152,43 +152,43 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColor()
   QVERIFY( renderCheck( "pointcloud_3d_singlecolor", img, 40 ) );
 }
 
-void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
-{
-  const QgsRectangle fullExtent = mLayer->extent();
+//void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
+//{
+//  const QgsRectangle fullExtent = mLayer->extent();
 
-  Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setLayers( QList<QgsMapLayer *>() << mLayer );
-  QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+//  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+//  map->setCrs( mProject->crs() );
+//  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+//  map->setLayers( QList<QgsMapLayer *>() << mLayer );
+//  QgsPointLightSettings defaultLight;
+//  defaultLight.setIntensity( 0.5 );
+//  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+//  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
-  QgsOffscreen3DEngine engine;
-  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
-  engine.setRootEntity( scene );
+//  QgsOffscreen3DEngine engine;
+//  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+//  engine.setRootEntity( scene );
 
-  QgsColorRampPointCloud3DSymbol *symbol = new QgsColorRampPointCloud3DSymbol();
-  symbol->setAttribute( QStringLiteral( "Z" ) );
-  QgsColorRampShader shader = QgsColorRampShader( 0.98, 1.25 );
-  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
-  shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
-  symbol->setColorRampShader( shader );
+//  QgsColorRampPointCloud3DSymbol *symbol = new QgsColorRampPointCloud3DSymbol();
+//  symbol->setAttribute( QStringLiteral( "Z" ) );
+//  QgsColorRampShader shader = QgsColorRampShader( 0.98, 1.25 );
+//  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+//  shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
+//  symbol->setColorRampShader( shader );
 
-  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
-  renderer->setSymbol( symbol );
-  mLayer->setRenderer3D( renderer );
+//  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
+//  renderer->setSymbol( symbol );
+//  mLayer->setRenderer3D( renderer );
 
-  Qgs3DUtils::captureSceneImage( engine, scene );
-  // When running the test on Travis, it would initially return empty rendered image.
-  // Capturing the initial image and throwing it away fixes that. Hopefully we will
-  // find a better fix in the future.
-  scene->cameraController()->resetView( 2.5 );
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+//  Qgs3DUtils::captureSceneImage( engine, scene );
+//  // When running the test on Travis, it would initially return empty rendered image.
+//  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+//  // find a better fix in the future.
+//  scene->cameraController()->resetView( 2.5 );
+//  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QVERIFY( renderCheck( "pointcloud_3d_colorramp", img, 40 ) );
-}
+//  QVERIFY( renderCheck( "pointcloud_3d_colorramp", img, 40 ) );
+//}
 
 void TestQgsPointCloud3DRendering::testPointCloudRgb()
 {
