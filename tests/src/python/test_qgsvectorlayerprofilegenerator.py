@@ -23,7 +23,8 @@ from qgis.core import (
     QgsRasterDemTerrainProvider,
     QgsFeature,
     QgsGeometry,
-    QgsCoordinateTransformContext
+    QgsCoordinateTransformContext,
+    QgsProjUtils
 )
 from qgis.testing import start_app, unittest
 
@@ -91,8 +92,8 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
-        self.assertEqual(results.distanceToHeightMap(),
-                         {31.204980351872074: 274.0, 175.61729584080234: 274.0, 1242.5349752853108: 221.75})
+        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                         {31.2: 274.0, 175.6: 274.0, 1242.5: 221.8})
 
     def testPointGenerationTerrain(self):
         """
@@ -132,8 +133,12 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
-        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
-                         {175.6: 69.5, 31.2: 69.5, 1242.5: 55.2})
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {175.6: 69.5, 31.2: 69.5, 1242.5: 55.2})
+        else:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {31.2: 67.2, 175.6: 65.8, 1242.5: 52.2})
 
     def testPointGenerationRelative(self):
         """
@@ -172,8 +177,8 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
-        self.assertEqual(results.distanceToHeightMap(),
-                         {175.61729584080234: 333.5, 31.204980351872074: 333.5, 1242.5349752853108: 267.0})
+        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                         {31.2: 333.5, 175.6: 333.5, 1242.5: 267.0})
 
     def testPointGenerationRelativeExtrusion(self):
         """
@@ -210,8 +215,13 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
-        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
-                         {31.2: 333.5, 175.6: 333.5, 1242.5: 267.0})
+
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {31.2: 333.5, 175.6: 333.5, 1242.5: 267.0})
+        else:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {31.2: 331.2, 175.6: 329.8, 1242.5: 264.0})
 
         self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
                               ['LineStringZ (-347395 6632649.6 333.5, -347395 6632649.6 340.5)',
@@ -321,8 +331,12 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
-        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
-                         {675.2: 66.5, 1195.7: 49.2, 1223.1: 50.0, 1272.0: 53.8, 1339.4: 58.2, 1444.4: 58.2})
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {675.2: 66.5, 1195.7: 49.2, 1223.1: 50.0, 1272.0: 53.8, 1339.4: 58.2, 1444.4: 58.2})
+        else:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {675.2: 62.7, 1195.7: 53.0, 1223.1: 56.0, 1272.0: 58.2, 1339.4: 57.5, 1444.4: 52.2})
 
     def testLineGenerationRelative(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
@@ -362,8 +376,12 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
-        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
-                         {675.2: 84.2, 1195.7: 86.8, 1223.1: 81.4, 1272.0: 90.0, 1339.4: 98.7, 1444.4: 100.0})
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {675.2: 84.2, 1195.7: 86.8, 1223.1: 81.4, 1272.0: 90.0, 1339.4: 98.7, 1444.4: 100.0})
+        else:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {675.2: 80.5, 1195.7: 90.5, 1223.1: 87.4, 1272.0: 94.5, 1339.4: 98.0, 1444.4: 94.0})
 
     def testLineGenerationRelativeExtrusion(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
@@ -405,8 +423,12 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
-        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
-                         {675.2: 84.2, 1195.7: 86.8, 1223.1: 81.4, 1272.0: 90.0, 1339.4: 98.7, 1444.4: 100.0})
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {675.2: 84.2, 1195.7: 86.8, 1223.1: 81.4, 1272.0: 90.0, 1339.4: 98.7, 1444.4: 100.0})
+        else:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {675.2: 80.5, 1195.7: 90.5, 1223.1: 87.4, 1272.0: 94.5, 1339.4: 98.0, 1444.4: 94.0})
 
         self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
                               ['LineStringZ (-346549.8 6632363.9 81.4, -346549.8 6632363.9 88.4)',
@@ -452,10 +474,16 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
-        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
-                         {1041.8: 15.0, 1042.4: 15.0, 1049.5: 15.0, 1070.2: 15.0, 1073.1: 15.0, 1074.8: 15.0,
-                          1078.9: 17.5, 1083.9: 17.5, 1091.1: 17.5, 1186.8: 20.0, 1189.8: 20.0, 1192.7: 20.0,
-                          1199.2: 20.0, 1450.0: 22.5, 1455.6: 22.5, 1458.1: 22.5})
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {1041.8: 15.0, 1042.4: 15.0, 1049.5: 15.0, 1070.2: 15.0, 1073.1: 15.0, 1074.8: 15.0,
+                              1078.9: 17.5, 1083.9: 17.5, 1091.1: 17.5, 1186.8: 20.0, 1189.8: 20.0, 1192.7: 20.0,
+                              1199.2: 20.0, 1450.0: 22.5, 1455.6: 22.5, 1458.1: 22.5})
+        else:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {1041.8: 48.5, 1042.4: 48.5, 1049.5: 48.5, 1070.2: 48.5, 1073.1: 48.5, 1074.8: 48.5,
+                              1078.9: 48.5, 1083.9: 48.5, 1091.1: 48.5, 1186.8: 52.3, 1189.8: 52.2, 1192.7: 52.2,
+                              1199.2: 52.2, 1450.0: 54.5, 1455.6: 54.5, 1458.1: 54.5})
 
     def testPolygonGenerationTerrain(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
@@ -495,10 +523,16 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
-        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
-                         {1041.8: 55.3, 1042.4: 55.2, 1049.5: 55.2, 1070.2: 55.2, 1073.1: 55.2, 1074.8: 55.3,
-                          1078.9: 54.5, 1083.9: 54.5, 1091.1: 54.5, 1186.8: 49.3, 1189.8: 49.2, 1192.7: 49.2,
-                          1199.2: 49.2, 1450.0: 53.0, 1455.6: 53.0, 1458.1: 53.0})
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {1041.8: 55.3, 1042.4: 55.2, 1049.5: 55.2, 1070.2: 55.2, 1073.1: 55.2, 1074.8: 55.3,
+                              1078.9: 54.5, 1083.9: 54.5, 1091.1: 54.5, 1186.8: 49.3, 1189.8: 49.2, 1192.7: 49.2,
+                              1199.2: 49.2, 1450.0: 53.0, 1455.6: 53.0, 1458.1: 53.0})
+        else:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {1041.8: 53.5, 1042.4: 53.5, 1049.5: 53.5, 1070.2: 53.5, 1073.1: 53.5, 1074.8: 53.5,
+                              1078.9: 56.0, 1083.9: 56.0, 1091.1: 56.0, 1186.8: 62.3, 1189.8: 62.3, 1192.7: 62.3,
+                              1199.2: 62.2, 1450.0: 67.0, 1455.6: 67.0, 1458.1: 67.0})
 
     def testPolygonGenerationRelative(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
@@ -538,10 +572,16 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
-        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
-                         {1041.8: 60.3, 1042.4: 60.2, 1049.5: 60.2, 1070.2: 60.2, 1073.1: 60.2, 1074.8: 60.3,
-                          1078.9: 62.0, 1083.9: 62.0, 1091.1: 62.0, 1186.8: 59.3, 1189.8: 59.2, 1192.7: 59.2,
-                          1199.2: 59.2, 1450.0: 65.5, 1455.6: 65.5, 1458.1: 65.5})
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {1041.8: 60.3, 1042.4: 60.2, 1049.5: 60.2, 1070.2: 60.2, 1073.1: 60.2, 1074.8: 60.3,
+                              1078.9: 62.0, 1083.9: 62.0, 1091.1: 62.0, 1186.8: 59.3, 1189.8: 59.2, 1192.7: 59.2,
+                              1199.2: 59.2, 1450.0: 65.5, 1455.6: 65.5, 1458.1: 65.5})
+        else:
+            self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                             {1041.8: 53.5, 1042.4: 53.5, 1049.5: 53.5, 1070.2: 53.5, 1073.1: 53.5, 1074.8: 53.5,
+                              1078.9: 56.0, 1083.9: 56.0, 1091.1: 56.0, 1186.8: 62.3, 1189.8: 62.3, 1192.7: 62.3,
+                              1199.2: 62.2, 1450.0: 67.0, 1455.6: 67.0, 1458.1: 67.0})
 
         self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
                               ['LineStringZ (-346718.7 6632419.8 60.3, -346712 6632417.4 60.3)',
