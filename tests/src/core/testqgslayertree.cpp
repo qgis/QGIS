@@ -64,6 +64,7 @@ class TestQgsLayerTree : public QObject
     void testNodeDepth();
     void testRasterSymbolNode();
     void testLayersEditable();
+    void testInsertLayerBelow();
 
   private:
 
@@ -934,6 +935,25 @@ void TestQgsLayerTree::testLayersEditable()
   QVERIFY( !QgsLayerTreeUtils::layersEditable( {nodeAl}, true ) );
   QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl1}, true ) );
   QVERIFY( !QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl2}, true ) );
+}
+
+void TestQgsLayerTree::testInsertLayerBelow()
+{
+  QgsVectorLayer *topLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "Top Layer" ), QStringLiteral( "memory" ) );
+  QVERIFY( topLayer->isValid() );
+  QgsVectorLayer *bottomLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "Bottom Layer" ), QStringLiteral( "memory" ) );
+  QVERIFY( bottomLayer->isValid() );
+
+  QgsLayerTree root;
+  root.addLayer( topLayer );
+  QCOMPARE( QgsLayerTreeUtils::countMapLayerInTree( &root, topLayer ), 1 );
+  QCOMPARE( QgsLayerTreeUtils::countMapLayerInTree( &root, bottomLayer ), 0 );
+
+  QgsLayerTreeUtils::insertLayerBelow( &root, topLayer, bottomLayer );
+  QCOMPARE( QgsLayerTreeUtils::countMapLayerInTree( &root, bottomLayer ), 1 );
+
+  // Check the order of the layers
+  QCOMPARE( root.findLayerIds(), QStringList() << topLayer->id() << bottomLayer->id() );
 }
 
 QGSTEST_MAIN( TestQgsLayerTree )
