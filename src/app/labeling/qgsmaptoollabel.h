@@ -270,6 +270,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     virtual bool canModifyCallout( const QgsCalloutPosition &callout, bool isOrigin, int &xCol, int &yCol );
 
     QList<QgsPalLayerSettings::Property> mPalProperties;
+    QList<QgsPalLayerSettings::Property> mPalAnchorProperties;
     QList<QgsDiagramLayerSettings::Property> mDiagramProperties;
     QList<QgsCallout::Property> mCalloutProperties;
 

@@ -34,10 +34,12 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigit
 
   mPalProperties << QgsPalLayerSettings::PositionX;
   mPalProperties << QgsPalLayerSettings::PositionY;
-  mPalProperties << QgsPalLayerSettings::LineAnchorPercent;
-  mPalProperties << QgsPalLayerSettings::LineAnchorClipping;
-  mPalProperties << QgsPalLayerSettings::LineAnchorType;
-  mPalProperties << QgsPalLayerSettings::LineAnchorTextPoint;
+
+  // For linestrings only:
+  mPalAnchorProperties << QgsPalLayerSettings::LineAnchorPercent;
+  mPalAnchorProperties << QgsPalLayerSettings::LineAnchorClipping;
+  mPalAnchorProperties << QgsPalLayerSettings::LineAnchorType;
+  mPalAnchorProperties << QgsPalLayerSettings::LineAnchorTextPoint;
 
   mDiagramProperties << QgsDiagramLayerSettings::PositionX;
   mDiagramProperties << QgsDiagramLayerSettings::PositionY;
@@ -76,9 +78,13 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       {
         const QgsFeature feature { mCurrentLabel.layer->getFeature( featureId ) };
         const QgsMapSettings &ms = mCanvas->mapSettings();
-        const QgsPointXY pointMapTransformed = ms.mapToLayerCoordinates( mCurrentLabel.layer, pointMapCoords );
-        const QgsGeometry pointMapGeometry = QgsGeometry::fromPointXY( pointMapTransformed );
-        if ( feature.geometry().distance( QgsGeometry::fromPointXY( pointMapCoords ) ) / mCanvas->mapUnitsPerPixel() > 100.0 )
+
+        // In map's CRS
+        const QgsGeometry pointMapGeometry { QgsGeometry::fromPointXY( pointMapCoords ) };
+        QgsGeometry featureMapGeometry { feature.geometry() };
+        featureMapGeometry.transform( ms.layerTransform( mCurrentLabel.layer ) );
+
+        if ( featureMapGeometry.distance( pointMapGeometry ) / mCanvas->mapUnitsPerPixel() > 100.0 )
         {
           mCurrentLabel.settings.placement = QgsPalLayerSettings::Placement::Horizontal;
           isCurvedOrLine = false;
@@ -86,7 +92,7 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         }
         else
         {
-          mOffsetFromLineStartRubberBand->setToGeometry( feature.geometry().nearestPoint( pointMapGeometry ) );
+          mOffsetFromLineStartRubberBand->setToGeometry( featureMapGeometry.nearestPoint( pointMapGeometry ) );
           mOffsetFromLineStartRubberBand->show();
         }
       }
@@ -422,10 +428,12 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
           const QgsFeature feature { mCurrentLabel.layer->getFeature( featureId ) };
           const QgsMapSettings &ms = mCanvas->mapSettings();
-          const QgsPointXY pointMapTransformed = ms.mapToLayerCoordinates( mCurrentLabel.layer, releaseCoords );
-          const QgsGeometry pointMapGeometry = QgsGeometry::fromPointXY( pointMapTransformed );
-          const QgsGeometry anchorPoint { feature.geometry().nearestPoint( pointMapGeometry ) };
-          const double lineAnchorPercent { feature.geometry().lineLocatePoint( anchorPoint ) / feature.geometry().length() };
+
+          // In layer's CRS:
+          const QgsPointXY releaseCoordsTransformed = ms.mapToLayerCoordinates( mCurrentLabel.layer, releaseCoords );
+          const QgsGeometry releaseCoordsGeometry = QgsGeometry::fromPointXY( releaseCoordsTransformed );
+
+          const double lineAnchorPercent { feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / feature.geometry().length() };
           vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
           bool success = false;
 
