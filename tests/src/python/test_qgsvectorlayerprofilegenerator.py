@@ -227,11 +227,16 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
             self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                              {31.2: 331.2, 175.6: 329.8, 1242.5: 264.0})
 
-        print([g.asWkt(1) for g in results.asGeometries()])
-        self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
-                              ['LineStringZ (-347395 6632649.6 333.5, -347395 6632649.6 340.5)',
-                               'LineStringZ (-347533.4 6632692.2 333.5, -347533.4 6632692.2 340.5)',
-                               'LineStringZ (-346399.2 6632265.6 267, -346399.2 6632265.6 274)'])
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
+                                  ['LineStringZ (-347395 6632649.6 333.5, -347395 6632649.6 340.5)',
+                                   'LineStringZ (-347533.4 6632692.2 333.5, -347533.4 6632692.2 340.5)',
+                                   'LineStringZ (-346399.2 6632265.6 267, -346399.2 6632265.6 274)'])
+        else:
+            self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
+                                  ['LineStringZ (-347395 6632649.6 329.8, -347395 6632649.6 336.8)',
+                                   'LineStringZ (-347533.4 6632692.2 331.3, -347533.4 6632692.2 338.3)',
+                                   'LineStringZ (-346399.2 6632265.6 264, -346399.2 6632265.6 271)'])
 
     def testPointGenerationMultiPoint(self):
         vl = QgsVectorLayer('MultipointZ?crs=EPSG:27700', 'trees', 'memory')
@@ -435,14 +440,22 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
             self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                              {675.2: 80.5, 1195.7: 90.5, 1223.1: 87.4, 1272.0: 94.5, 1339.4: 98.0, 1444.4: 94.0})
 
-        print([g.asWkt(1) for g in results.asGeometries()])
-        self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
-                              ['LineStringZ (-346549.8 6632363.9 81.4, -346549.8 6632363.9 88.4)',
-                               'LineStringZ (-346501.4 6632357.8 90, -346501.4 6632357.8 97)',
-                               'LineStringZ (-346434.5 6632349.2 98.7, -346434.5 6632349.2 105.7)',
-                               'LineStringZ (-346384.6 6632279.1 100, -346384.6 6632279.1 107)',
-                               'LineStringZ (-346577 6632367.4 86.8, -346577 6632367.4 93.8)',
-                               'LineStringZ (-347062.8 6632554.4 84.2, -347062.8 6632554.4 91.2)'])
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
+                                  ['LineStringZ (-346549.8 6632363.9 81.4, -346549.8 6632363.9 88.4)',
+                                   'LineStringZ (-346501.4 6632357.8 90, -346501.4 6632357.8 97)',
+                                   'LineStringZ (-346434.5 6632349.2 98.7, -346434.5 6632349.2 105.7)',
+                                   'LineStringZ (-346384.6 6632279.1 100, -346384.6 6632279.1 107)',
+                                   'LineStringZ (-346577 6632367.4 86.8, -346577 6632367.4 93.8)',
+                                   'LineStringZ (-347062.8 6632554.4 84.2, -347062.8 6632554.4 91.2)'])
+        else:
+            self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
+                                  ['LineStringZ (-346549.8 6632363.9 87.4, -346549.8 6632363.9 94.4)',
+                                   'LineStringZ (-346501.4 6632357.8 94.5, -346501.4 6632357.8 101.5)',
+                                   'LineStringZ (-346434.5 6632349.2 98, -346434.5 6632349.2 105)',
+                                   'LineStringZ (-346384.6 6632279.1 94, -346384.6 6632279.1 101)',
+                                   'LineStringZ (-346577 6632367.4 90.5, -346577 6632367.4 97.5)',
+                                   'LineStringZ (-347062.8 6632554.4 80.5, -347062.8 6632554.4 87.5)'])
 
     def testPolygonGenerationAbsolute(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
@@ -583,18 +596,30 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                               1078.9: 56.0, 1083.9: 56.0, 1091.1: 56.0, 1186.8: 62.3, 1189.8: 62.3, 1192.7: 62.3,
                               1199.2: 62.2, 1450.0: 67.0, 1455.6: 67.0, 1458.1: 67.0})
 
-        print([g.asWkt(1) for g in results.asGeometries()])
-        self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
-                              ['LineStringZ (-346718.7 6632419.8 60.3, -346712 6632417.4 60.3)',
-                               'LineStringZ (-346719.3 6632420 60.3, -346718.7 6632419.8 60.2)',
-                               'LineStringZ (-346689.7 6632409.5 60.3, -346688.2 6632409 60.3)',
-                               'LineStringZ (-346692.5 6632410.5 60.3, -346689.7 6632409.5 60.3)',
-                               'LineStringZ (-346684.3 6632407.6 62, -346679.6 6632406 62)',
-                               'LineStringZ (-346679.6 6632406 62, -346672.8 6632403.6 62)',
-                               'LineStringZ (-346582.6 6632371.7 59.3, -346579.7 6632370.7 59.3)',
-                               'LineStringZ (-346579.7 6632370.7 59.3, -346577 6632369.7 59.2, -346570.8 6632367.9 59.3)',
-                               'LineStringZ (-346387.6 6632223.9 65.5, -346384.8 6632219 65.5)',
-                               'LineStringZ (-346384.8 6632219 65.5, -346383.5 6632216.9 65.5)'])
+        if QgsProjUtils.projVersionMajor() >= 8:
+            self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
+                                  ['LineStringZ (-346718.7 6632419.8 60.3, -346712 6632417.4 60.3)',
+                                   'LineStringZ (-346719.3 6632420 60.3, -346718.7 6632419.8 60.2)',
+                                   'LineStringZ (-346689.7 6632409.5 60.3, -346688.2 6632409 60.3)',
+                                   'LineStringZ (-346692.5 6632410.5 60.3, -346689.7 6632409.5 60.3)',
+                                   'LineStringZ (-346684.3 6632407.6 62, -346679.6 6632406 62)',
+                                   'LineStringZ (-346679.6 6632406 62, -346672.8 6632403.6 62)',
+                                   'LineStringZ (-346582.6 6632371.7 59.3, -346579.7 6632370.7 59.3)',
+                                   'LineStringZ (-346579.7 6632370.7 59.3, -346577 6632369.7 59.2, -346570.8 6632367.9 59.3)',
+                                   'LineStringZ (-346387.6 6632223.9 65.5, -346384.8 6632219 65.5)',
+                                   'LineStringZ (-346384.8 6632219 65.5, -346383.5 6632216.9 65.5)'])
+        else:
+            self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
+                                  ['LineStringZ (-346718.7 6632419.8 53.5, -346712 6632417.4 53.5)',
+                                   'LineStringZ (-346719.3 6632420 53.5, -346718.7 6632419.8 53.5)',
+                                   'LineStringZ (-346689.7 6632409 53.5, -346688.2 6632409 53.5)',
+                                   'LineStringZ (-346692.5 6632410.5 53.5, -346689.7 6632409.5 53.5)',
+                                   'LineStringZ (-346684.3 6632407.6 56, -346679.6 6632406 56)',
+                                   'LineStringZ (-346679.6 6632406 56, -346672.8 6632403.6 56)',
+                                   'LineStringZ (-346582.6 6632371.7 62.3, -346579.7 6632370.7 62.3)',
+                                   'LineStringZ (-346579.7 6632370.7 62.3, -346577 6632369.7 62.3, -346570.8 6632367.9 62.3)',
+                                   'LineStringZ (-346387.6 6632223.9 67, -346384.8 6632219 67)',
+                                   'LineStringZ (-346384.8 6632219 67, -346383.5 6632216.9 67)'])
 
     def testPolygonGenerationRelativeExtrusion(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
@@ -647,6 +672,7 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                               1078.9: 56.0, 1083.9: 56.0, 1091.1: 56.0, 1186.8: 62.3, 1189.8: 62.3, 1192.7: 62.3,
                               1199.2: 62.2, 1450.0: 67.0, 1455.6: 67.0, 1458.1: 67.0})
 
+        print([g.asWkt(1) for g in results.asGeometries()])
         self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
                               [
                                   'PolygonZ ((-346718.7 6632419.8 60.3, -346712 6632417.4 60.3, -346712 6632417.4 67.3, -346718.7 6632419.8 67.3, -346718.7 6632419.8 60.3))',
