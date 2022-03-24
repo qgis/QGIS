@@ -294,19 +294,7 @@ void QgsCameraController::updateCameraFromPose()
 void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
 {
   mCameraPose.setCenterPoint( mCameraPose.centerPoint() + posDiff );
-
-  if ( mCameraPose.pitchAngle() > 180 )
-    mCameraPose.setPitchAngle( 180 );  // prevent going over the head
-  if ( mCameraPose.pitchAngle() < 0 )
-    mCameraPose.setPitchAngle( 0 );   // prevent going over the head
-  if ( mCameraPose.distanceFromCenterPoint() < 10 )
-    mCameraPose.setDistanceFromCenterPoint( 10 );
-
-  if ( mCamera )
-    mCameraPose.updateCamera( mCamera );
-
-  emit cameraChanged();
-
+  updateCameraFromPose();
 }
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
