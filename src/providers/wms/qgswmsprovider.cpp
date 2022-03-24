@@ -1584,7 +1584,7 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
     tm.topLeft = topLeft;
     tm.tileWidth = tm.tileHeight = 256 * tilePixelRatio;
     tm.matrixWidth = tm.matrixHeight = 1 << zoom;
-    tm.tres = xspan / ( (double) tm.tileWidth * tm.matrixWidth );
+    tm.tres = xspan / ( ( double ) tm.tileWidth * tm.matrixWidth );
     tm.scaleDenom = 0.0;
 
     mCaps.mTileMatrixSets[tms.identifier].tileMatrices[tm.tres] = tm;
