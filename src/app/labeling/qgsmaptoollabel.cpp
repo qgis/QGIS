@@ -1282,7 +1282,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     return false;
 
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
+
   bool changed = false;
+
   for ( const QgsPalLayerSettings::Property &p : std::as_const( mPalProperties ) )
   {
     int index = -1;
@@ -1301,6 +1303,30 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
 
     indexes[p] = index;
   }
+
+  // Anchor properties are for linestrings only:
+  if ( vlayer->geometryType() == QgsWkbTypes::GeometryType::LineGeometry )
+  {
+    for ( const QgsPalLayerSettings::Property &p : std::as_const( mPalAnchorProperties ) )
+    {
+      int index = -1;
+
+      // always use the default activated property
+      QgsProperty prop = details.settings.dataDefinedProperties().property( p );
+      if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+      {
+        index = vlayer->fields().lookupField( prop.field() );
+      }
+      else
+      {
+        index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
+        changed = true;
+      }
+
+      indexes[p] = index;
+    }
+  }
+
   if ( changed )
     emit vlayer->styleChanged();
 
