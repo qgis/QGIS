@@ -360,13 +360,14 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   lazperf::reader::generic_file f( file );
 
   // output file formats from entwine/untwine:
-  // - older versions write LAZ 1.2 files with point format 3
+  // - older versions write LAZ 1.2 files with point formats 0, 1, 2 or 3
   // - newer versions write LAZ 1.4 files with point formats 6, 7 or 8
 
   int lasPointFormat = f.header().pointFormat();
-  if ( lasPointFormat != 3 && lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
+  if ( lasPointFormat != 0 && lasPointFormat != 1 && lasPointFormat != 2 && lasPointFormat != 3 &&
+       lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
   {
-    QgsDebugMsg( QStringLiteral( "Unexpected point format record (%1) - only 3, 6, 7, 8 are supported" ).arg( lasPointFormat ) );
+    QgsDebugMsg( QStringLiteral( "Unexpected point format record (%1) - only 0, 1, 2, 3, 6, 7, 8 are supported" ).arg( lasPointFormat ) );
     return nullptr;
   }
   bool isLas14 = ( lasPointFormat == 6 || lasPointFormat == 7 || lasPointFormat == 8 );
@@ -538,28 +539,42 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   {
     f.readPoint( buf ); // read the point out
 
-    // LAS 1.2 file support
-    if ( lasPointFormat == 3 )   // base + gps time + rgb
+    switch ( lasPointFormat )
     {
-      p10.unpack( buf );
-      gps.unpack( buf + sizeof( lazperf::las::point10 ) );
-      rgb.unpack( buf + sizeof( lazperf::las::point10 ) + sizeof( lazperf::las::gpstime ) );
-    }
-    // LAS 1.4 file support
-    else if ( lasPointFormat == 6 )  // base (includes gps time)
-    {
-      p14.unpack( buf );
-    }
-    else if ( lasPointFormat == 7 ) // base + rgb
-    {
-      p14.unpack( buf );
-      rgb.unpack( buf + sizeof( lazperf::las::point14 ) );
-    }
-    else if ( lasPointFormat == 8 ) //  base + rgb + near infra red
-    {
-      p14.unpack( buf );
-      rgb.unpack( buf + sizeof( lazperf::las::point14 ) );
-      // TODO: load NIR channel - need some testing data!
+      // LAS 1.2 file support
+      case 0: // base
+        p10.unpack( buf );
+        break;
+      case 1: // base + gps time
+        p10.unpack( buf );
+        gps.unpack( buf + sizeof( lazperf::las::point10 ) );
+        break;
+      case 2: // base + rgb
+        p10.unpack( buf );
+        rgb.unpack( buf + sizeof( lazperf::las::point10 ) );
+        break;
+      case 3: // base + gps time + rgb
+        p10.unpack( buf );
+        gps.unpack( buf + sizeof( lazperf::las::point10 ) );
+        rgb.unpack( buf + sizeof( lazperf::las::point10 ) + sizeof( lazperf::las::gpstime ) );
+        break;
+
+      // LAS 1.4 file support
+      case 6: // base (includes gps time)
+        p14.unpack( buf );
+        break;
+      case 7: // base + rgb
+        p14.unpack( buf );
+        rgb.unpack( buf + sizeof( lazperf::las::point14 ) );
+        break;
+      case 8: // base + rgb + nir
+        p14.unpack( buf );
+        rgb.unpack( buf + sizeof( lazperf::las::point14 ) );
+        // TODO: load NIR channel - need some testing data!
+        break;
+
+      default:
+        Q_ASSERT( false );  // must not happen - we checked earlier that the format is supported
     }
 
     for ( const RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
