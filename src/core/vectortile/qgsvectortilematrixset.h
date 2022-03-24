@@ -35,7 +35,7 @@ class CORE_EXPORT QgsVectorTileMatrixSet : public QgsTileMatrixSet
     /**
      * Returns a vector tile structure corresponding to the standard web mercator/GoogleCRS84Quad setup.
      */
-    static QgsVectorTileMatrixSet fromWebMercator();
+    static QgsVectorTileMatrixSet fromWebMercator( int minimumZoom = 0, int maximumZoom = 14 );
 
     /**
      * Initializes the tile structure settings from an ESRI REST VectorTileService \a json map.

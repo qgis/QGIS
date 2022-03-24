@@ -85,13 +85,15 @@ bool QgsVectorTileLayer::loadDataSource()
     }
 
     // online tiles
-    mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
-
+    int zMin = 0;
     if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
-      mMatrixSet.dropMatricesOutsideZoomRange( dsUri.param( QStringLiteral( "zmin" ) ).toInt(), 99 );
-    if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
-      mMatrixSet.dropMatricesOutsideZoomRange( 0, dsUri.param( QStringLiteral( "zmax" ) ).toInt() );
+      zMin = dsUri.param( QStringLiteral( "zmin" ) ).toInt();
 
+    int zMax = 14;
+    if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
+      zMax = dsUri.param( QStringLiteral( "zmax" ) ).toInt();
+
+    mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator( zMin, zMax );
     setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
   }
   else if ( mSourceType == QLatin1String( "mbtiles" ) )
