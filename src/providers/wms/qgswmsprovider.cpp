@@ -660,10 +660,16 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode,
       break;
   }
 
+  if ( feedback && feedback->isCanceled() )
+    return;
+
   QList<QRectF> missingRectsToDelete;
   const auto constRequests = requests;
   for ( const TileRequest &r : constRequests )
   {
+    if ( feedback && feedback->isCanceled() )
+      return;
+
     QImage localImage;
     if ( ! QgsTileCache::tile( r.url, localImage ) )
       continue;
@@ -683,6 +689,9 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode,
       }
     }
   }
+
+  if ( feedback && feedback->isCanceled() )
+    return;
 
   // remove all the rectangles we have completely covered by tiles from this resolution
   // so we will not use tiles from multiple resolutions for one missing tile (to save time)
@@ -898,6 +907,9 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
         return image;
     }
 
+    if ( feedback && feedback->isCanceled() )
+      return image;
+
     QList<TileImage> tileImages;  // in the correct resolution
     QList<QRectF> missing;  // rectangles (in map coords) of missing tiles for this view
 
@@ -915,6 +927,9 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
     const auto constRequests = requests;
     for ( const TileRequest &r : constRequests )
     {
+      if ( feedback && feedback->isCanceled() )
+        return image;
+
       QImage localImage;
 
       if ( mbtilesReader && !QgsTileCache::tile( r.url, localImage ) )
@@ -955,6 +970,9 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
       }
     }
 
+    if ( feedback && feedback->isCanceled() )
+      return image;
+
     if ( sourceResolution < 0 )
       effectiveViewExtent = viewExtent;
 
@@ -977,9 +995,15 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
       // first we check lower resolution tiles: one level back, then two levels back (if there is still some area not covered),
       // finally (in the worst case we use one level higher resolution tiles). This heuristic should give
       // good overviews while not spending too much time drawing cached tiles from resolutions far away.
-      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, 1, lowerResTiles );
-      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, 2, lowerResTiles2 );
-      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, -1, higherResTiles );
+      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, 1, lowerResTiles, feedback );
+      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, 2, lowerResTiles2, feedback );
+      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, -1, higherResTiles, feedback );
+
+      if ( feedback && feedback->isCanceled() )
+      {
+        p.end();
+        return image;
+      }
 
       // draw the cached tiles lowest to highest resolution
       const auto constLowerResTiles2 = lowerResTiles2;
@@ -1004,10 +1028,22 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
 
     int t1 = t.elapsed() - t0;
 
+    if ( feedback && feedback->isCanceled() )
+    {
+      p.end();
+      return image;
+    }
+
     // draw composite in this resolution
     const auto constTileImages = tileImages;
     for ( const TileImage &ti : constTileImages )
     {
+      if ( feedback && feedback->isCanceled() )
+      {
+        p.end();
+        return image;
+      }
+
       if ( ti.smooth && mSettings.mSmoothPixmapTransform )
         p.setRenderHint( QPainter::SmoothPixmapTransform, true );
       p.drawImage( ti.rect, ti.img );
