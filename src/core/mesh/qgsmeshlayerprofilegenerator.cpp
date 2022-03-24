@@ -32,9 +32,9 @@ QString QgsMeshLayerProfileResults::type() const
   return QStringLiteral( "mesh" );
 }
 
-QHash<double, double> QgsMeshLayerProfileResults::distanceToHeightMap() const
+QMap<double, double> QgsMeshLayerProfileResults::distanceToHeightMap() const
 {
-  QHash<double, double> res;
+  QMap<double, double> res;
   for ( const Result &r : results )
   {
     res.insert( r.distance, r.height );

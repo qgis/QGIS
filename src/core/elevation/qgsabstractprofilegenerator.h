@@ -45,7 +45,7 @@ class CORE_EXPORT QgsAbstractProfileResults
     /**
      * Returns the map of distance (chainage) to height.
      */
-    virtual QHash< double, double > distanceToHeightMap() const = 0;
+    virtual QMap< double, double > distanceToHeightMap() const = 0;
 
     /**
      * Returns a list of sampled points, with their calculated elevation

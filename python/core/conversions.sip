@@ -1041,6 +1041,86 @@ template<double, TYPE>
 %End
 };
 
+%MappedType QMap<double, double>
+{
+%TypeHeaderCode
+#include <QMap>
+%End
+
+%ConvertFromTypeCode
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
+
+    if (!d)
+        return NULL;
+
+    // Set the dictionary elements.
+    QMap<double, double>::iterator i;
+
+    for (i = sipCpp->begin(); i != sipCpp->end(); ++i)
+    {
+        PyObject *t1obj = PyFloat_FromDouble(i.key());
+        PyObject *t2obj = PyFloat_FromDouble(i.value());
+
+        if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
+        {
+            Py_DECREF(d);
+
+            if (t1obj)
+                Py_DECREF(t1obj);
+
+            if (t2obj)
+                Py_DECREF(t2obj);
+
+            return NULL;
+        }
+
+        Py_DECREF(t1obj);
+        Py_DECREF(t2obj);
+   }
+
+    return d;
+%End
+
+%ConvertToTypeCode
+    PyObject *t1obj, *t2obj;
+    Py_ssize_t i = 0;
+
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    {
+        if (!PyDict_Check(sipPy))
+            return 0;
+
+        while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+        {
+            if (!PyFloat_Check(t1obj))
+                return 0;
+
+           if (!PyFloat_Check(t2obj))
+                return 0;
+        }
+
+        return 1;
+    }
+
+    QMap<double, double> *qm = new QMap<double, double>;
+
+    while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+    {
+        int state;
+
+        double k = PyFloat_AsDouble(t1obj);
+        double v = PyFloat_AsDouble(t2obj);
+
+        qm->insert(k, v);
+    }
+
+    *sipCppPtr = qm;
+
+    return sipGetState(sipTransferObj);
+%End
+};
 
 template<TYPE2>
 %MappedType QMap<QString, QList<TYPE2> >
