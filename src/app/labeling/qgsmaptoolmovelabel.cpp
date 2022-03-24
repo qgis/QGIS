@@ -86,12 +86,13 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
         if ( featureMapGeometry.distance( pointMapGeometry ) / mCanvas->mapUnitsPerPixel() > 100.0 )
         {
-          mCurrentLabel.settings.placement = QgsPalLayerSettings::Placement::Horizontal;
+          mAnchorDetached = true;
           isCurvedOrLine = false;
           mOffsetFromLineStartRubberBand->hide();
         }
         else
         {
+          mAnchorDetached = false;
           mOffsetFromLineStartRubberBand->setToGeometry( featureMapGeometry.nearestPoint( pointMapGeometry ) );
           mOffsetFromLineStartRubberBand->show();
         }
@@ -107,6 +108,7 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       const double offsetX = pointMapCoords.x() - mStartPointMapCoords.x();
       const double offsetY = pointMapCoords.y() - mStartPointMapCoords.y();
+      mOffsetFromLineStartRubberBand->hide();
       mLabelRubberBand->setTranslationOffset( offsetX, offsetY );
       mLabelRubberBand->updatePosition();
       mLabelRubberBand->update();
@@ -231,7 +233,12 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
       int xCol = -1, yCol = -1, pointCol = -1, lineAnchorPercentCol = -1, lineAnchorClippingCol = -1, lineAnchorTypeCol = -1, lineAnchorTextPointCol = -1;
 
-      bool isCurvedOrLine { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line };
+      if ( mAnchorDetached )
+      {
+        mCurrentLabel.settings.placement = QgsPalLayerSettings::Placement::Horizontal;
+      }
+
+      const bool isCurvedOrLine { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line };
 
       if ( isCurvedOrLine && !mCurrentLabel.pos.isDiagram && ! labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, lineAnchorPercentCol, lineAnchorClippingCol, lineAnchorTypeCol, lineAnchorTextPointCol ) )
       {
@@ -404,7 +411,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         bool lineAnchorTypeSuccess = false;
         bool lineAnchorTextPointSuccess = false;
 
-        bool isCurvedOrLine { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line };
+        bool isCurvedOrLine { ! mAnchorDetached &&( mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line ) };
 
         if ( !isCalloutMove && isCurvedOrLine && !currentLabelDataDefinedLineAnchorPercent( lineAnchorPercentOrig, lineAnchorPercentSuccess, lineAnchorPercentCol,
              lineAnchorClippingOrig, lineAnchorClippingSuccess, lineAnchorClippingCol,
@@ -626,6 +633,7 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
         e->ignore();  // Override default shortcut management
 
         // delete the stored label/callout position
+        mAnchorDetached = false;
         const bool isCalloutMove = !mCurrentCallout.layerID.isEmpty();
         const bool isCurvedOrLine { mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Curved || mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::Line };
         QgsVectorLayer *vlayer = !isCalloutMove ? mCurrentLabel.layer : qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( mCurrentCallout.layerID ) );
