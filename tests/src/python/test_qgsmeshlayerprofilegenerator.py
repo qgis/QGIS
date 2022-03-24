@@ -58,8 +58,8 @@ class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
         self.assertEqual(len(results), 102)
         first_point = min(results.keys())
         last_point = max(results.keys())
-        self.assertAlmostEqual(results[first_point], 152.87405434310168, 1)
-        self.assertAlmostEqual(results[last_point], 98.78085001573021, 1)
+        self.assertAlmostEqual(results[first_point], 152.87405434310168, 0)
+        self.assertAlmostEqual(results[last_point], 98.78085001573021, 0)
 
     def testStepSize(self):
         ml = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')
@@ -82,8 +82,8 @@ class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
         self.assertEqual(len(results), 216)
         first_point = min(results.keys())
         last_point = max(results.keys())
-        self.assertAlmostEqual(results[first_point], 152.87405434310168, 1)
-        self.assertAlmostEqual(results[last_point], 98.78085001573021, 1)
+        self.assertAlmostEqual(results[first_point], 152.87405434310168, 0)
+        self.assertAlmostEqual(results[last_point], 98.78085001573021, 0)
 
 
 if __name__ == '__main__':
