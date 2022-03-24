@@ -279,9 +279,6 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
 
 void QgsCameraController::updateCameraFromPose()
 {
-  if ( mCameraPose.distanceFromCenterPoint() < 10 )
-    mCameraPose.setDistanceFromCenterPoint( 10 );
-
   if ( mCamera )
     mCameraPose.updateCamera( mCamera );
   emit cameraChanged();
