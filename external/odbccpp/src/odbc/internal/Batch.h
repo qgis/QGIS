@@ -218,7 +218,7 @@ private:
     std::size_t blockRow_;
 
     /// The number of bytes required for the batch.
-    std::size_t dataSize_;
+    std::size_t dataSize_{0};
 };
 //------------------------------------------------------------------------------
 NS_ODBC_END
