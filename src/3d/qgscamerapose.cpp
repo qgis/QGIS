@@ -52,6 +52,11 @@ void QgsCameraPose::setCenterPoint( const QgsVector3D &point )
     mCenterPoint = point;
 }
 
+void QgsCameraPose::setDistanceFromCenterPoint( float distance )
+{
+  mDistanceFromCenterPoint = std::max( distance, 10.0f );
+}
+
 void QgsCameraPose::setPitchAngle( float pitch )
 {
   // prevent going over the head
