@@ -890,7 +890,6 @@ QgsPointCloudBlock *QgsEptDecoder::decompressCopc( const QString &filename, uint
   }
 
   lazperf::las::point14 p;
-  lazperf::las::gpstime gps;
   lazperf::las::rgb rgb;
 
   for ( int i = 0 ; i < pointCount; ++i )
@@ -898,8 +897,8 @@ QgsPointCloudBlock *QgsEptDecoder::decompressCopc( const QString &filename, uint
     decompressor.decompress( decodedData.get() );
     char *buf = decodedData.get();
     p.unpack( buf );
-    gps.unpack( buf + sizeof( lazperf::las::point14 ) );
-    rgb.unpack( buf + sizeof( lazperf::las::point14 ) + sizeof( lazperf::las::gpstime ) );
+    // The offset to RGB values is 30 in point formats 6, 7 and 8
+    rgb.unpack( buf + 30 );
 
     for ( const RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
     {
@@ -943,8 +942,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressCopc( const QString &filename, uint
           break;
         case LazAttribute::GpsTime:
           // lazperf internally stores gps value as int64 field, but in fact it is a double value
-          _storeToStream<double>( dataBuffer, outputOffset, requestedAttribute.type,
-                                  *reinterpret_cast<const double *>( reinterpret_cast<const void *>( &gps.value ) ) );
+          _storeToStream<double>( dataBuffer, outputOffset, requestedAttribute.type, p.gpsTime() );
           break;
         case LazAttribute::Red:
           _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.r );
