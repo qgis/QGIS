@@ -52,6 +52,17 @@ void QgsCameraPose::setCenterPoint( const QgsVector3D &point )
     mCenterPoint = point;
 }
 
+void QgsCameraPose::setPitchAngle( float pitch )
+{
+  // prevent going over the head
+  if ( pitch > 180.0f )
+    mPitchAngle = 180.0f;
+  else if ( pitch < 0.0f )
+    mPitchAngle = 0.0f;
+  else
+    mPitchAngle = pitch;
+}
+
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
 {
   // basic scene setup:

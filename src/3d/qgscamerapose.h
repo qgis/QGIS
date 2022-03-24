@@ -60,7 +60,7 @@ class _3D_EXPORT QgsCameraPose
     //! Returns pitch angle in degrees
     float pitchAngle() const { return mPitchAngle; }
     //! Sets pitch angle in degrees
-    void setPitchAngle( float pitch ) { mPitchAngle = pitch; }
+    void setPitchAngle( float pitch );
 
     //! Returns heading (yaw) angle in degrees
     float headingAngle() const { return mHeadingAngle; }
