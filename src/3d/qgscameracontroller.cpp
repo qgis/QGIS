@@ -279,10 +279,6 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
 
 void QgsCameraController::updateCameraFromPose()
 {
-  if ( mCameraPose.pitchAngle() > 180 )
-    mCameraPose.setPitchAngle( 180 );  // prevent going over the head
-  if ( mCameraPose.pitchAngle() < 0 )
-    mCameraPose.setPitchAngle( 0 );   // prevent going over the head
   if ( mCameraPose.distanceFromCenterPoint() < 10 )
     mCameraPose.setDistanceFromCenterPoint( 10 );
 
