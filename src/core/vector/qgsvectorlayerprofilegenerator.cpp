@@ -39,9 +39,9 @@ QString QgsVectorLayerProfileResults::type() const
   return QStringLiteral( "vector" );
 }
 
-QHash<double, double> QgsVectorLayerProfileResults::distanceToHeightMap() const
+QMap<double, double> QgsVectorLayerProfileResults::distanceToHeightMap() const
 {
-  QHash<double, double> res;
+  QMap<double, double> res;
   for ( const Result &r : results )
   {
     res.insert( r.distance, r.height );

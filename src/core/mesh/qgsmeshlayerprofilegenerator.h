@@ -58,7 +58,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileResults
     QList< Result > results;
 
     QString type() const override;
-    QHash< double, double > distanceToHeightMap() const override;
+    QMap< double, double > distanceToHeightMap() const override;
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
 };

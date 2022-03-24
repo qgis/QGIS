@@ -30,7 +30,7 @@ Abstract base class for storage of elevation profiles.
 Returns the unique string identifier for the results type.
 %End
 
-    virtual QHash< double, double > distanceToHeightMap() const = 0;
+    virtual QMap< double, double > distanceToHeightMap() const = 0;
 %Docstring
 Returns the map of distance (chainage) to height.
 %End
