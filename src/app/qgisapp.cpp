@@ -7460,7 +7460,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 
   // highest priority = delegate to provider registry to handle
   const QList< QgsProviderRegistry::ProviderCandidateDetails > candidateProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( fileName );
-  if ( candidateProviders.size() == 1 && candidateProviders.at( 0 ).layerTypes().size() == 1 )
+  if ( candidateProviders.size() >= 1 && candidateProviders.at( 0 ).layerTypes().size() == 1 )
   {
     // one good candidate provider and possible layer type -- that makes things nice and easy!
     switch ( candidateProviders.at( 0 ).layerTypes().at( 0 ) )
@@ -7476,8 +7476,10 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
         break;
 
       case QgsMapLayerType::PointCloudLayer:
+      {
         ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), false ) );
         break;
+      }
     }
   }
 

@@ -133,6 +133,16 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
         }
       }
     }
+    else
+    {
+      QgsContrastEnhancement contrast( Qgis::DataType::UInt16 );
+      contrast.setMinimumValue( std::numeric_limits<uint16_t>::lowest() );
+      contrast.setMaximumValue( std::numeric_limits<uint16_t>::max() );
+      contrast.setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+      renderer->setRedContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+      renderer->setGreenContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+      renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+    }
 
     if ( renderer )
       return renderer.release();
