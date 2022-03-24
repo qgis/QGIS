@@ -19,10 +19,10 @@
 #include "qgsarcgisrestutils.h"
 #include "qgslogger.h"
 
-QgsVectorTileMatrixSet QgsVectorTileMatrixSet::fromWebMercator()
+QgsVectorTileMatrixSet QgsVectorTileMatrixSet::fromWebMercator( int minimumZoom, int maximumZoom )
 {
   QgsVectorTileMatrixSet res;
-  res.addGoogleCrs84QuadTiles();
+  res.addGoogleCrs84QuadTiles( minimumZoom, maximumZoom );
   return res;
 }
 
