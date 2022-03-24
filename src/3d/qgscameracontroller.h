@@ -166,6 +166,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     /**
      * Returns distance of the camera from the point it is looking at.
+     * The value should not be smaller than 10.
      * \since QGIS 3.4
      */
     float distance() const { return mCameraPose.distanceFromCenterPoint(); }
