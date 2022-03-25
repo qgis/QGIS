@@ -342,7 +342,13 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
       }
     }
   }
-  depth /= samplesCount;
+
+  // if the whole buffer is white, a depth cannot be computed
+  if ( samplesCount == 0 )
+    depth = 1.0;
+  else
+    depth /= samplesCount;
+
   return depth;
 }
 
