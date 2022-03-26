@@ -393,7 +393,7 @@ void TestQgsGrassProvider::mapsets()
   }
 
   QStringList expectedMapsets;
-  expectedMapsets << QStringLiteral( "PERMANENT" ) << QStringLiteral( "test" ) << QStringLiteral( "test6" ) << QStringLiteral( "test7" );
+  expectedMapsets << QStringLiteral( "PERMANENT" ) << QStringLiteral( "test" ) << QStringLiteral( "test6" ) << QStringLiteral( "test7" ) << QStringLiteral( "test8" );
   QStringList mapsets = QgsGrass::mapsets( tmpGisdbase,  mLocation );
   reportRow( "expectedMapsets: " + expectedMapsets.join( QLatin1String( ", " ) ) );
   reportRow( "mapsets: " + mapsets.join( QLatin1String( ", " ) ) );
