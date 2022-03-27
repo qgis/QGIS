@@ -482,9 +482,9 @@ void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 {
   if ( mController )
     disconnect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
-  if ( QgsTemporalNavigationObject *no = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
   {
-    disconnect( no, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
+    disconnect( temporalNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
 
     // clear any existing animation settings from map settings. We don't do this on every render, as a 3rd party plugin
     // might be in control of these!
@@ -494,25 +494,28 @@ void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 
   mController = controller;
   connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
-  if ( QgsTemporalNavigationObject *no = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
-    connect( no, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+    connect( temporalNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
 }
 
 void QgsMapCanvas::temporalControllerModeChanged()
 {
-  if ( QgsTemporalNavigationObject *no = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
   {
-    if ( no->navigationMode() != QgsTemporalNavigationObject::Animated )
+    switch ( temporalNavigationObject->navigationMode() )
     {
-      // clear any existing animation settings from map settings. We don't do this on every render, as a 3rd party plugin
-      // might be in control of these!
-      mSettings.setFrameRate( -1 );
-      mSettings.setCurrentFrame( -1 );
-    }
-    else
-    {
-      mSettings.setFrameRate( no->framesPerSecond() );
-      mSettings.setCurrentFrame( no->currentFrameNumber() );
+      case QgsTemporalNavigationObject::Animated:
+        mSettings.setFrameRate( temporalNavigationObject->framesPerSecond() );
+        mSettings.setCurrentFrame( temporalNavigationObject->currentFrameNumber() );
+        break;
+
+      case QgsTemporalNavigationObject::NavigationOff:
+      case QgsTemporalNavigationObject::FixedRange:
+        // clear any existing animation settings from map settings. We don't do this on every render, as a 3rd party plugin
+        // might be in control of these!
+        mSettings.setFrameRate( -1 );
+        mSettings.setCurrentFrame( -1 );
+        break;
     }
   }
 }
@@ -677,12 +680,18 @@ void QgsMapCanvas::refreshMap()
   mSettings.setExpressionContext( createExpressionContext() );
 
   // if using the temporal controller in animation mode, get the frame settings from that
-  if ( QgsTemporalNavigationObject *to = dynamic_cast < QgsTemporalNavigationObject * >( mController ) )
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = dynamic_cast < QgsTemporalNavigationObject * >( mController ) )
   {
-    if ( to->navigationMode() == QgsTemporalNavigationObject::Animated )
+    switch ( temporalNavigationObject->navigationMode() )
     {
-      mSettings.setFrameRate( to->framesPerSecond() );
-      mSettings.setCurrentFrame( to->currentFrameNumber() );
+      case QgsTemporalNavigationObject::Animated:
+        mSettings.setFrameRate( temporalNavigationObject->framesPerSecond() );
+        mSettings.setCurrentFrame( temporalNavigationObject->currentFrameNumber() );
+        break;
+
+      case QgsTemporalNavigationObject::NavigationOff:
+      case QgsTemporalNavigationObject::FixedRange:
+        break;
     }
   }
 
