@@ -27,6 +27,26 @@ void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *wi
   mChildren.append( widget );
 }
 
+void QgsAttributeEditorContainer::insertChildElement( int index, QgsAttributeEditorElement *widget )
+{
+  mChildren.insert( index, widget );
+}
+
+QgsAttributeEditorElement* QgsAttributeEditorContainer::takeChildElement( int index )
+{
+  return mChildren.takeAt( index );
+}
+
+bool QgsAttributeEditorContainer::removeChildElement( QgsAttributeEditorElement *widget)
+{
+  int removed = mChildren.removeAll( widget );
+  if ( 0 == removed )
+    return false;
+
+  delete widget;
+  return true;
+}
+
 void QgsAttributeEditorContainer::setName( const QString &name )
 {
   mName = name;

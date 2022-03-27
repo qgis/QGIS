@@ -50,7 +50,36 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \param element The element to add as child
      */
-    virtual void addChildElement( QgsAttributeEditorElement *element SIP_TRANSFER );
+    void addChildElement( QgsAttributeEditorElement *element SIP_TRANSFER );
+
+    /**
+     * Insert a child element into this container. This may be another container, a field or a relation.
+     * Note that the element must first be taken out of its original container.
+     *
+     * \param index The location to insert the child
+     * \param widget The element to add as child
+     * \since QGIS 3.26
+     */
+    void insertChildElement( int index, QgsAttributeEditorElement *widget SIP_TRANSFER );
+
+    /**
+     * Take a child element from a container, so that it can be inserted into another container.
+     *
+     * \param index The index of the child element
+     * \returns widget The element to add as child
+     * \since QGIS 3.26
+     */
+    QgsAttributeEditorElement *takeChildElement( int index ) SIP_TRANSFERBACK;
+
+    /**
+     * Remove a child element from this container. The supplied child element is deleted.
+     *
+     * \param element The child element to remove.
+     * \returns FALSE if the element is not a direct child of this container, in which case it is not removed.
+     * TRUE if the child element is found and deleted.
+     * \since QGIS 3.26
+     */
+    virtual bool removeChildElement( QgsAttributeEditorElement *element );
 
     /**
      * Determines if this container is rendered as collapsible group box or tab in a tabwidget

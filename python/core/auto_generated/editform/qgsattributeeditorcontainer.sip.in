@@ -31,11 +31,45 @@ Creates a new attribute editor container
 
     ~QgsAttributeEditorContainer();
 
-    virtual void addChildElement( QgsAttributeEditorElement *element /Transfer/ );
+    void addChildElement( QgsAttributeEditorElement *element /Transfer/ );
 %Docstring
 Add a child element to this container. This may be another container, a field or a relation.
 
 :param element: The element to add as child
+%End
+
+    void insertChildElement( int index, QgsAttributeEditorElement *widget /Transfer/ );
+%Docstring
+Insert a child element into this container. This may be another container, a field or a relation.
+Note that the element must first be taken out of its original container.
+
+:param index: The location to insert the child
+:param widget: The element to add as child
+
+.. versionadded:: 3.26
+%End
+
+    QgsAttributeEditorElement *takeChildElement( int index ) /TransferBack/;
+%Docstring
+Take a child element from a container, so that it can be inserted into another container.
+
+:param index: The index of the child element
+
+:return: widget The element to add as child
+
+.. versionadded:: 3.26
+%End
+
+    virtual bool removeChildElement( QgsAttributeEditorElement *element );
+%Docstring
+Remove a child element from this container. The supplied child element is deleted.
+
+:param element: The child element to remove.
+
+:return: ``False`` if the element is not a direct child of this container, in which case it is not removed.
+         ``True`` if the child element is found and deleted.
+
+.. versionadded:: 3.26
 %End
 
     virtual void setIsGroupBox( bool isGroupBox );
