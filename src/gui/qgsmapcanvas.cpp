@@ -93,6 +93,7 @@ email                : sherman at mrcc.com
 #include "qgsmaplayerutils.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsrendereditemresults.h"
+#include "qgstemporalnavigationobject.h"
 
 /**
  * \ingroup gui
@@ -481,9 +482,39 @@ void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 {
   if ( mController )
     disconnect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+  if ( QgsTemporalNavigationObject *no = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+  {
+    disconnect( no, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
+
+    // clear any existing animation settings from map settings. We don't do this on every render, as a 3rd party plugin
+    // might be in control of these!
+    mSettings.setFrameRate( -1 );
+    mSettings.setCurrentFrame( -1 );
+  }
 
   mController = controller;
   connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+  if ( QgsTemporalNavigationObject *no = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+    connect( no, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
+}
+
+void QgsMapCanvas::temporalControllerModeChanged()
+{
+  if ( QgsTemporalNavigationObject *no = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+  {
+    if ( no->navigationMode() != QgsTemporalNavigationObject::Animated )
+    {
+      // clear any existing animation settings from map settings. We don't do this on every render, as a 3rd party plugin
+      // might be in control of these!
+      mSettings.setFrameRate( -1 );
+      mSettings.setCurrentFrame( -1 );
+    }
+    else
+    {
+      mSettings.setFrameRate( no->framesPerSecond() );
+      mSettings.setCurrentFrame( no->currentFrameNumber() );
+    }
+  }
 }
 
 const QgsTemporalController *QgsMapCanvas::temporalController() const
@@ -644,6 +675,17 @@ void QgsMapCanvas::refreshMap()
   stopPreviewJobs();
 
   mSettings.setExpressionContext( createExpressionContext() );
+
+  // if using the temporal controller in animation mode, get the frame settings from that
+  if ( QgsTemporalNavigationObject *to = dynamic_cast < QgsTemporalNavigationObject * >( mController ) )
+  {
+    if ( to->navigationMode() == QgsTemporalNavigationObject::Animated )
+    {
+      mSettings.setFrameRate( to->framesPerSecond() );
+      mSettings.setCurrentFrame( to->currentFrameNumber() );
+    }
+  }
+
   mSettings.setPathResolver( QgsProject::instance()->pathResolver() );
 
   if ( !mTheme.isEmpty() )

@@ -1255,6 +1255,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     void startPreviewJob( int number );
 
+    void temporalControllerModeChanged();
+
   private:
 
     // Restore scale RAII
