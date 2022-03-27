@@ -593,6 +593,26 @@ class CORE_EXPORT Qgis
     Q_ENUM( ContentStatus )
 
     /**
+     * GPS signal quality indicator
+     *
+     * \since QGIS 3.22.6
+     */
+    enum class GpsQualityIndicator
+    {
+      Unknown = -1, //!< Unknown
+      Invalid, //!< Invalid
+      GPS, //!< Standalone
+      DGPS, //!< Differential GPS
+      PPS, //!< PPS
+      RTK, //!< Real-time-kynematic
+      FloatRTK, //!< Float real-time-kynematic
+      Estimated, //!< Estimated
+      Manual, //!< Manual input mode
+      Simulation, //!< Simulation mode
+    };
+    Q_ENUM( GpsQualityIndicator )
+
+    /**
      * Babel GPS format capabilities.
      *
      * \since QGIS 3.22
