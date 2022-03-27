@@ -58,6 +58,7 @@ class TestQgsImageCache : public QObject
     void dpi();
     void cachesize();
     void frameCount();
+    void nextFrameDelay();
     void imageFrames();
 };
 
@@ -344,6 +345,32 @@ void TestQgsImageCache::frameCount()
   QCOMPARE( cache.totalFrameCount( animatedImage ), 4 );
   // call twice to test caching
   QCOMPARE( cache.totalFrameCount( animatedImage ), 4 );
+}
+
+void TestQgsImageCache::nextFrameDelay()
+{
+  QgsImageCache cache;
+
+  // not an animated image
+  const QString notAnimatedImage = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
+
+  QCOMPARE( cache.nextFrameDelay( notAnimatedImage ), -1 );
+  // call twice to test caching
+  QCOMPARE( cache.nextFrameDelay( notAnimatedImage ), -1 );
+
+  const QString animatedImage = TEST_DATA_DIR + QStringLiteral( "/qgis_logo_animated.gif" );
+
+  QCOMPARE( cache.nextFrameDelay( animatedImage ), 100 );
+  // call twice to test caching
+  QCOMPARE( cache.nextFrameDelay( animatedImage ), 100 );
+
+  // different frame
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 1 ), 100 );
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 1 ), 100 );
+
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 5 ), -1 );
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 5 ), -1 );
+
 }
 
 void TestQgsImageCache::imageFrames()

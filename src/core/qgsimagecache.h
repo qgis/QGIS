@@ -93,6 +93,13 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
      */
     int totalFrameCount = -1;
 
+    /**
+     * Delay (in milliseconds) to the next frame.
+     *
+     * \since QGIS 3.26
+     */
+    int nextFrameDelay = -1;
+
     int dataSize() const override;
     void dump() const override;
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
@@ -196,6 +203,26 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      */
     int totalFrameCount( const QString &path, bool blocking = false );
 
+    /**
+     * For image formats that support animation, this function returns the number of milliseconds to wait
+     * until displaying the next frame in the animation. If the image format doesn't support animation, 0 is returned.
+     *
+     * \a path may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+     *
+     * If \a path is a remote file, then -1 may be returned while the image is in the process
+     * of being fetched.
+     *
+     * The \a blocking boolean forces to wait for loading before returning the frame delay. The content is loaded
+     * in the same thread to ensure provided the original size. WARNING: the \a blocking parameter must NEVER
+     * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
+     * use in external scripts or QGIS server.
+     *
+     * If the image could not be read or is not an animated format then -1 is returned.
+     *
+     * \since QGIS 3.26
+     */
+    int nextFrameDelay( const QString &path, int currentFrame = 0, bool blocking = false );
+
   signals:
 
     /**
@@ -205,9 +232,9 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
   private:
 
-    QImage pathAsImagePrivate( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount );
+    QImage pathAsImagePrivate( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount, int &nextFrameDelayMs );
 
-    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, bool blocking = false ) const;
+    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, int &nextFrameDelayMs, bool blocking = false ) const;
 
     static QImage getFrameFromReader( QImageReader &reader, int frameNumber );
 
