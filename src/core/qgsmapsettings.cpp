@@ -864,3 +864,23 @@ void QgsMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
 {
   mRendererUsage = rendererUsage;
 }
+
+double QgsMapSettings::frameRate() const
+{
+  return mFrameRate;
+}
+
+void QgsMapSettings::setFrameRate( double rate )
+{
+  mFrameRate = rate;
+}
+
+long long QgsMapSettings::currentFrame() const
+{
+  return mCurrentFrame;
+}
+
+void QgsMapSettings::setCurrentFrame( long long frame )
+{
+  mCurrentFrame = frame;
+}

@@ -127,6 +127,14 @@ void TestQgsMapSettings::testGettersSetters()
   QVERIFY( ms.zRange().isInfinite() );
   ms.setZRange( QgsDoubleRange( 1, 10 ) );
   QCOMPARE( ms.zRange(), QgsDoubleRange( 1, 10 ) );
+
+  QCOMPARE( ms.frameRate(), -1.0 );
+  ms.setFrameRate( 30.0 );
+  QCOMPARE( ms.frameRate(), 30.0 );
+
+  QCOMPARE( ms.currentFrame(), -1 );
+  ms.setCurrentFrame( 6 );
+  QCOMPARE( ms.currentFrame(), 6LL );
 }
 
 void TestQgsMapSettings::testLabelingEngineSettings()
