@@ -617,6 +617,20 @@ Qgis.ContentStatus.__doc__ = 'Status for fetched or stored content\n\n.. version
 # --
 Qgis.ContentStatus.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GpsQualityIndicator.Unknown.__doc__ = "Unknown"
+Qgis.GpsQualityIndicator.Invalid.__doc__ = "Invalid"
+Qgis.GpsQualityIndicator.GPS.__doc__ = "Standalone"
+Qgis.GpsQualityIndicator.DGPS.__doc__ = "Differential GPS"
+Qgis.GpsQualityIndicator.PPS.__doc__ = "PPS"
+Qgis.GpsQualityIndicator.RTK.__doc__ = "Real-time-kynematic"
+Qgis.GpsQualityIndicator.FloatRTK.__doc__ = "Float real-time-kynematic"
+Qgis.GpsQualityIndicator.Estimated.__doc__ = "Estimated"
+Qgis.GpsQualityIndicator.Manual.__doc__ = "Manual input mode"
+Qgis.GpsQualityIndicator.Simulation.__doc__ = "Simulation mode"
+Qgis.GpsQualityIndicator.__doc__ = 'GPS signal quality indicator\n\n.. versionadded:: 3.22.6\n\n' + '* ``Unknown``: ' + Qgis.GpsQualityIndicator.Unknown.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.GpsQualityIndicator.Invalid.__doc__ + '\n' + '* ``GPS``: ' + Qgis.GpsQualityIndicator.GPS.__doc__ + '\n' + '* ``DGPS``: ' + Qgis.GpsQualityIndicator.DGPS.__doc__ + '\n' + '* ``PPS``: ' + Qgis.GpsQualityIndicator.PPS.__doc__ + '\n' + '* ``RTK``: ' + Qgis.GpsQualityIndicator.RTK.__doc__ + '\n' + '* ``FloatRTK``: ' + Qgis.GpsQualityIndicator.FloatRTK.__doc__ + '\n' + '* ``Estimated``: ' + Qgis.GpsQualityIndicator.Estimated.__doc__ + '\n' + '* ``Manual``: ' + Qgis.GpsQualityIndicator.Manual.__doc__ + '\n' + '* ``Simulation``: ' + Qgis.GpsQualityIndicator.Simulation.__doc__
+# --
+Qgis.GpsQualityIndicator.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.BabelFormatCapability.Import.__doc__ = "Format supports importing"
 Qgis.BabelFormatCapability.Export.__doc__ = "Format supports exporting"
 Qgis.BabelFormatCapability.Waypoints.__doc__ = "Format supports waypoints"
