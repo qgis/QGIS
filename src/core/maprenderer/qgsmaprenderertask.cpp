@@ -117,9 +117,9 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 
 ///@endcond
 
-QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster,
+QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster, Flags flags,
                                         const bool geoPDF, const QgsAbstractGeoPdfExporter::ExportDetails &geoPdfExportDetails )
-  : QgsTask( fileFormat == QLatin1String( "PDF" ) ? tr( "Saving as PDF" ) : tr( "Saving as image" ) )
+  : QgsTask( fileFormat == QLatin1String( "PDF" ) ? tr( "Saving as PDF" ) : tr( "Saving as image" ), flags )
   , mMapSettings( ms )
   , mFileName( fileName )
   , mFileFormat( fileFormat )
