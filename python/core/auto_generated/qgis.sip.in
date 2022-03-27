@@ -382,6 +382,20 @@ The development version
       Canceled,
     };
 
+    enum class GpsQualityIndicator
+    {
+      Unknown,
+      Invalid,
+      GPS,
+      DGPS,
+      PPS,
+      RTK,
+      FloatRTK,
+      Estimated,
+      Manual,
+      Simulation,
+    };
+
     enum class BabelFormatCapability
     {
       Import,
