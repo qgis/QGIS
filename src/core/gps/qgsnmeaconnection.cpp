@@ -189,7 +189,17 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.elevation = result.elv;
     mLastGPSInformation.elevation_diff = result.diff;
+
     mLastGPSInformation.quality = result.sig;
+    if ( result.sig >= 0 && result.sig <= 8 )
+    {
+      mLastGPSInformation.qualityIndicator = static_cast<Qgis::GpsQualityIndicator>( result.sig );
+    }
+    else
+    {
+      mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Unknown;
+    }
+
     mLastGPSInformation.satellitesUsed = result.satinuse;
   }
 }
@@ -278,6 +288,62 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
       QgsDebugMsgLevel( mLastGPSInformation.utcDateTime.toString(), 2 );
       QgsDebugMsgLevel( QStringLiteral( "local time:" ), 2 );
       QgsDebugMsgLevel( mLastGPSInformation.utcDateTime.toLocalTime().toString(), 2 );
+    }
+
+    // convert mode to signal (aka quality) indicator
+    // (see https://gitlab.com/fhuberts/nmealib/-/blob/master/src/info.c#L27)
+    if ( result.status == 'A' )
+    {
+      if ( result.mode == 'A' )
+      {
+        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::GPS );
+        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::GPS;
+      }
+      else if ( result.mode == 'D' )
+      {
+        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::DGPS );
+        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::DGPS;
+      }
+      else if ( result.mode == 'P' )
+      {
+        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::PPS );
+        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::PPS;
+      }
+      else if ( result.mode == 'R' )
+      {
+        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::RTK );
+        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::RTK;
+      }
+      else if ( result.mode == 'F' )
+      {
+        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::FloatRTK );
+        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::FloatRTK;
+      }
+      else if ( result.mode == 'E' )
+      {
+        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Estimated );
+        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Estimated;
+      }
+      else if ( result.mode == 'M' )
+      {
+        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Manual );
+        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Manual;
+      }
+      else if ( result.mode == 'S' )
+      {
+        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Simulation );
+        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Simulation;
+      }
+      else
+      {
+        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Unknown );
+        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Unknown;
+      }
+    }
+    else
+    {
+      mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Invalid );
+      mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Invalid;
     }
   }
 }

@@ -94,6 +94,8 @@ Encapsulates information relating to a GPS position fix.
 
     int quality;
 
+    Qgis::GpsQualityIndicator qualityIndicator;
+
     int satellitesUsed;
 
     QChar status;
