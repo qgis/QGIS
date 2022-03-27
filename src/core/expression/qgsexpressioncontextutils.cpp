@@ -503,6 +503,11 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
 
+  if ( mapSettings.frameRate() >= 0 )
+    scope->setVariable( QStringLiteral( "frame_rate" ), mapSettings.frameRate(), true );
+  if ( mapSettings.currentFrame() >= 0 )
+    scope->setVariable( QStringLiteral( "frame_number" ), mapSettings.currentFrame(), true );
+
   return scope;
 }
 

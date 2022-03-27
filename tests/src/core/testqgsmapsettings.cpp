@@ -594,6 +594,9 @@ void TestQgsMapSettings::testExpressionContext()
   r = e.evaluate( &c );
   QVERIFY( !r.isValid() );
 
+  QVERIFY( !c.variable( QStringLiteral( "frame_rate" ) ).isValid() );
+  QVERIFY( !c.variable( QStringLiteral( "frame_number" ) ).isValid() );
+
   ms.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2002, 3, 4 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2010, 6, 7 ), QTime( 0, 0, 0 ) ) ) );
   c = QgsExpressionContext();
   c << QgsExpressionContextUtils::mapSettingsScope( ms );
@@ -606,6 +609,22 @@ void TestQgsMapSettings::testExpressionContext()
   e = QgsExpression( QStringLiteral( "@map_interval" ) );
   r = e.evaluate( &c );
   QCOMPARE( r.value< QgsInterval >(), QgsInterval( QDateTime( QDate( 2010, 6, 7 ), QTime( 0, 0, 0 ) ) - QDateTime( QDate( 2002, 3, 4 ), QTime( 0, 0, 0 ) ) ) );
+
+  QVERIFY( !c.variable( QStringLiteral( "frame_rate" ) ).isValid() );
+  QVERIFY( !c.variable( QStringLiteral( "frame_number" ) ).isValid() );
+
+  ms.setFrameRate( 30 );
+  ms.setCurrentFrame( 5 );
+  c = QgsExpressionContext();
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+  QVERIFY( c.variable( QStringLiteral( "frame_rate" ) ).isValid() );
+  QVERIFY( c.variable( QStringLiteral( "frame_number" ) ).isValid() );
+  e = QgsExpression( QStringLiteral( "@frame_rate" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), 30.0 );
+  e = QgsExpression( QStringLiteral( "@frame_number" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toLongLong(), 5LL );
 }
 
 void TestQgsMapSettings::testRenderedFeatureHandlers()
