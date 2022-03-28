@@ -1623,6 +1623,19 @@ class CORE_EXPORT Qgis
     Q_FLAG( ProjectFlags )
 
     /**
+     * Flags that control the way the QgsPlotTools operate.
+     *
+     * \since QGIS 3.26
+     */
+    enum class PlotToolFlag : int
+    {
+      ShowContextMenu = 1 << 0, //!< Show a context menu when right-clicking with the tool.
+    };
+    Q_ENUM( PlotToolFlag )
+    Q_DECLARE_FLAGS( PlotToolFlags, PlotToolFlag )
+    Q_FLAG( PlotToolFlags )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -1760,6 +1773,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::HistoryProviderBackends )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerProperties )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
 
 
 // hack to workaround warnings when casting void pointers

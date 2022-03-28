@@ -10,6 +10,51 @@
 
 
 
+
+class QgsProfileRenderContext
+{
+%Docstring(signature="appended")
+Abstract base class for storage of elevation profiles.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsabstractprofilegenerator.h"
+%End
+  public:
+
+    QgsProfileRenderContext( QgsRenderContext &context );
+%Docstring
+Constructor for QgsProfileRenderContext, with the specified embedded render ``context``.
+%End
+
+    QgsRenderContext &renderContext();
+%Docstring
+Returns a reference to the component :py:class:`QgsRenderContext`.
+%End
+
+    const QTransform &worldTransform() const;
+%Docstring
+Returns the transform from world coordinates to painter coordinates.
+
+This transform maps points in (distance, elevation) to (x, y) in painter coordinates.
+
+.. seealso:: :py:func:`setWorldTransform`
+%End
+
+    void setWorldTransform( const QTransform &transform );
+%Docstring
+Sets the ``transform`` from world coordinates to painter coordinates.
+
+This transform maps points in (distance, elevation) to (x, y) in painter coordinates.
+
+.. seealso:: :py:func:`worldTransform`
+%End
+
+};
+
+
 class QgsAbstractProfileResults
 {
 %Docstring(signature="appended")
@@ -44,6 +89,11 @@ as the point z value.
     virtual QVector< QgsGeometry > asGeometries() const = 0;
 %Docstring
 Returns a list of geometries representing the calculated elevation results.
+%End
+
+    virtual void renderResults( QgsProfileRenderContext &context ) = 0;
+%Docstring
+Renders the results to the specified ``context``.
 %End
 
 };

@@ -1,10 +1,10 @@
 /***************************************************************************
-                         qgsabstractprofilegenerator.cpp
-                         ---------------
+                          qgsplotcanvasitem.cpp
+                          ------------------
     begin                : March 2022
     copyright            : (C) 2022 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -14,27 +14,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsabstractprofilegenerator.h"
 
+#include "qgsplotcanvasitem.h"
+#include "qgsplotcanvas.h"
 
-
-QgsProfileRenderContext::QgsProfileRenderContext( QgsRenderContext &context )
-  : mRenderContext( context )
+QgsPlotCanvasItem::QgsPlotCanvasItem( QgsPlotCanvas *canvas )
+  : mCanvas( canvas )
 {
-
+  Q_ASSERT( mCanvas && mCanvas->scene() );
+  mCanvas->scene()->addItem( this );
 }
 
-const QTransform &QgsProfileRenderContext::worldTransform() const
+QgsPlotCanvasItem::~QgsPlotCanvasItem() = default;
+
+void QgsPlotCanvasItem::paint( QPainter *painter,
+                               const QStyleOptionGraphicsItem *,
+                               QWidget * )
 {
-  return mWorldTransform;
+  paint( painter );
 }
-
-void QgsProfileRenderContext::setWorldTransform( const QTransform &transform )
-{
-  mWorldTransform = transform;
-}
-
-
-QgsAbstractProfileGenerator::~QgsAbstractProfileGenerator() = default;
-
-QgsAbstractProfileResults::~QgsAbstractProfileResults() = default;

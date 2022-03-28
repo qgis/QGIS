@@ -1,0 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgselevationprofilecanvas.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsElevationProfileCanvas : QgsDistanceVsElevationPlotCanvas
+{
+%Docstring(signature="appended")
+A canvas for elevation profiles.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgselevationprofilecanvas.h"
+%End
+  public:
+
+    QgsElevationProfileCanvas( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
+%End
+
+    ~QgsElevationProfileCanvas();
+
+    void update();
+
+    void setProject( QgsProject *project );
+
+    void setLayers( const QList< QgsMapLayer * > &layers );
+%Docstring
+Sets the list of ``layers`` to include in the profile.
+
+.. seealso:: :py:func:`layers`
+%End
+
+    QList< QgsMapLayer * > layers() const;
+%Docstring
+Returns the list of layers included in the profile.
+
+.. seealso:: :py:func:`setLayers`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgselevationprofilecanvas.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

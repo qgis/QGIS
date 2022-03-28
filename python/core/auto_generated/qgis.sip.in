@@ -987,6 +987,13 @@ The development version
     typedef QFlags<Qgis::ProjectFlag> ProjectFlags;
 
 
+    enum class PlotToolFlag
+    {
+      ShowContextMenu,
+    };
+    typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -1098,6 +1105,8 @@ QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis:
 QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
 
 QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
+
+QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
 
 
 

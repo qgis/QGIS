@@ -60,11 +60,13 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
     QgsPointSequence rawPoints;
     QList< Result > results;
     QVector< QgsGeometry > geometries;
+    QVector< QgsGeometry > distanceVHeightGeometries;
 
     QString type() const override;
     QMap< double, double > distanceToHeightMap() const override;
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
+    void renderResults( QgsProfileRenderContext &context ) override;
 };
 
 

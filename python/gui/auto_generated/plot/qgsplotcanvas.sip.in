@@ -1,0 +1,148 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotcanvas.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsPlotCanvas : QGraphicsView
+{
+%Docstring(signature="appended")
+Plot canvas is a class for displaying interactive 2d charts and plots.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplotcanvas.h"
+%End
+  public:
+
+    QgsPlotCanvas( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsPlotCanvas, with the specified ``parent`` widget.
+%End
+
+    ~QgsPlotCanvas();
+
+
+    void waitWhileRendering();
+%Docstring
+Blocks until the rendering job has finished.
+
+In almost all cases you do NOT want to call this, as it will hang the UI
+until the rendering job is complete. It's included in API solely for
+unit testing and standalone Python scripts.
+%End
+
+    void setTool( QgsPlotTool *tool, bool clean = false );
+%Docstring
+Sets the interactive tool currently being used on the canvas.
+%End
+
+    void unsetTool( QgsPlotTool *tool );
+%Docstring
+Unset the current ``tool``.
+
+This is called from destructor of plot tools to make sure
+that this map tool won't be used any more.
+
+You don't have to call it manually, :py:class:`QgsPlotTool` takes care of it.
+%End
+
+    QgsPlotTool *tool();
+%Docstring
+Returns the currently active tool.
+%End
+
+    virtual QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the coordinate reference system (CRS) for map coordinates used by the canvas.
+
+May return an invalid CRS if no CRS is associated with the canvas.
+%End
+
+    virtual QgsPoint toMapCoordinates( const QgsPointXY &point ) const;
+%Docstring
+Converts a ``point`` on the canvas to the associated map coordinate.
+
+May return an empty point if the canvas point cannot be converted to a map point.
+%End
+
+    virtual QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
+%Docstring
+Converts a ``point`` in map coordinates to the associated canvas point.
+
+May return an empty point if the map point cannot be converted to a canvas point.
+%End
+
+  public slots:
+
+    void refresh();
+%Docstring
+Updates and redraws the plot.
+%End
+
+  signals:
+
+    void toolChanged( QgsPlotTool *newTool, QgsPlotTool *oldTool );
+%Docstring
+Emitted when the plot tool is changed.
+%End
+
+    void contextMenuAboutToShow( QMenu *menu, QgsPlotMouseEvent *event );
+%Docstring
+Emitted before the canvas context menu will be shown.
+Can be used to extend the context menu.
+%End
+
+    void keyPressed( QKeyEvent *event );
+%Docstring
+Emitted when key press ``event`` occurs.
+%End
+
+    void keyReleased( QKeyEvent *event );
+%Docstring
+Emitted when a key release ``event`` occurs.
+%End
+
+  protected:
+
+    virtual bool event( QEvent *e );
+
+    virtual void keyPressEvent( QKeyEvent *e );
+
+    virtual void keyReleaseEvent( QKeyEvent *e );
+
+    virtual void mouseDoubleClickEvent( QMouseEvent *e );
+
+    virtual void mouseMoveEvent( QMouseEvent *e );
+
+    virtual void mousePressEvent( QMouseEvent *e );
+
+    virtual void mouseReleaseEvent( QMouseEvent *e );
+
+    virtual void wheelEvent( QWheelEvent *e );
+
+    virtual void resizeEvent( QResizeEvent *e );
+
+    virtual bool viewportEvent( QEvent *event );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotcanvas.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

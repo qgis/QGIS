@@ -30,6 +30,11 @@
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 
+
+#include "qgsapplication.h"
+#include "qgscolorschemeregistry.h"
+#include <QPolygonF>
+
 //
 // QgsVectorLayerProfileResults
 //
@@ -57,6 +62,41 @@ QgsPointSequence QgsVectorLayerProfileResults::sampledPoints() const
 QVector<QgsGeometry> QgsVectorLayerProfileResults::asGeometries() const
 {
   return geometries;
+}
+
+void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &context )
+{
+  QPainter *painter = context.renderContext().painter();
+  if ( !painter )
+    return;
+
+  painter->save();
+  painter->setBrush( Qt::NoBrush );
+  QPen pen( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
+  pen.setWidthF( 3 );
+  painter->setPen( pen );
+
+#if 0
+  p.setBrush( QBrush( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() ) );
+
+  const QMap< double, double > distMap = it->distanceToHeightMap();
+
+  for ( auto pointIt = distMap.begin(); pointIt != distMap.end(); ++pointIt )
+  {
+    double scaledX = pointIt.key() / curveLength * width();
+    double scaledY = zToCanvasY( pointIt.value() );
+    p.drawEllipse( QPointF( scaledX, scaledY ), 3, 3 );
+  }
+#endif
+
+  for ( const QgsGeometry &geometry : std::as_const( geometries ) )
+  {
+    QgsGeometry transformed = geometry;
+    transformed.transform( context.worldTransform() );
+    transformed.constGet()->draw( *painter );
+  }
+
+  painter->restore();
 }
 
 //
