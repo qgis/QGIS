@@ -47,18 +47,10 @@ class QgsPolygon;
  */
 class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResults
 {
-
   public:
 
-    // Temporary class only!
-    struct Result
-    {
-      double distance;
-      double height;
-    };
-
     QgsPointSequence rawPoints;
-    QList< Result > results;
+    QMap< double, double > mDistanceToHeightMap;
     QVector< QgsGeometry > geometries;
     QVector< QgsGeometry > distanceVHeightGeometries;
 
