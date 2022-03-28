@@ -16,6 +16,8 @@
 #ifndef QGSTABWIDGET_H
 #define QGSTABWIDGET_H
 
+#include <memory>
+
 #include <QTabWidget>
 
 #include "qgis_sip.h"

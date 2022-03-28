@@ -10,6 +10,7 @@
 
 
 
+
 class QgsTabWidget : QTabWidget
 {
 %Docstring(signature="appended")
