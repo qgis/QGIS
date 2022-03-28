@@ -201,13 +201,58 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QColor backgroundColor() const;
         void setBackgroundColor( const QColor &backgroundColor );
 
-        const QColor &labelColor() const;
-        void setLabelColor( const QColor &newLabelColor );
-
+        /**
+         * Returns the custom label font, this is only effective if overrideStyleLabel() is also set.
+         * \see setLabelFont()
+         * \see overrideLabelStyle()
+         * \see setOverrideLabelStyle()
+         * \since QGIS 3.26
+         */
         const QFont &labelFont() const;
-        void setLabelFont( const QFont &newLabelFont );
 
+        /**
+         * Sets the custom \a labelFont, this is only effective if overrideStyleLabel() is also set.
+         * \see setLabelFont()
+         * \see overrideLabelStyle()
+         * \see setOverrideLabelStyle()
+         * \since QGIS 3.26
+         */
+        void setLabelFont( const QFont &labelFont );
+
+        /**
+         * Returns the custom label color, this is only effective if overrideStyleLabel() is also set.
+         * \see setLabelColor()
+         * \see overrideLabelStyle()
+         * \see setOverrideLabelStyle()
+         * \since QGIS 3.26
+         */
+        const QColor &labelColor() const;
+
+        /**
+         * Sets the custom \a labelColor, this is only effective if overrideStyleLabel() is also set.
+         * \see setLabelColor()
+         * \see overrideLabelStyle()
+         * \see setOverrideLabelStyle()
+         * \since QGIS 3.26
+         */
+        void setLabelColor( const QColor &labelColor );
+
+        /**
+         * Returns TRUE if the label style (font and color) is overridden.
+         * \see labelColor()
+         * \see labelFont()
+         * \see setOverrideLabelStyle()
+         * \since QGIS 3.26
+         */
         bool overrideLabelStyle() const;
+
+        /**
+         * Sets \a overrideLabelStyle flag which determines if label style (font and color) is overridden.
+         * \see labelColor()
+         * \see labelFont()
+         * \see overrideLabelStyle()
+         * \since QGIS 3.26
+         */
         void setOverrideLabelStyle( bool overrideLabelStyle );
 
       private:
