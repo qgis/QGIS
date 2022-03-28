@@ -28,7 +28,8 @@
 QgsPlotCanvas::QgsPlotCanvas( QWidget *parent )
   : QGraphicsView( parent )
 {
-  mScene = new QGraphicsScene();
+  setObjectName( QStringLiteral( "PlotCanvas" ) );
+  mScene = new QGraphicsScene( this );
   setScene( mScene );
 
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -51,12 +52,21 @@ QgsPlotCanvas::~QgsPlotCanvas()
 
   cancelJobs();
 
+  // WARNING WARNING WARNING
+  // QgsMapCanvas deletes all items in the destructor. But for some absolutely INSANE WTF reason
+  // if we uncomment this code below then we get random crashes in QGraphicsScene EVEN IF WE NEVER EVER CREATE A QgsPlotCanvas
+  // object and this code is NEVER EVEN CALLED ONCE. Like, WTAF??!?!?!?!?!
+
+  // change this if you want to waste days of your life only. I don't, so I just made the scene parented to this canvas, and let's see what fallout ensures...
+#if 0
+
   // delete canvas items prior to deleting the canvas
   // because they might try to update canvas when it's
   // already being destructed, ends with segfault
   qDeleteAll( mScene->items() );
 
   mScene->deleteLater();
+#endif
 }
 
 void QgsPlotCanvas::cancelJobs()
