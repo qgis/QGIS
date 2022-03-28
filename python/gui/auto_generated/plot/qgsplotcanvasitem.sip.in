@@ -21,6 +21,12 @@ An abstract class for items that can be placed on a :py:class:`QgsPlotCanvas`.
 %TypeHeaderCode
 #include "qgsplotcanvasitem.h"
 %End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsPlotCanvasItem *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotCanvasItem;
+    else
+      sipType = nullptr;
+%End
   protected:
 
     QgsPlotCanvasItem( QgsPlotCanvas *canvas /TransferThis/ );

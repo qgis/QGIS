@@ -24,6 +24,12 @@ Plot tools are user tools for manipulating and interacting with a :py:class:`Qgs
 %TypeHeaderCode
 #include "qgsplottool.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsPlotTool *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotTool;
+    else
+      sipType = nullptr;
+%End
   public:
 
     ~QgsPlotTool();

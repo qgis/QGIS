@@ -41,6 +41,16 @@ class QMenu;
  */
 class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsPlotCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotCanvas;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:

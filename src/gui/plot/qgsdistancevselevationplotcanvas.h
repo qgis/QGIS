@@ -34,6 +34,16 @@ class QgsCurve;
  */
 class GUI_EXPORT QgsDistanceVsElevationPlotCanvas : public QgsPlotCanvas
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsDistanceVsElevationPlotCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsDistanceVsElevationPlotCanvas;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:

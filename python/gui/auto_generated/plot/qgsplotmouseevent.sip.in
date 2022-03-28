@@ -26,6 +26,12 @@ geographic coordinates corresponding to the event.
 %TypeHeaderCode
 #include "qgsplotmouseevent.h"
 %End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsPlotMouseEvent *>( sipCpp ) )
+      sipType = sipType_QgsPlotMouseEvent;
+    else
+      sipType = 0;
+%End
   public:
 
     QgsPlotMouseEvent( QgsPlotCanvas *canvas, QMouseEvent *event );

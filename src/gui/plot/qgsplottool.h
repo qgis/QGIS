@@ -44,6 +44,15 @@ class QMenu;
 class GUI_EXPORT QgsPlotTool : public QObject
 {
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsPlotTool *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotTool;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:

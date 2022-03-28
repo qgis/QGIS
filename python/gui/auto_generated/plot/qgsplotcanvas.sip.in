@@ -24,6 +24,12 @@ Plot canvas is a class for displaying interactive 2d charts and plots.
 %TypeHeaderCode
 #include "qgsplotcanvas.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsPlotCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotCanvas;
+    else
+      sipType = nullptr;
+%End
   public:
 
     QgsPlotCanvas( QWidget *parent /TransferThis/ = 0 );
