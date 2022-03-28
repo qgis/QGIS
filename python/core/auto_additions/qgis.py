@@ -1462,3 +1462,10 @@ Qgis.ProjectFlag.__doc__ = 'Flags which control the behavior of :py:class:`QgsPr
 Qgis.ProjectFlag.baseClass = Qgis
 Qgis.ProjectFlags.baseClass = Qgis
 ProjectFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.PlotToolFlag.ShowContextMenu.__doc__ = "Show a context menu when right-clicking with the tool."
+Qgis.PlotToolFlag.__doc__ = 'Flags that control the way the :py:class:`QgsPlotTools` operate.\n\n.. versionadded:: 3.26\n\n' + '* ``ShowContextMenu``: ' + Qgis.PlotToolFlag.ShowContextMenu.__doc__
+# --
+Qgis.PlotToolFlag.baseClass = Qgis
+Qgis.PlotToolFlags.baseClass = Qgis
+PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module

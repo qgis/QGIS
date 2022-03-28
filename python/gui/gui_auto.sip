@@ -362,6 +362,12 @@
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatguiregistry.sip
+%Include auto_generated/plot/qgsdistancevselevationplotcanvas.sip
+%Include auto_generated/plot/qgselevationprofilecanvas.sip
+%Include auto_generated/plot/qgsplotcanvas.sip
+%Include auto_generated/plot/qgsplotcanvasitem.sip
+%Include auto_generated/plot/qgsplotmouseevent.sip
+%Include auto_generated/plot/qgsplottool.sip
 %Include auto_generated/pointcloud/qgspointcloudclassifiedrendererwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererpropertieswidget.sip

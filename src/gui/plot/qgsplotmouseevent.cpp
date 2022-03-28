@@ -1,10 +1,10 @@
 /***************************************************************************
-                         qgsabstractprofilegenerator.cpp
-                         ---------------
+                          qgsplotmouseevent.cpp
+                          ---------------
     begin                : March 2022
     copyright            : (C) 2022 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -14,27 +14,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsabstractprofilegenerator.h"
+#include "qgsplotmouseevent.h"
+#include "qgsplotcanvas.h"
 
+QgsPlotMouseEvent::QgsPlotMouseEvent( QgsPlotCanvas *canvas, QMouseEvent *event )
+  : QgsPlotMouseEvent( canvas, event->type(), event->pos(), event->button(), event->buttons(), event->modifiers() )
+{
+}
 
-
-QgsProfileRenderContext::QgsProfileRenderContext( QgsRenderContext &context )
-  : mRenderContext( context )
+QgsPlotMouseEvent::QgsPlotMouseEvent( QgsPlotCanvas *canvas, QEvent::Type type, QPoint pos, Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
+  : QMouseEvent( type, pos, button, buttons, modifiers )
+  , mCanvas( canvas )
+  , mMapPoint( mCanvas->toMapCoordinates( pos ) )
 {
 
 }
 
-const QTransform &QgsProfileRenderContext::worldTransform() const
+QgsPoint QgsPlotMouseEvent::mapPoint() const
 {
-  return mWorldTransform;
+  return mMapPoint;
 }
-
-void QgsProfileRenderContext::setWorldTransform( const QTransform &transform )
-{
-  mWorldTransform = transform;
-}
-
-
-QgsAbstractProfileGenerator::~QgsAbstractProfileGenerator() = default;
-
-QgsAbstractProfileResults::~QgsAbstractProfileResults() = default;

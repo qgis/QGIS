@@ -23,6 +23,10 @@
 #include "qgsgeometryengine.h"
 #include "qgsgeos.h"
 
+#include "qgsapplication.h"
+#include "qgscolorschemeregistry.h"
+#include <QPolygonF>
+
 //
 // QgsRasterLayerProfileResults
 //
@@ -55,6 +59,36 @@ QVector<QgsGeometry> QgsRasterLayerProfileResults::asGeometries() const
     res.append( QgsGeometry( point.clone() ) );
 
   return res;
+}
+
+void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &context )
+{
+  QPainter *painter = context.renderContext().painter();
+  if ( !painter )
+    return;
+
+  painter->save();
+  painter->setBrush( Qt::NoBrush );
+  QPen pen( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
+  pen.setWidthF( 3 );
+  painter->setPen( pen );
+
+  const QMap< double, double > distMap = distanceToHeightMap();
+  QPolygonF currentLine;
+  for ( auto pointIt = distMap.begin(); pointIt != distMap.end(); ++pointIt )
+  {
+    if ( std::isnan( pointIt.value() ) )
+    {
+      if ( currentLine.length() > 1 )
+        painter->drawPolyline( currentLine );
+      currentLine.clear();
+    }
+    currentLine.append( context.worldTransform().map( QPointF( pointIt.key(), pointIt.value() ) ) );
+  }
+  if ( currentLine.length() > 1 )
+    painter->drawPolyline( currentLine );
+
+  painter->restore();
 }
 
 

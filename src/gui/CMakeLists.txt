@@ -312,6 +312,13 @@ set(QGIS_GUI_SRCS
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
+  plot/qgsdistancevselevationplotcanvas.cpp
+  plot/qgselevationprofilecanvas.cpp
+  plot/qgsplotcanvas.cpp
+  plot/qgsplotcanvasitem.cpp
+  plot/qgsplotmouseevent.cpp
+  plot/qgsplottool.cpp
+
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudclassifiedrendererwidget.cpp
   pointcloud/qgspointcloudextentrendererwidget.cpp
@@ -1153,6 +1160,13 @@ set(QGIS_GUI_HDRS
   ogr/qgsogrhelperfunctions.h
   ogr/qgsvectorlayersaveasdialog.h
 
+  plot/qgsdistancevselevationplotcanvas.h
+  plot/qgselevationprofilecanvas.h
+  plot/qgsplotcanvas.h
+  plot/qgsplotcanvasitem.h
+  plot/qgsplotmouseevent.h
+  plot/qgsplottool.h
+
   pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudclassifiedrendererwidget.h
   pointcloud/qgspointcloudextentrendererwidget.h
@@ -1499,6 +1513,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/mesh
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/plot
   ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
   ${CMAKE_SOURCE_DIR}/src/gui/providers

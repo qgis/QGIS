@@ -22,8 +22,58 @@
 #include <QList>
 
 #include "qgspoint.h"
+#include "qgsrendercontext.h"
+
+#include <QTransform>
 
 class QgsGeometry;
+
+/**
+ * \brief Abstract base class for storage of elevation profiles.
+ *
+ * \ingroup core
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsProfileRenderContext
+{
+  public:
+
+    /**
+     * Constructor for QgsProfileRenderContext, with the specified embedded render \a context.
+     */
+    QgsProfileRenderContext( QgsRenderContext &context );
+
+    /**
+     * Returns a reference to the component QgsRenderContext.
+     */
+    QgsRenderContext &renderContext() { return mRenderContext; }
+
+    /**
+     * Returns the transform from world coordinates to painter coordinates.
+     *
+     * This transform maps points in (distance, elevation) to (x, y) in painter coordinates.
+     *
+     * \see setWorldTransform()
+     */
+    const QTransform &worldTransform() const;
+
+    /**
+     * Sets the \a transform from world coordinates to painter coordinates.
+     *
+     * This transform maps points in (distance, elevation) to (x, y) in painter coordinates.
+     *
+     * \see worldTransform()
+     */
+    void setWorldTransform( const QTransform &transform );
+
+  private:
+
+    QgsRenderContext mRenderContext;
+
+    QTransform mWorldTransform;
+
+};
+
 
 /**
  * \brief Abstract base class for storage of elevation profiles.
@@ -57,6 +107,11 @@ class CORE_EXPORT QgsAbstractProfileResults
      * Returns a list of geometries representing the calculated elevation results.
      */
     virtual QVector< QgsGeometry > asGeometries() const = 0;
+
+    /**
+     * Renders the results to the specified \a context.
+     */
+    virtual void renderResults( QgsProfileRenderContext &context ) = 0;
 
 };
 

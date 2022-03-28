@@ -57,6 +57,11 @@ QVector<QgsGeometry> QgsMeshLayerProfileResults::asGeometries() const
   return res;
 }
 
+void QgsMeshLayerProfileResults::renderResults( QgsProfileRenderContext &context )
+{
+
+}
+
 //
 // QgsMeshLayerProfileGenerator
 //
