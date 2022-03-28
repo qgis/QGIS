@@ -10,6 +10,10 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsplotcanvasitem.h"
+%End
+
 class QgsPlotCanvasItem : QGraphicsItem
 {
 %Docstring(signature="appended")

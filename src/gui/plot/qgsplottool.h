@@ -34,6 +34,13 @@ class QGestureEvent;
 class QHelpEvent;
 class QMenu;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsplottool.h"
+% End
+#endif
+
+
 /**
  * \ingroup gui
  * \brief Abstract base class for all interactive plot tools.
