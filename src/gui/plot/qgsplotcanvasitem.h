@@ -24,6 +24,12 @@
 
 class QgsPlotCanvas;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsplotcanvasitem.h"
+% End
+#endif
+
 /**
  * \ingroup gui
  * \brief An abstract class for items that can be placed on a QgsPlotCanvas.

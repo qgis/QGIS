@@ -11,6 +11,11 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsplottool.h"
+%End
+
+
 class QgsPlotTool : QObject
 {
 %Docstring(signature="appended")
