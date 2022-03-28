@@ -31,6 +31,16 @@ class QgsPlotCanvas;
  */
 class GUI_EXPORT QgsPlotCanvasItem : public QGraphicsItem
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsPlotCanvasItem *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotCanvasItem;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
   protected:
 
     /**

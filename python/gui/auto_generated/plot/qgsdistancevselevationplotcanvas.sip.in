@@ -21,6 +21,12 @@ A canvas for display of distance vs elevation plots.
 %TypeHeaderCode
 #include "qgsdistancevselevationplotcanvas.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsDistanceVsElevationPlotCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsDistanceVsElevationPlotCanvas;
+    else
+      sipType = nullptr;
+%End
   public:
 
     QgsDistanceVsElevationPlotCanvas( QWidget *parent /TransferThis/ = 0 );

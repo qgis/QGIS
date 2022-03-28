@@ -21,6 +21,12 @@ A canvas for elevation profiles.
 %TypeHeaderCode
 #include "qgselevationprofilecanvas.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsElevationProfileCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsElevationProfileCanvas;
+    else
+      sipType = nullptr;
+%End
   public:
 
     QgsElevationProfileCanvas( QWidget *parent /TransferThis/ = 0 );
