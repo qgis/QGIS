@@ -691,6 +691,11 @@ void QgsOgrSourceSelect::fillOpenOptions()
          !EQUAL( pszOptionName, "PRELUDE_STATEMENTS" ) )
       continue;
 
+    // The NOLOCK option is automatically set by the OGR provider. Do not
+    // expose it
+    if ( bIsGPKG && EQUAL( pszOptionName, "NOLOCK" ) )
+      continue;
+
     // Do not list database options already asked in the database dialog
     if ( radioSrcDatabase->isChecked() &&
          ( EQUAL( pszOptionName, "USER" ) ||
