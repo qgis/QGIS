@@ -60,7 +60,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     {
       ModeTextRenderer,  //!< Configure font settings for use with QgsTextRenderer
       ModeQFont, //!< Configure font settings for use with QFont objects
-      ModeQFontColor, //!< Configure font settings for use with QFont objects and allows to set the foreground color
+      ModeQFontColor, //!< Configure font settings for use with QFont objects and the foreground QColor.
     };
 
     Q_ENUM( Mode )
