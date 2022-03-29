@@ -51,9 +51,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
-    QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
-    QVariantList metadataClasses( const QString &attribute ) const override;
-    QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
 
     bool isValid() const override;
@@ -83,9 +80,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
       double variance = std::numeric_limits< double >::quiet_NaN();
     };
 
-    QMap< QString, AttributeStatistics > mMetadataStats;
-
-    QMap< QString, QMap< int, int > > mAttributeClasses;
     QVariantMap mOriginalMetadata;
 };
 

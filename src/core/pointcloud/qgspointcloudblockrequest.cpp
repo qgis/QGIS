@@ -19,6 +19,7 @@
 
 #include "qgstiledownloadmanager.h"
 #include "qgseptdecoder.h"
+#include "qgslazdecoder.h"
 #include "qgsapplication.h"
 
 //
@@ -71,7 +72,7 @@ void QgsPointCloudBlockRequest::blockFinishedLoading()
       }
       else if ( mDataType == QLatin1String( "laszip" ) )
       {
-        mBlock = QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
+        mBlock = QgsLazDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
       }
       else
       {

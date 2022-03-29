@@ -21,6 +21,7 @@
 #include <QQueue>
 
 #include "qgseptdecoder.h"
+#include "qgslazdecoder.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
@@ -128,8 +129,8 @@ bool QgsCopcPointCloudIndex::loadSchema( const QString &filename )
       return false;
   }
 
-  QVector<QgsEptDecoder::ExtraBytesAttributeDetails> extrabyteAttributes = QgsEptDecoder::readExtraByteAttributes( file );
-  for ( QgsEptDecoder::ExtraBytesAttributeDetails attr : extrabyteAttributes )
+  QVector<QgsLazDecoder::ExtraBytesAttributeDetails> extrabyteAttributes = QgsLazDecoder::readExtraByteAttributes( file );
+  for ( QgsLazDecoder::ExtraBytesAttributeDetails attr : extrabyteAttributes )
   {
     attributes.push_back( QgsPointCloudAttribute( attr.attribute, attr.type ) );
   }
@@ -189,7 +190,7 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
-  return QgsEptDecoder::decompressCopc( mFileName, blockOffset, blockSize, pointCount, attributes(), requestAttributes, scale(), offset(), filterExpression );
+  return QgsLazDecoder::decompressCopc( mFileName, blockOffset, blockSize, pointCount, attributes(), requestAttributes, scale(), offset(), filterExpression );
 }
 
 QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
@@ -208,87 +209,6 @@ QgsCoordinateReferenceSystem QgsCopcPointCloudIndex::crs() const
 qint64 QgsCopcPointCloudIndex::pointCount() const
 {
   return mPointCount;
-}
-
-QVariant QgsCopcPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
-{
-  if ( attribute == QStringLiteral( "X" ) && statistic == QgsStatisticalSummary::Min )
-    return mExtent.xMinimum();
-  if ( attribute == QStringLiteral( "X" ) && statistic == QgsStatisticalSummary::Max )
-    return mExtent.xMaximum();
-
-  if ( attribute == QStringLiteral( "Y" ) && statistic == QgsStatisticalSummary::Min )
-    return mExtent.yMinimum();
-  if ( attribute == QStringLiteral( "Y" ) && statistic == QgsStatisticalSummary::Max )
-    return mExtent.yMaximum();
-
-  if ( attribute == QStringLiteral( "Z" ) && statistic == QgsStatisticalSummary::Min )
-    return mZMin;
-  if ( attribute == QStringLiteral( "Z" ) && statistic == QgsStatisticalSummary::Max )
-    return mZMax;
-
-  if ( !mMetadataStats.contains( attribute ) )
-    return QVariant();
-
-  const AttributeStatistics &stats = mMetadataStats[ attribute ];
-  switch ( statistic )
-  {
-    case QgsStatisticalSummary::Count:
-      return stats.count >= 0 ? QVariant( stats.count ) : QVariant();
-
-    case QgsStatisticalSummary::Mean:
-      return std::isnan( stats.mean ) ? QVariant() : QVariant( stats.mean );
-
-    case QgsStatisticalSummary::StDev:
-      return std::isnan( stats.stDev ) ? QVariant() : QVariant( stats.stDev );
-
-    case QgsStatisticalSummary::Min:
-      return stats.minimum;
-
-    case QgsStatisticalSummary::Max:
-      return stats.maximum;
-
-    case QgsStatisticalSummary::Range:
-      return stats.minimum.isValid() && stats.maximum.isValid() ? QVariant( stats.maximum.toDouble() - stats.minimum.toDouble() ) : QVariant();
-
-    case QgsStatisticalSummary::CountMissing:
-    case QgsStatisticalSummary::Sum:
-    case QgsStatisticalSummary::Median:
-    case QgsStatisticalSummary::StDevSample:
-    case QgsStatisticalSummary::Minority:
-    case QgsStatisticalSummary::Majority:
-    case QgsStatisticalSummary::Variety:
-    case QgsStatisticalSummary::FirstQuartile:
-    case QgsStatisticalSummary::ThirdQuartile:
-    case QgsStatisticalSummary::InterQuartileRange:
-    case QgsStatisticalSummary::First:
-    case QgsStatisticalSummary::Last:
-    case QgsStatisticalSummary::All:
-      return QVariant();
-  }
-  return QVariant();
-}
-
-QVariantList QgsCopcPointCloudIndex::metadataClasses( const QString &attribute ) const
-{
-  QVariantList classes;
-  const QMap< int, int > values =  mAttributeClasses.value( attribute );
-  for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
-  {
-    classes << it.key();
-  }
-  return classes;
-}
-
-QVariant QgsCopcPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
-{
-  if ( statistic != QgsStatisticalSummary::Count )
-    return QVariant();
-
-  const QMap< int, int > values =  mAttributeClasses.value( attribute );
-  if ( !values.contains( value.toInt() ) )
-    return QVariant();
-  return values.value( value.toInt() );
 }
 
 bool QgsCopcPointCloudIndex::loadHierarchy( const QString &filename )

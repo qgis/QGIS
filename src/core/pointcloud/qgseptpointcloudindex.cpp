@@ -27,6 +27,7 @@
 #include <QQueue>
 
 #include "qgseptdecoder.h"
+#include "qgslazdecoder.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
@@ -300,7 +301,7 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   else if ( mDataType == QLatin1String( "laszip" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressLaz( filename, attributes(), requestAttributes, scale(), offset(), filterExpression );
+    return QgsLazDecoder::decompressLaz( filename, attributes(), requestAttributes, scale(), offset(), filterExpression );
   }
   else
   {
