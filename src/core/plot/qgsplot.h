@@ -86,7 +86,20 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     void render( QgsRenderContext &context );
 
     /**
-     * Returns the overall size of the plot (in millimeters) (including titles and over components which sit outside the plot area).
+     * Renders the plot content.
+     *
+     * Subclasses can implement this method to render the actual plot content (e.g. bar charts, scatter plots).
+     * This method will be called after the chart background and grid are rendered, but before the chart border is rendered.
+     *
+     * The default implementation does nothing.
+     *
+     * The \a plotArea argument specifies that area of the plot which corresponds to the actual plot content. Implementations
+     * should take care to scale values accordingly to render points correctly inside this plot area.
+     */
+    virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea );
+
+    /**
+     * Returns the overall size of the plot (in millimeters) (including titles and other components which sit outside the plot area).
      *
      * \see setSize()
      */
@@ -98,6 +111,12 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * \see size()
      */
     void setSize( QSizeF size );
+
+    /**
+     * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
+     * outside the plot area).
+     */
+    QRectF interiorPlotArea( const QgsRenderContext &context ) const;
 
     /**
      * Returns the minimum value of the x axis.
@@ -331,7 +350,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      *
      * Ownership of \a symbol is transferred to the plot.
      *
-     * \see YGridMinorSymbol()
+     * \see yGridMinorSymbol()
      */
     void setYGridMinorSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
