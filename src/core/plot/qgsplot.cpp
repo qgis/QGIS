@@ -182,6 +182,8 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   const double firstMajorXGrid = std::ceil( mMinX / mGridIntervalMajorX ) * mGridIntervalMajorX;
   const double firstMinorYGrid = std::ceil( mMinY / mGridIntervalMinorY ) * mGridIntervalMinorY;
   const double firstMajorYGrid = std::ceil( mMinY / mGridIntervalMajorY ) * mGridIntervalMajorY;
+  const double firstXLabel = std::ceil( mMinX / mLabelIntervalX ) * mLabelIntervalX;
+  const double firstYLabel = std::ceil( mMinY / mLabelIntervalY ) * mLabelIntervalY;
 
   const QRectF plotArea = interiorPlotArea( context );
 
@@ -189,7 +191,7 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
   // calculate text metrics
   double maxYAxisLabelWidth = 0;
-  for ( double currentY = firstMinorYGrid; currentY <= mMaxY; currentY += mGridIntervalMinorY )
+  for ( double currentY = firstYLabel; currentY <= mMaxY; currentY += mLabelIntervalY )
   {
     const QString text = mYAxisNumericFormat->formatDouble( currentY, numericContext );
     maxYAxisLabelWidth = std::max( maxYAxisLabelWidth, QgsTextRenderer::textWidth( context, mYAxisLabelTextFormat, { text } ) );
@@ -212,6 +214,8 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
   const double xScale = ( chartAreaRight - chartAreaLeft ) / ( mMaxX - mMinX );
   const double yScale = ( chartAreaBottom - chartAreaTop ) / ( mMaxY - mMinY );
+
+
   // grid lines
 
   // x
@@ -243,10 +247,6 @@ void Qgs2DPlot::render( QgsRenderContext &context )
         QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaTop )
       } ), nullptr, context );
     }
-
-    const QString text = mXAxisNumericFormat->formatDouble( currentX, numericContext );
-    QgsTextRenderer::drawText( QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, mSize.height() - context.convertToPainterUnits( mMargins.bottom(), QgsUnitTypes::RenderMillimeters ) ),
-                               0, QgsTextRenderer::AlignCenter, { text }, context, mXAxisLabelTextFormat );
   }
 
   // y
@@ -278,7 +278,22 @@ void Qgs2DPlot::render( QgsRenderContext &context )
         QPointF( chartAreaRight, chartAreaBottom - ( currentY - mMinY ) * yScale )
       } ), nullptr, context );
     }
+  }
 
+
+  // axis labels
+
+  // x
+  for ( double currentX = firstXLabel; currentX <= mMaxX; currentX += mLabelIntervalX )
+  {
+    const QString text = mXAxisNumericFormat->formatDouble( currentX, numericContext );
+    QgsTextRenderer::drawText( QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, mSize.height() - context.convertToPainterUnits( mMargins.bottom(), QgsUnitTypes::RenderMillimeters ) ),
+                               0, QgsTextRenderer::AlignCenter, { text }, context, mXAxisLabelTextFormat );
+  }
+
+  // y
+  for ( double currentY = firstYLabel; currentY <= mMaxY; currentY += mLabelIntervalY )
+  {
     const QString text = mYAxisNumericFormat->formatDouble( currentY, numericContext );
     const double height = QgsTextRenderer::textHeight( context, mYAxisLabelTextFormat, { text } );
     QgsTextRenderer::drawText( QPointF(
@@ -327,14 +342,14 @@ void Qgs2DPlot::setSize( QSizeF size )
 
 QRectF Qgs2DPlot::interiorPlotArea( const QgsRenderContext &context ) const
 {
-  const double firstMinorXGrid = std::ceil( mMinX / mGridIntervalMinorX ) * mGridIntervalMinorX;
   const double firstMinorYGrid = std::ceil( mMinY / mGridIntervalMinorY ) * mGridIntervalMinorY;
+  const double firstXLabel = std::ceil( mMinX / mLabelIntervalX ) * mLabelIntervalX;
 
   QgsNumericFormatContext numericContext;
 
   // calculate text metrics
   double maxXAxisLabelHeight = 0;
-  for ( double currentX = firstMinorXGrid; currentX <= mMaxX; currentX += mGridIntervalMinorX )
+  for ( double currentX = firstXLabel; currentX <= mMaxX; currentX += mLabelIntervalX )
   {
     const QString text = mXAxisNumericFormat->formatDouble( currentX, numericContext );
     maxXAxisLabelHeight = std::max( maxXAxisLabelHeight, QgsTextRenderer::textHeight( context, mXAxisLabelTextFormat, { text } ) );
