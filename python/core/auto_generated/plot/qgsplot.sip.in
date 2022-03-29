@@ -67,9 +67,22 @@ Constructor for Qgs2DPlot.
 Renders the plot.
 %End
 
+    virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea );
+%Docstring
+Renders the plot content.
+
+Subclasses can implement this method to render the actual plot content (e.g. bar charts, scatter plots).
+This method will be called after the chart background and grid are rendered, but before the chart border is rendered.
+
+The default implementation does nothing.
+
+The ``plotArea`` argument specifies that area of the plot which corresponds to the actual plot content. Implementations
+should take care to scale values accordingly to render points correctly inside this plot area.
+%End
+
     QSizeF size() const;
 %Docstring
-Returns the overall size of the plot (in millimeters) (including titles and over components which sit outside the plot area).
+Returns the overall size of the plot (in millimeters) (including titles and other components which sit outside the plot area).
 
 .. seealso:: :py:func:`setSize`
 %End
@@ -79,6 +92,12 @@ Returns the overall size of the plot (in millimeters) (including titles and over
 Sets the overall ``size`` of the plot (including titles and over components which sit outside the plot area).
 
 .. seealso:: :py:func:`size`
+%End
+
+    QRectF interiorPlotArea( const QgsRenderContext &context ) const;
+%Docstring
+Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
+outside the plot area).
 %End
 
     double xMinimum() const;
@@ -314,7 +333,7 @@ Sets the ``symbol`` used to render the minor lines in the y axis grid.
 
 Ownership of ``symbol`` is transferred to the plot.
 
-.. seealso:: YGridMinorSymbol
+.. seealso:: :py:func:`yGridMinorSymbol`
 %End
 
     QgsTextFormat xAxisTextFormat() const;
