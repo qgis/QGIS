@@ -219,9 +219,8 @@ class ProcessingPlugin(QObject):
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
         self.resultsDock.hide()
 
-        self.menu = QMenu(self.iface.mainWindow().menuBar())
-        self.menu.setObjectName('processing')
-        self.menu.setTitle(self.tr('Pro&cessing'))
+        analysis_menu = self.iface.analysisMenu()
+        analysis_menu_actions = []
 
         self.toolboxAction = QAction(self.tr('&Toolbox'), self.iface.mainWindow())
         self.toolboxAction.setCheckable(True)
@@ -232,7 +231,7 @@ class ProcessingPlugin(QObject):
                                             QKeySequence('Ctrl+Alt+T').toString(QKeySequence.NativeText))
         self.toolboxAction.toggled.connect(self.openToolbox)
         self.iface.attributesToolBar().insertAction(self.iface.actionOpenStatisticalSummary(), self.toolboxAction)
-        self.menu.addAction(self.toolboxAction)
+        analysis_menu_actions.append(self.toolboxAction)
 
         self.modelerAction = QAction(
             QgsApplication.getThemeIcon("/processingModel.svg"),
@@ -241,7 +240,7 @@ class ProcessingPlugin(QObject):
         self.modelerAction.triggered.connect(self.openModeler)
         self.iface.registerMainWindowAction(self.modelerAction,
                                             QKeySequence('Ctrl+Alt+G').toString(QKeySequence.NativeText))
-        self.menu.addAction(self.modelerAction)
+        analysis_menu_actions.append(self.modelerAction)
 
         self.historyAction = QAction(
             QgsApplication.getThemeIcon("/mIconHistory.svg"),
@@ -250,7 +249,7 @@ class ProcessingPlugin(QObject):
         self.historyAction.triggered.connect(self.openHistory)
         self.iface.registerMainWindowAction(self.historyAction,
                                             QKeySequence('Ctrl+Alt+H').toString(QKeySequence.NativeText))
-        self.menu.addAction(self.historyAction)
+        analysis_menu_actions.append(self.historyAction)
         self.toolbox.processingToolbar.addAction(self.historyAction)
 
         self.resultsAction = QAction(
@@ -261,7 +260,7 @@ class ProcessingPlugin(QObject):
         self.iface.registerMainWindowAction(self.resultsAction,
                                             QKeySequence('Ctrl+Alt+R').toString(QKeySequence.NativeText))
 
-        self.menu.addAction(self.resultsAction)
+        analysis_menu_actions.append(self.resultsAction)
         self.toolbox.processingToolbar.addAction(self.resultsAction)
         self.resultsDock.visibilityChanged.connect(self.resultsAction.setChecked)
         self.resultsAction.toggled.connect(self.resultsDock.setUserVisible)
@@ -274,7 +273,6 @@ class ProcessingPlugin(QObject):
         self.editInPlaceAction.setObjectName('editInPlaceFeatures')
         self.editInPlaceAction.setCheckable(True)
         self.editInPlaceAction.toggled.connect(self.editSelected)
-        self.menu.addAction(self.editInPlaceAction)
         self.toolbox.processingToolbar.addAction(self.editInPlaceAction)
 
         self.toolbox.processingToolbar.addSeparator()
@@ -286,11 +284,20 @@ class ProcessingPlugin(QObject):
         self.optionsAction.triggered.connect(self.openProcessingOptions)
         self.toolbox.processingToolbar.addAction(self.optionsAction)
 
-        menuBar = self.iface.mainWindow().menuBar()
-        menuBar.insertMenu(
-            self.iface.firstRightStandardMenu().menuAction(), self.menu)
-
-        self.menu.addSeparator()
+        if not analysis_menu.actions():
+            for a in analysis_menu_actions:
+                analysis_menu.addAction(a)
+            analysis_menu.addSeparator()
+            analysis_menu.addAction(self.editInPlaceAction)
+            analysis_menu.addSeparator()
+        else:
+            # if there's existing entries in the Analysis menu, then make sure the Processing actions appear first
+            first_menu_action = analysis_menu.actions()[0]
+            for a in analysis_menu_actions:
+                analysis_menu.insertAction(first_menu_action, a)
+            analysis_menu.insertSeparator(first_menu_action)
+            analysis_menu.insertAction(first_menu_action, self.editInPlaceAction)
+            analysis_menu.insertSeparator(first_menu_action)
 
         initializeMenus()
         createMenus()
@@ -432,17 +439,25 @@ class ProcessingPlugin(QObject):
         self.iface.removeDockWidget(self.resultsDock)
 
         self.toolbox.deleteLater()
-        self.menu.deleteLater()
 
         # also delete temporary help files
         folder = tempHelpFolder()
         if QDir(folder).exists():
             shutil.rmtree(folder, True)
 
-        self.iface.unregisterMainWindowAction(self.toolboxAction)
-        self.iface.unregisterMainWindowAction(self.modelerAction)
-        self.iface.unregisterMainWindowAction(self.historyAction)
-        self.iface.unregisterMainWindowAction(self.resultsAction)
+        for action in [self.toolboxAction,
+                       self.modelerAction,
+                       self.historyAction,
+                       self.resultsAction,
+                       self.editInPlaceAction]:
+            self.iface.unregisterMainWindowAction(action)
+            action.deleteLater()
+
+        self.toolboxAction = None
+        self.modelerAction = None
+        self.historyAction = None
+        self.resultsAction = None
+        self.editInPlaceAction = None
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
         self.iface.deregisterLocatorFilter(self.locator_filter)

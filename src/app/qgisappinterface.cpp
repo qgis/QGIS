@@ -650,6 +650,7 @@ QMenu *QgisAppInterface::pluginHelpMenu() { return qgis->pluginHelpMenu(); }
 QMenu *QgisAppInterface::rasterMenu() { return qgis->rasterMenu(); }
 QMenu *QgisAppInterface::vectorMenu() { return qgis->vectorMenu(); }
 QMenu *QgisAppInterface::databaseMenu() { return qgis->databaseMenu(); }
+QMenu *QgisAppInterface::analysisMenu() { return qgis->analysisMenu(); }
 QMenu *QgisAppInterface::webMenu() { return qgis->webMenu(); }
 QMenu *QgisAppInterface::firstRightStandardMenu() { return qgis->firstRightStandardMenu(); }
 QMenu *QgisAppInterface::windowMenu() { return qgis->windowMenu(); }

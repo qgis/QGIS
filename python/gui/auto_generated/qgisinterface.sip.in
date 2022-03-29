@@ -239,6 +239,13 @@ Returns a reference to the main window "Database" menu.
 Returns a reference to the main window "Vector" menu.
 %End
 
+    virtual QMenu *analysisMenu() = 0;
+%Docstring
+Returns a reference to the main window "Analysis" menu.
+
+.. versionadded:: 3.26
+%End
+
     virtual QMenu *webMenu() = 0;
 %Docstring
 Returns a reference to the main window "Web" menu.

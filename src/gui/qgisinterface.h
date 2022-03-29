@@ -276,6 +276,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *vectorMenu() = 0;
 
     /**
+     * Returns a reference to the main window "Analysis" menu.
+     *
+     * \since QGIS 3.26
+     */
+    virtual QMenu *analysisMenu() = 0;
+
+    /**
      * Returns a reference to the main window "Web" menu.
      */
     virtual QMenu *webMenu() = 0;

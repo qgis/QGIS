@@ -396,6 +396,11 @@
     </property>
     <addaction name="mActionShowMeshCalculator"/>
    </widget>
+   <widget class="QMenu" name="mAnalysisMenu">
+    <property name="title">
+     <string>&amp;Analysis</string>
+    </property>
+   </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
@@ -405,6 +410,7 @@
    <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
    <addaction name="mMeshMenu"/>
+   <addaction name="mAnalysisMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">

@@ -662,6 +662,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *rasterMenu() { return mRasterMenu; }
     QMenu *vectorMenu() { return mVectorMenu; }
     QMenu *meshMenu() { return mMeshMenu; }
+    QMenu *analysisMenu() { return mAnalysisMenu; }
     QMenu *webMenu() { return mWebMenu; }
 #ifdef Q_OS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
