@@ -899,6 +899,10 @@ void QgsExpression::initVariableHelp()
 
   //form variable
   sVariableHelpTexts()->insert( QStringLiteral( "form_mode" ), QCoreApplication::translate( "form_mode", "What the form is used for, like AddFeatureMode, SingleEditMode, MultiEditMode, SearchMode, AggregateSearchMode or IdentifyMode as string." ) );
+
+  // plots
+  sVariableHelpTexts()->insert( QStringLiteral( "plot_axis" ), QCoreApplication::translate( "plot_axis", "The associated plot axis, e.g. 'x' or 'y'." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "plot_axis_value" ), QCoreApplication::translate( "plot_axis_value", "The current value for the plot axis." ) );
 }
 
 
