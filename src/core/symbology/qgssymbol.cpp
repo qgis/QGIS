@@ -550,11 +550,15 @@ void QgsSymbol::setColor( const QColor &color )
 
 QColor QgsSymbol::color() const
 {
-  for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  for ( const QgsSymbolLayer *layer : mLayers )
   {
     // return color of the first unlocked layer
-    if ( !( *it )->isLocked() )
-      return ( *it )->color();
+    if ( !layer->isLocked() )
+    {
+      const QColor layerColor = layer->color();
+      if ( layerColor.isValid() )
+        return layerColor;
+    }
   }
   return QColor( 0, 0, 0 );
 }

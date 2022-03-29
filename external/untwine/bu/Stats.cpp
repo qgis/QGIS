@@ -28,11 +28,11 @@ bool Stats::merge(const Stats& s)
     if ((m_name != s.m_name) || (m_enumerate != s.m_enumerate) || (m_advanced != s.m_advanced))
         return false;
 
-    double n1 = m_cnt;
-    double n2 = s.m_cnt;
+    double n1 = (double)m_cnt;
+    double n2 = (double)s.m_cnt;
     double n = n1 + n2;
     double nsq = n * n;
-    double n1n2 = m_cnt * s.m_cnt;
+    double n1n2 = (double)m_cnt * s.m_cnt;
     double n1sq = n1 * n1;
     double n2sq = n2 * n2;
     double ncube = n * n * n;

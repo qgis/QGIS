@@ -496,6 +496,9 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         //! Attributes to export (empty means all unless skipAttributeCreation is set)
         QgsAttributeList attributes;
 
+        //! Attributes export names
+        QStringList attributesExportNames;
+
         //! Symbology to export
         QgsVectorFileWriter::SymbologyExport symbologyExport = NoSymbology;
 

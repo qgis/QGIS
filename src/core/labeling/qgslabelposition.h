@@ -153,6 +153,13 @@ class CORE_EXPORT QgsLabelPosition
      * \since QGIS 3.10
      */
     bool isUnplaced = false;
+
+    /**
+     * If non zero, indicates that the label position is part of a group of label positions (i.e. a character in a curved label).
+     *
+     * All other linked positions will share the same groupedLabelId.
+     */
+    long long groupedLabelId = 0;
 };
 
 #endif // QGSLABELPOSITION_H

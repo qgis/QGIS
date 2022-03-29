@@ -377,6 +377,8 @@ Constructor
 
         QgsAttributeList attributes;
 
+        QStringList attributesExportNames;
+
         QgsVectorFileWriter::SymbologyExport symbologyExport;
 
         double symbologyScale;

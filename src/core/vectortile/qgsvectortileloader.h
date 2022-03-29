@@ -47,6 +47,7 @@ class QNetworkReply;
 class QEventLoop;
 
 class QgsMbTiles;
+class QgsVtpkTiles;
 
 class QgsTileDownloadManagerReply;
 
@@ -68,16 +69,21 @@ class QgsVectorTileLoader : public QObject
         const QPointF &viewCenter,
         const QgsTileRange &range,
         const QString &authid,
-        const QgsHttpHeaders &headers );
+        const QgsHttpHeaders &headers,
+        QgsFeedback *feedback = nullptr );
 
     //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
     static QByteArray loadFromNetwork( const QgsTileXYZ &id,
                                        const QgsTileMatrix &tileMatrix,
                                        const QString &requestUrl,
                                        const QString &authid,
-                                       const QgsHttpHeaders &headers );
+                                       const QgsHttpHeaders &headers,
+                                       QgsFeedback *feedback = nullptr );
     //! Returns raw tile data for a single tile loaded from MBTiles file
-    static QByteArray loadFromMBTiles( const QgsTileXYZ &id, QgsMbTiles &mbTileReader );
+    static QByteArray loadFromMBTiles( const QgsTileXYZ &id, QgsMbTiles &mbTileReader, QgsFeedback *feedback = nullptr );
+
+    //! Returns raw tile data for a single tile loaded from VTPK file
+    static QByteArray loadFromVtpk( const QgsTileXYZ &id, QgsVtpkTiles &vtpkTileReader );
 
     //
     // non-static stuff

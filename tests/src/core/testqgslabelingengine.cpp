@@ -84,6 +84,7 @@ class TestQgsLabelingEngine : public QObject
     void testLabelRotationUnit();
     void drawUnplaced();
     void labelingResults();
+    void labelingResultsCurved();
     void labelingResultsWithCallouts();
     void pointsetExtend();
     void curvedOverrun();
@@ -2460,6 +2461,109 @@ void TestQgsLabelingEngine::labelingResults()
   QCOMPARE( labels.at( 0 ).rotation, 60.0 );
   labels = results->labelsAtPosition( QgsPointXY( -2463392, 6708478 ) );
   QCOMPARE( labels.count(), 0 );
+}
+
+void TestQgsLabelingEngine::labelingResultsCurved()
+{
+  // test retrieval of labeling results for curved placement
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "\"id\"" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::Curved;
+  settings.priority = 10;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (-23.48732038587919746 58.94708170839115979, -11.017713405345674 60.99534928128858979)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  f.setAttributes( QgsAttributes() << 8888 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (-16.22889244198655234 57.45670302419525655, -5.39708458725444817 57.53670918909697463)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  f.setAttributes( QgsAttributes() << 33333 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (-23.52454309328377136 55.7985199122237816, -12.24606274969673869 53.62741130396216249)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  vl2->updateExtents();
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  const QgsCoordinateReferenceSystem tgtCrs( QStringLiteral( "EPSG:3857" ) );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( -4137976.6, 6557092.6, 1585557.4, 9656515.0 ) );
+  // mapSettings.setRotation( 60 );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  //engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  std::unique_ptr< QgsLabelingResults > results( job.takeLabelingResults() );
+  QVERIFY( results );
+
+  // retrieve some labels
+  QList<QgsLabelPosition> labels = results->allLabels();
+  QCOMPARE( labels.count(), 10 );
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
+  {
+    return a.labelText.compare( b.labelText ) < 0;
+  } );
+  QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "33333" ) );
+  long long group2 = labels.at( 1 ).groupedLabelId;
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "33333" ) );
+  QCOMPARE( labels.at( 2 ).groupedLabelId, group2 );
+  QCOMPARE( labels.at( 3 ).labelText, QStringLiteral( "33333" ) );
+  QCOMPARE( labels.at( 3 ).groupedLabelId, group2 );
+  QCOMPARE( labels.at( 4 ).labelText, QStringLiteral( "33333" ) );
+  QCOMPARE( labels.at( 4 ).groupedLabelId, group2 );
+  QCOMPARE( labels.at( 5 ).labelText, QStringLiteral( "33333" ) );
+  QCOMPARE( labels.at( 5 ).groupedLabelId, group2 );
+  long long group3 = labels.at( 6 ).groupedLabelId;
+  QCOMPARE( labels.at( 6 ).labelText, QStringLiteral( "8888" ) );
+  QCOMPARE( labels.at( 7 ).labelText, QStringLiteral( "8888" ) );
+  QCOMPARE( labels.at( 7 ).groupedLabelId, group3 );
+  QCOMPARE( labels.at( 8 ).labelText, QStringLiteral( "8888" ) );
+  QCOMPARE( labels.at( 8 ).groupedLabelId, group3 );
+  QCOMPARE( labels.at( 9 ).labelText, QStringLiteral( "8888" ) );
+  QCOMPARE( labels.at( 9 ).groupedLabelId, group3 );
+
+  labels = results->groupedLabelPositions( group2 );
+  QCOMPARE( labels.size(), 5 );
+  QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "33333" ) );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "33333" ) );
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "33333" ) );
+  QCOMPARE( labels.at( 3 ).labelText, QStringLiteral( "33333" ) );
+  QCOMPARE( labels.at( 4 ).labelText, QStringLiteral( "33333" ) );
+
+  labels = results->groupedLabelPositions( group3 );
+  QCOMPARE( labels.size(), 4 );
+  QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "8888" ) );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "8888" ) );
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "8888" ) );
+  QCOMPARE( labels.at( 3 ).labelText, QStringLiteral( "8888" ) );
 }
 
 void TestQgsLabelingEngine::labelingResultsWithCallouts()

@@ -167,6 +167,13 @@ class CORE_EXPORT QgsTemporalUtils
       //! List of decorations to draw onto exported frames.
       QList<QgsMapDecoration *> decorations;
 
+      /**
+       * Target animation frame rate in frames per second.
+       *
+       * \since QGIS 3.26
+       */
+      double frameRate = 30;
+
     };
 
     /**

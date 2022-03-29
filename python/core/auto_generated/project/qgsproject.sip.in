@@ -125,6 +125,39 @@ Returns the project's title.
    Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's :py:func:`~QgsProject.metadata`.
 %End
 
+    Qgis::ProjectFlags flags() const;
+%Docstring
+Returns the project's flags, which dictate the behavior of the project.
+
+.. seealso:: :py:func:`setFlags`
+
+.. seealso:: :py:func:`setFlag`
+
+.. versionadded:: 3.26
+%End
+
+    void setFlags( Qgis::ProjectFlags flags );
+%Docstring
+Sets the project's ``flags``, which dictate the behavior of the project.
+
+.. seealso:: :py:func:`flags`
+
+.. seealso:: :py:func:`setFlag`
+
+.. versionadded:: 3.26
+%End
+
+    void setFlag( Qgis::ProjectFlag flag, bool enabled = true );
+%Docstring
+Sets whether a project ``flag`` is ``enabled``.
+
+.. seealso:: :py:func:`flags`
+
+.. seealso:: :py:func:`setFlags`
+
+.. versionadded:: 3.26
+%End
+
     QString saveUser() const;
 %Docstring
 Returns the user name that did the last save.
@@ -782,6 +815,14 @@ time based settings.
 %End
 
 
+    QgsProjectElevationProperties *elevationProperties();
+%Docstring
+Returns the project's elevation properties, which contains the project's elevation related settings.
+
+.. versionadded:: 3.26
+%End
+
+
     QgsProjectDisplaySettings *displaySettings();
 %Docstring
 Returns the project's display settings, which settings and properties relating
@@ -916,18 +957,20 @@ Returns the edit buffer group
 .. versionadded:: 3.26
 %End
 
-    bool evaluateDefaultValues() const;
+ bool evaluateDefaultValues() const /Deprecated/;
 %Docstring
 Should default values be evaluated on provider side when requested and not when committed.
 
-.. versionadded:: 2.16
+.. deprecated::
+   Test whether the :py:func:`~QgsProject.flags` method returns the Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide flag instead.
 %End
 
-    void setEvaluateDefaultValues( bool evaluateDefaultValues );
+ void setEvaluateDefaultValues( bool evaluateDefaultValues ) /Deprecated/;
 %Docstring
 Defines if default values should be evaluated on provider side when requested and not when committed.
 
-.. versionadded:: 2.16
+.. deprecated::
+   use setFlag( Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide ) instead.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -1280,7 +1323,7 @@ Returns the default CRS for new layers based on the settings and
 the current project CRS
 %End
 
-    void setTrustLayerMetadata( bool trust );
+ void setTrustLayerMetadata( bool trust ) /Deprecated/;
 %Docstring
 Sets the trust option allowing to indicate if the extent has to be
 read from the XML document when data source has no metadata or if the
@@ -1290,10 +1333,11 @@ materialized views with Postgres provider.
 
 :param trust: ``True`` to trust the project, ``False`` otherwise
 
-.. versionadded:: 3.0
+.. deprecated::
+   Use setFlag( Qgis.ProjectFlag.TrustStoredLayerStatistics ) instead.
 %End
 
-    bool trustLayerMetadata() const;
+ bool trustLayerMetadata() const /Deprecated/;
 %Docstring
 Returns ``True`` if the trust option is activated, ``False`` otherwise. This
 option allows indicateing if the extent has to be read from the XML
@@ -1302,7 +1346,8 @@ to determine it. Moreover, when this option is activated, primary key
 unicity is not checked for views and materialized views with Postgres
 provider.
 
-.. versionadded:: 3.0
+.. deprecated::
+   Test whether the :py:func:`~QgsProject.flags` method returns the Qgis.ProjectFlag.TrustStoredLayerStatistics flag instead.
 %End
 
 

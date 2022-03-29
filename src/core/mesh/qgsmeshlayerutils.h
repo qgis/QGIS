@@ -177,6 +177,15 @@ class CORE_EXPORT QgsMeshLayerUtils
     );
 
     /**
+     * Interpolates the z value for a \a mesh at the specified point (\a x, \a y).
+     *
+     * Returns NaN if the z value cannot be calculated for the point.
+     *
+     * \since QGIS 3.26
+     */
+    static double interpolateZForPoint( const QgsTriangularMesh &mesh, double x, double y );
+
+    /**
     * Interpolates vector based on known vector on the vertices of a triangle
     * \param p1 first vertex of the triangle
     * \param p2 second vertex of the triangle

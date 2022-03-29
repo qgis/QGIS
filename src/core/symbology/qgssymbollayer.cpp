@@ -233,6 +233,35 @@ Qgis::SymbolLayerFlags QgsSymbolLayer::flags() const
   return Qgis::SymbolLayerFlags();
 }
 
+QColor QgsSymbolLayer::color() const
+{
+  return mColor;
+}
+
+void QgsSymbolLayer::setColor( const QColor &color )
+{
+  mColor = color;
+}
+
+void QgsSymbolLayer::setStrokeColor( const QColor & )
+{
+
+}
+
+QColor QgsSymbolLayer::strokeColor() const
+{
+  return QColor();
+}
+
+void QgsSymbolLayer::setFillColor( const QColor & )
+{
+}
+
+QColor QgsSymbolLayer::fillColor() const
+{
+  return QColor();
+}
+
 void QgsSymbolLayer::prepareExpressions( const QgsSymbolRenderContext &context )
 {
   mDataDefinedProperties.prepare( context.renderContext().expressionContext() );

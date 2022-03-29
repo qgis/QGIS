@@ -66,79 +66,21 @@ namespace QgsEptDecoder
     lazperf::reader::generic_file f( file );
     int point_record_length = f.header().point_record_length;
 
-    // Read VLR stuff
-
-    struct VlrHeader
-    {
-      unsigned short reserved;
-      char user_id[16];
-      unsigned short record_id;
-      unsigned short record_length;
-      char desc[32];
-    };
-
-    struct ExtraByteDescriptor
-    {
-      unsigned char reserved[2]; // 2 bytes
-      unsigned char data_type; // 1 byte
-      unsigned char options; // 1 byte
-      char name[32]; // 32 bytes
-      unsigned char unused[4]; // 4 bytes
-      unsigned char no_data[8]; // 8 bytes
-      unsigned char deprecated1[16]; // 16 bytes
-      unsigned char min[8]; // 8 bytes
-      unsigned char deprecated2[16]; // 16 bytes
-      unsigned char max[8]; // 8 bytes
-      unsigned char deprecated3[16]; // 16 bytes
-      unsigned char scale[8]; // 8 bytes
-      unsigned char deprecated4[16]; // 16 bytes
-      double offset; // 8 bytes
-      unsigned char deprecated5[16]; // 16 bytes
-      char description[32]; // 32 bytes
-    };
-
-    QVector<ExtraByteDescriptor> extraBytes;
     QVector<ExtraBytesAttributeDetails> extrabytesAttr;
 
-    VlrHeader extraBytesVlrHeader;
-    int extraBytesDescriptorsOffset = -1;
-
-    file.seekg( f.header().header_size );
-    for ( unsigned int i = 0; i < f.header().vlr_count && file.good() && !file.eof(); ++i )
+    std::vector<char> ebData = f.vlrData( "LASF_Spec", 4 );
+    lazperf::eb_vlr ebVlr;
+    ebVlr.fill( ebData.data(), ebData.size() );
+    for ( std::vector<lazperf::eb_vlr::ebfield>::reverse_iterator it = ebVlr.items.rbegin(); it != ebVlr.items.rend(); ++it )
     {
-      VlrHeader vlrHeader;
-      file.read( ( char * )&vlrHeader, sizeof( VlrHeader ) );
-      file.seekg( vlrHeader.record_length, std::ios::cur );
-      if ( std::equal( vlrHeader.user_id, vlrHeader.user_id + 9, "LASF_Spec" ) && vlrHeader.record_id == 4 )
-      {
-        extraBytesVlrHeader = vlrHeader;
-        extraBytesDescriptorsOffset = f.header().header_size + sizeof( VlrHeader );
-      }
-    }
-
-    // Read VLR fields
-    if ( extraBytesDescriptorsOffset != -1 )
-    {
-      file.seekg( extraBytesDescriptorsOffset );
-      int n_descriptors = extraBytesVlrHeader.record_length / sizeof( ExtraByteDescriptor );
-      for ( int i = 0; i < n_descriptors; ++i )
-      {
-        ExtraByteDescriptor ebd;
-        file.read( ( char * )&ebd, sizeof( ExtraByteDescriptor ) );
-        extraBytes.push_back( ebd );
-      }
-    }
-
-    for ( int i = ( int )extraBytes.size() - 1; i >= 0; --i )
-    {
-      ExtraByteDescriptor eb = extraBytes[i];
+      lazperf::eb_vlr::ebfield &field = *it;
       ExtraBytesAttributeDetails ebAtrr;
-      ebAtrr.attribute = QString::fromStdString( eb.name );
-      switch ( eb.data_type )
+      ebAtrr.attribute = QString::fromStdString( field.name );
+      switch ( field.data_type )
       {
         case 0:
           ebAtrr.type = QgsPointCloudAttribute::Char;
-          ebAtrr.size = eb.options;
+          ebAtrr.size = field.options;
           break;
         case 1:
           ebAtrr.type = QgsPointCloudAttribute::UChar;
@@ -182,7 +124,7 @@ namespace QgsEptDecoder
           break;
         default:
           ebAtrr.type = QgsPointCloudAttribute::Char;
-          ebAtrr.size = eb.options;
+          ebAtrr.size = field.options;
           break;
       }
       int accOffset = ( extrabytesAttr.empty() ? point_record_length : extrabytesAttr.back().offset ) - ebAtrr.size;

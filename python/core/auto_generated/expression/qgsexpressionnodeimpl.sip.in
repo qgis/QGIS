@@ -250,6 +250,69 @@ Returns the index node, representing an array element index or map key.
 
 };
 
+class QgsExpressionNodeBetweenOperator: QgsExpressionNode
+{
+%Docstring(signature="appended")
+SQL-like BETWEEN and NOT BETWEEN predicates.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsExpressionNodeBetweenOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode *nodeLowerBound /Transfer/, QgsExpressionNode *nodeHigherBound /Transfer/, bool negate = false );
+%Docstring
+This node tests if the result of ``node`` is between the result of ``nodeLowerBound`` and ``nodeHigherBound`` nodes. Optionally it can be inverted with ``negate`` which by default is ``False``.
+%End
+
+    ~QgsExpressionNodeBetweenOperator();
+
+    QgsExpressionNode *node() const;
+%Docstring
+Returns the expression node.
+%End
+
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+    QgsExpressionNode *lowerBound() const;
+%Docstring
+Returns the lower bound expression node of the range.
+%End
+
+    QgsExpressionNode *higherBound() const;
+%Docstring
+Returns the higher bound expression node of the range.
+%End
+
+    bool negate() const;
+%Docstring
+Returns ``True`` if the predicate is an exclusion test (NOT BETWEEN).
+%End
+
+};
+
 class QgsExpressionNodeInOperator : QgsExpressionNode
 {
 %Docstring(signature="appended")

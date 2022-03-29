@@ -9,6 +9,7 @@
 
 
 
+
 class QgsTileXYZ
 {
 %Docstring(signature="appended")
@@ -233,6 +234,11 @@ Defines a set of tile matrices for multiple zoom levels.
 
     virtual ~QgsTileMatrixSet();
 
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the matrix set is empty.
+%End
+
     void addGoogleCrs84QuadTiles( int minimumZoom = 0, int maximumZoom = 14 );
 %Docstring
 Adds tile matrices corresponding to the standard web mercator/GoogleCRS84Quad setup.
@@ -290,6 +296,25 @@ The zoom level will be linearly interpolated between zoom levels present in the 
 Finds the best fitting (integer) zoom level given a map ``scale`` denominator.
 
 Values are constrained to the zoom levels between :py:func:`~QgsTileMatrixSet.minimumZoom` and :py:func:`~QgsTileMatrixSet.maximumZoom`.
+%End
+
+    double scaleForRenderContext( const QgsRenderContext &context ) const;
+%Docstring
+Calculates the correct scale to use for the tiles when rendered using the specified render ``context``.
+
+.. versionadded:: 3.26
+%End
+
+    double calculateTileScaleForMap( double actualMapScale,
+                                     const QgsCoordinateReferenceSystem &mapCrs,
+                                     const QgsRectangle &mapExtent,
+                                     const QSize mapSize,
+                                     const double mapDpi
+                                   ) const;
+%Docstring
+Calculates the correct scale to use for the tiles when rendered using the specified map properties.
+
+.. versionadded:: 3.26
 %End
 
     virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );

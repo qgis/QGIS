@@ -64,6 +64,8 @@ Create a new QgsMaskMarkerSymbolLayer
 
     virtual bool usesMapUnits() const;
 
+    virtual QColor color() const;
+
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 

@@ -847,6 +847,38 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(fields.at(3).constraints().constraints()
                          & QgsFieldConstraints.ConstraintUnique)
 
+    def testIdentityFieldHandling(self):
+        """
+        Test identity field handling
+        """
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        conn = md.createConnection(self.dbconn, {})
+
+        conn.execSql('DROP TABLE IF EXISTS qgis_test.test_identity')
+        conn.execSql("""CREATE TABLE [qgis_test].[test_identity](
+        [pk] [int] IDENTITY(1,1) NOT NULL,
+        [name] [nchar](10) NULL,
+        [geom] [geometry] NULL,
+ CONSTRAINT [PK_test_table]  PRIMARY KEY CLUSTERED
+(
+        [pk] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]""")
+
+        uri = '{} table="qgis_test"."test_identity" sql='.format(self.dbconn)
+        vl = QgsVectorLayer(uri, '', 'mssql')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.dataProvider().pkAttributeIndexes(), [0])
+        self.assertEqual(vl.dataProvider().defaultValueClause(0), 'Autogenerate')
+        identity_field = vl.dataProvider().fields().at(0)
+        self.assertEqual(identity_field.name(), 'pk')
+        self.assertEqual(identity_field.constraints().constraints(), QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(identity_field.constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull), QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertEqual(identity_field.constraints().constraintStrength(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintStrengthHard)
+        self.assertTrue(identity_field.isReadOnly())
+
     def getSubsetString(self):
         return '[cnt] > 100 and [cnt] < 410'
 

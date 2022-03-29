@@ -243,6 +243,8 @@ set(QGIS_APP_SRCS
   dwg/qgsdwgimportdialog.cpp
   dwg/qgsdwgimporter.cpp
 
+  project/qgsprojectelevationsettingswidget.cpp
+
   pluginmanager/qgspluginmanager.cpp
   pluginmanager/qgspluginmanager_texts.cpp
   pluginmanager/qgsapppluginmanagerinterface.cpp

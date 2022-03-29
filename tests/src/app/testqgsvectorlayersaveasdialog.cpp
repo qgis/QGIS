@@ -89,16 +89,16 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   QCheckBox *mReplaceRawFieldValues = d.findChild<QCheckBox *>( QStringLiteral( "mReplaceRawFieldValues" ) );
 
   QCOMPARE( mAttributeTable->rowCount(), 2 );
-  QCOMPARE( mAttributeTable->columnCount(), 3 );
+  QCOMPARE( mAttributeTable->isColumnHidden( 3 ), false );
 
   QCOMPARE( d.attributesAsDisplayedValues().size(), 0 );
 
   QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::Unchecked );
   QCOMPARE( mReplaceRawFieldValues->isEnabled(), false );
   QCOMPARE( mAttributeTable->item( 0, 0 )->checkState(), Qt::Unchecked );
-  QCOMPARE( mAttributeTable->item( 0, 2 )->checkState(), Qt::Unchecked );
-  QCOMPARE( mAttributeTable->item( 0, 2 )->flags(), Qt::ItemIsUserCheckable );
-  QCOMPARE( mAttributeTable->item( 1, 2 )->flags(), 0 );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->flags(), Qt::ItemIsUserCheckable );
+  QCOMPARE( mAttributeTable->item( 1, 3 )->flags(), 0 );
 
   // Activate item
   mAttributeTable->item( 0, 0 )->setCheckState( Qt::Checked );
@@ -106,32 +106,32 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::Unchecked );
   QCOMPARE( mReplaceRawFieldValues->isEnabled(), true );
   QCOMPARE( mAttributeTable->item( 0, 0 )->checkState(), Qt::Checked );
-  QCOMPARE( mAttributeTable->item( 0, 2 )->checkState(), Qt::Unchecked );
-  QCOMPARE( mAttributeTable->item( 0, 2 )->flags(), Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->flags(), Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
 
   // Activate "Replace with displayed value" column
-  mAttributeTable->item( 0, 2 )->setCheckState( Qt::Checked );
+  mAttributeTable->item( 0, 3 )->setCheckState( Qt::Checked );
 
   QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::Checked );
   QCOMPARE( mReplaceRawFieldValues->isEnabled(), true );
 
   // Uncheck mReplaceRawFieldValues
   mReplaceRawFieldValues->setCheckState( Qt::Unchecked );
-  QCOMPARE( mAttributeTable->item( 0, 2 )->checkState(), Qt::Unchecked );
-  QCOMPARE( mAttributeTable->item( 0, 2 )->flags(), Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->flags(), Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
 
   // Check mReplaceRawFieldValues
   mReplaceRawFieldValues->setCheckState( Qt::Checked );
-  QCOMPARE( mAttributeTable->item( 0, 2 )->checkState(), Qt::Checked );
-  QCOMPARE( mAttributeTable->item( 0, 2 )->flags(), Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->flags(), Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
 
   QCOMPARE( d.attributesAsDisplayedValues().size(), 1 );
   QCOMPARE( d.attributesAsDisplayedValues()[0], 0 );
 
   // Disable item
   mAttributeTable->item( 0, 0 )->setCheckState( Qt::Unchecked );
-  QCOMPARE( mAttributeTable->item( 0, 2 )->checkState(), Qt::Unchecked );
-  QCOMPARE( mAttributeTable->item( 0, 2 )->flags(), Qt::ItemIsUserCheckable );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->flags(), Qt::ItemIsUserCheckable );
 
   // Check that we can get a custom CRS with crsObject()
   QCOMPARE( d.crsObject(), crs ) ;

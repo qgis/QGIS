@@ -30,6 +30,7 @@
 #include "qgspointcloudattributemodel.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudquerybuilder.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -47,6 +48,7 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   connect( this, &QDialog::rejected, this, &QgsPointCloudLayerProperties::onCancel );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsPointCloudLayerProperties::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPointCloudLayerProperties::showHelp );
+  connect( pbnQueryBuilder, &QPushButton::clicked, this, &QgsPointCloudLayerProperties::pbnQueryBuilder_clicked );
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsPointCloudLayerProperties::crsChanged );
 
@@ -190,6 +192,15 @@ void QgsPointCloudLayerProperties::syncToLayer()
   connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsPointCloudLayerProperties::urlClicked );
 
   mCrsSelector->setCrs( mLayer->crs() );
+
+  mSubsetGroupBox->setEnabled( true );
+  txtSubsetSQL->setText( mLayer->subsetString() );
+  txtSubsetSQL->setReadOnly( true );
+  txtSubsetSQL->setCaretWidth( 0 );
+  txtSubsetSQL->setCaretLineVisible( false );
+  pbnQueryBuilder->setEnabled( mLayer &&
+                               mLayer->dataProvider() &&
+                               mLayer->dataProvider()->supportsSubsetString() );
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->syncToLayer( mLayer );
@@ -417,6 +428,16 @@ void QgsPointCloudLayerProperties::urlClicked( const QUrl &url )
     QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
+}
+
+void QgsPointCloudLayerProperties::pbnQueryBuilder_clicked()
+{
+  QgsPointCloudQueryBuilder qb { mLayer };
+  qb.setSubsetString( mLayer->subsetString() );
+  if ( qb.exec() )
+  {
+    txtSubsetSQL->setText( qb.subsetString() );
+  }
 }
 
 void QgsPointCloudLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )

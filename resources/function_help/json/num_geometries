@@ -2,14 +2,17 @@
   "name": "num_geometries",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns the number of geometries in a geometry collection, or NULL if the input geometry is not a collection.",
+  "description": "Returns the number of geometries in a geometry collection, or the number of parts in a multi-part geometry. The function returns NULL if the input geometry is not a collection.",
   "arguments": [{
     "arg": "geometry",
-    "description": "geometry collection"
+    "description": "geometry collection or multi-part geometry"
   }],
   "examples": [{
     "expression": "num_geometries(geom_from_wkt('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))'))",
     "returns": "4"
+  },{
+    "expression": "num_geometries(geom_from_wkt('MULTIPOINT((0 1), (0 0), (1 0))'))",
+    "returns": "3"
   }],
   "tags": ["collection", "multipart", "parts", "count"]
 }

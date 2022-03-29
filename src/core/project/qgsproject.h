@@ -84,6 +84,7 @@ class QgsAnnotationLayer;
 class QgsAttributeEditorContainer;
 class QgsPropertyCollection;
 class QgsMapViewsManager;
+class QgsProjectElevationProperties;
 
 /**
  * \ingroup core
@@ -212,6 +213,36 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's metadata().
     */
     QString title() const;
+
+    /**
+     * Returns the project's flags, which dictate the behavior of the project.
+     *
+     * \see setFlags()
+     * \see setFlag()
+     *
+     * \since QGIS 3.26
+     */
+    Qgis::ProjectFlags flags() const { return mFlags; }
+
+    /**
+     * Sets the project's \a flags, which dictate the behavior of the project.
+     *
+     * \see flags()
+     * \see setFlag()
+     *
+     * \since QGIS 3.26
+     */
+    void setFlags( Qgis::ProjectFlags flags );
+
+    /**
+     * Sets whether a project \a flag is \a enabled.
+     *
+     * \see flags()
+     * \see setFlags()
+     *
+     * \since QGIS 3.26
+     */
+    void setFlag( Qgis::ProjectFlag flag, bool enabled = true );
 
     /**
     * Returns the user name that did the last save.
@@ -822,6 +853,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsProjectTimeSettings *timeSettings();
 
     /**
+     * Returns the project's elevation properties, which contains the project's elevation related settings.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.26
+     */
+    const QgsProjectElevationProperties *elevationProperties() const SIP_SKIP;
+
+    /**
+     * Returns the project's elevation properties, which contains the project's elevation related settings.
+     *
+     * \since QGIS 3.26
+     */
+    QgsProjectElevationProperties *elevationProperties();
+
+    /**
      * Returns the project's display settings, which settings and properties relating
      * to how a QgsProject should display values such as map coordinates and bearings.
      * \note not available in Python bindings
@@ -955,16 +1001,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
      *
-     * \since QGIS 2.16
+     * \deprecated Test whether the flags() method returns the Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide flag instead.
      */
-    bool evaluateDefaultValues() const;
+    Q_DECL_DEPRECATED bool evaluateDefaultValues() const SIP_DEPRECATED;
 
     /**
      * Defines if default values should be evaluated on provider side when requested and not when committed.
      *
-     * \since QGIS 2.16
+     * \deprecated use setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide ) instead.
      */
-    void setEvaluateDefaultValues( bool evaluateDefaultValues );
+    Q_DECL_DEPRECATED void setEvaluateDefaultValues( bool evaluateDefaultValues ) SIP_DEPRECATED;
 
     QgsExpressionContext createExpressionContext() const override;
     QgsExpressionContextScope *createExpressionContextScope() const override;
@@ -1352,9 +1398,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \param trust TRUE to trust the project, FALSE otherwise
      *
-     * \since QGIS 3.0
+     * \deprecated Use setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics ) instead.
      */
-    void setTrustLayerMetadata( bool trust );
+    Q_DECL_DEPRECATED void setTrustLayerMetadata( bool trust ) SIP_DEPRECATED;
 
     /**
      * Returns TRUE if the trust option is activated, FALSE otherwise. This
@@ -1364,9 +1410,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * unicity is not checked for views and materialized views with Postgres
      * provider.
      *
-     * \since QGIS 3.0
+     * \deprecated Test whether the flags() method returns the Qgis::ProjectFlag::TrustStoredLayerStatistics flag instead.
      */
-    bool trustLayerMetadata() const { return mTrustLayerMetadata; }
+    Q_DECL_DEPRECATED bool trustLayerMetadata() const SIP_DEPRECATED;
 
     /**
      * Returns the current const auxiliary storage.
@@ -2164,6 +2210,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsProjectTimeSettings *mTimeSettings = nullptr;
 
+    QgsProjectElevationProperties *mElevationProperties = nullptr;
+
     QgsProjectDisplaySettings *mDisplaySettings = nullptr;
 
     QgsLayerTree *mRootGroup = nullptr;
@@ -2208,11 +2256,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     Qgis::TransactionMode mTransactionMode = Qgis::TransactionMode::Disabled; // transaction grouped editing
-    bool mEvaluateDefaultValues = false; // evaluate default values immediately
+
+    Qgis::ProjectFlags mFlags;
     QgsCoordinateReferenceSystem mCrs;
     bool mDirty = false;                 // project has been modified since it has been read or saved
     int mDirtyBlockCount = 0;
-    bool mTrustLayerMetadata = false;
 
     QgsPropertyCollection mDataDefinedServerProperties;
 

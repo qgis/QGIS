@@ -2183,6 +2183,12 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
   QString resultTestWKT = QStringLiteral( "Polygon ((635.86 -420.08, 552.66 -134.85, 153.5 -251.27, 236.69 -536.51, 635.86 -420.08))" );
   QCOMPARE( result.asWkt( 2 ), resultTestWKT );
 
+  // Issue https://github.com/qgis/QGIS/issues/47726
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon (((-57 -30, -56.5 -30, -56 -30, -55.5 -30, -55.5 -29.6667, -55.5 -29.333, -55.5 -29, -56 -29, -56.5 -29, -57 -29, -57 -29.3333, -57 -29.6666, -57 -30)))" ) );
+  result = geomTest.orientedMinimumBoundingBox( );
+  resultTestWKT = QStringLiteral( "Polygon ((-57 -30, -55.5 -30, -55.5 -29, -57 -29, -57 -30))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+
 }
 void TestQgsGeometry::minimalEnclosingCircle()
 {
@@ -2273,6 +2279,35 @@ void TestQgsGeometry::splitGeometry()
   QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 2749544.19, 1262914.79, 0 ) << QgsPoint( 2749557.64, 1262897.30, 0 ), newGeoms, false, testPoints ), Qgis::GeometryOperationResult::Success );
   QVERIFY( newGeoms.count() == 1 );
   QCOMPARE( newGeoms[0].asWkt( 2 ), QStringLiteral( "LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)" ) );
+
+  // This should obviously not crash
+  g2 = QgsGeometry::fromWkt( "CompoundCurve ((1 1, 2 2, 3 3))" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 2, 2 ), newGeoms, false, testPoints ), Qgis::GeometryOperationResult::Success );
+  QVERIFY( newGeoms.count() == 1 );
+  QCOMPARE( newGeoms[0].asWkt( 2 ), QStringLiteral( "LineString (2 2, 3 3)" ) );
+
+  // Do not split on self-intersections - https://github.com/qgis/QGIS/issues/14070
+  g2 = QgsGeometry::fromWkt( "LineString (0 0, 10 0, 10 2, 6 2, 6 -2, 3 -2, 3 2, 0 2, 0 0)" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 0, 1 ) << QgsPoint( 11, 1 ) << QgsPoint( 11, -1 ) << QgsPoint( 0, -1 ), newGeoms, false, testPoints ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 6 );
+  QCOMPARE( newGeoms[0].asWkt( 2 ), QStringLiteral( "LineString (10 1, 10 2, 6 2, 6 1)" ) );
+  QCOMPARE( newGeoms[1].asWkt( 2 ), QStringLiteral( "LineString (6 1, 6 -1)" ) );
+  QCOMPARE( newGeoms[2].asWkt( 2 ), QStringLiteral( "LineString (6 -1, 6 -2, 3 -2, 3 -1)" ) );
+  QCOMPARE( newGeoms[3].asWkt( 2 ), QStringLiteral( "LineString (3 -1, 3 1)" ) );
+  QCOMPARE( newGeoms[4].asWkt( 2 ), QStringLiteral( "LineString (3 1, 3 2, 0 2, 0 1)" ) );
+  QCOMPARE( newGeoms[5].asWkt( 2 ), QStringLiteral( "LineString (0 1, 0 0)" ) );
+
+  // Same, but with a single split point on an existing vertex
+  g2 = QgsGeometry::fromWkt( "LineString (0 0, 10 0, 10 2, 6 2, 6 -2, 3 -2, 3 2, 0 2, 0 0)" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 6, 2 ), newGeoms, false, testPoints ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 1 );
+  QCOMPARE( newGeoms[0].asWkt( 2 ), QStringLiteral( "LineString (6 2, 6 -2, 3 -2, 3 2, 0 2, 0 0)" ) );
 
   // Test split geometry with topological editing
   QVector<QgsPointXY> testPointsXY;

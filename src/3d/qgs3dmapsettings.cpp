@@ -23,6 +23,8 @@
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgspointcloudlayer3drenderer.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsterrainprovider.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -81,6 +83,8 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
+  , mViewSyncMode( other.mViewSyncMode )
+  , mVisualizeViewFrustum( other.mVisualizeViewFrustum )
   , mDebugShadowMapEnabled( other.mDebugShadowMapEnabled )
   , mDebugShadowMapCorner( other.mDebugShadowMapCorner )
   , mDebugShadowMapSize( other.mDebugShadowMapSize )
@@ -269,6 +273,10 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mEyeDomeLightingStrength = elemEyeDomeLighting.attribute( "eye-dome-lighting-strength", QStringLiteral( "1000.0" ) ).toDouble();
   mEyeDomeLightingDistance = elemEyeDomeLighting.attribute( "eye-dome-lighting-distance", QStringLiteral( "1" ) ).toInt();
 
+  QDomElement elemNavigationSync = elem.firstChildElement( QStringLiteral( "navigation-sync" ) );
+  mViewSyncMode = ( Qgis::ViewSyncModeFlags )( elemNavigationSync.attribute( QStringLiteral( "view-sync-mode" ), QStringLiteral( "0" ) ).toInt() );
+  mVisualizeViewFrustum = elemNavigationSync.attribute( QStringLiteral( "view-frustum-visualization-enabled" ), QStringLiteral( "0" ) ).toInt();
+
   QDomElement elemDebugSettings = elem.firstChildElement( QStringLiteral( "debug-settings" ) );
   mDebugShadowMapEnabled = elemDebugSettings.attribute( QStringLiteral( "shadowmap-enabled" ), QStringLiteral( "0" ) ).toInt();
   mDebugShadowMapCorner = static_cast<Qt::Corner>( elemDebugSettings.attribute( QStringLiteral( "shadowmap-corner" ), "0" ).toInt() );
@@ -401,11 +409,15 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemDebug );
 
   QDomElement elemEyeDomeLighting = doc.createElement( QStringLiteral( "eye-dome-lighting" ) );
-  elemEyeDomeLighting.setAttribute( "enabled", mEyeDomeLightingEnabled ? 1 : 0 );
-  elemEyeDomeLighting.setAttribute( "eye-dome-lighting-strength", mEyeDomeLightingStrength );
-  elemEyeDomeLighting.setAttribute( "eye-dome-lighting-distance", mEyeDomeLightingDistance );
+  elemEyeDomeLighting.setAttribute( QStringLiteral( "enabled" ), mEyeDomeLightingEnabled ? 1 : 0 );
+  elemEyeDomeLighting.setAttribute( QStringLiteral( "eye-dome-lighting-strength" ), mEyeDomeLightingStrength );
+  elemEyeDomeLighting.setAttribute( QStringLiteral( "eye-dome-lighting-distance" ), mEyeDomeLightingDistance );
   elem.appendChild( elemEyeDomeLighting );
 
+  QDomElement elemNavigationSync = doc.createElement( QStringLiteral( "navigation-sync" ) );
+  elemNavigationSync.setAttribute( QStringLiteral( "view-sync-mode" ), ( int )mViewSyncMode );
+  elemNavigationSync.setAttribute( QStringLiteral( "view-frustum-visualization-enabled" ), mVisualizeViewFrustum ? 1 : 0 );
+  elem.appendChild( elemNavigationSync );
 
   QDomElement elemDebugSettings = doc.createElement( QStringLiteral( "debug-settings" ) );
   elemDebugSettings.setAttribute( QStringLiteral( "shadowmap-enabled" ), mDebugShadowMapEnabled );
@@ -533,6 +545,53 @@ QList<QgsMapLayer *> Qgs3DMapSettings::layers() const
       lst.append( layerRef.layer );
   }
   return lst;
+}
+
+void Qgs3DMapSettings::configureTerrainFromProject( QgsProjectElevationProperties *properties, const QgsRectangle &fullExtent )
+{
+  if ( properties->terrainProvider()->type() == QLatin1String( "flat" ) )
+  {
+    QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+    flatTerrain->setCrs( crs() );
+    flatTerrain->setExtent( fullExtent );
+    setTerrainGenerator( flatTerrain );
+
+    setTerrainElevationOffset( properties->terrainProvider()->offset() );
+  }
+  else if ( properties->terrainProvider()->type() == QLatin1String( "raster" ) )
+  {
+    QgsRasterDemTerrainProvider *rasterProvider = qgis::down_cast< QgsRasterDemTerrainProvider * >( properties->terrainProvider() );
+
+    QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
+    demTerrainGen->setCrs( crs(), QgsProject::instance()->transformContext() );
+    demTerrainGen->setLayer( rasterProvider->layer() );
+    setTerrainGenerator( demTerrainGen );
+
+    setTerrainElevationOffset( properties->terrainProvider()->offset() );
+    setTerrainVerticalScale( properties->terrainProvider()->scale() );
+  }
+  else if ( properties->terrainProvider()->type() == QLatin1String( "mesh" ) )
+  {
+    QgsMeshTerrainProvider *meshProvider = qgis::down_cast< QgsMeshTerrainProvider * >( properties->terrainProvider() );
+
+    QgsMeshTerrainGenerator *newTerrainGenerator = new QgsMeshTerrainGenerator;
+    newTerrainGenerator->setCrs( crs(), QgsProject::instance()->transformContext() );
+    newTerrainGenerator->setLayer( meshProvider->layer() );
+    std::unique_ptr< QgsMesh3DSymbol > symbol( newTerrainGenerator->symbol()->clone() );
+    symbol->setVerticalScale( properties->terrainProvider()->scale() );
+    newTerrainGenerator->setSymbol( symbol.release() );
+    setTerrainGenerator( newTerrainGenerator );
+
+    setTerrainElevationOffset( properties->terrainProvider()->offset() );
+    setTerrainVerticalScale( properties->terrainProvider()->scale() );
+  }
+  else
+  {
+    QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+    flatTerrain->setCrs( crs() );
+    flatTerrain->setExtent( fullExtent );
+    setTerrainGenerator( flatTerrain );
+  }
 }
 
 void Qgs3DMapSettings::setMapTileResolution( int res )
@@ -822,6 +881,21 @@ void Qgs3DMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
 {
   mRendererUsage = rendererUsage;
 }
+
+void Qgs3DMapSettings::setViewSyncMode( Qgis::ViewSyncModeFlags mode )
+{
+  mViewSyncMode = mode;
+}
+
+void Qgs3DMapSettings::setViewFrustumVisualizationEnabled( bool enabled )
+{
+  if ( mVisualizeViewFrustum != enabled )
+  {
+    mVisualizeViewFrustum = enabled;
+    emit viewFrustumVisualizationEnabledChanged();
+  }
+}
+
 
 void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
 {

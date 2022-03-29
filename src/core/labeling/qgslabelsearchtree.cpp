@@ -73,7 +73,7 @@ void QgsLabelSearchTree::labelsInRect( const QgsRectangle &r, QList<QgsLabelPosi
   }
 }
 
-bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram, bool pinned, const QString &providerId, bool isUnplaced )
+bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram, bool pinned, const QString &providerId, bool isUnplaced, long long linkedId )
 {
   if ( !labelPos )
   {
@@ -97,16 +97,30 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
     yMax = std::max( yMax, res.y() );
   }
 
+  pal::LabelPosition *next = labelPos->nextPart();
+  long long uniqueLinkedId = 0;
+  if ( linkedId != 0 )
+    uniqueLinkedId = linkedId;
+  else if ( next )
+    uniqueLinkedId = mNextFeatureId++;
+
   const QgsRectangle bounds( xMin, yMin, xMax, yMax );
   const QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
   std::unique_ptr< QgsLabelPosition > newEntry = std::make_unique< QgsLabelPosition >( featureId, labelPos->getAlpha() + mMapSettings.rotation(), cornerPoints, bounds,
       labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry, isUnplaced );
+  newEntry->groupedLabelId = uniqueLinkedId;
   mSpatialIndex.insert( newEntry.get(), bounds );
+
+  if ( uniqueLinkedId != 0 )
+  {
+    mLinkedLabelHash[ uniqueLinkedId ].append( newEntry.get() );
+  }
+
   mOwnedPositions.emplace_back( std::move( newEntry ) );
 
-  if ( pal::LabelPosition *next = labelPos->nextPart() )
+  if ( next )
   {
-    return insertLabel( next, featureId, layerName, labeltext, labelfont, diagram, pinned, providerId, isUnplaced );
+    return insertLabel( next, featureId, layerName, labeltext, labelfont, diagram, pinned, providerId, isUnplaced, uniqueLinkedId );
   }
   return true;
 }
@@ -139,6 +153,11 @@ QList<const QgsCalloutPosition *> QgsLabelSearchTree::calloutsInRectangle( const
   searchResults.erase( std::unique( searchResults.begin(), searchResults.end() ), searchResults.end() );
 
   return searchResults;
+}
+
+QList<QgsLabelPosition *> QgsLabelSearchTree::groupedLabelPositions( long long groupId ) const
+{
+  return mLinkedLabelHash.value( groupId );
 }
 
 void QgsLabelSearchTree::setMapSettings( const QgsMapSettings &settings )

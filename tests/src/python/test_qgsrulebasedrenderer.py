@@ -692,6 +692,123 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.assertEqual(counter.featureCount('1'), 1)
         self.assertEqual(counter.featureCount('2'), 1)
 
+    def test_legend_key_to_expression(self):
+
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+        renderer = QgsRuleBasedRenderer(root_rule)
+
+        exp, ok = renderer.legendKeyToExpression('xxxx', None)
+        self.assertFalse(ok)
+
+        exp, ok = renderer.legendKeyToExpression(root_rule.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'TRUE')
+
+        rule2 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = 5')
+        rule3 = QgsRuleBasedRenderer.Rule(None, maximumScale=2000, filterExp='"field_name" = 6')
+        rule4 = QgsRuleBasedRenderer.Rule(None, minimumScale=1000, filterExp='"field_name" = 7')
+        rule5 = QgsRuleBasedRenderer.Rule(None, minimumScale=3000, maximumScale=1000)
+
+        root_rule.appendChild(rule2)
+        root_rule.appendChild(rule3)
+        root_rule.appendChild(rule4)
+        root_rule.appendChild(rule5)
+
+        exp, ok = renderer.legendKeyToExpression(root_rule.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'TRUE')
+
+        exp, ok = renderer.legendKeyToExpression(rule2.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '"field_name" = 5')
+
+        exp, ok = renderer.legendKeyToExpression(rule3.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = 6) AND (@map_scale >= 2000)')
+
+        exp, ok = renderer.legendKeyToExpression(rule4.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = 7) AND (@map_scale <= 1000)')
+
+        exp, ok = renderer.legendKeyToExpression(rule5.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '(@map_scale <= 3000) AND (@map_scale >= 1000)')
+
+        rule6 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = \'a\'')
+        rule4.appendChild(rule6)
+
+        exp, ok = renderer.legendKeyToExpression(rule6.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = \'a\') AND (("field_name" = 7) AND (@map_scale <= 1000))')
+
+        # group only rule
+        rule7 = QgsRuleBasedRenderer.Rule(None)
+        rule3.appendChild(rule7)
+
+        rule8 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = \'c\'')
+        rule7.appendChild(rule8)
+
+        exp, ok = renderer.legendKeyToExpression(rule7.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = 6) AND (@map_scale >= 2000)')
+
+        exp, ok = renderer.legendKeyToExpression(rule8.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """("field_name" = 'c') AND (("field_name" = 6) AND (@map_scale >= 2000))""")
+
+        # else rules
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+        renderer = QgsRuleBasedRenderer(root_rule)
+
+        rule2 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = 5')
+        rule3 = QgsRuleBasedRenderer.Rule(None, maximumScale=2000, filterExp='"field_name" = 6')
+        rule4 = QgsRuleBasedRenderer.Rule(None, elseRule=True)
+
+        root_rule.appendChild(rule2)
+        root_rule.appendChild(rule3)
+        root_rule.appendChild(rule4)
+
+        exp, ok = renderer.legendKeyToExpression(root_rule.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'TRUE')
+
+        exp, ok = renderer.legendKeyToExpression(rule2.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '"field_name" = 5')
+
+        exp, ok = renderer.legendKeyToExpression(rule3.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = 6) AND (@map_scale >= 2000)')
+
+        exp, ok = renderer.legendKeyToExpression(rule4.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'NOT (("field_name" = 5) OR (("field_name" = 6) AND (@map_scale >= 2000)))')
+
+        rule5 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = 11')
+        rule4.appendChild(rule5)
+
+        exp, ok = renderer.legendKeyToExpression(rule5.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = 11) AND (NOT (("field_name" = 5) OR (("field_name" = 6) AND (@map_scale >= 2000))))')
+
+        # isolated ELSE rule, with no siblings
+
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+        renderer = QgsRuleBasedRenderer(root_rule)
+
+        rule2 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = 5')
+        rule3 = QgsRuleBasedRenderer.Rule(None, maximumScale=2000, filterExp='"field_name" = 6')
+
+        root_rule.appendChild(rule2)
+        root_rule.appendChild(rule3)
+
+        rule4 = QgsRuleBasedRenderer.Rule(None, elseRule=True)
+        rule3.appendChild(rule4)
+
+        exp, ok = renderer.legendKeyToExpression(rule4.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '(TRUE) AND (("field_name" = 6) AND (@map_scale >= 2000))')
+
 
 if __name__ == '__main__':
     unittest.main()

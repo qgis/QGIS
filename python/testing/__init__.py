@@ -125,6 +125,11 @@ class TestCase(_TestCase):
             ignore_part_order = False
 
         try:
+            normalize = compare['geometry']['normalize']
+        except KeyError:
+            normalize = False
+
+        try:
             unordered = compare['unordered']
         except KeyError:
             unordered = False
@@ -136,7 +141,7 @@ class TestCase(_TestCase):
                 for feat_expected in features_expected:
                     if self.checkGeometriesEqual(feat.geometry(), feat_expected.geometry(),
                                                  feat.id(), feat_expected.id(),
-                                                 False, precision, topo_equal_check, ignore_part_order) and \
+                                                 False, precision, topo_equal_check, ignore_part_order, normalize=normalize) and \
                        self.checkAttributesEqual(feat, feat_expected, layer_expected.fields(), False, compare):
                         feat_expected_equal = feat_expected
                         break
@@ -189,7 +194,7 @@ class TestCase(_TestCase):
                                            feats[1].geometry(),
                                            feats[0].id(),
                                            feats[1].id(),
-                                           use_asserts, precision, topo_equal_check, ignore_part_order)
+                                           use_asserts, precision, topo_equal_check, ignore_part_order, normalize=normalize)
             if not eq and not use_asserts:
                 return False
 
@@ -263,16 +268,20 @@ class TestCase(_TestCase):
             if p.is_dir():
                 self.assertDirectoriesEqual(str(p), path_result / p.stem)
 
-    def assertGeometriesEqual(self, geom0, geom1, geom0_id='geometry 1', geom1_id='geometry 2', precision=14, topo_equal_check=False, ignore_part_order=False):
-        self.checkGeometriesEqual(geom0, geom1, geom0_id, geom1_id, use_asserts=True, precision=precision, topo_equal_check=topo_equal_check, ignore_part_order=ignore_part_order)
+    def assertGeometriesEqual(self, geom0, geom1, geom0_id='geometry 1', geom1_id='geometry 2', precision=14, topo_equal_check=False, ignore_part_order=False, normalize=False):
+        self.checkGeometriesEqual(geom0, geom1, geom0_id, geom1_id, use_asserts=True, precision=precision, topo_equal_check=topo_equal_check, ignore_part_order=ignore_part_order, normalize=normalize)
 
-    def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False, ignore_part_order=False):
+    def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False, ignore_part_order=False, normalize=False):
         """ Checks whether two geometries are the same - using either a strict check of coordinates (up to given precision)
         or by using topological equality (where e.g. a polygon with clockwise is equal to a polygon with counter-clockwise
         order of vertices)
         .. versionadded:: 3.2
         """
         if not geom0.isNull() and not geom1.isNull():
+            if normalize:
+                geom0.normalize()
+                geom1.normalize()
+
             equal = geom0.constGet().asWkt(precision) == geom1.constGet().asWkt(precision)
             if not equal and topo_equal_check:
                 equal = geom0.isGeosEqual(geom1)

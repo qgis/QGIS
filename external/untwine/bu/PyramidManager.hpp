@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "CopcSupport.hpp"
 #include "OctantInfo.hpp"
 #include "Stats.hpp"
 #include "../untwine/ThreadPool.hpp"
@@ -41,11 +42,13 @@ public:
 
     void setProgress(ProgressWriter *progress);
     void queue(const OctantInfo& o);
+    void queueWithError(const OctantInfo& o, const std::string& error);
     void run();
     void logOctant(const VoxelKey& k, int cnt, const IndexedStats& istats);
     uint64_t totalPoints() const
         { return m_totalPoints; }
-    Stats *stats(const std::string& name);
+    Stats *stats(pdal::Dimension::Id id);
+    uint64_t newChunk(const VoxelKey& key, uint32_t size, uint32_t count);
 
 private:
     const int LevelBreak = 4;
@@ -57,8 +60,10 @@ private:
     std::queue<OctantInfo> m_queue;
     ThreadPool m_pool;
     uint64_t m_totalPoints;
-    std::map<std::string, Stats> m_stats;
+    StatsMap m_stats;
     ProgressWriter *m_progress;
+    CopcSupport m_copc;
+    std::string m_error;
     //
     std::unordered_map<VoxelKey, int> m_written;
     std::unordered_map<VoxelKey, int> m_childCounts;
@@ -68,8 +73,10 @@ private:
     void addComplete(const OctantInfo& o);
     bool childrenComplete(const VoxelKey& parent);
     OctantInfo removeComplete(const VoxelKey& k);
+    size_t extraByteSize();
     //
     void createHierarchy();
+    void writeHierarchy();
     std::deque<VoxelKey> emitRoot(const VoxelKey& root);
     std::deque<VoxelKey> emit(const VoxelKey& p, int stopLevel, Entries& entries);
 };

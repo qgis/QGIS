@@ -295,6 +295,22 @@ double QgsMeshLayerUtils::interpolateFromVerticesData( const QgsPointXY &p1, con
   return lam1 * val3 + lam2 * val2 + lam3 * val1;
 }
 
+double QgsMeshLayerUtils::interpolateZForPoint( const QgsTriangularMesh &mesh, double x, double y )
+{
+  const QgsPointXY point( x, y );
+  const int faceIndex = mesh.faceIndexForPoint_v2( point );
+  if ( faceIndex < 0 || faceIndex >= mesh.triangles().count() )
+    return std::numeric_limits<float>::quiet_NaN();
+
+  const QgsMeshFace &face = mesh.triangles().at( faceIndex );
+
+  const QgsPoint p1 = mesh.vertices().at( face.at( 0 ) );
+  const QgsPoint p2 = mesh.vertices().at( face.at( 1 ) );
+  const QgsPoint p3 = mesh.vertices().at( face.at( 2 ) );
+
+  return QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, p1.z(), p2.z(), p3.z(), point );
+}
+
 double QgsMeshLayerUtils::interpolateFromVerticesData( double fraction, double val1, double val2 )
 {
   if ( std::isnan( val1 ) || std::isnan( val2 ) || ( fraction < 0 ) || ( fraction > 1 ) )

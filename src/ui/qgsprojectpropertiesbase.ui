@@ -299,7 +299,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>685</width>
-                <height>792</height>
+                <height>790</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -312,54 +312,6 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_4">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Pro&amp;ject file</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>titleEdit</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="textLabel1">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Selection color</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>pbnSelectionColor</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QLabel" name="label_3">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Sa&amp;ve paths</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>cbxAbsolutePath</cstring>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="1" column="1" colspan="3">
                    <layout class="QHBoxLayout" name="horizontalLayout_14">
                     <item>
@@ -389,99 +341,6 @@
                      </widget>
                     </item>
                    </layout>
-                  </item>
-                  <item row="2" column="1" colspan="3">
-                   <widget class="QLineEdit" name="titleEdit">
-                    <property name="toolTip">
-                     <string>Descriptive project name</string>
-                    </property>
-                    <property name="text">
-                     <string>Default project title</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_2">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Project title</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="0" colspan="4">
-                   <widget class="QCheckBox" name="mMapTileRenderingCheckBox">
-                    <property name="toolTip">
-                     <string>Checking this setting avoids visible edge artifacts when rendering this project as separate map tiles. Rendering performance will be degraded.</string>
-                    </property>
-                    <property name="text">
-                     <string>Avoid artifacts when project is rendered as map tiles (degrades performance)</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1" colspan="3">
-                   <layout class="QHBoxLayout" name="horizontalLayout_13">
-                    <item>
-                     <widget class="QLineEdit" name="mProjectFileLineEdit">
-                      <property name="readOnly">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="mButtonOpenProjectFolder">
-                      <property name="toolTip">
-                       <string>Open folder containing the project</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-                      </property>
-                      <property name="autoRaise">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="4" column="1">
-                   <widget class="QComboBox" name="cbxAbsolutePath"/>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_30">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>&amp;Project home</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>titleEdit</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="2" colspan="2">
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
                   </item>
                   <item row="3" column="1" colspan="3">
                    <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -553,6 +412,154 @@
                      </spacer>
                     </item>
                    </layout>
+                  </item>
+                  <item row="5" column="0" colspan="4">
+                   <widget class="QCheckBox" name="mMapTileRenderingCheckBox">
+                    <property name="toolTip">
+                     <string>Checking this setting avoids visible edge artifacts when rendering this project as separate map tiles. Rendering performance will be degraded.</string>
+                    </property>
+                    <property name="text">
+                     <string>Avoid artifacts when project is rendered as map tiles (degrades performance)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="2" colspan="2">
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_4">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Pro&amp;ject file</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>titleEdit</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QComboBox" name="cbxAbsolutePath"/>
+                  </item>
+                  <item row="0" column="1" colspan="3">
+                   <layout class="QHBoxLayout" name="horizontalLayout_13">
+                    <item>
+                     <widget class="QLineEdit" name="mProjectFileLineEdit">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="mButtonOpenProjectFolder">
+                      <property name="toolTip">
+                       <string>Open folder containing the project</string>
+                      </property>
+                      <property name="text">
+                       <string>…</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+                      </property>
+                      <property name="autoRaise">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_30">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>&amp;Project home</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>titleEdit</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="textLabel1">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Selection color</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>pbnSelectionColor</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_2">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Project title</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1" colspan="3">
+                   <widget class="QLineEdit" name="titleEdit">
+                    <property name="toolTip">
+                     <string>Descriptive project name</string>
+                    </property>
+                    <property name="text">
+                     <string>Default project title</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="label_3">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Sa&amp;ve paths</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>cbxAbsolutePath</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0" colspan="4">
+                   <widget class="QCheckBox" name="mCheckBoxRememberAttributeTables">
+                    <property name="text">
+                     <string>Remember attribute tables windows and docks between sessions</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -642,10 +649,10 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_25">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_34">
                     <property name="text">
-                     <string>Display coordinates using</string>
+                     <string>Bearing format</string>
                     </property>
                    </widget>
                   </item>
@@ -701,10 +708,10 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_34">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_25">
                     <property name="text">
-                     <string>Bearing format</string>
+                     <string>Display coordinates using</string>
                     </property>
                    </widget>
                   </item>
@@ -731,6 +738,9 @@
                      </spacer>
                     </item>
                    </layout>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QDial" name="dial"/>
                   </item>
                  </layout>
                 </widget>
@@ -943,8 +953,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>341</width>
-                <height>72</height>
+                <width>685</width>
+                <height>790</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -996,8 +1006,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>603</width>
-                <height>101</height>
+                <width>685</width>
+                <height>790</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1056,8 +1066,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>290</width>
-                <height>543</height>
+                <width>685</width>
+                <height>790</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1473,37 +1483,7 @@
          </widget>
          <widget class="QWidget" name="mTab_DataSources">
           <layout class="QGridLayout" name="mTab_DataSourcesGridLayout">
-           <item row="1" column="0" colspan="3">
-            <widget class="QCheckBox" name="mEvaluateDefaultValues">
-             <property name="toolTip">
-              <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres, GPKG, spatialite and oracle.</string>
-             </property>
-             <property name="text">
-              <string>Evaluate default values on provider side</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="mTransactionModeLabel">
-             <property name="text">
-              <string>Transaction mode</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0" colspan="3">
-            <widget class="QCheckBox" name="mTrustProjectCheckBox">
-             <property name="toolTip">
-              <string>Speed up project loading by skipping data checks in PostgreSQL layers. Useful in QGIS server context or project with huge database views or materialized views.</string>
-             </property>
-             <property name="text">
-              <string>Trust project when data source has no metadata</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QComboBox" name="mTransactionModeComboBox"/>
-           </item>
-           <item row="3" column="0" colspan="3">
+           <item row="1" column="0" colspan="2">
             <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -1512,12 +1492,9 @@
               </sizepolicy>
              </property>
              <property name="title">
-              <string>Layers Capabilities</string>
+              <string>Layer Capabilities</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_19">
-              <property name="verticalSpacing">
-               <number>0</number>
-              </property>
               <item row="3" column="1">
                <spacer name="horizontalSpacer_5">
                 <property name="orientation">
@@ -1570,18 +1547,60 @@
              </layout>
             </widget>
            </item>
-           <item row="0" column="2">
-            <spacer name="horizontalSpacer_9">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+           <item row="0" column="0" colspan="2">
+            <widget class="QGroupBox" name="groupBox_3">
+             <property name="title">
+              <string>Editing Behavior</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="0" column="1">
+               <widget class="QComboBox" name="mTransactionModeComboBox"/>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="mTransactionModeLabel">
+                <property name="text">
+                 <string>Transaction mode</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" colspan="2">
+               <widget class="QCheckBox" name="mEvaluateDefaultValues">
+                <property name="toolTip">
+                 <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres, GPKG, spatialite and oracle.</string>
+                </property>
+                <property name="text">
+                 <string>Evaluate default values on provider side</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" colspan="2">
+               <widget class="QCheckBox" name="mCheckRememberEditStatus">
+                <property name="text">
+                 <string>Remember editable layer status between sessions</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QGroupBox" name="groupBox_8">
+             <property name="title">
+              <string>Advanced Settings</string>
              </property>
-            </spacer>
+             <layout class="QGridLayout" name="gridLayout_13">
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="mTrustProjectCheckBox">
+                <property name="toolTip">
+                 <string>Speed up project loading by skipping data checks in PostgreSQL layers. Useful in QGIS server context or project with huge database views or materialized views.</string>
+                </property>
+                <property name="text">
+                 <string>Trust project when data source has no metadata</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -1648,8 +1667,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>178</width>
-                <height>54</height>
+                <width>685</width>
+                <height>790</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1717,7 +1736,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>671</width>
-                <height>1213</height>
+                <height>1395</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2618,7 +2637,11 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox"/>
+                        <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox">
+                         <property name="maximum">
+                          <number>1024</number>
+                         </property>
+                        </widget>
                        </item>
                       </layout>
                      </item>
@@ -3224,6 +3247,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -3239,11 +3267,6 @@
    <extends>QgsCollapsibleGroupBox</extends>
    <header>qgsextentgroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -3317,6 +3340,7 @@
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cbxAbsolutePath</tabstop>
   <tabstop>mMapTileRenderingCheckBox</tabstop>
+  <tabstop>mCheckBoxRememberAttributeTables</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>leSemiMajor</tabstop>
   <tabstop>leSemiMinor</tabstop>
@@ -3357,12 +3381,14 @@
   <tabstop>mButtonPasteColors</tabstop>
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
+  <tabstop>mTransactionModeComboBox</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
-  <tabstop>mTrustProjectCheckBox</tabstop>
+  <tabstop>mCheckRememberEditStatus</tabstop>
   <tabstop>mLayerCapabilitiesTree</tabstop>
   <tabstop>mLayerCapabilitiesToggleSelectionButton</tabstop>
   <tabstop>mShowSpatialLayersCheckBox</tabstop>
   <tabstop>mLayerCapabilitiesTreeFilterLineEdit</tabstop>
+  <tabstop>mTrustProjectCheckBox</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>grpPythonMacros</tabstop>
   <tabstop>scrollArea_5</tabstop>
@@ -3438,6 +3464,7 @@
   <tabstop>mCalculateFromLayerButton</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

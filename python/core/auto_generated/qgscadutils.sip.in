@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCadUtils
 {
 %Docstring(signature="appended")
@@ -58,7 +59,6 @@ Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method
 #include "qgscadutils.h"
 %End
       public:
-
         bool valid;
 
         QgsPointXY finalMapPoint;
@@ -68,6 +68,10 @@ Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method
         QgsPointLocator::Match edgeMatch;
 
         double softLockCommonAngle;
+
+        Qgis::LineExtensionSide softLockLineExtension;
+        double softLockX;
+        double softLockY;
     };
 
     class AlignMapPointContext
@@ -95,6 +99,9 @@ Defines constraints for the :py:func:`QgsCadUtils.alignMapPoint()` method.
         QgsCadUtils::AlignMapPointConstraint angleConstraint;
         QgsCadUtils::AlignMapPointConstraint commonAngleConstraint;
 
+        QgsCadUtils::AlignMapPointConstraint lineExtensionConstraint;
+        QgsCadUtils::AlignMapPointConstraint xyVertexConstraint;
+
 
         QList< QgsPoint > cadPoints() const;
 %Docstring
@@ -107,7 +114,7 @@ point is the most recent point.
 
 .. versionadded:: 3.22
 %End
-        void setCadPoints( const QList< QgsPoint> &points );
+        void setCadPoints( const QList< QgsPoint > &points );
 %Docstring
 Sets the list of recent CAD ``points`` (in map coordinates).
 

@@ -44,6 +44,11 @@ set(QGIS_CORE_SRCS
   classification/qgsclassificationstandarddeviation.cpp
   classification/qgsclassificationlogarithmic.cpp
 
+  elevation/qgsabstractprofilegenerator.cpp
+  elevation/qgsabstractprofilesource.cpp
+  elevation/qgsprofilerequest.cpp
+  elevation/qgsterrainprovider.cpp
+
   geocoding/qgsabstractgeocoderlocatorfilter.cpp
   geocoding/qgsgeocoder.cpp
   geocoding/qgsgeocodercontext.cpp
@@ -628,6 +633,7 @@ set(QGIS_CORE_SRCS
 
   project/qgsproject.cpp
   project/qgsprojectbadlayerhandler.cpp
+  project/qgsprojectelevationproperties.cpp
   project/qgsprojectfiletransform.cpp
   project/qgsprojectdisplaysettings.cpp
   project/qgsprojectproperty.cpp
@@ -659,6 +665,7 @@ set(QGIS_CORE_SRCS
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrasterlayerelevationproperties.cpp
+  raster/qgsrasterlayerprofilegenerator.cpp
   raster/qgsrasterlayerrenderer.cpp
   raster/qgsrasterlayertemporalproperties.cpp
   raster/qgsrasterminmaxorigin.cpp
@@ -695,6 +702,7 @@ set(QGIS_CORE_SRCS
   mesh/qgsmeshdatasetgroupstore.cpp
   mesh/qgsmeshlayer.cpp
   mesh/qgsmeshlayerinterpolator.cpp
+  mesh/qgsmeshlayerprofilegenerator.cpp
   mesh/qgsmeshlayerrenderer.cpp
   mesh/qgsmeshlayertemporalproperties.cpp
   mesh/qgsmeshlayerutils.cpp
@@ -830,6 +838,7 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayerexporter.cpp
   vector/qgsvectorlayerjoinbuffer.cpp
   vector/qgsvectorlayerjoininfo.cpp
+  vector/qgsvectorlayerprofilegenerator.cpp
   vector/qgsvectorlayerrenderer.cpp
   vector/qgsvectorlayertemporalproperties.cpp
   vector/qgsvectorlayertools.cpp
@@ -853,6 +862,7 @@ set(QGIS_CORE_SRCS
   vectortile/qgsvectortileprovidermetadata.cpp
   vectortile/qgsvectortileutils.cpp
   vectortile/qgsvectortilewriter.cpp
+  vectortile/qgsvtpktiles.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
@@ -1256,6 +1266,11 @@ set(QGIS_CORE_HDRS
   editform/qgsattributeeditorhtmlelement.h
   editform/qgsattributeeditorqmlelement.h
 
+  elevation/qgsabstractprofilegenerator.h
+  elevation/qgsabstractprofilesource.h
+  elevation/qgsprofilerequest.h
+  elevation/qgsterrainprovider.h
+
   externalstorage/qgsexternalstorage.h
   externalstorage/qgsexternalstorageregistry.h
 
@@ -1457,6 +1472,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshdatasetgroupstore.h
   mesh/qgsmeshlayer.h
   mesh/qgsmeshlayerinterpolator.h
+  mesh/qgsmeshlayerprofilegenerator.h
   mesh/qgsmeshlayerrenderer.h
   mesh/qgsmeshlayertemporalproperties.h
   mesh/qgsmeshlayerutils.h
@@ -1586,6 +1602,7 @@ set(QGIS_CORE_HDRS
   project/qgsproject.h
   project/qgsprojectbadlayerhandler.h
   project/qgsprojectdisplaysettings.h
+  project/qgsprojectelevationproperties.h
   project/qgsprojectfiletransform.h
   project/qgsprojectproperty.h
   project/qgsprojectservervalidator.h
@@ -1663,6 +1680,7 @@ set(QGIS_CORE_HDRS
   raster/qgsrasteriterator.h
   raster/qgsrasterlayer.h
   raster/qgsrasterlayerelevationproperties.h
+  raster/qgsrasterlayerprofilegenerator.h
   raster/qgsrasterlayerrenderer.h
   raster/qgsrasterlayertemporalproperties.h
   raster/qgsrasterminmaxorigin.h
@@ -1778,6 +1796,7 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayerfeatureiterator.h
   vector/qgsvectorlayerjoinbuffer.h
   vector/qgsvectorlayerjoininfo.h
+  vector/qgsvectorlayerprofilegenerator.h
   vector/qgsvectorlayerrenderer.h
   vector/qgsvectorlayertemporalproperties.h
   vector/qgsvectorlayertools.h
@@ -1802,6 +1821,7 @@ set(QGIS_CORE_HDRS
   vectortile/qgsvectortilerenderer.h
   vectortile/qgsvectortileutils.h
   vectortile/qgsvectortilewriter.h
+  vectortile/qgsvtpktiles.h
 )
 
 set(QGIS_CORE_PRIVATE_HDRS
@@ -2053,6 +2073,7 @@ target_include_directories(qgis_core PUBLIC
   dxf
   editform
   effects
+  elevation
   expression
   externalstorage
   fieldformatter

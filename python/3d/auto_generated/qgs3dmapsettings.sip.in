@@ -27,7 +27,6 @@ Definition of the world.
 #include "qgs3dmapsettings.h"
 %End
   public:
-
     Qgs3DMapSettings();
 %Docstring
 Constructor for Qgs3DMapSettings
@@ -182,6 +181,7 @@ This setting dictates which layers are to be rendered using their 3D rendering c
 
 .. seealso:: :py:func:`layersChanged`
 %End
+
 
 
     void setTerrainVerticalScale( double zScale );
@@ -621,6 +621,34 @@ Sets the renderer usage
 .. versionadded:: 3.24
 %End
 
+    Qgis::ViewSyncModeFlags viewSyncMode() const;
+%Docstring
+Returns the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
+
+.. versionadded:: 3.26
+%End
+
+    void setViewSyncMode( Qgis::ViewSyncModeFlags mode );
+%Docstring
+Sets the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
+
+.. versionadded:: 3.26
+%End
+
+    bool viewFrustumVisualizationEnabled() const;
+%Docstring
+Returns whether the camera's view frustum is visualized on the 2D map canvas
+
+.. versionadded:: 3.26
+%End
+
+    void setViewFrustumVisualizationEnabled( bool enabled );
+%Docstring
+Sets whether the camera's view frustum is visualized on the 2D map canvas
+
+.. versionadded:: 3.26
+%End
+
   signals:
 
     void settingsChanged();
@@ -828,6 +856,13 @@ Emitted when shadow rendering settings are changed
 Emitted when the FPS counter is enabled or disabled
 
 .. versionadded:: 3.18
+%End
+
+    void viewFrustumVisualizationEnabledChanged();
+%Docstring
+Emitted when the camera's view frustum visualization on the main 2D map canvas is enabled or disabled
+
+.. versionadded:: 3.26
 %End
 
   private:

@@ -57,7 +57,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 {
     Q_OBJECT
   public:
-
     //! Constructor for Qgs3DMapSettings
     Qgs3DMapSettings();
     //! Copy constructor
@@ -182,6 +181,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //
     // terrain related config
     //
+
+    /**
+     * Configures the map's terrain settings directly from a project's elevation \a properties.
+     *
+     * \since QGIS 3.26
+     */
+    void configureTerrainFromProject( QgsProjectElevationProperties *properties, const QgsRectangle &fullExtent ) SIP_SKIP;
 
     /**
      * Sets vertical scale (exaggeration) of terrain
@@ -585,6 +591,34 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setRendererUsage( Qgis::RendererUsage rendererUsage );
 
+    /**
+     * Returns the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
+     *
+     * \since QGIS 3.26
+     */
+    Qgis::ViewSyncModeFlags viewSyncMode() const { return mViewSyncMode; }
+
+    /**
+     * Sets the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
+     *
+     * \since QGIS 3.26
+     */
+    void setViewSyncMode( Qgis::ViewSyncModeFlags mode );
+
+    /**
+     * Returns whether the camera's view frustum is visualized on the 2D map canvas
+     *
+     * \since QGIS 3.26
+     */
+    bool viewFrustumVisualizationEnabled() const { return mVisualizeViewFrustum; }
+
+    /**
+     * Sets whether the camera's view frustum is visualized on the 2D map canvas
+     *
+     * \since QGIS 3.26
+     */
+    void setViewFrustumVisualizationEnabled( bool enabled );
+
   signals:
 
     /**
@@ -752,6 +786,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void fpsCounterEnabledChanged( bool fpsCounterEnabled );
 
+    /**
+     * Emitted when the camera's view frustum visualization on the main 2D map canvas is enabled or disabled
+     *
+     * \since QGIS 3.26
+     */
+    void viewFrustumVisualizationEnabledChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -804,6 +845,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;
     int mEyeDomeLightingDistance = 1;
+
+    Qgis::ViewSyncModeFlags mViewSyncMode;
+    bool mVisualizeViewFrustum = false;
 
     bool mDebugShadowMapEnabled = false;
     Qt::Corner mDebugShadowMapCorner = Qt::Corner::TopLeftCorner;

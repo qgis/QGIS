@@ -60,6 +60,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/dxf
       ${CMAKE_SOURCE_DIR}/src/core/editform
       ${CMAKE_SOURCE_DIR}/src/core/effects
+      ${CMAKE_SOURCE_DIR}/src/core/elevation
       ${CMAKE_SOURCE_DIR}/src/core/expression
       ${CMAKE_SOURCE_DIR}/src/core/externalstorage
       ${CMAKE_SOURCE_DIR}/src/core/fieldformatter

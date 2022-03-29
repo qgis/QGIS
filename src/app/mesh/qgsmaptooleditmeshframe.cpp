@@ -790,7 +790,7 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::LeftButton &&
        ( !mCadDockWidget->cadEnabled() ||
-         mCadDockWidget->additionalConstraint() == QgsAdvancedDigitizingDockWidget::AdditionalConstraint::NoConstraint ) )
+         mCadDockWidget->betweenLineConstraint() == Qgis::BetweenLineConstraint::NoConstraint ) )
     mLeftButtonPressed = true;
 
   switch ( mCurrentState )

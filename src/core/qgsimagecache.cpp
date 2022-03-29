@@ -120,10 +120,11 @@ QgsImageCache::QgsImageCache( QObject *parent )
 QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing )
 {
   int totalFrameCount = -1;
-  return pathAsImagePrivate( f, size, keepAspectRatio, opacity, fitsInCache, blocking, targetDpi, frameNumber, isMissing, totalFrameCount );
+  int nextFrameDelayMs = 0;
+  return pathAsImagePrivate( f, size, keepAspectRatio, opacity, fitsInCache, blocking, targetDpi, frameNumber, isMissing, totalFrameCount, nextFrameDelayMs );
 }
 
-QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount )
+QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount, int &nextFrameDelayMs )
 {
   const QString file = f.trimmed();
   if ( isMissing )
@@ -147,7 +148,7 @@ QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, co
   {
     long cachedDataSize = 0;
     bool isBroken = false;
-    result = renderImage( file, size, keepAspectRatio, opacity, targetDpi, frameNumber, isBroken, totalFrameCount, blocking );
+    result = renderImage( file, size, keepAspectRatio, opacity, targetDpi, frameNumber, isBroken, totalFrameCount, nextFrameDelayMs, blocking );
     cachedDataSize += result.sizeInBytes();
     if ( cachedDataSize > mMaxCacheSize / 2 )
     {
@@ -159,6 +160,7 @@ QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, co
       mTotalSize += result.sizeInBytes();
       currentEntry->image = result;
       currentEntry->totalFrameCount = totalFrameCount;
+      currentEntry->nextFrameDelay = nextFrameDelayMs;
     }
 
     if ( isMissing )
@@ -171,6 +173,7 @@ QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, co
   {
     result = currentEntry->image;
     totalFrameCount = currentEntry->totalFrameCount;
+    nextFrameDelayMs = currentEntry->nextFrameDelay;
     if ( isMissing )
       *isMissing = currentEntry->isMissingImage;
   }
@@ -224,14 +227,33 @@ int QgsImageCache::totalFrameCount( const QString &path, bool blocking )
   const QMutexLocker locker( &mMutex );
 
   int res = -1;
+  int nextFrameDelayMs = 0;
   bool fitsInCache = false;
   bool isMissing = false;
-  ( void )pathAsImagePrivate( file, QSize(), true, 1.0, fitsInCache, blocking, 96, 0, &isMissing, res );
+  ( void )pathAsImagePrivate( file, QSize(), true, 1.0, fitsInCache, blocking, 96, 0, &isMissing, res, nextFrameDelayMs );
 
   return res;
 }
 
-QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, bool blocking ) const
+int QgsImageCache::nextFrameDelay( const QString &path, int currentFrame, bool blocking )
+{
+  const QString file = path.trimmed();
+
+  if ( file.isEmpty() )
+    return -1;
+
+  const QMutexLocker locker( &mMutex );
+
+  int frameCount = -1;
+  int nextFrameDelayMs = 0;
+  bool fitsInCache = false;
+  bool isMissing = false;
+  const QImage res = pathAsImagePrivate( file, QSize(), true, 1.0, fitsInCache, blocking, 96, currentFrame, &isMissing, frameCount, nextFrameDelayMs );
+
+  return nextFrameDelayMs <= 0 || res.isNull() ? -1 : nextFrameDelayMs;
+}
+
+QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, int &nextFrameDelayMs, bool blocking ) const
 {
   QImage im;
   isBroken = false;
@@ -263,6 +285,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
     }
 
     totalFrameCount = reader.imageCount();
+
     if ( frameNumber == -1 )
     {
       im = reader.read();
@@ -271,6 +294,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
     {
       im = getFrameFromReader( reader, frameNumber );
     }
+    nextFrameDelayMs = reader.nextImageDelay();
   }
   else
   {
@@ -358,6 +382,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
       {
         im = getFrameFromReader( reader, frameNumber );
       }
+      nextFrameDelayMs = reader.nextImageDelay();
     }
   }
 

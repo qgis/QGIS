@@ -255,10 +255,14 @@ int QgsMeshVertexCirculator::degree() const
   if ( !mIsValid )
     return mDegree;
 
-  goBoundaryCounterClockwise();
-  int firstFace = currentFaceIndex();
+  // if we are on the boundary, we count one more to take account of the circulator will
+  // not cover the last vertex (the other vertex on boundary)
+  if ( goBoundaryCounterClockwise() )
+    mDegree = 2;
+  else
+    mDegree = 1;
 
-  mDegree = 2; //if the vertex is not free, the vertex is linked with at least 2 other vertex
+  int firstFace = currentFaceIndex();
 
   while ( turnClockwise() != firstFace && currentFaceIndex() != -1 )
     ++mDegree;

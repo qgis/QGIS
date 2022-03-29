@@ -36,13 +36,6 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
     typedef QFlags<QgsAdvancedDigitizingDockWidget::CadCapacity> CadCapacities;
 
 
-    enum class AdditionalConstraint
-    {
-      NoConstraint,
-      Perpendicular,
-      Parallel
-    };
-
     enum WidgetSetMode
     {
       ReturnPressed,
@@ -205,8 +198,8 @@ apply the CAD constraints. The will modify the position of the map event in map 
 
     bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
 %Docstring
-align to segment for additional constraint.
-If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
+align to segment for between line constraint.
+If between line constraints are used, this will determine the angle to be locked depending on the snapped segment.
 
 .. versionadded:: 3.0
 %End
@@ -259,9 +252,9 @@ Sets whether M is enabled
 construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
 %End
 
-    AdditionalConstraint additionalConstraint() const;
+    Qgis::BetweenLineConstraint betweenLineConstraint() const;
 %Docstring
-Returns the additional constraints which are used to place
+Returns the between line constraints which are used to place
 perpendicular/parallel segments to snapped segments on the canvas
 %End
     const CadConstraint *constraintAngle() const;
@@ -299,11 +292,52 @@ Returns the ``CadConstraint`` on the M coordinate
 Returns ``True`` if a constraint on a common angle is active
 %End
 
+    const CadConstraint *constraintLineExtension() const;
+%Docstring
+Returns the ``CadConstraint``
+%End
+
+    Qgis::LineExtensionSide lineExtensionSide() const;
+%Docstring
+Returns on which side of the constraint line extension point, the line was created
+%End
+
+    const CadConstraint *constraintXyVertex() const;
+%Docstring
+Returns the ``CadConstraint``
+%End
+
+    double softLockX() const;
+%Docstring
+Returns the X value of the X soft lock. The value is NaN is the constraint isn't magnetized to a line
+%End
+
+    double softLockY() const;
+%Docstring
+Returns the Y value of the Y soft lock. The value is NaN is the constraint isn't magnetized to a line
+%End
+
     QgsPointLocator::Match mapPointMatch() const;
 %Docstring
 Returns the point locator match
 
 .. versionadded:: 3.4
+%End
+
+    QList< QgsPointLocator::Match > lockedSnapVertices() const;
+%Docstring
+Returns the snap matches whose vertices have been locked
+
+.. versionadded:: 3.26
+%End
+
+    void clearLockedSnapVertices( bool force = true );
+%Docstring
+Removes all points from the locked snap vertex list
+
+:param force: Clears the list even if the constraints that use it are still locked.
+
+.. versionadded:: 3.26
 %End
 
     void clearPoints();
@@ -805,6 +839,30 @@ Could be used by widgets that must reflect the current advanced digitizing state
    unstable API (will likely change)
 
 .. versionadded:: 3.8
+%End
+
+    void softLockLineExtensionChanged( bool locked );
+%Docstring
+Emitted whenever the soft line extension parameter is ``locked``.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.26
+%End
+
+    void softLockXyChanged( bool locked );
+%Docstring
+Emitted whenever the soft x/y extension parameter is ``locked``.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.26
 %End
 
 

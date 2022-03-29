@@ -617,6 +617,20 @@ Qgis.ContentStatus.__doc__ = 'Status for fetched or stored content\n\n.. version
 # --
 Qgis.ContentStatus.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GpsQualityIndicator.Unknown.__doc__ = "Unknown"
+Qgis.GpsQualityIndicator.Invalid.__doc__ = "Invalid"
+Qgis.GpsQualityIndicator.GPS.__doc__ = "Standalone"
+Qgis.GpsQualityIndicator.DGPS.__doc__ = "Differential GPS"
+Qgis.GpsQualityIndicator.PPS.__doc__ = "PPS"
+Qgis.GpsQualityIndicator.RTK.__doc__ = "Real-time-kynematic"
+Qgis.GpsQualityIndicator.FloatRTK.__doc__ = "Float real-time-kynematic"
+Qgis.GpsQualityIndicator.Estimated.__doc__ = "Estimated"
+Qgis.GpsQualityIndicator.Manual.__doc__ = "Manual input mode"
+Qgis.GpsQualityIndicator.Simulation.__doc__ = "Simulation mode"
+Qgis.GpsQualityIndicator.__doc__ = 'GPS signal quality indicator\n\n.. versionadded:: 3.22.6\n\n' + '* ``Unknown``: ' + Qgis.GpsQualityIndicator.Unknown.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.GpsQualityIndicator.Invalid.__doc__ + '\n' + '* ``GPS``: ' + Qgis.GpsQualityIndicator.GPS.__doc__ + '\n' + '* ``DGPS``: ' + Qgis.GpsQualityIndicator.DGPS.__doc__ + '\n' + '* ``PPS``: ' + Qgis.GpsQualityIndicator.PPS.__doc__ + '\n' + '* ``RTK``: ' + Qgis.GpsQualityIndicator.RTK.__doc__ + '\n' + '* ``FloatRTK``: ' + Qgis.GpsQualityIndicator.FloatRTK.__doc__ + '\n' + '* ``Estimated``: ' + Qgis.GpsQualityIndicator.Estimated.__doc__ + '\n' + '* ``Manual``: ' + Qgis.GpsQualityIndicator.Manual.__doc__ + '\n' + '* ``Simulation``: ' + Qgis.GpsQualityIndicator.Simulation.__doc__
+# --
+Qgis.GpsQualityIndicator.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.BabelFormatCapability.Import.__doc__ = "Format supports importing"
 Qgis.BabelFormatCapability.Export.__doc__ = "Format supports exporting"
 Qgis.BabelFormatCapability.Waypoints.__doc__ = "Format supports waypoints"
@@ -1303,6 +1317,12 @@ Qgis.RendererUsage.__doc__ = 'Usage of the renderer.\n\n.. versionadded:: 3.24\n
 # --
 Qgis.RendererUsage.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.ViewSyncModeFlag.Sync3DTo2D.__doc__ = "Synchronize 3D view camera to the main map canvas extent"
+Qgis.ViewSyncModeFlag.Sync2DTo3D.__doc__ = "Update the 2D main canvas extent to include the viewed area from the 3D view"
+Qgis.ViewSyncModeFlag.__doc__ = 'Synchronization of 2D map canvas and 3D view\n\n.. versionadded:: 3.26\n\n' + '* ``Sync3DTo2D``: ' + Qgis.ViewSyncModeFlag.Sync3DTo2D.__doc__ + '\n' + '* ``Sync2DTo3D``: ' + Qgis.ViewSyncModeFlag.Sync2DTo3D.__doc__
+# --
+Qgis.ViewSyncModeFlag.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.HistoryProviderBackend.LocalProfile.__doc__ = "Local profile"
 Qgis.HistoryProviderBackend.__doc__ = 'History provider backends.\n\n.. versionadded:: 3.24\n\n' + '* ``LocalProfile``: ' + Qgis.HistoryProviderBackend.LocalProfile.__doc__
 # --
@@ -1361,3 +1381,33 @@ Qgis.AltitudeBinding.Centroid.__doc__ = "Clamp just centroid of feature"
 Qgis.AltitudeBinding.__doc__ = 'Altitude binding.\n\n.. versionadded:: 3.26\n\n' + '* ``Vertex``: ' + Qgis.AltitudeBinding.Vertex.__doc__ + '\n' + '* ``Centroid``: ' + Qgis.AltitudeBinding.Centroid.__doc__
 # --
 Qgis.AltitudeBinding.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.NoConstraint = Qgis.BetweenLineConstraint.NoConstraint
+Qgis.NoConstraint.is_monkey_patched = True
+Qgis.BetweenLineConstraint.NoConstraint.__doc__ = "No additional constraint"
+Qgis.Perpendicular = Qgis.BetweenLineConstraint.Perpendicular
+Qgis.Perpendicular.is_monkey_patched = True
+Qgis.BetweenLineConstraint.Perpendicular.__doc__ = "Perpendicular"
+Qgis.Parallel = Qgis.BetweenLineConstraint.Parallel
+Qgis.Parallel.is_monkey_patched = True
+Qgis.BetweenLineConstraint.Parallel.__doc__ = "Parallel"
+Qgis.BetweenLineConstraint.__doc__ = 'Between line constraints which can be enabled\n\n.. versionadded:: 3.26\n\n' + '* ``NoConstraint``: ' + Qgis.BetweenLineConstraint.NoConstraint.__doc__ + '\n' + '* ``Perpendicular``: ' + Qgis.BetweenLineConstraint.Perpendicular.__doc__ + '\n' + '* ``Parallel``: ' + Qgis.BetweenLineConstraint.Parallel.__doc__
+# --
+Qgis.BetweenLineConstraint.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LineExtensionSide.BeforeVertex.__doc__ = "Lock to previous vertex"
+Qgis.LineExtensionSide.AfterVertex.__doc__ = "Lock to next vertex"
+Qgis.LineExtensionSide.NoVertex.__doc__ = "Don't lock to vertex"
+Qgis.LineExtensionSide.__doc__ = 'Designates whether the line extension constraint is currently soft locked\nwith the previous or next vertex of the locked one.\n\n.. versionadded:: 3.26\n\n' + '* ``BeforeVertex``: ' + Qgis.LineExtensionSide.BeforeVertex.__doc__ + '\n' + '* ``AfterVertex``: ' + Qgis.LineExtensionSide.AfterVertex.__doc__ + '\n' + '* ``NoVertex``: ' + Qgis.LineExtensionSide.NoVertex.__doc__
+# --
+Qgis.LineExtensionSide.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide.__doc__ = "If set, default values for fields will be evaluated on the provider side when features from the project are created instead of when they are committed."
+Qgis.ProjectFlag.TrustStoredLayerStatistics.__doc__ = "If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider."
+Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions.__doc__ = "If set, then any layers set to be editable will be stored in the project and immediately made editable whenever that project is restored"
+Qgis.ProjectFlag.RememberAttributeTableWindowsBetweenSessions.__doc__ = "If set, then any open attribute tables will be stored in the project and immediately reopened when the project is restored"
+Qgis.ProjectFlag.__doc__ = 'Flags which control the behavior of :py:class:`QgsProjects`.\n\n.. versionadded:: 3.26\n\n' + '* ``EvaluateDefaultValuesOnProviderSide``: ' + Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide.__doc__ + '\n' + '* ``TrustStoredLayerStatistics``: ' + Qgis.ProjectFlag.TrustStoredLayerStatistics.__doc__ + '\n' + '* ``RememberLayerEditStatusBetweenSessions``: ' + Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions.__doc__ + '\n' + '* ``RememberAttributeTableWindowsBetweenSessions``: ' + Qgis.ProjectFlag.RememberAttributeTableWindowsBetweenSessions.__doc__
+# --
+Qgis.ProjectFlag.baseClass = Qgis
+Qgis.ProjectFlags.baseClass = Qgis
+ProjectFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module

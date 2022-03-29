@@ -75,6 +75,7 @@
 #include <QWhatsThis>
 #include <QWidgetAction>
 #include <mutex>
+#include <QWindow>
 
 #include "qgssettingsregistrycore.h"
 #include "qgsnetworkaccessmanager.h"
@@ -353,6 +354,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspythonrunner.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsquerybuilder.h"
+#include "qgspointcloudquerybuilder.h"
 #include "qgsrastercalcdialog.h"
 #include "qgsmeshcalculatordialog.h"
 #include "qgsrasterfilewriter.h"
@@ -446,6 +448,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #include "pointcloud/qgspointcloudelevationpropertieswidget.h"
 #include "pointcloud/qgspointcloudlayerstylewidget.h"
+#include "project/qgsprojectelevationsettingswidget.h"
 
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
 #include "qgsmaptoolshaperegistry.h"
@@ -1485,6 +1488,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   registerMapLayerPropertiesFactory( new QgsVectorElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );
+
+  registerProjectPropertiesWidgetFactory( new QgsProjectElevationSettingsWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -7529,6 +7534,21 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       }
     }
   }
+  else if ( fileName.endsWith( QStringLiteral( ".vtpk" ), Qt::CaseInsensitive ) )
+  {
+    // these are vector tiles
+    QUrlQuery uq;
+    uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "vtpk" ) );
+    uq.addQueryItem( QStringLiteral( "url" ), fileName );
+    const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+    std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
+    if ( vtLayer->isValid() )
+    {
+      postProcessAddedLayer( vtLayer.get() );
+      QgsProject::instance()->addMapLayer( vtLayer.release() );
+      return true;
+    }
+  }
 
   QList< QgsProviderSublayerModel::NonLayerItem > nonLayerItems;
   if ( QgsProjectStorage *ps = QgsApplication::projectStorageRegistry()->projectStorageFromUri( fileName ) )
@@ -9302,6 +9322,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     options.forceMulti = dialog->forceMulti();
     options.includeZ = dialog->includeZ();
     options.attributes = dialog->selectedAttributes();
+    options.attributesExportNames = dialog->attributesExportNames();
     options.fieldValueConverter = converterPtr;
     options.saveMetadata = dialog->persistMetadata();
     options.layerMetadata = vlayer->metadata();
@@ -12004,6 +12025,13 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
         }
       }
     }
+    QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
+    if ( pclayer )
+    {
+      QgsPointCloudQueryBuilder qb { pclayer };
+      qb.setSubsetString( pclayer->subsetString() );
+      qb.exec();
+    }
     return;
   }
 
@@ -13878,10 +13906,7 @@ void QgisApp::new3DMapCanvas()
     map->setPathResolver( QgsProject::instance()->pathResolver() );
     map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
 
-    QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-    flatTerrain->setCrs( map->crs() );
-    flatTerrain->setExtent( fullExtent );
-    map->setTerrainGenerator( flatTerrain );
+    map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), fullExtent );
 
     // new scenes default to a single directional light
     map->setDirectionalLights( QList<QgsDirectionalLightSettings>() << QgsDirectionalLightSettings() );
@@ -15933,6 +15958,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
 
     case QgsMapLayerType::PointCloudLayer:
+    {
+      const QgsDataProvider *dprovider = layer->dataProvider();
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
       mActionLocalCumulativeCutStretch->setEnabled( false );
@@ -15943,7 +15970,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDecreaseContrast->setEnabled( false );
       mActionIncreaseGamma->setEnabled( false );
       mActionDecreaseGamma->setEnabled( false );
-      mActionLayerSubsetString->setEnabled( false );
+      mActionLayerSubsetString->setEnabled( dprovider && dprovider->supportsSubsetString() );
       mActionFeatureAction->setEnabled( false );
       mActionSelectFeatures->setEnabled( false );
       mActionSelectPolygon->setEnabled( false );
@@ -15999,7 +16026,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mDigitizingTechniqueManager->enableDigitizingTechniqueActions( false );
       enableMeshEditingTools( false );
       break;
-
+    }
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::GroupLayer:
       break;
@@ -16588,6 +16615,36 @@ void QgisApp::writeProject( QDomDocument &doc )
 
   QgsProject::instance()->writeEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ), static_cast< bool >( layerTreeView()->layerTreeModel()->legendFilterMapSettings() ) );
 
+  if ( QgsProject::instance()->flags() & Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions )
+  {
+    // save attribute tables
+    QDomElement attributeTablesElement = doc.createElement( QStringLiteral( "attributeTables" ) );
+
+    QSet< QgsAttributeTableDialog * > storedDialogs;
+    auto saveDialog = [&storedDialogs, &attributeTablesElement, &doc]( QgsAttributeTableDialog * attributeTableDialog )
+    {
+      if ( storedDialogs.contains( attributeTableDialog ) )
+        return;
+
+      QgsDebugMsg( attributeTableDialog->windowTitle() );
+      const QDomElement tableElement = attributeTableDialog->writeXml( doc );
+      attributeTablesElement.appendChild( tableElement );
+      storedDialogs.insert( attributeTableDialog );
+    };
+
+    const QList<QWidget * > topLevelWidgets = QgsApplication::topLevelWidgets();
+    for ( QWidget *widget : topLevelWidgets )
+    {
+      QList< QgsAttributeTableDialog * > dialogChildren = widget->findChildren< QgsAttributeTableDialog * >();
+      for ( QgsAttributeTableDialog *attributeTableDialog : dialogChildren )
+      {
+        saveDialog( attributeTableDialog );
+      }
+    }
+
+    qgisNode.appendChild( attributeTablesElement );
+  }
+
   // Save the position of the map view docks
   QDomElement mapViewNode = doc.createElement( QStringLiteral( "mapViewDocks" ) );
   const auto dockWidgets = findChildren< QgsMapCanvasDockWidget * >();
@@ -16737,6 +16794,29 @@ void QgisApp::readProject( const QDomDocument &doc )
     read3DMapViewSettings( mapCanvas3D, viewConfig );
   }
 #endif
+
+  if ( QgsProject::instance()->flags() & Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions )
+  {
+    // restore attribute tables
+    const QDomElement attributeTablesElement = doc.documentElement().firstChildElement( QStringLiteral( "attributeTables" ) );
+    const QDomNodeList attributeTableNodes = attributeTablesElement.elementsByTagName( QStringLiteral( "attributeTable" ) );
+    for ( int i = 0; i < attributeTableNodes.size(); ++i )
+    {
+      const QDomElement attributeTableElement = attributeTableNodes.at( i ).toElement();
+      const QString layerId = attributeTableElement.attribute( QStringLiteral( "layer" ) );
+      if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
+      {
+        if ( layer->isValid() )
+        {
+          bool initiallyDocked = attributeTableElement.attribute( QStringLiteral( "isDocked" ), QStringLiteral( "0" ) ).toInt() == 1;
+          const QgsAttributeTableFilterModel::FilterMode filterMode = qgsEnumKeyToValue( attributeTableElement.attribute( QStringLiteral( "filterMode" ) ), QgsAttributeTableFilterModel::ShowAll );
+
+          QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( layer, filterMode, nullptr, Qt::Window, &initiallyDocked );
+          dialog->readXml( attributeTableElement );
+        }
+      }
+    }
+  }
 
   // unfreeze all new views at once. We don't do this as they are created since additional
   // views which may exist in project could rearrange the docks and cause the canvases to resize

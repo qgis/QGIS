@@ -78,6 +78,7 @@ tests:
         compare:
           geometry:
             ignore_part_order: True
+            normalize: True
 
   - name: Aggregate using field
     algorithm: qgis:aggregate
@@ -127,6 +128,7 @@ tests:
         compare:
           geometry:
             ignore_part_order: True
+            normalize: True
 
   - algorithm: qgis:aggregate
     name: Aggregate using two fields
@@ -176,6 +178,7 @@ tests:
         compare:
           geometry:
             ignore_part_order: True
+            normalize: True
 
   - name: Aggregate points
     algorithm: qgis:aggregate
@@ -331,6 +334,9 @@ tests:
       OUTPUT:
         name: expected/clip_lines_by_multipolygon.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:clip
     name: Clip polygons by multipolygons
@@ -345,6 +351,9 @@ tests:
       OUTPUT:
         name: expected/clip_polys_by_multipolygon.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:clip
     name: Clip multipolygons by polygons
@@ -359,6 +368,9 @@ tests:
       OUTPUT:
         name: expected/clip_multipolygons_by_polygons.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:clip
     name: Clip points by polygons
@@ -406,6 +418,9 @@ tests:
       OUTPUT:
         name: expected/intersection_collection_fallback.shp
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - name: Densify geometries
     algorithm: native:densifygeometries
@@ -699,6 +714,7 @@ tests:
           geometry:
             precision: 4
             ignore_part_order: True
+            normalize: True
 
   - algorithm: native:dissolve
     name: Dissolve using two fields
@@ -715,6 +731,7 @@ tests:
           geometry:
             precision: 4
             ignore_part_order: True
+            normalize: True
 
   - name: Dissolve with geometries reported as valid but as invalid with isGeosValid
     algorithm: native:dissolve
@@ -729,6 +746,7 @@ tests:
         compare:
           geometry:
             precision: 0
+            normalize: True
 
   - name: Dissolve with NULL geometries
     algorithm: native:dissolve
@@ -743,6 +761,7 @@ tests:
         compare:
           geometry:
             precision: 7
+            normalize: True
 
   - name: Dissolve with invalid geometries
     algorithm: native:dissolve
@@ -758,6 +777,40 @@ tests:
         compare:
           geometry:
             precision: 7
+            normalize: True
+
+  - algorithm: native:dissolve
+    name: Dissolve separate disjoint
+    params:
+      INPUT:
+        name: custom/overlapping_polys.geojson
+        type: vector
+      SEPARATE_DISJOINT: true
+    results:
+      OUTPUT:
+        name: expected/dissolve_disjoint.geojson
+        type: vector
+        compare:
+          geometry:
+            normalize: True
+
+  - algorithm: native:dissolve
+    name: Dissolve separate disjoint with classes
+    params:
+      FIELD:
+      - class
+      INPUT:
+        name: custom/overlapping_polys.geojson
+        type: vector
+      SEPARATE_DISJOINT: true
+    results:
+      OUTPUT:
+        name: expected/dissolve_disjoint_by_class.geojson
+        type: vector
+        compare:
+          unordered: True
+          geometry:
+            normalize: True
 
   - algorithm: native:buffer
     name: Basic polygon buffer
@@ -792,6 +845,7 @@ tests:
         compare:
           geometry:
             precision: 7
+            normalize: True
           fields:
             fid: skip
             name: skip

@@ -133,6 +133,7 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   mScene = newScene;
   connect( mScene, &Qgs3DMapScene::fpsCountChanged, this, &Qgs3DMapCanvas::fpsCountChanged );
   connect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
+  connect( mScene, &Qgs3DMapScene::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged );
 
   delete mMap;
   mMap = map;
@@ -350,4 +351,14 @@ void Qgs3DMapCanvas::onNavigationModeHotKeyPressed( QgsCameraController::Navigat
 {
   mMap->setCameraNavigationMode( mode );
   mScene->cameraController()->setCameraNavigationMode( mode );
+}
+
+void Qgs3DMapCanvas::setViewFrom2DExtent( const QgsRectangle &extent )
+{
+  mScene->setViewFrom2DExtent( extent );
+}
+
+QVector<QgsPointXY> Qgs3DMapCanvas::viewFrustum2DExtent()
+{
+  return mScene->viewFrustum2DExtent();
 }

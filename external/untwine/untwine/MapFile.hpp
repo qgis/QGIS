@@ -30,10 +30,12 @@
 
 #pragma once
 
+#include <fcntl.h>
+
 #ifdef _WIN32
 #include <Windows.h>
+#include <io.h>
 #else
-#include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #endif

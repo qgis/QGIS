@@ -136,6 +136,15 @@
          </item>
          <item>
           <property name="text">
+           <string>Navigation sync</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/sync_views.svg</normaloff>:/images/themes/default/sync_views.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Advanced</string>
           </property>
           <property name="toolTip">
@@ -205,7 +214,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>709</width>
+                <width>722</width>
                 <height>604</height>
                </rect>
               </property>
@@ -706,6 +715,63 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mPage2DCanvasSync">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QgsScrollArea" name="scrollArea">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>711</width>
+                <height>584</height>
+               </rect>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="0" column="0" colspan="2">
+                <widget class="QCheckBox" name="mSync2DTo3DCheckbox">
+                 <property name="text">
+                  <string>2D Map View Follows 3D Camera</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QCheckBox" name="mSync3DTo2DCheckbox">
+                 <property name="text">
+                  <string>3D Camera Follows 2D Map View</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" colspan="2">
+                <widget class="QCheckBox" name="mVisualizeExtentCheckBox">
+                 <property name="text">
+                  <string>Show Visible Camera Area in 2D Map View</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0" colspan="2">
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mPageAdvanced">
           <layout class="QVBoxLayout" name="verticalLayout_63">
            <property name="topMargin">
@@ -730,7 +796,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>695</width>
+                <width>708</width>
                 <height>690</height>
                </rect>
               </property>
@@ -1133,6 +1199,7 @@
   <tabstop>mDebugDepthMapSizeSpinBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

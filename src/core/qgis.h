@@ -690,6 +690,26 @@ class CORE_EXPORT Qgis
     Q_ENUM( ContentStatus )
 
     /**
+     * GPS signal quality indicator
+     *
+     * \since QGIS 3.22.6
+     */
+    enum class GpsQualityIndicator
+    {
+      Unknown = -1, //!< Unknown
+      Invalid, //!< Invalid
+      GPS, //!< Standalone
+      DGPS, //!< Differential GPS
+      PPS, //!< PPS
+      RTK, //!< Real-time-kynematic
+      FloatRTK, //!< Float real-time-kynematic
+      Estimated, //!< Estimated
+      Manual, //!< Manual input mode
+      Simulation, //!< Simulation mode
+    };
+    Q_ENUM( GpsQualityIndicator )
+
+    /**
      * Babel GPS format capabilities.
      *
      * \since QGIS 3.22
@@ -1361,7 +1381,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( AngularDirection )
 
     /**
-     *  Usage of the renderer.
+     * Usage of the renderer.
      *
      * \since QGIS 3.24
      */
@@ -1372,6 +1392,19 @@ class CORE_EXPORT Qgis
       Unknown, //!< Renderer used for unknown usage
     };
     Q_ENUM( RendererUsage )
+
+    /**
+     * Synchronization of 2D map canvas and 3D view
+     *
+     * \since QGIS 3.26
+     */
+    enum class ViewSyncModeFlag : int
+    {
+      Sync3DTo2D = 1 << 0, //!< Synchronize 3D view camera to the main map canvas extent
+      Sync2DTo3D = 1 << 1, //!< Update the 2D main canvas extent to include the viewed area from the 3D view
+    };
+    Q_ENUM( ViewSyncModeFlag )
+    Q_DECLARE_FLAGS( ViewSyncModeFlags, ViewSyncModeFlag )
 
     /**
      * History provider backends.
@@ -1481,6 +1514,48 @@ class CORE_EXPORT Qgis
       Centroid, //!< Clamp just centroid of feature
     };
     Q_ENUM( AltitudeBinding )
+
+    /**
+     * Between line constraints which can be enabled
+     *
+     * \since QGIS 3.26
+     */
+    enum class BetweenLineConstraint SIP_MONKEYPATCH_SCOPEENUM : int
+    {
+      NoConstraint,  //!< No additional constraint
+      Perpendicular, //!< Perpendicular
+      Parallel       //!< Parallel
+    };
+    Q_ENUM( BetweenLineConstraint )
+
+    /**
+     * Designates whether the line extension constraint is currently soft locked
+     * with the previous or next vertex of the locked one.
+     * \since QGIS 3.26
+     */
+    enum class LineExtensionSide : int
+    {
+      BeforeVertex, //!< Lock to previous vertex
+      AfterVertex, //!< Lock to next vertex
+      NoVertex, //!< Don't lock to vertex
+    };
+    Q_ENUM( LineExtensionSide )
+
+    /**
+     * Flags which control the behavior of QgsProjects.
+     *
+     * \since QGIS 3.26
+     */
+    enum class ProjectFlag : int
+    {
+      EvaluateDefaultValuesOnProviderSide = 1 << 0, //!< If set, default values for fields will be evaluated on the provider side when features from the project are created instead of when they are committed.
+      TrustStoredLayerStatistics = 1 << 1, //!< If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider.
+      RememberLayerEditStatusBetweenSessions = 1 << 2, //!< If set, then any layers set to be editable will be stored in the project and immediately made editable whenever that project is restored
+      RememberAttributeTableWindowsBetweenSessions = 1 << 3, //!< If set, then any open attribute tables will be stored in the project and immediately reopened when the project is restored
+    };
+    Q_ENUM( ProjectFlag )
+    Q_DECLARE_FLAGS( ProjectFlags, ProjectFlag )
+    Q_FLAG( ProjectFlags )
 
     /**
      * Identify search radius in mm

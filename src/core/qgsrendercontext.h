@@ -993,6 +993,46 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     */
     void setRendererUsage( Qgis::RendererUsage usage ) {mRendererUsage = usage;}
 
+    /**
+     * Returns the frame rate of the map, for maps which are part of an animation.
+     *
+     * Returns -1 if the map is not associated with an animation.
+     *
+     * \see setFrameRate()
+     * \since QGIS 3.26
+     */
+    double frameRate() const;
+
+    /**
+     * Sets the frame \a rate of the map (in frames per second), for maps which are part of an animation.
+     *
+     * Defaults to -1 if the map is not associated with an animation.
+     *
+     * \see frameRate()
+     * \since QGIS 3.26
+     */
+    void setFrameRate( double rate );
+
+    /**
+     * Returns the current frame number of the map (in frames per second), for maps which are part of an animation.
+     *
+     * Returns -1 if the map is not associated with an animation.
+     *
+     * \see setCurrentFrame()
+     * \since QGIS 3.26
+     */
+    long long currentFrame() const;
+
+    /**
+     * Sets the current \a frame of the map, for maps which are part of an animation.
+     *
+     * Defaults to -1 if the map is not associated with an animation.
+     *
+     * \see currentFrame()
+     * \since QGIS 3.26
+     */
+    void setCurrentFrame( long long frame );
+
   private:
 
     Qgis::RenderContextFlags mFlags;
@@ -1107,6 +1147,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QImage::Format mImageFormat = QImage::Format_ARGB32_Premultiplied;
 
     Qgis::RendererUsage mRendererUsage = Qgis::RendererUsage::Unknown;
+
+    double mFrameRate = -1;
+    long long mCurrentFrame = -1;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

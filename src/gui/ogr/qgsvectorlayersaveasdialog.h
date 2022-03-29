@@ -122,6 +122,11 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsAttributeList attributesAsDisplayedValues() const;
 
     /**
+     * Returns a list of export names for attributes
+     */
+    QStringList attributesExportNames() const;
+
+    /**
      * Returns TRUE if the "add to canvas" checkbox is checked.
      *
      * \see setAddToCanvas()
@@ -233,10 +238,20 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void accept() override;
     void mSelectAllAttributes_clicked();
     void mDeselectAllAttributes_clicked();
+    void mUseAliasesForExportedName_stateChanged( int state );
     void mReplaceRawFieldValues_stateChanged( int state );
     void mAttributeTable_itemChanged( QTableWidgetItem *item );
 
   private:
+
+    enum class ColumnIndex : int
+    {
+      Name = 0,
+      ExportName = 1,
+      Type = 2,
+      ExportAsDisplayedValue = 3
+    };
+
     void setup();
     QList< QPair< QLabel *, QWidget * > > createControls( const QMap<QString, QgsVectorFileWriter::Option *> &options );
 
@@ -246,8 +261,6 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsCoordinateReferenceSystem mLayerCrs;
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-    bool mAttributeTableItemChangedSlotEnabled;
-    bool mReplaceRawFieldValuesStateChangedSlotEnabled;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
     Options mOptions = AllOptions;
 };
