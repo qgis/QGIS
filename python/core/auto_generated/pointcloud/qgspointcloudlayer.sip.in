@@ -155,6 +155,32 @@ Returns the string used to define a subset of the layer.
 .. versionadded:: 3.26
 %End
 
+    void setSync3DRendererTo2DRenderer( bool sync );
+%Docstring
+Sets whether this layer's 3D renderer should be automatically updated
+with changes applied to the layer's 2D renderer
+
+.. versionadded:: 3.26
+%End
+
+    bool sync3DRendererTo2DRenderer() const;
+%Docstring
+Returns whether this layer's 3D renderer should be automatically updated
+with changes applied to the layer's 2D renderer
+
+.. versionadded:: 3.26
+%End
+
+    bool convertRenderer3DFromRenderer2D();
+%Docstring
+Updates the layer's 3D renderer's symbol to match that of the layer's 2D renderer
+
+:return: ``True`` on success, ``False`` otherwise
+
+.. versionadded:: 3.26
+%End
+
+
   signals:
 
     void subsetStringChanged();

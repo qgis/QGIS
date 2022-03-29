@@ -209,6 +209,7 @@
 %Include auto_generated/./3d/qgs3dsymbolregistry.sip
 %Include auto_generated/./3d/qgsabstract3dsymbol.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
+%Include auto_generated/./3d/qgsabstractpointcloud3drenderer.sip
 %Include auto_generated/annotations/qgsannotation.sip
 %Include auto_generated/annotations/qgsannotationitem.sip
 %Include auto_generated/annotations/qgsannotationitemeditoperation.sip

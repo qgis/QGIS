@@ -33,6 +33,7 @@
 #include "qgsxmlutils.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmaplayerutils.h"
+#include "qgsabstractpointcloud3drenderer.h"
 
 #include <QUrl>
 
@@ -662,6 +663,10 @@ void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
   mRenderer.reset( renderer );
   emit rendererChanged();
   emitStyleChanged();
+
+  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
+  if ( r && r->syncedWith2DRenderer() )
+    convertRenderer3DFromRenderer2D();
 }
 
 bool QgsPointCloudLayer::setSubsetString( const QString &subset )
@@ -692,4 +697,31 @@ QString QgsPointCloudLayer::subsetString() const
     return customProperty( QStringLiteral( "storedSubsetString" ) ).toString();
   }
   return mDataProvider->subsetString();
+}
+
+bool QgsPointCloudLayer::convertRenderer3DFromRenderer2D()
+{
+  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
+  bool result = r->convertFrom2DRenderer( renderer() );
+  setRenderer3D( r );
+  trigger3DUpdate();
+  return result;
+}
+
+bool QgsPointCloudLayer::sync3DRendererTo2DRenderer() const
+{
+  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
+  if ( !r )
+    return false;
+  return r->syncedWith2DRenderer();
+}
+
+void QgsPointCloudLayer::setSync3DRendererTo2DRenderer( bool sync )
+{
+  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
+  if ( !r )
+    return;
+  if ( sync )
+    convertRenderer3DFromRenderer2D();
+  r->setSyncedWith2DRenderer( sync );
 }

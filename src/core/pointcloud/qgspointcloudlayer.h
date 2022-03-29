@@ -29,6 +29,7 @@ class QgsPointCloudLayerRenderer;
 
 class QgsPointCloudRenderer;
 class QgsPointCloudLayerElevationProperties;
+class QgsAbstractPointCloud3DRenderer;
 
 /**
  * \ingroup core
@@ -185,6 +186,31 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      * \since QGIS 3.26
      */
     QString subsetString() const;
+
+    /**
+     * Sets whether this layer's 3D renderer should be automatically updated
+     * with changes applied to the layer's 2D renderer
+     *
+     * \since QGIS 3.26
+     */
+    void setSync3DRendererTo2DRenderer( bool sync );
+
+    /**
+     * Returns whether this layer's 3D renderer should be automatically updated
+     * with changes applied to the layer's 2D renderer
+     *
+     * \since QGIS 3.26
+     */
+    bool sync3DRendererTo2DRenderer() const;
+
+    /**
+     * Updates the layer's 3D renderer's symbol to match that of the layer's 2D renderer
+     *
+     * \returns TRUE on success, FALSE otherwise
+     * \since QGIS 3.26
+     */
+    bool convertRenderer3DFromRenderer2D();
+
 
   signals:
 

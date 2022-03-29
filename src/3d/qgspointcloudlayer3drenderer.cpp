@@ -156,6 +156,7 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
   elem.setAttribute( QStringLiteral( "max-screen-error" ), maximumScreenError() );
   elem.setAttribute( QStringLiteral( "show-bounding-boxes" ), showBoundingBoxes() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "point-budget" ), mPointBudget );
+  elem.setAttribute( QStringLiteral( "synced-with-2d-renderer" ), mSyncedWith2DRenderer ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
   if ( mSymbol )
@@ -176,6 +177,7 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mShowBoundingBoxes = elem.attribute( QStringLiteral( "show-bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
   mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "1.0" ) ).toDouble();
   mPointBudget = elem.attribute( QStringLiteral( "point-budget" ), QStringLiteral( "1000000" ) ).toInt();
+  mSyncedWith2DRenderer = elem.attribute( QStringLiteral( "synced-with-2d-renderer" ), QStringLiteral( "0" ) ).toInt();
 
   if ( symbolType == QLatin1String( "single-color" ) )
     mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
@@ -222,3 +224,22 @@ void QgsPointCloudLayer3DRenderer::setPointRenderingBudget( int budget )
   mPointBudget = budget;
 }
 
+bool QgsPointCloudLayer3DRenderer::convertFrom2DRenderer( QgsPointCloudRenderer *renderer )
+{
+  std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DUtils::convert2dPointCloudRendererTo3d( renderer );
+  if ( !renderer3D )
+  {
+    setSymbol( nullptr );
+    return false;
+  }
+
+  QgsPointCloud3DSymbol *newSymbol = const_cast<QgsPointCloud3DSymbol *>(
+                                       static_cast<QgsPointCloud3DSymbol *>( renderer3D->symbol()->clone() )
+                                     );
+  // we need to retain some settings from the previous symbol, like point size
+  const QgsPointCloud3DSymbol *oldSymbol = symbol();
+  if ( oldSymbol )
+    oldSymbol->copyBaseSettings( newSymbol );
+  setSymbol( newSymbol );
+  return true;
+}
