@@ -65,6 +65,8 @@ set(QGIS_CORE_SRCS
   gps/qgsgpsdetector.cpp
   gps/qgsnmeaconnection.cpp
 
+  plot/qgsplot.cpp
+
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
   symbology/qgscategorizedsymbolrenderer.cpp
@@ -1507,6 +1509,8 @@ set(QGIS_CORE_HDRS
   pal/util.h
   ${PROJECT_SOURCE_DIR}/external/rtree/include/RTree.h
 
+  plot/qgsplot.h
+
   pointcloud/qgspointcloudattribute.h
   pointcloud/qgspointcloudattributebyramprenderer.h
   pointcloud/qgspointcloudattributemodel.h
@@ -2070,6 +2074,7 @@ target_include_directories(qgis_core PUBLIC
   network
   numericformats
   pal
+  plot
   pointcloud
   pointcloud/expression
   processing
