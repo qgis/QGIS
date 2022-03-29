@@ -7581,17 +7581,17 @@ void QgisApp::runScript( const QString &filePath )
 
 QgisApp::ProjectState QgisApp::getProjectState()
 {
-    return mprojectState;
+  return mprojectState;
 }
 
-void QgisApp::setProjectState(ProjectState projectState )
+void QgisApp::setProjectState( ProjectState projectState )
 {
-    mprojectState=projectState;
+  mprojectState = projectState;
 }
 
 void QgisApp::openProject( const QString &fileName )
 {
-  mprojectState=OPENING_PROJECT;
+  mprojectState = OPENING_PROJECT;
   QgsCanvasRefreshBlocker refreshBlocker;
   if ( checkTasksDependOnProject() )
     return;
@@ -7602,7 +7602,7 @@ void QgisApp::openProject( const QString &fileName )
     // error handling and reporting is in addProject() function
     addProject( fileName );
   }
-  mprojectState=OPENED_PROJECT;
+  mprojectState = OPENED_PROJECT;
 }
 
 bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
@@ -14144,7 +14144,7 @@ void QgisApp::closeProject()
   mBlockActiveLayerChanged = false;
 
   onActiveLayerChanged( activeLayer() );
-  mprojectState=NO_PROJECT;
+  mprojectState = NO_PROJECT;
 }
 
 
@@ -16504,7 +16504,7 @@ void QgisApp::writeProject( QDomDocument &doc )
   // The <legend> tag is ignored by QGIS application in >= 2.4 and this way also the new project files
   // can be opened in older versions of QGIS without losing information about layer groups.
 
-  mprojectState=WRITING_PROJECT;
+  mprojectState = WRITING_PROJECT;
   QgsLayerTree *clonedRoot = QgsProject::instance()->layerTreeRoot()->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ), QgsProject::instance() ); // convert absolute paths to relative paths if required
@@ -16557,7 +16557,7 @@ void QgisApp::writeProject( QDomDocument &doc )
 #endif
 
   projectChanged( doc );
-  mprojectState=OPENED_PROJECT;
+  mprojectState = OPENED_PROJECT;
   //What if writing has been initiated by a project close?
 }
 

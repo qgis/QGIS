@@ -2126,7 +2126,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
 
-    void setProjectState(ProjectState projectState );
+    void setProjectState( ProjectState projectState );
 
     void postProcessAddedLayer( QgsMapLayer *layer );
 

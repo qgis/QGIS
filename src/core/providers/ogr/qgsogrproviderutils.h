@@ -444,7 +444,7 @@ class QgsOgrLayer
     GIntBig GetApproxFeatureCount();
 
     //! Return an approximate feature count
-    long long getTotalFeatureCount(QTextCodec *encoding=nullptr) const;
+    long long getTotalFeatureCount( QTextCodec *encoding = nullptr ) const;
 
 
     //! Wrapper of OGR_L_GetLayerCount

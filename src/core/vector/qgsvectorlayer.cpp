@@ -871,8 +871,8 @@ QgsRectangle QgsVectorLayer::extent() const
     return rect;
 
   if ( !mValidExtent && mLazyExtent && !mXmlExtent.isNull() && mReadExtentFromXml ) // ||
- //      // load saved extent if a subset filter is turned on in order to significantly speed up loading of large layer files
- //      ( !subsetString().isNull() && !subsetString().isEmpty() ) ) )
+//      // load saved extent if a subset filter is turned on in order to significantly speed up loading of large layer files
+//      ( !subsetString().isNull() && !subsetString().isEmpty() ) ) )
   {
     updateExtent( mXmlExtent );
     mValidExtent = true;
@@ -1641,8 +1641,8 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     mReadExtentFromXml = true;
   }
   if ( mReadExtentFromXml )
- //      // load saved extent if a subset filter is turned on in order to significantly speed up loading of large layer files
-  //     ( !subsetString().isNull() && !subsetString().isEmpty() ) )
+//      // load saved extent if a subset filter is turned on in order to significantly speed up loading of large layer files
+    //     ( !subsetString().isNull() && !subsetString().isEmpty() ) )
   {
     const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
     if ( !extentNode.isNull() )
