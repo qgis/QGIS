@@ -31,8 +31,11 @@ from qgis.core import (
     QgsTextFormat,
     QgsBasicNumericFormat,
     QgsFillSymbol,
-    QgsLineSymbol
+    QgsLineSymbol,
+    QgsReadWriteContext
 )
+
+from qgis.PyQt.QtXml import QDomDocument, QDomElement
 
 from qgis.testing import start_app, unittest
 
@@ -99,6 +102,8 @@ class TestQgsPlot(unittest.TestCase):
 
         im = QImage(600, 500, QImage.Format_ARGB32)
         im.fill(Qt.white)
+        im.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(96 / 25.4 * 1000))
 
         painter = QPainter(im)
         rc = QgsRenderContext.fromQPainter(painter)
@@ -106,6 +111,90 @@ class TestQgsPlot(unittest.TestCase):
         painter.end()
 
         assert self.imageCheck('plot_2d_base', 'plot_2d_base', im)
+
+    def test_read_write(self):
+        plot = Qgs2DPlot()
+        plot.setSize(QSizeF(600, 500))
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
+        plot.setXGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
+        plot.setXGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
+        plot.setYGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
+        plot.setYGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        x_axis_format.setColor(QColor(255, 0, 0))
+        plot.setXAxisTextFormat(x_axis_format)
+
+        x_axis_number_format = QgsBasicNumericFormat()
+        x_axis_number_format.setNumberDecimalPlaces(1)
+        x_axis_number_format.setShowTrailingZeros(True)
+        plot.setXAxisNumericFormat(x_axis_number_format)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        y_axis_format.setColor(QColor(0, 255, 0))
+        plot.setYAxisTextFormat(y_axis_format)
+
+        y_axis_number_format = QgsBasicNumericFormat()
+        y_axis_number_format.setShowPlusSign(True)
+        plot.setYAxisNumericFormat(y_axis_number_format)
+
+        plot.setXMinimum(3)
+        plot.setXMaximum(9)
+
+        plot.setYMinimum(2)
+        plot.setYMaximum(12)
+
+        plot.setGridIntervalMinorX(0.5)
+        plot.setGridIntervalMajorX(1.5)
+        plot.setGridIntervalMinorY(0.3)
+        plot.setGridIntervalMajorY(1.3)
+
+        doc = QDomDocument()
+        elem = doc.createElement('test')
+        plot.writeXml(elem, doc, QgsReadWriteContext())
+
+        res = Qgs2DPlot()
+        self.assertTrue(res.readXml(elem, QgsReadWriteContext()))
+
+        self.assertEqual(res.xMinimum(), 3)
+        self.assertEqual(res.xMaximum(), 9)
+        self.assertEqual(res.yMinimum(), 2)
+        self.assertEqual(res.yMaximum(), 12)
+
+        self.assertEqual(res.gridIntervalMinorX(), 0.5)
+        self.assertEqual(res.gridIntervalMajorX(), 1.5)
+        self.assertEqual(res.gridIntervalMinorY(), 0.3)
+        self.assertEqual(res.gridIntervalMajorY(), 1.3)
+
+        self.assertEqual(res.xAxisNumericFormat().numberDecimalPlaces(), 1)
+        self.assertTrue(res.yAxisNumericFormat().showPlusSign())
+
+        self.assertEqual(res.xAxisTextFormat().color().name(), '#ff0000')
+        self.assertEqual(res.yAxisTextFormat().color().name(), '#00ff00')
+
+        self.assertEqual(res.chartBackgroundSymbol().color().name(), '#fdbf6f')
+        self.assertEqual(res.chartBorderSymbol().color().name(), '#0000ff')
+
+        self.assertEqual(res.xGridMinorSymbol().color().name(), '#ff00ff')
+        self.assertEqual(res.xGridMajorSymbol().color().name(), '#00ffff')
+        self.assertEqual(res.yGridMinorSymbol().color().name(), '#ff4433')
+        self.assertEqual(res.yGridMajorSymbol().color().name(), '#0066ff')
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)

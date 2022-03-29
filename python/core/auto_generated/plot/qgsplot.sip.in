@@ -35,6 +35,16 @@ Constructor for QgsPlot.
 
     virtual ~QgsPlot();
 
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context );
+%Docstring
+Writes the plot's properties into an XML ``element``.
+%End
+
+    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+%Docstring
+Reads the plot's properties from an XML ``element``.
+%End
+
 };
 
 class Qgs2DPlot : QgsPlot
@@ -63,6 +73,14 @@ Constructor for Qgs2DPlot.
 %End
 
     ~Qgs2DPlot();
+
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context );
+
+%Docstring
+Qgs2DPlot cannot be copied
+%End
+    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
 
 
     void render( QgsRenderContext &context );

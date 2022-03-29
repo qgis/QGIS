@@ -21,8 +21,21 @@
 #include "qgslinesymbollayer.h"
 #include "qgstextrenderer.h"
 #include "qgsbasicnumericformat.h"
+#include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
+#include "qgsnumericformatregistry.h"
 
 QgsPlot::~QgsPlot() = default;
+
+bool QgsPlot::writeXml( QDomElement &, QDomDocument &, QgsReadWriteContext & )
+{
+  return true;
+}
+
+bool QgsPlot::readXml( const QDomElement &, QgsReadWriteContext & )
+{
+  return true;
+}
 
 //
 // Qgs2DPlot
@@ -49,6 +62,111 @@ Qgs2DPlot::Qgs2DPlot()
   std::unique_ptr< QgsSimpleLineSymbolLayer > gridMajor = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20, 150 ), 0.1 );
   mXGridMajorSymbol = std::make_unique< QgsLineSymbol>( QgsSymbolLayerList( { gridMajor->clone() } ) );
   mYGridMajorSymbol = std::make_unique< QgsLineSymbol>( QgsSymbolLayerList( { gridMajor->clone() } ) );
+}
+
+bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context )
+{
+  element.setAttribute( QStringLiteral( "minX" ), qgsDoubleToString( mMinX ) );
+  element.setAttribute( QStringLiteral( "maxX" ), qgsDoubleToString( mMaxX ) );
+  element.setAttribute( QStringLiteral( "minY" ), qgsDoubleToString( mMinY ) );
+  element.setAttribute( QStringLiteral( "maxY" ), qgsDoubleToString( mMaxY ) );
+
+  element.setAttribute( QStringLiteral( "gridIntervalMinorX" ), qgsDoubleToString( mGridIntervalMinorX ) );
+  element.setAttribute( QStringLiteral( "gridIntervalMajorX" ), qgsDoubleToString( mGridIntervalMajorX ) );
+  element.setAttribute( QStringLiteral( "gridIntervalMinorY" ), qgsDoubleToString( mGridIntervalMinorY ) );
+  element.setAttribute( QStringLiteral( "gridIntervalMajorY" ), qgsDoubleToString( mGridIntervalMajorY ) );
+
+  element.setAttribute( QStringLiteral( "labelIntervalX" ), qgsDoubleToString( mLabelIntervalX ) );
+  element.setAttribute( QStringLiteral( "labelIntervalY" ), qgsDoubleToString( mLabelIntervalY ) );
+
+  QDomElement xAxisFormatElement = document.createElement( QStringLiteral( "xAxisNumericFormat" ) );
+  mXAxisNumericFormat->writeXml( xAxisFormatElement, document, context );
+  element.appendChild( xAxisFormatElement );
+  QDomElement yAxisFormatElement = document.createElement( QStringLiteral( "yAxisNumericFormat" ) );
+  mYAxisNumericFormat->writeXml( yAxisFormatElement, document, context );
+  element.appendChild( yAxisFormatElement );
+
+  QDomElement backgroundElement = document.createElement( QStringLiteral( "backgroundSymbol" ) );
+  backgroundElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mChartBackgroundSymbol.get(), document, context ) );
+  element.appendChild( backgroundElement );
+  QDomElement borderElement = document.createElement( QStringLiteral( "borderSymbol" ) );
+  borderElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mChartBorderSymbol.get(), document, context ) );
+  element.appendChild( borderElement );
+  QDomElement xGridMajorElement = document.createElement( QStringLiteral( "xGridMajorSymbol" ) );
+  xGridMajorElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mXGridMajorSymbol.get(), document, context ) );
+  element.appendChild( xGridMajorElement );
+  QDomElement xGridMinorElement = document.createElement( QStringLiteral( "xGridMinorSymbol" ) );
+  xGridMinorElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mXGridMinorSymbol.get(), document, context ) );
+  element.appendChild( xGridMinorElement );
+  QDomElement yGridMajorElement = document.createElement( QStringLiteral( "yGridMajorSymbol" ) );
+  yGridMajorElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mYGridMajorSymbol.get(), document, context ) );
+  element.appendChild( yGridMajorElement );
+  QDomElement yGridMinorElement = document.createElement( QStringLiteral( "yGridMinorSymbol" ) );
+  yGridMinorElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mYGridMinorSymbol.get(), document, context ) );
+  element.appendChild( yGridMinorElement );
+
+  QDomElement xAxisTextFormatElement = document.createElement( QStringLiteral( "xAxisTextFormat" ) );
+  xAxisTextFormatElement.appendChild( mXAxisLabelTextFormat.writeXml( document, context ) );
+  element.appendChild( xAxisTextFormatElement );
+  QDomElement yAxisTextFormatElement = document.createElement( QStringLiteral( "yAxisTextFormat" ) );
+  yAxisTextFormatElement.appendChild( mYAxisLabelTextFormat.writeXml( document, context ) );
+  element.appendChild( yAxisTextFormatElement );
+
+  QDomElement marginsElement = document.createElement( QStringLiteral( "margins" ) );
+  marginsElement.setAttribute( QStringLiteral( "left" ), qgsDoubleToString( mMargins.left() ) );
+  marginsElement.setAttribute( QStringLiteral( "right" ), qgsDoubleToString( mMargins.right() ) );
+  marginsElement.setAttribute( QStringLiteral( "top" ), qgsDoubleToString( mMargins.top() ) );
+  marginsElement.setAttribute( QStringLiteral( "bottom" ), qgsDoubleToString( mMargins.bottom() ) );
+  element.appendChild( marginsElement );
+
+  return true;
+}
+
+bool Qgs2DPlot::readXml( const QDomElement &element, QgsReadWriteContext &context )
+{
+  mMinX = element.attribute( QStringLiteral( "minX" ) ).toDouble();
+  mMaxX = element.attribute( QStringLiteral( "maxX" ) ).toDouble();
+  mMinY = element.attribute( QStringLiteral( "minY" ) ).toDouble();
+  mMaxY = element.attribute( QStringLiteral( "maxY" ) ).toDouble();
+
+  mGridIntervalMinorX = element.attribute( QStringLiteral( "gridIntervalMinorX" ) ).toDouble();
+  mGridIntervalMajorX = element.attribute( QStringLiteral( "gridIntervalMajorX" ) ).toDouble();
+  mGridIntervalMinorY = element.attribute( QStringLiteral( "gridIntervalMinorY" ) ).toDouble();
+  mGridIntervalMajorY = element.attribute( QStringLiteral( "gridIntervalMajorY" ) ).toDouble();
+
+  mLabelIntervalX = element.attribute( QStringLiteral( "labelIntervalX" ) ).toDouble();
+  mLabelIntervalY = element.attribute( QStringLiteral( "labelIntervalY" ) ).toDouble();
+
+  const QDomElement xAxisFormatElement = element.firstChildElement( QStringLiteral( "xAxisNumericFormat" ) );
+  mXAxisNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( xAxisFormatElement, context ) );
+  const QDomElement yAxisFormatElement = element.firstChildElement( QStringLiteral( "yAxisNumericFormat" ) );
+  mYAxisNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( yAxisFormatElement, context ) );
+
+  const QDomElement backgroundElement = element.firstChildElement( QStringLiteral( "backgroundSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  mChartBackgroundSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( backgroundElement, context ) );
+  const QDomElement borderElement = element.firstChildElement( QStringLiteral( "borderSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  mChartBorderSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( borderElement, context ) );
+  const QDomElement xGridMajorElement = element.firstChildElement( QStringLiteral( "xGridMajorSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  mXGridMajorSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( xGridMajorElement, context ) );
+  const QDomElement xGridMinorElement = element.firstChildElement( QStringLiteral( "xGridMinorSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  mXGridMinorSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( xGridMinorElement, context ) );
+  const QDomElement yGridMajorElement = element.firstChildElement( QStringLiteral( "yGridMajorSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  mYGridMajorSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( yGridMajorElement, context ) );
+  const QDomElement yGridMinorElement = element.firstChildElement( QStringLiteral( "yGridMinorSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  mYGridMinorSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( yGridMinorElement, context ) );
+
+  const QDomElement xAxisTextFormatElement = element.firstChildElement( QStringLiteral( "xAxisTextFormat" ) );
+  mXAxisLabelTextFormat.readXml( xAxisTextFormatElement, context );
+  const QDomElement yAxisTextFormatElement = element.firstChildElement( QStringLiteral( "yAxisTextFormat" ) );
+  mYAxisLabelTextFormat.readXml( yAxisTextFormatElement, context );
+
+  const QDomElement marginsElement = element.firstChildElement( QStringLiteral( "margins" ) );
+  mMargins.setLeft( marginsElement.attribute( QStringLiteral( "left" ) ).toDouble() );
+  mMargins.setRight( marginsElement.attribute( QStringLiteral( "right" ) ).toDouble() );
+  mMargins.setTop( marginsElement.attribute( QStringLiteral( "top" ) ).toDouble() );
+  mMargins.setBottom( marginsElement.attribute( QStringLiteral( "bottom" ) ).toDouble() );
+
+  return true;
 }
 
 void Qgs2DPlot::render( QgsRenderContext &context )
@@ -350,3 +468,4 @@ void Qgs2DPlot::setYAxisNumericFormat( QgsNumericFormat *format )
 {
   mYAxisNumericFormat.reset( format );
 }
+

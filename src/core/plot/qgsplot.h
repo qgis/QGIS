@@ -51,6 +51,16 @@ class CORE_EXPORT QgsPlot
 
     virtual ~QgsPlot();
 
+    /**
+     * Writes the plot's properties into an XML \a element.
+     */
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context );
+
+    /**
+     * Reads the plot's properties from an XML \a element.
+     */
+    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+
   private:
 
 
@@ -82,6 +92,9 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     Qgs2DPlot( const Qgs2DPlot &other ) = delete;
     //! Qgs2DPlot cannot be copied
     Qgs2DPlot &operator=( const Qgs2DPlot &other ) = delete;
+
+    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) override;
+    bool readXml( const QDomElement &element, QgsReadWriteContext &context ) override;
 
     /**
      * Renders the plot.
