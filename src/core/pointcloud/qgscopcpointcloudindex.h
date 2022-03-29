@@ -26,10 +26,20 @@
 #include <QList>
 #include <QFile>
 
+#include <fstream>
+
 #include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
 #include "qgis_sip.h"
+
+namespace lazperf
+{
+  namespace reader
+  {
+    class generic_file;
+  }
+}
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -57,28 +67,20 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Local; };
 
   protected:
-    bool loadSchema( const QString &filename );
-    bool loadHierarchy( const QString &filename );
+    bool loadSchema();
+    bool loadHierarchy();
 
     bool mIsValid = false;
     QString mDataType;
     QString mFileName;
     QString mWkt;
+    std::ifstream mCopcFile;
+    std::unique_ptr<lazperf::reader::generic_file> mLazFile;
 
     qint64 mPointCount = 0;
 
     mutable QHash<IndexedPointCloudNode, uint64_t> mHierarchyNodeOffset; //!< Additional data hierarchy for COPC
     mutable QHash<IndexedPointCloudNode, int32_t> mHierarchyNodeByteSize; //!< Additional data hierarchy for COPC
-
-    struct AttributeStatistics
-    {
-      int count = -1;
-      QVariant minimum;
-      QVariant maximum;
-      double mean = std::numeric_limits< double >::quiet_NaN();
-      double stDev = std::numeric_limits< double >::quiet_NaN();
-      double variance = std::numeric_limits< double >::quiet_NaN();
-    };
 
     QVariantMap mOriginalMetadata;
 };

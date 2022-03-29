@@ -44,41 +44,40 @@ QgsCopcPointCloudIndex::~QgsCopcPointCloudIndex() = default;
 
 void QgsCopcPointCloudIndex::load( const QString &fileName )
 {
-  QFile f( fileName );
-  if ( !f.open( QIODevice::ReadOnly ) )
+  mFileName = fileName;
+  mCopcFile.open( fileName.toStdString(), std::ios::binary );
+
+  if ( !mCopcFile.is_open() || !mCopcFile.good() )
   {
     QgsMessageLog::logMessage( tr( "Unable to open %1 for reading" ).arg( fileName ) );
     mIsValid = false;
     return;
   }
 
-  mFileName = fileName;
+  mLazFile.reset( new lazperf::reader::generic_file( mCopcFile ) );
 
-  bool success = loadSchema( fileName );
+  bool success = loadSchema();
 
   if ( success )
   {
-    success = loadHierarchy( fileName );
+    success = loadHierarchy();
   }
 
   mIsValid = success;
 }
 
-bool QgsCopcPointCloudIndex::loadSchema( const QString &filename )
+bool QgsCopcPointCloudIndex::loadSchema()
 {
-  std::ifstream file( filename.toStdString() );
-  lazperf::reader::generic_file f( file );
-
   mDataType = QStringLiteral( "copc" );
 
-  mPointCount = f.header().point_count;
+  mPointCount = mLazFile->header().point_count;
 
-  mScale = QgsVector3D( f.header().scale.x, f.header().scale.y, f.header().scale.z );
-  mOffset = QgsVector3D( f.header().offset.x, f.header().offset.y, f.header().offset.z );
+  mScale = QgsVector3D( mLazFile->header().scale.x, mLazFile->header().scale.y, mLazFile->header().scale.z );
+  mOffset = QgsVector3D( mLazFile->header().offset.x, mLazFile->header().offset.y, mLazFile->header().offset.z );
 
   // The COPC format only uses PDRF 6, 7 or 8. So there should be a OGC Coordinate System WKT record
   mWkt = QString();
-  std::vector<char> wktRecordData = f.vlrData( "LASF_Projection", 2112 );
+  std::vector<char> wktRecordData = mLazFile->vlrData( "LASF_Projection", 2112 );
   if ( !wktRecordData.empty() )
   {
     lazperf::wkt_vlr wktVlr;
@@ -86,10 +85,10 @@ bool QgsCopcPointCloudIndex::loadSchema( const QString &filename )
     mWkt = QString::fromStdString( wktVlr.wkt );
   }
 
-  mExtent.set( f.header().minx, f.header().miny, f.header().maxx, f.header().maxy );
+  mExtent.set( mLazFile->header().minx, mLazFile->header().miny, mLazFile->header().maxx, mLazFile->header().maxy );
 
-  mZMin = f.header().minz;
-  mZMax = f.header().maxz;
+  mZMin = mLazFile->header().minz;
+  mZMax = mLazFile->header().maxz;
 
 
   // Attributes for COPC format
@@ -110,7 +109,7 @@ bool QgsCopcPointCloudIndex::loadSchema( const QString &filename )
   attributes.push_back( QgsPointCloudAttribute( "PointSourceId", QgsPointCloudAttribute::UShort ) );
   attributes.push_back( QgsPointCloudAttribute( "GpsTime", QgsPointCloudAttribute::Double ) );
 
-  switch ( f.header().point_format_id )
+  switch ( mLazFile->header().point_format_id )
   {
     case 6:
       break;
@@ -129,7 +128,7 @@ bool QgsCopcPointCloudIndex::loadSchema( const QString &filename )
       return false;
   }
 
-  QVector<QgsLazDecoder::ExtraBytesAttributeDetails> extrabyteAttributes = QgsLazDecoder::readExtraByteAttributes( file );
+  QVector<QgsLazDecoder::ExtraBytesAttributeDetails> extrabyteAttributes = QgsLazDecoder::readExtraByteAttributes( mCopcFile );
   for ( QgsLazDecoder::ExtraBytesAttributeDetails attr : extrabyteAttributes )
   {
     attributes.push_back( QgsPointCloudAttribute( attr.attribute, attr.type ) );
@@ -137,7 +136,7 @@ bool QgsCopcPointCloudIndex::loadSchema( const QString &filename )
 
   setAttributes( attributes );
 
-  std::vector<char> copcInfoVlrData = f.vlrData( "copc", 1 );
+  std::vector<char> copcInfoVlrData = mLazFile->vlrData( "copc", 1 );
 
   lazperf::copc_info_vlr copcInfoVlr;
   copcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
@@ -211,12 +210,9 @@ qint64 QgsCopcPointCloudIndex::pointCount() const
   return mPointCount;
 }
 
-bool QgsCopcPointCloudIndex::loadHierarchy( const QString &filename )
+bool QgsCopcPointCloudIndex::loadHierarchy()
 {
-  std::ifstream file( filename.toStdString() );
-  lazperf::reader::generic_file f( file );
-
-  std::vector<char> copcInfoVlrData = f.vlrData( "copc", 1 );
+  std::vector<char> copcInfoVlrData = mLazFile->vlrData( "copc", 1 );
 
   lazperf::copc_info_vlr copcInfoVlr;
   copcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
@@ -244,9 +240,9 @@ bool QgsCopcPointCloudIndex::loadHierarchy( const QString &filename )
   {
     auto [offset, size] = queue.dequeue();
 
-    file.seekg( offset );
-    std::unique_ptr<char> data( new char[ offset ] );
-    file.read( data.get(), size );
+    mCopcFile.seekg( offset );
+    std::unique_ptr<char> data( new char[ size ] );
+    mCopcFile.read( data.get(), size );
 
     for ( uint64_t i = 0; i < size; i += sizeof( CopcEntry ) )
     {
