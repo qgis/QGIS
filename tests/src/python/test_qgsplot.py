@@ -112,6 +112,12 @@ class TestQgsPlot(unittest.TestCase):
 
         assert self.imageCheck('plot_2d_base', 'plot_2d_base', im)
 
+        plot_rect = plot.interiorPlotArea(rc)
+        self.assertAlmostEqual(plot_rect.left(), 64.8, 0)
+        self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
+        self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+
     def test_read_write(self):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
