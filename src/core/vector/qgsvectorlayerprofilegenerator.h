@@ -83,6 +83,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
 
     bool generateProfile() override;
     QgsAbstractProfileResults *takeResults() override;
+    QgsFeedback *feedback() const override;
 
   private:
 
@@ -95,6 +96,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
 
     void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid );
     bool clampAltitudes( QgsPolygon *polygon );
+
+    std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
     std::unique_ptr< QgsGeos > mProfileCurveEngine;

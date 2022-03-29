@@ -97,7 +97,8 @@ void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &conte
 //
 
 QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *layer, const QgsProfileRequest &request )
-  : mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
+  : mFeedback( std::make_unique< QgsRasterBlockFeedback >() )
+  , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mSourceCrs( layer->crs() )
   , mTargetCrs( request.crs() )
   , mTransformContext( request.transformContext() )
@@ -114,7 +115,7 @@ QgsRasterLayerProfileGenerator::~QgsRasterLayerProfileGenerator() = default;
 
 bool QgsRasterLayerProfileGenerator::generateProfile()
 {
-  if ( !mProfileCurve )
+  if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;
 
   // we need to transform the profile curve to the raster's CRS
@@ -130,14 +131,23 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
     return false;
   }
 
+  if ( mFeedback->isCanceled() )
+    return false;
+
   const QgsRectangle profileCurveBoundingBox = transformedCurve->boundingBox();
   if ( !profileCurveBoundingBox.intersects( mRasterProvider->extent() ) )
+    return false;
+
+  if ( mFeedback->isCanceled() )
     return false;
 
   mResults = std::make_unique< QgsRasterLayerProfileResults >();
 
   std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );
   curveEngine->prepareGeometry();
+
+  if ( mFeedback->isCanceled() )
+    return false;
 
   QSet< QgsPointXY > profilePoints;
   if ( !std::isnan( mStepDistance ) )
@@ -152,6 +162,9 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
       profilePoints.insert( *it );
     }
   }
+
+  if ( mFeedback->isCanceled() )
+    return false;
 
   // calculate the portion of the raster which actually covers the curve
   int subRegionWidth = 0;
@@ -188,12 +201,17 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
 
   while ( it.next( mBand, blockColumns, blockRows, blockTopLeftColumn, blockTopLeftRow, blockExtent ) )
   {
+    if ( mFeedback->isCanceled() )
+      return false;
+
     const QgsGeometry blockExtentGeom = QgsGeometry::fromRect( blockExtent );
     if ( !curveEngine->intersects( blockExtentGeom.constGet() ) )
       continue;
 
-    // TODO -- add feedback argument!
-    std::unique_ptr< QgsRasterBlock > block( mRasterProvider->block( mBand, blockExtent, blockColumns, blockRows ) );
+    std::unique_ptr< QgsRasterBlock > block( mRasterProvider->block( mBand, blockExtent, blockColumns, blockRows, mFeedback.get() ) );
+    if ( mFeedback->isCanceled() )
+      return false;
+
     if ( !block )
       continue;
 
@@ -206,6 +224,9 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
       auto it = profilePoints.begin();
       while ( it != profilePoints.end() )
       {
+        if ( mFeedback->isCanceled() )
+          return false;
+
         // convert point to a pixel and sample, if it's in this block
         if ( blockExtent.contains( *it ) )
         {
@@ -248,6 +269,9 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
       double currentY = blockExtent.yMaximum() - 0.5 * mRasterUnitsPerPixelY;
       for ( int row = 0; row < blockRows; ++row )
       {
+        if ( mFeedback->isCanceled() )
+          return false;
+
         double currentX = blockExtent.xMinimum() + 0.5 * mRasterUnitsPerPixelX;
         for ( int col = 0; col < blockColumns; ++col, currentX += mRasterUnitsPerPixelX )
         {
@@ -277,6 +301,9 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
     }
   }
 
+  if ( mFeedback->isCanceled() )
+    return false;
+
   // convert x/y values back to distance/height values
   QgsGeos originalCurveGeos( mProfileCurve.get() );
   originalCurveGeos.prepareGeometry();
@@ -284,6 +311,9 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
   QString lastError;
   for ( const QgsPoint &pixel : std::as_const( mResults->rawPoints ) )
   {
+    if ( mFeedback->isCanceled() )
+      return false;
+
     const double distance = originalCurveGeos.lineLocatePoint( pixel, &lastError );
 
     QgsRasterLayerProfileResults::Result res;
@@ -298,4 +328,9 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
 QgsAbstractProfileResults *QgsRasterLayerProfileGenerator::takeResults()
 {
   return mResults.release();
+}
+
+QgsFeedback *QgsRasterLayerProfileGenerator::feedback() const
+{
+  return mFeedback.get();
 }

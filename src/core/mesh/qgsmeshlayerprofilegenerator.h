@@ -86,10 +86,13 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileGenera
 
     bool generateProfile() override;
     QgsAbstractProfileResults *takeResults() override;
+    QgsFeedback *feedback() const override;
 
   private:
 
     double heightAt( double x, double y );
+
+    std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
 

@@ -86,7 +86,8 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
 //
 
 QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *layer, const QgsProfileRequest &request )
-  : mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
+  : mFeedback( std::make_unique< QgsFeedback >() )
+  , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mTerrainProvider( request.terrainProvider() ? request.terrainProvider()->clone() : nullptr )
   , mTolerance( request.tolerance() )
   , mSourceCrs( layer->crs() )
@@ -111,7 +112,7 @@ QgsVectorLayerProfileGenerator::~QgsVectorLayerProfileGenerator() = default;
 
 bool QgsVectorLayerProfileGenerator::generateProfile()
 {
-  if ( !mProfileCurve )
+  if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;
 
   // we need to transform the profile curve to the vector's CRS
@@ -134,10 +135,16 @@ bool QgsVectorLayerProfileGenerator::generateProfile()
   if ( !profileCurveBoundingBox.intersects( mExtent ) )
     return false;
 
+  if ( mFeedback->isCanceled() )
+    return false;
+
   mResults = std::make_unique< QgsVectorLayerProfileResults >();
 
   mProfileCurveEngine.reset( new QgsGeos( mProfileCurve.get() ) );
   mProfileCurveEngine->prepareGeometry();
+
+  if ( mFeedback->isCanceled() )
+    return false;
 
   switch ( QgsWkbTypes::geometryType( mWkbType ) )
   {
@@ -169,6 +176,11 @@ QgsAbstractProfileResults *QgsVectorLayerProfileGenerator::takeResults()
   return mResults.release();
 }
 
+QgsFeedback *QgsVectorLayerProfileGenerator::feedback() const
+{
+  return mFeedback.get();
+}
+
 bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
 {
   // get features from layer
@@ -176,6 +188,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
   request.setDestinationCrs( mTargetCrs, mTransformContext );
   request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), mTolerance );
   request.setNoAttributes();
+  request.setFeedback( mFeedback.get() );
 
   auto processPoint = [this]( const QgsPoint * point )
   {
@@ -204,6 +217,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
   QgsFeatureIterator it = mSource->getFeatures( request );
   while ( it.nextFeature( feature ) )
   {
+    if ( mFeedback->isCanceled() )
+      return false;
+
     const QgsGeometry g = feature.geometry();
     if ( g.isMultipart() )
     {
@@ -227,6 +243,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
   request.setDestinationCrs( mTargetCrs, mTransformContext );
   request.setFilterRect( mProfileCurve->boundingBox() );
   request.setNoAttributes();
+  request.setFeedback( mFeedback.get() );
 
   auto processCurve = [this]( const QgsCurve * curve )
   {
@@ -235,11 +252,20 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
     if ( !intersection )
       return;
 
+    if ( mFeedback->isCanceled() )
+      return;
+
     QgsGeos curveGeos( curve );
     curveGeos.prepareGeometry();
 
+    if ( mFeedback->isCanceled() )
+      return;
+
     for ( auto it = intersection->const_parts_begin(); it != intersection->const_parts_end(); ++it )
     {
+      if ( mFeedback->isCanceled() )
+        return;
+
       if ( const QgsPoint *intersectionPoint = qgsgeometry_cast< const QgsPoint * >( *it ) )
       {
         // unfortunately we need to do some work to interpolate the z value for the line -- GEOS doesn't give us this
@@ -272,6 +298,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
   QgsFeatureIterator it = mSource->getFeatures( request );
   while ( it.nextFeature( feature ) )
   {
+    if ( mFeedback->isCanceled() )
+      return false;
+
     if ( !mProfileCurveEngine->intersects( feature.geometry().constGet() ) )
       continue;
 
@@ -301,6 +330,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   request.setDestinationCrs( mTargetCrs, mTransformContext );
   request.setFilterRect( mProfileCurve->boundingBox() );
   request.setNoAttributes();
+  request.setFeedback( mFeedback.get() );
 
   auto interpolatePointOnTriangle = []( const QgsPolygon * triangle, double x, double y ) -> QgsPoint
   {
@@ -453,17 +483,26 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     }
     clampAltitudes( clampedPolygon.get() );
 
+    if ( mFeedback->isCanceled() )
+      return;
+
     const QgsRectangle bounds = clampedPolygon->boundingBox();
     QgsTessellator t( bounds, false, false, false, false );
     t.addPolygon( *clampedPolygon, 0 );
 
     QgsGeometry tessellation( t.asMultiPolygon() );
+    if ( mFeedback->isCanceled() )
+      return;
+
     tessellation.translate( bounds.xMinimum(), bounds.yMinimum() );
 
     // iterate through the tessellation, finding triangles which intersect the line
     const int numTriangles = qgsgeometry_cast< const QgsMultiPolygon * >( tessellation.constGet() )->numGeometries();
     for ( int i = 0; i < numTriangles; ++i )
     {
+      if ( mFeedback->isCanceled() )
+        return;
+
       const QgsPolygon *triangle = qgsgeometry_cast< const QgsPolygon * >( qgsgeometry_cast< const QgsMultiPolygon * >( tessellation.constGet() )->geometryN( i ) );
       if ( !mProfileCurveEngine->intersects( triangle ) )
         continue;
@@ -481,6 +520,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   QgsFeatureIterator it = mSource->getFeatures( request );
   while ( it.nextFeature( feature ) )
   {
+    if ( mFeedback->isCanceled() )
+      return false;
+
     if ( !mProfileCurveEngine->intersects( feature.geometry().constGet() ) )
       continue;
 
@@ -490,6 +532,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     {
       for ( auto it = g.const_parts_begin(); it != g.const_parts_end(); ++it )
       {
+        if ( mFeedback->isCanceled() )
+          break;
+
         if ( !mProfileCurveEngine->intersects( *it ) )
           continue;
 
@@ -500,6 +545,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     {
       processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( g.constGet() ), transformedParts );
     }
+
+    if ( mFeedback->isCanceled() )
+      return false;
 
     if ( !transformedParts.empty() )
     {
@@ -570,6 +618,9 @@ void QgsVectorLayerProfileGenerator::clampAltitudes( QgsLineString *lineString, 
 {
   for ( int i = 0; i < lineString->nCoordinates(); ++i )
   {
+    if ( mFeedback->isCanceled() )
+      break;
+
     double terrainZ = 0;
     switch ( mClamping )
     {
@@ -640,6 +691,9 @@ bool QgsVectorLayerProfileGenerator::clampAltitudes( QgsPolygon *polygon )
 
   for ( int i = 0; i < polygon->numInteriorRings(); ++i )
   {
+    if ( mFeedback->isCanceled() )
+      break;
+
     QgsCurve *curve = const_cast<QgsCurve *>( polygon->interiorRing( i ) );
     QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( curve );
     if ( !lineString )
