@@ -59,6 +59,9 @@ class CORE_EXPORT QgsPlot
 /**
  * \brief Base class for 2-dimensional plot/chart/graphs.
  *
+ * The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
+ * can implement the renderContent() method to render their actual plot content.
+ *
  * \warning This class is not considered stable API, and may change in future!
  *
  * \ingroup core
