@@ -118,6 +118,64 @@ class TestQgsPlot(unittest.TestCase):
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
         self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
 
+    def testPlotIntervals(self):
+        plot = Qgs2DPlot()
+        plot.setSize(QSizeF(600, 500))
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
+        plot.setXGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
+        plot.setXGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
+        plot.setYGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
+        plot.setYGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        plot.setXAxisTextFormat(x_axis_format)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        plot.setYAxisTextFormat(y_axis_format)
+
+        plot.setXMinimum(1)
+        plot.setXMaximum(21)
+
+        plot.setYMinimum(27)
+        plot.setYMaximum(327)
+
+        plot.setGridIntervalMajorX(10)
+        plot.setGridIntervalMinorX(2)
+
+        plot.setGridIntervalMajorY(100)
+        plot.setGridIntervalMinorY(50)
+
+        plot.setLabelIntervalX(5)
+        plot.setLabelIntervalY(70)
+
+        im = QImage(600, 500, QImage.Format_ARGB32)
+        im.fill(Qt.white)
+        im.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(96 / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        plot.render(rc)
+        painter.end()
+
+        assert self.imageCheck('plot_2d_intervals', 'plot_2d_intervals', im)
+
     def test_read_write(self):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
@@ -171,6 +229,9 @@ class TestQgsPlot(unittest.TestCase):
         plot.setGridIntervalMinorY(0.3)
         plot.setGridIntervalMajorY(1.3)
 
+        plot.setLabelIntervalX(32)
+        plot.setLabelIntervalY(23)
+
         doc = QDomDocument()
         elem = doc.createElement('test')
         plot.writeXml(elem, doc, QgsReadWriteContext())
@@ -187,6 +248,9 @@ class TestQgsPlot(unittest.TestCase):
         self.assertEqual(res.gridIntervalMajorX(), 1.5)
         self.assertEqual(res.gridIntervalMinorY(), 0.3)
         self.assertEqual(res.gridIntervalMajorY(), 1.3)
+
+        self.assertEqual(res.labelIntervalX(), 32)
+        self.assertEqual(res.labelIntervalY(), 23)
 
         self.assertEqual(res.xAxisNumericFormat().numberDecimalPlaces(), 1)
         self.assertTrue(res.yAxisNumericFormat().showPlusSign())
