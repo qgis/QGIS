@@ -82,12 +82,11 @@ QgsExpressionContextScope::~QgsExpressionContextScope()
 
 void QgsExpressionContextScope::setVariable( const QString &name, const QVariant &value, bool isStatic )
 {
-  if ( mVariables.contains( name ) )
+  auto it = mVariables.find( name );
+  if ( it != mVariables.end() )
   {
-    StaticVariable existing = mVariables.value( name );
-    existing.value = value;
-    existing.isStatic = isStatic;
-    addVariable( existing );
+    it->value = value;
+    it->isStatic = isStatic;
   }
   else
   {
