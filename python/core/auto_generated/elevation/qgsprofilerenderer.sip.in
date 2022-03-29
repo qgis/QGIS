@@ -1,0 +1,91 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilerenderer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProfilePlotRenderer : QObject
+{
+%Docstring(signature="appended")
+Generates and renders elevation profile plots.
+
+This class has two roles:
+
+1. Extraction and generation of the raw elevation profiles from a list of :py:class:`QgsAbstractProfileSource` objects.
+2. Rendering the results
+
+Step 1, involving the generation of the elevation profiles only needs to occur once. This is done via
+a call to :py:func:`~startGeneration`, which commences generation of the profiles from each source in a separate
+background thread. When the generation is completed for all sources the :py:func:`~generationFinished` signal is
+emitted.
+
+After the profile is generated, it can be rendered. The rendering step may be undertaken multiple times
+(e.g. to render to different image sizes or data ranges) without having to re-generate the raw profile
+data.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprofilerenderer.h"
+%End
+  public:
+
+    QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
+                            const QgsProfileRequest &request );
+
+    ~QgsProfilePlotRenderer();
+
+    void startGeneration();
+%Docstring
+Start the generation job and immediately return.
+Does nothing if the generation is already in progress.
+%End
+
+    void cancelGeneration();
+%Docstring
+Stop the generation job - does not return until the job has terminated.
+Does nothing if the generation is not active.
+%End
+
+    void cancelGenerationWithoutBlocking();
+%Docstring
+Triggers cancellation of the generation job without blocking. The generation job will continue
+to operate until it is able to cancel, at which stage the :py:func:`~QgsProfilePlotRenderer.generationFinished` signal will be emitted.
+Does nothing if the generation is not active.
+%End
+
+    void waitForFinished();
+%Docstring
+Block until the current job has finished.
+%End
+
+    bool isActive() const;
+%Docstring
+Returns ``True`` if the generation job is currently running in background.
+%End
+
+    QImage renderToImage( int width, int height, double zMin, double zMax );
+
+  signals:
+
+    void generationFinished();
+%Docstring
+Emitted when the profile generation is finished (or canceled).
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilerenderer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

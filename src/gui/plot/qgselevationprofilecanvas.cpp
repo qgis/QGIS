@@ -27,6 +27,7 @@
 #include "qgsabstractprofilegenerator.h"
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
+#include "qgsprofilerenderer.h"
 
 class QgsElevationProfilePlotItem : public QgsPlotCanvasItem
 {
@@ -102,57 +103,36 @@ void QgsElevationProfileCanvas::update()
 
   mProfileResults.clear();
 
-  QgsProfileRequest req( profileCurve()->clone() );
-  req.setCrs( mCrs );
-  req.setTransformContext( mProject->transformContext() );
-  req.setTerrainProvider( mProject->elevationProperties()->terrainProvider() ? mProject->elevationProperties()->terrainProvider()->clone() : nullptr );
-
-  // TODO -- background thread!
+  QgsProfileRequest request( profileCurve()->clone() );
+  request.setCrs( mCrs );
+  request.setTransformContext( mProject->transformContext() );
+  request.setTerrainProvider( mProject->elevationProperties()->terrainProvider() ? mProject->elevationProperties()->terrainProvider()->clone() : nullptr );
 
   const QList< QgsMapLayer * > layersToUpdate = layers();
-  std::vector< std::unique_ptr< QgsAbstractProfileGenerator > > generators;
+  QList< QgsAbstractProfileSource * > sources;
+  sources.reserve( layersToUpdate.size() );
   for ( QgsMapLayer *layer : layersToUpdate )
   {
     if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
-    {
-      std::unique_ptr< QgsAbstractProfileGenerator > generator( source->createProfileGenerator( req ) );
-      if ( generator )
-        generators.emplace_back( std::move( generator ) );
-    }
+      sources.append( source );
   }
 
-  for ( auto &it : generators )
-  {
-    it->generateProfile();
-    std::unique_ptr< QgsAbstractProfileResults > res( it->takeResults() );
-    if ( res )
-      mProfileResults.emplace_back( std::move( res ) );
-  }
+  mCurrentJob = new QgsProfilePlotRenderer( sources, request );
+  connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
+  mCurrentJob->startGeneration();
+}
 
-  QImage res( width(), height(), QImage::Format_ARGB32 );
-  res.fill( Qt::white );
+void QgsElevationProfileCanvas::generationFinished()
+{
+  redrawResults();
+}
 
-  QPainter p( &res );
-  QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
-  QgsProfileRenderContext profileRenderContext( context );
+void QgsElevationProfileCanvas::redrawResults()
+{
+  if ( !mCurrentJob )
+    return;
 
-  const double curveLength = profileCurve()->length();
-  QTransform transform;
-  transform.translate( 0, mPlotContentsRect.height() );
-  transform.scale( mPlotContentsRect.width() / curveLength, -mPlotContentsRect.height() / ( mZMax - mZMin ) );
-  transform.translate( 0, -mZMin );
-  profileRenderContext.setWorldTransform( transform );
-
-
-  p.setRenderHint( QPainter::Antialiasing, true );
-  p.setBrush( QBrush( Qt::red ) );
-  p.setPen( Qt::NoPen );
-  for ( auto &it  : mProfileResults )
-  {
-    it->renderResults( profileRenderContext );
-  }
-  p.end();
-
+  const QImage res = mCurrentJob->renderToImage( mPlotContentsRect.width(), mPlotContentsRect.height(), mZMin, mZMax );
   mPlotItem->setContent( res );
 }
 
@@ -179,4 +159,10 @@ void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
 {
   return _qgis_listQPointerToRaw( mLayers );
+}
+
+void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
+{
+  QgsDistanceVsElevationPlotCanvas::resizeEvent( event );
+  redrawResults();
 }

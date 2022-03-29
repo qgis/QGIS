@@ -46,6 +46,7 @@ set(QGIS_CORE_SRCS
 
   elevation/qgsabstractprofilegenerator.cpp
   elevation/qgsabstractprofilesource.cpp
+  elevation/qgsprofilerenderer.cpp
   elevation/qgsprofilerequest.cpp
   elevation/qgsterrainprovider.cpp
 
@@ -1272,6 +1273,7 @@ set(QGIS_CORE_HDRS
 
   elevation/qgsabstractprofilegenerator.h
   elevation/qgsabstractprofilesource.h
+  elevation/qgsprofilerenderer.h
   elevation/qgsprofilerequest.h
   elevation/qgsterrainprovider.h
 

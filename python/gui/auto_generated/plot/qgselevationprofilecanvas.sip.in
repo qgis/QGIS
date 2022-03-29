@@ -54,6 +54,8 @@ Returns the list of layers included in the profile.
 .. seealso:: :py:func:`setLayers`
 %End
 
+    virtual void resizeEvent( QResizeEvent *event );
+
 };
 
 /************************************************************************
