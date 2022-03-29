@@ -1288,25 +1288,25 @@ QgsRectangle QgsOgrProvider::extent() const
 
       // other algorithms usually depend on extent calculation when it is called, so block
       // the main window until it's finished and its result is available for the caller to proceed.
-        progressDialog = new QProgressDialog( mainWindow );
-        feedback = new QgsFeedback(mainWindow);
+      progressDialog = new QProgressDialog( mainWindow );
+      feedback = new QgsFeedback( mainWindow );
 
     }
     else
     {
-        progressDialog = new QProgressDialog();
-        feedback = new QgsFeedback();
+      progressDialog = new QProgressDialog();
+      feedback = new QgsFeedback();
     }
 
 
     int maxfeatures = 0;
     maxfeatures = mOgrLayer->getTotalFeatureCount();
 
-   /*progress = QProgressDialog("Processing...","Cancel", 0, 100, mainWindow)
-    progress.setWindowModality(Qt.WindowModal)
-    progress.setMinimumDuration(500)
-    feedback.progressChanged.connect(progress.setValue)
-    progress.show()*/
+    /*progress = QProgressDialog("Processing...","Cancel", 0, 100, mainWindow)
+     progress.setWindowModality(Qt.WindowModal)
+     progress.setMinimumDuration(500)
+     feedback.progressChanged.connect(progress.setValue)
+     progress.show()*/
     //calc = QgsRasterCalculator( formula, output_path, 'GTiff', slope_map.extent(), slope_map.width(), slope_map.height(), entries)
     //calc.processCalculation(feedback)
     //progressDialog = new QProgressDialog( mainWindow );
@@ -1321,7 +1321,7 @@ QgsRectangle QgsOgrProvider::extent() const
     //feedback->progressChanged()->connect(progressDialog.setValue);
 
 
-//    if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && //QgisApp::instance()->getProjectState() == QgisApp::ProjectState )
+//    if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && //QgisApp::instance()->getProjectState() == QgisApp::OPENING_PROJECT )
 //       static_cast< QgisApp* > (qApp)->getProjectState()==QgisApp::ProjectState)
 //      // how do we know we've  acutally been called  for reading and not for saving or just calling properties?
 //      // we've been called by "QgsVectorLayer::extent()" and there then "updateExtent( mDataProvider->extent() );"
@@ -1385,7 +1385,7 @@ QgsRectangle QgsOgrProvider::extent() const
         count++;
         progressDialog->setValue( count );
         // feedback->progressChanged( );
-        feedback->setProgress( double(count/ maxfeatures) );
+        feedback->setProgress( double( count / maxfeatures ) );
 
         QApplication::processEvents();
       }

@@ -7579,7 +7579,7 @@ void QgisApp::runScript( const QString &filePath )
 #endif
 }
 
-QgisApp::ProjectState QgisApp::getProjectState()
+QgisApp::ProjectState QgisApp::projectState()
 {
   return mprojectState;
 }

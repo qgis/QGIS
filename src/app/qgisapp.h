@@ -250,7 +250,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Returns the current project state: Whether a project is loading, loaded, closed, writing
      * Used to regognize the current state for user communication especially during loading and saving.
      */
-    ProjectState getProjectState();
+    ProjectState projectState();
 
     /**
      * Open the specified project file; prompt to save previous project if necessary.
