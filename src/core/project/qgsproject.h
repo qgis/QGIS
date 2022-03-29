@@ -169,6 +169,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       WMSOnlineResource = 2, //!< Alias
     };
 
+    /**
+     * Enumeration of project states:
+     * Whether currently a project is loading, loaded, closed, writing or no project loaded
+     * Used to regognize the current state for user communication especially during loading and saving.
+     *
+     * \since QGIS 3.2x?
+     */
+    enum ProjectState
+    {
+      NO_PROJECT,        // No project is loaded or has yet been loaded or a project has been closed
+      OPENING_PROJECT,   // A project is currently opening
+      OPENED_PROJECT,    // A project has completely been loaded
+      WRITING_PROJECT   // In writing state
+    };
+
+
     //! Returns the QgsProject singleton instance
     static QgsProject *instance();
 
@@ -1950,6 +1966,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsPropertyCollection dataDefinedServerProperties() const;
 
+    /**
+     * Returns the current project state: Whether a project is loading, loaded, closed, writing
+     * Used to regognize the current state for user communication especially during loading and saving.
+     */
+    ProjectState projectState();
+
+    void setProjectState( ProjectState projectState );
+
+
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
     void onMapLayersRemoved( const QList<QgsMapLayer *> &layers );
@@ -2096,6 +2121,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mDirty = false;                 // project has been modified since it has been read or saved
     int mDirtyBlockCount = 0;
     bool mTrustLayerMetadata = false;
+
+    mutable ProjectState mprojectState;
+
 
     QgsPropertyCollection mDataDefinedServerProperties;
 

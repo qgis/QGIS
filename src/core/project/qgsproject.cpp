@@ -3794,6 +3794,16 @@ void QgsProject::setProjectColors( const QgsNamedColorList &colors )
   emit projectColorsChanged();
 }
 
+QgsProject::ProjectState QgsProject::projectState()
+{
+  return mprojectState;
+}
+
+void QgsProject::setProjectState( ProjectState projectState )
+{
+  mprojectState = projectState;
+}
+
 void QgsProject::setBackgroundColor( const QColor &color )
 {
   if ( mBackgroundColor == color )

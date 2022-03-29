@@ -1321,7 +1321,7 @@ QgsRectangle QgsOgrProvider::extent() const
     //feedback->progressChanged()->connect(progressDialog.setValue);
 
 
-//    if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && //QgisApp::instance()->getProjectState() == QgisApp::OPENING_PROJECT )
+//    if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && //QgisApp::instance()->getProjectState() == QgisApp/QgisProject::OPENING_PROJECT )
 //       static_cast< QgisApp* > (qApp)->getProjectState()==QgisApp::ProjectState)
 //      // how do we know we've  acutally been called  for reading and not for saving or just calling properties?
 //      // we've been called by "QgsVectorLayer::extent()" and there then "updateExtent( mDataProvider->extent() );"

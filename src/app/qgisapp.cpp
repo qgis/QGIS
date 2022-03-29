@@ -7579,19 +7579,11 @@ void QgisApp::runScript( const QString &filePath )
 #endif
 }
 
-QgisApp::ProjectState QgisApp::projectState()
-{
-  return mprojectState;
-}
-
-void QgisApp::setProjectState( ProjectState projectState )
-{
-  mprojectState = projectState;
-}
 
 void QgisApp::openProject( const QString &fileName )
 {
-  mprojectState = OPENING_PROJECT;
+  QgsProject::instance()->setProjectState( QgsProject::OPENING_PROJECT );
+
   QgsCanvasRefreshBlocker refreshBlocker;
   if ( checkTasksDependOnProject() )
     return;
@@ -7602,7 +7594,7 @@ void QgisApp::openProject( const QString &fileName )
     // error handling and reporting is in addProject() function
     addProject( fileName );
   }
-  mprojectState = OPENED_PROJECT;
+  QgsProject::instance()->setProjectState( QgsProject::OPENED_PROJECT );
 }
 
 bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
@@ -14144,7 +14136,7 @@ void QgisApp::closeProject()
   mBlockActiveLayerChanged = false;
 
   onActiveLayerChanged( activeLayer() );
-  mprojectState = NO_PROJECT;
+  QgsProject::instance()->setProjectState( QgsProject::NO_PROJECT );
 }
 
 
@@ -16504,7 +16496,7 @@ void QgisApp::writeProject( QDomDocument &doc )
   // The <legend> tag is ignored by QGIS application in >= 2.4 and this way also the new project files
   // can be opened in older versions of QGIS without losing information about layer groups.
 
-  mprojectState = WRITING_PROJECT;
+  QgsProject::instance()->setProjectState( QgsProject::WRITING_PROJECT );
   QgsLayerTree *clonedRoot = QgsProject::instance()->layerTreeRoot()->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ), QgsProject::instance() ); // convert absolute paths to relative paths if required
@@ -16557,7 +16549,7 @@ void QgisApp::writeProject( QDomDocument &doc )
 #endif
 
   projectChanged( doc );
-  mprojectState = OPENED_PROJECT;
+  QgsProject::instance()->setProjectState( QgsProject::OPENED_PROJECT );
   //What if writing has been initiated by a project close?
 }
 

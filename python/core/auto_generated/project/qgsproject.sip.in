@@ -67,6 +67,15 @@ open within the main QGIS application.
       WMSOnlineResource,
     };
 
+    enum ProjectState
+    {
+      NO_PROJECT,
+      OPENING_PROJECT,
+      OPENED_PROJECT,
+      WRITING_PROJECT
+    };
+
+
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -1973,6 +1982,15 @@ parameters
 
 .. versionadded:: 3.14
 %End
+
+    ProjectState projectState();
+%Docstring
+Returns the current project state: Whether a project is loading, loaded, closed, writing
+Used to regognize the current state for user communication especially during loading and saving.
+%End
+
+    void setProjectState( ProjectState projectState );
+
 
 };
 
