@@ -32,7 +32,10 @@ from qgis.core import (
     QgsBasicNumericFormat,
     QgsFillSymbol,
     QgsLineSymbol,
-    QgsReadWriteContext
+    QgsReadWriteContext,
+    QgsProperty,
+    QgsSymbolLayer,
+    QgsPalLayerSettings
 )
 
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
@@ -175,6 +178,67 @@ class TestQgsPlot(unittest.TestCase):
         painter.end()
 
         assert self.imageCheck('plot_2d_intervals', 'plot_2d_intervals', im)
+
+    def testPlotDataDefinedProperties(self):
+        plot = Qgs2DPlot()
+        plot.setSize(QSizeF(600, 500))
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#ffffff', 'outline_style': 'no'})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {'outline_color': '#000000', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1, 'capstyle': 'flat'})
+        sym3[0].setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 10 then 3 else 1 end'))
+        plot.setXGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5, 'capstyle': 'flat'})
+        sym4[0].setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 6 then 3 else 0.5 end'))
+        plot.setXGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1, 'capstyle': 'flat'})
+        sym3[0].setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 5 then 3 else 0.5 end'))
+        plot.setYGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5, 'capstyle': 'flat'})
+        sym4[0].setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 9 then 3 else 0.5 end'))
+        plot.setYGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        x_axis_format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Color, QgsProperty.fromExpression('case when @plot_axis_value %3 = 0 then \'#ff0000\' else \'#000000\' end'))
+        plot.setXAxisTextFormat(x_axis_format)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        y_axis_format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Color, QgsProperty.fromExpression('case when @plot_axis_value %4 = 0 then \'#0000ff\' else \'#000000\' end'))
+        plot.setYAxisTextFormat(y_axis_format)
+
+        plot.setXMinimum(3)
+        plot.setXMaximum(13)
+
+        plot.setYMinimum(2)
+        plot.setYMaximum(12)
+
+        im = QImage(600, 500, QImage.Format_ARGB32)
+        im.fill(Qt.white)
+        im.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(96 / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        plot.render(rc)
+        painter.end()
+
+        assert self.imageCheck('plot_2d_data_defined', 'plot_2d_data_defined', im)
+
+        plot_rect = plot.interiorPlotArea(rc)
+        self.assertAlmostEqual(plot_rect.left(), 44.71, 0)
+        self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
+        self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
 
     def test_read_write(self):
         plot = Qgs2DPlot()

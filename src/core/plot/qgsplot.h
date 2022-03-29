@@ -132,7 +132,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
      * outside the plot area).
      */
-    QRectF interiorPlotArea( const QgsRenderContext &context ) const;
+    QRectF interiorPlotArea( QgsRenderContext &context ) const;
 
     /**
      * Returns the minimum value of the x axis.

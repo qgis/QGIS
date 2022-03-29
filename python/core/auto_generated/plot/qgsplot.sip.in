@@ -115,7 +115,7 @@ Sets the overall ``size`` of the plot (including titles and over components whic
 .. seealso:: :py:func:`size`
 %End
 
-    QRectF interiorPlotArea( const QgsRenderContext &context ) const;
+    QRectF interiorPlotArea( QgsRenderContext &context ) const;
 %Docstring
 Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
 outside the plot area).
