@@ -156,6 +156,11 @@ class CORE_EXPORT QgsAbstractProfileGenerator
     virtual bool generateProfile() = 0;
 
     /**
+     * Access to feedback object of the generator (may be NULLPTR)
+     */
+    virtual QgsFeedback *feedback() const = 0;
+
+    /**
      * Takes results from the generator.
      *
      * Ownership is transferred to the caller.

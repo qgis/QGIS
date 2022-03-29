@@ -67,7 +67,8 @@ void QgsMeshLayerProfileResults::renderResults( QgsProfileRenderContext &context
 //
 
 QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer, const QgsProfileRequest &request )
-  : mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
+  : mFeedback( std::make_unique< QgsFeedback >() )
+  , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mSourceCrs( layer->crs() )
   , mTargetCrs( request.crs() )
   , mTransformContext( request.transformContext() )
@@ -81,7 +82,7 @@ QgsMeshLayerProfileGenerator::~QgsMeshLayerProfileGenerator() = default;
 
 bool QgsMeshLayerProfileGenerator::generateProfile()
 {
-  if ( !mProfileCurve )
+  if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;
 
   // we need to transform the profile curve to the mesh's CRS
@@ -98,6 +99,9 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
     return false;
   }
 
+  if ( mFeedback->isCanceled() )
+    return false;
+
   mResults = std::make_unique< QgsMeshLayerProfileResults >();
 
   // we don't currently have any method to determine line->mesh intersection points, so for now we just sample at about 100(?) points over the line
@@ -108,8 +112,14 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
   else
     transformedCurve = transformedCurve.densifyByDistance( curveLength / 100 );
 
+  if ( mFeedback->isCanceled() )
+    return false;
+
   for ( auto it = transformedCurve.vertices_begin(); it != transformedCurve.vertices_end(); ++it )
   {
+    if ( mFeedback->isCanceled() )
+      return false;
+
     QgsPoint point = ( *it );
     const double height = heightAt( point.x(), point.y() );
 
@@ -124,6 +134,9 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
     mResults->rawPoints.append( QgsPoint( point.x(), point.y(), height ) );
   }
 
+  if ( mFeedback->isCanceled() )
+    return false;
+
   // convert x/y values back to distance/height values
   QgsGeos originalCurveGeos( mProfileCurve.get() );
   originalCurveGeos.prepareGeometry();
@@ -131,6 +144,9 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
   QString lastError;
   for ( const QgsPoint &pixel : std::as_const( mResults->rawPoints ) )
   {
+    if ( mFeedback->isCanceled() )
+      return false;
+
     const double distance = originalCurveGeos.lineLocatePoint( pixel, &lastError );
 
     QgsMeshLayerProfileResults::Result res;
@@ -145,6 +161,11 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
 QgsAbstractProfileResults *QgsMeshLayerProfileGenerator::takeResults()
 {
   return mResults.release();
+}
+
+QgsFeedback *QgsMeshLayerProfileGenerator::feedback() const
+{
+  return mFeedback.get();
 }
 
 double QgsMeshLayerProfileGenerator::heightAt( double x, double y )

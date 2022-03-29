@@ -140,6 +140,11 @@ Returns ``True`` if the profile was generated successfully (i.e. the generation
 was not canceled early).
 %End
 
+    virtual QgsFeedback *feedback() const = 0;
+%Docstring
+Access to feedback object of the generator (may be ``None``)
+%End
+
     virtual QgsAbstractProfileResults *takeResults() = 0 /TransferBack/;
 %Docstring
 Takes results from the generator.

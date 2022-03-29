@@ -29,7 +29,7 @@ class QgsProfileRequest;
 class QgsCurve;
 class QgsRasterLayer;
 class QgsRasterDataProvider;
-
+class QgsRasterBlockFeedback;
 
 #define SIP_NO_FILE
 
@@ -82,8 +82,11 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileGene
 
     bool generateProfile() override;
     QgsAbstractProfileResults *takeResults() override;
+    QgsFeedback *feedback() const override;
 
   private:
+
+    std::unique_ptr<QgsRasterBlockFeedback> mFeedback = nullptr;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
 
