@@ -20,6 +20,7 @@ set(ORACLE_SRCS
 
 if (WITH_GUI)
   set(ORACLE_SRCS ${ORACLE_SRCS}
+    qgsoracleprojectstoragedialog.cpp
     qgsoraclesourceselect.cpp
   )
 endif()

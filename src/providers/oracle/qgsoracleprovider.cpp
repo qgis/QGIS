@@ -30,6 +30,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgslogger.h"
 #include "qgsdbquerylog.h"
+#include "qgsprojectstorageguiprovider.h"
 
 #include "qgsoracleprovider.h"
 #include "qgsoracletablemodel.h"
@@ -39,6 +40,7 @@
 #include "qgsoracletransaction.h"
 #include "qgsoracleproviderconnection.h"
 #include "qgsapplication.h"
+#include "qgsoracleprojectstoragedialog.h"
 
 #ifdef HAVE_GUI
 #include "qgsoraclesourceselect.h"
@@ -4004,6 +4006,34 @@ class QgsOracleSourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
+class QgsOracleProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
+{
+  public:
+    QString type() override { return QStringLiteral( "oracle" ); }
+    QString visibleName() override
+    {
+      return QObject::tr( "Oracle" );
+    }
+
+    QString showLoadGui() override
+    {
+      QgsOracleProjectStorageDialog dlg( false );
+      if ( !dlg.exec() )
+        return QString();
+
+      return dlg.currentProjectUri();
+    }
+
+    QString showSaveGui() override
+    {
+      QgsOracleProjectStorageDialog dlg( true );
+      if ( !dlg.exec() )
+        return QString();
+
+      return dlg.currentProjectUri();
+    }
+};
+
 QgsOracleProviderGuiMetadata::QgsOracleProviderGuiMetadata()
   : QgsProviderGuiMetadata( ORACLE_KEY )
 {
@@ -4013,6 +4043,13 @@ QgsOracleProviderGuiMetadata::QgsOracleProviderGuiMetadata()
 QList<QgsSourceSelectProvider *> QgsOracleProviderGuiMetadata::sourceSelectProviders()
 {
   return QList<QgsSourceSelectProvider *>() << new QgsOracleSourceSelectProvider;
+}
+
+QList<QgsProjectStorageGuiProvider *> QgsOracleProviderGuiMetadata::projectStorageGuiProviders()
+{
+  QList<QgsProjectStorageGuiProvider *> providers;
+  providers << new QgsOracleProjectStorageGuiProvider;
+  return providers;
 }
 
 void QgsOracleProviderGuiMetadata::registerGui( QMainWindow *mainWindow )

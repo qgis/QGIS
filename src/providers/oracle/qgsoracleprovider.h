@@ -474,6 +474,7 @@ class QgsOracleProviderGuiMetadata final: public QgsProviderGuiMetadata
   public:
     QgsOracleProviderGuiMetadata();
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+    QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override;
     void registerGui( QMainWindow *mainWindow ) override;
 };
 #endif
