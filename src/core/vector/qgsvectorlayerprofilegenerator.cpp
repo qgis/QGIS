@@ -73,6 +73,9 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
 
   for ( const QgsGeometry &geometry : std::as_const( distanceVHeightGeometries ) )
   {
+    if ( geometry.isEmpty() )
+      continue;
+
     QgsGeometry transformed = geometry;
     transformed.transform( context.worldTransform() );
     transformed.constGet()->draw( *painter );

@@ -26,6 +26,7 @@
 
 class QgsElevationProfilePlotItem;
 class QgsAbstractProfileResults;
+class QgsProfilePlotRenderer;
 
 /**
  * \ingroup gui
@@ -74,7 +75,14 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
      */
     QList< QgsMapLayer * > layers() const;
 
+    void resizeEvent( QResizeEvent *event ) override;
+  private slots:
+
+    void generationFinished();
+
   private:
+
+    void redrawResults();
 
     QgsProject *mProject = nullptr;
 
@@ -83,6 +91,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
     QgsElevationProfilePlotItem *mPlotItem = nullptr;
 
     std::vector< std::unique_ptr< QgsAbstractProfileResults > > mProfileResults;
+
+    QgsProfilePlotRenderer *mCurrentJob = nullptr;
 
 };
 
