@@ -281,3 +281,37 @@ QString QgsPointCloudIndex::subsetString() const
 {
   return mFilterExpression;
 }
+
+QVariant QgsPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+{
+  if ( attribute == QStringLiteral( "X" ) && statistic == QgsStatisticalSummary::Min )
+    return mExtent.xMinimum();
+  if ( attribute == QStringLiteral( "X" ) && statistic == QgsStatisticalSummary::Max )
+    return mExtent.xMaximum();
+
+  if ( attribute == QStringLiteral( "Y" ) && statistic == QgsStatisticalSummary::Min )
+    return mExtent.yMinimum();
+  if ( attribute == QStringLiteral( "Y" ) && statistic == QgsStatisticalSummary::Max )
+    return mExtent.yMaximum();
+
+  if ( attribute == QStringLiteral( "Z" ) && statistic == QgsStatisticalSummary::Min )
+    return mZMin;
+  if ( attribute == QStringLiteral( "Z" ) && statistic == QgsStatisticalSummary::Max )
+    return mZMax;
+
+  return QVariant();
+}
+
+QVariantList QgsPointCloudIndex::metadataClasses( const QString &attribute ) const
+{
+  Q_UNUSED( attribute );
+  return QVariantList();
+}
+
+QVariant QgsPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+{
+  Q_UNUSED( attribute );
+  Q_UNUSED( value );
+  Q_UNUSED( statistic );
+  return QVariant();
+}

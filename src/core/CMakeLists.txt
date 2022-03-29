@@ -1989,9 +1989,11 @@ if (WITH_EPT OR WITH_COPC)
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       pointcloud/qgseptdecoder.cpp
+      pointcloud/qgslazdecoder.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       pointcloud/qgseptdecoder.h
+      pointcloud/qgslazdecoder.h
   )
 endif()
 

@@ -37,6 +37,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsgeometry.h"
 #include "qgseptdecoder.h"
+#include "qgslazdecoder.h"
 
 /**
  * \ingroup UnitTests
@@ -460,7 +461,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesExtraction()
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/copc/extrabytes-dataset.copc.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
-    QVector<QgsEptDecoder::ExtraBytesAttributeDetails> attributes = QgsEptDecoder::readExtraByteAttributes<std::ifstream>( file );
+    QVector<QgsLazDecoder::ExtraBytesAttributeDetails> attributes = QgsLazDecoder::readExtraByteAttributes<std::ifstream>( file );
     QCOMPARE( attributes.size(), 3 );
 
     QCOMPARE( attributes[0].attribute, QStringLiteral( "Reflectance" ) );
@@ -483,7 +484,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesExtraction()
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/copc/no-extrabytes-dataset.copc.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
-    QVector<QgsEptDecoder::ExtraBytesAttributeDetails> attributes = QgsEptDecoder::readExtraByteAttributes<std::ifstream>( file );
+    QVector<QgsLazDecoder::ExtraBytesAttributeDetails> attributes = QgsLazDecoder::readExtraByteAttributes<std::ifstream>( file );
     QCOMPARE( attributes.size(), 0 );
   }
 }
