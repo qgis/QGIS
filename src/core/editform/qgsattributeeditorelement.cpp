@@ -23,6 +23,7 @@
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorrelation.h"
 #include "qgssymbollayerutils.h"
+#include "qgsfontutils.h"
 
 
 QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
@@ -31,7 +32,7 @@ QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "name" ), mName );
   elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
   elem.setAttribute( QStringLiteral( "labelColor" ), QgsSymbolLayerUtils::encodeColor( mLabelColor ) );
-  elem.setAttribute( QStringLiteral( "labelFont" ), mLabelFont.toString() );
+  elem.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, QStringLiteral( "labelFont" ) ) );
   elem.setAttribute( QStringLiteral( "overrideLabelStyle" ), mOverrideLabelStyle );
   saveConfiguration( elem, doc );
   return elem;
@@ -47,7 +48,7 @@ void QgsAttributeEditorElement::setShowLabel( bool showLabel )
   mShowLabel = showLabel;
 }
 
-const QFont &QgsAttributeEditorElement::labelFont() const
+const QFont QgsAttributeEditorElement::labelFont() const
 {
   return mLabelFont;
 }
@@ -57,7 +58,7 @@ void QgsAttributeEditorElement::setLabelFont( const QFont &labelFont )
   mLabelFont = labelFont;
 }
 
-const QColor &QgsAttributeEditorElement::labelColor() const
+const QColor QgsAttributeEditorElement::labelColor() const
 {
   return mLabelColor;
 }
@@ -125,12 +126,9 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
       newElement->setLabelColor( QgsSymbolLayerUtils::decodeColor( element.attribute( QStringLiteral( "labelColor" ) ) ) );
     }
 
-    if ( element.hasAttribute( QStringLiteral( "labelFont" ) ) )
-    {
-      QFont font;
-      font.fromString( element.attribute( QStringLiteral( "labelFont" ) ) );
-      newElement->setLabelFont( font );
-    }
+    QFont font;
+    QgsFontUtils::setFromXmlChildNode( font, element, QStringLiteral( "labelFont" ) );
+    newElement->setLabelFont( font );
 
     if ( element.hasAttribute( QStringLiteral( "overrideLabelStyle" ) ) )
     {

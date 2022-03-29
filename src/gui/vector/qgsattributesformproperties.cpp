@@ -1620,7 +1620,7 @@ void QgsAttributesFormProperties::DnDTreeItemData::setBackgroundColor( const QCo
   mBackgroundColor = backgroundColor;
 }
 
-const QFont &QgsAttributesFormProperties::DnDTreeItemData::labelFont() const
+const QFont QgsAttributesFormProperties::DnDTreeItemData::labelFont() const
 {
   return mLabelFont;
 }
@@ -1640,7 +1640,7 @@ void QgsAttributesFormProperties::DnDTreeItemData::setOverrideLabelStyle( bool o
   mOverrideLabelStyle = overrideLabelStyle;
 }
 
-const QColor &QgsAttributesFormProperties::DnDTreeItemData::labelColor() const
+const QColor QgsAttributesFormProperties::DnDTreeItemData::labelColor() const
 {
   return mLabelColor;
 }

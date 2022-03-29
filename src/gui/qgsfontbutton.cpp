@@ -345,16 +345,25 @@ void QgsFontButton::dragEnterEvent( QDragEnterEvent *e )
     e->acceptProposedAction();
     updatePreview( QColor(), nullptr, &font );
   }
-  else if ( mMode == ModeQFontColor && fontFromMimeData( e->mimeData(), font ) )
+  else if ( mMode == ModeQFontColor )
   {
-    e->acceptProposedAction();
-    if ( colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) )
+    const bool hasFont { fontFromMimeData( e->mimeData(), font ) };
+    const bool hasColor { colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) };
+    if ( hasColor || hasFont )
     {
-      updatePreview( mimeColor, nullptr, &font );
-    }
-    else
-    {
-      updatePreview( QColor(), nullptr, &font );
+      e->acceptProposedAction();
+      if ( hasColor && hasFont )
+      {
+        updatePreview( mimeColor, nullptr, &font );
+      }
+      else if ( hasFont )
+      {
+        updatePreview( QColor(), nullptr, &font );
+      }
+      else
+      {
+        updatePreview( mimeColor, nullptr, nullptr );
+      }
     }
   }
   else if ( mMode == ModeTextRenderer && colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) )
@@ -1093,7 +1102,24 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 void QgsFontButton::copyColor()
 {
   //copy color
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( currentColor() ) );
+  switch ( mMode )
+  {
+
+    case ModeQFontColor:
+    {
+      QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( currentColor() ) );
+      break;
+    }
+
+    case ModeTextRenderer:
+    {
+      QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mFormat.color() ) );
+      break;
+    }
+
+    case ModeQFont:
+      break;
+  }
 }
 
 void QgsFontButton::pasteColor()

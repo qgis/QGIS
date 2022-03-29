@@ -208,7 +208,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
          * \see setOverrideLabelStyle()
          * \since QGIS 3.26
          */
-        const QFont &labelFont() const;
+        const QFont labelFont() const;
 
         /**
          * Sets the custom \a labelFont, this is only effective if overrideStyleLabel() is also set.
@@ -226,7 +226,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
          * \see setOverrideLabelStyle()
          * \since QGIS 3.26
          */
-        const QColor &labelColor() const;
+        const QColor labelColor() const;
 
         /**
          * Sets the custom \a labelColor, this is only effective if overrideStyleLabel() is also set.
