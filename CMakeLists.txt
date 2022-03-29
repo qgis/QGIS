@@ -411,21 +411,19 @@ if(WITH_CORE)
     message(STATUS "Qt WebKit support DISABLED.")
   endif()
 
-  if (WITH_EPT)  # EPT provider
-    find_package(ZSTD REQUIRED) # for decompression of point clouds
+  if (WITH_EPT OR WITH_COPC)
     find_package(LazPerf) # for decompression of point clouds
     if (NOT LazPerf_FOUND)
       message(STATUS "Using embedded laz-perf")
     endif()
+  endif()
+
+  if (WITH_EPT)  # EPT provider
+    find_package(ZSTD REQUIRED) # for decompression of point clouds
     set(HAVE_EPT TRUE)  # used in qgsconfig.h
   endif()
 
   if (WITH_COPC)  # COPC provider
-    find_package(ZSTD REQUIRED) # for decompression of point clouds
-    find_package(LazPerf) # for decompression of point clouds
-    if (NOT LazPerf_FOUND)
-      message(STATUS "Using embedded laz-perf")
-    endif()
     set(HAVE_COPC TRUE)  # used in qgsconfig.h
   endif()
 

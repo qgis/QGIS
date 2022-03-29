@@ -58,10 +58,9 @@ if (WITH_EPT)
   add_qgis_test(testqgseptprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
 endif()
 
-# TODO: test COPC
-#if (WITH_COPC)
-#  add_qgis_test(testqgscopcprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
-#endif()
+if (WITH_COPC)
+  add_qgis_test(testqgscopcprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
+endif()
 
 if (WITH_PDAL)
   include_directories(

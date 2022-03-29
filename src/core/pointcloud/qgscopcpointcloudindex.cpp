@@ -17,12 +17,6 @@
 
 #include "qgscopcpointcloudindex.h"
 #include <QFile>
-#include <QFileInfo>
-#include <QDir>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QTime>
 #include <QtDebug>
 #include <QQueue>
 
@@ -100,22 +94,20 @@ bool QgsCopcPointCloudIndex::loadSchema( const QString &filename )
   // Attributes for COPC format
   // COPC supports only PDRF 6, 7 and 8
 
-  // TODO: How to handle bitfields in LAZ
-
   QgsPointCloudAttributeCollection attributes;
-  attributes.push_back( QgsPointCloudAttribute( "X", ( QgsPointCloudAttribute::DataType ) 9 ) );
-  attributes.push_back( QgsPointCloudAttribute( "Y", ( QgsPointCloudAttribute::DataType ) 9 ) );
-  attributes.push_back( QgsPointCloudAttribute( "Z", ( QgsPointCloudAttribute::DataType ) 9 ) );
-  attributes.push_back( QgsPointCloudAttribute( "Classification", ( QgsPointCloudAttribute::DataType ) 0 ) );
-  attributes.push_back( QgsPointCloudAttribute( "Intensity", ( QgsPointCloudAttribute::DataType ) 3 ) );
-  attributes.push_back( QgsPointCloudAttribute( "ReturnNumber", ( QgsPointCloudAttribute::DataType ) 0 ) );
-  attributes.push_back( QgsPointCloudAttribute( "NumberOfReturns", ( QgsPointCloudAttribute::DataType ) 0 ) );
-  attributes.push_back( QgsPointCloudAttribute( "ScanDirectionFlag", ( QgsPointCloudAttribute::DataType ) 0 ) );
-  attributes.push_back( QgsPointCloudAttribute( "EdgeOfFlightLine", ( QgsPointCloudAttribute::DataType ) 0 ) );
-  attributes.push_back( QgsPointCloudAttribute( "ScanAngleRank", ( QgsPointCloudAttribute::DataType ) 8 ) );
-  attributes.push_back( QgsPointCloudAttribute( "UserData", ( QgsPointCloudAttribute::DataType ) 0 ) );
-  attributes.push_back( QgsPointCloudAttribute( "PointSourceId", ( QgsPointCloudAttribute::DataType ) 3 ) );
-  attributes.push_back( QgsPointCloudAttribute( "GpsTime", ( QgsPointCloudAttribute::DataType ) 9 ) );
+  attributes.push_back( QgsPointCloudAttribute( "X", QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( "Y", QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( "Z", QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( "Intensity", QgsPointCloudAttribute::UShort ) );
+  attributes.push_back( QgsPointCloudAttribute( "ReturnNumber", QgsPointCloudAttribute::Char ) );
+  attributes.push_back( QgsPointCloudAttribute( "NumberOfReturns", QgsPointCloudAttribute::Char ) );
+  attributes.push_back( QgsPointCloudAttribute( "ScanDirectionFlag", QgsPointCloudAttribute::Char ) );
+  attributes.push_back( QgsPointCloudAttribute( "EdgeOfFlightLine", QgsPointCloudAttribute::Char ) );
+  attributes.push_back( QgsPointCloudAttribute( "Classification", QgsPointCloudAttribute::Char ) );
+  attributes.push_back( QgsPointCloudAttribute( "ScanAngleRank", QgsPointCloudAttribute::Short ) );
+  attributes.push_back( QgsPointCloudAttribute( "UserData", QgsPointCloudAttribute::Char ) );
+  attributes.push_back( QgsPointCloudAttribute( "PointSourceId", QgsPointCloudAttribute::UShort ) );
+  attributes.push_back( QgsPointCloudAttribute( "GpsTime", QgsPointCloudAttribute::Double ) );
 
   switch ( f.header().point_format_id )
   {
@@ -136,7 +128,11 @@ bool QgsCopcPointCloudIndex::loadSchema( const QString &filename )
       return false;
   }
 
-  // TODO: add extrabyte attributes
+  QVector<QgsEptDecoder::ExtraBytesAttributeDetails> extrabyteAttributes = QgsEptDecoder::readExtraByteAttributes( file );
+  for ( QgsEptDecoder::ExtraBytesAttributeDetails attr : extrabyteAttributes )
+  {
+    attributes.push_back( QgsPointCloudAttribute( attr.attribute, attr.type ) );
+  }
 
   setAttributes( attributes );
 
@@ -216,6 +212,21 @@ qint64 QgsCopcPointCloudIndex::pointCount() const
 
 QVariant QgsCopcPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
+  if ( attribute == QStringLiteral( "X" ) && statistic == QgsStatisticalSummary::Min )
+    return mExtent.xMinimum();
+  if ( attribute == QStringLiteral( "X" ) && statistic == QgsStatisticalSummary::Max )
+    return mExtent.xMaximum();
+
+  if ( attribute == QStringLiteral( "Y" ) && statistic == QgsStatisticalSummary::Min )
+    return mExtent.yMinimum();
+  if ( attribute == QStringLiteral( "Y" ) && statistic == QgsStatisticalSummary::Max )
+    return mExtent.yMaximum();
+
+  if ( attribute == QStringLiteral( "Z" ) && statistic == QgsStatisticalSummary::Min )
+    return mZMin;
+  if ( attribute == QStringLiteral( "Z" ) && statistic == QgsStatisticalSummary::Max )
+    return mZMax;
+
   if ( !mMetadataStats.contains( attribute ) )
     return QVariant();
 

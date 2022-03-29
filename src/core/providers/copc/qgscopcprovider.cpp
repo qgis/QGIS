@@ -145,7 +145,7 @@ QgsCopcProvider *QgsCopcProviderMetadata::createProvider( const QString &uri, co
 QList<QgsProviderSublayerDetails> QgsCopcProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( QStringLiteral( "isCopc" ), false ).toBool() )
+  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
   {
     QgsProviderSublayerDetails details;
     details.setUri( uri );
@@ -164,8 +164,8 @@ int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
   const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-  if ( fi.exists() && parts.value( QStringLiteral( "isCopc" ), false ).toBool() )
-    return 100;
+  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
+    return 101;
 
   return 0;
 }
@@ -174,7 +174,7 @@ QList<QgsMapLayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QSt
 {
   const QVariantMap parts = decodeUri( uri );
   const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-  if ( fi.exists() && parts.value( QStringLiteral( "isCopc" ), false ).toBool() )
+  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
     return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
 
   return QList< QgsMapLayerType>();
@@ -189,7 +189,7 @@ bool QgsCopcProviderMetadata::uriIsBlocklisted( const QString &uri ) const
   const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
 
   // internal details only
-  if ( fi.exists() && parts.value( QStringLiteral( "isCopc" ), false ).toBool() )
+  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
     return true;
 
   return false;
@@ -200,7 +200,6 @@ QVariantMap QgsCopcProviderMetadata::decodeUri( const QString &uri ) const
   const QString path = uri;
   QVariantMap uriComponents;
   uriComponents.insert( QStringLiteral( "path" ), path );
-  uriComponents.insert( QStringLiteral( "isCopc" ), uri.endsWith( ".copc.laz" ) );
   return uriComponents;
 }
 
@@ -215,7 +214,7 @@ QString QgsCopcProviderMetadata::filters( QgsProviderMetadata::FilterType type )
       return QString();
 
     case QgsProviderMetadata::FilterType::FilterPointCloud:
-      return QObject::tr( "COPC Point Clouds" ) + QStringLiteral( "COPC LAZ files (*.copc.laz *.COPC.LAZ)" );
+      return QObject::tr( "COPC Point Clouds" ) + QStringLiteral( " (*.copc.laz *.COPC.LAZ)" );
   }
   return QString();
 }
