@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 
 #include "qgs3drendererregistry.h"
-#include "qgsabstract3drenderer.h"
+#include "qgsabstractpointcloud3drenderer.h"
 #include "qgsmaplayerref.h"
 #include "qgsfeedback.h"
 #include <QObject>
@@ -225,7 +225,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
  *
  * \since QGIS 3.18
  */
-class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
+class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRenderer
 {
   public:
     //! Takes ownership of the symbol object
@@ -295,12 +295,17 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
      */
     void setPointRenderingBudget( int budget );
 
+    bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) override;
+    bool syncedWith2DRenderer() override { return mSyncedWith2DRenderer; };
+    void setSyncedWith2DRenderer( bool synced ) override { mSyncedWith2DRenderer = synced; };
+
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mMaximumScreenError = 1.0;
     bool mShowBoundingBoxes = false;
     int mPointBudget = 1000000;
+    bool mSyncedWith2DRenderer = false;
 
   private:
 #ifdef SIP_RUN

@@ -143,6 +143,7 @@
 #include "qgsmapviewsmanager.h"
 #include "qgs3dmapcanvaswidget.h"
 #include "qgs3dviewsmanagerdialog.h"
+#include "qgs3dutils.h"
 #endif
 
 #ifdef HAVE_GEOREFERENCER
@@ -5832,7 +5833,7 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
       {
         QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( layer );
         // for point clouds we default to a 3d renderer. it just makes sense :)
-        std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DAppUtils::convert2dPointCloudRendererTo3d( pcLayer->renderer() );
+        std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DUtils::convert2dPointCloudRendererTo3d( pcLayer->renderer() );
         if ( renderer3D )
           layer->setRenderer3D( renderer3D.release() );
         else
@@ -5846,7 +5847,7 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
               if ( !layerPointer || state != QgsPointCloudDataProvider::Indexed )
                 return;
 
-              std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DAppUtils::convert2dPointCloudRendererTo3d( layerPointer->renderer() );
+              std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DUtils::convert2dPointCloudRendererTo3d( layerPointer->renderer() );
               if ( renderer3D )
                 layerPointer->setRenderer3D( renderer3D.release() );
             } );

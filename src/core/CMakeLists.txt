@@ -1194,6 +1194,7 @@ set(QGIS_CORE_HDRS
   3d/qgs3dsymbolregistry.h
   3d/qgsabstract3dsymbol.h
   3d/qgsabstract3drenderer.h
+  3d/qgsabstractpointcloud3drenderer.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationitem.h
