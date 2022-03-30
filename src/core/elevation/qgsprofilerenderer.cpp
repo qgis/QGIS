@@ -126,7 +126,7 @@ bool QgsProfilePlotRenderer::isActive() const
 QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double zMin, double zMax )
 {
   QImage res( width, height, QImage::Format_ARGB32 );
-  res.fill( Qt::white );
+  res.fill( Qt::transparent );
 
   QPainter p( &res );
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
