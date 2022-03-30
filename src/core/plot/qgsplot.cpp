@@ -452,10 +452,15 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
   }
   mLabelIntervalX = candidate;
   if ( numberLabels < 10 )
+  {
     mGridIntervalMinorX = mLabelIntervalX / 2;
+    mGridIntervalMajorX = mGridIntervalMinorX * 4;
+  }
   else
+  {
     mGridIntervalMinorX = mLabelIntervalX;
-  mGridIntervalMajorX = mGridIntervalMinorX * 5;
+    mGridIntervalMajorX = mGridIntervalMinorX * 5;
+  }
 
   double labelIntervalY = ( mMaxY - mMinY ) / numberLabelsY;
   candidate = roundBase10( labelIntervalY );
@@ -477,10 +482,15 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
   }
   mLabelIntervalY = candidate;
   if ( numberLabels < 10 )
+  {
     mGridIntervalMinorY = mLabelIntervalY / 2;
+    mGridIntervalMajorY = mGridIntervalMinorY * 4;
+  }
   else
+  {
     mGridIntervalMinorY = mLabelIntervalY;
-  mGridIntervalMajorY = mGridIntervalMinorY * 5;
+    mGridIntervalMajorY = mGridIntervalMinorY * 5;
+  }
 }
 
 QgsFillSymbol *Qgs2DPlot::chartBackgroundSymbol()
