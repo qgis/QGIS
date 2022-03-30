@@ -56,6 +56,9 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
     void load( const QString &fileName ) override;
 
+    bool hasNode( const IndexedPointCloudNode &n ) const override;
+    QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
+
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
@@ -70,12 +73,21 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     bool loadSchema();
     bool loadHierarchy();
 
+    //! Fetches all nodes leading to node \n into memory
+    bool fetchNodeHierarchy( const IndexedPointCloudNode &n ) const;
+
+    /**
+     * Fetches the COPC hierachy page at offset \a offset and of size \a byteSize into memory
+     * \note: This function is NOT thread safe and the mutex mHierarchyMutex needs to be locked before entering
+     */
+    void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
+
     bool mIsValid = false;
     QString mDataType;
     QString mFileName;
     QString mWkt;
-    std::ifstream mCopcFile;
-    std::unique_ptr<lazperf::reader::generic_file> mLazFile;
+    mutable std::ifstream mCopcFile;
+    mutable std::unique_ptr<lazperf::reader::generic_file> mLazFile;
 
     qint64 mPointCount = 0;
 

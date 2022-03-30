@@ -19,6 +19,7 @@
 #include <QFile>
 #include <QtDebug>
 #include <QQueue>
+#include <QMutexLocker>
 
 #include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
@@ -173,14 +174,14 @@ bool QgsCopcPointCloudIndex::loadSchema()
 
 QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
+  const bool found = fetchNodeHierarchy( n );
+  if ( !found )
+    return nullptr;
   mHierarchyMutex.lock();
-  const bool found = mHierarchy.contains( n );
   int pointCount = mHierarchy[n];
   uint64_t blockOffset = mHierarchyNodeOffset[n];
   int32_t blockSize = mHierarchyNodeByteSize[n];
   mHierarchyMutex.unlock();
-  if ( !found )
-    return nullptr;
 
   // we need to create a copy of the expression to pass to the decoder
   // as the same QgsPointCloudExpression object mighgt be concurrently
@@ -217,8 +218,44 @@ bool QgsCopcPointCloudIndex::loadHierarchy()
   lazperf::copc_info_vlr copcInfoVlr;
   copcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
 
-  QQueue<std::pair<uint64_t, uint64_t>> queue;
-  queue.push_back( std::make_pair( copcInfoVlr.root_hier_offset, copcInfoVlr.root_hier_size ) );
+  QMutexLocker locker( &mHierarchyMutex );
+  fetchHierarchyPage( copcInfoVlr.root_hier_offset, copcInfoVlr.root_hier_size );
+  return true;
+}
+
+bool QgsCopcPointCloudIndex::isValid() const
+{
+  return mIsValid;
+}
+
+bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNode &n ) const
+{
+  QMutexLocker locker( &mHierarchyMutex );
+
+  QVector<IndexedPointCloudNode> ancestors;
+  IndexedPointCloudNode foundRoot = n;
+  while ( !mHierarchy.contains( foundRoot ) )
+  {
+    ancestors.push_front( foundRoot );
+    foundRoot = foundRoot.parentNode();
+  }
+  ancestors.push_front( foundRoot );
+  for ( IndexedPointCloudNode n : ancestors )
+  {
+    if ( !mHierarchy.contains( n ) )
+      return false;
+    int nodesCount = mHierarchy[n];
+    if ( nodesCount < 0 )
+      fetchHierarchyPage( mHierarchyNodeOffset[n], mHierarchyNodeByteSize[n] );
+  }
+  return true;
+}
+
+void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
+{
+  mCopcFile.seekg( offset );
+  std::unique_ptr<char> data( new char[ byteSize ] );
+  mCopcFile.read( data.get(), byteSize );
 
   struct CopcVoxelKey
   {
@@ -236,38 +273,46 @@ bool QgsCopcPointCloudIndex::loadHierarchy()
     int32_t pointCount;
   };
 
-  while ( !queue.isEmpty() )
+  for ( uint64_t i = 0; i < byteSize; i += sizeof( CopcEntry ) )
   {
-    auto [offset, size] = queue.dequeue();
-
-    mCopcFile.seekg( offset );
-    std::unique_ptr<char> data( new char[ size ] );
-    mCopcFile.read( data.get(), size );
-
-    for ( uint64_t i = 0; i < size; i += sizeof( CopcEntry ) )
-    {
-      CopcEntry *entry = reinterpret_cast<CopcEntry *>( data.get() + i );
-      if ( entry->pointCount < 0 )
-      {
-        queue.enqueue( std::make_pair( entry->offset, entry->byteSize ) );
-      }
-      else if ( entry->pointCount > 0 )
-      {
-        const IndexedPointCloudNode nodeId( entry->key.level, entry->key.x, entry->key.y, entry->key.z );
-        mHierarchyMutex.lock();
-        mHierarchy[nodeId] = entry->pointCount;
-        mHierarchyNodeOffset[nodeId] = entry->offset;
-        mHierarchyNodeByteSize[nodeId] = entry->byteSize;
-        mHierarchyMutex.unlock();
-      }
-    }
+    CopcEntry *entry = reinterpret_cast<CopcEntry *>( data.get() + i );
+    const IndexedPointCloudNode nodeId( entry->key.level, entry->key.x, entry->key.y, entry->key.z );
+    mHierarchy[nodeId] = entry->pointCount;
+    mHierarchyNodeOffset[nodeId] = entry->offset;
+    mHierarchyNodeByteSize[nodeId] = entry->byteSize;
   }
-  return true;
 }
 
-bool QgsCopcPointCloudIndex::isValid() const
+bool QgsCopcPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
 {
-  return mIsValid;
+  fetchNodeHierarchy( n );
+  mHierarchyMutex.lock();
+  const bool found = mHierarchy.contains( n ) && mHierarchy[n] > 0;
+  mHierarchyMutex.unlock();
+  return found;
+}
+
+QList<IndexedPointCloudNode> QgsCopcPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
+{
+  fetchNodeHierarchy( n );
+
+  mHierarchyMutex.lock();
+  Q_ASSERT( mHierarchy.contains( n ) );
+  QList<IndexedPointCloudNode> lst;
+  const int d = n.d() + 1;
+  const int x = n.x() * 2;
+  const int y = n.y() * 2;
+  const int z = n.z() * 2;
+  mHierarchyMutex.unlock();
+
+  for ( int i = 0; i < 8; ++i )
+  {
+    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
+    const IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
+    if ( fetchNodeHierarchy( n2 ) && mHierarchy[n] > 0 )
+      lst.append( n2 );
+  }
+  return lst;
 }
 
 ///@endcond

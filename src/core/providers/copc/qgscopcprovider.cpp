@@ -165,7 +165,7 @@ int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
   const QVariantMap parts = decodeUri( uri );
   const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
   if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
-    return 101;
+    return 100;
 
   return 0;
 }

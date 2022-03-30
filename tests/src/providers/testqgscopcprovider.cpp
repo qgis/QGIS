@@ -164,7 +164,7 @@ void TestQgsCopcProvider::layerTypesForUri()
 void TestQgsCopcProvider::uriIsBlocklisted()
 {
   QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/test/ept.json" ) ) );
-  QVERIFY( QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/test/dataset.copc.laz" ) ) );
+  QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/test/dataset.copc.laz" ) ) );
 }
 
 void TestQgsCopcProvider::querySublayers()
