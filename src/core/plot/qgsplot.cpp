@@ -160,6 +160,8 @@ Qgs2DPlot::Qgs2DPlot()
 
 bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context )
 {
+  QgsPlot::writeXml( element, document, context );
+
   element.setAttribute( QStringLiteral( "minX" ), qgsDoubleToString( mMinX ) );
   element.setAttribute( QStringLiteral( "maxX" ), qgsDoubleToString( mMaxX ) );
   element.setAttribute( QStringLiteral( "minY" ), qgsDoubleToString( mMinY ) );
@@ -191,6 +193,8 @@ bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, QgsReadW
 
 bool Qgs2DPlot::readXml( const QDomElement &element, QgsReadWriteContext &context )
 {
+  QgsPlot::readXml( element, context );
+
   mMinX = element.attribute( QStringLiteral( "minX" ) ).toDouble();
   mMaxX = element.attribute( QStringLiteral( "maxX" ) ).toDouble();
   mMinY = element.attribute( QStringLiteral( "minY" ) ).toDouble();
