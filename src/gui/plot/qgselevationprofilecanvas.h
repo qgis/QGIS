@@ -82,8 +82,6 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
 
   private:
 
-    void redrawResults();
-
     QgsProject *mProject = nullptr;
 
     QgsWeakMapLayerPointerList mLayers;

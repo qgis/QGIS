@@ -106,9 +106,6 @@ class GUI_EXPORT QgsDistanceVsElevationPlotCanvas : public QgsPlotCanvas
 
     std::unique_ptr< QgsCurve > mProfileCurve;
 
-
-
-
 };
 
 #endif // QGSDISTANCEVSELEVATIONPLOTCANVAS_H

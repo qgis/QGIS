@@ -28,23 +28,39 @@
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
 #include "qgsprofilerenderer.h"
+#include "qgsplot.h"
 
-class QgsElevationProfilePlotItem : public QgsPlotCanvasItem
+class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
 {
   public:
 
     QgsElevationProfilePlotItem( QgsElevationProfileCanvas *canvas )
       : QgsPlotCanvasItem( canvas )
-    {}
-
-    void setContent( const QImage &image )
     {
-      mImage = image;
+      setYMinimum( 0 );
+      setYMaximum( 100 );
+    }
+
+    void setRenderer( QgsProfilePlotRenderer *renderer )
+    {
+      mRenderer = renderer;
+    }
+
+    void updateRect()
+    {
       mRect = mCanvas->rect();
+      setSize( mRect.size() );
 
       prepareGeometryChange();
       setPos( mRect.topLeft() );
 
+      mImage = QImage();
+      update();
+    }
+
+    void updatePlot()
+    {
+      mImage = QImage();
       update();
     }
 
@@ -53,37 +69,40 @@ class QgsElevationProfilePlotItem : public QgsPlotCanvasItem
       return mRect;
     }
 
+    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    {
+      const QImage plot = mRenderer->renderToImage( plotArea.width(), plotArea.height(), yMinimum(), yMaximum() );
+      rc.painter()->drawImage( plotArea.left(), plotArea.top(), plot );
+    }
+
     void paint( QPainter *painter ) override
     {
-      if ( mImage.isNull() )
-        return;
-
-      const int w = std::round( mRect.width() ) - 2;
-      const int h = std::round( mRect.height() ) - 2;
-
-      bool scale = false;
-      if ( mImage.size() != QSize( w, h ) * mImage.devicePixelRatioF() )
+      // cache rendering to an image, so we don't need to redraw the plot
+      if ( !mImage.isNull() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" )
-                          .arg( mImage.width() / mImage.devicePixelRatioF() )
-                          .arg( mImage.height() / mImage.devicePixelRatioF() )
-                          .arg( w ).arg( h ), 2 );
-        // This happens on zoom events when ::paint is called before
-        // the renderer has completed
-        scale = true;
-      }
-
-      if ( scale )
-        painter->drawImage( QRect( 0, 0, w, h ), mImage );
-      else
         painter->drawImage( 0, 0, mImage );
+      }
+      else
+      {
+        mImage = QImage( mRect.width(), mRect.height(), QImage::Format_ARGB32_Premultiplied );
+        mImage.fill( Qt::transparent );
+
+        QPainter imagePainter( &mImage );
+        imagePainter.setRenderHint( QPainter::Antialiasing, true );
+        QgsRenderContext rc = QgsRenderContext::fromQPainter( &imagePainter );
+        calculateOptimisedIntervals( rc );
+        render( rc );
+        imagePainter.end();
+
+        painter->drawImage( 0, 0, mImage );
+      }
     }
 
   private:
 
     QImage mImage;
     QRectF mRect;
-
+    QgsProfilePlotRenderer *mRenderer = nullptr;
 };
 
 
@@ -93,7 +112,6 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   : QgsDistanceVsElevationPlotCanvas( parent )
 {
   mPlotItem = new QgsElevationProfilePlotItem( this );
-
 }
 
 void QgsElevationProfileCanvas::update()
@@ -120,20 +138,15 @@ void QgsElevationProfileCanvas::update()
   mCurrentJob = new QgsProfilePlotRenderer( sources, request );
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
   mCurrentJob->startGeneration();
+  mPlotItem->setRenderer( mCurrentJob );
 }
 
 void QgsElevationProfileCanvas::generationFinished()
 {
-  redrawResults();
-}
-
-void QgsElevationProfileCanvas::redrawResults()
-{
   if ( !mCurrentJob )
     return;
 
-  const QImage res = mCurrentJob->renderToImage( mPlotContentsRect.width(), mPlotContentsRect.height(), mZMin, mZMax );
-  mPlotItem->setContent( res );
+  mPlotItem->updatePlot();
 }
 
 void QgsElevationProfileCanvas::setProject( QgsProject *project )
@@ -164,5 +177,5 @@ QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 {
   QgsDistanceVsElevationPlotCanvas::resizeEvent( event );
-  redrawResults();
+  mPlotItem->updateRect();
 }

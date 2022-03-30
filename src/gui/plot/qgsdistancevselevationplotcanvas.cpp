@@ -20,6 +20,9 @@
 #include "qgspoint.h"
 #include "qgscurve.h"
 #include "qgsgeos.h"
+#include "qgsplot.h"
+
+
 
 
 QgsDistanceVsElevationPlotCanvas::QgsDistanceVsElevationPlotCanvas( QWidget *parent )
