@@ -60,7 +60,6 @@ class QgsCopcProvider: public QgsPointCloudDataProvider
     PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
 
   private:
-    QVariantMap mOriginalMetadata;
     std::unique_ptr<QgsPointCloudIndex> mIndex;
 
     QgsRectangle mExtent;
