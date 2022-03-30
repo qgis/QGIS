@@ -1668,6 +1668,44 @@ template <TYPE>
 };
 %End
 
+
+%MappedType QPointer< QgsMapLayer >
+{
+%TypeHeaderCode
+#include <QPointer>
+%End
+
+%ConvertFromTypeCode
+    QgsMapLayer *t = sipCpp->data();
+    PyObject *tobj = sipConvertFromType(t, sipType_QgsMapLayer, sipTransferObj);
+    if (tobj == NULL)
+    {
+        Py_DECREF(tobj);
+        return NULL;
+    }
+    return tobj;
+%End
+
+%ConvertToTypeCode
+    int state;
+
+    QgsMapLayer *t = reinterpret_cast<QgsMapLayer *>(sipConvertToType(sipPy, sipType_QgsMapLayer, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+
+    if (*sipIsErr)
+    {
+      sipReleaseType(t, sipType_QgsMapLayer, state);
+      return 0;
+    }
+    QPointer<QgsMapLayer> *v = new QPointer<QgsMapLayer>( t );
+    sipReleaseType(t, sipType_QgsMapLayer, state);
+
+    *sipCppPtr = v;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
 %MappedType QMap<qint64, QgsFeature*>
 {
 %TypeHeaderCode
