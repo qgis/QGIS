@@ -398,6 +398,93 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
   return QRectF( leftMargin, topMargin, mSize.width() - rightMargin - leftMargin, mSize.height() - bottomMargin - topMargin );
 }
 
+void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
+{
+  QgsNumericFormatContext numericContext;
+
+  // calculate text metrics
+  const double minXTextWidth = QgsTextRenderer::textWidth( context, mXAxisLabelTextFormat, { mXAxisNumericFormat->formatDouble( mMinX, numericContext )  } );
+  const double maxXTextWidth = QgsTextRenderer::textWidth( context, mXAxisLabelTextFormat, { mXAxisNumericFormat->formatDouble( mMaxX, numericContext )  } );
+  const double averageXTextWidth  = ( minXTextWidth + maxXTextWidth ) * 0.5;
+
+  const double minYTextHeight = QgsTextRenderer::textHeight( context, mYAxisLabelTextFormat, { mYAxisNumericFormat->formatDouble( mMinY, numericContext )  } );
+  const double maxYTextHeight = QgsTextRenderer::textHeight( context, mYAxisLabelTextFormat, { mYAxisNumericFormat->formatDouble( mMaxY, numericContext )  } );
+  const double averageYTextHeight = ( minYTextHeight + maxYTextHeight ) * 0.5;
+
+  const double leftMargin = context.convertToPainterUnits( mMargins.left(), QgsUnitTypes::RenderMillimeters );
+  const double rightMargin = context.convertToPainterUnits( mMargins.right(), QgsUnitTypes::RenderMillimeters );
+  const double topMargin = context.convertToPainterUnits( mMargins.top(), QgsUnitTypes::RenderMillimeters );
+  const double bottomMargin = context.convertToPainterUnits( mMargins.bottom(), QgsUnitTypes::RenderMillimeters );
+
+  const double availableWidth = mSize.width() - leftMargin - rightMargin;
+  const double availableHeight = mSize.height() - topMargin - bottomMargin;
+
+  const double unitsPerPixelX = ( mMaxX - mMinX ) / availableWidth;
+  const double unitsPerPixelY = ( mMaxY - mMinY ) / availableHeight;
+
+  // aim for roughly 40% of the width/height to be taken up by labels
+  // we start with this and drop labels till things fit nicely
+  int numberLabelsX = std::floor( availableWidth / averageXTextWidth );
+  int numberLabelsY = std::floor( availableHeight / averageYTextHeight );
+
+  auto roundBase10 = []( double value )->double
+  {
+    return std::pow( 10, std::ceil( std::log10( value ) ) );
+  };
+
+  double labelIntervalX = ( mMaxX - mMinX ) / numberLabelsX;
+  double candidate = roundBase10( labelIntervalX );
+  int numberLabels = 0;
+  while ( true )
+  {
+    const double firstXLabel = std::ceil( mMinX / candidate ) * candidate;
+    double totalWidth = 0;
+    numberLabels = 0;
+    for ( double currentX = firstXLabel; currentX <= mMaxX; currentX += candidate )
+    {
+      const QString text = mXAxisNumericFormat->formatDouble( currentX, numericContext );
+      totalWidth += QgsTextRenderer::textWidth( context, mXAxisLabelTextFormat, { text } );
+      numberLabels += 1;
+    }
+
+    if ( totalWidth <= availableWidth * 0.4 )
+      break;
+
+    candidate *= 2;
+  }
+  mLabelIntervalX = candidate;
+  if ( numberLabels < 10 )
+    mGridIntervalMinorX = mLabelIntervalX / 2;
+  else
+    mGridIntervalMinorX = mLabelIntervalX;
+  mGridIntervalMajorX = mGridIntervalMinorX * 5;
+
+  double labelIntervalY = ( mMaxY - mMinY ) / numberLabelsY;
+  candidate = roundBase10( labelIntervalY );
+  while ( true )
+  {
+    const double firstYLabel = std::ceil( mMinY / candidate ) * candidate;
+    double totalHeight = 0;
+    numberLabels = 0;
+    for ( double currentY = firstYLabel; currentY <= mMaxY; currentY += candidate )
+    {
+      const QString text = mYAxisNumericFormat->formatDouble( currentY, numericContext );
+      totalHeight += QgsTextRenderer::textHeight( context, mYAxisLabelTextFormat, { text } );
+    }
+
+    if ( totalHeight <= availableHeight * 0.4 )
+      break;
+
+    candidate *= 2;
+  }
+  mLabelIntervalY = candidate;
+  if ( numberLabels < 10 )
+    mGridIntervalMinorY = mLabelIntervalY / 2;
+  else
+    mGridIntervalMinorY = mLabelIntervalY;
+  mGridIntervalMajorY = mGridIntervalMinorY * 5;
+}
+
 QgsFillSymbol *Qgs2DPlot::chartBackgroundSymbol()
 {
   return mChartBackgroundSymbol.get();

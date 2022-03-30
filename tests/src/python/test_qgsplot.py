@@ -240,6 +240,87 @@ class TestQgsPlot(unittest.TestCase):
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
         self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
 
+    def testOptimiseIntervals(self):
+        plot = Qgs2DPlot()
+        plot.setSize(QSizeF(600, 500))
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        plot.setXAxisTextFormat(x_axis_format)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        plot.setYAxisTextFormat(y_axis_format)
+
+        plot.setXMinimum(3)
+        plot.setXMaximum(13)
+        plot.setYMinimum(2)
+        plot.setYMaximum(12)
+
+        im = QImage(600, 500, QImage.Format_ARGB32)
+        im.fill(Qt.white)
+        im.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(96 / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        painter.end()
+
+        plot.calculateOptimisedIntervals(rc)
+        self.assertEqual(plot.labelIntervalX(), 1)
+        self.assertEqual(plot.labelIntervalY(), 2)
+        self.assertEqual(plot.gridIntervalMinorX(), 1)
+        self.assertEqual(plot.gridIntervalMinorY(), 1)
+        self.assertEqual(plot.gridIntervalMajorX(), 5)
+        self.assertEqual(plot.gridIntervalMajorY(), 5)
+
+        plot.setXMinimum(3)
+        plot.setXMaximum(113)
+        plot.setYMinimum(2)
+        plot.setYMaximum(112)
+
+        plot.calculateOptimisedIntervals(rc)
+        self.assertEqual(plot.labelIntervalX(), 20)
+        self.assertEqual(plot.labelIntervalY(), 20)
+        self.assertEqual(plot.gridIntervalMinorX(), 10)
+        self.assertEqual(plot.gridIntervalMinorY(), 10)
+        self.assertEqual(plot.gridIntervalMajorX(), 50)
+        self.assertEqual(plot.gridIntervalMajorY(), 50)
+
+        plot.setXMinimum(0.3)
+        plot.setXMaximum(0.5)
+        plot.setYMinimum(1.1)
+        plot.setYMaximum(2)
+
+        plot.calculateOptimisedIntervals(rc)
+        self.assertEqual(plot.labelIntervalX(), 0.1)
+        self.assertEqual(plot.labelIntervalY(), 0.2)
+        self.assertEqual(plot.gridIntervalMinorX(), 0.05)
+        self.assertEqual(plot.gridIntervalMinorY(), 0.1)
+        self.assertEqual(plot.gridIntervalMajorX(), 0.25)
+        self.assertEqual(plot.gridIntervalMajorY(), 0.5)
+
+        plot.setXMinimum(-10)
+        plot.setXMaximum(0)
+        plot.setYMinimum(-10000)
+        plot.setYMaximum(-500)
+
+        plot.calculateOptimisedIntervals(rc)
+        self.assertEqual(plot.labelIntervalX(), 2)
+        self.assertEqual(plot.labelIntervalY(), 2000)
+        self.assertEqual(plot.gridIntervalMinorX(), 1)
+        self.assertEqual(plot.gridIntervalMinorY(), 1000)
+        self.assertEqual(plot.gridIntervalMajorX(), 5)
+        self.assertEqual(plot.gridIntervalMajorY(), 5000)
+
+        plot.setXMinimum(100000)
+        plot.setXMaximum(200000)
+
+        plot.calculateOptimisedIntervals(rc)
+        self.assertEqual(plot.labelIntervalX(), 100000)
+        self.assertEqual(plot.gridIntervalMinorX(), 50000)
+        self.assertEqual(plot.gridIntervalMajorX(), 250000)
+
     def test_read_write(self):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
