@@ -67,6 +67,160 @@ class CORE_EXPORT QgsPlot
 };
 
 /**
+ * \brief Encapsulates the properties of a plot axis.
+ *
+ * \warning This class is not considered stable API, and may change in future!
+ *
+ * \ingroup core
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsPlotAxis
+{
+  public:
+
+    QgsPlotAxis();
+    ~QgsPlotAxis();
+
+    //! QgsPlotAxis cannot be copied
+    QgsPlotAxis( const QgsPlotAxis &other ) = delete;
+    //! QgsPlotAxis cannot be copied
+    QgsPlotAxis &operator=( const QgsPlotAxis &other ) = delete;
+
+    /**
+     * Writes the axis' properties into an XML \a element.
+     */
+    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context );
+
+    /**
+     * Reads the axis' properties from an XML \a element.
+     */
+    bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+
+    /**
+     * Returns the interval of minor grid lines for the axis.
+     *
+     * \see setGridIntervalMinor()
+     */
+    double gridIntervalMinor() const { return mGridIntervalMinor; }
+
+    /**
+     * Sets the \a interval of minor grid lines for the axis.
+     *
+     * \see gridIntervalMinor()
+     */
+    void setGridIntervalMinor( double interval ) { mGridIntervalMinor = interval; }
+
+    /**
+     * Returns the interval of major grid lines for the axis.
+     *
+     * \see setGridIntervalMajor()
+     */
+    double gridIntervalMajor() const { return mGridIntervalMajor; }
+
+    /**
+     * Sets the \a interval of major grid lines for the axis.
+     *
+     * \see gridIntervalMajor()
+     */
+    void setGridIntervalMajor( double interval ) { mGridIntervalMajor = interval; }
+
+    /**
+     * Returns the interval of labels for the axis.
+     *
+     * \see setLabelInterval()
+     */
+    double labelInterval() const { return mLabelInterval; }
+
+    /**
+     * Sets the \a interval of labels for the axis.
+     *
+     * \see labelInterval()
+     */
+    void setLabelInterval( double interval ) { mLabelInterval = interval; }
+
+    /**
+     * Returns the line symbol used to render the major lines in the axis grid.
+     *
+     * \see setGridMajorSymbol()
+     */
+    QgsLineSymbol *gridMajorSymbol();
+
+    /**
+     * Sets the \a symbol used to render the major lines in the axis grid.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * \see gridMajorSymbol()
+     */
+    void setGridMajorSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol used to render the minor lines in the axis grid.
+     *
+     * \see setGridMinorSymbol()
+     */
+    QgsLineSymbol *gridMinorSymbol();
+
+    /**
+     * Sets the \a symbol used to render the minor lines in the axis grid.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * \see gridMinorSymbol()
+     */
+    void setGridMinorSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the text format used for the axis labels.
+     *
+     * \see setTextFormat()
+     */
+    QgsTextFormat textFormat() const;
+
+    /**
+     * Sets the text \a format used for the axis labels.
+     *
+     * \see textFormat()
+     */
+    void setTextFormat( const QgsTextFormat &format );
+
+    /**
+     * Returns the numeric format used for the axis labels.
+     *
+     * \see setNumericFormat()
+     */
+    QgsNumericFormat *numericFormat() const;
+
+    /**
+     * Sets the numeric \a format used for the axis labels.
+     *
+     * Ownership of \a format is transferred to the plot.
+     *
+     * \see numericFormat()
+     */
+    void setNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
+
+  private:
+
+#ifdef SIP_RUN
+    QgsPlotAxis( const QgsPlotAxis &other );
+#endif
+
+    double mGridIntervalMinor = 1;
+    double mGridIntervalMajor = 5;
+
+    double mLabelInterval = 1;
+
+    std::unique_ptr< QgsNumericFormat > mNumericFormat;
+
+    std::unique_ptr< QgsLineSymbol > mGridMajorSymbol;
+    std::unique_ptr< QgsLineSymbol > mGridMinorSymbol;
+
+    QgsTextFormat mLabelTextFormat;
+
+};
+
+/**
  * \brief Base class for 2-dimensional plot/chart/graphs.
  *
  * The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
@@ -200,88 +354,18 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     void setYMaximum( double maximum ) { mMaxY = maximum; }
 
     /**
-     * Returns the interval of minor grid lines for the x axis.
+     * Returns a reference to the plot's x axis.
      *
-     * \see setGridIntervalMinorX()
+     * \see yAxis()
      */
-    double gridIntervalMinorX() const { return mGridIntervalMinorX; }
+    QgsPlotAxis &xAxis() { return mXAxis; }
 
     /**
-     * Sets the \a interval of minor grid lines for the x axis.
+     * Returns a reference to the plot's y axis.
      *
-     * \see gridIntervalMinorX()
+     * \see xAxis()
      */
-    void setGridIntervalMinorX( double interval ) { mGridIntervalMinorX = interval; }
-
-    /**
-     * Returns the interval of major grid lines for the x axis.
-     *
-     * \see setGridIntervalMajorX()
-     */
-    double gridIntervalMajorX() const { return mGridIntervalMajorX; }
-
-    /**
-     * Sets the \a interval of major grid lines for the x axis.
-     *
-     * \see gridIntervalMajorX()
-     */
-    void setGridIntervalMajorX( double interval ) { mGridIntervalMajorX = interval; }
-
-    /**
-     * Returns the interval of minor grid lines for the y axis.
-     *
-     * \see setGridIntervalMinorY()
-     */
-    double gridIntervalMinorY() const { return mGridIntervalMinorY; }
-
-    /**
-     * Sets the \a interval of minor grid lines for the y axis.
-     *
-     * \see gridIntervalMinorY()
-     */
-    void setGridIntervalMinorY( double interval ) { mGridIntervalMinorY = interval; }
-
-    /**
-     * Returns the interval of major grid lines for the y axis.
-     *
-     * \see setGridIntervalMajorY()
-     */
-    double gridIntervalMajorY() const { return mGridIntervalMajorY; }
-
-    /**
-     * Sets the \a interval of major grid lines for the y axis.
-     *
-     * \see gridIntervalMajorY()
-     */
-    void setGridIntervalMajorY( double interval ) { mGridIntervalMajorY = interval; }
-
-    /**
-     * Returns the interval of labels for the x axis.
-     *
-     * \see setLabelIntervalX()
-     */
-    double labelIntervalX() const { return mLabelIntervalX; }
-
-    /**
-     * Sets the \a interval of labels for the x axis.
-     *
-     * \see labelIntervalX()
-     */
-    void setLabelIntervalX( double interval ) { mLabelIntervalX = interval; }
-
-    /**
-     * Returns the interval of labels for the y axis.
-     *
-     * \see setLabelIntervalY()
-     */
-    double labelIntervalY() const { return mLabelIntervalY; }
-
-    /**
-     * Sets the \a interval of labels for the y axis.
-     *
-     * \see labelIntervalY()
-     */
-    void setLabelIntervalY( double interval ) { mLabelIntervalY = interval; }
+    QgsPlotAxis &yAxis() { return mYAxis; }
 
     /**
      * Returns the fill symbol used to render the background of the chart.
@@ -316,98 +400,6 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     void setChartBorderSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
     /**
-     * Returns the line symbol used to render the major lines in the x axis grid.
-     *
-     * \see setXGridMajorSymbol()
-     */
-    QgsLineSymbol *xGridMajorSymbol();
-
-    /**
-     * Sets the \a symbol used to render the major lines in the x axis grid.
-     *
-     * Ownership of \a symbol is transferred to the plot.
-     *
-     * \see xGridMajorSymbol()
-     */
-    void setXGridMajorSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
-
-    /**
-     * Returns the line symbol used to render the minor lines in the x axis grid.
-     *
-     * \see setXGridMinorSymbol()
-     */
-    QgsLineSymbol *xGridMinorSymbol();
-
-    /**
-     * Sets the \a symbol used to render the minor lines in the x axis grid.
-     *
-     * Ownership of \a symbol is transferred to the plot.
-     *
-     * \see xGridMinorSymbol()
-     */
-    void setXGridMinorSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
-
-    /**
-     * Returns the line symbol used to render the major lines in the y axis grid.
-     *
-     * \see setYGridMajorSymbol()
-     */
-    QgsLineSymbol *yGridMajorSymbol();
-
-    /**
-     * Sets the \a symbol used to render the major lines in the y axis grid.
-     *
-     * Ownership of \a symbol is transferred to the plot.
-     *
-     * \see yGridMajorSymbol()
-     */
-    void setYGridMajorSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
-
-    /**
-     * Returns the line symbol used to render the minor lines in the y axis grid.
-     *
-     * \see setYGridMinorSymbol()
-     */
-    QgsLineSymbol *yGridMinorSymbol();
-
-    /**
-     * Sets the \a symbol used to render the minor lines in the y axis grid.
-     *
-     * Ownership of \a symbol is transferred to the plot.
-     *
-     * \see yGridMinorSymbol()
-     */
-    void setYGridMinorSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
-
-    /**
-     * Returns the text format used for the x axis labels.
-     *
-     * \see setXAxisTextFormat()
-     */
-    QgsTextFormat xAxisTextFormat() const;
-
-    /**
-     * Sets the text \a format used for the x axis labels.
-     *
-     * \see xAxisTextFormat()
-     */
-    void setXAxisTextFormat( const QgsTextFormat &format );
-
-    /**
-     * Returns the text format used for the y axis labels.
-     *
-     * \see setYAxisTextFormat()
-     */
-    QgsTextFormat yAxisTextFormat() const;
-
-    /**
-     * Sets the text \a format used for the y axis labels.
-     *
-     * \see yAxisTextFormat()
-     */
-    void setYAxisTextFormat( const QgsTextFormat &format );
-
-    /**
      * Returns the margins of the plot area (in millimeters)
      *
      * \see setMargins()
@@ -420,38 +412,6 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * \see setMargins()
      */
     void setMargins( const QgsMargins &margins );
-
-    /**
-     * Returns the numeric format used for the x axis labels.
-     *
-     * \see setXAxisNumericFormat()
-     */
-    QgsNumericFormat *xAxisNumericFormat();
-
-    /**
-     * Sets the numeric \a format used for the x axis labels.
-     *
-     * Ownership of \a format is transferred to the plot.
-     *
-     * \see xAxisNumericFormat()
-     */
-    void setXAxisNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
-
-    /**
-     * Returns the numeric format used for the y axis labels.
-     *
-     * \see setYAxisNumericFormat()
-     */
-    QgsNumericFormat *yAxisNumericFormat();
-
-    /**
-     * Sets the numeric \a format used for the y axis labels.
-     *
-     * Ownership of \a format is transferred to the plot.
-     *
-     * \see yAxisNumericFormat()
-     */
-    void setYAxisNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
 
   private:
 
@@ -466,29 +426,13 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     double mMaxX = 10;
     double mMaxY = 10;
 
-    double mGridIntervalMinorX = 1;
-    double mGridIntervalMajorX = 5;
-    double mGridIntervalMinorY = 1;
-    double mGridIntervalMajorY = 5;
-
-    double mLabelIntervalX = 1;
-    double mLabelIntervalY = 1;
-
-    std::unique_ptr< QgsNumericFormat > mXAxisNumericFormat;
-    std::unique_ptr< QgsNumericFormat > mYAxisNumericFormat;
-
     std::unique_ptr< QgsFillSymbol > mChartBackgroundSymbol;
     std::unique_ptr< QgsFillSymbol > mChartBorderSymbol;
 
-    std::unique_ptr< QgsLineSymbol > mXGridMajorSymbol;
-    std::unique_ptr< QgsLineSymbol > mXGridMinorSymbol;
-    std::unique_ptr< QgsLineSymbol > mYGridMajorSymbol;
-    std::unique_ptr< QgsLineSymbol > mYGridMinorSymbol;
-
-    QgsTextFormat mXAxisLabelTextFormat;
-    QgsTextFormat mYAxisLabelTextFormat;
-
     QgsMargins mMargins;
+
+    QgsPlotAxis mXAxis;
+    QgsPlotAxis mYAxis;
 };
 
 #endif // QGSPLOT_H

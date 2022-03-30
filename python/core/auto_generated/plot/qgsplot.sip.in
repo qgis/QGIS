@@ -47,13 +47,152 @@ Reads the plot's properties from an XML ``element``.
 
 };
 
+class QgsPlotAxis
+{
+%Docstring(signature="appended")
+Encapsulates the properties of a plot axis.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    QgsPlotAxis();
+    ~QgsPlotAxis();
+
+
+    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context );
+%Docstring
+Writes the axis' properties into an XML ``element``.
+%End
+
+    bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+%Docstring
+Reads the axis' properties from an XML ``element``.
+%End
+
+    double gridIntervalMinor() const;
+%Docstring
+Returns the interval of minor grid lines for the axis.
+
+.. seealso:: :py:func:`setGridIntervalMinor`
+%End
+
+    void setGridIntervalMinor( double interval );
+%Docstring
+Sets the ``interval`` of minor grid lines for the axis.
+
+.. seealso:: :py:func:`gridIntervalMinor`
+%End
+
+    double gridIntervalMajor() const;
+%Docstring
+Returns the interval of major grid lines for the axis.
+
+.. seealso:: :py:func:`setGridIntervalMajor`
+%End
+
+    void setGridIntervalMajor( double interval );
+%Docstring
+Sets the ``interval`` of major grid lines for the axis.
+
+.. seealso:: :py:func:`gridIntervalMajor`
+%End
+
+    double labelInterval() const;
+%Docstring
+Returns the interval of labels for the axis.
+
+.. seealso:: :py:func:`setLabelInterval`
+%End
+
+    void setLabelInterval( double interval );
+%Docstring
+Sets the ``interval`` of labels for the axis.
+
+.. seealso:: :py:func:`labelInterval`
+%End
+
+    QgsLineSymbol *gridMajorSymbol();
+%Docstring
+Returns the line symbol used to render the major lines in the axis grid.
+
+.. seealso:: :py:func:`setGridMajorSymbol`
+%End
+
+    void setGridMajorSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the major lines in the axis grid.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`gridMajorSymbol`
+%End
+
+    QgsLineSymbol *gridMinorSymbol();
+%Docstring
+Returns the line symbol used to render the minor lines in the axis grid.
+
+.. seealso:: :py:func:`setGridMinorSymbol`
+%End
+
+    void setGridMinorSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the minor lines in the axis grid.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`gridMinorSymbol`
+%End
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used for the axis labels.
+
+.. seealso:: :py:func:`setTextFormat`
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used for the axis labels.
+
+.. seealso:: :py:func:`textFormat`
+%End
+
+    QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used for the axis labels.
+
+.. seealso:: :py:func:`setNumericFormat`
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used for the axis labels.
+
+Ownership of ``format`` is transferred to the plot.
+
+.. seealso:: :py:func:`numericFormat`
+%End
+
+  private:
+    QgsPlotAxis( const QgsPlotAxis &other );
+};
+
 class Qgs2DPlot : QgsPlot
 {
 %Docstring(signature="appended")
 Base class for 2-dimensional plot/chart/graphs.
 
 The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
-can implement the :py:func:`~QgsPlot.renderContent` method to render their actual plot content.
+can implement the :py:func:`~QgsPlotAxis.renderContent` method to render their actual plot content.
 
 .. warning::
 
@@ -186,88 +325,18 @@ Sets the ``maximum`` value of the y axis.
 .. seealso:: :py:func:`yMaximum`
 %End
 
-    double gridIntervalMinorX() const;
+    QgsPlotAxis &xAxis();
 %Docstring
-Returns the interval of minor grid lines for the x axis.
+Returns a reference to the plot's x axis.
 
-.. seealso:: :py:func:`setGridIntervalMinorX`
+.. seealso:: :py:func:`yAxis`
 %End
 
-    void setGridIntervalMinorX( double interval );
+    QgsPlotAxis &yAxis();
 %Docstring
-Sets the ``interval`` of minor grid lines for the x axis.
+Returns a reference to the plot's y axis.
 
-.. seealso:: :py:func:`gridIntervalMinorX`
-%End
-
-    double gridIntervalMajorX() const;
-%Docstring
-Returns the interval of major grid lines for the x axis.
-
-.. seealso:: :py:func:`setGridIntervalMajorX`
-%End
-
-    void setGridIntervalMajorX( double interval );
-%Docstring
-Sets the ``interval`` of major grid lines for the x axis.
-
-.. seealso:: :py:func:`gridIntervalMajorX`
-%End
-
-    double gridIntervalMinorY() const;
-%Docstring
-Returns the interval of minor grid lines for the y axis.
-
-.. seealso:: :py:func:`setGridIntervalMinorY`
-%End
-
-    void setGridIntervalMinorY( double interval );
-%Docstring
-Sets the ``interval`` of minor grid lines for the y axis.
-
-.. seealso:: :py:func:`gridIntervalMinorY`
-%End
-
-    double gridIntervalMajorY() const;
-%Docstring
-Returns the interval of major grid lines for the y axis.
-
-.. seealso:: :py:func:`setGridIntervalMajorY`
-%End
-
-    void setGridIntervalMajorY( double interval );
-%Docstring
-Sets the ``interval`` of major grid lines for the y axis.
-
-.. seealso:: :py:func:`gridIntervalMajorY`
-%End
-
-    double labelIntervalX() const;
-%Docstring
-Returns the interval of labels for the x axis.
-
-.. seealso:: :py:func:`setLabelIntervalX`
-%End
-
-    void setLabelIntervalX( double interval );
-%Docstring
-Sets the ``interval`` of labels for the x axis.
-
-.. seealso:: :py:func:`labelIntervalX`
-%End
-
-    double labelIntervalY() const;
-%Docstring
-Returns the interval of labels for the y axis.
-
-.. seealso:: :py:func:`setLabelIntervalY`
-%End
-
-    void setLabelIntervalY( double interval );
-%Docstring
-Sets the ``interval`` of labels for the y axis.
-
-.. seealso:: :py:func:`labelIntervalY`
+.. seealso:: :py:func:`xAxis`
 %End
 
     QgsFillSymbol *chartBackgroundSymbol();
@@ -302,98 +371,6 @@ Ownership of ``symbol`` is transferred to the plot.
 .. seealso:: :py:func:`chartBorderSymbol`
 %End
 
-    QgsLineSymbol *xGridMajorSymbol();
-%Docstring
-Returns the line symbol used to render the major lines in the x axis grid.
-
-.. seealso:: :py:func:`setXGridMajorSymbol`
-%End
-
-    void setXGridMajorSymbol( QgsLineSymbol *symbol /Transfer/ );
-%Docstring
-Sets the ``symbol`` used to render the major lines in the x axis grid.
-
-Ownership of ``symbol`` is transferred to the plot.
-
-.. seealso:: :py:func:`xGridMajorSymbol`
-%End
-
-    QgsLineSymbol *xGridMinorSymbol();
-%Docstring
-Returns the line symbol used to render the minor lines in the x axis grid.
-
-.. seealso:: :py:func:`setXGridMinorSymbol`
-%End
-
-    void setXGridMinorSymbol( QgsLineSymbol *symbol /Transfer/ );
-%Docstring
-Sets the ``symbol`` used to render the minor lines in the x axis grid.
-
-Ownership of ``symbol`` is transferred to the plot.
-
-.. seealso:: :py:func:`xGridMinorSymbol`
-%End
-
-    QgsLineSymbol *yGridMajorSymbol();
-%Docstring
-Returns the line symbol used to render the major lines in the y axis grid.
-
-.. seealso:: :py:func:`setYGridMajorSymbol`
-%End
-
-    void setYGridMajorSymbol( QgsLineSymbol *symbol /Transfer/ );
-%Docstring
-Sets the ``symbol`` used to render the major lines in the y axis grid.
-
-Ownership of ``symbol`` is transferred to the plot.
-
-.. seealso:: :py:func:`yGridMajorSymbol`
-%End
-
-    QgsLineSymbol *yGridMinorSymbol();
-%Docstring
-Returns the line symbol used to render the minor lines in the y axis grid.
-
-.. seealso:: :py:func:`setYGridMinorSymbol`
-%End
-
-    void setYGridMinorSymbol( QgsLineSymbol *symbol /Transfer/ );
-%Docstring
-Sets the ``symbol`` used to render the minor lines in the y axis grid.
-
-Ownership of ``symbol`` is transferred to the plot.
-
-.. seealso:: :py:func:`yGridMinorSymbol`
-%End
-
-    QgsTextFormat xAxisTextFormat() const;
-%Docstring
-Returns the text format used for the x axis labels.
-
-.. seealso:: :py:func:`setXAxisTextFormat`
-%End
-
-    void setXAxisTextFormat( const QgsTextFormat &format );
-%Docstring
-Sets the text ``format`` used for the x axis labels.
-
-.. seealso:: :py:func:`xAxisTextFormat`
-%End
-
-    QgsTextFormat yAxisTextFormat() const;
-%Docstring
-Returns the text format used for the y axis labels.
-
-.. seealso:: :py:func:`setYAxisTextFormat`
-%End
-
-    void setYAxisTextFormat( const QgsTextFormat &format );
-%Docstring
-Sets the text ``format`` used for the y axis labels.
-
-.. seealso:: :py:func:`yAxisTextFormat`
-%End
-
     const QgsMargins &margins() const;
 %Docstring
 Returns the margins of the plot area (in millimeters)
@@ -406,38 +383,6 @@ Returns the margins of the plot area (in millimeters)
 Sets the ``margins`` of the plot area (in millimeters)
 
 .. seealso:: :py:func:`setMargins`
-%End
-
-    QgsNumericFormat *xAxisNumericFormat();
-%Docstring
-Returns the numeric format used for the x axis labels.
-
-.. seealso:: :py:func:`setXAxisNumericFormat`
-%End
-
-    void setXAxisNumericFormat( QgsNumericFormat *format /Transfer/ );
-%Docstring
-Sets the numeric ``format`` used for the x axis labels.
-
-Ownership of ``format`` is transferred to the plot.
-
-.. seealso:: :py:func:`xAxisNumericFormat`
-%End
-
-    QgsNumericFormat *yAxisNumericFormat();
-%Docstring
-Returns the numeric format used for the y axis labels.
-
-.. seealso:: :py:func:`setYAxisNumericFormat`
-%End
-
-    void setYAxisNumericFormat( QgsNumericFormat *format /Transfer/ );
-%Docstring
-Sets the numeric ``format`` used for the y axis labels.
-
-Ownership of ``format`` is transferred to the plot.
-
-.. seealso:: :py:func:`yAxisNumericFormat`
 %End
 
   private:
