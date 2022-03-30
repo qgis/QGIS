@@ -288,24 +288,14 @@ void Qgs2DPlot::render( QgsRenderContext &context )
     }
 
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
-    if ( isMinor )
+
+    QgsLineSymbol *currentGridSymbol = isMinor ? mXAxis.gridMinorSymbol() : mXAxis.gridMajorSymbol();
+    currentGridSymbol->renderPolyline( QPolygonF(
+                                         QVector<QPointF>
     {
-      mXAxis.gridMinorSymbol()->renderPolyline( QPolygonF(
-            QVector<QPointF>
-      {
-        QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaBottom ),
-        QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaTop )
-      } ), nullptr, context );
-    }
-    else
-    {
-      mXAxis.gridMajorSymbol()->renderPolyline( QPolygonF(
-            QVector<QPointF>
-      {
-        QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaBottom ),
-        QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaTop )
-      } ), nullptr, context );
-    }
+      QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaBottom ),
+      QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaTop )
+    } ), nullptr, context );
   }
 
   // y
@@ -321,24 +311,14 @@ void Qgs2DPlot::render( QgsRenderContext &context )
     }
 
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
-    if ( isMinor )
+
+    QgsLineSymbol *currentGridSymbol = isMinor ? mYAxis.gridMinorSymbol() : mYAxis.gridMajorSymbol();
+    currentGridSymbol->renderPolyline( QPolygonF(
+                                         QVector<QPointF>
     {
-      mYAxis.gridMinorSymbol()->renderPolyline( QPolygonF(
-            QVector<QPointF>
-      {
-        QPointF( chartAreaLeft, chartAreaBottom - ( currentY - mMinY ) * yScale ),
-        QPointF( chartAreaRight, chartAreaBottom - ( currentY - mMinY ) * yScale )
-      } ), nullptr, context );
-    }
-    else
-    {
-      mYAxis.gridMajorSymbol()->renderPolyline( QPolygonF(
-            QVector<QPointF>
-      {
-        QPointF( chartAreaLeft, chartAreaBottom - ( currentY - mMinY ) * yScale ),
-        QPointF( chartAreaRight, chartAreaBottom - ( currentY - mMinY ) * yScale )
-      } ), nullptr, context );
-    }
+      QPointF( chartAreaLeft, chartAreaBottom - ( currentY - mMinY ) * yScale ),
+      QPointF( chartAreaRight, chartAreaBottom - ( currentY - mMinY ) * yScale )
+    } ), nullptr, context );
   }
 
   // axis labels
