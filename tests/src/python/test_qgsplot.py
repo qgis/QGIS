@@ -272,7 +272,7 @@ class TestQgsPlot(unittest.TestCase):
         self.assertEqual(plot.gridIntervalMinorX(), 1)
         self.assertEqual(plot.gridIntervalMinorY(), 1)
         self.assertEqual(plot.gridIntervalMajorX(), 5)
-        self.assertEqual(plot.gridIntervalMajorY(), 5)
+        self.assertEqual(plot.gridIntervalMajorY(), 4)
 
         plot.setXMinimum(3)
         plot.setXMaximum(113)
@@ -284,8 +284,8 @@ class TestQgsPlot(unittest.TestCase):
         self.assertEqual(plot.labelIntervalY(), 20)
         self.assertEqual(plot.gridIntervalMinorX(), 10)
         self.assertEqual(plot.gridIntervalMinorY(), 10)
-        self.assertEqual(plot.gridIntervalMajorX(), 50)
-        self.assertEqual(plot.gridIntervalMajorY(), 50)
+        self.assertEqual(plot.gridIntervalMajorX(), 40)
+        self.assertEqual(plot.gridIntervalMajorY(), 40)
 
         plot.setXMinimum(0.3)
         plot.setXMaximum(0.5)
@@ -297,8 +297,8 @@ class TestQgsPlot(unittest.TestCase):
         self.assertEqual(plot.labelIntervalY(), 0.2)
         self.assertEqual(plot.gridIntervalMinorX(), 0.05)
         self.assertEqual(plot.gridIntervalMinorY(), 0.1)
-        self.assertEqual(plot.gridIntervalMajorX(), 0.25)
-        self.assertEqual(plot.gridIntervalMajorY(), 0.5)
+        self.assertEqual(plot.gridIntervalMajorX(), 0.2)
+        self.assertEqual(plot.gridIntervalMajorY(), 0.4)
 
         plot.setXMinimum(-10)
         plot.setXMaximum(0)
@@ -310,8 +310,8 @@ class TestQgsPlot(unittest.TestCase):
         self.assertEqual(plot.labelIntervalY(), 2000)
         self.assertEqual(plot.gridIntervalMinorX(), 1)
         self.assertEqual(plot.gridIntervalMinorY(), 1000)
-        self.assertEqual(plot.gridIntervalMajorX(), 5)
-        self.assertEqual(plot.gridIntervalMajorY(), 5000)
+        self.assertEqual(plot.gridIntervalMajorX(), 4)
+        self.assertEqual(plot.gridIntervalMajorY(), 4000)
 
         plot.setXMinimum(100000)
         plot.setXMaximum(200000)
@@ -319,7 +319,7 @@ class TestQgsPlot(unittest.TestCase):
         plot.calculateOptimisedIntervals(rc)
         self.assertEqual(plot.labelIntervalX(), 100000)
         self.assertEqual(plot.gridIntervalMinorX(), 50000)
-        self.assertEqual(plot.gridIntervalMajorX(), 250000)
+        self.assertEqual(plot.gridIntervalMajorX(), 200000)
 
     def test_read_write(self):
         plot = Qgs2DPlot()
