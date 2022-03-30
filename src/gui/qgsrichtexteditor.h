@@ -112,6 +112,15 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
      */
     void clearSource();
 
+  signals:
+
+    /**
+     * Emitted when the text contents are changed.
+     *
+     * \since QGIS 3.26
+     */
+    void textChanged();
+
   protected:
     void focusInEvent( QFocusEvent *event ) override;
 
