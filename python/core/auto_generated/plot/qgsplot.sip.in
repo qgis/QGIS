@@ -121,6 +121,15 @@ Returns the area of the plot which corresponds to the actual plot content (exclu
 outside the plot area).
 %End
 
+    void calculateOptimisedIntervals( QgsRenderContext &context );
+%Docstring
+Automatically sets the grid and label intervals to optimal values
+for display in the given render ``context``.
+
+Intervals will be calculated in order to avoid overlapping axis labels and to ensure
+round values are shown.
+%End
+
     double xMinimum() const;
 %Docstring
 Returns the minimum value of the x axis.

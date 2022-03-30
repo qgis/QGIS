@@ -135,6 +135,15 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     QRectF interiorPlotArea( QgsRenderContext &context ) const;
 
     /**
+     * Automatically sets the grid and label intervals to optimal values
+     * for display in the given render \a context.
+     *
+     * Intervals will be calculated in order to avoid overlapping axis labels and to ensure
+     * round values are shown.
+     */
+    void calculateOptimisedIntervals( QgsRenderContext &context );
+
+    /**
      * Returns the minimum value of the x axis.
      *
      * \see setXMinimum()
