@@ -139,91 +139,6 @@ void QgsLayoutItemScaleBar::setUnitsPerSegment( double units )
   resizeToMinimumWidth();
 }
 
-void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *context )
-{
-  const QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
-
-  mDataDefinedProperties.prepare( *evalContext );
-
-  double unitsPerSegment = mSettings.unitsPerSegment();
-
-  mHasExpressionError = false;
-
-  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarSegmentWidth ) )
-  {
-    bool ok = false;
-    unitsPerSegment = mDataDefinedProperties.valueAsDouble(QgsLayoutObject::ScalebarSegmentWidth, *evalContext, unitsPerSegment, &ok);
-
-    if ( !ok )
-    {
-      mHasExpressionError = true;
-      // TODO: find out how to get actual default value
-      unitsPerSegment = 100.0;
-      QgsMessageLog::logMessage( tr( "Scalebar units per segment expression eval error" ) );
-    }
-  }
-
-  setUnitsPerSegment(unitsPerSegment);
-}
-
-void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *context )
-{
-  const QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
-
-  mDataDefinedProperties.prepare( *evalContext );
-
-    //mSettings.setMinimumBarWidth( minWidth );
-  double minimumBarWidth = mSettings.minimumBarWidth();
-
-  mHasExpressionError = false;
-
-  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarMinWidth ) )
-  {
-    bool ok = false;
-    minimumBarWidth = mDataDefinedProperties.valueAsDouble(QgsLayoutObject::ScalebarMinWidth, *evalContext, minimumBarWidth, &ok);
-
-    if ( !ok )
-    {
-      mHasExpressionError = true;
-      // TODO: find out how to get actual default value
-      minimumBarWidth = 50.0;
-      QgsMessageLog::logMessage( tr( "Scalebar minimum segment width expression eval error" ) );
-    }
-  }
-
-  setMinimumBarWidth( minimumBarWidth );
-}
-
-void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *context )
-{
-  const QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
-
-  mDataDefinedProperties.prepare( *evalContext );
-
-    //mSettings.setMinimumBarWidth( minWidth );
-  double maximumBarWidth = mSettings.maximumBarWidth();
-
-  mHasExpressionError = false;
-
-  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarMaxWidth ) )
-  {
-    bool ok = false;
-    maximumBarWidth = mDataDefinedProperties.valueAsDouble(QgsLayoutObject::ScalebarMaxWidth, *evalContext, maximumBarWidth, &ok);
-
-    if ( !ok )
-    {
-      mHasExpressionError = true;
-      // TODO: find out how to get actual default value
-      maximumBarWidth = 150.0;
-      QgsMessageLog::logMessage( tr( "Scalebar maximum segment width expression eval error" ) );
-    }
-  }
-
-  setMaximumBarWidth( maximumBarWidth );
-}
 
 void QgsLayoutItemScaleBar::setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeMode mode )
 {
@@ -373,6 +288,148 @@ void QgsLayoutItemScaleBar::disconnectCurrentMap()
   disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateScale );
   disconnect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::disconnectCurrentMap );
   mMap = nullptr;
+}
+
+void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *context )
+{
+  const QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
+
+  mDataDefinedProperties.prepare( *evalContext );
+
+  double unitsPerSegment = mSettings.unitsPerSegment();
+
+  mHasExpressionError = false;
+
+  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarSegmentWidth ) )
+  {
+    bool ok = false;
+    unitsPerSegment = mDataDefinedProperties.valueAsDouble(QgsLayoutObject::ScalebarSegmentWidth, *evalContext, unitsPerSegment, &ok);
+
+    if ( !ok )
+    {
+      mHasExpressionError = true;
+      // TODO: find out how to get actual default value
+      unitsPerSegment = 100.0;
+      QgsMessageLog::logMessage( tr( "Scalebar units per segment expression eval error" ) );
+    }
+  }
+
+  setUnitsPerSegment(unitsPerSegment);
+}
+
+void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *context )
+{
+  const QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
+
+  mDataDefinedProperties.prepare( *evalContext );
+
+    //mSettings.setMinimumBarWidth( minWidth );
+  double minimumBarWidth = mSettings.minimumBarWidth();
+
+  mHasExpressionError = false;
+
+  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarMinWidth ) )
+  {
+    bool ok = false;
+    minimumBarWidth = mDataDefinedProperties.valueAsDouble(QgsLayoutObject::ScalebarMinWidth, *evalContext, minimumBarWidth, &ok);
+
+    if ( !ok )
+    {
+      mHasExpressionError = true;
+      // TODO: find out how to get actual default value
+      minimumBarWidth = 50.0;
+      QgsMessageLog::logMessage( tr( "Scalebar minimum segment width expression eval error" ) );
+    }
+  }
+
+  setMinimumBarWidth( minimumBarWidth );
+}
+
+void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *context )
+{
+  const QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
+
+  mDataDefinedProperties.prepare( *evalContext );
+
+    //mSettings.setMinimumBarWidth( minWidth );
+  double maximumBarWidth = mSettings.maximumBarWidth();
+
+  mHasExpressionError = false;
+
+  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarMaxWidth ) )
+  {
+    bool ok = false;
+    maximumBarWidth = mDataDefinedProperties.valueAsDouble(QgsLayoutObject::ScalebarMaxWidth, *evalContext, maximumBarWidth, &ok);
+
+    if ( !ok )
+    {
+      mHasExpressionError = true;
+      // TODO: find out how to get actual default value
+      maximumBarWidth = 150.0;
+      QgsMessageLog::logMessage( tr( "Scalebar maximum segment width expression eval error" ) );
+    }
+  }
+
+  setMaximumBarWidth( maximumBarWidth );
+}
+
+void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft(const QgsExpressionContext *context)
+{
+  const QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
+
+  mDataDefinedProperties.prepare( *evalContext );
+
+  int leftSegments = mSettings.numberOfSegmentsLeft();
+
+  mHasExpressionError = false;
+
+  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarLeftSegments ) )
+  {
+    bool ok = false;
+    leftSegments = mDataDefinedProperties.valueAsInt(QgsLayoutObject::ScalebarLeftSegments, *evalContext, leftSegments, &ok);
+
+    if ( !ok )
+    {
+      mHasExpressionError = true;
+      // TODO: find out how to get actual default value
+      leftSegments = 0;
+      QgsMessageLog::logMessage( tr( "Scalebar left segment count expression eval error" ) );
+    }
+  }
+
+  setNumberOfSegmentsLeft(leftSegments);
+}
+
+void QgsLayoutItemScaleBar::refreshNumberOfSegmentsRight(const QgsExpressionContext *context)
+{
+  const QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
+
+  mDataDefinedProperties.prepare( *evalContext );
+
+  int rightSegments = mSettings.numberOfSegments();
+
+  mHasExpressionError = false;
+
+  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarRightSegments ) )
+  {
+    bool ok = false;
+    rightSegments = mDataDefinedProperties.valueAsInt(QgsLayoutObject::ScalebarRightSegments, *evalContext, rightSegments, &ok);
+
+    if ( !ok )
+    {
+      mHasExpressionError = true;
+      // TODO: find out how to get actual default value
+      rightSegments = 2;
+      QgsMessageLog::logMessage( tr( "Scalebar left segment count expression eval error" ) );
+    }
+  }
+
+  setNumberOfSegments(rightSegments);
 }
 
 void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
@@ -991,6 +1048,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
 
   return true;
 }
+
 
 bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext &context )
 {
