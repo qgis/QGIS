@@ -429,16 +429,32 @@ QString QgsPointCloudLayer::decodedSource( const QString &source, const QString 
 
 void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
 {
-  if ( state == QgsPointCloudDataProvider::Indexed )
+  switch ( state )
   {
-    mDataProvider.get()->loadIndex();
-    if ( mRenderer->type() == QLatin1String( "extent" ) )
+    case QgsPointCloudDataProvider::Indexed:
     {
-      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
-    }
-    triggerRepaint();
+      mDataProvider.get()->loadIndex();
+      if ( mRenderer->type() == QLatin1String( "extent" ) )
+      {
+        setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
+      }
+      triggerRepaint();
 
-    emit rendererChanged();
+      emit rendererChanged();
+      break;
+    }
+    case QgsPointCloudDataProvider::NotIndexed:
+    {
+      QgsError providerError = mDataProvider->error();
+      if ( !providerError.isEmpty() )
+      {
+        setError( providerError );
+        emit raiseError( providerError.summary() );
+      }
+      break;
+    }
+    case QgsPointCloudDataProvider::Indexing:
+      break;
   }
 }
 

@@ -111,7 +111,8 @@ bool QgsPdalEptGenerationTask::runUntwine()
       if ( !untwineProcess.errorMessage().empty() )
       {
         // TODO: propagate the error message to GUI
-        QgsDebugMsg( QStringLiteral( "Untwine error: " ) + QString::fromStdString( untwineProcess.errorMessage() ) );
+        mErrorMessage = QStringLiteral( "Untwine error: %1" ).arg( QString::fromStdString( untwineProcess.errorMessage() ) );
+        QgsDebugMsg( mErrorMessage );
         return false;
       }
 

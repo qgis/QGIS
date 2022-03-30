@@ -195,6 +195,13 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     void subsetStringChanged();
 
+    /**
+     * Signals an error related to this point cloud layer.
+     *
+     * \since QGIS 3.26
+     */
+    void raiseError( const QString &msg );
+
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
