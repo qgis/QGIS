@@ -419,9 +419,6 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
   const double availableWidth = mSize.width() - leftMargin - rightMargin;
   const double availableHeight = mSize.height() - topMargin - bottomMargin;
 
-  const double unitsPerPixelX = ( mMaxX - mMinX ) / availableWidth;
-  const double unitsPerPixelY = ( mMaxY - mMinY ) / availableHeight;
-
   // aim for roughly 40% of the width/height to be taken up by labels
   // we start with this and drop labels till things fit nicely
   int numberLabelsX = std::floor( availableWidth / averageXTextWidth );
