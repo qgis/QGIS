@@ -112,14 +112,11 @@ void QgsCopcProvider::loadIndex( )
     return;
 
   mIndex->load( dataSourceUri() );
-
-  // TODO: Read metadata from LAZ into mOriginalMetadata
-  // NOTE: This is not done in EPT provider either
 }
 
 QVariantMap QgsCopcProvider::originalMetadata() const
 {
-  return mOriginalMetadata;
+  return mIndex->originalMetadata();
 }
 
 void QgsCopcProvider::generateIndex()

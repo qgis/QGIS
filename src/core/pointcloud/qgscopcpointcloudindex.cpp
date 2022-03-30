@@ -76,6 +76,21 @@ bool QgsCopcPointCloudIndex::loadSchema()
   mScale = QgsVector3D( mLazFile->header().scale.x, mLazFile->header().scale.y, mLazFile->header().scale.z );
   mOffset = QgsVector3D( mLazFile->header().offset.x, mLazFile->header().offset.y, mLazFile->header().offset.z );
 
+  mOriginalMetadata[ QStringLiteral( "creation_year" ) ] = mLazFile->header().creation.year;
+  mOriginalMetadata[ QStringLiteral( "creation_day" ) ] = mLazFile->header().creation.day;
+  mOriginalMetadata[ QStringLiteral( "major_version" ) ] = mLazFile->header().version.major;
+  mOriginalMetadata[ QStringLiteral( "minor_version" ) ] = mLazFile->header().version.minor;
+  mOriginalMetadata[ QStringLiteral( "dataformat_id" ) ] = mLazFile->header().point_format_id;
+  mOriginalMetadata[ QStringLiteral( "scale_x" ) ] = mScale.x();
+  mOriginalMetadata[ QStringLiteral( "scale_y" ) ] = mScale.y();
+  mOriginalMetadata[ QStringLiteral( "scale_z" ) ] = mScale.z();
+  mOriginalMetadata[ QStringLiteral( "offset_x" ) ] = mOffset.x();
+  mOriginalMetadata[ QStringLiteral( "offset_y" ) ] = mOffset.y();
+  mOriginalMetadata[ QStringLiteral( "offset_z" ) ] = mOffset.z();
+  mOriginalMetadata[ QStringLiteral( "project_id" ) ] = QString( QByteArray( mLazFile->header().guid, 16 ).toHex() );
+  mOriginalMetadata[ QStringLiteral( "system_id" ) ] = QString::fromLocal8Bit( mLazFile->header().system_identifier, 32 );
+  mOriginalMetadata[ QStringLiteral( "software_id" ) ] = QString::fromLocal8Bit( mLazFile->header().generating_software, 32 );
+
   // The COPC format only uses PDRF 6, 7 or 8. So there should be a OGC Coordinate System WKT record
   mWkt = QString();
   std::vector<char> wktRecordData = mLazFile->vlrData( "LASF_Projection", 2112 );
