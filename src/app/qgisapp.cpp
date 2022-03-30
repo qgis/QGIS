@@ -14953,6 +14953,11 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
       connect( rlayer, &QgsRasterLayer::statusChanged, this, &QgisApp::showStatusMessage );
     }
 
+    if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer ) )
+    {
+      connect( pclayer, &QgsPointCloudLayer::raiseError, this, &QgisApp::onLayerError );
+    }
+
     if ( QgsDataProvider *provider = layer->dataProvider() )
     {
       connect( provider, &QgsDataProvider::dataChanged, layer, [layer] { layer->triggerRepaint(); } );
@@ -17352,7 +17357,7 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
 
 void QgisApp::onLayerError( const QString &msg )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( sender() );
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
 
   Q_ASSERT( layer );
 

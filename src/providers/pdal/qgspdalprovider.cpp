@@ -162,6 +162,11 @@ void QgsPdalProvider::onGenerateIndexFailed()
   // this may be already canceled task that we don't care anymore...
   if ( task == mRunningIndexingTask )
   {
+    QString error = task->errorMessage();
+    if ( !error.isEmpty() )
+    {
+      appendError( error );
+    }
     mRunningIndexingTask = nullptr;
     emit indexGenerationStateChanged( PointCloudIndexGenerationState::NotIndexed );
   }

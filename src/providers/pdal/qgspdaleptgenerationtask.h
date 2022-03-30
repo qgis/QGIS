@@ -31,6 +31,7 @@ class QgsPdalEptGenerationTask: public QgsTask
     void setUntwineExecutableBinary( const QString &untwineExecutableBinary );
 
     QString outputDir() const;
+    const QString errorMessage() const { return mErrorMessage; };
 
   private:
     bool prepareOutputDir();
@@ -41,6 +42,7 @@ class QgsPdalEptGenerationTask: public QgsTask
     QString mUntwineExecutableBinary;
     QString mOutputDir;
     QString mFile;
+    QString mErrorMessage;
 };
 
 #endif // QGSPDALEPTGENERATIONTASK_H

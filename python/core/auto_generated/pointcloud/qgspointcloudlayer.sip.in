@@ -164,6 +164,13 @@ Emitted when the layer's subset string has changed.
 .. versionadded:: 3.26
 %End
 
+    void raiseError( const QString &msg );
+%Docstring
+Signals an error related to this point cloud layer.
+
+.. versionadded:: 3.26
+%End
+
   private:
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 };
