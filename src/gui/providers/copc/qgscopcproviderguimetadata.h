@@ -2,7 +2,7 @@
                          qgscopcproviderguimetadata.h
                          --------------------
     begin                : March 2022
-    copyright            : (C) 2020 by Belgacem Nedjima
+    copyright            : (C) 2022 by Belgacem Nedjima
     email                : belgacem dot nedjima at gmail dot com
  ***************************************************************************/
 

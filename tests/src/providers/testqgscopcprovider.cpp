@@ -1,9 +1,9 @@
 /***************************************************************************
-     testqgseptprovider.cpp
+     testqgscopcprovider.cpp
      --------------------------------------
-    Date                 : November 2020
-    Copyright            : (C) 2020 by Nyall Dawson
-    Email                : nyall dot dawson at gmail dot com
+    Date                 : March 2022
+    Copyright            : (C) 2022 by Belgacem Nedjima
+    Email                : belgacem dot nedjima at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
