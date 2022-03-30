@@ -240,12 +240,15 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
   const QRectF plotArea = interiorPlotArea( context );
 
+  const double xTolerance = mXAxis.gridIntervalMinor() / 100000;
+  const double yTolerance = mYAxis.gridIntervalMinor() / 100000;
+
   QgsNumericFormatContext numericContext;
 
   // calculate text metrics
   double maxYAxisLabelWidth = 0;
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
-  for ( double currentY = firstYLabel; currentY <= mMaxY; currentY += mYAxis.labelInterval() )
+  for ( double currentY = firstYLabel; currentY <= mMaxY && !qgsDoubleNear( currentY, mMaxY, yTolerance ); currentY += mYAxis.labelInterval() )
   {
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
     const QString text = mYAxis.numericFormat()->formatDouble( currentY, numericContext );
@@ -270,15 +273,12 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   const double xScale = ( chartAreaRight - chartAreaLeft ) / ( mMaxX - mMinX );
   const double yScale = ( chartAreaBottom - chartAreaTop ) / ( mMaxY - mMinY );
 
-  const double xTolerance = mXAxis.gridIntervalMinor() / 100000;
-  const double yTolerance = mYAxis.gridIntervalMinor() / 100000;
-
   // grid lines
 
   // x
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
   double nextMajorXGrid = firstMajorXGrid;
-  for ( double currentX = firstMinorXGrid; currentX <= mMaxX; currentX += mXAxis.gridIntervalMinor() )
+  for ( double currentX = firstMinorXGrid; currentX <= mMaxX && !qgsDoubleNear( currentX, mMaxX, xTolerance ); currentX += mXAxis.gridIntervalMinor() )
   {
     bool isMinor = true;
     if ( qgsDoubleNear( currentX, nextMajorXGrid, xTolerance ) )
@@ -301,7 +301,7 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   // y
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
   double nextMajorYGrid = firstMajorYGrid;
-  for ( double currentY = firstMinorYGrid; currentY <= mMaxY; currentY += mYAxis.gridIntervalMinor() )
+  for ( double currentY = firstMinorYGrid; currentY <= mMaxY && !qgsDoubleNear( currentY, mMaxY, yTolerance ); currentY += mYAxis.gridIntervalMinor() )
   {
     bool isMinor = true;
     if ( qgsDoubleNear( currentY, nextMajorYGrid, yTolerance ) )
@@ -394,10 +394,13 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
 
   QgsNumericFormatContext numericContext;
 
+  const double xTolerance = mXAxis.gridIntervalMinor() / 100000;
+  const double yTolerance = mYAxis.gridIntervalMinor() / 100000;
+
   // calculate text metrics
   double maxXAxisLabelHeight = 0;
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
-  for ( double currentX = firstXLabel; currentX <= mMaxX; currentX += mXAxis.labelInterval() )
+  for ( double currentX = firstXLabel; currentX <= mMaxX || qgsDoubleNear( currentX, mMaxX, xTolerance ); currentX += mXAxis.labelInterval() )
   {
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
     const QString text = mXAxis.numericFormat()->formatDouble( currentX, numericContext );
@@ -406,7 +409,7 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
 
   double maxYAxisLabelWidth = 0;
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
-  for ( double currentY = firstMinorYGrid; currentY <= mMaxY; currentY += mYAxis.gridIntervalMinor() )
+  for ( double currentY = firstMinorYGrid; currentY <= mMaxY || qgsDoubleNear( currentY, mMaxY, yTolerance ); currentY += mYAxis.gridIntervalMinor() )
   {
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
     const QString text = mYAxis.numericFormat()->formatDouble( currentY, numericContext );
