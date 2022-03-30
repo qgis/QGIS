@@ -2264,6 +2264,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       int row = 0;
       int column = 0;
+      bool addSpacer = true;
 
       const QList<QgsAttributeEditorElement *> children = container->children();
 
@@ -2338,11 +2339,25 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           column = 0;
           row += 1;
         }
+
+        if ( widgetInfo.widget
+             && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Fixed
+             && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Maximum
+             && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Preferred )
+          addSpacer = false;
+
+        // we consider all relation editors should be expanding
+        if ( qobject_cast<QgsAttributeFormRelationEditorWidget *>( widgetInfo.widget ) )
+          addSpacer = false;
       }
-      QWidget *spacer = new QWidget();
-      spacer->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
-      gbLayout->addWidget( spacer, ++row, 0 );
-      gbLayout->setRowStretch( row, 1 );
+
+      if ( addSpacer )
+      {
+        QWidget *spacer = new QWidget();
+        spacer->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
+        gbLayout->addWidget( spacer, ++row, 0 );
+        gbLayout->setRowStretch( row, 1 );
+      }
 
       newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
