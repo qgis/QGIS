@@ -223,6 +223,8 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   const double xScale = ( chartAreaRight - chartAreaLeft ) / ( mMaxX - mMinX );
   const double yScale = ( chartAreaBottom - chartAreaTop ) / ( mMaxY - mMinY );
 
+  const double xTolerance = mGridIntervalMinorX / 100000;
+  const double yTolerance = mGridIntervalMinorY / 100000;
 
   // grid lines
 
@@ -232,7 +234,7 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   for ( double currentX = firstMinorXGrid; currentX <= mMaxX; currentX += mGridIntervalMinorX )
   {
     bool isMinor = true;
-    if ( qgsDoubleNear( currentX, nextMajorXGrid ) )
+    if ( qgsDoubleNear( currentX, nextMajorXGrid, xTolerance ) )
     {
       isMinor = false;
       nextMajorXGrid += mGridIntervalMajorX;
@@ -265,7 +267,7 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   for ( double currentY = firstMinorYGrid; currentY <= mMaxY; currentY += mGridIntervalMinorY )
   {
     bool isMinor = true;
-    if ( qgsDoubleNear( currentY, nextMajorYGrid ) )
+    if ( qgsDoubleNear( currentY, nextMajorYGrid, yTolerance ) )
     {
       isMinor = false;
       nextMajorYGrid += mGridIntervalMajorY;
@@ -292,12 +294,11 @@ void Qgs2DPlot::render( QgsRenderContext &context )
     }
   }
 
-
   // axis labels
 
   // x
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
-  for ( double currentX = firstXLabel; currentX <= mMaxX; currentX += mLabelIntervalX )
+  for ( double currentX = firstXLabel; currentX <= mMaxX || qgsDoubleNear( currentX, mMaxX, xTolerance ); currentX += mLabelIntervalX )
   {
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
     const QString text = mXAxisNumericFormat->formatDouble( currentX, numericContext );
@@ -307,7 +308,7 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
   // y
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
-  for ( double currentY = firstYLabel; currentY <= mMaxY; currentY += mLabelIntervalY )
+  for ( double currentY = firstYLabel; currentY <= mMaxY || qgsDoubleNear( currentY, mMaxY, yTolerance ); currentY += mLabelIntervalY )
   {
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
     const QString text = mYAxisNumericFormat->formatDouble( currentY, numericContext );
