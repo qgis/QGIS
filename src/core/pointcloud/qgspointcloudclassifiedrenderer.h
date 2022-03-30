@@ -48,6 +48,12 @@ class CORE_EXPORT QgsPointCloudCategory
     QgsPointCloudCategory( int value, const QColor &color, const QString &label, bool render = true );
 
     /**
+     * Equality operator.
+     * \since QGIS 3.26
+     */
+    bool operator==( const QgsPointCloudCategory &other ) const;
+
+    /**
      * Returns the value corresponding to this category.
      *
      * \see setValue()

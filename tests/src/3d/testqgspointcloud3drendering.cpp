@@ -46,11 +46,14 @@ class TestQgsPointCloud3DRendering : public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void testPointCloudSingleColor();
-    void testPointCloudAttributeByRamp();
-    void testPointCloudRgb();
-    void testPointCloudClassification();
-    void testPointCloudSyncedTo2D();
+    void testSync3DRendererTo2DRenderer();
+    void testDisableSync3DRendererTo2DRenderer();
+
+//    void testPointCloudSingleColor();
+//    void testPointCloudAttributeByRamp();
+//    void testPointCloudRgb();
+//    void testPointCloudClassification();
+//    void testPointCloudSyncedTo2D();
 
 
   private:
@@ -96,9 +99,14 @@ void TestQgsPointCloud3DRendering::initTestCase()
   mLayer = new QgsPointCloudLayer( dataDir + "/point_clouds/ept/rgb/ept.json", "test", "ept" );
   QVERIFY( mLayer->isValid() );
   mProject->addMapLayer( mLayer );
-
   mProject->setCrs( mLayer->crs() );
 
+  // set a default 3d renderer
+  QgsSingleColorPointCloud3DSymbol *symbol = new QgsSingleColorPointCloud3DSymbol();
+  symbol->setSingleColor( QColor( 255, 0, 0 ) );
+  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
+  renderer->setSymbol( symbol );
+  mLayer->setRenderer3D( renderer );
 }
 
 //runs after all tests
@@ -117,6 +125,148 @@ void TestQgsPointCloud3DRendering::cleanupTestCase()
 
   QgsApplication::exitQgis();
 }
+
+void TestQgsPointCloud3DRendering::testSync3DRendererTo2DRenderer()
+{
+  // gather different 2d renderers
+  QgsPointCloudExtentRenderer *extent2DRenderer = new QgsPointCloudExtentRenderer();
+  QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer = new QgsPointCloudAttributeByRampRenderer();
+  colorramp2DRenderer->setAttribute( QStringLiteral( "Z" ) );
+  QgsColorRampShader shader = QgsColorRampShader( 0.98, 1.25 );
+  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
+  colorramp2DRenderer->setColorRampShader( shader );
+  QgsPointCloudRgbRenderer *rgb2DRenderer = dynamic_cast<QgsPointCloudRgbRenderer *>( mLayer->renderer()->clone() );
+  QgsPointCloudClassifiedRenderer *classification2DRenderer = new QgsPointCloudClassifiedRenderer();
+  classification2DRenderer->setAttribute( QStringLiteral( "Classification" ) );
+  auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
+  // change a couple of categories
+  categories[3].setRenderState( false );
+  categories[3].setColor( QColor( 255, 0, 0 ) );
+  categories[5].setRenderState( false );
+  categories[5].setColor( QColor( 0, 255, 0 ) );
+  classification2DRenderer->setCategories( categories );
+
+  // enable syncing, the 3d renderer should change when the 2d renderer changes
+  mLayer->setSync3DRendererTo2DRenderer( true );
+
+  {
+    // for the extent 2d renderer we should have a 3d renderer but no symbol
+    mLayer->setRenderer( extent2DRenderer );
+    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3d );
+    QVERIFY( !r3d->symbol() );
+  }
+  {
+    mLayer->setRenderer( colorramp2DRenderer );
+    QgsPointCloudAttributeByRampRenderer *r2d = static_cast<QgsPointCloudAttributeByRampRenderer *>( mLayer->renderer() );
+    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3d );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3d->symbol() );
+    QVERIFY( s );
+    QVERIFY( s->attribute() == r2d->attribute() );
+    QVERIFY( s->colorRampShader() == r2d->colorRampShader() );
+    QVERIFY( s->colorRampShaderMin() == r2d->minimum() );
+    QVERIFY( s->colorRampShaderMax() == r2d->maximum() );
+  }
+  {
+    mLayer->setRenderer( rgb2DRenderer );
+    QgsPointCloudRgbRenderer *r2d = static_cast<QgsPointCloudRgbRenderer *>( mLayer->renderer() );
+    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3d );
+    QgsRgbPointCloud3DSymbol *s = const_cast<QgsRgbPointCloud3DSymbol *>( dynamic_cast<const QgsRgbPointCloud3DSymbol *>( r3d->symbol() ) );
+
+    QVERIFY( s );
+    QVERIFY( s->redAttribute() == r2d->redAttribute() );
+    QVERIFY( s->blueAttribute() == r2d->blueAttribute() );
+    QVERIFY( s->greenAttribute() == r2d->greenAttribute() );
+    QVERIFY( s->redContrastEnhancement() == r2d->redContrastEnhancement() );
+    QVERIFY( s->greenContrastEnhancement() == r2d->greenContrastEnhancement() );
+    QVERIFY( s->blueContrastEnhancement() == r2d->blueContrastEnhancement() );
+  }
+  {
+    mLayer->setRenderer( classification2DRenderer );
+    QgsPointCloudClassifiedRenderer *r2d = static_cast<QgsPointCloudClassifiedRenderer *>( mLayer->renderer() );
+    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3d );
+    const QgsClassificationPointCloud3DSymbol *s = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( r3d->symbol() );
+    QVERIFY( s );
+    QVERIFY( s->attribute() == r2d->attribute() );
+    QVERIFY( s->categoriesList() == r2d->categories() );
+  }
+}
+
+void TestQgsPointCloud3DRendering::testDisableSync3DRendererTo2DRenderer()
+{
+  // gather different 2d renderers
+  QgsPointCloudExtentRenderer *extent2DRenderer = new QgsPointCloudExtentRenderer();
+  QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer = new QgsPointCloudAttributeByRampRenderer();
+  colorramp2DRenderer->setAttribute( QStringLiteral( "Z" ) );
+  QgsColorRampShader shader = QgsColorRampShader( 0.98, 1.25 );
+  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
+  colorramp2DRenderer->setColorRampShader( shader );
+  QgsPointCloudRgbRenderer *rgb2DRenderer = dynamic_cast<QgsPointCloudRgbRenderer *>( mLayer->renderer()->clone() );
+  QgsPointCloudClassifiedRenderer *classification2DRenderer = new QgsPointCloudClassifiedRenderer();
+  classification2DRenderer->setAttribute( QStringLiteral( "Classification" ) );
+  auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
+  // change a couple of categories
+  categories[3].setRenderState( false );
+  categories[3].setColor( QColor( 255, 0, 0 ) );
+  categories[5].setRenderState( false );
+  categories[5].setColor( QColor( 0, 255, 0 ) );
+  classification2DRenderer->setCategories( categories );
+
+
+  // enable syncing, the 3d renderer should change when the 2d renderer changes
+  mLayer->setSync3DRendererTo2DRenderer( true );
+
+  {
+    // for the extent 2d renderer we should have a 3d renderer but no symbol
+    mLayer->setRenderer( extent2DRenderer );
+    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3d );
+    QVERIFY( !r3d->symbol() );
+  }
+  {
+    mLayer->setRenderer( colorramp2DRenderer );
+    QgsPointCloudAttributeByRampRenderer *r2d = static_cast<QgsPointCloudAttributeByRampRenderer *>( mLayer->renderer() );
+    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3d );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3d->symbol() );
+    QVERIFY( s );
+    QVERIFY( s->attribute() == r2d->attribute() );
+    QVERIFY( s->colorRampShader() == r2d->colorRampShader() );
+    QVERIFY( s->colorRampShaderMin() == r2d->minimum() );
+    QVERIFY( s->colorRampShaderMax() == r2d->maximum() );
+  }
+
+  // now disable syncing and check that the 3d renderer symbol does not change
+  mLayer->setSync3DRendererTo2DRenderer( false );
+
+  {
+    mLayer->setRenderer( colorramp2DRenderer );
+    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3d );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3d->symbol() );
+    QVERIFY( s );
+  }
+  {
+    mLayer->setRenderer( rgb2DRenderer );
+    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3d );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3d->symbol() );
+    QVERIFY( s );
+  }
+  {
+    mLayer->setRenderer( classification2DRenderer );
+    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3d );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3d->symbol() );
+    QVERIFY( s );
+  }
+}
+/*
 
 void TestQgsPointCloud3DRendering::testPointCloudSingleColor()
 {
@@ -279,173 +429,98 @@ void TestQgsPointCloud3DRendering::testPointCloudClassification()
 
 void TestQgsPointCloud3DRendering::testPointCloudSyncedTo2D()
 {
-  int i = 0;
   const QgsRectangle fullExtent = mLayer->extent();
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   map->setCrs( mProject->crs() );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QgsPointLightSettings defaultLight;
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   defaultLight.setIntensity( 0.5 );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   QgsOffscreen3DEngine engine;
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   engine.setRootEntity( scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   mLayer->setRenderer3D( renderer );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   // gather different 2d renderers
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QgsPointCloudExtentRenderer *extent2DRenderer = new QgsPointCloudExtentRenderer();
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer = new QgsPointCloudAttributeByRampRenderer();
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   colorramp2DRenderer->setAttribute( QStringLiteral( "Z" ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QgsColorRampShader shader = QgsColorRampShader( 0.98, 1.25 );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   colorramp2DRenderer->setColorRampShader( shader );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QgsPointCloudRgbRenderer *rgb2DRenderer = dynamic_cast<QgsPointCloudRgbRenderer *>( mLayer->renderer()->clone() );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QgsPointCloudClassifiedRenderer *classification2DRenderer = new QgsPointCloudClassifiedRenderer();
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   classification2DRenderer->setAttribute( QStringLiteral( "Classification" ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   classification2DRenderer->setCategories( QgsPointCloudClassifiedRenderer::defaultCategories() );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   QgsPointCloudExtentRenderer *extent2DRenderer_2 = new QgsPointCloudExtentRenderer();
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer_2 = new QgsPointCloudAttributeByRampRenderer();
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   colorramp2DRenderer_2->setAttribute( QStringLiteral( "Z" ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QgsColorRampShader shader_2 = QgsColorRampShader( 0.98, 1.25 );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   shader_2.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   shader_2.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   colorramp2DRenderer_2->setColorRampShader( shader_2 );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QgsPointCloudRgbRenderer *rgb2DRenderer_2 = dynamic_cast<QgsPointCloudRgbRenderer *>( mLayer->renderer()->clone() );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QgsPointCloudClassifiedRenderer *classification2DRenderer_2 = new QgsPointCloudClassifiedRenderer();
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   classification2DRenderer_2->setAttribute( QStringLiteral( "Classification" ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   classification2DRenderer_2->setCategories( QgsPointCloudClassifiedRenderer::defaultCategories() );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   Qgs3DUtils::captureSceneImage( engine, scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   // When running the test on Travis, it would initially return empty rendered image.
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   // find a better fix in the future.
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   scene->cameraController()->resetView( 2.5 );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   // 3D symbols should now automatically change to match the 2d renderer
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   mLayer->setSync3DRendererTo2DRenderer( true );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   // default 2d renderer is rgb for this pointcloud
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QVERIFY( renderCheck( "pointcloud_3d_rgb", img, 40 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   // extent renderer should not render anythin in 3d
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   mLayer->setRenderer( extent2DRenderer );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QVERIFY( renderCheck( "pointcloud_3d_norenderer", img2, 40 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   mLayer->setRenderer( colorramp2DRenderer );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QVERIFY( renderCheck( "pointcloud_3d_colorramp", img3, 40 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   mLayer->setRenderer( rgb2DRenderer );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QImage img4 = Qgs3DUtils::captureSceneImage( engine, scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QVERIFY( renderCheck( "pointcloud_3d_rgb", img4, 40 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   mLayer->setRenderer( classification2DRenderer );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QImage img5 = Qgs3DUtils::captureSceneImage( engine, scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QVERIFY( renderCheck( "pointcloud_3d_classification", img5, 40 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   // Now let's stop syncing, 3d symbol should stay at the last one used
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   mLayer->setSync3DRendererTo2DRenderer( false );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   mLayer->setRenderer( extent2DRenderer_2 );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QImage img6 = Qgs3DUtils::captureSceneImage( engine, scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QVERIFY( renderCheck( "pointcloud_3d_classification", img6, 40 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   mLayer->setRenderer( colorramp2DRenderer_2 );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QImage img7 = Qgs3DUtils::captureSceneImage( engine, scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QVERIFY( renderCheck( "pointcloud_3d_classification", img7, 40 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   mLayer->setRenderer( rgb2DRenderer_2 );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QImage img8 = Qgs3DUtils::captureSceneImage( engine, scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QVERIFY( renderCheck( "pointcloud_3d_classification", img8, 40 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 
   mLayer->setRenderer( classification2DRenderer_2 );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QImage img9 = Qgs3DUtils::captureSceneImage( engine, scene );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
   QVERIFY( renderCheck( "pointcloud_3d_classification", img9, 40 ) );
-  QWARN( ( QString( "%1" ).arg( i++ ) ).toLocal8Bit().data() );
 }
-
+*/
 QGSTEST_MAIN( TestQgsPointCloud3DRendering )
 #include "testqgspointcloud3drendering.moc"
