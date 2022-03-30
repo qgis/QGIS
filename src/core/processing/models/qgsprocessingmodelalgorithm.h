@@ -531,6 +531,15 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     const QgsProcessingParameterDefinition *modelParameterFromChildIdAndOutputName( const QString &childId, const QString &childOutputName ) const;
 
+    /**
+     * Makes a name "safe", by replacing any non-alphanumeric characters with underscores.
+     *
+     * If \a capitalize is TRUE then the string will be converted to a camel case string.
+     *
+     * \since QGIS 3.26
+     */
+    static QString safeName( const QString &name, bool capitalize = false );
+
 #ifndef SIP_RUN
 
     //! Internal model versions
@@ -576,8 +585,6 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QMap< QString, QgsProcessingModelGroupBox > mGroupBoxes;
 
     QStringList mParameterOrder;
-
-    static QString safeName( const QString &name, bool capitalize );
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch ) const;

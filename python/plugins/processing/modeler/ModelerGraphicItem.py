@@ -25,6 +25,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelOutput,
+                       QgsProcessingModelAlgorithm,
                        QgsProject,
                        Qgis)
 from qgis.gui import (
@@ -119,9 +120,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
                 comment = dlg.comments()
                 comment_color = dlg.commentColor()
 
-                validChars = \
-                    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-                safeName = ''.join(c for c in new_param.description() if c in validChars)
+                safeName = QgsProcessingModelAlgorithm.safeName(new_param.description())
                 new_param.setName(safeName.lower())
 
         if new_param is not None:
