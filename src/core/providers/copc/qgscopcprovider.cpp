@@ -186,12 +186,6 @@ bool QgsCopcProviderMetadata::uriIsBlocklisted( const QString &uri ) const
   if ( !parts.contains( QStringLiteral( "path" ) ) )
     return false;
 
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-
-  // internal details only
-  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
-    return true;
-
   return false;
 }
 
