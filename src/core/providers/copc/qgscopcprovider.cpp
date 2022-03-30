@@ -177,15 +177,6 @@ QList<QgsMapLayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QSt
   return QList< QgsMapLayerType>();
 }
 
-bool QgsCopcProviderMetadata::uriIsBlocklisted( const QString &uri ) const
-{
-  const QVariantMap parts = decodeUri( uri );
-  if ( !parts.contains( QStringLiteral( "path" ) ) )
-    return false;
-
-  return false;
-}
-
 QVariantMap QgsCopcProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QString path = uri;
