@@ -181,12 +181,7 @@ bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, QgsReadW
   borderElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mChartBorderSymbol.get(), document, context ) );
   element.appendChild( borderElement );
 
-  QDomElement marginsElement = document.createElement( QStringLiteral( "margins" ) );
-  marginsElement.setAttribute( QStringLiteral( "left" ), qgsDoubleToString( mMargins.left() ) );
-  marginsElement.setAttribute( QStringLiteral( "right" ), qgsDoubleToString( mMargins.right() ) );
-  marginsElement.setAttribute( QStringLiteral( "top" ), qgsDoubleToString( mMargins.top() ) );
-  marginsElement.setAttribute( QStringLiteral( "bottom" ), qgsDoubleToString( mMargins.bottom() ) );
-  element.appendChild( marginsElement );
+  element.setAttribute( QStringLiteral( "margins" ), mMargins.toString() );
 
   return true;
 }
@@ -210,11 +205,7 @@ bool Qgs2DPlot::readXml( const QDomElement &element, QgsReadWriteContext &contex
   const QDomElement borderElement = element.firstChildElement( QStringLiteral( "borderSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
   mChartBorderSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( borderElement, context ) );
 
-  const QDomElement marginsElement = element.firstChildElement( QStringLiteral( "margins" ) );
-  mMargins.setLeft( marginsElement.attribute( QStringLiteral( "left" ) ).toDouble() );
-  mMargins.setRight( marginsElement.attribute( QStringLiteral( "right" ) ).toDouble() );
-  mMargins.setTop( marginsElement.attribute( QStringLiteral( "top" ) ).toDouble() );
-  mMargins.setBottom( marginsElement.attribute( QStringLiteral( "bottom" ) ).toDouble() );
+  mMargins = QgsMargins::fromString( element.attribute( QStringLiteral( "margins" ) ) );
 
   return true;
 }
