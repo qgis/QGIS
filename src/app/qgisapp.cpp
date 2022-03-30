@@ -7481,10 +7481,8 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
         break;
 
       case QgsMapLayerType::PointCloudLayer:
-      {
         ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), false ) );
         break;
-      }
     }
   }
 
