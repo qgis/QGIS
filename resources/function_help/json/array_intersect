@@ -12,7 +12,7 @@
   }],
   "examples": [{
     "expression": "array_intersect(array(1,2,3,4),array(4,0,2,5))",
-    "returns": "true"
+    "returns": "TRUE"
   }],
   "tags": ["array", "element", "exists", "intersection", "overlap"]
 }
