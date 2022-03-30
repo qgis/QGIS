@@ -214,6 +214,9 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
 #endif
 
   fontChanged( mTextEdit->font() );
+
+  connect( mTextEdit, &QTextEdit::textChanged, this, &QgsRichTextEditor::textChanged );
+  connect( mSourceEdit, &QgsCodeEditorHTML::textChanged, this, &QgsRichTextEditor::textChanged );
 }
 
 QString QgsRichTextEditor::toPlainText() const
