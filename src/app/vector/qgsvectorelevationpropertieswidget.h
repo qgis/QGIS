@@ -40,6 +40,7 @@ class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
     void onChanged();
     void clampingChanged();
     void bindingChanged();
+    void toggleSymbolWidgets();
 
   private:
 

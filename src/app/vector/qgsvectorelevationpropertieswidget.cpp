@@ -19,6 +19,9 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -28,6 +31,10 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
   mExtrusionSpinBox->setClearValue( 0 );
+
+  mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
+  mFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
+  mMarkerStyleButton->setSymbolType( Qgis::SymbolType::Marker );
 
   mComboClamping->addItem( tr( "Clamped to Terrain" ), static_cast< int >( Qgis::AltitudeClamping::Terrain ) );
   mComboClamping->addItem( tr( "Relative to Terrain" ), static_cast< int >( Qgis::AltitudeClamping::Relative ) );
@@ -46,6 +53,12 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   connect( mComboBinding, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mComboClamping, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::clampingChanged );
   connect( mComboBinding, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::bindingChanged );
+
+  connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mMarkerStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
+
+  connect( mExtrusionGroupBox, &QGroupBox::toggled, this, &QgsVectorElevationPropertiesWidget::toggleSymbolWidgets );
 }
 
 void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -73,6 +86,13 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mScaleZSpinBox->setValue( props->zScale() );
   mExtrusionGroupBox->setChecked( props->extrusionEnabled() );
   mExtrusionSpinBox->setValue( props->extrusionHeight() );
+
+  mLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
+  mFillStyleButton->setSymbol( props->profileFillSymbol()->clone() );
+  mMarkerStyleButton->setSymbol( props->profileMarkerSymbol()->clone() );
+
+  toggleSymbolWidgets();
+
   mBlockUpdates = false;
 
   clampingChanged();
@@ -92,6 +112,11 @@ void QgsVectorElevationPropertiesWidget::apply()
   props->setBinding( static_cast< Qgis::AltitudeBinding >( mComboBinding->currentData().toInt() ) );
   props->setExtrusionEnabled( mExtrusionGroupBox->isChecked() );
   props->setExtrusionHeight( mExtrusionSpinBox->value() );
+
+  props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  props->setProfileMarkerSymbol( mMarkerStyleButton->clonedSymbol< QgsMarkerSymbol >() );
+  props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
+
   mLayer->trigger3DUpdate();
 }
 
@@ -158,6 +183,39 @@ void QgsVectorElevationPropertiesWidget::bindingChanged()
       );
       break;
 
+  }
+}
+
+void QgsVectorElevationPropertiesWidget::toggleSymbolWidgets()
+{
+  // see QgsVectorLayerElevationProperties documentation on why certain symbols are
+  // enabled here
+  switch ( mLayer->geometryType() )
+  {
+    case QgsWkbTypes::PointGeometry:
+      mLineStyleButton->setEnabled( mExtrusionGroupBox->isChecked() );
+      mMarkerStyleButton->setEnabled( true );
+      mFillStyleButton->setEnabled( false );
+      break;
+
+    case QgsWkbTypes::LineGeometry:
+      mLineStyleButton->setEnabled( mExtrusionGroupBox->isChecked() );
+      mMarkerStyleButton->setEnabled( true );
+      mFillStyleButton->setEnabled( false );
+      break;
+
+    case QgsWkbTypes::PolygonGeometry:
+      mLineStyleButton->setEnabled( true );
+      mMarkerStyleButton->setEnabled( true );
+      mFillStyleButton->setEnabled( mExtrusionGroupBox->isChecked() );
+      break;
+
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      mLineStyleButton->setEnabled( false );
+      mMarkerStyleButton->setEnabled( false );
+      mFillStyleButton->setEnabled( false );
+      break;
   }
 }
 
