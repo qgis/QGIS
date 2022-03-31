@@ -59,7 +59,16 @@ void QgsMapToolProfileCurve::keyPressEvent( QKeyEvent *e )
   if ( e->key() == Qt::Key_Escape )
   {
     canvas()->setMapTool( mPreviousTool );
+    emit captureCanceled();
   }
+}
+
+void QgsMapToolProfileCurve::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
+{
+  const bool wasCapturing = isCapturing();
+  QgsMapToolCapture::cadCanvasReleaseEvent( e );
+  if ( !wasCapturing && isCapturing() )
+    emit captureStarted();
 }
 
 void QgsMapToolProfileCurve::lineCaptured( const QgsCurve *line )

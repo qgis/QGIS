@@ -21,6 +21,7 @@
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
 #include "qgsgeometry.h"
+#include "qobjectuniqueptr.h"
 
 class QgsDockableWidgetHelper;
 class QgsMapCanvas;
@@ -29,6 +30,7 @@ class QToolButton;
 class QgsElevationProfileCanvas;
 class QgsMapToolProfileCurve;
 class QgsGeometry;
+class QgsRubberBand;
 
 class QgsElevationProfileWidget : public QWidget
 {
@@ -52,6 +54,8 @@ class QgsElevationProfileWidget : public QWidget
     void setProfileCurve( const QgsGeometry &curve );
     void updatePlot();
     void scheduleUpdate();
+    void clear();
+
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
 
@@ -66,8 +70,11 @@ class QgsElevationProfileWidget : public QWidget
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;
     QgsGeometry mProfileCurve;
 
+    QObjectUniquePtr<QgsRubberBand> mRubberBand;
+
     QTimer *mSetCurveTimer = nullptr;
     bool mUpdateScheduled = false;
+    QgsRubberBand *createRubberBand();
 };
 
 #endif // QGSELEVATIONPROFILEWIDGET_H

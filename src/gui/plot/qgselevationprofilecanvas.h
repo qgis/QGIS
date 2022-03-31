@@ -82,6 +82,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
 
     void zoomFull();
 
+    void clear();
+
   private slots:
 
     void generationFinished();
@@ -93,8 +95,6 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
     QgsWeakMapLayerPointerList mLayers;
 
     QgsElevationProfilePlotItem *mPlotItem = nullptr;
-
-    std::vector< std::unique_ptr< QgsAbstractProfileResults > > mProfileResults;
 
     QgsProfilePlotRenderer *mCurrentJob = nullptr;
 
