@@ -89,6 +89,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name, bool 
 
   mCanvas = new QgsElevationProfileCanvas( this );
   mCanvas->setProject( QgsProject::instance() );
+  connect( mCanvas, &QgsElevationProfileCanvas::activeJobCountChanged, this, &QgsElevationProfileWidget::onTotalPendingJobsCountChanged );
 
 #if 0
   connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, [ = ]( const QString fileName )
@@ -99,6 +100,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name, bool 
 
   mProgressPendingJobs = new QProgressBar( this );
   mProgressPendingJobs->setRange( 0, 0 );
+  mProgressPendingJobs->hide();
 
   QHBoxLayout *topLayout = new QHBoxLayout;
   topLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -115,8 +117,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name, bool 
 
   setLayout( layout );
 
-// onTotalPendingJobsCountChanged();
-
   mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock 3D Map View" ) );
@@ -126,7 +126,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name, bool 
     close();
   } );
 
-  // updating the profile plot is defered on a timer, so that we don't trigger it too often
+  // updating the profile plot is deferred on a timer, so that we don't trigger it too often
   mSetCurveTimer = new QTimer( this );
   mSetCurveTimer->setSingleShot( true );
   mSetCurveTimer->stop();
@@ -169,7 +169,6 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
   connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
 
   // only do this from map tool!
-  // mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs()
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &QgsElevationProfileWidget::onMainCanvasLayersChanged );
   onMainCanvasLayersChanged();
 }
@@ -181,15 +180,14 @@ void QgsElevationProfileWidget::cancelJobs()
 
 void QgsElevationProfileWidget::onMainCanvasLayersChanged()
 {
-  // not right -- should be done in response to project layers
+  // possibly not right -- do we always want to sync the profile layers to canvas layers?
   mCanvas->setLayers( mMainCanvas->layers( true ) );
   scheduleUpdate();
 }
 
-void QgsElevationProfileWidget::onTotalPendingJobsCountChanged()
+void QgsElevationProfileWidget::onTotalPendingJobsCountChanged( int count )
 {
-//  const int count = mCanvas->scene() ? mCanvas->scene()->totalPendingJobsCount() : 0;
-  // mProgressPendingJobs->setVisible( count );
+  mProgressPendingJobs->setVisible( count );
 }
 
 void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve )

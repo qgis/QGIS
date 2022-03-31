@@ -59,7 +59,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
     /**
      * Sets the \a project associated with the profile.
      *
-     * This must be set before any layers which utilise terrain based elevation settings can be
+     * This must be set before any layers which utilize terrain based elevation settings can be
      * included in the canvas.
      */
     void setProject( QgsProject *project );
@@ -80,6 +80,13 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
 
     void resizeEvent( QResizeEvent *event ) override;
     void showEvent( QShowEvent *event ) override;
+
+  signals:
+
+    /**
+     * Emitted when the number of active background jobs changes.
+     */
+    void activeJobCountChanged( int count );
 
   public slots:
 

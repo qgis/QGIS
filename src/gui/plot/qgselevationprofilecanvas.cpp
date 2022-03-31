@@ -132,6 +132,7 @@ void QgsElevationProfileCanvas::cancelJobs()
   if ( mCurrentJob )
   {
     mPlotItem->setRenderer( nullptr );
+    disconnect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
     mCurrentJob->cancelGeneration();
     mCurrentJob->deleteLater();
     mCurrentJob = nullptr;
@@ -169,12 +170,16 @@ void QgsElevationProfileCanvas::refresh()
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
   mCurrentJob->startGeneration();
   mPlotItem->setRenderer( mCurrentJob );
+
+  emit activeJobCountChanged( 1 );
 }
 
 void QgsElevationProfileCanvas::generationFinished()
 {
   if ( !mCurrentJob )
     return;
+
+  emit activeJobCountChanged( 0 );
 
   zoomFull();
 }

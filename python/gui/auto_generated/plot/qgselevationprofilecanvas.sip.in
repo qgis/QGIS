@@ -42,7 +42,7 @@ background.
 %Docstring
 Sets the ``project`` associated with the profile.
 
-This must be set before any layers which utilise terrain based elevation settings can be
+This must be set before any layers which utilize terrain based elevation settings can be
 included in the canvas.
 %End
 
@@ -64,6 +64,13 @@ Returns the list of layers included in the profile.
 
     virtual void showEvent( QShowEvent *event );
 
+
+  signals:
+
+    void activeJobCountChanged( int count );
+%Docstring
+Emitted when the number of active background jobs changes.
+%End
 
   public slots:
 
