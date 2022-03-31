@@ -96,6 +96,11 @@ Returns a list of geometries representing the calculated elevation results.
 Renders the results to the specified ``context``.
 %End
 
+    virtual QgsDoubleRange zRange() const = 0;
+%Docstring
+Returns the range of the retrieved elevation values
+%End
+
 };
 
 class QgsAbstractProfileGenerator

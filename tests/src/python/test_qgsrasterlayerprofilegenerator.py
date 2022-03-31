@@ -68,6 +68,9 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         self.assertEqual(results[first_point], 154)
         self.assertEqual(results[last_point], 99)
 
+        self.assertEqual(r.zRange().lower(), 74)
+        self.assertEqual(r.zRange().upper(), 154)
+
     def testGenerationWithStepSize(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
         self.assertTrue(rl.isValid())
@@ -100,6 +103,9 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         last_point = max(results.keys())
         self.assertEqual(results[first_point], 154)
         self.assertEqual(results[last_point], 99)
+
+        self.assertEqual(r.zRange().lower(), 74)
+        self.assertEqual(r.zRange().upper(), 154)
 
 
 if __name__ == '__main__':

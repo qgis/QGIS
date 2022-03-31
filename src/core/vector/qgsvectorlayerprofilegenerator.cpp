@@ -49,6 +49,11 @@ QMap<double, double> QgsVectorLayerProfileResults::distanceToHeightMap() const
   return mDistanceToHeightMap;
 }
 
+QgsDoubleRange QgsVectorLayerProfileResults::zRange() const
+{
+  return QgsDoubleRange( minZ, maxZ );
+}
+
 QgsPointSequence QgsVectorLayerProfileResults::sampledPoints() const
 {
   return rawPoints;
@@ -197,6 +202,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
   {
     const double height = featureZToHeight( point->x(), point->y(), point->z() );
     mResults->rawPoints.append( QgsPoint( point->x(), point->y(), height ) );
+    mResults->minZ = std::min( mResults->minZ, height );
+    mResults->maxZ = std::max( mResults->maxZ, height );
 
     QString lastError;
     const double distance = mProfileCurveEngine->lineLocatePoint( *point, &lastError );
@@ -208,6 +215,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
                                    QgsPoint( point->x(), point->y(), height + mExtrusionHeight ) ) ) );
       mResults->distanceVHeightGeometries.append( QgsGeometry( new QgsLineString( QgsPoint( distance, height ),
           QgsPoint( distance, height + mExtrusionHeight ) ) ) );
+      mResults->minZ = std::min( mResults->minZ, height + mExtrusionHeight );
+      mResults->maxZ = std::max( mResults->maxZ, height + mExtrusionHeight );
     }
     else
     {
@@ -277,6 +286,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
 
         const double height = featureZToHeight( interpolatedPoint->x(), interpolatedPoint->y(), interpolatedPoint->z() );
         mResults->rawPoints.append( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
+        mResults->minZ = std::min( mResults->minZ, height );
+        mResults->maxZ = std::max( mResults->maxZ, height );
 
         const double distanceAlongProfileCurve = mProfileCurveEngine->lineLocatePoint( *interpolatedPoint, &error );
         mResults->mDistanceToHeightMap.insert( distanceAlongProfileCurve, height );
@@ -287,6 +298,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
                                        QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height + mExtrusionHeight ) ) ) );
           mResults->distanceVHeightGeometries.append( QgsGeometry( new QgsLineString( QgsPoint( distanceAlongProfileCurve, height ),
               QgsPoint( distanceAlongProfileCurve, height + mExtrusionHeight ) ) ) );
+          mResults->minZ = std::min( mResults->minZ, height + mExtrusionHeight );
+          mResults->maxZ = std::max( mResults->maxZ, height + mExtrusionHeight );
         }
         else
         {
@@ -365,6 +378,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
         {
           const QgsPoint interpolatedPoint = interpolatePointOnTriangle( triangle, p->x(), p->y() );
           mResults->rawPoints.append( interpolatedPoint );
+          mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() );
+          mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() );
 
           QString lastError;
           const double distance = mProfileCurveEngine->lineLocatePoint( *p, &lastError );
@@ -376,6 +391,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
                                          QgsPoint( interpolatedPoint.x(), interpolatedPoint.y(), interpolatedPoint.z() + mExtrusionHeight ) ) ) );
             transformedParts.append( QgsGeometry( new QgsLineString( QgsPoint( distance, interpolatedPoint.z() ),
                                                   QgsPoint( distance, interpolatedPoint.z() + mExtrusionHeight ) ) ) );
+            mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() + mExtrusionHeight );
+            mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() + mExtrusionHeight );
           }
           else
           {
@@ -434,6 +451,13 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
               *extZOut++ = interpolatedPoint.z() + mExtrusionHeight;
 
             mResults->rawPoints.append( interpolatedPoint );
+            mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() );
+            mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() );
+            if ( mExtrusionEnabled )
+            {
+              mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() + mExtrusionHeight );
+              mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() + mExtrusionHeight );
+            }
 
             const double distance = mProfileCurveEngine->lineLocatePoint( interpolatedPoint, &lastError );
             *outDistance++ = distance;

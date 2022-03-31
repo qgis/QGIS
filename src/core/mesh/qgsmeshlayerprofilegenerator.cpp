@@ -34,12 +34,7 @@ QString QgsMeshLayerProfileResults::type() const
 
 QMap<double, double> QgsMeshLayerProfileResults::distanceToHeightMap() const
 {
-  QMap<double, double> res;
-  for ( const Result &r : results )
-  {
-    res.insert( r.distance, r.height );
-  }
-  return res;
+  return results;
 }
 
 QgsPointSequence QgsMeshLayerProfileResults::sampledPoints() const
@@ -55,6 +50,11 @@ QVector<QgsGeometry> QgsMeshLayerProfileResults::asGeometries() const
     res.append( QgsGeometry( point.clone() ) );
 
   return res;
+}
+
+QgsDoubleRange QgsMeshLayerProfileResults::zRange() const
+{
+  return QgsDoubleRange( minZ, maxZ );
 }
 
 void QgsMeshLayerProfileResults::renderResults( QgsProfileRenderContext &context )
@@ -140,7 +140,6 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
   // convert x/y values back to distance/height values
   QgsGeos originalCurveGeos( mProfileCurve.get() );
   originalCurveGeos.prepareGeometry();
-  mResults->results.reserve( mResults->rawPoints.size() );
   QString lastError;
   for ( const QgsPoint &pixel : std::as_const( mResults->rawPoints ) )
   {
@@ -149,10 +148,9 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
 
     const double distance = originalCurveGeos.lineLocatePoint( pixel, &lastError );
 
-    QgsMeshLayerProfileResults::Result res;
-    res.distance = distance;
-    res.height = pixel.z();
-    mResults->results.push_back( res );
+    mResults->minZ = std::min( pixel.z(), mResults->minZ );
+    mResults->maxZ = std::max( pixel.z(), mResults->maxZ );
+    mResults->results.insert( distance, pixel.z() );
   }
 
   return true;
