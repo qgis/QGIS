@@ -10,6 +10,7 @@
 
 
 
+
 class QgsRasterLayerElevationProperties : QgsMapLayerElevationProperties
 {
 %Docstring(signature="appended")
@@ -27,6 +28,7 @@ Raster layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
 %Docstring
 Constructor for QgsRasterLayerElevationProperties, with the specified ``parent`` object.
 %End
+    ~QgsRasterLayerElevationProperties();
 
     virtual bool hasElevation() const;
 
@@ -51,6 +53,22 @@ Returns ``True`` if the elevation properties are enabled, i.e. the raster layer 
 Sets whether the elevation properties are enabled, i.e. the raster layer values represent an elevation surface.
 
 .. seealso:: :py:func:`isEnabled`
+%End
+
+    QgsLineSymbol *profileLineSymbol() const;
+%Docstring
+Returns the line symbol used to render the raster profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileLineSymbol`
+%End
+
+    void setProfileLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the raster profile in elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`profileLineSymbol`
 %End
 
 };
