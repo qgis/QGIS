@@ -151,6 +151,7 @@ class QgsDevToolWidgetFactory;
 class QgsNetworkLogger;
 class QgsNetworkLoggerWidgetFactory;
 class QgsMapToolCapture;
+class QgsElevationProfileWidget;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -2271,6 +2272,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Closes any existing 3D map docks
     void closeAdditional3DMapCanvases();
+
+    QgsElevationProfileWidget *createNewElevationProfile();
 
     /**
      * Refresh the user profile menu.

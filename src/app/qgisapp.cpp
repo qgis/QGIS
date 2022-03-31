@@ -121,6 +121,7 @@
 #include "raster/qgsrasterelevationpropertieswidget.h"
 #include "vector/qgsvectorelevationpropertieswidget.h"
 #include "mesh/qgsmeshelevationpropertieswidget.h"
+#include "profile/qgselevationprofilewidget.h"
 
 #ifdef HAVE_3D
 #include "qgs3d.h"
@@ -1976,6 +1977,12 @@ QgisApp::~QgisApp()
   qDeleteAll( mCustomDropHandlers );
   qDeleteAll( mCustomLayoutDropHandlers );
 
+  const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren< QgsElevationProfileWidget * >();
+  for ( QgsElevationProfileWidget *widget : elevationProfileWidgets )
+  {
+    delete widget;
+  }
+
   const QList<QgsMapCanvas *> canvases = mapCanvases();
   for ( QgsMapCanvas *canvas : canvases )
   {
@@ -2854,6 +2861,7 @@ void QgisApp::createActions()
   connect( mActionLabeling, &QAction::triggered, this, &QgisApp::labeling );
   mStatisticalSummaryDockWidget->setToggleVisibilityAction( mActionStatisticalSummary );
   connect( mActionManage3DMapViews, &QAction::triggered, this, &QgisApp::show3DMapViewsManager );
+  connect( mActionElevationProfile, &QAction::triggered, this, &QgisApp::createNewElevationProfile );
 
   // Layer Menu Items
 
@@ -13880,6 +13888,13 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
 #endif
 }
 
+QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
+{
+  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( tr( "Elevation Profile" ), true );
+  widget->setMainCanvas( mMapCanvas );
+  return widget;
+}
+
 void QgisApp::new3DMapCanvas()
 {
 #ifdef HAVE_3D
@@ -14187,6 +14202,12 @@ void QgisApp::closeProject()
   mLegendExpressionFilterButton->setExpressionText( QString() );
   mLegendExpressionFilterButton->setChecked( false );
   mFilterLegendByMapContentAction->setChecked( false );
+
+  const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren< QgsElevationProfileWidget * >();
+  for ( QgsElevationProfileWidget *widget : elevationProfileWidgets )
+  {
+    delete widget;
+  }
 
   closeAdditionalMapCanvases();
   closeAdditional3DMapCanvases();

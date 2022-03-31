@@ -194,8 +194,11 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
 
     const double distance = originalCurveGeos.lineLocatePoint( pixel, &lastError );
 
-    mResults->minZ = std::min( pixel.z(), mResults->minZ );
-    mResults->maxZ = std::max( pixel.z(), mResults->maxZ );
+    if ( !std::isnan( pixel.z() ) )
+    {
+      mResults->minZ = std::min( pixel.z(), mResults->minZ );
+      mResults->maxZ = std::max( pixel.z(), mResults->maxZ );
+    }
     mResults->results.insert( distance, pixel.z() );
   }
 
