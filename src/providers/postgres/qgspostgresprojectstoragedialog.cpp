@@ -64,7 +64,7 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
   populateProjects();
 
   connect( mCboSchema, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateProjects );
-  connect( mCboProject, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::projectChanged );
+  connect( mCboProject, &QComboBox::currentTextChanged, this, &QgsPostgresProjectStorageDialog::projectChanged );
 
   projectChanged();
 }
@@ -130,11 +130,13 @@ void QgsPostgresProjectStorageDialog::populateSchemas()
 void QgsPostgresProjectStorageDialog::populateProjects()
 {
   mCboProject->clear();
+  mExistingProjects.clear();
 
   QString uri = currentProjectUri();
   QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) );
   Q_ASSERT( storage );
-  mCboProject->addItems( storage->listProjects( uri ) );
+  mExistingProjects = storage->listProjects( uri );
+  mCboProject->addItems( mExistingProjects );
   projectChanged();
 }
 
@@ -146,7 +148,7 @@ void QgsPostgresProjectStorageDialog::onOK()
 
   if ( mSaving )
   {
-    if ( mCboProject->findText( mCboProject->currentText() ) != -1 )
+    if ( mExistingProjects.contains( mCboProject->currentText() ) )
     {
       int res = QMessageBox::question( this, tr( "Overwrite project" ),
                                        tr( "A project with the same name already exists. Would you like to overwrite it?" ),
@@ -161,7 +163,7 @@ void QgsPostgresProjectStorageDialog::onOK()
 
 void QgsPostgresProjectStorageDialog::projectChanged()
 {
-  mActionRemoveProject->setEnabled( mCboProject->count() != 0 && mCboProject->findText( mCboProject->currentText() ) != -1 );
+  mActionRemoveProject->setEnabled( mCboProject->count() != 0 && mExistingProjects.contains( mCboProject->currentText() ) );
 }
 
 void QgsPostgresProjectStorageDialog::removeProject()
