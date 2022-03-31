@@ -117,10 +117,28 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   mPlotItem = new QgsElevationProfilePlotItem( this );
 }
 
+QgsElevationProfileCanvas::~QgsElevationProfileCanvas()
+{
+  if ( mCurrentJob )
+  {
+    mPlotItem->setRenderer( nullptr );
+    mCurrentJob->deleteLater();
+    mCurrentJob = nullptr;
+  }
+}
+
 void QgsElevationProfileCanvas::update()
 {
   if ( !mProject || !profileCurve() )
     return;
+
+  if ( mCurrentJob )
+  {
+    mPlotItem->setRenderer( nullptr );
+    disconnect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
+    mCurrentJob->deleteLater();
+    mCurrentJob = nullptr;
+  }
 
   QgsProfileRequest request( profileCurve()->clone() );
   request.setCrs( mCrs );
@@ -154,8 +172,6 @@ void QgsElevationProfileCanvas::setProject( QgsProject *project )
 {
   mProject = project;
 }
-
-QgsElevationProfileCanvas::~QgsElevationProfileCanvas() = default;
 
 void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 {
