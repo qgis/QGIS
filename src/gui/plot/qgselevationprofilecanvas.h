@@ -57,8 +57,18 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
 
     ~QgsElevationProfileCanvas() override;
 
+    /**
+     * Triggers an update of the profile, causing the profile extraction to perform in the
+     * background.
+     */
     void update();
 
+    /**
+     * Sets the \a project associated with the profile.
+     *
+     * This must be set before any layers which utilise terrain based elevation settings can be
+     * included in the canvas.
+     */
     void setProject( QgsProject *project );
 
     /**
@@ -80,8 +90,14 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
 
   public slots:
 
+    /**
+     * Zooms to the full extent of the profile.
+     */
     void zoomFull();
 
+    /**
+     * Clears the current profile.
+     */
     void clear();
 
   private slots:

@@ -39,6 +39,10 @@ data.
 
     QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
                             const QgsProfileRequest &request );
+%Docstring
+Constructor for QgsProfilePlotRenderer, using the provided list of profile ``sources`` to generate the
+results.
+%End
 
     ~QgsProfilePlotRenderer();
 
@@ -77,6 +81,9 @@ Returns the limits of the retrieved elevation values.
 %End
 
     QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax );
+%Docstring
+Renders a portion of the profile to an image with the given ``width`` and ``height``.
+%End
 
   signals:
 
