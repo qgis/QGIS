@@ -181,7 +181,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       NO_PROJECT,        // No project is loaded or has yet been loaded or a project has been closed
       OPENING_PROJECT,   // A project is currently opening
       OPENED_PROJECT,    // A project has completely been loaded
-      WRITING_PROJECT   // In writing state
+      WRITING_PROJECT,   // In writing state
+      CLOSING_PROJECT   // In closing state
     };
 
 

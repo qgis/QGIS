@@ -7035,7 +7035,10 @@ bool QgisApp::addProject( const QString &projectFile )
   }
 
   // close the previous opened project if any
+
   closeProject();
+  QgsProject::instance()->setProjectState( QgsProject::OPENING_PROJECT );
+
 
   QFileInfo pfi( projectFile );
   mStatusBar->showMessage( tr( "Loading project: %1" ).arg( pfi.fileName() ) );
@@ -7183,6 +7186,8 @@ bool QgisApp::addProject( const QString &projectFile )
     dirtyBlocker.reset(); // allow project dirtying again
     QgsProject::instance()->setDirty( true );
   }
+
+  QgsProject::instance()->setProjectState( QgsProject::OPENED_PROJECT );
 
   return returnCode;
 } // QgisApp::addProject(QString projectFile)
@@ -7582,8 +7587,6 @@ void QgisApp::runScript( const QString &filePath )
 
 void QgisApp::openProject( const QString &fileName )
 {
-  QgsProject::instance()->setProjectState( QgsProject::OPENING_PROJECT );
-
   QgsCanvasRefreshBlocker refreshBlocker;
   if ( checkTasksDependOnProject() )
     return;
@@ -7594,7 +7597,6 @@ void QgisApp::openProject( const QString &fileName )
     // error handling and reporting is in addProject() function
     addProject( fileName );
   }
-  QgsProject::instance()->setProjectState( QgsProject::OPENED_PROJECT );
 }
 
 bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
@@ -14099,6 +14101,8 @@ bool QgisApp::checkTasksDependOnProject()
 
 void QgisApp::closeProject()
 {
+  QgsProject::instance()->setProjectState( QgsProject::CLOSING_PROJECT );
+
   QgsCanvasRefreshBlocker refreshBlocker;
 
   // unload the project macros before changing anything

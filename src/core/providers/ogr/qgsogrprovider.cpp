@@ -38,6 +38,7 @@ email                : sherman at mrcc.com
 #include "qgsprovidersublayerdetails.h"
 //#include "qgisapp.h"
 #include <QApplication>
+#include "qgsproject.h"
 
 
 
@@ -1320,12 +1321,13 @@ QgsRectangle QgsOgrProvider::extent() const
 
     //feedback->progressChanged()->connect(progressDialog.setValue);
 
+    // QgsProject::instance()->projectState();
 
-//    if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && //QgisApp::instance()->getProjectState() == QgisApp/QgisProject::OPENING_PROJECT )
-//       static_cast< QgisApp* > (qApp)->getProjectState()==QgisApp::ProjectState)
-//      // how do we know we've  acutally been called  for reading and not for saving or just calling properties?
-//      // we've been called by "QgsVectorLayer::extent()" and there then "updateExtent( mDataProvider->extent() );"
-//      progressDialog->setLabelText( "<i>Hint: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>" );
+    if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && QgsProject::instance()->projectState() == QgsProject::OPENING_PROJECT )
+      // static_cast< QgisApp* > (qApp)->getProjectState()==QgisApp::ProjectState)
+      // how do we know we've  acutally been called  for reading and not for saving or just calling properties?
+      // we've been called by "QgsVectorLayer::extent()" and there then "updateExtent( mDataProvider->extent() );"
+      progressDialog->setLabelText( "<i>Note: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>" );
 
 
 
