@@ -67,11 +67,16 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
   private slots:
     void setCaptureTechnique( Qgis::CaptureTechnique technique, bool alsoSetShapeTool = true );
     void setShapeTool( const QString &shapeToolId );
+    void mapToolSet( QgsMapTool *newTool, QgsMapTool * );
 
   private:
+    void setupTool( QgsMapToolCapture *tool );
+
     QMap<Qgis::CaptureTechnique, QAction *> mTechniqueActions;
     QHash<QString, QAction *> mShapeActions;
     QMap<QgsMapToolShapeAbstract::ShapeCategory, QToolButton *> mShapeCategoryButtons;
+
+    QSet< QgsMapTool * > mInitializedTools;
 
     QToolButton *mDigitizeModeToolButton = nullptr;
     QgsStreamDigitizingSettingsAction *mStreamDigitizingSettingsAction = nullptr;
