@@ -56,10 +56,14 @@ Returns the list of layers included in the profile.
 
     virtual void resizeEvent( QResizeEvent *event );
 
+    virtual void showEvent( QShowEvent *event );
+
 
   public slots:
 
     void zoomFull();
+
+    void clear();
 
 };
 

@@ -21,6 +21,8 @@
 #include "qgsdockablewidgethelper.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolprofilecurve.h"
+#include "qgsrubberband.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -48,6 +50,10 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name, bool 
     }
   } );
   toolBar->addAction( mCaptureCurveAction );
+
+  QAction *clearAction = new QAction( tr( "Clear" ), this );
+  connect( clearAction, &QAction::triggered, this, &QgsElevationProfileWidget::clear );
+  toolBar->addAction( clearAction );
 
   // Options Menu
   mOptionsMenu = new QMenu( this );
@@ -129,6 +135,9 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name, bool 
 
 QgsElevationProfileWidget::~QgsElevationProfileWidget()
 {
+  if ( mRubberBand )
+    mRubberBand.reset();
+
   delete mDockableWidgetHelper;
 }
 
@@ -144,6 +153,19 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
 
   mCaptureCurveMapTool = std::make_unique< QgsMapToolProfileCurve >( canvas, QgisApp::instance()->cadDockWidget() );
   mCaptureCurveMapTool->setAction( mCaptureCurveAction );
+  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
+  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::captureStarted, this, [ = ]
+  {
+    // if capturing a new curve, we just hide the existing rubber band -- if the user cancels the new curve digitizing then we'll
+    // re-show the old curve rubber band
+    if ( mRubberBand )
+      mRubberBand->hide();
+  } );
+  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::captureCanceled, this, [ = ]
+  {
+    if ( mRubberBand )
+      mRubberBand->show();
+  } );
   connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
 
   // only do this from map tool!
@@ -168,6 +190,8 @@ void QgsElevationProfileWidget::onTotalPendingJobsCountChanged()
 void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve )
 {
   mProfileCurve = curve;
+  mRubberBand.reset( createRubberBand() );
+  mRubberBand->setToGeometry( mProfileCurve );
   scheduleUpdate();
 }
 
@@ -189,5 +213,24 @@ void QgsElevationProfileWidget::scheduleUpdate()
     mSetCurveTimer->start( 1 );
     mUpdateScheduled = true;
   }
+}
+
+void QgsElevationProfileWidget::clear()
+{
+  mRubberBand.reset();
+  mCanvas->clear();
+}
+
+QgsRubberBand *QgsElevationProfileWidget::createRubberBand( )
+{
+  QgsRubberBand *rb = new QgsRubberBand( mMainCanvas, QgsWkbTypes::LineGeometry );
+  rb->setWidth( QgsSettingsRegistryCore::settingsDigitizingLineWidth.value() );
+  QColor color = QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
+                         QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
+                         QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value(),
+                         QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() );
+  rb->setStrokeColor( color );
+  rb->show();
+  return rb;
 }
 

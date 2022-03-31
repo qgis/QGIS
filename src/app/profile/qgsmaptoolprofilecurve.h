@@ -33,9 +33,11 @@ class QgsMapToolProfileCurve : public QgsMapToolCapture
     QgsMapToolCapture::Capabilities capabilities() const override;
     bool supportsTechnique( Qgis::CaptureTechnique technique ) const override;
     void keyPressEvent( QKeyEvent *e ) override;
-
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
   signals:
 
+    void captureStarted();
+    void captureCanceled();
     void curveCaptured( const QgsGeometry &curve );
 
   private:

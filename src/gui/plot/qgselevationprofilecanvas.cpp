@@ -122,8 +122,6 @@ void QgsElevationProfileCanvas::update()
   if ( !mProject || !profileCurve() )
     return;
 
-  mProfileResults.clear();
-
   QgsProfileRequest request( profileCurve()->clone() );
   request.setCrs( mCrs );
   request.setTransformContext( mProject->transformContext() );
@@ -205,5 +203,12 @@ void QgsElevationProfileCanvas::zoomFull()
   // just 2% margin to max distance -- any more is overkill and wasted space
   mPlotItem->setXMaximum( profileLength  * 1.02 );
 
+  mPlotItem->updatePlot();
+}
+
+void QgsElevationProfileCanvas::clear()
+{
+  setProfileCurve( nullptr );
+  mPlotItem->setRenderer( nullptr );
   mPlotItem->updatePlot();
 }
