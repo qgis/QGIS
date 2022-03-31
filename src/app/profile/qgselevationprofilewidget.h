@@ -45,6 +45,12 @@ class QgsElevationProfileWidget : public QWidget
     QString canvasName() const { return mCanvasName; }
 
     void setMainCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Cancel any rendering job, in a blocking way. Used for application closing.
+     */
+    void cancelJobs();
+
   signals:
     void toggleDockModeRequested( bool docked );
 

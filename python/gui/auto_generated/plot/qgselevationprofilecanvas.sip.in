@@ -30,7 +30,9 @@ Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
 
     ~QgsElevationProfileCanvas();
 
-    void update();
+
+    virtual void refresh();
+
 %Docstring
 Triggers an update of the profile, causing the profile extraction to perform in the
 background.

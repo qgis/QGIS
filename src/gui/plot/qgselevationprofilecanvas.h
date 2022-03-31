@@ -48,11 +48,13 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
 
     ~QgsElevationProfileCanvas() override;
 
+    void cancelJobs() override SIP_SKIP;
+
     /**
      * Triggers an update of the profile, causing the profile extraction to perform in the
      * background.
      */
-    void update();
+    void refresh() override;
 
     /**
      * Sets the \a project associated with the profile.

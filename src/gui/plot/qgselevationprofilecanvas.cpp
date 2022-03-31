@@ -127,7 +127,18 @@ QgsElevationProfileCanvas::~QgsElevationProfileCanvas()
   }
 }
 
-void QgsElevationProfileCanvas::update()
+void QgsElevationProfileCanvas::cancelJobs()
+{
+  if ( mCurrentJob )
+  {
+    mPlotItem->setRenderer( nullptr );
+    mCurrentJob->cancelGeneration();
+    mCurrentJob->deleteLater();
+    mCurrentJob = nullptr;
+  }
+}
+
+void QgsElevationProfileCanvas::refresh()
 {
   if ( !mProject || !profileCurve() )
     return;

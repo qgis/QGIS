@@ -78,16 +78,7 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
      * Cancel any rendering job, in a blocking way. Used for application closing.
      * \note not available in Python bindings
      */
-    void cancelJobs() SIP_SKIP;
-
-    /**
-     * Blocks until the rendering job has finished.
-     *
-     * In almost all cases you do NOT want to call this, as it will hang the UI
-     * until the rendering job is complete. It's included in API solely for
-     * unit testing and standalone Python scripts.
-     */
-    void waitWhileRendering();
+    virtual void cancelJobs() SIP_SKIP;
 
     /**
      * Sets the interactive tool currently being used on the canvas.
@@ -135,7 +126,7 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     /**
      * Updates and redraws the plot.
      */
-    void refresh();
+    virtual void refresh();
 
   signals:
 

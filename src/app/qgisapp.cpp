@@ -1980,6 +1980,7 @@ QgisApp::~QgisApp()
   const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren< QgsElevationProfileWidget * >();
   for ( QgsElevationProfileWidget *widget : elevationProfileWidgets )
   {
+    widget->cancelJobs();
     delete widget;
   }
 
