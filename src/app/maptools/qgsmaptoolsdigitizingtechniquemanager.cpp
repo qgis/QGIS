@@ -40,6 +40,8 @@ QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QO
 
   mDigitizeModeToolButton = new QToolButton();
   mDigitizeModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
+
+  connect( QgisApp::instance()->mapCanvas(), &QgsMapCanvas::mapToolSet, this, &QgsMapToolsDigitizingTechniqueManager::mapToolSet );
 }
 
 void QgsMapToolsDigitizingTechniqueManager::setupCanvasTools()
@@ -47,7 +49,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupCanvasTools()
   const QList< QgsMapToolCapture * > captureTools = QgisApp::instance()->captureTools();
   for ( QgsMapToolCapture *tool : captureTools )
   {
-    connect( tool->action(), &QAction::toggled, this, [this, tool]( bool checked ) {  enableDigitizingTechniqueActions( checked, tool->action() ); } );
+    setupTool( tool );
   }
 }
 
@@ -222,6 +224,36 @@ void QgsMapToolsDigitizingTechniqueManager::setShapeTool( const QString &shapeTo
       tool->setCurrentShapeMapTool( md );
     }
   }
+}
+
+void QgsMapToolsDigitizingTechniqueManager::mapToolSet( QgsMapTool *newTool, QgsMapTool * )
+{
+  if ( QgsMapToolCapture *captureTool = qobject_cast< QgsMapToolCapture *>( newTool ) )
+  {
+    if ( mInitializedTools.contains( captureTool ) )
+      return;
+
+    // this is a non-standard tool, e.g. a plugin tool. But still support setting the digitizing modes for those!
+    enableDigitizingTechniqueActions( true, captureTool->action() );
+  }
+  else
+  {
+    enableDigitizingTechniqueActions( false, nullptr );
+  }
+}
+
+void QgsMapToolsDigitizingTechniqueManager::setupTool( QgsMapToolCapture *tool )
+{
+  if ( tool->action() )
+  {
+    connect( tool->action(), &QAction::toggled, this, [this, tool]( bool checked ) {  enableDigitizingTechniqueActions( checked, tool->action() ); } );
+  }
+
+  mInitializedTools.insert( tool );
+  connect( tool, &QObject::destroyed, this, [ = ]
+  {
+    mInitializedTools.remove( tool );
+  } );
 }
 
 void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bool enabled, QAction *triggeredFromToolAction )
