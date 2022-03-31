@@ -444,6 +444,7 @@
 %Include auto_generated/mesh/qgsmeshdataprovidertemporalcapabilities.sip
 %Include auto_generated/mesh/qgsmeshdataset.sip
 %Include auto_generated/mesh/qgsmeshlayer.sip
+%Include auto_generated/mesh/qgsmeshlayerelevationproperties.sip
 %Include auto_generated/mesh/qgsmeshlayerinterpolator.sip
 %Include auto_generated/mesh/qgsmeshlayertemporalproperties.sip
 %Include auto_generated/mesh/qgsmeshrenderersettings.sip

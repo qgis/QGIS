@@ -120,6 +120,7 @@
 
 #include "raster/qgsrasterelevationpropertieswidget.h"
 #include "vector/qgsvectorelevationpropertieswidget.h"
+#include "mesh/qgsmeshelevationpropertieswidget.h"
 
 #ifdef HAVE_3D
 #include "qgs3d.h"
@@ -1487,6 +1488,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsRasterElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsVectorElevationPropertiesWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsMeshElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );
 
