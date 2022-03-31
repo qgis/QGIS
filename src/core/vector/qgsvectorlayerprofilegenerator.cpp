@@ -70,11 +70,24 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
   if ( !painter )
     return;
 
-  painter->save();
+  const QgsScopedQPainterState painterState( painter );
+
   painter->setBrush( Qt::NoBrush );
   QPen pen( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   pen.setWidthF( 3 );
   painter->setPen( pen );
+
+  const double minDistance = context.distanceRange().lower();
+  const double maxDistance = context.distanceRange().upper();
+  const double minZ = context.elevationRange().lower();
+  const double maxZ = context.elevationRange().upper();
+
+  const QRectF visibleRegion( minDistance, minZ, maxDistance - minDistance, maxZ - minZ );
+  QPainterPath clipPath;
+  clipPath.addPolygon( context.worldTransform().map( visibleRegion ) );
+  painter->setClipPath( clipPath, Qt::ClipOperation::IntersectClip );
+
+  const QgsRectangle clipPathRect( clipPath.boundingRect() );
 
   for ( const QgsGeometry &geometry : std::as_const( distanceVHeightGeometries ) )
   {
@@ -83,10 +96,12 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
 
     QgsGeometry transformed = geometry;
     transformed.transform( context.worldTransform() );
+
+    if ( !transformed.boundingBoxIntersects( clipPathRect ) )
+      continue;
+
     transformed.constGet()->draw( *painter );
   }
-
-  painter->restore();
 }
 
 //

@@ -52,6 +52,42 @@ This transform maps points in (distance, elevation) to (x, y) in painter coordin
 .. seealso:: :py:func:`worldTransform`
 %End
 
+    QgsDoubleRange distanceRange() const;
+%Docstring
+Returns the range of distances to include in the render.
+
+Distances outside this range should be excluded from the render.
+
+.. seealso:: :py:func:`setDistanceRange`
+%End
+
+    void setDistanceRange( const QgsDoubleRange &range );
+%Docstring
+Sets the ``range`` of distances to include in the render.
+
+Distances outside this range will be excluded from the render.
+
+.. seealso:: :py:func:`distanceRange`
+%End
+
+    QgsDoubleRange elevationRange() const;
+%Docstring
+Returns the range of elevations to include in the render.
+
+Elevations outside this range should be excluded from the render.
+
+.. seealso:: :py:func:`setElevationRange`
+%End
+
+    void setElevationRange( const QgsDoubleRange &range );
+%Docstring
+Sets the ``range`` of elevations to include in the render.
+
+Elevations outside this range will be excluded from the render.
+
+.. seealso:: :py:func:`elevationRange`
+%End
+
 };
 
 

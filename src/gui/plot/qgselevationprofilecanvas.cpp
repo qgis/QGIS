@@ -71,7 +71,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
 
     void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
     {
-      const QImage plot = mRenderer->renderToImage( plotArea.width(), plotArea.height(), yMinimum(), yMaximum() );
+      const QImage plot = mRenderer->renderToImage( plotArea.width(), plotArea.height(), xMinimum(), xMaximum(), yMinimum(), yMaximum() );
       rc.painter()->drawImage( plotArea.left(), plotArea.top(), plot );
     }
 
@@ -146,7 +146,7 @@ void QgsElevationProfileCanvas::generationFinished()
   if ( !mCurrentJob )
     return;
 
-  mPlotItem->updatePlot();
+  zoomFull();
 }
 
 void QgsElevationProfileCanvas::setProject( QgsProject *project )
@@ -178,4 +178,23 @@ void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 {
   QgsDistanceVsElevationPlotCanvas::resizeEvent( event );
   mPlotItem->updateRect();
+}
+
+void QgsElevationProfileCanvas::zoomFull()
+{
+  if ( !mCurrentJob )
+    return;
+
+  const QgsDoubleRange zRange = mCurrentJob->zRange();
+  // add 5% margin to height range
+  const double margin = ( zRange.upper() - zRange.lower() ) * 0.05;
+  mPlotItem->setYMinimum( zRange.lower() - margin );
+  mPlotItem->setYMaximum( zRange.upper() + margin );
+
+  const double profileLength = profileCurve()->length();
+  mPlotItem->setXMinimum( 0 );
+  // just 2% margin to max distance -- any more is overkill and wasted space
+  mPlotItem->setXMaximum( profileLength  * 1.02 );
+
+  mPlotItem->updatePlot();
 }

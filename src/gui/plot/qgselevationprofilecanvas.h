@@ -76,6 +76,11 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
     QList< QgsMapLayer * > layers() const;
 
     void resizeEvent( QResizeEvent *event ) override;
+
+  public slots:
+
+    void zoomFull();
+
   private slots:
 
     void generationFinished();

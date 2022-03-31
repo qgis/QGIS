@@ -24,8 +24,6 @@
 #include "qgsgeos.h"
 #include "qgslinesymbol.h"
 
-#include "qgsapplication.h"
-#include "qgscolorschemeregistry.h"
 #include <QPolygonF>
 
 //
@@ -68,11 +66,22 @@ void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &conte
   if ( !painter )
     return;
 
-  painter->save();
+  const QgsScopedQPainterState painterState( painter );
+
   painter->setBrush( Qt::NoBrush );
-  QPen pen( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
-  pen.setWidthF( 3 );
-  painter->setPen( pen );
+  painter->setPen( Qt::NoPen );
+
+  const double minDistance = context.distanceRange().lower();
+  const double maxDistance = context.distanceRange().upper();
+  const double minZ = context.elevationRange().lower();
+  const double maxZ = context.elevationRange().upper();
+
+  const QRectF visibleRegion( minDistance, minZ, maxDistance - minDistance, maxZ - minZ );
+  QPainterPath clipPath;
+  clipPath.addPolygon( context.worldTransform().map( visibleRegion ) );
+  painter->setClipPath( clipPath, Qt::ClipOperation::IntersectClip );
+
+  lineSymbol->startRender( context.renderContext() );
 
   QPolygonF currentLine;
   for ( auto pointIt = results.constBegin(); pointIt != results.constEnd(); ++pointIt )
@@ -80,15 +89,21 @@ void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &conte
     if ( std::isnan( pointIt.value() ) )
     {
       if ( currentLine.length() > 1 )
-        painter->drawPolyline( currentLine );
+      {
+        lineSymbol->renderPolyline( currentLine, nullptr, context.renderContext() );
+      }
       currentLine.clear();
+      continue;
     }
+
     currentLine.append( context.worldTransform().map( QPointF( pointIt.key(), pointIt.value() ) ) );
   }
   if ( currentLine.length() > 1 )
-    painter->drawPolyline( currentLine );
+  {
+    lineSymbol->renderPolyline( currentLine, nullptr, context.renderContext() );
+  }
 
-  painter->restore();
+  lineSymbol->stopRender( context.renderContext() );
 }
 
 
@@ -99,6 +114,7 @@ void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &conte
 QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *layer, const QgsProfileRequest &request )
   : mFeedback( std::make_unique< QgsRasterBlockFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
+  , mLineSymbol( qgis::down_cast< QgsRasterLayerElevationProperties* >( layer->elevationProperties() )->profileLineSymbol()->clone() )
   , mSourceCrs( layer->crs() )
   , mTargetCrs( request.crs() )
   , mTransformContext( request.transformContext() )
@@ -142,6 +158,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
     return false;
 
   mResults = std::make_unique< QgsRasterLayerProfileResults >();
+  mResults->lineSymbol.reset( mLineSymbol->clone() );
 
   std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );
   curveEngine->prepareGeometry();

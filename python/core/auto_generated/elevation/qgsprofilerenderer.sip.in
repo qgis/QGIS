@@ -71,7 +71,12 @@ Block until the current job has finished.
 Returns ``True`` if the generation job is currently running in background.
 %End
 
-    QImage renderToImage( int width, int height, double zMin, double zMax );
+    QgsDoubleRange zRange() const;
+%Docstring
+Returns the limits of the retrieved elevation values.
+%End
+
+    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax );
 
   signals:
 

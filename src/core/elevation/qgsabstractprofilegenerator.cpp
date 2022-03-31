@@ -34,6 +34,26 @@ void QgsProfileRenderContext::setWorldTransform( const QTransform &transform )
   mWorldTransform = transform;
 }
 
+QgsDoubleRange QgsProfileRenderContext::distanceRange() const
+{
+  return mDistanceRange;
+}
+
+void QgsProfileRenderContext::setDistanceRange( const QgsDoubleRange &range )
+{
+  mDistanceRange = range;
+}
+
+QgsDoubleRange QgsProfileRenderContext::elevationRange() const
+{
+  return mElevationRange;
+}
+
+void QgsProfileRenderContext::setElevationRange( const QgsDoubleRange &range )
+{
+  mElevationRange = range;
+}
+
 
 QgsAbstractProfileGenerator::~QgsAbstractProfileGenerator() = default;
 
