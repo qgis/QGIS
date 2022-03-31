@@ -95,6 +95,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                          {31.2: 274.0, 175.6: 274.0, 1242.5: 221.8})
 
+        self.assertAlmostEqual(results.zRange().lower(), 221.75, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 274.0, 2)
+
     def testPointGenerationTerrain(self):
         """
         Points layer with terrain clamping
@@ -140,6 +143,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
             self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                              {31.2: 67.2, 175.6: 65.8, 1242.5: 52.2})
 
+        self.assertAlmostEqual(results.zRange().lower(), 55.249, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 69.5, 2)
+
     def testPointGenerationRelative(self):
         """
         Points layer with relative clamping
@@ -183,6 +189,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         else:
             self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                              {31.2: 331.2, 175.6: 329.8, 1242.5: 264.0})
+
+        self.assertAlmostEqual(results.zRange().lower(), 267.0, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 333.5, 2)
 
     def testPointGenerationRelativeExtrusion(self):
         """
@@ -238,6 +247,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                                    'LineStringZ (-347533.4 6632692.2 331.3, -347533.4 6632692.2 338.3)',
                                    'LineStringZ (-346399.2 6632265.6 264, -346399.2 6632265.6 271)'])
 
+        self.assertAlmostEqual(results.zRange().lower(), 267.0, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 340.5, 2)
+
     def testPointGenerationMultiPoint(self):
         vl = QgsVectorLayer('MultipointZ?crs=EPSG:27700', 'trees', 'memory')
         self.assertTrue(vl.isValid())
@@ -263,6 +275,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         results = generator.takeResults()
         self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                          {1158.2: 232.8, 1172.4: 235.5, 1196.5: 241.0})
+
+        self.assertAlmostEqual(results.zRange().lower(), 232.75, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 241.0, 2)
 
     def testLineGenerationAbsolute(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
@@ -302,6 +317,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                          {675.2: 27.7, 1195.7: 47.5, 1223.1: 41.4, 1272.0: 46.2, 1339.4: 50.5, 1444.4: 51.8})
+
+        self.assertAlmostEqual(results.zRange().lower(), 27.7064, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 51.7598, 2)
 
     def testLineGenerationTerrain(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
@@ -348,6 +366,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
             self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                              {675.2: 62.7, 1195.7: 53.0, 1223.1: 56.0, 1272.0: 58.2, 1339.4: 57.5, 1444.4: 52.2})
 
+        self.assertAlmostEqual(results.zRange().lower(), 49.25, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 66.5, 2)
+
     def testLineGenerationRelative(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
         self.assertTrue(vl.isValid())
@@ -392,6 +413,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         else:
             self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                              {675.2: 80.5, 1195.7: 90.5, 1223.1: 87.4, 1272.0: 94.5, 1339.4: 98.0, 1444.4: 94.0})
+
+        self.assertAlmostEqual(results.zRange().lower(), 81.358, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 100.009, 2)
 
     def testLineGenerationRelativeExtrusion(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
@@ -457,6 +481,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                                    'LineStringZ (-346577 6632367.4 90.5, -346577 6632367.4 97.5)',
                                    'LineStringZ (-347062.8 6632554.4 80.5, -347062.8 6632554.4 87.5)'])
 
+        self.assertAlmostEqual(results.zRange().lower(), 81.3588, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 107.009, 2)
+
     def testPolygonGenerationAbsolute(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
         self.assertTrue(vl.isValid())
@@ -497,6 +524,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                          {1041.8: 15.0, 1042.4: 15.0, 1049.5: 15.0, 1070.2: 15.0, 1073.1: 15.0, 1074.8: 15.0,
                           1078.9: 17.5, 1083.9: 17.5, 1091.1: 17.5, 1186.8: 20.0, 1189.8: 20.0, 1192.7: 20.0,
                           1199.2: 20.0, 1450.0: 22.5, 1455.6: 22.5, 1458.1: 22.5})
+
+        self.assertAlmostEqual(results.zRange().lower(), 15.0, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 22.5000, 2)
 
     def testPolygonGenerationTerrain(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
@@ -546,6 +576,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                              {1041.8: 48.5, 1042.4: 48.5, 1049.5: 48.5, 1070.2: 48.5, 1073.1: 48.5, 1074.8: 48.5,
                               1078.9: 48.5, 1083.9: 48.5, 1091.1: 48.5, 1186.8: 52.3, 1189.8: 52.2, 1192.7: 52.2,
                               1199.2: 52.2, 1450.0: 54.5, 1455.6: 54.5, 1458.1: 54.5})
+
+        self.assertAlmostEqual(results.zRange().lower(), 49.25, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 55.250, 2)
 
     def testPolygonGenerationRelative(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
@@ -621,6 +654,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                                    'LineStringZ (-346387.6 6632223.9 67, -346384.8 6632219 67)',
                                    'LineStringZ (-346384.8 6632219 67, -346383.5 6632216.9 67)'])
 
+        self.assertAlmostEqual(results.zRange().lower(), 59.2499, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 65.5000, 2)
+
     def testPolygonGenerationRelativeExtrusion(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
         self.assertTrue(vl.isValid())
@@ -672,7 +708,6 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                               1078.9: 56.0, 1083.9: 56.0, 1091.1: 56.0, 1186.8: 62.3, 1189.8: 62.3, 1192.7: 62.3,
                               1199.2: 62.2, 1450.0: 67.0, 1455.6: 67.0, 1458.1: 67.0})
 
-        print([g.asWkt(1) for g in results.asGeometries()])
         if QgsProjUtils.projVersionMajor() >= 8:
             self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
                                   [
@@ -699,6 +734,9 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                                       'PolygonZ ((-346579.7 6632370.7 62.3, -346577 6632369.7 62.3, -346570.8 6632367.9 62.3, -346570.8 6632367.9 69.3, -346577 6632369.7 69.3, -346579.7 6632370.7 69.3, -346579.7 6632370.7 62.3))',
                                       'PolygonZ ((-346387.6 6632223.9 67, -346384.8 6632219 67, -346384.8 6632219 74, -346387.6 6632223.9 74, -346387.6 6632223.9 67))',
                                       'PolygonZ ((-346384.8 6632219 67, -346383.5 6632216.9 67, -346383.5 6632216.9 74, -346384.8 6632219 74, -346384.8 6632219 67))'])
+
+        self.assertAlmostEqual(results.zRange().lower(), 59.2499, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 72.50000, 2)
 
 
 if __name__ == '__main__':

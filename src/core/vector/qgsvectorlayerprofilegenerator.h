@@ -53,9 +53,12 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
     QMap< double, double > mDistanceToHeightMap;
     QVector< QgsGeometry > geometries;
     QVector< QgsGeometry > distanceVHeightGeometries;
+    double minZ = std::numeric_limits< double >::max();
+    double maxZ = std::numeric_limits< double >::lowest();
 
     QString type() const override;
     QMap< double, double > distanceToHeightMap() const override;
+    QgsDoubleRange zRange() const override;
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
     void renderResults( QgsProfileRenderContext &context ) override;

@@ -113,6 +113,11 @@ class CORE_EXPORT QgsAbstractProfileResults
      */
     virtual void renderResults( QgsProfileRenderContext &context ) = 0;
 
+    /**
+     * Returns the range of the retrieved elevation values
+     */
+    virtual QgsDoubleRange zRange() const = 0;
+
 };
 
 /**

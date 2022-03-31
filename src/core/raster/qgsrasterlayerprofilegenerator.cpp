@@ -39,12 +39,12 @@ QString QgsRasterLayerProfileResults::type() const
 
 QMap<double, double> QgsRasterLayerProfileResults::distanceToHeightMap() const
 {
-  QMap<double, double> res;
-  for ( const Result &r : results )
-  {
-    res.insert( r.distance, r.height );
-  }
-  return res;
+  return results;
+}
+
+QgsDoubleRange QgsRasterLayerProfileResults::zRange() const
+{
+  return QgsDoubleRange( minZ, maxZ );
 }
 
 QgsPointSequence QgsRasterLayerProfileResults::sampledPoints() const
@@ -74,9 +74,8 @@ void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &conte
   pen.setWidthF( 3 );
   painter->setPen( pen );
 
-  const QMap< double, double > distMap = distanceToHeightMap();
   QPolygonF currentLine;
-  for ( auto pointIt = distMap.begin(); pointIt != distMap.end(); ++pointIt )
+  for ( auto pointIt = results.constBegin(); pointIt != results.constEnd(); ++pointIt )
   {
     if ( std::isnan( pointIt.value() ) )
     {
@@ -308,7 +307,6 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
   // convert x/y values back to distance/height values
   QgsGeos originalCurveGeos( mProfileCurve.get() );
   originalCurveGeos.prepareGeometry();
-  mResults->results.reserve( mResults->rawPoints.size() );
   QString lastError;
   for ( const QgsPoint &pixel : std::as_const( mResults->rawPoints ) )
   {
@@ -317,10 +315,9 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
 
     const double distance = originalCurveGeos.lineLocatePoint( pixel, &lastError );
 
-    QgsRasterLayerProfileResults::Result res;
-    res.distance = distance;
-    res.height = pixel.z();
-    mResults->results.push_back( res );
+    mResults->minZ = std::min( pixel.z(), mResults->minZ );
+    mResults->maxZ = std::max( pixel.z(), mResults->maxZ );
+    mResults->results.insert( distance, pixel.z() );
   }
 
   return true;

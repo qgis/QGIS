@@ -47,18 +47,14 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileResults
 
   public:
 
-    // Temporary class only!
-    struct Result
-    {
-      double distance;
-      double height;
-    };
-
     QgsPointSequence rawPoints;
-    QList< Result > results;
+    QMap< double, double> results;
+    double minZ = std::numeric_limits< double >::max();
+    double maxZ = std::numeric_limits< double >::lowest();
 
     QString type() const override;
     QMap< double, double > distanceToHeightMap() const override;
+    QgsDoubleRange zRange() const override;
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
     void renderResults( QgsProfileRenderContext &context ) override;
