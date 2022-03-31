@@ -2,7 +2,7 @@
   "name": "intersects",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Tests whether a geometry intersects another. Returns true if the geometries spatially intersect (share any portion of space) and false if they do not.",
+  "description": "Tests whether a geometry intersects another. Returns TRUE if the geometries spatially intersect (share any portion of space) and false if they do not.",
   "arguments": [{
     "arg": "geometry1",
     "description": "a geometry"
@@ -12,10 +12,10 @@
   }],
   "examples": [{
     "expression": "intersects( geom_from_wkt( 'POINT(4 4)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )",
-    "returns": "true"
+    "returns": "TRUE"
   }, {
     "expression": "intersects( geom_from_wkt( 'POINT(4 5)' ), geom_from_wkt( 'POINT(5 5)' ) )",
-    "returns": "false"
+    "returns": "FALSE"
   }],
   "tags": ["share", "space", "intersects", "tests", "intersect", "portion", "overlaps"]
 }

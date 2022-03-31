@@ -12,13 +12,13 @@
   }],
   "examples": [{
     "expression": "5 &gt;= 4",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "5 &gt;= 5",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "4 &gt;= 5",
-    "returns": "0"
+    "returns": "FALSE"
   }],
   "tags": ["compares", "equal", "values", "greater", "left", "evaluates", "right"]
 }
