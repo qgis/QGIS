@@ -50,15 +50,6 @@ Constructor for QgsPlotCanvas, with the specified ``parent`` widget.
     ~QgsPlotCanvas();
 
 
-    void waitWhileRendering();
-%Docstring
-Blocks until the rendering job has finished.
-
-In almost all cases you do NOT want to call this, as it will hang the UI
-until the rendering job is complete. It's included in API solely for
-unit testing and standalone Python scripts.
-%End
-
     void setTool( QgsPlotTool *tool, bool clean = false );
 %Docstring
 Sets the interactive tool currently being used on the canvas.
@@ -102,7 +93,7 @@ May return an empty point if the map point cannot be converted to a canvas point
 
   public slots:
 
-    void refresh();
+    virtual void refresh();
 %Docstring
 Updates and redraws the plot.
 %End

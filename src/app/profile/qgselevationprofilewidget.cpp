@@ -174,6 +174,11 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
   onMainCanvasLayersChanged();
 }
 
+void QgsElevationProfileWidget::cancelJobs()
+{
+  mCanvas->cancelJobs();
+}
+
 void QgsElevationProfileWidget::onMainCanvasLayersChanged()
 {
   // not right -- should be done in response to project layers
@@ -201,7 +206,7 @@ void QgsElevationProfileWidget::updatePlot()
   {
     mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
     mCanvas->setProfileCurve( curve->clone() );
-    mCanvas->update();
+    mCanvas->refresh();
   }
   mUpdateScheduled = false;
 }

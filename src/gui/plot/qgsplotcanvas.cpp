@@ -38,8 +38,6 @@ QgsPlotCanvas::QgsPlotCanvas( QWidget *parent )
   setFocusPolicy( Qt::StrongFocus );
 
   setInteractive( false );
-
-  refresh();
 }
 
 QgsPlotCanvas::~QgsPlotCanvas()
@@ -50,7 +48,7 @@ QgsPlotCanvas::~QgsPlotCanvas()
     mTool = nullptr;
   }
 
-  cancelJobs();
+  QgsPlotCanvas::cancelJobs();
 
   // WARNING WARNING WARNING
   // QgsMapCanvas deletes all items in the destructor. But for some absolutely INSANE WTF reason
@@ -70,11 +68,6 @@ QgsPlotCanvas::~QgsPlotCanvas()
 }
 
 void QgsPlotCanvas::cancelJobs()
-{
-
-}
-
-void QgsPlotCanvas::waitWhileRendering()
 {
 
 }
