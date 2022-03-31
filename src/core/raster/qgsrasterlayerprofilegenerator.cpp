@@ -22,6 +22,7 @@
 #include "qgsrasteriterator.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeos.h"
+#include "qgslinesymbol.h"
 
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"

@@ -19,6 +19,7 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
+#include "qgslinesymbol.h"
 
 QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -28,12 +29,14 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
   mElevationGroupBox->setChecked( false );
+  mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
 
   syncToLayer( layer );
 
   connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
   connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
   connect( mElevationGroupBox, &QGroupBox::toggled, this, &QgsRasterElevationPropertiesWidget::onChanged );
+  connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsRasterElevationPropertiesWidget::onChanged );
 }
 
 void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -47,6 +50,8 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mElevationGroupBox->setChecked( props->isEnabled() );
   mOffsetZSpinBox->setValue( props->zOffset() );
   mScaleZSpinBox->setValue( props->zScale() );
+  mLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
+
   mBlockUpdates = false;
 }
 
@@ -59,6 +64,7 @@ void QgsRasterElevationPropertiesWidget::apply()
   props->setEnabled( mElevationGroupBox->isChecked() );
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
+  props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
   mLayer->trigger3DUpdate();
 }
 

@@ -40,6 +40,7 @@ class QgsMesh3dAveragingMethod;
 class QgsMeshLayerTemporalProperties;
 class QgsMeshDatasetGroupStore;
 class QgsMeshEditor;
+class QgsMeshLayerElevationProperties;
 
 /**
  * \ingroup core
@@ -188,6 +189,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QgsMapLayerTemporalProperties *temporalProperties() override;
+    QgsMapLayerElevationProperties *elevationProperties() override;
     void reload() override;
     QStringList subLayers() const override;
     QString htmlMetadata() const override;
@@ -958,6 +960,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QgsMeshSimplificationSettings mSimplificationSettings;
 
     QgsMeshLayerTemporalProperties *mTemporalProperties = nullptr;
+    QgsMeshLayerElevationProperties *mElevationProperties = nullptr;
 
     //! Temporal unit used by the provider
     QgsUnitTypes::TemporalUnit mTemporalUnit = QgsUnitTypes::TemporalHours;

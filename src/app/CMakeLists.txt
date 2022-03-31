@@ -259,6 +259,7 @@ set(QGIS_APP_SRCS
   mesh/qgsmeshcalculatordialog.cpp
   mesh/qgsnewmeshlayerdialog.cpp
   mesh/qgsmaptooleditmeshframe.cpp
+  mesh/qgsmeshelevationpropertieswidget.cpp
   mesh/qgsmeshtransformcoordinatesdockwidget.cpp
   mesh/qgsmeshselectbyexpressiondialog.cpp
 

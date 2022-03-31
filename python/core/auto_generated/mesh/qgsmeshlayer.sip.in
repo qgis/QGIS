@@ -155,6 +155,8 @@ QgsMeshLayer cannot be copied.
 
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+
     virtual void reload();
 
     virtual QStringList subLayers() const;

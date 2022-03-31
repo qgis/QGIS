@@ -1,0 +1,68 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshlayerelevationproperties.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMeshLayerElevationProperties : QgsMapLayerElevationProperties
+{
+%Docstring(signature="appended")
+Mesh layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsmeshlayerelevationproperties.h"
+%End
+  public:
+
+    QgsMeshLayerElevationProperties( QObject *parent /TransferThis/ );
+%Docstring
+Constructor for QgsMeshLayerElevationProperties, with the specified ``parent`` object.
+%End
+    ~QgsMeshLayerElevationProperties();
+
+    virtual bool hasElevation() const;
+
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
+
+    virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+
+
+    QgsLineSymbol *profileLineSymbol() const;
+%Docstring
+Returns the line symbol used to render the mesh profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileLineSymbol`
+%End
+
+    void setProfileLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the mesh profile in elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`profileLineSymbol`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshlayerelevationproperties.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
