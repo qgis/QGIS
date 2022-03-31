@@ -56,7 +56,7 @@ class QgsElevationProfileWidget : public QWidget
 
   private slots:
     void onMainCanvasLayersChanged();
-    void onTotalPendingJobsCountChanged();
+    void onTotalPendingJobsCountChanged( int count );
     void setProfileCurve( const QgsGeometry &curve );
     void updatePlot();
     void scheduleUpdate();
