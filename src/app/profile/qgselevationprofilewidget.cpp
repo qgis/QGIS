@@ -24,6 +24,7 @@
 
 #include <QToolBar>
 #include <QProgressBar>
+#include <QTimer>
 
 QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
@@ -118,6 +119,12 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name, bool 
   {
     close();
   } );
+
+  // updating the profile plot is defered on a timer, so that we don't trigger it too often
+  mSetCurveTimer = new QTimer( this );
+  mSetCurveTimer->setSingleShot( true );
+  mSetCurveTimer->stop();
+  connect( mSetCurveTimer, &QTimer::timeout, this, &QgsElevationProfileWidget::updatePlot );
 }
 
 QgsElevationProfileWidget::~QgsElevationProfileWidget()
@@ -149,7 +156,7 @@ void QgsElevationProfileWidget::onMainCanvasLayersChanged()
 {
   // not right -- should be done in response to project layers
   mCanvas->setLayers( mMainCanvas->layers( true ) );
-  mCanvas->update();
+  scheduleUpdate();
 }
 
 void QgsElevationProfileWidget::onTotalPendingJobsCountChanged()
@@ -160,7 +167,27 @@ void QgsElevationProfileWidget::onTotalPendingJobsCountChanged()
 
 void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve )
 {
-  mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
-  mCanvas->setProfileCurve( qgsgeometry_cast< const QgsCurve *>( curve.constGet() )->clone() );
-  mCanvas->update();
+  mProfileCurve = curve;
+  scheduleUpdate();
 }
+
+void QgsElevationProfileWidget::updatePlot()
+{
+  if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( mProfileCurve.constGet() ) )
+  {
+    mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
+    mCanvas->setProfileCurve( curve->clone() );
+    mCanvas->update();
+  }
+  mUpdateScheduled = false;
+}
+
+void QgsElevationProfileWidget::scheduleUpdate()
+{
+  if ( !mUpdateScheduled )
+  {
+    mSetCurveTimer->start( 1 );
+    mUpdateScheduled = true;
+  }
+}
+
