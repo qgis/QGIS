@@ -13,6 +13,12 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsplotcanvas.h"
+#include "qgselevationprofilecanvas.h"
+#include "qgsdistancevselevationplotcanvas.h"
+%End
+
 class QgsPlotCanvas : QGraphicsView
 {
 %Docstring(signature="appended")
@@ -25,7 +31,11 @@ Plot canvas is a class for displaying interactive 2d charts and plots.
 #include "qgsplotcanvas.h"
 %End
 %ConvertToSubClassCode
-    if ( qobject_cast<QgsPlotCanvas *>( sipCpp ) != nullptr )
+    if ( qobject_cast<QgsElevationProfileCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsElevationProfileCanvas;
+    else if ( qobject_cast<QgsDistanceVsElevationPlotCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsDistanceVsElevationPlotCanvas;
+    else if ( qobject_cast<QgsPlotCanvas *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPlotCanvas;
     else
       sipType = nullptr;

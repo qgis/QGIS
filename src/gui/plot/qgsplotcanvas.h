@@ -33,6 +33,14 @@ class QgsPointXY;
 class QMenu;
 
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsplotcanvas.h"
+#include "qgselevationprofilecanvas.h"
+#include "qgsdistancevselevationplotcanvas.h"
+% End
+#endif
+
 /**
  * \ingroup gui
  * \brief Plot canvas is a class for displaying interactive 2d charts and plots.
@@ -44,7 +52,11 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( qobject_cast<QgsPlotCanvas *>( sipCpp ) != nullptr )
+    if ( qobject_cast<QgsElevationProfileCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsElevationProfileCanvas;
+    else if ( qobject_cast<QgsDistanceVsElevationPlotCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsDistanceVsElevationPlotCanvas;
+    else if ( qobject_cast<QgsPlotCanvas *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPlotCanvas;
     else
       sipType = nullptr;
