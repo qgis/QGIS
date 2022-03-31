@@ -631,6 +631,9 @@ if (PEDANTIC)
     # unavoidable - we can't avoid these, as older, supported compilers do not support removing the redundant move
     set(_warnings "${_warnings} -Wno-redundant-move")
 
+    # disable misleading-indentation warning -- it's slow to parse the sip files and not needed since we have the automated code styling rules
+    set(_warnings "${_warnings} -Wno-misleading-indentation")
+
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.9.999)
       # heaps of these thrown by Qt headers at the moment (sep 2019)
       set(_warnings "${_warnings} -Wno-deprecated-copy")
