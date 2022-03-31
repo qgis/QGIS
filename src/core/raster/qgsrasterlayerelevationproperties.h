@@ -23,6 +23,8 @@
 #include "qgis_sip.h"
 #include "qgsmaplayerelevationproperties.h"
 
+class QgsLineSymbol;
+
 /**
  * \class QgsRasterLayerElevationProperties
  * \ingroup core
@@ -41,6 +43,7 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
      * Constructor for QgsRasterLayerElevationProperties, with the specified \a parent object.
      */
     QgsRasterLayerElevationProperties( QObject *parent SIP_TRANSFERTHIS );
+    ~QgsRasterLayerElevationProperties() override;
 
     bool hasElevation() const override;
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
@@ -62,9 +65,28 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
      */
     void setEnabled( bool enabled ) { mEnabled = enabled; }
 
+    /**
+     * Returns the line symbol used to render the raster profile in elevation profile plots.
+     *
+     * \see setProfileLineSymbol()
+     */
+    QgsLineSymbol *profileLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the raster profile in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * \see profileLineSymbol()
+     */
+    void setProfileLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
   private:
 
+    void setDefaultProfileLineSymbol();
+
     bool mEnabled = false;
+    std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
 
 };
 

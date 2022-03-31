@@ -15,6 +15,7 @@ import qgis  # NOQA
 from qgis.core import (
     QgsRasterLayerElevationProperties,
     QgsReadWriteContext,
+    QgsLineSymbol
 )
 
 from qgis.PyQt.QtXml import QDomDocument
@@ -32,6 +33,7 @@ class TestQgsRasterLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props.zOffset(), 0)
         self.assertFalse(props.isEnabled())
         self.assertFalse(props.hasElevation())
+        self.assertIsInstance(props.profileLineSymbol(), QgsLineSymbol)
 
         props.setZOffset(0.5)
         props.setZScale(2)
@@ -40,6 +42,10 @@ class TestQgsRasterLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props.zOffset(), 0.5)
         self.assertTrue(props.isEnabled())
         self.assertTrue(props.hasElevation())
+
+        sym = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
+        props.setProfileLineSymbol(sym)
+        self.assertEqual(props.profileLineSymbol().color().name(), '#ff4433')
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
@@ -50,6 +56,7 @@ class TestQgsRasterLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props2.zScale(), 2)
         self.assertEqual(props2.zOffset(), 0.5)
         self.assertTrue(props2.isEnabled())
+        self.assertEqual(props2.profileLineSymbol().color().name(), '#ff4433')
 
 
 if __name__ == '__main__':

@@ -17,33 +17,52 @@
 
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsrasterlayer.h"
+#include "qgslinesymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgslinesymbollayer.h"
+#include "qgsapplication.h"
+#include "qgscolorschemeregistry.h"
 
 QgsRasterLayerElevationProperties::QgsRasterLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )
 {
+  setDefaultProfileLineSymbol();
 }
+
+QgsRasterLayerElevationProperties::~QgsRasterLayerElevationProperties() = default;
 
 bool QgsRasterLayerElevationProperties::hasElevation() const
 {
   return mEnabled;
 }
 
-QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & )
+QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
   element.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
   element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+
+  QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
+  profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
+  element.appendChild( profileLineSymbolElement );
+
   parentElement.appendChild( element );
   return element;
 }
 
-bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext & )
+bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
   mEnabled = elevationElement.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mZOffset = elevationElement.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
   mZScale = elevationElement.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
+
+  const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  mProfileLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context ) );
+  if ( !mProfileLineSymbol )
+    setDefaultProfileLineSymbol();
+
   return true;
 }
 
@@ -57,4 +76,20 @@ QgsDoubleRange QgsRasterLayerElevationProperties::calculateZRange( QgsMapLayer *
 {
   // TODO -- determine actual z range from raster statistics
   return QgsDoubleRange();
+}
+
+QgsLineSymbol *QgsRasterLayerElevationProperties::profileLineSymbol() const
+{
+  return mProfileLineSymbol.get();
+}
+
+void QgsRasterLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
+{
+  mProfileLineSymbol.reset( symbol );
+}
+
+void QgsRasterLayerElevationProperties::setDefaultProfileLineSymbol()
+{
+  std::unique_ptr< QgsSimpleLineSymbolLayer > profileLineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), 0.6 );
+  mProfileLineSymbol = std::make_unique< QgsLineSymbol>( QgsSymbolLayerList( { profileLineLayer.release() } ) );
 }
