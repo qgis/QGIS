@@ -20,6 +20,7 @@
 #include "qmenu.h"
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include "qgsgeometry.h"
 
 class QgsDockableWidgetHelper;
 class QgsMapCanvas;
@@ -49,6 +50,8 @@ class QgsElevationProfileWidget : public QWidget
     void onMainCanvasLayersChanged();
     void onTotalPendingJobsCountChanged();
     void setProfileCurve( const QgsGeometry &curve );
+    void updatePlot();
+    void scheduleUpdate();
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
 
@@ -61,6 +64,10 @@ class QgsElevationProfileWidget : public QWidget
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;
+    QgsGeometry mProfileCurve;
+
+    QTimer *mSetCurveTimer = nullptr;
+    bool mUpdateScheduled = false;
 };
 
 #endif // QGSELEVATIONPROFILEWIDGET_H
