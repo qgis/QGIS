@@ -24,6 +24,10 @@
 #include "qgis.h"
 #include "qgsmaplayerelevationproperties.h"
 
+class QgsLineSymbol;
+class QgsFillSymbol;
+class QgsMarkerSymbol;
+
 /**
  * \class QgsVectorLayerElevationProperties
  * \ingroup core
@@ -42,6 +46,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      * Constructor for QgsVectorLayerElevationProperties, with the specified \a parent object.
      */
     QgsVectorLayerElevationProperties( QObject *parent SIP_TRANSFERTHIS );
+    ~QgsVectorLayerElevationProperties() override;
 
     bool hasElevation() const override;
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
@@ -119,13 +124,99 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      */
     void setExtrusionHeight( double height ) { mExtrusionHeight = height; }
 
+    /**
+     * Returns the symbol used to render lines for the layer in elevation profile plots.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A point feature is shown on the profile chart when extrusionEnabled() is TRUE
+     * - A line feature is intersected by a profile line and extrusionEnabled() is TRUE
+     * - A polygon feature is intersected by a profile line and extrusionEnabled() is FALSE
+     *
+     * \see setProfileLineSymbol()
+     */
+    QgsLineSymbol *profileLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render lines for the layer in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A point feature is shown on the profile chart when extrusionEnabled() is TRUE
+     * - A line feature is intersected by a profile line and extrusionEnabled() is TRUE
+     * - A polygon feature is intersected by a profile line and extrusionEnabled() is FALSE
+     *
+     * \see profileLineSymbol()
+     */
+    void setProfileLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the symbol used to render polygons for the layer in elevation profile plots.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A polygon feature is intersected by a profile line and extrusionEnabled() is TRUE
+     *
+     * \see setProfileFillSymbol()
+     */
+    QgsFillSymbol *profileFillSymbol() const;
+
+    /**
+     * Sets the fill \a symbol used to render polygons for the layer in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A polygon feature is intersected by a profile line and extrusionEnabled() is TRUE
+     *
+     * \see profileFillSymbol()
+     */
+    void setProfileFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the symbol used to render points for the layer in elevation profile plots.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A point feature is shown on the profile chart when extrusionEnabled() is FALSE
+     * - A line feature is intersected by a profile line and extrusionEnabled() is FALSE
+     *
+     * \see setProfileMarkerSymbol()
+     */
+    QgsMarkerSymbol *profileMarkerSymbol() const;
+
+    /**
+     * Sets the marker \a symbol used to render points for the layer in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A point feature is shown on the profile chart when extrusionEnabled() is FALSE
+     * - A line feature is intersected by a profile line and extrusionEnabled() is FALSE
+     *
+     * \see profileMarkerSymbol()
+     */
+    void setProfileMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
+
   private:
+
+    void setDefaultProfileLineSymbol( const QColor &color );
+    void setDefaultProfileMarkerSymbol( const QColor &color );
+    void setDefaultProfileFillSymbol( const QColor &color );
 
     Qgis::AltitudeClamping mClamping = Qgis::AltitudeClamping::Terrain;
     Qgis::AltitudeBinding mBinding = Qgis::AltitudeBinding::Centroid;
 
     bool mEnableExtrusion = false;
     double mExtrusionHeight = 0;
+
+    std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
+    std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
 
 };
 

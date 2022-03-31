@@ -16,6 +16,9 @@ from qgis.core import (
     Qgis,
     QgsVectorLayerElevationProperties,
     QgsReadWriteContext,
+    QgsLineSymbol,
+    QgsMarkerSymbol,
+    QgsFillSymbol
 )
 
 from qgis.PyQt.QtXml import QDomDocument
@@ -51,6 +54,18 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props.clamping(), Qgis.AltitudeClamping.Relative)
         self.assertEqual(props.binding(), Qgis.AltitudeBinding.Vertex)
 
+        sym = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
+        props.setProfileLineSymbol(sym)
+        self.assertEqual(props.profileLineSymbol().color().name(), '#ff4433')
+
+        sym = QgsFillSymbol.createSimple({'color': '#ff4455', 'outline_width': 0.5})
+        props.setProfileFillSymbol(sym)
+        self.assertEqual(props.profileFillSymbol().color().name(), '#ff4455')
+
+        sym = QgsMarkerSymbol.createSimple({'color': '#ff1122', 'outline_width': 0.5})
+        props.setProfileMarkerSymbol(sym)
+        self.assertEqual(props.profileMarkerSymbol().color().name(), '#ff1122')
+
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
         props.writeXml(elem, doc, QgsReadWriteContext())
@@ -63,6 +78,10 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props2.binding(), Qgis.AltitudeBinding.Vertex)
         self.assertEqual(props2.extrusionHeight(), 10)
         self.assertTrue(props2.extrusionEnabled())
+
+        self.assertEqual(props2.profileLineSymbol().color().name(), '#ff4433')
+        self.assertEqual(props2.profileFillSymbol().color().name(), '#ff4455')
+        self.assertEqual(props2.profileMarkerSymbol().color().name(), '#ff1122')
 
 
 if __name__ == '__main__':

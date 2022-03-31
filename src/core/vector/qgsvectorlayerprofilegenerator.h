@@ -34,6 +34,9 @@ class QgsAbstractTerrainProvider;
 class QgsGeos;
 class QgsLineString;
 class QgsPolygon;
+class QgsLineSymbol;
+class QgsFillSymbol;
+class QgsMarkerSymbol;
 
 #define SIP_NO_FILE
 
@@ -55,6 +58,10 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
     QVector< QgsGeometry > distanceVHeightGeometries;
     double minZ = std::numeric_limits< double >::max();
     double maxZ = std::numeric_limits< double >::lowest();
+
+    std::unique_ptr< QgsLineSymbol > profileLineSymbol;
+    std::unique_ptr< QgsFillSymbol > profileFillSymbol;
+    std::unique_ptr< QgsMarkerSymbol > profileMarkerSymbol;
 
     QString type() const override;
     QMap< double, double > distanceToHeightMap() const override;
@@ -131,6 +138,9 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
 
     std::unique_ptr< QgsVectorLayerProfileResults > mResults;
 
+    std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
+    std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
 
 };
 
