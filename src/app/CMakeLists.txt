@@ -243,6 +243,9 @@ set(QGIS_APP_SRCS
   dwg/qgsdwgimportdialog.cpp
   dwg/qgsdwgimporter.cpp
 
+  profile/qgselevationprofilewidget.cpp
+  profile/qgsmaptoolprofilecurve.cpp
+
   project/qgsprojectelevationsettingswidget.cpp
 
   pluginmanager/qgspluginmanager.cpp

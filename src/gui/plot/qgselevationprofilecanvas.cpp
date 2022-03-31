@@ -71,6 +71,9 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
 
     void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
     {
+      if ( !mRenderer )
+        return;
+
       const QImage plot = mRenderer->renderToImage( plotArea.width(), plotArea.height(), xMinimum(), xMaximum(), yMinimum(), yMaximum() );
       rc.painter()->drawImage( plotArea.left(), plotArea.top(), plot );
     }
@@ -177,6 +180,12 @@ QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 {
   QgsDistanceVsElevationPlotCanvas::resizeEvent( event );
+  mPlotItem->updateRect();
+}
+
+void QgsElevationProfileCanvas::showEvent( QShowEvent *event )
+{
+  QgsDistanceVsElevationPlotCanvas::showEvent( event );
   mPlotItem->updateRect();
 }
 
