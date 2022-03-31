@@ -242,25 +242,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QgsDoubleSpinBox" name="mSegmentSizeSpinBox">
-            <property name="toolTip">
-             <string>Number of scalebar units per scalebar segment</string>
-            </property>
-            <property name="suffix">
-             <string> units</string>
-            </property>
-            <property name="decimals">
-             <number>6</number>
-            </property>
-            <property name="maximum">
-             <double>9999999999999.000000000000000</double>
-            </property>
-            <property name="showClearButton" stdset="0">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
           <item row="5" column="0" colspan="2">
            <widget class="QLabel" name="label">
             <property name="text">
@@ -268,28 +249,50 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QgsSpinBox" name="mNumberOfSegmentsSpinBox">
-            <property name="suffix">
-             <string/>
-            </property>
-            <property name="prefix">
-             <string>right </string>
-            </property>
-            <property name="value">
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="2">
-           <widget class="QgsSpinBox" name="mSegmentsLeftSpinBox">
-            <property name="suffix">
-             <string/>
-            </property>
-            <property name="prefix">
-             <string>left </string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout1">
+            <item>
+             <widget class="QgsSpinBox" name="mSegmentsLeftSpinBox">
+              <property name="suffix">
+               <string/>
+              </property>
+              <property name="prefix">
+               <string>left </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mSegmentsLeftDDBtn">
+              <property name="text">
+               <string>…</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout2">
+            <item>
+             <widget class="QgsSpinBox" name="mNumberOfSegmentsSpinBox">
+              <property name="suffix">
+               <string/>
+              </property>
+              <property name="prefix">
+               <string>right </string>
+              </property>
+              <property name="value">
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mSegmentsRightDDBtn">
+              <property name="text">
+               <string>…</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QRadioButton" name="mFixedSizeRadio">
@@ -301,6 +304,36 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout3">
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mSegmentSizeSpinBox">
+              <property name="toolTip">
+               <string>Number of scalebar units per scalebar segment</string>
+              </property>
+              <property name="suffix">
+               <string> units</string>
+              </property>
+              <property name="decimals">
+               <number>6</number>
+              </property>
+              <property name="maximum">
+               <double>9999999999999.000000000000000</double>
+              </property>
+              <property name="showClearButton" stdset="0">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mSegmentSizeDDBtn">
+              <property name="text">
+               <string>…</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item row="3" column="0" colspan="2">
            <widget class="QRadioButton" name="mFitWidthRadio">
             <property name="text">
@@ -308,34 +341,56 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="2">
-           <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-            <property name="maximum">
-             <double>999.990000000000009</double>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="2">
-           <widget class="QgsDoubleSpinBox" name="mMinWidthSpinBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-            <property name="maximum">
-             <double>999.990000000000009</double>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout4">
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mMinWidthSpinBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="suffix">
+               <string> mm</string>
+              </property>
+              <property name="maximum">
+               <double>999.990000000000009</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mMinWidthDDBtn">
+              <property name="text">
+               <string>…</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item row="4" column="2">
-           <widget class="QgsDoubleSpinBox" name="mMaxWidthSpinBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
+           <layout class="QHBoxLayout" name="horizontalLayout5">
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mMaxWidthSpinBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="suffix">
+               <string> mm</string>
+              </property>
+              <property name="maximum">
+               <double>999.990000000000009</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mMaxWidthDDBtn">
+              <property name="text">
+               <string>…</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="5" column="2">
+           <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
             <property name="suffix">
              <string> mm</string>
             </property>
@@ -595,6 +650,11 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -649,12 +709,17 @@
   <tabstop>mNumberFormatPushButton</tabstop>
   <tabstop>mGroupBoxSegments</tabstop>
   <tabstop>mSegmentsLeftSpinBox</tabstop>
+  <tabstop>mSegmentsLeftDDBtn</tabstop>
   <tabstop>mNumberOfSegmentsSpinBox</tabstop>
+  <tabstop>mSegmentsRightDDBtn</tabstop>
   <tabstop>mFixedSizeRadio</tabstop>
   <tabstop>mSegmentSizeSpinBox</tabstop>
+  <tabstop>mSegmentSizeDDBtn</tabstop>
   <tabstop>mFitWidthRadio</tabstop>
   <tabstop>mMinWidthSpinBox</tabstop>
+  <tabstop>mMinWidthDDBtn</tabstop>
   <tabstop>mMaxWidthSpinBox</tabstop>
+  <tabstop>mMaxWidthDDBtn</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
   <tabstop>mNumberOfSubdivisionsSpinBox</tabstop>
   <tabstop>mSubdivisionsHeightSpinBox</tabstop>
