@@ -37,8 +37,18 @@ Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
     ~QgsElevationProfileCanvas();
 
     void update();
+%Docstring
+Triggers an update of the profile, causing the profile extraction to perform in the
+background.
+%End
 
     void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` associated with the profile.
+
+This must be set before any layers which utilise terrain based elevation settings can be
+included in the canvas.
+%End
 
     void setLayers( const QList< QgsMapLayer * > &layers );
 %Docstring
@@ -62,8 +72,14 @@ Returns the list of layers included in the profile.
   public slots:
 
     void zoomFull();
+%Docstring
+Zooms to the full extent of the profile.
+%End
 
     void clear();
+%Docstring
+Clears the current profile.
+%End
 
 };
 

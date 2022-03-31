@@ -30,6 +30,7 @@
 #include "qgsprofilerenderer.h"
 #include "qgsplot.h"
 
+///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
 {
   public:
@@ -107,8 +108,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
     QRectF mRect;
     QgsProfilePlotRenderer *mRenderer = nullptr;
 };
-
-
+///@endcond PRIVATE
 
 
 QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )

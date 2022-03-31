@@ -57,6 +57,10 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
 
   public:
 
+    /**
+     * Constructor for QgsProfilePlotRenderer, using the provided list of profile \a sources to generate the
+     * results.
+     */
     QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
                             const QgsProfileRequest &request );
 
@@ -92,6 +96,9 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
      */
     QgsDoubleRange zRange() const;
 
+    /**
+     * Renders a portion of the profile to an image with the given \a width and \a height.
+     */
     QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax );
 
   signals:
