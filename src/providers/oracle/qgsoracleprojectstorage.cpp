@@ -101,7 +101,7 @@ bool QgsOracleProjectStorage::readProject( const QString &uri, QIODevice *device
   QgsOracleProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
-    context.pushMessage( QObject::tr( "Invalid URI for OracleQL provider: " ) + uri, Qgis::MessageLevel::Critical );
+    context.pushMessage( QObject::tr( "Invalid URI for Oracle provider: " ) + uri, Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -118,7 +118,6 @@ bool QgsOracleProjectStorage::readProject( const QString &uri, QIODevice *device
     return false;
   }
 
-  bool ok = false;
   QString sql( QStringLiteral( "SELECT content FROM %1.\"qgis_projects\" WHERE name = ?" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
   QSqlQuery qry( *pconn.get() );
   qry.prepare( sql );
@@ -223,7 +222,6 @@ bool QgsOracleProjectStorage::removeProject( const QString &uri )
   if ( !pconn.get() )
     return false;
 
-  bool removed = false;
   if ( _projectsTableExists( pconn.get(), projectUri.owner ) )
   {
     QSqlQuery qry( *pconn.get() );
@@ -244,6 +242,9 @@ bool QgsOracleProjectStorage::readProjectStorageMetadata( const QString &uri, Qg
 
   QgsPoolOracleConn pconn( projectUri.connInfo.connectionInfo( false ) );
   if ( !pconn.get() )
+    return false;
+
+  if ( !_projectsTableExists( pconn.get(), projectUri.owner ) )
     return false;
 
   QString sql( QStringLiteral( "SELECT metadata FROM %1.\"qgis_projects\" WHERE name = ?" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
@@ -268,34 +269,32 @@ bool QgsOracleProjectStorage::readProjectStorageMetadata( const QString &uri, Qg
 
 QString QgsOracleProjectStorage::encodeUri( const QgsOracleProjectUri &postUri )
 {
-  // QUrl u;
-  // QUrlQuery urlQuery;
+  QUrl u;
+  QUrlQuery urlQuery;
 
-  // u.setScheme( "oracleql" );
-  // u.setHost( postUri.connInfo.host() );
-  // if ( !postUri.connInfo.port().isEmpty() )
-  //   u.setPort( postUri.connInfo.port().toInt() );
-  // u.setUserName( postUri.connInfo.username() );
-  // u.setPassword( postUri.connInfo.password() );
+  u.setScheme( "oracle" );
+  u.setHost( postUri.connInfo.host() );
+  if ( !postUri.connInfo.port().isEmpty() )
+    u.setPort( postUri.connInfo.port().toInt() );
+  u.setUserName( postUri.connInfo.username() );
+  u.setPassword( postUri.connInfo.password() );
 
-  // if ( !postUri.connInfo.service().isEmpty() )
-  //   urlQuery.addQueryItem( "service", postUri.connInfo.service() );
-  // if ( !postUri.connInfo.authConfigId().isEmpty() )
-  //   urlQuery.addQueryItem( "authcfg", postUri.connInfo.authConfigId() );
-  // if ( postUri.connInfo.sslMode() != QgsDataSourceUri::SslPrefer )
-  //   urlQuery.addQueryItem( "sslmode", QgsDataSourceUri::encodeSslMode( postUri.connInfo.sslMode() ) );
+  if ( !postUri.connInfo.service().isEmpty() )
+    urlQuery.addQueryItem( "service", postUri.connInfo.service() );
+  if ( !postUri.connInfo.authConfigId().isEmpty() )
+    urlQuery.addQueryItem( "authcfg", postUri.connInfo.authConfigId() );
+  if ( postUri.connInfo.sslMode() != QgsDataSourceUri::SslPrefer )
+    urlQuery.addQueryItem( "sslmode", QgsDataSourceUri::encodeSslMode( postUri.connInfo.sslMode() ) );
 
-  // urlQuery.addQueryItem( "dbname", postUri.connInfo.database() );
+  urlQuery.addQueryItem( "dbname", postUri.connInfo.database() );
 
-  // urlQuery.addQueryItem( "schema", postUri.schemaName );
-  // if ( !postUri.projectName.isEmpty() )
-  //   urlQuery.addQueryItem( "project", postUri.projectName );
+  urlQuery.addQueryItem( "schema", postUri.owner );
+  if ( !postUri.projectName.isEmpty() )
+    urlQuery.addQueryItem( "project", postUri.projectName );
 
-  // u.setQuery( urlQuery );
+  u.setQuery( urlQuery );
 
-  // return QString::fromUtf8( u.toEncoded() );
-
-  return QString();
+  return QString::fromUtf8( u.toEncoded() );
 }
 
 

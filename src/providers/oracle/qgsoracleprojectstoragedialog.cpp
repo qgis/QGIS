@@ -17,7 +17,7 @@
 #include "qgsoracleconn.h"
 #include "qgsoracleconnpool.h"
 #include "qgsoracleproviderconnection.h"
-// #include "qgsoracleprojectstorage.h"
+#include "qgsoracleprojectstorage.h"
 
 #include "qgsapplication.h"
 #include "qgsprojectstorage.h"
@@ -44,12 +44,12 @@ QgsOracleProjectStorageDialog::QgsOracleProjectStorageDialog( bool saving, QWidg
 
   if ( saving )
   {
-    setWindowTitle( tr( "Save project to OracleQL" ) );
+    setWindowTitle( tr( "Save project to Oracle" ) );
     mCboProject->setEditable( true );
   }
   else
   {
-    setWindowTitle( tr( "Load project from OracleQL" ) );
+    setWindowTitle( tr( "Load project from Oracle" ) );
   }
 
   connect( mCboConnection, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::populateOwners );
@@ -122,61 +122,63 @@ void QgsOracleProjectStorageDialog::populateOwners()
 
 void QgsOracleProjectStorageDialog::populateProjects()
 {
-  // mCboProject->clear();
+  mCboProject->clear();
+  mExistingProjects.clear();
 
-  // QString uri = currentProjectUri();
-  // QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "oracleql" ) );
-  // Q_ASSERT( storage );
-  // mCboProject->addItems( storage->listProjects( uri ) );
-  // projectChanged();
+  QString uri = currentProjectUri();
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "oracle" ) );
+  Q_ASSERT( storage );
+  mExistingProjects = storage->listProjects( uri );
+  mCboProject->addItems( mExistingProjects );
+  projectChanged();
 }
 
 void QgsOracleProjectStorageDialog::onOK()
 {
-  // // check that the fields are filled in
-  // if ( mCboProject->currentText().isEmpty() )
-  //   return;
+  // check that the fields are filled in
+  if ( mCboProject->currentText().isEmpty() )
+    return;
 
-  // if ( mSaving )
-  // {
-  //   if ( mCboProject->findText( mCboProject->currentText() ) != -1 )
-  //   {
-  //     int res = QMessageBox::question( this, tr( "Overwrite project" ),
-  //                                      tr( "A project with the same name already exists. Would you like to overwrite it?" ),
-  //                                      QMessageBox::Yes | QMessageBox::No );
-  //     if ( res != QMessageBox::Yes )
-  //       return;
-  //   }
-  // }
+  if ( mSaving )
+  {
+    if ( mExistingProjects.contains( mCboProject->currentText() ) )
+    {
+      int res = QMessageBox::question( this, tr( "Overwrite project" ),
+                                       tr( "A project with the same name already exists. Would you like to overwrite it?" ),
+                                       QMessageBox::Yes | QMessageBox::No );
+      if ( res != QMessageBox::Yes )
+        return;
+    }
+  }
 
-  // accept();
+  accept();
 }
 
 void QgsOracleProjectStorageDialog::projectChanged()
 {
-  mActionRemoveProject->setEnabled( mCboProject->count() != 0 && mCboProject->findText( mCboProject->currentText() ) != -1 );
+  mActionRemoveProject->setEnabled( mCboProject->count() != 0 && mExistingProjects.contains( mCboProject->currentText() ) );
 }
 
 void QgsOracleProjectStorageDialog::removeProject()
 {
-  // int res = QMessageBox::question( this, tr( "Remove project" ),
-  //                                  tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ),
-  //                                  QMessageBox::Yes | QMessageBox::No );
-  // if ( res != QMessageBox::Yes )
-  //   return;
+  int res = QMessageBox::question( this, tr( "Remove project" ),
+                                   tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ),
+                                   QMessageBox::Yes | QMessageBox::No );
+  if ( res != QMessageBox::Yes )
+    return;
 
-  // QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "oracleql" ) );
-  // Q_ASSERT( storage );
-  // storage->removeProject( currentProjectUri() );
-  // populateProjects();
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "oracle" ) );
+  Q_ASSERT( storage );
+  storage->removeProject( currentProjectUri() );
+  populateProjects();
 }
 
-QString QgsOracleProjectStorageDialog::currentProjectUri( bool schemaOnly )
+QString QgsOracleProjectStorageDialog::currentProjectUri( bool ownerOnly )
 {
-  // QgsOracleProjectUri postUri;
-  // postUri.connInfo = QgsOracleConn::connUri( mCboConnection->currentText() );
-  // postUri.schemaName = mCboOwner->currentText();
-  // if ( !schemaOnly )
-  //   postUri.projectName = mCboProject->currentText();
-  // return QgsOracleProjectStorage::encodeUri( postUri );
+  QgsOracleProjectUri projectUri;
+  projectUri.connInfo = QgsOracleConn::connUri( mCboConnection->currentText() );
+  projectUri.owner = mCboOwner->currentText();
+  if ( !ownerOnly )
+    projectUri.projectName = mCboProject->currentText();
+  return QgsOracleProjectStorage::encodeUri( projectUri );
 }

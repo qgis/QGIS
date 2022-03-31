@@ -30,7 +30,7 @@ class QgsOracleProjectStorageDialog : public QDialog, private Ui::QgsOracleProje
     QString schemaName() const;
     QString projectName() const;
 
-    QString currentProjectUri( bool schemaOnly = false );
+    QString currentProjectUri( bool ownerOnly = false );
 
   signals:
 
@@ -45,6 +45,7 @@ class QgsOracleProjectStorageDialog : public QDialog, private Ui::QgsOracleProje
 
     bool mSaving = false;  //!< Whether using this dialog for loading or saving a project
     QAction *mActionRemoveProject = nullptr;
+    QStringList mExistingProjects;
 };
 
 #endif // QGSORACLEPROJECTSTORAGEDIALOG_H
