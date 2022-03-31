@@ -31,6 +31,7 @@ class QgsProfileRequest;
 class QgsCurve;
 class QgsMeshLayer;
 class QgsAbstractTerrainProvider;
+class QgsLineSymbol;
 
 #define SIP_NO_FILE
 
@@ -51,6 +52,8 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileResults
     QMap< double, double> results;
     double minZ = std::numeric_limits< double >::max();
     double maxZ = std::numeric_limits< double >::lowest();
+
+    std::unique_ptr< QgsLineSymbol > lineSymbol;
 
     QString type() const override;
     QMap< double, double > distanceToHeightMap() const override;
@@ -92,9 +95,14 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileGenera
 
     std::unique_ptr< QgsCurve > mProfileCurve;
 
+    std::unique_ptr< QgsLineSymbol > mLineSymbol;
+
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;
+
+    double mOffset = 0;
+    double mScale = 1;
 
     double mStepDistance = std::numeric_limits<double>::quiet_NaN();
 

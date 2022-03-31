@@ -66,11 +66,50 @@ class CORE_EXPORT QgsProfileRenderContext
      */
     void setWorldTransform( const QTransform &transform );
 
+    /**
+     * Returns the range of distances to include in the render.
+     *
+     * Distances outside this range should be excluded from the render.
+     *
+     * \see setDistanceRange()
+     */
+    QgsDoubleRange distanceRange() const;
+
+    /**
+     * Sets the \a range of distances to include in the render.
+     *
+     * Distances outside this range will be excluded from the render.
+     *
+     * \see distanceRange()
+     */
+    void setDistanceRange( const QgsDoubleRange &range );
+
+    /**
+     * Returns the range of elevations to include in the render.
+     *
+     * Elevations outside this range should be excluded from the render.
+     *
+     * \see setElevationRange()
+     */
+    QgsDoubleRange elevationRange() const;
+
+    /**
+     * Sets the \a range of elevations to include in the render.
+     *
+     * Elevations outside this range will be excluded from the render.
+     *
+     * \see elevationRange()
+     */
+    void setElevationRange( const QgsDoubleRange &range );
+
   private:
 
     QgsRenderContext mRenderContext;
 
     QTransform mWorldTransform;
+
+    QgsDoubleRange mDistanceRange;
+    QgsDoubleRange mElevationRange;
 
 };
 

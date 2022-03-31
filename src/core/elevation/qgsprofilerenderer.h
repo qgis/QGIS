@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsprofilerequest.h"
+#include "qgsrange.h"
 
 #include <QObject>
 #include <QFutureWatcher>
@@ -86,7 +87,12 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     //! Returns TRUE if the generation job is currently running in background.
     bool isActive() const;
 
-    QImage renderToImage( int width, int height, double zMin, double zMax );
+    /**
+     * Returns the limits of the retrieved elevation values.
+     */
+    QgsDoubleRange zRange() const;
+
+    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax );
 
   signals:
 

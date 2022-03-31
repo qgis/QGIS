@@ -123,21 +123,39 @@ bool QgsProfilePlotRenderer::isActive() const
   return mStatus != Idle;
 }
 
-QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double zMin, double zMax )
+QgsDoubleRange QgsProfilePlotRenderer::zRange() const
 {
-  QImage res( width, height, QImage::Format_ARGB32 );
+  double min = std::numeric_limits< double >::max();
+  double max = std::numeric_limits< double >::lowest();
+  for ( const ProfileJob &job : mJobs )
+  {
+    if ( job.complete && job.results )
+    {
+      const QgsDoubleRange jobRange = job.results->zRange();
+      min = std::min( min, jobRange.lower() );
+      max = std::max( max, jobRange.upper() );
+    }
+  }
+  return QgsDoubleRange( min, max );
+}
+
+QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax )
+{
+  QImage res( width + 200, height + 200, QImage::Format_ARGB32 );
   res.fill( Qt::transparent );
 
   QPainter p( &res );
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
   QgsProfileRenderContext profileRenderContext( context );
 
-  const double curveLength = mRequest.profileCurve()->length();
   QTransform transform;
   transform.translate( 0, height );
-  transform.scale( width / curveLength, -height / ( zMax - zMin ) );
-  transform.translate( 0, -zMin );
+  transform.scale( width / ( distanceMax - distanceMin ), -height / ( zMax - zMin ) );
+  transform.translate( -distanceMin, -zMin );
   profileRenderContext.setWorldTransform( transform );
+
+  profileRenderContext.setDistanceRange( QgsDoubleRange( distanceMin, distanceMax ) );
+  profileRenderContext.setElevationRange( QgsDoubleRange( zMin, zMax ) );
 
   p.setRenderHint( QPainter::Antialiasing, true );
   for ( const ProfileJob &job : mJobs )
