@@ -175,7 +175,7 @@ jobs:
         if: ${{ matrix.run-tests }}
         run: tar --exclude='*.o' -cvzf build.tgz build
 
-      - uses: actions/upload-artifact@v2.3.1
+      - uses: actions/upload-artifact@v3
         if: ${{ matrix.run-tests }}
         with:
           name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
