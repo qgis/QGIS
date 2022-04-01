@@ -74,6 +74,9 @@ QgsPointCloudLayer *QgsPointCloudLayer::clone() const
   QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
 
+  layer->mElevationProperties = mElevationProperties->clone();
+  layer->mElevationProperties->setParent( layer );
+
   if ( mRenderer )
     layer->setRenderer( mRenderer->clone() );
 

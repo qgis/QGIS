@@ -66,6 +66,16 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
   return true;
 }
 
+QgsRasterLayerElevationProperties *QgsRasterLayerElevationProperties::clone() const
+{
+  std::unique_ptr< QgsRasterLayerElevationProperties > res = std::make_unique< QgsRasterLayerElevationProperties >( nullptr );
+  res->setEnabled( mEnabled );
+  res->setZOffset( mZOffset );
+  res->setZScale( mZScale );
+  res->setProfileLineSymbol( mProfileLineSymbol->clone() );
+  return res.release();
+}
+
 bool QgsRasterLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
 {
   // TODO -- test actual raster z range

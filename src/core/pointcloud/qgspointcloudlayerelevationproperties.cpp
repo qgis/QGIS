@@ -45,6 +45,14 @@ bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element,
   return true;
 }
 
+QgsPointCloudLayerElevationProperties *QgsPointCloudLayerElevationProperties::clone() const
+{
+  std::unique_ptr< QgsPointCloudLayerElevationProperties > res = std::make_unique< QgsPointCloudLayerElevationProperties >( nullptr );
+  res->setZOffset( mZOffset );
+  res->setZScale( mZScale );
+  return res.release();
+}
+
 bool QgsPointCloudLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
 {
   // TODO -- test actual point cloud z range

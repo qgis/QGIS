@@ -101,6 +101,21 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
   return true;
 }
 
+QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() const
+{
+  std::unique_ptr< QgsVectorLayerElevationProperties > res = std::make_unique< QgsVectorLayerElevationProperties >( nullptr );
+  res->setZOffset( mZOffset );
+  res->setZScale( mZScale );
+  res->setClamping( mClamping );
+  res->setBinding( mBinding );
+  res->setExtrusionEnabled( mEnableExtrusion );
+  res->setExtrusionHeight( mExtrusionHeight );
+  res->setProfileLineSymbol( mProfileLineSymbol->clone() );
+  res->setProfileFillSymbol( mProfileFillSymbol->clone() );
+  res->setProfileMarkerSymbol( mProfileMarkerSymbol->clone() );
+  return res.release();
+}
+
 bool QgsVectorLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
 {
   // TODO -- test actual layer z range
