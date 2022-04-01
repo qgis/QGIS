@@ -50,18 +50,6 @@ class CORE_EXPORT QgsAbstractPointCloud3DRenderer : public QgsAbstract3DRenderer
      */
     virtual bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) = 0;
 
-    /**
-     * Sets whether this 3D renderer should be automatically updated
-     * with changes applied to the respective layer's 2D renderer
-     */
-    virtual void setSyncedWith2DRenderer( bool synced ) = 0;
-
-    /**
-     * Returns whether this 3D renderer should be automatically updated
-     * with changes applied to the respective layer's 2D renderer
-     */
-    virtual bool syncedWith2DRenderer() = 0;
-
   protected:
     //! Default constructor
     QgsAbstractPointCloud3DRenderer() = default;

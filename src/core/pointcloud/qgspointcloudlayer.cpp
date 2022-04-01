@@ -197,6 +197,14 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
 {
   bool result = true;
 
+  if ( categories.testFlag( Symbology3D ) )
+  {
+    bool ok;
+    bool sync = node.attributes().namedItem( QStringLiteral( "sync3DRendererTo2DRenderer" ) ).nodeValue().toInt( &ok );
+    if ( ok )
+      setSync3DRendererTo2DRenderer( sync );
+  }
+
   if ( categories.testFlag( Symbology ) )
   {
     QDomElement rendererElement = node.firstChildElement( QStringLiteral( "renderer" ) );
@@ -274,6 +282,11 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
 {
   QDomElement mapLayerNode = node.toElement();
 
+  if ( categories.testFlag( Symbology3D ) )
+  {
+    mapLayerNode.setAttribute( QStringLiteral( "sync3DRendererTo2DRenderer" ), mSync3DRendererTo2DRenderer ? 1 : 0 );
+  }
+
   if ( categories.testFlag( Symbology ) )
   {
     if ( mRenderer )
@@ -310,7 +323,6 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
     mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
     mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
   }
-
   return true;
 }
 
@@ -664,8 +676,7 @@ void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
   emit rendererChanged();
   emitStyleChanged();
 
-  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
-  if ( r && r->syncedWith2DRenderer() )
+  if ( mSync3DRendererTo2DRenderer )
     convertRenderer3DFromRenderer2D();
 }
 
@@ -701,27 +712,25 @@ QString QgsPointCloudLayer::subsetString() const
 
 bool QgsPointCloudLayer::convertRenderer3DFromRenderer2D()
 {
+  bool result = false;
   QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
-  bool result = r->convertFrom2DRenderer( renderer() );
-  setRenderer3D( r );
-  trigger3DUpdate();
+  if ( r )
+  {
+    result = r->convertFrom2DRenderer( renderer() );
+    setRenderer3D( r );
+    trigger3DUpdate();
+  }
   return result;
 }
 
 bool QgsPointCloudLayer::sync3DRendererTo2DRenderer() const
 {
-  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
-  if ( !r )
-    return false;
-  return r->syncedWith2DRenderer();
+  return mSync3DRendererTo2DRenderer;
 }
 
 void QgsPointCloudLayer::setSync3DRendererTo2DRenderer( bool sync )
 {
-  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
-  if ( !r )
-    return;
+  mSync3DRendererTo2DRenderer = sync;
   if ( sync )
     convertRenderer3DFromRenderer2D();
-  r->setSyncedWith2DRenderer( sync );
 }

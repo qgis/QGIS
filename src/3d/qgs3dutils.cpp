@@ -735,7 +735,7 @@ QVector2D Qgs3DUtils::textureToScreenCoordinates( QVector2D textureXY, QSize win
   return QVector2D( textureXY.x() * winSize.width(), ( 1 - textureXY.y() ) * winSize.height() );
 }
 
-std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2dPointCloudRendererTo3d( QgsPointCloudRenderer *renderer )
+std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer )
 {
   if ( !renderer )
     return nullptr;
@@ -743,34 +743,34 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2dPointCloudRen
   std::unique_ptr< QgsPointCloud3DSymbol > symbol3D;
   if ( renderer->type() == QLatin1String( "ramp" ) )
   {
-    const QgsPointCloudAttributeByRampRenderer *renderer2d = dynamic_cast< const QgsPointCloudAttributeByRampRenderer * >( renderer );
+    const QgsPointCloudAttributeByRampRenderer *renderer2D = dynamic_cast< const QgsPointCloudAttributeByRampRenderer * >( renderer );
     symbol3D = std::make_unique< QgsColorRampPointCloud3DSymbol >();
     QgsColorRampPointCloud3DSymbol *symbol = static_cast< QgsColorRampPointCloud3DSymbol * >( symbol3D.get() );
-    symbol->setAttribute( renderer2d->attribute() );
-    symbol->setColorRampShaderMinMax( renderer2d->minimum(), renderer2d->maximum() );
-    symbol->setColorRampShader( renderer2d->colorRampShader() );
+    symbol->setAttribute( renderer2D->attribute() );
+    symbol->setColorRampShaderMinMax( renderer2D->minimum(), renderer2D->maximum() );
+    symbol->setColorRampShader( renderer2D->colorRampShader() );
   }
   else if ( renderer->type() == QLatin1String( "rgb" ) )
   {
-    const QgsPointCloudRgbRenderer *renderer2d = dynamic_cast< const QgsPointCloudRgbRenderer * >( renderer );
+    const QgsPointCloudRgbRenderer *renderer2D = dynamic_cast< const QgsPointCloudRgbRenderer * >( renderer );
     symbol3D = std::make_unique< QgsRgbPointCloud3DSymbol >();
     QgsRgbPointCloud3DSymbol *symbol = static_cast< QgsRgbPointCloud3DSymbol * >( symbol3D.get() );
-    symbol->setRedAttribute( renderer2d->redAttribute() );
-    symbol->setGreenAttribute( renderer2d->greenAttribute() );
-    symbol->setBlueAttribute( renderer2d->blueAttribute() );
+    symbol->setRedAttribute( renderer2D->redAttribute() );
+    symbol->setGreenAttribute( renderer2D->greenAttribute() );
+    symbol->setBlueAttribute( renderer2D->blueAttribute() );
 
-    symbol->setRedContrastEnhancement( renderer2d->redContrastEnhancement() ? new QgsContrastEnhancement( *renderer2d->redContrastEnhancement() ) : nullptr );
-    symbol->setGreenContrastEnhancement( renderer2d->greenContrastEnhancement() ? new QgsContrastEnhancement( *renderer2d->greenContrastEnhancement() ) : nullptr );
-    symbol->setBlueContrastEnhancement( renderer2d->blueContrastEnhancement() ? new QgsContrastEnhancement( *renderer2d->blueContrastEnhancement() ) : nullptr );
+    symbol->setRedContrastEnhancement( renderer2D->redContrastEnhancement() ? new QgsContrastEnhancement( *renderer2D->redContrastEnhancement() ) : nullptr );
+    symbol->setGreenContrastEnhancement( renderer2D->greenContrastEnhancement() ? new QgsContrastEnhancement( *renderer2D->greenContrastEnhancement() ) : nullptr );
+    symbol->setBlueContrastEnhancement( renderer2D->blueContrastEnhancement() ? new QgsContrastEnhancement( *renderer2D->blueContrastEnhancement() ) : nullptr );
   }
   else if ( renderer->type() == QLatin1String( "classified" ) )
   {
 
-    const QgsPointCloudClassifiedRenderer *renderer2d = dynamic_cast< const QgsPointCloudClassifiedRenderer * >( renderer );
+    const QgsPointCloudClassifiedRenderer *renderer2D = dynamic_cast< const QgsPointCloudClassifiedRenderer * >( renderer );
     symbol3D = std::make_unique< QgsClassificationPointCloud3DSymbol >();
     QgsClassificationPointCloud3DSymbol *symbol = static_cast< QgsClassificationPointCloud3DSymbol * >( symbol3D.get() );
-    symbol->setAttribute( renderer2d->attribute() );
-    symbol->setCategoriesList( renderer2d->categories() );
+    symbol->setAttribute( renderer2D->attribute() );
+    symbol->setCategoriesList( renderer2D->categories() );
   }
 
   if ( symbol3D )

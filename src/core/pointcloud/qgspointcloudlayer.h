@@ -238,6 +238,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     std::unique_ptr<QgsPointCloudRenderer> mRenderer;
 
     QgsPointCloudLayerElevationProperties *mElevationProperties = nullptr;
+
+    bool mSync3DRendererTo2DRenderer = false;
 };
 
 

@@ -237,7 +237,7 @@ class _3D_EXPORT Qgs3DUtils
      * \note This function was formerly in Qgs3DAppUtils
      * \since QGIS 3.26
      */
-    static std::unique_ptr< QgsPointCloudLayer3DRenderer > convert2dPointCloudRendererTo3d( QgsPointCloudRenderer *renderer );
+    static std::unique_ptr< QgsPointCloudLayer3DRenderer > convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
 };
 
 #endif // QGS3DUTILS_H

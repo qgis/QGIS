@@ -296,8 +296,6 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
     void setPointRenderingBudget( int budget );
 
     bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) override;
-    bool syncedWith2DRenderer() override { return mSyncedWith2DRenderer; };
-    void setSyncedWith2DRenderer( bool synced ) override { mSyncedWith2DRenderer = synced; };
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
@@ -305,7 +303,6 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
     double mMaximumScreenError = 1.0;
     bool mShowBoundingBoxes = false;
     int mPointBudget = 1000000;
-    bool mSyncedWith2DRenderer = false;
 
   private:
 #ifdef SIP_RUN
