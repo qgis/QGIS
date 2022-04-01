@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsDistanceVsElevationPlotCanvas
+"""QGIS Unit tests for QgsElevationProfileCanvas
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,10 +29,11 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLineString,
     QgsPoint,
-    QgsPointXY
+    QgsPointXY,
+    QgsProject
 )
 from qgis.gui import (
-    QgsDistanceVsElevationPlotCanvas,
+    QgsElevationProfileCanvas,
     QgsPlotTool,
     QgsPlotMouseEvent
 )
@@ -70,10 +71,10 @@ class TestTool(QgsPlotTool):
         self.events.append(event)
 
 
-class TestQgsDistanceVsElevationPlotCanvas(unittest.TestCase):
+class TestQgsElevationProfileCanvas(unittest.TestCase):
 
     def setUp(self):
-        self.report = "<h1>Python QgsDistanceVsElevationPlotCanvas Tests</h1>\n"
+        self.report = "<h1>Python QgsElevationProfileCanvas Tests</h1>\n"
 
     def tearDown(self):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
@@ -81,7 +82,7 @@ class TestQgsDistanceVsElevationPlotCanvas(unittest.TestCase):
             report_file.write(self.report)
 
     def testGettersSetters(self):
-        canvas = QgsDistanceVsElevationPlotCanvas()
+        canvas = QgsElevationProfileCanvas()
         canvas.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(canvas.crs().authid(), 'EPSG:3111')
 
@@ -90,26 +91,15 @@ class TestQgsDistanceVsElevationPlotCanvas(unittest.TestCase):
         canvas.setProfileCurve(ls)
         self.assertEqual(canvas.profileCurve().asWkt(), 'LineString (1 2, 3 4)')
 
-    def testZToCanvasY(self):
-        canvas = QgsDistanceVsElevationPlotCanvas()
-        canvas.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
-        canvas.setFrameStyle(0)
-        canvas.resize(600, 400)
-        canvas.show()
-        self.assertEqual(canvas.width(), 600)
-        self.assertEqual(canvas.height(), 400)
-
-        self.assertEqual(canvas.zToCanvasY(0), 400)
-        self.assertEqual(canvas.zToCanvasY(100), 0)
-
     def testToFromMapCoordinates(self):
         """
         Test converting canvas coordinates to map coordinates
         """
-        canvas = QgsDistanceVsElevationPlotCanvas()
+        canvas = QgsElevationProfileCanvas()
         canvas.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
+        canvas.setProject(QgsProject.instance())
         canvas.show()
         self.assertEqual(canvas.width(), 600)
         self.assertEqual(canvas.height(), 400)
@@ -122,47 +112,56 @@ class TestQgsDistanceVsElevationPlotCanvas(unittest.TestCase):
         ls.fromWkt('LineString(0 2, 10 2, 10 4)')
         canvas.setProfileCurve(ls)
 
+        canvas.setVisiblePlotRange(0, ls.length(), 0, 100)
+
         res = canvas.toMapCoordinates(QgsPointXY(300, 200))
-        self.assertAlmostEqual(res.x(), 6, 4)
+        self.assertAlmostEqual(res.x(), 5.927, 0)
         self.assertAlmostEqual(res.y(), 2, 4)
-        self.assertAlmostEqual(res.z(), 50, 4)
+        self.assertAlmostEqual(res.z(), 49.165, 0)
 
         res = canvas.toCanvasCoordinates(QgsPoint(6, 2, 50))
-        self.assertAlmostEqual(res.x(), 300, 4)
-        self.assertAlmostEqual(res.y(), 200, 4)
+        self.assertAlmostEqual(res.x(), 303.578, -1)
+        self.assertAlmostEqual(res.y(), 196.75, -1)
 
+        # point outside plot area
         res = canvas.toMapCoordinates(QgsPointXY(0, 0))
-        self.assertAlmostEqual(res.x(), 0, 4)
+        self.assertTrue(res.isEmpty())
+
+        # just inside top left of plot area
+        res = canvas.toMapCoordinates(QgsPointXY(15, 380))
+        self.assertAlmostEqual(res.x(), 0.1190, 1)
         self.assertAlmostEqual(res.y(), 2, 4)
-        self.assertAlmostEqual(res.z(), 0, 4)
+        self.assertAlmostEqual(res.z(), 2.95, 1)
 
         res = canvas.toCanvasCoordinates(QgsPoint(0, 2, 0))
-        self.assertAlmostEqual(res.x(), 0, 4)
-        self.assertAlmostEqual(res.y(), 0, 4)
-
-        res = canvas.toMapCoordinates(QgsPointXY(600, 400))
-        self.assertAlmostEqual(res.x(), 10, 4)
-        self.assertAlmostEqual(res.y(), 4, 4)
-        self.assertAlmostEqual(res.z(), 100, 4)
+        self.assertAlmostEqual(res.x(), 9.156, 0)
+        self.assertAlmostEqual(res.y(), 391.5, 0)
 
         res = canvas.toCanvasCoordinates(QgsPoint(10, 4, 100))
-        self.assertAlmostEqual(res.x(), 600, 4)
-        self.assertAlmostEqual(res.y(), 400, 4)
+        self.assertAlmostEqual(res.x(), 598, -1)
+        self.assertAlmostEqual(res.y(), 2, -1)
+
+        res = canvas.toMapCoordinates(QgsPointXY(590, 10))
+        self.assertAlmostEqual(res.x(), 10, 1)
+        self.assertAlmostEqual(res.y(), 3.83, 1)
+        self.assertAlmostEqual(res.z(), 97.946, 1)
 
     def test_tool(self):
         """
         Test some plot tool logic
         """
-        canvas = QgsDistanceVsElevationPlotCanvas()
+        canvas = QgsElevationProfileCanvas()
         canvas.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
+        canvas.setProject(QgsProject.instance())
         canvas.show()
         self.assertEqual(canvas.width(), 600)
         self.assertEqual(canvas.height(), 400)
         ls = QgsLineString()
         ls.fromWkt('LineString(0 2, 10 2, 10 4)')
         canvas.setProfileCurve(ls)
+        canvas.setVisiblePlotRange(0, ls.length(), 0, 100)
 
         self.assertFalse(canvas.tool())
         tool = TestTool(canvas)
@@ -182,33 +181,33 @@ class TestQgsDistanceVsElevationPlotCanvas(unittest.TestCase):
         canvas.mouseDoubleClickEvent(mouse_dbl_click_event)
         self.assertEqual(tool.events[-1].type(), QEvent.MouseButtonDblClick)
         self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 6, 4)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.92, 1)
         self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 50, 4)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 1)
 
         mouse_move_event = QMouseEvent(QEvent.MouseMove, QPointF(300, 200), Qt.LeftButton, Qt.MouseButtons(), Qt.ShiftModifier)
         canvas.mouseMoveEvent(mouse_move_event)
         self.assertEqual(tool.events[-1].type(), QEvent.MouseMove)
         self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 6, 4)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.92, 1)
         self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 50, 4)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 1)
 
         mouse_press_event = QMouseEvent(QEvent.MouseButtonPress, QPointF(300, 200), Qt.LeftButton, Qt.MouseButtons(), Qt.ShiftModifier)
         canvas.mousePressEvent(mouse_press_event)
         self.assertEqual(tool.events[-1].type(), QEvent.MouseButtonPress)
         self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 6, 4)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.927, 1)
         self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 50, 4)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 1)
 
         mouse_release_event = QMouseEvent(QEvent.MouseButtonRelease, QPointF(300, 200), Qt.LeftButton, Qt.MouseButtons(), Qt.ShiftModifier)
         canvas.mouseReleaseEvent(mouse_release_event)
         self.assertEqual(tool.events[-1].type(), QEvent.MouseButtonRelease)
         self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 6, 4)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.927, 1)
         self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 50, 4)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 1)
 
         wheel_event = QWheelEvent(QPointF(300, 200), QPointF(300, 200), QPoint(1, 2), QPoint(3, 4), Qt.NoButton, Qt.NoModifier, Qt.ScrollBegin, False)
         canvas.wheelEvent(wheel_event)

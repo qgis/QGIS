@@ -25,10 +25,10 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
 #include "qgsabstractprofilegenerator.h"
-#include "qgsapplication.h"
-#include "qgscolorschemeregistry.h"
 #include "qgsprofilerenderer.h"
 #include "qgsplot.h"
+#include "qgspoint.h"
+#include "qgsgeos.h"
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
@@ -56,12 +56,14 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       setPos( mRect.topLeft() );
 
       mImage = QImage();
+      mPlotArea = QRectF();
       update();
     }
 
     void updatePlot()
     {
       mImage = QImage();
+      mPlotArea = QRectF();
       update();
     }
 
@@ -70,8 +72,22 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       return mRect;
     }
 
+    QRectF plotArea()
+    {
+      if ( !mPlotArea.isNull() )
+        return mPlotArea;
+
+      // force immediate recalculation of plot area
+      QgsRenderContext context;
+      calculateOptimisedIntervals( context );
+      mPlotArea = interiorPlotArea( context );
+      return mPlotArea;
+    }
+
     void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
     {
+      mPlotArea = plotArea;
+
       if ( !mRenderer )
         return;
 
@@ -106,13 +122,14 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
 
     QImage mImage;
     QRectF mRect;
+    QRectF mPlotArea;
     QgsProfilePlotRenderer *mRenderer = nullptr;
 };
 ///@endcond PRIVATE
 
 
 QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
-  : QgsDistanceVsElevationPlotCanvas( parent )
+  : QgsPlotCanvas( parent )
 {
   mPlotItem = new QgsElevationProfilePlotItem( this );
 }
@@ -189,6 +206,26 @@ void QgsElevationProfileCanvas::setProject( QgsProject *project )
   mProject = project;
 }
 
+void QgsElevationProfileCanvas::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrs = crs;
+}
+
+void QgsElevationProfileCanvas::setProfileCurve( QgsCurve *curve )
+{
+  mProfileCurve.reset( curve );
+}
+
+QgsCurve *QgsElevationProfileCanvas::profileCurve() const
+{
+  return mProfileCurve.get();
+}
+
+QgsCoordinateReferenceSystem QgsElevationProfileCanvas::crs() const
+{
+  return mCrs;
+}
+
 void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 {
   // filter list, removing null layers and invalid layers
@@ -209,14 +246,67 @@ QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
 
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 {
-  QgsDistanceVsElevationPlotCanvas::resizeEvent( event );
+  QgsPlotCanvas::resizeEvent( event );
   mPlotItem->updateRect();
 }
 
 void QgsElevationProfileCanvas::showEvent( QShowEvent *event )
 {
-  QgsDistanceVsElevationPlotCanvas::showEvent( event );
+  QgsPlotCanvas::showEvent( event );
   mPlotItem->updateRect();
+}
+
+QgsPoint QgsElevationProfileCanvas::toMapCoordinates( const QgsPointXY &point ) const
+{
+  if ( !mPlotItem->plotArea().contains( point.x(), point.y() ) )
+    return QgsPoint();
+
+  if ( !mProfileCurve )
+    return QgsPoint();
+
+  const double dx = point.x() - mPlotItem->plotArea().left();
+
+  const double distanceAlongPlotPercent = dx / mPlotItem->plotArea().width();
+  double distanceAlongCurveLength = distanceAlongPlotPercent * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) + mPlotItem->xMinimum();
+
+  std::unique_ptr< QgsPoint > mapXyPoint( mProfileCurve->interpolatePoint( distanceAlongCurveLength ) );
+
+  const double mapZ = ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * ( mPlotItem->plotArea().bottom() - point.y() ) + mPlotItem->yMinimum();
+
+  return QgsPoint( mapXyPoint->x(), mapXyPoint->y(), mapZ );
+}
+
+QgsPointXY QgsElevationProfileCanvas::toCanvasCoordinates( const QgsPoint &point ) const
+{
+  if ( !mProfileCurve )
+    return QgsPointXY();
+
+  QgsGeos geos( mProfileCurve.get() );
+  QString error;
+  const double distanceAlongCurve = geos.lineLocatePoint( point, &error );
+
+  const double distanceAlongCurveOnPlot = distanceAlongCurve - mPlotItem->xMinimum();
+  const double distanceAlongCurvePercent = distanceAlongCurveOnPlot / ( mPlotItem->xMaximum() - mPlotItem->xMinimum() );
+  const double distanceAlongPlotRect = distanceAlongCurvePercent * mPlotItem->plotArea().width();
+
+  const double canvasX = mPlotItem->plotArea().left() + distanceAlongPlotRect;
+
+  double canvasY = 0;
+  if ( std::isnan( point.z() ) || point.z() < mPlotItem->yMinimum() )
+  {
+    canvasY = mPlotItem->plotArea().top();
+  }
+  else if ( point.z() > mPlotItem->yMaximum() )
+  {
+    canvasY = mPlotItem->plotArea().bottom();
+  }
+  else
+  {
+    const double yPercent = ( point.z() - mPlotItem->yMinimum() ) / ( mPlotItem->yMaximum() - mPlotItem->yMinimum() );
+    canvasY = mPlotItem->plotArea().bottom() - mPlotItem->plotArea().height() * yPercent;
+  }
+
+  return QgsPointXY( canvasX, canvasY );
 }
 
 void QgsElevationProfileCanvas::zoomFull()
@@ -235,6 +325,15 @@ void QgsElevationProfileCanvas::zoomFull()
   // just 2% margin to max distance -- any more is overkill and wasted space
   mPlotItem->setXMaximum( profileLength  * 1.02 );
 
+  mPlotItem->updatePlot();
+}
+
+void QgsElevationProfileCanvas::setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation )
+{
+  mPlotItem->setYMinimum( minimumElevation );
+  mPlotItem->setYMaximum( maximumElevation );
+  mPlotItem->setXMinimum( minimumDistance );
+  mPlotItem->setXMaximum( maximumDistance );
   mPlotItem->updatePlot();
 }
 

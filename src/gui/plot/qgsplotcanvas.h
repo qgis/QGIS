@@ -37,7 +37,6 @@ class QMenu;
 % ModuleHeaderCode
 #include "qgsplotcanvas.h"
 #include "qgselevationprofilecanvas.h"
-#include "qgsdistancevselevationplotcanvas.h"
 % End
 #endif
 
@@ -54,8 +53,6 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsElevationProfileCanvas *>( sipCpp ) != nullptr )
       sipType = sipType_QgsElevationProfileCanvas;
-    else if ( qobject_cast<QgsDistanceVsElevationPlotCanvas *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsDistanceVsElevationPlotCanvas;
     else if ( qobject_cast<QgsPlotCanvas *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPlotCanvas;
     else
