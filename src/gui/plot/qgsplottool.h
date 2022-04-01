@@ -23,6 +23,9 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+#include <QPointer>
+#include <QCursor>
+
 class QgsPlotCanvas;
 class QgsPlotMouseEvent;
 class QgsPoint;
@@ -33,10 +36,12 @@ class QKeyEvent;
 class QGestureEvent;
 class QHelpEvent;
 class QMenu;
+class QAction;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsplottool.h"
+#include "qgsplotpantool.h"
 % End
 #endif
 
@@ -53,7 +58,9 @@ class GUI_EXPORT QgsPlotTool : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( qobject_cast<QgsPlotTool *>( sipCpp ) != nullptr )
+    if ( qobject_cast<QgsPlotToolPan *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotToolPan;
+    else if ( qobject_cast<QgsPlotTool *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPlotTool;
     else
       sipType = nullptr;
@@ -70,6 +77,11 @@ class GUI_EXPORT QgsPlotTool : public QObject
      * Returns the flags for the plot tool.
      */
     virtual Qgis::PlotToolFlags flags() const;
+
+    /**
+     * Returns a user-visible, translated name for the tool.
+     */
+    QString toolName() const { return mToolName; }
 
     /**
      * Mouse move \a event for overriding.
@@ -174,6 +186,28 @@ class GUI_EXPORT QgsPlotTool : public QObject
     QgsPlotCanvas *canvas() const;
 
     /**
+     * Associates an \a action with this tool. When the setTool
+     * method of QgsPlotCanvas is called the action's state will be set to on.
+     * Usually this will cause a toolbutton to appear pressed in and
+     * the previously used toolbutton to pop out.
+     *
+     * \see action()
+    */
+    void setAction( QAction *action );
+
+    /**
+     * Returns the action associated with the tool or NULLPTR if no action is associated.
+     *
+     * \see setAction()
+     */
+    QAction *action();
+
+    /**
+     * Sets a user defined \a cursor for use when the tool is active.
+     */
+    void setCursor( const QCursor &cursor );
+
+    /**
      * Allows the tool to populate and customize the given \a menu,
      * prior to showing it in response to a right-mouse button click.
      *
@@ -202,7 +236,7 @@ class GUI_EXPORT QgsPlotTool : public QObject
   protected:
 
     //! Constructor takes a plot canvas as a parameter.
-    QgsPlotTool( QgsPlotCanvas *canvas SIP_TRANSFERTHIS );
+    QgsPlotTool( QgsPlotCanvas *canvas SIP_TRANSFERTHIS, const QString &name );
 
     /**
      * Converts a \a point on the canvas to the associated map coordinate.
@@ -218,9 +252,25 @@ class GUI_EXPORT QgsPlotTool : public QObject
      */
     QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
 
+    /**
+     * Returns TRUE if a mouse press/release operation which started at
+     * \a startViewPoint and ended at \a endViewPoint should be considered
+     * a "click and drag". If FALSE is returned, the operation should be
+     * instead treated as just a click on \a startViewPoint.
+     */
+    bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
+
     //! The pointer to the canvas
     QgsPlotCanvas *mCanvas = nullptr;
 
+    //! Translated name of the map tool
+    QString mToolName;
+
+    //! Optional action associated with tool
+    QPointer< QAction > mAction;
+
+    //! Cursor used by tool
+    QCursor mCursor = Qt::ArrowCursor;
 };
 
 #endif // QGSPLOTTOOL_H

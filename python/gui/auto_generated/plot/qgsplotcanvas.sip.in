@@ -88,6 +88,13 @@ Converts a ``point`` in map coordinates to the associated canvas point.
 May return an empty point if the map point cannot be converted to a canvas point.
 %End
 
+    virtual void panContentsBy( double dx, double dy );
+%Docstring
+Pans the plot contents by ``dx``, ``dy`` in canvas units.
+
+The default implementation does nothing.
+%End
+
   public slots:
 
     virtual void refresh();
@@ -116,6 +123,12 @@ Emitted when key press ``event`` occurs.
     void keyReleased( QKeyEvent *event );
 %Docstring
 Emitted when a key release ``event`` occurs.
+%End
+
+    void willBeDeleted();
+%Docstring
+Emitted in the destructor when the canvas is about to be deleted,
+but is still in a perfectly valid state.
 %End
 
   protected:

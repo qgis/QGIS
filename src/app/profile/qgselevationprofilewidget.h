@@ -31,6 +31,7 @@ class QgsElevationProfileCanvas;
 class QgsMapToolProfileCurve;
 class QgsGeometry;
 class QgsRubberBand;
+class QgsPlotToolPan;
 
 class QgsElevationProfileWidget : public QWidget
 {
@@ -81,6 +82,8 @@ class QgsElevationProfileWidget : public QWidget
     QTimer *mSetCurveTimer = nullptr;
     bool mUpdateScheduled = false;
     QgsRubberBand *createRubberBand();
+
+    QgsPlotToolPan *mPanTool = nullptr;
 };
 
 #endif // QGSELEVATIONPROFILEWIDGET_H

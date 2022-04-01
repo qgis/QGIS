@@ -118,6 +118,13 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
      */
     virtual QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
 
+    /**
+     * Pans the plot contents by \a dx, \a dy in canvas units.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void panContentsBy( double dx, double dy );
+
   public slots:
 
     /**
@@ -143,6 +150,12 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
 
     //! Emitted when a key release \a event occurs.
     void keyReleased( QKeyEvent *event );
+
+    /**
+     * Emitted in the destructor when the canvas is about to be deleted,
+     * but is still in a perfectly valid state.
+     */
+    void willBeDeleted();
 
   protected:
 

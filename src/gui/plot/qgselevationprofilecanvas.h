@@ -55,6 +55,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void resizeEvent( QResizeEvent *event ) override;
     void paintEvent( QPaintEvent *event ) override;
     void cancelJobs() override SIP_SKIP;
+    void panContentsBy( double dx, double dy ) override;
 
     /**
      * Triggers an update of the profile, causing the profile extraction to perform in the
