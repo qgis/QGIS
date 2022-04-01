@@ -9,7 +9,7 @@
   }],
   "examples": [{
     "expression": "file_exists('/home/qgis/data/country_boundaries.shp')",
-    "returns": "true"
+    "returns": "TRUE"
   }],
   "tags": ["path", "exists", "file"]
 }

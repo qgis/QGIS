@@ -12,7 +12,7 @@
   }],
   "examples": [{
     "expression": "overlaps( geom_from_wkt( 'LINESTRING(3 5, 4 4, 5 5, 5 3)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )",
-    "returns": "true"
+    "returns": "TRUE"
   }, {
     "expression": "overlaps( geom_from_wkt( 'LINESTRING(0 0, 1 1)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )",
     "returns": "FALSE"
