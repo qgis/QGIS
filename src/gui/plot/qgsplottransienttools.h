@@ -21,7 +21,7 @@
 #include "qgsplottool.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
+#include "qgsplottoolzoom.h"
 
 /**
  * \ingroup gui
@@ -80,5 +80,35 @@ class GUI_EXPORT QgsPlotToolTemporaryMousePan : public QgsPlotTool
 
 };
 
+/**
+ * \ingroup gui
+ * \brief Plot tool for temporarily zooming a plot while a key is depressed.
+ * \since QGIS 3.26
+ */
+class GUI_EXPORT QgsPlotToolTemporaryKeyZoom : public QgsPlotToolZoom
+{
+
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsPlotToolTemporaryKeyZoom.
+     */
+    QgsPlotToolTemporaryKeyZoom( QgsPlotCanvas *canvas SIP_TRANSFERTHIS );
+
+    void plotReleaseEvent( QgsPlotMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+    void keyReleaseEvent( QKeyEvent *event ) override;
+    void activate() override;
+
+  private:
+
+    QPointer< QgsPlotTool > mPreviousViewTool;
+
+    bool mDeactivateOnMouseRelease = false;
+
+    void updateCursor( Qt::KeyboardModifiers modifiers );
+};
 
 #endif // QGSPLOTTRANSIENTTOOLS_H

@@ -43,7 +43,7 @@ QgsPlotCanvas::QgsPlotCanvas( QWidget *parent )
 
   mSpacePanTool = new QgsPlotToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsPlotToolTemporaryMousePan( this );
-  //mSpaceZoomTool = new QgsPlotToolTemporaryKeyZoom( this );
+  mSpaceZoomTool = new QgsPlotToolTemporaryKeyZoom( this );
 }
 
 QgsPlotCanvas::~QgsPlotCanvas()
@@ -117,7 +117,7 @@ void QgsPlotCanvas::keyPressEvent( QKeyEvent *event )
     else
     {
       //ctrl+space pressed, so switch to temporary keyboard based zoom tool
-      //  setTool( mSpaceZoomTool );
+      setTool( mSpaceZoomTool );
     }
     event->accept();
   }
@@ -281,6 +281,11 @@ void QgsPlotCanvas::centerPlotOn( double, double )
 }
 
 void QgsPlotCanvas::scalePlot( double )
+{
+
+}
+
+void QgsPlotCanvas::zoomToRect( const QRectF )
 {
 
 }
