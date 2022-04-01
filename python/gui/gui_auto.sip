@@ -366,6 +366,7 @@
 %Include auto_generated/plot/qgsplotcanvas.sip
 %Include auto_generated/plot/qgsplotcanvasitem.sip
 %Include auto_generated/plot/qgsplotmouseevent.sip
+%Include auto_generated/plot/qgsplotpantool.sip
 %Include auto_generated/plot/qgsplottool.sip
 %Include auto_generated/pointcloud/qgspointcloudclassifiedrendererwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererwidget.sip

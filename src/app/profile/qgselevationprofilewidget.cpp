@@ -23,6 +23,7 @@
 #include "qgsmaptoolprofilecurve.h"
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsplotpantool.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -90,6 +91,9 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mCanvas = new QgsElevationProfileCanvas( this );
   mCanvas->setProject( QgsProject::instance() );
   connect( mCanvas, &QgsElevationProfileCanvas::activeJobCountChanged, this, &QgsElevationProfileWidget::onTotalPendingJobsCountChanged );
+
+  mPanTool = new QgsPlotToolPan( mCanvas );
+  mCanvas->setTool( mPanTool );
 
 #if 0
   connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, [ = ]( const QString fileName )

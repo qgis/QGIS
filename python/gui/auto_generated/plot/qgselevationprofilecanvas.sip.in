@@ -39,6 +39,8 @@ Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
 
     virtual void paintEvent( QPaintEvent *event );
 
+    virtual void panContentsBy( double dx, double dy );
+
 
     virtual void refresh();
 

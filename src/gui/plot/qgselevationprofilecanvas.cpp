@@ -156,6 +156,23 @@ void QgsElevationProfileCanvas::cancelJobs()
   }
 }
 
+void QgsElevationProfileCanvas::panContentsBy( double dx, double dy )
+{
+  const double dxPercent = dx / mPlotItem->plotArea().width();
+  const double dyPercent = dy / mPlotItem->plotArea().height();
+
+  // these look backwards, but we are dragging the paper, not the view!
+  const double dxPlot = - dxPercent * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() );
+  const double dyPlot = dyPercent * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() );
+
+  mPlotItem->setXMinimum( mPlotItem->xMinimum() + dxPlot );
+  mPlotItem->setXMaximum( mPlotItem->xMaximum() + dxPlot );
+  mPlotItem->setYMinimum( mPlotItem->yMinimum() + dyPlot );
+  mPlotItem->setYMaximum( mPlotItem->yMaximum() + dyPlot );
+
+  mPlotItem->updatePlot();
+}
+
 void QgsElevationProfileCanvas::refresh()
 {
   if ( !mProject || !profileCurve() )
@@ -276,6 +293,8 @@ QgsPoint QgsElevationProfileCanvas::toMapCoordinates( const QgsPointXY &point ) 
   double distanceAlongCurveLength = distanceAlongPlotPercent * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) + mPlotItem->xMinimum();
 
   std::unique_ptr< QgsPoint > mapXyPoint( mProfileCurve->interpolatePoint( distanceAlongCurveLength ) );
+  if ( !mapXyPoint )
+    return QgsPoint();
 
   const double mapZ = ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * ( mPlotItem->plotArea().bottom() - point.y() ) + mPlotItem->yMinimum();
 

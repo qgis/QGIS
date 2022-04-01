@@ -47,6 +47,7 @@ QgsPlotCanvas::~QgsPlotCanvas()
     mTool->deactivate();
     mTool = nullptr;
   }
+  emit willBeDeleted();
 
   QgsPlotCanvas::cancelJobs();
 
@@ -299,6 +300,11 @@ QgsPoint QgsPlotCanvas::toMapCoordinates( const QgsPointXY & ) const
 QgsPointXY QgsPlotCanvas::toCanvasCoordinates( const QgsPoint & ) const
 {
   return QgsPointXY();
+}
+
+void QgsPlotCanvas::panContentsBy( double, double )
+{
+
 }
 
 bool QgsPlotCanvas::viewportEvent( QEvent *event )

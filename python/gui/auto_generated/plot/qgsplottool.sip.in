@@ -11,8 +11,10 @@
 
 
 
+
 %ModuleHeaderCode
 #include "qgsplottool.h"
+#include "qgsplotpantool.h"
 %End
 
 
@@ -30,7 +32,9 @@ Plot tools are user tools for manipulating and interacting with a :py:class:`Qgs
 #include "qgsplottool.h"
 %End
 %ConvertToSubClassCode
-    if ( qobject_cast<QgsPlotTool *>( sipCpp ) != nullptr )
+    if ( qobject_cast<QgsPlotToolPan *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotToolPan;
+    else if ( qobject_cast<QgsPlotTool *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPlotTool;
     else
       sipType = nullptr;
@@ -42,6 +46,11 @@ Plot tools are user tools for manipulating and interacting with a :py:class:`Qgs
     virtual Qgis::PlotToolFlags flags() const;
 %Docstring
 Returns the flags for the plot tool.
+%End
+
+    QString toolName() const;
+%Docstring
+Returns a user-visible, translated name for the tool.
 %End
 
     virtual void plotMoveEvent( QgsPlotMouseEvent *event );
@@ -146,6 +155,28 @@ Called when the tool should clean up.
 Returns the tool's plot canvas.
 %End
 
+    void setAction( QAction *action );
+%Docstring
+Associates an ``action`` with this tool. When the setTool
+method of :py:class:`QgsPlotCanvas` is called the action's state will be set to on.
+Usually this will cause a toolbutton to appear pressed in and
+the previously used toolbutton to pop out.
+
+.. seealso:: :py:func:`action`
+%End
+
+    QAction *action();
+%Docstring
+Returns the action associated with the tool or ``None`` if no action is associated.
+
+.. seealso:: :py:func:`setAction`
+%End
+
+    void setCursor( const QCursor &cursor );
+%Docstring
+Sets a user defined ``cursor`` for use when the tool is active.
+%End
+
     virtual bool populateContextMenuWithEvent( QMenu *menu, QgsPlotMouseEvent *event );
 %Docstring
 Allows the tool to populate and customize the given ``menu``,
@@ -180,7 +211,7 @@ Emitted when the tool is deactivated
 
   protected:
 
-    QgsPlotTool( QgsPlotCanvas *canvas /TransferThis/ );
+    QgsPlotTool( QgsPlotCanvas *canvas /TransferThis/, const QString &name );
 %Docstring
 Constructor takes a plot canvas as a parameter.
 %End
@@ -198,6 +229,16 @@ Converts a ``point`` in map coordinates to the associated canvas point.
 
 May return an empty point if the map point cannot be converted to a canvas point.
 %End
+
+    bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
+%Docstring
+Returns ``True`` if a mouse press/release operation which started at
+``startViewPoint`` and ended at ``endViewPoint`` should be considered
+a "click and drag". If ``False`` is returned, the operation should be
+instead treated as just a click on ``startViewPoint``.
+%End
+
+
 
 
 };

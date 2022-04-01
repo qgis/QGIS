@@ -20,11 +20,17 @@
 #include "qgsplotmouseevent.h"
 
 #include <QWheelEvent>
+#include <QAction>
 
-QgsPlotTool::QgsPlotTool( QgsPlotCanvas *canvas )
+QgsPlotTool::QgsPlotTool( QgsPlotCanvas *canvas, const QString &name )
   : QObject( canvas )
   , mCanvas( canvas )
+  , mToolName( name )
 {
+  connect( mCanvas, &QgsPlotCanvas::willBeDeleted, this, [ = ]
+  {
+    mCanvas = nullptr;
+  } );
 }
 
 QgsPoint QgsPlotTool::toMapCoordinates( const QgsPointXY &point ) const
@@ -35,6 +41,13 @@ QgsPoint QgsPlotTool::toMapCoordinates( const QgsPointXY &point ) const
 QgsPointXY QgsPlotTool::toCanvasCoordinates( const QgsPoint &point ) const
 {
   return mCanvas->toCanvasCoordinates( point );
+}
+
+bool QgsPlotTool::isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const
+{
+  const int diffX = endViewPoint.x() - startViewPoint.x();
+  const int diffY = endViewPoint.y() - startViewPoint.y();
+  return std::abs( diffX ) >= 2 || std::abs( diffY ) >= 2;
 }
 
 QgsPlotTool::~QgsPlotTool()
@@ -50,11 +63,19 @@ Qgis::PlotToolFlags QgsPlotTool::flags() const
 
 void QgsPlotTool::activate()
 {
+  // make action and/or button active
+  if ( mAction )
+    mAction->setChecked( true );
+
+  mCanvas->viewport()->setCursor( mCursor );
   emit activated();
 }
 
 void QgsPlotTool::deactivate()
 {
+  if ( mAction )
+    mAction->setChecked( false );
+
   emit deactivated();
 }
 
@@ -115,6 +136,21 @@ bool QgsPlotTool::canvasToolTipEvent( QHelpEvent * )
 QgsPlotCanvas *QgsPlotTool::canvas() const
 {
   return mCanvas;
+}
+
+void QgsPlotTool::setAction( QAction *action )
+{
+  mAction = action;
+}
+
+QAction *QgsPlotTool::action()
+{
+  return mAction;
+}
+
+void QgsPlotTool::setCursor( const QCursor &cursor )
+{
+  mCursor = cursor;
 }
 
 bool QgsPlotTool::populateContextMenuWithEvent( QMenu *, QgsPlotMouseEvent * )
