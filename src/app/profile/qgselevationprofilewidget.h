@@ -36,7 +36,7 @@ class QgsElevationProfileWidget : public QWidget
 {
     Q_OBJECT
   public:
-    QgsElevationProfileWidget( const QString &name, bool isDocked );
+    QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();
 
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }

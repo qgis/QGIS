@@ -13891,7 +13891,7 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
 
 QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
 {
-  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( tr( "Elevation Profile" ), true );
+  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( tr( "Elevation Profile" ) );
   widget->setMainCanvas( mMapCanvas );
   return widget;
 }
