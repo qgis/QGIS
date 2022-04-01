@@ -176,11 +176,6 @@ class GUI_EXPORT QgsPlotTool : public QObject
     virtual void deactivate();
 
     /**
-     * Called when the tool should clean up.
-     */
-    virtual void clean();
-
-    /**
      * Returns the tool's plot canvas.
      */
     QgsPlotCanvas *canvas() const;

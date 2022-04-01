@@ -41,6 +41,12 @@ Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
 
     virtual void panContentsBy( double dx, double dy );
 
+    virtual void centerPlotOn( double x, double y );
+
+    virtual void scalePlot( double factor );
+
+    virtual void wheelZoom( QWheelEvent *event );
+
 
     virtual void refresh();
 

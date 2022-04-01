@@ -20,6 +20,8 @@
 #include "qgsplotmouseevent.h"
 #include "qgsplottool.h"
 #include "qgslogger.h"
+#include "qgsplottransienttools.h"
+#include "qgssettings.h"
 
 #include <QMenu>
 #include <QKeyEvent>
@@ -35,9 +37,13 @@ QgsPlotCanvas::QgsPlotCanvas( QWidget *parent )
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setMouseTracking( true );
+  viewport()->setMouseTracking( true );
+
   setFocusPolicy( Qt::StrongFocus );
 
-  setInteractive( false );
+  mSpacePanTool = new QgsPlotToolTemporaryKeyPan( this );
+  mMidMouseButtonPanTool = new QgsPlotToolTemporaryMousePan( this );
+  //mSpaceZoomTool = new QgsPlotToolTemporaryKeyZoom( this );
 }
 
 QgsPlotCanvas::~QgsPlotCanvas()
@@ -92,111 +98,96 @@ void QgsPlotCanvas::showContextMenu( QgsPlotMouseEvent *event )
   menu.exec( event->globalPos() );
 }
 
-void QgsPlotCanvas::keyPressEvent( QKeyEvent *e )
-{
-  if ( mMouseButtonDown )
-  {
-    emit keyPressed( e );
-    return;
-  }
-  // Don't want to interfer with mouse events
-  else if ( !mMouseButtonDown )
-  {
-    e->ignore();
-    if ( mTool )
-    {
-      mTool->keyPressEvent( e );
-      if ( e->isAccepted() ) // map tool consumed event
-        return;
-    }
-
-    switch ( e->key() )
-    {
-      default:
-        // Pass it on
-        if ( !mTool )
-        {
-          e->ignore();
-        }
-    }
-  }
-
-  emit keyPressed( e );
-}
-
-void QgsPlotCanvas::keyReleaseEvent( QKeyEvent *e )
-{
-  switch ( e->key() )
-  {
-    default:
-      // Pass it on
-      if ( mTool )
-      {
-        mTool->keyReleaseEvent( e );
-      }
-      else
-      {
-        e->ignore();
-
-      }
-  }
-  emit keyReleased( e );
-}
-
-void QgsPlotCanvas::mouseDoubleClickEvent( QMouseEvent *e )
+void QgsPlotCanvas::keyPressEvent( QKeyEvent *event )
 {
   if ( mTool )
   {
-    std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, e ) );
+    mTool->keyPressEvent( event );
+  }
+  if ( mTool && event->isAccepted() )
+    return;
+
+  if ( event->key() == Qt::Key_Space && ! event->isAutoRepeat() )
+  {
+    if ( !( event->modifiers() & Qt::ControlModifier ) )
+    {
+      // Pan layout with space bar
+      setTool( mSpacePanTool );
+    }
+    else
+    {
+      //ctrl+space pressed, so switch to temporary keyboard based zoom tool
+      //  setTool( mSpaceZoomTool );
+    }
+    event->accept();
+  }
+}
+
+void QgsPlotCanvas::keyReleaseEvent( QKeyEvent *event )
+{
+  if ( mTool )
+  {
+    mTool->keyReleaseEvent( event );
+  }
+
+  if ( !mTool || !event->isAccepted() )
+    QGraphicsView::keyReleaseEvent( event );
+}
+
+void QgsPlotCanvas::mouseDoubleClickEvent( QMouseEvent *event )
+{
+  if ( mTool )
+  {
+    std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
     mTool->plotDoubleClickEvent( me.get() );
+    event->setAccepted( me->isAccepted() );
+  }
+
+  if ( !mTool || !event->isAccepted() )
+    QGraphicsView::mouseDoubleClickEvent( event );
+}
+
+void QgsPlotCanvas::mousePressEvent( QMouseEvent *event )
+{
+  if ( mTool )
+  {
+    std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
+    mTool->plotPressEvent( me.get() );
+    event->setAccepted( me->isAccepted() );
+  }
+
+  if ( !mTool || !event->isAccepted() )
+  {
+    if ( event->button() == Qt::MiddleButton )
+    {
+      // Pan layout with middle mouse button
+      setTool( mMidMouseButtonPanTool );
+      event->accept();
+    }
+    else if ( event->button() == Qt::RightButton && mTool->flags() & Qgis::PlotToolFlag::ShowContextMenu )
+    {
+      std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
+      showContextMenu( me.get() );
+      return;
+    }
+    else
+    {
+      QGraphicsView::mousePressEvent( event );
+    }
   }
 }
 
-void QgsPlotCanvas::mousePressEvent( QMouseEvent *e )
+void QgsPlotCanvas::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( false )
+  if ( mTool )
   {
-
-  }
-  else
-  {
-    // call handler of current map tool
-    if ( mTool )
-    {
-      if ( mTool->flags() & Qgis::PlotToolFlag::ShowContextMenu && e->button() == Qt::RightButton )
-      {
-        std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, e ) );
-        showContextMenu( me.get() );
-        return;
-      }
-      else
-      {
-        std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, e ) );
-        mTool->plotPressEvent( me.get() );
-      }
-    }
+    std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
+    mTool->plotReleaseEvent( me.get() );
+    event->setAccepted( me->isAccepted() );
   }
 
-  mMouseButtonDown = true;
-}
-
-void QgsPlotCanvas::mouseReleaseEvent( QMouseEvent *e )
-{
-  if ( false )
-  {
-
-  }
-  else
-  {
-    // call handler of current tool
-    if ( mTool )
-    {
-      std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, e ) );
-      mTool->plotReleaseEvent( me.get() );
-    }
-  }
-
-  mMouseButtonDown = false;
+  if ( !mTool || !event->isAccepted() )
+    QGraphicsView::mouseReleaseEvent( event );
 }
 
 void QgsPlotCanvas::resizeEvent( QResizeEvent *e )
@@ -204,80 +195,57 @@ void QgsPlotCanvas::resizeEvent( QResizeEvent *e )
   QGraphicsView::resizeEvent( e );
 }
 
-void QgsPlotCanvas::wheelEvent( QWheelEvent *e )
+void QgsPlotCanvas::wheelEvent( QWheelEvent *event )
 {
-  // Zoom the map canvas in response to a mouse wheel event. Moving the
-  // wheel forward (away) from the user zooms in
-
-  e->ignore();
   if ( mTool )
   {
-    mTool->wheelEvent( e );
-    if ( e->isAccepted() )
-      return;
+    mTool->wheelEvent( event );
   }
 
-  if ( e->angleDelta().y() == 0 )
+  if ( !mTool || !event->isAccepted() )
   {
-    e->accept();
-    return;
-  }
-
-  e->accept();
-}
-
-void QgsPlotCanvas::mouseMoveEvent( QMouseEvent *e )
-{
-  if ( false )
-  {
-
-  }
-  else
-  {
-    // call handler of current map tool
-    if ( mTool )
-    {
-      std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, e ) );
-      mTool->plotMoveEvent( me.get() );
-    }
+    event->accept();
+    wheelZoom( event );
   }
 }
 
-void QgsPlotCanvas::setTool( QgsPlotTool *tool, bool clean )
+void QgsPlotCanvas::mouseMoveEvent( QMouseEvent *event )
 {
-  if ( !tool )
-    return;
-
   if ( mTool )
   {
-    if ( clean )
-      mTool->clean();
+    std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
+    mTool->plotMoveEvent( me.get() );
+    event->setAccepted( me->isAccepted() );
+  }
 
-    disconnect( mTool, &QObject::destroyed, this, &QgsPlotCanvas::toolDestroyed );
+  if ( !mTool || !event->isAccepted() )
+    QGraphicsView::mouseMoveEvent( event );
+}
+
+void QgsPlotCanvas::setTool( QgsPlotTool *tool )
+{
+  if ( mTool )
+  {
     mTool->deactivate();
   }
 
-  QgsPlotTool *oldTool = mTool;
-
-  // set new tool and activate it
-  mTool = tool;
-  emit toolChanged( mTool, oldTool );
-  if ( mTool )
+  if ( tool )
   {
-    connect( mTool, &QObject::destroyed, this, &QgsPlotCanvas::toolDestroyed );
-    mTool->activate();
+    // activate new tool before setting it - gives tools a chance
+    // to respond to whatever the current tool is
+    tool->activate();
   }
+
+  mTool = tool;
+  emit toolChanged( mTool );
 }
 
 void QgsPlotCanvas::unsetTool( QgsPlotTool *tool )
 {
   if ( mTool && mTool == tool )
   {
-    disconnect( mTool, &QObject::destroyed, this, &QgsPlotCanvas::toolDestroyed );
-    QgsPlotTool *oldTool = mTool;
-    mTool = nullptr;
-    oldTool->deactivate();
-    emit toolChanged( nullptr, oldTool );
+    mTool->deactivate();
+    emit toolChanged( nullptr );
     setCursor( Qt::ArrowCursor );
   }
 }
@@ -307,6 +275,16 @@ void QgsPlotCanvas::panContentsBy( double, double )
 
 }
 
+void QgsPlotCanvas::centerPlotOn( double, double )
+{
+
+}
+
+void QgsPlotCanvas::scalePlot( double )
+{
+
+}
+
 bool QgsPlotCanvas::viewportEvent( QEvent *event )
 {
   if ( event->type() == QEvent::ToolTip && mTool && mTool->canvasToolTipEvent( qgis::down_cast<QHelpEvent *>( event ) ) )
@@ -316,10 +294,9 @@ bool QgsPlotCanvas::viewportEvent( QEvent *event )
   return QGraphicsView::viewportEvent( event );
 }
 
-void QgsPlotCanvas::toolDestroyed()
+void QgsPlotCanvas::wheelZoom( QWheelEvent * )
 {
-  QgsDebugMsgLevel( QStringLiteral( "tool destroyed" ), 2 );
-  mTool = nullptr;
+
 }
 
 bool QgsPlotCanvas::event( QEvent *e )

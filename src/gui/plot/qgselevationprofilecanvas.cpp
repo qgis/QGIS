@@ -29,6 +29,7 @@
 #include "qgsplot.h"
 #include "qgspoint.h"
 #include "qgsgeos.h"
+#include <QWheelEvent>
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
@@ -171,6 +172,96 @@ void QgsElevationProfileCanvas::panContentsBy( double dx, double dy )
   mPlotItem->setYMaximum( mPlotItem->yMaximum() + dyPlot );
 
   mPlotItem->updatePlot();
+}
+
+void QgsElevationProfileCanvas::centerPlotOn( double x, double y )
+{
+  if ( !mPlotItem->plotArea().contains( x, y ) )
+    return;
+
+  const double newCenterX = mPlotItem->xMinimum() + ( x - mPlotItem->plotArea().left() ) / mPlotItem->plotArea().width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() );
+  const double newCenterY = mPlotItem->yMinimum() + ( mPlotItem->plotArea().height() - y ) / mPlotItem->plotArea().height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() );
+
+  const double dxPlot = newCenterX - ( mPlotItem->xMaximum() + mPlotItem->xMinimum() ) * 0.5;
+  const double dyPlot = newCenterY - ( mPlotItem->yMaximum() + mPlotItem->yMinimum() ) * 0.5;
+
+  mPlotItem->setXMinimum( mPlotItem->xMinimum() + dxPlot );
+  mPlotItem->setXMaximum( mPlotItem->xMaximum() + dxPlot );
+  mPlotItem->setYMinimum( mPlotItem->yMinimum() + dyPlot );
+  mPlotItem->setYMaximum( mPlotItem->yMaximum() + dyPlot );
+
+  mPlotItem->updatePlot();
+}
+
+void QgsElevationProfileCanvas::scalePlot( double factor )
+{
+  const double currentWidth = mPlotItem->xMaximum() - mPlotItem->xMinimum();
+  const double currentHeight = mPlotItem->yMaximum() - mPlotItem->yMinimum();
+
+  const double newWidth = currentWidth / factor;
+  const double newHeight = currentHeight / factor;
+
+  const double currentCenterX = ( mPlotItem->xMinimum() + mPlotItem->xMaximum() ) * 0.5;
+  const double currentCenterY = ( mPlotItem->yMinimum() + mPlotItem->yMaximum() ) * 0.5;
+
+  mPlotItem->setXMinimum( currentCenterX - newWidth * 0.5 );
+  mPlotItem->setXMaximum( currentCenterX + newWidth * 0.5 );
+  mPlotItem->setYMinimum( currentCenterY - newHeight * 0.5 );
+  mPlotItem->setYMaximum( currentCenterY + newHeight * 0.5 );
+
+  mPlotItem->updatePlot();
+}
+
+void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
+{
+  //get mouse wheel zoom behavior settings
+  QgsSettings settings;
+  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
+
+  // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
+
+  if ( event->modifiers() & Qt::ControlModifier )
+  {
+    //holding ctrl while wheel zooming results in a finer zoom
+    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 20.0;
+  }
+
+  //calculate zoom scale factor
+  bool zoomIn = event->angleDelta().y() > 0;
+  double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
+
+  QRectF viewportRect = mPlotItem->plotArea();
+  if ( viewportRect.contains( event->pos() ) )
+  {
+    //adjust view center
+    const double oldCenterX = 0.5 * ( mPlotItem->xMaximum() + mPlotItem->xMinimum() );
+    const double oldCenterY = 0.5 * ( mPlotItem->yMaximum() + mPlotItem->yMinimum() );
+
+    const double eventPosX = ( event->pos().x() - viewportRect.left() ) / viewportRect.width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) + mPlotItem->xMinimum();
+    const double eventPosY = ( viewportRect.bottom() - event->pos().y() ) / viewportRect.height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) + mPlotItem->yMinimum();
+
+    const double newCenterX = eventPosX + ( ( oldCenterX - eventPosX ) * scaleFactor );
+    const double newCenterY = eventPosY + ( ( oldCenterY - eventPosY ) * scaleFactor );
+
+    const double dxPlot = newCenterX - ( mPlotItem->xMaximum() + mPlotItem->xMinimum() ) * 0.5;
+    const double dyPlot = newCenterY - ( mPlotItem->yMaximum() + mPlotItem->yMinimum() ) * 0.5;
+
+    mPlotItem->setXMinimum( mPlotItem->xMinimum() + dxPlot );
+    mPlotItem->setXMaximum( mPlotItem->xMaximum() + dxPlot );
+    mPlotItem->setYMinimum( mPlotItem->yMinimum() + dyPlot );
+    mPlotItem->setYMaximum( mPlotItem->yMaximum() + dyPlot );
+  }
+
+  //zoom plot
+  if ( zoomIn )
+  {
+    scalePlot( zoomFactor );
+  }
+  else
+  {
+    scalePlot( 1 / zoomFactor );
+  }
 }
 
 void QgsElevationProfileCanvas::refresh()

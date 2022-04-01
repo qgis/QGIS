@@ -23,12 +23,16 @@
 #include "qgis_gui.h"
 
 #include <QGraphicsView>
+#include <QPointer>
 
 class QgsPlotMouseEvent;
 class QgsPlotTool;
 class QgsCoordinateReferenceSystem;
 class QgsPoint;
 class QgsPointXY;
+class QgsPlotToolTemporaryKeyPan;
+class QgsPlotToolTemporaryMousePan;
+class QgsPlotToolTemporaryKeyZoom;
 
 class QMenu;
 
@@ -80,7 +84,7 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     /**
      * Sets the interactive tool currently being used on the canvas.
      */
-    void setTool( QgsPlotTool *tool, bool clean = false );
+    void setTool( QgsPlotTool *tool );
 
     /**
      * Unset the current \a tool.
@@ -125,6 +129,20 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
      */
     virtual void panContentsBy( double dx, double dy );
 
+    /**
+     * Centers the plot on the plot point corresponding to \a x, \a y in canvas units.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void centerPlotOn( double x, double y );
+
+    /**
+     * Scales the plot by a specified \a scale factor.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void scalePlot( double factor );
+
   public slots:
 
     /**
@@ -137,19 +155,13 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     /**
      * Emitted when the plot tool is changed.
      */
-    void toolChanged( QgsPlotTool *newTool, QgsPlotTool *oldTool );
+    void toolChanged( QgsPlotTool *newTool );
 
     /**
      * Emitted before the canvas context menu will be shown.
      * Can be used to extend the context menu.
      */
     void contextMenuAboutToShow( QMenu *menu, QgsPlotMouseEvent *event );
-
-    //! Emitted when key press \a event occurs.
-    void keyPressed( QKeyEvent *event );
-
-    //! Emitted when a key release \a event occurs.
-    void keyReleased( QKeyEvent *event );
 
     /**
      * Emitted in the destructor when the canvas is about to be deleted,
@@ -170,9 +182,12 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     void resizeEvent( QResizeEvent *e ) override;
     bool viewportEvent( QEvent *event ) override;
 
-  private slots:
-    //! Called when current tool is destroyed
-    void toolDestroyed();
+    /**
+     * Zoom plot from a mouse wheel \a event.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void wheelZoom( QWheelEvent *event );
 
   private:
 
@@ -180,9 +195,11 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     QGraphicsScene *mScene = nullptr;
 
     //! pointer to current plot tool
-    QgsPlotTool *mTool = nullptr;
+    QPointer< QgsPlotTool > mTool;
 
-    bool mMouseButtonDown = false;
+    QgsPlotToolTemporaryKeyPan *mSpacePanTool = nullptr;
+    QgsPlotToolTemporaryMousePan *mMidMouseButtonPanTool = nullptr;
+    QgsPlotToolTemporaryKeyZoom *mSpaceZoomTool = nullptr;
 
     void showContextMenu( QgsPlotMouseEvent *event );
 

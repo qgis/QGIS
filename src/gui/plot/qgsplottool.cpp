@@ -79,10 +79,6 @@ void QgsPlotTool::deactivate()
   emit deactivated();
 }
 
-void QgsPlotTool::clean()
-{
-}
-
 bool QgsPlotTool::isActive() const
 {
   return mCanvas && mCanvas->tool() == this;

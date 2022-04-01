@@ -318,6 +318,7 @@ set(QGIS_GUI_SRCS
   plot/qgsplotmouseevent.cpp
   plot/qgsplotpantool.cpp
   plot/qgsplottool.cpp
+  plot/qgsplottransienttools.cpp
 
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudclassifiedrendererwidget.cpp
@@ -1166,6 +1167,7 @@ set(QGIS_GUI_HDRS
   plot/qgsplotmouseevent.h
   plot/qgsplotpantool.h
   plot/qgsplottool.h
+  plot/qgsplottransienttools.h
 
   pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudclassifiedrendererwidget.h

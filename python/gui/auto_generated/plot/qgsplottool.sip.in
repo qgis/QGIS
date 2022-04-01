@@ -145,11 +145,6 @@ Called when the tool is set as the currently active plot tool.
 Called when the tool is being deactivated.
 %End
 
-    virtual void clean();
-%Docstring
-Called when the tool should clean up.
-%End
-
     QgsPlotCanvas *canvas() const;
 %Docstring
 Returns the tool's plot canvas.
