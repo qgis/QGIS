@@ -53,7 +53,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsPoint toMapCoordinates( const QgsPointXY &point ) const override;
     QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const override;
     void resizeEvent( QResizeEvent *event ) override;
-    void showEvent( QShowEvent *event ) override;
+    void paintEvent( QPaintEvent *event ) override;
     void cancelJobs() override SIP_SKIP;
 
     /**
@@ -151,6 +151,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsProfilePlotRenderer *mCurrentJob = nullptr;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
+
+    bool mFirstDrawOccurred = false;
 };
 
 #endif // QGSELEVATIONPROFILECANVAS_H

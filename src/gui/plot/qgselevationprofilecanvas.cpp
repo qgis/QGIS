@@ -250,10 +250,16 @@ void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
   mPlotItem->updateRect();
 }
 
-void QgsElevationProfileCanvas::showEvent( QShowEvent *event )
+void QgsElevationProfileCanvas::paintEvent( QPaintEvent *event )
 {
-  QgsPlotCanvas::showEvent( event );
-  mPlotItem->updateRect();
+  QgsPlotCanvas::paintEvent( event );
+
+  if ( !mFirstDrawOccurred )
+  {
+    // on first show we need to update the visible rect of the plot. (Not sure why this doesn't work in showEvent, but it doesn't).
+    mFirstDrawOccurred = true;
+    mPlotItem->updateRect();
+  }
 }
 
 QgsPoint QgsElevationProfileCanvas::toMapCoordinates( const QgsPointXY &point ) const
