@@ -46,7 +46,7 @@ app = start_app()
 class TestTool(QgsPlotTool):
 
     def __init__(self, canvas):
-        super().__init__(canvas)
+        super().__init__(canvas, 'Test')
         self.events = []
 
     def plotMoveEvent(self, event):
@@ -131,7 +131,7 @@ class TestQgsElevationProfileCanvas(unittest.TestCase):
         res = canvas.toMapCoordinates(QgsPointXY(15, 380))
         self.assertAlmostEqual(res.x(), 0.1190, 1)
         self.assertAlmostEqual(res.y(), 2, 4)
-        self.assertAlmostEqual(res.z(), 2.95, 1)
+        self.assertAlmostEqual(res.z(), 2.95, 0)
 
         res = canvas.toCanvasCoordinates(QgsPoint(0, 2, 0))
         self.assertAlmostEqual(res.x(), 9.156, 0)
@@ -183,7 +183,7 @@ class TestQgsElevationProfileCanvas(unittest.TestCase):
         self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
         self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.92, 1)
         self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 1)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 0)
 
         mouse_move_event = QMouseEvent(QEvent.MouseMove, QPointF(300, 200), Qt.LeftButton, Qt.MouseButtons(), Qt.ShiftModifier)
         canvas.mouseMoveEvent(mouse_move_event)
@@ -191,7 +191,7 @@ class TestQgsElevationProfileCanvas(unittest.TestCase):
         self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
         self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.92, 1)
         self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 1)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 0)
 
         mouse_press_event = QMouseEvent(QEvent.MouseButtonPress, QPointF(300, 200), Qt.LeftButton, Qt.MouseButtons(), Qt.ShiftModifier)
         canvas.mousePressEvent(mouse_press_event)
@@ -199,7 +199,7 @@ class TestQgsElevationProfileCanvas(unittest.TestCase):
         self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
         self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.927, 1)
         self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 1)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 0)
 
         mouse_release_event = QMouseEvent(QEvent.MouseButtonRelease, QPointF(300, 200), Qt.LeftButton, Qt.MouseButtons(), Qt.ShiftModifier)
         canvas.mouseReleaseEvent(mouse_release_event)
@@ -207,7 +207,7 @@ class TestQgsElevationProfileCanvas(unittest.TestCase):
         self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
         self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.927, 1)
         self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 1)
+        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, 0)
 
         wheel_event = QWheelEvent(QPointF(300, 200), QPointF(300, 200), QPoint(1, 2), QPoint(3, 4), Qt.NoButton, Qt.NoModifier, Qt.ScrollBegin, False)
         canvas.wheelEvent(wheel_event)
