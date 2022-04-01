@@ -28,7 +28,7 @@
 #include <QProgressBar>
 #include <QTimer>
 
-QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name, bool isDocked )
+QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   : QWidget( nullptr )
   , mCanvasName( name )
 {
@@ -117,7 +117,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name, bool 
 
   setLayout( layout );
 
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( true, mCanvasName, this, QgisApp::instance(), Qt::BottomDockWidgetArea,  QStringList(), true );
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock 3D Map View" ) );
   toolBar->addWidget( toggleButton );
