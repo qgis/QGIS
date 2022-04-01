@@ -415,12 +415,12 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
             self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                              {675.2: 84.2, 1195.7: 86.8, 1223.1: 81.4, 1272.0: 90.0, 1339.4: 98.7, 1444.4: 100.0})
             self.assertAlmostEqual(results.zRange().lower(), 81.358, 2)
+            self.assertAlmostEqual(results.zRange().upper(), 100.009, 2)
         else:
             self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
                              {675.2: 80.5, 1195.7: 90.5, 1223.1: 87.4, 1272.0: 94.5, 1339.4: 98.0, 1444.4: 94.0})
             self.assertAlmostEqual(results.zRange().lower(), 80.4564, 2)
-
-        self.assertAlmostEqual(results.zRange().upper(), 100.009, 2)
+            self.assertAlmostEqual(results.zRange().upper(), 97.9811, 2)
 
     def testLineGenerationRelativeExtrusion(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
@@ -478,6 +478,7 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                                    'LineStringZ (-346577 6632367.4 86.8, -346577 6632367.4 93.8)',
                                    'LineStringZ (-347062.8 6632554.4 84.2, -347062.8 6632554.4 91.2)'])
             self.assertAlmostEqual(results.zRange().lower(), 81.3588, 2)
+            self.assertAlmostEqual(results.zRange().upper(), 107.009, 2)
         else:
             self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
                                   ['LineStringZ (-346549.8 6632363.9 87.4, -346549.8 6632363.9 94.4)',
@@ -487,8 +488,7 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                                    'LineStringZ (-346577 6632367.4 90.5, -346577 6632367.4 97.5)',
                                    'LineStringZ (-347062.8 6632554.4 80.5, -347062.8 6632554.4 87.5)'])
             self.assertAlmostEqual(results.zRange().lower(), 80.45645, 2)
-
-        self.assertAlmostEqual(results.zRange().upper(), 107.009, 2)
+            self.assertAlmostEqual(results.zRange().upper(), 104.9811499, 2)
 
     def testPolygonGenerationAbsolute(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
