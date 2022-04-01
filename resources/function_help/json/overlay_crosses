@@ -26,10 +26,10 @@
   }],
   "examples": [{
     "expression": "overlay_crosses('regions')",
-    "returns": "true if the current feature spatially crosses a region"
+    "returns": "TRUE if the current feature spatially crosses a region"
   }, {
     "expression": "overlay_crosses('regions', filter:= population > 10000)",
-    "returns": "true if the current feature spatially crosses a region with a population greater than 10000"
+    "returns": "TRUE if the current feature spatially crosses a region with a population greater than 10000"
   }, {
     "expression": "overlay_crosses('regions', name)",
     "returns": "an array of names, for the regions crossed by the current feature"

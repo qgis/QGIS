@@ -26,10 +26,10 @@
   }],
   "examples": [{
     "expression": "overlay_disjoint('regions')",
-    "returns": "true if the current feature is spatially disjoint from all the regions"
+    "returns": "TRUE if the current feature is spatially disjoint from all the regions"
   }, {
     "expression": "overlay_disjoint('regions', filter:= population > 10000)",
-    "returns": "true if the current feature is spatially disjoint from all the regions with a population greater than 10000"
+    "returns": "TRUE if the current feature is spatially disjoint from all the regions with a population greater than 10000"
   }, {
     "expression": "overlay_disjoint('regions', name)",
     "returns": "an array of names, for the regions spatially disjoint from the current feature"
