@@ -64,27 +64,12 @@ void QgsPlotToolPan::plotReleaseEvent( QgsPlotMouseEvent *event )
   if ( event->button() == Qt::MiddleButton && clickOnly )
   {
     //middle mouse button click = recenter on point
-
-#if 0
-    //get current visible part of scene
-    const QRect viewportRect( 0, 0, canvas()->viewport()->width(), canvas()->viewport()->height() );
-    QgsRectangle visibleRect = QgsRectangle( canvas()->mapToScene( viewportRect ).boundingRect() );
-    const QPointF scenePoint = event->layoutPoint();
-    visibleRect.scale( 1, scenePoint.x(), scenePoint.y() );
-    const QRectF boundsRect = visibleRect.toRectF();
-
-    //zoom view to fit desired bounds
-    canvas()->fitInView( boundsRect, Qt::KeepAspectRatio );
-    canvas()->emitZoomLevelChanged();
-    canvas()->viewChanged();
-#endif
+    mCanvas->centerPlotOn( event->pos().x(), event->pos().y() );
     return;
   }
 
   if ( !mIsPanning || event->button() != Qt::LeftButton )
   {
-    // view()->emitZoomLevelChanged();
-    // view()->viewChanged();
     event->ignore();
     return;
   }

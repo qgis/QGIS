@@ -47,7 +47,7 @@ Constructor for QgsPlotCanvas, with the specified ``parent`` widget.
     ~QgsPlotCanvas();
 
 
-    void setTool( QgsPlotTool *tool, bool clean = false );
+    void setTool( QgsPlotTool *tool );
 %Docstring
 Sets the interactive tool currently being used on the canvas.
 %End
@@ -95,6 +95,20 @@ Pans the plot contents by ``dx``, ``dy`` in canvas units.
 The default implementation does nothing.
 %End
 
+    virtual void centerPlotOn( double x, double y );
+%Docstring
+Centers the plot on the plot point corresponding to ``x``, ``y`` in canvas units.
+
+The default implementation does nothing.
+%End
+
+    virtual void scalePlot( double factor );
+%Docstring
+Scales the plot by a specified ``scale`` factor.
+
+The default implementation does nothing.
+%End
+
   public slots:
 
     virtual void refresh();
@@ -104,7 +118,7 @@ Updates and redraws the plot.
 
   signals:
 
-    void toolChanged( QgsPlotTool *newTool, QgsPlotTool *oldTool );
+    void toolChanged( QgsPlotTool *newTool );
 %Docstring
 Emitted when the plot tool is changed.
 %End
@@ -113,16 +127,6 @@ Emitted when the plot tool is changed.
 %Docstring
 Emitted before the canvas context menu will be shown.
 Can be used to extend the context menu.
-%End
-
-    void keyPressed( QKeyEvent *event );
-%Docstring
-Emitted when key press ``event`` occurs.
-%End
-
-    void keyReleased( QKeyEvent *event );
-%Docstring
-Emitted when a key release ``event`` occurs.
 %End
 
     void willBeDeleted();
@@ -153,6 +157,13 @@ but is still in a perfectly valid state.
 
     virtual bool viewportEvent( QEvent *event );
 
+
+    virtual void wheelZoom( QWheelEvent *event );
+%Docstring
+Zoom plot from a mouse wheel ``event``.
+
+The default implementation does nothing.
+%End
 
 };
 
