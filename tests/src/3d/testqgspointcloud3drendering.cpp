@@ -101,7 +101,7 @@ void TestQgsPointCloud3DRendering::initTestCase()
   mProject->addMapLayer( mLayer );
   mProject->setCrs( mLayer->crs() );
 
-  // set a default 3d renderer
+  // set a default 3D renderer
   QgsSingleColorPointCloud3DSymbol *symbol = new QgsSingleColorPointCloud3DSymbol();
   symbol->setSingleColor( QColor( 255, 0, 0 ) );
   QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
@@ -128,7 +128,7 @@ void TestQgsPointCloud3DRendering::cleanupTestCase()
 
 void TestQgsPointCloud3DRendering::testSync3DRendererTo2DRenderer()
 {
-  // gather different 2d renderers
+  // gather different 2D renderers
   QgsPointCloudExtentRenderer *extent2DRenderer = new QgsPointCloudExtentRenderer();
   QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer = new QgsPointCloudAttributeByRampRenderer();
   colorramp2DRenderer->setAttribute( QStringLiteral( "Z" ) );
@@ -147,58 +147,58 @@ void TestQgsPointCloud3DRendering::testSync3DRendererTo2DRenderer()
   categories[5].setColor( QColor( 0, 255, 0 ) );
   classification2DRenderer->setCategories( categories );
 
-  // enable syncing, the 3d renderer should change when the 2d renderer changes
+  // enable syncing, the 3D renderer should change when the 2D renderer changes
   mLayer->setSync3DRendererTo2DRenderer( true );
 
   {
-    // for the extent 2d renderer we should have a 3d renderer but no symbol
+    // for the extent 2D renderer we should have a 3D renderer but no symbol
     mLayer->setRenderer( extent2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-    QVERIFY( r3d );
-    QVERIFY( !r3d->symbol() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3D );
+    QVERIFY( !r3D->symbol() );
   }
   {
     mLayer->setRenderer( colorramp2DRenderer );
-    QgsPointCloudAttributeByRampRenderer *r2d = static_cast<QgsPointCloudAttributeByRampRenderer *>( mLayer->renderer() );
-    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-    QVERIFY( r3d );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3d->symbol() );
+    QgsPointCloudAttributeByRampRenderer *r2D = static_cast<QgsPointCloudAttributeByRampRenderer *>( mLayer->renderer() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3D );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D->symbol() );
     QVERIFY( s );
-    QVERIFY( s->attribute() == r2d->attribute() );
-    QVERIFY( s->colorRampShader() == r2d->colorRampShader() );
-    QVERIFY( s->colorRampShaderMin() == r2d->minimum() );
-    QVERIFY( s->colorRampShaderMax() == r2d->maximum() );
+    QVERIFY( s->attribute() == r2D->attribute() );
+    QVERIFY( s->colorRampShader() == r2D->colorRampShader() );
+    QVERIFY( s->colorRampShaderMin() == r2D->minimum() );
+    QVERIFY( s->colorRampShaderMax() == r2D->maximum() );
   }
   {
     mLayer->setRenderer( rgb2DRenderer );
-    QgsPointCloudRgbRenderer *r2d = static_cast<QgsPointCloudRgbRenderer *>( mLayer->renderer() );
-    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-    QVERIFY( r3d );
-    QgsRgbPointCloud3DSymbol *s = const_cast<QgsRgbPointCloud3DSymbol *>( dynamic_cast<const QgsRgbPointCloud3DSymbol *>( r3d->symbol() ) );
+    QgsPointCloudRgbRenderer *r2D = static_cast<QgsPointCloudRgbRenderer *>( mLayer->renderer() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3D );
+    QgsRgbPointCloud3DSymbol *s = const_cast<QgsRgbPointCloud3DSymbol *>( dynamic_cast<const QgsRgbPointCloud3DSymbol *>( r3D->symbol() ) );
 
     QVERIFY( s );
-    QVERIFY( s->redAttribute() == r2d->redAttribute() );
-    QVERIFY( s->blueAttribute() == r2d->blueAttribute() );
-    QVERIFY( s->greenAttribute() == r2d->greenAttribute() );
-    QVERIFY( s->redContrastEnhancement() == r2d->redContrastEnhancement() );
-    QVERIFY( s->greenContrastEnhancement() == r2d->greenContrastEnhancement() );
-    QVERIFY( s->blueContrastEnhancement() == r2d->blueContrastEnhancement() );
+    QVERIFY( s->redAttribute() == r2D->redAttribute() );
+    QVERIFY( s->blueAttribute() == r2D->blueAttribute() );
+    QVERIFY( s->greenAttribute() == r2D->greenAttribute() );
+    QVERIFY( s->redContrastEnhancement() == r2D->redContrastEnhancement() );
+    QVERIFY( s->greenContrastEnhancement() == r2D->greenContrastEnhancement() );
+    QVERIFY( s->blueContrastEnhancement() == r2D->blueContrastEnhancement() );
   }
   {
     mLayer->setRenderer( classification2DRenderer );
-    QgsPointCloudClassifiedRenderer *r2d = static_cast<QgsPointCloudClassifiedRenderer *>( mLayer->renderer() );
-    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-    QVERIFY( r3d );
-    const QgsClassificationPointCloud3DSymbol *s = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( r3d->symbol() );
+    QgsPointCloudClassifiedRenderer *r2D = static_cast<QgsPointCloudClassifiedRenderer *>( mLayer->renderer() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3D );
+    const QgsClassificationPointCloud3DSymbol *s = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( r3D->symbol() );
     QVERIFY( s );
-    QVERIFY( s->attribute() == r2d->attribute() );
-    QVERIFY( s->categoriesList() == r2d->categories() );
+    QVERIFY( s->attribute() == r2D->attribute() );
+    QVERIFY( s->categoriesList() == r2D->categories() );
   }
 }
 
 void TestQgsPointCloud3DRendering::testDisableSync3DRendererTo2DRenderer()
 {
-  // gather different 2d renderers
+  // gather different 2D renderers
   QgsPointCloudExtentRenderer *extent2DRenderer = new QgsPointCloudExtentRenderer();
   QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer = new QgsPointCloudAttributeByRampRenderer();
   colorramp2DRenderer->setAttribute( QStringLiteral( "Z" ) );
@@ -218,51 +218,51 @@ void TestQgsPointCloud3DRendering::testDisableSync3DRendererTo2DRenderer()
   classification2DRenderer->setCategories( categories );
 
 
-  // enable syncing, the 3d renderer should change when the 2d renderer changes
+  // enable syncing, the 3D renderer should change when the 2D renderer changes
   mLayer->setSync3DRendererTo2DRenderer( true );
 
   {
-    // for the extent 2d renderer we should have a 3d renderer but no symbol
+    // for the extent 2D renderer we should have a 3D renderer but no symbol
     mLayer->setRenderer( extent2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-    QVERIFY( r3d );
-    QVERIFY( !r3d->symbol() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3D );
+    QVERIFY( !r3D->symbol() );
   }
   {
     mLayer->setRenderer( colorramp2DRenderer );
-    QgsPointCloudAttributeByRampRenderer *r2d = static_cast<QgsPointCloudAttributeByRampRenderer *>( mLayer->renderer() );
-    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-    QVERIFY( r3d );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3d->symbol() );
+    QgsPointCloudAttributeByRampRenderer *r2D = static_cast<QgsPointCloudAttributeByRampRenderer *>( mLayer->renderer() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3D );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D->symbol() );
     QVERIFY( s );
-    QVERIFY( s->attribute() == r2d->attribute() );
-    QVERIFY( s->colorRampShader() == r2d->colorRampShader() );
-    QVERIFY( s->colorRampShaderMin() == r2d->minimum() );
-    QVERIFY( s->colorRampShaderMax() == r2d->maximum() );
+    QVERIFY( s->attribute() == r2D->attribute() );
+    QVERIFY( s->colorRampShader() == r2D->colorRampShader() );
+    QVERIFY( s->colorRampShaderMin() == r2D->minimum() );
+    QVERIFY( s->colorRampShaderMax() == r2D->maximum() );
   }
 
-  // now disable syncing and check that the 3d renderer symbol does not change
+  // now disable syncing and check that the 3D  renderer symbol does not change
   mLayer->setSync3DRendererTo2DRenderer( false );
 
   {
     mLayer->setRenderer( colorramp2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-    QVERIFY( r3d );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3d->symbol() );
+    QgsPointCloudLayer3DRenderer *r3D  = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3D );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D ->symbol() );
     QVERIFY( s );
   }
   {
     mLayer->setRenderer( rgb2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-    QVERIFY( r3d );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3d->symbol() );
+    QgsPointCloudLayer3DRenderer *r3D  = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3D );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D ->symbol() );
     QVERIFY( s );
   }
   {
     mLayer->setRenderer( classification2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3d = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-    QVERIFY( r3d );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3d->symbol() );
+    QgsPointCloudLayer3DRenderer *r3D  = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QVERIFY( r3D );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D ->symbol() );
     QVERIFY( s );
   }
 }
@@ -447,7 +447,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSyncedTo2D()
   QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
   mLayer->setRenderer3D( renderer );
 
-  // gather different 2d renderers
+  // gather different 2D renderers
   QgsPointCloudExtentRenderer *extent2DRenderer = new QgsPointCloudExtentRenderer();
   QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer = new QgsPointCloudAttributeByRampRenderer();
   colorramp2DRenderer->setAttribute( QStringLiteral( "Z" ) );
@@ -478,14 +478,14 @@ void TestQgsPointCloud3DRendering::testPointCloudSyncedTo2D()
   // find a better fix in the future.
   scene->cameraController()->resetView( 2.5 );
 
-  // 3D symbols should now automatically change to match the 2d renderer
+  // 3D symbols should now automatically change to match the 2D renderer
   mLayer->setSync3DRendererTo2DRenderer( true );
 
-  // default 2d renderer is rgb for this pointcloud
+  // default 2D renderer is rgb for this pointcloud
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "pointcloud_3d_rgb", img, 40 ) );
 
-  // extent renderer should not render anythin in 3d
+  // extent renderer should not render anythin in 3D
   mLayer->setRenderer( extent2DRenderer );
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "pointcloud_3d_norenderer", img2, 40 ) );
@@ -502,7 +502,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSyncedTo2D()
   QImage img5 = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "pointcloud_3d_classification", img5, 40 ) );
 
-  // Now let's stop syncing, 3d symbol should stay at the last one used
+  // Now let's stop syncing, 3D symbol should stay at the last one used
   mLayer->setSync3DRendererTo2DRenderer( false );
 
   mLayer->setRenderer( extent2DRenderer_2 );

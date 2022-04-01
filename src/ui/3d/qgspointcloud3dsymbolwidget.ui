@@ -202,7 +202,7 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="noRendererPage"/>
-     <widget class="QWidget" name="follow2dRendererPage">
+     <widget class="QWidget" name="follow2DRendererPage">
       <layout class="QGridLayout" name="gridLayout_9">
        <property name="leftMargin">
         <number>0</number>
@@ -216,7 +216,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_8">
          <property name="text">
-          <string>See 2d renderer settings</string>
+          <string>See 2D Symbology settings</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>

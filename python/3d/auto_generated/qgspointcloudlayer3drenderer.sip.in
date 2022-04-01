@@ -104,7 +104,6 @@ Sets the maximum number of points to be rendered in the scene
 
     virtual bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer );
 
-    virtual bool syncedWith2DRenderer();
 
   private:
     QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );

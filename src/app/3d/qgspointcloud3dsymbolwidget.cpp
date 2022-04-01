@@ -48,7 +48,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mSingleColorBtn->setColor( QColor( 0, 0, 255 ) ); // default color
 
   mRenderingStyleComboBox->addItem( tr( "No Rendering" ), QString() );
-  mRenderingStyleComboBox->addItem( tr( "Follow 2d renderer" ), QStringLiteral( "2d" ) );
+  mRenderingStyleComboBox->addItem( tr( "Follow 2D Symbology" ), QStringLiteral( "2D" ) );
   mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlecolor.svg" ) ), tr( "Single Color" ), QStringLiteral( "single-color" ) );
   mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) ), tr( "Attribute by Ramp" ), QStringLiteral( "color-ramp" ) );
   mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/multibandcolor.svg" ) ), tr( "RGB" ), QStringLiteral( "rgb" ) );
@@ -229,10 +229,10 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
   QgsPointCloud3DSymbol *retSymb = nullptr;
   const QString symbolType = mRenderingStyleComboBox->currentData().toString();
 
-  if ( symbolType == QLatin1String( "2d" ) )
+  if ( symbolType == QLatin1String( "2D" ) )
   {
     // we still need to return some symbol since it carries needed settings like the point size
-    // any symbol type is ok, it will be replaced with the proper one, converted from the 2d renderer
+    // any symbol type is ok, it will be replaced with the proper one, converted from the 2D renderer
     retSymb = new QgsSingleColorPointCloud3DSymbol;
   }
   else if ( symbolType == QLatin1String( "single-color" ) )
@@ -422,7 +422,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
     const QString newSymbolType = mRenderingStyleComboBox->currentData().toString();
 
     mLayer->setSync3DRendererTo2DRenderer( false );
-    if ( newSymbolType == QLatin1String( "2d" ) )
+    if ( newSymbolType == QLatin1String( "2D" ) )
     {
       mLayer->setSync3DRendererTo2DRenderer( true );
     }

@@ -33,18 +33,6 @@ Updates the 3D renderer's symbol to match that of a given :py:class:`QgsPointClo
 :return: ``True`` on success, ``False`` otherwise
 %End
 
-    virtual void setSyncedWith2DRenderer( bool synced ) = 0;
-%Docstring
-Sets whether this 3D renderer should be automatically updated
-with changes applied to the respective layer's 2D renderer
-%End
-
-    virtual bool syncedWith2DRenderer() = 0;
-%Docstring
-Returns whether this 3D renderer should be automatically updated
-with changes applied to the respective layer's 2D renderer
-%End
-
   protected:
     QgsAbstractPointCloud3DRenderer();
 %Docstring
