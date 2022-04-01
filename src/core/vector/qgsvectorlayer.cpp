@@ -357,6 +357,9 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   if ( auto *lAuxiliaryLayer = auxiliaryLayer() )
     layer->setAuxiliaryLayer( lAuxiliaryLayer->clone( layer ) );
 
+  layer->mElevationProperties = mElevationProperties->clone();
+  layer->mElevationProperties->setParent( layer );
+
   return layer;
 }
 

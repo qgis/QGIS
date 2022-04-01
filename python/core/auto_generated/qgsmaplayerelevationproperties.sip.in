@@ -84,6 +84,13 @@ Reads the elevation properties from a DOM ``element`` previously written by :py:
 .. seealso:: :py:func:`writeXml`
 %End
 
+    virtual QgsMapLayerElevationProperties *clone() const = 0 /Factory/;
+%Docstring
+Creates a clone of the properties.
+
+.. versionadded:: 3.26
+%End
+
     virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
 %Docstring
 Returns ``True`` if the layer should be visible and rendered for the specified z ``range``.

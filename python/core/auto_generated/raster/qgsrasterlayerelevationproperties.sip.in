@@ -36,6 +36,8 @@ Constructor for QgsRasterLayerElevationProperties, with the specified ``parent``
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
+    virtual QgsRasterLayerElevationProperties *clone() const /Factory/;
+
     virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;

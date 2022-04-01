@@ -109,6 +109,13 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 
     /**
+     * Creates a clone of the properties.
+     *
+     * \since QGIS 3.26
+     */
+    virtual QgsMapLayerElevationProperties *clone() const = 0 SIP_FACTORY;
+
+    /**
      * Returns TRUE if the layer should be visible and rendered for the specified z \a range.
      */
     virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;

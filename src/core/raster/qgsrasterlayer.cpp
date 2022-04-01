@@ -165,6 +165,8 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   }
   QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
+  layer->mElevationProperties = mElevationProperties->clone();
+  layer->mElevationProperties->setParent( layer );
 
   // do not clone data provider which is the first element in pipe
   for ( int i = 1; i < mPipe->size(); i++ )

@@ -45,6 +45,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     bool hasElevation() const override;
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
+    QgsPointCloudLayerElevationProperties *clone() const override SIP_FACTORY;
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
 
