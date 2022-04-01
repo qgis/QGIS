@@ -41,6 +41,13 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   QToolBar *toolBar = new QToolBar( this );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
 
+  mCanvas = new QgsElevationProfileCanvas( this );
+  mCanvas->setProject( QgsProject::instance() );
+  connect( mCanvas, &QgsElevationProfileCanvas::activeJobCountChanged, this, &QgsElevationProfileWidget::onTotalPendingJobsCountChanged );
+
+  mPanTool = new QgsPlotToolPan( mCanvas );
+  mCanvas->setTool( mPanTool );
+
   mCaptureCurveAction = new QAction( tr( "Capture Curve" ), this );
   mCaptureCurveAction->setCheckable( true );
   connect( mCaptureCurveAction, &QAction::triggered, this, [ = ]
@@ -55,6 +62,10 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   QAction *clearAction = new QAction( tr( "Clear" ), this );
   connect( clearAction, &QAction::triggered, this, &QgsElevationProfileWidget::clear );
   toolBar->addAction( clearAction );
+
+  QAction *resetViewAction = new QAction( tr( "Zoom Full" ), this );
+  connect( resetViewAction, &QAction::triggered, mCanvas, &QgsElevationProfileCanvas::zoomFull );
+  toolBar->addAction( resetViewAction );
 
   // Options Menu
   mOptionsMenu = new QMenu( this );
@@ -88,12 +99,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mOptionsMenu->addAction( configureAction );
 #endif
 
-  mCanvas = new QgsElevationProfileCanvas( this );
-  mCanvas->setProject( QgsProject::instance() );
-  connect( mCanvas, &QgsElevationProfileCanvas::activeJobCountChanged, this, &QgsElevationProfileWidget::onTotalPendingJobsCountChanged );
 
-  mPanTool = new QgsPlotToolPan( mCanvas );
-  mCanvas->setTool( mPanTool );
 
 #if 0
   connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, [ = ]( const QString fileName )
