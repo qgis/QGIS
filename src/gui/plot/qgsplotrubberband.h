@@ -113,7 +113,7 @@ class GUI_EXPORT QgsPlotRubberBand : public QObject
 
   private:
 
-    QgsPlotCanvas *mCanvas= nullptr;
+    QgsPlotCanvas *mCanvas = nullptr;
 
     QBrush mBrush = Qt::NoBrush;
     QPen mPen = QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 );
@@ -151,7 +151,5 @@ class GUI_EXPORT QgsPlotRectangularRubberBand : public QgsPlotRubberBand
     QPointF mRubberBandStartPos;
 
 };
-
-
 
 #endif // QGSPLOTRUBBERBAND_H
