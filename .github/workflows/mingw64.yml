@@ -93,13 +93,13 @@ jobs:
           (cd $DEBUGROOT && zip -r - *) > qgis-portable-win64-debugsym.zip
 
       - name: Upload QGIS for Windows 64bit
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3
         with:
           name: QGIS for Windows 64bit
           path: qgis-portable-win64.zip
 
       - name: Upload QGIS for Windows 64bit Debug Symbols
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3
         with:
           name: QGIS for Windows 64bit Debug Symbols
           path: qgis-portable-win64-debugsym.zip
