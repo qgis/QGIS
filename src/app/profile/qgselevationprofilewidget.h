@@ -32,6 +32,7 @@ class QgsMapToolProfileCurve;
 class QgsGeometry;
 class QgsRubberBand;
 class QgsPlotToolPan;
+class QgsPlotToolZoom;
 
 class QgsElevationProfileWidget : public QWidget
 {
@@ -84,6 +85,7 @@ class QgsElevationProfileWidget : public QWidget
     QgsRubberBand *createRubberBand();
 
     QgsPlotToolPan *mPanTool = nullptr;
+    QgsPlotToolZoom *mZoomTool = nullptr;
 };
 
 #endif // QGSELEVATIONPROFILEWIDGET_H

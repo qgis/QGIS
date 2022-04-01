@@ -317,7 +317,9 @@ set(QGIS_GUI_SRCS
   plot/qgsplotcanvasitem.cpp
   plot/qgsplotmouseevent.cpp
   plot/qgsplotpantool.cpp
+  plot/qgsplotrubberband.cpp
   plot/qgsplottool.cpp
+  plot/qgsplottoolzoom.cpp
   plot/qgsplottransienttools.cpp
 
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
@@ -1166,7 +1168,9 @@ set(QGIS_GUI_HDRS
   plot/qgsplotcanvasitem.h
   plot/qgsplotmouseevent.h
   plot/qgsplotpantool.h
+  plot/qgsplotrubberband.h
   plot/qgsplottool.h
+  plot/qgsplottoolzoom.h
   plot/qgsplottransienttools.h
 
   pointcloud/qgspointcloudattributebyramprendererwidget.h

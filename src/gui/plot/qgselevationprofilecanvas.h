@@ -58,6 +58,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void panContentsBy( double dx, double dy ) override;
     void centerPlotOn( double x, double y ) override;
     void scalePlot( double factor ) override;
+    void zoomToRect( const QRectF rect ) override;
     void wheelZoom( QWheelEvent *event ) override;
 
     /**

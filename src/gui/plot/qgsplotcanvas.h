@@ -143,6 +143,13 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
      */
     virtual void scalePlot( double factor );
 
+    /**
+     * Zooms the plot to the specified \a rect in canvas units.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void zoomToRect( const QRectF rect );
+
   public slots:
 
     /**

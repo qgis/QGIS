@@ -212,6 +212,23 @@ void QgsElevationProfileCanvas::scalePlot( double factor )
   mPlotItem->updatePlot();
 }
 
+void QgsElevationProfileCanvas::zoomToRect( const QRectF rect )
+{
+  const QRectF intersected = rect.intersected( mPlotItem->plotArea() );
+
+  const double minX = ( intersected.left() - mPlotItem->plotArea().left() ) / mPlotItem->plotArea().width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) + mPlotItem->xMinimum();
+  const double maxX = ( intersected.right() - mPlotItem->plotArea().left() ) / mPlotItem->plotArea().width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) + mPlotItem->xMinimum();
+  const double minY = ( mPlotItem->plotArea().bottom() - intersected.bottom() ) / mPlotItem->plotArea().height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) + mPlotItem->yMinimum();
+  const double maxY = ( mPlotItem->plotArea().bottom() - intersected.top() ) / mPlotItem->plotArea().height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) + mPlotItem->yMinimum();
+
+  mPlotItem->setXMinimum( minX );
+  mPlotItem->setXMaximum( maxX );
+  mPlotItem->setYMinimum( minY );
+  mPlotItem->setYMaximum( maxY );
+
+  mPlotItem->updatePlot();
+}
+
 void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings

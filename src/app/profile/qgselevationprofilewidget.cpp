@@ -24,6 +24,7 @@
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsplotpantool.h"
+#include "qgsplottoolzoom.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -48,6 +49,8 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mPanTool = new QgsPlotToolPan( mCanvas );
   mCanvas->setTool( mPanTool );
 
+  mZoomTool = new QgsPlotToolZoom( mCanvas );
+
   mCaptureCurveAction = new QAction( tr( "Capture Curve" ), this );
   mCaptureCurveAction->setCheckable( true );
   connect( mCaptureCurveAction, &QAction::triggered, this, [ = ]
@@ -62,6 +65,19 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   QAction *clearAction = new QAction( tr( "Clear" ), this );
   connect( clearAction, &QAction::triggered, this, &QgsElevationProfileWidget::clear );
   toolBar->addAction( clearAction );
+
+  QAction *panToolAction = new QAction( tr( "Pan" ), this );
+  panToolAction->setCheckable( true );
+  panToolAction->setChecked( true );
+  mPanTool->setAction( panToolAction );
+  connect( panToolAction, &QAction::triggered, mPanTool, [ = ] { mCanvas->setTool( mPanTool ); } );
+  toolBar->addAction( panToolAction );
+
+  QAction *zoomToolAction = new QAction( tr( "Zoom" ), this );
+  zoomToolAction->setCheckable( true );
+  mZoomTool->setAction( zoomToolAction );
+  connect( zoomToolAction, &QAction::triggered, mZoomTool, [ = ] { mCanvas->setTool( mZoomTool ); } );
+  toolBar->addAction( zoomToolAction );
 
   QAction *resetViewAction = new QAction( tr( "Zoom Full" ), this );
   connect( resetViewAction, &QAction::triggered, mCanvas, &QgsElevationProfileCanvas::zoomFull );
