@@ -2778,7 +2778,8 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
     // use feature count from meta data for large layers
 
 // langes counting mit progressdialog austesten durch auskommentieren von totalFeatureCount:
-    if ( GIntBig totalFeatureCount = getTotalFeatureCount() > 100000 )
+    GIntBig totalFeatureCount = getTotalFeatureCount();
+    if ( totalFeatureCount > 100000 )
       return totalFeatureCount;
 //    else //if total feature count < 100.000 get those features in order to enumerate them
     {
