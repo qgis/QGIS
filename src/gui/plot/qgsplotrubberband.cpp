@@ -23,7 +23,7 @@
 #include <math.h>
 
 QgsPlotRubberBand::QgsPlotRubberBand( QgsPlotCanvas *canvas )
-  : mCanvas(canvas )
+  : mCanvas( canvas )
 {
 
 }

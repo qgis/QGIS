@@ -9,7 +9,6 @@
 
 
 
-
 class QgsPlotToolTemporaryKeyPan : QgsPlotTool
 {
 %Docstring(signature="appended")
@@ -64,6 +63,34 @@ Constructor for QgsPlotToolTemporaryMousePan.
 
 };
 
+class QgsPlotToolTemporaryKeyZoom : QgsPlotToolZoom
+{
+%Docstring(signature="appended")
+Plot tool for temporarily zooming a plot while a key is depressed.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplottransienttools.h"
+%End
+  public:
+
+    QgsPlotToolTemporaryKeyZoom( QgsPlotCanvas *canvas /TransferThis/ );
+%Docstring
+Constructor for QgsPlotToolTemporaryKeyZoom.
+%End
+
+    virtual void plotReleaseEvent( QgsPlotMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
+    virtual void activate();
+
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *
