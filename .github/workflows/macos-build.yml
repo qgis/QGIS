@@ -58,7 +58,7 @@ jobs:
       # Qt caching
       - name: Cache Qt
         id: cache-qt
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3.0.1
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/Qt/${{ env.QT_VERSION }}
           key: mac-qt-${{ env.QT_VERSION }}
@@ -81,7 +81,7 @@ jobs:
       # QGIS-deps caching
       - name: Cache qgis-deps
         id: cache-deps
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3.0.1
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/QGIS/qgis-deps-${{ env.QGIS_DEPS_VERSION }}.${{ env.QGIS_DEPS_PATCH_VERSION }}
           key: mac-qgis-deps-${{ env.QGIS_DEPS_VERSION }}.${{ env.QGIS_DEPS_PATCH_VERSION }}
