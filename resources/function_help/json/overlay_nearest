@@ -31,10 +31,10 @@
   }],
   "examples": [{
     "expression": "overlay_nearest('airports')",
-    "returns": "true if the \"airports\" layer has at least one feature"
+    "returns": "TRUE if the \"airports\" layer has at least one feature"
   }, {
     "expression": "overlay_nearest('airports', max_distance:= 5000)",
-    "returns": "true if there is an airport within a distance of 5000 map units from the current feature"
+    "returns": "TRUE if there is an airport within a distance of 5000 map units from the current feature"
   }, {
     "expression": "overlay_nearest('airports', name)",
     "returns": "the name of the closest airport to the current feature, as an array"

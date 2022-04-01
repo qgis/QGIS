@@ -26,10 +26,10 @@
   }],
   "examples": [{
     "expression": "overlay_contains('regions')",
-    "returns": "true if the current feature spatially contains a region"
+    "returns": "TRUE if the current feature spatially contains a region"
   }, {
     "expression": "overlay_contains('regions', filter:= population > 10000)",
-    "returns": "true if the current feature spatially contains a region with a population greater than 10000"
+    "returns": "TRUE if the current feature spatially contains a region with a population greater than 10000"
   }, {
     "expression": "overlay_contains('regions', name)",
     "returns": "an array of names, for the regions contained in the current feature"

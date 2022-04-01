@@ -26,10 +26,10 @@
   }],
   "examples": [{
     "expression": "overlay_within('regions')",
-    "returns": "true if the current feature is spatially within a region"
+    "returns": "TRUE if the current feature is spatially within a region"
   }, {
     "expression": "overlay_within('regions', filter:= population > 10000)",
-    "returns": "true if the current feature is spatially within a region with a population greater than 10000"
+    "returns": "TRUE if the current feature is spatially within a region with a population greater than 10000"
   }, {
     "expression": "overlay_within('regions', name)",
     "returns": "an array of names, for the regions containing the current feature"
