@@ -9,19 +9,19 @@
   }],
   "examples": [{
     "expression": "is_empty_or_null(NULL)",
-    "returns": "true"
+    "returns": "TRUE"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'))",
     "returns": "FALSE"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('LINESTRING EMPTY'))",
-    "returns": "true"
+    "returns": "TRUE"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('POINT(7 4)'))",
     "returns": "FALSE"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('POINT EMPTY'))",
-    "returns": "true"
+    "returns": "TRUE"
   }],
   "tags": ["empty", "is_empty", "coordinates", "false"]
 }

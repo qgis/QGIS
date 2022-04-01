@@ -12,7 +12,7 @@
     "returns": "FALSE"
   }, {
     "expression": "is_directory('/home/qgis/data/')",
-    "returns": "true"
+    "returns": "TRUE"
   }],
   "tags": ["path", "directory", "folder"]
 }

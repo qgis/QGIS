@@ -9,7 +9,7 @@
   }],
   "examples": [{
     "expression": "is_valid(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2, 0 0)'))",
-    "returns": "true"
+    "returns": "TRUE"
   }, {
     "expression": "is_valid(geom_from_wkt('LINESTRING(0 0)'))",
     "returns": "FALSE"
