@@ -21,12 +21,14 @@
 #include "qgsconfig.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
-#include "qgsdistancevselevationplotcanvas.h"
+#include "qgsplotcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsElevationProfilePlotItem;
 class QgsAbstractProfileResults;
 class QgsProfilePlotRenderer;
+class QgsCurve;
 
 /**
  * \ingroup gui
@@ -34,7 +36,7 @@ class QgsProfilePlotRenderer;
  *
  * \since QGIS 3.26
  */
-class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCanvas
+class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 {
 
     Q_OBJECT
@@ -47,7 +49,11 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
     QgsElevationProfileCanvas( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsElevationProfileCanvas() override;
-
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsPoint toMapCoordinates( const QgsPointXY &point ) const override;
+    QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const override;
+    void resizeEvent( QResizeEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
     void cancelJobs() override SIP_SKIP;
 
     /**
@@ -78,8 +84,37 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
      */
     QList< QgsMapLayer * > layers() const;
 
-    void resizeEvent( QResizeEvent *event ) override;
-    void showEvent( QShowEvent *event ) override;
+    /**
+     * Sets the \a crs associated with the canvas' map coordinates.
+     *
+     * \see crs()
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Sets the profile \a curve.
+     *
+     * The CRS associated with \a curve is set via setCrs().
+     *
+     * Ownership is transferred to the plot canvas.
+     *
+     * \see profileCurve()
+     */
+    void setProfileCurve( QgsCurve *curve SIP_TRANSFER );
+
+    /**
+     * Returns the profile curve.
+     *
+     * The CRS associated with the curve is retrieved via crs().
+     *
+     * \see setProfileCurve()
+     */
+    QgsCurve *profileCurve() const;
+
+    /**
+     * Sets the visible area of the plot.
+     */
+    void setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation );
 
   signals:
 
@@ -106,6 +141,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
 
   private:
 
+    QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;
 
     QgsWeakMapLayerPointerList mLayers;
@@ -114,6 +150,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsDistanceVsElevationPlotCa
 
     QgsProfilePlotRenderer *mCurrentJob = nullptr;
 
+    std::unique_ptr< QgsCurve > mProfileCurve;
 };
 
 #endif // QGSELEVATIONPROFILECANVAS_H

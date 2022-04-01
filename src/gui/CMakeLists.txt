@@ -312,7 +312,6 @@ set(QGIS_GUI_SRCS
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
-  plot/qgsdistancevselevationplotcanvas.cpp
   plot/qgselevationprofilecanvas.cpp
   plot/qgsplotcanvas.cpp
   plot/qgsplotcanvasitem.cpp
@@ -1160,7 +1159,6 @@ set(QGIS_GUI_HDRS
   ogr/qgsogrhelperfunctions.h
   ogr/qgsvectorlayersaveasdialog.h
 
-  plot/qgsdistancevselevationplotcanvas.h
   plot/qgselevationprofilecanvas.h
   plot/qgsplotcanvas.h
   plot/qgsplotcanvasitem.h
