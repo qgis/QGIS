@@ -116,6 +116,7 @@ A line edit widget with toolbutton for setting a raster image path.
     {
       Svg,
       Image,
+      AnimatedImage,
     };
 
     QgsPictureSourceLineEditBase( QWidget *parent /TransferThis/ = 0 );
@@ -182,6 +183,30 @@ Designed for use with :py:class:`QgsImageCache`.
     QgsImageSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsImageSourceLineEdit, with the specified ``parent`` widget.
+%End
+};
+
+
+class QgsAnimatedImageSourceLineEdit : QgsPictureSourceLineEditBase
+{
+%Docstring(signature="appended")
+A line edit widget with toolbutton for setting an animated raster image path.
+
+Designed for use with :py:class:`QgsImageCache`.
+
+.. seealso:: :py:class:`QgsImageSourceLineEdit`
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfilecontentsourcelineedit.h"
+%End
+  public:
+
+    QgsAnimatedImageSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsAnimatedImageSourceLineEdit, with the specified ``parent`` widget.
 %End
 };
 
