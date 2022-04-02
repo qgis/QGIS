@@ -3496,6 +3496,10 @@ void QgsOgrProvider::open( OpenMode mode )
 
   const bool bIsGpkg = QFileInfo( mFilePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+  bool forceWAL = false;
+#endif
+
   // first try to open in update mode (unless specified otherwise)
   QString errCause;
   if ( !openReadOnly )
@@ -3507,7 +3511,12 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
-    if ( bIsGpkg && mode == OpenModeInitial )
+    if ( bIsGpkg && options.contains( "QGIS_FORCE_WAL=ON" ) )
+    {
+      // Hack use for qgsofflineediting / https://github.com/qgis/QGIS/issues/48012
+      forceWAL = true;
+    }
+    if ( bIsGpkg && mode == OpenModeInitial && !forceWAL )
     {
       // A hint to QgsOgrProviderUtils::GDALOpenWrapper() to not force WAL
       // as in OpenModeInitial we are not going to do anything besides getting capabilities
@@ -3636,7 +3645,7 @@ void QgsOgrProvider::open( OpenMode mode )
        ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ||
          mGDALDriverName == QLatin1String( "MapInfo File" )
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
-         || mGDALDriverName == QLatin1String( "GPKG" )
+         || ( !forceWAL && mGDALDriverName == QLatin1String( "GPKG" ) )
 #endif
        ) )
   {
