@@ -74,6 +74,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsSvgMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "RasterMarker" )
           sipType = sipType_QgsRasterMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "AnimatedMarker" )
+          sipType = sipType_QgsAnimatedMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "VectorField" )
           sipType = sipType_QgsVectorFieldSymbolLayer;
         else if ( sipCpp->layerType() == "MaskMarker" )

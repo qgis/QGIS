@@ -2802,40 +2802,43 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "scale_method" ) ) )
     scaleMethod = QgsSymbolLayerUtils::decodeScaleMethod( props[QStringLiteral( "scale_method" )].toString() );
 
-  QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( path, size, angle, scaleMethod );
+  std::unique_ptr< QgsRasterMarkerSymbolLayer > m = std::make_unique< QgsRasterMarkerSymbolLayer >( path, size, angle, scaleMethod );
+  m->setCommonProperties( props );
+  return m.release();
+}
 
+void QgsRasterMarkerSymbolLayer::setCommonProperties( const QVariantMap &props )
+{
   if ( props.contains( QStringLiteral( "alpha" ) ) )
   {
-    m->setOpacity( props[QStringLiteral( "alpha" )].toDouble() );
+    setOpacity( props[QStringLiteral( "alpha" )].toDouble() );
   }
 
   if ( props.contains( QStringLiteral( "size_unit" ) ) )
-    m->setSizeUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "size_unit" )].toString() ) );
+    setSizeUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "size_unit" )].toString() ) );
   if ( props.contains( QStringLiteral( "size_map_unit_scale" ) ) )
-    m->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "size_map_unit_scale" )].toString() ) );
+    setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "size_map_unit_scale" )].toString() ) );
   if ( props.contains( QStringLiteral( "fixedAspectRatio" ) ) )
-    m->setFixedAspectRatio( props[QStringLiteral( "fixedAspectRatio" )].toDouble() );
+    setFixedAspectRatio( props[QStringLiteral( "fixedAspectRatio" )].toDouble() );
 
   if ( props.contains( QStringLiteral( "offset" ) ) )
-    m->setOffset( QgsSymbolLayerUtils::decodePoint( props[QStringLiteral( "offset" )].toString() ) );
+    setOffset( QgsSymbolLayerUtils::decodePoint( props[QStringLiteral( "offset" )].toString() ) );
   if ( props.contains( QStringLiteral( "offset_unit" ) ) )
-    m->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_unit" )].toString() ) );
+    setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_unit" )].toString() ) );
   if ( props.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
-    m->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_map_unit_scale" )].toString() ) );
+    setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_map_unit_scale" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "horizontal_anchor_point" ) ) )
   {
-    m->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( props[ QStringLiteral( "horizontal_anchor_point" )].toInt() ) );
+    setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( props[ QStringLiteral( "horizontal_anchor_point" )].toInt() ) );
   }
   if ( props.contains( QStringLiteral( "vertical_anchor_point" ) ) )
   {
-    m->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
+    setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
   }
 
-  m->restoreOldDataDefinedProperties( props );
-  m->updateDefaultAspectRatio();
-
-  return m;
+  restoreOldDataDefinedProperties( props );
+  updateDefaultAspectRatio();
 }
 
 void QgsRasterMarkerSymbolLayer::resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
@@ -2965,8 +2968,7 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   }
   opacity *= context.opacity();
 
-  bool cached;
-  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+  QImage img = fetchImage( context.renderContext(), path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity );
   if ( !img.isNull() )
   {
     if ( context.selected() )
@@ -2976,6 +2978,12 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
 
     p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
   }
+}
+
+QImage QgsRasterMarkerSymbolLayer::fetchImage( QgsRenderContext &context, const QString &path, QSize size, bool preserveAspectRatio, double opacity ) const
+{
+  bool cached = false;
+  return QgsApplication::imageCache()->pathAsImage( path, size, preserveAspectRatio, opacity, cached, context.flags() & Qgis::RenderContextFlag::RenderBlocking );
 }
 
 double QgsRasterMarkerSymbolLayer::calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const
@@ -3110,19 +3118,25 @@ QVariantMap QgsRasterMarkerSymbolLayer::properties() const
 
 QgsRasterMarkerSymbolLayer *QgsRasterMarkerSymbolLayer::clone() const
 {
-  QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( mPath, mSize, mAngle );
-  m->setFixedAspectRatio( mFixedAspectRatio );
-  m->setOpacity( mOpacity );
-  m->setOffset( mOffset );
-  m->setOffsetUnit( mOffsetUnit );
-  m->setOffsetMapUnitScale( mOffsetMapUnitScale );
-  m->setSizeUnit( mSizeUnit );
-  m->setSizeMapUnitScale( mSizeMapUnitScale );
-  m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
-  m->setVerticalAnchorPoint( mVerticalAnchorPoint );
-  copyDataDefinedProperties( m );
-  copyPaintEffect( m );
-  return m;
+  std::unique_ptr< QgsRasterMarkerSymbolLayer > m = std::make_unique< QgsRasterMarkerSymbolLayer >( mPath, mSize, mAngle );
+  copyCommonProperties( m.get() );
+  return m.release();
+}
+
+
+void QgsRasterMarkerSymbolLayer::copyCommonProperties( QgsRasterMarkerSymbolLayer *other ) const
+{
+  other->setFixedAspectRatio( mFixedAspectRatio );
+  other->setOpacity( mOpacity );
+  other->setOffset( mOffset );
+  other->setOffsetUnit( mOffsetUnit );
+  other->setOffsetMapUnitScale( mOffsetMapUnitScale );
+  other->setSizeUnit( mSizeUnit );
+  other->setSizeMapUnitScale( mSizeMapUnitScale );
+  other->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
+  other->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  copyDataDefinedProperties( other );
+  copyPaintEffect( other );
 }
 
 bool QgsRasterMarkerSymbolLayer::usesMapUnits() const
@@ -3726,3 +3740,81 @@ QSet<QString> QgsSvgMarkerSymbolLayer::usedAttributes( const QgsRenderContext &c
 
   return attrs;
 }
+
+//
+// QgsAnimatedMarkerSymbolLayer
+//
+
+QgsAnimatedMarkerSymbolLayer::QgsAnimatedMarkerSymbolLayer( const QString &path, double size, double angle )
+  : QgsRasterMarkerSymbolLayer( path, size, angle )
+{
+
+}
+
+QgsAnimatedMarkerSymbolLayer::~QgsAnimatedMarkerSymbolLayer() = default;
+
+QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &props )
+{
+  QString path;
+  double size = DEFAULT_RASTERMARKER_SIZE;
+  double angle = DEFAULT_RASTERMARKER_ANGLE;
+
+  if ( props.contains( QStringLiteral( "imageFile" ) ) )
+    path = props[QStringLiteral( "imageFile" )].toString();
+  if ( props.contains( QStringLiteral( "size" ) ) )
+    size = props[QStringLiteral( "size" )].toDouble();
+  if ( props.contains( QStringLiteral( "angle" ) ) )
+    angle = props[QStringLiteral( "angle" )].toDouble();
+
+  std::unique_ptr< QgsAnimatedMarkerSymbolLayer > m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( path, size, angle );
+  m->setFrameRate( props.value( QStringLiteral( "frameRate" ), QStringLiteral( "10" ) ).toDouble() );
+
+  m->setCommonProperties( props );
+  return m.release();
+}
+
+QString QgsAnimatedMarkerSymbolLayer::layerType() const
+{
+  return QStringLiteral( "AnimatedMarker" );
+}
+
+QVariantMap QgsAnimatedMarkerSymbolLayer::properties() const
+{
+  QVariantMap res = QgsRasterMarkerSymbolLayer::properties();
+  res.insert( QStringLiteral( "frameRate" ), mFrameRateFps );
+  return res;
+}
+
+QgsAnimatedMarkerSymbolLayer *QgsAnimatedMarkerSymbolLayer::clone() const
+{
+  std::unique_ptr< QgsAnimatedMarkerSymbolLayer > m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( mPath, mSize, mAngle );
+  m->setFrameRate( mFrameRateFps );
+  copyCommonProperties( m.get() );
+  return m.release();
+}
+
+QImage QgsAnimatedMarkerSymbolLayer::fetchImage( QgsRenderContext &context, const QString &path, QSize size, bool preserveAspectRatio, double opacity ) const
+{
+  const long long mapFrameNumber = context.currentFrame();
+  const int totalFrameCount = QgsApplication::imageCache()->totalFrameCount( path, context.flags() & Qgis::RenderContextFlag::RenderBlocking );
+  const double markerAnimationDuration = totalFrameCount / mFrameRateFps;
+
+  double animationTimeSeconds = 0;
+  if ( mapFrameNumber >= 0 && context.frameRate() > 0 )
+  {
+    // render is part of an animation, so we base the calculated frame on that
+    animationTimeSeconds = mapFrameNumber / context.frameRate();
+  }
+  else
+  {
+    // render is outside of animation, so base the calculated frame on the current epoch
+    animationTimeSeconds = QDateTime::currentMSecsSinceEpoch() / 1000.0;
+  }
+
+  const double markerAnimationProgressSeconds = std::fmod( animationTimeSeconds, markerAnimationDuration );
+  const int movieFrame = static_cast< int >( std::floor( markerAnimationProgressSeconds * mFrameRateFps ) );
+
+  bool cached = false;
+  return QgsApplication::imageCache()->pathAsImage( path, size, preserveAspectRatio, opacity, cached, context.flags() & Qgis::RenderContextFlag::RenderBlocking, 96, movieFrame );
+}
+
