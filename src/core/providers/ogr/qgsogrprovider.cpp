@@ -3454,7 +3454,7 @@ void QgsOgrProvider::open( OpenMode mode )
       // Hack use for qgsofflineediting / https://github.com/qgis/QGIS/issues/48012
       forceWAL = true;
     }
-    if ( bIsGpkg && mode == OpenModeInitial && !forceWAL )
+    if ( bIsGpkg && mode == OpenModeInitial && !forceWAL && QgsOgrProviderUtils::IsLocalFile( mFilePath ) )
     {
       // A hint to QgsOgrProviderUtils::GDALOpenWrapper() to not force WAL
       // as in OpenModeInitial we are not going to do anything besides getting capabilities
@@ -3583,7 +3583,7 @@ void QgsOgrProvider::open( OpenMode mode )
        ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ||
          mGDALDriverName == QLatin1String( "MapInfo File" )
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
-         || ( !forceWAL && mGDALDriverName == QLatin1String( "GPKG" ) )
+         || ( !forceWAL && mGDALDriverName == QLatin1String( "GPKG" ) && QgsOgrProviderUtils::IsLocalFile( mFilePath ) )
 #endif
        ) )
   {
