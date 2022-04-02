@@ -87,6 +87,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "FilledMarker" ), QgsFilledMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "SvgMarker" ), QgsSvgMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "RasterMarker" ), QgsRasterMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "AnimatedMarker" ), QgsAnimatedMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "FontMarker" ), QgsFontMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "EllipseMarker" ), QgsEllipseSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "VectorField" ), QgsVectorFieldSymbolLayerWidget::create );
