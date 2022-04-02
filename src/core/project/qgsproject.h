@@ -33,6 +33,7 @@
 #include <QFileInfo>
 #include <QStringList>
 #include <QTranslator>
+#include <QProgressDialog>
 
 #include "qgsunittypes.h"
 #include "qgssnappingconfig.h"
@@ -1975,6 +1976,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     void setProjectState( ProjectState projectState );
 
+    /**
+     * Receive signal to prepare for showing extent calculation progress
+     * \since QGIS 3.2?
+     */
+    void initCalculateExtentProgress( long long maxValue, QString *labelText = nullptr );
+
+    /**
+     * Receive signals to update extent calculation progress
+     * \since QGIS 3.2?
+     */
+    void extentCalculationProgressChanged( long long currValue );
+
+    /**
+     * Receive signal to finish showing extent calculation progress
+     * \since QGIS 3.2?
+     */
+    void extentCalculationComplete();
+
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
@@ -2124,7 +2143,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mTrustLayerMetadata = false;
 
     mutable ProjectState mprojectState;
-
+    QProgressDialog *progressDialog = nullptr;
 
     QgsPropertyCollection mDataDefinedServerProperties;
 

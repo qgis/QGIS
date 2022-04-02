@@ -2777,11 +2777,10 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
   {
     // use feature count from meta data for large layers
 
-// langes counting mit progressdialog austesten durch auskommentieren von totalFeatureCount:
-    GIntBig totalFeatureCount = getTotalFeatureCount();
+    GIntBig totalFeatureCount = getTotalFeatureCountfromMetaData();
     if ( totalFeatureCount > 100000 )
       return totalFeatureCount;
-//    else //if total feature count < 100.000 get those features in order to enumerate them
+    else //if total feature count < 100.000 get those features in order to enumerate them
     {
       CPLPushErrorHandler( CPLQuietErrorHandler );
       OGRLayerH hSqlLayer = GDALDatasetExecuteSQL(
@@ -2880,7 +2879,7 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
  * Returns the total (unfiltered) feature count according to OGRGeoPackageTableLayer::GetFeatureCount used by GDAL's ogrinfo.
  */
 
-long long QgsOgrLayer::getTotalFeatureCount( QTextCodec *encoding ) const
+long long QgsOgrLayer::getTotalFeatureCountfromMetaData() const
 {
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray layerName = OGR_L_GetName( hLayer );

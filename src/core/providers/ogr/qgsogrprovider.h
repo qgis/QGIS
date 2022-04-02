@@ -146,6 +146,27 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     QByteArray quotedIdentifier( const QByteArray &field ) const;
 
+  signals:
+
+    /**
+     * Emitted whenever an extent calculation is started by the provider.
+     *
+     * Provider connects to this signal to announce a potentially expensive extent calculation
+     *
+     */
+    void aboutToCalculateExtent( long long maxValue, QString *labelText = nullptr ) const;
+
+    /**
+     * Emitted whenever an extent calculation is updated by the provider.
+     *
+     */
+    void extentCalculationProgressChanged( long long currValue ) const;
+
+    /**
+     * Emitted whenever an extent calculation by the provider is finished.
+     *
+     */
+    void extentCalculationComplete() const;
 
   protected:
     //! Loads fields from input file to member attributeFields

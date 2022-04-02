@@ -72,7 +72,8 @@ open within the main QGIS application.
       NO_PROJECT,
       OPENING_PROJECT,
       OPENED_PROJECT,
-      WRITING_PROJECT
+      WRITING_PROJECT,
+      CLOSING_PROJECT
     };
 
 
@@ -1990,6 +1991,27 @@ Used to regognize the current state for user communication especially during loa
 %End
 
     void setProjectState( ProjectState projectState );
+
+    void initCalculateExtentProgress( long long maxValue, QString *labelText = 0 );
+%Docstring
+Receive signal to prepare for showing extent calculation progress
+
+.. versionadded:: 3.2
+%End
+
+    void extentCalculationProgressChanged( long long currValue );
+%Docstring
+Receive signals to update extent calculation progress
+
+.. versionadded:: 3.2
+%End
+
+    void extentCalculationComplete();
+%Docstring
+Receive signal to finish showing extent calculation progress
+
+.. versionadded:: 3.2
+%End
 
 
 };

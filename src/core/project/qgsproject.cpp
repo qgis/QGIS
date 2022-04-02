@@ -80,6 +80,8 @@
 #include <QStandardPaths>
 #include <QUuid>
 #include <QRegularExpression>
+#include <QProgressDialog>
+
 
 #ifdef _MSC_VER
 #include <sys/utime.h>
@@ -3851,6 +3853,58 @@ bool QgsProject::useProjectScales() const
 {
   return mViewSettings->useProjectScales();
 }
+
+void QgsProject::initCalculateExtentProgress( long long maxValue, QString *labelText )
+{
+  //Raise QProgressDialog
+  //QProgressDialog *progressDialog = nullptr;
+
+  //QApplication *mainWindow = nullptr;
+  //mainWindow=QgsApplication::instance();
+  //QgsApplication::instance()->topLevelWidgets();
+
+  QWidget *mainWindow = nullptr;
+  const QWidgetList topLevelWidgets = qApp->topLevelWidgets();
+  for ( QWidgetList::const_iterator it = topLevelWidgets.constBegin(); it != topLevelWidgets.constEnd(); ++it )
+  {
+    if ( ( *it )->objectName() == QLatin1String( "QgisApp" ) )
+    {
+      mainWindow = *it;
+      break;
+    }
+  }
+  if ( mainWindow )
+    progressDialog = new QProgressDialog( mainWindow );
+  else
+    progressDialog = new QProgressDialog( );
+
+
+  progressDialog->setRange( 0, maxValue );
+  progressDialog->setWindowTitle( tr( "Calculating extent.." ) );
+  progressDialog->setMinimumDuration( 5000 ); // 3 s
+  progressDialog->setWindowModality( Qt::WindowModal );
+  progressDialog->setCancelButtonText( QString() );
+
+  //progressDialog->setLabelText( "<i>Note: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>" );
+  if ( labelText != nullptr )
+    progressDialog->setLabelText( *labelText );
+
+}
+
+void QgsProject::extentCalculationProgressChanged( long long currValue )
+{
+  progressDialog->setValue( currValue );
+  QApplication::processEvents();
+}
+
+void QgsProject::extentCalculationComplete()
+{
+  progressDialog->setMaximum( progressDialog->maximum() );
+  QApplication::processEvents();
+  delete progressDialog;
+}
+
+
 
 void QgsProject::generateTsFile( const QString &locale )
 {

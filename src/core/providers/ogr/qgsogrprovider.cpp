@@ -520,6 +520,12 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   setNativeTypes( nativeTypes );
 
   QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
+
+  connect( this, &QgsOgrProvider::aboutToCalculateExtent, QgsProject::instance(), &QgsProject::initCalculateExtentProgress );
+  connect( this, &QgsOgrProvider::extentCalculationProgressChanged, QgsProject::instance(), &QgsProject::extentCalculationProgressChanged );
+  connect( this, &QgsOgrProvider::extentCalculationComplete, QgsProject::instance(), &QgsProject::extentCalculationComplete );
+
+
 }
 
 QgsOgrProvider::~QgsOgrProvider()
@@ -1241,9 +1247,9 @@ QgsRectangle QgsOgrProvider::extent() const
 
 
     //find out if there is a QGIS main window. If yes, display a progress dialog
-    QgsFeedback *feedback = nullptr;
+//    QgsFeedback *feedback = nullptr;
 
-    QProgressDialog *progressDialog = nullptr;
+//    QProgressDialog *progressDialog = nullptr;
 
     QWidget *mainWindow = nullptr;
     const QWidgetList topLevelWidgets = qApp->topLevelWidgets();
@@ -1289,48 +1295,41 @@ QgsRectangle QgsOgrProvider::extent() const
 
       // other algorithms usually depend on extent calculation when it is called, so block
       // the main window until it's finished and its result is available for the caller to proceed.
-      progressDialog = new QProgressDialog( mainWindow );
-      feedback = new QgsFeedback( mainWindow );
+//      progressDialog = new QProgressDialog( mainWindow );
+//      feedback = new QgsFeedback( mainWindow );
 
     }
     else
     {
-      progressDialog = new QProgressDialog();
-      feedback = new QgsFeedback();
+//      progressDialog = new QProgressDialog();
+//      feedback = new QgsFeedback();
     }
 
 
-    int maxfeatures = 0;
-    maxfeatures = mOgrLayer->getTotalFeatureCount();
+    const long long maxfeatures = mOgrLayer->getTotalFeatureCountfromMetaData();
 
-    /*progress = QProgressDialog("Processing...","Cancel", 0, 100, mainWindow)
-     progress.setWindowModality(Qt.WindowModal)
-     progress.setMinimumDuration(500)
-     feedback.progressChanged.connect(progress.setValue)
-     progress.show()*/
-    //calc = QgsRasterCalculator( formula, output_path, 'GTiff', slope_map.extent(), slope_map.width(), slope_map.height(), entries)
-    //calc.processCalculation(feedback)
-    //progressDialog = new QProgressDialog( mainWindow );
 
-    progressDialog->setRange( 0, maxfeatures );
-    progressDialog->setWindowTitle( tr( "Calculating extent.." ) );
-    progressDialog->setMinimumDuration( 2000 ); // 3 s
-    progressDialog->setWindowModality( Qt::WindowModal );
-    progressDialog->setCancelButtonText( QString() );
+//    progressDialog->setRange( 0, maxfeatures );
+//    progressDialog->setWindowTitle( tr( "Calculating extent.." ) );
+//    progressDialog->setMinimumDuration( 2000 ); // 3 s
+//    progressDialog->setWindowModality( Qt::WindowModal );
+//    progressDialog->setCancelButtonText( QString() );
 
 
     //feedback->progressChanged()->connect(progressDialog.setValue);
 
     // QgsProject::instance()->projectState();
-
+    QString * labelText = nullptr;
     if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && QgsProject::instance()->projectState() == QgsProject::OPENING_PROJECT )
       // static_cast< QgisApp* > (qApp)->getProjectState()==QgisApp::ProjectState)
       // how do we know we've  acutally been called  for reading and not for saving or just calling properties?
       // we've been called by "QgsVectorLayer::extent()" and there then "updateExtent( mDataProvider->extent() );"
-      progressDialog->setLabelText( "<i>Note: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>" );
+//      progressDialog->setLabelText( "<i>Note: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>" );
+//        *labelText = "<i>Note: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>" ;
+        labelText = new QString("<i>Note: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>");
+    emit aboutToCalculateExtent( maxfeatures, labelText );
 
-
-
+//QString * labelText = nullptr;
 
     if ( mForceRecomputeExtent && mValid && mGDALDriverName == QLatin1String( "GPKG" ) && mOgrOrigLayer )
     {
@@ -1385,20 +1384,24 @@ QgsRectangle QgsOgrProvider::extent() const
           mExtent->MaxY = std::max( mExtent->MaxY, env.MaxY );
         }
         count++;
-        progressDialog->setValue( count );
-        // feedback->progressChanged( );
-        feedback->setProgress( double( count / maxfeatures ) );
 
-        QApplication::processEvents();
+        //progressDialog->setValue( count );
+        // feedback->progressChanged( );
+        emit extentCalculationProgressChanged( count );
+
+        //feedback->setProgress( double( count / maxfeatures ) );
+
+        //QApplication::processEvents();
       }
       mOgrLayer->ResetReading();
     }
-    progressDialog->setMaximum( progressDialog->maximum() );
-    feedback->setProgress( 100 );
-
-    QApplication::processEvents();
-    delete progressDialog;
-    delete feedback;
+//    progressDialog->setMaximum( progressDialog->maximum() );
+    //feedback->setProgress( 100 );
+    emit extentCalculationComplete();
+    delete labelText;
+//    QApplication::processEvents();
+//    delete progressDialog;
+//    delete feedback;
 
 
     QgsDebugMsgLevel( QStringLiteral( "Finished get extent" ), 4 );
