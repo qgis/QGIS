@@ -47,8 +47,6 @@ email                : nyall dot dawson at gmail dot com
 
 ///@cond PRIVATE
 
-static bool IsLocalFile( const QString &path );
-
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGlobalMutex, ( QMutex::Recursive ) )
 #else
@@ -1124,7 +1122,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   return hDS;
 }
 
-static bool IsLocalFile( const QString &path )
+bool QgsOgrProviderUtils::IsLocalFile( const QString &path )
 {
   QString dirName( QFileInfo( path ).absolutePath() );
   // Start with the OS specific methods since the QT >= 5.4 method just
