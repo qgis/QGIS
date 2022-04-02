@@ -3017,6 +3017,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mSetLegendFromStyle = false;
 
     QList< QgsFeatureRendererGenerator * > mRendererGenerators;
+
+    //! Timer for triggering automatic redraw of the layer based on feature renderer settings (e.g. animated symbols)
+    QTimer *mRefreshRendererTimer = nullptr;
 };
 
 
