@@ -109,6 +109,7 @@
 #include <QUrlQuery>
 #include <QUuid>
 #include <QRegularExpression>
+#include <QTimer>
 
 #include <limits>
 #include <optional>
@@ -164,6 +165,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mAuxiliaryLayer( nullptr )
   , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( options.readExtentFromXml )
+  , mRefreshRendererTimer( new QTimer( this ) )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
@@ -227,8 +229,9 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mSimplifyMethod.setThreshold( settings.value( QStringLiteral( "qgis/simplifyDrawingTol" ), mSimplifyMethod.threshold() ).toFloat() );
   mSimplifyMethod.setForceLocalOptimization( settings.value( QStringLiteral( "qgis/simplifyLocal" ), mSimplifyMethod.forceLocalOptimization() ).toBool() );
   mSimplifyMethod.setMaximumScale( settings.value( QStringLiteral( "qgis/simplifyMaxScale" ), mSimplifyMethod.maximumScale() ).toFloat() );
-} // QgsVectorLayer ctor
 
+  connect( mRefreshRendererTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
+}
 
 QgsVectorLayer::~QgsVectorLayer()
 {
@@ -3793,6 +3796,18 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
     mSymbolFeatureCounted = false;
     mSymbolFeatureCountMap.clear();
     mSymbolFeatureIdMap.clear();
+
+    const double refreshRate = QgsSymbolLayerUtils::rendererFrameRate( mRenderer );
+    if ( refreshRate <= 0 )
+    {
+      mRefreshRendererTimer->stop();
+      mRefreshRendererTimer->setInterval( 0 );
+    }
+    else
+    {
+      mRefreshRendererTimer->setInterval( 1000 / refreshRate );
+      mRefreshRendererTimer->start();
+    }
 
     emit rendererChanged();
     emitStyleChanged();
