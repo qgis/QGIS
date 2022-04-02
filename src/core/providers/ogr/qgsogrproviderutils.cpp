@@ -1000,6 +1000,12 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   bool bIsGpkg = QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
   bool bIsLocalGpkg = false;
 
+  if ( bIsGpkg )
+  {
+    // Hack use for qgsofflineediting / https://github.com/qgis/QGIS/issues/48012
+    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "QGIS_FORCE_WAL", nullptr );
+  }
+
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
   if ( bIsGpkg && !bUpdate )
   {
