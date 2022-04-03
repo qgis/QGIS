@@ -89,6 +89,20 @@ class TestQgsRasterLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(self.imageCheck('rasterline_render', 'rasterline_render', rendered_image))
 
+    def testRenderHairline(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        raster_line = QgsRasterLineSymbolLayer()
+        raster_line.setPath(TEST_DATA_DIR + '/raster_brush.png')
+        raster_line.setWidth(0)
+
+        s.appendSymbolLayer(raster_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.imageCheck('rasterline_hairline', 'rasterline_hairline', rendered_image))
+
     def testRenderClosedRing(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
