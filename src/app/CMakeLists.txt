@@ -170,6 +170,12 @@ set(QGIS_APP_SRCS
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
 
+  dwg/qgsdwgimportdialog.cpp
+  dwg/qgsdwgimporter.cpp
+
+  elevation/qgselevationprofilewidget.cpp
+  elevation/qgsmaptoolprofilecurve.cpp
+
   georeferencer/qgsvalidateddoublespinbox.cpp
 
   labeling/qgslabelpropertydialog.cpp
@@ -239,12 +245,6 @@ set(QGIS_APP_SRCS
   gps/qgsgpsbearingitem.cpp
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
-
-  dwg/qgsdwgimportdialog.cpp
-  dwg/qgsdwgimporter.cpp
-
-  profile/qgselevationprofilewidget.cpp
-  profile/qgsmaptoolprofilecurve.cpp
 
   project/qgsprojectelevationsettingswidget.cpp
 

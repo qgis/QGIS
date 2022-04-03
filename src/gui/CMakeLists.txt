@@ -212,6 +212,8 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
+  elevation/qgselevationprofilecanvas.cpp
+
   history/qgshistoryprovider.cpp
   history/qgshistoryproviderregistry.cpp
 
@@ -312,7 +314,6 @@ set(QGIS_GUI_SRCS
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
-  plot/qgselevationprofilecanvas.cpp
   plot/qgsplotcanvas.cpp
   plot/qgsplotcanvasitem.cpp
   plot/qgsplotmouseevent.cpp
@@ -1063,6 +1064,8 @@ set(QGIS_GUI_HDRS
   effects/qgspainteffectpropertieswidget.h
   effects/qgspainteffectwidget.h
 
+  elevation/qgselevationprofilecanvas.h
+
   history/qgshistoryprovider.h
   history/qgshistoryproviderregistry.h
 
@@ -1163,7 +1166,6 @@ set(QGIS_GUI_HDRS
   ogr/qgsogrhelperfunctions.h
   ogr/qgsvectorlayersaveasdialog.h
 
-  plot/qgselevationprofilecanvas.h
   plot/qgsplotcanvas.h
   plot/qgsplotcanvasitem.h
   plot/qgsplotmouseevent.h
@@ -1510,6 +1512,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/effects
+  ${CMAKE_SOURCE_DIR}/src/gui/elevation
   ${CMAKE_SOURCE_DIR}/src/gui/history
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
