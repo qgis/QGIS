@@ -17,6 +17,11 @@ tests:
       OUTPUT:
         name: expected/multi_difference.gml
         type: vector
+        compare:
+          fields:
+            gml_id: skip
+          geometry:
+            normalize: True
 
   - name: Intersection (multiple overlays)
     algorithm: native:multiintersection
@@ -36,6 +41,11 @@ tests:
       OUTPUT:
         name: expected/multi_intersection.gml
         type: vector
+        compare:
+          fields:
+            gml_id: skip
+          geometry:
+            normalize: True
 
   - name: Union (multiple overlays)
     algorithm: native:multiunion
@@ -55,3 +65,8 @@ tests:
       OUTPUT:
         name: expected/multi_union.gml
         type: vector
+        compare:
+          fields:
+            gml_id: skip
+          geometry:
+            normalize: True
