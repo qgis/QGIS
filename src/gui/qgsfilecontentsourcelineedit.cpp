@@ -316,7 +316,7 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
       {
         formatsFilter.append( QString( QStringLiteral( "*.%1" ) ).arg( QString( format ) ) );
       }
-      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Movies" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
+      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Animated Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
     }
   }
   BUILTIN_UNREACHABLE
@@ -331,7 +331,7 @@ QString QgsPictureSourceLineEditBase::selectFileTitle() const
     case Image:
       return tr( "Select Image File" );
     case AnimatedImage:
-      return tr( "Select Movie File" );
+      return tr( "Select Animated Image File" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -345,7 +345,7 @@ QString QgsPictureSourceLineEditBase::fileFromUrlTitle() const
     case Image:
       return tr( "Image From URL" );
     case AnimatedImage:
-      return tr( "Movie From URL" );
+      return tr( "Animated Image From URL" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -359,7 +359,7 @@ QString QgsPictureSourceLineEditBase::fileFromUrlText() const
     case Image:
       return tr( "Enter image URL" );
     case AnimatedImage:
-      return tr( "Enter movie URL" );
+      return tr( "Enter animated image URL" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -373,7 +373,7 @@ QString QgsPictureSourceLineEditBase::embedFileTitle() const
     case Image:
       return tr( "Embed Image File" );
     case AnimatedImage:
-      return tr( "Embed Movie File" );
+      return tr( "Embed Animated Image File" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -387,7 +387,7 @@ QString QgsPictureSourceLineEditBase::extractFileTitle() const
     case Image:
       return tr( "Extract Image File" );
     case AnimatedImage:
-      return tr( "Extract Movie File" );
+      return tr( "Extract Animated Image File" );
   }
   BUILTIN_UNREACHABLE
 }

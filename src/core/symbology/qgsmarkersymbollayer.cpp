@@ -2807,37 +2807,37 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
   return m.release();
 }
 
-void QgsRasterMarkerSymbolLayer::setCommonProperties( const QVariantMap &props )
+void QgsRasterMarkerSymbolLayer::setCommonProperties( const QVariantMap &properties )
 {
-  if ( props.contains( QStringLiteral( "alpha" ) ) )
+  if ( properties.contains( QStringLiteral( "alpha" ) ) )
   {
-    setOpacity( props[QStringLiteral( "alpha" )].toDouble() );
+    setOpacity( properties[QStringLiteral( "alpha" )].toDouble() );
   }
 
-  if ( props.contains( QStringLiteral( "size_unit" ) ) )
-    setSizeUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "size_unit" )].toString() ) );
-  if ( props.contains( QStringLiteral( "size_map_unit_scale" ) ) )
-    setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "size_map_unit_scale" )].toString() ) );
-  if ( props.contains( QStringLiteral( "fixedAspectRatio" ) ) )
-    setFixedAspectRatio( props[QStringLiteral( "fixedAspectRatio" )].toDouble() );
+  if ( properties.contains( QStringLiteral( "size_unit" ) ) )
+    setSizeUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "size_unit" )].toString() ) );
+  if ( properties.contains( QStringLiteral( "size_map_unit_scale" ) ) )
+    setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "size_map_unit_scale" )].toString() ) );
+  if ( properties.contains( QStringLiteral( "fixedAspectRatio" ) ) )
+    setFixedAspectRatio( properties[QStringLiteral( "fixedAspectRatio" )].toDouble() );
 
-  if ( props.contains( QStringLiteral( "offset" ) ) )
-    setOffset( QgsSymbolLayerUtils::decodePoint( props[QStringLiteral( "offset" )].toString() ) );
-  if ( props.contains( QStringLiteral( "offset_unit" ) ) )
-    setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_unit" )].toString() ) );
-  if ( props.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
-    setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_map_unit_scale" )].toString() ) );
+  if ( properties.contains( QStringLiteral( "offset" ) ) )
+    setOffset( QgsSymbolLayerUtils::decodePoint( properties[QStringLiteral( "offset" )].toString() ) );
+  if ( properties.contains( QStringLiteral( "offset_unit" ) ) )
+    setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "offset_unit" )].toString() ) );
+  if ( properties.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
+    setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "offset_map_unit_scale" )].toString() ) );
 
-  if ( props.contains( QStringLiteral( "horizontal_anchor_point" ) ) )
+  if ( properties.contains( QStringLiteral( "horizontal_anchor_point" ) ) )
   {
-    setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( props[ QStringLiteral( "horizontal_anchor_point" )].toInt() ) );
+    setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( properties[ QStringLiteral( "horizontal_anchor_point" )].toInt() ) );
   }
-  if ( props.contains( QStringLiteral( "vertical_anchor_point" ) ) )
+  if ( properties.contains( QStringLiteral( "vertical_anchor_point" ) ) )
   {
-    setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
+    setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( properties[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
   }
 
-  restoreOldDataDefinedProperties( props );
+  restoreOldDataDefinedProperties( properties );
   updateDefaultAspectRatio();
 }
 
@@ -3753,23 +3753,23 @@ QgsAnimatedMarkerSymbolLayer::QgsAnimatedMarkerSymbolLayer( const QString &path,
 
 QgsAnimatedMarkerSymbolLayer::~QgsAnimatedMarkerSymbolLayer() = default;
 
-QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &props )
+QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &properties )
 {
   QString path;
   double size = DEFAULT_RASTERMARKER_SIZE;
   double angle = DEFAULT_RASTERMARKER_ANGLE;
 
-  if ( props.contains( QStringLiteral( "imageFile" ) ) )
-    path = props[QStringLiteral( "imageFile" )].toString();
-  if ( props.contains( QStringLiteral( "size" ) ) )
-    size = props[QStringLiteral( "size" )].toDouble();
-  if ( props.contains( QStringLiteral( "angle" ) ) )
-    angle = props[QStringLiteral( "angle" )].toDouble();
+  if ( properties.contains( QStringLiteral( "imageFile" ) ) )
+    path = properties[QStringLiteral( "imageFile" )].toString();
+  if ( properties.contains( QStringLiteral( "size" ) ) )
+    size = properties[QStringLiteral( "size" )].toDouble();
+  if ( properties.contains( QStringLiteral( "angle" ) ) )
+    angle = properties[QStringLiteral( "angle" )].toDouble();
 
   std::unique_ptr< QgsAnimatedMarkerSymbolLayer > m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( path, size, angle );
-  m->setFrameRate( props.value( QStringLiteral( "frameRate" ), QStringLiteral( "10" ) ).toDouble() );
+  m->setFrameRate( properties.value( QStringLiteral( "frameRate" ), QStringLiteral( "10" ) ).toDouble() );
 
-  m->setCommonProperties( props );
+  m->setCommonProperties( properties );
   return m.release();
 }
 

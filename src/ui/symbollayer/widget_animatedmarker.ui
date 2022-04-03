@@ -514,6 +514,7 @@
  <tabstops>
   <tabstop>mImageSourceLineEdit</tabstop>
   <tabstop>mFilenameDDBtn</tabstop>
+  <tabstop>mFrameRateSpin</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
   <tabstop>mLockAspectRatio</tabstop>
