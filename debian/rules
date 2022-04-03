@@ -110,11 +110,11 @@ ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
 endif
 
-ifeq ($(GRASSVER),7)
+ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
 	CMAKE_OPTS += \
 		-DWITH_GRASS=TRUE \
-		-DWITH_GRASS7=TRUE \
-		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
+		-DWITH_GRASS$(GRASSVER)=TRUE \
+		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
