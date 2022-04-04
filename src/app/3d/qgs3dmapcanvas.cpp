@@ -351,7 +351,6 @@ QSize Qgs3DMapCanvas::windowSize() const
 void Qgs3DMapCanvas::onNavigationModeHotKeyPressed( QgsCameraController::NavigationMode mode )
 {
   mMap->setCameraNavigationMode( mode );
-  mScene->cameraController()->setCameraNavigationMode( mode );
 }
 
 void Qgs3DMapCanvas::setViewFrom2DExtent( const QgsRectangle &extent )
