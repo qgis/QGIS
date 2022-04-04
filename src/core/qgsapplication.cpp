@@ -1297,7 +1297,17 @@ int QgsApplication::systemMemorySizeMb()
 #elif defined(Q_OS_MAC)
   return -1;
 #elif defined(Q_OS_WIN)
+     MEMORYSTATUSEX memoryStatus;
+     ZeroMemory( &memoryStatus, sizeof(MEMORYSTATUSEX));
+     memoryStatus.dwLength = sizeof(MEMORYSTATUSEX);
+     if ( GlobalMemoryStatusEx( &memoryStatus ))
+     {
+         return memoryStatus.ullTotalPhys / ( 1024 * 1024 );
+     }
+     else
+     {
   return -1;
+     }
 #elif defined(Q_OS_LINUX)
   QProcess p;
   p.start( "awk", QStringList() << "/MemTotal/ { print $2 }" << "/proc/meminfo" );
