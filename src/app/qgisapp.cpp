@@ -121,7 +121,7 @@
 #include "raster/qgsrasterelevationpropertieswidget.h"
 #include "vector/qgsvectorelevationpropertieswidget.h"
 #include "mesh/qgsmeshelevationpropertieswidget.h"
-#include "profile/qgselevationprofilewidget.h"
+#include "elevation/qgselevationprofilewidget.h"
 
 #ifdef HAVE_3D
 #include "qgs3d.h"

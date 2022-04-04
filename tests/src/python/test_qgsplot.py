@@ -293,11 +293,11 @@ class TestQgsPlot(unittest.TestCase):
         plot.setYMaximum(2)
 
         plot.calculateOptimisedIntervals(rc)
-        self.assertEqual(plot.xAxis().labelInterval(), 0.1)
+        self.assertEqual(plot.xAxis().labelInterval(), 0.05)
         self.assertEqual(plot.yAxis().labelInterval(), 0.2)
-        self.assertEqual(plot.xAxis().gridIntervalMinor(), 0.05)
+        self.assertEqual(plot.xAxis().gridIntervalMinor(), 0.025)
         self.assertEqual(plot.yAxis().gridIntervalMinor(), 0.1)
-        self.assertEqual(plot.xAxis().gridIntervalMajor(), 0.2)
+        self.assertEqual(plot.xAxis().gridIntervalMajor(), 0.1)
         self.assertEqual(plot.yAxis().gridIntervalMajor(), 0.4)
 
         plot.setXMinimum(-10)
