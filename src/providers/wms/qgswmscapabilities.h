@@ -199,7 +199,7 @@ struct QgsWmsDimensionProperty
       QDateTime start = QDateTime::fromString( extentContent.at( 0 ), Qt::ISODateWithMs );
       QDateTime end = QDateTime::fromString( extentContent.at( extentSize - 2 ), Qt::ISODateWithMs );
 
-      if ( start.isValid() & end.isValid() )
+      if ( start.isValid() && end.isValid() )
         return QgsDateTimeRange( start, end );
     }
 
