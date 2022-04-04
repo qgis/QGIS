@@ -869,7 +869,7 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
-  if ( !mValidExtent && mLazyExtent && !mXmlExtent.isNull() && mReadExtentFromXml )
+  if ( !mValidExtent && mLazyExtent && mReadExtentFromXml && !mXmlExtent.isNull() )
   {
     updateExtent( mXmlExtent );
     mValidExtent = true;

@@ -3904,8 +3904,6 @@ void QgsProject::extentCalculationComplete( QString dataSourceUri )
   }
 }
 
-
-
 void QgsProject::generateTsFile( const QString &locale )
 {
   QgsTranslationContext translationContext;

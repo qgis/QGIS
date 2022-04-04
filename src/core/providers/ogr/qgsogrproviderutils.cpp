@@ -2879,7 +2879,7 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
  * Returns the total (unfiltered) feature count according to OGRGeoPackageTableLayer::GetFeatureCount used by GDAL's ogrinfo.
  */
 
-long long QgsOgrLayer::getTotalFeatureCountfromMetaData() const
+GIntBig QgsOgrLayer::getTotalFeatureCountfromMetaData() const
 {
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray layerName = OGR_L_GetName( hLayer );
@@ -2914,7 +2914,6 @@ long long QgsOgrLayer::getTotalFeatureCountfromMetaData() const
   }
   return -1;
 }
-
 
 OGRErr QgsOgrLayer::GetExtent( OGREnvelope *psExtent, bool bForce )
 {

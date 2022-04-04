@@ -1235,7 +1235,7 @@ QgsRectangle QgsOgrProvider::extent() const
     const long long maxfeatures = mOgrLayer->getTotalFeatureCountfromMetaData();
     QString userMessageProgress = QString();
     if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && QgsProject::instance()->projectState() == QgsProject::OPENING_PROJECT )
-      userMessageProgress = QString( "<i>Note:</i><br><br>Extent calculation during project loading can be avoided using the trust option in the project preferences." );
+      userMessageProgress = QString( "<i>Note:</i><br>Extent calculation during project loading can be avoided using the trust option in the project preferences." );
     emit aboutToCalculateExtent( dataSourceUri(),  maxfeatures, userMessageProgress );
 
     if ( mForceRecomputeExtent && mValid && mGDALDriverName == QLatin1String( "GPKG" ) && mOgrOrigLayer )
@@ -1270,8 +1270,8 @@ QgsRectangle QgsOgrProvider::extent() const
       }
     }
     else
-    // TODO:Make use of gdal performance optimized filtered extent function as soon as available on
-    // https://github.com/OSGeo/gdal/issues/5372
+      // TODO:Make use of gdal performance optimized filtered extent function as soon as available on
+      // https://github.com/OSGeo/gdal/issues/5372
     {
       gdal::ogr_feature_unique_ptr f;
 

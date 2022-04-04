@@ -2017,7 +2017,6 @@ Receive signal to finish showing extent calculation progress
 %End
 
 
-
 };
 
 QFlags<QgsProject::ReadFlag> operator|(QgsProject::ReadFlag f1, QFlags<QgsProject::ReadFlag> f2);

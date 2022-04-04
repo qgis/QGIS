@@ -16495,7 +16495,7 @@ void QgisApp::writeProject( QDomDocument &doc )
   // can be opened in older versions of QGIS without losing information about layer groups.
 
   //remember previous project state to reset to it when finished
-  QgsProject::ProjectState previousProjectstate=QgsProject::instance()->projectState();
+  QgsProject::ProjectState previousProjectstate = QgsProject::instance()->projectState();
   QgsProject::instance()->setProjectState( QgsProject::WRITING_PROJECT );
 
   QgsLayerTree *clonedRoot = QgsProject::instance()->layerTreeRoot()->clone();

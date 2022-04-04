@@ -1998,7 +1998,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void extentCalculationComplete( QString dataSourceUri );
 
 
-
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
     void onMapLayersRemoved( const QList<QgsMapLayer *> &layers );

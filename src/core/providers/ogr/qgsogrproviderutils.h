@@ -443,9 +443,8 @@ class QgsOgrLayer
     //! Return an approximate feature count
     GIntBig GetApproxFeatureCount();
 
-    //! Return an approximate feature count
-    long long getTotalFeatureCountfromMetaData() const;
-
+    //! Return an total feature count based on meta data from package container
+    GIntBig getTotalFeatureCountfromMetaData() const;
 
     //! Wrapper of OGR_L_GetLayerCount
     OGRErr GetExtent( OGREnvelope *psExtent, bool bForce );
