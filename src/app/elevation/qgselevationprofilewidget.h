@@ -64,6 +64,7 @@ class QgsElevationProfileWidget : public QWidget
     void scheduleUpdate();
     void clear();
     void exportAsPdf();
+    void exportAsImage();
 
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;

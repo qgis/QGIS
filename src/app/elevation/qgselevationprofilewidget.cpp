@@ -26,6 +26,7 @@
 #include "qgsplotpantool.h"
 #include "qgsplottoolzoom.h"
 #include "qgselevationprofilepdfexportdialog.h"
+#include "qgselevationprofileimageexportdialog.h"
 #include "qgsfileutils.h"
 #include "qgsmessagebar.h"
 #include "qgsplot.h"
@@ -102,7 +103,10 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( exportAsPdfAction, &QAction::triggered, this, &QgsElevationProfileWidget::exportAsPdf );
   toolBar->addAction( exportAsPdfAction );
 
-
+  QAction *exportAsImageAction = new QAction( tr( "Export as Image" ), this );
+  exportAsImageAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveMapAsImage.svg" ) ) );
+  connect( exportAsImageAction, &QAction::triggered, this, &QgsElevationProfileWidget::exportAsImage );
+  toolBar->addAction( exportAsImageAction );
 
 #if 0
   // Options Menu
@@ -331,6 +335,59 @@ void QgsElevationProfileWidget::exportAsPdf()
   p.end();
 
   QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved the profile to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ) );
+}
+
+void QgsElevationProfileWidget::exportAsImage()
+{
+  QgsSettings s;
+  QString outputFileName = QgsFileUtils::findClosestExistingPath( s.value( QStringLiteral( "lastProfileExportDir" ), QDir::homePath(), QgsSettings::App ).toString() );
+
+#ifdef Q_OS_MAC
+  QgisApp::instance()->activateWindow();
+  this->raise();
+#endif
+  const QPair<QString, QString> fileWithExtension = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Plot As" ), outputFileName );
+
+  this->activateWindow();
+  if ( fileWithExtension.first.isEmpty() )
+  {
+    return;
+  }
+  QgsSettings().setValue( QStringLiteral( "lastProfileExportDir" ), fileWithExtension.first, QgsSettings::App );
+
+  QgsElevationProfileImageExportDialog dialog( this );
+  dialog.setPlotSettings( mCanvas->plot() );
+  dialog.setImageSize( mCanvas->plot().size().toSize() );
+
+  if ( !dialog.exec() )
+    return;
+
+  QImage image( dialog.imageSize(), QImage::Format_ARGB32 );
+  if ( image.isNull() )
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Save as Image" ), tr( "Could not create image" ) );
+    return;
+  }
+  image.fill( Qt::transparent );
+
+  QPainter p( &image );
+
+  QgsRenderContext rc = QgsRenderContext::fromQPainter( &p );
+  rc.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+  rc.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
+  rc.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );
+  rc.setPainterFlagsUsingContext( &p );
+
+  Qgs2DPlot plotSettings;
+  dialog.updatePlotSettings( plotSettings );
+
+  mCanvas->render( rc, image.width(), image.height(), plotSettings );
+  p.end();
+
+  image.save( fileWithExtension.first );
+
+  QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the profile to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileWithExtension.first ).toString(), QDir::toNativeSeparators( fileWithExtension.first ) ) );
+
 }
 
 QgsRubberBand *QgsElevationProfileWidget::createRubberBand( )
