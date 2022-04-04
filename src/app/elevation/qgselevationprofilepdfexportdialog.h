@@ -33,30 +33,30 @@ class QgsElevationProfilePdfExportDialog : public QDialog, private Ui::QgsElevat
     Q_OBJECT
   public:
 
-    QgsElevationProfilePdfExportDialog( QWidget* parent = nullptr );
+    QgsElevationProfilePdfExportDialog( QWidget *parent = nullptr );
 
     /**
      * Sets the initial plot settings to show in the widget.
      */
-    void setPlotSettings( const Qgs2DPlot& plot );
+    void setPlotSettings( const Qgs2DPlot &plot );
 
     /**
      * Updates plot settings based on the widget's state.
      */
-    void updatePlotSettings( Qgs2DPlot & plot );
+    void updatePlotSettings( Qgs2DPlot &plot );
 
     QgsLayoutSize pageSizeMM() const;
 
-private slots:
+  private slots:
 
-  void pageSizeChanged( int index );
+    void pageSizeChanged( int index );
     void orientationChanged( int index );
     void setToCustomSize();
 
-private:
+  private:
 
-    QgsElevationProfileExportSettingsWidget* mProfileSettingsWidget = nullptr;
-QgsLayoutMeasurementConverter mConverter;
+    QgsElevationProfileExportSettingsWidget *mProfileSettingsWidget = nullptr;
+    QgsLayoutMeasurementConverter mConverter;
     bool mSettingPresetSize = false;
 };
 
