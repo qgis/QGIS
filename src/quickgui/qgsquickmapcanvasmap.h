@@ -167,9 +167,10 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     void refresh();
 
   private slots:
-    void refreshMap();
+    void refreshMap( bool silent = false );
     void renderJobUpdated();
     void renderJobFinished();
+    void layerRepaintRequested( bool deferred );
     void onWindowChanged( QQuickWindow *window );
     void onScreenChanged( QScreen *screen );
     void onExtentChanged();
@@ -199,6 +200,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     QList<QMetaObject::Connection> mLayerConnections;
     QTimer mMapUpdateTimer;
     bool mIncrementalRendering = false;
+    bool mDeferredRefreshPending = false;
 
     QQuickWindow *mWindow = nullptr;
 };
