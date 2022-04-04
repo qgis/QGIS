@@ -52,6 +52,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mZoomTool = new QgsPlotToolZoom( mCanvas );
 
   mCaptureCurveAction = new QAction( tr( "Capture Curve" ), this );
+  mCaptureCurveAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureLine.svg" ) ) );
   mCaptureCurveAction->setCheckable( true );
   connect( mCaptureCurveAction, &QAction::triggered, this, [ = ]
   {
@@ -63,10 +64,12 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   toolBar->addAction( mCaptureCurveAction );
 
   QAction *clearAction = new QAction( tr( "Clear" ), this );
+  clearAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconClearConsole.svg" ) ) );
   connect( clearAction, &QAction::triggered, this, &QgsElevationProfileWidget::clear );
   toolBar->addAction( clearAction );
 
   QAction *panToolAction = new QAction( tr( "Pan" ), this );
+  panToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
   panToolAction->setCheckable( true );
   panToolAction->setChecked( true );
   mPanTool->setAction( panToolAction );
@@ -75,11 +78,13 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   QAction *zoomToolAction = new QAction( tr( "Zoom" ), this );
   zoomToolAction->setCheckable( true );
+  zoomToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
   mZoomTool->setAction( zoomToolAction );
   connect( zoomToolAction, &QAction::triggered, mZoomTool, [ = ] { mCanvas->setTool( mZoomTool ); } );
   toolBar->addAction( zoomToolAction );
 
   QAction *resetViewAction = new QAction( tr( "Zoom Full" ), this );
+  resetViewAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomFullExtent.svg" ) ) );
   connect( resetViewAction, &QAction::triggered, mCanvas, &QgsElevationProfileCanvas::zoomFull );
   toolBar->addAction( resetViewAction );
 
