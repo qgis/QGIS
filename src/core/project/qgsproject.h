@@ -186,7 +186,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       CLOSING_PROJECT   // In closing state
     };
 
-
     //! Returns the QgsProject singleton instance
     static QgsProject *instance();
 
@@ -1974,6 +1973,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     ProjectState projectState();
 
+    /**
+     * Sets the current project state: Whether a project is loading, loaded, closed, writing
+     * Used to regognize the current state for user communication especially during loading and saving.
+     */
     void setProjectState( ProjectState projectState );
 
     /**

@@ -76,7 +76,6 @@ open within the main QGIS application.
       CLOSING_PROJECT
     };
 
-
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -1991,6 +1990,10 @@ Used to regognize the current state for user communication especially during loa
 %End
 
     void setProjectState( ProjectState projectState );
+%Docstring
+Sets the current project state: Whether a project is loading, loaded, closed, writing
+Used to regognize the current state for user communication especially during loading and saving.
+%End
 
     void initCalculateExtentProgress( QString dataSourceUri, const long long maxValue, QString labelText = QString() );
 %Docstring

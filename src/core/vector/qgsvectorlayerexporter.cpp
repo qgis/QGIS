@@ -33,8 +33,6 @@
 #include "qgsabstractgeometry.h"
 #include "qgscoordinatetransform.h"
 
-// #include <QProgressDialog>
-
 typedef Qgis::VectorExportResult createEmptyLayer_t(
   const QString &uri,
   const QgsFields &fields,

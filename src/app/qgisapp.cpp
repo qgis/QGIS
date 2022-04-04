@@ -5905,8 +5905,6 @@ QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDet
   return result;
 }
 
-
-
 void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
 {
   switch ( layer->type() )
@@ -7035,10 +7033,8 @@ bool QgisApp::addProject( const QString &projectFile )
   }
 
   // close the previous opened project if any
-
   closeProject();
   QgsProject::instance()->setProjectState( QgsProject::OPENING_PROJECT );
-
 
   QFileInfo pfi( projectFile );
   mStatusBar->showMessage( tr( "Loading project: %1" ).arg( pfi.fileName() ) );
@@ -7188,7 +7184,6 @@ bool QgisApp::addProject( const QString &projectFile )
   }
 
   QgsProject::instance()->setProjectState( QgsProject::OPENED_PROJECT );
-
   return returnCode;
 } // QgisApp::addProject(QString projectFile)
 
@@ -7583,7 +7578,6 @@ void QgisApp::runScript( const QString &filePath )
   Q_UNUSED( filePath )
 #endif
 }
-
 
 void QgisApp::openProject( const QString &fileName )
 {
@@ -16500,7 +16494,10 @@ void QgisApp::writeProject( QDomDocument &doc )
   // The <legend> tag is ignored by QGIS application in >= 2.4 and this way also the new project files
   // can be opened in older versions of QGIS without losing information about layer groups.
 
+  //remember previous project state to reset to it when finished
+  QgsProject::ProjectState previousProjectstate=QgsProject::instance()->projectState();
   QgsProject::instance()->setProjectState( QgsProject::WRITING_PROJECT );
+
   QgsLayerTree *clonedRoot = QgsProject::instance()->layerTreeRoot()->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ), QgsProject::instance() ); // convert absolute paths to relative paths if required
@@ -16553,8 +16550,7 @@ void QgisApp::writeProject( QDomDocument &doc )
 #endif
 
   projectChanged( doc );
-  QgsProject::instance()->setProjectState( QgsProject::OPENED_PROJECT );
-  //What if writing has been initiated by a project close?
+  QgsProject::instance()->setProjectState( previousProjectstate );
 }
 
 void QgisApp::writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &elem )

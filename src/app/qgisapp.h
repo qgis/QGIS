@@ -201,8 +201,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
-
-
     //! Constructor
     QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipBadLayers = false,
              bool skipVersionCheck = false, const QString &rootProfileLocation = QString(),

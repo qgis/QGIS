@@ -16,7 +16,6 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsogrprovider.h"
-
 ///@cond PRIVATE
 
 #include "qgscplerrorhandler.h"
@@ -36,11 +35,7 @@ email                : sherman at mrcc.com
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgszipitem.h"
 #include "qgsprovidersublayerdetails.h"
-//#include "qgisapp.h"
-#include <QApplication>
 #include "qgsproject.h"
-
-
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -62,8 +57,6 @@ email                : sherman at mrcc.com
 #include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
-#include <QProgressDialog>
-
 
 #define TEXT_PROVIDER_KEY QStringLiteral( "ogr" )
 #define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "OGR data provider" )
@@ -524,8 +517,6 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   connect( this, &QgsOgrProvider::aboutToCalculateExtent, QgsProject::instance(), &QgsProject::initCalculateExtentProgress );
   connect( this, &QgsOgrProvider::extentCalculationProgressChanged, QgsProject::instance(), &QgsProject::extentCalculationProgressChanged );
   connect( this, &QgsOgrProvider::extentCalculationComplete, QgsProject::instance(), &QgsProject::extentCalculationComplete );
-
-
 }
 
 QgsOgrProvider::~QgsOgrProvider()
@@ -1279,13 +1270,14 @@ QgsRectangle QgsOgrProvider::extent() const
       }
     }
     else
+    // TODO:Make use of gdal performance optimized filtered extent function as soon as available on
+    // https://github.com/OSGeo/gdal/issues/5372
     {
       gdal::ogr_feature_unique_ptr f;
 
       mOgrLayer->ResetReading();
-      long long count = 0;
+      long long progressCount = 0;
       while ( f.reset( mOgrLayer->GetNextFeature() ), f )
-
       {
         OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
         if ( g && !OGR_G_IsEmpty( g ) )
@@ -1298,10 +1290,9 @@ QgsRectangle QgsOgrProvider::extent() const
           mExtent->MaxX = std::max( mExtent->MaxX, env.MaxX );
           mExtent->MaxY = std::max( mExtent->MaxY, env.MaxY );
         }
-        count++;
-
+        progressCount++;
         // update extent calc progress bar
-        emit extentCalculationProgressChanged( dataSourceUri(), count );
+        emit extentCalculationProgressChanged( dataSourceUri(), progressCount );
       }
       mOgrLayer->ResetReading();
     }
@@ -1477,8 +1468,6 @@ QgsFields QgsOgrProvider::fields() const
 {
   return mAttributeFields;
 }
-
-
 
 
 //TODO - add sanity check for shape file layers, to include checking to

@@ -88,7 +88,6 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsfeaturerenderergenerator.h"
 #include "qgsvectorlayerutils.h"
-#include "qwidget.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -870,9 +869,7 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
-  if ( !mValidExtent && mLazyExtent && !mXmlExtent.isNull() && mReadExtentFromXml ) // ||
-//      // load saved extent if a subset filter is turned on in order to significantly speed up loading of large layer files
-//      ( !subsetString().isNull() && !subsetString().isEmpty() ) ) )
+  if ( !mValidExtent && mLazyExtent && !mXmlExtent.isNull() && mReadExtentFromXml )
   {
     updateExtent( mXmlExtent );
     mValidExtent = true;
@@ -881,13 +878,10 @@ QgsRectangle QgsVectorLayer::extent() const
 
   if ( !mValidExtent && mLazyExtent && mDataProvider && mDataProvider->isValid() )
   {
-
-
     // store the extent
     updateExtent( mDataProvider->extent() );
     mValidExtent = true;
     mLazyExtent = false;
-
 
     // show the extent
     QgsDebugMsgLevel( QStringLiteral( "Extent of layer: %1" ).arg( mExtent.toString() ), 3 );
@@ -1641,8 +1635,6 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     mReadExtentFromXml = true;
   }
   if ( mReadExtentFromXml )
-//      // load saved extent if a subset filter is turned on in order to significantly speed up loading of large layer files
-    //     ( !subsetString().isNull() && !subsetString().isEmpty() ) )
   {
     const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
     if ( !extentNode.isNull() )

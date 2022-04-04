@@ -82,7 +82,6 @@
 #include <QRegularExpression>
 #include <QProgressDialog>
 
-
 #ifdef _MSC_VER
 #include <sys/utime.h>
 #else
@@ -3859,7 +3858,6 @@ void QgsProject::initCalculateExtentProgress( QString dataSourceUri, const long 
   QProgressDialog *progressDialog = nullptr;
 
   //find out if there is a QGIS main window. If so, display a progress dialog in its context
-
   QWidget *mainWindow = nullptr;
   const QWidgetList topLevelWidgets = qApp->topLevelWidgets();
   for ( QWidgetList::const_iterator it = topLevelWidgets.constBegin(); it != topLevelWidgets.constEnd(); ++it )
@@ -3886,7 +3884,6 @@ void QgsProject::initCalculateExtentProgress( QString dataSourceUri, const long 
     progressDialog->setLabelText( labelText );
 
   mExtentProgressDialogRegister.insert( dataSourceUri, progressDialog );
-
 }
 
 void QgsProject::extentCalculationProgressChanged( QString dataSourceUri, long long currValue )
