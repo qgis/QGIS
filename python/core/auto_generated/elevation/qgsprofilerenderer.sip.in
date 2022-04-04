@@ -87,7 +87,7 @@ Renders a portion of the profile to an image with the given ``width`` and ``heig
 
     void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax );
 %Docstring
-Renders a portion of the profile using the specied render ``context``.
+Renders a portion of the profile using the specified render ``context``.
 %End
 
   signals:
