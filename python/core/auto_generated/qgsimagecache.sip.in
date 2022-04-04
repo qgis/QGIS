@@ -35,6 +35,13 @@ reuse without incurring the cost of resampling on every render.
 Constructor for QgsImageCache, with the specified ``parent`` object.
 %End
 
+    long maximumSize() const;
+%Docstring
+Returns the maximum size of the cache, in bytes.
+
+.. versionadded:: 3.26
+%End
+
     QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache /Out/, bool blocking = false, double targetDpi = 96, int frameNumber = -1);
 %Docstring
 Returns the specified ``path`` rendered as an image. If possible, a pre-existing cached
