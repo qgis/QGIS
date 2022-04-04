@@ -56,6 +56,13 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mMinWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged );
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsLayoutScaleBarWidget::changeNumberFormat );
+
+  registerDataDefinedButton( mSegmentsLeftDDBtn, QgsLayoutObject::ScalebarLeftSegments );
+  registerDataDefinedButton( mSegmentsRightDDBtn, QgsLayoutObject::ScalebarRightSegments );
+  registerDataDefinedButton( mSegmentSizeDDBtn, QgsLayoutObject::ScalebarSegmentWidth );
+  registerDataDefinedButton( mMinWidthDDBtn, QgsLayoutObject::ScalebarMinWidth );
+  registerDataDefinedButton( mMaxWidthDDBtn, QgsLayoutObject::ScalebarMaxWidth );
+
   setPanelTitle( tr( "Scalebar Properties" ) );
 
   mFontButton->registerExpressionContextGenerator( this );
@@ -780,4 +787,13 @@ void QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged( double )
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();
+}
+
+void QgsLayoutScaleBarWidget::populateDataDefinedButtons()
+{
+  updateDataDefinedButton( mSegmentsLeftDDBtn );
+  updateDataDefinedButton( mSegmentsRightDDBtn );
+  updateDataDefinedButton( mSegmentSizeDDBtn );
+  updateDataDefinedButton( mMinWidthDDBtn );
+  updateDataDefinedButton( mMaxWidthDDBtn );
 }
