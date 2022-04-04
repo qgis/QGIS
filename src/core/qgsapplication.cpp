@@ -1290,6 +1290,35 @@ QString QgsApplication::osName()
 #endif
 }
 
+int QgsApplication::systemMemorySizeMb()
+{
+#if defined(Q_OS_ANDROID)
+  return -1;
+#elif defined(Q_OS_MAC)
+  return -1;
+#elif defined(Q_OS_WIN)
+  return -1;
+#elif defined(Q_OS_LINUX)
+  QProcess p;
+  p.start( "awk", QStringList() << "/MemTotal/ { print $2 }" << "/proc/meminfo" );
+  p.waitForFinished();
+  QString memory = p.readAllStandardOutput();
+  const int res = memory.toInt() / 1000;
+  p.close();
+  return res;
+#elif defined(Q_OS_FREEBSD)
+  return -1;
+#elif defined(Q_OS_OPENBSD)
+  return -1;
+#elif defined(Q_OS_NETBSD)
+  return -1;
+#elif defined(Q_OS_UNIX)
+  return -1;
+#else
+  return -1;
+#endif
+}
+
 QString QgsApplication::platform()
 {
   return *sPlatformName();

@@ -86,15 +86,26 @@ void QgsImageCacheEntry::dump() const
 
 ///@endcond
 
-static const int DEFAULT_IMAGE_CACHE_MAX_BYTES = 104857600;
-
 QgsImageCache::QgsImageCache( QObject *parent )
-  : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ),  DEFAULT_IMAGE_CACHE_MAX_BYTES )
+  : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ) )
 {
-  int bytes = QgsSettings().value( QStringLiteral( "/qgis/maxImageCacheSize" ), 0 ).toInt();
+  const int bytes = QgsSettings().value( QStringLiteral( "/qgis/maxImageCacheSize" ), 0 ).toInt();
   if ( bytes > 0 )
   {
     mMaxCacheSize = bytes;
+  }
+  else
+  {
+    const int sysMemory = QgsApplication::systemMemorySizeMb();
+    if ( sysMemory > 0 )
+    {
+      if ( sysMemory >= 32000 ) // 32 gb RAM (or more) = 500mb cache size
+        mMaxCacheSize = 500000000;
+      else if ( sysMemory >= 16000 ) // 16 gb RAM = 250mb cache size
+        mMaxCacheSize = 250000000;
+      else
+        mMaxCacheSize = 104857600; // otherwise default to 100mb cache size
+    }
   }
 
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();

@@ -139,6 +139,13 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
     QgsImageCache( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
+     * Returns the maximum size of the cache, in bytes.
+     *
+     * \since QGIS 3.26
+     */
+    long maximumSize() const { return mMaxCacheSize; }
+
+    /**
      * Returns the specified \a path rendered as an image. If possible, a pre-existing cached
      * version of the image will be used. If not, the image is fetched and resampled to the desired
      * size, and then the result cached for subsequent lookups.

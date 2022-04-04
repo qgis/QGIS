@@ -456,6 +456,15 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString osName();
 
     /**
+     * Returns the size of the system memory (RAM) in megabytes.
+     *
+     * This is only supported on some platforms, and will return -1 if not supported.
+     *
+     * \since QGIS 3.26
+     */
+    static int systemMemorySizeMb();
+
+    /**
      * Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
      * \see osName()
      * \since QGIS 2.14
