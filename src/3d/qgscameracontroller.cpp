@@ -669,7 +669,7 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
         setCameraNavigationMode( NavigationMode::WalkNavigation );
         break;
     }
-    emit navigationModeHotKeyPressed( mCameraNavigationMode );
+    emit navigationModeChanged( mCameraNavigationMode );
     return;
   }
 
