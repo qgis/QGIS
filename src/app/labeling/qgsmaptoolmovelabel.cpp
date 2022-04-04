@@ -84,7 +84,7 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         QgsGeometry featureMapGeometry { feature.geometry() };
         featureMapGeometry.transform( ms.layerTransform( mCurrentLabel.layer ) );
 
-        if ( featureMapGeometry.distance( pointMapGeometry ) / mCanvas->mapUnitsPerPixel() > 100.0 )
+        if ( featureMapGeometry.distance( pointMapGeometry ) / mCanvas->mapUnitsPerPixel() > mLabelTearFromLineThreshold )
         {
           mAnchorDetached = true;
           isCurvedOrLine = false;
@@ -224,6 +224,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       clearHoveredLabel();
 
       mCurrentLabel = LabelDetails( labelPos, canvas() );
+      mLabelTearFromLineThreshold = QFontMetrics( mCurrentLabel.settings.format().font() ).horizontalAdvance( 'X' ) * 5;
 
       QgsVectorLayer *vlayer = mCurrentLabel.layer;
       if ( !vlayer )
