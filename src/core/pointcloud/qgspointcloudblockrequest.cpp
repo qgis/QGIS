@@ -28,14 +28,18 @@
 
 ///@cond PRIVATE
 
-QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri, const QString &dataType,
+QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &uri, const QString &dataType,
     const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
     const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression )
-  : mNode( node ), mDataType( dataType ),
+  : mNode( node ), mUri( uri ), mDataType( dataType ),
     mAttributes( attributes ), mRequestedAttributes( requestedAttributes ),
     mScale( scale ), mOffset( offset ), mFilterExpression( filterExpression )
 {
-  QNetworkRequest nr( Uri );
+}
+
+void QgsPointCloudBlockRequest::startRequest()
+{
+  QNetworkRequest nr( mUri );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   mTileDownloadManagetReply.reset( QgsApplication::tileDownloadManager()->get( nr ) );

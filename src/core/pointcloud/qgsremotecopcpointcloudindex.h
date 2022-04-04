@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscopcpointcloudindex.h
+                         qgsremotecopcpointcloudindex.h
                          --------------------
     begin                : March 2022
     copyright            : (C) 2022 by Belgacem Nedjima
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCOPCPOINTCLOUDINDEX_H
-#define QGSCOPCPOINTCLOUDINDEX_H
+#ifndef QGSREMOTECOPCPOINTCLOUDINDEX_H
+#define QGSREMOTECOPCPOINTCLOUDINDEX_H
 
 #include <QObject>
 #include <QString>
@@ -25,56 +25,53 @@
 #include <QVector>
 #include <QList>
 #include <QFile>
+#include <QUrl>
+#include <QSet>
 
-#include <fstream>
+#include <sstream>
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
 #include "qgis_sip.h"
+#include "qgscopcpointcloudindex.h"
 
-namespace lazperf
-{
-  namespace reader
-  {
-    class generic_file;
-  }
-}
+#include "lazperf/header.hpp"
+#include "lazperf/vlr.hpp"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
 class QgsCoordinateReferenceSystem;
+class QgsTileDownloadManager;
+class QgsCopcPointCloudBlockRequest;
 
-class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
+class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
 {
     Q_OBJECT
   public:
 
-    explicit QgsCopcPointCloudIndex();
-    ~QgsCopcPointCloudIndex();
+    explicit QgsRemoteCopcPointCloudIndex();
+    ~QgsRemoteCopcPointCloudIndex();
+
+    QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
 
     void load( const QString &fileName ) override;
-
-    bool hasNode( const IndexedPointCloudNode &n ) const override;
-    QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
 
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
-    QgsCoordinateReferenceSystem crs() const override;
-    qint64 pointCount() const override;
-    QVariantMap originalMetadata() const override { return mOriginalMetadata; }
+    bool hasNode( const IndexedPointCloudNode &n ) const override;
 
     bool isValid() const override;
-    QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Local; };
 
-  protected:
-    bool loadSchema();
-    bool loadHierarchy();
+    QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Remote; }
 
-    //! Fetches all nodes leading to node \a node into memory
-    bool fetchNodeHierarchy( const IndexedPointCloudNode &n ) const;
+    friend QgsCopcPointCloudBlockRequest;
+  private:
+    bool loadHeader();
+
+    bool fetchNodeHierarchy( const IndexedPointCloudNode &nodeId ) const;
 
     /**
      * Fetches the COPC hierarchy page at offset \a offset and of size \a byteSize into memory
@@ -82,18 +79,22 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
      */
     void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
 
-    bool mIsValid = false;
-    QString mFileName;
-    QString mWkt;
-    mutable std::ifstream mCopcFile;
-    mutable std::unique_ptr<lazperf::reader::generic_file> mLazFile;
 
-    qint64 mPointCount = 0;
+    QString mUrlDirectoryPart;
+    QString mUrlFileNamePart;
 
-    mutable QHash<IndexedPointCloudNode, QPair<uint64_t, int32_t>> mHierarchyNodePos; //!< Additional data hierarchy for COPC
+    QUrl mUrl;
+    QByteArray mCopcHeaderData;
+    QByteArray mVlrData;
+    QByteArray mExtraBytesData;
+    lazperf::wkt_vlr mWktVlr;
+    lazperf::eb_vlr mExtraBytesVlr;
+    mutable lazperf::header14 mCopcHeader;
+    mutable lazperf::copc_info_vlr mCopcInfoVlr;
 
-    QVariantMap mOriginalMetadata;
+    mutable QSet<IndexedPointCloudNode> mHierarchyNodes;
 };
 
 ///@endcond
-#endif // QGSCOPCPOINTCLOUDINDEX_H
+
+#endif // QGSREMOTECOPCPOINTCLOUDINDEX_H
