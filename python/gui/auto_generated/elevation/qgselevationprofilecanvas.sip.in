@@ -114,7 +114,7 @@ Sets the visible area of the plot.
 
     void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
 %Docstring
-Renders a portion of the profile using the specied render ``context``.
+Renders a portion of the profile using the specified render ``context``.
 %End
 
   signals:

@@ -130,7 +130,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     const Qgs2DPlot &plot() const SIP_SKIP;
 
     /**
-     * Renders a portion of the profile using the specied render \a context.
+     * Renders a portion of the profile using the specified render \a context.
      */
     void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
 

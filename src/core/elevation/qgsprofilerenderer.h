@@ -103,7 +103,7 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax );
 
     /**
-     * Renders a portion of the profile using the specied render \a context.
+     * Renders a portion of the profile using the specified render \a context.
      */
     void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax );
 
