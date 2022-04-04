@@ -51,6 +51,8 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
                                const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
                                const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression );
 
+    virtual void startRequest();
+
     /**
      * Returns the requested block. if the returned block is nullptr, that means the data request failed
      * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
@@ -63,8 +65,9 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
   signals:
     //! Emitted when the request processing has finished
     void finished();
-  private:
+  protected:
     IndexedPointCloudNode mNode;
+    QString mUri;
     QString mDataType;
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudAttributeCollection mRequestedAttributes;
@@ -73,8 +76,8 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     QString mErrorStr;
     QgsVector3D mScale, mOffset;
     QgsPointCloudExpression mFilterExpression;
-  private slots:
-    void blockFinishedLoading();
+  protected slots:
+    virtual void blockFinishedLoading();
 };
 
 #endif // QGSPOINTCLOUDBLOCKREQUEST_H

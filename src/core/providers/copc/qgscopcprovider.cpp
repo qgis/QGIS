@@ -20,6 +20,7 @@
 #include "qgsproviderregistry.h"
 #include "qgscopcprovider.h"
 #include "qgscopcpointcloudindex.h"
+#include "qgsremotecopcpointcloudindex.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 #include "qgsprovidersublayerdetails.h"
@@ -39,7 +40,7 @@ QgsCopcProvider::QgsCopcProvider(
   : QgsPointCloudDataProvider( uri, options, flags )
 {
   if ( uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
-    mIndex.reset( nullptr );
+    mIndex.reset( new QgsRemoteCopcPointCloudIndex );
   else
     mIndex.reset( new QgsCopcPointCloudIndex );
 
@@ -108,10 +109,9 @@ QVariant QgsCopcProvider::metadataClassStatistic( const QString &attribute, cons
 
 void QgsCopcProvider::loadIndex( )
 {
+  mIndex->load( dataSourceUri() );
   if ( mIndex->isValid() )
     return;
-
-  mIndex->load( dataSourceUri() );
 }
 
 QVariantMap QgsCopcProvider::originalMetadata() const

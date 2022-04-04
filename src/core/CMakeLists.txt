@@ -1956,10 +1956,14 @@ if (WITH_COPC)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/copc/qgscopcprovider.cpp
       pointcloud/qgscopcpointcloudindex.cpp
+      pointcloud/qgsremotecopcpointcloudindex.cpp
+      pointcloud/qgscopcpointcloudblockrequest.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/copc/qgscopcprovider.h
       pointcloud/qgscopcpointcloudindex.h
+      pointcloud/qgsremotecopcpointcloudindex.h
+      pointcloud/qgscopcpointcloudblockrequest.h
   )
 
   add_definitions( -DWITH_COPC )

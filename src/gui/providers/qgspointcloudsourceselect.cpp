@@ -94,11 +94,11 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       return;
     }
 
-    if ( !mPath.endsWith( QLatin1String( "/ept.json" ) ) )
+    if ( !mPath.endsWith( QLatin1String( "/ept.json" ) ) && !mPath.endsWith( QLatin1String( ".copc.laz" ) ) )
     {
       QMessageBox::information( this,
                                 tr( "Add Point Cloud Layers" ),
-                                tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json" ).arg( mPath ) );
+                                tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json or .copc.laz" ).arg( mPath ) );
       return;
     }
 

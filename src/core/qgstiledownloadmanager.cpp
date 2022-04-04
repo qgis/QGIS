@@ -268,7 +268,7 @@ QgsTileDownloadManager::QueueEntry QgsTileDownloadManager::findEntryForRequest( 
 {
   for ( auto it = mQueue.constBegin(); it != mQueue.constEnd(); ++it )
   {
-    if ( it->request.url() == request.url() )
+    if ( it->request.url() == request.url() && it->request.rawHeader( "Range" ) == request.rawHeader( "Range" ) )
       return *it;
   }
   return QgsTileDownloadManager::QueueEntry();
@@ -278,7 +278,7 @@ void QgsTileDownloadManager::addEntry( const QgsTileDownloadManager::QueueEntry 
 {
   for ( auto it = mQueue.constBegin(); it != mQueue.constEnd(); ++it )
   {
-    Q_ASSERT( entry.request.url() != it->request.url() );
+    Q_ASSERT( entry.request.url() != it->request.url() || entry.request.rawHeader( "Range" ) != it->request.rawHeader( "Range" ) );
   }
 
   mQueue.append( entry );

@@ -69,8 +69,6 @@ void QgsCopcPointCloudIndex::load( const QString &fileName )
 
 bool QgsCopcPointCloudIndex::loadSchema()
 {
-  mDataType = QStringLiteral( "copc" );
-
   mPointCount = mLazFile->header().point_count;
 
   mScale = QgsVector3D( mLazFile->header().scale.x, mLazFile->header().scale.y, mLazFile->header().scale.z );
@@ -144,7 +142,8 @@ bool QgsCopcPointCloudIndex::loadSchema()
       return false;
   }
 
-  QVector<QgsLazDecoder::ExtraBytesAttributeDetails> extrabyteAttributes = QgsLazDecoder::readExtraByteAttributes( mCopcFile );
+  auto [ebVlr, pointRecordLength] = QgsLazDecoder::extractExtrabytesVlr( mCopcFile );
+  QVector<QgsLazDecoder::ExtraBytesAttributeDetails> extrabyteAttributes = QgsLazDecoder::readExtraByteAttributesFromVlr( ebVlr, pointRecordLength );
   for ( QgsLazDecoder::ExtraBytesAttributeDetails attr : extrabyteAttributes )
   {
     attributes.push_back( QgsPointCloudAttribute( attr.attribute, attr.type ) );
@@ -194,8 +193,7 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
     return nullptr;
   mHierarchyMutex.lock();
   int pointCount = mHierarchy[n];
-  uint64_t blockOffset = mHierarchyNodeOffset[n];
-  int32_t blockSize = mHierarchyNodeByteSize[n];
+  auto [blockOffset, blockSize] = mHierarchyNodePos[n];
   mHierarchyMutex.unlock();
 
   // we need to create a copy of the expression to pass to the decoder
@@ -205,7 +203,8 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
-  return QgsLazDecoder::decompressCopc( mFileName, blockOffset, blockSize, pointCount, attributes(), requestAttributes, scale(), offset(), filterExpression );
+  lazperf::header14 header = mLazFile->header();
+  return QgsLazDecoder::decompressCopc( mFileName, header, blockOffset, blockSize, pointCount, attributes(), requestAttributes, scale(), offset(), filterExpression );
 }
 
 QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
@@ -261,7 +260,9 @@ bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNode &n 
       return false;
     int nodesCount = mHierarchy[n];
     if ( nodesCount < 0 )
-      fetchHierarchyPage( mHierarchyNodeOffset[n], mHierarchyNodeByteSize[n] );
+    {
+      fetchHierarchyPage( mHierarchyNodePos[n].first, mHierarchyNodePos[n].second );
+    }
   }
   return true;
 }
@@ -293,8 +294,7 @@ void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteS
     CopcEntry *entry = reinterpret_cast<CopcEntry *>( data.get() + i );
     const IndexedPointCloudNode nodeId( entry->key.level, entry->key.x, entry->key.y, entry->key.z );
     mHierarchy[nodeId] = entry->pointCount;
-    mHierarchyNodeOffset[nodeId] = entry->offset;
-    mHierarchyNodeByteSize[nodeId] = entry->byteSize;
+    mHierarchyNodePos[nodeId] = QPair( entry->offset, entry->byteSize );
   }
 }
 
