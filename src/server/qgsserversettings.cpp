@@ -125,7 +125,7 @@ void QgsServerSettings::initSettings()
                                QStringLiteral( "Specify the cache size" ),
                                QStringLiteral( "/cache/size" ),
                                QVariant::LongLong,
-                               QVariant( 50 * 1024 * 1024 ),
+                               QVariant( 256 * 1024 * 1024 ),
                                QVariant()
                              };
   mSettings[ sCacheSize.envVar ] = sCacheSize;
