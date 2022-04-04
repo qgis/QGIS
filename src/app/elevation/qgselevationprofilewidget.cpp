@@ -25,10 +25,15 @@
 #include "qgssettingsregistrycore.h"
 #include "qgsplotpantool.h"
 #include "qgsplottoolzoom.h"
+#include "qgselevationprofilepdfexportdialog.h"
+#include "qgsfileutils.h"
+#include "qgsmessagebar.h"
+#include "qgsplot.h"
 
 #include <QToolBar>
 #include <QProgressBar>
 #include <QTimer>
+#include <QPrinter>
 
 QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   : QWidget( nullptr )
@@ -68,6 +73,8 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( clearAction, &QAction::triggered, this, &QgsElevationProfileWidget::clear );
   toolBar->addAction( clearAction );
 
+  toolBar->addSeparator();
+
   QAction *panToolAction = new QAction( tr( "Pan" ), this );
   panToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
   panToolAction->setCheckable( true );
@@ -88,6 +95,16 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( resetViewAction, &QAction::triggered, mCanvas, &QgsElevationProfileCanvas::zoomFull );
   toolBar->addAction( resetViewAction );
 
+  toolBar->addSeparator();
+
+  QAction *exportAsPdfAction = new QAction( tr( "Export as PDF" ), this );
+  exportAsPdfAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveAsPDF.svg" ) ) );
+  connect( exportAsPdfAction, &QAction::triggered, this, &QgsElevationProfileWidget::exportAsPdf );
+  toolBar->addAction( exportAsPdfAction );
+
+
+
+#if 0
   // Options Menu
   mOptionsMenu = new QMenu( this );
 
@@ -100,7 +117,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   toolBar->addWidget( mBtnOptions );
 
-#if 0
+
   mActionEnableShadows = new QAction( tr( "Show Shadows" ), this );
   mActionEnableShadows->setCheckable( true );
   connect( mActionEnableShadows, &QAction::toggled, this, [ = ]( bool enabled )
@@ -118,15 +135,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
                                           tr( "Configure…" ), this );
   connect( configureAction, &QAction::triggered, this, &QgsElevationProfileWidget::configure );
   mOptionsMenu->addAction( configureAction );
-#endif
-
-
-
-#if 0
-  connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, [ = ]( const QString fileName )
-  {
-    QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the 3D map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
-  } );
 #endif
 
   mProgressPendingJobs = new QProgressBar( this );
@@ -253,6 +261,76 @@ void QgsElevationProfileWidget::clear()
 {
   mRubberBand.reset();
   mCanvas->clear();
+}
+
+void QgsElevationProfileWidget::exportAsPdf()
+{
+  QgsSettings s;
+  QString outputFileName = QgsFileUtils::findClosestExistingPath( s.value( QStringLiteral( "lastProfileExportDir" ), QDir::homePath(), QgsSettings::App ).toString() );
+
+#ifdef Q_OS_MAC
+  QgisApp::instance()->activateWindow();
+  this->raise();
+#endif
+  outputFileName = QFileDialog::getSaveFileName(
+                     this,
+                     tr( "Export to PDF" ),
+                     outputFileName,
+                     tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+  this->activateWindow();
+  if ( outputFileName.isEmpty() )
+  {
+    return;
+  }
+  outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, { QStringLiteral( "pdf" ) } );
+  QgsSettings().setValue( QStringLiteral( "lastProfileExportDir" ), outputFileName, QgsSettings::App );
+
+  QgsElevationProfilePdfExportDialog dialog( this );
+  dialog.setPlotSettings( mCanvas->plot() );
+
+  if ( !dialog.exec() )
+    return;
+
+  QPrinter printer;
+  printer.setOutputFileName( outputFileName );
+  printer.setOutputFormat( QPrinter::PdfFormat );
+
+  const QgsLayoutSize pageSizeMM = dialog.pageSizeMM();
+  QPageLayout pageLayout( QPageSize( pageSizeMM.toQSizeF(), QPageSize::Millimeter ),
+                          QPageLayout::Portrait,
+                          QMarginsF( 0, 0, 0, 0 ) );
+  pageLayout.setMode( QPageLayout::FullPageMode );
+  printer.setPageLayout( pageLayout );
+  printer.setFullPage( true );
+  printer.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
+  printer.setFullPage( true );
+  printer.setColorMode( QPrinter::Color );
+  printer.setResolution( 300 );
+
+  QPainter p;
+  if ( !p.begin( &printer ) )
+  {
+    //error beginning print
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not create %1" ).arg( QDir::toNativeSeparators( outputFileName ) ) );
+    return;
+  }
+
+  QgsRenderContext rc = QgsRenderContext::fromQPainter( &p );
+  rc.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+  rc.setFlag( Qgis::RenderContextFlag::ForceVectorOutput, true );
+  rc.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
+  rc.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );
+  rc.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
+  rc.setPainterFlagsUsingContext( &p );
+
+  Qgs2DPlot plotSettings;
+  dialog.updatePlotSettings( plotSettings );
+
+  mCanvas->render( rc, rc.convertToPainterUnits( pageSizeMM.width(), QgsUnitTypes::RenderMillimeters ),
+                   rc.convertToPainterUnits( pageSizeMM.height(), QgsUnitTypes::RenderMillimeters ), plotSettings );
+  p.end();
+
+  QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved the profile to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ) );
 }
 
 QgsRubberBand *QgsElevationProfileWidget::createRubberBand( )

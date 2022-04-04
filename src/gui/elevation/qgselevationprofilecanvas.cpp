@@ -26,9 +26,9 @@
 #include "qgsterrainprovider.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgsprofilerenderer.h"
-#include "qgsplot.h"
 #include "qgspoint.h"
 #include "qgsgeos.h"
+#include "qgsplot.h"
 #include <QWheelEvent>
 
 ///@cond PRIVATE
@@ -468,6 +468,55 @@ void QgsElevationProfileCanvas::setVisiblePlotRange( double minimumDistance, dou
   mPlotItem->setXMinimum( minimumDistance );
   mPlotItem->setXMaximum( maximumDistance );
   mPlotItem->updatePlot();
+}
+
+const Qgs2DPlot &QgsElevationProfileCanvas::plot() const
+{
+  return *mPlotItem;
+}
+
+///@cond PRIVATE
+class QgsElevationProfilePlot : public Qgs2DPlot
+{
+  public:
+
+    QgsElevationProfilePlot( QgsProfilePlotRenderer *renderer )
+      : mRenderer( renderer )
+    {
+    }
+
+    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    {
+      if ( !mRenderer )
+        return;
+
+      rc.painter()->translate( plotArea.left(), plotArea.top() );
+      mRenderer->render( rc, plotArea.width(), plotArea.height(), xMinimum(), xMaximum(), yMinimum(), yMaximum() );
+      rc.painter()->translate( -plotArea.left(), -plotArea.top() );
+    }
+
+  private:
+
+    QgsProfilePlotRenderer *mRenderer = nullptr;
+};
+///@endcond PRIVATE
+
+void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings )
+{
+  if ( !mCurrentJob )
+    return;
+
+  QgsElevationProfilePlot profilePlot( mCurrentJob );
+
+  // quick and nasty way to transfer settings from another plot class -- in future we probably want to improve this, but let's let the API settle first...
+  QDomDocument doc;
+  QDomElement elem = doc.createElement( QStringLiteral( "plot" ) );
+  QgsReadWriteContext rwContext;
+  plotSettings.writeXml( elem, doc, rwContext );
+  profilePlot.readXml( elem, rwContext );
+
+  profilePlot.setSize( QSizeF( width, height ) );
+  profilePlot.render( context );
 }
 
 void QgsElevationProfileCanvas::clear()

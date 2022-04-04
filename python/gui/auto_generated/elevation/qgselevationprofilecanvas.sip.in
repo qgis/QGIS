@@ -111,6 +111,12 @@ The CRS associated with the curve is retrieved via :py:func:`~QgsElevationProfil
 Sets the visible area of the plot.
 %End
 
+
+    void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
+%Docstring
+Renders a portion of the profile using the specied render ``context``.
+%End
+
   signals:
 
     void activeJobCountChanged( int count );

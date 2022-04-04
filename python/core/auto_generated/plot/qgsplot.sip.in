@@ -35,7 +35,7 @@ Constructor for QgsPlot.
 
     virtual ~QgsPlot();
 
-    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context );
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
 %Docstring
 Writes the plot's properties into an XML ``element``.
 %End
@@ -68,7 +68,7 @@ Encapsulates the properties of a plot axis.
     ~QgsPlotAxis();
 
 
-    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context );
+    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
 %Docstring
 Writes the axis' properties into an XML ``element``.
 %End
@@ -214,7 +214,7 @@ Constructor for Qgs2DPlot.
     ~Qgs2DPlot();
 
 
-    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context );
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
 
 %Docstring
 Qgs2DPlot cannot be copied
@@ -332,12 +332,15 @@ Returns a reference to the plot's x axis.
 .. seealso:: :py:func:`yAxis`
 %End
 
+
     QgsPlotAxis &yAxis();
 %Docstring
 Returns a reference to the plot's y axis.
 
 .. seealso:: :py:func:`xAxis`
 %End
+
+
 
     QgsFillSymbol *chartBackgroundSymbol();
 %Docstring

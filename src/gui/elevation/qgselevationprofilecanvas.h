@@ -29,6 +29,7 @@ class QgsElevationProfilePlotItem;
 class QgsAbstractProfileResults;
 class QgsProfilePlotRenderer;
 class QgsCurve;
+class Qgs2DPlot;
 
 /**
  * \ingroup gui
@@ -120,6 +121,18 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * Sets the visible area of the plot.
      */
     void setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation );
+
+    /**
+     * Returns a reference to the 2D plot used by the widget.
+     *
+     * \note Not available in Python bindings
+     */
+    const Qgs2DPlot &plot() const SIP_SKIP;
+
+    /**
+     * Renders a portion of the profile using the specied render \a context.
+     */
+    void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
 
   signals:
 
