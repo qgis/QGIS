@@ -77,6 +77,7 @@ void QgsCameraController::setCameraNavigationMode( QgsCameraController::Navigati
 
   mCameraNavigationMode = navigationMode;
   mIgnoreNextMouseMove = true;
+  emit navigationModeChanged( mCameraNavigationMode );
 }
 
 void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
@@ -669,7 +670,6 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
         setCameraNavigationMode( NavigationMode::WalkNavigation );
         break;
     }
-    emit navigationModeChanged( mCameraNavigationMode );
     return;
   }
 
