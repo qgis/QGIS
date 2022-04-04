@@ -134,7 +134,7 @@ class TestQgsElevationProfileCanvas(unittest.TestCase):
         self.assertAlmostEqual(res.z(), 2.95, 0)
 
         res = canvas.toCanvasCoordinates(QgsPoint(0, 2, 0))
-        self.assertAlmostEqual(res.x(), 9.156, delta=1.5)
+        self.assertAlmostEqual(res.x(), 9.156, delta=3)
         self.assertAlmostEqual(res.y(), 391.5, delta=10)
 
         res = canvas.toCanvasCoordinates(QgsPoint(10, 4, 100))
