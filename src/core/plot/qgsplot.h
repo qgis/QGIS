@@ -54,7 +54,7 @@ class CORE_EXPORT QgsPlot
     /**
      * Writes the plot's properties into an XML \a element.
      */
-    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context );
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
 
     /**
      * Reads the plot's properties from an XML \a element.
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsPlotAxis
     /**
      * Writes the axis' properties into an XML \a element.
      */
-    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context );
+    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
 
     /**
      * Reads the axis' properties from an XML \a element.
@@ -247,7 +247,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     //! Qgs2DPlot cannot be copied
     Qgs2DPlot &operator=( const Qgs2DPlot &other ) = delete;
 
-    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) override;
+    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &element, QgsReadWriteContext &context ) override;
 
     /**
@@ -361,11 +361,26 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     QgsPlotAxis &xAxis() { return mXAxis; }
 
     /**
+     * Returns a reference to the plot's x axis.
+     *
+     * \see yAxis()
+     */
+    const QgsPlotAxis &xAxis() const SIP_SKIP { return mXAxis; }
+
+    /**
      * Returns a reference to the plot's y axis.
      *
      * \see xAxis()
      */
     QgsPlotAxis &yAxis() { return mYAxis; }
+
+
+    /**
+     * Returns a reference to the plot's y axis.
+     *
+     * \see xAxis()
+     */
+    const QgsPlotAxis &yAxis() const SIP_SKIP { return mYAxis; }
 
     /**
      * Returns the fill symbol used to render the background of the chart.

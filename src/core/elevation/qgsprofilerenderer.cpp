@@ -145,7 +145,22 @@ QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double dist
   res.fill( Qt::transparent );
 
   QPainter p( &res );
+
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+  context.setPainterFlagsUsingContext( &p );
+  render( context, width, height, distanceMin, distanceMax, zMin, zMax );
+  p.end();
+
+  return res;
+}
+
+void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax )
+{
+  QPainter *painter = context.painter();
+  if ( !painter )
+    return;
+
   QgsProfileRenderContext profileRenderContext( context );
 
   QTransform transform;
@@ -157,15 +172,11 @@ QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double dist
   profileRenderContext.setDistanceRange( QgsDoubleRange( distanceMin, distanceMax ) );
   profileRenderContext.setElevationRange( QgsDoubleRange( zMin, zMax ) );
 
-  p.setRenderHint( QPainter::Antialiasing, true );
   for ( const ProfileJob &job : mJobs )
   {
     if ( job.complete && job.results )
       job.results->renderResults( profileRenderContext );
   }
-  p.end();
-
-  return res;
 }
 
 void QgsProfilePlotRenderer::onGeneratingFinished()

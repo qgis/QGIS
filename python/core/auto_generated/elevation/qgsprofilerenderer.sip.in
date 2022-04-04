@@ -85,6 +85,11 @@ Returns the limits of the retrieved elevation values.
 Renders a portion of the profile to an image with the given ``width`` and ``height``.
 %End
 
+    void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax );
+%Docstring
+Renders a portion of the profile using the specied render ``context``.
+%End
+
   signals:
 
     void generationFinished();

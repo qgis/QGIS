@@ -179,6 +179,7 @@ void QgsLayoutPagePropertiesWidget::setToCustomSize()
     return;
   whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->count() - 1 );
   mPageOrientationComboBox->setEnabled( false );
+  pageSizeChanged( mPageSizeComboBox->currentIndex() );
 }
 
 void QgsLayoutPagePropertiesWidget::symbolChanged()

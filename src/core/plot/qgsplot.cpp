@@ -28,7 +28,7 @@
 
 QgsPlot::~QgsPlot() = default;
 
-bool QgsPlot::writeXml( QDomElement &, QDomDocument &, QgsReadWriteContext & )
+bool QgsPlot::writeXml( QDomElement &, QDomDocument &, QgsReadWriteContext & ) const
 {
   return true;
 }
@@ -58,7 +58,7 @@ QgsPlotAxis::QgsPlotAxis()
 
 QgsPlotAxis::~QgsPlotAxis() = default;
 
-bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context )
+bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "gridIntervalMinor" ), qgsDoubleToString( mGridIntervalMinor ) );
   element.setAttribute( QStringLiteral( "gridIntervalMajor" ), qgsDoubleToString( mGridIntervalMajor ) );
@@ -158,7 +158,7 @@ Qgs2DPlot::Qgs2DPlot()
   mChartBorderSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { chartBorder.release() } ) );
 }
 
-bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context )
+bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const
 {
   QgsPlot::writeXml( element, document, context );
 

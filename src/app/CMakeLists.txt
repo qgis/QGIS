@@ -173,6 +173,8 @@ set(QGIS_APP_SRCS
   dwg/qgsdwgimportdialog.cpp
   dwg/qgsdwgimporter.cpp
 
+  elevation/qgselevationprofileexportsettingswidget.cpp
+  elevation/qgselevationprofilepdfexportdialog.cpp
   elevation/qgselevationprofilewidget.cpp
   elevation/qgsmaptoolprofilecurve.cpp
 
