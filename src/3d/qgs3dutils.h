@@ -25,6 +25,8 @@ class QgsFeedback;
 class QgsAbstract3DEngine;
 class QgsAbstract3DSymbol;
 class Qgs3DMapScene;
+class QgsPointCloudRenderer;
+class QgsPointCloudLayer3DRenderer;
 
 namespace Qt3DExtras
 {
@@ -61,6 +63,16 @@ class _3D_EXPORT Qgs3DUtils
     static QImage captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
+     * Captures the depth buffer of the current 3D scene of a 3D engine. The function waits
+     * until the scene is not fully loaded/updated before capturing the image.
+     *
+     * \note In order to get more precision, the depth values are encoded into RGB colors,
+     * use Qgs3DUtils::decodeDepth() to get the correct depth value.
+     * \since QGIS 3.24
+     */
+    static QImage captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
+
+    /**
      * Captures 3D animation frames to the selected folder
      *
      * \param animationSettings Settings for keyframes and camera
@@ -95,14 +107,14 @@ class _3D_EXPORT Qgs3DUtils
     static int maxZoomLevel( double tile0width, double tileResolution, double maxError );
 
     //! Converts a value from AltitudeClamping enum to a string
-    static QString altClampingToString( Qgs3DTypes::AltitudeClamping altClamp );
+    static QString altClampingToString( Qgis::AltitudeClamping altClamp );
     //! Converts a string to a value from AltitudeClamping enum
-    static Qgs3DTypes::AltitudeClamping altClampingFromString( const QString &str );
+    static Qgis::AltitudeClamping altClampingFromString( const QString &str );
 
     //! Converts a value from AltitudeBinding enum to a string
-    static QString altBindingToString( Qgs3DTypes::AltitudeBinding altBind );
+    static QString altBindingToString( Qgis::AltitudeBinding altBind );
     //! Converts a string to a value from AltitudeBinding enum
-    static Qgs3DTypes::AltitudeBinding altBindingFromString( const QString &str );
+    static Qgis::AltitudeBinding altBindingFromString( const QString &str );
 
     //! Converts a value from CullingMode enum to a string
     static QString cullingModeToString( Qgs3DTypes::CullingMode mode );
@@ -110,11 +122,11 @@ class _3D_EXPORT Qgs3DUtils
     static Qgs3DTypes::CullingMode cullingModeFromString( const QString &str );
 
     //! Clamps altitude of a vertex according to the settings, returns Z value
-    static float clampAltitude( const QgsPoint &p, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map );
+    static float clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map );
     //! Clamps altitude of vertices of a linestring according to the settings
-    static void clampAltitudes( QgsLineString *lineString, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
+    static void clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
     //! Clamps altitude of vertices of a polygon according to the settings
-    static bool clampAltitudes( QgsPolygon *polygon, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
+    static bool clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
 
     //! Converts a 4x4 transform matrix to a string
     static QString matrix4x4toString( const QMatrix4x4 &m );
@@ -122,7 +134,7 @@ class _3D_EXPORT Qgs3DUtils
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     //! Calculates (x,y,z) positions of (multi)point from the given feature
-    static void extractPointPositions( const QgsFeature &f, const Qgs3DMapSettings &map, Qgs3DTypes::AltitudeClamping altClamp, QVector<QVector3D> &positions );
+    static void extractPointPositions( const QgsFeature &f, const Qgs3DMapSettings &map, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
 
     /**
      * Returns TRUE if bbox is completely outside the current viewing volume.
@@ -180,6 +192,52 @@ class _3D_EXPORT Qgs3DUtils
 
     //! Convert from clicked point on the screen to a ray in world coordinates
     static QgsRay3D rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera );
+
+    /**
+     * Converts the clicked mouse position to the corresponding 3D world coordinates
+     * \since QGIS 3.24
+     */
+    static QVector3D screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera );
+
+    /**
+     * Function used to extract the pitch and yaw (also known as heading) angles in degrees from the view vector of the camera [cameraViewCenter - cameraPosition]
+     * \since QGIS 3.24
+     */
+    static void pitchAndYawFromViewVector( QVector3D vect, double &pitch, double &yaw );
+
+    /**
+     * Converts from screen coordinates to texture coordinates
+     * \note Expected return values are in [0, 1] range
+     * \see textureToScreenCoordinates()
+     * \since QGIS 3.24
+     */
+    static QVector2D screenToTextureCoordinates( QVector2D screenXY, QSize winSize );
+
+    /**
+     * Converts from texture coordinates coordinates to screen coordinates
+     * \note Expected return values are in [0, winSize.width], [0, winSize.height] range
+     * \see screenToTextureCoordinates()
+     * \since QGIS 3.24
+     */
+    static QVector2D textureToScreenCoordinates( QVector2D textureXY, QSize winSize );
+
+    /**
+     * Decodes the depth value from the pixel's color value
+     * The depth value is encoded from OpenGL side (the depth render pass) into the 3 RGB channels to preserve precision.
+     *
+     * \since QGIS 3.24
+     */
+    static double decodeDepth( const QRgb &pixel )
+    {
+      return ( ( qRed( pixel ) / 255.0 + qGreen( pixel ) ) / 255.0 + qBlue( pixel ) ) / 255.0;
+    }
+
+    /**
+     * Creates a QgsPointCloudLayer3DRenderer matching the symbol settings of a given QgsPointCloudRenderer
+     * \note This function was formerly in Qgs3DAppUtils
+     * \since QGIS 3.26
+     */
+    static std::unique_ptr< QgsPointCloudLayer3DRenderer > convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
 };
 
 #endif // QGS3DUTILS_H

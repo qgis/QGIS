@@ -59,6 +59,15 @@ class CORE_EXPORT QgsPointCloudBlock
 
     //! Returns the custom offset of the block.
     QgsVector3D offset() const;
+
+    /**
+     * Changes the number of points in the block.
+     * This is used in order to remove all points after point \a size.
+     * If a \a size larger than \a pointCount() is used, data for the new points will be uninitialized
+     *
+     * \since QGIS 3.26
+     */
+    void setPointCount( int size );
   private:
     int mPointCount;
     QgsPointCloudAttributeCollection mAttributes;

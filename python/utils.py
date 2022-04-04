@@ -621,7 +621,7 @@ def showPluginHelp(packageName: str = None, filename: str = "index", section: st
         url = "file://" + helpfile
         if section != "":
             url = url + "#" + section
-        QDesktopServices.openUrl(QUrl(url))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(url))
 
 
 def pluginDirectory(packageName: str) -> str:

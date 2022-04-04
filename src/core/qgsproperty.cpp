@@ -370,11 +370,20 @@ QgsProperty::operator bool() const
 void QgsProperty::setExpressionString( const QString &expression )
 {
   d.detach();
-  d->type = ExpressionBasedProperty;
   d->expressionString = expression;
   d->expression = QgsExpression( expression );
   d->expressionPrepared = false;
   d->expressionIsInvalid = false;
+
+  if ( d->expressionString.isEmpty() )
+  {
+    d->active = false;
+    d->type = InvalidProperty;
+  }
+  else
+  {
+    d->type = ExpressionBasedProperty;
+  }
 }
 
 QString QgsProperty::expressionString() const

@@ -321,6 +321,7 @@ class CORE_EXPORT QgsPalLayerSettings
       // (data defined only)
       PositionX = 9, //!< X-coordinate data defined label position
       PositionY = 10, //!< Y-coordinate data defined label position
+      PositionPoint = 114, //!< Point-coordinate data defined label position
       Hali = 11, //!< Horizontal alignment for data defined label position (Left, Center, Right)
       Vali = 12, //!< Vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       Rotation = 14, //!< Label rotation (deprecated, for old project compatibility only)
@@ -335,6 +336,8 @@ class CORE_EXPORT QgsPalLayerSettings
       PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced (since QGIS 3.14)
       LineAnchorPercent = 111, //!< Portion along line at which labels should be anchored (since QGIS 3.16)
       LineAnchorClipping = 112, //!< Clipping mode for line anchor calculation (since QGIS 3.20)
+      LineAnchorType = 115, //!< Line anchor type (since QGIS 3.26)
+      LineAnchorTextPoint = 116, //!< Line anchor text point (since QGIS 3.26)
 
       // rendering
       ScaleVisibility = 23,

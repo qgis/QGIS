@@ -1,0 +1,94 @@
+Content-Type: text/xml; subtype=gml/2.1.2; charset=utf-8
+
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:qgs="http://www.qgis.org/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml ?">
+<gml:boundedBy>
+ <gml:Box srsName="EPSG:4326">
+  <gml:coordinates cs="," ts=" ">3.8,43.5 3.9,43.6</gml:coordinates>
+ </gml:Box>
+</gml:boundedBy>
+<gml:featureMember>
+ <qgs:test_layer_wfs_cdata_lines fid="test_layer_wfs_cdata_lines.1">
+  <gml:boundedBy>
+   <gml:Box srsName="EPSG:4326">
+    <gml:coordinates cs="," ts=" ">3.8,43.5 3.8,43.6</gml:coordinates>
+   </gml:Box>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <LineString xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">3.8,43.5 3.8,43.6</coordinates>
+   </LineString>
+  </qgs:geometry>
+  <qgs:id>1</qgs:id>
+  <qgs:name>éù%@ > 1</qgs:name>
+  <qgs:comment>Accents, sup</qgs:comment>
+ </qgs:test_layer_wfs_cdata_lines>
+</gml:featureMember>
+<gml:featureMember>
+ <qgs:test_layer_wfs_cdata_lines fid="test_layer_wfs_cdata_lines.2">
+  <gml:boundedBy>
+   <gml:Box srsName="EPSG:4326">
+    <gml:coordinates cs="," ts=" ">3.8,43.6 3.9,43.6</gml:coordinates>
+   </gml:Box>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <LineString xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">3.8,43.6 3.9,43.6</coordinates>
+   </LineString>
+  </qgs:geometry>
+  <qgs:id>2</qgs:id>
+  <qgs:name>Line > 2</qgs:name>
+  <qgs:comment>Normal, sup</qgs:comment>
+ </qgs:test_layer_wfs_cdata_lines>
+</gml:featureMember>
+<gml:featureMember>
+ <qgs:test_layer_wfs_cdata_lines fid="test_layer_wfs_cdata_lines.3">
+  <gml:boundedBy>
+   <gml:Box srsName="EPSG:4326">
+    <gml:coordinates cs="," ts=" ">3.9,43.5 3.9,43.6</gml:coordinates>
+   </gml:Box>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <LineString xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">3.9,43.6 3.9,43.5</coordinates>
+   </LineString>
+  </qgs:geometry>
+  <qgs:id>3</qgs:id>
+  <qgs:name><![CDATA[Line < 3]]></qgs:name>
+  <qgs:comment>Normal, inf</qgs:comment>
+ </qgs:test_layer_wfs_cdata_lines>
+</gml:featureMember>
+<gml:featureMember>
+ <qgs:test_layer_wfs_cdata_lines fid="test_layer_wfs_cdata_lines.4">
+  <gml:boundedBy>
+   <gml:Box srsName="EPSG:4326">
+    <gml:coordinates cs="," ts=" ">3.8,43.5 3.9,43.5</gml:coordinates>
+   </gml:Box>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <LineString xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">3.9,43.5 3.8,43.5</coordinates>
+   </LineString>
+  </qgs:geometry>
+  <qgs:id>4</qgs:id>
+  <qgs:name>05200</qgs:name>
+  <qgs:comment>Trailing 0</qgs:comment>
+ </qgs:test_layer_wfs_cdata_lines>
+</gml:featureMember>
+<gml:featureMember>
+ <qgs:test_layer_wfs_cdata_lines fid="test_layer_wfs_cdata_lines.5">
+  <gml:boundedBy>
+   <gml:Box srsName="EPSG:4326">
+    <gml:coordinates cs="," ts=" ">3.8,43.5 3.9,43.6</gml:coordinates>
+   </gml:Box>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <LineString xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">3.8,43.5 3.9,43.6</coordinates>
+   </LineString>
+  </qgs:geometry>
+  <qgs:id>5</qgs:id>
+  <qgs:name><![CDATA[Line & 2]]></qgs:name>
+  <qgs:comment>And sign</qgs:comment>
+ </qgs:test_layer_wfs_cdata_lines>
+</gml:featureMember>
+</wfs:FeatureCollection>

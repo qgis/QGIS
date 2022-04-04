@@ -38,6 +38,7 @@
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
+#include "qgsabstractprofilesource.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
@@ -47,6 +48,7 @@ class QgsRasterPipe;
 class QgsRasterResampleFilter;
 class QgsBrightnessContrastFilter;
 class QgsHueSaturationFilter;
+class QgsRasterLayerElevationProperties;
 
 class QImage;
 class QPixmap;
@@ -71,7 +73,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *     my_raster_layer = QgsRasterLayer("/path/to/file.tif", "my layer")
  * \endcode
  */
-class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
+class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfileSource
 {
     Q_OBJECT
   public:
@@ -176,6 +178,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \since QGIS 3.0
      */
     QgsRasterLayer *clone() const override SIP_FACTORY;
+
+    QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     //! \brief This enumerator describes the types of shading that can be used
     enum ColorShadingAlgorithm
@@ -344,6 +348,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool isSpatial() const override { return true; }
 
     QString htmlMetadata() const override;
+    Qgis::MapLayerProperties properties() const override;
 
     /**
      * Returns a 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
@@ -466,6 +471,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool ignoreExtents() const;
 
     QgsMapLayerTemporalProperties *temporalProperties() override;
+    QgsMapLayerElevationProperties *elevationProperties() override;
 
   public slots:
     void showStatusMessage( const QString &message );
@@ -550,6 +556,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     //! Pointer to temporal properties
     QgsRasterLayerTemporalProperties *mTemporalProperties = nullptr;
+
+    QgsRasterLayerElevationProperties *mElevationProperties = nullptr;
 
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;

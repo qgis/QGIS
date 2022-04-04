@@ -20,6 +20,7 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#whats-new-in-version-3.24-tisler">What’s new in Version 3.24 ‘Tisler’?</a></li>
 <li><a href="#whats-new-in-version-3.22-białowieża">What’s new in Version 3.22 ‘Białowieża’?</a></li>
 <li><a href="#whats-new-in-version-3.20-odense">What’s new in Version 3.20 ‘Odense’?</a></li>
 <li><a href="#whats-new-in-version-3.18-zürich">What’s new in Version 3.18 ‘Zürich’?</a></li>
@@ -78,6 +79,79 @@
 </ul>
 </nav>
 <p>Change history for the QGIS Project</p>
+<h1 id="whats-new-in-version-3.24-tisler">What’s new in Version 3.24 ‘Tisler’?</h1>
+<p>This release has following new features:</p>
+<ul>
+<li>User Interface: Retrieve map extents directly from layout maps and bookmarks</li>
+<li>User Interface: Easier creation of custom coordinate reference systems</li>
+<li>Symbology: Marker/hash line: offsets along line by “percent” of line length (and negative offsets!)</li>
+<li>Symbology: Control whether first/last vertex placements apply to every part of multi-part geometries</li>
+<li>Symbology: Marker/hash line “on vertices” placement option replaced by “on inner vertices”</li>
+<li>Symbology: Placement options in marker and hash line symbol layers are now checkboxes instead of mutually exclusive buttons</li>
+<li>Symbology: Control the color model used when interpolating gradient ramps</li>
+<li>Symbology: Resizable thumbnails in the style manager dialog</li>
+<li>Symbology: “Lineburst” symbols</li>
+<li>Symbology: “Raster Line” symbols</li>
+<li>Symbology: Choice of clipping behaviour for line pattern fills</li>
+<li>Symbology: Improved rendering of line pattern fills</li>
+<li>Symbology: Rotation angle for point pattern fills</li>
+<li>Symbology: Randomized point offsets for point pattern fills</li>
+<li>Symbology: Coordinate reference mode setting for line pattern and point pattern fill symbol layers</li>
+<li>Symbology: Control marker clipping for point pattern fills</li>
+<li>Symbology: Expression functions for creating triangular/square/curved waves</li>
+<li>Labelling: “Percentage” units for text buffer size, shadow offset and blur radius</li>
+<li>Labelling: Data defined label positions by point geometries</li>
+<li>Labelling: Stretched text for labels and text formats</li>
+<li>Rendering: Rendering layers as groups</li>
+<li>Rendering: Support for “Line pattern” when converting Mapbox GL vector tile layer styles</li>
+<li>Rendering: Support background styles for Mapbox GL-styled vector tile layers</li>
+<li>3D Features: Respect Z ordering when rendering point clouds in 2D</li>
+<li>3D Features: Dock/Undock 3D views</li>
+<li>3D Features: 3D map view manager</li>
+<li>3D Features: Improved camera navigation</li>
+<li>Print Layouts: Full text rendering capabilities for layout text labels</li>
+<li>Expressions: geometry_type function</li>
+<li>Expressions: Overlay intersects sort by intersection size</li>
+<li>Expressions: Show all layer field names when building expressions</li>
+<li>Expressions: represent_attributes function</li>
+<li>Expressions: Optional minimum overlap area and circle radius for overlay_intersection</li>
+<li>Expressions: map_prefix_keys function</li>
+<li>Expressions: densify_by_count and densify_by_distance functions</li>
+<li>Expressions: Rotate parts of multi-part geometries independently with “rotate” expression function</li>
+<li>Expressions: apply_dash_pattern function</li>
+<li>Expressions: scale function</li>
+<li>Expressions: Filter by multiple attributes for get_feature function</li>
+<li>Data Management: Multiedit support for relation editor</li>
+<li>Metadata and Metasearch: Support for OGC API - Records in MetaSearch</li>
+<li>Forms and Widgets: Form submit actions with HTTP POST</li>
+<li>Forms and Widgets: New button to open attribute table on filtered features</li>
+<li>Analysis Tools: Add roundness method to curve polygon</li>
+<li>Processing: Extract labels algorithm</li>
+<li>Processing: Optional output extent parameter for the GDAL Raster Calculator algorithm</li>
+<li>Processing: Optional extent parameter for the GDAL clip raster by mask algorithm</li>
+<li>Processing: Processing history rework</li>
+<li>Processing: Advanced actions in Processing dialogs</li>
+<li>Processing: Single file exports from Atlas to PDF algorithm</li>
+<li>Processing: Project Models are shown in the Project menu</li>
+<li>Processing: Add point cloud destination parameter and output to Processing</li>
+<li>Processing: Array field support</li>
+<li>Application and Project Options: qgis_process –no-python argument</li>
+<li>Application and Project Options: Suppress “bad layers” handler on startup</li>
+<li>Application and Project Options: Parameter values for qgis_process can be specified as a JSON object via stdin</li>
+<li>Application and Project Options: Run Python script algorithms directly via qgis_process</li>
+<li>Data Providers: Friendlier errors from XYZ raster tiles, WMS and vector tiles</li>
+<li>Data Providers: Add out-of-the-box connection to Mapzen Global Terrain tiles</li>
+<li>Data Providers: HMAC SHA256 auth method for MapTiler</li>
+<li>Data Providers: Template parameter {usage} for XYZ raster and vector tiles</li>
+<li>Data Providers: Convert WMTS/XYZ raster tiles to terrain (DEM)</li>
+<li>Data Providers: Array field types for scratch layers</li>
+<li>Data Providers: JSON field types for new GeoPackage layers</li>
+<li>Data Providers: Delimited text type overrides and other improvements</li>
+<li>Data Providers: New authentication method for HTTP header based authentication</li>
+<li>Data Providers: Expose secondary PostGIS geometry columns as referenced geometries</li>
+<li>QGIS Server: Allow better control of the response flow chain from server filters</li>
+<li></li>
+</ul>
 <h1 id="whats-new-in-version-3.22-białowieża">What’s new in Version 3.22 ‘Białowieża’?</h1>
 <p>This release has following new features:</p>
 <ul>

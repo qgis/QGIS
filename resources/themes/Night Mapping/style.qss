@@ -36,7 +36,7 @@ QToolTip
 {
     border: 1px solid #222;
     background-color: @itemdarkbackground;
-    color: @itembackground;
+    color: @text;
 }
 
 QMenuBar {
@@ -237,7 +237,7 @@ QToolButton
     color:@text;
 }
 
-QPushButton[autoRaise=true], QToolButton[autoRaise=true] {
+QPushButton[flat=true], QPushButton[autoRaise=true], QToolButton[autoRaise=true] {
     border:1px solid rgba(0,0,0,0);
     background-color:transparent;
 }
@@ -991,6 +991,11 @@ QHeaderView::up-arrow {
 
 QToolButton:focus, QPushButton:focus, QCheckBox:focus, QRadioButton:focus, QGroupBox:focus {
     outline:1px solid @focusdark;
+    outline-radius: 0;
+}
+
+QPushButton[flat=true], QPushButton[autoRaise=true], QToolButton[autoRaise=true] {
+    outline:1px solid rgba(0,0,0,0);
     outline-radius: 0;
 }
 

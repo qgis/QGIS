@@ -930,7 +930,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   if ( uniqueValues.size() >= 1000 )
   {
     const int res = QMessageBox::warning( nullptr, tr( "Classify Categories" ),
-                                          tr( "High number of classes. Classification would yield %1 entries which might not be expected. Continue?" ).arg( uniqueValues.size() ),
+                                          tr( "High number of classes. Classification would yield %n entries which might not be expected. Continue?", nullptr, uniqueValues.size() ),
                                           QMessageBox::Ok | QMessageBox::Cancel,
                                           QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
@@ -1170,7 +1170,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromLibrary()
   if ( matched > 0 )
   {
     QMessageBox::information( this, tr( "Matched Symbols" ),
-                              tr( "Matched %1 categories to symbols." ).arg( matched ) );
+                              tr( "Matched %n categories to symbols.", nullptr, matched ) );
   }
   else
   {
@@ -1223,7 +1223,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   if ( matched > 0 )
   {
     QMessageBox::information( this, tr( "Match to Symbols from File" ),
-                              tr( "Matched %1 categories to symbols from file." ).arg( matched ) );
+                              tr( "Matched %n categories to symbols from file.", nullptr, matched ) );
   }
   else
   {

@@ -24,6 +24,7 @@
 #include "qgspallabeling.h"
 #include "qgslabelingenginesettings.h"
 #include "qgslabeling.h"
+#include "qgsfeedback.h"
 
 class QgsLabelingEngine;
 class QgsLabelingResults;
@@ -204,6 +205,108 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
 
 /**
  * \ingroup core
+ * \brief QgsFeedback subclass for granular reporting of labeling engine progress.
+ * \note not available in Python bindings
+ * \since QGIS 3.24
+ */
+class CORE_EXPORT QgsLabelingEngineFeedback : public QgsFeedback
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsLabelingEngineFeedback, with the specified \a parent object.
+     */
+    QgsLabelingEngineFeedback( QObject *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsFeedback( parent )
+    {}
+
+  signals:
+
+    /**
+     * Emitted when the label registration is about to begin.
+     */
+    void labelRegistrationAboutToBegin();
+
+    /**
+     * Emitted when the label registration has completed for all providers.
+     */
+    void labelRegistrationFinished();
+
+    /**
+     * Emitted when the label registration is about to begin for a \a provider.
+     */
+    void providerRegistrationAboutToBegin( QgsAbstractLabelProvider *provider );
+
+    /**
+     * Emitted when the label registration has completed for a \a provider.
+     */
+    void providerRegistrationFinished( QgsAbstractLabelProvider *provider );
+
+    /**
+     * Emitted when the label candidate creation is about to begin for a \a provider.
+     */
+    void candidateCreationAboutToBegin( QgsAbstractLabelProvider *provider );
+
+    /**
+     * Emitted when the label candidate creation has completed for a \a provider.
+     */
+    void candidateCreationFinished( QgsAbstractLabelProvider *provider );
+
+    /**
+     * Emitted when the obstacle costing is about to begin.
+     */
+    void obstacleCostingAboutToBegin();
+
+    /**
+     * Emitted when the obstacle costing has completed.
+     */
+    void obstacleCostingFinished();
+
+    /**
+     * Emitted when the conflict handling step is about to begin.
+     */
+    void calculatingConflictsAboutToBegin();
+
+    /**
+     * Emitted when the conflict handling step has completed.
+     */
+    void calculatingConflictsFinished();
+
+    /**
+     * Emitted when the label candidates are about to be finalized.
+     */
+    void finalizingCandidatesAboutToBegin();
+
+    /**
+     * Emitted when the label candidates are finalized.
+     */
+    void finalizingCandidatesFinished();
+
+    /**
+     * Emitted when the candidate reduction step is about to begin.
+     */
+    void reductionAboutToBegin();
+
+    /**
+     * Emitted when the candidate reduction step is finished.
+     */
+    void reductionFinished();
+
+    /**
+     * Emitted when the problem solving step is about to begin.
+     */
+    void solvingPlacementAboutToBegin();
+
+    /**
+     * Emitted when the problem solving step is finished.
+     */
+    void solvingPlacementFinished();
+};
+
+/**
+ * \ingroup core
  * \brief The QgsLabelingEngine class provides map labeling functionality.
  * The input for the engine is a list of label provider objects and map settings.
  * Based on the input, the engine computes layout of labels for the given map view
@@ -298,7 +401,6 @@ class CORE_EXPORT QgsLabelingEngine
      * Runs the label registration step.
      *
      * Must be called by subclasses prior to solve() and drawLabels()
-     *
      * \since QGIS 3.10
      */
     void registerLabels( QgsRenderContext &context );

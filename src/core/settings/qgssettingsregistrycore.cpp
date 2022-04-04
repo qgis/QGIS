@@ -25,6 +25,7 @@
 #include "qgslocalizeddatapathregistry.h"
 #include "qgsmaprendererjob.h"
 
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {
@@ -71,7 +72,9 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingFillColorAlpha );
   addSettingsEntry( &settingsDigitizingLineGhost );
   addSettingsEntry( &settingsDigitizingDefaultZValue );
+  addSettingsEntry( &settingsDigitizingDefaultMValue );
   addSettingsEntry( &settingsDigitizingDefaultSnapEnabled );
+  addSettingsEntry( &settingsDigitizingDefaultSnapMode );
   addSettingsEntry( &settingsDigitizingDefaultSnapType );
   addSettingsEntry( &settingsDigitizingDefaultSnappingTolerance );
   addSettingsEntry( &settingsDigitizingDefaultSnappingToleranceUnit );
@@ -95,6 +98,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingOffsetCapStyle );
   addSettingsEntry( &settingsDigitizingOffsetShowAdvanced );
   addSettingsEntry( &settingsDigitizingTracingMaxFeatureCount );
+  addSettingsEntry( &settingsGpsBabelPath );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()

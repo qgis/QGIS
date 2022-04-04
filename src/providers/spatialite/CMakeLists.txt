@@ -14,6 +14,7 @@ set(SPATIALITE_SRCS
   qgsspatialitetablemodel.cpp
   qgsspatialiteproviderconnection.cpp
   qgsspatialitetransaction.cpp
+  qgsspatialiteexpressioncompiler.cpp
 )
 
 if (WITH_GUI)
@@ -23,7 +24,7 @@ if (WITH_GUI)
     qgsspatialitesourceselect.cpp
   )
 
-  set(SPATIALITE_UIS qgsdbsourceselectbase.ui)
+  set(SPATIALITE_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgsdbsourceselectbase.ui)
 endif()
 
 

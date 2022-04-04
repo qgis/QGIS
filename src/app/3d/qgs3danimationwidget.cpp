@@ -62,9 +62,6 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   connect( cboKeyframe, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DAnimationWidget::onKeyframeChanged );
 }
 
-Qgs3DAnimationWidget::~Qgs3DAnimationWidget() = default;
-
-
 void Qgs3DAnimationWidget::setCameraController( QgsCameraController *cameraController )
 {
   mCameraController = cameraController;

@@ -28,6 +28,7 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgsrendercontext.h"
+#include "qgsmapcanvasutils.h"
 
 // Qt includes
 #include <QPoint>
@@ -211,16 +212,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
   context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
 
-  QString temporalFilter;
-  if ( mapCanvas->mapSettings().isTemporal() )
-  {
-    if ( !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) )
-      return QString();
-
-    QgsVectorLayerTemporalContext temporalContext;
-    temporalContext.setLayer( vlayer );
-    temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( temporalContext, mapCanvas->temporalRange() );
-  }
+  const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mapCanvas, vlayer );
+  if ( canvasFilter ==  QLatin1String( "FALSE" ) )
+    return QString();
 
   const QString mapTip = vlayer->mapTipTemplate();
   QString tipString;
@@ -230,8 +224,8 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   QgsFeatureRequest request;
   request.setFilterRect( r );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
-  if ( !temporalFilter.isEmpty() )
-    request.setFilterExpression( temporalFilter );
+  if ( !canvasFilter.isEmpty() )
+    request.setFilterExpression( canvasFilter );
 
   if ( mapTip.isEmpty() )
   {

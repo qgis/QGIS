@@ -4,11 +4,22 @@
   "groups": ["GeometryGroup"],
   "description": "Creates a triangle polygon.",
   "variableLenArguments": false,
-  "arguments": [
-	{"arg":"point1", "description": "first point of the triangle"},
-	{"arg":"point2", "description": "second point of the triangle"},
-	{"arg":"point3", "description": "third point of the triangle"}],
-  "examples": [ { "expression":"geom_to_wkt(make_triangle(make_point(0,0), make_point(5,5), make_point(0,10)))", "returns":"'Triangle ((0 0, 5 5, 0 10, 0 0))'"},
-    { "expression":"geom_to_wkt(boundary(make_triangle(make_point(0,0), make_point(5,5), make_point(0,10))))", "returns":"'LineString (0 0, 5 5, 0 10, 0 0)'"}
-    ]
+  "arguments": [{
+    "arg": "point1",
+    "description": "first point of the triangle"
+  }, {
+    "arg": "point2",
+    "description": "second point of the triangle"
+  }, {
+    "arg": "point3",
+    "description": "third point of the triangle"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(make_triangle(make_point(0,0), make_point(5,5), make_point(0,10)))",
+    "returns": "'Triangle ((0 0, 5 5, 0 10, 0 0))'"
+  }, {
+    "expression": "geom_to_wkt(boundary(make_triangle(make_point(0,0), make_point(5,5), make_point(0,10))))",
+    "returns": "'LineString (0 0, 5 5, 0 10, 0 0)'"
+  }],
+  "tags": ["triangle", "polygon"]
 }

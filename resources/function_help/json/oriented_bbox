@@ -2,8 +2,14 @@
   "name": "oriented_bbox",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description":"Returns a geometry which represents the minimal oriented bounding box of an input geometry.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"} ],
-  "examples": [ { "expression":"geom_to_wkt( oriented_bbox( geom_from_wkt( 'MULTIPOINT(1 2, 3 4, 3 2)' ) ) )", "returns":"'Polygon ((3 2, 3 4, 1 4, 1 2, 3 2))'"}]
+  "description": "Returns a geometry which represents the minimal oriented bounding box of an input geometry.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt( oriented_bbox( geom_from_wkt( 'MULTIPOINT(1 2, 3 4, 3 2)' ) ) )",
+    "returns": "'Polygon ((3 2, 3 4, 1 4, 1 2, 3 2))'"
+  }],
+  "tags": ["oriented", "box", "minimal", "represents", "bounding"]
 }
-

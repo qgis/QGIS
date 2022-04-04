@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Reverses the direction of a line string by reversing the order of its vertices.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"}],
-  "examples": [ { "expression":"geom_to_wkt(reverse(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)')))", "returns":"'LINESTRING(2 2, 1 1, 0 0)'"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(reverse(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)')))",
+    "returns": "'LINESTRING(2 2, 1 1, 0 0)'"
+  }],
+  "tags": ["direction", "order", "vertices", "reverses", "line", "reversing"]
 }

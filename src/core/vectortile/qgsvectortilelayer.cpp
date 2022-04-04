@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include "qgsvectortilelayerrenderer.h"
 #include "qgsmbtiles.h"
+#include "qgsvtpktiles.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelabeling.h"
@@ -32,6 +33,7 @@
 #include "qgsjsonutils.h"
 #include "qgspainting.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsarcgisrestutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -40,6 +42,8 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
   , mTransformContext( options.transformContext )
 {
+  mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
+
   mDataSource = uri;
 
   setValid( loadDataSource() );
@@ -64,6 +68,8 @@ bool QgsVectorTileLayer::loadDataSource()
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
 
+  setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
   mSourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
@@ -80,14 +86,15 @@ bool QgsVectorTileLayer::loadDataSource()
     }
 
     // online tiles
-    mSourceMinZoom = 0;
-    mSourceMaxZoom = 14;
-
+    int zMin = 0;
     if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
-      mSourceMinZoom = dsUri.param( QStringLiteral( "zmin" ) ).toInt();
-    if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
-      mSourceMaxZoom = dsUri.param( QStringLiteral( "zmax" ) ).toInt();
+      zMin = dsUri.param( QStringLiteral( "zmin" ) ).toInt();
 
+    int zMax = 14;
+    if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
+      zMax = dsUri.param( QStringLiteral( "zmax" ) ).toInt();
+
+    mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator( zMin, zMax );
     setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
   }
   else if ( mSourceType == QLatin1String( "mbtiles" ) )
@@ -111,24 +118,44 @@ bool QgsVectorTileLayer::loadDataSource()
     const int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );
     const int maxZoom = reader.metadataValue( QStringLiteral( "maxzoom" ) ).toInt( &maxZoomOk );
     if ( minZoomOk )
-      mSourceMinZoom = minZoom;
+      mMatrixSet.dropMatricesOutsideZoomRange( minZoom, 99 );
     if ( maxZoomOk )
-      mSourceMaxZoom = maxZoom;
-    QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mSourceMinZoom ).arg( mSourceMaxZoom ), 2 );
+      mMatrixSet.dropMatricesOutsideZoomRange( 0, maxZoom );
+    QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mMatrixSet.minimumZoom() ).arg( mMatrixSet.maximumZoom() ), 2 );
 
     QgsRectangle r = reader.extent();
-    const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
-                                     QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext() );
+    QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                               QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext() );
+    ct.setBallparkTransformsAreAppropriate( true );
     r = ct.transformBoundingBox( r );
     setExtent( r );
+  }
+  else if ( mSourceType == QLatin1String( "vtpk" ) )
+  {
+    QgsVtpkTiles reader( mSourcePath );
+    if ( !reader.open() )
+    {
+      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
+      return false;
+    }
+
+    const QVariantMap metadata = reader.metadata();
+    const QString format = metadata.value( QStringLiteral( "tileInfo" ) ).toMap().value( QStringLiteral( "format" ) ).toString();
+    if ( format != QLatin1String( "pbf" ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Cannot open VTPK for vector tiles. Format = " ) + format );
+      return false;
+    }
+
+    mMatrixSet = reader.matrixSet();
+    setCrs( mMatrixSet.crs() );
+    setExtent( reader.extent( transformContext() ) );
   }
   else
   {
     QgsDebugMsg( QStringLiteral( "Unknown source type: " ) + mSourceType );
     return false;
   }
-
-  setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
   const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
   const QgsDataProvider::ReadFlags flags;
@@ -187,18 +214,50 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
     return false;
   }
 
+  mMatrixSet.fromEsriJson( mArcgisLayerConfiguration );
+  setCrs( mMatrixSet.crs() );
+
   // if hardcoded zoom limits aren't specified, take them from the server
-  if ( !dataSourceUri.hasParam( QStringLiteral( "zmin" ) ) )
-    mSourceMinZoom = 0;
-  else
-    mSourceMinZoom = dataSourceUri.param( QStringLiteral( "zmin" ) ).toInt();
+  if ( dataSourceUri.hasParam( QStringLiteral( "zmin" ) ) )
+    mMatrixSet.dropMatricesOutsideZoomRange( dataSourceUri.param( QStringLiteral( "zmin" ) ).toInt(), 99 );
 
-  if ( !dataSourceUri.hasParam( QStringLiteral( "zmax" ) ) )
-    mSourceMaxZoom = mArcgisLayerConfiguration.value( QStringLiteral( "maxzoom" ) ).toInt();
-  else
-    mSourceMaxZoom = dataSourceUri.param( QStringLiteral( "zmax" ) ).toInt();
+  if ( dataSourceUri.hasParam( QStringLiteral( "zmax" ) ) )
+    mMatrixSet.dropMatricesOutsideZoomRange( 0, dataSourceUri.param( QStringLiteral( "zmax" ) ).toInt() );
 
-  setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
+  const QVariantMap fullExtent = mArcgisLayerConfiguration.value( QStringLiteral( "fullExtent" ) ).toMap();
+  if ( !fullExtent.isEmpty() )
+  {
+    const QgsRectangle fullExtentRect(
+      fullExtent.value( QStringLiteral( "xmin" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "ymin" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "xmax" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "ymax" ) ).toDouble()
+    );
+
+    const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( QStringLiteral( "spatialReference" ) ).toMap() );
+    const QgsCoordinateTransform extentTransform( fullExtentCrs, crs(), transformContext() );
+    try
+    {
+      setExtent( extentTransform.transformBoundingBox( fullExtentRect ) );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
+    }
+  }
+  else
+  {
+    // if no fullExtent specified in JSON, default to web mercator specs full extent
+    const QgsCoordinateTransform extentTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), crs(), transformContext() );
+    try
+    {
+      setExtent( extentTransform.transformBoundingBox( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) ) );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
+    }
+  }
 
   return true;
 }
@@ -233,6 +292,13 @@ bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 {
   setValid( loadDataSource() );
 
+  const QDomElement matrixSetElement = layerNode.firstChildElement( QStringLiteral( "matrixSet" ) );
+  if ( !matrixSetElement.isNull() )
+  {
+    mMatrixSet.readXml( matrixSetElement, context );
+    setCrs( mMatrixSet.crs() );
+  }
+
   QString errorMsg;
   if ( !readSymbology( layerNode, errorMsg, context ) )
     return false;
@@ -245,6 +311,8 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 {
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
+
+  mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
 
   // add provider node
   if ( mDataProvider )
@@ -402,11 +470,29 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
   return error;
 }
 
+Qgis::MapLayerProperties QgsVectorTileLayer::properties() const
+{
+  Qgis::MapLayerProperties res;
+  if ( mSourceType == QLatin1String( "xyz" ) )
+  {
+    // always consider xyz vector tiles as basemap layers
+    res |= Qgis::MapLayerProperty::IsBasemapLayer;
+  }
+  else
+  {
+    // TODO when should we consider mbtiles layers as basemap layers? potentially if their extent is "large"?
+  }
+
+  return res;
+}
+
 bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings )
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
 
+  QVariantMap styleDefinition;
+  QgsMapBoxGlStyleConversionContext context;
   QString styleUrl;
   if ( !dsUri.param( QStringLiteral( "styleUrl" ) ).isEmpty() )
   {
@@ -419,7 +505,25 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
                + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString();
   }
 
-  if ( !styleUrl.isEmpty() )
+  if ( mSourceType == QLatin1String( "vtpk" ) )
+  {
+    QgsVtpkTiles reader( mSourcePath );
+    if ( !reader.open() )
+    {
+      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
+      return false;
+    }
+
+    styleDefinition = reader.styleDefinition();
+
+    const QVariantMap spriteDefinition = reader.spriteDefinition();
+    if ( !spriteDefinition.isEmpty() )
+    {
+      const QImage spriteImage = reader.spriteImage();
+      context.setSprites( spriteImage, spriteDefinition );
+    }
+  }
+  else if ( !styleUrl.isEmpty() )
   {
     QNetworkRequest request = QNetworkRequest( QUrl( styleUrl ) );
 
@@ -439,14 +543,7 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
     }
 
     const QgsNetworkReplyContent content = networkRequest.reply();
-    const QVariantMap styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
-
-    QgsMapBoxGlStyleConversionContext context;
-    // convert automatically from pixel sizes to millimeters, because pixel sizes
-    // are a VERY edge case in QGIS and don't play nice with hidpi map renders or print layouts
-    context.setTargetUnit( QgsUnitTypes::RenderMillimeters );
-    //assume source uses 96 dpi
-    context.setPixelSizeConversionFactor( 25.4 / 96.0 );
+    styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
 
     if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) )
     {
@@ -510,6 +607,15 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
           break;
       }
     }
+  }
+
+  if ( !styleDefinition.isEmpty() )
+  {
+    // convert automatically from pixel sizes to millimeters, because pixel sizes
+    // are a VERY edge case in QGIS and don't play nice with hidpi map renders or print layouts
+    context.setTargetUnit( QgsUnitTypes::RenderMillimeters );
+    //assume source uses 96 dpi
+    context.setPixelSizeConversionFactor( 25.4 / 96.0 );
 
     QgsMapBoxGlStyleConverter converter;
     if ( converter.convert( styleDefinition, &context ) != QgsMapBoxGlStyleConverter::Success )
@@ -556,6 +662,21 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
     setMetadata( metadata );
 
     resultFlag = true;
+    return QString();
+  }
+  else if ( mSourceType == QLatin1String( "vtpk" ) )
+  {
+    QgsVtpkTiles reader( mSourcePath );
+    if ( !reader.open() )
+    {
+      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
+      resultFlag = false;
+    }
+    else
+    {
+      setMetadata( reader.layerMetadata() );
+      resultFlag = true;
+    }
     return QString();
   }
   else
@@ -685,7 +806,7 @@ QString QgsVectorTileLayer::htmlMetadata() const
 
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
-  const QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileID.zoomLevel() );
+  const QgsTileMatrix tileMatrix = mMatrixSet.tileMatrix( tileID.zoomLevel() );
   const QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
 
   QgsDataSourceUri dsUri;
@@ -758,4 +879,13 @@ bool QgsVectorTileDataProvider::isValid() const
 {
   return true;
 }
+
+bool QgsVectorTileDataProvider::renderInPreview( const PreviewContext &context )
+{
+  // Vector tiles by design are very CPU light to render, so we are much more permissive here compared
+  // with other layer types. (Generally if a vector tile layer has taken more than a few milliseconds to render it's
+  // a result of network requests, and the tile manager class handles these gracefully for us)
+  return context.lastRenderingTimeMs <= 1000;
+}
+
 ///@endcond

@@ -494,9 +494,9 @@ CoordinateItemDelegate::CoordinateItemDelegate( const QgsCoordinateReferenceSyst
 
 }
 
-QString CoordinateItemDelegate::displayText( const QVariant &value, const QLocale &locale ) const
+QString CoordinateItemDelegate::displayText( const QVariant &value, const QLocale & ) const
 {
-  return locale.toString( value.toDouble(), 'f', displayDecimalPlaces() );
+  return QLocale().toString( value.toDouble(), 'f', displayDecimalPlaces() );
 }
 
 QWidget *CoordinateItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
@@ -523,7 +523,7 @@ void CoordinateItemDelegate::setEditorData( QWidget *editor, const QModelIndex &
   QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
   if ( lineEdit && index.isValid() )
   {
-    lineEdit->setText( displayText( index.data( ).toDouble( ), QLocale() ) );
+    lineEdit->setText( displayText( index.data( ).toDouble( ), QLocale() ).replace( QLocale().groupSeparator(), QString( ) ) );
   }
 }
 

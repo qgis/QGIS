@@ -17,9 +17,11 @@
 #include "Reprocessor.hpp"
 #include "Writer.hpp"
 #include "../untwine/Common.hpp"
+#include "../untwine/Las.hpp"
 
 #include <unordered_set>
 
+#include <pdal/pdal_features.hpp>
 #include <pdal/Dimension.hpp>
 #include <pdal/Metadata.hpp>
 #include <pdal/StageFactory.hpp>
@@ -35,6 +37,7 @@ namespace epf
 
 /// Epf
 
+static_assert(MaxBuffers > NumFileProcessors, "MaxBuffers must be greater than NumFileProcessors.");
 Epf::Epf(BaseInfo& common) : m_b(common), m_pool(NumFileProcessors)
 {}
 
@@ -43,26 +46,29 @@ Epf::~Epf()
 {}
 
 
-void Epf::run(const Options& options, ProgressWriter& progress)
+void Epf::run(ProgressWriter& progress)
 {
     using namespace pdal;
 
     BOX3D totalBounds;
 
-    if (pdal::FileUtils::fileExists(options.tempDir + "/" + MetadataFilename))
-        fatal("Output directory already contains EPT data.");
+    if (pdal::FileUtils::fileExists(m_b.opts.tempDir + "/" + MetadataFilename))
+        throw FatalError("Output directory already contains EPT data.");
 
-    m_grid.setCubic(options.doCube);
+    m_grid.setCubic(m_b.opts.doCube);
 
+    // Create the file infos. As each info is created, the N x N x N grid is expanded to
+    // hold all the points. If the number of points seems too large, N is expanded to N + 1.
+    // The correct N is often wrong, especially for some areas where things are more dense.
     std::vector<FileInfo> fileInfos;
-    progress.m_total = createFileInfo(options.inputFiles, options.dimNames, fileInfos);
+    point_count_t totalPoints = createFileInfo(m_b.opts.inputFiles, m_b.opts.dimNames, fileInfos);
 
-    if (options.level != -1)
-        m_grid.resetLevel(options.level);
+    if (m_b.opts.level != -1)
+        m_grid.resetLevel(m_b.opts.level);
 
     // This is just a debug thing that will allow the number of input files to be limited.
-    if (fileInfos.size() > options.fileLimit)
-        fileInfos.resize(options.fileLimit);
+    if (fileInfos.size() > m_b.opts.fileLimit)
+        fileInfos.resize(m_b.opts.fileLimit);
 
     // Stick all the dimension names from each input file in a set.
     std::unordered_set<std::string> allDimNames;
@@ -75,9 +81,15 @@ void Epf::run(const Options& options, ProgressWriter& progress)
     PointLayoutPtr layout(new PointLayout());
     for (const std::string& dimName : allDimNames)
     {
-        Dimension::Type type = Dimension::defaultType(Dimension::id(dimName));
-        if (type == Dimension::Type::None)
+        Dimension::Type type;
+        try
+        {
+            type = Dimension::defaultType(Dimension::id(dimName));
+        }
+        catch (pdal::pdal_error&)
+        {
             type = Dimension::Type::Double;
+        }
         layout->registerOrAssignDim(dimName, type);
     }
     layout->finalize();
@@ -94,18 +106,17 @@ void Epf::run(const Options& options, ProgressWriter& progress)
     }
 
     // Make a writer with NumWriters threads.
-    m_writer.reset(new Writer(options.tempDir, NumWriters, layout->pointSize()));
+    m_writer.reset(new Writer(m_b.opts.tempDir, NumWriters, layout->pointSize()));
 
     // Sort file infos so the largest files come first. This helps to make sure we don't delay
     // processing big files that take the longest (use threads more efficiently).
     std::sort(fileInfos.begin(), fileInfos.end(), [](const FileInfo& f1, const FileInfo& f2)
         { return f1.numPoints > f2.numPoints; });
 
-    progress.m_threshold = progress.m_total / 40;
-    progress.setIncrement(.01);
-    progress.m_current = 0;
+    progress.setPointIncrementer(totalPoints, 40);
 
     // Add the files to the processing pool
+    m_pool.trap(true, "Unknown error in FileProcessor");
     for (const FileInfo& fi : fileInfos)
     {
         int pointSize = layout->pointSize();
@@ -117,29 +128,41 @@ void Epf::run(const Options& options, ProgressWriter& progress)
     }
 
     // Wait for  all the processors to finish and restart.
-    m_pool.cycle();
-    progress.setPercent(.4);
-
+    m_pool.join();
     // Tell the writer that it can exit. stop() will block until the writer threads
-    // are finished.
+    // are finished.  stop() will throw if an error occurred during writing.
     m_writer->stop();
 
-    // Get totals from the current writer.
+    // If the FileProcessors had an error, throw.
+    std::vector<std::string> errors = m_pool.clearErrors();
+    if (errors.size())
+        throw FatalError(errors.front());
+
+    m_pool.go();
+    progress.setPercent(.4);
+
+    // Get totals from the current writer that are greater than the MaxPointsPerNode.
+    // Each of these voxels that is too large will be reprocessed.
     //ABELL - would be nice to avoid this copy, but it probably doesn't matter much.
     Totals totals = m_writer->totals(MaxPointsPerNode);
 
     // Progress for reprocessing goes from .4 to .6.
     progress.setPercent(.4);
-    progress.setIncrement(.2 / totals.size());
+    progress.setIncrement(.2 / (std::max)((size_t)1, totals.size()));
 
-    // Make a new writer.
-    m_writer.reset(new Writer(options.tempDir, 4, layout->pointSize()));
+    // Make a new writer since we stopped the old one. Could restart, but why bother with
+    // extra code...
+    m_writer.reset(new Writer(m_b.opts.tempDir, 4, layout->pointSize()));
+    m_pool.trap(true, "Unknown error in Reprocessor");
     for (auto& t : totals)
     {
         VoxelKey key = t.first;
         int numPoints = t.second;
         int pointSize = layout->pointSize();
-        std::string tempDir = options.tempDir;
+        std::string tempDir = m_b.opts.tempDir;
+
+        // Create a reprocessor thread. Note that the grid is copied by value and
+        // its level is re-calculated based on the number of points.
         m_pool.add([&progress, key, numPoints, pointSize, tempDir, this]()
         {
             Reprocessor r(key, numPoints, pointSize, tempDir, m_grid, m_writer.get());
@@ -148,6 +171,11 @@ void Epf::run(const Options& options, ProgressWriter& progress)
         });
     }
     m_pool.stop();
+    // If the Reprocessors had an error, throw.
+    errors = m_pool.clearErrors();
+    if (errors.size())
+        throw FatalError(errors.front());
+
     m_writer->stop();
 
     fillMetadata(layout);
@@ -155,25 +183,37 @@ void Epf::run(const Options& options, ProgressWriter& progress)
 
 void Epf::fillMetadata(const pdal::PointLayoutPtr layout)
 {
+    using namespace pdal;
+
     // Info to be passed to sampler.
     m_b.bounds = m_grid.processingBounds();
     m_b.trueBounds = m_grid.conformingBounds();
     if (m_srsFileInfo.valid())
         m_b.srs = m_srsFileInfo.srs;
     m_b.pointSize = 0;
-    for (pdal::Dimension::Id id : layout->dims())
+
+    // Set the pointFormatId based on whether or not colors exist in the file
+    if (layout->hasDim(Dimension::Id::Infrared))
+        m_b.pointFormatId = 8;
+    else if (layout->hasDim(Dimension::Id::Red) ||
+             layout->hasDim(Dimension::Id::Green) ||
+             layout->hasDim(Dimension::Id::Blue))
+        m_b.pointFormatId = 7;
+    else
+        m_b.pointFormatId = 6;
+
+    const Dimension::IdList& lasDims = pdrfDims(m_b.pointFormatId);
+    for (Dimension::Id id : layout->dims())
     {
         FileDimInfo di;
         di.name = layout->dimName(id);
         di.type = layout->dimType(id);
         di.offset = layout->dimOffset(id);
+        di.dim = id;
+        di.extraDim = !Utils::contains(lasDims, id);
         m_b.pointSize += pdal::Dimension::size(di.type);
         m_b.dimInfo.push_back(di);
     }
-    m_b.offset[0] = m_b.bounds.maxx / 2 + m_b.bounds.minx / 2;
-    m_b.offset[1] = m_b.bounds.maxy / 2 + m_b.bounds.miny / 2;
-    m_b.offset[2] = m_b.bounds.maxz / 2 + m_b.bounds.minz / 2;
-
     auto calcScale = [](double scale, double low, double high)
     {
         if (scale > 0)
@@ -188,9 +228,28 @@ void Epf::fillMetadata(const pdal::PointLayoutPtr layout)
         return std::pow(10, (std::max)(power, -4.0));
     };
 
-    m_b.scale[0] = calcScale(m_b.scale[0], m_b.bounds.minx, m_b.bounds.maxx);
-    m_b.scale[1] = calcScale(m_b.scale[1], m_b.bounds.minx, m_b.bounds.maxx);
-    m_b.scale[2] = calcScale(m_b.scale[2], m_b.bounds.minx, m_b.bounds.maxx);
+    m_b.scale[0] = calcScale(m_b.scale[0], m_b.trueBounds.minx, m_b.trueBounds.maxx);
+    m_b.scale[1] = calcScale(m_b.scale[1], m_b.trueBounds.miny, m_b.trueBounds.maxy);
+    m_b.scale[2] = calcScale(m_b.scale[2], m_b.trueBounds.minz, m_b.trueBounds.maxz);
+
+    // Find an offset such that (offset - min) / scale is close to an integer. This helps
+    // to eliminate warning messages in lasinfo that complain because of being unable
+    // to write nominal double values precisely using a 32-bit integer.
+    // The hope is also that raw input values are written as the same raw values
+    // on output. This may not be possible if the input files have different scaling or
+    // incompatible offsets.
+    auto calcOffset = [](double minval, double maxval, double scale)
+    {
+        double interval = maxval - minval;
+        double spacings = interval / scale;  // Number of quantized values in our range.
+        double halfspacings = spacings / 2;  // Half of that number.
+        double offset = (int32_t)halfspacings * scale; // Round to an int value and scale down.
+        return minval + offset;              // Add the base (min) value.
+    };
+
+    m_b.offset[0] = calcOffset(m_b.trueBounds.minx, m_b.trueBounds.maxx, m_b.scale[0]);
+    m_b.offset[1] = calcOffset(m_b.trueBounds.miny, m_b.trueBounds.maxy, m_b.scale[1]);
+    m_b.offset[2] = calcOffset(m_b.trueBounds.minz, m_b.trueBounds.maxz, m_b.scale[2]);
 }
 
 PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
@@ -198,6 +257,7 @@ PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
 {
     using namespace pdal;
 
+    std::vector<FileInfo> tempFileInfos;
     std::vector<std::string> filenames;
     PointCount totalPoints = 0;
 
@@ -225,6 +285,10 @@ PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
             filenames.push_back(filename);
     }
 
+    std::vector<double> xOffsets;
+    std::vector<double> yOffsets;
+    std::vector<double> zOffsets;
+
     // Determine a driver for each file and get a preview of the file.  If we couldn't
     // Create a FileInfo object containing the file bounds, dimensions, filename and
     // associated driver.  Expand our grid by the bounds and file point count.
@@ -233,15 +297,16 @@ PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
         StageFactory factory;
         std::string driver = factory.inferReaderDriver(filename);
         if (driver.empty())
-            fatal("Can't infer reader for '" + filename + "'.");
+            throw FatalError("Can't infer reader for '" + filename + "'.");
         Stage *s = factory.createStage(driver);
         pdal::Options opts;
         opts.add("filename", filename);
         s->setOptions(opts);
 
         QuickInfo qi = s->preview();
+
         if (!qi.valid())
-            throw "Couldn't get quick info for '" + filename + "'.";
+            throw FatalError("Couldn't get quick info for '" + filename + "'.");
 
         // Get scale values from the reader if they exist.
         pdal::MetadataNode root = s->getMetadata();
@@ -254,6 +319,15 @@ PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
         m = root.findChild("scale_z");
         if (m.valid())
             m_b.scale[2] = (std::max)(m_b.scale[2], m.value<double>());
+        m = root.findChild("offset_x");
+        if (m.valid())
+            xOffsets.push_back(m.value<double>());
+        m = root.findChild("offset_y");
+        if (m.valid())
+            yOffsets.push_back(m.value<double>());
+        m = root.findChild("offset_z");
+        if (m.valid())
+            zOffsets.push_back(m.value<double>());
 
         FileInfo fi;
         fi.bounds = qi.m_bounds;
@@ -271,13 +345,58 @@ PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
             std::cerr << "Files have mismatched SRS values. Using SRS from '" <<
                 m_srsFileInfo.filename << "'.\n";
         fi.srs = qi.m_srs;
-        fileInfos.push_back(fi);
+        tempFileInfos.push_back(fi);
         if (!m_srsFileInfo.valid() && qi.m_srs.valid())
             m_srsFileInfo = fi;
 
         m_grid.expand(qi.m_bounds, qi.m_pointCount);
         totalPoints += fi.numPoints;
     }
+
+    // If we had an offset from the input, choose one in the middle of the list of offsets.
+    if (xOffsets.size())
+    {
+        std::sort(xOffsets.begin(), xOffsets.end());
+        m_b.offset[0] = xOffsets[xOffsets.size() / 2];
+    }
+    if (yOffsets.size())
+    {
+        std::sort(yOffsets.begin(), yOffsets.end());
+        m_b.offset[1] = yOffsets[yOffsets.size() / 2];
+    }
+    if (zOffsets.size())
+    {
+        std::sort(zOffsets.begin(), zOffsets.end());
+        m_b.offset[2] = zOffsets[zOffsets.size() / 2];
+    }
+
+    // If we have LAS start capability, break apart file infos into chunks of size 5 million.
+#ifdef PDAL_LAS_START
+    PointCount ChunkSize = 5'000'000;
+    for (const FileInfo& fi : tempFileInfos)
+    {
+        if (fi.driver != "readers.las" || fi.numPoints < ChunkSize)
+        {
+            fileInfos.push_back(fi);
+            continue;
+        }
+        PointCount remaining = fi.numPoints;
+        pdal::PointId start = 0;
+        while (remaining)
+        {
+            FileInfo lasFi(fi);
+            lasFi.numPoints = (std::min)(ChunkSize, remaining);
+            lasFi.start = start;
+            fileInfos.push_back(lasFi);
+
+            start += ChunkSize;
+            remaining -= lasFi.numPoints;
+        }
+    }
+#else
+    fileInfos = std::move(tempFileInfos);
+#endif
+
     return totalPoints;
 }
 

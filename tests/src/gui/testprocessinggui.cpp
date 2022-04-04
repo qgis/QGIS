@@ -738,6 +738,9 @@ void TestProcessingGui::testModelerWrapper()
   model.addModelParameter( new TestParamType( "test_type", "p2" ), testParam );
   QgsProcessingModelParameter testDestParam( "p3" );
   model.addModelParameter( new QgsProcessingParameterFileDestination( "test_dest", "p3" ), testDestParam );
+  QgsProcessingModelParameter testLayerParam( "p4" );
+  model.addModelParameter( new QgsProcessingParameterMapLayer( "p4", "test_layer" ), testLayerParam );
+
   // try to create a parameter widget, no factories registered
   QgsProcessingGuiRegistry registry;
   QgsProcessingContext context;
@@ -750,9 +753,21 @@ void TestProcessingGui::testModelerWrapper()
   QVERIFY( w );
   delete w;
 
+  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p1" ), context );
+  QVERIFY( w );
+  // should default to static value
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::StaticValue );
+  delete w;
+
+  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p4" ), context );
+  QVERIFY( w );
+  // a layer parameter should default to "model input" type
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  delete w;
 
   // widget tests
   w = new QgsProcessingModelerParameterWidget( &model, "alg1", model.parameterDefinition( "p1" ), context );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( w->parameterDefinition()->name(), QStringLiteral( "p1" ) );
   QLabel *l = w->createLabel();
   QVERIFY( l );
@@ -2053,6 +2068,32 @@ void TestProcessingGui::testNumericWrapperInt()
   QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->dataType(), QgsProcessingParameterNumber::Double );
   QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->minimum(), -2.5 );
   QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->maximum(), 2.5 );
+
+  // integer type, no min/max values set
+  QgsProcessingParameterNumber numParam2( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterNumber::Integer, 1 );
+  widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext, &numParam2 );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->defaultValue().toDouble(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->dataType(), QgsProcessingParameterNumber::Integer );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->minimum(), numParam2.minimum() );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->maximum(), numParam2.maximum() );
+
+  // double type, no min/max values set
+  QgsProcessingParameterNumber numParam3( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterNumber::Double, 1 );
+  widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext, &numParam3 );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->defaultValue().toDouble(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->dataType(), QgsProcessingParameterNumber::Double );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->minimum(), numParam3.minimum() );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->maximum(), numParam3.maximum() );
 }
 
 void TestProcessingGui::testDistanceWrapper()
@@ -2956,21 +2997,21 @@ void TestProcessingGui::testFieldSelectionPanel()
   QgsProcessingFieldPanelWidget w( nullptr, &fieldParam );
   QSignalSpy spy( &w, &QgsProcessingFieldPanelWidget::changed );
 
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 field(s) selected" ) );
   w.setValue( QStringLiteral( "aa" ) );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "aa" ) );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "aa" ) );
 
   w.setValue( QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "bb,aa" ) );
 
   w.setValue( QVariant() );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( w.value().toList(), QVariantList() );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 field(s) selected" ) );
 
 }
 
@@ -3674,26 +3715,26 @@ void TestProcessingGui::testRasterBandSelectionPanel()
   QgsProcessingRasterBandPanelWidget w( nullptr, &bandParam );
   QSignalSpy spy( &w, &QgsProcessingRasterBandPanelWidget::changed );
 
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 bands selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 band(s) selected" ) );
   w.setValue( QStringLiteral( "1" ) );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "1" ) );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 bands selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 band(s) selected" ) );
 
   w.setValue( QVariantList() << QStringLiteral( "2" ) << QStringLiteral( "1" ) );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "2" ) << QStringLiteral( "1" ) );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 bands selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 band(s) selected" ) );
 
   w.setValue( QVariantList() << 3 << 5 << 1 );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( w.value().toList(), QVariantList() << 3 << 5 << 1 );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "3 bands selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "3 band(s) selected" ) );
 
   w.setValue( QVariant() );
   QCOMPARE( spy.count(), 4 );
   QCOMPARE( w.value().toList(), QVariantList() );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 bands selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 band(s) selected" ) );
 }
 
 void TestProcessingGui::testBandWrapper()
@@ -4125,12 +4166,12 @@ void TestProcessingGui::testEnumSelectionPanel()
   w.setValue( 1 );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( w.value().toList(), QVariantList() << 1 );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "b" ) );
 
   w.setValue( QVariantList() << 2 << 0 );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( w.value().toList(), QVariantList() << 2 << 0 );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 options selected" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "c,a" ) );
 
   w.setValue( QVariant() );
   QCOMPARE( spy.count(), 3 );
@@ -4146,12 +4187,12 @@ void TestProcessingGui::testEnumSelectionPanel()
   w2.setValue( QStringLiteral( "a" ) );
   QCOMPARE( spy2.count(), 1 );
   QCOMPARE( w2.value().toList(), QVariantList() << QStringLiteral( "a" ) );
-  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "1 options selected" ) );
+  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "a" ) );
 
   w2.setValue( QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "a" ) );
   QCOMPARE( spy2.count(), 2 );
   QCOMPARE( w2.value().toList(), QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "a" ) );
-  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "2 options selected" ) );
+  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "c,a" ) );
 
   w2.setValue( QVariant() );
   QCOMPARE( spy2.count(), 3 );
@@ -7565,7 +7606,7 @@ void TestProcessingGui::testProviderConnectionWrapper()
 {
   // register some connections
   QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
-  QgsAbstractProviderConnection *conn = md->createConnection( QStringLiteral( "test uri" ), QVariantMap() );
+  QgsAbstractProviderConnection *conn = md->createConnection( QStringLiteral( "test uri.gpkg" ), QVariantMap() );
   md->saveConnection( conn, QStringLiteral( "aa" ) );
   md->saveConnection( conn, QStringLiteral( "bb" ) );
 
@@ -10545,11 +10586,12 @@ void TestProcessingGui::testModelGraphicsView()
   // comment should not be copied, was not selected
   QCOMPARE( algDest.parameterComponents().value( QStringLiteral( "LAYER" ) ).comment()->description(), QString() );
   QCOMPARE( algDest.childAlgorithms().size(), 1 );
-  QCOMPARE( algDest.childAlgorithms().keys().at( 0 ), QStringLiteral( "native:buffer_1" ) );
-  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).algorithmId(), QStringLiteral( "native:buffer" ) );
-  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).comment()->description(), QString() );
+  // the child algorithm is already unique, so should not be changed
+  QCOMPARE( algDest.childAlgorithms().keys().at( 0 ), QStringLiteral( "buffer" ) );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "buffer" ) ).algorithmId(), QStringLiteral( "native:buffer" ) );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "buffer" ) ).comment()->description(), QString() );
   // output was not selected
-  QVERIFY( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).modelOutputs().empty() );
+  QVERIFY( algDest.childAlgorithms().value( QStringLiteral( "buffer" ) ).modelOutputs().empty() );
   QCOMPARE( algDest.groupBoxes().size(), 1 );
   QCOMPARE( algDest.groupBoxes().at( 0 ).description(), QStringLiteral( "group" ) );
 
@@ -10563,14 +10605,14 @@ void TestProcessingGui::testModelGraphicsView()
   QCOMPARE( algDest.parameterComponents().value( QStringLiteral( "LAYER" ) ).comment()->description(), QString() );
   QCOMPARE( algDest.parameterComponents().value( QStringLiteral( "LAYER (2)" ) ).comment()->description(), QStringLiteral( "input comment" ) );
   QCOMPARE( algDest.childAlgorithms().size(), 2 );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "buffer" ) ).algorithmId(), QStringLiteral( "native:buffer" ) );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "buffer" ) ).comment()->description(), QString() );
   QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).algorithmId(), QStringLiteral( "native:buffer" ) );
-  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).comment()->description(), QString() );
-  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).algorithmId(), QStringLiteral( "native:buffer" ) );
-  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).comment()->description(), QStringLiteral( "alg comment" ) );
-  QVERIFY( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).modelOutputs().empty() );
-  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).modelOutputs().size(), 1 );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).comment()->description(), QStringLiteral( "alg comment" ) );
+  QVERIFY( algDest.childAlgorithms().value( QStringLiteral( "buffer" ) ).modelOutputs().empty() );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).modelOutputs().size(), 1 );
   // output comment wasn't selected
-  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).modelOutputs().value( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).modelOutputs().keys().at( 0 ) ).comment()->description(), QString() );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).modelOutputs().value( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).modelOutputs().keys().at( 0 ) ).comment()->description(), QString() );
   QCOMPARE( algDest.groupBoxes().size(), 2 );
   QCOMPARE( algDest.groupBoxes().at( 0 ).description(), QStringLiteral( "group" ) );
   QCOMPARE( algDest.groupBoxes().at( 1 ).description(), QStringLiteral( "group" ) );
@@ -10579,8 +10621,8 @@ void TestProcessingGui::testModelGraphicsView()
   view.copyItems( QList< QgsModelComponentGraphicItem * >() << algItem << outputItem << outputCommentItem, QgsModelGraphicsView::ClipboardCopy );
   viewDest.pasteItems( QgsModelGraphicsView::PasteModeInPlace );
   QCOMPARE( algDest.childAlgorithms().size(), 3 );
-  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_3" ) ).modelOutputs().size(), 1 );
-  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_3" ) ).modelOutputs().value( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_3" ) ).modelOutputs().keys().at( 0 ) ).comment()->description(), QStringLiteral( "output comm" ) );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).modelOutputs().size(), 1 );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).modelOutputs().value( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).modelOutputs().keys().at( 0 ) ).comment()->description(), QStringLiteral( "output comm" ) );
 }
 
 void TestProcessingGui::cleanupTempDir()

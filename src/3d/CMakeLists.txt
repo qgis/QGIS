@@ -216,6 +216,7 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/terrain
 
   ${CMAKE_BINARY_DIR}/src/3d
+  ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
 )
 
 if (WITH_QT6)

@@ -169,13 +169,16 @@ void Qgs3DMapToolMeasureLine::handleClick( Qt3DRender::QPickEvent *event, const 
 
 void Qgs3DMapToolMeasureLine::updateSettings()
 {
-  const QgsSettings settings;
-  const int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
-  const int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
-  const int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
+  if ( mRubberBand )
+  {
+    const QgsSettings settings;
+    const int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
+    const int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
+    const int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
 
-  mRubberBand->setWidth( 3 );
-  mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
+    mRubberBand->setWidth( 3 );
+    mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
+  }
 }
 
 void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )

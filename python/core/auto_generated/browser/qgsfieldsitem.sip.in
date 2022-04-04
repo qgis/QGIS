@@ -120,6 +120,14 @@ Constructor for QgsFieldItem, with the specified ``parent`` item and ``field``.
     virtual QIcon icon();
 
 
+    QgsField field() const;
+%Docstring
+Returns the field definition.
+
+.. versionadded:: 3.26
+%End
+
+    virtual bool equal( const QgsDataItem *other );
 
 
 };

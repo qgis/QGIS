@@ -92,7 +92,7 @@ class CORE_EXPORT QgsLabelSearchTree
      * \returns TRUE in case of success
      * \note not available in Python bindings
      */
-    bool insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString(), bool isUnplaced = false ) SIP_SKIP;
+    bool insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString(), bool isUnplaced = false, long long linkedId = 0 ) SIP_SKIP;
 
     /**
      * Inserts a rendered callout position.
@@ -115,6 +115,16 @@ class CORE_EXPORT QgsLabelSearchTree
     QList<const QgsCalloutPosition *> calloutsInRectangle( const QgsRectangle &rectangle ) const;
 
     /**
+     * Returns a list of all label positions sharing the same group ID (i.e. positions for individual characters in a curved label).
+     *
+     * QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.26
+     */
+    QList<QgsLabelPosition *> groupedLabelPositions( long long groupId ) const SIP_SKIP;
+
+    /**
      * Sets the map \a settings associated with the labeling run.
      * \since QGIS 3.4.8
      */
@@ -122,6 +132,8 @@ class CORE_EXPORT QgsLabelSearchTree
 
   private:
     QgsGenericSpatialIndex< QgsLabelPosition > mSpatialIndex;
+    long long mNextFeatureId = 1;
+    QHash< long long, QList< QgsLabelPosition * > > mLinkedLabelHash;
     std::vector< std::unique_ptr< QgsLabelPosition > > mOwnedPositions;
     QgsGenericSpatialIndex< QgsCalloutPosition > mCalloutIndex;
     std::vector< std::unique_ptr< QgsCalloutPosition > > mOwnedCalloutPositions;

@@ -4906,7 +4906,7 @@ void QgsLayoutDesignerDialog::updateWindowTitle()
 void QgsLayoutDesignerDialog::backgroundTaskCountChanged( int total )
 {
   if ( total > 1 )
-    mStatusBar->showMessage( tr( "Redrawing %1 maps" ).arg( total ) );
+    mStatusBar->showMessage( tr( "Redrawing %n map(s)", nullptr, total ) );
   else if ( total == 1 )
     mStatusBar->showMessage( tr( "Redrawing map" ) );
   else

@@ -44,11 +44,21 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     //! Returns the proxy model used to filter the results
     QSortFilterProxyModel *proxyModel() {return mProxyModel;}
 
+    QPushButton *mBuildQueryButton = nullptr;
+
   protected slots:
-    //! This is called to define the SQL query and must be re-implemented. The implementation should call QgsAbstractDbTableModel::setSql
+
+    /**
+     * This is called to define the SQL query and must be re-implemented.
+     * The implementation should call QgsAbstractDbTableModel::setSql
+     * The index is in the source model.
+     */
     virtual void setSql( const QModelIndex &index ) = 0;
 
+    //! Called on click for the source \a index
     virtual void treeviewClicked( const QModelIndex &index );
+
+    //! Called on double-click for the source \a index
     virtual void treeviewDoubleClicked( const QModelIndex &index );
 
   private:
@@ -61,8 +71,6 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     QList<QAction *> mSearchColumnActions;
     QAction *mSearchModeWildCardAction = nullptr;
     QAction *mSearchModeRegexAction = nullptr;
-
-    QPushButton *mBuildQueryButton = nullptr;
 };
 
 #endif // QGSABSTRACTDBSOURCESELECT_H

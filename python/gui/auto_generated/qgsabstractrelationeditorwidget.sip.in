@@ -144,6 +144,16 @@ If it's empty it takes the relation id as label
     QgsFeature feature() const;
 %Docstring
 Returns the widget's current feature
+If the widget is in multiedit mode only the first is returned
+
+.. seealso:: :py:func:`features`
+%End
+
+    QList<QgsFeature> features() const;
+%Docstring
+Returns the widget's current features
+
+.. versionadded:: 3.24
 %End
 
     bool forceSuppressFormPopup() const;

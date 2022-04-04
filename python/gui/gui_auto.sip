@@ -39,6 +39,7 @@
 %Include auto_generated/qgscoordinateboundspreviewmapwidget.sip
 %Include auto_generated/qgscoordinateoperationwidget.sip
 %Include auto_generated/qgscredentialdialog.sip
+%Include auto_generated/qgscrsdefinitionwidget.sip
 %Include auto_generated/qgscurveeditorwidget.sip
 %Include auto_generated/qgscustomdrophandler.sip
 %Include auto_generated/qgscustomprojectopenhandler.sip
@@ -72,6 +73,7 @@
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfeatureselectiondlg.sip
 %Include auto_generated/qgsfieldcombobox.sip
+%Include auto_generated/qgsfielddomainwidget.sip
 %Include auto_generated/qgsfieldexpressionwidget.sip
 %Include auto_generated/qgsfieldmappingwidget.sip
 %Include auto_generated/qgsfieldmappingmodel.sip
@@ -161,6 +163,7 @@
 %Include auto_generated/qgspixmaplabel.sip
 %Include auto_generated/qgspluginmanagerinterface.sip
 %Include auto_generated/qgspointcloudattributecombobox.sip
+%Include auto_generated/qgspointcloudquerybuilder.sip
 %Include auto_generated/qgspresetcolorrampdialog.sip
 %Include auto_generated/qgsprevieweffect.sip
 %Include auto_generated/qgsprojectionselectiondialog.sip
@@ -209,6 +212,7 @@
 %Include auto_generated/qgssublayersdialog.sip
 %Include auto_generated/qgssubstitutionlistwidget.sip
 %Include auto_generated/qgssymbolbutton.sip
+%Include auto_generated/qgstableview.sip
 %Include auto_generated/qgstablewidgetbase.sip
 %Include auto_generated/qgstablewidgetitem.sip
 %Include auto_generated/qgstabwidget.sip
@@ -353,6 +357,7 @@
 %Include auto_generated/layout/qgslayoutviewtooltemporarymousepan.sip
 %Include auto_generated/layout/qgslayoutviewtoolzoom.sip
 %Include auto_generated/locator/qgslocatorwidget.sip
+%Include auto_generated/maptools/qgsmaptoolcapturelayergeometry.sip
 %Include auto_generated/mesh/qgsmeshlayerproperties.sip
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
@@ -363,6 +368,7 @@
 %Include auto_generated/processing/qgsprocessingaggregatewidgets.sip
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
+%Include auto_generated/processing/qgsprocessingbatchalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessinggui.sip
 %Include auto_generated/processing/qgsprocessingguiregistry.sip
 %Include auto_generated/processing/qgsprocessinghistoryprovider.sip
@@ -398,6 +404,7 @@
 %Include auto_generated/raster/qgssinglebandpseudocolorrendererwidget.sip
 %Include auto_generated/raster/qgsrasterlayerproperties.sip
 %Include auto_generated/raster/qgsrasterlayertemporalpropertieswidget.sip
+%Include auto_generated/vector/qgsfieldcalculator.sip
 %Include auto_generated/vector/qgsvectorlayerproperties.sip
 %Include auto_generated/symbology/characterwidget.sip
 %Include auto_generated/symbology/qgs25drendererwidget.sip

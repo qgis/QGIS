@@ -26,7 +26,7 @@
 #include "qgsmapsettingsutils.h"
 #include "qgslayertree.h"
 #include "qgsmaplayerref.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontext.h"
@@ -37,6 +37,7 @@
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgsprojoperation.h"
 #include "qgslabelingresults.h"
+#include "qgsvectortileutils.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -1519,11 +1520,13 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     //if outputting layout, we disable optimisations like layer simplification by default, UNLESS the context specifically tells us to use them
     jobMapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, mLayout->renderContext().simplifyMethod().simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
     jobMapSettings.setSimplifyMethod( mLayout->renderContext().simplifyMethod() );
+    jobMapSettings.setRendererUsage( Qgis::RendererUsage::Export );
   }
   else
   {
     // preview render - always use optimization
     jobMapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, true );
+    jobMapSettings.setRendererUsage( Qgis::RendererUsage::View );
   }
 
   jobMapSettings.setExpressionContext( expressionContext );
@@ -1671,7 +1674,11 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_id" ), id(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_rotation" ), mMapRotation, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_scale" ), scale(), true ) );
+  const double mapScale = scale();
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_scale" ), mapScale, true ) );
+
+  scope->setVariable( QStringLiteral( "zoom_level" ), QgsVectorTileUtils::scaleToZoomLevel( mapScale, 0, 99999 ), true );
+  scope->setVariable( QStringLiteral( "vector_tile_zoom" ), QgsVectorTileUtils::scaleToZoom( mapScale ), true );
 
   QgsRectangle currentExtent( extent() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent" ), QVariant::fromValue( QgsGeometry::fromRect( currentExtent ) ), true ) );
@@ -1718,6 +1725,13 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), isTemporal() ? temporalRange().begin() : QVariant(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), isTemporal() ? temporalRange().end() : QVariant(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), isTemporal() ? ( temporalRange().end() - temporalRange().begin() ) : QVariant(), true ) );
+
+#if 0 // not relevant here! (but left so as to respect all the dangerous warnings in QgsExpressionContextUtils::mapSettingsScope)
+  if ( mapSettings.frameRate() >= 0 )
+    scope->setVariable( QStringLiteral( "frame_rate" ), mapSettings.frameRate(), true );
+  if ( mapSettings.currentFrame() >= 0 )
+    scope->setVariable( QStringLiteral( "frame_number" ), mapSettings.currentFrame(), true );
+#endif
 
   return context;
 }

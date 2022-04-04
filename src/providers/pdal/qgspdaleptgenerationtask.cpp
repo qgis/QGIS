@@ -107,6 +107,15 @@ bool QgsPdalEptGenerationTask::runUntwine()
     if ( !untwineProcess.running() )
     {
       setProgress( 100 );
+
+      if ( !untwineProcess.errorMessage().empty() )
+      {
+        // TODO: propagate the error message to GUI
+        mErrorMessage = QStringLiteral( "Untwine error: %1" ).arg( QString::fromStdString( untwineProcess.errorMessage() ) );
+        QgsDebugMsg( mErrorMessage );
+        return false;
+      }
+
       return true;
     }
   }
@@ -166,18 +175,14 @@ bool QgsPdalEptGenerationTask::prepareOutputDir()
           return false;
         }
       }
-    }
-    else
-    {
-      const bool success = QDir().mkdir( mOutputDir );
-      if ( success )
-      {
-        QgsMessageLog::logMessage( tr( "Created output directory %1" ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
-      }
       else
       {
-        QgsMessageLog::logMessage( tr( "Unable to create output directory %1" ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Critical );
-        return false;
+        // untwine expects that the output directory does not exist at all
+        if ( !QDir().rmdir( mOutputDir ) )
+        {
+          QgsMessageLog::logMessage( tr( "Failed to remove empty directory %1" ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Critical );
+          return false;
+        }
       }
     }
   }

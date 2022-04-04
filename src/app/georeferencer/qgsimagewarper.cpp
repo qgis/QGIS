@@ -23,17 +23,14 @@
 #include <ogr_spatialref.h>
 
 #include <QFile>
-#include <QProgressDialog>
 
 #include "qgsimagewarper.h"
 #include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 #include "qgsogrutils.h"
+#include "qgsfeedback.h"
 
-bool QgsImageWarper::sWarpCanceled = false;
-
-QgsImageWarper::QgsImageWarper( QWidget *parent )
-  : mParent( parent )
+QgsImageWarper::QgsImageWarper()
 {
 }
 
@@ -135,36 +132,35 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   return true;
 }
 
-int QgsImageWarper::warpFile( const QString &input,
-                              const QString &output,
-                              const QgsGeorefTransform &georefTransform,
-                              ResamplingMethod resampling,
-                              bool useZeroAsTrans,
-                              const QString &compression,
-                              const QgsCoordinateReferenceSystem &crs,
-                              double destResX, double destResY )
+QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input,
+    const QString &output,
+    const QgsGeorefTransform &georefTransform,
+    ResamplingMethod resampling,
+    bool useZeroAsTrans,
+    const QString &compression,
+    const QgsCoordinateReferenceSystem &crs,
+    QgsFeedback *feedback,
+    double destResX, double destResY )
 {
   if ( !georefTransform.parametersInitialized() )
-    return false;
+    return QgsImageWarper::Result::InvalidParameters;
 
-  CPLErr eErr;
   gdal::dataset_unique_ptr hSrcDS;
   gdal::dataset_unique_ptr hDstDS;
   gdal::warp_options_unique_ptr psWarpOptions;
   if ( !openSrcDSAndGetWarpOpt( input, resampling, georefTransform.GDALTransformer(), hSrcDS, psWarpOptions ) )
   {
-    // TODO: be verbose about failures
-    return false;
+    return QgsImageWarper::Result::SourceError;
   }
 
   double adfGeoTransform[6];
   int destPixels, destLines;
-  eErr = GDALSuggestedWarpOutput( hSrcDS.get(), georefTransform.GDALTransformer(),
-                                  georefTransform.GDALTransformerArgs(),
-                                  adfGeoTransform, &destPixels, &destLines );
+  CPLErr eErr = GDALSuggestedWarpOutput( hSrcDS.get(), georefTransform.GDALTransformer(),
+                                         georefTransform.GDALTransformerArgs(),
+                                         adfGeoTransform, &destPixels, &destLines );
   if ( eErr != CE_None )
   {
-    return false;
+    return QgsImageWarper::Result::TransformError;
   }
 
   // If specified, override the suggested resolution with user values
@@ -187,7 +183,7 @@ int QgsImageWarper::warpFile( const QString &input,
     if ( adfGeoTransform[0] <= 0.0  || adfGeoTransform[5] >= 0.0 )
     {
       QgsDebugMsg( QStringLiteral( "Image is not north up after GDALSuggestedWarpOutput, bailing out." ) );
-      return false;
+      return QgsImageWarper::Result::InvalidParameters;
     }
     // Find suggested output image extent (in georeferenced units)
     const double minX = adfGeoTransform[0];
@@ -208,20 +204,12 @@ int QgsImageWarper::warpFile( const QString &input,
                                   adfGeoTransform, useZeroAsTrans, compression,
                                   crs ) )
   {
-    return false;
+    return QgsImageWarper::Result::DestinationCreationError;
   }
 
-  // Create a QT progress dialog
-  QProgressDialog *progressDialog = new QProgressDialog( mParent );
-  progressDialog->setWindowTitle( tr( "Progress Indication" ) );
-  progressDialog->setRange( 0, 100 );
-  progressDialog->setAutoClose( true );
-  progressDialog->setModal( true );
-  progressDialog->setMinimumDuration( 0 );
-
   // Set GDAL callbacks for the progress dialog
-  psWarpOptions->pProgressArg = createWarpProgressArg( progressDialog );
-  psWarpOptions->pfnProgress  = updateWarpProgress;
+  psWarpOptions->pProgressArg = reinterpret_cast< void * >( feedback );
+  psWarpOptions->pfnProgress = updateWarpProgress;
 
   psWarpOptions->hSrcDS = hSrcDS.get();
   psWarpOptions->hDstDS = hDstDS.get();
@@ -236,17 +224,11 @@ int QgsImageWarper::warpFile( const QString &input,
   GDALWarpOperation oOperation;
   oOperation.Initialize( psWarpOptions.get() );
 
-  progressDialog->show();
-  progressDialog->raise();
-  progressDialog->activateWindow();
-
   eErr = oOperation.ChunkAndWarpImage( 0, 0, destPixels, destLines );
 
   destroyGeoToPixelTransform( psWarpOptions->pTransformerArg );
-  delete progressDialog;
-  return sWarpCanceled ? -1 : eErr == CE_None ? 1 : 0;
+  return feedback->isCanceled() ? QgsImageWarper::Result::Canceled : eErr == CE_None ? QgsImageWarper::Result::Success : QgsImageWarper::Result::WarpFailure;
 }
-
 
 void *QgsImageWarper::addGeoToPixelTransform( GDALTransformerFunc GDALTransformer, void *GDALTransformerArg, double *padfGeotransform ) const
 {
@@ -316,25 +298,16 @@ int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, i
   return true;
 }
 
-void *QgsImageWarper::createWarpProgressArg( QProgressDialog *progressDialog ) const
-{
-  return ( void * )progressDialog;
-}
-
 int CPL_STDCALL QgsImageWarper::updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
   Q_UNUSED( pszMessage )
-  QProgressDialog *progress = static_cast<QProgressDialog *>( pProgressArg );
-  progress->setValue( std::min( 100u, ( uint )( dfComplete * 100.0 ) ) );
-  qApp->processEvents();
-  // TODO: call QEventLoop manually to make "cancel" button more responsive
-  if ( progress->wasCanceled() )
+  QgsFeedback *feedback = static_cast<QgsFeedback *>( pProgressArg );
+  feedback->setProgress( std::min( 100.0, dfComplete * 100.0 ) );
+  if ( feedback->isCanceled() )
   {
-    sWarpCanceled = true;
     return false;
   }
 
-  sWarpCanceled = false;
   return true;
 }
 
@@ -342,20 +315,70 @@ GDALResampleAlg QgsImageWarper::toGDALResampleAlg( const QgsImageWarper::Resampl
 {
   switch ( method )
   {
-    case NearestNeighbour:
+    case ResamplingMethod::NearestNeighbour:
       return GRA_NearestNeighbour;
-    case Bilinear:
+    case ResamplingMethod::Bilinear:
       return  GRA_Bilinear;
-    case Cubic:
+    case ResamplingMethod::Cubic:
       return GRA_Cubic;
-    case CubicSpline:
+    case ResamplingMethod::CubicSpline:
       return GRA_CubicSpline;
-    case Lanczos:
+    case ResamplingMethod::Lanczos:
       return GRA_Lanczos;
-    default:
-      break;
-  };
+  }
 
-  //avoid warning
-  return GRA_NearestNeighbour;
+  BUILTIN_UNREACHABLE
+}
+
+//
+// QgsImageWarperTask
+//
+
+QgsImageWarperTask::QgsImageWarperTask( const QString &input, const QString &output,
+                                        const QgsGeorefTransform &georefTransform,
+                                        QgsImageWarper::ResamplingMethod resampling,
+                                        bool useZeroAsTrans, const QString &compression,
+                                        const QgsCoordinateReferenceSystem &crs,
+                                        double destResX, double destResY )
+  : QgsTask( tr( "Warping %1" ).arg( input ), QgsTask::CanCancel )
+  , mInput( input )
+  , mOutput( output )
+  , mTransform( qgis::down_cast< QgsGeorefTransform * >( georefTransform.clone() ) )
+  , mResamplingMethod( resampling )
+  , mUseZeroAsTrans( useZeroAsTrans )
+  , mCompression( compression )
+  , mDestinationCrs( crs )
+  , mDestinationResX( destResX )
+  , mDestinationResY( destResY )
+{
+}
+
+void QgsImageWarperTask::cancel()
+{
+  if ( mFeedback )
+    mFeedback->cancel();
+
+  QgsTask::cancel();
+}
+
+bool QgsImageWarperTask::run()
+{
+  mFeedback = std::make_unique< QgsFeedback >();
+  connect( mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsTask::progressChanged );
+
+  QgsImageWarper warper;
+  mResult = warper.warpFile(
+              mInput,
+              mOutput,
+              *mTransform.get(),
+              mResamplingMethod,
+              mUseZeroAsTrans,
+              mCompression,
+              mDestinationCrs,
+              mFeedback.get(),
+              mDestinationResX,
+              mDestinationResY );
+
+  mFeedback.reset();
+  return mResult == QgsImageWarper::Result::Success;
 }

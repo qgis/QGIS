@@ -99,7 +99,6 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
         connect( pb, &QAbstractButton::clicked, a, &QgsFeatureAction::execute );
     }
   }
-
   return dialog;
 }
 
@@ -168,7 +167,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   return true;
 }
 
-bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, QgsExpressionContextScope *scope SIP_TRANSFER )
+bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, QgsExpressionContextScope *scope SIP_TRANSFER, bool hideParent )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return false;
@@ -254,7 +253,6 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   }
   else
   {
-
     QgsAttributeDialog *dialog = newDialog( false );
     // delete the dialog when it is closed
     dialog->setAttribute( Qt::WA_DeleteOnClose );
@@ -270,6 +268,12 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
       setParent( dialog ); // keep dialog until the dialog is closed and destructed
       connect( dialog, &QgsAttributeDialog::finished, this, &QgsFeatureAction::addFeatureFinished );
       dialog->show();
+
+      if ( hideParent )
+      {
+        connect( this, &QgsFeatureAction::addFeatureFinished, this, &QgsFeatureAction::unhideParentWidget );
+        hideParentWidget();
+      }
       mFeature = nullptr;
       return true;
     }
@@ -311,6 +315,28 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
       QgsDebugMsg( QStringLiteral( "saving %1 for %2" ).arg( ( *sLastUsedValues() )[ mLayer ][idx].toString() ).arg( idx ) );
       ( *sLastUsedValues() )[ mLayer ][idx] = newValues.at( idx );
     }
+  }
+}
+
+void QgsFeatureAction::hideParentWidget()
+{
+  QWidget *dialog = parentWidget();
+  if ( dialog )
+  {
+    QWidget *triggerWidget = dialog->parentWidget();
+    if ( triggerWidget && triggerWidget->window()->objectName() != QStringLiteral( "QgisApp" ) )
+      triggerWidget->window()->setVisible( false );
+  }
+}
+
+void QgsFeatureAction::unhideParentWidget()
+{
+  QWidget *dialog = parentWidget();
+  if ( dialog )
+  {
+    QWidget *triggerWidget = dialog->parentWidget();
+    if ( triggerWidget )
+      triggerWidget->window()->setVisible( true );
   }
 }
 

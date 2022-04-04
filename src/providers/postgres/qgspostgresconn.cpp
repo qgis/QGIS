@@ -30,6 +30,7 @@
 #include "qgsjsonutils.h"
 #include "qgspostgresstringutils.h"
 #include "qgspostgresconnpool.h"
+#include "qgsvariantutils.h"
 
 #include <QApplication>
 #include <QStringList>
@@ -172,24 +173,68 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
     shared = false;
   }
 
+  QgsPostgresConn *conn;
+
   if ( shared )
   {
     // sharing connection between threads is not safe
     // See https://github.com/qgis/QGIS/issues/21205
     Q_ASSERT( QApplication::instance()->thread() == QThread::currentThread() );
 
-    if ( connections.contains( conninfo ) )
+    QMap<QString, QgsPostgresConn *>::iterator it = connections.find( conninfo );
+    if ( it != connections.end() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Using cached connection for %1" ).arg( conninfo ), 2 );
-      connections[conninfo]->mRef++;
-      return connections[conninfo];
+      conn = *it;
+      QgsDebugMsgLevel(
+        QStringLiteral(
+          "Using cached (%3) connection for %1 (%2)"
+        )
+        .arg( conninfo )
+        .arg( reinterpret_cast<std::uintptr_t>( conn ) )
+        .arg( readonly ? "readonly" : "read-write" )
+        ,
+        2
+      );
+      conn->mRef++;
+      return conn;
     }
+    QgsDebugMsgLevel(
+      QStringLiteral(
+        "Cached (%2) connection for %1 not found"
+      )
+      .arg( conninfo )
+      .arg( readonly ? "readonly" : "read-write" )
+      ,
+      2
+    );
   }
 
-  QgsPostgresConn *conn = new QgsPostgresConn( conninfo, readonly, shared, transaction );
+  conn = new QgsPostgresConn( conninfo, readonly, shared, transaction );
+  QgsDebugMsgLevel(
+    QStringLiteral(
+      "Created new (%4) connection %2 for %1%3"
+    )
+    .arg( conninfo )
+    .arg( reinterpret_cast<std::uintptr_t>( conn ) )
+    .arg( shared ? " (shared)" : "" )
+    .arg( readonly ? "readonly" : "read-write" )
+    ,
+    2
+  );
 
+  // mRef will be set to 0 when the connection fails
   if ( conn->mRef == 0 )
   {
+    QgsDebugMsgLevel(
+      QStringLiteral(
+        "New (%3) connection %2 failed for conninfo %1"
+      )
+      .arg( conninfo )
+      .arg( reinterpret_cast<std::uintptr_t>( conn ) )
+      .arg( readonly ? "readonly" : "read-write" )
+      ,
+      2
+    );
     delete conn;
     return nullptr;
   }
@@ -197,6 +242,16 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   if ( shared )
   {
     connections.insert( conninfo, conn );
+    QgsDebugMsgLevel(
+      QStringLiteral(
+        "Added connection %2 (for %1) in (%3) cache"
+      )
+      .arg( conninfo )
+      .arg( reinterpret_cast<std::uintptr_t>( conn ) )
+      .arg( readonly ? "readonly" : "read-write" )
+      ,
+      2
+    );
   }
 
   return conn;
@@ -388,10 +443,19 @@ void QgsPostgresConn::unref()
   {
     QMap<QString, QgsPostgresConn *> &connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
 
-    QString key = connections.key( this, QString() );
+    int removed = connections.remove( mConnInfo );
+    Q_ASSERT( removed == 1 );
 
-    Q_ASSERT( !key.isNull() );
-    connections.remove( key );
+    QgsDebugMsgLevel(
+      QStringLiteral(
+        "Cached (%1) connection for %2 (%3) removed"
+      )
+      .arg( mReadOnly ? "readonly" : "read-write" )
+      .arg( mConnInfo )
+      .arg( reinterpret_cast<std::uintptr_t>( this ) )
+      ,
+      2
+    );
   }
 
   // to avoid destroying locked mutex
@@ -1711,15 +1775,15 @@ QList<QgsVectorDataProvider::NativeType> QgsPostgresConn::nativeTypes()
   QList<QgsVectorDataProvider::NativeType> types;
 
   types     // integer types
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (smallint - 16bit)" ), QStringLiteral( "int2" ), QVariant::Int, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 32bit)" ), QStringLiteral( "int4" ), QVariant::Int, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64bit)" ), QStringLiteral( "int8" ), QVariant::LongLong, -1, -1, 0, 0 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
+      << QgsVectorDataProvider::NativeType( tr( "Whole Number (smallint - 16bit)" ), QStringLiteral( "int2" ), QVariant::Int, -1, -1, 0, 0 )
+      << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer - 32bit)" ), QStringLiteral( "int4" ), QVariant::Int, -1, -1, 0, 0 )
+      << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer - 64bit)" ), QStringLiteral( "int8" ), QVariant::LongLong, -1, -1, 0, 0 )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
 
       // floating point
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "real" ), QVariant::Double, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (real)" ), QStringLiteral( "real" ), QVariant::Double, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal Number (double)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
 
       // string types
       << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255, -1, -1 )
@@ -1728,22 +1792,22 @@ QList<QgsVectorDataProvider::NativeType> QgsPostgresConn::nativeTypes()
       << QgsVectorDataProvider::NativeType( tr( "Text, case-insensitive unlimited length (citext)" ), QStringLiteral( "citext" ), QVariant::String, -1, -1, -1, -1 )
 
       // date type
-      << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "timestamp without time zone" ), QVariant::DateTime, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "timestamp without time zone" ), QVariant::DateTime, -1, -1, -1, -1 )
 
       // complex types
       << QgsVectorDataProvider::NativeType( tr( "Map (hstore)" ), QStringLiteral( "hstore" ), QVariant::Map, -1, -1, -1, -1, QVariant::String )
-      << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 32bit)" ), QStringLiteral( "int4[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Int )
-      << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 64bit)" ), QStringLiteral( "int8[]" ), QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
-      << QgsVectorDataProvider::NativeType( tr( "Array of number (double)" ), QStringLiteral( "double precision[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Double )
-      << QgsVectorDataProvider::NativeType( tr( "Array of text" ), QStringLiteral( "text[]" ), QVariant::StringList, -1, -1, -1, -1, QVariant::String )
+      << QgsVectorDataProvider::NativeType( tr( "Array of Number (integer - 32bit)" ), QStringLiteral( "int4[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Int )
+      << QgsVectorDataProvider::NativeType( tr( "Array of Number (integer - 64bit)" ), QStringLiteral( "int8[]" ), QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
+      << QgsVectorDataProvider::NativeType( tr( "Array of Number (double)" ), QStringLiteral( "double precision[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Double )
+      << QgsVectorDataProvider::NativeType( tr( "Array of Text" ), QStringLiteral( "text[]" ), QVariant::StringList, -1, -1, -1, -1, QVariant::String )
 
       // boolean
-      << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Bool ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
 
       // binary (bytea)
-      << QgsVectorDataProvider::NativeType( tr( "Binary object (bytea)" ), QStringLiteral( "bytea" ), QVariant::ByteArray, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Binary Object (bytea)" ), QStringLiteral( "bytea" ), QVariant::ByteArray, -1, -1, -1, -1 )
       ;
 
   if ( pgVersion() >= 90200 )

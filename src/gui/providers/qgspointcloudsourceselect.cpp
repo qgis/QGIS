@@ -98,7 +98,7 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     {
       QMessageBox::information( this,
                                 tr( "Add Point Cloud Layers" ),
-                                tr( "Unvalid point cloud URL \"%1\", please make sure your URL ends with /ept.json" ).arg( mPath ) );
+                                tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json" ).arg( mPath ) );
       return;
     }
 

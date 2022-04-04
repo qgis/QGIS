@@ -71,7 +71,12 @@
   <Option name="designerParameterValues"/>
   <Option name="groupBoxes"/>
   <Option name="help" type="Map">
-    <Option name="ALG_DESC" type="QString" value="model description"/>
+    <Option name="ALG_CREATOR" type="QString" value="Author of model"/>
+    <Option name="ALG_DESC" type="QString" value="This is the model description"/>
+    <Option name="ALG_VERSION" type="QString" value="Version 2.1"/>
+    <Option name="EXAMPLES" type="QString" value="this is an example of running the model"/>
+    <Option name="HELP_URL" type="QString" value=""/>
+    <Option name="SHORT_DESCRIPTION" type="QString" value=""/>
   </Option>
   <Option name="modelVariables"/>
   <Option name="model_group" type="QString" value=""/>
@@ -82,8 +87,10 @@
         <Option type="int" value="-1"/>
       </Option>
       <Option name="default" type="invalid"/>
+      <Option name="defaultGui" type="invalid"/>
       <Option name="description" type="QString" value="FEATS"/>
       <Option name="flags" type="int" value="0"/>
+      <Option name="help" type="QString" value=""/>
       <Option name="metadata"/>
       <Option name="name" type="QString" value="FEATS"/>
       <Option name="parameter_type" type="QString" value="source"/>
@@ -92,8 +99,10 @@
       <Option name="create_by_default" type="bool" value="true"/>
       <Option name="data_type" type="int" value="0"/>
       <Option name="default" type="invalid"/>
+      <Option name="defaultGui" type="invalid"/>
       <Option name="description" type="QString" value="CENTROIDS"/>
       <Option name="flags" type="int" value="0"/>
+      <Option name="help" type="QString" value=""/>
       <Option name="metadata"/>
       <Option name="name" type="QString" value="native:centroids_1:CENTROIDS"/>
       <Option name="parameter_type" type="QString" value="sink"/>
@@ -101,6 +110,7 @@
       <Option name="supports_non_file_outputs" type="bool" value="true"/>
     </Option>
   </Option>
+  <Option name="parameterOrder"/>
   <Option name="parameters" type="Map">
     <Option name="FEATS" type="Map">
       <Option name="color" type="QString" value=""/>

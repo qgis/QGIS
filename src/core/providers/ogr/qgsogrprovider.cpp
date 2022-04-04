@@ -18,7 +18,7 @@ email                : sherman at mrcc.com
 #include "qgsogrprovider.h"
 ///@cond PRIVATE
 
-#include "qgscplerrorhandler.h"
+#include "qgscplerrorhandler_p.h"
 #include "qgslogger.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsapplication.h"
@@ -36,6 +36,7 @@ email                : sherman at mrcc.com
 #include "qgszipitem.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproject.h"
+#include "qgsvariantutils.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -392,6 +393,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
               mOgrGeometryTypeFilter,
               mOpenOptions );
 
+  // to be called only after mFilePath has been set
+  invalidateNetworkCache();
+
   if ( uri.contains( QLatin1String( "authcfg" ) ) )
   {
     QRegularExpression authcfgRe( QStringLiteral( " authcfg='([^']+)'" ) );
@@ -425,10 +429,10 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 
   QList<NativeType> nativeTypes;
   nativeTypes
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, nMaxIntLen )
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "integer" ), QVariant::Int, 0, nMaxIntLen )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
       << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
-      << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::String ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
 
   if ( mGDALDriverName == QLatin1String( "GPKG" ) )
     nativeTypes << QgsVectorDataProvider::NativeType( tr( "JSON (string)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 0, 0, 0, QVariant::String );
@@ -437,6 +441,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
   bool supportsDateTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" );
   bool supportsBinary = false;
+  bool supportIntegerList = false;
+  bool supportInteger64List = false;
+  bool supportRealList = false;
   bool supportsStringList = false;
   const char *pszDataTypes = nullptr;
   if ( mOgrOrigLayer )
@@ -452,6 +459,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
     supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
     supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
     supportsBinary = CSLFindString( papszTokens, "Binary" ) >= 0;
+    supportIntegerList = CSLFindString( papszTokens, "IntegerList" ) >= 0;
+    supportInteger64List = CSLFindString( papszTokens, "Integer64List" ) >= 0;
+    supportRealList = CSLFindString( papszTokens, "RealList" ) >= 0;
     supportsStringList = CSLFindString( papszTokens, "StringList" ) >= 0;
     CSLDestroy( papszTokens );
   }
@@ -468,27 +478,42 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   if ( supportsDate )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, nDateLen, nDateLen );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, nDateLen, nDateLen );
   }
   if ( supportsTime )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time );
   }
   if ( supportsDateTime )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime );
   }
   if ( supportsBinary )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), QStringLiteral( "binary" ), QVariant::ByteArray );
+  }
+  if ( supportIntegerList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int );
+  }
+  if ( supportInteger64List )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+  }
+  if ( supportRealList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double );
   }
   if ( supportsStringList )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( tr( "String List" ), QStringLiteral( "stringlist" ), QVariant::List, 0, 0, 0, 0, QVariant::String );
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::StringList ), QStringLiteral( "stringlist" ), QVariant::List, 0, 0, 0, 0, QVariant::String );
   }
 
   bool supportsBoolean = false;
@@ -821,78 +846,12 @@ void QgsOgrProvider::loadFields()
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
   {
     OGRFieldDefnH fldDef = fdef.GetFieldDefn( i );
-    OGRFieldType ogrType = OGR_Fld_GetType( fldDef );
-    OGRFieldSubType ogrSubType = OFSTNone;
+    const OGRFieldType ogrType = OGR_Fld_GetType( fldDef );
+    const OGRFieldSubType ogrSubType = OGR_Fld_GetSubType( fldDef );
 
-    QVariant::Type varType;
+    QVariant::Type varType = QVariant::Invalid;
     QVariant::Type varSubType = QVariant::Invalid;
-    switch ( ogrType )
-    {
-      case OFTInteger:
-        if ( OGR_Fld_GetSubType( fldDef ) == OFSTBoolean )
-        {
-          varType = QVariant::Bool;
-          ogrSubType = OFSTBoolean;
-        }
-        else
-          varType = QVariant::Int;
-        break;
-      case OFTInteger64:
-        varType = QVariant::LongLong;
-        break;
-      case OFTReal:
-        varType = QVariant::Double;
-        break;
-      case OFTDate:
-        varType = QVariant::Date;
-        break;
-      case OFTTime:
-        varType = QVariant::Time;
-        break;
-      case OFTDateTime:
-        varType = QVariant::DateTime;
-        break;
-
-      case OFTBinary:
-        varType = QVariant::ByteArray;
-        break;
-
-      case OFTString:
-        if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
-        {
-          ogrSubType = OFSTJSON;
-          varType = QVariant::Map;
-          varSubType = QVariant::String;
-        }
-        else
-        {
-          varType = QVariant::String;
-        }
-        break;
-
-      case OFTStringList:
-        varType = QVariant::StringList;
-        varSubType = QVariant::String;
-        break;
-
-      case OFTIntegerList:
-        varType = QVariant::List;
-        varSubType = QVariant::Int;
-        break;
-
-      case OFTRealList:
-        varType = QVariant::List;
-        varSubType = QVariant::Double;
-        break;
-
-      case OFTInteger64List:
-        varType = QVariant::List;
-        varSubType = QVariant::LongLong;
-        break;
-
-      default:
-        varType = QVariant::String; // other unsupported, leave it as a string
-    }
+    QgsOgrUtils::ogrFieldTypeToQVariantType( ogrType, ogrSubType, varType, varSubType );
 
     //TODO: fix this hack
 #ifdef ANDROID
@@ -977,6 +936,10 @@ void QgsOgrProvider::loadFields()
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
     if ( const char *domainName = OGR_Fld_GetDomainName( fldDef ) )
     {
+      QgsFieldConstraints constraints = newField.constraints();
+      constraints.setDomainName( domainName );
+      newField.setConstraints( constraints );
+
       // dataset retains ownership of domain!
       if ( OGRFieldDomainH domain = GDALDatasetGetFieldDomain( ds, domainName ) )
       {
@@ -3467,7 +3430,6 @@ void QgsOgrProvider::open( OpenMode mode )
   QgsDebugMsgLevel( "mLayerIndex: " + QString::number( mLayerIndex ), 3 );
   QgsDebugMsgLevel( "mLayerName: " + mLayerName, 3 );
   QgsDebugMsgLevel( "mSubsetString: " + mSubsetString, 3 );
-  CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
   CPLSetConfigOption( "GPX_ELE_AS_25D", "YES" );  // use GPX elevation as z values
   CPLSetConfigOption( "LIBKML_RESOLVE_STYLE", "YES" );  // resolve kml style urls from style tables to feature style strings
   if ( !CPLGetConfigOption( "OSM_USE_CUSTOM_INDEXING", nullptr ) )
@@ -3488,15 +3450,37 @@ void QgsOgrProvider::open( OpenMode mode )
   else if ( mode == OpenModeSameAsCurrent && !mWriteAccess )
     openReadOnly = true;
 
+  const bool bIsGpkg = QFileInfo( mFilePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+  bool forceWAL = false;
+#endif
+
   // first try to open in update mode (unless specified otherwise)
   QString errCause;
   if ( !openReadOnly )
   {
     QStringList options( mOpenOptions );
-    if ( mode == OpenModeForceUpdateRepackOff || ( mDeferRepack && OpenModeSameAsCurrent ) )
+    if ( !bIsGpkg && ( mode == OpenModeForceUpdateRepackOff || ( mDeferRepack && OpenModeSameAsCurrent ) ) )
     {
       options << "AUTO_REPACK=OFF";
     }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+    if ( bIsGpkg && options.contains( "QGIS_FORCE_WAL=ON" ) )
+    {
+      // Hack use for qgsofflineediting / https://github.com/qgis/QGIS/issues/48012
+      forceWAL = true;
+    }
+    if ( bIsGpkg && mode == OpenModeInitial && !forceWAL && QgsOgrProviderUtils::IsLocalFile( mFilePath ) )
+    {
+      // A hint to QgsOgrProviderUtils::GDALOpenWrapper() to not force WAL
+      // as in OpenModeInitial we are not going to do anything besides getting capabilities
+      // and re-opening in readonly mode.
+      options << "DO_NOT_ENABLE_WAL=ON";
+    }
+#endif
+
     // We get the layer which was requested by the uri. The layername
     // has precedence over the layerid if both are given.
     if ( !mLayerName.isNull() )
@@ -3610,10 +3594,16 @@ void QgsOgrProvider::open( OpenMode mode )
 
   // For shapefiles or MapInfo .tab, so as to allow concurrent opening between
   // QGIS and MapInfo, we go back to read-only mode for now.
+  // For GPKG too, so to open in read-only nolock mode for GDAL >= 3.4.2
   // We limit to those drivers as re-opening is relatively cheap (other drivers
   // like GeoJSON might do full content ingestion for example)
   if ( mValid && mode == OpenModeInitial && mWriteAccess &&
-       ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) || mGDALDriverName == QLatin1String( "MapInfo File" ) ) )
+       ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ||
+         mGDALDriverName == QLatin1String( "MapInfo File" )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+         || ( !forceWAL && mGDALDriverName == QLatin1String( "GPKG" ) && QgsOgrProviderUtils::IsLocalFile( mFilePath ) )
+#endif
+       ) )
   {
     mOgrSqlLayer.reset();
     mOgrOrigLayer.reset();
@@ -3631,7 +3621,7 @@ void QgsOgrProvider::open( OpenMode mode )
     // try to open read-only
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, mOpenOptions, mLayerName, errCause, true );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, mOpenOptions,  mLayerName, errCause, true );
     }
     else
     {
@@ -3670,6 +3660,9 @@ void QgsOgrProvider::open( OpenMode mode )
 
 void QgsOgrProvider::close()
 {
+  if ( mWriteAccess && mForceRecomputeExtent )
+    extent();
+
   mOgrSqlLayer.reset();
   mOgrOrigLayer.reset();
   mOgrLayer = nullptr;
@@ -3679,8 +3672,21 @@ void QgsOgrProvider::close()
   invalidateCachedExtent( false );
 }
 
+void QgsOgrProvider::invalidateNetworkCache()
+{
+  if ( mFilePath.startsWith( QLatin1String( "/vsicurl/" ) )  ||
+       mFilePath.startsWith( QLatin1String( "/vsis3/" ) ) ||
+       mFilePath.startsWith( QLatin1String( "/vsigs/" ) ) ||
+       mFilePath.startsWith( QLatin1String( "/vsiaz/" ) ) )
+  {
+    QgsDebugMsgLevel( QString( "Invalidating cache for %1" ).arg( mFilePath ), 3 );
+    VSICurlPartialClearCache( mFilePath.toUtf8().constData() );
+  }
+}
+
 void QgsOgrProvider::reloadProviderData()
 {
+  invalidateNetworkCache();
   mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
   bool wasValid = mValid;
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );

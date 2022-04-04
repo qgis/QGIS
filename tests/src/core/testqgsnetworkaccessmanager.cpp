@@ -26,6 +26,7 @@
 #include <QNetworkReply>
 #include <QAuthenticator>
 #include <QThread>
+#include <QHttpMultiPart>
 
 class BackgroundRequest : public QThread
 {
@@ -155,6 +156,8 @@ class TestQgsNetworkAccessManager : public QObject
     void fetchBadUrl(); //test fetching bad url
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
     void fetchPost();
+    void fetchPostMultiPart();
+    void fetchPostMultiPart_data();
     void fetchBadSsl();
     void testSslErrorHandler();
     void testAuthRequestHandler();
@@ -554,6 +557,42 @@ void TestQgsNetworkAccessManager::fetchPost()
   blockingThread->exit();
   blockingThread->wait();
   blockingThread->deleteLater();
+}
+
+void TestQgsNetworkAccessManager::fetchPostMultiPart()
+{
+  QFETCH( int, iContentType );
+  QHttpMultiPart::ContentType contentType = static_cast< QHttpMultiPart::ContentType>( iContentType );
+  QHttpMultiPart *multipart = new QHttpMultiPart( contentType );
+  QHttpPart part;
+  part.setHeader( QNetworkRequest::ContentDispositionHeader,
+                  QStringLiteral( "form-data; name=\"param\"" ) );
+  part.setBody( QStringLiteral( "some data" ) .toUtf8() );
+  multipart->append( part );
+  QUrl u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/post" ) );
+  QNetworkRequest req( u );
+
+  // MultiPart
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( req, multipart );
+  multipart->setParent( reply );
+
+  QEventLoop el;
+  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::finished, &el, &QEventLoop::quit );
+  el.exec();
+
+  QCOMPARE( reply->error(), QNetworkReply::NoError );
+  QVERIFY( reply->rawHeaderList().contains( "Content-Type" ) );
+  QCOMPARE( reply->request().url(), u );
+}
+
+void TestQgsNetworkAccessManager::fetchPostMultiPart_data()
+{
+  QTest::addColumn<int>( "iContentType" );
+
+  QTest::newRow( "MixedType" ) << static_cast<int>( QHttpMultiPart::MixedType );
+  QTest::newRow( "FormDataType" ) << static_cast<int>( QHttpMultiPart::FormDataType );
+  QTest::newRow( "RelatedType" ) << static_cast<int>( QHttpMultiPart::FormDataType );
+  QTest::newRow( "AlternativeType" ) << static_cast<int>( QHttpMultiPart::FormDataType );
 }
 
 void TestQgsNetworkAccessManager::fetchBadSsl()

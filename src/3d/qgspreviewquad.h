@@ -34,14 +34,16 @@ class QgsPreviewQuadMaterial : public Qt3DRender::QMaterial
 {
   public:
     //! Constructor
-    QgsPreviewQuadMaterial( Qt3DRender::QAbstractTexture *texture, const QMatrix4x4 &modelMatrix, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>(), QNode *parent = nullptr );
+    QgsPreviewQuadMaterial( Qt3DRender::QAbstractTexture *texture, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>(), QNode *parent = nullptr );
 
-    //! Sets the model matrix of the quad
-    void setModelMatrix( const QMatrix4x4 &modelMatrix );
+    //! Sets the view port of the quad
+    void setViewPort( QVector2D centerTexCoords, QVector2D sizeTexCoords );
   private:
     Qt3DRender::QEffect *mEffect = nullptr;
     Qt3DRender::QParameter *mTextureParameter = nullptr;
-    Qt3DRender::QParameter *mTextureTransformParameter = nullptr;
+    Qt3DRender::QParameter *mCenterTextureCoords = nullptr;
+    Qt3DRender::QParameter *mSizeTextureCoords = nullptr;
+
 };
 
 /**

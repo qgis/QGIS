@@ -43,31 +43,20 @@ to validate set values and provide more accurate settings description for the gu
 %End
   public:
 
-    enum class SettingsType
-    {
-      Variant,
-      String,
-      StringList,
-      Bool,
-      Integer,
-      Double,
-      EnumFlag,
-      Color
-    };
-
 
     QgsSettingsEntryBase( const QString &key,
-                          const QString &pluginName,
+                          const QString &section,
                           const QVariant &defaultValue = QVariant(),
-                          const QString &description = QString() );
+                          const QString &description = QString(),
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
 Constructor for QgsSettingsEntryBase.
-This constructor is intended to be used from plugins.
 
 The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
+The ``section`` argument specifies the section.
 The ``defaultValue`` argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
+The ``options`` argument specifies the options for the settings entry.
 %End
 
     virtual ~QgsSettingsEntryBase();
@@ -137,51 +126,86 @@ Removes the settings from the underlying QSettings.
 The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
-    QgsSettings::Section section() const;
+ QgsSettings::Section section() const;
 %Docstring
 Returns settings section. The settings section of the parent group is returned if available.
+
+.. deprecated:: QGIS 3.26
+   the key is entirely self-defined
 %End
 
-    virtual bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
+ virtual bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const /Deprecated/;
 %Docstring
 Set settings value.
 
 The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+
+.. deprecated:: QGIS 3.26
+   use setVariantValuePrivate or an implementation setValue instead
 %End
 
-    virtual bool setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
+ virtual bool setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const /Deprecated/;
 %Docstring
 Set settings value.
 
 The ``value`` to set.
 The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
+
+.. deprecated:: QGIS 3.26
+   use setVariantValuePrivate or an implementation setValue instead
 %End
 
-    QVariant valueAsVariant( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QVariant &defaultValueOverride = QVariant() ) const;
+    QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Returns settings value with the ``dynamicKeyPart`` argument specifying the dynamic part of the settings key.
+%End
+
+    QVariant valueAsVariant( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Returns settings value with the ``dynamicKeyPart`` argument specifying the dynamic part of the settings key.
+%End
+
+    QVariant valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Returns settings value with a ``defaultValueOverride``
+
+.. versionadded:: 3.26
+%End
+
+    QVariant valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Returns settings value.
 
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
+The ``dynamicKeyPartList`` argument specifies the list of dynamic parts of the settings key.
 The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
+
+.. versionadded:: 3.26
 %End
 
-    QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const QVariant &defaultValueOverride = QVariant() ) const;
+ QVariant valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated/;
 %Docstring
-Returns settings value.
+Returns settings value with an optional default value override
 
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
+.. deprecated:: QGIS 3.26
+   use valueAsVariantWithDefaultOverride instead
 %End
+
+ QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated/;
+%Docstring
+Returns settings value with an optional default value override
+
+.. deprecated:: QGIS 3.26
+   use valueAsVariantWithDefaultOverride instead
+%End
+
 
     QVariant defaultValueAsVariant() const;
 %Docstring
 Returns settings default value.
 %End
 
-    virtual SettingsType settingsType() const = 0;
+    virtual Qgis::SettingsType settingsType() const = 0;
 %Docstring
 Returns the settings entry type.
 %End
@@ -191,16 +215,54 @@ Returns the settings entry type.
 Returns the settings entry description.
 %End
 
+    QVariant formerValueAsVariant( const QString &dynamicKeyPart ) const;
+%Docstring
+Returns the former value of the settings if it has been enabled in the options.
+Returns the current value (or default) if there is no former value.
+
+.. versionadded:: 3.26
+%End
+
+    QVariant formerValueAsVariant( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Returns the former value of the settings if it has been enabled in the options
+Returns the current value (or default) if there is no former value.
+
+.. versionadded:: 3.26
+%End
+
+  protected:
+
+    bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList = QStringList() ) const;
+%Docstring
+Sets the settings value with a variant value.
+This should be called from any implementation as it takes care of actually calling QSettings
+
+.. versionadded:: 3.26
+%End
+
+    QStringList dynamicKeyPartToList( const QString &dynamicKeyPart ) const;
+%Docstring
+Transforms a dynamic key part string to list
+
+.. versionadded:: 3.26
+%End
+
 };
 
 
-class QgsSettingsEntryVariant : QgsSettingsEntryBase
+template<T>
+class QgsSettingsEntryByReference : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
 
-A variant settings entry.
+Base abstract class for settings entry which are passed by reference
 
-.. versionadded:: 3.20
+.. seealso:: :py:class:`QgsSettingsEntryBase`
+
+.. seealso:: :py:class:`QgsSettingsEntryByValue`
+
+.. versionadded:: 3.26
 %End
 
 %TypeHeaderCode
@@ -208,571 +270,62 @@ A variant settings entry.
 %End
   public:
 
-
-    QgsSettingsEntryVariant( const QString &key,
-                             const QString &pluginName,
-                             const QVariant &defaultValue = QVariant(),
-                             const QString &description = QString() );
+    QgsSettingsEntryByReference( const QString &key,
+                                 const QString &section,
+                                 const T &defaultValue,
+                                 const QString &description = QString(),
+                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
-Constructor for QgsSettingsEntryVariant.
-This constructor is intended to be used from plugins.
+Constructor for QgsSettingsEntryByReference.
 
 The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
 The ``defaultValue`` argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
 %End
 
-    bool setValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
-%Docstring
-Set settings value.
 
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
+    virtual Qgis::SettingsType settingsType() const = 0;
 
-    bool setValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
-    QVariant value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QVariant &defaultValueOverride = QVariant() ) const;
+    T value( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Returns settings value.
 
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
 The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
 %End
 
-    QVariant value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const QVariant &defaultValueOverride = QVariant() ) const;
+    T value( const QStringList &dynamicKeyPartList )  const;
 %Docstring
 Returns settings value.
 
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
+The ``dynamicKeyPartList`` argument specifies the list of dynamic parts of the settings key.
 The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
 %End
 
-    QVariant defaultValue() const;
+    T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
-Returns settings default value.
+Returns the settings value with a ``defaultValueOverride`` and with an optional ``dynamicKeyPart``
 %End
-
-    virtual SettingsType settingsType() const;
-};
-
-
-class QgsSettingsEntryString : QgsSettingsEntryBase
-{
-%Docstring(signature="appended")
-
-A string settings entry.
-
-.. versionadded:: 3.20
-%End
-
-%TypeHeaderCode
-#include "qgssettingsentry.h"
-%End
-  public:
-
-
-    QgsSettingsEntryString( const QString &key,
-                            const QString &pluginName,
-                            const QString &defaultValue = QString(),
-                            const QString &description = QString() );
+    T valueWithDefaultOverride( const T &defaultValueOverride, const QStringList &dynamicKeyPartList ) const;
 %Docstring
-Constructor for QgsSettingsEntryString.
-This constructor is intended to be used from plugins.
-
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
+Returns the settings value with a ``defaultValueOverride`` for the ``dynamicKeyPartList``
 %End
 
-    bool setValue( const QString &value, const QString &dynamicKeyPart = QString() ) const;
+ T value( const QString &dynamicKeyPart, bool useDefaultValueOverride, const T &defaultValueOverride ) const /Deprecated/;
 %Docstring
-Set settings value.
+Returns the settings value for the ``dynamicKeyPart`` and  with a ``defaultValueOverride``
 
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+.. deprecated:: QGIS 3.26
+   use valueAsVariantWithDefaultOverride instead
 %End
 
-    bool setValue( const QString &value, const QStringList &dynamicKeyPartList ) const;
+ T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const T &defaultValueOverride ) const /Deprecated/;
 %Docstring
-Set settings value.
+Returns the settings value for the ``dynamicKeyPartList`` and  with a ``defaultValueOverride``
 
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
-    QString value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QString &defaultValueOverride = QString() ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    QString value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const QString &defaultValueOverride = QString() ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    QString defaultValue() const;
-%Docstring
-Returns settings default value.
-%End
-
-    virtual SettingsType settingsType() const;
-
-    void setMinLength( int minLength );
-%Docstring
-Set the string minimum length.
-
-minLength The string minimum length.
-%End
-
-    int minLength();
-%Docstring
-Returns the string minimum length.
-%End
-
-    void setMaxLength( int maxLength );
-%Docstring
-Set the string maximum length.
-
-maxLength The string maximum length.
-%End
-
-    int maxLength();
-%Docstring
-Returns the string maximum length. By -1 there is no limitation.
-%End
-
-};
-
-
-class QgsSettingsEntryStringList : QgsSettingsEntryBase
-{
-%Docstring(signature="appended")
-
-A string list settings entry.
-
-.. versionadded:: 3.20
-%End
-
-%TypeHeaderCode
-#include "qgssettingsentry.h"
-%End
-  public:
-
-
-    QgsSettingsEntryStringList( const QString &key,
-                                const QString &pluginName,
-                                const QStringList &defaultValue = QStringList(),
-                                const QString &description = QString() );
-%Docstring
-Constructor for QgsSettingsEntryStringList.
-This constructor is intended to be used from plugins.
-
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-%End
-
-    bool setValue( const QStringList &value, const QString &dynamicKeyPart = QString() ) const;
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    bool setValue( const QStringList &value, const QStringList &dynamicKeyPartList ) const;
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
-    QStringList value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QStringList &defaultValueOverride = QStringList() ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    QStringList value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const QStringList &defaultValueOverride = QStringList() ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    QStringList defaultValue() const;
-%Docstring
-Returns settings default value.
-%End
-
-    virtual SettingsType settingsType() const;
-
-};
-
-
-class QgsSettingsEntryBool : QgsSettingsEntryBase
-{
-%Docstring(signature="appended")
-
-A boolean settings entry.
-
-.. versionadded:: 3.20
-%End
-
-%TypeHeaderCode
-#include "qgssettingsentry.h"
-%End
-  public:
-
-
-    QgsSettingsEntryBool( const QString &key,
-                          const QString &pluginName,
-                          bool defaultValue = false,
-                          const QString &description = QString() );
-%Docstring
-Constructor for QgsSettingsEntryBool.
-This constructor is intended to be used from plugins.
-
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-%End
-
-    bool setValue( bool value, const QString &dynamicKeyPart = QString() ) const;
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    bool setValue( bool value, const QStringList &dynamicKeyPartList ) const;
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
-    bool value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, bool defaultValueOverride = false ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    bool value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, bool defaultValueOverride = false ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    bool defaultValue() const;
-%Docstring
-Returns settings default value.
-%End
-
-    virtual SettingsType settingsType() const;
-};
-
-
-class QgsSettingsEntryInteger : QgsSettingsEntryBase
-{
-%Docstring(signature="appended")
-
-An integer settings entry.
-
-.. versionadded:: 3.20
-%End
-
-%TypeHeaderCode
-#include "qgssettingsentry.h"
-%End
-  public:
-
-
-
-    QgsSettingsEntryInteger( const QString &key,
-                             const QString &pluginName,
-                             qlonglong defaultValue = 0,
-                             const QString &description = QString() );
-%Docstring
-Constructor for QgsSettingsEntryInteger.
-This constructor is intended to be used from plugins.
-
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-%End
-
-    bool setValue( qlonglong value, const QString &dynamicKeyPart = QString() ) const;
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    bool setValue( qlonglong value, const QStringList &dynamicKeyPartList ) const;
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
-    qlonglong value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, qlonglong defaultValueOverride = 0 ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    qlonglong value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, qlonglong defaultValueOverride = 0 ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    qlonglong defaultValue() const;
-%Docstring
-Returns settings default value.
-%End
-
-    virtual SettingsType settingsType() const;
-
-    void setMinValue( qlonglong minValue );
-%Docstring
-Set the minimum value.
-
-minValue The minimum value.
-%End
-
-    qlonglong minValue();
-%Docstring
-Returns the minimum value.
-%End
-
-    void setMaxValue( qlonglong maxValue );
-%Docstring
-Set the maximum value.
-
-maxValue The maximum value.
-%End
-
-    qlonglong maxValue();
-%Docstring
-Returns the maximum value.
-%End
-
-};
-
-
-class QgsSettingsEntryDouble : QgsSettingsEntryBase
-{
-%Docstring(signature="appended")
-
-A double settings entry.
-
-.. versionadded:: 3.20
-%End
-
-%TypeHeaderCode
-#include "qgssettingsentry.h"
-%End
-  public:
-
-
-    QgsSettingsEntryDouble( const QString &key,
-                            const QString &pluginName,
-                            double defaultValue,
-                            const QString &description = QString() );
-%Docstring
-Constructor for QgsSettingsEntryDouble.
-This constructor is intended to be used from plugins.
-
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValueargument`` specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-%End
-
-    bool setValue( double value, const QString &dynamicKeyPart = QString() ) const;
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-%End
-
-    bool setValue( double value, const QStringList &dynamicKeyPartList ) const;
-%Docstring
-Set settings value.
-
-The ``value`` to set.
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-%End
-
-    double value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, double defaultValueOverride = 0.0 ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    double value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, double defaultValueOverride = 0.0 ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    double defaultValue() const;
-%Docstring
-Returns settings default value.
-%End
-
-    virtual SettingsType settingsType() const;
-
-    void setMinValue( double minValue );
-%Docstring
-Set the minimum value.
-
-minValue The minimum value.
-%End
-
-    double minValue() const;
-%Docstring
-Returns the minimum value.
-%End
-
-    void setMaxValue( double maxValue );
-%Docstring
-Set the maximum value.
-
-maxValue The maximum value.
-%End
-
-    double maxValue() const;
-%Docstring
-Returns the maximum value.
-%End
-
-    void setDisplayHintDecimals( int displayHintDecimals );
-%Docstring
-Set the display hint decimals.
-
-displayHintDecimals The number of decimals that should be shown in the Gui.
-%End
-
-    int displayHintDecimals() const;
-%Docstring
-Returns how much decimals should be shown in the Gui.
-%End
-
-};
-
-
-template <T>
-class QgsSettingsEntryEnumFlag : QgsSettingsEntryBase
-{
-%Docstring(signature="appended")
-
-A template class for enum and flag settings entry.
-
-.. note::
-
-   This template class has a dedicated handling in sipify.pl
-
-.. versionadded:: 3.20
-%End
-
-%TypeHeaderCode
-#include "qgssettingsentry.h"
-%End
-  public:
-
-    QgsSettingsEntryEnumFlag( const QString &key, QgsSettings::Section section, const T &defaultValue, const QString &description = QString() );
-%Docstring
-Constructor for :py:class:`QgsSettingsEntryEnumFlagBase`.
-
-The ``key`` argument specifies the final part of the settings key.
-The ``section`` argument specifies the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-
-.. note::
-
-   The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
-
-.. note::
-
-   for Python bindings, a custom implementation is achieved in Python directly
-%End
-
-    T value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const T &defaultValueOverride = T() ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const T &defaultValueOverride = T() ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    T defaultValue() const;
-%Docstring
-Returns settings default value.
+.. deprecated:: QGIS 3.26
+   use valueAsVariantWithDefaultOverride instead
 %End
 
     bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const;
@@ -791,18 +344,58 @@ The ``value`` to set.
 The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
-    virtual QgsSettingsEntryBase::SettingsType settingsType() const;
+    T defaultValue() const;
+%Docstring
+Returns settings default value.
+%End
 
+    T formerValue( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Returns the former value.
+Returns the current value (or default) if there is no former value.
+%End
+
+    T formerValue( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Returns the former value
+Returns the current value (or default) if there is no former value.
+%End
+
+  protected:
+    bool setValuePrivate( const T &value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Sets the settings value with an optional list of dynamic parts
+%End
+
+    virtual T convertFromVariant( const QVariant &value ) const = 0;
+%Docstring
+Converts the variant value to the value type of the setting
+%End
+
+    virtual QVariant convertToVariant( const T &value ) const;
+%Docstring
+Converts the value to a variant
+%End
+
+    virtual bool checkValue( const T &value ) const;
+%Docstring
+Check if the value is valid
+%End
 };
 
 
-class QgsSettingsEntryColor : QgsSettingsEntryBase
+template<T>
+class QgsSettingsEntryByValue : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
 
-A color settings entry.
+Base abstract class for settings entry which are passed by value
 
-.. versionadded:: 3.20
+.. seealso:: :py:class:`QgsSettingsEntryBase`
+
+.. seealso:: :py:class:`QgsSettingsEntryByReference`
+
+.. versionadded:: 3.26
 %End
 
 %TypeHeaderCode
@@ -811,21 +404,61 @@ A color settings entry.
   public:
 
 
-    QgsSettingsEntryColor( const QString &key,
-                           const QString &pluginName,
-                           const QColor &defaultValue = QColor(),
-                           const QString &description = QString() );
+    QgsSettingsEntryByValue( const QString &key, const QString &section, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
-Constructor for QgsSettingsEntryColor.
-This constructor is intended to be used from plugins.
+Constructor for QgsSettingsEntryByValue.
 
 The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
+The ``section`` argument specifies the section.
 The ``defaultValue`` argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
 %End
 
-    bool setValue( const QColor &value, const QString &dynamicKeyPart = QString() ) const;
+    virtual Qgis::SettingsType settingsType() const = 0;
+
+    T value( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Returns settings value.
+
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
+%End
+
+    T value( const QStringList &dynamicKeyPartList )  const;
+%Docstring
+Returns settings value.
+
+The ``dynamicKeyPartList`` argument specifies the list of dynamic parts of the settings key.
+The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
+%End
+
+    T valueWithDefaultOverride( T defaultValueOverride, const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Returns the settings value with a ``defaultValueOverride`` and with an optional ``dynamicKeyPart``
+%End
+    T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Returns the settings value with a ``defaultValueOverride`` for the ``dynamicKeyPartList``
+%End
+
+ T value( const QString &dynamicKeyPart, bool useDefaultValueOverride, T defaultValueOverride ) const /Deprecated/;
+%Docstring
+Returns the settings value for the ``dynamicKeyPart`` and  with a ``defaultValueOverride``
+
+.. deprecated:: QGIS 3.26
+   use valueWithDefaultOverride instead
+%End
+
+ T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, T defaultValueOverride ) const  /Deprecated/;
+%Docstring
+Returns the settings value for the ``dynamicKeyPartList`` and  with a ``defaultValueOverride``
+
+.. deprecated:: QGIS 3.26
+   use valueWithDefaultOverride instead
+%End
+
+    bool setValue( T value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Set settings value.
 
@@ -833,7 +466,7 @@ The ``value`` to set.
 The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
-    bool setValue( const QColor &value, const QStringList &dynamicKeyPartList ) const;
+    bool setValue( T value, const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Set settings value.
 
@@ -841,32 +474,45 @@ The ``value`` to set.
 The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
-    QColor value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QString &defaultValueOverride = QString() ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    QColor value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, const QString &defaultValueOverride = QString() ) const;
-%Docstring
-Returns settings value.
-
-The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
-The ``useDefaultValueOverride`` argument specifies if defaultValueOverride should be used.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
-%End
-
-    QColor defaultValue() const;
+    T defaultValue() const;
 %Docstring
 Returns settings default value.
 %End
 
-    virtual SettingsType settingsType() const;
+    T formerValue( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Returns the former value
+Returns the current value (or default) if there is no former value.
+%End
 
+    T formerValue( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Returns the former value
+Returns the current value (or default) if there is no former value.
+%End
+
+  protected:
+    virtual bool setValuePrivate( T value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Sets the settings value with an optional list of dynamic parts
+%End
+
+    virtual T convertFromVariant( const QVariant &value ) const = 0;
+%Docstring
+Converts the variant value to the value type of the setting
+%End
+
+    virtual QVariant convertToVariant( T value ) const;
+%Docstring
+Converts the value to a variant
+%End
+
+    virtual bool checkValue( T value ) const;
+%Docstring
+Check if the value is valid
+%End
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

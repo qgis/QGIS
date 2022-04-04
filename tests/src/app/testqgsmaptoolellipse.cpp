@@ -25,28 +25,30 @@
 #include "qgsmaptooladdfeature.h"
 
 #include "testqgsmaptoolutils.h"
-#include "qgsmaptoolellipsecenterpoint.h"
-#include "qgsmaptoolellipsecenter2points.h"
-#include "qgsmaptoolellipseextent.h"
-#include "qgsmaptoolellipsefoci.h"
+#include "qgsmaptoolcapture.h"
+
+#include "qgsmaptoolshapeellipsecenterpoint.h"
+#include "qgsmaptoolshapeellipsecenter2points.h"
+#include "qgsmaptoolshapeellipseextent.h"
+#include "qgsmaptoolshapeellipsefoci.h"
 
 class TestQgsMapToolEllipse : public QObject
 {
     Q_OBJECT
 
   public:
-    TestQgsMapToolEllipse();
+    TestQgsMapToolEllipse() = default;
 
   private slots:
-    void initTestCase();
-    void cleanupTestCase();
+    void initTestCase(); // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testEllipse_data();
     void testEllipse();
 
   private:
     QgisApp *mQgisApp = nullptr;
-    QgsMapToolCapture *mParentTool = nullptr;
+    QgsMapToolCapture *mMapTool = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     std::map<QString, std::unique_ptr<QgsVectorLayer>> mVectorLayerMap = {};
 
@@ -67,6 +69,8 @@ class TestQgsMapToolEllipse : public QObject
 
     void initAttributs();
 
+    void resetMapTool( QgsMapToolShapeMetadata *metadata );
+
     QgsFeatureId drawEllipseFromCenterAndPoint();
     QgsFeatureId drawEllipseFromCenterAndPointWithDeletedVertex();
     QgsFeatureId drawEllipseFromCenterAnd2Points();
@@ -82,8 +86,6 @@ class TestQgsMapToolEllipse : public QObject
 
     unsigned int segments( ) { return QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value() * 12; }
 };
-
-TestQgsMapToolEllipse::TestQgsMapToolEllipse() = default;
 
 
 //runs before all tests
@@ -119,7 +121,9 @@ void TestQgsMapToolEllipse::initTestCase()
   QgsProject::instance()->addMapLayers( layerList );
   mCanvas->setLayers( layerList );
 
-  mParentTool = new QgsMapToolAddFeature( mCanvas, QgsMapToolCapture::CaptureLine );
+  mMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
+  mCanvas->setMapTool( mMapTool );
 
   initAttributs();
 }
@@ -183,21 +187,28 @@ void TestQgsMapToolEllipse::initAttributs()
 
 void TestQgsMapToolEllipse::cleanupTestCase()
 {
-
-  for ( QString coordinate : mCoordinateList )
+  for ( const QString &coordinate : std::as_const( mCoordinateList ) )
   {
     mVectorLayerMap[coordinate].reset();
   }
+
+  delete mMapTool;
+
   QgsApplication::exitQgis();
 }
 
+void TestQgsMapToolEllipse::resetMapTool( QgsMapToolShapeMetadata *metadata )
+{
+  mMapTool->clean();
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
+  mMapTool->setCurrentShapeMapTool( metadata ) ;
+}
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAndPoint()
 {
-  QgsMapToolEllipseCenterPoint mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  resetMapTool( new QgsMapToolShapeEllipseCenterPointMetadata() );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 1, -1 );
   utils.mouseClick( 1, -1, Qt::RightButton );
@@ -207,10 +218,9 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAndPoint()
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAndPointWithDeletedVertex()
 {
-  QgsMapToolEllipseCenterPoint mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  resetMapTool( new QgsMapToolShapeEllipseCenterPointMetadata() );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 4, 1, Qt::LeftButton );
   utils.keyClick( Qt::Key_Backspace );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -222,10 +232,9 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAndPointWithDeletedVert
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAnd2Points()
 {
-  QgsMapToolEllipseCenter2Points mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  resetMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata() );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 0, 1, Qt::LeftButton );
   utils.mouseMove( 0, -1 );
@@ -236,10 +245,9 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAnd2Points()
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAnd2PointsWithDeletedVertex()
 {
-  QgsMapToolEllipseCenter2Points mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  resetMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata() );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 4, 1, Qt::LeftButton );
   utils.keyClick( Qt::Key_Backspace );
@@ -252,10 +260,9 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAnd2PointsWithDeletedVe
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromExtent()
 {
-  QgsMapToolEllipseExtent mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  resetMapTool( new QgsMapToolShapeEllipseExtentMetadata() );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 2, 2 );
   utils.mouseClick( 2, 2, Qt::RightButton );
@@ -265,10 +272,9 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromExtent()
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromExtentWithDeletedVertex()
 {
-  QgsMapToolEllipseExtent mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  resetMapTool( new QgsMapToolShapeEllipseExtentMetadata() );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 4, 1, Qt::LeftButton );
   utils.keyClick( Qt::Key_Backspace );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -280,10 +286,9 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromExtentWithDeletedVertex()
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromFoci()
 {
-  QgsMapToolEllipseFoci mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  resetMapTool( new QgsMapToolShapeEllipseFociMetadata() );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 1, -1 );
   utils.mouseClick( 1, -1, Qt::LeftButton );
@@ -295,10 +300,9 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromFoci()
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromFociWithDeletedVertex()
 {
-  QgsMapToolEllipseFoci mapTool( mParentTool, mCanvas );
-  mCanvas->setMapTool( &mapTool );
+  resetMapTool( new QgsMapToolShapeEllipseFociMetadata() );
 
-  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 4, 1, Qt::LeftButton );
   utils.keyClick( Qt::Key_Backspace );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -328,12 +332,12 @@ void TestQgsMapToolEllipse::testEllipse_data()
 
   QString rowStringName;
 
-  for ( QString coordinate : mCoordinateList )
+  for ( const QString &coordinate : std::as_const( mCoordinateList ) )
   {
     mLayer = mVectorLayerMap[coordinate].get();
     mCanvas->setCurrentLayer( mLayer );
 
-    for ( QString drawMethod : mDrawingEllipseMethods )
+    for ( const QString &drawMethod : std::as_const( mDrawingEllipseMethods ) )
     {
       mLayer->startEditing();
       mLayer->dataProvider()->truncate();

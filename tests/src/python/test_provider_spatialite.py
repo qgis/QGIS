@@ -20,7 +20,8 @@ from datetime import datetime
 import qgis  # NOQA
 from osgeo import ogr
 from qgis.PyQt.QtCore import QVariant, QByteArray
-from qgis.core import (QgsProviderRegistry,
+from qgis.core import (Qgis,
+                       QgsProviderRegistry,
                        QgsDataSourceUri,
                        QgsVectorLayer,
                        QgsVectorDataProvider,
@@ -413,7 +414,11 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                     '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')',
                     'to_time("time") >= make_time(12, 14, 14)',
                     'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
-                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')'
+                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                    'dt BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
+                    'dt NOT BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
+                    '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                    '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)'
                     ])
 
     def partiallyCompiledFilters(self):
@@ -1082,6 +1087,166 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         err, ok = vl.loadDefaultStyle()
         self.assertTrue(ok)
 
+    def testStyleStorage(self):
+
+        # First test with invalid URI
+        vl = QgsVectorLayer('/idont/exist.sqlite', 'test', 'spatialite')
+
+        self.assertFalse(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', '/idont/exist.sqlite', '')
+        self.assertFalse(res)
+        self.assertTrue(err)
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', '/idont/exist.sqlite', 'a style')
+        self.assertFalse(res)
+        self.assertTrue(err)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, -1)
+        self.assertEqual(idlist, [])
+        self.assertEqual(namelist, [])
+        self.assertEqual(desclist, [])
+        self.assertTrue(errmsg)
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
+
+        qml, success = vl.loadNamedStyle('/idont/exist.sqlite')
+        self.assertFalse(success)
+
+        errorMsg = vl.saveStyleToDatabase("name", "description", False, "")
+        self.assertTrue(errorMsg)
+
+        # create test db
+        dbname = os.path.join(tempfile.gettempdir(), "test_stylehandling.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = "CREATE TABLE test_pg (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+
+        sql = "SELECT AddGeometryColumn('test_pg', 'geometry', 4326, 'POLYGON', 'XY')"
+        cur.execute(sql)
+
+        sql = "INSERT INTO test_pg (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+
+        cur.execute("COMMIT")
+        con.close()
+
+        testPath = "dbname=%s table='test_pg' (geometry) key='id'" % dbname
+        vl = QgsVectorLayer(testPath, 'test', 'spatialite')
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+
+        # style tables don't exist yet
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 0)
+        self.assertEqual(idlist, [])
+        self.assertEqual(namelist, [])
+        self.assertEqual(desclist, [])
+        self.assertTrue(errmsg)
+
+        qml, errmsg = vl.getStyleFromDatabase("not_existing")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
+
+        qml, success = vl.loadNamedStyle('{}|layerid=0'.format(dbname))
+        self.assertFalse(success)
+
+        errorMsg = vl.saveStyleToDatabase("name", "description", False, "")
+        self.assertEqual(errorMsg, "")
+
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), 'name')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        qml, errmsg = vl.getStyleFromDatabase("not_existing")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertFalse(errmsg)
+        self.assertEqual(idlist, ['1'])
+        self.assertEqual(namelist, ['name'])
+        self.assertEqual(desclist, ['description'])
+
+        qml, errmsg = vl.getStyleFromDatabase("100")
+        self.assertEqual(qml, "")
+        self.assertNotEqual(errmsg, "")
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
+        self.assertFalse(errmsg)
+
+        # overwrite existing style
+        settings = QgsSettings()
+        settings.setValue("/qgis/overwriteStyle", True)
+        errorMsg = vl.saveStyleToDatabase("name", "description_bis", False, "")
+        self.assertFalse(errorMsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), 'name')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertFalse(errmsg)
+        self.assertEqual(idlist, ['1'])
+        self.assertEqual(namelist, ['name'])
+        self.assertEqual(desclist, ['description_bis'])
+
+        errorMsg = vl.saveStyleToDatabase("name_test2", "description_test2", True, "")
+        self.assertFalse(errmsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), 'name_test2')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        errorMsg = vl.saveStyleToDatabase("name2", "description2", True, "")
+        self.assertFalse(errmsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), 'name2')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        errorMsg = vl.saveStyleToDatabase("name3", "description3", True, "")
+        self.assertFalse(errmsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), 'name3')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 4)
+        self.assertFalse(errmsg)
+        self.assertCountEqual(idlist, ['1', '3', '4', '2'])
+        self.assertCountEqual(namelist, ['name', 'name2', 'name3', 'name_test2'])
+        self.assertCountEqual(desclist, ['description_bis', 'description2', 'description3', 'description_test2'])
+
     def _aliased_sql_helper(self, dbname):
         queries = (
             '(SELECT * FROM (SELECT * from \\"some view\\"))',
@@ -1556,7 +1721,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         # prepare a project with transactions enabled
         p = QgsProject()
-        p.setAutoTransaction(True)
+        p.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         p.addMapLayers([vl1, vl2])
 
         self.assertTrue(vl1.startEditing())
@@ -1628,7 +1793,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl2.featureCount(), 1)
 
         project = QgsProject()
-        project.setAutoTransaction(True)
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         project.addMapLayers([vl, vl2])
         project.setEvaluateDefaultValues(True)
 

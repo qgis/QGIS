@@ -36,6 +36,7 @@
 #include "qgsstatusbar.h"
 #include "qgslabelingresults.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QMouseEvent>
 
@@ -334,25 +335,130 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
   return QString();
 }
 
-void QgsMapToolLabel::currentAlignment( QString &hali, QString &vali )
+QgsMapToolLabel::LabelAlignment QgsMapToolLabel::currentAlignment()
 {
-  hali = QStringLiteral( "Left" );
-  vali = QStringLiteral( "Bottom" );
+  LabelAlignment labelAlignment = LabelAlignment::BottomLeft;
 
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
   if ( !vlayer )
   {
-    return;
+    return labelAlignment;
   }
 
   QgsFeature f;
   if ( !currentFeature( f ) )
   {
-    return;
+    return labelAlignment;
   }
 
-  hali = evaluateDataDefinedProperty( QgsPalLayerSettings::Hali, mCurrentLabel.settings, f, hali ).toString();
-  vali = evaluateDataDefinedProperty( QgsPalLayerSettings::Vali, mCurrentLabel.settings, f, vali ).toString();
+  // data defined quadrant offset
+  if ( mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::AroundPoint ||
+       mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::OverPoint )
+  {
+    QgsPalLayerSettings::QuadrantPosition quadrantOffset = QgsPalLayerSettings::QuadrantAboveRight;
+
+    // quadrant offest defined via buttons
+    if ( mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::OverPoint )
+      quadrantOffset = mCurrentLabel.settings.quadOffset;
+
+    // quadrant offest DD defined
+    if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::OffsetQuad ) )
+    {
+      QVariant exprVal = evaluateDataDefinedProperty( QgsPalLayerSettings::OffsetQuad, mCurrentLabel.settings, f, quadrantOffset );
+      if ( !exprVal.isNull() )
+      {
+        bool ok;
+        int quadInt = exprVal.toInt( &ok );
+        if ( ok && 0 <= quadInt && quadInt <= 8 )
+        {
+          quadrantOffset = static_cast< QgsPalLayerSettings::QuadrantPosition >( quadInt );
+        }
+      }
+    }
+
+    switch ( quadrantOffset )
+    {
+      case QgsPalLayerSettings::QuadrantAboveLeft:
+        labelAlignment = LabelAlignment::BottomRight;
+        break;
+      case QgsPalLayerSettings::QuadrantAbove:
+        labelAlignment = LabelAlignment::BottomCenter;
+        break;
+      case QgsPalLayerSettings::QuadrantAboveRight:
+        labelAlignment = LabelAlignment::BottomLeft;
+        break;
+      case QgsPalLayerSettings::QuadrantLeft:
+        labelAlignment = LabelAlignment::HalfRight;
+        break;
+      case QgsPalLayerSettings::QuadrantOver:
+        labelAlignment = LabelAlignment::HalfCenter;
+        break;
+      case QgsPalLayerSettings::QuadrantRight:
+        labelAlignment = LabelAlignment::HalfLeft;
+        break;
+      case QgsPalLayerSettings::QuadrantBelowLeft:
+        labelAlignment = LabelAlignment::TopRight;
+        break;
+      case QgsPalLayerSettings::QuadrantBelow:
+        labelAlignment = LabelAlignment::TopCenter;
+        break;
+      case QgsPalLayerSettings::QuadrantBelowRight:
+        labelAlignment = LabelAlignment::TopLeft;
+        break;
+    }
+  }
+
+  // quadrant defined by DD alignment
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Hali ) ||
+       mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Vali ) )
+  {
+    QString hali = QStringLiteral( "Left" );
+    QString vali = QStringLiteral( "Bottom" );
+    hali = evaluateDataDefinedProperty( QgsPalLayerSettings::Hali, mCurrentLabel.settings, f, hali ).toString();
+    vali = evaluateDataDefinedProperty( QgsPalLayerSettings::Vali, mCurrentLabel.settings, f, vali ).toString();
+
+    if ( hali.compare( QLatin1String( "Left" ), Qt::CaseInsensitive ) == 0 )
+    {
+      if ( vali.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::TopLeft;
+      else if ( vali.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::HalfLeft;
+      else if ( vali.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::BottomLeft;
+      else if ( vali.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::BaseLeft;
+      else if ( vali.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::CapLeft;
+    }
+    else if ( hali.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
+    {
+      if ( vali.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::TopCenter;
+      else if ( vali.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::HalfCenter;
+      else if ( vali.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::BottomCenter;
+      else if ( vali.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::BaseCenter;
+      else if ( vali.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::CapCenter;
+    }
+    else if ( hali.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
+    {
+      if ( vali.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::TopRight;
+      else if ( vali.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::HalfRight;
+      else if ( vali.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::BottomRight;
+      else if ( vali.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::BaseRight;
+      else if ( vali.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
+        labelAlignment = LabelAlignment::CapRight;
+    }
+  }
+
+  return labelAlignment;
 }
 
 bool QgsMapToolLabel::currentFeature( QgsFeature &f, bool fetchGeom )
@@ -470,8 +576,7 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   }
 
   //adapt pos depending on data defined alignment
-  QString haliString, valiString;
-  currentAlignment( haliString, valiString );
+  LabelAlignment alignment = currentAlignment();
 
   QFontMetricsF labelFontMetrics( mCurrentLabel.pos.labelFont );
 
@@ -486,33 +591,64 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   double labelSizeX = std::sqrt( cp_0.sqrDist( cp_1 ) );
   double labelSizeY = std::sqrt( cp_0.sqrDist( cp_3 ) );
 
-  double xdiff = 0;
+  // X diff
+  double xdiff = 0.0;
+  switch ( alignment )
+  {
+    case LabelAlignment::BottomRight:
+    case LabelAlignment::HalfRight:
+    case LabelAlignment::TopRight:
+    case LabelAlignment::BaseRight:
+    case LabelAlignment::CapRight:
+      xdiff = labelSizeX;
+      break;
+    case LabelAlignment::BottomCenter:
+    case LabelAlignment::HalfCenter:
+    case LabelAlignment::TopCenter:
+    case LabelAlignment::BaseCenter:
+    case LabelAlignment::CapCenter:
+      xdiff = labelSizeX / 2.0;
+      break;
+    case LabelAlignment::BottomLeft:
+    case LabelAlignment::HalfLeft:
+    case LabelAlignment::TopLeft:
+    case LabelAlignment::BaseLeft:
+    case LabelAlignment::CapLeft:
+      // Do nothing
+      break;
+  }
+
+  // Y diff
   double ydiff = 0;
-
-  if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
+  double descentRatio = 1.0 / labelFontMetrics.ascent() / labelFontMetrics.height();
+  double capHeightRatio = ( labelFontMetrics.boundingRect( 'H' ).height() + 1 + labelFontMetrics.descent() ) / labelFontMetrics.height();
+  switch ( alignment )
   {
-    xdiff = labelSizeX / 2.0;
-  }
-  else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
-  {
-    xdiff = labelSizeX;
-  }
-
-  if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 || valiString.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
-  {
-    ydiff = labelSizeY;
-  }
-  else
-  {
-    double descentRatio = 1 / labelFontMetrics.ascent() / labelFontMetrics.height();
-    if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
-    {
+    case LabelAlignment::BottomRight:
+    case LabelAlignment::BottomCenter:
+    case LabelAlignment::BottomLeft:
+      // Do nothing
+      break;
+    case LabelAlignment::HalfRight:
+    case LabelAlignment::HalfCenter:
+    case LabelAlignment::HalfLeft:
+      ydiff = labelSizeY * 0.5 * ( capHeightRatio - descentRatio );
+      break;
+    case LabelAlignment::TopRight:
+    case LabelAlignment::TopCenter:
+    case LabelAlignment::TopLeft:
+      ydiff = labelSizeY;
+      break;
+    case LabelAlignment::BaseRight:
+    case LabelAlignment::BaseCenter:
+    case LabelAlignment::BaseLeft:
       ydiff = labelSizeY * descentRatio;
-    }
-    else if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
-    {
-      ydiff = labelSizeY * 0.5 * ( 1 - descentRatio );
-    }
+      break;
+    case LabelAlignment::CapRight:
+    case LabelAlignment::CapCenter:
+    case LabelAlignment::CapLeft:
+      ydiff = labelSizeY * capHeightRatio;
+      break;
   }
 
   double angle = mCurrentLabel.pos.rotation;
@@ -548,8 +684,9 @@ bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::DataDefinedProp
 }
 #endif
 
-QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer ) const
+QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer, PropertyStatus &status ) const
 {
+  status = PropertyStatus::DoesNotExist;
   if ( !labelSettings.dataDefinedProperties().isActive( p ) )
     return QString();
 
@@ -558,14 +695,20 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
   switch ( property.propertyType() )
   {
     case QgsProperty::InvalidProperty:
+      break;
+
     case QgsProperty::StaticProperty:
+      status = PropertyStatus::Valid;
       break;
 
     case QgsProperty::FieldBasedProperty:
+      status = PropertyStatus::Valid;
       return property.field();
 
     case QgsProperty::ExpressionBasedProperty:
     {
+      status = PropertyStatus::Valid;
+
       // an expression based property may still be a effectively a single field reference in the map canvas context.
       // e.g. if it is a expression like '"some_field"', or 'case when @some_project_var = 'a' then "field_a" else "field_b" end'
 
@@ -607,6 +750,10 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
         }
 
       }
+      else
+      {
+        status = PropertyStatus::CurrentExpressionInvalid;
+      }
       break;
     }
   }
@@ -616,7 +763,8 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
 
 int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *vlayer ) const
 {
-  QString fieldname = dataDefinedColumnName( p, labelSettings, vlayer );
+  PropertyStatus status = PropertyStatus::DoesNotExist;
+  QString fieldname = dataDefinedColumnName( p, labelSettings, vlayer, status );
   if ( !fieldname.isEmpty() )
     return vlayer->fields().lookupField( fieldname );
   return -1;
@@ -630,7 +778,7 @@ QVariant QgsMapToolLabel::evaluateDataDefinedProperty( QgsPalLayerSettings::Prop
   return labelSettings.dataDefinedProperties().value( property, context, defaultValue );
 }
 
-bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol ) const
+bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol, int &pointCol ) const
 {
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
   QgsFeatureId featureId = mCurrentLabel.pos.featureId;
@@ -650,7 +798,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
       return false;
     }
   }
-  else if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+  else if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
   {
     return false;
   }
@@ -661,28 +809,51 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
     return false;
   }
 
-  if ( mCurrentLabel.pos.isUnplaced )
-  {
-    xSuccess = false;
-    ySuccess = false;
-  }
-  else
+  if ( !mCurrentLabel.pos.isUnplaced )
   {
     QgsAttributes attributes = f.attributes();
-    if ( !attributes.at( xCol ).isNull() )
-      x = attributes.at( xCol ).toDouble( &xSuccess );
-    if ( !attributes.at( yCol ).isNull() )
-      y = attributes.at( yCol ).toDouble( &ySuccess );
+
+    if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+    {
+      if ( pointCol >= 0
+           && !attributes.at( pointCol ).isNull() )
+      {
+        QVariant pointAsVariant = attributes.at( pointCol );
+        if ( pointAsVariant.canConvert<QgsGeometry>() )
+        {
+          const  QgsGeometry geometry = pointAsVariant.value<QgsGeometry>();
+          if ( const QgsPoint *point  = ( geometry.constGet() ? qgsgeometry_cast<const QgsPoint *>( geometry.constGet()->simplifiedTypeRef() ) : nullptr ) )
+          {
+            x = point->x();
+            y = point->y();
+
+            xSuccess = true;
+            ySuccess = true;
+          }
+        }
+      }
+    }
+    else
+    {
+      if ( !attributes.at( xCol ).isNull() )
+        x = attributes.at( xCol ).toDouble( &xSuccess );
+      if ( !attributes.at( yCol ).isNull() )
+        y = attributes.at( yCol ).toDouble( &ySuccess );
+    }
   }
 
   return true;
 }
 
-bool QgsMapToolLabel::labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const
+QgsMapToolLabel::PropertyStatus QgsMapToolLabel::labelRotatableStatus( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const
 {
-  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::LabelRotation, settings, layer );
+  PropertyStatus status = PropertyStatus::DoesNotExist;
+  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::LabelRotation, settings, layer, status );
+  if ( status == PropertyStatus::CurrentExpressionInvalid )
+    return status;
+
   rotationCol = layer->fields().lookupField( rColName );
-  return rotationCol != -1;
+  return rotationCol != -1 ? PropertyStatus::Valid : PropertyStatus::DoesNotExist;
 }
 
 bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &rotationSuccess, int &rCol, bool ignoreXY ) const
@@ -696,7 +867,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &r
     return false;
   }
 
-  if ( !labelIsRotatable( vlayer, mCurrentLabel.settings, rCol ) )
+  if ( labelRotatableStatus( vlayer, mCurrentLabel.settings, rCol ) != PropertyStatus::Valid )
   {
     return false;
   }
@@ -710,16 +881,43 @@ bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &r
   //test, if data defined x- and y- values are not null. Otherwise, the position is determined by PAL and the rotation cannot be fixed
   if ( !ignoreXY )
   {
-    int xCol, yCol;
+    int xCol, yCol, pointCol;
     double x, y;
     bool xSuccess, ySuccess;
-    if ( !currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
+    if ( !currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol, pointCol ) || !xSuccess || !ySuccess )
     {
       return false;
     }
   }
 
   rotation = f.attribute( rCol ).toDouble( &rotationSuccess );
+  return true;
+}
+
+bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, const QVariant &y )
+{
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+  {
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    int pointCol = mCurrentLabel.layer->fields().lookupField( pointColName );
+
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, pointCol, QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromPointXY( QgsPoint( x.toDouble(), y.toDouble() ) ), mCurrentLabel.layer->crs() ) ) ) )
+      return false;
+  }
+  else
+  {
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    int xCol = mCurrentLabel.layer->fields().lookupField( xColName );
+    int yCol = mCurrentLabel.layer->fields().lookupField( yColName );
+
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, x )
+         || !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, y ) )
+      return false;
+  }
+
   return true;
 }
 
@@ -782,40 +980,6 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
   return false;
 }
 
-bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
-{
-  if ( !vlayer || !vlayer->isEditable() || !vlayer->labelsEnabled() )
-  {
-    return false;
-  }
-
-  const auto constSubProviders = vlayer->labeling()->subProviders();
-  for ( const QString &providerId : constSubProviders )
-  {
-    if ( labelMoveable( vlayer, vlayer->labeling()->settings( providerId ), xCol, yCol ) )
-      return true;
-  }
-
-  return false;
-}
-
-bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol ) const
-{
-  QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
-  QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
-  //return !xColName.isEmpty() && !yColName.isEmpty();
-  xCol = vlayer->fields().lookupField( xColName );
-  yCol = vlayer->fields().lookupField( yColName );
-  return ( xCol != -1 && yCol != -1 );
-}
-
-bool QgsMapToolLabel::layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
-{
-  // currently same as QgsMapToolLabel::labelMoveable, but may change
-  bool canPin = labelMoveable( vlayer, xCol, yCol );
-  return canPin;
-}
-
 bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
 {
   if ( !vlayer || !vlayer->isEditable() || !vlayer->labelsEnabled() )
@@ -824,10 +988,11 @@ bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) c
   }
 
   const auto constSubProviders = vlayer->labeling()->subProviders();
+  PropertyStatus status = PropertyStatus::DoesNotExist;
   for ( const QString &providerId : constSubProviders )
   {
     QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Show,
-                        vlayer->labeling()->settings( providerId ), vlayer );
+                        vlayer->labeling()->settings( providerId ), vlayer, status );
     showCol = vlayer->fields().lookupField( fieldname );
     if ( showCol != -1 )
       return true;
@@ -848,15 +1013,45 @@ bool QgsMapToolLabel::isPinned()
   {
     // for diagrams, the isPinned attribute is not set. So we check directly if
     // there's data defined.
-    int xCol, yCol;
+    int xCol, yCol, pointCol;
     double x, y;
     bool xSuccess, ySuccess;
 
-    if ( currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol ) && xSuccess && ySuccess )
+    if ( currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol, pointCol ) && xSuccess && ySuccess )
       rc = true;
   }
 
   return rc;
+}
+
+bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const
+{
+  xCol = -1;
+  yCol = -1;
+  pointCol = -1;
+
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+  {
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer, status );
+    pointCol = vlayer->fields().lookupField( pointColName );
+    if ( pointCol >= 0 )
+      return true;
+  }
+
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionX )
+       && settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionY ) )
+  {
+    PropertyStatus status = PropertyStatus::DoesNotExist;
+    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer, status );
+    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer, status );
+    xCol = vlayer->fields().lookupField( xColName );
+    yCol = vlayer->fields().lookupField( yColName );
+    if ( xCol >= 0 || yCol >= 0 )
+      return true;
+  }
+
+  return false;
 }
 
 bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
@@ -1134,11 +1329,26 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
 
   mHoverRubberBand->show();
   mHoverRubberBand->reset( QgsWkbTypes::LineGeometry );
-  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 0 ) );
-  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 1 ) );
-  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 2 ) );
-  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 3 ) );
-  mHoverRubberBand->addPoint( labelPos.cornerPoints.at( 0 ) );
+  if ( const QgsLabelingResults *labelingResults = mCanvas->labelingResults( false ) )
+  {
+    if ( labelPos.groupedLabelId != 0 )
+    {
+      // if it's a curved label, we need to highlight ALL characters
+      const QList< QgsLabelPosition > allPositions = labelingResults->groupedLabelPositions( labelPos.groupedLabelId );
+      for ( const QgsLabelPosition &position : allPositions )
+      {
+        mHoverRubberBand->addGeometry( position.labelGeometry );
+      }
+    }
+    else
+    {
+      mHoverRubberBand->addGeometry( labelPos.labelGeometry );
+    }
+  }
+  else
+  {
+    mHoverRubberBand->addGeometry( labelPos.labelGeometry );
+  }
   QgisApp::instance()->statusBarIface()->showMessage( tr( "Label “%1” in %2" ).arg( labelPos.labelText, mCurrentHoverLabel.layer->name() ), 2000 );
 }
 

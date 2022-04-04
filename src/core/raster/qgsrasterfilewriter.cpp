@@ -257,7 +257,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       QgsRasterProjector *projector = pipe->projector();
       if ( projector && projector->destinationCrs() != projector->sourceCrs() )
       {
-        const QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs(), transformContext );
+        QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs(), transformContext );
+        ct.setBallparkTransformsAreAppropriate( true );
         outputExtentInSrcCrs = ct.transformBoundingBox( outputExtent );
       }
       if ( !srcProviderExtent.contains( outputExtentInSrcCrs ) &&

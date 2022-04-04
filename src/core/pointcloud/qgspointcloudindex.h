@@ -34,6 +34,7 @@
 #include "qgsrange.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
+#include "qgspointcloudexpression.h"
 
 #define SIP_NO_FILE
 
@@ -164,8 +165,8 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! The access type of the data, local is for local files and remote for remote files (over HTTP)
     enum AccessType
     {
-      Local, //! Local means the source is a local file on the machine
-      Remote //! Remote means it's loaded through a protocol like HTTP
+      Local, //!< Local means the source is a local file on the machine
+      Remote //!< Remote means it's loaded through a protocol like HTTP
     };
 
     //! Constructs index
@@ -191,11 +192,11 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns the number of points in the point cloud
     virtual qint64 pointCount() const = 0;
     //! Returns the statistic \a statistic of \a attribute
-    virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const = 0;
+    virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
     //! Returns the classes of \a attribute
-    virtual QVariantList metadataClasses( const QString &attribute ) const = 0;
+    virtual QVariantList metadataClasses( const QString &attribute ) const;
     //! Returns the statistic \a statistic of the class \a value of the attribute \a attribute
-    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const = 0;
+    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
     //! Returns the original metadata map
     virtual QVariantMap originalMetadata() const = 0;
 
@@ -275,9 +276,25 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     int span() const;
 
     /**
-     * Returns the number of poiny of indexed point cloud node \a n
+     * Returns the number of points of indexed point cloud node \a n
      */
     int nodePointCount( const IndexedPointCloudNode &n );
+
+    /**
+     * Sets the string used to define a subset of the point cloud.
+     * \param subset The subset string to be used in a \a QgsPointCloudExpression
+     * \returns true if the expression is parsed with no errors, false otherwise
+     * \since QGIS 3.26
+     */
+    bool setSubsetString( const QString &subset );
+
+    /**
+     * Returns the string used to define a subset of the point cloud.
+     * \returns The subset string or null QString if not implemented by the provider
+     *
+     * \since QGIS 3.26
+     */
+    QString subsetString() const;
 
   protected: //TODO private
     //! Sets native attributes of the data
@@ -293,6 +310,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
     QgsPointCloudAttributeCollection mAttributes; //! All native attributes stored in the file
     int mSpan;  //!< Number of points in one direction in a single node
+    QgsPointCloudExpression mFilterExpression;  //!< The filter expression to be evaluated when fetching node data
 };
 
 #endif // QGSPOINTCLOUDINDEX_H

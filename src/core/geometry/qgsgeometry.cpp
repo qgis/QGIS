@@ -942,17 +942,6 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QgsPointSequence
   QVector<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
 
-  /**
-   * QGIS uses GEOS algorithm to split geometries.
-   * Using 3D points in GEOS will returns an interpolation value which is the
-   * mean between geometries.
-   * On the contrary, in our logic, the interpolation is a linear interpolation
-   * on the split point. By dropping Z/M value, GEOS will returns the expected
-   * result. See https://github.com/qgis/QGIS/issues/33489
-   */
-  splitLineString.dropZValue();
-  splitLineString.dropMValue();
-
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( splitLineString, newGeoms, topological, topologyTestPoints, &mLastError, skipIntersectionTest );
@@ -1439,7 +1428,7 @@ json QgsGeometry::asJsonObject( int precision ) const
 
 }
 
-QVector<QgsGeometry> QgsGeometry::coerceToType( const QgsWkbTypes::Type type ) const
+QVector<QgsGeometry> QgsGeometry::coerceToType( const QgsWkbTypes::Type type, double defaultZ, double defaultM ) const
 {
   QVector< QgsGeometry > res;
   if ( isNull() )
@@ -1537,11 +1526,11 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const QgsWkbTypes::Type type ) c
   // Add Z/M back, set to 0
   if ( ! newGeom.constGet()->is3D() && QgsWkbTypes::hasZ( type ) )
   {
-    newGeom.get()->addZValue( 0.0 );
+    newGeom.get()->addZValue( defaultZ );
   }
   if ( ! newGeom.constGet()->isMeasure() && QgsWkbTypes::hasM( type ) )
   {
-    newGeom.get()->addMValue( 0.0 );
+    newGeom.get()->addMValue( defaultM );
   }
 
   // Multi -> single
@@ -2571,11 +2560,15 @@ double QgsGeometry::interpolateAngle( double distance ) const
   if ( !d->geometry )
     return 0.0;
 
+  const QgsAbstractGeometry *geom = d->geometry->simplifiedTypeRef();
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::PointGeometry )
+    return 0.0;
+
   // always operate on segmentized geometries
   QgsGeometry segmentized = *this;
-  if ( QgsWkbTypes::isCurvedType( wkbType() ) )
+  if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
   {
-    segmentized = QgsGeometry( static_cast< QgsCurve * >( d->geometry.get() )->segmentize() );
+    segmentized = QgsGeometry( static_cast< const QgsCurve * >( geom )->segmentize() );
   }
 
   QgsVertexId previous;
@@ -3200,7 +3193,6 @@ static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int 
   if ( const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
   {
     partIndex = 0;
-    int offset = 0;
     for ( int i = 0; i < geomCollection->numGeometries(); ++i )
     {
       const QgsAbstractGeometry *part = geomCollection->geometryN( i );
@@ -3216,7 +3208,6 @@ static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int 
         return vertexIndexInfo( part, vertexIndex, nothing, ringIndex, vertex ); // set ring_index + index
       }
       vertexIndex -= numPoints;
-      offset += numPoints;
       partIndex++;
     }
   }

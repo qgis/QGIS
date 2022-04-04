@@ -67,6 +67,9 @@ void QgsProcessingModelChildAlgorithm::copyNonDefinitionPropertiesFromModel( Qgs
   int i = 0;
   for ( auto it = mModelOutputs.begin(); it != mModelOutputs.end(); ++it )
   {
+    if ( !existingChild.modelOutputs().contains( it.key() ) )
+      continue;
+
     if ( !existingChild.modelOutputs().value( it.key() ).position().isNull() )
     {
       it.value().setPosition( existingChild.modelOutputs().value( it.key() ).position() );

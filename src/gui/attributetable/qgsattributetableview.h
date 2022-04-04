@@ -16,9 +16,9 @@
 #ifndef QGSATTRIBUTETABLEVIEW_H
 #define QGSATTRIBUTETABLEVIEW_H
 
-#include <QTableView>
 #include <QAction>
 #include "qgsfeatureid.h"
+#include "qgstableview.h"
 
 #include "qgis_gui.h"
 #include "qgsattributetableconfig.h"
@@ -45,7 +45,7 @@ class QgsFeature;
  * Or this can be used within the QgsDualView stacked widget.
  */
 
-class GUI_EXPORT QgsAttributeTableView : public QTableView
+class GUI_EXPORT QgsAttributeTableView : public QgsTableView
 {
     Q_OBJECT
 
@@ -205,6 +205,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag = QItemSelectionModel::Select;
     QMap< QModelIndex, QWidget * > mActionWidgets;
     QgsAttributeTableConfig mConfig;
+    QString mSortExpression;
 };
 
 #endif

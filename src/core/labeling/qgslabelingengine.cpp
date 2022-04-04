@@ -268,6 +268,11 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
 
 void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
 {
+  QgsLabelingEngineFeedback *feedback = qobject_cast< QgsLabelingEngineFeedback * >( context.feedback() );
+
+  if ( feedback )
+    feedback->emit labelRegistrationAboutToBegin();
+
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
 
   mPal = std::make_unique< pal::Pal >();
@@ -279,15 +284,27 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   mPal->setPlacementVersion( settings.placementVersion() );
 
   // for each provider: get labels and register them in PAL
+  const double step = !mProviders.empty() ? 100.0 / mProviders.size() : 1;
+  int index = 0;
   for ( QgsAbstractLabelProvider *provider : std::as_const( mProviders ) )
   {
+    if ( feedback )
+    {
+      feedback->emit providerRegistrationAboutToBegin( provider );
+      feedback->setProgress( index * step );
+    }
+    index++;
     std::unique_ptr< QgsExpressionContextScopePopper > layerScopePopper;
     if ( provider->layerExpressionContextScope() )
     {
       layerScopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), new QgsExpressionContextScope( *provider->layerExpressionContextScope() ) );
     }
     processProvider( provider, context, *mPal );
+    if ( feedback )
+      feedback->emit providerRegistrationFinished( provider );
   }
+  if ( feedback )
+    feedback->emit labelRegistrationFinished();
 }
 
 void QgsLabelingEngine::solve( QgsRenderContext &context )
@@ -351,7 +368,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
   // do the labeling itself
   try
   {
-    mProblem = mPal->extractProblem( extent, mapBoundaryGeom );
+    mProblem = mPal->extractProblem( extent, mapBoundaryGeom, context );
   }
   catch ( std::exception &e )
   {
@@ -395,7 +412,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
   }
 
   // find the solution
-  mLabels = mPal->solveProblem( mProblem.get(),
+  mLabels = mPal->solveProblem( mProblem.get(), context,
                                 settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ),
                                 settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) || settings.testFlag( QgsLabelingEngineSettings::CollectUnplacedLabels ) ? &mUnlabeled : nullptr );
 

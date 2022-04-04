@@ -3,7 +3,9 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Returns the current feature being evaluated. This can be used with the 'attribute' function to evaluate attribute values from the current feature.",
-  "examples": [
-	{ "expression":"attribute( $currentfeature, 'name' )", "returns":"value stored in 'name' attribute for the current feature"}
-  ]
+  "examples": [{
+    "expression": "attribute( $currentfeature, 'name' )",
+    "returns": "value stored in 'name' attribute for the current feature"
+  }],
+  "tags": ["evaluated", "attribute", "current", "evaluate"]
 }

@@ -3,11 +3,17 @@
   "type": "function",
   "groups": ["Files and Paths"],
   "description": "Retrieves exif tag values from an image file.",
-  "arguments": [
-    {"arg":"path","description":"An image file path."},
-    {"arg":"tag", "optional": true, "description":"The tag to return. If empty, a map with all exif tag values will be returned."}
-  ],
-  "examples": [
-    { "expression":"exif('/my/photo.jpg','Exif.Image.Orientation')", "returns":"0"}
-  ]
+  "arguments": [{
+    "arg": "path",
+    "description": "An image file path or a map layer value. If a map layer value is specified then the file source of the layer will be used."
+  }, {
+    "arg": "tag",
+    "optional": true,
+    "description": "The tag to return. If empty, a map with all exif tag values will be returned."
+  }],
+  "examples": [{
+    "expression": "exif('/my/photo.jpg','Exif.Image.Orientation')",
+    "returns": "0"
+  }],
+  "tags": ["exif", "retrieves", "tag", "file", "image", "values"]
 }

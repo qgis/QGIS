@@ -23,6 +23,9 @@ based on a transformation method and a list of GCPs.
 #include "qgsgcptransformer.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum class TransformMethod
     {

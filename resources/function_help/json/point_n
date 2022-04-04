@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a specific node from a geometry.",
-  "arguments": [ {"arg":"geometry","description":"geometry object"},
-  {"arg":"index","description":"index of node to return, where 1 is the first node; if the value is negative, the selected vertex index will be its total count minus the absolute value"} ],
-  "examples": [ { "expression":"geom_to_wkt(point_n(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'),2))", "returns":"'Point (4 0)'"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "geometry object"
+  }, {
+    "arg": "index",
+    "description": "index of node to return, where 1 is the first node; if the value is negative, the selected vertex index will be its total count minus the absolute value"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(point_n(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'),2))",
+    "returns": "'Point (4 0)'"
+  }],
+  "tags": ["specific", "node", "vertex"]
 }

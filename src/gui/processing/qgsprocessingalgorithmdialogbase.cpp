@@ -245,12 +245,15 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       break;
   }
 
-  connect( mAdvancedMenu, &QMenu::aboutToShow, this, [ = ]
+  if ( mAdvancedMenu )
   {
-    mCopyAsQgisProcessCommand->setEnabled( algorithm()
-                                           && !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool ) );
-    mPasteJsonAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
-  } );
+    connect( mAdvancedMenu, &QMenu::aboutToShow, this, [ = ]
+    {
+      mCopyAsQgisProcessCommand->setEnabled( algorithm()
+                                             && !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool ) );
+      mPasteJsonAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
+    } );
+  }
 
   connect( mButtonRun, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
   connect( mButtonChangeParameters, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::showParameters );
@@ -304,6 +307,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
         "dl dd { margin - bottom: 5px; }" ) );
     textShortHelp->setHtml( algHelp );
     connect( textShortHelp, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::linkClicked );
+    textShortHelp->show();
   }
 
   if ( algorithm->helpUrl().isEmpty() && algorithm->provider()->helpId().isEmpty() )
@@ -506,7 +510,7 @@ void QgsProcessingAlgorithmDialogBase::algExecuted( bool successful, const QVari
   else
   {
     // delete dialog if closed
-    if ( !isVisible() )
+    if ( isFinalized() && !isVisible() )
     {
       deleteLater();
     }
@@ -654,7 +658,7 @@ void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
 
   QDialog::closeEvent( e );
 
-  if ( !mAlgorithmTask )
+  if ( !mAlgorithmTask && isFinalized() )
   {
     // when running a background task, the dialog is kept around and deleted only when the task
     // completes. But if not running a task, we auto cleanup (later - gotta give callers a chance
@@ -806,6 +810,11 @@ QString QgsProcessingAlgorithmDialogBase::formatStringForLog( const QString &str
   return s;
 }
 
+bool QgsProcessingAlgorithmDialogBase::isFinalized()
+{
+  return true;
+}
+
 void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml, bool isWarning )
 {
   constexpr int MESSAGE_COUNT_LIMIT = 10000;
@@ -830,7 +839,7 @@ void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isE
 
 void QgsProcessingAlgorithmDialogBase::reject()
 {
-  if ( !mAlgorithmTask )
+  if ( !mAlgorithmTask && isFinalized() )
   {
     setAttribute( Qt::WA_DeleteOnClose );
   }

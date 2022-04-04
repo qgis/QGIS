@@ -402,6 +402,10 @@ class TestQgsProcessExecutable(unittest.TestCase):
             self.assertFalse(err)
         self.assertEqual(rc, 0)
         self.assertIn('model description', output.lower())
+        self.assertIn('author of model', output.lower())
+        self.assertIn('version 2.1', output.lower())
+        self.assertIn('examples', output.lower())
+        self.assertIn('this is an example of running the model', output.lower())
 
     def testModelRun(self):
         output_file = self.TMP_DIR + '/model_output.shp'
@@ -461,7 +465,6 @@ class TestQgsProcessExecutable(unittest.TestCase):
     def testModelRunWithLog(self):
         output_file = self.TMP_DIR + '/model_log.log'
         rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_logging_model.model3', '--', 'logfile={}'.format(output_file)])
-        self.assertIn('Test logged message', err)
         self.assertEqual(rc, 0)
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
@@ -552,6 +555,15 @@ class TestQgsProcessExecutable(unittest.TestCase):
         rc, output, err = self.run_process(['help', TEST_DATA_DIR + '/script_with_error.py'])
         self.assertEqual(rc, 1)
         self.assertIn('is not a valid Processing script', err)
+
+    def testComplexParameterNames(self):
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/complex_names.py', '--INPUT with many complex chars.123 a=abc', '--another% complex# NaMe=def'])
+        if os.environ.get('TRAVIS', '') != 'true':
+            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
+            self.assertFalse(err)
+
+        self.assertIn('OUTPUT:	abc:def', output)
+        self.assertEqual(rc, 0)
 
 
 if __name__ == '__main__':

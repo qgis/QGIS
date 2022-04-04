@@ -87,7 +87,11 @@ void QgsTextFormatWidget::initWidget()
   connect( mBufferUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::mBufferUnitWidget_changed );
   connect( mMaskBufferUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::mMaskBufferUnitWidget_changed );
   connect( mCoordXDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordXDDBtn_changed );
+  connect( mCoordXDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordXDDBtn_activated );
   connect( mCoordYDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordYDDBtn_changed );
+  connect( mCoordYDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordYDDBtn_activated );
+  connect( mCoordPointDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordPointDDBtn_changed );
+  connect( mCoordPointDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordPointDDBtn_activated );
   connect( mShapeTypeCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged );
   connect( mShapeRotationCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeRotationCmbBx_currentIndexChanged );
   connect( mShapeSVGParamsBtn, &QPushButton::clicked, this, &QgsTextFormatWidget::mShapeSVGParamsBtn_clicked );
@@ -804,9 +808,12 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   // data defined-only
   registerDataDefinedButton( mCoordXDDBtn, QgsPalLayerSettings::PositionX );
   registerDataDefinedButton( mCoordYDDBtn, QgsPalLayerSettings::PositionY );
+  registerDataDefinedButton( mCoordPointDDBtn, QgsPalLayerSettings::PositionPoint );
   registerDataDefinedButton( mCoordAlignmentHDDBtn, QgsPalLayerSettings::Hali );
   registerDataDefinedButton( mCoordAlignmentVDDBtn, QgsPalLayerSettings::Vali );
   registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::LabelRotation );
+
+  updateDataDefinedAlignment();
 
   // rendering
   const QString ddScaleVisInfo = tr( "Value &lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1<br>"
@@ -1168,12 +1175,9 @@ void QgsTextFormatWidget::deactivateField( QgsPalLayerSettings::Property key )
   if ( mButtons.contains( key ) )
   {
     QgsPropertyOverrideButton *button = mButtons[ key ];
-    QgsProperty p = button->toProperty();
-    p.setField( QString() );
-    p.setActive( false );
     button->updateFieldLists();
-    button->setToProperty( p );
-    mDataDefinedProperties.setProperty( key, p );
+    button->setToProperty( QgsProperty() );
+    mDataDefinedProperties.setProperty( key, QgsProperty() );
   }
 }
 
@@ -1572,28 +1576,44 @@ void QgsTextFormatWidget::mMaskBufferUnitWidget_changed()
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::mCoordXDDBtn_changed( )
+void QgsTextFormatWidget::mCoordXDDBtn_changed()
 {
-  if ( !mCoordXDDBtn->isActive() ) //no data defined alignment without data defined position
-  {
-    enableDataDefinedAlignment( false );
-  }
-  else if ( mCoordYDDBtn->isActive() )
-  {
-    enableDataDefinedAlignment( true );
-  }
+  updateDataDefinedAlignment();
 }
 
-void QgsTextFormatWidget::mCoordYDDBtn_changed( )
+void QgsTextFormatWidget::mCoordXDDBtn_activated( bool isActive )
 {
-  if ( !mCoordYDDBtn->isActive() ) //no data defined alignment without data defined position
-  {
-    enableDataDefinedAlignment( false );
-  }
-  else if ( mCoordXDDBtn->isActive() )
-  {
-    enableDataDefinedAlignment( true );
-  }
+  if ( !isActive )
+    return;
+
+  mCoordPointDDBtn->setActive( false );
+}
+
+void QgsTextFormatWidget::mCoordYDDBtn_changed()
+{
+  updateDataDefinedAlignment();
+}
+
+void QgsTextFormatWidget::mCoordYDDBtn_activated( bool isActive )
+{
+  if ( !isActive )
+    return;
+
+  mCoordPointDDBtn->setActive( false );
+}
+
+void QgsTextFormatWidget::mCoordPointDDBtn_changed()
+{
+  updateDataDefinedAlignment();
+}
+
+void QgsTextFormatWidget::mCoordPointDDBtn_activated( bool isActive )
+{
+  if ( !isActive )
+    return;
+
+  mCoordXDDBtn->setActive( false );
+  mCoordYDDBtn->setActive( false );
 }
 
 void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int )
@@ -1841,6 +1861,13 @@ void QgsTextFormatWidget::updateCalloutFrameStatus()
   mCalloutFrame->setEnabled( mCalloutDrawDDBtn->isActive() || mCalloutsDrawCheckBox->isChecked() );
 }
 
+void QgsTextFormatWidget::updateDataDefinedAlignment()
+{
+  // no data defined alignment without data defined position
+  mCoordAlignmentFrame->setEnabled( ( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() )
+                                    || mCoordPointDDBtn->isActive() );
+}
+
 void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type )
 {
   switch ( type )
@@ -2033,11 +2060,6 @@ void QgsTextFormatWidget::showBackgroundRadius( bool show )
 
   mShapeRadiusDDBtn->setVisible( show );
   mShapeRadiusUnitsDDBtn->setVisible( show );
-}
-
-void QgsTextFormatWidget::enableDataDefinedAlignment( bool enable )
-{
-  mCoordAlignmentFrame->setEnabled( enable );
 }
 
 QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const

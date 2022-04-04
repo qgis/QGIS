@@ -22,15 +22,14 @@
 
 #include <QFile>
 
-void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
+void QgsRasterChangeCoords::loadRaster( const QString &fileRaster )
 {
   GDALAllRegister();
   const gdal::dataset_unique_ptr hDS( GDALOpen( fileRaster.toUtf8().constData(), GA_ReadOnly ) );
   double adfGeoTransform[6];
   if ( GDALGetProjectionRef( hDS.get() ) && GDALGetGeoTransform( hDS.get(), adfGeoTransform ) == CE_None )
-    //if ( false )
   {
-    mHasCrs = true;
+    mHasExistingGeoreference = true;
     mUL_X = adfGeoTransform[0];
     mUL_Y = adfGeoTransform[3];
     mResX = adfGeoTransform[1];
@@ -38,11 +37,11 @@ void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
   }
   else
   {
-    mHasCrs = false;
+    mHasExistingGeoreference = false;
   }
 }
 
-QVector<QgsPointXY> QgsRasterChangeCoords::getPixelCoords( const QVector<QgsPointXY> &mapCoords )
+QVector<QgsPointXY> QgsRasterChangeCoords::getPixelCoords( const QVector<QgsPointXY> &mapCoords ) const
 {
   const int size = mapCoords.size();
   QVector<QgsPointXY> pixelCoords( size );
@@ -53,28 +52,36 @@ QVector<QgsPointXY> QgsRasterChangeCoords::getPixelCoords( const QVector<QgsPoin
   return pixelCoords;
 }
 
-QgsRectangle QgsRasterChangeCoords::getBoundingBox( const QgsRectangle &rect, bool toPixel )
+QgsRectangle QgsRasterChangeCoords::transformExtent( const QgsRectangle &rect, bool toPixel ) const
 {
+  if ( ! mHasExistingGeoreference )
+    return rect;
+
   QgsRectangle rectReturn;
   const QgsPointXY p1( rect.xMinimum(), rect.yMinimum() );
   const QgsPointXY p2( rect.xMaximum(), rect.yMaximum() );
-  QgsPointXY( QgsRasterChangeCoords::* func )( const QgsPointXY & );
 
-  func = toPixel ? &QgsRasterChangeCoords::toColumnLine : &QgsRasterChangeCoords::toXY;
+  auto func = toPixel ? &QgsRasterChangeCoords::toColumnLine : &QgsRasterChangeCoords::toXY;
   rectReturn.set( ( this->*func )( p1 ), ( this->*func )( p2 ) );
 
   return rectReturn;
 }
 
-QgsPointXY QgsRasterChangeCoords::toColumnLine( const QgsPointXY &pntMap )
+QgsPointXY QgsRasterChangeCoords::toColumnLine( const QgsPointXY &pntMap ) const
 {
+  if ( ! mHasExistingGeoreference )
+    return QgsPointXY( pntMap.x(), pntMap.y() );
+
   const double col = ( pntMap.x() - mUL_X ) / mResX;
   const double line = ( mUL_Y - pntMap.y() ) / mResY;
   return QgsPointXY( col, line );
 }
 
-QgsPointXY QgsRasterChangeCoords::toXY( const QgsPointXY &pntPixel )
+QgsPointXY QgsRasterChangeCoords::toXY( const QgsPointXY &pntPixel ) const
 {
+  if ( ! mHasExistingGeoreference )
+    return QgsPointXY( pntPixel.x(), pntPixel.y() );
+
   const double x = mUL_X + ( pntPixel.x() *  mResX );
   const double y = mUL_Y + ( pntPixel.y() * -mResY );
   return QgsPointXY( x, y );

@@ -18,6 +18,7 @@
 #define QGSGEOPACKAGEPROVIDERCONNECTION_H
 
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsogrproviderconnection.h"
 #include "qgsogrutils.h"
 
 ///@cond PRIVATE
@@ -53,7 +54,7 @@ struct QgsGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderCo
 
 };
 
-class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnection
+class QgsGeoPackageProviderConnection : public QgsOgrProviderConnection
 {
   public:
 
@@ -66,8 +67,6 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
-    void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
-    void dropVectorTable( const QString &schema, const QString &name ) const override;
     void dropRasterTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
@@ -79,7 +78,6 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
         const TableFlags &flags = TableFlags() ) const override;
     QIcon icon() const override;
-    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QgsFields fields( const QString &schema, const QString &table ) const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;

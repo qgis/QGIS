@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Python 3.7
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v3
         with:
           python-version: 3.7
       - name: Install Requirements
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Requirements
         run: |
           sudo apt install -y \
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Requirements
         run: |
             sudo apt install -y \
@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Run Banned Keywords Test
         run: ./tests/code_layout/test_banned_keywords.sh
 
@@ -88,15 +88,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Def Window Title Test
         run: ./tests/code_layout/test_defwindowtitle.sh
+
+  qgsscrollarea_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Run QgsScrollArea check
+        run: ./tests/code_layout/test_qgsscrollarea.sh
 
   qvariant_no_brace_init:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: No brace initialization of QVariant variables
         run: ./tests/code_layout/test_qvariant_no_brace_init.sh
 
@@ -104,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: No module-wide imports of Qt modules
         run: ./tests/code_layout/test_qt_imports.sh
 
@@ -112,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Requirements
         run: |
           sudo apt install -y \
@@ -121,12 +129,20 @@ jobs:
       - name: Doxygen Layout Test
         run: ./tests/code_layout/test_doxygen_layout.sh
 
+  settings_registry_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Settings Registries Test
+        run: ./tests/code_layout/test_settings_registry.sh
+
   indentation_check:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 100
       - name: Install Requirements
@@ -142,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Requirements
         run: |
           sudo apt install -y \
@@ -160,7 +176,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python 3.7
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v3
         with:
           python-version: 3.7
       - name: Install Requirements
@@ -184,19 +200,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install autopep8 nose2 mock termcolor
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Sip Checks
-        run: ./tests/code_layout/test_sipify.sh
+        run: ./tests/code_layout/sipify/test_sipify.sh
       - name: Sip Include Test
-        run: ./tests/code_layout/test_sip_include.sh
+        run: ./tests/code_layout/sipify/test_sip_include.sh
       - name: Sip Files Up To Date
-        run: ./tests/code_layout/test_sipfiles.sh
+        run: ./tests/code_layout/sipify/test_sipfiles.sh
 
   cppcheck_18_04:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Requirements
         run: |

@@ -77,6 +77,13 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setItemsCheckable( bool checkable );
 
     /**
+     * Sets the QgsProject from which map layers are shown
+     *
+     * \since QGIS 3.24
+     */
+    void setProject( QgsProject *project );
+
+    /**
      * Sets whether items in the model can be reordered via drag and drop.
      *
      * \see itemsCanBeReordered()

@@ -47,8 +47,6 @@ email                : nyall dot dawson at gmail dot com
 
 ///@cond PRIVATE
 
-static bool IsLocalFile( const QString &path );
-
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGlobalMutex, ( QMutex::Recursive ) )
 #else
@@ -999,17 +997,43 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
 
   bool bIsGpkg = QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
   bool bIsLocalGpkg = false;
+
+  if ( bIsGpkg )
+  {
+    // Hack use for qgsofflineediting / https://github.com/qgis/QGIS/issues/48012
+    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "QGIS_FORCE_WAL", nullptr );
+  }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+  if ( bIsGpkg && !bUpdate )
+  {
+    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "NOLOCK", "ON" );
+  }
+#endif
+
   if ( bIsGpkg &&
        IsLocalFile( filePath ) &&
        !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
        QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool() )
   {
-    // For GeoPackage, we force opening of the file in WAL (Write Ahead Log)
-    // mode so as to avoid readers blocking writer(s), and vice-versa.
-    // https://www.sqlite.org/wal.html
-    // But only do that on a local file since WAL is advertised not to work
-    // on network shares
-    CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
+    // Starting with GDAL 3.4.2, QgsOgrProvider::open(OpenModeInitial) will set
+    // a fake DO_NOT_ENABLE_WAL=ON when doing the initial open in update mode
+    // to indicate that we should not enable WAL.
+    // And NOLOCK=ON will be set in read-only attempts.
+    // Only enable it when enterUpdateMode() has been executed.
+    if ( CSLFetchNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL" ) == nullptr &&
+         CSLFetchNameValue( papszOpenOptions, "NOLOCK" ) == nullptr )
+    {
+      // For GeoPackage, we force opening of the file in WAL (Write Ahead Log)
+      // mode so as to avoid readers blocking writer(s), and vice-versa.
+      // https://www.sqlite.org/wal.html
+      // But only do that on a local file since WAL is advertised not to work
+      // on network shares
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+      QgsDebugMsgLevel( QStringLiteral( "Enabling WAL" ), 3 );
+#endif
+      CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
+    }
     bIsLocalGpkg = true;
   }
   else if ( bIsGpkg )
@@ -1017,6 +1041,11 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     // If WAL isn't set, we explicitly disable it, as it is persistent and it
     // may have been set on a previous connection.
     CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
+  }
+
+  if ( CSLFetchNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL" ) != nullptr )
+  {
+    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL", nullptr );
   }
 
   bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
@@ -1093,7 +1122,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   return hDS;
 }
 
-static bool IsLocalFile( const QString &path )
+bool QgsOgrProviderUtils::IsLocalFile( const QString &path )
 {
   QString dirName( QFileInfo( path ).absolutePath() );
   // Start with the OS specific methods since the QT >= 5.4 method just
@@ -1144,7 +1173,7 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
        !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) )
   {
     bool openedAsUpdate = false;
-    bool tryReturnToWall = false;
+    bool tryReturnToDelete = false;
     {
       QMutexLocker locker( sGlobalMutex() );
       ( *sMapCountOpenedDS() )[ datasetName ] --;
@@ -1152,27 +1181,18 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
       {
         sMapCountOpenedDS()->remove( datasetName );
         openedAsUpdate = ( *sMapDSHandleToUpdateMode() )[hDS];
-        tryReturnToWall = true;
+        tryReturnToDelete = true;
       }
       sMapDSHandleToUpdateMode()->remove( hDS );
     }
-    if ( tryReturnToWall )
+    if ( tryReturnToDelete )
     {
       bool bSuccess = false;
-      if ( openedAsUpdate )
-      {
-        // We need to reset all iterators on layers, otherwise we will not
-        // be able to change journal_mode.
-        int layerCount = GDALDatasetGetLayerCount( hDS );
-        for ( int i = 0; i < layerCount; i ++ )
-        {
-          OGR_L_ResetReading( GDALDatasetGetLayer( hDS, i ) );
-        }
 
-        CPLPushErrorHandler( CPLQuietErrorHandler );
-        QgsDebugMsgLevel( QStringLiteral( "GPKG: Trying to return to delete mode" ), 2 );
+      // Check if the current journal_mode is not already delete
+      {
         OGRLayerH hSqlLyr = GDALDatasetExecuteSQL( hDS,
-                            "PRAGMA journal_mode = delete",
+                            "PRAGMA journal_mode",
                             nullptr, nullptr );
         if ( hSqlLyr )
         {
@@ -1183,13 +1203,44 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
             bSuccess = EQUAL( pszRet, "delete" );
             QgsDebugMsgLevel( QStringLiteral( "Return: %1" ).arg( pszRet ), 2 );
           }
+          GDALDatasetReleaseResultSet( hDS, hSqlLyr );
         }
-        else if ( CPLGetLastErrorType() != CE_None )
+      }
+
+      if ( openedAsUpdate )
+      {
+        // We need to reset all iterators on layers, otherwise we will not
+        // be able to change journal_mode.
+        int layerCount = GDALDatasetGetLayerCount( hDS );
+        for ( int i = 0; i < layerCount; i ++ )
         {
-          QgsDebugMsg( QStringLiteral( "Return: %1" ).arg( CPLGetLastErrorMsg() ) );
+          OGR_L_ResetReading( GDALDatasetGetLayer( hDS, i ) );
         }
-        GDALDatasetReleaseResultSet( hDS, hSqlLyr );
-        CPLPopErrorHandler();
+
+        if ( !bSuccess )
+        {
+          CPLPushErrorHandler( CPLQuietErrorHandler );
+          QgsDebugMsgLevel( QStringLiteral( "GPKG: Trying to return to delete mode" ), 2 );
+          OGRLayerH hSqlLyr = GDALDatasetExecuteSQL( hDS,
+                              "PRAGMA journal_mode = delete",
+                              nullptr, nullptr );
+          if ( hSqlLyr )
+          {
+            gdal::ogr_feature_unique_ptr hFeat( OGR_L_GetNextFeature( hSqlLyr ) );
+            if ( hFeat )
+            {
+              const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
+              bSuccess = EQUAL( pszRet, "delete" );
+              QgsDebugMsgLevel( QStringLiteral( "Return: %1" ).arg( pszRet ), 2 );
+            }
+          }
+          else if ( CPLGetLastErrorType() != CE_None )
+          {
+            QgsDebugMsg( QStringLiteral( "Return: %1" ).arg( CPLGetLastErrorMsg() ) );
+          }
+          GDALDatasetReleaseResultSet( hDS, hSqlLyr );
+          CPLPopErrorHandler();
+        }
       }
       GDALClose( hDS );
 

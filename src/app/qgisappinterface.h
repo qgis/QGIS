@@ -131,6 +131,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removePluginVectorMenu( const QString &name, QAction *action ) override;
     void addPluginToWebMenu( const QString &name, QAction *action ) override;
     void removePluginWebMenu( const QString &name, QAction *action ) override;
+    void addPluginToMeshMenu( const QString &name, QAction *action ) override;
+    void removePluginMeshMenu( const QString &name, QAction *action ) override;
     void insertAddLayerAction( QAction *action ) override;
     void removeAddLayerAction( QAction *action ) override;
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) override;
@@ -288,22 +290,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionQgisHomePage() override;
     QAction *actionCheckQgisVersion() override;
     QAction *actionAbout() override;
-    QAction *actionCircle2Points() override;
-    QAction *actionCircle3Points() override;
-    QAction *actionCircle3Tangents() override;
-    QAction *actionCircle2TangentsPoint() override;
-    QAction *actionCircleCenterPoint() override;
-    QAction *actionEllipseCenter2Points() override;
-    QAction *actionEllipseCenterPoint() override;
-    QAction *actionEllipseExtent() override;
-    QAction *actionEllipseFoci() override;
-    QAction *actionRectangleCenterPoint() override;
-    QAction *actionRectangleExtent() override;
-    QAction *actionRectangle3PointsDistance() override;
-    QAction *actionRectangle3PointsProjected() override;
-    QAction *actionRegularPolygon2Points() override;
-    QAction *actionRegularPolygonCenterPoint() override;
-    QAction *actionRegularPolygonCenterCorner() override;
 
     bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) override;
     QgsAttributeDialog *getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;

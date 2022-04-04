@@ -42,6 +42,13 @@ Returns the details of any labels placed at the specified point (in map coordina
 Returns the details of any labels placed within the specified rectangle (in map coordinates).
 %End
 
+    QList<QgsLabelPosition> groupedLabelPositions( long long groupId ) const;
+%Docstring
+Returns a list of all label positions sharing the same group ID (i.e. positions for individual characters in a curved label).
+
+.. versionadded:: 3.26
+%End
+
     QList<QgsCalloutPosition> calloutsWithinRectangle( const QgsRectangle &rectangle ) const;
 %Docstring
 Returns a list of callouts with origins or destinations inside the given ``rectangle``.

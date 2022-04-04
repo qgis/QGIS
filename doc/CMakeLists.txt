@@ -60,6 +60,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/dxf
       ${CMAKE_SOURCE_DIR}/src/core/editform
       ${CMAKE_SOURCE_DIR}/src/core/effects
+      ${CMAKE_SOURCE_DIR}/src/core/elevation
       ${CMAKE_SOURCE_DIR}/src/core/expression
       ${CMAKE_SOURCE_DIR}/src/core/externalstorage
       ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
@@ -78,6 +79,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/network
       ${CMAKE_SOURCE_DIR}/src/core/numericformats
       ${CMAKE_SOURCE_DIR}/src/core/pal
+      ${CMAKE_SOURCE_DIR}/src/core/plot
       ${CMAKE_SOURCE_DIR}/src/core/pointcloud
       ${CMAKE_SOURCE_DIR}/src/core/processing
       ${CMAKE_SOURCE_DIR}/src/core/processing/models
@@ -109,6 +111,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
       ${CMAKE_SOURCE_DIR}/src/gui/layout
       ${CMAKE_SOURCE_DIR}/src/gui/locator
+      ${CMAKE_SOURCE_DIR}/src/gui/maptools
       ${CMAKE_SOURCE_DIR}/src/gui/mesh
       ${CMAKE_SOURCE_DIR}/src/gui/numericformats
       ${CMAKE_SOURCE_DIR}/src/gui/ogr

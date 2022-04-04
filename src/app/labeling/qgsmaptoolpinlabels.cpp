@@ -347,14 +347,14 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
     return false;
   }
 
-  // verify attribute table has x, y fields mapped
-  int xCol, yCol;
+  // verify attribute table has x, y or point fields mapped
+  int xCol, yCol, pointCol;
   double xPosOrig, yPosOrig;
   bool xSuccess, ySuccess;
 
-  if ( !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+  if ( !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Label X or Y column not mapped, skipping" ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Label X, Y or Point column not mapped, skipping" ), 2 );
     return false;
   }
 
@@ -461,11 +461,11 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
     return false;
 
   // verify attribute table has x, y fields mapped
-  int xCol, yCol;
+  int xCol, yCol, pointCol;
   double xPosOrig, yPosOrig;
   bool xSuccess, ySuccess;
 
-  if ( !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+  if ( !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
     return false;
 
   // edit attribute table

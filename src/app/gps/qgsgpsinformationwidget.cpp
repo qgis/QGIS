@@ -752,7 +752,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   FixStatus fixStatus = NoData;
 
   // no fix if any of the three report bad; default values are invalid values and won't be changed if the corresponding NMEA msg is not received
-  if ( info.status == 'V' || info.fixType == NMEA_FIX_BAD || info.quality == 0 ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  if ( info.status == 'V' || info.fixType == NMEA_FIX_BAD || info.qualityIndicator == Qgis::GpsQualityIndicator::Invalid || info.qualityIndicator == Qgis::GpsQualityIndicator::Unknown ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
     fixStatus = NoFix;
   }
@@ -761,7 +761,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     fixStatus = Fix2D;
     validFlag = true;
   }
-  else if ( info.status == 'A' || info.fixType == NMEA_FIX_3D || info.quality > 0 ) // good
+  else if ( info.status == 'A' || info.fixType == NMEA_FIX_3D || ( info.qualityIndicator != Qgis::GpsQualityIndicator::Invalid && info.qualityIndicator != Qgis::GpsQualityIndicator::Unknown ) ) // good
   {
     fixStatus = Fix3D;
     validFlag = true;
@@ -1042,7 +1042,15 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     }
     else
     {
-      bearing = 180 * mDistanceCalculator.bearing( mSecondLastGpsPosition, mLastGpsPosition ) / M_PI;
+      try
+      {
+        bearing = 180 * mDistanceCalculator.bearing( mSecondLastGpsPosition, mLastGpsPosition ) / M_PI;
+      }
+      catch ( QgsCsException & )
+      {
+
+      }
+
     }
 
     const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
@@ -1665,13 +1673,20 @@ void QgsGpsInformationWidget::updateGpsDistanceStatusMessage( bool forceDisplay 
 
   const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
                           QgsProject::instance()->distanceUnits() );
-  const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
-  const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
-  const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
-  const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
+  try
+  {
+    const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
+    const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+    const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
+    const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
 
-  QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS
-      : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - mLastForcedStatusUpdate.elapsed() );
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS
+        : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - mLastForcedStatusUpdate.elapsed() );
+  }
+  catch ( QgsCsException & )
+  {
+
+  }
 }
 
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )

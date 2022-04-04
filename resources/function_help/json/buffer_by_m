@@ -3,8 +3,18 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Creates a buffer along a line geometry where the buffer diameter varies according to the m-values at the line vertices.",
-  "arguments": [ {"arg":"geometry","description":"input geometry. Must be a (multi)line geometry with m values."},
-                 {"arg":"segments","optional":true,"default":"8","description":"number of segments to approximate quarter-circle curves in the buffer."}],
-  "examples": [ { "expression":"buffer_by_m(geometry:=geom_from_wkt('LINESTRINGM(1 2 0.5, 4 2 0.2)'),segments:=8)", "returns":"A variable width buffer starting with a diameter of 0.5 and ending with a diameter of 0.2 along the linestring geometry."}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "input geometry. Must be a (multi)line geometry with m values."
+  }, {
+    "arg": "segments",
+    "optional": true,
+    "default": "8",
+    "description": "number of segments to approximate quarter-circle curves in the buffer."
+  }],
+  "examples": [{
+    "expression": "buffer_by_m(geometry:=geom_from_wkt('LINESTRINGM(1 2 0.5, 4 2 0.2)'),segments:=8)",
+    "returns": "A variable width buffer starting with a diameter of 0.5 and ending with a diameter of 0.2 along the linestring geometry."
+  }],
+  "tags": ["line", "according", "values", "varies", "vertices", "buffer", "diameter"]
 }
-

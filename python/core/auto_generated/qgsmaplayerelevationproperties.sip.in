@@ -25,11 +25,21 @@ how an individual :py:class:`QgsMapLayer` behaves with relation to z values or e
 %TypeHeaderCode
 #include "qgsmaplayerelevationproperties.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsvectorlayerelevationproperties.h"
 %End
 %ConvertToSubClassCode
     if ( qobject_cast<QgsPointCloudLayerElevationProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsPointCloudLayerElevationProperties;
+    }
+    else if ( qobject_cast<QgsVectorLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsVectorLayerElevationProperties;
+    }
+    else if ( qobject_cast<QgsRasterLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterLayerElevationProperties;
     }
     else
     {
@@ -87,12 +97,68 @@ the settings defined by this elevation properties object.
 May return an infinite range if the extent could not be calculated.
 %End
 
+    double zOffset() const;
+%Docstring
+Returns the z offset, which is a fixed offset amount which should be added to z values from
+the layer.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsMapLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsMapLayerElevationProperties.zOffset`
+
+.. seealso:: :py:func:`setZOffset`
+%End
+
+    void setZOffset( double offset );
+%Docstring
+Sets the z ``offset``, which is a fixed offset amount which will be added to z values from
+the layer.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsMapLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsMapLayerElevationProperties.zOffset`
+
+.. seealso:: :py:func:`zOffset`
+%End
+
+    double zScale() const;
+%Docstring
+Returns the z scale, which is a scaling factor which should be applied to z values from
+the layer.
+
+This can be used to correct or manually adjust for incorrect elevation values in a layer, such
+as conversion of elevation values in feet to meters.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsMapLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsMapLayerElevationProperties.zOffset`
+
+.. seealso:: :py:func:`setZScale`
+%End
+
+    void setZScale( double scale );
+%Docstring
+Sets the z ``scale``, which is a scaling factor which will be applied to z values from
+the layer.
+
+This can be used to correct or manually adjust for incorrect elevation values in a layer, such
+as conversion of elevation values in feet to meters.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsMapLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsMapLayerElevationProperties.zOffset`
+
+.. seealso:: :py:func:`zScale`
+%End
+
   signals:
 
     void changed();
 %Docstring
 Emitted when the elevation properties have changed.
 %End
+
+  protected:
 };
 
 /************************************************************************

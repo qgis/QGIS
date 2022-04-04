@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the distance along a linestring corresponding to the closest position the linestring comes to a specified point geometry.",
-  "arguments": [ {"arg":"geometry","description":"a linestring geometry"},
-                 {"arg":"point","description":"point geometry to locate closest position on linestring to"}],
-  "examples": [ { "expression":"line_locate_point(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),point:=geom_from_wkt('Point(5 0)'))", "returns":"5.0"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a linestring geometry"
+  }, {
+    "arg": "point",
+    "description": "point geometry to locate closest position on linestring to"
+  }],
+  "examples": [{
+    "expression": "line_locate_point(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),point:=geom_from_wkt('Point(5 0)'))",
+    "returns": "5.0"
+  }],
+  "tags": ["distance", "point", "specified", "closest", "linestring", "position", "corresponding", "along"]
 }

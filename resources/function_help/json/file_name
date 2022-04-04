@@ -3,7 +3,13 @@
   "type": "function",
   "groups": ["Files and Paths"],
   "description": "Returns the name of a file (including the file extension), excluding the directory.",
-  "arguments": [ {"arg":"path","description":"a file path"}],
-  "examples": [ { "expression":"file_name('/home/qgis/data/country_boundaries.shp')", "returns":"'country_boundaries.shp'"}]
+  "arguments": [{
+    "arg": "path",
+    "description": "a file path or a map layer value. If a map layer value is specified then the file source of the layer will be used."
+  }],
+  "examples": [{
+    "expression": "file_name('/home/qgis/data/country_boundaries.shp')",
+    "returns": "'country_boundaries.shp'"
+  }],
+  "tags": ["extension", "name", "directory", "file", "path"]
 }
-

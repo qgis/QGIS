@@ -97,8 +97,8 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 
   // restore settings
   bool enabled = QgsLocator::settingsLocatorFilterEnabled.value( filter->name() );
-  bool byDefault = QgsLocator::settingsLocatorFilterDefault.value( filter->name(), true, filter->useWithoutPrefix() );
-  QString prefix = QgsLocator::settingsLocatorFilterPrefix.value( filter->name(), true, filter->prefix() );
+  bool byDefault = QgsLocator::settingsLocatorFilterDefault.valueWithDefaultOverride( filter->useWithoutPrefix(), filter->name() );
+  QString prefix = QgsLocator::settingsLocatorFilterPrefix.valueWithDefaultOverride( filter->prefix(), filter->name() );
   if ( prefix.isEmpty() )
   {
     prefix = filter->prefix();

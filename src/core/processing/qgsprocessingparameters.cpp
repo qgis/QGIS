@@ -1094,7 +1094,8 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     const QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
     if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
     {
-      const QgsCoordinateTransform ct( rr.crs(), crs, context.project() );
+      QgsCoordinateTransform ct( rr.crs(), crs, context.project() );
+      ct.setBallparkTransformsAreAppropriate( true );
       try
       {
         return ct.transformBoundingBox( rr );
@@ -1155,7 +1156,8 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
       const QgsCoordinateReferenceSystem rectCrs( match.captured( 5 ) );
       if ( crs.isValid() && rectCrs.isValid() && crs != rectCrs )
       {
-        const QgsCoordinateTransform ct( rectCrs, crs, context.project() );
+        QgsCoordinateTransform ct( rectCrs, crs, context.project() );
+        ct.setBallparkTransformsAreAppropriate( true );
         try
         {
           return ct.transformBoundingBox( rect );
@@ -1178,7 +1180,8 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     const QgsRectangle rect = layer->extent();
     if ( crs.isValid() && layer->crs().isValid() && crs != layer->crs() )
     {
-      const QgsCoordinateTransform ct( layer->crs(), crs, context.project() );
+      QgsCoordinateTransform ct( layer->crs(), crs, context.project() );
+      ct.setBallparkTransformsAreAppropriate( true );
       try
       {
         return ct.transformBoundingBox( rect );

@@ -18,7 +18,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
 #include "qgsproviderregistry.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgssettings.h"
 
 QgsProcessingContext::QgsProcessingContext()
@@ -84,9 +84,9 @@ std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidG
       auto callback = [sourceName]( const QgsFeature & feature )
       {
         if ( !sourceName.isEmpty() )
-          throw QgsProcessingException( QObject::tr( "Feature (%1) from “%2” has invalid geometry. Please fix the geometry or change the Processing setting to the “Ignore invalid input features” option." ).arg( feature.id() ).arg( sourceName ) );
+          throw QgsProcessingException( QObject::tr( "Feature (%1) from “%2” has invalid geometry. Please fix the geometry or change the “Invalid features filtering” option for this input or globally in Processing settings." ).arg( feature.id() ).arg( sourceName ) );
         else
-          throw QgsProcessingException( QObject::tr( "Feature (%1) has invalid geometry. Please fix the geometry or change the Processing setting to the “Ignore invalid input features” option." ).arg( feature.id() ) );
+          throw QgsProcessingException( QObject::tr( "Feature (%1) has invalid geometry. Please fix the geometry or change the “Invalid features filtering” option for input layers or globally in Processing settings." ).arg( feature.id() ) );
       };
       return callback;
     }
@@ -98,9 +98,9 @@ std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidG
         if ( mFeedback )
         {
           if ( !sourceName.isEmpty() )
-            mFeedback->reportError( QObject::tr( "Feature (%1) from “%2” has invalid geometry and has been skipped. Please fix the geometry or change the Processing setting to the “Ignore invalid input features” option." ).arg( feature.id() ).arg( sourceName ) );
+            mFeedback->reportError( QObject::tr( "Feature (%1) from “%2” has invalid geometry and has been skipped. Please fix the geometry or change the “Invalid features filtering” option for this input or globally in Processing settings." ).arg( feature.id() ).arg( sourceName ) );
           else
-            mFeedback->reportError( QObject::tr( "Feature (%1) has invalid geometry and has been skipped. Please fix the geometry or change the Processing setting to the “Ignore invalid input features” option." ).arg( feature.id() ) );
+            mFeedback->reportError( QObject::tr( "Feature (%1) has invalid geometry and has been skipped. Please fix the geometry or change the “Invalid features filtering” option for input layers or globally in Processing settings." ).arg( feature.id() ) );
         }
       };
       return callback;

@@ -35,6 +35,7 @@
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgsfielddomain.h"
 
 #include <QTextCodec>
 #include <QUuid>
@@ -181,6 +182,71 @@ QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType typ
     }
   }
   return QVariant();
+}
+
+std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &value )
+{
+  std::unique_ptr< OGRField > res = std::make_unique< OGRField >();
+
+  switch ( value.type() )
+  {
+    case QVariant::Invalid:
+      OGR_RawField_SetUnset( res.get() );
+      break;
+    case QVariant::Bool:
+      res->Integer = value.toBool() ? 1 : 0;
+      break;
+    case QVariant::Int:
+      res->Integer = value.toInt();
+      break;
+    case QVariant::LongLong:
+      res->Integer64 = value.toLongLong();
+      break;
+    case QVariant::Double:
+      res->Real = value.toDouble();
+      break;
+    case QVariant::Char:
+    case QVariant::String:
+      res->String = CPLStrdup( value.toString().toUtf8().constData() );
+      break;
+    case QVariant::Date:
+    {
+      const QDate date = value.toDate();
+      res->Date.Day = date.day();
+      res->Date.Month = date.month();
+      res->Date.Year = date.year();
+      res->Date.TZFlag = 0;
+      break;
+    }
+    case QVariant::Time:
+    {
+      const QTime time = value.toTime();
+      res->Date.Hour = time.hour();
+      res->Date.Minute = time.minute();
+      res->Date.Second = time.second() + static_cast< double >( time.msec() ) / 1000;
+      res->Date.TZFlag = 0;
+      break;
+    }
+    case QVariant::DateTime:
+    {
+      const QDateTime dateTime = value.toDateTime();
+      res->Date.Day = dateTime.date().day();
+      res->Date.Month = dateTime.date().month();
+      res->Date.Year = dateTime.date().year();
+      res->Date.Hour = dateTime.time().hour();
+      res->Date.Minute = dateTime.time().minute();
+      res->Date.Second = dateTime.time().second() + static_cast< double >( dateTime.time().msec() ) / 1000;
+      res->Date.TZFlag = 0;
+      break;
+    }
+
+    default:
+      QgsDebugMsg( "Unhandled variant type in variantToOGRField" );
+      OGR_RawField_SetUnset( res.get() );
+      break;
+  }
+
+  return res;
 }
 
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
@@ -962,24 +1028,76 @@ QgsCoordinateReferenceSystem QgsOgrUtils::OGRSpatialReferenceToCrs( OGRSpatialRe
   if ( wkt.isEmpty() )
     return QgsCoordinateReferenceSystem();
 
+  const char *authorityName = OSRGetAuthorityName( srs, nullptr );
+  const char *authorityCode = OSRGetAuthorityCode( srs, nullptr );
+  QgsCoordinateReferenceSystem res;
+  if ( authorityName && authorityCode )
+  {
+    QString authId = QString( authorityName ) + ':' + QString( authorityCode );
+    OGRSpatialReferenceH ogrSrsTmp = OSRNewSpatialReference( nullptr );
+    // Check that the CRS build from authId and the input one are the "same".
+    if ( OSRSetFromUserInput( ogrSrsTmp, authId.toUtf8().constData() ) != OGRERR_NONE &&
+         OSRIsSame( srs, ogrSrsTmp ) )
+    {
+      res = QgsCoordinateReferenceSystem();
+      res.createFromUserInput( authId );
+    }
+    OSRDestroySpatialReference( ogrSrsTmp );
+  }
+  if ( !res.isValid() )
+    res = QgsCoordinateReferenceSystem::fromWkt( wkt );
+
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
-  QgsCoordinateReferenceSystem res = QgsCoordinateReferenceSystem::fromWkt( wkt );
   const double coordinateEpoch = OSRGetCoordinateEpoch( srs );
   if ( coordinateEpoch > 0 )
     res.setCoordinateEpoch( coordinateEpoch );
-  return res;
-#else
-  return QgsCoordinateReferenceSystem::fromWkt( wkt );
 #endif
+  return res;
 }
 
 OGRSpatialReferenceH QgsOgrUtils::crsToOGRSpatialReference( const QgsCoordinateReferenceSystem &crs )
 {
   if ( crs.isValid() )
   {
-    const QString srsWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
+    OGRSpatialReferenceH ogrSrs = nullptr;
 
-    if ( OGRSpatialReferenceH ogrSrs = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() ) )
+    // First try instantiating the CRS from its authId. This will give a
+    // more complete representation of the CRS for GDAL. In particular it might
+    // help a few drivers to get the datum code, that would be missing in WKT-2.
+    // See https://github.com/OSGeo/gdal/pull/5218
+    const QString authId = crs.authid();
+    const QString srsWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
+    if ( !authId.isEmpty() )
+    {
+      ogrSrs = OSRNewSpatialReference( nullptr );
+      if ( OSRSetFromUserInput( ogrSrs, authId.toUtf8().constData() ) == OGRERR_NONE )
+      {
+        // Check that the CRS build from WKT and authId are the "same".
+        OGRSpatialReferenceH ogrSrsFromWkt = OSRNewSpatialReference( srsWkt.toUtf8().constData() );
+        if ( ogrSrsFromWkt )
+        {
+          if ( !OSRIsSame( ogrSrs, ogrSrsFromWkt ) )
+          {
+            OSRDestroySpatialReference( ogrSrs );
+            ogrSrs = ogrSrsFromWkt;
+          }
+          else
+          {
+            OSRDestroySpatialReference( ogrSrsFromWkt );
+          }
+        }
+      }
+      else
+      {
+        OSRDestroySpatialReference( ogrSrs );
+        ogrSrs = nullptr;
+      }
+    }
+    if ( !ogrSrs )
+    {
+      ogrSrs = OSRNewSpatialReference( srsWkt.toUtf8().constData() );
+    }
+    if ( ogrSrs )
     {
       OSRSetAxisMappingStrategy( ogrSrs, OAMS_TRADITIONAL_GIS_ORDER );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
@@ -1731,3 +1849,382 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 
   return nullptr;
 }
+
+void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubType ogrSubType, QVariant::Type &variantType, QVariant::Type &variantSubType )
+{
+  variantType = QVariant::Type::Invalid;
+  variantSubType = QVariant::Type::Invalid;
+
+  switch ( ogrType )
+  {
+    case OFTInteger:
+      if ( ogrSubType == OFSTBoolean )
+      {
+        variantType = QVariant::Bool;
+        ogrSubType = OFSTBoolean;
+      }
+      else
+        variantType = QVariant::Int;
+      break;
+    case OFTInteger64:
+      variantType = QVariant::LongLong;
+      break;
+    case OFTReal:
+      variantType = QVariant::Double;
+      break;
+    case OFTDate:
+      variantType = QVariant::Date;
+      break;
+    case OFTTime:
+      variantType = QVariant::Time;
+      break;
+    case OFTDateTime:
+      variantType = QVariant::DateTime;
+      break;
+
+    case OFTBinary:
+      variantType = QVariant::ByteArray;
+      break;
+
+    case OFTString:
+    case OFTWideString:
+      if ( ogrSubType == OFSTJSON )
+      {
+        ogrSubType = OFSTJSON;
+        variantType = QVariant::Map;
+        variantSubType = QVariant::String;
+      }
+      else
+      {
+        variantType = QVariant::String;
+      }
+      break;
+
+    case OFTStringList:
+    case OFTWideStringList:
+      variantType = QVariant::StringList;
+      variantSubType = QVariant::String;
+      break;
+
+    case OFTIntegerList:
+      variantType = QVariant::List;
+      variantSubType = QVariant::Int;
+      break;
+
+    case OFTRealList:
+      variantType = QVariant::List;
+      variantSubType = QVariant::Double;
+      break;
+
+    case OFTInteger64List:
+      variantType = QVariant::List;
+      variantSubType = QVariant::LongLong;
+      break;
+  }
+}
+
+void QgsOgrUtils::variantTypeToOgrFieldType( QVariant::Type variantType, OGRFieldType &ogrType, OGRFieldSubType &ogrSubType )
+{
+  ogrSubType = OFSTNone;
+  switch ( variantType )
+  {
+    case QVariant::Bool:
+      ogrType = OFTInteger;
+      ogrSubType = OFSTBoolean;
+      break;
+
+    case QVariant::Int:
+      ogrType = OFTInteger;
+      break;
+
+    case QVariant::LongLong:
+      ogrType = OFTInteger64;
+      break;
+
+    case QVariant::Double:
+      ogrType = OFTReal;
+      break;
+
+    case QVariant::Char:
+      ogrType = OFTString;
+      break;
+
+    case QVariant::String:
+      ogrType = OFTString;
+      break;
+
+    case QVariant::StringList:
+      ogrType = OFTStringList;
+      break;
+
+    case QVariant::ByteArray:
+      ogrType = OFTBinary;
+      break;
+
+    case QVariant::Date:
+      ogrType = OFTDate;
+      break;
+
+    case QVariant::Time:
+      ogrType = OFTTime;
+      break;
+    case QVariant::DateTime:
+      ogrType = OFTDateTime;
+      break;
+
+    default:
+      ogrType = OFTString;
+      break;
+  }
+}
+
+QVariant QgsOgrUtils::stringToVariant( OGRFieldType type, OGRFieldSubType, const QString &string )
+{
+  if ( string.isEmpty() )
+    return QVariant();
+
+  bool ok = false;
+  QVariant res;
+  switch ( type )
+  {
+    case OFTInteger:
+      res = string.toInt( &ok );
+      break;
+
+    case OFTInteger64:
+      res = string.toLongLong( &ok );
+      break;
+
+    case OFTReal:
+      res = string.toDouble( &ok );
+      break;
+
+    case OFTString:
+    case OFTWideString:
+      res = string;
+      ok = true;
+      break;
+
+    case OFTDate:
+      res = QDate::fromString( string, Qt::ISODate );
+      ok = res.isValid();
+      break;
+
+    case OFTTime:
+      res = QTime::fromString( string, Qt::ISODate );
+      ok = res.isValid();
+      break;
+
+    case OFTDateTime:
+      res = QDateTime::fromString( string, Qt::ISODate );
+      ok = res.isValid();
+      break;
+
+    default:
+      res = string;
+      ok = true;
+      break;
+  }
+
+  return ok ? res : QVariant();
+}
+
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+std::unique_ptr< QgsFieldDomain > QgsOgrUtils::convertFieldDomain( OGRFieldDomainH domain )
+{
+  if ( !domain )
+    return nullptr;
+
+  const QString name{ OGR_FldDomain_GetName( domain ) };
+  const QString description{ OGR_FldDomain_GetDescription( domain ) };
+
+  QVariant::Type fieldType = QVariant::Type::Invalid;
+  QVariant::Type fieldSubType = QVariant::Type::Invalid;
+  const OGRFieldType domainFieldType = OGR_FldDomain_GetFieldType( domain );
+  const OGRFieldSubType domainFieldSubType = OGR_FldDomain_GetFieldSubType( domain );
+  ogrFieldTypeToQVariantType( domainFieldType, domainFieldSubType, fieldType, fieldSubType );
+
+  std::unique_ptr< QgsFieldDomain > res;
+  switch ( OGR_FldDomain_GetDomainType( domain ) )
+  {
+    case OFDT_CODED:
+    {
+      QList< QgsCodedValue > values;
+      const OGRCodedValue *codedValue = OGR_CodedFldDomain_GetEnumeration( domain );
+      while ( codedValue && codedValue->pszCode )
+      {
+        const QString code( codedValue->pszCode );
+
+        // if pszValue is null then it indicates we are working with a set of acceptable values which aren't
+        // coded. In this case we copy the code as the value so that QGIS exposes the domain as a choice of
+        // the valid code values.
+        const QString value( codedValue->pszValue ? codedValue->pszValue : codedValue->pszCode );
+        values.append( QgsCodedValue( stringToVariant( domainFieldType, domainFieldSubType, code ), value ) );
+
+        codedValue++;
+      }
+
+      res = std::make_unique< QgsCodedFieldDomain >( name, description, fieldType, values );
+      break;
+    }
+
+    case OFDT_RANGE:
+    {
+      QVariant minValue;
+      bool minIsInclusive = false;
+      if ( const OGRField *min = OGR_RangeFldDomain_GetMin( domain, &minIsInclusive ) )
+      {
+        minValue = QgsOgrUtils::OGRFieldtoVariant( min, domainFieldType );
+      }
+      QVariant maxValue;
+      bool maxIsInclusive = false;
+      if ( const OGRField *max = OGR_RangeFldDomain_GetMax( domain, &maxIsInclusive ) )
+      {
+        maxValue = QgsOgrUtils::OGRFieldtoVariant( max, domainFieldType );
+      }
+
+      res = std::make_unique< QgsRangeFieldDomain >( name, description, fieldType,
+            minValue, minIsInclusive,
+            maxValue, maxIsInclusive );
+      break;
+    }
+
+    case OFDT_GLOB:
+      res = std::make_unique< QgsGlobFieldDomain >( name, description, fieldType,
+            QString( OGR_GlobFldDomain_GetGlob( domain ) ) );
+      break;
+  }
+
+  switch ( OGR_FldDomain_GetMergePolicy( domain ) )
+  {
+    case OFDMP_DEFAULT_VALUE:
+      res->setMergePolicy( Qgis::FieldDomainMergePolicy::DefaultValue );
+      break;
+    case OFDMP_SUM:
+      res->setMergePolicy( Qgis::FieldDomainMergePolicy::Sum );
+      break;
+    case OFDMP_GEOMETRY_WEIGHTED:
+      res->setMergePolicy( Qgis::FieldDomainMergePolicy::GeometryWeighted );
+      break;
+  }
+
+  switch ( OGR_FldDomain_GetSplitPolicy( domain ) )
+  {
+    case OFDSP_DEFAULT_VALUE:
+      res->setSplitPolicy( Qgis::FieldDomainSplitPolicy::DefaultValue );
+      break;
+    case OFDSP_DUPLICATE:
+      res->setSplitPolicy( Qgis::FieldDomainSplitPolicy::Duplicate );
+      break;
+    case OFDSP_GEOMETRY_RATIO:
+      res->setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+      break;
+  }
+  return res;
+}
+
+OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
+{
+  if ( !domain )
+    return nullptr;
+
+  OGRFieldType domainFieldType = OFTInteger;
+  OGRFieldSubType domainFieldSubType = OFSTNone;
+  variantTypeToOgrFieldType( domain->fieldType(), domainFieldType, domainFieldSubType );
+
+  OGRFieldDomainH res = nullptr;
+  switch ( domain->type() )
+  {
+    case Qgis::FieldDomainType::Coded:
+    {
+      std::vector< OGRCodedValue > enumeration;
+      const QList< QgsCodedValue> values = qgis::down_cast< const QgsCodedFieldDomain * >( domain )->values();
+      enumeration.reserve( values.size() );
+      for ( const QgsCodedValue &value : values )
+      {
+        OGRCodedValue codedValue;
+        codedValue.pszCode = CPLStrdup( value.code().toString().toUtf8().constData() );
+        codedValue.pszValue = CPLStrdup( value.value().toUtf8().constData() );
+        enumeration.push_back( codedValue );
+      }
+      OGRCodedValue last;
+      last.pszCode = nullptr;
+      last.pszValue = nullptr;
+      enumeration.push_back( last );
+      res = OGR_CodedFldDomain_Create(
+              domain->name().toUtf8().constData(),
+              domain->description().toUtf8().constData(),
+              domainFieldType,
+              domainFieldSubType,
+              enumeration.data()
+            );
+
+      for ( const OGRCodedValue &value : std::as_const( enumeration ) )
+      {
+        CPLFree( value.pszCode );
+        CPLFree( value.pszValue );
+      }
+      break;
+    }
+
+    case Qgis::FieldDomainType::Range:
+    {
+      std::unique_ptr< OGRField > min = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->minimum() );
+      std::unique_ptr< OGRField > max = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->maximum() );
+      res = OGR_RangeFldDomain_Create(
+              domain->name().toUtf8().constData(),
+              domain->description().toUtf8().constData(),
+              domainFieldType,
+              domainFieldSubType,
+              min.get(),
+              qgis::down_cast< const QgsRangeFieldDomain * >( domain )->minimumIsInclusive(),
+              max.get(),
+              qgis::down_cast< const QgsRangeFieldDomain * >( domain )->maximumIsInclusive()
+            );
+      break;
+    }
+
+    case Qgis::FieldDomainType::Glob:
+    {
+      res = OGR_GlobFldDomain_Create(
+              domain->name().toUtf8().constData(),
+              domain->description().toUtf8().constData(),
+              domainFieldType,
+              domainFieldSubType,
+              qgis::down_cast< const QgsGlobFieldDomain * >( domain )->glob().toUtf8().constData()
+            );
+      break;
+    }
+  }
+
+  switch ( domain->mergePolicy() )
+  {
+    case Qgis::FieldDomainMergePolicy::DefaultValue:
+      OGR_FldDomain_SetMergePolicy( res, OFDMP_DEFAULT_VALUE );
+      break;
+    case Qgis::FieldDomainMergePolicy::GeometryWeighted:
+      OGR_FldDomain_SetMergePolicy( res, OFDMP_GEOMETRY_WEIGHTED );
+      break;
+    case Qgis::FieldDomainMergePolicy::Sum:
+      OGR_FldDomain_SetMergePolicy( res, OFDMP_SUM );
+      break;
+  }
+
+  switch ( domain->splitPolicy() )
+  {
+    case Qgis::FieldDomainSplitPolicy::DefaultValue:
+      OGR_FldDomain_SetSplitPolicy( res, OFDSP_DEFAULT_VALUE );
+      break;
+    case Qgis::FieldDomainSplitPolicy::GeometryRatio:
+      OGR_FldDomain_SetSplitPolicy( res, OFDSP_GEOMETRY_RATIO );
+      break;
+    case Qgis::FieldDomainSplitPolicy::Duplicate:
+      OGR_FldDomain_SetSplitPolicy( res, OFDSP_DUPLICATE );
+      break;
+  }
+
+  return res;
+}
+
+#endif

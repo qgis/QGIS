@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a geometry that represents that part of geometry1 that does not intersect with geometry2.",
-  "arguments": [ {"arg":"geometry1","description":"a geometry"},
-                 {"arg":"geometry2","description":"a geometry"}],
-  "examples": [ { "expression":"geom_to_wkt( difference( geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4)' ) ) )", "returns":"'LINESTRING(4 4, 5 5)'"} ]
+  "arguments": [{
+    "arg": "geometry1",
+    "description": "a geometry"
+  }, {
+    "arg": "geometry2",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt( difference( geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4)' ) ) )",
+    "returns": "'LINESTRING(4 4, 5 5)'"
+  }],
+  "tags": ["part", "represents", "intersect", "clip"]
 }

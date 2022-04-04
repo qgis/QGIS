@@ -25,5 +25,7 @@
         <file>shaders/phongDataDefined.frag</file>
         <file>shaders/goochDataDefined.frag</file>
         <file>shaders/goochDataDefined.vert</file>
+        <file>shaders/depth_render.frag</file>
+        <file>shaders/depth_render.vert</file>
     </qresource>
 </RCC>

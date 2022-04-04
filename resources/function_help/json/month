@@ -3,16 +3,31 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Extracts the month part from a date, or the number of months from an interval.",
-  "variants": [
-  { "variant": "Date variant",
-      "variant_description": "Extracts the month part from a date or datetime.",
-      "arguments": [ {"arg":"date","description":"a date or datetime value"}],
-      "examples": [ { "expression":"month('2012-05-12')", "returns":"05"}] },
-      {
-      "variant": "Interval variant",
-      "variant_description": "Calculates the length in months of an interval.",
-      "arguments": [ {"arg":"interval","description":"interval value to return number of months from"}],
-      "examples": [ { "expression":"month(to_interval('3 months'))", "returns":"3"},
-                    { "expression":"month(age('2012-01-01','2010-01-01'))", "returns":"4.03333"}]
-  }]
+  "variants": [{
+    "variant": "Date variant",
+    "variant_description": "Extracts the month part from a date or datetime.",
+    "arguments": [{
+      "arg": "date",
+      "description": "a date or datetime value"
+    }],
+    "examples": [{
+      "expression": "month('2012-05-12')",
+      "returns": "05"
+    }]
+  }, {
+    "variant": "Interval variant",
+    "variant_description": "Calculates the length in months of an interval.",
+    "arguments": [{
+      "arg": "interval",
+      "description": "interval value to return number of months from"
+    }],
+    "examples": [{
+      "expression": "month(to_interval('3 months'))",
+      "returns": "3"
+    }, {
+      "expression": "month(age('2012-01-01','2010-01-01'))",
+      "returns": "4.03333"
+    }]
+  }],
+  "tags": ["date", "extracts", "months", "part", "interval", "month", "number"]
 }

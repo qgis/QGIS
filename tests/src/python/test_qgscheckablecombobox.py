@@ -56,6 +56,11 @@ class TestQgsCheckableComboBox(unittest.TestCase):
 
         self.assertEqual(len(checkedItemsChanged_spy), 1)
 
+    def test_readonly(self):
+        w = qgis.gui.QgsCheckableComboBox()
+        w.setEditable(False)
+        w.show()  # Should not crash
+
 
 if __name__ == '__main__':
     unittest.main()

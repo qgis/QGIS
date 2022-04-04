@@ -136,7 +136,7 @@ void QgsInterpolatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   whileBlocking( mWidthUnitSelectionFixed )->setUnit( mLayer->widthUnit() );
   whileBlocking( mWidthUnitSelectionVarying )->setUnit( mLayer->widthUnit() );
   whileBlocking( mCheckBoxAbsoluteValue )->setChecked( interpolatedWidth.useAbsoluteValue() );
-  whileBlocking( mCheckBoxOutOfrange )->setChecked( interpolatedLineWidth().ignoreOutOfRange() );
+  whileBlocking( mCheckBoxOutOfrange )->setChecked( interpolatedWidth.ignoreOutOfRange() );
 
   const QgsInterpolatedLineColor interpolatedColor = mLayer->interpolatedColor();
   whileBlocking( mColorMethodComboBox )->setCurrentIndex( mColorMethodComboBox->findData( interpolatedColor.coloringMethod() ) );

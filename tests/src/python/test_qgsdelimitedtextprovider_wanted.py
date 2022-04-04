@@ -355,7 +355,7 @@ def test_007_multiple_quote():
     }
     wanted['log'] = [
         'Errors in file test.quote',
-        '3 records discarded due to invalid format',
+        '3 record(s) discarded due to invalid format',
         'The following lines were not loaded into QGIS due to errors:',
         'Invalid record format at line 7',
         'Invalid record format at line 8',
@@ -381,7 +381,7 @@ def test_008_badly_formed_quotes():
     }
     wanted['log'] = [
         'Errors in file test.badquote',
-        '2 records discarded due to invalid format',
+        '2 record(s) discarded due to invalid format',
         'The following lines were not loaded into QGIS due to errors:',
         'Invalid record format at line 2',
         'Invalid record format at line 5',
@@ -442,7 +442,7 @@ def test_010_read_coordinates():
     }
     wanted['log'] = [
         'Errors in file testpt.csv',
-        '1 records discarded due to invalid geometry definitions',
+        '1 record(s) discarded due to invalid geometry definitions',
         'The following lines were not loaded into QGIS due to errors:',
         'Invalid X or Y fields at line 4',
     ]
@@ -488,8 +488,8 @@ def test_011_read_wkt():
     }
     wanted['log'] = [
         'Errors in file testwkt.csv',
-        '1 records discarded due to invalid geometry definitions',
-        '10 records discarded due to incompatible geometry types',
+        '1 record(s) discarded due to invalid geometry definitions',
+        '10 record(s) discarded due to incompatible geometry types',
         'The following lines were not loaded into QGIS due to errors:',
         'Invalid WKT at line 8',
     ]
@@ -535,8 +535,8 @@ def test_012_read_wkt_point():
     }
     wanted['log'] = [
         'Errors in file testwkt.csv',
-        '1 records discarded due to invalid geometry definitions',
-        '10 records discarded due to incompatible geometry types',
+        '1 record(s) discarded due to invalid geometry definitions',
+        '10 record(s) discarded due to incompatible geometry types',
         'The following lines were not loaded into QGIS due to errors:',
         'Invalid WKT at line 8',
     ]
@@ -594,8 +594,8 @@ def test_013_read_wkt_line():
     }
     wanted['log'] = [
         'Errors in file testwkt.csv',
-        '1 records discarded due to invalid geometry definitions',
-        '8 records discarded due to incompatible geometry types',
+        '1 record(s) discarded due to invalid geometry definitions',
+        '8 record(s) discarded due to incompatible geometry types',
         'The following lines were not loaded into QGIS due to errors:',
         'Invalid WKT at line 8',
     ]
@@ -629,8 +629,8 @@ def test_014_read_wkt_polygon():
     }
     wanted['log'] = [
         'Errors in file testwkt.csv',
-        '1 records discarded due to invalid geometry definitions',
-        '12 records discarded due to incompatible geometry types',
+        '1 record(s) discarded due to invalid geometry definitions',
+        '12 record(s) discarded due to incompatible geometry types',
         'The following lines were not loaded into QGIS due to errors:',
         'Invalid WKT at line 8',
     ]
@@ -798,7 +798,7 @@ def test_015_read_dms_xy():
     }
     wanted['log'] = [
         'Errors in file testdms.csv',
-        '5 records discarded due to invalid geometry definitions',
+        '5 record(s) discarded due to invalid geometry definitions',
         'The following lines were not loaded into QGIS due to errors:',
         'Invalid X or Y fields at line 27',
         'Invalid X or Y fields at line 28',
@@ -929,7 +929,7 @@ def test_019_regular_expression_3():
     }
     wanted['log'] = [
         'Errors in file testre2.txt',
-        '1 records discarded due to invalid format',
+        '1 record(s) discarded due to invalid format',
         'The following lines were not loaded into QGIS due to errors:',
         'Invalid record format at line 3',
     ]
@@ -2395,7 +2395,7 @@ def test_039_issue_13749():
     }
     wanted['log'] = [
         'Errors in file test13749.csv',
-        '1 records have missing geometry definitions',
+        '1 record(s) have missing geometry definitions',
     ]
     return wanted
 
@@ -2449,7 +2449,7 @@ def test_040_issue_14666():
     }
     wanted['log'] = [
         'Errors in file test14666.csv',
-        '2 records have missing geometry definitions',
+        '2 record(s) have missing geometry definitions',
     ]
     return wanted
 

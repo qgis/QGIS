@@ -213,15 +213,6 @@ void QgsDualView::columnBoxInit()
 
   const QString defaultField;
 
-  // default expression: saved value
-  QString displayExpression = mLayer->displayExpression();
-
-  if ( displayExpression.isEmpty() )
-  {
-    // ... there isn't really much to display
-    displayExpression = QStringLiteral( "'[Please define preview text]'" );
-  }
-
   mFeatureListPreviewButton->addAction( mActionExpressionPreview );
   mFeatureListPreviewButton->addAction( mActionPreviewColumnsMenu );
 
@@ -284,9 +275,10 @@ void QgsDualView::columnBoxInit()
   // If there is no single field found as preview
   if ( !mFeatureListPreviewButton->defaultAction() )
   {
-    mFeatureListView->setDisplayExpression( displayExpression );
+    mFeatureListView->setDisplayExpression( mLayer->displayExpression() );
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
-    setDisplayExpression( mFeatureListView->displayExpression() );
+    const QString displayExpression = mFeatureListView->displayExpression();
+    setDisplayExpression( displayExpression.isEmpty() ? tr( "'[Please define preview text]'" ) : displayExpression );
   }
   else
   {

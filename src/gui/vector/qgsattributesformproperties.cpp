@@ -245,8 +245,8 @@ void QgsAttributesFormProperties::initInitPython()
                           "\"\"\"\n"
                           "from qgis.PyQt.QtWidgets import QWidget\n\n"
                           "def my_form_open(dialog, layer, feature):\n"
-                          "\tgeom = feature.geometry()\n"
-                          "\tcontrol = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );
+                          "    geom = feature.geometry()\n"
+                          "    control = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );
   }
 }
 
@@ -479,6 +479,8 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       itemData.setShowAsGroupBox( container->isGroupBox() );
       itemData.setBackgroundColor( container->backgroundColor() );
       itemData.setVisibilityExpression( container->visibilityExpression() );
+      itemData.setCollapsedExpression( container->collapsedExpression() );
+      itemData.setCollapsed( container->collapsed() );
       newWidget = tree->addItem( parent, itemData );
 
       const QList<QgsAttributeEditorElement *> children = container->children();
@@ -733,6 +735,8 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( item->text( 0 ), parent, itemData.backgroundColor() );
       container->setColumnCount( itemData.columnCount() );
       container->setIsGroupBox( forceGroup ? true : itemData.showAsGroupBox() );
+      container->setCollapsed( itemData.collapsed() );
+      container->setCollapsedExpression( itemData.collapsedExpression() );
       container->setVisibilityExpression( itemData.visibilityExpression() );
       container->setBackgroundColor( itemData.backgroundColor( ) );
 
@@ -1340,7 +1344,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       expressionWidgetBox->layout()->addWidget( addExpressionButton );
       qmlCodeBox->layout()->addWidget( qmlCode );
       layout->addWidget( qmlCodeBox );
-      QScrollArea *qmlPreviewBox = new QScrollArea();
+      QScrollArea *qmlPreviewBox = new QgsScrollArea();
       qmlPreviewBox->setLayout( new QGridLayout );
       qmlPreviewBox->setMinimumWidth( 400 );
       qmlPreviewBox->layout()->addWidget( qmlWrapper->widget() );
@@ -1421,7 +1425,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       expressionWidgetBox->layout()->addWidget( expressionWidget );
       expressionWidgetBox->layout()->addWidget( addExpressionButton );
       layout->addWidget( htmlCode );
-      QScrollArea *htmlPreviewBox = new QScrollArea();
+      QScrollArea *htmlPreviewBox = new QgsScrollArea();
       htmlPreviewBox->setLayout( new QGridLayout );
       htmlPreviewBox->setMinimumWidth( 400 );
       htmlPreviewBox->layout()->addWidget( htmlWrapper->widget() );
@@ -1540,6 +1544,16 @@ QgsOptionalExpression QgsAttributesFormProperties::DnDTreeItemData::visibilityEx
 void QgsAttributesFormProperties::DnDTreeItemData::setVisibilityExpression( const QgsOptionalExpression &visibilityExpression )
 {
   mVisibilityExpression = visibilityExpression;
+}
+
+QgsOptionalExpression QgsAttributesFormProperties::DnDTreeItemData::collapsedExpression() const
+{
+  return mCollapsedExpression;
+}
+
+void QgsAttributesFormProperties::DnDTreeItemData::setCollapsedExpression( const QgsOptionalExpression &collapsedExpression )
+{
+  mCollapsedExpression = collapsedExpression;
 }
 
 QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributesFormProperties::DnDTreeItemData::relationEditorConfiguration() const

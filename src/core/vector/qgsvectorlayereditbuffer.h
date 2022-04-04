@@ -24,6 +24,7 @@
 #include "qgsgeometry.h"
 
 class QgsVectorLayer;
+class QgsVectorLayerEditBufferGroup;
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -198,6 +199,18 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      */
     void updateFields( QgsFields &fields ) SIP_SKIP;
 
+    /**
+     * Returns the parent edit buffer group for this edit buffer, or nullptr if not part of a group.
+     * \since QGIS 3.26
+     */
+    QgsVectorLayerEditBufferGroup *editBufferGroup() const;
+
+    /**
+     * Set the parent edit buffer group for this edit buffer.
+     * \since QGIS 3.26
+     */
+    void setEditBufferGroup( QgsVectorLayerEditBufferGroup *editBufferGroup );
+
     //QString dumpEditBuffer();
 
   protected slots:
@@ -315,7 +328,76 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     //! Changed geometries which are not committed.
     QgsGeometryMap mChangedGeometries;
 
+    QgsVectorLayerEditBufferGroup *mEditBufferGroup = nullptr;
+
     friend class QgsGrassProvider; //GRASS provider totally abuses the edit buffer
+
+  private:
+
+    friend class QgsVectorLayerEditBufferGroup;
+
+    /**
+     * Check geometry of added features for compatibility with data provider
+     * \param commitErrors will be extended in case of error
+     * \returns TRUE if compatible
+     */
+    bool commitChangesCheckGeometryTypeCompatibility( QStringList &commitErrors );
+
+    /**
+     * Delete attributes
+     * \param attributesDeleted is set if one or more attributes where deleted
+     * \param commitErrors will be extended in case of error
+     * \returns TRUE on success
+     */
+    bool commitChangesDeleteAttributes( bool &attributesDeleted, QStringList &commitErrors );
+
+    /**
+     * Rename attributes
+     * \param attributesRenamed is set if one or more attributes where renamed
+     * \param commitErrors will be extended in case of error
+     * \returns TRUE on success
+     */
+    bool commitChangesRenameAttributes( bool &attributesRenamed, QStringList &commitErrors );
+
+    /**
+     * Add new attributes
+     * \param attributesAdded is set if one or more attributes where added
+     * \param commitErrors will be extended in case of error
+     * \returns TRUE on success
+     */
+    bool commitChangesAddAttributes( bool &attributesAdded, QStringList &commitErrors );
+
+    /**
+     * Check that delete/rename/add attributes operations where successful
+     * \param oldFields are the fields before delete/rename/add operations
+     * \param commitErrors will be extended in case of error
+     * \returns TRUE on success
+     */
+    bool commitChangesCheckAttributesModifications( const QgsFields oldFields, QStringList &commitErrors );
+
+    /**
+     * Change attributes
+     * \param attributesChanged is set if one or more attributes where changed
+     * \param commitErrors will be extended in case of error
+     * \returns TRUE on success
+     */
+    bool commitChangesChangeAttributes( bool &attributesChanged, QStringList &commitErrors );
+
+    /**
+     * Delete features
+     * \param featuresDeleted is set if one or more features where deleted
+     * \param commitErrors will be extended in case of error
+     * \returns TRUE on success
+     */
+    bool commitChangesDeleteFeatures( bool &featuresDeleted, QStringList &commitErrors );
+
+    /**
+     * Add new features
+     * \param featuresAdded is set if one or more features where deleted
+     * \param commitErrors will be extended in case of error
+     * \returns TRUE on success
+     */
+    bool commitChangesAddFeatures( bool &featuresAdded, QStringList &commitErrors );
 };
 
 #endif // QGSVECTORLAYEREDITBUFFER_H

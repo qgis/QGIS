@@ -182,6 +182,13 @@
            </layout>
           </item>
           <item>
+           <widget class="QCheckBox" name="mUseAliasesForExportedName">
+            <property name="text">
+             <string>Use aliases for exported name</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="mReplaceRawFieldValues">
             <property name="text">
              <string>Replace all selected raw field values by displayed values</string>

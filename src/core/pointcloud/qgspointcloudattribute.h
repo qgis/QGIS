@@ -23,6 +23,7 @@
 #include "qgsfields.h"
 #include <QString>
 #include <QVector>
+#include <QSet>
 
 #include "qgsvector3d.h"
 
@@ -43,9 +44,13 @@ class CORE_EXPORT QgsPointCloudAttribute
     enum DataType
     {
       Char, //!< Char 1 byte
+      UChar, //!< Unsigned char 1 byte
       Short, //!< Short int 2 bytes
       UShort, //!< Unsigned short int 2 bytes
       Int32, //!< Int32 4 bytes
+      UInt32, //!< Unsigned int32 4 bytes
+      Int64, //!< Int64 8 bytes
+      UInt64, //!< Unsigned int64 8 bytes
       Float, //!< Float 4 bytes
       Double, //!< Double 8 bytes
     };
@@ -83,6 +88,14 @@ class CORE_EXPORT QgsPointCloudAttribute
      * \see type()
      */
     QString displayType() const;
+
+    /**
+     * Returns the attribute's value as a double for data pointed to by \a ptr
+     *
+     * \note Not available in Python binding
+     * \since QGIS 3.26
+     */
+    double convertValueToDouble( const char *ptr ) const SIP_SKIP;
 
     /**
      * Returns TRUE if the specified data \a type is numeric.
@@ -134,6 +147,14 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );
     //! Adds extra attribute
     void push_back( const QgsPointCloudAttribute &attribute );
+
+    /**
+     *  Adds specific missing attributes from another QgsPointCloudAttributeCollection
+     * \param otherCollection a QgsPointCloudAttributeCollection with more attributes
+     * \param matchingNames the names of the attributes to be added
+     * \since QGIS 3.26
+     */
+    void extend( const QgsPointCloudAttributeCollection &otherCollection, const QSet<QString> &matchingNames );
 
     //! Returns all attributes
     QVector<QgsPointCloudAttribute> attributes() const;

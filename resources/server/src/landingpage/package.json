@@ -8,28 +8,29 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "leaflet": "^1.6.0",
-    "leaflet-wms": "^0.1.0",
-    "reproject": "^1.2.5",
-    "vue": "^2.6.11",
-    "vue-router": "^3.4.1",
-    "vue2-leaflet": "^2.5.2",
-    "vuetify": "^2.3.7",
-    "vuex": "^3.5.1"
+    "leaflet": "^1.7.1",
+    "leaflet.wms": "^0.2.0",
+    "reproject": "^1.2.6",
+    "vue": "^2.6.14",
+    "vue-router": "^3.5.3",
+    "vue2-leaflet": "^2.7.1",
+    "vuetify": "^2.6.2",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@vue/cli": "^4.4.6",
-    "@vue/cli-plugin-babel": "^4.4.6",
-    "@vue/cli-plugin-eslint": "^4.4.6",
-    "@vue/cli-service": "^4.4.6",
+    "@vue/cli": "~5.0.0-rc.1",
+    "@vue/cli-plugin-babel": "~5.0.0-rc.1",
+    "@vue/cli-plugin-eslint": "~5.0.0-rc.1",
+    "@vue/cli-service": "~5.0.0-rc.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.6.0",
     "eslint-plugin-vue": "^6.2.2",
-    "sass": "^1.26.10",
+    "sass": "~1.32.6",
     "sass-loader": "^9.0.3",
-    "vue-cli-plugin-vuetify": "^2.0.7",
-    "vue-template-compiler": "^2.6.11",
-    "vuetify-loader": "^1.6.0"
+    "vue-cli-plugin-vuetify": "~2.4.5",
+    "vue-template-compiler": "^2.6.14",
+    "vuetify-loader": "^1.7.3",
+    "webpack-license-plugin": "^4.2.2"
   },
   "eslintConfig": {
     "root": true,
@@ -48,6 +49,7 @@
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not dead"
+    "not dead",
+    "not ie 11"
   ]
 }

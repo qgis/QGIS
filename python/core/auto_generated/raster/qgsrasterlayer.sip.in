@@ -12,7 +12,7 @@
 
 typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
-class QgsRasterLayer : QgsMapLayer
+class QgsRasterLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 
@@ -106,6 +106,9 @@ created for the same data source and renderer is cloned too.
 
 .. versionadded:: 3.0
 %End
+
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
+
 
     enum ColorShadingAlgorithm
     {
@@ -291,6 +294,8 @@ Returns a list with classification items (Text and color).
 
     virtual QString htmlMetadata() const;
 
+    virtual Qgis::MapLayerProperties properties() const;
+
 
     QPixmap paletteAsPixmap( int bandNumber = 1 );
 %Docstring
@@ -418,6 +423,8 @@ to be drawn outside the data extent.
 %End
 
     virtual QgsMapLayerTemporalProperties *temporalProperties();
+
+    virtual QgsMapLayerElevationProperties *elevationProperties();
 
 
   public slots:

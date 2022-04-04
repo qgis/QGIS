@@ -490,7 +490,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   {
     return;
   }
-  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Fix Errors" ), tr( "Do you want to fix %1 errors?" ).arg( errors.size() ), QMessageBox::Yes, QMessageBox::No ) )
+  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Fix Errors" ), tr( "Do you want to fix %n error(s)?", nullptr, errors.size() ), QMessageBox::Yes, QMessageBox::No ) )
   {
     return;
   }

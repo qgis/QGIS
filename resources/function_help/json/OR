@@ -2,14 +2,23 @@
   "name": "OR",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Returns 1 when condition a or b is true.",
-  "arguments": [
-	{"arg":"a","description":"condition"},
-	{"arg":"b","description":"condition"}
-  ],
-  "examples": [
-	{ "expression":"4 = 2+2 OR 1 = 1", "returns":"1"},
-	{ "expression":"4 = 2+2 OR 1 = 2", "returns":"1"},
-	{ "expression":"4 = 2   OR 1 = 2", "returns":"0"}
-  ]
+  "description": "Returns TRUE when condition a or b is true.",
+  "arguments": [{
+    "arg": "a",
+    "description": "condition"
+  }, {
+    "arg": "b",
+    "description": "condition"
+  }],
+  "examples": [{
+    "expression": "4 = 2+2 OR 1 = 1",
+    "returns": "TRUE"
+  }, {
+    "expression": "4 = 2+2 OR 1 = 2",
+    "returns": "TRUE"
+  }, {
+    "expression": "4 = 2   OR 1 = 2",
+    "returns": "FALSE"
+  }],
+  "tags": ["condition"]
 }

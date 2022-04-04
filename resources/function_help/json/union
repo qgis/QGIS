@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a geometry that represents the point set union of the geometries.",
-  "arguments": [ {"arg":"geometry1","description":"a geometry"},
-                 {"arg":"geometry2","description":"a geometry"}],
-  "examples": [ { "expression":"geom_to_wkt( union( make_point(4, 4), make_point(5, 5) ) )", "returns":"'MULTIPOINT(4 4, 5 5)'"} ]
+  "arguments": [{
+    "arg": "geometry1",
+    "description": "a geometry"
+  }, {
+    "arg": "geometry2",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt( union( make_point(4, 4), make_point(5, 5) ) )",
+    "returns": "'MULTIPOINT(4 4, 5 5)'"
+  }],
+  "tags": ["union", "dissolve", "point", "represents", "set"]
 }

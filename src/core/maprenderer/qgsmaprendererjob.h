@@ -29,7 +29,7 @@
 #include "qgslabelsink.h"
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
 
 
 class QgsLabelingEngine;
@@ -369,6 +369,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
 
     /**
+     * Returns the associated labeling engine feedback object.
+     *
+     * Callers can connect to the signals in this object to receive granular progress reports during the labeling steps.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.24
+     */
+    QgsLabelingEngineFeedback *labelingEngineFeedback() SIP_SKIP;
+
+    /**
      * Returns the total time it took to finish the job (in milliseconds).
      * \see perLayerRenderingTime()
      */
@@ -417,7 +427,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 
 #ifndef SIP_RUN
     //! Settings entry log canvas refresh event
-    static const inline QgsSettingsEntryBool settingsLogCanvasRefreshEvent = QgsSettingsEntryBool( QStringLiteral( "Map/logCanvasRefreshEvent" ), QgsSettings::NoSection, false );
+    static const inline QgsSettingsEntryBool settingsLogCanvasRefreshEvent = QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettings::Prefix::MAP, false );
 #endif
 
   signals:
@@ -595,6 +605,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     virtual void startPrivate() = 0;
 
     QgsLabelSink *mLabelSink = nullptr;
+    QgsLabelingEngineFeedback *mLabelingEngineFeedback = nullptr;
 
 };
 

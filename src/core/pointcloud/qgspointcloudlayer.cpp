@@ -33,6 +33,7 @@
 #include "qgsxmlutils.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmaplayerutils.h"
+#include "qgsabstractpointcloud3drenderer.h"
 
 #include <QUrl>
 
@@ -58,6 +59,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
   }
 
   setLegend( QgsMapLayerLegend::defaultPointCloudLegend( this ) );
+  connect( this, &QgsPointCloudLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
 }
 
 QgsPointCloudLayer::~QgsPointCloudLayer() = default;
@@ -132,6 +134,10 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
       flags |= QgsDataProvider::FlagTrustDataSource;
     }
     setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
+    const QDomNode subset = layerNode.namedItem( QStringLiteral( "subset" ) );
+    const QString subsetText = subset.toElement().text();
+    if ( !subsetText.isEmpty() )
+      setSubsetString( subsetText );
   }
 
   if ( !isValid() )
@@ -152,6 +158,13 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::PointCloudLayer ) );
 
+  if ( !subsetString().isEmpty() )
+  {
+    QDomElement subset = doc.createElement( QStringLiteral( "subset" ) );
+    const QDomText subsetText = doc.createTextNode( subsetString() );
+    subset.appendChild( subsetText );
+    layerNode.appendChild( subset );
+  }
   if ( mDataProvider )
   {
     QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
@@ -183,6 +196,14 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
 bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
   bool result = true;
+
+  if ( categories.testFlag( Symbology3D ) )
+  {
+    bool ok;
+    bool sync = node.attributes().namedItem( QStringLiteral( "sync3DRendererTo2DRenderer" ) ).nodeValue().toInt( &ok );
+    if ( ok )
+      setSync3DRendererTo2DRenderer( sync );
+  }
 
   if ( categories.testFlag( Symbology ) )
   {
@@ -261,6 +282,11 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
 {
   QDomElement mapLayerNode = node.toElement();
 
+  if ( categories.testFlag( Symbology3D ) )
+  {
+    mapLayerNode.setAttribute( QStringLiteral( "sync3DRendererTo2DRenderer" ), mSync3DRendererTo2DRenderer ? 1 : 0 );
+  }
+
   if ( categories.testFlag( Symbology ) )
   {
     if ( mRenderer )
@@ -297,7 +323,6 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
     mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
     mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
   }
-
   return true;
 }
 
@@ -417,16 +442,32 @@ QString QgsPointCloudLayer::decodedSource( const QString &source, const QString 
 
 void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
 {
-  if ( state == QgsPointCloudDataProvider::Indexed )
+  switch ( state )
   {
-    mDataProvider.get()->loadIndex();
-    if ( mRenderer->type() == QLatin1String( "extent" ) )
+    case QgsPointCloudDataProvider::Indexed:
     {
-      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
-    }
-    triggerRepaint();
+      mDataProvider.get()->loadIndex();
+      if ( mRenderer->type() == QLatin1String( "extent" ) )
+      {
+        setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
+      }
+      triggerRepaint();
 
-    emit rendererChanged();
+      emit rendererChanged();
+      break;
+    }
+    case QgsPointCloudDataProvider::NotIndexed:
+    {
+      QgsError providerError = mDataProvider->error();
+      if ( !providerError.isEmpty() )
+      {
+        setError( providerError );
+        emit raiseError( providerError.summary() );
+      }
+      break;
+    }
+    case QgsPointCloudDataProvider::Indexing:
+      break;
   }
 }
 
@@ -650,4 +691,62 @@ void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
   mRenderer.reset( renderer );
   emit rendererChanged();
   emitStyleChanged();
+
+  if ( mSync3DRendererTo2DRenderer )
+    convertRenderer3DFromRenderer2D();
+}
+
+bool QgsPointCloudLayer::setSubsetString( const QString &subset )
+{
+  if ( !isValid() || !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    setCustomProperty( QStringLiteral( "storedSubsetString" ), subset );
+    return false;
+  }
+  else if ( subset == mDataProvider->subsetString() )
+    return true;
+
+  bool res = mDataProvider->setSubsetString( subset );
+  if ( res )
+  {
+    emit subsetStringChanged();
+    triggerRepaint();
+  }
+  return res;
+}
+
+QString QgsPointCloudLayer::subsetString() const
+{
+  if ( !isValid() || !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    return customProperty( QStringLiteral( "storedSubsetString" ) ).toString();
+  }
+  return mDataProvider->subsetString();
+}
+
+bool QgsPointCloudLayer::convertRenderer3DFromRenderer2D()
+{
+  bool result = false;
+  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
+  if ( r )
+  {
+    result = r->convertFrom2DRenderer( renderer() );
+    setRenderer3D( r );
+    trigger3DUpdate();
+  }
+  return result;
+}
+
+bool QgsPointCloudLayer::sync3DRendererTo2DRenderer() const
+{
+  return mSync3DRendererTo2DRenderer;
+}
+
+void QgsPointCloudLayer::setSync3DRendererTo2DRenderer( bool sync )
+{
+  mSync3DRendererTo2DRenderer = sync;
+  if ( sync )
+    convertRenderer3DFromRenderer2D();
 }

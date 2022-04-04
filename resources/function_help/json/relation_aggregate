@@ -3,17 +3,37 @@
   "type": "function",
   "groups": ["Aggregates"],
   "description": "Returns an aggregate value calculated using all matching child features from a layer relation.",
-  "arguments": [
-	{"arg":"relation", "description":"a string, representing a relation ID"},
-	{"arg":"aggregate", "description":"a string corresponding to the aggregate to calculate. Valid options are:<br /><ul><li>count</li><li>count_distinct</li><li>count_missing</li><li>min</li><li>max</li><li>sum</li><li>mean</li><li>median</li><li>stdev</li><li>stdevsample</li><li>range</li><li>minority</li><li>majority</li><li>q1: first quartile</li><li>q3: third quartile</li><li>iqr: inter quartile range</li><li>min_length: minimum string length</li><li>max_length: maximum string length</li><li>concatenate: join strings with a concatenator</li><li>concatenate_unique: join unique strings with a concatenator</li><li>collect: create an aggregated multipart geometry</li><li>array_agg: create an array of aggregated values</li></ul>"},
-	{"arg":"expression", "description":"sub expression or field name to aggregate"},
-	{"arg":"concatenator", "optional":true, "default":"''", "description":"optional string to use to join values for 'concatenate' aggregate"},
-	{"arg":"order_by", "optional":true, "description":"optional expression to order the features used for calculating the aggregate. Fields and geometry are from the features on the joined layer. By default, the features will be returned in an unspecified order."}
-  ],
-  "examples": [
-	{ "expression":"relation_aggregate(relation:='my_relation',aggregate:='mean',expression:=\"passengers\")", "returns":"mean value of all matching child features using the 'my_relation' relation"},
-	{ "expression":"relation_aggregate('my_relation','sum', \"passengers\"/7)", "returns":"sum of the passengers field divided by 7 for all matching child features using the 'my_relation' relation"},
-	{ "expression":"relation_aggregate('my_relation','concatenate', \"towns\", concatenator:=',')", "returns":"comma separated list of the towns field for all matching child features using the 'my_relation' relation"},
-  { "expression":"relation_aggregate('my_relation','array_agg', \"id\")", "returns":"array of the id field from all matching child features using the 'my_relation' relation"}
-  ]
+  "arguments": [{
+    "arg": "relation",
+    "description": "a string, representing a relation ID"
+  }, {
+    "arg": "aggregate",
+    "description": "a string corresponding to the aggregate to calculate. Valid options are:<br /><ul><li>count</li><li>count_distinct</li><li>count_missing</li><li>min</li><li>max</li><li>sum</li><li>mean</li><li>median</li><li>stdev</li><li>stdevsample</li><li>range</li><li>minority</li><li>majority</li><li>q1: first quartile</li><li>q3: third quartile</li><li>iqr: inter quartile range</li><li>min_length: minimum string length</li><li>max_length: maximum string length</li><li>concatenate: join strings with a concatenator</li><li>concatenate_unique: join unique strings with a concatenator</li><li>collect: create an aggregated multipart geometry</li><li>array_agg: create an array of aggregated values</li></ul>"
+  }, {
+    "arg": "expression",
+    "description": "sub expression or field name to aggregate"
+  }, {
+    "arg": "concatenator",
+    "optional": true,
+    "default": "''",
+    "description": "optional string to use to join values for 'concatenate' aggregate"
+  }, {
+    "arg": "order_by",
+    "optional": true,
+    "description": "optional expression to order the features used for calculating the aggregate. Fields and geometry are from the features on the joined layer. By default, the features will be returned in an unspecified order."
+  }],
+  "examples": [{
+    "expression": "relation_aggregate(relation:='my_relation',aggregate:='mean',expression:=\"passengers\")",
+    "returns": "mean value of all matching child features using the 'my_relation' relation"
+  }, {
+    "expression": "relation_aggregate('my_relation','sum', \"passengers\"/7)",
+    "returns": "sum of the passengers field divided by 7 for all matching child features using the 'my_relation' relation"
+  }, {
+    "expression": "relation_aggregate('my_relation','concatenate', \"towns\", concatenator:=',')",
+    "returns": "comma separated list of the towns field for all matching child features using the 'my_relation' relation"
+  }, {
+    "expression": "relation_aggregate('my_relation','array_agg', \"id\")",
+    "returns": "array of the id field from all matching child features using the 'my_relation' relation"
+  }],
+  "tags": ["child", "matching", "aggregate", "features", "relation"]
 }

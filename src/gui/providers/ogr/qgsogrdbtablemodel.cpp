@@ -27,7 +27,7 @@ QgsOgrDbTableModel::QgsOgrDbTableModel( QObject *parent )
            << tr( "Type" )
            << tr( "Geometry column" )
            << tr( "SQL" );
-  setHorizontalHeaderLabels( columns() );
+  setHorizontalHeaderLabels( mColumns );
 }
 
 QStringList QgsOgrDbTableModel::columns() const
@@ -42,11 +42,19 @@ int QgsOgrDbTableModel::defaultSearchColumn() const
 
 bool QgsOgrDbTableModel::searchableColumn( int column ) const
 {
-  Q_UNUSED( column )
-  return true;
+  Columns col = static_cast<Columns>( column );
+  switch ( col )
+  {
+    case QgsOgrDbTableModel::DbtmTable:
+    case QgsOgrDbTableModel::DbtmType:
+    case QgsOgrDbTableModel::DbtmGeomCol:
+    case QgsOgrDbTableModel::DbtmSql:
+      return true;
+  }
+  BUILTIN_UNREACHABLE
 }
 
-void QgsOgrDbTableModel::addTableEntry( const Qgis::BrowserLayerType &layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql )
+void QgsOgrDbTableModel::addTableEntry( Qgis::BrowserLayerType layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql )
 {
   //is there already a root item ?
   QStandardItem *dbItem = nullptr;

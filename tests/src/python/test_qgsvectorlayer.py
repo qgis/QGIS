@@ -19,7 +19,16 @@ import os
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QVariant, Qt, QDateTime, QDate, QTime
+from qgis.PyQt.QtCore import (
+    QDate,
+    QDateTime,
+    QVariant,
+    Qt,
+    QDateTime,
+    QDate,
+    QTime,
+    QTimer
+)
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -67,6 +76,9 @@ from qgis.core import (Qgis,
                        QgsVectorLayerSelectedFeatureSource,
                        QgsExpression,
                        QgsLayerMetadata,
+                       QgsAnimatedMarkerSymbolLayer,
+                       QgsMarkerSymbol,
+                       QgsSingleSymbolRenderer,
                        NULL)
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
@@ -2288,6 +2300,20 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.selectByExpression('"Heading"=95', QgsVectorLayer.RemoveFromSelection)
         self.assertEqual(set(layer.selectedFeatureIds()), set([]))
 
+        # test using specific expression context
+        layer.selectByExpression('"Class"=@class and "Heading" > @low_heading and "Heading" <@high_heading', QgsVectorLayer.SetSelection)
+        # default built context won't have variables used in the expression
+        self.assertFalse(layer.selectedFeatureIds())
+
+        context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+        context.lastScope().setVariable('class', 'B52')
+        context.lastScope().setVariable('low_heading', 10)
+        context.lastScope().setVariable('high_heading', 70)
+        # using custom context should allow the expression to be evaluated correctly
+        layer.selectByExpression('"Class"=@class and "Heading" > @low_heading and "Heading" <@high_heading',
+                                 QgsVectorLayer.SetSelection, context)
+        self.assertCountEqual(layer.selectedFeatureIds(), [10, 11])
+
     def testSelectByRect(self):
         """ Test selecting by rectangle """
         layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
@@ -3835,6 +3861,47 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
 
         layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
         self.assertEqual(layer.vectorLayerTypeFlags(), Qgis.VectorLayerTypeFlags())
+
+    def test_renderer_with_animated_symbol(self):
+        """
+        Test that setting a renderer with an animated symbol leads to redraw signals on the correct interval
+        """
+        layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
+
+        # renderer with an animated symbol
+        marker_symbol = QgsMarkerSymbol()
+        animated_marker = QgsAnimatedMarkerSymbolLayer()
+        animated_marker.setFrameRate(30)
+        marker_symbol.appendSymbolLayer(animated_marker)
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        layer.setRenderer(renderer)
+
+        spy = QSignalSpy(layer.repaintRequested)
+        timer = QTimer()
+        timer.setSingleShot(True)
+        timer.setInterval(500)
+        spy2 = QSignalSpy(timer.timeout)
+        spy2.wait()
+
+        # expect 15 repaint requests in a 0.5 seconds, but add a lot of tolerance for a stable test!
+        # (it may have been much longer than 0.5 seconds here!)
+        self.assertGreaterEqual(len(spy), 14)
+        self.assertLessEqual(len(spy), 300)
+
+        # not an animated symbol
+        marker_symbol = QgsMarkerSymbol()
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        layer.setRenderer(renderer)
+
+        spy = QSignalSpy(layer.repaintRequested)
+        timer = QTimer()
+        timer.setSingleShot(True)
+        timer.setInterval(500)
+        spy2 = QSignalSpy(timer.timeout)
+        spy2.wait()
+
+        # should not be any repaint requests now
+        self.assertEqual(len(spy), 0)
 
     def testLayerWithoutProvider(self):
         """Test that we don't crash when invoking methods on a layer with a broken provider"""

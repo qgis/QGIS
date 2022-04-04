@@ -34,6 +34,15 @@ class TestQgis : public QObject
 {
     Q_OBJECT
 
+  public:
+    enum class TestEnum : int
+    {
+      TestEnum1 = 1,
+      TestEnum2 = 2,
+      TestEnum3 = 6,
+    };
+    Q_ENUM( TestEnum )
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -52,6 +61,7 @@ class TestQgis : public QObject
     void testQgsAsConst();
     void testQgsRound();
     void testQgsVariantEqual();
+    void testQgsEnumMapList();
     void testQgsEnumValueToKey();
     void testQgsEnumKeyToValue();
     void testQgsFlagValueToKeys();
@@ -431,33 +441,81 @@ void TestQgis::testQgsVariantEqual()
   QVERIFY( !qgsVariantEqual( QVariant(), QVariant( QVariant::Int ) ) );
 }
 
+void TestQgis::testQgsEnumMapList()
+{
+  QCOMPARE( qgsEnumList<TestEnum>(), QList<TestEnum>( {TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3} ) );
+  QCOMPARE( qgsEnumMap<TestEnum>().keys(), QList<TestEnum>( {TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3} ) );
+  QCOMPARE( qgsEnumMap<TestEnum>().values(), QStringList( {QStringLiteral( "TestEnum1" ), QStringLiteral( "TestEnum2" ), QStringLiteral( "TestEnum3" ) } ) );
+}
+
+
 void TestQgis::testQgsEnumValueToKey()
 {
-  QCOMPARE( qgsEnumValueToKey<QgsMapLayerModel::ItemDataRole>( QgsMapLayerModel::LayerRole ), QStringLiteral( "LayerRole" ) );
+  bool ok = false;
+  QgsMapLayerModel::ItemDataRole value = QgsMapLayerModel::LayerRole;
+  QgsMapLayerModel::ItemDataRole badValue = static_cast<QgsMapLayerModel::ItemDataRole>( -1 );
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::ItemDataRole>();
+  QVERIFY( !metaEnum.valueToKey( badValue ) );
+  QCOMPARE( qgsEnumValueToKey( value, &ok ), QStringLiteral( "LayerRole" ) );
+  QCOMPARE( ok, true );
+  QCOMPARE( qgsEnumValueToKey( badValue, &ok ), QString() );
+  QCOMPARE( ok, false );
 }
 void TestQgis::testQgsEnumKeyToValue()
 {
-  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "AdditionalRole" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::AdditionalRole );
-  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "UnknownKey" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
+  bool ok = false;
+  QgsMapLayerModel::ItemDataRole defaultValue = QgsMapLayerModel::LayerIdRole;
+  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "AdditionalRole" ), defaultValue, false, &ok ), QgsMapLayerModel::AdditionalRole );
+  QCOMPARE( ok, true );
+  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "UnknownKey" ), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( ok, false );
+  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "UnknownKey" ), defaultValue, true, &ok ), defaultValue );
+  QCOMPARE( ok, false );
+
   // try with int values as string keys
-  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QString::number( QgsMapLayerModel::AdditionalRole ), QgsMapLayerModel::LayerIdRole, true ), QgsMapLayerModel::AdditionalRole );
-  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QString::number( QgsMapLayerModel::AdditionalRole ), QgsMapLayerModel::LayerIdRole, false ), QgsMapLayerModel::LayerIdRole );
+  QCOMPARE( qgsEnumKeyToValue( QString::number( QgsMapLayerModel::AdditionalRole ), defaultValue, true, &ok ), QgsMapLayerModel::AdditionalRole );
+  QCOMPARE( ok, true );
+  QCOMPARE( qgsEnumKeyToValue( QString::number( QgsMapLayerModel::AdditionalRole ), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( ok, false );
   // also try with an invalid int value
   QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::ItemDataRole>();
-  int invalidValue = QgsMapLayerModel::LayerIdRole + 100;
+  int invalidValue = defaultValue + 7894563;
   QVERIFY( !metaEnum.valueToKey( invalidValue ) );
-  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QString::number( invalidValue ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
+  QCOMPARE( qgsEnumKeyToValue( QString::number( invalidValue ), defaultValue, true, &ok ), defaultValue );
+  QCOMPARE( ok, false );
 }
 
 void TestQgis::testQgsFlagValueToKeys()
 {
+  bool ok = false;
   QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::Double;
-  QCOMPARE( qgsFlagValueToKeys( filters ), QStringLiteral( "String|Double" ) );
+  QCOMPARE( qgsFlagValueToKeys( filters, &ok ), QStringLiteral( "String|Double" ) );
+  QCOMPARE( ok, true );
+  QCOMPARE( qgsFlagValueToKeys( QgsFieldProxyModel::Filters( -10 ), &ok ), QString() );
+  QCOMPARE( ok, false );
 }
+
 void TestQgis::testQgsFlagKeysToValue()
 {
-  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "String|Double" ), QgsFieldProxyModel::Filters( QgsFieldProxyModel::Filter::AllTypes ) ), QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::Double );
-  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), QgsFieldProxyModel::Filters( QgsFieldProxyModel::Filter::AllTypes ) ), QgsFieldProxyModel::Filters( QgsFieldProxyModel::Filter::AllTypes ) );
+  QgsFieldProxyModel::Filters defaultValue( QgsFieldProxyModel::Filter::AllTypes );
+  QgsFieldProxyModel::Filters newValue( QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::Double );
+
+  bool ok = false;
+  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "String|Double" ), defaultValue, false, &ok ), newValue );
+  QCOMPARE( ok, true );
+  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( ok, false );
+  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), defaultValue, true, &ok ), defaultValue );
+  QCOMPARE( ok, false );
+
+  // try with int values as string keys
+  QCOMPARE( qgsFlagKeysToValue( QString::number( newValue ), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( ok, false );
+  QCOMPARE( qgsFlagKeysToValue( QString::number( newValue ), defaultValue, true, &ok ), newValue );
+  QCOMPARE( ok, true );
+  // also try with an invalid int value
+  QCOMPARE( qgsFlagKeysToValue( QString::number( -1 ), defaultValue, true, &ok ), defaultValue );
+  QCOMPARE( ok, false );
 }
 
 void TestQgis::testQMapQVariantList()

@@ -45,6 +45,13 @@ class TestQgsFields(unittest.TestCase):
             fields[111]
 
         # check no error
+        self.assertEqual("value", fields['value'].name())
+        self.assertEqual("id", fields['ID'].name())
+        # check exceptions raised
+        with self.assertRaises(KeyError):
+            fields['arg']
+
+        # check no error
         fields.at(1)
         # check exceptions raised
         with self.assertRaises(KeyError):

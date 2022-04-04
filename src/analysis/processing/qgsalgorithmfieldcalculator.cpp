@@ -18,6 +18,7 @@
 
 #include "qgsalgorithmfieldcalculator.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvariantutils.h"
 
 ///@cond PRIVATE
 
@@ -63,12 +64,46 @@ QgsProcessingFeatureSource::Flag QgsFieldCalculatorAlgorithm::sourceFlags() cons
 
 void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configuration )
 {
-  Q_UNUSED( configuration );
+  Q_UNUSED( configuration )
 
-  const QStringList fieldTypes = QStringList( {QObject::tr( "Float" ), QObject::tr( "Integer" ), QObject::tr( "String" ), QObject::tr( "Date" ) } );
+  QStringList fieldTypes;
+  QVariantList icons;
+  fieldTypes.reserve( 11 );
+  icons.reserve( 11 );
+  for ( const auto &type :
+        std::vector < std::pair< QVariant::Type, QVariant::Type > >
+{
+  {QVariant::Double, QVariant::Invalid },
+  {QVariant::Int, QVariant::Invalid },
+  {QVariant::String, QVariant::Invalid },
+  {QVariant::Date, QVariant::Invalid },
+  {QVariant::Time, QVariant::Invalid },
+  {QVariant::DateTime, QVariant::Invalid },
+  {QVariant::Bool, QVariant::Invalid },
+  {QVariant::ByteArray, QVariant::Invalid },
+  {QVariant::StringList, QVariant::Invalid },
+  {QVariant::List, QVariant::Int },
+  {QVariant::List, QVariant::Double }
+} )
+  {
+    fieldTypes << QgsVariantUtils::typeToDisplayString( type.first, type.second );
+    icons << QgsFields::iconForFieldType( type.first, type.second );
+  }
 
   std::unique_ptr< QgsProcessingParameterString > fieldName = std::make_unique< QgsProcessingParameterString > ( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
   std::unique_ptr< QgsProcessingParameterEnum > fieldType = std::make_unique< QgsProcessingParameterEnum > ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
+  fieldType->setMetadata(
+  {
+    QVariantMap( {{
+        QStringLiteral( "widget_wrapper" ),
+        QVariantMap(
+        { {
+            QStringLiteral( "icons" ), icons
+          }}
+        )
+      }} )
+  } );
+
   std::unique_ptr< QgsProcessingParameterNumber > fieldLength = std::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
   std::unique_ptr< QgsProcessingParameterNumber > fieldPrecision = std::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
   std::unique_ptr< QgsProcessingParameterExpression > expression = std::make_unique< QgsProcessingParameterExpression> ( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
@@ -108,15 +143,53 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QList<QVariant::Type> fieldTypes( {QVariant::Double, QVariant::Int, QVariant::String, QVariant::Date} );
-
   // prepare fields
   const int fieldTypeIdx = parameterAsInt( parameters, QStringLiteral( "FIELD_TYPE" ), context );
   const int fieldLength = parameterAsInt( parameters, QStringLiteral( "FIELD_LENGTH" ), context );
   const int fieldPrecision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
   const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
 
-  const QVariant::Type fieldType = fieldTypes[fieldTypeIdx];
+  QVariant::Type fieldType = QVariant::Type::String;
+  QVariant::Type fieldSubType = QVariant::Type::Invalid;
+  switch ( fieldTypeIdx )
+  {
+    case 0: // Float
+      fieldType = QVariant::Double;
+      break;
+    case 1: // Integer
+      fieldType = QVariant::Int;
+      break;
+    case 2: // String
+      fieldType = QVariant::String;
+      break;
+    case 3: // Date
+      fieldType = QVariant::Date;
+      break;
+    case 4: // Time
+      fieldType = QVariant::Time;
+      break;
+    case 5: // DateTime
+      fieldType = QVariant::DateTime;
+      break;
+    case 6: // Boolean
+      fieldType = QVariant::Bool;
+      break;
+    case 7: // Binary
+      fieldType = QVariant::ByteArray;
+      break;
+    case 8: // StringList
+      fieldType = QVariant::StringList;
+      fieldSubType = QVariant::String;
+      break;
+    case 9: // IntegerList
+      fieldType = QVariant::List;
+      fieldSubType = QVariant::Int;
+      break;
+    case 10: // DoubleList
+      fieldType = QVariant::List;
+      fieldSubType = QVariant::Double;
+      break;
+  }
 
   if ( fieldName.isEmpty() )
     throw QgsProcessingException( QObject::tr( "Field name must not be an empty string" ) );
@@ -126,7 +199,9 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     fieldType,
     QString(),
     fieldLength,
-    fieldPrecision
+    fieldPrecision,
+    QString(),
+    fieldSubType
   );
 
   mFields = source->fields();

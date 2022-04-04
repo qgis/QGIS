@@ -3,35 +3,47 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Returns the display expression for a given feature in a layer. The expression is evaluated by default. Can be used with zero, one or more arguments, see below for details.",
-  "variants": [
-    {
-      "variant": "No parameters",
-      "variant_description": "If called with no parameters, the function will evaluate the display expression of the current feature in the current layer.",
-      "arguments": [],
-      "examples": [ { "expression": "display_expression()", "returns" : "The display expression of the current feature in the current layer." } ]
-    },
-    {
-      "variant": "One 'feature' parameter",
-      "variant_description": "If called with a 'feature' parameter only, the function will evaluate the specified feature from the current layer.",
-      "arguments": [ { "arg": "feature", "description": "The feature which should be evaluated." } ],
-      "examples": [ { "expression": "display_expression(@atlas_feature)", "returns": "The display expression of the current atlas feature." } ]
-    },
-    {
-      "variant" : "Layer and feature parameters",
-      "variant_description": "If the function is called with both a layer and a feature, it will evaluate the specified feature from the specified layer.",
-      "arguments": [
-        { "arg": "layer", "description": "The layer (or its ID or name)" },
-        { "arg": "feature", "description": "The feature which should be evaluated." },
-        { "arg": "evaluate", "description": "If the expression must be evaluated. If false, the expression will be returned as a string literal only (which could potentially be later evaluated using the 'eval' function).", "optional": true, "default": "true" }
-      ],
-      "examples": [
-        { "expression": "display_expression( 'streets', get_feature_by_id('streets', 1))",
-          "returns": "The display expression of the feature with the ID 1 on the layer 'streets'."
-        },
-        { "expression": "display_expression('a_layer_id', $currentfeature, 'False')",
-          "returns": "The display expression of the given feature not evaluated."
-        }
-      ]
-    }
-  ]
+  "variants": [{
+    "variant": "No parameters",
+    "variant_description": "If called with no parameters, the function will evaluate the display expression of the current feature in the current layer.",
+    "arguments": [],
+    "examples": [{
+      "expression": "display_expression()",
+      "returns": "The display expression of the current feature in the current layer."
+    }]
+  }, {
+    "variant": "One 'feature' parameter",
+    "variant_description": "If called with a 'feature' parameter only, the function will evaluate the specified feature from the current layer.",
+    "arguments": [{
+      "arg": "feature",
+      "description": "The feature which should be evaluated."
+    }],
+    "examples": [{
+      "expression": "display_expression(@atlas_feature)",
+      "returns": "The display expression of the current atlas feature."
+    }]
+  }, {
+    "variant": "Layer and feature parameters",
+    "variant_description": "If the function is called with both a layer and a feature, it will evaluate the specified feature from the specified layer.",
+    "arguments": [{
+      "arg": "layer",
+      "description": "The layer (or its ID or name)"
+    }, {
+      "arg": "feature",
+      "description": "The feature which should be evaluated."
+    }, {
+      "arg": "evaluate",
+      "description": "If the expression must be evaluated. If false, the expression will be returned as a string literal only (which could potentially be later evaluated using the 'eval' function).",
+      "optional": true,
+      "default": "true"
+    }],
+    "examples": [{
+      "expression": "display_expression( 'streets', get_feature_by_id('streets', 1))",
+      "returns": "The display expression of the feature with the ID 1 on the layer 'streets'."
+    }, {
+      "expression": "display_expression('a_layer_id', $currentfeature, 'False')",
+      "returns": "The display expression of the given feature not evaluated."
+    }]
+  }],
+  "tags": ["evaluated", "arguments", "details", "display", "default"]
 }

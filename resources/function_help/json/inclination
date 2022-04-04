@@ -3,15 +3,25 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the inclination measured from the zenith (0) to the nadir (180) on point_a to point_b.",
-  "arguments": [
-    {"arg":"point_a","description":"point geometry"},
-    {"arg":"point_b","description":"point geometry"}
-  ],
-  "examples": [
-	{ "expression":"inclination( make_point( 5, 10, 0 ), make_point( 5, 10, 5 ) )", "returns":"0.0"},
-	{ "expression":"inclination( make_point( 5, 10, 0 ), make_point( 5, 10, 0 ) )", "returns":"90.0"},
-	{ "expression":"inclination( make_point( 5, 10, 0 ), make_point( 50, 100, 0 ) )", "returns":"90.0"},
-	{ "expression":"inclination( make_point( 5, 10, 0 ), make_point( 5, 10, -5 ) )", "returns":"180.0"}
-
-  ]
+  "arguments": [{
+    "arg": "point_a",
+    "description": "point geometry"
+  }, {
+    "arg": "point_b",
+    "description": "point geometry"
+  }],
+  "examples": [{
+    "expression": "inclination( make_point( 5, 10, 0 ), make_point( 5, 10, 5 ) )",
+    "returns": "0.0"
+  }, {
+    "expression": "inclination( make_point( 5, 10, 0 ), make_point( 5, 10, 0 ) )",
+    "returns": "90.0"
+  }, {
+    "expression": "inclination( make_point( 5, 10, 0 ), make_point( 50, 100, 0 ) )",
+    "returns": "90.0"
+  }, {
+    "expression": "inclination( make_point( 5, 10, 0 ), make_point( 5, 10, -5 ) )",
+    "returns": "180.0"
+  }],
+  "tags": ["zenith", "nadir", "inclination", "measured", "points"]
 }

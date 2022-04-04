@@ -105,6 +105,17 @@ Returns a string representation of the 3D vector.
 Members will be truncated to the specified ``precision``.
 %End
 
+    QVector3D toVector3D() const;
+%Docstring
+Converts the current object to QVector3D
+
+.. warning::
+
+   the conversion may decrease the accuracy (double to float values conversion)
+
+.. versionadded:: 3.24
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsVector3D: %1>" ).arg( sipCpp->toString() );

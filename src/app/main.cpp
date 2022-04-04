@@ -411,7 +411,8 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
        *  we have no control over and have low value anyway);
        * - QtSVG warnings with regards to lack of implementation beyond Tiny SVG 1.2
        */
-      if ( msg.startsWith( QLatin1String( "libpng warning: iCCP: known incorrect sRGB profile" ), Qt::CaseInsensitive ) ||
+      if ( msg.contains( QLatin1String( "QXcbClipboard" ), Qt::CaseInsensitive ) ||
+           msg.startsWith( QLatin1String( "libpng warning: iCCP: known incorrect sRGB profile" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "Could not add child element to parent element because the types are incorrect" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "OpenType support missing for" ), Qt::CaseInsensitive ) )
         break;
@@ -709,7 +710,16 @@ int main( int argc, char *argv[] )
         }
         else if ( i + 1 < argc && ( arg == QLatin1String( "--project" ) || arg == QLatin1String( "-p" ) ) )
         {
-          sProjectFileName = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+          const QString projectUri { args[++i] };
+          const QFileInfo projectFileInfo { projectUri };
+          if ( projectFileInfo.isFile() )
+          {
+            sProjectFileName = QDir::toNativeSeparators( projectFileInfo.absoluteFilePath() );
+          }
+          else
+          {
+            sProjectFileName = projectUri;
+          }
         }
         else if ( i + 1 < argc && ( arg == QLatin1String( "--extent" ) || arg == QLatin1String( "-e" ) ) )
         {
@@ -1268,6 +1278,8 @@ int main( int argc, char *argv[] )
         if ( pos == -1 )
           continue;
         QString envVarApply = varStr.left( pos );
+        if ( envVarApply == QLatin1String( "skip" ) )
+          continue;
         QString varStrNameValue = varStr.mid( pos + 1 );
         pos = varStrNameValue.indexOf( QLatin1Char( '=' ) );
         if ( pos == -1 )

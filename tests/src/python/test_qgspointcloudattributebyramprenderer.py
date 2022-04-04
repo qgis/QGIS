@@ -16,6 +16,7 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsPointCloudLayer,
     QgsPointCloudAttributeByRampRenderer,
+    QgsPointCloudRenderer,
     QgsReadWriteContext,
     QgsRenderContext,
     QgsPointCloudRenderContext,
@@ -399,6 +400,76 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('pointcloudrenderer')
         renderchecker.setControlName('expected_ramp_zfilter')
         result = renderchecker.runTest('expected_ramp_zfilter')
+        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderTopToBottom(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudAttributeByRampRenderer()
+        renderer.setAttribute('Intensity')
+        renderer.setMinimum(200)
+        renderer.setMaximum(1000)
+        ramp = QgsStyle.defaultStyle().colorRamp("Viridis")
+        shader = QgsColorRampShader(200, 1000, ramp)
+        shader.classifyColorRamp()
+        renderer.setColorRampShader(shader)
+
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(6)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.TopToBottom)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_ramp_top_to_bottom')
+        result = renderchecker.runTest('expected_ramp_top_to_bottom')
+        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderBottomToTop(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudAttributeByRampRenderer()
+        renderer.setAttribute('Intensity')
+        renderer.setMinimum(200)
+        renderer.setMaximum(1000)
+        ramp = QgsStyle.defaultStyle().colorRamp("Viridis")
+        shader = QgsColorRampShader(200, 1000, ramp)
+        shader.classifyColorRamp()
+        renderer.setColorRampShader(shader)
+
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(6)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.BottomToTop)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_ramp_bottom_to_top')
+        result = renderchecker.runTest('expected_ramp_bottom_to_top')
         TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
         self.assertTrue(result)
 

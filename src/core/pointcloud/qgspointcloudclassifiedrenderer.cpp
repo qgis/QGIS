@@ -31,6 +31,13 @@ QgsPointCloudCategory::QgsPointCloudCategory( const int value, const QColor &col
 {
 }
 
+bool QgsPointCloudCategory::operator==( const QgsPointCloudCategory &other ) const
+{
+  return mValue == other.value() &&
+         mColor == other.color() &&
+         mLabel == other.label() &&
+         mRender == other.renderState();
+}
 
 //
 // QgsPointCloudClassifiedRenderer

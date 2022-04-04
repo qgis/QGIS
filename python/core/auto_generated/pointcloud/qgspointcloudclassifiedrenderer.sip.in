@@ -37,6 +37,8 @@ The ``label`` argument specifies the label used for this category in legends and
 The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
 %End
 
+    bool operator==( const QgsPointCloudCategory &other ) const;
+
     int value() const;
 %Docstring
 Returns the value corresponding to this category.

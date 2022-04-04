@@ -32,10 +32,10 @@ QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const St
 {
   ui.setupUi( this );
 
-  ui.groupBoxFixedErrors->setTitle( tr( "%1 errors were fixed" ).arg( stats.fixedErrors.size() ) );
-  ui.groupBoxNewErrors->setTitle( tr( "%1 new errors were found" ).arg( stats.newErrors.count() ) );
-  ui.groupBoxNotFixed->setTitle( tr( "%1 errors were not fixed" ).arg( stats.failedErrors.count() ) );
-  ui.groupBoxObsoleteErrors->setTitle( tr( "%1 errors are obsolete" ).arg( stats.obsoleteErrors.count() ) );
+  ui.groupBoxFixedErrors->setTitle( tr( "%n error(s) were fixed", nullptr, stats.fixedErrors.size() ) );
+  ui.groupBoxNewErrors->setTitle( tr( "%n new error(s) were found", nullptr, stats.newErrors.count() ) );
+  ui.groupBoxNotFixed->setTitle( tr( "%n error(s) were not fixed", nullptr, stats.failedErrors.count() ) );
+  ui.groupBoxObsoleteErrors->setTitle( tr( "%n error(s) are obsolete", nullptr, stats.obsoleteErrors.count() ) );
 
   for ( QgsGeometryCheckError *error : stats.fixedErrors )
   {

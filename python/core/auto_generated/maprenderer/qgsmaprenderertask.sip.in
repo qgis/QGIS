@@ -32,15 +32,16 @@ task. This can be used to draw maps without blocking the QGIS interface.
       ImageUnsupportedFormat
     };
 
+
     QgsMapRendererTask( const QgsMapSettings &ms,
                         const QString &fileName,
                         const QString &fileFormat = QString( "PNG" ),
-                        bool forceRaster = false );
+                        bool forceRaster = false,
+                        QgsTask::Flags flags = QgsTask::CanCancel );
 %Docstring
 Constructor for QgsMapRendererTask to render a map to an image file.
 
-If the output ``fileFormat`` is set to PDF, the ``geoPdf`` argument controls whether a GeoPDF file is created.
-See :py:func:`QgsAbstractGeoPdfExporter.geoPDFCreationAvailable()` for conditions on GeoPDF creation availability.
+Since QGIS 3.26 the optional ``flags`` argument can be used to control the task flags.
 %End
 
     QgsMapRendererTask( const QgsMapSettings &ms,

@@ -1,12 +1,16 @@
-
 {
   "name": "sha256",
   "groups": ["Conversions"],
   "type": "function",
   "description": "Creates a sha256 hash from a string.",
   "variableLenArguments": false,
-  "arguments": [
-    {"arg":"string", "description": "the string to hash"}],
-    "examples": [ { "expression":"sha256('QGIS')", "returns":"'eb045cba7a797aaa06ac58830846e40c8e8c780bc0676d3393605fae50c05309'"}
-    ]
+  "arguments": [{
+    "arg": "string",
+    "description": "the string to hash"
+  }],
+  "examples": [{
+    "expression": "sha256('QGIS')",
+    "returns": "'eb045cba7a797aaa06ac58830846e40c8e8c780bc0676d3393605fae50c05309'"
+  }],
+  "tags": ["hash"]
 }

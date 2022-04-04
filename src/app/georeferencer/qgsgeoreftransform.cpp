@@ -26,12 +26,12 @@
 
 QgsGeorefTransform::QgsGeorefTransform( const QgsGeorefTransform &other )
 {
-  selectTransformParametrisation( other.mTransformParametrisation );
+  setMethod( other.mTransformParametrisation );
 }
 
 QgsGeorefTransform::QgsGeorefTransform( TransformMethod parametrisation )
 {
-  selectTransformParametrisation( parametrisation );
+  setMethod( parametrisation );
 }
 
 QgsGeorefTransform::QgsGeorefTransform() = default;
@@ -43,7 +43,7 @@ QgsGeorefTransform::TransformMethod QgsGeorefTransform::transformParametrisation
   return mTransformParametrisation;
 }
 
-void QgsGeorefTransform::selectTransformParametrisation( TransformMethod parametrisation )
+void QgsGeorefTransform::setMethod( TransformMethod parametrisation )
 {
   if ( parametrisation != mTransformParametrisation )
   {
@@ -53,9 +53,14 @@ void QgsGeorefTransform::selectTransformParametrisation( TransformMethod paramet
   }
 }
 
-void QgsGeorefTransform::setRasterChangeCoords( const QString &fileRaster )
+void QgsGeorefTransform::loadRaster( const QString &fileRaster )
 {
-  mRasterChangeCoords.setRaster( fileRaster );
+  mRasterChangeCoords.loadRaster( fileRaster );
+}
+
+QgsPointXY QgsGeorefTransform::toSourceCoordinate( const QgsPointXY &pixel ) const
+{
+  return mRasterChangeCoords.toXY( pixel );
 }
 
 bool QgsGeorefTransform::providesAccurateInverseTransformation() const
@@ -95,10 +100,10 @@ bool QgsGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &so
   {
     return false;
   }
-  if ( mRasterChangeCoords.hasCrs() )
+  if ( mRasterChangeCoords.hasExistingGeoreference() )
   {
-    const QVector<QgsPointXY> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords( sourceCoordinates );
-    mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGcps( sourceCoordinates, pixelCoordsCorrect, invertYAxis );
+    const QVector<QgsPointXY> sourcePixelCoordinates = mRasterChangeCoords.getPixelCoords( sourceCoordinates );
+    mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGcps( sourcePixelCoordinates, destinationCoordinates, invertYAxis );
   }
   else
   {
@@ -131,12 +136,12 @@ bool QgsGeorefTransform::transformRasterToWorld( const QgsPointXY &raster, QgsPo
 {
   // flip y coordinate due to different CS orientation
   const QgsPointXY raster_flipped( raster.x(), -raster.y() );
-  return gdal_transform( raster_flipped, world, 0 );
+  return transformPrivate( raster_flipped, world, false );
 }
 
 bool QgsGeorefTransform::transformWorldToRaster( const QgsPointXY &world, QgsPointXY &raster )
 {
-  const bool success = gdal_transform( world, raster, 1 );
+  const bool success = transformPrivate( world, raster, true );
   // flip y coordinate due to different CS orientation
   raster.setY( -raster.y() );
   return success;
@@ -186,13 +191,13 @@ bool QgsGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, double &sca
 }
 
 
-bool QgsGeorefTransform::gdal_transform( const QgsPointXY &src, QgsPointXY &dst, int dstToSrc ) const
+bool QgsGeorefTransform::transformPrivate( const QgsPointXY &src, QgsPointXY &dst, bool inverseTransform ) const
 {
   // Copy the source coordinate for inplace transform
   double x = src.x();
   double y = src.y();
 
-  if ( !QgsGcpTransformerInterface::transform( x, y, dstToSrc == 1 ) )
+  if ( !QgsGcpTransformerInterface::transform( x, y, inverseTransform ) )
     return false;
 
   dst.setX( x );

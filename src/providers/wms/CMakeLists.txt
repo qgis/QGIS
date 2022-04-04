@@ -19,7 +19,7 @@ if (WITH_GUI)
     qgsxyzsourcewidget.cpp
   )
 
-  set(WMS_UIS qgswmstsettingswidgetbase.ui)
+  set(WMS_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgswmstsettingswidgetbase.ui)
 endif()
 
 # static library

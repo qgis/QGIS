@@ -374,6 +374,17 @@ void TestQgsAppLocatorFilters::testGoto()
   QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 1,234.56 789.012 (Map CRS, )" ) );
   QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 1234.56, 789.012 ) );
 
+  // decimal degree with suffixes
+  results = gatherResults( &filter, QStringLiteral( "12.345N, 67.890W" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to -67.89° 12.345° (EPSG:4326 - WGS 84)" ) );
+  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( -67.890, 12.345 ) );
+
+  results = gatherResults( &filter, QStringLiteral( "12.345 e, 67.890 s" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 12.345° -67.89° (EPSG:4326 - WGS 84)" ) );
+  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 12.345, -67.890 ) );
+
   // degree/minuste/second coordinates goto
   // easting northing
   results = gatherResults( &filter, QStringLiteral( "40deg 1' 0\" E 11deg  55' 0\" S" ), QgsLocatorContext() );

@@ -7,14 +7,23 @@
     <x>0</x>
     <y>0</y>
     <width>382</width>
-    <height>229</height>
+    <height>242</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -58,23 +67,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QComboBox" name="cboAltClamping">
-       <item>
-        <property name="text">
-         <string>Absolute</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Relative</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Terrain</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QComboBox" name="cboAltClamping"/>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="labelBinding">
@@ -126,7 +119,16 @@
       <string>Shading</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item row="3" column="0" colspan="2">
@@ -146,15 +148,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsMaterialWidget</class>
    <extends>QWidget</extends>
    <header>qgsmaterialwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>

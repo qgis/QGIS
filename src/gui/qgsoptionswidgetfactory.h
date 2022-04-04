@@ -52,13 +52,22 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
      */
     virtual QString helpKey() const { return QString(); }
 
-
     /**
      * Returns the registered highlight widgets used to search and highlight text in
      * options dialogs.
      */
     QHash<QWidget *, QgsOptionsDialogHighlightWidget *> registeredHighlightWidgets() {return mHighlightWidgets;} SIP_SKIP
 
+    /**
+     * Validates the current state of the widget.
+     *
+     * Subclasses should return TRUE if the widget state is currently valid and acceptable to apply().
+     *
+     * The default implementation returns TRUE.
+     *
+     * \since QGIS 3.24
+     */
+    virtual bool isValid() { return true; }
 
   public slots:
 

@@ -18,12 +18,14 @@
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgssettings.h"
+#include "qgsrendercontext.h"
 
 QgsTileMatrix QgsTileMatrix::fromWebMercator( int zoomLevel )
 {
-  double z0xMin = -20037508.3427892, z0yMax =  20037508.3427892;
+  constexpr double z0xMin = -20037508.3427892;
+  constexpr double z0yMax =  20037508.3427892;
 
-  return fromCustomDef( zoomLevel, QgsCoordinateReferenceSystem( "EPSG:3857" ), QgsPointXY( z0xMin, z0yMax ), 2 * z0yMax );
+  return fromCustomDef( zoomLevel, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsPointXY( z0xMin, z0yMax ), 2 * z0yMax );
 }
 
 QgsTileMatrix QgsTileMatrix::fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs,
@@ -36,11 +38,11 @@ QgsTileMatrix QgsTileMatrix::fromCustomDef( int zoomLevel, const QgsCoordinateRe
   double z0yMin = z0yMax - z0MatrixHeight * z0Dimension;
 
   // Constant for scale denominator calculation
-  const double tileSize = 256.0;
-  const double PIXELS_TO_M = 2.8 / 10000.0;  // WMS/WMTS define "standardized rendering pixel size" as 0.28mm
-  const double UNIT_TO_M = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
+  constexpr double TILE_SIZE = 256.0;
+  constexpr double PIXELS_TO_M = 2.8 / 10000.0;  // WMS/WMTS define "standardized rendering pixel size" as 0.28mm
+  const double unitToMeters = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
   // Scale denominator calculation
-  double scaleDenom0 = ( z0Dimension / tileSize ) * ( UNIT_TO_M / PIXELS_TO_M );
+  const double scaleDenom0 = ( z0Dimension / TILE_SIZE ) * ( unitToMeters / PIXELS_TO_M );
 
   int numTiles = static_cast<int>( pow( 2, zoomLevel ) ); // assuming we won't ever go over 30 zoom levels
 
@@ -56,8 +58,7 @@ QgsTileMatrix QgsTileMatrix::fromCustomDef( int zoomLevel, const QgsCoordinateRe
   return tm;
 }
 
-
-QgsTileMatrix QgsTileMatrix::fromTileMatrix( const int &zoomLevel, const QgsTileMatrix &tileMatrix )
+QgsTileMatrix QgsTileMatrix::fromTileMatrix( const int zoomLevel, const QgsTileMatrix &tileMatrix )
 {
   QgsTileMatrix tm;
   int numTiles = static_cast<int>( pow( 2, zoomLevel ) ); // assuming we won't ever go over 30 zoom levels
@@ -122,4 +123,237 @@ QPointF QgsTileMatrix::mapToTileCoordinates( const QgsPointXY &mapPoint ) const
   double dx = mapPoint.x() - mExtent.xMinimum();
   double dy = mExtent.yMaximum() - mapPoint.y();
   return QPointF( dx / mTileXSpan, dy / mTileYSpan );
+}
+
+//
+// QgsTileMatrixSet
+//
+
+bool QgsTileMatrixSet::isEmpty() const
+{
+  return mTileMatrices.isEmpty();
+}
+
+void QgsTileMatrixSet::addGoogleCrs84QuadTiles( int minimumZoom, int maximumZoom )
+{
+  if ( maximumZoom < minimumZoom )
+    std::swap( minimumZoom, maximumZoom );
+
+  for ( int zoom = minimumZoom; zoom <= maximumZoom; ++zoom )
+  {
+    addMatrix( QgsTileMatrix::fromWebMercator( zoom ) );
+  }
+}
+
+QgsTileMatrix QgsTileMatrixSet::tileMatrix( int zoom ) const
+{
+  return mTileMatrices.value( zoom );
+}
+
+void QgsTileMatrixSet::addMatrix( const QgsTileMatrix &matrix )
+{
+  mTileMatrices.insert( matrix.zoomLevel(), matrix );
+}
+
+int QgsTileMatrixSet::minimumZoom() const
+{
+  int res = -1;
+  for ( auto it = mTileMatrices.constBegin(); it != mTileMatrices.constEnd(); ++it )
+  {
+    if ( res == -1 || it->zoomLevel() < res )
+      res = it->zoomLevel();
+  }
+  return res;
+}
+
+int QgsTileMatrixSet::maximumZoom() const
+{
+  int res = -1;
+  for ( auto it = mTileMatrices.constBegin(); it != mTileMatrices.constEnd(); ++it )
+  {
+    if ( res == -1 || it->zoomLevel() > res )
+      res = it->zoomLevel();
+  }
+  return res;
+}
+
+void QgsTileMatrixSet::dropMatricesOutsideZoomRange( int minimumZoom, int maximumZoom )
+{
+  for ( auto it = mTileMatrices.begin(); it != mTileMatrices.end(); )
+  {
+    if ( it->zoomLevel() < minimumZoom || it->zoomLevel() > maximumZoom )
+    {
+      it = mTileMatrices.erase( it );
+    }
+    else
+    {
+      ++it;
+    }
+  }
+}
+
+QgsCoordinateReferenceSystem QgsTileMatrixSet::crs() const
+{
+  if ( mTileMatrices.empty() )
+    return QgsCoordinateReferenceSystem();
+
+  return mTileMatrices.value( minimumZoom() ).crs();
+}
+
+double QgsTileMatrixSet::scaleToZoom( double scale ) const
+{
+  int zoomUnder = -1;
+  int zoomOver = -1;
+  double scaleUnder = 0;
+  double scaleOver = 0;
+
+  switch ( mScaleToTileZoomMethod )
+  {
+    case Qgis::ScaleToTileZoomLevelMethod::MapBox:
+    {
+      // TODO: it seems that map scale is double (is that because of high-dpi screen?)
+      // (this TODO was taken straight from QgsVectorTileUtils::scaleToZoom!)
+      scale *= 2;
+      break;
+    }
+    case Qgis::ScaleToTileZoomLevelMethod::Esri:
+      break;
+  }
+
+  for ( auto it = mTileMatrices.constBegin(); it != mTileMatrices.constEnd(); ++it )
+  {
+    if ( it->scale() > scale && ( zoomUnder == -1 || zoomUnder < it->zoomLevel() ) )
+    {
+      zoomUnder = it->zoomLevel();
+      scaleUnder = it->scale();
+    }
+    if ( it->scale() < scale && ( zoomOver == -1 || zoomOver > it->zoomLevel() ) )
+    {
+      zoomOver = it->zoomLevel();
+      scaleOver = it->scale();
+    }
+  }
+
+  if ( zoomUnder < 0 )
+    return zoomOver;
+  if ( zoomOver < 0 )
+    return zoomUnder;
+  else
+    return ( scaleUnder - scale ) / ( scaleUnder - scaleOver ) * ( zoomOver - zoomUnder ) + zoomUnder;
+}
+
+int QgsTileMatrixSet::scaleToZoomLevel( double scale ) const
+{
+  int tileZoom = 0;
+  switch ( mScaleToTileZoomMethod )
+  {
+    case Qgis::ScaleToTileZoomLevelMethod::MapBox:
+      tileZoom = static_cast<int>( round( scaleToZoom( scale ) ) );
+      break;
+    case Qgis::ScaleToTileZoomLevelMethod::Esri:
+      tileZoom = static_cast<int>( floor( scaleToZoom( scale ) ) );
+      break;
+  }
+
+  return std::clamp( tileZoom, minimumZoom(), maximumZoom() );
+}
+
+double QgsTileMatrixSet::scaleForRenderContext( const QgsRenderContext &context ) const
+{
+  return calculateTileScaleForMap( context.rendererScale(),
+                                   context.coordinateTransform().destinationCrs(),
+                                   context.mapExtent(),
+                                   context.outputSize(),
+                                   context.painter()->device()->logicalDpiX() );
+}
+
+double QgsTileMatrixSet::calculateTileScaleForMap( double actualMapScale, const QgsCoordinateReferenceSystem &mapCrs, const QgsRectangle &mapExtent, const QSize mapSize, const double mapDpi ) const
+{
+  switch ( mScaleToTileZoomMethod )
+  {
+    case Qgis::ScaleToTileZoomLevelMethod::MapBox:
+      return actualMapScale;
+
+    case Qgis::ScaleToTileZoomLevelMethod::Esri:
+      if ( mapCrs.isGeographic() )
+      {
+        // ESRI calculates the scale for geographic CRS ***ALWAYS*** at the equator, regardless of map extent!
+        // see https://support.esri.com/en/technical-article/000007211, https://gis.stackexchange.com/questions/33270/how-does-arcmap-calculate-scalebar-inside-a-wgs84-layout
+        constexpr double METERS_PER_DEGREE = M_PI / 180.0 * 6378137;
+        constexpr double INCHES_PER_METER = 39.370078;
+        const double mapWidthInches = mapExtent.width() * METERS_PER_DEGREE * INCHES_PER_METER;
+
+        double scale = mapWidthInches * mapDpi / static_cast< double >( mapSize.width() );
+
+        // Note: I **think** there's also some magic which ESRI applies when rendering tiles ON SCREEN,
+        // which may be something like adjusting the scale based on the ratio between the map DPI and 96 DPI,
+        // e.g. scale *= mapDpi / 96.0;
+        // BUT the same adjustment isn't applied when exporting maps. This needs further investigation!
+
+        return scale;
+      }
+      else
+      {
+        return actualMapScale;
+      }
+  }
+  BUILTIN_UNREACHABLE
+}
+
+bool QgsTileMatrixSet::readXml( const QDomElement &element, QgsReadWriteContext & )
+{
+  mTileMatrices.clear();
+
+  mScaleToTileZoomMethod = qgsEnumKeyToValue( element.attribute( QStringLiteral( "scaleToZoomMethod" ) ), Qgis::ScaleToTileZoomLevelMethod::MapBox );
+
+  const QDomNodeList children = element.childNodes();
+  for ( int i = 0; i < children.size(); i++ )
+  {
+    const QDomElement matrixElement = children.at( i ).toElement();
+
+    QgsTileMatrix matrix;
+    matrix.mZoomLevel = matrixElement.attribute( QStringLiteral( "zoomLevel" ) ).toInt();
+    matrix.mMatrixWidth = matrixElement.attribute( QStringLiteral( "matrixWidth" ) ).toInt();
+    matrix.mMatrixHeight = matrixElement.attribute( QStringLiteral( "matrixHeight" ) ).toInt();
+    matrix.mExtent = QgsRectangle(
+                       matrixElement.attribute( QStringLiteral( "xMin" ) ).toDouble(),
+                       matrixElement.attribute( QStringLiteral( "yMin" ) ).toDouble(),
+                       matrixElement.attribute( QStringLiteral( "xMax" ) ).toDouble(),
+                       matrixElement.attribute( QStringLiteral( "yMax" ) ).toDouble()
+                     );
+
+    matrix.mScaleDenom = matrixElement.attribute( QStringLiteral( "scale" ) ).toDouble();
+    matrix.mTileXSpan = matrixElement.attribute( QStringLiteral( "tileXSpan" ) ).toDouble();
+    matrix.mTileYSpan = matrixElement.attribute( QStringLiteral( "tileYSpan" ) ).toDouble();
+    matrix.mCrs.readXml( matrixElement );
+    addMatrix( matrix );
+  }
+  return true;
+}
+
+QDomElement QgsTileMatrixSet::writeXml( QDomDocument &document, const QgsReadWriteContext & ) const
+{
+  QDomElement setElement = document.createElement( QStringLiteral( "matrixSet" ) );
+  setElement.setAttribute( QStringLiteral( "scaleToZoomMethod" ), qgsEnumValueToKey( mScaleToTileZoomMethod ) );
+
+  for ( auto it = mTileMatrices.constBegin(); it != mTileMatrices.constEnd(); ++it )
+  {
+    QDomElement matrixElement = document.createElement( QStringLiteral( "matrix" ) );
+    matrixElement.setAttribute( QStringLiteral( "zoomLevel" ), it->zoomLevel() );
+    matrixElement.setAttribute( QStringLiteral( "matrixWidth" ), it->matrixWidth() );
+    matrixElement.setAttribute( QStringLiteral( "matrixHeight" ), it->matrixHeight() );
+
+    matrixElement.setAttribute( QStringLiteral( "xMin" ), qgsDoubleToString( it->mExtent.xMinimum() ) );
+    matrixElement.setAttribute( QStringLiteral( "xMax" ), qgsDoubleToString( it->mExtent.xMaximum() ) );
+    matrixElement.setAttribute( QStringLiteral( "yMin" ), qgsDoubleToString( it->mExtent.yMinimum() ) );
+    matrixElement.setAttribute( QStringLiteral( "yMax" ), qgsDoubleToString( it->mExtent.yMaximum() ) );
+
+    matrixElement.setAttribute( QStringLiteral( "scale" ), qgsDoubleToString( it->scale() ) );
+    matrixElement.setAttribute( QStringLiteral( "tileXSpan" ), qgsDoubleToString( it->mTileXSpan ) );
+    matrixElement.setAttribute( QStringLiteral( "tileYSpan" ), qgsDoubleToString( it->mTileYSpan ) );
+
+    it->crs().writeXml( matrixElement, document );
+    setElement.appendChild( matrixElement );
+  }
+  return setElement;
 }

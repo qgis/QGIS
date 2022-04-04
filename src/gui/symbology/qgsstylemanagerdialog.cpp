@@ -627,7 +627,7 @@ void QgsStyleManagerDialog::copyItemsToDefault()
     cursorOverride.reset();
     if ( count > 0 )
     {
-      mMessageBar->pushSuccess( tr( "Import Items" ), count > 1 ? tr( "Successfully imported %1 items." ).arg( count ) : tr( "Successfully imported item." ) );
+      mMessageBar->pushSuccess( tr( "Import Items" ), count > 1 ? tr( "Successfully imported %n item(s).", nullptr, count ) : tr( "Successfully imported item." ) );
     }
   }
 }
@@ -2101,7 +2101,7 @@ void QgsStyleManagerDialog::removeItem()
     else if ( currentItemType() == 5 )
     {
       if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Label Settings" ),
-           QString( tr( "Do you really want to remove %n label settings?", nullptr, items.count() ) ),
+           QString( tr( "Do you really want to remove %n label setting(s)?", nullptr, items.count() ) ),
            QMessageBox::Yes,
            QMessageBox::No ) )
         return;
@@ -2109,7 +2109,7 @@ void QgsStyleManagerDialog::removeItem()
     else if ( currentItemType() == 6 )
     {
       if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Legend Patch Shapes" ),
-           QString( tr( "Do you really want to remove %n legend patch shapes?", nullptr, items.count() ) ),
+           QString( tr( "Do you really want to remove %n legend patch shape(s)?", nullptr, items.count() ) ),
            QMessageBox::Yes,
            QMessageBox::No ) )
         return;
@@ -2117,7 +2117,7 @@ void QgsStyleManagerDialog::removeItem()
     else if ( currentItemType() == 7 )
     {
       if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove 3D Symbols" ),
-           QString( tr( "Do you really want to remove %n 3D symbols?", nullptr, items.count() ) ),
+           QString( tr( "Do you really want to remove %n 3D symbol(s)?", nullptr, items.count() ) ),
            QMessageBox::Yes,
            QMessageBox::No ) )
         return;

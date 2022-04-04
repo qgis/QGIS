@@ -237,17 +237,33 @@ class CORE_EXPORT QgsProviderRegistry
                     QString &errCause );
 
     /**
-     * Gets a layer style defined by \a styleId
+     * Returns TRUE if a layer style with the specified \a styleId exists in the provider defined by \a providerKey and \a uri.
+     *
+     * \param providerKey provider key
+     * \param uri provider URI
+     * \param styleId style ID to test for
+     * \param errorCause will be set to a descriptive error message, if an error occurs while checking if the style exists
+     * \returns TRUE if the layer style already exists
+     *
+     * \see getStyleById()
+     * \since QGIS 3.24
+     */
+    bool styleExists( const QString &providerKey, const QString &uri, const QString &styleId, QString &errorCause SIP_OUT );
+
+    /**
+     * Gets a layer style defined by \a styleId.
+     *
+     * \see styleExists()
      *
      * \since QGIS 3.10
      */
-    QString getStyleById( const QString &providerKey,  const QString &uri, QString styleId, QString &errCause );
+    QString getStyleById( const QString &providerKey, const QString &uri, const QString &styleId, QString &errCause );
 
     /**
      * Deletes a layer style defined by \a styleId
      * \since QGIS 3.10
      */
-    bool deleteStyleById( const QString &providerKey,  const QString &uri, QString styleId, QString &errCause );
+    bool deleteStyleById( const QString &providerKey, const QString &uri, const QString &styleId, QString &errCause );
 
     /**
      * Saves a layer style to provider

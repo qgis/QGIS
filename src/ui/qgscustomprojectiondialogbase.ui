@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsCustomProjectionDialogBase</class>
- <widget class="QDialog" name="QgsCustomProjectionDialogBase">
+ <class>QgsCustomProjectionWidgetBase</class>
+ <widget class="QWidget" name="QgsCustomProjectionWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,20 +15,21 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <property name="margin">
-    <number>3</number>
+   <property name="leftMargin">
+    <number>0</number>
    </property>
-   <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="focusPolicy">
@@ -45,285 +46,125 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>536</width>
-        <height>615</height>
+        <width>542</width>
+        <height>650</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBox">
-         <property name="title">
-          <string>Define</string>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Name</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,3,0,1,0">
-          <item row="0" column="0" colspan="3">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to a WKT or Proj string format for specifying a CRS.</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="2">
-             <widget class="QPushButton" name="mButtonValidate">
-              <property name="toolTip">
-               <string>Validate the current CRS definition and test whether it is an acceptable projection definition</string>
-              </property>
-              <property name="text">
-               <string>&amp;Validate</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QPushButton" name="pbnCopyCRS">
-              <property name="toolTip">
-               <string>Copy parameters from existing CRS</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
-             <spacer name="verticalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="0" rowspan="2">
-             <widget class="QPlainTextEdit" name="teParameters"/>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_3">
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QTreeWidget" name="leNameList">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
+           <property name="sortingEnabled">
+            <bool>false</bool>
+           </property>
+           <attribute name="headerShowSortIndicator" stdset="0">
+            <bool>false</bool>
+           </attribute>
+           <column>
             <property name="text">
              <string>Name</string>
             </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="3">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QTreeWidget" name="leNameList">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="alternatingRowColors">
-               <bool>true</bool>
-              </property>
-              <property name="sortingEnabled">
-               <bool>false</bool>
-              </property>
-              <attribute name="headerShowSortIndicator" stdset="0">
-               <bool>false</bool>
-              </attribute>
-              <column>
-               <property name="text">
-                <string>Name</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>ID</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Parameters</string>
-               </property>
-              </column>
-             </widget>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_2">
-              <item>
-               <widget class="QPushButton" name="pbnAdd">
-                <property name="toolTip">
-                 <string>Add new CRS</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="../../images/images.qrc">
-                  <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pbnRemove">
-                <property name="toolTip">
-                 <string>Remove CRS</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="../../images/images.qrc">
-                  <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="leName"/>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_4">
+           </column>
+           <column>
+            <property name="text">
+             <string>ID</string>
+            </property>
+           </column>
+           <column>
             <property name="text">
              <string>Parameters</string>
             </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QComboBox" name="mFormatComboBox"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Format</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+           </column>
+          </widget>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QPushButton" name="pbnAdd">
+             <property name="toolTip">
+              <string>Add new CRS</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pbnRemove">
+             <property name="toolTip">
+              <string>Remove CRS</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
-       <item row="1" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Test</string>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="leName"/>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to a WKT or Proj string format for specifying a CRS.</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="wordWrap">
           <bool>true</bool>
          </property>
-         <layout class="QGridLayout">
-          <item row="3" column="0">
-           <widget class="QLabel" name="textLabel2_2_2">
-            <property name="text">
-             <string>East</string>
-            </property>
-            <property name="buddy">
-             <cstring>eastWGS84</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="textLabel1_3">
-            <property name="text">
-             <string>Geographic / WGS84</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="textLabel2_3">
-            <property name="text">
-             <string>Destination CRS        </string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="textLabel2_2">
-            <property name="text">
-             <string>North</string>
-            </property>
-            <property name="buddy">
-             <cstring>northWGS84</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="northWGS84">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLabel" name="projectedX">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::Box</enum>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="eastWGS84"/>
-          </item>
-          <item row="3" column="2">
-           <widget class="QLabel" name="projectedY">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::Box</enum>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="margin">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" colspan="3">
-           <widget class="QPushButton" name="pbnCalculate">
-            <property name="text">
-             <string>Calculate</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QgsCrsDefinitionWidget" name="mCrsDefinitionWidget" native="true"/>
        </item>
       </layout>
      </widget>
@@ -340,9 +181,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsCrsDefinitionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgscrsdefinitionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -350,34 +191,9 @@
   <tabstop>leNameList</tabstop>
   <tabstop>pbnAdd</tabstop>
   <tabstop>pbnRemove</tabstop>
-  <tabstop>leName</tabstop>
-  <tabstop>mFormatComboBox</tabstop>
-  <tabstop>teParameters</tabstop>
-  <tabstop>pbnCopyCRS</tabstop>
-  <tabstop>mButtonValidate</tabstop>
-  <tabstop>northWGS84</tabstop>
-  <tabstop>eastWGS84</tabstop>
-  <tabstop>pbnCalculate</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsCustomProjectionDialogBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>270</x>
-     <y>590</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>270</x>
-     <y>306</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

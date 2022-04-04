@@ -21,6 +21,11 @@ use constant MULTILINE_CONDITIONAL_STATEMENT => 22;
 use constant CODE_SNIPPET => 30;
 use constant CODE_SNIPPET_CPP => 31;
 
+use constant PREPEND_CODE_NO => 40;
+use constant PREPEND_CODE_VIRTUAL => 41;
+use constant PREPEND_CODE_MAKE_PRIVATE => 42;
+
+
 # read arguments
 my $debug = 0;
 my $sip_output = '';
@@ -37,7 +42,7 @@ chomp(my @INPUT_LINES = <$handle>);
 close $handle;
 
 # config
-my $cfg_file = File::Spec->catfile( dirname(__FILE__), 'sipify.yaml' );
+my $cfg_file = File::Spec->catfile( dirname(__FILE__), '../python/sipify.yaml' );
 my $yaml = YAML::Tiny->read( $cfg_file  );
 my $SIP_CONFIG = $yaml->[0];
 
@@ -64,8 +69,9 @@ my @SKIPPED_PARAMS_REMOVE = ();
 my $GLOB_IFDEF_NESTING_IDX = 0;
 my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
+my $LAST_ACCESS_SECTION_LINE = '';
 my $RETURN_TYPE = '';
-my $IS_OVERRIDE = 0;
+my $IS_OVERRIDE_OR_MAKE_PRIVATE = PREPEND_CODE_NO;
 my $IF_FEATURE_CONDITION = '';
 my $FOUND_SINCE = 0;
 my %QFLAG_HASH;
@@ -87,7 +93,7 @@ sub read_line {
                                   $GLOB_BRACKET_NESTING_IDX[$#GLOB_BRACKET_NESTING_IDX],
                                   $SIP_RUN,
                                   $MULTILINE_DEFINITION,
-                                  $IS_OVERRIDE,
+                                  $IS_OVERRIDE_OR_MAKE_PRIVATE,
                                   $ACTUAL_CLASS,
                                   $#CLASSNAME)." :: ".$new_line."\n";
    $new_line = replace_macros($new_line);
@@ -550,6 +556,8 @@ sub fix_constants {
     $line =~ s/\bstd::numeric_limits<double>::max\(\)/DBL_MAX/g;
     $line =~ s/\bstd::numeric_limits<double>::lowest\(\)/-DBL_MAX/g;
     $line =~ s/\bstd::numeric_limits<double>::epsilon\(\)/DBL_EPSILON/g;
+    $line =~ s/\bstd::numeric_limits<qlonglong>::min\(\)/LLONG_MIN/g;
+    $line =~ s/\bstd::numeric_limits<qlonglong>::max\(\)/LLONG_MAX/g;
     $line =~ s/\bstd::numeric_limits<int>::max\(\)/INT_MAX/g;
     $line =~ s/\bstd::numeric_limits<int>::min\(\)/INT_MIN/g;
     return $line;
@@ -827,6 +835,9 @@ while ($LINE_IDX < $LINE_COUNT){
     if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$/){
         next;
     }
+    if ($LINE =~ m/^\s*QHASH_FOR_CLASS_ENUM/){
+        next;
+    }
 
     # SIP_SKIP
     if ( $LINE =~ m/SIP_SKIP|SIP_PYTHON_SPECIAL_/ ){
@@ -898,7 +909,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 push @DECLARED_CLASSES, $CLASSNAME[$#CLASSNAME];
             }
             dbg_info("class: ".$CLASSNAME[$#CLASSNAME]);
-            if ($LINE =~ m/\b[A-Z0-9_]+_EXPORT\b/ || $#CLASSNAME != 0 || $INPUT_LINES[$LINE_IDX-2] =~ m/^\s*template</){
+            if ($LINE =~ m/\b[A-Z0-9_]+_EXPORT\b/ || $#CLASSNAME != 0 || $INPUT_LINES[$LINE_IDX-2] =~ m/^\s*template\s*</){
                 # class should be exported except those not at top level or template classes
                 # if class is not exported, then its methods should be (checked whenever leaving out the class)
                 $EXPORTED[-1]++;
@@ -1004,6 +1015,7 @@ while ($LINE_IDX < $LINE_COUNT){
     # Private members (exclude SIP_RUN)
     if ( $LINE =~ m/^\s*private( slots)?:/ ){
         $ACCESS[$#ACCESS] = PRIVATE;
+        $LAST_ACCESS_SECTION_LINE = $LINE;
         $PRIVATE_SECTION_LINE = $LINE;
         $COMMENT = '';
         dbg_info("going private");
@@ -1011,11 +1023,13 @@ while ($LINE_IDX < $LINE_COUNT){
     }
     elsif ( $LINE =~ m/^\s*(public( slots)?|signals):.*$/ ){
         dbg_info("going public");
+        $LAST_ACCESS_SECTION_LINE = $LINE;
         $ACCESS[$#ACCESS] = PUBLIC;
         $COMMENT = '';
     }
     elsif ( $LINE =~ m/^\s*(protected)( slots)?:.*$/ ){
         dbg_info("going protected");
+        $LAST_ACCESS_SECTION_LINE = $LINE;
         $ACCESS[$#ACCESS] = PROTECTED;
         $COMMENT = '';
     }
@@ -1159,13 +1173,15 @@ while ($LINE_IDX < $LINE_COUNT){
       exit_with_error("\"\\\\!<\" doxygen command must only be used for enum documentation")
     }
 
-    $IS_OVERRIDE = 1 if ( $LINE =~ m/\boverride\b/);
-    $IS_OVERRIDE = 1 if ( $LINE =~ m/\bFINAL\b/);
+    $IS_OVERRIDE_OR_MAKE_PRIVATE = PREPEND_CODE_VIRTUAL if ( $LINE =~ m/\boverride\b/);
+    $IS_OVERRIDE_OR_MAKE_PRIVATE = PREPEND_CODE_VIRTUAL if ( $LINE =~ m/\bFINAL\b/);
+    $IS_OVERRIDE_OR_MAKE_PRIVATE = PREPEND_CODE_MAKE_PRIVATE if ( $LINE =~ m/\bSIP_MAKE_PRIVATE\b/);
 
     # keyword fixes
     do {no warnings 'uninitialized';
         $LINE =~ s/^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
         $LINE =~ s/\s*\boverride\b//;
+        $LINE =~ s/\s*\bSIP_MAKE_PRIVATE\b//;
         $LINE =~ s/\s*\bFINAL\b/ \${SIP_FINAL}/;
         $LINE =~ s/\s*\bextern \b//;
         $LINE =~ s/\s*\bMAYBE_UNUSED \b//;
@@ -1230,24 +1246,35 @@ while ($LINE_IDX < $LINE_COUNT){
 
     do {no warnings 'uninitialized';
         # remove keywords
-        if ( $IS_OVERRIDE == 1 ){
-            # handle multiline definition to add virtual keyword on opening line
+        if ( $IS_OVERRIDE_OR_MAKE_PRIVATE != PREPEND_CODE_NO ){
+            # handle multiline definition to add virtual keyword or making private on opening line
             if ( $MULTILINE_DEFINITION != MULTILINE_NO ){
-                my $virtual_line = $LINE;
-                my $virtual_line_idx = $LINE_IDX;
-                dbg_info("handle multiline definition to add virtual keyword on opening line");
-                while ( $virtual_line !~ m/^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$/){
-                    $virtual_line_idx--;
-                    $virtual_line = $INPUT_LINES[$virtual_line_idx];
-                    $virtual_line_idx >= 0 or exit_with_error('could not reach opening definition');
+                my $rolling_line = $LINE;
+                my $rolling_line_idx = $LINE_IDX;
+                dbg_info("handle multiline definition to add virtual keyword or making private on opening line");
+                while ( $rolling_line !~ m/^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$/){
+                    $rolling_line_idx--;
+                    $rolling_line = $INPUT_LINES[$rolling_line_idx];
+                    $rolling_line_idx >= 0 or exit_with_error('could not reach opening definition');
                 }
-                if ( $virtual_line !~ m/^(\s*)virtual\b(.*)$/ ){
-                    my $idx = $#OUTPUT-$LINE_IDX+$virtual_line_idx+2;
-                    #print "len: $#OUTPUT line_idx: $LINE_IDX virt: $virtual_line_idx\n"idx: $idx\n$OUTPUT[$idx]\n";
-                    $OUTPUT[$idx] = fix_annotations($virtual_line =~ s/^(\s*?)\b(.*)$/$1 virtual $2\n/r);
+                if ( $IS_OVERRIDE_OR_MAKE_PRIVATE == PREPEND_CODE_VIRTUAL && $rolling_line !~ m/^(\s*)virtual\b(.*)$/ ){
+                    my $idx = $#OUTPUT-$LINE_IDX+$rolling_line_idx+2;
+                    #print "len: $#OUTPUT line_idx: $LINE_IDX virt: $rolling_line_idx\n"idx: $idx\n$OUTPUT[$idx]\n";
+                    $OUTPUT[$idx] = fix_annotations($rolling_line =~ s/^(\s*?)\b(.*)$/$1 virtual $2\n/r);
+                }
+                elsif ( $IS_OVERRIDE_OR_MAKE_PRIVATE == PREPEND_CODE_MAKE_PRIVATE ) {
+                    dbg_info("prepending private access");
+                    my $idx = $#OUTPUT-$LINE_IDX+$rolling_line_idx+2;
+                    my $private_access = $LAST_ACCESS_SECTION_LINE =~ s/(protected|public)/private/r;
+                    splice @OUTPUT, $idx, 0, $private_access . "\n";
+                    $OUTPUT[$idx+1] = fix_annotations($rolling_line) . "\n";
                 }
             }
-            elsif ( $LINE !~ m/^(\s*)virtual\b(.*)$/ ){
+            elsif ( $IS_OVERRIDE_OR_MAKE_PRIVATE == PREPEND_CODE_MAKE_PRIVATE ) {
+                dbg_info("prepending private access");
+                $LINE = $LAST_ACCESS_SECTION_LINE =~ s/(protected|public)/private/r . "\n" . $LINE . "\n";
+            }
+            elsif (  $IS_OVERRIDE_OR_MAKE_PRIVATE == PREPEND_CODE_VIRTUAL && $LINE !~ m/^(\s*)virtual\b(.*)$/ ){
                 #sip often requires the virtual keyword to be present, or it chokes on covariant return types
                 #in overridden methods
                 dbg_info('adding virtual keyword for overridden method');
@@ -1313,7 +1340,7 @@ while ($LINE_IDX < $LINE_COUNT){
         dbg_info('because typedef') if ($LINE =~ m/\s*typedef.*?(?!SIP_DOC_TEMPLATE)/);
         $COMMENT = '';
         $RETURN_TYPE = '';
-        $IS_OVERRIDE = 0;
+        $IS_OVERRIDE_OR_MAKE_PRIVATE = PREPEND_CODE_NO;
     }
 
     $LINE = fix_constants($LINE);
@@ -1342,6 +1369,7 @@ typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
     }
 
     write_output("NOR", "$LINE\n");
+
     if ($PYTHON_SIGNATURE ne '') {
       write_output("PSI", "$PYTHON_SIGNATURE\n");
     }
@@ -1382,7 +1410,8 @@ typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
     # write comment
     if ( $LINE =~ m/^\s*$/ )
     {
-        $IS_OVERRIDE = 0;
+        dbg_info("no more override / private");
+        $IS_OVERRIDE_OR_MAKE_PRIVATE = PREPEND_CODE_NO;
         next;
     }
     if ( $LINE =~ m/^\s*template\s*<.*>/ ){
@@ -1390,7 +1419,7 @@ typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
         next;
     }
     if ( $COMMENT !~ m/^\s*$/ || $RETURN_TYPE ne ''){
-        if ( $IS_OVERRIDE == 1 && $COMMENT =~ m/^\s*$/ ){
+        if ( $IS_OVERRIDE_OR_MAKE_PRIVATE != PREPEND_CODE_VIRTUAL && $COMMENT =~ m/^\s*$/ ){
             # overridden method with no new docs - so don't create a Docstring and use
             # parent class Docstring
         }
@@ -1489,10 +1518,16 @@ typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
         }
         $COMMENT = '';
         $RETURN_TYPE = '';
-        $IS_OVERRIDE = 0;
+        if ($IS_OVERRIDE_OR_MAKE_PRIVATE == PREPEND_CODE_MAKE_PRIVATE){
+          write_output("MKP", $LAST_ACCESS_SECTION_LINE);
+        }
+        $IS_OVERRIDE_OR_MAKE_PRIVATE = PREPEND_CODE_NO;
     }
     else {
-        $IS_OVERRIDE = 0;
+        if ($IS_OVERRIDE_OR_MAKE_PRIVATE == PREPEND_CODE_MAKE_PRIVATE){
+          write_output("MKP", $LAST_ACCESS_SECTION_LINE);
+        }
+        $IS_OVERRIDE_OR_MAKE_PRIVATE = PREPEND_CODE_NO;
     }
 }
 

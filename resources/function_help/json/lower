@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["String"],
   "description": "Converts a string to lower case letters.",
-  "arguments": [ {"arg":"string","description":"the string to convert to lower case"}],
-  "examples": [ { "expression":"lower('HELLO World')", "returns":"'hello world'"}]
+  "arguments": [{
+    "arg": "string",
+    "description": "the string to convert to lower case"
+  }],
+  "examples": [{
+    "expression": "lower('HELLO World')",
+    "returns": "'hello world'"
+  }],
+  "tags": ["converts", "letters", "lower", "case"]
 }

@@ -147,6 +147,13 @@ Gets the data source specification.
 .. versionadded:: 3.0
 %End
 
+    virtual Qgis::DataProviderFlags flags() const;
+%Docstring
+Returns the generic data provider flags.
+
+.. versionadded:: 3.26
+%End
+
     virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
 %Docstring
 Returns the provider's temporal capabilities.

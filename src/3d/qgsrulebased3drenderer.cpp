@@ -304,7 +304,7 @@ QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::regis
     registered = true;
   }
 
-  bool willRegisterSomething = false;
+  bool matchedAChild = false;
 
   // call recursively
   for ( Rule *rule : std::as_const( mChildren ) )
@@ -312,23 +312,25 @@ QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::regis
     // Don't process else rules yet
     if ( !rule->isElse() )
     {
-      RegisterResult res = rule->registerFeature( feature, context, handlers );
-      // consider inactive items as "registered" so the else rule will ignore them
-      willRegisterSomething |= ( res == Registered || res == Inactive );
-      registered |= willRegisterSomething;
+      const RegisterResult res = rule->registerFeature( feature, context, handlers );
+      // consider inactive items as "matched" so the else rule will ignore them
+      matchedAChild |= ( res == Registered || res == Inactive );
+      registered |= matchedAChild;
     }
   }
 
   // If none of the rules passed then we jump into the else rules and process them.
-  if ( !willRegisterSomething )
+  if ( !matchedAChild )
   {
     for ( Rule *rule : std::as_const( mElseRules ) )
     {
-      registered |= rule->registerFeature( feature, context, handlers ) != Filtered;
+      const RegisterResult res = rule->registerFeature( feature, context, handlers );
+      matchedAChild |= ( res == Registered || res == Inactive );
+      registered |= res != Filtered;
     }
   }
 
-  if ( !mIsActive )
+  if ( !mIsActive || ( matchedAChild && !registered ) )
     return Inactive;
   else if ( registered )
     return Registered;

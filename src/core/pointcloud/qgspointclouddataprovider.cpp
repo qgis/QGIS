@@ -298,3 +298,22 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
 
   return nodes;
 }
+
+bool QgsPointCloudDataProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
+{
+  Q_UNUSED( updateFeatureCount )
+  const auto i = index();
+  if ( !i )
+    return false;
+
+  if ( !i->setSubsetString( subset ) )
+    return false;
+  mSubsetString = subset;
+  emit dataChanged();
+  return true;
+}
+
+QString QgsPointCloudDataProvider::subsetString() const
+{
+  return mSubsetString;
+}

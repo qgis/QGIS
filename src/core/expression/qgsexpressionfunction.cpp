@@ -41,7 +41,7 @@
 #include "qgsogcutils.h"
 #include "qgsdistancearea.h"
 #include "qgsgeometryengine.h"
-#include "qgsexpressionsorter.h"
+#include "qgsexpressionsorter_p.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
 #include "qgsexception.h"
@@ -1444,7 +1444,7 @@ static QVariant fcnReplace( const QVariantList &values, const QgsExpressionConte
     QVariantList after;
     bool isSingleReplacement = false;
 
-    if ( values.at( 1 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+    if ( !QgsExpressionUtils::isList( values.at( 1 ) ) && values.at( 2 ).type() != QVariant::StringList )
     {
       before = QVariantList() << QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
     }
@@ -1453,7 +1453,7 @@ static QVariant fcnReplace( const QVariantList &values, const QgsExpressionConte
       before = QgsExpressionUtils::getListValue( values.at( 1 ), parent );
     }
 
-    if ( values.at( 2 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+    if ( !QgsExpressionUtils::isList( values.at( 2 ) ) )
     {
       after = QVariantList() << QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
       isSingleReplacement = true;
@@ -1701,7 +1701,7 @@ static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionCon
   }
   else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `attribute` requires one or two parameters. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `attribute` requires one or two parameters. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 
@@ -1751,7 +1751,7 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
   }
   else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `represent_attributes` requires no more than two parameters. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `represent_attributes` requires no more than two parameters. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 
@@ -1842,11 +1842,11 @@ static QVariant fcnCoreFeatureMaptipDisplay( const QVariantList &values, const Q
   {
     if ( isMaptip )
     {
-      parent->setEvalErrorString( QObject::tr( "Function `maptip` requires no more than three parameters. %1 given." ).arg( values.length() ) );
+      parent->setEvalErrorString( QObject::tr( "Function `maptip` requires no more than three parameters. %n given.", nullptr, values.length() ) );
     }
     else
     {
-      parent->setEvalErrorString( QObject::tr( "Function `display` requires no more than three parameters. %1 given." ).arg( values.length() ) );
+      parent->setEvalErrorString( QObject::tr( "Function `display` requires no more than three parameters. %n given.", nullptr, values.length() ) );
     }
     return QVariant();
   }
@@ -1923,7 +1923,7 @@ static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionCo
   }
   else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `is_selected` requires no more than two parameters. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `is_selected` requires no more than two parameters. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 
@@ -1945,7 +1945,7 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
     layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
   else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one parameter. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one parameter. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 
@@ -2464,14 +2464,24 @@ static QVariant fcnDateTimeFromEpoch( const QVariantList &values, const QgsExpre
 
 static QVariant fcnExif( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString filepath = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "exif" ) ) );
+    return QVariant();
+  }
   QString tag = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   return !tag.isNull() ? QgsExifTools::readTag( filepath, tag ) : QVariant( QgsExifTools::readTags( filepath ) );
 }
 
 static QVariant fcnExifGeoTag( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString filepath = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "exif_geotag" ) ) );
+    return QVariant();
+  }
   bool ok;
   return QVariant::fromValue( QgsGeometry( new QgsPoint( QgsExifTools::getGeoTag( filepath, ok ) ) ) );
 }
@@ -3159,7 +3169,7 @@ static QVariant fcnDensifyByDistance( const QVariantList &values, const QgsExpre
 static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantList list;
-  if ( values.size() == 1 && ( values.at( 0 ).type() == QVariant::List || values.at( 0 ).type() == QVariant::StringList ) )
+  if ( values.size() == 1 && QgsExpressionUtils::isList( values.at( 0 ) ) )
   {
     list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   }
@@ -3599,12 +3609,21 @@ static QVariant fcnYat( const QVariantList &values, const QgsExpressionContext *
 }
 static QVariant fcnGeometry( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
 {
-  FEAT_FROM_CONTEXT( context, f )
-  QgsGeometry geom = f.geometry();
-  if ( !geom.isNull() )
-    return  QVariant::fromValue( geom );
-  else
+  if ( !context )
     return QVariant();
+
+  // prefer geometry from context if it's present, otherwise fallback to context's feature's geometry
+  if ( context->hasGeometry() )
+    return context->geometry();
+  else
+  {
+    FEAT_FROM_CONTEXT( context, f )
+    QgsGeometry geom = f.geometry();
+    if ( !geom.isNull() )
+      return  QVariant::fromValue( geom );
+    else
+      return QVariant();
+  }
 }
 
 static QVariant fcnGeomFromWKT( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -3820,6 +3839,15 @@ static QVariant fcnBoundsHeight( const QVariantList &values, const QgsExpression
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   return QVariant::fromValue( geom.boundingBox().height() );
+}
+
+static QVariant fcnGeometryType( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  return QgsWkbTypes::geometryDisplayString( geom.type() );
 }
 
 static QVariant fcnXMin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -4672,7 +4700,7 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
 {
   if ( values.length() != 2 )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `azimuth` requires exactly two parameters. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `azimuth` requires exactly two parameters. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 
@@ -6181,7 +6209,11 @@ static QVariant fcnArrayInsert( const QVariantList &values, const QgsExpressionC
 static QVariant fcnArrayRemoveAt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  list.removeAt( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) );
+  int position = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  if ( position < 0 )
+    position = position + list.length();
+  if ( position >= 0 && position < list.length() )
+    list.removeAt( position );
   return convertToSameType( list, values.at( 0 ).type() );
 }
 
@@ -6217,7 +6249,7 @@ static QVariant fcnArrayReplace( const QVariantList &values, const QgsExpression
     QVariantList after;
     bool isSingleReplacement = false;
 
-    if ( values.at( 1 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+    if ( !QgsExpressionUtils::isList( values.at( 1 ) ) && values.at( 2 ).type() != QVariant::StringList )
     {
       before = QVariantList() << values.at( 1 );
     }
@@ -6226,7 +6258,7 @@ static QVariant fcnArrayReplace( const QVariantList &values, const QgsExpression
       before = QgsExpressionUtils::getListValue( values.at( 1 ), parent );
     }
 
-    if ( values.at( 2 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+    if ( !QgsExpressionUtils::isList( values.at( 2 ) ) )
     {
       after = QVariantList() << values.at( 2 );
       isSingleReplacement = true;
@@ -6502,53 +6534,93 @@ static QVariant fcnEnvVar( const QVariantList &values, const QgsExpressionContex
 
 static QVariant fcnBaseFileName( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "base_file_name" ) ) );
+    return QVariant();
+  }
   return QFileInfo( file ).completeBaseName();
 }
 
 static QVariant fcnFileSuffix( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "file_suffix" ) ) );
+    return QVariant();
+  }
   return QFileInfo( file ).completeSuffix();
 }
 
 static QVariant fcnFileExists( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "file_exists" ) ) );
+    return QVariant();
+  }
   return QFileInfo::exists( file );
 }
 
 static QVariant fcnFileName( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "file_name" ) ) );
+    return QVariant();
+  }
   return QFileInfo( file ).fileName();
 }
 
 static QVariant fcnPathIsFile( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "is_file" ) ) );
+    return QVariant();
+  }
   return QFileInfo( file ).isFile();
 }
 
 static QVariant fcnPathIsDir( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "is_directory" ) ) );
+    return QVariant();
+  }
   return QFileInfo( file ).isDir();
 }
 
 static QVariant fcnFilePath( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "file_path" ) ) );
+    return QVariant();
+  }
   return QDir::toNativeSeparators( QFileInfo( file ).path() );
 }
 
 static QVariant fcnFileSize( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QStringLiteral( "file_size" ) ) );
+    return QVariant();
+  }
   return QFileInfo( file ).size();
 }
 
-static QVariant fcnHash( const QString str, const QCryptographicHash::Algorithm algorithm )
+static QVariant fcnHash( const QString &str, const QCryptographicHash::Algorithm algorithm )
 {
   return QString( QCryptographicHash::hash( str.toUtf8(), algorithm ).toHex() );
 }
@@ -6731,8 +6803,15 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
   // Sixth parameter (for intersects only) is the min overlap (area or length)
   // Seventh parameter (for intersects only) is the min inscribed circle radius
+  // Eighth parameter (for intersects only) is the return_details
+  // Ninth parameter (for intersects only) is the sort_by_intersection_size flag
   double minOverlap { -1 };
   double minInscribedCircleRadius { -1 };
+  bool returnDetails = false;  //#spellok
+  bool sortByMeasure = false;
+  bool sortAscending = false;
+  bool requireMeasures = false;
+  bool overlapOrRadiusFilter = false;
   if ( isIntersectsFunc )
   {
 
@@ -6753,6 +6832,16 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
       return QVariant();
     }
 #endif
+    node = QgsExpressionUtils::getNode( values.at( 7 ), parent );
+    // Return measures is only effective when an expression is set
+    returnDetails = !testOnly && node->eval( parent, context ).toBool();  //#spellok
+    node = QgsExpressionUtils::getNode( values.at( 8 ), parent );
+    // Sort by measures is only effective when an expression is set
+    const QString sorting { node->eval( parent, context ).toString().toLower() };
+    sortByMeasure = !testOnly && ( sorting.startsWith( "asc" ) || sorting.startsWith( "des" ) );
+    sortAscending = sorting.startsWith( "asc" );
+    requireMeasures = sortByMeasure || returnDetails;  //#spellok
+    overlapOrRadiusFilter = minInscribedCircleRadius != -1 || minOverlap != -1;
   }
 
 
@@ -6870,53 +6959,83 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QVariantList results;
 
   QListIterator<QgsFeature> i( features );
-  while ( i.hasNext() && ( limit == -1 || foundCount < limit ) )
+  while ( i.hasNext() && ( sortByMeasure || limit == -1 || foundCount < limit ) )
   {
     QgsFeature feat2 = i.next();
 
     if ( ! relationFunction || ( geometry.*relationFunction )( feat2.geometry() ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
 
-      if ( isIntersectsFunc && ( minOverlap != -1 || minInscribedCircleRadius != -1 ) )
+      double overlapValue = -1;
+      double radiusValue = -1;
+
+      if ( isIntersectsFunc && ( requireMeasures || overlapOrRadiusFilter ) )
       {
         const QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
 
-        // overlap and inscribed circle tests must be checked both (if the valuea are != -1)
+        // Depending on the intersection geometry type and on the geometry type of
+        // the tested geometry we can run different tests and collect different measures
+        // that can be used for sorting (if required).
         switch ( intersection.type() )
         {
+
           case QgsWkbTypes::GeometryType::PolygonGeometry:
           {
 
+            // overlap and inscribed circle tests must be checked both (if the values are != -1)
             bool testResult { false };
-            for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
+            // For return measures:
+            QVector<double> overlapValues;
+            QVector<double> radiusValues;
+            for ( auto it = intersection.const_parts_begin(); ( ! testResult || requireMeasures ) && it != intersection.const_parts_end(); ++it )
             {
               const QgsCurvePolygon *geom = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
               // Check min overlap for intersection (if set)
-              if ( minOverlap != -1 )
+              if ( minOverlap != -1 || requireMeasures )
               {
-                if ( geom->area() >= minOverlap )
+                overlapValue = geom->area();
+                overlapValues.append( geom->area() );
+                if ( minOverlap != - 1 )
                 {
-                  testResult = true;
-                }
-                else
-                {
-                  continue;
+                  if ( overlapValue >= minOverlap )
+                  {
+                    testResult = true;
+                  }
+                  else
+                  {
+                    continue;
+                  }
                 }
               }
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
               // Check min inscribed circle radius for intersection (if set)
-              if ( minInscribedCircleRadius != -1 )
+              if ( minInscribedCircleRadius != -1 || requireMeasures )
               {
                 const QgsRectangle bbox = geom->boundingBox();
                 const double width = bbox.width();
                 const double height = bbox.height();
                 const double size = width > height ? width : height;
                 const double tolerance = size / 100.0;
-                testResult = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() >= minInscribedCircleRadius;
+                radiusValue = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
+                testResult = radiusValue >= minInscribedCircleRadius;
+                radiusValues.append( radiusValues );
               }
+#endif
             }
 
-            if ( ! testResult )
+            // Get the max values
+            if ( !radiusValues.isEmpty() )
+            {
+              radiusValue = *std::max_element( radiusValues.cbegin(), radiusValues.cend() );
+            }
+
+            if ( ! overlapValues.isEmpty() )
+            {
+              overlapValue = *std::max_element( overlapValues.cbegin(), overlapValues.cend() );
+            }
+
+            if ( ! testResult && overlapOrRadiusFilter )
             {
               continue;
             }
@@ -6926,30 +7045,83 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
           case QgsWkbTypes::GeometryType::LineGeometry:
           {
             bool testResult { false };
+            // For return measures:
+            QVector<double> overlapValues;
             for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
             {
               const QgsCurve *geom = qgsgeometry_cast< const QgsCurve * >( *it );
               // Check min overlap for intersection (if set)
-              if ( minOverlap != -1 )
+              if ( minOverlap != -1  || requireMeasures )
               {
-                if ( geom->length() >= minOverlap )
+                overlapValue = geom->length();
+                overlapValues.append( overlapValue );
+                if ( minOverlap != -1 )
                 {
-                  testResult = true;
-                }
-                else
-                {
-                  continue;
+                  if ( overlapValue >= minOverlap )
+                  {
+                    testResult = true;
+                  }
+                  else
+                  {
+                    continue;
+                  }
                 }
               }
             }
 
-            if ( ! testResult )
+            if ( ! overlapValues.isEmpty() )
+            {
+              overlapValue = *std::max_element( overlapValues.cbegin(), overlapValues.cend() );
+            }
+
+            if ( ! testResult && overlapOrRadiusFilter )
             {
               continue;
             }
+
             break;
           }
           case QgsWkbTypes::GeometryType::PointGeometry:
+          {
+            if ( minOverlap != -1  || requireMeasures )
+            {
+              // Initially set this to 0 because it's a point intersection...
+              overlapValue = 0;
+              // ... but if the target geometry is not a point and the source
+              // geometry is a point, we must record the length or the area
+              // of the intersected geometry and use that as a measure for
+              // sorting or reporting.
+              if ( geometry.type() == QgsWkbTypes::GeometryType::PointGeometry )
+              {
+                switch ( feat2.geometry().type() )
+                {
+                  case QgsWkbTypes::GeometryType::UnknownGeometry:
+                  case QgsWkbTypes::GeometryType::NullGeometry:
+                  case QgsWkbTypes::GeometryType::PointGeometry:
+                  {
+                    break;
+                  }
+                  case QgsWkbTypes::GeometryType::LineGeometry:
+                  {
+                    overlapValue = feat2.geometry().length();
+                    break;
+                  }
+                  case QgsWkbTypes::GeometryType::PolygonGeometry:
+                  {
+                    overlapValue = feat2.geometry().area();
+                    break;
+                  }
+                }
+              }
+
+              if ( minOverlap != -1 && overlapValue < minOverlap )
+              {
+                continue;
+              }
+
+            }
+            break;
+          }
           case QgsWkbTypes::GeometryType::NullGeometry:
           case QgsWkbTypes::GeometryType::UnknownGeometry:
           {
@@ -6969,7 +7141,26 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
       {
         // We want a list of attributes / geometries / other expression values, evaluate now
         subContext.setFeature( feat2 );
-        results.append( subExpression.evaluate( &subContext ) );
+        const QVariant expResult = subExpression.evaluate( &subContext );
+
+        if ( requireMeasures )
+        {
+          QVariantMap resultRecord;
+          resultRecord.insert( QStringLiteral( "id" ), feat2.id() );
+          resultRecord.insert( QStringLiteral( "result" ), expResult );
+          // Overlap is always added because return measures was set
+          resultRecord.insert( QStringLiteral( "overlap" ), overlapValue );
+          // Radius is only added when is different than -1 (because for linestrings is not set)
+          if ( radiusValue != -1 )
+          {
+            resultRecord.insert( QStringLiteral( "radius" ), radiusValue );
+          }
+          results.append( resultRecord );
+        }
+        else
+        {
+          results.append( expResult );
+        }
       }
       else
       {
@@ -6987,7 +7178,37 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   }
 
   if ( !invert )
+  {
+    if ( requireMeasures )
+    {
+      if ( sortByMeasure )
+      {
+        std::sort( results.begin(), results.end(), [ sortAscending ]( const QVariant & recordA, const QVariant & recordB ) -> bool
+        {
+          return sortAscending ?
+          recordB.toMap().value( QStringLiteral( "overlap" ) ).toDouble() > recordA.toMap().value( QStringLiteral( "overlap" ) ).toDouble()
+          : recordA.toMap().value( QStringLiteral( "overlap" ) ).toDouble() > recordB.toMap().value( QStringLiteral( "overlap" ) ).toDouble();
+        } );
+      }
+      // Resize
+      if ( limit > 0 && results.size() > limit )
+      {
+        results.erase( results.begin() + limit );
+      }
+
+      if ( ! returnDetails )  //#spellok
+      {
+        QVariantList expResults;
+        for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
+        {
+          expResults.append( it->toMap().value( QStringLiteral( "result" ) ) );
+        }
+        return expResults;
+      }
+    }
+
     return results;
+  }
 
   // for disjoint condition returns the results for cached layers not intersected feats
   QVariantList disjoint_results;
@@ -7458,7 +7679,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( -1 ), true )
           << QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false )
           << QgsExpressionFunction::Parameter( QStringLiteral( "min_overlap" ), true, QVariant( -1 ), false )
-          << QgsExpressionFunction::Parameter( QStringLiteral( "min_inscribed_circle_radius" ), true, QVariant( -1 ), false ),
+          << QgsExpressionFunction::Parameter( QStringLiteral( "min_inscribed_circle_radius" ), true, QVariant( -1 ), false )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "return_details" ), true, false, false )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "sort_by_intersection_size" ), true, QString(), false ),
           i.value(), QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
 
       // The current feature is accessed for the geometry, so this should not be cached
@@ -7540,6 +7763,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions << yAtFunc;
 
     functions
+        << new QgsStaticExpressionFunction( QStringLiteral( "geometry_type" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeometryType, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "x_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnXMin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "xmin" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "x_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnXMax, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "xmax" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "y_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnYMin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "ymin" ) )
@@ -7880,7 +8104,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     functions
         << new QgsStaticExpressionFunction( QStringLiteral( "get_feature" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "attribute(s)" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "attribute" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "value" ), true ),
                                             fcnGetFeature, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "QgsExpressionUtils::getFeature" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "get_feature_by_id" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )

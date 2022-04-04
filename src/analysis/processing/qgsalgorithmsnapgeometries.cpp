@@ -85,8 +85,18 @@ void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
                 QList< int >() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ),
                 QList< int >() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ),
-                10.0, QStringLiteral( "INPUT" ), false, 0.00000001 ) );
+
+  std::unique_ptr< QgsProcessingParameterDistance > tolParam = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 10.0, QStringLiteral( "INPUT" ), false, 0.00000001 );
+  tolParam->setMetadata(
+  {
+    QVariantMap( {{
+        QStringLiteral( "widget_wrapper" ),
+        QVariantMap( {{
+            QStringLiteral( "decimals" ), 8
+          }} )
+      }} )
+  } );
+  addParameter( tolParam.release() );
 
   const QStringList options = QStringList()
                               << QObject::tr( "Prefer aligning nodes, insert extra vertices where required" )
@@ -161,7 +171,7 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
   {
     // input layer == reference layer
     const int modified = QgsGeometrySnapperSingleSource::run( *source, *sink, tolerance, feedback );
-    feedback->pushInfo( QObject::tr( "Snapped %1 geometries." ).arg( modified ) );
+    feedback->pushInfo( QObject::tr( "Snapped %n geometries.", nullptr, modified ) );
   }
   else
   {

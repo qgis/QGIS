@@ -45,7 +45,6 @@
 
 #include <QSqlRecord>
 #include <QSqlField>
-#include <QMessageBox>
 #include <QUuid>
 
 #include "ocispatial/wkbptr.h"
@@ -227,6 +226,11 @@ Qgis::VectorLayerTypeFlags QgsOracleProvider::vectorLayerTypeFlags() const
     flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
   }
   return flags;
+}
+
+void QgsOracleProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  mShared = qobject_cast<QgsOracleProvider *>( source )->mShared;
 }
 
 void QgsOracleProvider::setWorkspace( const QString &workspace )
@@ -3366,6 +3370,63 @@ QVariantList QgsOracleSharedData::lookupKey( QgsFeatureId featureId )
   return QVariantList();
 }
 
+bool QgsOracleProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errorCause )
+{
+  errorCause.clear();
+
+  QgsDataSourceUri dsUri( uri );
+
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri, false );
+  if ( !conn )
+  {
+    errorCause = QObject::tr( "Could not connect to database" );
+    return false;
+  }
+
+  QSqlQuery qry = QSqlQuery( *conn );
+  if ( !qry.exec( "SELECT COUNT(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ) || !qry.next() )
+  {
+    errorCause = QObject::tr( "Unable to check layer style existence [%1]" ).arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+  else if ( qry.value( 0 ).toInt() == 0 )
+  {
+    // layer styles table does not exist
+    return false;
+  }
+
+  if ( !qry.prepare( QStringLiteral( "SELECT id,stylename FROM layer_styles"
+                                     " WHERE f_table_catalog=?"
+                                     " AND f_table_schema=?"
+                                     " AND f_table_name=?"
+                                     " AND f_geometry_column=?"
+                                     " AND styleName=?" ) ) ||
+       !(
+         qry.addBindValue( dsUri.database() ),
+         qry.addBindValue( dsUri.schema() ),
+         qry.addBindValue( dsUri.table() ),
+         qry.addBindValue( dsUri.geometryColumn() ),
+         qry.addBindValue( styleId.isEmpty() ? dsUri.table() : styleId ),
+         qry.exec()
+       ) )
+  {
+    errorCause = QObject::tr( "Unable to check style existence [%1]" ).arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+  else if ( qry.next() )
+  {
+    conn->disconnect();
+    return true;
+  }
+  else
+  {
+    conn->disconnect();
+    return false;
+  }
+}
+
 bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
     const QString &qmlStyle,
     const QString &sldStyle,
@@ -3441,16 +3502,6 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
   }
   else if ( qry.next() )
   {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
-                                QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
-                                .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
-                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
-    {
-      errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
-      conn->disconnect();
-      return false;
-    }
-
     id = qry.value( 0 ).toInt();
 
     sql = QString( "UPDATE layer_styles"
@@ -3677,7 +3728,7 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri,
   return res;
 }
 
-QString QgsOracleProviderMetadata::getStyleById( const QString &uri, QString styleId, QString &errCause )
+QString QgsOracleProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QString style;
   QgsDataSourceUri dsUri( uri );

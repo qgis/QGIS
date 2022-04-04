@@ -2,9 +2,17 @@
   "name": "is_file",
   "type": "function",
   "groups": ["Files and Paths"],
-  "description": "Returns true if a path corresponds to a file.",
-  "arguments": [ {"arg":"path","description":"a file path"}],
-  "examples": [ { "expression":"is_file('/home/qgis/data/country_boundaries.shp')", "returns":"true"},
-{ "expression":"is_file('/home/qgis/data/')", "returns":"false"}]
+  "description": "Returns TRUE if a path corresponds to a file.",
+  "arguments": [{
+    "arg": "path",
+    "description": "a file path or a map layer value. If a map layer value is specified then the file source of the layer will be used."
+  }],
+  "examples": [{
+    "expression": "is_file('/home/qgis/data/country_boundaries.shp')",
+    "returns": "TRUE"
+  }, {
+    "expression": "is_file('/home/qgis/data/')",
+    "returns": "FALSE"
+  }],
+  "tags": ["path", "file"]
 }
-

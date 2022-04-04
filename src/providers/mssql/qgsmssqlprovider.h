@@ -166,6 +166,8 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     std::shared_ptr<QgsMssqlDatabase> connection() const;
 
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
+
   protected:
     //! Loads fields from input file to member attributeFields
     QVariant::Type DecodeSqlType( const QString &sqlTypeName );
@@ -294,9 +296,10 @@ class QgsMssqlProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsMssqlProviderMetadata();
-    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
+    bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
                     const QString &styleName, const QString &styleDescription,
                     const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;

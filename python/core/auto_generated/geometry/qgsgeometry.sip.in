@@ -1934,7 +1934,7 @@ Exports the geometry to a GeoJSON string.
 %End
 
 
-    QVector< QgsGeometry > coerceToType( QgsWkbTypes::Type type ) const;
+    QVector< QgsGeometry > coerceToType( QgsWkbTypes::Type type, double defaultZ = 0, double defaultM = 0 ) const;
 %Docstring
 Attempts to coerce this geometry into the specified destination ``type``.
 
@@ -1949,6 +1949,10 @@ This method will do anything possible to force the current geometry into the spe
 - multi geometries will be converted to a list of single geometries
 - single geometries will be upgraded to multi geometries
 - z or m values will be added or dropped as required.
+
+Since QGIS 3.24, the parameters ``defaultZ`` and ``defaultM`` control the dimension value added when promoting geometries
+to Z, M or ZM versions.
+By default 0.0 is used for Z and M.
 
 .. note::
 

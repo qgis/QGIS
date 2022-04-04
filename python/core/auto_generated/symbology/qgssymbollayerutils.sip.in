@@ -962,6 +962,15 @@ Converts a set of symbol layer id to a set of pointers to actual symbol layers c
 .. versionadded:: 3.12
 %End
 
+    static double rendererFrameRate( const QgsFeatureRenderer *renderer );
+%Docstring
+Calculates the frame rate (in frames per second) at which the given ``renderer`` must be redrawn.
+
+Returns -1 if the ``renderer`` is not animated.
+
+.. versionadded:: 3.26
+%End
+
     static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height );
 %Docstring
 Creates a new symbol with size restricted to min/max size if original size is out of min/max range

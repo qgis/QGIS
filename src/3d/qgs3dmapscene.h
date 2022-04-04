@@ -81,6 +81,20 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Resets camera view to show the whole scene (top view)
     void viewZoomFull();
 
+    /**
+     * Resets camera view to show the extent \a extent (top view)
+     *
+     * \since QGIS 3.26
+     */
+    void setViewFrom2DExtent( const QgsRectangle &extent );
+
+    /**
+     * Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed trapezoid
+     *
+     * \since QGIS 3.26
+     */
+    QVector<QgsPointXY> viewFrustum2DExtent();
+
     //! Returns number of pending jobs of the terrain entity
     int terrainPendingJobsCount() const;
 
@@ -146,6 +160,13 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Emitted when the FPS counter is activated or deactivated
     void fpsCounterEnabledChanged( bool fpsCounterEnabled );
 
+    /**
+     * Emitted when the viewed 2D extent seen by the 3D camera has changed
+     *
+     * \since QGIS 3.26
+     */
+    void viewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
+
   public slots:
     //! Updates the temporale entities
     void updateTemporal();
@@ -175,6 +196,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );
     void addCameraViewCenterEntity( Qt3DRender::QCamera *camera );
+    void addCameraRotationCenterEntity( QgsCameraController *controller );
     void setSceneState( SceneState state );
     void updateSceneState();
     void updateScene();
@@ -204,6 +226,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QList<Qt3DCore::QEntity *> mLightOriginEntities;
     QList<QgsMapLayer *> mModelVectorLayers;
     QgsSkyboxEntity *mSkybox = nullptr;
+    //! Entity that shows rotation center = useful for debugging camera issues
+    Qt3DCore::QEntity *mEntityRotationCenter = nullptr;
 };
 
 #endif // QGS3DMAPSCENE_H

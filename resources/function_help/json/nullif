@@ -3,10 +3,22 @@
   "type": "function",
   "groups": ["Conditionals"],
   "description": "Returns a NULL value if value1 equals value2; otherwise it returns value1. This can be used to conditionally substitute values with NULL.",
-  "arguments": [ {"arg":"value1", "description": "The value that should either be used or substituted with NULL."},
-                 {"arg":"value2", "description": "The control value that will trigger the NULL substitution."}],
-  "examples": [ { "expression":"nullif('(none)', '(none)')", "returns":"NULL"},
-                { "expression":"nullif('text', '(none)')", "returns":"'text'"},
-                { "expression":"nullif(\"name\", '')", "returns":"NULL, if name is an empty string (or already NULL), the name in any other case."} ]
+  "arguments": [{
+    "arg": "value1",
+    "description": "The value that should either be used or substituted with NULL."
+  }, {
+    "arg": "value2",
+    "description": "The control value that will trigger the NULL substitution."
+  }],
+  "examples": [{
+    "expression": "nullif('(none)', '(none)')",
+    "returns": "NULL"
+  }, {
+    "expression": "nullif('text', '(none)')",
+    "returns": "'text'"
+  }, {
+    "expression": "nullif(\"name\", '')",
+    "returns": "NULL, if name is an empty string (or already NULL), the name in any other case."
+  }],
+  "tags": ["substitute", "equals", "condition", "compare"]
 }
-

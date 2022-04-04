@@ -1250,20 +1250,25 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
 
   const QImage image = getLegendGraphic();
 
-  QSize targetSize = image.size();
-  if ( settings.wmsLegendSize().width() < image.width() )
+  double px2mm = 1000. / image.dotsPerMeterX();
+  double mmWidth = image.width() * px2mm;
+  double mmHeight = image.height() * px2mm;
+
+  QSize targetSize = QSize( mmWidth, mmHeight );
+  if ( settings.wmsLegendSize().width() < mmWidth )
   {
-    double targetHeight = image.height() * settings.wmsLegendSize().width() / image.width();
+    double targetHeight = mmHeight * settings.wmsLegendSize().width() / mmWidth;
     targetSize = QSize( settings.wmsLegendSize().width(), targetHeight );
   }
-  else if ( settings.wmsLegendSize().height() < image.height() )
+  else if ( settings.wmsLegendSize().height() < mmHeight )
   {
-    double targetWidth = image.width() * settings.wmsLegendSize().height() / image.height();
+    double targetWidth = mmWidth * settings.wmsLegendSize().height() / mmHeight;
     targetSize = QSize( targetWidth, settings.wmsLegendSize().height() );
   }
 
   if ( ctx && ctx->painter )
   {
+    QImage smoothImage = image.scaled( targetSize / px2mm, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
     switch ( settings.symbolAlignment() )
     {
@@ -1273,8 +1278,8 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
                                          ctx->top,
                                          targetSize.width(),
                                          targetSize.height() ),
-                                 image,
-                                 QRectF( QPointF( 0, 0 ), image.size() ) );
+                                 smoothImage,
+                                 QRectF( QPointF( 0, 0 ), smoothImage.size() ) );
         break;
 
       case Qt::AlignRight:
@@ -1282,8 +1287,8 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
                                          ctx->top,
                                          targetSize.width(),
                                          targetSize.height() ),
-                                 image,
-                                 QRectF( QPointF( 0, 0 ), image.size() ) );
+                                 smoothImage,
+                                 QRectF( QPointF( 0, 0 ), smoothImage.size() ) );
         break;
     }
   }

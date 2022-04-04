@@ -307,6 +307,59 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
         return Fail;
     }
 
+    case QgsExpressionNode::ntBetweenOperator:
+    {
+      const QgsExpressionNodeBetweenOperator *n = static_cast<const QgsExpressionNodeBetweenOperator *>( node );
+      QString res;
+      Result betweenResult = Complete;
+
+      const Result rn = compileNode( n->node(), res );
+      if ( rn == Complete || rn == Partial )
+      {
+        if ( rn == Partial )
+        {
+          betweenResult = Partial;
+        }
+      }
+      else
+      {
+        return rn;
+      }
+
+      QString s;
+      const Result rl = compileNode( n->lowerBound(), s );
+      if ( rl == Complete || rl == Partial )
+      {
+        if ( rl == Partial )
+        {
+          betweenResult = Partial;
+        }
+      }
+      else
+      {
+        return rl;
+      }
+
+      res.append( n->negate() ? QStringLiteral( " NOT BETWEEN %1" ).arg( s ) : QStringLiteral( " BETWEEN %1" ).arg( s ) );
+
+      const Result rh = compileNode( n->higherBound(), s );
+      if ( rh == Complete || rh == Partial )
+      {
+        if ( rh == Partial )
+        {
+          betweenResult = Partial;
+        }
+      }
+      else
+      {
+        return rh;
+      }
+
+      res.append( QStringLiteral( " AND %1" ).arg( s ) );
+      result = res;
+      return betweenResult;
+    }
+
     case QgsExpressionNode::ntLiteral:
     {
       const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( node );

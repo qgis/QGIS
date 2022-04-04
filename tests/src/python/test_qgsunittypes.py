@@ -16,12 +16,14 @@ from qgis.testing import unittest
 from qgis.core import QgsUnitTypes
 from qgis.PyQt.QtCore import QLocale
 
-# enforce C locale because the tests expect it
-# (decimal separators / thousand separators)
-QLocale.setDefault(QLocale.c())
-
 
 class TestQgsUnitTypes(unittest.TestCase):
+
+    def setUp(self):
+        super().setUp()
+        # enforce C locale because the tests expect it
+        # (decimal separators / thousand separators)
+        QLocale.setDefault(QLocale.c())
 
     def testEncodeDecodeUnitType(self):
         """Test encoding and decoding unit type"""
@@ -1182,6 +1184,99 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleMilliradiansSI), '1 millirad')
         self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleMilNATO), '1 mil')
         self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnknownUnit), '1.00')
+
+    def testFormatDistance(self):
+        """Test formatting distances"""
+        # keep base unit
+        self.assertEqual(QgsUnitTypes.formatDistance(100, 3, QgsUnitTypes.DistanceMeters, True), '100.000 m')
+        self.assertEqual(QgsUnitTypes.formatDistance(10, 2, QgsUnitTypes.DistanceKilometers, True), '10.00 km')
+        self.assertEqual(QgsUnitTypes.formatDistance(1, 0, QgsUnitTypes.DistanceFeet, True), '1 ft')
+        self.assertEqual(QgsUnitTypes.formatDistance(1.11111111, 4, QgsUnitTypes.DistanceNauticalMiles, True), '1.1111 NM')
+        self.assertEqual(QgsUnitTypes.formatDistance(1.99999999, 2, QgsUnitTypes.DistanceYards, True), '2.00 yd')
+        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceMiles, True), '1.00 mi')
+        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceDegrees, True), '1.00 deg')
+        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceCentimeters, True), '1.00 cm')
+        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceMillimeters, True), '1.00 mm')
+        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnknownUnit, True), '1.00')
+
+        # don't keep base unit
+        self.assertEqual(QgsUnitTypes.formatDistance(10, 3, QgsUnitTypes.DistanceMeters, False), '10.000 m')
+        self.assertEqual(QgsUnitTypes.formatDistance(1001, 3, QgsUnitTypes.DistanceMeters, False), '1.001 km')
+        self.assertEqual(QgsUnitTypes.formatDistance(0.05, 2, QgsUnitTypes.DistanceMeters, False), '5.00 cm')
+        self.assertEqual(QgsUnitTypes.formatDistance(0.005, 2, QgsUnitTypes.DistanceMeters, False), '5.00 mm')
+        self.assertEqual(QgsUnitTypes.formatDistance(10, 2, QgsUnitTypes.DistanceKilometers, False), '10.00 km')
+        self.assertEqual(QgsUnitTypes.formatDistance(0.5, 2, QgsUnitTypes.DistanceKilometers, False), '500.00 m')
+        self.assertEqual(QgsUnitTypes.formatDistance(10, 2, QgsUnitTypes.DistanceFeet, False), '10.00 ft')
+        self.assertEqual(QgsUnitTypes.formatDistance(6000, 2, QgsUnitTypes.DistanceFeet, False), '1.14 mi')
+        self.assertEqual(QgsUnitTypes.formatDistance(10, 2, QgsUnitTypes.DistanceYards, False), '10.00 yd')
+        self.assertEqual(QgsUnitTypes.formatDistance(2500, 2, QgsUnitTypes.DistanceYards, False), '1.42 mi')
+        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceMiles, False), '1.00 mi')
+        self.assertEqual(QgsUnitTypes.formatDistance(0.5, 2, QgsUnitTypes.DistanceMiles, False), '2640.00 ft')
+        self.assertEqual(QgsUnitTypes.formatDistance(1.11111111, 4, QgsUnitTypes.DistanceNauticalMiles, False), '1.1111 NM')
+        self.assertEqual(QgsUnitTypes.formatDistance(0.001, 4, QgsUnitTypes.DistanceDegrees, False), '0.0010 deg')
+        self.assertEqual(QgsUnitTypes.formatDistance(100, 2, QgsUnitTypes.DistanceCentimeters, False), '100.00 cm')
+        self.assertEqual(QgsUnitTypes.formatDistance(1000, 2, QgsUnitTypes.DistanceMillimeters, False), '1000.00 mm')
+        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnknownUnit, False), '1.00')
+
+        # small values should not be displayed as zeroes, instead fallback to scientific notation
+        self.assertEqual(QgsUnitTypes.formatDistance(0.00168478, 2, QgsUnitTypes.DistanceMeters, False), '1.68 mm')
+        self.assertEqual(QgsUnitTypes.formatDistance(0.00000168478, 2, QgsUnitTypes.DistanceMeters, False), '1.68e-06 m')
+        self.assertEqual(QgsUnitTypes.formatDistance(0.00168478, 2, QgsUnitTypes.DistanceMeters, True), '1.68e-03 m')
+
+        # test different locales
+        QLocale.setDefault(QLocale(QLocale.Italian))
+        self.assertEqual(QgsUnitTypes.formatDistance(10, 3, QgsUnitTypes.DistanceMeters, False), '10,000 m')
+        self.assertEqual(QgsUnitTypes.formatDistance(0.5, 2, QgsUnitTypes.DistanceMiles, False), '2.640,00 ft')
+
+    def testFormatArea(self):
+        """Test formatting areas"""
+        # keep base unit
+        self.assertEqual(QgsUnitTypes.formatArea(100, 3, QgsUnitTypes.AreaSquareMeters, True), '100.000 m²')
+        self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaSquareKilometers, True), '10.00 km²')
+        self.assertEqual(QgsUnitTypes.formatArea(1, 0, QgsUnitTypes.AreaSquareFeet, True), '1 ft²')
+        self.assertEqual(QgsUnitTypes.formatArea(1.11111111, 4, QgsUnitTypes.AreaSquareYards, True), '1.1111 yd²')
+        self.assertEqual(QgsUnitTypes.formatArea(1.99999999, 2, QgsUnitTypes.AreaSquareMiles, True), '2.00 mi²')
+        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaHectares, True), '1.00 ha')
+        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaAcres, True), '1.00 ac')
+        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaSquareNauticalMiles, True), '1.00 NM²')
+        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaSquareDegrees, True), '1.00 deg²')
+        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaSquareCentimeters, True), '1.00 cm²')
+        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaSquareMillimeters, True), '1.00 mm²')
+        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnknownUnit, True), '1.00')
+
+        # don't keep base unit
+        self.assertEqual(QgsUnitTypes.formatArea(100, 2, QgsUnitTypes.AreaSquareMeters, False), '100.00 m²')
+        self.assertEqual(QgsUnitTypes.formatArea(2000000, 2, QgsUnitTypes.AreaSquareMeters, False), '2.00 km²')
+        self.assertEqual(QgsUnitTypes.formatArea(10001, 2, QgsUnitTypes.AreaSquareMeters, False), '1.00 ha')
+        self.assertEqual(QgsUnitTypes.formatArea(100, 2, QgsUnitTypes.AreaSquareKilometers, False), '100.00 km²')
+        self.assertEqual(QgsUnitTypes.formatArea(0.5, 2, QgsUnitTypes.AreaSquareKilometers, False), '0.50 km²')
+        self.assertEqual(QgsUnitTypes.formatArea(27879000, 2, QgsUnitTypes.AreaSquareFeet, False), '1.00 mi²')
+        self.assertEqual(QgsUnitTypes.formatArea(2787, 2, QgsUnitTypes.AreaSquareFeet, False), '2787.00 ft²')
+        self.assertEqual(QgsUnitTypes.formatArea(3099000, 2, QgsUnitTypes.AreaSquareYards, False), '1.00 mi²')
+        self.assertEqual(QgsUnitTypes.formatArea(309, 2, QgsUnitTypes.AreaSquareYards, False), '309.00 yd²')
+        self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaSquareMiles, False), '10.00 mi²')
+        self.assertEqual(QgsUnitTypes.formatArea(0.05, 2, QgsUnitTypes.AreaSquareMiles, False), '0.05 mi²')
+        self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaHectares, False), '10.00 ha')
+        self.assertEqual(QgsUnitTypes.formatArea(110, 2, QgsUnitTypes.AreaHectares, False), '1.10 km²')
+        self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaAcres, False), '10.00 ac')
+        self.assertEqual(QgsUnitTypes.formatArea(650, 2, QgsUnitTypes.AreaAcres, False), '1.02 mi²')
+        self.assertEqual(QgsUnitTypes.formatArea(0.01, 2, QgsUnitTypes.AreaSquareNauticalMiles, False), '0.01 NM²')
+        self.assertEqual(QgsUnitTypes.formatArea(100, 2, QgsUnitTypes.AreaSquareNauticalMiles, False), '100.00 NM²')
+        self.assertEqual(QgsUnitTypes.formatArea(0.0001, 4, QgsUnitTypes.AreaSquareDegrees, False), '0.0001 deg²')
+        self.assertEqual(QgsUnitTypes.formatArea(0.0001, 4, QgsUnitTypes.AreaSquareDegrees, False), '0.0001 deg²')
+        self.assertEqual(QgsUnitTypes.formatArea(1000, 4, QgsUnitTypes.AreaSquareMillimeters, False), '0.0010 m²')
+        self.assertEqual(QgsUnitTypes.formatArea(100, 3, QgsUnitTypes.AreaSquareCentimeters, False), '0.010 m²')
+        self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaUnknownUnit, False), '10.00')
+
+        # small values should not be displayed as zeroes, instead fallback to scientific notation
+        self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 4, QgsUnitTypes.AreaSquareMeters, False), '0.0017 m²')
+        self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 2, QgsUnitTypes.AreaSquareMeters, False), '1.68e-03 m²')
+        self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 2, QgsUnitTypes.AreaSquareMeters, True), '1.68e-03 m²')
+
+        # test different locales
+        QLocale.setDefault(QLocale(QLocale.Italian))
+        self.assertEqual(QgsUnitTypes.formatArea(100, 2, QgsUnitTypes.AreaSquareKilometers, False), '100,00 km²')
+        self.assertEqual(QgsUnitTypes.formatArea(2787, 2, QgsUnitTypes.AreaSquareFeet, False), '2.787,00 ft²')
 
     def testEncodeDecodeLayoutUnits(self):
         """Test encoding and decoding layout units"""

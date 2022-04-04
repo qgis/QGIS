@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilemvtencoder.h"
 #include "qgsvectortileutils.h"
+#include "qgsziputils.h"
 
 #include <nlohmann/json.hpp>
 
@@ -150,6 +151,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
       try
       {
         QgsCoordinateTransform ct( mRootTileMatrix.crs(), QgsCoordinateReferenceSystem( "EPSG:4326" ), mTransformContext );
+        ct.setBallparkTransformsAreAppropriate( true );
         QgsRectangle wgsExtent = ct.transform( outputExtent );
         QString boundsStr = QString( "%1,%2,%3,%4" )
                             .arg( wgsExtent.xMinimum() ).arg( wgsExtent.yMinimum() )
@@ -216,7 +218,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
         else  // mbtiles
         {
           QByteArray gzipTileData;
-          QgsMbTiles::encodeGzip( tileData, gzipTileData );
+          QgsZipUtils::encodeGzip( tileData, gzipTileData );
           int rowTMS = pow( 2, tileID.zoomLevel() ) - tileID.row() - 1;
           mbtiles->setTileData( tileID.zoomLevel(), tileID.column(), rowTMS, gzipTileData );
         }
@@ -235,6 +237,7 @@ QgsRectangle QgsVectorTileWriter::fullExtent() const
   {
     QgsVectorLayer *vl = layer.layer();
     QgsCoordinateTransform ct( vl->crs(), mRootTileMatrix.crs(), mTransformContext );
+    ct.setBallparkTransformsAreAppropriate( true );
     try
     {
       QgsRectangle r = ct.transformBoundingBox( vl->extent() );

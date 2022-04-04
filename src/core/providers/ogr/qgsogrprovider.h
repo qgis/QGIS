@@ -355,6 +355,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     */
     void reloadProviderData() override;
 
+    //! Invalidate GDAL /vsicurl/ RAM cache for mFilePath
+    void invalidateNetworkCache();
 };
 
 ///@endcond

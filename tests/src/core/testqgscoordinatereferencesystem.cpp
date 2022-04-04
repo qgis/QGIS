@@ -63,6 +63,9 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void proj4Cache();
     void fromString();
     void fromStringCache();
+    void fromProjObject();
+    void fromProjObjectKnownCrs();
+    void fromProjObjectNotCrs();
     void isValid();
     void validate();
     void comparison_data();
@@ -71,6 +74,8 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void noEquality();
     void equalityInvalid();
     void readWriteXml();
+    void readWriteXmlNativeFormatWkt();
+    void readWriteXmlNativeFormatProj();
     void setCustomSrsValidation();
     void customSrsValidation();
     void postgisSrid();
@@ -767,6 +772,88 @@ void TestQgsCoordinateReferenceSystem::fromStringCache()
   QVERIFY( !QgsCoordinateReferenceSystem::stringCache().contains( QStringLiteral( "EPSG:3113" ) ) );
 }
 
+void TestQgsCoordinateReferenceSystem::fromProjObject()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProjObject( nullptr );
+  QVERIFY( !crs.isValid() );
+
+  // test creating a QgsCoordinateReferenceSystem from a proj object which is custom crs
+  const QString def = QStringLiteral( "+proj=ortho +lat_0=-20 +lon_0=11.11111 +x_0=0 +y_0=0 +R=6371000 +units=m +no_defs +type=crs" );
+  const QgsProjUtils::proj_pj_unique_ptr pj( proj_create( QgsProjContext::get(), def.toUtf8().constData() ) );
+  QVERIFY( pj.get() );
+
+  crs = QgsCoordinateReferenceSystem::fromProjObject( pj.get() );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QString() );
+  QCOMPARE( crs.toProj(), QStringLiteral( "+proj=ortho +lat_0=-20 +lon_0=11.11111 +x_0=0 +y_0=0 +R=6371000 +units=m +no_defs +type=crs" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::fromProjObjectKnownCrs()
+{
+  // test creating a QgsCoordinateReferenceSystem from a proj object which is known crs
+  const QString crsWkt = QStringLiteral( R"""(
+PROJCRS["GDA94 / Vicgrid",
+    BASEGEOGCRS["GDA94",
+        DATUM["Geocentric Datum of Australia 1994",
+            ELLIPSOID["GRS 1980",6378137,298.257222101,
+                LENGTHUNIT["metre",1]]],
+        PRIMEM["Greenwich",0,
+            ANGLEUNIT["degree",0.0174532925199433]],
+        ID["EPSG",4283]],
+    CONVERSION["Vicgrid",
+        METHOD["Lambert Conic Conformal (2SP)",
+            ID["EPSG",9802]],
+        PARAMETER["Latitude of false origin",-37,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8821]],
+        PARAMETER["Longitude of false origin",145,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8822]],
+        PARAMETER["Latitude of 1st standard parallel",-36,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8823]],
+        PARAMETER["Latitude of 2nd standard parallel",-38,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8824]],
+        PARAMETER["Easting at false origin",2500000,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8826]],
+        PARAMETER["Northing at false origin",2500000,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8827]]],
+    CS[Cartesian,2],
+        AXIS["(E)",east,
+            ORDER[1],
+            LENGTHUNIT["metre",1]],
+        AXIS["(N)",north,
+            ORDER[2],
+            LENGTHUNIT["metre",1]],
+    USAGE[
+        SCOPE["State-wide spatial data management."],
+        AREA["Australia - Victoria."],
+        BBOX[-39.2,140.96,-33.98,150.04]],
+    ID["EPSG",3111]]
+          )""" );
+
+  const QgsProjUtils::proj_pj_unique_ptr pj( proj_create_from_wkt( QgsProjContext::get(), crsWkt.toUtf8().constData(), nullptr, nullptr, nullptr ) );
+  QVERIFY( pj.get() );
+
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProjObject( pj.get() );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3111" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::fromProjObjectNotCrs()
+{
+  // test creating a QgsCoordinateReferenceSystem from a proj object which is NOT a crs
+  const QString operation = QStringLiteral( "+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=utm +zone=56 +south +ellps=GRS80" );
+  const QgsProjUtils::proj_pj_unique_ptr pj( proj_create( QgsProjContext::get(), operation.toUtf8().constData() ) );
+  QVERIFY( pj.get() );
+
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProjObject( pj.get() );
+  QVERIFY( !crs.isValid() );
+}
+
 void TestQgsCoordinateReferenceSystem::isValid()
 {
   QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:4326" ) );
@@ -1223,6 +1310,40 @@ void TestQgsCoordinateReferenceSystem::readWriteXml()
   QCOMPARE( myCrs21c.description(), QStringLiteral( "a new CRS C" ) );
 }
 
+void TestQgsCoordinateReferenceSystem::readWriteXmlNativeFormatWkt()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=ortho +lat_0=-11 +lon_0=34 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs +type=crs" ) );
+  crs.setNativeFormat( Qgis::CrsDefinitionFormat::Wkt );
+
+  QDomDocument document( QStringLiteral( "test" ) );
+  QDomElement node = document.createElement( QStringLiteral( "crs" ) );
+  document.appendChild( node );
+
+  QVERIFY( crs.writeXml( node, document ) );
+
+  QgsCoordinateReferenceSystem crs2;
+  QVERIFY( crs2.readXml( node ) );
+  QVERIFY( crs == crs2 );
+  QCOMPARE( crs2.nativeFormat(), Qgis::CrsDefinitionFormat::Wkt );
+}
+
+void TestQgsCoordinateReferenceSystem::readWriteXmlNativeFormatProj()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=ortho +lat_0=-11.6 +lon_0=34 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs +type=crs" ) );
+  crs.setNativeFormat( Qgis::CrsDefinitionFormat::Proj );
+
+  QDomDocument document( QStringLiteral( "test" ) );
+  QDomElement node = document.createElement( QStringLiteral( "crs" ) );
+  document.appendChild( node );
+
+  QVERIFY( crs.writeXml( node, document ) );
+
+  QgsCoordinateReferenceSystem crs2;
+  QVERIFY( crs2.readXml( node ) );
+  QVERIFY( crs == crs2 );
+  QCOMPARE( crs2.nativeFormat(), Qgis::CrsDefinitionFormat::Proj );
+}
+
 void TestQgsCoordinateReferenceSystem::setCustomSrsValidation()
 {
   //QgsCoordinateReferenceSystem myCrs;
@@ -1608,9 +1729,13 @@ void TestQgsCoordinateReferenceSystem::geographicCrsAuthId()
   crs.createFromString( QStringLiteral( "EPSG:4326" ) );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4326" ) );
   QCOMPARE( crs.geographicCrsAuthId(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( crs.toGeographicCrs(), crs );
+
   crs.createFromString( QStringLiteral( "EPSG:3825" ) );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3825" ) );
   QCOMPARE( crs.geographicCrsAuthId(), QStringLiteral( "EPSG:3824" ) );
+  QCOMPARE( crs.toGeographicCrs().toProj().replace( QLatin1String( "+towgs84=0,0,0,0,0,0,0 " ), QString() ).replace( QLatin1String( " +type=crs" ), QString() ),
+            QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3824" ) ).toProj().replace( QLatin1String( "+towgs84=0,0,0,0,0,0,0 " ), QString() ).replace( QLatin1String( " +type=crs" ), QString() ) );
 }
 
 void TestQgsCoordinateReferenceSystem::noProj()
@@ -1641,7 +1766,7 @@ void TestQgsCoordinateReferenceSystem::customProjString()
   QVERIFY( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2019 ).startsWith( QLatin1String( R"""(BOUNDCRS[SOURCECRS[)""" ) ) );
   QVERIFY( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2019 ).contains( QLatin1String( R"""(METHOD["Oblique Stereographic",ID["EPSG",9809]])""" ) ) );
   QVERIFY( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2019 ).contains( QLatin1String( R"""(PARAMETER["X-axis translation",595.75,ID["EPSG",8605]],PARAMETER["Y-axis translation",121.09,ID["EPSG",8606]],PARAMETER["Z-axis translation",515.5,ID["EPSG",8607]],PARAMETER["X-axis rotation",8.227,ID["EPSG",8608]],PARAMETER["Y-axis rotation",-1.5193,ID["EPSG",8609]],PARAMETER["Z-axis rotation",5.5971,ID["EPSG",8610]],PARAMETER["Scale difference",0.9999973271,ID["EPSG",8611]])""" ) ) );
-  const long id = crs.saveAsUserCrs( QStringLiteral( "custom proj crs" ), QgsCoordinateReferenceSystem::FormatProj );
+  const long id = crs.saveAsUserCrs( QStringLiteral( "custom proj crs" ), Qgis::CrsDefinitionFormat::Proj );
   QVERIFY( id );
 
   // try again and make sure it's matched to user crs

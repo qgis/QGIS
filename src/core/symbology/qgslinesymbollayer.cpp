@@ -3421,7 +3421,7 @@ void QgsRasterLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
   double opacity = mOpacity * context.opacity();
   bool cached = false;
   mLineImage = QgsApplication::imageCache()->pathAsImage( mPath,
-               QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * scaledHeight ) ),
+               QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ),
                       static_cast< int >( std::ceil( scaledHeight ) ) ),
                true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
 }
@@ -3466,7 +3466,7 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
 
     bool cached = false;
     sourceImage = QgsApplication::imageCache()->pathAsImage( path,
-                  QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * scaledHeight ) ),
+                  QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ),
                          static_cast< int >( std::ceil( scaledHeight ) ) ),
                   true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
   }
@@ -3523,6 +3523,11 @@ QgsMapUnitScale QgsRasterLineSymbolLayer::mapUnitScale() const
 double QgsRasterLineSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
 {
   return ( mWidth / 2.0 ) + mOffset;
+}
+
+QColor QgsRasterLineSymbolLayer::color() const
+{
+  return QColor();
 }
 
 
@@ -3760,6 +3765,11 @@ QgsMapUnitScale QgsLineburstSymbolLayer::mapUnitScale() const
 double QgsLineburstSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
 {
   return ( mWidth / 2.0 ) + mOffset;
+}
+
+QColor QgsLineburstSymbolLayer::color() const
+{
+  return QColor();
 }
 
 QgsColorRamp *QgsLineburstSymbolLayer::colorRamp()

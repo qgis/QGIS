@@ -196,6 +196,16 @@ class TestQgsRelation(unittest.TestCase):
         self.assertTrue(valid)
 
         # update style
+        # Note: the project is re-read because of a subtle bug with bindings involving
+        # QgsOptionalExpression mCollapsedExpressionv that makes the tab loose the information
+        # about the children. The issue couldn't be reproduced when the test is run from QGIS
+        # console and the new test testqgsrelation.cpp now covers this behavior without reloading
+        # the project.
+        self.assertTrue(p.read(myPath))
+        relations = QgsProject.instance().relationManager().relations()
+        relation = relations[list(relations.keys())[0]]
+        referencedLayer = relation.referencedLayer()
+
         referencedLayer.styleManager().setCurrentStyle("custom")
 
         for l in p.mapLayers().values():

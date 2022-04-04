@@ -55,6 +55,11 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
   mXyz = false;  // assume WMS / WMTS
 
+  if ( uri.hasParam( QStringLiteral( "interpretation" ) ) )
+  {
+    mInterpretation = uri.param( QStringLiteral( "interpretation" ) );
+  }
+
   if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) ||
        uri.param( QStringLiteral( "type" ) ) == QLatin1String( "mbtiles" ) )
   {
@@ -69,7 +74,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mBaseUrl = mHttpUri;
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
-    mSmoothPixmapTransform = true;
+    mSmoothPixmapTransform = mInterpretation.isEmpty();
     mDpiMode = DpiNone; // does not matter what we set here
     mActiveSubLayers = QStringList( QStringLiteral( "xyz" ) );  // just a placeholder to have one sub-layer
     mActiveSubStyles = QStringList( QStringLiteral( "xyz" ) );  // just a placeholder to have one sub-style
@@ -1191,6 +1196,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( nodeElement.attribute( QStringLiteral( "SRS" ) ) );
             QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
             QgsCoordinateTransform ct( src, dst, mCoordinateTransformContext );
+            ct.setBallparkTransformsAreAppropriate( true );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
           }
           catch ( QgsCsException &cse )
@@ -2338,7 +2344,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsCapabilitiesDownload" ) );
   if ( !mAuth.setAuthorization( request ) )
   {
-    mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
+    mError = tr( "Download of capabilities failed:\nnetwork request update failed for authentication config" );
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     return false;
   }
@@ -2350,7 +2356,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   {
     mCapabilitiesReply->deleteLater();
     mCapabilitiesReply = nullptr;
-    mError = tr( "Download of capabilities failed: network reply update failed for authentication config" );
+    mError = tr( "Download of capabilities failed:\nnetwork reply update failed for authentication config" );
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     return false;
   }
@@ -2397,7 +2403,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
         mCapabilitiesReply->request();
         if ( toUrl == mCapabilitiesReply->url() )
         {
-          mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
+          mError = tr( "Redirect loop detected:\n%1" ).arg( toUrl.toString() );
           QgsMessageLog::logMessage( mError, tr( "WMS" ) );
           mHttpCapabilitiesResponse.clear();
         }
@@ -2408,7 +2414,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           if ( !mAuth.setAuthorization( request ) )
           {
             mHttpCapabilitiesResponse.clear();
-            mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
+            mError = tr( "Download of capabilities failed:\nnetwork request update failed for authentication config" );
             QgsMessageLog::logMessage( mError, tr( "WMS" ) );
             emit downloadFinished();
             return;
@@ -2419,7 +2425,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           mCapabilitiesReply->deleteLater();
           mCapabilitiesReply = nullptr;
 
-          QgsDebugMsgLevel( QStringLiteral( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 2 );
+          QgsDebugMsgLevel( QStringLiteral( "redirected getcapabilities:\n%1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 2 );
           mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
           if ( !mAuth.setAuthorizationReply( mCapabilitiesReply ) )
@@ -2427,7 +2433,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
             mHttpCapabilitiesResponse.clear();
             mCapabilitiesReply->deleteLater();
             mCapabilitiesReply = nullptr;
-            mError = tr( "Download of capabilities failed: network reply update failed for authentication config" );
+            mError = tr( "Download of capabilities failed:\nnetwork reply update failed for authentication config" );
             QgsMessageLog::logMessage( mError, tr( "WMS" ) );
             emit downloadFinished();
             return;
@@ -2471,20 +2477,31 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 
 #ifdef QGISDEBUG
         bool fromCache = mCapabilitiesReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
-        QgsDebugMsgLevel( QStringLiteral( "Capabilities reply was cached: %1" ).arg( fromCache ), 2 );
+        QgsDebugMsgLevel( QStringLiteral( "Capabilities reply was cached:\n%1" ).arg( fromCache ), 2 );
 #endif
 
         mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
 
         if ( mHttpCapabilitiesResponse.isEmpty() )
         {
-          mError = tr( "empty of capabilities: %1" ).arg( mCapabilitiesReply->errorString() );
+          mError = tr( "Capabilities are empty:\n%1" ).arg( mCapabilitiesReply->errorString() );
         }
       }
     }
     else
     {
-      mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
+      const QString contentType = mCapabilitiesReply->header( QNetworkRequest::ContentTypeHeader ).toString();
+
+      QString errorMessage;
+      if ( contentType.startsWith( QLatin1String( "text/plain" ) ) )
+        errorMessage = mCapabilitiesReply->readAll();
+      else
+        errorMessage = mCapabilitiesReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString();
+
+      if ( errorMessage.isEmpty() )
+        errorMessage = mCapabilitiesReply->errorString();
+
+      mError = tr( "Download of capabilities failed:\n%1" ).arg( errorMessage );
       QgsMessageLog::logMessage( mError, tr( "WMS" ) );
       mHttpCapabilitiesResponse.clear();
     }

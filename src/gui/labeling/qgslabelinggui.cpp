@@ -200,6 +200,7 @@ void QgsLabelingGui::showLineAnchorSettings()
     mLineSettings.setLineAnchorPercent( widgetSettings.lineAnchorPercent() );
     mLineSettings.setAnchorType( widgetSettings.anchorType() );
     mLineSettings.setAnchorClipping( widgetSettings.anchorClipping() );
+    mLineSettings.setAnchorTextPoint( widgetSettings.anchorTextPoint() );
     const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
     widget->updateDataDefinedProperties( mDataDefinedProperties );
     emit widgetChanged();
@@ -482,7 +483,6 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   // do this after other widgets are configured, so they can be enabled/disabled
   populateDataDefinedButtons();
 
-  enableDataDefinedAlignment( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() );
   updateUi(); // should come after data defined button setup
 }
 
@@ -572,6 +572,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.lineSettings().setLineAnchorPercent( mLineSettings.lineAnchorPercent() );
   lyr.lineSettings().setAnchorType( mLineSettings.anchorType() );
   lyr.lineSettings().setAnchorClipping( mLineSettings.anchorClipping() );
+  lyr.lineSettings().setAnchorTextPoint( mLineSettings.anchorTextPoint() );
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();

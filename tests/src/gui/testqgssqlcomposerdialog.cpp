@@ -331,9 +331,9 @@ void TestQgsSQLComposerDialog::testSelectFunction()
 
   QCOMPARE( getFunctionsCombo( d )->itemText( 1 ), QString( "first_func()" ) );
   QCOMPARE( getFunctionsCombo( d )->itemText( 2 ), QString( "second_func(): int" ) );
-  QCOMPARE( getFunctionsCombo( d )->itemText( 3 ), QString( "third_func(1 argument)" ) );
+  QCOMPARE( getFunctionsCombo( d )->itemText( 3 ), QString( "third_func(1 argument(s))" ) );
   QCOMPARE( getFunctionsCombo( d )->itemText( 4 ), QString( "fourth_func(1 to 2 arguments)" ) );
-  QCOMPARE( getFunctionsCombo( d )->itemText( 5 ), QString( "fifth_func(1 argument or more)" ) );
+  QCOMPARE( getFunctionsCombo( d )->itemText( 5 ), QString( "fifth_func(1 argument(s) or more)" ) );
   QCOMPARE( getFunctionsCombo( d )->itemText( 6 ), QString( "sixth_func(arg1, arg2: double, arg3: geometry, int)" ) );
   QCOMPARE( getFunctionsCombo( d )->itemText( 7 ), QString( "seventh_func(arg1[, arg2: double])" ) );
 

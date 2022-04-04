@@ -134,6 +134,9 @@ class CORE_EXPORT QgsOgrProviderUtils
     static QStringList directoryExtensions();
     static QStringList wildcards();
 
+    //! Whether the file is a local file.
+    static bool IsLocalFile( const QString &path );
+
     /**
      * Creates an empty data source
      * \param uri location to store the file(s)

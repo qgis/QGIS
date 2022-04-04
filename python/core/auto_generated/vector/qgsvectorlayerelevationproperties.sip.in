@@ -1,0 +1,136 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vector/qgsvectorlayerelevationproperties.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsVectorLayerElevationProperties : QgsMapLayerElevationProperties
+{
+%Docstring(signature="appended")
+Vector layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerelevationproperties.h"
+%End
+  public:
+
+    QgsVectorLayerElevationProperties( QObject *parent /TransferThis/ );
+%Docstring
+Constructor for QgsVectorLayerElevationProperties, with the specified ``parent`` object.
+%End
+
+    virtual bool hasElevation() const;
+
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
+
+    virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+
+
+    Qgis::AltitudeClamping clamping() const;
+%Docstring
+Returns the altitude clamping method, which dictates how feature heights are interpreted
+with respect to terrain heights.
+
+.. seealso:: :py:func:`setClamping`
+%End
+
+    void setClamping( Qgis::AltitudeClamping clamping );
+%Docstring
+Sets the altitude ``clamping`` method, which dictates how feature heights are interpreted
+with respect to terrain heights.
+
+.. seealso:: :py:func:`clamping`
+%End
+
+    Qgis::AltitudeBinding binding() const;
+%Docstring
+Returns the altitude binding method, which determines how altitude is bound to individual vertices in features.
+
+.. note::
+
+   Binding only relevant for line or polygon feature types -- it is not applicable for point layers.
+
+.. seealso:: :py:func:`setBinding`
+%End
+
+    void setBinding( Qgis::AltitudeBinding binding );
+%Docstring
+Sets the altitude ``binding`` method, which determines how altitude is bound to individual vertices in features.
+
+.. note::
+
+   Binding only relevant for line or polygon feature types -- it is not applicable for point layers.
+
+.. seealso:: :py:func:`binding`
+%End
+
+    bool extrusionEnabled() const;
+%Docstring
+Returns ``True`` if extrusion is enabled.
+
+.. seealso:: :py:func:`setExtrusionEnabled`
+
+.. seealso:: :py:func:`extrusionHeight`
+%End
+
+    void setExtrusionEnabled( bool enabled );
+%Docstring
+Sets whether extrusion is ``enabled``.
+
+.. seealso:: :py:func:`extrusionEnabled`
+
+.. seealso:: :py:func:`setExtrusionHeight`
+%End
+
+    double extrusionHeight() const;
+%Docstring
+Returns the feature extrusion height.
+
+.. warning::
+
+   extrusion is only applied if :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``True``.
+
+.. note::
+
+   the :py:func:`~QgsVectorLayerElevationProperties.zScale` factor is NOT applied to extrusion heights.
+
+.. seealso:: :py:func:`setExtrusionHeight`
+%End
+
+    void setExtrusionHeight( double height );
+%Docstring
+Sets the feature extrusion height.
+
+.. warning::
+
+   extrusion is only applied if :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``True``.
+
+.. note::
+
+   the :py:func:`~QgsVectorLayerElevationProperties.zScale` factor is NOT applied to extrusion heights.
+
+.. seealso:: :py:func:`extrusionHeight`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vector/qgsvectorlayerelevationproperties.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

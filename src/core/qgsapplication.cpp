@@ -136,6 +136,9 @@
 
 #include <proj.h>
 
+#if defined(Q_OS_LINUX)
+#include <sys/sysinfo.h>
+#endif
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 
@@ -1287,6 +1290,42 @@ QString QgsApplication::osName()
   return QLatin1String( "unix" );
 #else
   return QLatin1String( "unknown" );
+#endif
+}
+
+int QgsApplication::systemMemorySizeMb()
+{
+#if defined(Q_OS_ANDROID)
+  return -1;
+#elif defined(Q_OS_MAC)
+  return -1;
+#elif defined(Q_OS_WIN)
+  MEMORYSTATUSEX memoryStatus;
+  ZeroMemory( &memoryStatus, sizeof( MEMORYSTATUSEX ) );
+  memoryStatus.dwLength = sizeof( MEMORYSTATUSEX );
+  if ( GlobalMemoryStatusEx( &memoryStatus ) )
+  {
+    return memoryStatus.ullTotalPhys / ( 1024 * 1024 );
+  }
+  else
+  {
+    return -1;
+  }
+#elif defined(Q_OS_LINUX)
+  constexpr int megabyte = 1024 * 1024;
+  struct sysinfo si;
+  sysinfo( &si );
+  return si.totalram / megabyte;
+#elif defined(Q_OS_FREEBSD)
+  return -1;
+#elif defined(Q_OS_OPENBSD)
+  return -1;
+#elif defined(Q_OS_NETBSD)
+  return -1;
+#elif defined(Q_OS_UNIX)
+  return -1;
+#else
+  return -1;
 #endif
 }
 

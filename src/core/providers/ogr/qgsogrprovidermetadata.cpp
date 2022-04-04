@@ -30,12 +30,12 @@ email                : nyall dot dawson at gmail dot com
 #include "qgszipitem.h"
 #include "qgsproviderutils.h"
 #include "qgsgdalutils.h"
+#include "qgsproviderregistry.h"
 
 #include <gdal.h>
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
-#include <QMessageBox>
 #include <QRegularExpression>
 #include <QDirIterator>
 
@@ -268,6 +268,49 @@ static QgsOgrLayerUniquePtr LoadDataSourceAndLayer( const QString &uri, QString 
     return QgsOgrProviderUtils::getLayer( filePath, true, QStringList(), layerIndex, errCause, true );
   }
 }
+
+bool QgsOgrProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errorCause )
+{
+  errorCause.clear();
+
+  QgsOgrLayerUniquePtr userLayer = LoadDataSourceAndLayer( uri, errorCause );
+  if ( !userLayer )
+    return false;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QMutex *mutex = nullptr;
+#else
+  QRecursiveMutex *mutex = nullptr;
+#endif
+  OGRLayerH hUserLayer = userLayer->getHandleAndMutex( mutex );
+  GDALDatasetH hDS = userLayer->getDatasetHandleAndMutex( mutex );
+  QMutexLocker locker( mutex );
+
+  // check if layer_styles table exists
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
+  if ( !hLayer )
+    return false;
+
+  const QString realStyleId = styleId.isEmpty() ? QString( OGR_L_GetName( hUserLayer ) ) : styleId;
+
+  const QString checkQuery = QStringLiteral( "f_table_schema=''"
+                             " AND f_table_name=%1"
+                             " AND f_geometry_column=%2"
+                             " AND styleName=%3" )
+                             .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetName( hUserLayer ) ) ),
+                                   QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetGeometryColumn( hUserLayer ) ) ),
+                                   QgsOgrProviderUtils::quotedValue( realStyleId ) );
+  OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
+  OGR_L_ResetReading( hLayer );
+  gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+  OGR_L_ResetReading( hLayer );
+
+  if ( hFeature )
+    return true;
+
+  return false;
+}
+
 bool QgsOgrProviderMetadata::saveStyle(
   const QString &uri, const QString &qmlStyle, const QString &sldStyle,
   const QString &styleName, const QString &styleDescription,
@@ -412,19 +455,6 @@ bool QgsOgrProviderMetadata::saveStyle(
 
   if ( hFeature )
   {
-    QgsSettings settings;
-    // Only used in tests. Do not define it for interactive implication
-    QVariant overwriteStyle = settings.value( QStringLiteral( "qgis/overwriteStyle" ) );
-    if ( ( !overwriteStyle.isNull() && !overwriteStyle.toBool() ) ||
-         ( overwriteStyle.isNull() &&
-           QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
-                                  QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
-                                  .arg( realStyleName ),
-                                  QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No ) )
-    {
-      errCause = QObject::tr( "Operation aborted" );
-      return false;
-    }
     bNew = false;
   }
   else
@@ -484,7 +514,7 @@ bool QgsOgrProviderMetadata::saveStyle(
   return true;
 }
 
-bool QgsOgrProviderMetadata::deleteStyleById( const QString &uri, QString styleId, QString &errCause )
+bool QgsOgrProviderMetadata::deleteStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   bool deleted;
@@ -764,7 +794,7 @@ int QgsOgrProviderMetadata::listStyles(
   return numberOfRelatedStyles;
 }
 
-QString QgsOgrProviderMetadata::getStyleById( const QString &uri, QString styleId, QString &errCause )
+QString QgsOgrProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   QgsOgrLayerUniquePtr layerStyles;
   QgsOgrLayerUniquePtr userLayer;
@@ -1487,7 +1517,13 @@ QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const Q
 
 QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
 {
-  return new QgsGeoPackageProviderConnection( uri, configuration );
+  const QVariantMap parts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri );
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo fi( path );
+  if ( fi.suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+    return new QgsGeoPackageProviderConnection( uri, configuration );
+  else
+    return new QgsOgrProviderConnection( uri, configuration );
 }
 
 void QgsOgrProviderMetadata::deleteConnection( const QString &name )

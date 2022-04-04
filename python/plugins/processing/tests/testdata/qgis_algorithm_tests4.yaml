@@ -91,6 +91,9 @@ tests:
       OUTPUT:
         name: expected/multiring_buffer.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:multiringconstantbuffer
     name: Multi-ring negative buffer with polygons
@@ -104,6 +107,9 @@ tests:
       OUTPUT:
         name: expected/multiring_negative_buffer.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:segmentizebymaxangle
     name: Segmentize by angle
@@ -193,6 +199,9 @@ tests:
       OUTPUT:
         name: expected/concave_hull_points_03.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: qgis:concavehull
     name: Concave Hull - Points (0.7)
@@ -207,6 +216,9 @@ tests:
       OUTPUT:
         name: expected/concave_hull_points_07.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - Points (k=7)
@@ -324,6 +336,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:intersection
     name: Test Intersection (geom types)
@@ -342,6 +356,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:intersection
     name: Test Intersection (custom prefix)
@@ -361,6 +377,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:wedgebuffers
     name: Wedge buffers
@@ -394,6 +412,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:difference
     name: Test Difference B - A (basic)
@@ -412,6 +432,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:symmetricaldifference
     name: Test Symmetrical Difference A - B (basic)
@@ -430,6 +452,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:symmetricaldifference
     name: Test Symmetrical Difference B - A (basic)
@@ -448,6 +472,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:symmetricaldifference
     name: Test Symmetrical Difference B - A (custom prefix)
@@ -467,6 +493,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:union
     name: Test Union of single layer
@@ -482,6 +510,8 @@ tests:
           unordered: true
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:union
     name: Test Union (basic)
@@ -500,6 +530,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:union
     name: Test Union (custom prefix)
@@ -519,6 +551,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:union
     name: Test Union (geom types)
@@ -537,6 +571,8 @@ tests:
         compare:
           fields:
             fid: skip
+          geometry:
+            normalize: True
 
   - algorithm: native:taperedbuffer
     name: Tapered buffers (lines)
@@ -573,7 +609,7 @@ tests:
         compare:
           geometry:
             topo_equal_check: True
-
+            normalize: True
 
   - algorithm: native:bufferbym
     name: Variable width buffer by m
@@ -884,7 +920,7 @@ tests:
       DATETIME_FIELD: date
       DBSCAN*: false
       EPS: 5.0
-      EPS2: 86400000.0
+      EPS2: 86400000000.0
       FIELD_NAME: CLUSTER_ID
       INPUT:
         name: custom/points_with_date.shp
@@ -2849,6 +2885,25 @@ tests:
     results:
       OUTPUT:
         name: expected/shortest_line_point_to_line_4326_to_3857.shp
+        type: vector
+
+  - algorithm: native:joinattributestable
+    name: Test native:joinattributestable with name conflict, fix for issue 47650
+    params:
+      DISCARD_NONMATCHING: true
+      FIELD: UNIDAD_CONSTRUCCION_ID
+      FIELD_2: ID_2
+      INPUT:
+        name: custom/join_attributes_table_base_table.gml|layername=join_attributes_table_base_table
+        type: vector
+      INPUT_2:
+        name: custom/join_attributes_table_secondary_table.gml|layername=join_attributes_table_secondary_table
+        type: vector
+      METHOD: 0
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_attributes_table_issue_47650.gml
         type: vector
 
 # See ../README.md for a description of the file format

@@ -190,18 +190,13 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mTypeButton->setPopupMode( QToolButton::InstantPopup );
   SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), this );
 
-  for ( QgsSnappingConfig::SnappingTypes type :
-        {
-          QgsSnappingConfig::VertexFlag,
-          QgsSnappingConfig::SegmentFlag,
-          QgsSnappingConfig::AreaFlag,
-          QgsSnappingConfig::CentroidFlag,
-          QgsSnappingConfig::MiddleOfSegmentFlag,
-          QgsSnappingConfig::LineEndpointFlag
-        } )
+
+  for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
   {
-    QAction *action = new QAction( QgsSnappingConfig::snappingTypeFlagToIcon( type ), QgsSnappingConfig::snappingTypeFlagToString( type ), typeMenu );
-    action->setData( type );
+    if ( type == Qgis::SnappingType::NoSnap )
+      continue;
+    QAction *action = new QAction( QgsSnappingConfig::snappingTypeToIcon( type ), QgsSnappingConfig::snappingTypeToString( type ), typeMenu );
+    action->setData( QVariant::fromValue( type ) );
     action->setCheckable( true );
     typeMenu->addAction( action );
     mSnappingFlagActions << action;
@@ -440,19 +435,19 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
 
   mEnabledAction->setChecked( config.enabled() );
 
-  if ( config.mode() == QgsSnappingConfig::AllLayers && mModeButton->defaultAction() != mAllLayersAction )
+  if ( config.mode() == Qgis::SnappingMode::AllLayers && mModeButton->defaultAction() != mAllLayersAction )
   {
     mModeButton->setDefaultAction( mAllLayersAction );
     modeChanged();
     updateToleranceDecimals();
   }
-  if ( config.mode() == QgsSnappingConfig::ActiveLayer && mModeButton->defaultAction() != mActiveLayerAction )
+  if ( config.mode() == Qgis::SnappingMode::ActiveLayer && mModeButton->defaultAction() != mActiveLayerAction )
   {
     mModeButton->setDefaultAction( mActiveLayerAction );
     modeChanged();
     updateToleranceDecimals();
   }
-  if ( config.mode() == QgsSnappingConfig::AdvancedConfiguration && mModeButton->defaultAction() != mAdvancedModeAction )
+  if ( config.mode() == Qgis::SnappingMode::AdvancedConfiguration && mModeButton->defaultAction() != mAdvancedModeAction )
   {
     mModeButton->setDefaultAction( mAdvancedModeAction );
     modeChanged();
@@ -462,7 +457,7 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
   // update snapping flag actions
   for ( QAction *action : std::as_const( mSnappingFlagActions ) )
   {
-    const QgsSnappingConfig::SnappingTypeFlag actionFlag = static_cast<QgsSnappingConfig::SnappingTypeFlag>( action->data().toInt() );
+    const Qgis::SnappingTypes actionFlag = static_cast<Qgis::SnappingTypes>( action->data().toInt() );
     action->setChecked( config.typeFlag() & actionFlag );
     if ( action->isChecked() )
       mTypeButton->setDefaultAction( action );
@@ -681,15 +676,15 @@ void QgsSnappingWidget::modeButtonTriggered( QAction *action )
     mModeButton->setDefaultAction( action );
     if ( action == mAllLayersAction )
     {
-      mConfig.setMode( QgsSnappingConfig::AllLayers );
+      mConfig.setMode( Qgis::SnappingMode::AllLayers );
     }
     else if ( action == mActiveLayerAction )
     {
-      mConfig.setMode( QgsSnappingConfig::ActiveLayer );
+      mConfig.setMode( Qgis::SnappingMode::ActiveLayer );
     }
     else if ( action == mAdvancedModeAction )
     {
-      mConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      mConfig.setMode( Qgis::SnappingMode::AdvancedConfiguration );
     }
     mProject->setSnappingConfig( mConfig );
     updateToleranceDecimals();
@@ -701,7 +696,7 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
 {
   unsigned int type = static_cast<int>( mConfig.typeFlag() );
 
-  const QgsSnappingConfig::SnappingTypeFlag actionFlag = static_cast<QgsSnappingConfig::SnappingTypeFlag>( action->data().toInt() );
+  const Qgis::SnappingTypes actionFlag = static_cast<Qgis::SnappingTypes>( action->data().toInt() );
   type ^= actionFlag;
 
   if ( type & actionFlag )
@@ -714,7 +709,7 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
     // user unchecked the action -- find out which ones we should set as new default action
     for ( QAction *flagAction : std::as_const( mSnappingFlagActions ) )
     {
-      if ( type & static_cast<QgsSnappingConfig::SnappingTypeFlag>( flagAction->data().toInt() ) )
+      if ( type & static_cast<Qgis::SnappingTypes>( flagAction->data().toInt() ) )
       {
         mTypeButton->setDefaultAction( flagAction );
         break;
@@ -722,7 +717,7 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
     }
   }
 
-  mConfig.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( type ) );
+  mConfig.setTypeFlag( static_cast<Qgis::SnappingTypes>( type ) );
   mProject->setSnappingConfig( mConfig );
 }
 
@@ -775,7 +770,7 @@ void QgsSnappingWidget::updateToleranceDecimals()
 
 void QgsSnappingWidget::modeChanged()
 {
-  bool advanced = mConfig.mode() == QgsSnappingConfig::AdvancedConfiguration;
+  bool advanced = mConfig.mode() == Qgis::SnappingMode::AdvancedConfiguration;
 
   if ( mDisplayMode == ToolBar )
   {

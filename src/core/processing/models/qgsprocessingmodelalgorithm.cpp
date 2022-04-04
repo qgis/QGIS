@@ -92,15 +92,10 @@ QString QgsProcessingModelAlgorithm::helpUrl() const
   return mHelpContent.value( QStringLiteral( "HELP_URL" ) ).toString();
 }
 
-QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
+QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error ) const
 {
-  // TODO - check child algorithms, if they all support threading, then the model supports threading...
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
-}
-
-QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const
-{
-  auto evaluateSources = [ = ]( const QgsProcessingParameterDefinition * def )->QVariant
+  error.clear();
+  auto evaluateSources = [ =, &error ]( const QgsProcessingParameterDefinition * def )->QVariant
   {
     const QgsProcessingModelChildParameterSources paramSources = child.parameterSources().value( def->name() );
 
@@ -129,6 +124,10 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
         {
           QgsExpression exp( source.expression() );
           paramParts << exp.evaluate( &expressionContext );
+          if ( exp.hasEvalError() )
+          {
+            error = QObject::tr( "Could not evaluate expression for parameter %1 for %2: %3" ).arg( def->name(), child.description(), exp.evalErrorString() );
+          }
           break;
         }
         case QgsProcessingModelChildParameterSource::ExpressionText:
@@ -154,8 +153,8 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
 
 
   QVariantMap childParams;
-  const auto constParameterDefinitions = child.algorithm()->parameterDefinitions();
-  for ( const QgsProcessingParameterDefinition *def : constParameterDefinitions )
+  const QList< const QgsProcessingParameterDefinition * > childParameterDefinitions = child.algorithm()->parameterDefinitions();
+  for ( const QgsProcessingParameterDefinition *def : childParameterDefinitions )
   {
     if ( !def->isDestination() )
     {
@@ -178,12 +177,34 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
         if ( outputIt->childOutputName() == destParam->name() )
         {
           QString paramName = child.childId() + ':' + outputIt.key();
+          bool foundParam = false;
+          QVariant value;
+
+          // if parameter was specified using child_id:child_name directly, take that
           if ( modelParameters.contains( paramName ) )
           {
-            QVariant value = modelParameters.value( paramName );
+            value = modelParameters.value( paramName );
+            foundParam  = true;
+          }
+
+          // ...otherwise we need to find the corresponding model parameter which matches this output
+          if ( !foundParam )
+          {
+            if ( const QgsProcessingParameterDefinition *modelParam = modelParameterFromChildIdAndOutputName( child.childId(), outputIt.key() ) )
+            {
+              if ( modelParameters.contains( modelParam->name() ) )
+              {
+                value = modelParameters.value( modelParam->name() );
+                foundParam = true;
+              }
+            }
+          }
+
+          if ( foundParam )
+          {
             if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
             {
-              // make sure layout output name is correctly set
+              // make sure layer output name is correctly set
               QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
               fromVar.destinationName = outputIt.key();
               value = QVariant::fromValue( fromVar );
@@ -226,6 +247,22 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
     }
   }
   return childParams;
+}
+
+const QgsProcessingParameterDefinition *QgsProcessingModelAlgorithm::modelParameterFromChildIdAndOutputName( const QString &childId, const QString &childOutputName ) const
+{
+  for ( const QgsProcessingParameterDefinition *definition : mParameters )
+  {
+    if ( !definition->isDestination() )
+      continue;
+
+    const QString modelChildId = definition->metadata().value( QStringLiteral( "_modelChildId" ) ).toString();
+    const QString modelOutputName = definition->metadata().value( QStringLiteral( "_modelChildOutputName" ) ).toString();
+
+    if ( modelChildId == childId && modelOutputName == childOutputName )
+      return definition;
+  }
+  return nullptr;
 }
 
 bool QgsProcessingModelAlgorithm::childOutputIsRequired( const QString &childId, const QString &outputName ) const
@@ -329,7 +366,11 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
                  << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
       context.setExpressionContext( expContext );
 
-      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
+      QString error;
+      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext, error );
+      if ( !error.isEmpty() )
+        throw QgsProcessingException( error );
+
       if ( feedback && !skipGenericLogging )
         feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
 
@@ -351,12 +392,88 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       childTime.start();
 
       bool ok = false;
-      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
+
+      QThread *modelThread = QThread::currentThread();
+
+      auto prepareOnMainThread = [modelThread, &ok, &childAlg, &childParams, &context, &modelFeedback]
+      {
+        Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->prepare() must be run on the main thread" );
+        ok = childAlg->prepare( childParams, context, &modelFeedback );
+        context.pushToThread( modelThread );
+      };
+
+      // Make sure we only run prepare steps on the main thread!
+      if ( modelThread == qApp->thread() )
+        ok = childAlg->prepare( childParams, context, &modelFeedback );
+      else
+      {
+        context.pushToThread( qApp->thread() );
+        QMetaObject::invokeMethod( qApp, prepareOnMainThread, Qt::BlockingQueuedConnection );
+      }
+
+      Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
+
       if ( !ok )
       {
         const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
         throw QgsProcessingException( error );
       }
+
+      QVariantMap results;
+      try
+      {
+        if ( childAlg->flags() & QgsProcessingAlgorithm::FlagNoThreading )
+        {
+          // child algorithm run step must be called on main thread
+          auto runOnMainThread = [modelThread, &context, &modelFeedback, &results, &childAlg, &childParams]
+          {
+            Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->runPrepared() must be run on the main thread" );
+            results = childAlg->runPrepared( childParams, context, &modelFeedback );
+            context.pushToThread( modelThread );
+          };
+
+          if ( feedback && !skipGenericLogging && modelThread != qApp->thread() )
+            feedback->pushWarning( QObject::tr( "Algorithm “%1” cannot be run in a background thread, switching to main thread for this step" ).arg( childAlg->displayName() ) );
+
+          context.pushToThread( qApp->thread() );
+          QMetaObject::invokeMethod( qApp, runOnMainThread, Qt::BlockingQueuedConnection );
+        }
+        else
+        {
+          // safe to run on model thread
+          results = childAlg->runPrepared( childParams, context, &modelFeedback );
+        }
+      }
+      catch ( QgsProcessingException & )
+      {
+        const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
+        throw QgsProcessingException( error );
+      }
+
+      Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
+
+      QVariantMap ppRes;
+      auto postProcessOnMainThread = [modelThread, &ppRes, &childAlg, &context, &modelFeedback]
+      {
+        Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->postProcess() must be run on the main thread" );
+        ppRes = childAlg->postProcess( context, &modelFeedback );
+        context.pushToThread( modelThread );
+      };
+
+      // Make sure we only run postProcess steps on the main thread!
+      if ( modelThread == qApp->thread() )
+        ppRes = childAlg->postProcess( context, &modelFeedback );
+      else
+      {
+        context.pushToThread( qApp->thread() );
+        QMetaObject::invokeMethod( qApp, postProcessOnMainThread, Qt::BlockingQueuedConnection );
+      }
+
+      Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
+
+      if ( !ppRes.isEmpty() )
+        results = ppRes;
+
       childResults.insert( childId, results );
 
       // look through child alg's outputs to determine whether any of these should be copied
@@ -365,7 +482,18 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QMap<QString, QgsProcessingModelOutput>::const_iterator outputIt = outputs.constBegin();
       for ( ; outputIt != outputs.constEnd(); ++outputIt )
       {
-        finalResults.insert( childId + ':' + outputIt->name(), results.value( outputIt->childOutputName() ) );
+        switch ( mInternalVersion )
+        {
+          case QgsProcessingModelAlgorithm::InternalVersion::Version1:
+            finalResults.insert( childId + ':' + outputIt->name(), results.value( outputIt->childOutputName() ) );
+            break;
+          case QgsProcessingModelAlgorithm::InternalVersion::Version2:
+            if ( const QgsProcessingParameterDefinition *modelParam = modelParameterFromChildIdAndOutputName( child.childId(), outputIt.key() ) )
+            {
+              finalResults.insert( modelParam->name(), results.value( outputIt->childOutputName() ) );
+            }
+            break;
+        }
       }
 
       executed.insert( childId );
@@ -437,14 +565,14 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       childAlg.reset( nullptr );
       modelFeedback.setCurrentStep( executed.count() );
       if ( feedback && !skipGenericLogging )
-        feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
+        feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%n output(s)).", nullptr, results.count() ).arg( childTime.elapsed() / 1000.0 ) );
     }
 
     if ( feedback && feedback->isCanceled() )
       break;
   }
   if ( feedback )
-    feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
+    feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %n algorithm(s) total in %1 s.", nullptr, executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
 
   mResults = finalResults;
   mResults.insert( QStringLiteral( "CHILD_RESULTS" ), childResults );
@@ -460,6 +588,15 @@ QString QgsProcessingModelAlgorithm::sourceFilePath() const
 void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile )
 {
   mSourceFile = sourceFile;
+}
+
+bool QgsProcessingModelAlgorithm::modelNameMatchesFilePath() const
+{
+  if ( mSourceFile.isEmpty() )
+    return false;
+
+  const QFileInfo fi( mSourceFile );
+  return fi.completeBaseName().compare( mModelName, Qt::CaseInsensitive ) == 0;
 }
 
 QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const int indentSize ) const
@@ -479,19 +616,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
   QMap< QString, QString> friendlyChildNames;
   QMap< QString, QString> friendlyOutputNames;
-  auto safeName = []( const QString & name, bool capitalize )->QString
-  {
-    QString n = name.toLower().trimmed();
-    QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
-    n.replace( rx, QString() );
-    QRegularExpression rx2( QStringLiteral( "^\\d*" ) ); // name can't start in a digit
-    n.replace( rx2, QString() );
-    if ( !capitalize )
-      n = n.replace( ' ', '_' );
-    return capitalize ? QgsStringUtils::capitalize( n, Qgis::Capitalization::UpperCamelCase ) : n;
-  };
-
-  auto uniqueSafeName = [ &safeName ]( const QString & name, bool capitalize, const QMap< QString, QString > &friendlyNames )->QString
+  auto uniqueSafeName = []( const QString & name, bool capitalize, const QMap< QString, QString > &friendlyNames )->QString
   {
     const QString base = safeName( name, capitalize );
     QString candidate = base;
@@ -564,8 +689,9 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
           if ( defClone->isDestination() )
           {
-            const QString &friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
-            friendlyOutputNames.insert( defClone->name(), friendlyName );
+            const QString uniqueChildName = defClone->metadata().value( QStringLiteral( "_modelChildId" ) ).toString() + ':' + defClone->metadata().value( QStringLiteral( "_modelChildOutputName" ) ).toString();
+            const QString friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
+            friendlyOutputNames.insert( uniqueChildName, friendlyName );
             defClone->setName( friendlyName );
           }
           else
@@ -899,7 +1025,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::StaticValue:
       case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
-    };
+    }
     variables.insert( safeName( name ), VariableDefinition( value, source, description ) );
   }
 
@@ -946,7 +1072,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
 
-    };
+    }
 
     if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
     {
@@ -961,7 +1087,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     if ( !layer )
       layer = QgsProcessingUtils::mapLayerFromString( value.toString(), context );
 
-    variables.insert( safeName( name ), VariableDefinition( QVariant::fromValue( layer ), source, description ) );
+    variables.insert( safeName( name ), VariableDefinition( QVariant::fromValue( QgsWeakMapLayerPointer( layer ) ), source, description ) );
     variables.insert( safeName( QStringLiteral( "%1_minx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMinimum() : QVariant(), source, QObject::tr( "Minimum X of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_miny" ).arg( name ) ), VariableDefinition( layer ? layer->extent().yMinimum() : QVariant(), source, QObject::tr( "Minimum Y of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_maxx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMaximum() : QVariant(), source, QObject::tr( "Maximum X of %1" ).arg( description ) ) );
@@ -1005,7 +1131,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
 
-    };
+    }
 
     QgsFeatureSource *featureSource = nullptr;
     if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
@@ -1265,6 +1391,21 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
   mOutputs.clear();
 
   // rebuild
+  QSet< QString > usedFriendlyNames;
+  auto uniqueSafeName = [&usedFriendlyNames ]( const QString & name )->QString
+  {
+    const QString base = safeName( name, false );
+    QString candidate = base;
+    int i = 1;
+    while ( usedFriendlyNames.contains( candidate ) )
+    {
+      i++;
+      candidate = QStringLiteral( "%1_%2" ).arg( base ).arg( i );
+    }
+    usedFriendlyNames.insert( candidate );
+    return candidate;
+  };
+
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
@@ -1286,7 +1427,20 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagHidden );
       if ( outputIt->isMandatory() )
         param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagOptional );
-      param->setName( outputIt->childId() + ':' + outputIt->name() );
+      if ( mInternalVersion != InternalVersion::Version1 && !outputIt->description().isEmpty() )
+      {
+        QString friendlyName = uniqueSafeName( outputIt->description() );
+        param->setName( friendlyName );
+      }
+      else
+      {
+        param->setName( outputIt->childId() + ':' + outputIt->name() );
+      }
+      // add some metadata so we can easily link this parameter back to the child source
+      param->metadata().insert( QStringLiteral( "_modelChildId" ), outputIt->childId() );
+      param->metadata().insert( QStringLiteral( "_modelChildOutputName" ), outputIt->name() );
+      param->metadata().insert( QStringLiteral( "_modelChildProvider" ), childIt->algorithm()->provider()->id() );
+
       param->setDescription( outputIt->description() );
       param->setDefaultValue( outputIt->defaultValue() );
 
@@ -1326,6 +1480,7 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   map.insert( QStringLiteral( "model_name" ), mModelName );
   map.insert( QStringLiteral( "model_group" ), mModelGroup );
   map.insert( QStringLiteral( "help" ), mHelpContent );
+  map.insert( QStringLiteral( "internal_version" ), qgsEnumValueToKey( mInternalVersion ) );
 
   QVariantMap childMap;
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
@@ -1374,6 +1529,8 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   mModelGroup = map.value( QStringLiteral( "model_group" ) ).toString();
   mModelGroupId = map.value( QStringLiteral( "model_group" ) ).toString();
   mHelpContent = map.value( QStringLiteral( "help" ) ).toMap();
+
+  mInternalVersion = qgsEnumKeyToValue( map.value( QStringLiteral( "internal_version" ) ).toString(), InternalVersion::Version1 );
 
   mVariables = map.value( QStringLiteral( "modelVariables" ) ).toMap();
   mDesignerParameterValues = map.value( QStringLiteral( "designerParameterValues" ) ).toMap();
@@ -1526,6 +1683,10 @@ bool QgsProcessingModelAlgorithm::fromFile( const QString &path )
 
     file.close();
   }
+  else
+  {
+    return false;
+  }
 
   QVariant props = QgsXmlUtils::readVariant( doc.firstChildElement() );
   return loadVariant( props );
@@ -1608,6 +1769,94 @@ void QgsProcessingModelAlgorithm::removeModelParameter( const QString &name )
 {
   removeParameter( name );
   mParameterComponents.remove( name );
+}
+
+void QgsProcessingModelAlgorithm::changeParameterName( const QString &oldName, const QString &newName )
+{
+  QgsProcessingContext context;
+  QgsExpressionContext expressionContext = createExpressionContext( QVariantMap(), context );
+
+  auto replaceExpressionVariable = [oldName, newName, &expressionContext]( const QString & expressionString ) -> std::tuple< bool, QString >
+  {
+    QgsExpression expression( expressionString );
+    expression.prepare( &expressionContext );
+    QSet<QString> variables = expression.referencedVariables();
+    if ( variables.contains( oldName ) )
+    {
+      QString newExpression = expressionString;
+      newExpression.replace( QStringLiteral( "@%1" ).arg( oldName ), QStringLiteral( "@%2" ).arg( newName ) );
+      return { true, newExpression };
+    }
+    return { false, QString() };
+  };
+
+  QMap< QString, QgsProcessingModelChildAlgorithm >::iterator childIt = mChildAlgorithms.begin();
+  for ( ; childIt != mChildAlgorithms.end(); ++childIt )
+  {
+    bool changed = false;
+    QMap<QString, QgsProcessingModelChildParameterSources> childParams = childIt->parameterSources();
+    QMap<QString, QgsProcessingModelChildParameterSources>::iterator paramIt = childParams.begin();
+    for ( ; paramIt != childParams.end(); ++paramIt )
+    {
+      QList< QgsProcessingModelChildParameterSource > &value = paramIt.value();
+      for ( auto valueIt = value.begin(); valueIt != value.end(); ++valueIt )
+      {
+        switch ( valueIt->source() )
+        {
+          case QgsProcessingModelChildParameterSource::ModelParameter:
+          {
+            if ( valueIt->parameterName() == oldName )
+            {
+              valueIt->setParameterName( newName );
+              changed = true;
+            }
+            break;
+          }
+
+          case QgsProcessingModelChildParameterSource::Expression:
+          {
+            bool updatedExpression = false;
+            QString newExpression;
+            std::tie( updatedExpression, newExpression ) = replaceExpressionVariable( valueIt->expression() );
+            if ( updatedExpression )
+            {
+              valueIt->setExpression( newExpression );
+              changed = true;
+            }
+            break;
+          }
+
+          case QgsProcessingModelChildParameterSource::StaticValue:
+          {
+            if ( valueIt->staticValue().canConvert< QgsProperty >() )
+            {
+              QgsProperty property = valueIt->staticValue().value< QgsProperty >();
+              if ( property.propertyType() == QgsProperty::ExpressionBasedProperty )
+              {
+                bool updatedExpression = false;
+                QString newExpression;
+                std::tie( updatedExpression, newExpression ) = replaceExpressionVariable( property.expressionString() );
+                if ( updatedExpression )
+                {
+                  property.setExpressionString( newExpression );
+                  valueIt->setStaticValue( property );
+                  changed = true;
+                }
+              }
+            }
+            break;
+          }
+
+          case QgsProcessingModelChildParameterSource::ChildOutput:
+          case QgsProcessingModelChildParameterSource::ExpressionText:
+          case QgsProcessingModelChildParameterSource::ModelOutput:
+            break;
+        }
+      }
+    }
+    if ( changed )
+      childIt->setParameterSources( childParams );
+  }
 }
 
 bool QgsProcessingModelAlgorithm::childAlgorithmsDependOnParameter( const QString &name ) const
@@ -1929,6 +2178,18 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   alg->setProvider( provider() );
   alg->setSourceFilePath( sourceFilePath() );
   return alg;
+}
+
+QString QgsProcessingModelAlgorithm::safeName( const QString &name, bool capitalize )
+{
+  QString n = name.toLower().trimmed();
+  const thread_local QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
+  n.replace( rx, QString() );
+  const thread_local QRegularExpression rx2( QStringLiteral( "^\\d*" ) ); // name can't start in a digit
+  n.replace( rx2, QString() );
+  if ( !capitalize )
+    n = n.replace( ' ', '_' );
+  return capitalize ? QgsStringUtils::capitalize( n, Qgis::Capitalization::UpperCamelCase ) : n;
 }
 
 QVariantMap QgsProcessingModelAlgorithm::variables() const

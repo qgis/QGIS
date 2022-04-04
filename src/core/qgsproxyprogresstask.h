@@ -43,7 +43,7 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
     /**
      * Constructor for QgsProxyProgressTask, with the specified \a description.
      */
-    QgsProxyProgressTask( const QString &description );
+    QgsProxyProgressTask( const QString &description, bool canCancel = false );
 
     /**
      * Finalizes the task, with the specified \a result.
@@ -61,6 +61,17 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
      * This method is safe to call from the main thread.
      */
     void setProxyProgress( double progress );
+
+    void cancel() override;
+
+  signals:
+
+    /**
+     * Emitted when the task is canceled.
+     *
+     * \since QGIS 3.26
+     */
+    void canceled();
 
   private:
 

@@ -16,8 +16,9 @@ import os
 from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsMapSettings,
-                       QgsSnappingUtils,
                        QgsSnappingConfig,
+                       QgsSnappingUtils,
+                       Qgis,
                        QgsTolerance,
                        QgsRectangle,
                        QgsPointXY,
@@ -110,10 +111,10 @@ class TestLayerDependencies(unittest.TestCase):
         u.setMapSettings(ms)
         cfg = u.config()
         cfg.setEnabled(True)
-        cfg.setMode(QgsSnappingConfig.AdvancedConfiguration)
+        cfg.setMode(Qgis.SnappingMode.AdvancedConfiguration)
         cfg.setIndividualLayerSettings(self.pointsLayer,
                                        QgsSnappingConfig.IndividualLayerSettings(True,
-                                                                                 QgsSnappingConfig.VertexFlag, 20, QgsTolerance.Pixels, 0.0, 0.0))
+                                                                                 Qgis.SnappingType.Vertex, 20, QgsTolerance.Pixels, 0.0, 0.0))
         u.setConfig(cfg)
 
         m = u.snapToMap(QPoint(95, 100))
@@ -156,7 +157,7 @@ class TestLayerDependencies(unittest.TestCase):
         # test chained layer dependencies A -> B -> C
         cfg.setIndividualLayerSettings(self.pointsLayer2,
                                        QgsSnappingConfig.IndividualLayerSettings(True,
-                                                                                 QgsSnappingConfig.VertexFlag, 20, QgsTolerance.Pixels, 0.0, 0.0))
+                                                                                 Qgis.SnappingType.Vertex, 20, QgsTolerance.Pixels, 0.0, 0.0))
         u.setConfig(cfg)
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
         self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])
@@ -301,13 +302,13 @@ class TestLayerDependencies(unittest.TestCase):
         u.setMapSettings(ms)
         cfg = u.config()
         cfg.setEnabled(True)
-        cfg.setMode(QgsSnappingConfig.AdvancedConfiguration)
+        cfg.setMode(Qgis.SnappingMode.AdvancedConfiguration)
         cfg.setIndividualLayerSettings(self.pointsLayer,
                                        QgsSnappingConfig.IndividualLayerSettings(True,
-                                                                                 QgsSnappingConfig.VertexFlag, 20, QgsTolerance.Pixels, 0.0, 0.0))
+                                                                                 Qgis.SnappingType.Vertex, 20, QgsTolerance.Pixels, 0.0, 0.0))
         cfg.setIndividualLayerSettings(self.pointsLayer2,
                                        QgsSnappingConfig.IndividualLayerSettings(True,
-                                                                                 QgsSnappingConfig.VertexFlag, 20, QgsTolerance.Pixels, 0.0, 0.0))
+                                                                                 Qgis.SnappingType.Vertex, 20, QgsTolerance.Pixels, 0.0, 0.0))
         u.setConfig(cfg)
         # add another line
         f = QgsFeature(self.linesLayer.fields())

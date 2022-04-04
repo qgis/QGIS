@@ -19,7 +19,7 @@
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayerlabeling.h"
 
 #include <QtConcurrentRun>
@@ -49,8 +49,8 @@ void QgsMapRendererAbstractCustomPainterJob::preparePainter( QPainter *painter, 
   QPaintDevice *paintDevice = painter->device();
   const QString errMsg = QStringLiteral( "pre-set DPI not equal to painter's DPI (%1 vs %2)" )
                          .arg( paintDevice->logicalDpiX() )
-                         .arg( mSettings.outputDpi() * mSettings.devicePixelRatio() );
-  Q_ASSERT_X( qgsDoubleNear( paintDevice->logicalDpiX(), mSettings.outputDpi() * mSettings.devicePixelRatio(), 1.0 ),
+                         .arg( mSettings.outputDpi() );
+  Q_ASSERT_X( qgsDoubleNear( paintDevice->logicalDpiX(), mSettings.outputDpi(), 1.0 ),
               "Job::startRender()", errMsg.toLatin1().data() );
 #endif
 }
@@ -331,6 +331,7 @@ void QgsMapRendererCustomPainterJob::doRender()
     emit layerRendered( job.layerId );
   }
 
+  emit renderingLayersFinished();
   QgsDebugMsgLevel( QStringLiteral( "Done rendering map layers" ), 5 );
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) && !mLabelJob.context.renderingStopped() )

@@ -153,6 +153,11 @@ class QgsNetworkLoggerProxyModel : public QSortFilterProxyModel
      */
     void setShowTimeouts( bool show );
 
+    /**
+     * Sets whether requests served directly from cache are shown
+     */
+    void setShowCached( bool show );
+
   protected:
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
@@ -163,6 +168,7 @@ class QgsNetworkLoggerProxyModel : public QSortFilterProxyModel
     QString mFilterString;
     bool mShowSuccessful = true;
     bool mShowTimeouts = true;
+    bool mShowCached = true;
 };
 
 #endif // QGSNETWORKLOGGER_H

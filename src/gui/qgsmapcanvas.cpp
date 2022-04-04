@@ -93,6 +93,8 @@ email                : sherman at mrcc.com
 #include "qgsmaplayerutils.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsrendereditemresults.h"
+#include "qgstemporalnavigationobject.h"
+#include "qgssymbollayerutils.h"
 
 /**
  * \ingroup gui
@@ -208,6 +210,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
+
+  mSettings.setRendererUsage( Qgis::RendererUsage::View );
 
   setSceneRect( 0, 0, s.width(), s.height() );
   mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
@@ -403,6 +407,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
+      disconnect( vlayer, &QgsVectorLayer::rendererChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     }
   }
 
@@ -418,6 +423,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       connect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
+      connect( vlayer, &QgsVectorLayer::rendererChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     }
   }
 
@@ -479,9 +485,42 @@ void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 {
   if ( mController )
     disconnect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+  {
+    disconnect( temporalNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
+
+    // clear any existing animation settings from map settings. We don't do this on every render, as a 3rd party plugin
+    // might be in control of these!
+    mSettings.setFrameRate( -1 );
+    mSettings.setCurrentFrame( -1 );
+  }
 
   mController = controller;
   connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+    connect( temporalNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
+}
+
+void QgsMapCanvas::temporalControllerModeChanged()
+{
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+  {
+    switch ( temporalNavigationObject->navigationMode() )
+    {
+      case QgsTemporalNavigationObject::Animated:
+        mSettings.setFrameRate( temporalNavigationObject->framesPerSecond() );
+        mSettings.setCurrentFrame( temporalNavigationObject->currentFrameNumber() );
+        break;
+
+      case QgsTemporalNavigationObject::NavigationOff:
+      case QgsTemporalNavigationObject::FixedRange:
+        // clear any existing animation settings from map settings. We don't do this on every render, as a 3rd party plugin
+        // might be in control of these!
+        mSettings.setFrameRate( -1 );
+        mSettings.setCurrentFrame( -1 );
+        break;
+    }
+  }
 }
 
 const QgsTemporalController *QgsMapCanvas::temporalController() const
@@ -642,6 +681,23 @@ void QgsMapCanvas::refreshMap()
   stopPreviewJobs();
 
   mSettings.setExpressionContext( createExpressionContext() );
+
+  // if using the temporal controller in animation mode, get the frame settings from that
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = dynamic_cast < QgsTemporalNavigationObject * >( mController ) )
+  {
+    switch ( temporalNavigationObject->navigationMode() )
+    {
+      case QgsTemporalNavigationObject::Animated:
+        mSettings.setFrameRate( temporalNavigationObject->framesPerSecond() );
+        mSettings.setCurrentFrame( temporalNavigationObject->currentFrameNumber() );
+        break;
+
+      case QgsTemporalNavigationObject::NavigationOff:
+      case QgsTemporalNavigationObject::FixedRange:
+        break;
+    }
+  }
+
   mSettings.setPathResolver( QgsProject::instance()->pathResolver() );
 
   if ( !mTheme.isEmpty() )
@@ -725,14 +781,7 @@ void QgsMapCanvas::rendererJobFinished()
 
   mMapUpdateTimer.stop();
 
-  // TODO: would be better to show the errors in message bar
-  const auto constErrors = mJob->errors();
-  for ( const QgsMapRendererJob::Error &error : constErrors )
-  {
-    QgsMapLayer *layer = QgsProject::instance()->mapLayer( error.layerID );
-    emit renderErrorOccurred( error.message, layer );
-    QgsMessageLog::logMessage( error.layerID + " :: " + error.message, tr( "Rendering" ) );
-  }
+  notifyRendererErrors( mJob->errors() );
 
   if ( !mJobCanceled )
   {
@@ -893,16 +942,44 @@ void QgsMapCanvas::clearTemporalCache()
 {
   if ( mCache )
   {
+    bool invalidateLabels = false;
     const QList<QgsMapLayer *> layerList = mapSettings().layers();
     for ( QgsMapLayer *layer : layerList )
     {
+      bool alreadyInvalidatedThisLayer = false;
+      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
+      {
+        if ( vl->renderer() && QgsSymbolLayerUtils::rendererFrameRate( vl->renderer() ) > -1 )
+        {
+          // layer has an animated symbol assigned, so we have to redraw it regardless of whether
+          // or not it has temporal settings
+          mCache->invalidateCacheForLayer( layer );
+          alreadyInvalidatedThisLayer = true;
+          // we can't shortcut and "continue" here, as we still need to check whether the layer
+          // will cause label invalidation using the logic below
+        }
+      }
+
       if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
       {
+        if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
+        {
+          if ( vl->labelsEnabled() || vl->diagramsEnabled() )
+            invalidateLabels = true;
+        }
+
         if ( layer->temporalProperties()->flags() & QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges )
           continue;
 
-        mCache->invalidateCacheForLayer( layer );
+        if ( !alreadyInvalidatedThisLayer )
+          mCache->invalidateCacheForLayer( layer );
       }
+    }
+
+    if ( invalidateLabels )
+    {
+      mCache->clearCacheImage( QStringLiteral( "_labels_" ) );
+      mCache->clearCacheImage( QStringLiteral( "_preview_labels_" ) );
     }
   }
 }
@@ -911,16 +988,29 @@ void QgsMapCanvas::clearElevationCache()
 {
   if ( mCache )
   {
+    bool invalidateLabels = false;
     const QList<QgsMapLayer *> layerList = mapSettings().layers();
     for ( QgsMapLayer *layer : layerList )
     {
       if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
       {
+        if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
+        {
+          if ( vl->labelsEnabled() || vl->diagramsEnabled() )
+            invalidateLabels = true;
+        }
+
         if ( layer->elevationProperties()->flags() & QgsMapLayerElevationProperties::FlagDontInvalidateCachedRendersWhenRangeChanges )
           continue;
 
         mCache->invalidateCacheForLayer( layer );
       }
+    }
+
+    if ( invalidateLabels )
+    {
+      mCache->clearCacheImage( QStringLiteral( "_labels_" ) );
+      mCache->clearCacheImage( QStringLiteral( "_preview_labels_" ) );
     }
   }
 }
@@ -936,7 +1026,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 
   auto addCoordinateFormat = [ &, this]( const QString identifier, const QgsCoordinateReferenceSystem & crs )
   {
-    QgsCoordinateTransform ct( mSettings.destinationCrs(), crs, mSettings.transformContext() );
+    const QgsCoordinateTransform ct( mSettings.destinationCrs(), crs, mSettings.transformContext() );
     try
     {
       const QgsPointXY transformedPoint = ct.transform( mapPoint );
@@ -945,7 +1035,9 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
       int displayPrecision = 0;
       try
       {
-        QgsRectangle extentReproj = ct.transformBoundingBox( extent() );
+        QgsCoordinateTransform extentTransform = ct;
+        extentTransform.setBallparkTransformsAreAppropriate( true );
+        QgsRectangle extentReproj = extentTransform.transformBoundingBox( extent() );
         const double mapUnitsPerPixel = ( extentReproj.width() / width() + extentReproj.height() / height() ) * 0.5;
         if ( mapUnitsPerPixel > 10 )
           displayPrecision = 0;
@@ -1038,6 +1130,29 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
   menu.exec( event->globalPos() );
 }
 
+void QgsMapCanvas::notifyRendererErrors( const QgsMapRendererJob::Errors &errors )
+{
+  const QDateTime currentTime = QDateTime::currentDateTime();
+
+  // remove errors too old
+  for ( const QgsMapRendererJob::Error &error : errors )
+  {
+    const QString errorKey = error.layerID + ':' + error.message;
+    if ( mRendererErrors.contains( errorKey ) )
+    {
+      const QDateTime sameErrorTime = mRendererErrors.value( errorKey );
+
+      if ( sameErrorTime.secsTo( currentTime ) < 60 )
+        continue;
+    }
+
+    mRendererErrors[errorKey] = currentTime;
+
+    if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( error.layerID ) )
+      emit renderErrorOccurred( error.message, layer );
+  }
+}
+
 void QgsMapCanvas::updateDevicePixelFromScreen()
 {
   mSettings.setDevicePixelRatio( devicePixelRatio() );
@@ -1045,12 +1160,16 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
   if ( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() )
   {
     if ( window()->windowHandle() )
+    {
       mSettings.setOutputDpi( window()->windowHandle()->screen()->physicalDotsPerInch() );
+      mSettings.setDpiTarget( window()->windowHandle()->screen()->physicalDotsPerInch() );
+    }
   }
   else
   {
     // Fallback: compatibility with QGIS <= 3.20; always assume low dpi screens
     mSettings.setOutputDpi( window()->windowHandle()->screen()->logicalDotsPerInch() );
+    mSettings.setDpiTarget( window()->windowHandle()->screen()->logicalDotsPerInch() );
   }
 }
 
@@ -1290,7 +1409,8 @@ bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
   if ( extent.crs() != mapSettings().destinationCrs() )
   {
     QgsCoordinateTransform ct( extent.crs(), mapSettings().destinationCrs(), QgsProject::instance() );
-    canvasExtent = ct.transform( extent );
+    ct.setBallparkTransformsAreAppropriate( true );
+    canvasExtent = ct.transformBoundingBox( extent );
 
     if ( canvasExtent.isEmpty() )
     {
@@ -2554,8 +2674,28 @@ void QgsMapCanvas::updateAutoRefreshTimer()
   const auto layers = mSettings.layers();
   for ( QgsMapLayer *layer : layers )
   {
+    int layerRefreshInterval = 0;
+
     if ( layer->hasAutoRefreshEnabled() && layer->autoRefreshInterval() > 0 )
-      minAutoRefreshInterval = minAutoRefreshInterval > 0 ? std::min( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
+    {
+      layerRefreshInterval = layer->autoRefreshInterval();
+    }
+    else if ( QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( layer ) )
+    {
+      if ( const QgsFeatureRenderer *renderer = vectorLayer->renderer() )
+      {
+        const double rendererRefreshRate = QgsSymbolLayerUtils::rendererFrameRate( renderer );
+        if ( rendererRefreshRate > 0 )
+        {
+          layerRefreshInterval = 1000 / rendererRefreshRate;
+        }
+      }
+    }
+
+    if ( layerRefreshInterval == 0 )
+      continue;
+
+    minAutoRefreshInterval = minAutoRefreshInterval > 0 ? std::min( layerRefreshInterval, minAutoRefreshInterval ) : layerRefreshInterval;
   }
 
   if ( minAutoRefreshInterval > 0 )
@@ -2626,7 +2766,12 @@ void QgsMapCanvas::panAction( QMouseEvent *e )
 
   QgsPointXY currentMapPoint = getCoordinateTransform()->toMapCoordinates( e->pos() );
   QgsPointXY startMapPoint = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
-  emit panDistanceBearingChanged( mDa.measureLine( currentMapPoint, startMapPoint ), mDa.lengthUnits(), mDa.bearing( currentMapPoint, startMapPoint ) * 180 / M_PI );
+  try
+  {
+    emit panDistanceBearingChanged( mDa.measureLine( currentMapPoint, startMapPoint ), mDa.lengthUnits(), mDa.bearing( currentMapPoint, startMapPoint ) * 180 / M_PI );
+  }
+  catch ( QgsCsException & )
+  {}
 
   // move all map canvas items
   moveCanvasContents();

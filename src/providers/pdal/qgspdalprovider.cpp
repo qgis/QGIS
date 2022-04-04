@@ -162,6 +162,11 @@ void QgsPdalProvider::onGenerateIndexFailed()
   // this may be already canceled task that we don't care anymore...
   if ( task == mRunningIndexingTask )
   {
+    QString error = task->errorMessage();
+    if ( !error.isEmpty() )
+    {
+      appendError( error );
+    }
     mRunningIndexingTask = nullptr;
     emit indexGenerationStateChanged( PointCloudIndexGenerationState::NotIndexed );
   }
@@ -300,7 +305,12 @@ QVariantMap QgsPdalProviderMetadata::decodeUri( const QString &uri ) const
 int QgsPdalProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo fi( filePath );
+
+  if ( filePath.endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    return 0;
+
   if ( fi.suffix().compare( QLatin1String( "las" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "laz" ), Qt::CaseInsensitive ) == 0 )
     return 100;
 
@@ -310,8 +320,9 @@ int QgsPdalProviderMetadata::priorityForUri( const QString &uri ) const
 QList<QgsMapLayerType> QgsPdalProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-  if ( fi.suffix().compare( QLatin1String( "las" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "laz" ), Qt::CaseInsensitive ) == 0 )
+  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo fi( filePath );
+  if ( fi.suffix().compare( QLatin1String( "las" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "laz" ), Qt::CaseInsensitive ) == 0 || filePath.endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
     return QList<QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
 
   return QList<QgsMapLayerType>();
@@ -320,8 +331,10 @@ QList<QgsMapLayerType> QgsPdalProviderMetadata::validLayerTypesForUri( const QSt
 QList<QgsProviderSublayerDetails> QgsPdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-  if ( fi.suffix().compare( QLatin1String( "las" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "laz" ), Qt::CaseInsensitive ) == 0 )
+  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo fi( filePath );
+
+  if ( fi.suffix().compare( QLatin1String( "las" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "laz" ), Qt::CaseInsensitive ) == 0 || filePath.endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
   {
     QgsProviderSublayerDetails details;
     details.setUri( uri );

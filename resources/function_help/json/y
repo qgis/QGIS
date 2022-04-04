@@ -3,8 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the y coordinate of a point geometry, or the y coordinate of the centroid for a non-point geometry.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"}],
-  "examples": [ { "expression":"y( geom_from_wkt( 'POINT(2 5)' ) )", "returns":"5"},
-  { "expression":"y( $geometry )", "returns":"y coordinate of the current feature's centroid"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "y( geom_from_wkt( 'POINT(2 5)' ) )",
+    "returns": "5"
+  }, {
+    "expression": "y( $geometry )",
+    "returns": "y coordinate of the current feature's centroid"
+  }],
+  "tags": ["centroid", "point", "coordinate"]
 }

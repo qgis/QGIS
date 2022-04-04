@@ -15,9 +15,12 @@ __revision__ = '$Format:%H$'
 
 import os
 import shutil
+from osgeo import gdal  # NOQA
+
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
-from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.core import (
+    Qgis,
     QgsWkbTypes,
     QgsAbstractDatabaseProviderConnection,
     QgsProviderConnectionException,
@@ -26,11 +29,19 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsFields,
     QgsCoordinateReferenceSystem,
+    QgsRangeFieldDomain,
+    QgsGlobFieldDomain,
+    QgsCodedFieldDomain,
+    QgsCodedValue
 )
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
 class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnectionBase):
@@ -64,6 +75,11 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         cls.temp_dir = QTemporaryDir()
         cls.gpkg_path = '{}/test_project_wms_grouped_layers.gpkg'.format(cls.temp_dir.path())
         shutil.copy(gpkg_original_path, cls.gpkg_path)
+
+        gpkg_domains_original_path = '{}/domains.gpkg'.format(TEST_DATA_DIR)
+        cls.gpkg_domains_path = '{}/domains.gpkg'.format(cls.temp_dir.path())
+        shutil.copy(gpkg_domains_original_path, cls.gpkg_domains_path)
+
         vl = QgsVectorLayer('{}|layername=cdb_lines'.format(cls.gpkg_path), 'test', 'ogr')
         assert vl.isValid()
         cls.uri = cls.gpkg_path
@@ -73,7 +89,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
 
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
         vl = QgsVectorLayer('{}|layername=cdb_lines'.format(self.gpkg_path), 'test', 'ogr')
-        conn = md.createConnection(vl.dataProvider().uri().uri(), {})
+        conn = md.createConnection(vl.dataProvider().dataSourceUri(), {})
         self.assertEqual(conn.uri(), self.gpkg_path)
 
     def test_gpkg_table_uri(self):
@@ -141,6 +157,132 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         self.assertIn(table_info.geometryColumn(), fields.names())
         self.assertIn(table_info.primaryKeyColumns()[0], fields.names())
         self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name', 'ortsrat', 'id_long', 'geom'])
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 5, 0), "GDAL 3.5 required")
+    def test_gpkg_field_domain_names(self):
+        """
+        Test retrieving field domain names
+        """
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(self.gpkg_domains_path, {})
+
+        domain_names = conn.fieldDomainNames()
+        self.assertCountEqual(domain_names, ['enum_domain',
+                                             'glob_domain',
+                                             'range_domain_int',
+                                             'range_domain_int64',
+                                             'range_domain_real',
+                                             'range_domain_real_inf'])
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0), "GDAL 3.3 required")
+    def test_gpkg_field_domain(self):
+        """
+        Test retrieving field domain
+        """
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(self.gpkg_domains_path, {})
+
+        domain = conn.fieldDomain('enum_domain')
+        self.assertEqual(domain.type(), Qgis.FieldDomainType.Coded)
+        self.assertEqual(domain.name(), 'enum_domain')
+
+        domain = conn.fieldDomain('range_domain_int')
+        self.assertEqual(domain.type(), Qgis.FieldDomainType.Range)
+        self.assertEqual(domain.name(), 'range_domain_int')
+        self.assertEqual(domain.minimum(), 1)
+        self.assertEqual(domain.maximum(), 2)
+
+        domain = conn.fieldDomain('glob_domain')
+        self.assertEqual(domain.type(), Qgis.FieldDomainType.Glob)
+        self.assertEqual(domain.name(), 'glob_domain')
+        self.assertEqual(domain.glob(), '*')
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0), "GDAL 3.3 required")
+    def test_gpkg_field_domain_create(self):
+        """
+        Test creating field domains
+        """
+        gpkg_domains_original_path = '{}/domains.gpkg'.format(TEST_DATA_DIR)
+        temp_domains_path = '{}/domains_create.gpkg'.format(self.temp_dir.path())
+        shutil.copy(gpkg_domains_original_path, temp_domains_path)
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(temp_domains_path, {})
+
+        domain = QgsRangeFieldDomain('my new domain', 'my new domain desc', QVariant.Int, 5, True, 15, True)
+        conn.addFieldDomain(domain, '')
+
+        # try retrieving result
+        del conn
+        conn = md.createConnection(temp_domains_path, {})
+
+        res = conn.fieldDomain('my new domain')
+        self.assertEqual(res.type(), Qgis.FieldDomainType.Range)
+        self.assertEqual(res.name(), 'my new domain')
+
+        self.assertEqual(res.minimum(), 5)
+        self.assertEqual(res.maximum(), 15)
+
+        # try adding another with a duplicate name, should fail
+        with self.assertRaises(QgsProviderConnectionException) as e:
+            conn.addFieldDomain(domain, '')
+        self.assertEqual(str(e.exception), 'Could not create field domain: A domain of identical name already exists')
+
+        domain = QgsGlobFieldDomain('my new glob domain', 'my new glob desc', QVariant.String, '*aaabc*')
+        conn.addFieldDomain(domain, '')
+
+        # try retrieving result
+        del conn
+        conn = md.createConnection(temp_domains_path, {})
+
+        res = conn.fieldDomain('my new glob domain')
+        self.assertEqual(res.type(), Qgis.FieldDomainType.Glob)
+        self.assertEqual(res.name(), 'my new glob domain')
+        self.assertEqual(res.description(), 'my new glob desc')
+        self.assertEqual(res.glob(), '*aaabc*')
+
+        # coded value
+        domain = QgsCodedFieldDomain('my new coded domain', 'my new coded desc', QVariant.String, [QgsCodedValue('a', 'aa'), QgsCodedValue('b', 'bb')])
+        conn.addFieldDomain(domain, '')
+
+        # try retrieving result
+        del conn
+        conn = md.createConnection(temp_domains_path, {})
+
+        res = conn.fieldDomain('my new coded domain')
+        self.assertEqual(res.type(), Qgis.FieldDomainType.Coded)
+        self.assertEqual(res.name(), 'my new coded domain')
+        self.assertEqual(res.description(), 'my new coded desc')
+        self.assertCountEqual(res.values(), [QgsCodedValue('a', 'aa'), QgsCodedValue('b', 'bb')])
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0), "GDAL 3.3 required")
+    def test_gpkg_field_domain_set(self):
+        """
+        Test setting field domains
+        """
+        gpkg_domains_original_path = '{}/bug_17878.gpkg'.format(TEST_DATA_DIR)
+        temp_domains_path = '{}/domain_set.gpkg'.format(self.temp_dir.path())
+        shutil.copy(gpkg_domains_original_path, temp_domains_path)
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(temp_domains_path, {})
+
+        domain = QgsRangeFieldDomain('my new domain', 'my new domain desc', QVariant.Int, 5, True, 15, True)
+        conn.addFieldDomain(domain, '')
+
+        # field doesn't exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.setFieldDomainName('xxx', '', 'bug_17878', 'my new domain')
+
+        conn.setFieldDomainName('int_field', '', 'bug_17878', 'my new domain')
+
+        # try retrieving result
+        del conn
+        conn = md.createConnection(temp_domains_path, {})
+
+        fields = conn.fields('', 'bug_17878')
+        field = fields.field('int_field')
+        self.assertEqual(field.constraints().domainName(), 'my new domain')
 
     def test_create_vector_layer(self):
         """Test query layers"""

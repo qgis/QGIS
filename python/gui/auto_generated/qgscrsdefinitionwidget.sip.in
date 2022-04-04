@@ -1,0 +1,105 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscrsdefinitionwidget.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsCrsDefinitionWidget : QWidget
+{
+%Docstring(signature="appended")
+A widget for definition a custom coordinate reference system.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgscrsdefinitionwidget.h"
+%End
+  public:
+
+    QgsCrsDefinitionWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCrsDefinitionWidget, with the specified ``parent`` widget.
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the current CRS as defined in the widget.
+
+An invalid CRS may be returned if no CRS is defined in the widget.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the current ``crs`` to display in the widget.
+
+.. seealso:: :py:func:`crs`
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs, Qgis::CrsDefinitionFormat nativeFormat );
+%Docstring
+Sets the current ``crs`` to display in the widget.
+
+The ``nativeFormat`` argument specifies the format (e.g. WKT or PROJ) is natively associated
+with the custom CRS.
+
+.. seealso:: :py:func:`crs`
+%End
+
+    Qgis::CrsDefinitionFormat format() const;
+%Docstring
+Returns the selected CRS format.
+
+.. seealso:: :py:func:`setFormat`
+%End
+
+    void setFormat( Qgis::CrsDefinitionFormat format );
+%Docstring
+Sets the CRS ``format``.
+
+.. seealso:: :py:func:`format`
+%End
+
+    QString definitionString() const;
+%Docstring
+Returns the current definition string.
+
+This represents the unaltered user-entered definition string, which may represent
+either a WKT or PROJ string (see :py:func:`~QgsCrsDefinitionWidget.format`), and may not represent a valid CRS definition.
+
+.. seealso:: :py:func:`setDefinitionString`
+%End
+
+    void setDefinitionString( const QString &definition );
+%Docstring
+Sets the current ``definition`` string.
+
+This represents the unaltered user-entered definition string, which may represent
+either a WKT or PROJ string (see :py:func:`~QgsCrsDefinitionWidget.format`), and may not represent a valid CRS definition.
+
+.. seealso:: :py:func:`definitionString`
+%End
+
+  signals:
+
+    void crsChanged();
+%Docstring
+Emitted when the CRS defined in the widget is changed.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscrsdefinitionwidget.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

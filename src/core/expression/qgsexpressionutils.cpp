@@ -17,6 +17,7 @@
 #include "qgsexpressionnode.h"
 #include "qgsvectorlayer.h"
 #include "qgscolorrampimpl.h"
+#include "qgsproviderregistry.h"
 
 ///@cond PRIVATE
 
@@ -47,6 +48,26 @@ QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpr
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to gradient ramp" ).arg( value.toString() ) );
 
   return QgsGradientColorRamp();
+}
+
+QString QgsExpressionUtils::getFilePathValue( const QVariant &value, QgsExpression *parent )
+{
+  // if it's a map layer, return the file path of that layer...
+  QString res;
+  if ( QgsMapLayer *layer = getMapLayer( value, parent ) )
+  {
+    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+    res = parts.value( QStringLiteral( "path" ) ).toString();
+  }
+
+  if ( res.isEmpty() )
+    res = value.toString();
+
+  if ( res.isEmpty() && !value.isNull() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert value to a file path" ) );
+  }
+  return res;
 }
 
 ///@endcond

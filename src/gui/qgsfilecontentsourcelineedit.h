@@ -199,6 +199,7 @@ class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSou
     {
       Svg, //!< SVG image
       Image, //!< Raster image
+      AnimatedImage, //!< Animated image (since QGIS 3.26)
     };
 
     /**
@@ -284,6 +285,31 @@ class GUI_EXPORT QgsImageSourceLineEdit : public QgsPictureSourceLineEditBase
      */
     QgsImageSourceLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr )
       : QgsPictureSourceLineEditBase( Image, parent )
+    {}
+};
+
+
+/**
+ * \ingroup gui
+ * \class QgsAnimatedImageSourceLineEdit
+ * \brief A line edit widget with toolbutton for setting an animated raster image path.
+ *
+ * Designed for use with QgsImageCache.
+ *
+ * \see QgsImageSourceLineEdit
+ *
+ * \since QGIS 3.26
+ */
+class GUI_EXPORT QgsAnimatedImageSourceLineEdit : public QgsPictureSourceLineEditBase
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsAnimatedImageSourceLineEdit, with the specified \a parent widget.
+     */
+    QgsAnimatedImageSourceLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsPictureSourceLineEditBase( AnimatedImage, parent )
     {}
 };
 

@@ -184,12 +184,23 @@ class CORE_EXPORT QgsPointCloudRenderContext
     {
       switch ( type )
       {
+        case QgsPointCloudAttribute::UChar:
         case QgsPointCloudAttribute::Char:
           value = *( data + offset );
           return;
 
+        case QgsPointCloudAttribute::UInt32:
+          value = *reinterpret_cast< const quint32 * >( data + offset );
+          return;
         case QgsPointCloudAttribute::Int32:
           value = *reinterpret_cast< const qint32 * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::UInt64:
+          value = *reinterpret_cast< const quint64 * >( data + offset );
+          return;
+        case QgsPointCloudAttribute::Int64:
+          value = *reinterpret_cast< const qint64 * >( data + offset );
           return;
 
         case QgsPointCloudAttribute::Short:
@@ -270,6 +281,17 @@ class CORE_EXPORT QgsPointCloudRenderer
     {
       Square, //!< Renders points as squares
       Circle, //!< Renders points as circles
+    };
+
+    /**
+     * Pointcloud rendering order for 2d views
+     * /since QGIS 3.24
+     */
+    enum class DrawOrder : int
+    {
+      Default, //!< Draw points in the order they are stored
+      BottomToTop, //!< Draw points with larger Z values last
+      TopToBottom, //!< Draw points with larger Z values first
     };
 
     /**
@@ -437,6 +459,22 @@ class CORE_EXPORT QgsPointCloudRenderer
     const QgsMapUnitScale &pointSizeMapUnitScale() const { return mPointSizeMapUnitScale; }
 
     /**
+     * Returns the drawing order used by the renderer for drawing points.
+     *
+     * \see setDrawOrder2d()
+     * \since QGIS 3.24
+     */
+    DrawOrder drawOrder2d() const;
+
+    /**
+     * Sets the drawing \a order used by the renderer for drawing points.
+     *
+     * \see drawOrder2d()
+     * \since QGIS 3.24
+     */
+    void setDrawOrder2d( DrawOrder order );
+
+    /**
      * Returns the symbol used by the renderer for drawing points.
      *
      * \see setPointSymbol()
@@ -592,6 +630,7 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     PointSymbol mPointSymbol = Square;
     int mPainterPenWidth = 1;
+    DrawOrder mDrawOrder2d = DrawOrder::Default;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

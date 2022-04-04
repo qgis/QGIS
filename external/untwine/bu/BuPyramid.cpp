@@ -24,21 +24,23 @@ BuPyramid::BuPyramid(BaseInfo& common) : m_b(common), m_manager(m_b)
 {}
 
 
-void BuPyramid::run(const Options& options, ProgressWriter& progress)
+void BuPyramid::run(ProgressWriter& progress)
 {
-    m_b.inputDir = options.tempDir;
-    m_b.outputDir = options.outputDir;
-    m_b.stats = options.stats;
-
     getInputFiles();
     size_t count = queueWork();
-    
+
     progress.setPercent(.6);
     progress.setIncrement(.4 / count);
     m_manager.setProgress(&progress);
+    //ABELL - Not sure why this was being run in a separate thread. The current thread
+    // would block in join() anyway.
+    /**
     std::thread runner(&PyramidManager::run, &m_manager);
     runner.join();
-    writeInfo();
+    **/
+    m_manager.run();
+    if (!m_b.opts.singleFile)
+        writeInfo();
 }
 
 
@@ -61,14 +63,15 @@ void BuPyramid::writeInfo()
         }
     };
 
-    std::ofstream out(m_b.outputDir + "/ept.json");
+    std::ofstream out(m_b.opts.outputName + "/ept.json");
+    int maxdigits = std::numeric_limits<double>::max_digits10;
 
     out << "{\n";
 
     pdal::BOX3D& b = m_b.bounds;
 
     // Set fixed output for bounds output to get sufficient precision.
-    out << std::fixed;
+    out << std::fixed << std::setprecision(maxdigits);
     out << "\"bounds\": [" <<
         b.minx << ", " << b.miny << ", " << b.minz << ", " <<
         b.maxx << ", " << b.maxy << ", " << b.maxz << "],\n";
@@ -93,14 +96,16 @@ void BuPyramid::writeInfo()
         out << "\t{";
             out << "\"name\": \"" << fdi.name << "\", ";
             out << "\"type\": \"" << typeString(pdal::Dimension::base(fdi.type)) << "\", ";
+            out << std::fixed << std::setprecision(maxdigits);
             if (fdi.name == "X")
                 out << "\"scale\": " << m_b.scale[0] << ", \"offset\": " << m_b.offset[0] << ", ";
             if (fdi.name == "Y")
                 out << "\"scale\": " << m_b.scale[1] << ", \"offset\": " << m_b.offset[1] << ", ";
             if (fdi.name == "Z")
                 out << "\"scale\": " << m_b.scale[2] << ", \"offset\": " << m_b.offset[2] << ", ";
+            out << std::defaultfloat;
             out << "\"size\": " << pdal::Dimension::size(fdi.type);
-            const Stats *stats = m_manager.stats(fdi.name);
+            const Stats *stats = m_manager.stats(fdi.dim);
             if (stats)
             {
                 const Stats::EnumMap& v = stats->values();
@@ -118,11 +123,13 @@ void BuPyramid::writeInfo()
                     out << "], ";
                 }
                 out << "\"count\": " << m_manager.totalPoints() << ", ";
+                out << std::fixed << std::setprecision(maxdigits);
                 out << "\"maximum\": " << stats->maximum() << ", ";
                 out << "\"minimum\": " << stats->minimum() << ", ";
                 out << "\"mean\": " << stats->average() << ", ";
                 out << "\"stddev\": " << stats->stddev() << ", ";
                 out << "\"variance\": " << stats->variance();
+                out << std::defaultfloat;
             }
         out << "}";
         if (di + 1 != m_b.dimInfo.end())
@@ -157,7 +164,7 @@ void BuPyramid::getInputFiles()
         return std::make_pair(true, VoxelKey(x, y, z, level));
     };
 
-    std::vector<std::string> files = pdal::FileUtils::directoryList(m_b.inputDir);
+    std::vector<std::string> files = pdal::FileUtils::directoryList(m_b.opts.tempDir);
 
     VoxelKey root;
     for (std::string file : files)

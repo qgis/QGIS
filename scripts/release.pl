@@ -137,9 +137,6 @@ if( $domajor ) {
 my $splashwidth;
 unless( defined $dopoint ) {
 	pod2usage("Splash images/splash/splash-$newmajor.$newminor.png not found") unless -r "images/splash/splash-$newmajor.$newminor.png";
-	pod2usage("NSIS image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png not found") unless -r "ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png";
-	my $welcomeformat = `identify -format '%wx%h %m' ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png`;
-	pod2usage("NSIS Image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png mis-sized [$welcomeformat vs. 164x314 BMP3]") unless $welcomeformat =~ /^164x314 /;
 }
 
 print "Last pull rebase...\n";
@@ -184,7 +181,6 @@ unless( defined $dopoint ) {
 	run( "perl -i -pe 's/qgis-dev-deps/qgis-ltr-deps/;' INSTALL.md", "could not update osgeo4w deps package" ) if $doltr;
 	run( "perl -i -pe 's/qgis-dev-deps/qgis-rel-deps/;' INSTALL.md", "could not update osgeo4w deps package" ) unless $doltr;
 	run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
-	run( "convert -resize 164x314 ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png BMP3:ms-windows/Installer-Files/WelcomeFinishPage.bmp", "installer bitmap switch failed" );
 	run( "git commit -n -a -m 'Release of $release ($newreleasename)'", "release commit failed" );
 	run( "git tag $reltag -m 'Version $release'", "release tag failed" );
 	run( "for i in \$(seq 20); do tx push -s -b $relbranch && exit 0; echo \"Retry \$i/20...\"; done; exit 1", "push translation for $relbranch branch" );
@@ -236,6 +232,7 @@ my $topush = join(" ", @topush);
 print "Push dry-run...\n";
 run( "git push -n --follow-tags origin $topush", "push dry run failed" );
 print "Now manually push and upload the tar balls:\n\tgit push --follow-tags origin $topush\n\trsync qgis-$version.tar.bz2* ssh.qgis.org:/var/www/downloads/\n";
+print "Update version-ltr.txt rewrite rule on website\n" if $doltr;
 unless($dopoint) {
 	print "Create new transifex branch and push the translations.\n";
 	print "Update the versions and release name in release spreadsheet.\n";
@@ -264,8 +261,7 @@ release.pl {{-major|-minor [-premajor]} [-skipts] -releasename=releasename|-poin
 			a major release
 
   Major and minor releases also require a new splash screen
-  images/splash/splash-M.N.png and bitmap for the NSIS
-  installer ms-windows/Installer-Files/WelcomeFinishPage-M.N.bmp.
+  images/splash/splash-M.N.png.
 
   A pre-major minor release also produces a second branch
   master_$currentmajor to allow more interim minor releases

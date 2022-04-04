@@ -805,13 +805,41 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
   if ( !useJson )
   {
     std::cout << QStringLiteral( "%1 (%2)\n" ).arg( alg->displayName(), alg->id() ).toLocal8Bit().constData();
+
     std::cout << "\n----------------\n";
     std::cout << "Description\n";
     std::cout << "----------------\n";
-    if ( !alg->shortDescription().isEmpty() )
-      std::cout << alg->shortDescription().toLocal8Bit().constData() << '\n';
-    if ( !alg->shortHelpString().isEmpty() && alg->shortHelpString() != alg->shortDescription() )
-      std::cout << alg->shortHelpString().toLocal8Bit().constData() << '\n';
+
+    if ( const QgsProcessingModelAlgorithm *model = dynamic_cast< const QgsProcessingModelAlgorithm * >( alg ) )
+    {
+      // show finer help content for models
+      const QVariantMap help = model->helpContent();
+      std::cout << help.value( QStringLiteral( "ALG_DESC" ) ).toString().toLocal8Bit().constData() << '\n';
+
+      if ( !help.value( QStringLiteral( "ALG_CREATOR" ) ).toString().isEmpty() ||
+           !help.value( QStringLiteral( "ALG_VERSION" ) ).toString().isEmpty() )
+        std::cout << '\n';
+
+      if ( !help.value( QStringLiteral( "ALG_CREATOR" ) ).toString().isEmpty() )
+        std::cout << "Algorithm author:\t" << help.value( QStringLiteral( "ALG_CREATOR" ) ).toString().toLocal8Bit().constData() << '\n';
+      if ( !help.value( QStringLiteral( "ALG_VERSION" ) ).toString().isEmpty() )
+        std::cout << "Algorithm version:\t" << help.value( QStringLiteral( "ALG_VERSION" ) ).toString().toLocal8Bit().constData() << '\n';
+
+      if ( !help.value( QStringLiteral( "EXAMPLES" ) ).toString().isEmpty() )
+      {
+        std::cout << "\n----------------\n";
+        std::cout << "Examples\n";
+        std::cout << "----------------\n";
+        std::cout << help.value( QStringLiteral( "EXAMPLES" ) ).toString().toLocal8Bit().constData() << '\n';
+      }
+    }
+    else
+    {
+      if ( !alg->shortDescription().isEmpty() )
+        std::cout << alg->shortDescription().toLocal8Bit().constData() << '\n';
+      if ( !alg->shortHelpString().isEmpty() && alg->shortHelpString() != alg->shortDescription() )
+        std::cout << alg->shortHelpString().toLocal8Bit().constData() << '\n';
+    }
 
     std::cout << "\n----------------\n";
     std::cout << "Arguments\n";
@@ -830,7 +858,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
     json.insert( QStringLiteral( "provider_details" ), providerJson );
   }
 
-
+  QgsProcessingContext context;
   QVariantMap parametersJson;
   const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *p : defs )
@@ -841,7 +869,18 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
     QVariantMap parameterJson;
 
     if ( !useJson )
-      std::cout << QStringLiteral( "%1: %2\n" ).arg( p->name(), p->description() ).toLocal8Bit().constData();
+    {
+      QString line = QStringLiteral( "%1: %2" ).arg( p->name(), p->description() );
+      if ( p->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        line += QStringLiteral( " (optional)" );
+      std::cout << QStringLiteral( "%1\n" ).arg( line ).toLocal8Bit().constData();
+
+      if ( p->defaultValue().isValid() )
+      {
+        bool ok = false;
+        std::cout << QStringLiteral( "\tDefault value:\t%1\n" ).arg( p->valueAsString( p->defaultValue(), context, ok ) ).toLocal8Bit().constData();
+      }
+    }
     else
     {
       parameterJson.insert( QStringLiteral( "name" ), p->name() );

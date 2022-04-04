@@ -1,0 +1,87 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsmapviewsmanager.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapViewsManager : QObject
+{
+%Docstring(signature="appended")
+
+Manages storage of a set of views.
+
+:py:class:`QgsMapViewsManager` handles the storage, serializing and deserializing
+of views. Usually this class is not constructed directly, but rather
+accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.viewsManager()`.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsmapviewsmanager.h"
+%End
+  public:
+
+    explicit QgsMapViewsManager( QgsProject *project /TransferThis/ );
+%Docstring
+Constructor for QgsMapViewsManager. The project will become the parent object for this
+manager.
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &doc );
+%Docstring
+Reads the manager's state from a DOM element, restoring all views
+present in the XML document
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Returns a DOM element representing the state of the manager.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    void clear();
+%Docstring
+Removes and deletes all views from the manager.
+%End
+
+
+
+
+
+    void remove3DView( const QString &name );
+%Docstring
+Removes the configuration of the 3D view named ``name``
+%End
+
+    void rename3DView( const QString &oldTitle, const QString &newTitle );
+%Docstring
+Renames the 3D view named ``oldTitle`` to ``newTitle``
+%End
+
+
+
+  signals:
+    void views3DListChanged();
+%Docstring
+Emitted when the views list has changed (whenever a view was removed, added, renamed..)
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsmapviewsmanager.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

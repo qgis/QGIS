@@ -3,15 +3,30 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Constructs randomized square/rectangular waves along the boundary of a geometry.",
-  "arguments": [
-    {"arg":"geometry","description":"a geometry"},
-    {"arg":"min_wavelength","description":"minimum wavelength of waves"},
-    {"arg":"max_wavelength","description":"maximum wavelength of waves"},
-    {"arg":"min_amplitude","description":"minimum amplitude of waves"},
-    {"arg":"max_amplitude","description":"maximum amplitude of waves"},
-    {"arg":"seed","optional": true, "default": "0", "description":"specifies a random seed for generating waves. If the seed is 0, then a completely random set of waves will be generated."}
-  ],
-  "examples": [
-        { "expression":"square_wave_randomized(geom_from_wkt('LineString(0 0, 10 0)'), 2, 3, 0.1, 0.2)", "returns":"Randomly sized square waves with wavelengths between 2 and 3 and amplitudes between 0.1 and 0.2 along the linestring"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "min_wavelength",
+    "description": "minimum wavelength of waves"
+  }, {
+    "arg": "max_wavelength",
+    "description": "maximum wavelength of waves"
+  }, {
+    "arg": "min_amplitude",
+    "description": "minimum amplitude of waves"
+  }, {
+    "arg": "max_amplitude",
+    "description": "maximum amplitude of waves"
+  }, {
+    "arg": "seed",
+    "optional": true,
+    "default": "0",
+    "description": "specifies a random seed for generating waves. If the seed is 0, then a completely random set of waves will be generated."
+  }],
+  "examples": [{
+    "expression": "square_wave_randomized(geom_from_wkt('LineString(0 0, 10 0)'), 2, 3, 0.1, 0.2)",
+    "returns": "Randomly sized square waves with wavelengths between 2 and 3 and amplitudes between 0.1 and 0.2 along the linestring"
+  }],
+  "tags": ["waves", "rectangular", "constructs", "square", "boundary", "randomized"]
 }

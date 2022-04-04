@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Calculates the approximate pole of inaccessibility for a surface, which is the most distant internal point from the boundary of the surface. This function uses the 'polylabel' algorithm (Vladimir Agafonkin, 2016), which is an iterative approach guaranteed to find the true pole of inaccessibility within a specified tolerance. More precise tolerances require more iterations and will take longer to calculate.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"},
-                 {"arg":"tolerance","description":"maximum distance between the returned point and the true pole location"}],
-  "examples": [ { "expression":"geom_to_wkt(pole_of_inaccessibility( geom_from_wkt('POLYGON((0 1, 0 9, 3 10, 3 3, 10 3, 10 1, 0 1))'), 0.1))'", "returns":"'Point(1.546875 2.546875)'"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "tolerance",
+    "description": "maximum distance between the returned point and the true pole location"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(pole_of_inaccessibility( geom_from_wkt('POLYGON((0 1, 0 9, 3 10, 3 3, 10 3, 10 1, 0 1))'), 0.1))'",
+    "returns": "'Point(1.546875 2.546875)'"
+  }],
+  "tags": ["inaccessibility", "precise", "tolerances", "calculates", "guaranteed", "boundary", "require", "point", "true", "iterations", "internal", "uses", "approximate", "approach", "polylabel", "find", "distant", "calculate", "pole", "take", "surface", "specified", "tolerance", "iterative"]
 }

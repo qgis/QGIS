@@ -3,13 +3,24 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Constructs square/rectangular waves along the boundary of a geometry.",
-  "arguments": [
-    {"arg":"geometry","description":"a geometry"},
-    {"arg":"wavelength","description":"wavelength of square waveform"},
-    {"arg":"amplitude","description":"amplitude of square waveform"},
-    {"arg":"strict","optional": true, "default": false, "description":"By default the wavelength argument is treated as a \"maximum wavelength\", where the actual wavelength will be dynamically adjusted so that an exact number of square waves are created along the boundaries of the geometry. If the strict argument is set to true then the wavelength will be used exactly and an incomplete pattern may be used for the final waveform."}
-  ],
-  "examples": [
-    { "expression":"square_wave(geom_from_wkt('LineString(0 0, 10 0)'), 3, 1)", "returns":"Square waves with wavelength 3 and amplitude 1 along the linestring"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "wavelength",
+    "description": "wavelength of square waveform"
+  }, {
+    "arg": "amplitude",
+    "description": "amplitude of square waveform"
+  }, {
+    "arg": "strict",
+    "optional": true,
+    "default": false,
+    "description": "By default the wavelength argument is treated as a \"maximum wavelength\", where the actual wavelength will be dynamically adjusted so that an exact number of square waves are created along the boundaries of the geometry. If the strict argument is set to true then the wavelength will be used exactly and an incomplete pattern may be used for the final waveform."
+  }],
+  "examples": [{
+    "expression": "square_wave(geom_from_wkt('LineString(0 0, 10 0)'), 3, 1)",
+    "returns": "Square waves with wavelength 3 and amplitude 1 along the linestring"
+  }],
+  "tags": ["waves", "rectangular", "constructs", "square", "boundary"]
 }

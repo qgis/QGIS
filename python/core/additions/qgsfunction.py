@@ -20,6 +20,7 @@
 
 import inspect
 import string
+import traceback
 from builtins import str
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis._core import QgsExpressionFunction, QgsExpression, QgsMessageLog, QgsFeatureRequest, Qgis
@@ -83,7 +84,10 @@ def register_function(function, arg_count, group, usesgeometry=False,
                         self.function(values, feature, parent, context)
                     return self.function(values, feature, parent)
             except Exception as ex:
-                parent.setEvalErrorString(str(ex))
+                tb = traceback.format_exception(None, ex, ex.__traceback__)
+                formatted_traceback = ''.join(tb)
+                formatted_exception = f"{ex}:<pre>{formatted_traceback}</pre>"
+                parent.setEvalErrorString(formatted_exception)
                 return None
 
         def usesGeometry(self, node):

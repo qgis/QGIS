@@ -1629,15 +1629,15 @@ QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area,
     pt1 = hull->vertexAt( vertexId );
   }
 
+  QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
+  minBounds.rotate( angle, QgsPointXY( pt0.x(), pt0.y() ) );
+
   if ( width > height )
   {
     width = minRect.height();
     height = minRect.width();
     angle = angle + 90.0;
   }
-
-  QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
-  minBounds.rotate( angle, QgsPointXY( pt0.x(), pt0.y() ) );
 
   // constrain angle to 0 - 180
   if ( angle > 180.0 )
@@ -2242,10 +2242,8 @@ std::unique_ptr< QgsLineString > roundWavesAlongLine( const QgsLineString *line,
 
   int side = -1;
 
-  double xOutBuffer[4];
-  double yOutBuffer[4];
-  xOutBuffer[0] = prevX;
-  yOutBuffer[0] = prevY;
+  double xOutBuffer[4] { prevX, prevX, prevX, prevX };
+  double yOutBuffer[4] { prevY, prevY, prevY, prevY };
   bool isFirstPart = true;
 
   double distanceToNextPointFromStartOfSegment = wavelength / 8;
@@ -2369,10 +2367,8 @@ std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine( const QgsLineStr
 
   int side = -1;
 
-  double xOutBuffer[4];
-  double yOutBuffer[4];
-  xOutBuffer[0] = prevX;
-  yOutBuffer[0] = prevY;
+  double xOutBuffer[4] { prevX, prevX, prevX, prevX };
+  double yOutBuffer[4] { prevY, prevY, prevY, prevY };
   bool isFirstPart = true;
 
   double amplitude = uniformDist( mt ) * ( maximumAmplitude - minimumAmplitude ) + minimumAmplitude;

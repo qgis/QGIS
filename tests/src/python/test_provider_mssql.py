@@ -32,7 +32,7 @@ from qgis.core import (QgsSettings,
                        QgsCoordinateReferenceSystem,
                        QgsDataProvider)
 
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 from providertestbase import ProviderTestCase
@@ -398,6 +398,109 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual(result_geoms, [t])
             self.execSQLCommand('DROP TABLE IF EXISTS [qgis_test].[new_table_curvegeom_{}]'.format(str(idx)))
 
+    def testStyle(self):
+        self.execSQLCommand('DROP TABLE IF EXISTS layer_styles')
+
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', 'not valid', '')
+        self.assertFalse(res)
+        self.assertTrue(err)
+
+        vl = self.getSource()
+        self.assertTrue(vl.isValid())
+        self.assertTrue(
+            vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+
+        # table layer_styles does not exist
+
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, -1)
+        self.assertEqual(idlist, [])
+        self.assertEqual(namelist, [])
+        self.assertEqual(desclist, [])
+        self.assertFalse(errmsg)
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
+
+        mFilePath = QDir.toNativeSeparators(
+            '%s/symbol_layer/%s.qml' % (unitTestDataPath(), "singleSymbol"))
+        status = vl.loadNamedStyle(mFilePath)
+        self.assertTrue(status)
+
+        # The style is saved as non-default
+        errorMsg = vl.saveStyleToDatabase(
+            "by day", "faded greens and elegant patterns", False, "")
+        self.assertFalse(errorMsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'by day')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        # the style id should be "1", not "by day"
+        qml, errmsg = vl.getStyleFromDatabase("by day")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertFalse(errmsg)
+        self.assertEqual(idlist, ["1"])
+        self.assertEqual(namelist, ["by day"])
+        self.assertEqual(desclist, ["faded greens and elegant patterns"])
+
+        qml, errmsg = vl.getStyleFromDatabase("100")
+        self.assertFalse(qml)
+        self.assertTrue(errmsg)
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
+        self.assertFalse(errmsg)
+
+        # We save now the style again twice but with one as default
+        errorMsg = vl.saveStyleToDatabase(
+            "related style", "faded greens and elegant patterns", False, "")
+        self.assertFalse(errorMsg)
+        errorMsg = vl.saveStyleToDatabase(
+            "default style", "faded greens and elegant patterns", True, "")
+        self.assertFalse(errorMsg)
+
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), '')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'a style')
+        self.assertFalse(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'default style')
+        self.assertTrue(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'related style')
+        self.assertTrue(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('mssql', vl.source(), 'by day')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 3)
+        self.assertFalse(errmsg)
+        self.assertCountEqual(idlist, ["1", "2", "3"])
+        self.assertCountEqual(namelist, ["default style", "related style", "by day"])
+        self.assertCountEqual(desclist, ["faded greens and elegant patterns"] * 3)
+
     def testInsertPolygonInMultiPolygon(self):
         layer = QgsVectorLayer("MultiPolygon?crs=epsg:4326&field=id:integer", "addfeat", "memory")
         pr = layer.dataProvider()
@@ -744,6 +847,38 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(fields.at(3).constraints().constraints()
                          & QgsFieldConstraints.ConstraintUnique)
 
+    def testIdentityFieldHandling(self):
+        """
+        Test identity field handling
+        """
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        conn = md.createConnection(self.dbconn, {})
+
+        conn.execSql('DROP TABLE IF EXISTS qgis_test.test_identity')
+        conn.execSql("""CREATE TABLE [qgis_test].[test_identity](
+        [pk] [int] IDENTITY(1,1) NOT NULL,
+        [name] [nchar](10) NULL,
+        [geom] [geometry] NULL,
+ CONSTRAINT [PK_test_table]  PRIMARY KEY CLUSTERED
+(
+        [pk] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]""")
+
+        uri = '{} table="qgis_test"."test_identity" sql='.format(self.dbconn)
+        vl = QgsVectorLayer(uri, '', 'mssql')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.dataProvider().pkAttributeIndexes(), [0])
+        self.assertEqual(vl.dataProvider().defaultValueClause(0), 'Autogenerate')
+        identity_field = vl.dataProvider().fields().at(0)
+        self.assertEqual(identity_field.name(), 'pk')
+        self.assertEqual(identity_field.constraints().constraints(), QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(identity_field.constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull), QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertEqual(identity_field.constraints().constraintStrength(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintStrengthHard)
+        self.assertTrue(identity_field.isReadOnly())
+
     def getSubsetString(self):
         return '[cnt] > 100 and [cnt] < 410'
 
@@ -820,6 +955,33 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         extent = loadedLayer.extent()
         self.assertEqual(extent.toString(1),
                          QgsRectangle(0.0, 0.5, 5.5, 6.0).toString(1))
+
+    def test_insert_pk_escaping(self):
+        """
+        Test that inserting features works with complex pk name
+        see https://github.com/qgis/QGIS/issues/42290
+        """
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        conn = md.createConnection(self.dbconn, {})
+
+        conn.execSql('DROP TABLE IF EXISTS qgis_test.test_complex_pk_name')
+        conn.execSql('CREATE TABLE qgis_test.test_complex_pk_name ([test-field] int)')
+
+        uri = '{} table="qgis_test"."test_complex_pk_name" sql='.format(self.dbconn)
+        vl = QgsVectorLayer(uri, '', 'mssql')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.primaryKeyAttributes(), [0])
+
+        vl.startEditing()
+        f = QgsFeature(vl.fields())
+        f.setAttributes([1])
+        self.assertTrue(vl.addFeature(f))
+        self.assertTrue(vl.commitChanges())
+
+        vl = QgsVectorLayer(uri, '', 'mssql')
+        features = list(vl.getFeatures())
+        self.assertEqual([f['test-field'] for f in features], [1])
 
 
 if __name__ == '__main__':

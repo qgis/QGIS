@@ -210,7 +210,7 @@ void QgsExportMeshOnElement::initAlgorithm( const QVariantMap &configuration )
                   QStringLiteral( "DATASET_GROUPS" ),
                   QObject::tr( "Dataset groups" ),
                   QStringLiteral( "INPUT" ),
-                  supportedDataType(), true ) );
+                  supportedDataType() ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetTime(
                   QStringLiteral( "DATASET_TIME" ),
@@ -970,8 +970,10 @@ void QgsMeshContoursAlgorithm::initAlgorithm( const QVariantMap &configuration )
   addParameter( new QgsProcessingParameterNumber(
                   QStringLiteral( "MAXIMUM" ), QObject::tr( "Maximum contour level" ), QgsProcessingParameterNumber::Double, QVariant(), true ) );
 
-  addParameter( new QgsProcessingParameterString(
-                  QStringLiteral( "CONTOUR_LEVEL_LIST" ), QObject::tr( "List of contours level" ), QVariant(), false, true ) );
+  std::unique_ptr< QgsProcessingParameterString > contourLevelList = std::make_unique < QgsProcessingParameterString >(
+        QStringLiteral( "CONTOUR_LEVEL_LIST" ), QObject::tr( "List of contours level" ), QVariant(), false, true );
+  contourLevelList->setHelp( QObject::tr( "Comma separated list of values to export. If filled, the increment, minimum and maximum settings are ignored." ) );
+  addParameter( contourLevelList.release() );
 
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
 

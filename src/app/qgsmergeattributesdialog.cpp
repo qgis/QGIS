@@ -180,7 +180,8 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     mFieldToColumnMap[ mFields.at( idx ).name() ] = col;
 
     QComboBox *cb = createMergeComboBox( mFields.at( idx ).type() );
-    if ( mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    if ( ! mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mFields.fieldOriginIndex( idx ) ) &&
+         mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
     {
       cb->setCurrentIndex( cb->findData( "skip" ) );
     }
@@ -454,7 +455,8 @@ void QgsMergeAttributesDialog::setAllAttributesFromFeature( QgsFeatureId feature
     if ( !currentComboBox )
       continue;
 
-    if ( mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    if ( ! mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mVectorLayer->fields().fieldOriginIndex( i ) ) &&
+         mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
     {
       currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "skip" ) ) );
     }

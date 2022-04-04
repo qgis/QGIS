@@ -38,14 +38,25 @@ Sets the source model for the table and optionally a delegate
 Returns the proxy model used to filter the results
 %End
 
+
   protected slots:
+
     virtual void setSql( const QModelIndex &index ) = 0;
 %Docstring
-This is called to define the SQL query and must be re-implemented. The implementation should call :py:class:`QgsAbstractDbTableModel`.setSql
+This is called to define the SQL query and must be re-implemented.
+The implementation should call :py:class:`QgsAbstractDbTableModel`.setSql
+The index is in the source model.
 %End
 
     virtual void treeviewClicked( const QModelIndex &index );
+%Docstring
+Called on click for the source ``index``
+%End
+
     virtual void treeviewDoubleClicked( const QModelIndex &index );
+%Docstring
+Called on double-click for the source ``index``
+%End
 
 };
 

@@ -114,12 +114,14 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
   if ( reply->error() == QNetworkReply::NoError )
   {
     ++mManager->mStats.networkRequestsOk;
-
     data = reply->readAll();
   }
   else
   {
     ++mManager->mStats.networkRequestsFailed;
+    const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    if ( contentType.startsWith( QLatin1String( "text/plain" ) ) )
+      data = reply->readAll();
   }
 
   emit finished( data, reply->error(), reply->errorString() );

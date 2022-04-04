@@ -2,6 +2,7 @@
 <component type="desktop">
   <id>org.qgis.qgis.desktop</id>
   <name>QGIS Desktop</name>
+  <developer_name>QGIS Development Team</developer_name>
   <summary>A Free and Open Source Geographic Information System</summary>
   <screenshots>
     <screenshot><image type="source">https://qgis.org/en/_static/images/about-screenshot.png</image></screenshot>
@@ -18,6 +19,7 @@
 
   <project_group>QGIS</project_group>
   <releases>
+    <release version="3.24.0" date="2022-02-18" />
     <release version="3.22.0" date="2021-10-22" />
     <release version="3.20.0" date="2021-06-18" />
     <release version="3.18.0" date="2021-02-19" />

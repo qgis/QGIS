@@ -3,15 +3,30 @@
   "type": "function",
   "groups": ["Conversions"],
   "description": "Converts a coordinate to degree, minute, second.",
-  "arguments": [
-    {"arg":"coordinate","description":"A latitude or longitude value."},
-    {"arg":"axis","description":"The axis of the coordinate. Either 'x' or 'y'."},
-    {"arg":"precision", "description":"Number of decimals."},
-    {"arg":"formatting", "optional": true, "default":"", "description":"Designates the formatting type. Acceptable values are NULL (default), 'aligned' or 'suffix'."}
-  ],
-  "examples": [
-    { "expression":"to_dms(6.1545681, 'x', 3)", "returns":"6°9′16.445″"},
-    { "expression":"to_dms(6.1545681, 'y', 4, 'aligned')", "returns":"6°09′16.4452″N"},
-    { "expression":"to_dms(6.1545681, 'y', 4, 'suffix')", "returns":"6°9′16.4452″N"}
-  ]
+  "arguments": [{
+    "arg": "coordinate",
+    "description": "A latitude or longitude value."
+  }, {
+    "arg": "axis",
+    "description": "The axis of the coordinate. Either 'x' or 'y'."
+  }, {
+    "arg": "precision",
+    "description": "Number of decimals."
+  }, {
+    "arg": "formatting",
+    "optional": true,
+    "default": "",
+    "description": "Designates the formatting type. Acceptable values are NULL (default), 'aligned' or 'suffix'."
+  }],
+  "examples": [{
+    "expression": "to_dms(6.1545681, 'x', 3)",
+    "returns": "6\u00b09\u203216.445\u2033"
+  }, {
+    "expression": "to_dms(6.1545681, 'y', 4, 'aligned')",
+    "returns": "6\u00b009\u203216.4452\u2033N"
+  }, {
+    "expression": "to_dms(6.1545681, 'y', 4, 'suffix')",
+    "returns": "6\u00b09\u203216.4452\u2033N"
+  }],
+  "tags": ["converts", "minute", "degree", "second", "coordinate"]
 }

@@ -3,15 +3,31 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Returns an attribute from a feature.",
-  "variants": [
-    { "variant": "Variant 1",
-        "variant_description": "Returns the value of an attribute from the current feature.",
-        "arguments": [ {"arg":"attribute_name","description":"name of attribute to be returned"}],
-        "examples": [ { "expression":"attribute( 'name' )", "returns":"value stored in 'name' attribute for the current feature"}] },
-    { "variant": "Variant 2",
-        "variant_description": "Allows the target feature and attribute name to be specified.",
-        "arguments": [ {"arg":"feature","description":"a feature"},
-                       {"arg":"attribute_name","description":"name of attribute to be returned"}],
-        "examples": [ { "expression":"attribute( @atlas_feature, 'name' )", "returns":"value stored in 'name' attribute for the current atlas feature"}] }
-   ]
+  "variants": [{
+    "variant": "Variant 1",
+    "variant_description": "Returns the value of an attribute from the current feature.",
+    "arguments": [{
+      "arg": "attribute_name",
+      "description": "name of attribute to be returned"
+    }],
+    "examples": [{
+      "expression": "attribute( 'name' )",
+      "returns": "value stored in 'name' attribute for the current feature"
+    }]
+  }, {
+    "variant": "Variant 2",
+    "variant_description": "Allows the target feature and attribute name to be specified.",
+    "arguments": [{
+      "arg": "feature",
+      "description": "a feature"
+    }, {
+      "arg": "attribute_name",
+      "description": "name of attribute to be returned"
+    }],
+    "examples": [{
+      "expression": "attribute( @atlas_feature, 'name' )",
+      "returns": "value stored in 'name' attribute for the current atlas feature"
+    }]
+  }],
+  "tags": ["attribute"]
 }

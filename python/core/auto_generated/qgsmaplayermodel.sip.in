@@ -56,6 +56,13 @@ populate the model.
 setItemsCheckable defines if layers should be selectable in the widget
 %End
 
+    void setProject( QgsProject *project );
+%Docstring
+Sets the :py:class:`QgsProject` from which map layers are shown
+
+.. versionadded:: 3.24
+%End
+
     void setItemsCanBeReordered( bool allow );
 %Docstring
 Sets whether items in the model can be reordered via drag and drop.

@@ -28,7 +28,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import Qt, QSize
+from qgis.PyQt.QtCore import Qt, QSize, QVariant
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsVectorLayer,
@@ -48,6 +48,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsSimpleMarkerSymbolLayer,
                        QgsProperty,
                        QgsFeature,
+                       QgsField,
                        QgsGeometry,
                        QgsEmbeddedSymbolRenderer
                        )
@@ -71,6 +72,8 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'rectangles.shp')
         layer = QgsVectorLayer(myShpFile, 'Rectangles', 'ogr')
+        vfield = QgsField('fa_cy-fie+ld', QVariant.Int)
+        layer.addExpressionField('"id"', vfield)
         QgsProject.instance().addMapLayer(layer)
 
         # Create rulebased style
@@ -135,6 +138,35 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         rendered = renderer.willRenderFeature(ft, ctx)
         renderer.stopRender(ctx)
         self.assertTrue(rendered)
+
+    def testGroupAndElseRules(self):
+        vl = self.mapsettings.layers()[0]
+
+        # Create rulebased style
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c', 'outline_color': 'black'})
+        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4', 'outline_color': 'black'})
+
+        self.rx1 = QgsRuleBasedRenderer.Rule(None, 0, 0, '"id" < 3')
+        self.rx2 = QgsRuleBasedRenderer.Rule(sym3, 0, 0, 'ELSE')
+
+        self.subrx1 = QgsRuleBasedRenderer.Rule(sym1, 0, 0, '"id" = 1')
+        self.subrx2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 2')
+        self.rx1.appendChild(self.subrx1)
+        self.rx1.appendChild(self.subrx2)
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(self.rx1)
+        rootrule.appendChild(self.rx2)
+        rootrule.children()[0].children()[0].setActive(False)
+        rootrule.children()[0].children()[1].setActive(False)
+
+        vl.setRenderer(QgsRuleBasedRenderer(rootrule))
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlName('expected_rulebased_group_else')
+        self.assertTrue(renderchecker.runTest('rulebased_group_else'))
 
     def testWillRenderFeatureNestedElse(self):
         vl = self.mapsettings.layers()[0]
@@ -208,6 +240,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         QgsRuleBasedRenderer.refineRuleCategories(self.r2, c)
         self.assertEqual(self.r2.children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(self.r2.children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(self.r2.children()[2].filterExpression(), '"id" IS NULL')
         self.assertEqual(self.r2.children()[0].label(), 'id 1')
         self.assertEqual(self.r2.children()[1].label(), '2')
         self.assertEqual(self.r2.children()[2].label(), '')
@@ -271,6 +304,66 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
     def testConvertFromCategorisedRenderer(self):
         # Test converting categorised renderer to rule based
+        vl = self.mapsettings.layers()[0]
+        # First, try with a field based category (id)
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "id 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "id 2"))
+        cats.append(QgsRendererCategory('a\'b', QgsMarkerSymbol(), "id a'b"))
+        cats.append(QgsRendererCategory('a\nb', QgsMarkerSymbol(), "id a\\nb"))
+        cats.append(QgsRendererCategory('a\\b', QgsMarkerSymbol(), "id a\\\\b"))
+        cats.append(QgsRendererCategory('a\tb', QgsMarkerSymbol(), "id a\\tb"))
+        cats.append(QgsRendererCategory(['c', 'd'], QgsMarkerSymbol(), "c/d"))
+        c = QgsCategorizedSymbolRenderer("id", cats)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(c, vl)
+        self.assertEqual(len(r.rootRule().children()), 7)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" = 1')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" = \'a\'\'b\'')
+        self.assertEqual(r.rootRule().children()[3].filterExpression(), '"id" = \'a\\nb\'')
+        self.assertEqual(r.rootRule().children()[4].filterExpression(), '"id" = \'a\\\\b\'')
+        self.assertEqual(r.rootRule().children()[5].filterExpression(), '"id" = \'a\\tb\'')
+        self.assertEqual(r.rootRule().children()[6].filterExpression(), '"id" IN (\'c\',\'d\')')
+
+        # Next try with an expression based category
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        cats.append(QgsRendererCategory([3, 4], QgsMarkerSymbol(), "result 3/4"))
+        c = QgsCategorizedSymbolRenderer("id + 1", cats)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(c, vl)
+        self.assertEqual(len(r.rootRule().children()), 3)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), 'id + 1 = 1')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), 'id + 1 = 2')
+        self.assertEqual(r.rootRule().children()[2].filterExpression(), 'id + 1 IN (3,4)')
+
+        # Last try with an expression which is just a quoted field name
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        cats.append(QgsRendererCategory([3, 4], QgsMarkerSymbol(), "result 3/4"))
+        c = QgsCategorizedSymbolRenderer('"id"', cats)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(c, vl)
+        self.assertEqual(len(r.rootRule().children()), 3)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" = 1')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" IN (3,4)')
+
+        # Next try with a complex name
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "fa_cy-fie+ld 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "fa_cy-fie+ld 2"))
+        c = QgsCategorizedSymbolRenderer("fa_cy-fie+ld", cats)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(c, vl)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"fa_cy-fie+ld" = 1')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"fa_cy-fie+ld" = 2')
+
+    def testConvertFromCategorisedRendererNoLayer(self):
+        # Test converting categorised renderer to rule based
 
         # First, try with a field based category (id)
         cats = []
@@ -319,9 +412,62 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
         self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" IN (3,4)')
 
+        # Next try with a complex name -- in this case since we don't have a layer or
+        # actual field names available, we must assume the complex field name is actually an expression
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "fa_cy-fie+ld 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "fa_cy-fie+ld 2"))
+        c = QgsCategorizedSymbolRenderer("fa_cy-fie+ld", cats)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(c)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), 'fa_cy-fie+ld = 1')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), 'fa_cy-fie+ld = 2')
+
     def testConvertFromGraduatedRenderer(self):
         # Test converting graduated renderer to rule based
+        vl = self.mapsettings.layers()[0]
+        # First, try with a field based category (id)
+        ranges = []
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("id", ranges)
 
+        r = QgsRuleBasedRenderer.convertFromRenderer(g, vl)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
+
+        # Next try with an expression based range
+        ranges = []
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("id / 2", ranges)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(g, vl)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '(id / 2) >= 0.000000 AND (id / 2) <= 1.000000')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '(id / 2) > 1.000000 AND (id / 2) <= 2.000000')
+
+        # Last try with an expression which is just a quoted field name
+        ranges = []
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer('"id"', ranges)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(g, vl)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
+
+        # Test with a complex field name
+        ranges = []
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("fa_cy-fie+ld", ranges)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(g, vl)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '"fa_cy-fie+ld" >= 0.000000 AND "fa_cy-fie+ld" <= 1.000000')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '"fa_cy-fie+ld" > 1.000000 AND "fa_cy-fie+ld" <= 2.000000')
+
+    def testConvertFromGraduatedRendererNoLayer(self):
+        # Test converting graduated renderer to rule based
         # First, try with a field based category (id)
         ranges = []
         ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
@@ -351,6 +497,17 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         r = QgsRuleBasedRenderer.convertFromRenderer(g)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
+
+        # Next try with a complex name -- in this case since we don't have a layer or
+        # actual field names available, we must assume the complex field name is actually an expression
+        ranges = []
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("fa_cy-fie+ld", ranges)
+
+        r = QgsRuleBasedRenderer.convertFromRenderer(g)
+        self.assertEqual(r.rootRule().children()[0].filterExpression(), '(fa_cy-fie+ld) >= 0.000000 AND (fa_cy-fie+ld) <= 1.000000')
+        self.assertEqual(r.rootRule().children()[1].filterExpression(), '(fa_cy-fie+ld) > 1.000000 AND (fa_cy-fie+ld) <= 2.000000')
 
     def testWillRenderFeatureTwoElse(self):
         """Regression #21287, also test rulesForFeature since there were no tests any where and I've found a couple of issues"""
@@ -534,6 +691,123 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.assertEqual(counter.featureCount('0'), 1)
         self.assertEqual(counter.featureCount('1'), 1)
         self.assertEqual(counter.featureCount('2'), 1)
+
+    def test_legend_key_to_expression(self):
+
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+        renderer = QgsRuleBasedRenderer(root_rule)
+
+        exp, ok = renderer.legendKeyToExpression('xxxx', None)
+        self.assertFalse(ok)
+
+        exp, ok = renderer.legendKeyToExpression(root_rule.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'TRUE')
+
+        rule2 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = 5')
+        rule3 = QgsRuleBasedRenderer.Rule(None, maximumScale=2000, filterExp='"field_name" = 6')
+        rule4 = QgsRuleBasedRenderer.Rule(None, minimumScale=1000, filterExp='"field_name" = 7')
+        rule5 = QgsRuleBasedRenderer.Rule(None, minimumScale=3000, maximumScale=1000)
+
+        root_rule.appendChild(rule2)
+        root_rule.appendChild(rule3)
+        root_rule.appendChild(rule4)
+        root_rule.appendChild(rule5)
+
+        exp, ok = renderer.legendKeyToExpression(root_rule.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'TRUE')
+
+        exp, ok = renderer.legendKeyToExpression(rule2.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '"field_name" = 5')
+
+        exp, ok = renderer.legendKeyToExpression(rule3.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = 6) AND (@map_scale >= 2000)')
+
+        exp, ok = renderer.legendKeyToExpression(rule4.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = 7) AND (@map_scale <= 1000)')
+
+        exp, ok = renderer.legendKeyToExpression(rule5.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '(@map_scale <= 3000) AND (@map_scale >= 1000)')
+
+        rule6 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = \'a\'')
+        rule4.appendChild(rule6)
+
+        exp, ok = renderer.legendKeyToExpression(rule6.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = \'a\') AND (("field_name" = 7) AND (@map_scale <= 1000))')
+
+        # group only rule
+        rule7 = QgsRuleBasedRenderer.Rule(None)
+        rule3.appendChild(rule7)
+
+        rule8 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = \'c\'')
+        rule7.appendChild(rule8)
+
+        exp, ok = renderer.legendKeyToExpression(rule7.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = 6) AND (@map_scale >= 2000)')
+
+        exp, ok = renderer.legendKeyToExpression(rule8.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """("field_name" = 'c') AND (("field_name" = 6) AND (@map_scale >= 2000))""")
+
+        # else rules
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+        renderer = QgsRuleBasedRenderer(root_rule)
+
+        rule2 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = 5')
+        rule3 = QgsRuleBasedRenderer.Rule(None, maximumScale=2000, filterExp='"field_name" = 6')
+        rule4 = QgsRuleBasedRenderer.Rule(None, elseRule=True)
+
+        root_rule.appendChild(rule2)
+        root_rule.appendChild(rule3)
+        root_rule.appendChild(rule4)
+
+        exp, ok = renderer.legendKeyToExpression(root_rule.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'TRUE')
+
+        exp, ok = renderer.legendKeyToExpression(rule2.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '"field_name" = 5')
+
+        exp, ok = renderer.legendKeyToExpression(rule3.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = 6) AND (@map_scale >= 2000)')
+
+        exp, ok = renderer.legendKeyToExpression(rule4.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'NOT (("field_name" = 5) OR (("field_name" = 6) AND (@map_scale >= 2000)))')
+
+        rule5 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = 11')
+        rule4.appendChild(rule5)
+
+        exp, ok = renderer.legendKeyToExpression(rule5.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '("field_name" = 11) AND (NOT (("field_name" = 5) OR (("field_name" = 6) AND (@map_scale >= 2000))))')
+
+        # isolated ELSE rule, with no siblings
+
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+        renderer = QgsRuleBasedRenderer(root_rule)
+
+        rule2 = QgsRuleBasedRenderer.Rule(None, filterExp='"field_name" = 5')
+        rule3 = QgsRuleBasedRenderer.Rule(None, maximumScale=2000, filterExp='"field_name" = 6')
+
+        root_rule.appendChild(rule2)
+        root_rule.appendChild(rule3)
+
+        rule4 = QgsRuleBasedRenderer.Rule(None, elseRule=True)
+        rule3.appendChild(rule4)
+
+        exp, ok = renderer.legendKeyToExpression(rule4.ruleKey(), None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, '(TRUE) AND (("field_name" = 6) AND (@map_scale >= 2000))')
 
 
 if __name__ == '__main__':

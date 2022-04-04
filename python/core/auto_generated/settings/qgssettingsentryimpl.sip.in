@@ -1,0 +1,579 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingsentryimpl.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+typedef QgsSettingsEntryByReference<QVariant> QgsSettingsEntryByReferenceQVariantBase;
+
+class QgsSettingsEntryVariant : QgsSettingsEntryByReferenceQVariantBase
+{
+%Docstring(signature="appended")
+
+A variant settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryByReference<QVariant> QgsSettingsEntryByReferenceQVariantBase;
+%End
+  public:
+
+
+  private:
+    QgsSettingsEntryVariant( const QString &key,
+                             const QString &section,
+                             const QVariant &defaultValue = QVariant(),
+                             const QString &description = QString(),
+                             Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryVariant.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` argument specifies the options for the settings entry.
+%End
+  public:
+
+    QgsSettingsEntryVariant( const QString &key,
+                             const QString &pluginName,
+                             const QVariant &defaultValue = QVariant(),
+                             const QString &description = QString(),
+                             Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryVariant.
+This constructor is intended to be used from plugins.
+
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+%MethodCode
+    sipCpp = new sipQgsSettingsEntryVariant( QgsSettingsEntryVariant( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), *a2, *a3, *a4 ) );
+%End
+
+
+    virtual Qgis::SettingsType settingsType() const;
+
+  private:
+    virtual QVariant convertFromVariant( const QVariant &value ) const;
+};
+
+
+
+typedef QgsSettingsEntryByReference<QString> QgsSettingsEntryByReferenceQStringBase;
+
+class QgsSettingsEntryString : QgsSettingsEntryByReferenceQStringBase
+{
+%Docstring(signature="appended")
+
+A string settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryByReference<QString> QgsSettingsEntryByReferenceQStringBase;
+%End
+  public:
+
+  private:
+    QgsSettingsEntryString( const QString &key,
+                            const QString &section,
+                            const QString &defaultValue = QString(),
+                            const QString &description = QString(),
+                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                            int minLength = 0,
+                            int maxLength = -1 );
+%Docstring
+Constructor for QgsSettingsEntryString.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+The ``minLength`` argument specifies the minimal length of the string value. 0 means no limit.
+The ``maxLength`` argument specifies the maximal length of the string value. -1 means no limit.
+%End
+  public:
+
+    QgsSettingsEntryString( const QString &key,
+                            const QString &pluginName,
+                            const QString &defaultValue = QString(),
+                            const QString &description = QString(),
+                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                            int minLength = 0,
+                            int maxLength = -1 );
+%Docstring
+Constructor for QgsSettingsEntryString.
+This constructor is intended to be used from plugins.
+
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+%MethodCode
+    sipCpp = new sipQgsSettingsEntryString( QgsSettingsEntryString( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), *a2, *a3, *a4 ) );
+%End
+
+    virtual Qgis::SettingsType settingsType() const;
+
+    void setMinLength( int minLength );
+%Docstring
+Set the string minimum length.
+
+minLength The string minimum length.
+%End
+
+    int minLength();
+%Docstring
+Returns the string minimum length.
+%End
+
+    void setMaxLength( int maxLength );
+%Docstring
+Set the string maximum length.
+
+maxLength The string maximum length.
+%End
+
+    int maxLength();
+%Docstring
+Returns the string maximum length. By -1 there is no limitation.
+%End
+
+  private:
+    virtual bool checkValue( const QString &value ) const;
+
+    virtual QString convertFromVariant( const QVariant &value ) const;
+
+};
+
+
+
+typedef QgsSettingsEntryByReference<QStringList> QgsSettingsEntryByReferenceQStringListBase;
+
+class QgsSettingsEntryStringList : QgsSettingsEntryByReferenceQStringListBase
+{
+%Docstring(signature="appended")
+
+A string list settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryByReference<QStringList> QgsSettingsEntryByReferenceQStringListBase;
+%End
+  public:
+
+  private:
+    QgsSettingsEntryStringList( const QString &key,
+                                const QString &section,
+                                const QStringList &defaultValue = QStringList(),
+                                const QString &description = QString(),
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryStringList.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+  public:
+
+    QgsSettingsEntryStringList( const QString &key,
+                                const QString &pluginName,
+                                const QStringList &defaultValue = QStringList(),
+                                const QString &description = QString(),
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryStringList.
+This constructor is intended to be used from plugins.
+
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+%MethodCode
+    sipCpp = new sipQgsSettingsEntryStringList( QgsSettingsEntryStringList( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), *a2, *a3, *a4 ) );
+%End
+
+    virtual Qgis::SettingsType settingsType() const;
+
+  private:
+    virtual QStringList convertFromVariant( const QVariant &value ) const;
+
+};
+
+
+
+typedef QgsSettingsEntryByValue<bool> QgsSettingsEntryByValueboolBase;
+
+class QgsSettingsEntryBool : QgsSettingsEntryByValueboolBase
+{
+%Docstring(signature="appended")
+
+A boolean settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryByValue<bool> QgsSettingsEntryByValueboolBase;
+%End
+  public:
+
+  private:
+    QgsSettingsEntryBool( const QString &key,
+                          const QString &section,
+                          bool defaultValue = false,
+                          const QString &description = QString(),
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryBool.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+  public:
+
+    QgsSettingsEntryBool( const QString &key,
+                          const QString &pluginName,
+                          bool defaultValue = false,
+                          const QString &description = QString(),
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryBool.
+This constructor is intended to be used from plugins.
+
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+%MethodCode
+    sipCpp = new sipQgsSettingsEntryBool( QgsSettingsEntryBool( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), a2, *a3, *a4 ) );
+%End
+
+
+    virtual Qgis::SettingsType settingsType() const;
+
+  private:
+    virtual bool convertFromVariant( const QVariant &value ) const;
+
+};
+
+
+
+typedef QgsSettingsEntryByValue<qlonglong> QgsSettingsEntryByValueqlonglongBase;
+
+class QgsSettingsEntryInteger : QgsSettingsEntryByValueqlonglongBase
+{
+%Docstring(signature="appended")
+
+An integer settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryByValue<qlonglong> QgsSettingsEntryByValueqlonglongBase;
+%End
+  public:
+
+  private:
+    QgsSettingsEntryInteger( const QString &key,
+                             const QString &section,
+                             qlonglong defaultValue = 0,
+                             const QString &description = QString(),
+                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                             qlonglong minValue = LLONG_MIN,
+                             qlonglong maxValue = LLONG_MAX );
+%Docstring
+Constructor for QgsSettingsEntryInteger.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+The ``minValue`` argument specifies the minimal value.
+The ``maxValue`` argument specifies the maximal value.
+%End
+  public:
+
+    QgsSettingsEntryInteger( const QString &key,
+                             const QString &pluginName,
+                             qlonglong defaultValue = 0,
+                             const QString &description = QString(),
+                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                             qlonglong minValue = LLONG_MIN,
+                             qlonglong maxValue = LLONG_MAX );
+%Docstring
+Constructor for QgsSettingsEntryInteger.
+This constructor is intended to be used from plugins.
+
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is used to define the key of the setting
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+The ``minValue`` argument specifies the minimal value.
+The ``maxValue`` argument specifies the maximal value.
+%End
+%MethodCode
+    sipCpp = new sipQgsSettingsEntryInteger( QgsSettingsEntryInteger( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), a2, *a3, *a4, a5, a6 ) );
+%End
+
+    virtual Qgis::SettingsType settingsType() const;
+
+    void setMinValue( qlonglong minValue );
+%Docstring
+Set the minimum value.
+
+minValue The minimum value.
+%End
+
+    qlonglong minValue();
+%Docstring
+Returns the minimum value.
+%End
+
+    void setMaxValue( qlonglong maxValue );
+%Docstring
+Set the maximum value.
+
+maxValue The maximum value.
+%End
+
+    qlonglong maxValue();
+%Docstring
+Returns the maximum value.
+%End
+
+  private:
+    virtual bool checkValue( qlonglong value ) const;
+
+    virtual qlonglong convertFromVariant( const QVariant &value ) const;
+
+};
+
+
+
+typedef QgsSettingsEntryByValue<double> QgsSettingsEntryByValuedoubleBase;
+
+class QgsSettingsEntryDouble : QgsSettingsEntryByValuedoubleBase
+{
+%Docstring(signature="appended")
+
+A double settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryByValue<double> QgsSettingsEntryByValuedoubleBase;
+%End
+  public:
+
+  private:
+    QgsSettingsEntryDouble( const QString &key,
+                            const QString &section,
+                            double defaultValue = 0.0,
+                            const QString &description = QString(),
+                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                            double minValue = -DBL_MAX,
+                            double maxValue = DBL_MAX,
+                            int displayDecimals = 1 );
+%Docstring
+Constructor for QgsSettingsEntryDouble.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+The ``minValue`` argument specifies the minimal value.
+The ``maxValue`` argument specifies the maximal value.
+The ``displayDecimals`` specifies an hint for the gui about how much decimals to show
+for example for a QDoubleSpinBox.
+%End
+  public:
+
+    QgsSettingsEntryDouble( const QString &key,
+                            const QString &pluginName,
+                            double defaultValue,
+                            const QString &description = QString(),
+                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                            double minValue = -DBL_MAX,
+                            double maxValue = DBL_MAX,
+                            int displayDecimals = 1 );
+%Docstring
+Constructor for QgsSettingsEntryDouble.
+This constructor is intended to be used from plugins.
+
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is used to define the key of the setting
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``minValue`` argument specifies the minimal value.
+The ``maxValue`` argument specifies the maximal value.
+The ``displayDecimals`` specifies an hint for the gui about how much decimals to show
+%End
+%MethodCode
+    sipCpp = new sipQgsSettingsEntryDouble( QgsSettingsEntryDouble( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), a2, *a3, *a4, a5, a6, a7 ) );
+%End
+
+
+    virtual Qgis::SettingsType settingsType() const;
+
+    void setMinValue( double minValue );
+%Docstring
+Set the minimum value.
+
+minValue The minimum value.
+%End
+
+    double minValue() const;
+%Docstring
+Returns the minimum value.
+%End
+
+    void setMaxValue( double maxValue );
+%Docstring
+Set the maximum value.
+
+maxValue The maximum value.
+%End
+
+    double maxValue() const;
+%Docstring
+Returns the maximum value.
+%End
+
+    void setDisplayHintDecimals( int displayHintDecimals );
+%Docstring
+Set the display hint decimals.
+
+displayHintDecimals The number of decimals that should be shown in the Gui.
+%End
+
+    int displayHintDecimals() const;
+%Docstring
+Returns how much decimals should be shown in the Gui.
+%End
+
+  private:
+    virtual bool checkValue( double value ) const;
+
+    virtual double convertFromVariant( const QVariant &value ) const;
+
+};
+
+
+
+
+typedef QgsSettingsEntryByReference<QColor> QgsSettingsEntryByReferenceQColorBase;
+
+class QgsSettingsEntryColor : QgsSettingsEntryByReferenceQColorBase
+{
+%Docstring(signature="appended")
+
+A color settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryByReference<QColor> QgsSettingsEntryByReferenceQColorBase;
+%End
+  public:
+
+  private:
+    QgsSettingsEntryColor( const QString &key,
+                           const QString &section,
+                           const QColor &defaultValue = QColor(),
+                           const QString &description = QString(),
+                           Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryColor.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+  public:
+
+    QgsSettingsEntryColor( const QString &key,
+                           const QString &pluginName,
+                           const QColor &defaultValue = QColor(),
+                           const QString &description = QString(),
+                           Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryColor.
+This constructor is intended to be used from plugins.
+
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+%MethodCode
+    sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), *a2, *a3, *a4 ) );
+%End
+
+    virtual Qgis::SettingsType settingsType() const;
+
+  private:
+    virtual QColor convertFromVariant( const QVariant &value ) const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingsentryimpl.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

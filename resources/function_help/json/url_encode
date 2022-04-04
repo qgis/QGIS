@@ -3,16 +3,13 @@
   "type": "function",
   "groups": ["Maps"],
   "description": "Returns an URL encoded string from a map. Transforms all characters in their properly-encoded form producing a fully-compliant query string.<br>Note that the plus sign '+' is not converted.",
-  "arguments": [
-    {
-      "arg": "map",
-      "description": "a map."
-    }
-  ],
-  "examples": [
-    {
-      "expression": "url_encode(map('a&+b', 'a and plus b', 'a=b', 'a equals b'))",
-      "returns": "'a%26+b=a%20and%20plus%20b&a%3Db=a%20equals%20b'"
-    }
-  ]
+  "arguments": [{
+    "arg": "map",
+    "description": "a map."
+  }],
+  "examples": [{
+    "expression": "url_encode(map('a&+b', 'a and plus b', 'a=b', 'a equals b'))",
+    "returns": "'a%26+b=a%20and%20plus%20b&a%3Db=a%20equals%20b'"
+  }],
+  "tags": ["encoded", "producing", "form", "characters", "query", "plus", "url", "compliant", "converted", "map", "sign", "transforms"]
 }

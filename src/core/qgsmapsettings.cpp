@@ -22,7 +22,7 @@
 
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerlistutils.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsproject.h"
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
@@ -853,4 +853,34 @@ QgsDoubleRange QgsMapSettings::zRange() const
 void QgsMapSettings::setZRange( const QgsDoubleRange &zRange )
 {
   mZRange = zRange;
+}
+
+Qgis::RendererUsage QgsMapSettings::rendererUsage() const
+{
+  return mRendererUsage;
+}
+
+void QgsMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
+{
+  mRendererUsage = rendererUsage;
+}
+
+double QgsMapSettings::frameRate() const
+{
+  return mFrameRate;
+}
+
+void QgsMapSettings::setFrameRate( double rate )
+{
+  mFrameRate = rate;
+}
+
+long long QgsMapSettings::currentFrame() const
+{
+  return mCurrentFrame;
+}
+
+void QgsMapSettings::setCurrentFrame( long long frame )
+{
+  mCurrentFrame = frame;
 }

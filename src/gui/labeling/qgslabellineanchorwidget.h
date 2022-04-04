@@ -62,6 +62,7 @@ class GUI_EXPORT QgsLabelLineAnchorWidget : public QgsLabelSettingsWidgetBase, p
     bool mBlockSignals = false;
 
     void updateAnchorTypeHint();
+    void updateAnchorTextPointHint();
 };
 
 #endif // QGSLABELLINEANCHORWIDGET_H

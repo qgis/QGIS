@@ -240,7 +240,8 @@ void QgsLayerTreeViewDefaultActions::checkAndAllParents()
 
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
-  if ( mView->selectedNodes( true ).count() >= 2 )
+  int nodeCount = mView->selectedNodes( true ).count();
+  if ( nodeCount > 1 || ( nodeCount == 1 && mView->currentLayer() ) )
   {
     groupSelected();
     return;
@@ -511,7 +512,7 @@ void QgsLayerTreeViewDefaultActions::moveToBottom()
 void QgsLayerTreeViewDefaultActions::groupSelected()
 {
   const QList<QgsLayerTreeNode *> nodes = mView->selectedNodes( true );
-  if ( nodes.count() < 2 || ! QgsLayerTree::isGroup( nodes[0]->parent() ) )
+  if ( nodes.empty() || ! QgsLayerTree::isGroup( nodes[0]->parent() ) )
     return;
 
   QgsLayerTreeGroup *parentGroup = QgsLayerTree::toGroup( nodes[0]->parent() );

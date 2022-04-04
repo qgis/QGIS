@@ -229,6 +229,9 @@ QIcon QgsPointCloudAttributeModel::iconForAttributeType( QgsPointCloudAttribute:
     case QgsPointCloudAttribute::Short:
     case QgsPointCloudAttribute::UShort:
     case QgsPointCloudAttribute::Int32:
+    case QgsPointCloudAttribute::Int64:
+    case QgsPointCloudAttribute::UInt32:
+    case QgsPointCloudAttribute::UInt64:
     {
       return QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
     }
@@ -238,6 +241,7 @@ QIcon QgsPointCloudAttributeModel::iconForAttributeType( QgsPointCloudAttribute:
       return QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
     }
     case QgsPointCloudAttribute::Char:
+    case QgsPointCloudAttribute::UChar:
     {
       return QgsApplication::getThemeIcon( "/mIconFieldText.svg" );
     }
@@ -281,9 +285,13 @@ bool QgsPointCloudAttributeProxyModel::filterAcceptsRow( int source_row, const Q
     return true;
 
   if ( ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::Char ) ||
+       ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::UChar ) ||
        ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::Short ) ||
        ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::UShort ) ||
        ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int32 ) ||
+       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::UInt32 ) ||
+       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int64 ) ||
+       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::UInt64 ) ||
        ( mFilters.testFlag( Float ) && type == QgsPointCloudAttribute::Float ) ||
        ( mFilters.testFlag( Double ) && type == QgsPointCloudAttribute::Double ) )
     return true;

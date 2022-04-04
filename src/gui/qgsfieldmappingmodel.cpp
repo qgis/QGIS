@@ -17,6 +17,7 @@
 #include "qgsfieldmappingmodel.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsvariantutils.h"
 
 QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields,
     const QgsFields &destinationFields,
@@ -120,7 +121,7 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
           }
           case ColumnDataIndex::DestinationType:
           {
-            return static_cast<int>( f.field.type() );
+            return f.field.typeName();
           }
           case ColumnDataIndex::DestinationLength:
           {
@@ -207,7 +208,7 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
         }
         case ColumnDataIndex::DestinationType:
         {
-          f.field.setType( static_cast<QVariant::Type>( value.toInt( ) ) );
+          setFieldTypeFromName( f.field, value.toString() );
           break;
         }
         case ColumnDataIndex::DestinationLength:
@@ -354,6 +355,7 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
   {
     Field f;
     f.field = df;
+    f.field.setTypeName( qgsFieldToTypeName( df ) );
     f.originalName = df.name();
     if ( expressions.contains( f.field.name() ) )
     {
@@ -391,17 +393,64 @@ const QMap<QVariant::Type, QString> QgsFieldMappingModel::dataTypes()
 {
   static const QMap<QVariant::Type, QString> sDataTypes
   {
-    { QVariant::Type::Int, tr( "Whole number (integer - 32bit)" ) },
-    { QVariant::Type::LongLong, tr( "Whole number (integer - 64bit)" ) },
-    { QVariant::Type::Double, tr( "Decimal number (double)" ) },
-    { QVariant::Type::String, tr( "Text (string)" ) },
-    { QVariant::Type::Date, tr( "Date" ) },
-    { QVariant::Type::Time, tr( "Time" ) },
-    { QVariant::Type::DateTime, tr( "Date & Time" ) },
-    { QVariant::Type::Bool, tr( "Boolean" ) },
-    { QVariant::Type::ByteArray, tr( "Binary object (BLOB)" ) },
+    { QVariant::Type::Int, QgsVariantUtils::typeToDisplayString( QVariant::Type::Int ) },
+    { QVariant::Type::LongLong, QgsVariantUtils::typeToDisplayString( QVariant::Type::LongLong ) },
+    { QVariant::Type::Double, QgsVariantUtils::typeToDisplayString( QVariant::Type::Double ) },
+    { QVariant::Type::String, QgsVariantUtils::typeToDisplayString( QVariant::Type::String ) },
+    { QVariant::Type::Date, QgsVariantUtils::typeToDisplayString( QVariant::Type::Date ) },
+    { QVariant::Type::Time, QgsVariantUtils::typeToDisplayString( QVariant::Type::Time ) },
+    { QVariant::Type::DateTime, QgsVariantUtils::typeToDisplayString( QVariant::Type::DateTime ) },
+    { QVariant::Type::Bool, QgsVariantUtils::typeToDisplayString( QVariant::Type::Bool ) },
+    { QVariant::Type::ByteArray, QgsVariantUtils::typeToDisplayString( QVariant::Type::ByteArray ) },
   };
   return sDataTypes;
+}
+
+const QList<QgsVectorDataProvider::NativeType> QgsFieldMappingModel::supportedDataTypes()
+{
+  static const QList<QgsVectorDataProvider::NativeType> sDataTypes =
+    QList<QgsVectorDataProvider::NativeType>() << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::Int ), QStringLiteral( "integer" ), QVariant::Int )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::LongLong ), QStringLiteral( "int8" ), QVariant::LongLong )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::Double ), QStringLiteral( "double precision" ), QVariant::Double )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::String ), QStringLiteral( "text" ), QVariant::String )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::Date ), QStringLiteral( "date" ), QVariant::Date )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::Time ), QStringLiteral( "time" ), QVariant::Time )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::Bool ), QStringLiteral( "boolean" ), QVariant::Bool )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::ByteArray ), QStringLiteral( "binary" ), QVariant::ByteArray )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::StringList ), QStringLiteral( "stringlist" ), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::List, QVariant::Type::Int ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::List, QVariant::Type::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Type::List, QVariant::Type::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+  return sDataTypes;
+}
+
+const QString QgsFieldMappingModel::qgsFieldToTypeName( const QgsField &field )
+{
+  const QList<QgsVectorDataProvider::NativeType> types = supportedDataTypes();
+  for ( const auto &type : types )
+  {
+    if ( type.mType == field.type() && type.mSubType == field.subType() )
+    {
+      return type.mTypeName;
+    }
+  }
+  return QString();
+}
+
+void QgsFieldMappingModel::setFieldTypeFromName( QgsField &field, const QString &name )
+{
+  const QList<QgsVectorDataProvider::NativeType> types = supportedDataTypes();
+  for ( const auto &type : types )
+  {
+    if ( type.mTypeName == name )
+    {
+      field.setType( type.mType );
+      field.setTypeName( type.mTypeName );
+      field.setSubType( type.mSubType );
+      return;
+    }
+  }
 }
 
 QList<QgsFieldMappingModel::Field> QgsFieldMappingModel::mapping() const
@@ -465,6 +514,7 @@ void QgsFieldMappingModel::appendField( const QgsField &field, const QString &ex
   beginInsertRows( QModelIndex(), lastRow, lastRow );
   Field f;
   f.field = field;
+  f.field.setTypeName( qgsFieldToTypeName( field ) );
   f.expression = expression;
   f.originalName = field.name();
   mMapping.push_back( f );

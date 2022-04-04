@@ -8,24 +8,17 @@
     <alias type="application/x-qgis"/>
     <icon name="qgis-qgs"/>
     <magic priority="50">
-      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
-        <match type="string" offset="0:256" value="&lt;qgis projectname"/>
-      </match>
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis"/>
     </magic>
     <glob pattern="*.qgs"/>
   </mime-type>
-  
+
   <mime-type type="application/x-qgis-project-container">
     <comment>QGIS Project</comment>
     <comment xml:lang="de">QGIS-Projekt</comment>
     <sub-class-of type="application/zip"/>
     <alias type="application/x-qgis"/>
     <icon name="qgis-qgs"/>
-    <magic priority="50">
-      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
-        <match type="string" offset="0:256" value="&lt;qgis projectname"/>
-      </match>
-    </magic>
     <glob pattern="*.qgz"/>
   </mime-type>
 
@@ -34,23 +27,19 @@
     <comment xml:lang="de">QGIS-Layereinstellungen</comment>
     <sub-class-of type="application/xml"/>
     <icon name="qgis-qml"/>
-    <magic priority="50">
-      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
-        <match type="string" offset="0:256" value="&lt;qgis version"/>
-      </match>
+    <magic priority="80">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis"/>
     </magic>
     <glob pattern="*.qml"/>
   </mime-type>
-  
+
   <mime-type type="application/x-qgis-layer-definition">
     <comment>QGIS layer definition</comment>
     <comment xml:lang="de">QGIS-Layerdefinition</comment>
     <sub-class-of type="application/xml"/>
     <icon name="qgis-qlr"/>
     <magic priority="50">
-      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
-        <match type="string" offset="0:256" value="&lt;qgis version"/>
-      </match>
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis-layer-definition"/>
     </magic>
     <glob pattern="*.qlr"/>
   </mime-type>
@@ -61,9 +50,7 @@
     <sub-class-of type="application/xml"/>
     <icon name="qgis-qpt"/>
     <magic priority="50">
-      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
-        <match type="string" offset="0:256" value="&lt;qgis version"/>
-      </match>
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis"/>
     </magic>
     <glob pattern="*.qpt"/>
   </mime-type>
@@ -80,11 +67,11 @@
               <match type="big32" offset="16" value="0">
                 <match type="big32" offset="20" value="0">
                   <match type="big32" offset="28" value="1000"/>
-		</match>
+                </match>
               </match>
-	    </match>
-	  </match>
-	</match>
+            </match>
+          </match>
+        </match>
       </match>
     </magic>
     <glob pattern="*.shp"/>
@@ -143,7 +130,7 @@
                 <match type="byte" offset="13" value="10">
                   <match type="byte" offset="14" value="135">
                     <match type="byte" offset="13" value="10"/>
-		  </match>
+                  </match>
                 </match>
               </match>
             </match>

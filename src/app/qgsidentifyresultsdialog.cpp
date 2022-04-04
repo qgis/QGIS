@@ -1511,6 +1511,8 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     mActionPopup->addAction( tr( "Copy Attribute Value" ), this, &QgsIdentifyResultsDialog::copyAttributeValue );
     mActionPopup->addAction( tr( "Copy Feature Attributes" ), this, &QgsIdentifyResultsDialog::copyFeatureAttributes );
 
+    mActionPopup->addAction( tr( "Select Features by Attribute Value" ), this, &QgsIdentifyResultsDialog::selectFeatureByAttribute );
+
     if ( item->parent() == featItem && item->childCount() == 0 )
     {
       idx = item->data( 0, Qt::UserRole + 1 ).toInt();
@@ -2322,6 +2324,27 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
 
   QgsDebugMsg( QStringLiteral( "set clipboard: %1" ).arg( text ) );
   clipboard->setText( text );
+}
+
+void QgsIdentifyResultsDialog::selectFeatureByAttribute()
+{
+  QTreeWidgetItem *item = lstResults->currentItem();
+  if ( !item ) // should not happen
+  {
+    QgsDebugMsg( QStringLiteral( "Selected item is not feature" ) );
+    return;
+  }
+
+  const QString attribute = item->data( 0, Qt::DisplayRole ).toString();
+  const QVariant value = item->data( 1, Qt::UserRole );
+
+  QgsVectorLayer *vlayer = vectorLayer( item );
+
+  if ( !vlayer )
+    return;
+
+  QString expression = QgsExpression::createFieldEqualityExpression( attribute, value );
+  vlayer->selectByExpression( expression );
 }
 
 void QgsIdentifyResultsDialog::copyGetFeatureInfoUrl()

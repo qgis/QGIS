@@ -40,6 +40,7 @@ set(TESTS
  testqgsconnectionpool.cpp
  testqgscoordinatereferencesystemregistry.cpp
  testqgscoordinatetransform.cpp
+ testqgscoordinateutils.cpp
  testqgscopyfiletask.cpp
  testqgscredentials.cpp
  testqgscurve.cpp
@@ -53,6 +54,7 @@ set(TESTS
  testqgsexpression.cpp
  testqgsexpressioncontext.cpp
  testqgsfeature.cpp
+ testqgsfeaturerequest.cpp
  testqgsfield.cpp
  testqgsfields.cpp
  testqgsfilledmarker.cpp
@@ -135,6 +137,7 @@ set(TESTS
  testqgspainteffectregistry.cpp
  testqgspallabeling.cpp
  testqgspointcloudattribute.cpp
+ testqgspointcloudexpression.cpp
  testqgspointcloudrendererregistry.cpp
  testqgspointlocator.cpp
  testqgspointpatternfillsymbol.cpp
@@ -164,11 +167,13 @@ set(TESTS
  testqgssettingsregistry.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp
+ testqgssimplifymethod.cpp
  testqgssnappingutils.cpp
  testqgsspatialindex.cpp
  testqgsspatialindexkdbush.cpp
  testqgssqliteexpressioncompiler.cpp
  testqgssqliteutils.cpp
+ testqgsrelation.cpp
  testqgsstatisticalsummary.cpp
  testqgsstoredexpressionmanager.cpp
  testqgsstringutils.cpp
@@ -193,6 +198,7 @@ set(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayerutils.cpp
  testqgsvectortilelayer.cpp
+ testqgsvectortileconnection.cpp
  testqgsvectortileutils.cpp
  testqgsvectortilewriter.cpp
  testqgstiles.cpp

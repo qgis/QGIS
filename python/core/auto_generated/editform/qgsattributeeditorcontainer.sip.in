@@ -47,11 +47,33 @@ Determines if this container is rendered as collapsible group box or tab in a ta
 
     virtual bool isGroupBox() const;
 %Docstring
-Returns if this container is going to be rendered as a group box
+Returns if this container is going to be a group box
 
 :return: ``True`` if it will be a group box, ``False`` if it will be a tab
 %End
 
+    bool collapsed() const;
+%Docstring
+For group box containers  returns if this group box is collapsed.
+
+:return: ``True`` if the group box is collapsed, ``False`` otherwise.
+
+.. seealso:: :py:func:`collapsed`
+
+.. seealso:: :py:func:`setCollapsed`
+
+.. versionadded:: 3.26
+%End
+    void setCollapsed( bool collapsed );
+%Docstring
+For group box containers  sets if this group box is ``collapsed``.
+
+.. seealso:: :py:func:`collapsed`
+
+.. seealso:: :py:func:`setCollapsed`
+
+.. versionadded:: 3.26
+%End
     QList<QgsAttributeEditorElement *> children() const;
 %Docstring
 Gets a list of the children elements of this container
@@ -113,6 +135,8 @@ the field value controlled by editor widgets.
 
 .. versionadded:: 3.0
 %End
+
+
 
     QColor backgroundColor() const;
 %Docstring

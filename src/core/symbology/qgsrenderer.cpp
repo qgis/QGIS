@@ -368,6 +368,12 @@ void QgsFeatureRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *sym
   delete symbol;
 }
 
+QString QgsFeatureRenderer::legendKeyToExpression( const QString &, QgsVectorLayer *, bool &ok ) const
+{
+  ok = false;
+  return QString();
+}
+
 QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const
 {
   return QgsLegendSymbolList();

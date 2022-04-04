@@ -45,17 +45,24 @@ QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::Windo
   mBuildQueryButton->setDisabled( true );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
 
-  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsAbstractDbSourceSelect::treeviewClicked );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsAbstractDbSourceSelect::treeviewDoubleClicked );
+  connect( mTablesTreeView, &QTreeView::clicked, this, [ = ]( const QModelIndex & index )
+  {
+    treeviewClicked( mProxyModel->mapToSource( index ) );
+  } );
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [ = ]( const QModelIndex & index )
+  {
+    treeviewDoubleClicked( mProxyModel->mapToSource( index ) );
+  } );
 
-  connect( mBuildQueryButton, &QAbstractButton::clicked, this, [ = ]() {setSql( mTablesTreeView->currentIndex() );} );
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, [ = ]() {setSql( mProxyModel->mapToSource( mTablesTreeView->currentIndex() ) );} );
 }
 
 void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDelegate *delegate )
 {
   mProxyModel->setSourceModel( model );
   mTablesTreeView->setModel( mProxyModel );
-  mTablesTreeView->setItemDelegate( delegate );
+  if ( delegate )
+    mTablesTreeView->setItemDelegate( delegate );
 
   // setting the search coluns in search settings menu using the model header data
   if ( mSearchSettingsMenu )

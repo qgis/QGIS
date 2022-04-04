@@ -22,6 +22,7 @@
 #include <QRect>
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QMouseEvent>
+#include <QImage>
 
 namespace Qt3DInput
 {
@@ -214,9 +215,15 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      */
     void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
 
+    /**
+     * Sets the depth buffer image used by the camera controller to calculate world position from a pixel's coordinates and depth
+     * \since QGIS 3.24
+     */
+    void depthBufferCaptured( const QImage &depthImage );
+
   private:
     void rotateCamera( float diffPitch, float diffYaw );
-    void updateCameraFromPose( bool centerPointChanged = false );
+    void updateCameraFromPose();
     void moveCameraPositionBy( const QVector3D &posDiff );
 
   signals:
@@ -238,6 +245,18 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      */
     void setCursorPosition( QPoint point );
 
+    /**
+     * Emitted to ask for the depth buffer image
+     * \since QGIS 3.24
+     */
+    void requestDepthBufferCapture();
+
+    /**
+     * Emitted when the camera rotation center changes
+     * \since QGIS 3.24
+     */
+    void cameraRotationCenterChanged( QVector3D position );
+
   private slots:
     void onPositionChanged( Qt3DInput::QMouseEvent *mouse );
     void onWheel( Qt3DInput::QWheelEvent *wheel );
@@ -253,6 +272,16 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *event );
     void onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse );
     void onPositionChangedTerrainNavigation( Qt3DInput::QMouseEvent *mouse );
+
+    void handleTerrainNavigationWheelZoom();
+
+    double cameraCenterElevation();
+
+    /**
+     * Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
+     * If the value is 1, the average depth of all non void pixels is returned instead.
+     */
+    double sampleDepthBuffer( const QImage &buffer, int px, int py );
 
   private:
     //! Camera that is being controlled
@@ -272,6 +301,28 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     bool mMousePressed = false;
     Qt3DInput::QMouseEvent::Buttons mPressedButton = Qt3DInput::QMouseEvent::Buttons::NoButton;
 
+    bool mDepthBufferIsReady = false;
+    QImage mDepthBufferImage;
+
+    QPoint mMiddleButtonClickPos;
+    bool mRotationCenterCalculated = false;
+    QVector3D mRotationCenter;
+    double mRotationDistanceFromCenter;
+    double mRotationPitch = 0;
+    double mRotationYaw = 0;
+    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeRotation;
+
+    QPoint mDragButtonClickPos;
+    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeDrag;
+    bool mDragPointCalculated = false;
+    QVector3D mDragPoint;
+    double mDragDepth;
+
+    bool mIsInZoomInState = false;
+    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeZoom;
+    bool mZoomPointCalculated = false;
+    QVector3D mZoomPoint;
+
     //! Delegates mouse events to the attached MouseHandler objects
     Qt3DInput::QMouseDevice *mMouseDevice = nullptr;
     Qt3DInput::QKeyboardDevice *mKeyboardDevice = nullptr;
@@ -286,6 +337,9 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     bool mCaptureFpsMouseMovements = false;
     bool mIgnoreNextMouseMove = false;
     QTimer *mFpsNavTimer = nullptr;
+
+    double mCumulatedWheelY = 0;
+
 };
 
 #endif // QGSCAMERACONTROLLER_H

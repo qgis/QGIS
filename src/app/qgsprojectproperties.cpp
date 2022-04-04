@@ -168,10 +168,34 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mAreaUnitsCombo->addItem( tr( "Square Degrees" ), QgsUnitTypes::AreaSquareDegrees );
   mAreaUnitsCombo->addItem( tr( "Map Units" ), QgsUnitTypes::AreaUnknownUnit );
 
+  mTransactionModeComboBox->addItem( tr( "Local Edit Buffer" ), static_cast< int >( Qgis::TransactionMode::Disabled ) );
+  mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Edits are buffered locally and sent to the provider when toggling layer editing mode." ), Qt::ToolTipRole );
+  mTransactionModeComboBox->addItem( tr( "Automatic Transaction Groups" ), static_cast< int >( Qgis::TransactionMode::AutomaticGroups ) );
+  mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Automatic transactional editing means that on supported datasources (postgres databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction." ), Qt::ToolTipRole );
+  mTransactionModeComboBox->addItem( tr( "Buffered Transaction Groups" ), static_cast< int >( Qgis::TransactionMode::BufferedGroups ) );
+  mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is executed within a single transaction on all layers (per provider)." ), Qt::ToolTipRole );
+
   projectionSelector->setShowNoProjection( true );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsProjectProperties::apply );
-  connect( this, &QDialog::accepted, this, &QgsProjectProperties::apply );
+
+  // disconnect default connection setup by initOptionsBase for accepting dialog, and insert logic
+  // to validate widgets before allowing dialog to be closed
+  disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mOptButtonBox, &QDialogButtonBox::accepted, this, [ = ]
+  {
+    for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
+    {
+      if ( !widget->isValid() )
+      {
+        setCurrentPage( widget->objectName() );
+        return;
+      }
+    }
+    apply();
+    accept();
+  } );
+
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [ = ]
   {
     if ( mBlockCrsUpdates || !projectionSelector->hasValidSelection() )
@@ -217,6 +241,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     // reproject extent
     QgsCoordinateTransform ct( QgsProject::instance()->crs(),
                                QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
+    ct.setBallparkTransformsAreAppropriate( true );
 
     g = g.densifyByCount( 5 );
     try
@@ -241,8 +266,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   {
     if ( layer->isEditable() )
     {
-      mAutoTransaction->setEnabled( false );
-      mAutoTransaction->setToolTip( tr( "Layers are in edit mode. Stop edit mode on all layers to toggle transactional editing." ) );
+      mTransactionModeComboBox->setEnabled( false );
+      mTransactionModeComboBox->setToolTip( tr( "Layers are in edit mode. Stop edit mode on all layers to toggle transactional editing." ) );
     }
   }
 
@@ -251,13 +276,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mStartDateTimeEdit->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTimeEdit->maximumDateTime() );
   mEndDateTimeEdit->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mEndDateTimeEdit->maximumDateTime() );
-  mStartDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-  mEndDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mStartDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
+  mEndDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
 
   mStartDateTimeEdit->setDateTime( range.begin() );
   mEndDateTimeEdit->setDateTime( range.end() );
 
-  mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
   mProjectFileLineEdit->setText( QDir::toNativeSeparators( !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath() ) );
   mProjectHomeLineEdit->setShowClearButton( true );
@@ -638,13 +662,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
   else
   {
-    values = QgsProject::instance()->readListEntry( QStringLiteral( "WMSEpsgList" ), QStringLiteral( "/" ), QStringList(), &ok );
+    const QStringList wmsEpsgListValues = QgsProject::instance()->readListEntry( QStringLiteral( "WMSEpsgList" ), QStringLiteral( "/" ), QStringList(), &ok );
     grpWMSList->setChecked( ok && !values.isEmpty() );
     if ( grpWMSList->isChecked() )
     {
       QStringList list;
-      const auto constValues = values;
-      for ( const QString &value : constValues )
+      list.reserve( wmsEpsgListValues.size() );
+      for ( const QString &value : wmsEpsgListValues )
       {
         list << QStringLiteral( "EPSG:%1" ).arg( value );
       }
@@ -754,7 +778,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   populateWmtsTree( QgsProject::instance()->layerTreeRoot(), projItem );
   projItem->setExpanded( true );
   twWmtsLayers->header()->resizeSections( QHeaderView::ResizeToContents );
-  for ( QTreeWidgetItem *item : twWmtsLayers->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+  const QList<QTreeWidgetItem *> wmtsItems = twWmtsLayers->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 );
+  for ( QTreeWidgetItem *item : wmtsItems )
   {
     QString itemType = item->data( 0, Qt::UserRole ).toString();
     if ( itemType == QLatin1String( "group" ) )
@@ -793,7 +818,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       QStringList config = c.split( ',' );
       wmtsGridConfigs[config[0]] = config;
     }
-    for ( QTreeWidgetItem *item : twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+    const QList<QTreeWidgetItem *> wmtsGridItems = twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 );
+    for ( QTreeWidgetItem *item : wmtsGridItems )
     {
       QString crsStr = item->data( 0, Qt::UserRole ).toString();
       if ( !wmtsGridList.contains( crsStr ) )
@@ -872,6 +898,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     }
   }
   twWFSLayers->setRowCount( j );
+  twWFSLayers->resizeColumnToContents( 0 );
+  twWFSLayers->resizeColumnToContents( 2 );
   twWFSLayers->verticalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
   mWCSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), QString() ) );
@@ -955,9 +983,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
   mRelationManagerDlg->setLayers( vectorLayers );
 
-  mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
-  mEvaluateDefaultValues->setChecked( QgsProject::instance()->evaluateDefaultValues() );
-  mTrustProjectCheckBox->setChecked( QgsProject::instance()->trustLayerMetadata() );
+  mTransactionModeComboBox->setCurrentIndex( mTransactionModeComboBox->findData( static_cast<int>( QgsProject::instance()->transactionMode() ) ) );
+  mEvaluateDefaultValues->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide );
+  mTrustProjectCheckBox->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::TrustStoredLayerStatistics );
+  mCheckRememberEditStatus->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::RememberLayerEditStatusBetweenSessions );
+  mCheckBoxRememberAttributeTables->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions );
 
   // Variables editor
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
@@ -1014,6 +1044,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     if ( !page )
       continue;
 
+    page->setObjectName( factory->title() );
+
     mAdditionalProjectPropertiesWidgets << page;
     mOptionsStackedWidget->addWidget( page );
   }
@@ -1058,6 +1090,15 @@ QgsExpressionContext QgsProjectProperties::createExpressionContext() const
 
 void QgsProjectProperties::apply()
 {
+  for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
+  {
+    if ( !widget->isValid() )
+    {
+      setCurrentPage( widget->objectName() );
+      return;
+    }
+  }
+
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "RenderMapTile" ), QStringLiteral( "/" ), mMapTileRenderingCheckBox->isChecked() );
 
@@ -1088,9 +1129,12 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setPresetHomePath( QDir::fromNativeSeparators( mProjectHomeLineEdit->text() ) );
 
   // DB-related options
-  QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
-  QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
-  QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
+  QgsProject::instance()->setTransactionMode( mTransactionModeComboBox->currentData().value<Qgis::TransactionMode>() );
+  QgsProject::instance()->setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide, mEvaluateDefaultValues->isChecked() );
+  QgsProject::instance()->setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics, mTrustProjectCheckBox->isChecked() );
+
+  QgsProject::instance()->setFlag( Qgis::ProjectFlag::RememberLayerEditStatusBetweenSessions, mCheckRememberEditStatus->isChecked() );
+  QgsProject::instance()->setFlag( Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions, mCheckBoxRememberAttributeTables->isChecked() );
 
   // Time settings
   QDateTime start = mStartDateTimeEdit->dateTime();
@@ -1368,6 +1412,7 @@ void QgsProjectProperties::apply()
   if ( grpWMSList->isChecked() )
   {
     QStringList crslist;
+    crslist.reserve( mWMSList->count() );
     for ( int i = 0; i < mWMSList->count(); i++ )
     {
       crslist << mWMSList->item( i )->text();
@@ -1384,6 +1429,7 @@ void QgsProjectProperties::apply()
   if ( mWMSPrintLayoutGroupBox->isChecked() )
   {
     QStringList composerTitles;
+    composerTitles.reserve( mPrintLayoutListWidget->count() );
     for ( int i = 0; i < mPrintLayoutListWidget->count(); ++i )
     {
       composerTitles << mPrintLayoutListWidget->item( i )->text();
@@ -1399,6 +1445,7 @@ void QgsProjectProperties::apply()
   if ( mLayerRestrictionsGroupBox->isChecked() )
   {
     QStringList layerNames;
+    layerNames.reserve( mLayerRestrictionsListWidget->count() );
     for ( int i = 0; i < mLayerRestrictionsListWidget->count(); ++i )
     {
       layerNames << mLayerRestrictionsListWidget->item( i )->text();
@@ -1472,7 +1519,8 @@ void QgsProjectProperties::apply()
   QStringList wmtsLayerList;
   QStringList wmtsPngLayerList;
   QStringList wmtsJpegLayerList;
-  for ( const QTreeWidgetItem *item : twWmtsLayers->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+  const QList<QTreeWidgetItem *> wmtsLayerItems = twWmtsLayers->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 );
+  for ( const QTreeWidgetItem *item : wmtsLayerItems )
   {
     if ( !item->checkState( 1 ) )
       continue;
@@ -1515,7 +1563,8 @@ void QgsProjectProperties::apply()
 
   QStringList wmtsGridList;
   QStringList wmtsGridConfigList;
-  for ( const QTreeWidgetItem *item : twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+  const QList<QTreeWidgetItem *> wmtsGridItems = twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 );
+  for ( const QTreeWidgetItem *item : wmtsGridItems )
   {
     if ( !item->checkState( 1 ) )
       continue;
@@ -1566,6 +1615,7 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), mWCSUrlLineEdit->text() );
   QStringList wcsLayerList;
+  wcsLayerList.reserve( twWCSLayers->rowCount() );
   for ( int i = 0; i < twWCSLayers->rowCount(); i++ )
   {
     QString id = twWCSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
@@ -1636,11 +1686,13 @@ void QgsProjectProperties::lwWmsRowsRemoved( const QModelIndex &parent, int firs
   Q_UNUSED( first )
   Q_UNUSED( last )
   QStringList crslist;
+  crslist.reserve( mWMSList->count() );
   for ( int i = 0; i < mWMSList->count(); i++ )
   {
     crslist << mWMSList->item( i )->text();
   }
-  for ( const QTreeWidgetItem *item : twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+  const QList<QTreeWidgetItem *> wmtsGridItems = twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 );
+  for ( const QTreeWidgetItem *item : wmtsGridItems )
   {
     QString crsStr = item->data( 0, Qt::UserRole ).toString();
     if ( crslist.contains( crsStr ) )
@@ -1678,7 +1730,7 @@ void QgsProjectProperties::twWmtsGridItemChanged( QTreeWidgetItem *item, int col
 {
   if ( column == 4 || column == 5 )
   {
-    double maxScale = item->data( 4, Qt::DisplayRole ).toFloat();
+    double maxScale = item->data( 4, Qt::DisplayRole ).toDouble();
     int lastLevel = item->data( 5, Qt::DisplayRole ).toInt();
     item->setData( 6, Qt::DisplayRole, ( maxScale / std::pow( 2, lastLevel ) ) );
   }
@@ -1896,7 +1948,8 @@ void QgsProjectProperties::mAddWMSPrintLayoutButton_clicked()
 {
   const QList<QgsPrintLayout *> projectLayouts( QgsProject::instance()->layoutManager()->printLayouts() );
   QStringList layoutTitles;
-  for ( const auto &layout : projectLayouts )
+  layoutTitles.reserve( projectLayouts.size() );
+  for ( const QgsPrintLayout *layout : projectLayouts )
   {
     layoutTitles << layout->name();
   }
@@ -2097,6 +2150,7 @@ void QgsProjectProperties::pbnExportScales_clicked()
   }
 
   QStringList myScales;
+  myScales.reserve( lstScales->count() );
   for ( int i = 0; i < lstScales->count(); ++i )
   {
     myScales.append( lstScales->item( i )->text() );
@@ -2266,7 +2320,8 @@ void QgsProjectProperties::resetPythonMacros()
 
 void QgsProjectProperties::populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem )
 {
-  for ( QgsLayerTreeNode *treeNode : treeGroup->children() )
+  const QList<QgsLayerTreeNode *> children = treeGroup->children();
+  for ( QgsLayerTreeNode *treeNode : children )
   {
     QgsTreeWidgetItem *childItem = nullptr;
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
@@ -2334,6 +2389,7 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
     // calculate top, left and scale based on CRS bounds
     QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
     QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), crs, QgsProject::instance() );
+    crsTransform.setBallparkTransformsAreAppropriate( true );
     try
     {
       // firstly transform CRS bounds expressed in WGS84 to CRS

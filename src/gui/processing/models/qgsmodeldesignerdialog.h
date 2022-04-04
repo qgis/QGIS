@@ -94,6 +94,26 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     void setModelScene( QgsModelGraphicsScene *scene SIP_TRANSFER );
 
+    /**
+     * Save action.
+     *
+     * \since QGIS 3.24
+     */
+    enum class SaveAction
+    {
+      SaveAsFile, //!< Save model as a file
+      SaveInProject, //!< Save model into project
+    };
+
+  public slots:
+
+    /**
+     * Raise, unminimize and activate this window.
+     *
+     * \since QGIS 3.24
+     */
+    void activate();
+
   protected:
 
     // cppcheck-suppress pureVirtualCall
@@ -102,12 +122,11 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
     virtual void exportAsScriptAlgorithm() = 0;
     // cppcheck-suppress pureVirtualCall
-    virtual void saveModel( bool saveAs = false ) = 0;
+    virtual bool saveModel( bool saveAs = false ) = 0;
 
     QToolBar *toolbar() { return mToolbar; }
     QAction *actionOpen() { return mActionOpen; }
     QAction *actionSaveInProject() { return mActionSaveInProject; }
-    QAction *actionEditHelp() { return mActionEditHelp; }
     QAction *actionRun() { return mActionRun; }
     QgsMessageBar *messageBar() { return mMessageBar; }
     QGraphicsView *view() { return mView; }
@@ -117,7 +136,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     /**
      * Checks if the model can current be saved, and returns TRUE if it can.
      */
-    bool validateSave();
+    bool validateSave( SaveAction action );
 
     /**
      * Checks if there are unsaved changes in the model, and if so, prompts the user to save them.
@@ -136,11 +155,21 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
 
+    /**
+     * Sets the model \a name.
+     *
+     * Updates both the name text edit and the model name itself.
+     *
+     * \since QGIS 3.24
+     */
+    void setModelName( const QString &name );
+
   private slots:
     void zoomIn();
     void zoomOut();
     void zoomActual();
     void zoomFull();
+    void newModel();
     void exportToImage();
     void exportToPdf();
     void exportToSvg();
@@ -152,6 +181,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void validate();
     void reorderInputs();
     void setPanelVisibility( bool hidden );
+    void editHelp();
 
   private:
 

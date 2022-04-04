@@ -585,7 +585,7 @@ QgsRuleBasedRenderer::Rule::RenderResult QgsRuleBasedRenderer::Rule::renderFeatu
     }
   }
 
-  bool willrendersomething = false;
+  bool matchedAChild = false;
 
   // process children
   const auto constMChildren = mChildren;
@@ -594,23 +594,25 @@ QgsRuleBasedRenderer::Rule::RenderResult QgsRuleBasedRenderer::Rule::renderFeatu
     // Don't process else rules yet
     if ( !rule->isElse() )
     {
-      RenderResult res = rule->renderFeature( featToRender, context, renderQueue );
-      // consider inactive items as "rendered" so the else rule will ignore them
-      willrendersomething |= ( res == Rendered || res == Inactive );
+      const RenderResult res = rule->renderFeature( featToRender, context, renderQueue );
+      // consider inactive items as "matched" so the else rule will ignore them
+      matchedAChild |= ( res == Rendered || res == Inactive );
       rendered |= ( res == Rendered );
     }
   }
 
   // If none of the rules passed then we jump into the else rules and process them.
-  if ( !willrendersomething )
+  if ( !matchedAChild )
   {
     const auto constMElseRules = mElseRules;
     for ( Rule *rule : constMElseRules )
     {
-      rendered |= rule->renderFeature( featToRender, context, renderQueue ) == Rendered;
+      const RenderResult res = rule->renderFeature( featToRender, context, renderQueue );
+      matchedAChild |= ( res == Rendered || res == Inactive );
+      rendered |= res == Rendered;
     }
   }
-  if ( !mIsActive || ( mSymbol && !rendered ) )
+  if ( !mIsActive || ( mSymbol && !rendered ) || ( matchedAChild && !rendered ) )
     return Inactive;
   else if ( rendered )
     return Rendered;
@@ -1113,6 +1115,87 @@ void QgsRuleBasedRenderer::checkLegendSymbolItem( const QString &key, bool state
     rule->setActive( state );
 }
 
+QString QgsRuleBasedRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *, bool &ok ) const
+{
+  ok = false;
+  Rule *rule = mRootRule->findRuleByKey( key );
+  if ( !rule )
+    return QString();
+
+  std::function<QString( Rule *rule )> ruleToExpression;
+  ruleToExpression = [&ruleToExpression]( Rule * rule ) -> QString
+  {
+    if ( rule->isElse() && rule->parent() )
+    {
+      // gather the expressions for all other rules on this level and invert them
+
+      QStringList otherRules;
+      const QList<QgsRuleBasedRenderer::Rule *> siblings = rule->parent()->children();
+      for ( Rule *sibling : siblings )
+      {
+        if ( sibling == rule )
+          continue;
+
+        const QString siblingExpression = ruleToExpression( sibling );
+        if ( siblingExpression.isEmpty() )
+          return QStringLiteral( "FALSE" ); // nothing will match this rule
+
+        otherRules.append( siblingExpression );
+      }
+
+      if ( otherRules.empty() )
+        return QStringLiteral( "TRUE" ); // all features will match the else rule
+      else
+        return (
+                 otherRules.size() > 1
+                 ?  QStringLiteral( "NOT ((%1))" ).arg( otherRules.join( QStringLiteral( ") OR (" ) ) )
+                 : QStringLiteral( "NOT (%1)" ).arg( otherRules.at( 0 ) )
+               );
+    }
+    else
+    {
+      QStringList ruleParts;
+      if ( !rule->filterExpression().isEmpty() )
+        ruleParts.append( rule->filterExpression() );
+
+      if ( !qgsDoubleNear( rule->minimumScale(), 0.0 ) )
+        ruleParts.append( QStringLiteral( "@map_scale <= %1" ).arg( rule->minimumScale() ) );
+
+      if ( !qgsDoubleNear( rule->maximumScale(), 0.0 ) )
+        ruleParts.append( QStringLiteral( "@map_scale >= %1" ).arg( rule->maximumScale() ) );
+
+      if ( !ruleParts.empty() )
+      {
+        return (
+                 ruleParts.size() > 1
+                 ?  QStringLiteral( "(%1)" ).arg( ruleParts.join( QStringLiteral( ") AND (" ) ) )
+                 : ruleParts.at( 0 )
+               );
+      }
+      else
+      {
+        return QString();
+      }
+    }
+  };
+
+  QStringList parts;
+  while ( rule )
+  {
+    const QString ruleFilter = ruleToExpression( rule );
+    if ( !ruleFilter.isEmpty() )
+      parts.append( ruleFilter );
+
+    rule = rule->parent();
+  }
+
+  ok = true;
+  return parts.empty() ? QStringLiteral( "TRUE" )
+         : ( parts.size() > 1
+             ?  QStringLiteral( "(%1)" ).arg( parts.join( QStringLiteral( ") AND (" ) ) )
+             : parts.at( 0 ) );
+}
+
 void QgsRuleBasedRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
   Rule *rule = mRootRule->findRuleByKey( key );
@@ -1202,7 +1285,9 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule *ini
   {
     QString value;
     // not quoting numbers saves a type cast
-    if ( cat.value().type() == QVariant::Int )
+    if ( cat.value().isNull() )
+      value = "NULL";
+    else if ( cat.value().type() == QVariant::Int )
       value = cat.value().toString();
     else if ( cat.value().type() == QVariant::Double )
       // we loose precision here - so we may miss some categories :-(
@@ -1210,7 +1295,7 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule *ini
       value = QString::number( cat.value().toDouble(), 'f', 4 );
     else
       value = QgsExpression::quotedString( cat.value().toString() );
-    const QString filter = QStringLiteral( "%1 = %2" ).arg( attr, value );
+    const QString filter = QStringLiteral( "%1 %2 %3" ).arg( attr, cat.value().isNull() ? QStringLiteral( "IS" ) : QStringLiteral( "=" ), value );
     const QString label = !cat.label().isEmpty() ? cat.label() :
                           cat.value().isValid() ? value : QString();
     initialRule->appendChild( new Rule( cat.symbol()->clone(), 0, 0, filter, label ) );
@@ -1325,9 +1410,17 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
 
     QString attr = categorizedRenderer->classAttribute();
     // categorizedAttr could be either an attribute name or an expression.
-    // the only way to differentiate is to test it as an expression...
-    QgsExpression testExpr( attr );
-    if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) ) )
+    bool isField = false;
+    if ( layer )
+    {
+      isField = QgsExpression::expressionToLayerFieldIndex( attr, layer ) != -1;
+    }
+    else
+    {
+      QgsExpression testExpr( attr );
+      isField = testExpr.hasParserError() || testExpr.isField();
+    }
+    if ( isField && !attr.contains( '\"' ) )
     {
       //not an expression, so need to quote column name
       attr = QgsExpression::quotedColumnRef( attr );
@@ -1416,13 +1509,22 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
     QString attr = graduatedRenderer->classAttribute();
     // categorizedAttr could be either an attribute name or an expression.
     // the only way to differentiate is to test it as an expression...
-    QgsExpression testExpr( attr );
-    if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) ) )
+    bool isField = false;
+    if ( layer )
+    {
+      isField = QgsExpression::expressionToLayerFieldIndex( attr, layer ) != -1;
+    }
+    else
+    {
+      QgsExpression testExpr( attr );
+      isField = testExpr.hasParserError() || testExpr.isField();
+    }
+    if ( isField  && !attr.contains( '\"' ) )
     {
       //not an expression, so need to quote column name
       attr = QgsExpression::quotedColumnRef( attr );
     }
-    else if ( !testExpr.isField() )
+    else if ( !isField )
     {
       //otherwise wrap expression in brackets
       attr = QStringLiteral( "(%1)" ).arg( attr );

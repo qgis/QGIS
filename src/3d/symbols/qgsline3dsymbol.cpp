@@ -19,6 +19,8 @@
 #include "qgsmaterialregistry.h"
 #include "qgs3dexportobject.h"
 #include "qgs3dsceneexporter.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerelevationproperties.h"
 
 QgsLine3DSymbol::QgsLine3DSymbol()
   : mMaterial( std::make_unique< QgsPhongMaterialSettings >() )
@@ -99,6 +101,16 @@ void QgsLine3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
 QList<QgsWkbTypes::GeometryType> QgsLine3DSymbol::compatibleGeometryTypes() const
 {
   return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::LineGeometry;
+}
+
+void QgsLine3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer )
+{
+  const QgsVectorLayerElevationProperties *props = qgis::down_cast< const QgsVectorLayerElevationProperties * >( const_cast< QgsVectorLayer *>( layer )->elevationProperties() );
+
+  mAltClamping = props->clamping();
+  mAltBinding = props->binding();
+  mExtrusionHeight = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
+  mHeight = static_cast< float >( props->zOffset() );
 }
 
 QgsAbstract3DSymbol *QgsLine3DSymbol::create()

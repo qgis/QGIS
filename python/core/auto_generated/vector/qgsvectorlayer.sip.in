@@ -18,7 +18,7 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 Represents a vector layer which manages a vector based data sets.
@@ -509,12 +509,12 @@ Uses :py:class:`QgsExpression`
 
     virtual QgsVectorDataProvider *dataProvider() ${SIP_FINAL};
 
-
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 
-%Docstring
-Returns temporal properties associated with the vector layer.
-%End
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
+
 
     void setProviderEncoding( const QString &encoding );
 %Docstring
@@ -663,13 +663,14 @@ Selects features found within the search rectangle (in layer's coordinates)
 .. seealso:: :py:func:`selectByIds`
 %End
 
-    void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
+    void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection, QgsExpressionContext *context = 0 );
 %Docstring
 Selects matching features using an expression.
 
 :param expression: expression to evaluate to select features
 :param behavior: selection type, allows adding to current selection, removing
                  from selection, etc.
+:param context: since QGIS 3.26, specifies an optional expression context to use when selecting features. If not specified a default one will be built.
 
 .. seealso:: :py:func:`selectByRect`
 
@@ -941,6 +942,14 @@ Saves named and sld style of the layer to the style table in the db.
 :param description: A description of the style
 :param useAsDefault: Set to ``True`` if style should be used as the default style for the layer
 :param uiFileContent:
+
+.. note::
+
+   Prior to QGIS 3.24, this method would show a message box warning when a
+   style with the same ``styleName`` already existed to confirm replacing the style with the user.
+   Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
+   Use :py:func:`QgsProviderRegistry.styleExists()` to test in advance if a style already exists and handle this appropriately
+   in your client code.
 %End
 
     virtual int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/,

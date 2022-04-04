@@ -393,7 +393,7 @@ void TestQgsGrassProvider::mapsets()
   }
 
   QStringList expectedMapsets;
-  expectedMapsets << QStringLiteral( "PERMANENT" ) << QStringLiteral( "test" ) << QStringLiteral( "test6" ) << QStringLiteral( "test7" );
+  expectedMapsets << QStringLiteral( "PERMANENT" ) << QStringLiteral( "test" ) << QStringLiteral( "test6" ) << QStringLiteral( "test7" ) << QStringLiteral( "test8" );
   QStringList mapsets = QgsGrass::mapsets( tmpGisdbase,  mLocation );
   reportRow( "expectedMapsets: " + expectedMapsets.join( QLatin1String( ", " ) ) );
   reportRow( "mapsets: " + mapsets.join( QLatin1String( ", " ) ) );
@@ -597,7 +597,7 @@ void TestQgsGrassProvider::info()
 
   reportRow( QLatin1String( "" ) );
   QgsCoordinateReferenceSystem expectedCrs;
-  expectedCrs.createFromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  expectedCrs.createFromString( QStringLiteral( "WKT:GEOGCS[\"wgs84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.257223563],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]]" ) );
 
   reportRow( "expectedCrs: " + expectedCrs.toWkt() );
   QString error;

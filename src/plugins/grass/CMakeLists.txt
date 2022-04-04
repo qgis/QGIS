@@ -197,6 +197,8 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
       set_source_files_properties(${GRASS_PLUGIN_SRCS} PROPERTIES COMPILE_FLAGS "-wd4611")
     endif()
 
+    target_compile_features(plugin_grass${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
+
     target_link_libraries(plugin_grass${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
       qgis_app
@@ -251,7 +253,7 @@ if(NOT WIN32)
   install(DIRECTORY qtermwidget/color-schemes/ DESTINATION "${COLORSCHEMES_DIR}" FILES_MATCHING PATTERN "*.*schem*")
 endif()
 
-foreach(GRASS_BUILD_VERSION 6 7) # GRASS 6 and GRASS 7
+foreach(GRASS_BUILD_VERSION 6 7 8)
   if(GRASS_FOUND${GRASS_BUILD_VERSION})
     add_subdirectory(${GRASS_BUILD_VERSION})
   endif()

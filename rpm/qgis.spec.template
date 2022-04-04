@@ -12,16 +12,7 @@
 # py files located under /usr/share/qgis/python/plugins
 %global __python %{__python3}
 
-# SPEC do not support elseif until very recent releases
-%if 0%{?fedora} >= 31
-%define grass grass78
-%endif
-%if 0%{?fedora} == 30
-%define grass grass76
-%endif
-%if 0%{?fedora} < 30
-%define grass grass74
-%endif
+%define grass_prefix $(pkg-config --variable=prefix grass)
 
 %if %{_timestamp} > 0
 # Epoch is set only when building packages from master
@@ -54,11 +45,6 @@ Source5:        %{name}-server-README.fedora
 # MIME definitions
 # Based on debian/qgis.xml but excluding already defined or proprietary types
 Source6:        %{name}-mime.xml
-
-# Fix builds on 64-bit machines
-# https://github.com/qgis/QGIS/issues/23525
-# https://github.com/qgis/QGIS/commit/718581ffb12b723f9a3c0ae01b7ec2d8aed9d4bb.patch
-Patch0:         %{name}-lib64.patch
 
 # Compiling stuff
 BuildRequires:  bison
@@ -130,14 +116,7 @@ BuildRequires:  qt5-qtwebkit-devel
 BuildRequires:  qtkeychain-qt5-devel
 BuildRequires:  qt5-qtserialport-devel
 BuildRequires:  qt5-qt3d-devel
-
-# In F30+ qt5-qtbase-devel has been split
-# in qt5-qtbase-devel and qt5-qtbase-private-devel
-# qt5-qtbase-private-devel is needed by
-# external/qspatialite/qsql_spatialite.cpp:49:10
-%if 0%{?fedora} >= 30
 BuildRequires:  qt5-qtbase-private-devel
-%endif
 
 # Qwt stuff
 BuildRequires:  qwt-devel
@@ -182,28 +161,19 @@ Requires:       %{name}%{?_isa} = %{combinedversion}-%{release}
 # WARNING: Rebuild QGIS whenever a new version of GRASS is shipped! Even though
 # the soname might stay the same, it won't work anymore.
 # https://github.com/qgis/QGIS/issues/14999
-Requires:       grass%{?_isa} = %{grass_version}
+Requires:       grass%{?_isa}
 
 %description grass
 GRASS plugin for QGIS required to interface with the GRASS system.
 
 %package -n python3-qgis
 %{?python_provide:%python_provide python3-qgis}
-# Remove before F30
 Provides:       %{name}-python = %{combinedversion}-%{release}
 Provides:       %{name}-python%{?_isa} = %{combinedversion}-%{release}
-Obsoletes:      %{name}-python < %{version}-%{release}
-Obsoletes:      python2-%{name} < %{version}-%{release}
 Summary:        Python integration and plug-ins for QGIS
 Requires:       %{name}%{?_isa} = %{combinedversion}-%{release}
 Requires:       gdal-python3
-# Starting from Fedora 30 python2-gdal package
-# has been renamed to gdal-python-tools
-%if 0%{?fedora} >= 30
 Requires:       gdal-python-tools
-%else
-Requires:       python2-gdal
-%endif
 Requires:       python3-future
 Requires:       python3-jinja2
 Requires:       python3-OWSLib
@@ -233,7 +203,6 @@ Please refer to %{name}-server-README.fedora for details!
 
 %prep
 %setup -q
-%patch0 -p0 -b .lib64
 
 # Remove executable permissions from source code files
 find . \( -name "*.cpp" -o -name "*.h" \) -type f -perm /111 -execdir chmod -x {} \+
@@ -254,8 +223,13 @@ gzip ChangeLog
       -D QGIS_MANUAL_SUBDIR=/share/man \
       -D QGIS_CGIBIN_SUBDIR=%{_libexecdir}/%{name} \
       -D WITH_BINDINGS:BOOL=TRUE \
+%if 0%{?fedora} >= 36
+      -D WITH_GRASS8:BOOL=TRUE \
+      -D GRASS_PREFIX8=%{grass_prefix} \
+%else
       -D WITH_GRASS7:BOOL=TRUE \
-      -D GRASS_PREFIX7=%{_libdir}/%{grass} \
+      -D GRASS_PREFIX7=%{grass_prefix} \
+%endif
       -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
       -D BINDINGS_GLOBAL_INSTALL:BOOL=TRUE \
       -D ENABLE_TESTS:BOOL=FALSE \

@@ -142,7 +142,10 @@ QgsStyle *QgsStyle::defaultStyle() // static
       sDefaultStyle->createDatabase( styleFilename );
       if ( QFile::exists( QgsApplication::defaultStylePath() ) )
       {
-        sDefaultStyle->importXml( QgsApplication::defaultStylePath() );
+        if ( sDefaultStyle->importXml( QgsApplication::defaultStylePath() ) )
+        {
+          sDefaultStyle->createStyleMetadataTableIfNeeded();
+        }
       }
     }
     else
@@ -3243,13 +3246,12 @@ void QgsStyle::clearCachedTags( QgsStyle::StyleEntity type, const QString &name 
   mCachedTags[ type ].remove( name );
 }
 
-void QgsStyle::upgradeIfRequired()
+bool QgsStyle::createStyleMetadataTableIfNeeded()
 {
   // make sure metadata table exists
   QString query = qgs_sqlite3_mprintf( "SELECT name FROM sqlite_master WHERE name='stylemetadata'" );
   sqlite3_statement_unique_ptr statement;
   int rc;
-  int dbVersion = 0;
   statement = mCurrentDB.prepare( query, rc );
 
   if ( rc != SQLITE_OK || sqlite3_step( statement.get() ) != SQLITE_ROW )
@@ -3260,15 +3262,25 @@ void QgsStyle::upgradeIfRequired()
                                  "key TEXT UNIQUE,"\
                                  "value TEXT);" );
     runEmptyQuery( query );
-    query = qgs_sqlite3_mprintf( "INSERT INTO stylemetadata VALUES (NULL, '%q', '%q')", "version", "31200" );
+    query = qgs_sqlite3_mprintf( "INSERT INTO stylemetadata VALUES (NULL, '%q', '%q')", "version", QString::number( Qgis::versionInt() ).toUtf8().constData() );
     runEmptyQuery( query );
-
-    dbVersion = 31200;
+    return true;
   }
   else
   {
-    query = qgs_sqlite3_mprintf( "SELECT value FROM stylemetadata WHERE key='version'" );
-    statement = mCurrentDB.prepare( query, rc );
+    return false;
+  }
+}
+
+void QgsStyle::upgradeIfRequired()
+{
+  // make sure metadata table exists
+  int dbVersion = 0;
+  if ( !createStyleMetadataTableIfNeeded() )
+  {
+    const QString query = qgs_sqlite3_mprintf( "SELECT value FROM stylemetadata WHERE key='version'" );
+    int rc;
+    sqlite3_statement_unique_ptr statement = mCurrentDB.prepare( query, rc );
     if ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
       dbVersion = statement.columnAsText( 0 ).toInt();
@@ -3280,7 +3292,7 @@ void QgsStyle::upgradeIfRequired()
     // do upgrade
     if ( importXml( QgsApplication::defaultStylePath(), dbVersion ) )
     {
-      query = qgs_sqlite3_mprintf( "UPDATE stylemetadata SET value='%q' WHERE key='version'", QString::number( Qgis::versionInt() ).toUtf8().constData() );
+      const QString query = qgs_sqlite3_mprintf( "UPDATE stylemetadata SET value='%q' WHERE key='version'", QString::number( Qgis::versionInt() ).toUtf8().constData() );
       runEmptyQuery( query );
     }
   }

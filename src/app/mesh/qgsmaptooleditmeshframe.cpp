@@ -727,6 +727,7 @@ static QList<QgsMapToolIdentify::IdentifyResult> searchFeatureOnMap( QgsMapMouse
       {
         QgsRectangle rect( x - sr, y - sr, x + sr, y + sr );
         QgsCoordinateTransform transform = canvas->mapSettings().layerTransform( vectorLayer );
+        transform.setBallparkTransformsAreAppropriate( true );
 
         try
         {
@@ -789,7 +790,7 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::LeftButton &&
        ( !mCadDockWidget->cadEnabled() ||
-         mCadDockWidget->additionalConstraint() == QgsAdvancedDigitizingDockWidget::AdditionalConstraint::NoConstraint ) )
+         mCadDockWidget->betweenLineConstraint() == Qgis::BetweenLineConstraint::NoConstraint ) )
     mLeftButtonPressed = true;
 
   switch ( mCurrentState )
@@ -2183,8 +2184,8 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   }
   else if ( mSelectedFaces.count() > 1 )
   {
-    mActionRemoveFaces->setText( tr( "Remove %1 selected faces" ).arg( mSelectedFaces.count() ) );
-    mActionFacesRefinement->setText( tr( "Refine %1 selected faces" ).arg( mSelectedFaces.count() ) );
+    mActionRemoveFaces->setText( tr( "Remove %n selected face(s)", nullptr, mSelectedFaces.count() ) );
+    mActionFacesRefinement->setText( tr( "Refine %n selected face(s)", nullptr, mSelectedFaces.count() ) );
   }
   else
   {
@@ -2202,7 +2203,7 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   if ( mSplittableFaceCount == 1 )
     mActionSplitFaces->setText( tr( "Split selected face" ) );
   else if ( mSplittableFaceCount > 1 )
-    mActionSplitFaces->setText( tr( "Split %1 selected faces" ).arg( mSplittableFaceCount ) );
+    mActionSplitFaces->setText( tr( "Split %n selected face(s)", nullptr, mSplittableFaceCount ) );
   else
     mActionSplitFaces->setText( tr( "Split current face" ) );
 

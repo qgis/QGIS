@@ -20,12 +20,25 @@
 #include "qgssettings.h"
 #include "qgshttpheaders.h"
 
+#include <QFileInfo>
+
 ///@cond PRIVATE
 
 QString QgsVectorTileProviderConnection::encodedUri( const QgsVectorTileProviderConnection::Data &conn )
 {
   QgsDataSourceUri uri;
-  uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+
+  const QFileInfo info( conn.url );
+  QString suffix = info.suffix().toLower();
+  if ( suffix.startsWith( QLatin1String( "mbtiles" ) ) )
+  {
+    uri.setParam( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+  }
+  else
+  {
+    uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  }
+
   uri.setParam( QStringLiteral( "url" ), conn.url );
   if ( conn.zMin != -1 )
     uri.setParam( QStringLiteral( "zmin" ), QString::number( conn.zMin ) );
@@ -82,7 +95,18 @@ QString QgsVectorTileProviderConnection::encodedLayerUri( const QgsVectorTilePro
 {
   // compared to encodedUri() this one also adds type=xyz to the URI
   QgsDataSourceUri uri;
-  uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+
+  const QFileInfo info( conn.url );
+  QString suffix = info.suffix().toLower();
+  if ( suffix.startsWith( QLatin1String( "mbtiles" ) ) )
+  {
+    uri.setParam( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+  }
+  else
+  {
+    uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  }
+
   uri.setParam( QStringLiteral( "url" ), conn.url );
   if ( conn.zMin != -1 )
     uri.setParam( QStringLiteral( "zmin" ), QString::number( conn.zMin ) );

@@ -576,6 +576,20 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, QgsV
       strValue = QStringLiteral( "array(%1)" ).arg( result );
       forceRepresentedValue = true;
     }
+    else if ( value.type() == QVariant::List )
+    {
+      QString result;
+      const QList list = value.toList();
+      for ( const QVariant &item : list )
+      {
+        if ( !result.isEmpty() )
+          result.append( QStringLiteral( ", " ) );
+
+        result.append( item.toString() );
+      }
+      strValue = QStringLiteral( "array(%1)" ).arg( result );
+      forceRepresentedValue = true;
+    }
     else
       strValue = '\'' + value.toString().replace( '\'', QLatin1String( "''" ) ) + '\'';
 
@@ -775,6 +789,13 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
     {
       const QgsExpressionNodeUnaryOperator *node = static_cast<const QgsExpressionNodeUnaryOperator *>( inNode );
       createMarkers( node->operand() );
+      break;
+    }
+    case QgsExpressionNode::NodeType::ntBetweenOperator:
+    {
+      const QgsExpressionNodeBetweenOperator *node = static_cast<const QgsExpressionNodeBetweenOperator *>( inNode );
+      createMarkers( node->lowerBound() );
+      createMarkers( node->higherBound() );
       break;
     }
     case QgsExpressionNode::NodeType::ntBinaryOperator:

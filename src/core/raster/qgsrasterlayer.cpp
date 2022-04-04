@@ -59,6 +59,8 @@ email                : tim at linfiniti.com
 #include "qgsruntimeprofiler.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsrasterpipe.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsrasterlayerprofilegenerator.h"
 
 #include <cmath>
 #include <cstdio>
@@ -107,8 +109,8 @@ QgsRasterLayer::QgsRasterLayer()
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
+  , mElevationProperties( new QgsRasterLayerElevationProperties( this ) )
   , mPipe( std::make_unique< QgsRasterPipe >() )
-
 {
   init();
   setValid( false );
@@ -123,6 +125,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
+  , mElevationProperties( new QgsRasterLayerElevationProperties( this ) )
   , mPipe( std::make_unique< QgsRasterPipe >() )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
@@ -172,6 +175,14 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   layer->pipe()->setDataDefinedProperties( mPipe->dataDefinedProperties() );
 
   return layer;
+}
+
+QgsAbstractProfileGenerator *QgsRasterLayer::createProfileGenerator( const QgsProfileRequest &request )
+{
+  if ( !mElevationProperties->isEnabled() )
+    return nullptr;
+
+  return new QgsRasterLayerProfileGenerator( this, request );
 }
 
 //////////////////////////////////////////////////////////
@@ -480,6 +491,16 @@ QString QgsRasterLayer::htmlMetadata() const
   return myMetadata;
 }
 
+Qgis::MapLayerProperties QgsRasterLayer::properties() const
+{
+  Qgis::MapLayerProperties res;
+  if ( mDataProvider && ( mDataProvider->flags() & Qgis::DataProviderFlag::IsBasemapSource ) )
+  {
+    res |= Qgis::MapLayerProperty::IsBasemapLayer;
+  }
+  return res;
+}
+
 QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
 {
   //TODO: This function should take dimensions
@@ -599,7 +620,8 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   setValid( false ); // assume the layer is invalid until we determine otherwise
 
-  mPipe->remove( mDataProvider ); // deletes if exists
+  // deletes pipe elements (including data provider)
+  mPipe = std::make_unique< QgsRasterPipe >();
   mDataProvider = nullptr;
 
   // XXX should I check for and possibly delete any pre-existing providers?
@@ -1058,6 +1080,11 @@ bool QgsRasterLayer::ignoreExtents() const
 QgsMapLayerTemporalProperties *QgsRasterLayer::temporalProperties()
 {
   return mTemporalProperties;
+}
+
+QgsMapLayerElevationProperties *QgsRasterLayer::elevationProperties()
+{
+  return mElevationProperties;
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )

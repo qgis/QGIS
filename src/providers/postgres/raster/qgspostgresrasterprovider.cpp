@@ -686,10 +686,9 @@ Qgis::DataType QgsPostgresRasterProvider::dataType( int bandNo ) const
 {
   if ( mDataTypes.size() < static_cast<unsigned long>( bandNo ) )
   {
-    QgsMessageLog::logMessage( tr( "Data type size for band %1 could not be found: num bands is: %2 and the type size map for bands contains: %3 items" )
+    QgsMessageLog::logMessage( tr( "Data type size for band %1 could not be found: num bands is: %2 and the type size map for bands contains: %n item(s)", nullptr, mDataSizes.size() )
                                .arg( bandNo )
-                               .arg( mBandCount )
-                               .arg( mDataSizes.size() ),
+                               .arg( mBandCount ),
                                QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
     return Qgis::DataType::UnknownDataType;
   }

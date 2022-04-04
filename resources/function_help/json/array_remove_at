@@ -2,8 +2,10 @@
   "name": "array_remove_at",
   "type": "function",
   "groups": ["Arrays"],
-  "description": "Returns an array with the given index removed.",
+  "description": "Returns an array with the item at the given index removed. Supports positive (0 for the first element) and negative (the last -Nth value, -1 for the last element) index.",
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"pos","description":"the position to remove (0 based)"}],
-  "examples": [ { "expression":"array_remove_at(array(1,2,3),1)", "returns":"[ 1, 3 ]"}]
+  "examples": [ { "expression":"array_remove_at(array(1, 2, 3), 1)", "returns":"[1, 3 ]"},
+    { "expression":"array_remove_at(array(1, 2, 3), -1)", "returns":"[1, 2 ]"}],
+  "tags": ["array", "removed", "index"]
 }

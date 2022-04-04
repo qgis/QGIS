@@ -2523,7 +2523,19 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
  * \class QgsProcessingParameterEnum
  * \ingroup core
  * \brief An enum based parameter for processing algorithms, allowing for selection from predefined values.
-  * \since QGIS 3.0
+ *
+ * Since QGIS 3.24 a list of icons corresponding to the enum values can be specified by setting the
+ * widget wrapper metadata "icons" option, as demonstrated below. The "icons" value should be
+ * set to a list of QIcon values.
+ *
+ * \code{.py}
+ *   param = QgsProcessingParameterEnum( 'FIELD_TYPE', 'Field type', ['Integer', 'String'])
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'icons': [QIcon('integer.svg'), QIcon('string.svg')] }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefinition
 {
@@ -3192,6 +3204,7 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
 
     friend class QgsProcessingModelAlgorithm;
     friend class TestQgsProcessing;
+    friend class TestQgsProcessingModelAlgorithm;
 };
 
 

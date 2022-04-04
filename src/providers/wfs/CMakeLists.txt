@@ -38,7 +38,7 @@ if (WITH_GUI)
     qgswfssubsetstringeditor.cpp
   )
 
-  set(WFS_UIS qgswfssourceselectbase.ui)
+  set(WFS_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgswfssourceselectbase.ui)
 endif()
 
 ########################################################
