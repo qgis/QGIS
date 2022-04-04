@@ -3854,14 +3854,11 @@ bool QgsProject::useProjectScales() const
   return mViewSettings->useProjectScales();
 }
 
-void QgsProject::initCalculateExtentProgress( long long maxValue, QString *labelText )
+void QgsProject::initCalculateExtentProgress( QString dataSourceUri, const long long maxValue, QString labelText )
 {
-  //Raise QProgressDialog
-  //QProgressDialog *progressDialog = nullptr;
+  QProgressDialog *progressDialog = nullptr;
 
-  //QApplication *mainWindow = nullptr;
-  //mainWindow=QgsApplication::instance();
-  //QgsApplication::instance()->topLevelWidgets();
+  //find out if there is a QGIS main window. If so, display a progress dialog in its context
 
   QWidget *mainWindow = nullptr;
   const QWidgetList topLevelWidgets = qApp->topLevelWidgets();
@@ -3878,30 +3875,36 @@ void QgsProject::initCalculateExtentProgress( long long maxValue, QString *label
   else
     progressDialog = new QProgressDialog( );
 
-
   progressDialog->setRange( 0, maxValue );
   progressDialog->setWindowTitle( tr( "Calculating extent.." ) );
-  progressDialog->setMinimumDuration( 5000 ); // 3 s
+  progressDialog->setMinimumDuration( 3000 ); // 3 s
   progressDialog->setWindowModality( Qt::WindowModal );
   progressDialog->setCancelButtonText( QString() );
 
-  //progressDialog->setLabelText( "<i>Note: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>" );
+  // set labelText if sender asks for it
   if ( labelText != nullptr )
-    progressDialog->setLabelText( *labelText );
+    progressDialog->setLabelText( labelText );
+
+  mExtentProgressDialogRegister.insert( dataSourceUri, progressDialog );
 
 }
 
-void QgsProject::extentCalculationProgressChanged( long long currValue )
+void QgsProject::extentCalculationProgressChanged( QString dataSourceUri, long long currValue )
 {
+  QProgressDialog *progressDialog = mExtentProgressDialogRegister.value( dataSourceUri );
   progressDialog->setValue( currValue );
   QApplication::processEvents();
 }
 
-void QgsProject::extentCalculationComplete()
+void QgsProject::extentCalculationComplete( QString dataSourceUri )
 {
-  progressDialog->setMaximum( progressDialog->maximum() );
-  QApplication::processEvents();
-  delete progressDialog;
+  if ( mExtentProgressDialogRegister.contains( dataSourceUri ) )
+  {
+    QProgressDialog *progressDialog = mExtentProgressDialogRegister.value( dataSourceUri );
+    progressDialog->setMaximum( progressDialog->maximum() );
+    QApplication::processEvents();
+    delete progressDialog;
+  }
 }
 
 

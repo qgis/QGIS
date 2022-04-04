@@ -2775,10 +2775,10 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
   QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
   if ( driverName == QLatin1String( "GPKG" ) )
   {
-    // use feature count from meta data for large layers
-
     GIntBig totalFeatureCount = getTotalFeatureCountfromMetaData();
+    // use feature count from meta data for large layers
     if ( totalFeatureCount > 100000 )
+
       return totalFeatureCount;
     else //if total feature count < 100.000 get those features in order to enumerate them
     {

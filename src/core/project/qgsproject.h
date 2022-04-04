@@ -1980,19 +1980,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Receive signal to prepare for showing extent calculation progress
      * \since QGIS 3.2?
      */
-    void initCalculateExtentProgress( long long maxValue, QString *labelText = nullptr );
+    void initCalculateExtentProgress( QString dataSourceUri, const long long maxValue, QString labelText = QString() );
 
     /**
      * Receive signals to update extent calculation progress
      * \since QGIS 3.2?
      */
-    void extentCalculationProgressChanged( long long currValue );
+    void extentCalculationProgressChanged( QString dataSourceUri, long long currValue );
 
     /**
      * Receive signal to finish showing extent calculation progress
      * \since QGIS 3.2?
      */
-    void extentCalculationComplete();
+    void extentCalculationComplete( QString dataSourceUri );
+
 
 
   private slots:
@@ -2143,7 +2144,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mTrustLayerMetadata = false;
 
     mutable ProjectState mprojectState;
-    QProgressDialog *progressDialog = nullptr;
+
+    // Using a QMultiMap for simultaneously running calculations with same URI assume the same starting
+    // time -> No distinction between different MapLayers possessing the same URI source required
+    QMultiMap<QString, QProgressDialog *> mExtentProgressDialogRegister;
 
     QgsPropertyCollection mDataDefinedServerProperties;
 

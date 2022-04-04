@@ -149,24 +149,26 @@ class QgsOgrProvider final: public QgsVectorDataProvider
   signals:
 
     /**
-     * Emitted whenever an extent calculation is started by the provider.
-     *
-     * Provider connects to this signal to announce a potentially expensive extent calculation
-     *
+     * \brief Emitted whenever an extent calculation is started by the provider.
+     * Provider connects to this signal to announce a potentially expensive extent calculation.
+     * \param dataSourceUri data source specification as an identifier for the dataprovider
+     * \param maxValue Maximum value to set up the progress bar
+     * \param labelText Text to be displayed during calculation (optional)
      */
-    void aboutToCalculateExtent( long long maxValue, QString *labelText = nullptr ) const;
+    void aboutToCalculateExtent( QString dataSourceUri, const long long maxValue, QString userMessageProgress = QString() ) const;
 
     /**
-     * Emitted whenever an extent calculation is updated by the provider.
-     *
+     * \brief Emitted whenever an extent calculation is updated by the provider.
+     * \param dataSourceUri data source specification as a unique identificator for the dataprovider
+     * \param currValue Current value the progress bar needs to be updated to
      */
-    void extentCalculationProgressChanged( long long currValue ) const;
+    void extentCalculationProgressChanged( QString dataSourceUri, long long currValue ) const;
 
     /**
-     * Emitted whenever an extent calculation by the provider is finished.
-     *
+     * \brief Emitted whenever an extent calculation by the given provider has finished.
+     * \param dataSourceUri data source specification as an identifier for the dataprovider
      */
-    void extentCalculationComplete() const;
+    void extentCalculationComplete( QString dataSourceUri ) const;
 
   protected:
     //! Loads fields from input file to member attributeFields

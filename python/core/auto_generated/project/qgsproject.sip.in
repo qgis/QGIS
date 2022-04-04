@@ -1992,26 +1992,27 @@ Used to regognize the current state for user communication especially during loa
 
     void setProjectState( ProjectState projectState );
 
-    void initCalculateExtentProgress( long long maxValue, QString *labelText = 0 );
+    void initCalculateExtentProgress( QString dataSourceUri, const long long maxValue, QString labelText = QString() );
 %Docstring
 Receive signal to prepare for showing extent calculation progress
 
 .. versionadded:: 3.2
 %End
 
-    void extentCalculationProgressChanged( long long currValue );
+    void extentCalculationProgressChanged( QString dataSourceUri, long long currValue );
 %Docstring
 Receive signals to update extent calculation progress
 
 .. versionadded:: 3.2
 %End
 
-    void extentCalculationComplete();
+    void extentCalculationComplete( QString dataSourceUri );
 %Docstring
 Receive signal to finish showing extent calculation progress
 
 .. versionadded:: 3.2
 %End
+
 
 
 };

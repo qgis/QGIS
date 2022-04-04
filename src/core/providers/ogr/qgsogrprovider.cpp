@@ -1240,96 +1240,12 @@ QgsRectangle QgsOgrProvider::extent() const
     // get the extent_ (envelope) of the layer
     QgsDebugMsgLevel( QStringLiteral( "Starting get extent" ), 3 );
 
-    // progress bar for expensive extent calculation
-    // QObject::sender
-    // https://doc.qt.io/qt-5/qobject.html#sender
-
-
-
-    //find out if there is a QGIS main window. If yes, display a progress dialog
-//    QgsFeedback *feedback = nullptr;
-
-//    QProgressDialog *progressDialog = nullptr;
-
-    QWidget *mainWindow = nullptr;
-    const QWidgetList topLevelWidgets = qApp->topLevelWidgets();
-    for ( QWidgetList::const_iterator it = topLevelWidgets.constBegin(); it != topLevelWidgets.constEnd(); ++it )
-    {
-      if ( ( *it )->objectName() == QLatin1String( "QgisApp" ) )
-      {
-        mainWindow = *it;
-        break;
-      }
-    }
-    if ( mainWindow )
-    {
-//      progressDialog = new QProgressDialog( tr("Calculating extent.."), QString(), 0, 0, mainWindow );
-//      progressDialog->setWindowModality( Qt::ApplicationModal );
-//      progressDialog->setMinimumDuration( 0 ); // 3 s
-//      progressDialog->setWindowTitle( tr( "Progress Indication" ) );
-//      progressDialog->setLabelText("Labeltext");
-//      progressDialog->show();
-
-      /* FUNKTIONIERT:
-       *
-       *   QProgressDialog progressDialog(mainWindow);
-           progressDialog.setCancelButtonText(tr("&Cancel"));
-           progressDialog.setRange(0, 200);
-           progressDialog.setWindowTitle(tr("Find Files"));
-
-
-             QCoreApplication::processEvents();
-
-           for (int i = 0; i < 200 ; ++i) {
-               progressDialog.setValue(i);
-               progressDialog.setLabelText(tr("Searching file number ..."));
-               QCoreApplication::processEvents();
-               sleep(1);
-
-               if (progressDialog.wasCanceled())
-                   break;
-             }
-      */
-
-// https://gis.stackexchange.com/questions/278825/qgis3-apibreak-qgsfeedback-instead-qprogressdialog-while-using-qgsrastercalcul
-
-      // other algorithms usually depend on extent calculation when it is called, so block
-      // the main window until it's finished and its result is available for the caller to proceed.
-//      progressDialog = new QProgressDialog( mainWindow );
-//      feedback = new QgsFeedback( mainWindow );
-
-    }
-    else
-    {
-//      progressDialog = new QProgressDialog();
-//      feedback = new QgsFeedback();
-    }
-
-
+    // raise progress bar for expensive extent calculation with large layers
     const long long maxfeatures = mOgrLayer->getTotalFeatureCountfromMetaData();
-
-
-//    progressDialog->setRange( 0, maxfeatures );
-//    progressDialog->setWindowTitle( tr( "Calculating extent.." ) );
-//    progressDialog->setMinimumDuration( 2000 ); // 3 s
-//    progressDialog->setWindowModality( Qt::WindowModal );
-//    progressDialog->setCancelButtonText( QString() );
-
-
-    //feedback->progressChanged()->connect(progressDialog.setValue);
-
-    // QgsProject::instance()->projectState();
-    QString * labelText = nullptr;
+    QString userMessageProgress = QString();
     if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && QgsProject::instance()->projectState() == QgsProject::OPENING_PROJECT )
-      // static_cast< QgisApp* > (qApp)->getProjectState()==QgisApp::ProjectState)
-      // how do we know we've  acutally been called  for reading and not for saving or just calling properties?
-      // we've been called by "QgsVectorLayer::extent()" and there then "updateExtent( mDataProvider->extent() );"
-//      progressDialog->setLabelText( "<i>Note: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>" );
-//        *labelText = "<i>Note: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>" ;
-        labelText = new QString("<i>Note: Extent calculation during loading can be avoided using the trust option in the project preferences.</i>");
-    emit aboutToCalculateExtent( maxfeatures, labelText );
-
-//QString * labelText = nullptr;
+      userMessageProgress = QString( "<i>Note:</i><br><br>Extent calculation during project loading can be avoided using the trust option in the project preferences." );
+    emit aboutToCalculateExtent( dataSourceUri(),  maxfeatures, userMessageProgress );
 
     if ( mForceRecomputeExtent && mValid && mGDALDriverName == QLatin1String( "GPKG" ) && mOgrOrigLayer )
     {
@@ -1367,8 +1283,7 @@ QgsRectangle QgsOgrProvider::extent() const
       gdal::ogr_feature_unique_ptr f;
 
       mOgrLayer->ResetReading();
-      int count = 0;
-      //while ( f.reset( mOgrLayer->GetNextFeature() ), count++, progressDialog->setValue(count), QApplication::processEvents(), f )
+      long long count = 0;
       while ( f.reset( mOgrLayer->GetNextFeature() ), f )
 
       {
@@ -1385,25 +1300,12 @@ QgsRectangle QgsOgrProvider::extent() const
         }
         count++;
 
-        //progressDialog->setValue( count );
-        // feedback->progressChanged( );
-        emit extentCalculationProgressChanged( count );
-
-        //feedback->setProgress( double( count / maxfeatures ) );
-
-        //QApplication::processEvents();
+        // update extent calc progress bar
+        emit extentCalculationProgressChanged( dataSourceUri(), count );
       }
       mOgrLayer->ResetReading();
     }
-//    progressDialog->setMaximum( progressDialog->maximum() );
-    //feedback->setProgress( 100 );
-    emit extentCalculationComplete();
-    delete labelText;
-//    QApplication::processEvents();
-//    delete progressDialog;
-//    delete feedback;
-
-
+    emit extentCalculationComplete( dataSourceUri() );
     QgsDebugMsgLevel( QStringLiteral( "Finished get extent" ), 4 );
   }
 
@@ -1565,9 +1467,6 @@ long long QgsOgrProvider::featureCount() const
   if ( mRefreshFeatureCount )
   {
     mRefreshFeatureCount = false;
-    QProgressDialog progress( tr( "Counting features.." ), QString(), 0, 100 );
-    //test if it appears after 4 s:
-    sleep( 5 );
     recalculateFeatureCount();
   }
   return mFeaturesCounted;
@@ -3490,14 +3389,6 @@ void QgsOgrProvider::recalculateFeatureCount() const
     mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
     return;
   }
-
-  /* // assuming the count takes filters into account
-   * // if there is no filter use the total count
-  if (subsetString().length()==0)
-      totalFeatureCount();
-  else
-  */
-
 
   OGRGeometryH filter = mOgrLayer->GetSpatialFilter();
   if ( filter )
