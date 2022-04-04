@@ -38,7 +38,7 @@ QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
   , mCache( std::make_unique<QgsMapRendererCache>() )
 {
   connect( this, &QQuickItem::windowChanged, this, &QgsQuickMapCanvasMap::onWindowChanged );
-  connect( &mRefreshTimer, &QTimer::timeout, this, &QgsQuickMapCanvasMap::refreshMap );
+  connect( &mRefreshTimer, &QTimer::timeout, this, [ = ] { refreshMap(); } );
   connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsQuickMapCanvasMap::renderJobUpdated );
 
   connect( mMapSettings.get(), &QgsQuickMapSettings::extentChanged, this, &QgsQuickMapCanvasMap::onExtentChanged );
@@ -94,7 +94,7 @@ void QgsQuickMapCanvasMap::pan( QPointF oldPos, QPointF newPos )
   mMapSettings->setExtent( extent );
 }
 
-void QgsQuickMapCanvasMap::refreshMap()
+void QgsQuickMapCanvasMap::refreshMap( bool silent )
 {
   stopRendering(); // if any...
 
@@ -140,7 +140,10 @@ void QgsQuickMapCanvasMap::refreshMap()
 
   mJob->start();
 
-  emit renderStarting();
+  if ( !silent )
+  {
+    emit renderStarting();
+  }
 }
 
 void QgsQuickMapCanvasMap::renderJobUpdated()
@@ -195,6 +198,30 @@ void QgsQuickMapCanvasMap::renderJobFinished()
 
   update();
   emit mapCanvasRefreshed();
+
+  if ( mDeferredRefreshPending )
+  {
+    mDeferredRefreshPending = false;
+    refreshMap( true );
+  }
+}
+
+void QgsQuickMapCanvasMap::layerRepaintRequested( bool deferred )
+{
+  if ( mMapSettings->outputSize().isNull() )
+    return; // the map image size has not been set yet
+
+  if ( !mFreeze )
+  {
+    if ( !deferred || !mJob )
+    {
+      refreshMap( deferred );
+    }
+    else
+    {
+      mDeferredRefreshPending = true;
+    }
+  }
 }
 
 void QgsQuickMapCanvasMap::onWindowChanged( QQuickWindow *window )
@@ -364,7 +391,7 @@ void QgsQuickMapCanvasMap::onLayersChanged()
   const QList<QgsMapLayer *> layers = mMapSettings->layers();
   for ( QgsMapLayer *layer : layers )
   {
-    mLayerConnections << connect( layer, &QgsMapLayer::repaintRequested, this, &QgsQuickMapCanvasMap::refresh );
+    mLayerConnections << connect( layer, &QgsMapLayer::repaintRequested, this, &QgsQuickMapCanvasMap::layerRepaintRequested );
   }
 
   refresh();
