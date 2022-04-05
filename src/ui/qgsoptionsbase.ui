@@ -3412,6 +3412,13 @@
                    </layout>
                   </item>
                   <item>
+                   <widget class="QCheckBox" name="mShowFeatureCountByDefaultCheckBox">
+                    <property name="text">
+                     <string>Show feature count for newly added layers</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QCheckBox" name="cbxLegendClassifiers">
                     <property name="text">
                      <string>Display classification attribute in layer titles</string>
@@ -6229,6 +6236,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cmbLegendDoubleClickAction</tabstop>
+  <tabstop>mShowFeatureCountByDefaultCheckBox</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>
   <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
   <tabstop>mLegendSymbolMinimumSizeSpinBox</tabstop>
