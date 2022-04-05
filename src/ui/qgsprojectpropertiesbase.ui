@@ -642,13 +642,6 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_18">
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_26">
-                    <property name="text">
-                     <string>Coordinate precision</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="label_34">
                     <property name="text">
@@ -656,8 +649,29 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QComboBox" name="mCoordinateDisplayComboBox"/>
+                  <item row="2" column="1">
+                   <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="3,6">
+                    <item>
+                     <widget class="QPushButton" name="mCustomizeBearingFormatButton">
+                      <property name="text">
+                       <string>Customize…</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_8">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </item>
                   <item row="1" column="1">
                    <widget class="QFrame" name="mFramePrecision">
@@ -715,32 +729,15 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="1">
-                   <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="3,6">
-                    <item>
-                     <widget class="QPushButton" name="mCustomizeBearingFormatButton">
-                      <property name="text">
-                       <string>Customize…</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_8">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_26">
+                    <property name="text">
+                     <string>Coordinate precision</string>
+                    </property>
+                   </widget>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QDial" name="dial"/>
+                  <item row="0" column="1">
+                   <widget class="QComboBox" name="mCoordinateDisplayComboBox"/>
                   </item>
                  </layout>
                 </widget>
