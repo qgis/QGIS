@@ -149,8 +149,13 @@ std::vector< QgsLazDecoder::RequestedAttributeDetails > __prepareRequestedAttrib
   return __prepareRequestedAttributeDetails( requestedAttributes, extrabytesAttr );
 }
 
-void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &outputOffset, lazperf::las::point10 &p10, lazperf::las::gpstime &gps, lazperf::las::rgb &rgb, lazperf::las::point14 &p14, std::vector< QgsLazDecoder::RequestedAttributeDetails > &requestedAttributeDetails )
+void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &outputOffset, std::vector< QgsLazDecoder::RequestedAttributeDetails > &requestedAttributeDetails )
 {
+  lazperf::las::point10 p10;
+  lazperf::las::gpstime gps;
+  lazperf::las::rgb rgb;
+  lazperf::las::point14 p14;
+
   bool isLas14 = ( lasPointFormat == 6 || lasPointFormat == 7 || lasPointFormat == 8 );
 
   switch ( lasPointFormat )
@@ -350,18 +355,13 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     return block.release();
   }
 
-  lazperf::las::point10 p10;
-  lazperf::las::gpstime gps;
-  lazperf::las::rgb rgb;
-  lazperf::las::point14 p14;
-
   std::vector< QgsLazDecoder::RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( file, requestedAttributes );
 
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
 
-    decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, p10, gps, rgb, p14, requestedAttributeDetails );
+    decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
 
     // check if point needs to be filtered out
     if ( filterIsValid )
@@ -456,17 +456,12 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QString &filename, cons
     return block.release();
   }
 
-  lazperf::las::point10 p10;
-  lazperf::las::gpstime gps;
-  lazperf::las::rgb rgb;
-  lazperf::las::point14 p14;
-
   for ( int i = 0 ; i < pointCount; ++i )
   {
     char *buf = decodedData.get();
     decompressor.decompress( buf );
 
-    decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, p10, gps, rgb, p14, requestedAttributeDetails );
+    decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
 
     // check if point needs to be filtered out
     if ( filterIsValid )
@@ -531,17 +526,12 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, const
     return block.release();
   }
 
-  lazperf::las::point10 p10;
-  lazperf::las::gpstime gps;
-  lazperf::las::rgb rgb;
-  lazperf::las::point14 p14;
-
   for ( int i = 0 ; i < pointCount; ++i )
   {
     decompressor.decompress( decodedData.get() );
     char *buf = decodedData.get();
 
-    decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, p10, gps, rgb, p14, requestedAttributeDetails );
+    decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
 
     // check if point needs to be filtered out
     if ( filterIsValid )
