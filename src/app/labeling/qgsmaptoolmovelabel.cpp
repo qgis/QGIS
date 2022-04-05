@@ -234,6 +234,11 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
       int xCol = -1, yCol = -1, pointCol = -1, lineAnchorPercentCol = -1, lineAnchorClippingCol = -1, lineAnchorTypeCol = -1, lineAnchorTextPointCol = -1;
 
+      // If x or y DD are set, this label was manually detached, let's start as detached
+      double x, y;
+      bool xSuccess, ySuccess;
+      mAnchorDetached = currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol, pointCol ) && xSuccess && ySuccess;
+
       if ( mAnchorDetached )
       {
         mCurrentLabel.settings.placement = QgsPalLayerSettings::Placement::Horizontal;
