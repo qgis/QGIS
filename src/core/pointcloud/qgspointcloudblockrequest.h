@@ -46,11 +46,16 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     /**
      * QgsPointCloudBlockRequest constructor
      * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
+     * Note: The data loading will not start until startRequest() is called
      */
     QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri, const QString &dataType,
                                const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
                                const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression );
 
+    /**
+     * Start loading the point cloud block data
+     * \since QGIS 3.26
+     */
     virtual void startRequest();
 
     /**
@@ -65,6 +70,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
   signals:
     //! Emitted when the request processing has finished
     void finished();
+
   protected:
     IndexedPointCloudNode mNode;
     QString mUri;
@@ -76,7 +82,13 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     QString mErrorStr;
     QgsVector3D mScale, mOffset;
     QgsPointCloudExpression mFilterExpression;
+
   protected slots:
+
+    /**
+     * Called when the block data has been loaded into memory.
+     * This function takes care of transforming the binary data from the network request into point cloud block data
+     */
     virtual void blockFinishedLoading();
 };
 
