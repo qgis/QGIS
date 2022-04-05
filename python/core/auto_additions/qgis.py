@@ -785,6 +785,50 @@ Qgis.DataProviderFlag.__doc__ = 'Generic data provider flags.\n\n.. versionadded
 # --
 Qgis.DataProviderFlag.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.CrsAxisDirection.North.__doc__ = "North"
+Qgis.CrsAxisDirection.NorthNorthEast.__doc__ = "North North East"
+Qgis.CrsAxisDirection.NorthEast.__doc__ = "North East"
+Qgis.CrsAxisDirection.EastNorthEast.__doc__ = "East North East"
+Qgis.CrsAxisDirection.East.__doc__ = "East"
+Qgis.CrsAxisDirection.EastSouthEast.__doc__ = "East South East"
+Qgis.CrsAxisDirection.SouthEast.__doc__ = "South East"
+Qgis.CrsAxisDirection.SouthSouthEast.__doc__ = "South South East"
+Qgis.CrsAxisDirection.South.__doc__ = "South"
+Qgis.CrsAxisDirection.SouthSouthWest.__doc__ = "South South West"
+Qgis.CrsAxisDirection.SouthWest.__doc__ = "South West"
+Qgis.CrsAxisDirection.WestSouthWest.__doc__ = "West South West"
+Qgis.CrsAxisDirection.West.__doc__ = "West"
+Qgis.CrsAxisDirection.WestNorthWest.__doc__ = "West North West"
+Qgis.CrsAxisDirection.NorthWest.__doc__ = "North West"
+Qgis.CrsAxisDirection.NorthNorthWest.__doc__ = "North North West"
+Qgis.CrsAxisDirection.GeocentricX.__doc__ = "Geocentric (X)"
+Qgis.CrsAxisDirection.GeocentricY.__doc__ = "Geocentric (Y)"
+Qgis.CrsAxisDirection.GeocentricZ.__doc__ = "Geocentric (Z)"
+Qgis.CrsAxisDirection.Up.__doc__ = "Up"
+Qgis.CrsAxisDirection.Down.__doc__ = "Down"
+Qgis.CrsAxisDirection.Forward.__doc__ = "Forward"
+Qgis.CrsAxisDirection.Aft.__doc__ = "Aft"
+Qgis.CrsAxisDirection.Port.__doc__ = "Port"
+Qgis.CrsAxisDirection.Starboard.__doc__ = "Starboard"
+Qgis.CrsAxisDirection.Clockwise.__doc__ = "Clockwise"
+Qgis.CrsAxisDirection.CounterClockwise.__doc__ = "Counter clockwise"
+Qgis.CrsAxisDirection.ColumnPositive.__doc__ = "Column positive"
+Qgis.CrsAxisDirection.ColumnNegative.__doc__ = "Column negative"
+Qgis.CrsAxisDirection.RowPositive.__doc__ = "Row positive"
+Qgis.CrsAxisDirection.RowNegative.__doc__ = "Row negative"
+Qgis.CrsAxisDirection.DisplayRight.__doc__ = "Display right"
+Qgis.CrsAxisDirection.DisplayLeft.__doc__ = "Display left"
+Qgis.CrsAxisDirection.DisplayUp.__doc__ = "Display up"
+Qgis.CrsAxisDirection.DisplayDown.__doc__ = "Display down"
+Qgis.CrsAxisDirection.Future.__doc__ = "Future"
+Qgis.CrsAxisDirection.Past.__doc__ = "Past"
+Qgis.CrsAxisDirection.Towards.__doc__ = "Towards"
+Qgis.CrsAxisDirection.AwayFrom.__doc__ = "Away from"
+Qgis.CrsAxisDirection.Unspecified.__doc__ = "Unspecified"
+Qgis.CrsAxisDirection.__doc__ = 'Coordinate reference system axis directions.\n\nFrom "Geographic information — Well-known text representation of coordinate reference systems", section 7.5.1.\n\n.. versionadded:: 3.26\n\n' + '* ``North``: ' + Qgis.CrsAxisDirection.North.__doc__ + '\n' + '* ``NorthNorthEast``: ' + Qgis.CrsAxisDirection.NorthNorthEast.__doc__ + '\n' + '* ``NorthEast``: ' + Qgis.CrsAxisDirection.NorthEast.__doc__ + '\n' + '* ``EastNorthEast``: ' + Qgis.CrsAxisDirection.EastNorthEast.__doc__ + '\n' + '* ``East``: ' + Qgis.CrsAxisDirection.East.__doc__ + '\n' + '* ``EastSouthEast``: ' + Qgis.CrsAxisDirection.EastSouthEast.__doc__ + '\n' + '* ``SouthEast``: ' + Qgis.CrsAxisDirection.SouthEast.__doc__ + '\n' + '* ``SouthSouthEast``: ' + Qgis.CrsAxisDirection.SouthSouthEast.__doc__ + '\n' + '* ``South``: ' + Qgis.CrsAxisDirection.South.__doc__ + '\n' + '* ``SouthSouthWest``: ' + Qgis.CrsAxisDirection.SouthSouthWest.__doc__ + '\n' + '* ``SouthWest``: ' + Qgis.CrsAxisDirection.SouthWest.__doc__ + '\n' + '* ``WestSouthWest``: ' + Qgis.CrsAxisDirection.WestSouthWest.__doc__ + '\n' + '* ``West``: ' + Qgis.CrsAxisDirection.West.__doc__ + '\n' + '* ``WestNorthWest``: ' + Qgis.CrsAxisDirection.WestNorthWest.__doc__ + '\n' + '* ``NorthWest``: ' + Qgis.CrsAxisDirection.NorthWest.__doc__ + '\n' + '* ``NorthNorthWest``: ' + Qgis.CrsAxisDirection.NorthNorthWest.__doc__ + '\n' + '* ``GeocentricX``: ' + Qgis.CrsAxisDirection.GeocentricX.__doc__ + '\n' + '* ``GeocentricY``: ' + Qgis.CrsAxisDirection.GeocentricY.__doc__ + '\n' + '* ``GeocentricZ``: ' + Qgis.CrsAxisDirection.GeocentricZ.__doc__ + '\n' + '* ``Up``: ' + Qgis.CrsAxisDirection.Up.__doc__ + '\n' + '* ``Down``: ' + Qgis.CrsAxisDirection.Down.__doc__ + '\n' + '* ``Forward``: ' + Qgis.CrsAxisDirection.Forward.__doc__ + '\n' + '* ``Aft``: ' + Qgis.CrsAxisDirection.Aft.__doc__ + '\n' + '* ``Port``: ' + Qgis.CrsAxisDirection.Port.__doc__ + '\n' + '* ``Starboard``: ' + Qgis.CrsAxisDirection.Starboard.__doc__ + '\n' + '* ``Clockwise``: ' + Qgis.CrsAxisDirection.Clockwise.__doc__ + '\n' + '* ``CounterClockwise``: ' + Qgis.CrsAxisDirection.CounterClockwise.__doc__ + '\n' + '* ``ColumnPositive``: ' + Qgis.CrsAxisDirection.ColumnPositive.__doc__ + '\n' + '* ``ColumnNegative``: ' + Qgis.CrsAxisDirection.ColumnNegative.__doc__ + '\n' + '* ``RowPositive``: ' + Qgis.CrsAxisDirection.RowPositive.__doc__ + '\n' + '* ``RowNegative``: ' + Qgis.CrsAxisDirection.RowNegative.__doc__ + '\n' + '* ``DisplayRight``: ' + Qgis.CrsAxisDirection.DisplayRight.__doc__ + '\n' + '* ``DisplayLeft``: ' + Qgis.CrsAxisDirection.DisplayLeft.__doc__ + '\n' + '* ``DisplayUp``: ' + Qgis.CrsAxisDirection.DisplayUp.__doc__ + '\n' + '* ``DisplayDown``: ' + Qgis.CrsAxisDirection.DisplayDown.__doc__ + '\n' + '* ``Future``: ' + Qgis.CrsAxisDirection.Future.__doc__ + '\n' + '* ``Past``: ' + Qgis.CrsAxisDirection.Past.__doc__ + '\n' + '* ``Towards``: ' + Qgis.CrsAxisDirection.Towards.__doc__ + '\n' + '* ``AwayFrom``: ' + Qgis.CrsAxisDirection.AwayFrom.__doc__ + '\n' + '* ``Unspecified``: ' + Qgis.CrsAxisDirection.Unspecified.__doc__
+# --
+Qgis.CrsAxisDirection.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box will vary depending on map scale"
 Qgis.AnnotationItemFlag.__doc__ = 'Flags for annotation items.\n\n.. versionadded:: 3.22\n\n' + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__
 # --

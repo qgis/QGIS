@@ -901,6 +901,58 @@ class CORE_EXPORT Qgis
     Q_ENUM( DataProviderFlag )
 
     /**
+     * Coordinate reference system axis directions.
+     *
+     * From "Geographic information — Well-known text representation of coordinate reference systems", section 7.5.1.
+     *
+     * \since QGIS 3.26
+     */
+    enum class CrsAxisDirection : int
+    {
+      North, //!< North
+      NorthNorthEast, //!< North North East
+      NorthEast, //!< North East
+      EastNorthEast, //!< East North East
+      East, //!< East
+      EastSouthEast, //!< East South East
+      SouthEast, //!< South East
+      SouthSouthEast, //!< South South East
+      South, //!< South
+      SouthSouthWest, //!< South South West
+      SouthWest, //!< South West
+      WestSouthWest, //!< West South West
+      West, //!< West
+      WestNorthWest, //!< West North West
+      NorthWest, //!< North West
+      NorthNorthWest, //!< North North West
+      GeocentricX, //!< Geocentric (X)
+      GeocentricY, //!< Geocentric (Y)
+      GeocentricZ, //!< Geocentric (Z)
+      Up, //!< Up
+      Down, //!< Down
+      Forward, //!< Forward
+      Aft, //!< Aft
+      Port, //!< Port
+      Starboard, //!< Starboard
+      Clockwise, //!< Clockwise
+      CounterClockwise, //!< Counter clockwise
+      ColumnPositive, //!< Column positive
+      ColumnNegative, //!< Column negative
+      RowPositive, //!< Row positive
+      RowNegative, //!< Row negative
+      DisplayRight, //!< Display right
+      DisplayLeft, //!< Display left
+      DisplayUp, //!< Display up
+      DisplayDown, //!< Display down
+      Future, //!< Future
+      Past, //!< Past
+      Towards, //!< Towards
+      AwayFrom, //!< Away from
+      Unspecified, //!< Unspecified
+    };
+    Q_ENUM( CrsAxisDirection )
+
+    /**
      * Flags for annotation items.
      *
      * \since QGIS 3.22

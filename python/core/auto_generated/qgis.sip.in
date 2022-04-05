@@ -560,6 +560,50 @@ The development version
     typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
 
+    enum class CrsAxisDirection
+    {
+      North,
+      NorthNorthEast,
+      NorthEast,
+      EastNorthEast,
+      East,
+      EastSouthEast,
+      SouthEast,
+      SouthSouthEast,
+      South,
+      SouthSouthWest,
+      SouthWest,
+      WestSouthWest,
+      West,
+      WestNorthWest,
+      NorthWest,
+      NorthNorthWest,
+      GeocentricX,
+      GeocentricY,
+      GeocentricZ,
+      Up,
+      Down,
+      Forward,
+      Aft,
+      Port,
+      Starboard,
+      Clockwise,
+      CounterClockwise,
+      ColumnPositive,
+      ColumnNegative,
+      RowPositive,
+      RowNegative,
+      DisplayRight,
+      DisplayLeft,
+      DisplayUp,
+      DisplayDown,
+      Future,
+      Past,
+      Towards,
+      AwayFrom,
+      Unspecified,
+    };
+
     enum class AnnotationItemFlag
     {
       ScaleDependentBoundingBox,
