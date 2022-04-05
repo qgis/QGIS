@@ -18,18 +18,21 @@
 
 #include "qgis_3d.h"
 
-#include <QVector3D>
-#include <Qt3DCore/QEntity>
-#include <Qt3DRender/QCamera>
-#include <Qt3DExtras/Qt3DWindow>
-#include <Qt3DRender/QViewport>
-#include <Qt3DExtras/QText2DEntity>
 #include "qgs3dmapsettings.h"
+#include <Qt3DCore/QEntity>
+#include <Qt3DExtras/Qt3DWindow>
+#include <Qt3DExtras/QText2DEntity>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QViewport>
+#include <QVector3D>
+
+#include <Qt3DRender/QBuffer>
 
 #define SIP_NO_FILE
 
 /**
- * Display 3D ortho axis in the main 3D view.
+ * \ingroup 3d
+ * \brief Display 3D ortho axis in the main 3D view.
  *
  * Axis are displayed in a dedicated viewport which can be placed all around the main viewport.
  * Axis labels are displayed in a dedicated viewport with a specific camera to act as a billboarding layer.
@@ -37,9 +40,9 @@
 
  * \note Not available in Python bindings
  *
- * \since QGIS 3.25
+ * \since QGIS 3.26
  */
-class Qgs3DAxis : public QObject
+class _3D_EXPORT Qgs3DAxis : public QObject
 {
     Q_OBJECT
   public:
@@ -56,37 +59,42 @@ class Qgs3DAxis : public QObject
     /**
      * \brief The Axis enum
      */
-    enum Axis
+    enum class Axis
     {
       X = 1,
       Y = 2,
       Z = 3
     };
+    Q_ENUM( Axis )
 
     /**
      * \brief The AxisViewportPosition enum
      */
-    enum AxisViewportPosition
+    enum class AxisViewportPosition
     {
       //! top or left
-      BEGIN = 1,
-      MIDDLE = 2,
+      Begin = 1,
+      Middle = 2,
       //! bottom or right
-      END = 3
+      End = 3
     };
+    Q_ENUM( AxisViewportPosition )
 
     /**
      * \brief The Mode enum
      */
-    enum Mode
+    enum class Mode
     {
       //! disabled
-      OFF = 1,
+      Off = 1,
       //! CRS specific. TODO: should handle up axis
-      SRS = 2,
+      Crs = 2,
       //! Compass axis ie. North-East-Up
-      NEU = 3
+      NorthEastUp = 3,
+      //! Cube with label
+      Cube = 4
     };
+    Q_ENUM( Mode )
 
     /**
      * \brief set axis representation mode
@@ -121,37 +129,70 @@ class Qgs3DAxis : public QObject
   private:
     void createAxisScene();
     void createAxis( const Axis &axis );
+    void createCube( );
     void updateCamera( );
     void updateAxisViewportSize( int val = 0 );
-    void updateLabelPosition();
+    void updateAxisLabelPosition();
 
     Qt3DRender::QViewport *constructAxisViewport( Qt3DCore::QEntity *parent3DScene );
     Qt3DRender::QViewport *constructLabelViewport( Qt3DCore::QEntity *parent3DScene, const QRectF &parentViewportSize );
 
+    Qt3DExtras::QText2DEntity *addCubeText( const QString &text, float textHeight, float textWidth, const QFont &f, const QMatrix4x4 &rotation, const QVector3D &translation );
+
     Qt3DExtras::Qt3DWindow *mParentWindow;
     Qt3DRender::QCamera *mParentCamera;
-    float mCylinderLength;
-    int mAxisViewportSize;
-    AxisViewportPosition mAxisViewportVertPos;
-    AxisViewportPosition mAxisViewportHorizPos;
-    int mFontSize;
+    float mCylinderLength = 40.0f;
+    int mAxisViewportSize = 4.0 * mCylinderLength;
+    AxisViewportPosition mAxisViewportVertPos = AxisViewportPosition::Begin;
+    AxisViewportPosition mAxisViewportHorizPos = AxisViewportPosition::End;
+    int mFontSize = 10;
 
     Qt3DCore::QEntity *mAxisSceneEntity;
     Qt3DRender::QCamera *mAxisCamera;
     Qt3DRender::QViewport *mAxisViewport;
 
-    Qgs3DAxis::Mode mMode;
-    Qt3DCore::QEntity *mAxisRoot;
+    Qgs3DAxis::Mode mMode = Mode::Crs;
+    Qt3DCore::QEntity *mAxisRoot = nullptr;
+    Qt3DCore::QEntity *mCube;
+    QList<Qt3DExtras::QText2DEntity *> mCubeLabels;
 
     Qt3DExtras::QText2DEntity *mText_X, *mText_Y, *mText_Z;
     QVector3D mTextCoord_X, mTextCoord_Y, mTextCoord_Z;
-    Qt3DCore::QTransform *mTextTransform_X, *mTextTransform_Y, *mTextTransform_Z;
+    Qt3DCore::QTransform *mTextTransform_X = nullptr, *mTextTransform_Y = nullptr, *mTextTransform_Z = nullptr;
     QgsCoordinateReferenceSystem mCrs;
     QVector3D mPreviousVector;
 
     Qt3DRender::QCamera *mTwoDLabelCamera;
     Qt3DCore::QEntity *mTwoDLabelSceneEntity;
     Qt3DRender::QViewport *mTwoDLabelViewport;
+};
+
+/**
+ * \ingroup 3d
+ * \brief Geometry renderer for lines, draws a wired mesh
+ *
+ * \since QGIS 3.26
+ */
+class Qgs3DWiredMesh : public Qt3DRender::QGeometryRenderer
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * \brief Defaul Qgs3DWiredMesh constructor
+     */
+    Qgs3DWiredMesh( Qt3DCore::QNode *parent = nullptr );
+
+    /**
+     * \brief add or replace mesh vertices coordinates
+     */
+    void setVertices( const QList<QVector3D> &vertices );
+
+  private:
+    Qt3DRender::QGeometry *mGeom = nullptr;
+    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
+    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
 };
 
 #endif // QGS3DAXIS_H

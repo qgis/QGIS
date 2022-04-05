@@ -43,7 +43,7 @@ QWindow *QgsWindow3DEngine::window()
   return mWindow3D;
 }
 
-Qt3DCore::QEntity *QgsWindow3DEngine::root()
+Qt3DCore::QEntity *QgsWindow3DEngine::root() const
 {
   return mRoot;
 }
