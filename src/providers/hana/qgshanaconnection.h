@@ -66,7 +66,7 @@ class QgsHanaConnection : public QObject
     QVariant executeScalar( const QString &sql );
     QVariant executeScalar( const QString &sql, const QVariantList &args );
 
-    odbc::PreparedStatementRef prepareStatement( const QString &sql );
+    NS_ODBC::PreparedStatementRef prepareStatement( const QString &sql );
 
     void commit();
     void rollback();
@@ -105,14 +105,14 @@ class QgsHanaConnection : public QObject
     static QStringList connectionList();
 
   private:
-    QgsHanaConnection( odbc::ConnectionRef connection, const QgsDataSourceUri &uri );
+    QgsHanaConnection( NS_ODBC::ConnectionRef connection, const QgsDataSourceUri &uri );
 
     QStringList getPrimaryKeyCandidates( const QgsHanaLayerProperty &layerProperty );
 
-    odbc::PreparedStatementRef createPreparedStatement( const QString &sql, const QVariantList &args );
+    NS_ODBC::PreparedStatementRef createPreparedStatement( const QString &sql, const QVariantList &args );
 
   private:
-    odbc::ConnectionRef mConnection;
+    NS_ODBC::ConnectionRef mConnection;
     const QgsDataSourceUri mUri;
     QString mDatabaseVersion;
     QString mUserName;

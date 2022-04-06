@@ -24,7 +24,7 @@
 #include "odbc/Connection.h"
 #include "odbc/Environment.h"
 
-using namespace odbc;
+using namespace NS_ODBC;
 
 static QString detectDriverPath( EnvironmentRef &env, const QString &libName, const QString &defaultPath )
 {

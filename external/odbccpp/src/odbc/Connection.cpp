@@ -12,7 +12,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 Connection::Connection(Environment* parent)
 : parent_(parent, true)
@@ -262,4 +262,4 @@ DatabaseMetaDataUnicodeRef Connection::getDatabaseMetaDataUnicode()
     return ret;
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

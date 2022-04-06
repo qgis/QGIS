@@ -24,7 +24,7 @@
 #include "odbc/PreparedStatement.h"
 #include "odbc/Statement.h"
 
-using namespace odbc;
+using namespace NS_ODBC;
 
 QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )
@@ -210,7 +210,7 @@ QgsGeometry QgsHanaResultSet::getGeometry( unsigned short columnIndex )
       return geom;
     }
   }
-  else if ( bufLength != 0 && bufLength != odbc::ResultSet::NULL_DATA )
+  else if ( bufLength != 0 && bufLength != ResultSet::NULL_DATA )
   {
     QByteArray wkbBytes( toWkbSize( bufLength ), '0' );
     mResultSet->getBinaryData( columnIndex, wkbBytes.data(), bufLength );

@@ -1,12 +1,13 @@
 #ifndef ODBC_INTERNAL_TYPEINFO_H_INCLUDED
 #define ODBC_INTERNAL_TYPEINFO_H_INCLUDED
 //------------------------------------------------------------------------------
+#include <odbc/Config.h>
 #include <odbc/Types.h>
 #include <odbc/internal/Odbc.h>
 #include <cassert>
 #include <cstdint>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 /**
  * Structure that contains the ODBC value type and parameter type for a C++
@@ -267,6 +268,6 @@ struct TypeInfo
     }
 };
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END
 //------------------------------------------------------------------------------
 #endif

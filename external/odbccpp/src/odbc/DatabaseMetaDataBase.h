@@ -6,7 +6,7 @@
 #include <odbc/Forwards.h>
 #include <odbc/Types.h>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
  /**
   * Base class for DatabaseMetaData and DatabaseMetaDataUnicode.
@@ -88,6 +88,6 @@ protected:
     ConnectionRef parent_;
 };
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END
 //------------------------------------------------------------------------------
 #endif

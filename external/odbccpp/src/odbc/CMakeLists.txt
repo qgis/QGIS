@@ -50,9 +50,13 @@ add_library(odbccpp_static
     STATIC
         ${odbccpp_sources}
 )
+
 target_compile_definitions(odbccpp_static
     PUBLIC
         ODBC_STATIC
+        "NS_ODBC=qgs::odbc"
+        "NS_ODBC_START=namespace qgs { namespace odbc {"
+        "NS_ODBC_END=} }"
 )
 
 target_include_directories(odbccpp_static PUBLIC ${ODBC_INCLUDE_DIRS})

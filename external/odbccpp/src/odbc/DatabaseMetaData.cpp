@@ -7,7 +7,7 @@
 #include <odbc/internal/Macros.h>
 #include <odbc/internal/Odbc.h>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
@@ -301,4 +301,4 @@ string DatabaseMetaData::getUserName()
     return getStringTypeInfoA(SQL_USER_NAME);
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

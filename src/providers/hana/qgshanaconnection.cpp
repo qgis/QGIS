@@ -40,7 +40,7 @@
 #include "odbc/ResultSetMetaDataUnicode.h"
 #include "odbc/Statement.h"
 
-using namespace odbc;
+using namespace NS_ODBC;
 
 namespace
 {
@@ -49,7 +49,7 @@ namespace
     QMap<QString, bool> ret;
     DatabaseMetaDataUnicodeRef dmd = conn.getDatabaseMetaDataUnicode();
     ResultSetRef rsStats = dmd->getStatistics( nullptr, schemaName.toStdU16String().c_str(),
-                           tableName.toStdU16String().c_str(), odbc::IndexType::UNIQUE, odbc::StatisticsAccuracy::ENSURE );
+                           tableName.toStdU16String().c_str(), IndexType::UNIQUE, StatisticsAccuracy::ENSURE );
     QMap<QString, QStringList> compositeKeys;
     while ( rsStats->next() )
     {
@@ -177,7 +177,7 @@ QgsField AttributeField::toQgsField() const
 static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
 static const int GEOMETRIES_SELECT_LIMIT = 10;
 
-QgsHanaConnection::QgsHanaConnection( odbc::ConnectionRef connection,  const QgsDataSourceUri &uri )
+QgsHanaConnection::QgsHanaConnection( ConnectionRef connection,  const QgsDataSourceUri &uri )
   : mConnection( connection )
   , mUri( uri )
 {
@@ -223,7 +223,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
     conn->setAutoCommit( false );
     QString message;
 
-    auto connect = []( odbc::ConnectionRef & conn,
+    auto connect = []( ConnectionRef & conn,
                        const QgsDataSourceUri & uri,
                        QString & errorMessage )
     {
@@ -430,7 +430,7 @@ QVariant QgsHanaConnection::executeScalar( const QString &sql, const QVariantLis
   }
 }
 
-odbc::PreparedStatementRef QgsHanaConnection::prepareStatement( const QString &sql )
+PreparedStatementRef QgsHanaConnection::prepareStatement( const QString &sql )
 {
   try
   {

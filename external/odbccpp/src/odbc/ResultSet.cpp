@@ -12,7 +12,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 ResultSet::ResultSet(StatementBase* parent)
 : parent_(parent, true)
@@ -158,7 +158,7 @@ Decimal ResultSet::getDecimal(unsigned short columnIndex)
     if (ind == SQL_NULL_DATA)
         return Decimal();
     char str[64];
-    odbc::UtilInternal::numericToString(num, str);
+    UtilInternal::numericToString(num, str);
     return Decimal(decimal(str, num.precision, num.scale));
 }
 //------------------------------------------------------------------------------
@@ -397,4 +397,4 @@ void ResultSet::getNStringData(unsigned short columnIndex, void* data,
         SQL_C_WCHAR, (SQLPOINTER)data, size * sizeof(char16_t), NULL);
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END
