@@ -21,6 +21,8 @@ from utilities import unitTestDataPath
 from qgis.testing import unittest
 from qgis.server import QgsServerSettings, QgsServerSettingsEnv
 
+DEFAULT_CACHE_SIZE = 256 * 1024 * 1024
+
 
 class TestQgsServerSettings(unittest.TestCase):
 
@@ -104,7 +106,7 @@ class TestQgsServerSettings(unittest.TestCase):
     def test_env_cache_size(self):
         env = "QGIS_SERVER_CACHE_SIZE"
 
-        self.assertEqual(self.settings.cacheSize(), 50 * 1024 * 1024)
+        self.assertEqual(self.settings.cacheSize(), DEFAULT_CACHE_SIZE)
 
         os.environ[env] = "1024"
         self.settings.load()

@@ -36,6 +36,7 @@
 #include "qgslayerdefinition.h"
 #include "qgsiconutils.h"
 #include "qgsmimedatautils.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QPalette>
 
@@ -879,11 +880,17 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
   {
     addLegendToLayer( nodeLayer );
 
-    // automatic collapse of legend nodes - useful if a layer has many legend nodes
+    // if we aren't loading a layer from a project, setup some nice default settings
     if ( !mRootNode->customProperty( QStringLiteral( "loading" ) ).toBool() )
     {
+      // automatic collapse of legend nodes - useful if a layer has many legend nodes
       if ( mAutoCollapseLegendNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseLegendNodesCount )
         nodeLayer->setExpanded( false );
+
+      if ( nodeLayer->layer()->type() == QgsMapLayerType::VectorLayer && QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers.value() )
+      {
+        nodeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), true );
+      }
     }
   }
 

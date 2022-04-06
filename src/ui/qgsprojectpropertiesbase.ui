@@ -642,23 +642,6 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_18">
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_26">
-                    <property name="text">
-                     <string>Coordinate precision</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_34">
-                    <property name="text">
-                     <string>Bearing format</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QComboBox" name="mCoordinateDisplayComboBox"/>
-                  </item>
                   <item row="1" column="1">
                    <widget class="QFrame" name="mFramePrecision">
                     <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -708,14 +691,7 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_25">
-                    <property name="text">
-                     <string>Display coordinates using</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
+                  <item row="3" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="3,6">
                     <item>
                      <widget class="QPushButton" name="mCustomizeBearingFormatButton">
@@ -739,8 +715,39 @@
                     </item>
                    </layout>
                   </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_26">
+                    <property name="text">
+                     <string>Coordinate precision</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QComboBox" name="mCoordinateDisplayComboBox"/>
+                  </item>
                   <item row="3" column="0">
-                   <widget class="QDial" name="dial"/>
+                   <widget class="QLabel" name="label_34">
+                    <property name="text">
+                     <string>Bearing format</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_25">
+                    <property name="text">
+                     <string>Display coordinates using</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_31">
+                    <property name="text">
+                     <string>Coordinate order</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QComboBox" name="mCoordinateOrderComboBox"/>
                   </item>
                  </layout>
                 </widget>
@@ -953,8 +960,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>790</height>
+                <width>337</width>
+                <height>74</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1006,8 +1013,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>790</height>
+                <width>604</width>
+                <height>105</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1066,8 +1073,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>790</height>
+                <width>291</width>
+                <height>563</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1667,8 +1674,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>790</height>
+                <width>179</width>
+                <height>56</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1735,7 +1742,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
+                <width>635</width>
                 <height>1395</height>
                </rect>
               </property>
@@ -3247,42 +3254,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsExtentGroupBox</class>
-   <extends>QgsCollapsibleGroupBox</extends>
-   <header>qgsextentgroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsVariableEditorWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3291,21 +3265,31 @@
    <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionTreeWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectiontreewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3318,6 +3302,29 @@
    <class>QgsDatumTransformTableWidget</class>
    <extends>QWidget</extends>
    <header>qgsdatumtransformtablewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QgsCollapsibleGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionTreeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectiontreewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3350,6 +3357,7 @@
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>
+  <tabstop>mCoordinateOrderComboBox</tabstop>
   <tabstop>mCustomizeBearingFormatButton</tabstop>
   <tabstop>cbtsLocale</tabstop>
   <tabstop>generateTsFileButton</tabstop>

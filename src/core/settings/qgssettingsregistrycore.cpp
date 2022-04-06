@@ -99,6 +99,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingOffsetShowAdvanced );
   addSettingsEntry( &settingsDigitizingTracingMaxFeatureCount );
   addSettingsEntry( &settingsGpsBabelPath );
+  addSettingsEntry( &settingsLayerTreeShowFeatureCountForNewLayers );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()

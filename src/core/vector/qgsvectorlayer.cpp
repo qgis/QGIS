@@ -3797,16 +3797,19 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
     mSymbolFeatureCountMap.clear();
     mSymbolFeatureIdMap.clear();
 
-    const double refreshRate = QgsSymbolLayerUtils::rendererFrameRate( mRenderer );
-    if ( refreshRate <= 0 )
+    if ( mRenderer )
     {
-      mRefreshRendererTimer->stop();
-      mRefreshRendererTimer->setInterval( 0 );
-    }
-    else
-    {
-      mRefreshRendererTimer->setInterval( 1000 / refreshRate );
-      mRefreshRendererTimer->start();
+      const double refreshRate = QgsSymbolLayerUtils::rendererFrameRate( mRenderer );
+      if ( refreshRate <= 0 )
+      {
+        mRefreshRendererTimer->stop();
+        mRefreshRendererTimer->setInterval( 0 );
+      }
+      else
+      {
+        mRefreshRendererTimer->setInterval( 1000 / refreshRate );
+        mRefreshRendererTimer->start();
+      }
     }
 
     emit rendererChanged();
