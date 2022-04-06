@@ -172,7 +172,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const inline QgsSettingsEntryString settingsGpsBabelPath = QgsSettingsEntryString( QStringLiteral( "gpsbabelPath" ), QgsSettings::Prefix::GPS, QStringLiteral( "gpsbabel" ) );
 
     //! Settings entry show feature counts for newly added layers by default
-    static const inline QgsSettingsEntryBool settingsLayerTreeShowFeatureCountForNewLayers = QgsSettingsEntryBool( QStringLiteral( "show_feature_count_for_new_layers" ), QgsSettings::Prefix::LAYER_TREE, false, QStringLiteral( "If true, feature counts will be shown in the layer tree for all newly added layers." ) );
+    static const inline QgsSettingsEntryBool settingsLayerTreeShowFeatureCountForNewLayers = QgsSettingsEntryBool( QStringLiteral( "show_feature_count_for_new_layers" ), QgsSettings::Prefix::CORE_LAYERTREE, false, QStringLiteral( "If true, feature counts will be shown in the layer tree for all newly added layers." ) );
 #endif
 
 };
