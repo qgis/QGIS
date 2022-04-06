@@ -1195,7 +1195,7 @@ QgsRectangle QgsOgrProvider::extent() const
     QgsDebugMsgLevel( QStringLiteral( "Starting get extent" ), 3 );
 
     // raise progress bar for expensive extent calculation with large layers
-    const long long maxfeatures = mOgrLayer->getTotalFeatureCountfromMetaData();
+    const long long maxfeatures = featureCount();
     QString userMessageProgress = QString();
     if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && QgsProject::instance()->projectState() == QgsProject::OPENING_PROJECT )
       userMessageProgress = QString( "<i>Note:</i><br>Extent calculation during project loading can be avoided using the trust option in the project preferences." );
