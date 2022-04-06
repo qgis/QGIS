@@ -278,14 +278,6 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
 
 void QgsCameraController::updateCameraFromPose()
 {
-  // Some changes to be inserted
-  if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
-  {
-    // something went horribly wrong but we need to at least try to fix it somehow
-    qWarning() << "camera position got NaN!";
-    mCameraPose.setCenterPoint( QgsVector3D( 0, 0, 0 ) );
-  }
-
   if ( mCameraPose.pitchAngle() > 180 )
     mCameraPose.setPitchAngle( 180 );  // prevent going over the head
   if ( mCameraPose.pitchAngle() < 0 )
