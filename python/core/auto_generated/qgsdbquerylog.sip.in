@@ -28,6 +28,10 @@ Constructor for QgsDatabaseQueryLogEntry.
 
     int queryId;
 
+    QString uri;
+
+    QString provider;
+
     QString query;
 
     quint64 startedTime;
@@ -92,7 +96,7 @@ This method can be safely called from any thread.
 
     static void finished( const QgsDatabaseQueryLogEntry &query );
 %Docstring
-Records that the database ``query`` as finished.
+Records that the database ``query`` has finished.
 
 This method can be safely called from any thread.
 %End
@@ -106,6 +110,7 @@ This method can be safely called from any thread.
 
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

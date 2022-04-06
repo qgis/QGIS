@@ -93,6 +93,9 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
 
     case Qt::ToolTipRole:
     {
+      // Show no more than 255 characters
+      return mSql.length() > 255 ? mSql.mid( 0, 255 ).append( QStringLiteral( "…" ) ) : mSql;
+
 #if 0
       QString bytes = QObject::tr( "unknown" );
       if ( mBytesTotal != 0 )
@@ -154,7 +157,7 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
     default:
       break;
   }
-  return QVariant();
+  return QVariant( );
 }
 
 QList<QAction *> QgsDatabaseQueryLoggerQueryGroup::actions( QObject *parent )
@@ -235,6 +238,7 @@ void QgsDatabaseQueryLoggerQueryGroup::setFinished( const QgsDatabaseQueryLogEnt
   mReplyGroup = replyGroup.get();
   addChild( std::move( replyGroup ) );
 #endif
+  addKeyValueNode( QObject::tr( "Total time" ), QLocale().toString( ( query.finishedTime - query.startedTime ) / 1000.0 ).append( QStringLiteral( " s" ) ) );
 }
 
 void QgsDatabaseQueryLoggerQueryGroup::setTimedOut()

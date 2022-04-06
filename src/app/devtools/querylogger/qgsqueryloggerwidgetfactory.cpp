@@ -18,7 +18,7 @@
 #include "qgsapplication.h"
 
 QgsDatabaseQueryLoggerWidgetFactory::QgsDatabaseQueryLoggerWidgetFactory( QgsAppQueryLogger *logger )
-  : QgsDevToolWidgetFactory( QObject::tr( "Query Logger" ), QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/network_and_proxy.svg" ) ) )
+  : QgsDevToolWidgetFactory( QObject::tr( "Query Logger" ), QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/database.svg" ) ) )
   , mLogger( logger )
 {
 }

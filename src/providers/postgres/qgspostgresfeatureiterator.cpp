@@ -19,6 +19,7 @@
 #include "qgspostgresprovider.h"
 #include "qgspostgrestransaction.h"
 #include "qgslogger.h"
+#include "qgsdbquerylog.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgsexception.h"
@@ -292,6 +293,9 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
       QgsDebugMsgLevel( QStringLiteral( "fetching %1 features." ).arg( mFeatureQueueSize ), 4 );
 
       lock();
+
+      QgsDatabaseQueryLogWrapper logWrapper { fetch, mSource->mConnInfo, QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresFeatureIterator" ), QGS_QUERY_LOG_ORIGIN };
+
       if ( mConn->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
       {
         QgsMessageLog::logMessage( QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName, mConn->PQerrorMessage() ), QObject::tr( "PostGIS" ) );

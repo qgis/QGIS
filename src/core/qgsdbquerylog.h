@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
   qgsdbquerylog.h
   ------------
   Date                 : October 2021
@@ -90,6 +90,7 @@ Q_DECLARE_METATYPE( QgsDatabaseQueryLogEntry );
 #include "qgsconfig.h"
 constexpr int sQueryLoggerFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
 #define QgsSetQueryLogClass(entry, _class) entry.initiatorClass = _class; entry.origin = QString(QString( __FILE__ ).mid( sQueryLoggerFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")");
+#define QGS_QUERY_LOG_ORIGIN QString(QString( __FILE__ ).mid( sQueryLoggerFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")")
 #endif
 
 /**
@@ -151,7 +152,7 @@ class CORE_EXPORT QgsDatabaseQueryLog: public QObject
     static void log( const QgsDatabaseQueryLogEntry &query );
 
     /**
-     * Records that the database \a query as finished.
+     * Records that the database \a query has finished.
      *
      * This method can be safely called from any thread.
      */
@@ -194,5 +195,45 @@ class CORE_EXPORT QgsDatabaseQueryLog: public QObject
     static bool sEnabled;
 
 };
+
+#ifndef SIP_RUN
+///@cond private
+
+/**
+ * The QgsDatabaseQueryLogWrapper class is a RIIA wrapper for the query logger.
+ */
+class QgsDatabaseQueryLogWrapper
+{
+
+  public:
+
+    QgsDatabaseQueryLogWrapper( const QString &query, const QString &uri, const QString &provider, const QString &initiatorClass, const QString &origin )
+      : mEntry( query )
+    {
+      mEntry.uri = uri;
+      mEntry.origin = origin;
+      mEntry.initiatorClass = initiatorClass;
+      mEntry.provider = provider;
+      QgsDatabaseQueryLog::log( mEntry );
+    }
+
+    ~QgsDatabaseQueryLogWrapper( )
+    {
+      QgsDatabaseQueryLog::finished( mEntry );
+    }
+
+    QgsDatabaseQueryLogEntry &entry()
+    {
+      return mEntry;
+    }
+
+  private:
+
+    QgsDatabaseQueryLogEntry mEntry;
+
+};
+
+///@endcond
+#endif
 
 #endif // QGSDBQUERYLOG_H
