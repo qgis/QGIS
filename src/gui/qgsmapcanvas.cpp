@@ -1091,7 +1091,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
       QAction *copyCoordinateAction = new QAction( QStringLiteral( "%5 (%1%2, %3%4)" ).arg(
             firstNumber, firstSuffix, secondNumber, secondSuffix, identifier ), &menu );
 
-      connect( copyCoordinateAction, &QAction::triggered, this, [displayPrecision, transformedPoint, firstNumber, secondNumber]
+      connect( copyCoordinateAction, &QAction::triggered, this, [firstNumber, secondNumber, transformedPoint]
       {
         QClipboard *clipboard = QApplication::clipboard();
 
