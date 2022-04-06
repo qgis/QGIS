@@ -17718,7 +17718,7 @@ void QgisApp::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockW
       {
         for ( QDockWidget *cw : dockWidgetsInArea )
         {
-          if ( cw->objectName() == tabifyWith.at( i ) )
+          if ( cw->objectName() == tabifyWith.at( i ) || cw->property( "dock_uuid" ).toString() == tabifyWith.at( i ) )
           {
             tabifyWithDockWidget = cw;
             objectNameFound = true;  // Also exit the outer for loop
@@ -17735,6 +17735,8 @@ void QgisApp::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockW
     {
       tabifyWithDockWidget = dockWidgetsInArea.at( 0 );  // Last resort
     }
+    if ( tabifyWithDockWidget == dockWidget )
+      return;
 
     QTabBar *existentTabBar = nullptr;
     int currentIndex = -1;
