@@ -282,6 +282,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      */
     double sampleDepthBuffer( const QImage &buffer, int px, int py );
 
+    bool screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *cameraBefore, double &depth, QVector3D &worldPosition );
+
   private:
     //! Camera that is being controlled
     Qt3DRender::QCamera *mCamera = nullptr;
