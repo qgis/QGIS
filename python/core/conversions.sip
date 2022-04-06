@@ -298,7 +298,6 @@ template <TYPE>
 %End
 };
 
-
 %MappedType QList<long>
 {
 %TypeHeaderCode

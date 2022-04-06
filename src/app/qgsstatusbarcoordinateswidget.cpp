@@ -30,7 +30,7 @@
 #include "qgscoordinateutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
-
+#include "qgscoordinatereferencesystemutils.h"
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   : QWidget( parent )
@@ -161,15 +161,16 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
 
   bool xOk = false;
   bool  yOk = false;
-  double x = 0., y = 0.;
+  double first = 0;
+  double second = 0;
   QString coordText = mLineEdit->text();
   coordText.replace( QRegExp( " {2,}" ), QStringLiteral( " " ) );
 
   QStringList parts = coordText.split( ',' );
   if ( parts.size() == 2 )
   {
-    x = parts.at( 0 ).toDouble( &xOk );
-    y = parts.at( 1 ).toDouble( &yOk );
+    first = parts.at( 0 ).toDouble( &xOk );
+    second = parts.at( 1 ).toDouble( &yOk );
   }
 
   if ( !xOk || !yOk )
@@ -177,15 +178,29 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
     parts = coordText.split( ' ' );
     if ( parts.size() == 2 )
     {
-      x = parts.at( 0 ).toDouble( &xOk );
-      y = parts.at( 1 ).toDouble( &yOk );
+      first = parts.at( 0 ).toDouble( &xOk );
+      second = parts.at( 1 ).toDouble( &yOk );
     }
   }
 
   if ( !xOk || !yOk )
     return;
 
-  mMapCanvas->setCenter( QgsPointXY( x, y ) );
+  const Qgis::CoordinateOrder projectAxisOrder = qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
+
+  const Qgis::CoordinateOrder coordinateOrder = projectAxisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( mMapCanvas->mapSettings().destinationCrs() ) : projectAxisOrder;
+  // we may need to flip coordinates depending on crs axis ordering
+  switch ( coordinateOrder )
+  {
+    case Qgis::CoordinateOrder::Default:
+    case Qgis::CoordinateOrder::XY:
+      mMapCanvas->setCenter( QgsPointXY( first, second ) );
+      break;
+    case Qgis::CoordinateOrder::YX:
+      mMapCanvas->setCenter( QgsPointXY( second, first ) );
+      break;
+  }
+
   mMapCanvas->refresh();
 }
 

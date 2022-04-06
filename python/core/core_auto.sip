@@ -468,6 +468,7 @@
 %Include auto_generated/proj/qgscelestialbody.sip
 %Include auto_generated/proj/qgscoordinatereferencesystem.sip
 %Include auto_generated/proj/qgscoordinatereferencesystemregistry.sip
+%Include auto_generated/proj/qgscoordinatereferencesystemutils.sip
 %Include auto_generated/proj/qgscoordinatetransform.sip
 %Include auto_generated/proj/qgscoordinatetransformcontext.sip
 %Include auto_generated/proj/qgsdatums.sip
