@@ -78,3 +78,92 @@ Qgis::CoordinateOrder QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderF
 
   return Qgis::CoordinateOrder::XY;
 }
+
+QString QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( Qgis::CrsAxisDirection axis )
+{
+  switch ( axis )
+  {
+    case Qgis::CrsAxisDirection::North:
+      return QStringLiteral( "N" );
+    case Qgis::CrsAxisDirection::NorthNorthEast:
+      return QStringLiteral( "NNE" );
+    case Qgis::CrsAxisDirection::SouthSouthEast:
+      return QStringLiteral( "SSE" );
+    case Qgis::CrsAxisDirection::South:
+      return QStringLiteral( "S" );
+    case Qgis::CrsAxisDirection::SouthSouthWest:
+      return QStringLiteral( "SSW" );
+    case Qgis::CrsAxisDirection::NorthNorthWest:
+      return QStringLiteral( "NNW" );
+    case Qgis::CrsAxisDirection::GeocentricY:
+      return QStringLiteral( "Y" );
+    case Qgis::CrsAxisDirection::DisplayUp:
+      return QStringLiteral( "Up" );
+    case Qgis::CrsAxisDirection::DisplayDown:
+      return QStringLiteral( "Down" );
+    case Qgis::CrsAxisDirection::NorthEast:
+      return QStringLiteral( "NE" );
+    case Qgis::CrsAxisDirection::EastNorthEast:
+      return QStringLiteral( "ENE" );
+    case Qgis::CrsAxisDirection::East:
+      return QStringLiteral( "E" );
+    case Qgis::CrsAxisDirection::EastSouthEast:
+      return QStringLiteral( "ESE" );
+    case Qgis::CrsAxisDirection::SouthEast:
+      return QStringLiteral( "SE" );
+    case Qgis::CrsAxisDirection::SouthWest:
+      return QStringLiteral( "SW" );
+    case Qgis::CrsAxisDirection::WestSouthWest:
+      return QStringLiteral( "WSW" );
+    case Qgis::CrsAxisDirection::West:
+      return QStringLiteral( "W" );
+    case Qgis::CrsAxisDirection::WestNorthWest:
+      return QStringLiteral( "WNW" );
+    case Qgis::CrsAxisDirection::NorthWest:
+      return QStringLiteral( "NW" );
+    case Qgis::CrsAxisDirection::GeocentricX:
+      return QStringLiteral( "X" );
+    case Qgis::CrsAxisDirection::DisplayRight:
+      return QStringLiteral( "Disp. R" );
+    case Qgis::CrsAxisDirection::DisplayLeft:
+      return QStringLiteral( "Disp. L" );
+    case Qgis::CrsAxisDirection::GeocentricZ:
+      return QStringLiteral( "Z" );
+    case Qgis::CrsAxisDirection::Up:
+      return QStringLiteral( "U" );
+    case Qgis::CrsAxisDirection::Down:
+      return QStringLiteral( "D" );
+    case Qgis::CrsAxisDirection::Forward:
+      return QStringLiteral( "F" );
+    case Qgis::CrsAxisDirection::Aft:
+      return QStringLiteral( "A" );
+    case Qgis::CrsAxisDirection::Port:
+      return QStringLiteral( "P" );
+    case Qgis::CrsAxisDirection::Starboard:
+      return QStringLiteral( "STBD" );
+    case Qgis::CrsAxisDirection::Clockwise:
+      return QStringLiteral( "CW" );
+    case Qgis::CrsAxisDirection::CounterClockwise:
+      return QStringLiteral( "CCW" );
+    case Qgis::CrsAxisDirection::ColumnPositive:
+      return QStringLiteral( "C+" );
+    case Qgis::CrsAxisDirection::ColumnNegative:
+      return QStringLiteral( "C-" );
+    case Qgis::CrsAxisDirection::RowPositive:
+      return QStringLiteral( "R+" );
+    case Qgis::CrsAxisDirection::RowNegative:
+      return QStringLiteral( "R-" );
+    case Qgis::CrsAxisDirection::Future:
+      return QStringLiteral( "F" );
+    case Qgis::CrsAxisDirection::Past:
+      return QStringLiteral( "P" );
+    case Qgis::CrsAxisDirection::Towards:
+      return QStringLiteral( "T" );
+    case Qgis::CrsAxisDirection::AwayFrom:
+      return QStringLiteral( "AF" );
+    case Qgis::CrsAxisDirection::Unspecified:
+      break;
+  }
+
+  return QString();
+}
