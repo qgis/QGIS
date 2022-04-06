@@ -953,6 +953,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( CrsAxisDirection )
 
     /**
+     * Order of coordinates.
+     *
+     * \since QGIS 3.26
+     */
+    enum class CoordinateOrder : int
+    {
+      Default, //!< Respect the default axis ordering for the CRS, as defined in the CRS's parameters
+      XY, //!< Easting/Northing (or Longitude/Latitude for geographic CRS)
+      YX, //!< Northing/Easting (or Latitude/Longitude for geographic CRS)
+    };
+    Q_ENUM( CoordinateOrder )
+
+    /**
      * Flags for annotation items.
      *
      * \since QGIS 3.22

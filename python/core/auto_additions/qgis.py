@@ -829,6 +829,13 @@ Qgis.CrsAxisDirection.__doc__ = 'Coordinate reference system axis directions.\n\
 # --
 Qgis.CrsAxisDirection.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.CoordinateOrder.Default.__doc__ = "Respect the default axis ordering for the CRS, as defined in the CRS's parameters"
+Qgis.CoordinateOrder.XY.__doc__ = "Easting/Northing (or Longitude/Latitude for geographic CRS)"
+Qgis.CoordinateOrder.YX.__doc__ = "Northing/Easting (or Latitude/Longitude for geographic CRS)"
+Qgis.CoordinateOrder.__doc__ = 'Order of coordinates.\n\n.. versionadded:: 3.26\n\n' + '* ``Default``: ' + Qgis.CoordinateOrder.Default.__doc__ + '\n' + '* ``XY``: ' + Qgis.CoordinateOrder.XY.__doc__ + '\n' + '* ``YX``: ' + Qgis.CoordinateOrder.YX.__doc__
+# --
+Qgis.CoordinateOrder.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box will vary depending on map scale"
 Qgis.AnnotationItemFlag.__doc__ = 'Flags for annotation items.\n\n.. versionadded:: 3.22\n\n' + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__
 # --

@@ -626,6 +626,7 @@ set(QGIS_CORE_SRCS
 
   proj/qgscoordinatereferencesystem.cpp
   proj/qgscoordinatereferencesystemregistry.cpp
+  proj/qgscoordinatereferencesystemutils.cpp
   proj/qgscoordinatetransform.cpp
   proj/qgscoordinatetransform_p.cpp
   proj/qgscoordinatetransformcontext.cpp
@@ -1536,6 +1537,7 @@ set(QGIS_CORE_HDRS
   proj/qgscelestialbody.h
   proj/qgscoordinatereferencesystem.h
   proj/qgscoordinatereferencesystemregistry.h
+  proj/qgscoordinatereferencesystemutils.h
   proj/qgscoordinatetransform.h
   proj/qgscoordinatetransformcontext.h
   proj/qgsdatums.h
