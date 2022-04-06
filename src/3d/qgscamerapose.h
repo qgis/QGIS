@@ -50,7 +50,7 @@ class _3D_EXPORT QgsCameraPose
     //! Returns center point (towards which point the camera is looking)
     QgsVector3D centerPoint() const { return mCenterPoint; }
     //! Sets center point (towards which point the camera is looking)
-    void setCenterPoint( const QgsVector3D &point ) { mCenterPoint = point; }
+    void setCenterPoint( const QgsVector3D &point );
 
     //! Returns distance of the camera from the center point
     float distanceFromCenterPoint() const { return mDistanceFromCenterPoint; }

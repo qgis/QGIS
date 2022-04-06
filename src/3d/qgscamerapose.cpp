@@ -43,6 +43,15 @@ void QgsCameraPose::readXml( const QDomElement &elem )
   mHeadingAngle = elem.attribute( QStringLiteral( "heading" ) ).toFloat();
 }
 
+void QgsCameraPose::setCenterPoint( const QgsVector3D &point )
+{
+  // something went horribly wrong. Prevent further errors
+  if ( std::isnan( point.x() ) || std::isnan( point.y() ) || std::isnan( point.z() ) )
+    qWarning() << "Not updating camera position: it cannot be NaN!";
+  else
+    mCenterPoint = point;
+}
+
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
 {
   // basic scene setup:
