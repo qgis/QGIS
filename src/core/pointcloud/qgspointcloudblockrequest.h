@@ -20,15 +20,10 @@
 
 #include <QObject>
 
-#include "qgspointcloudattribute.h"
 #include "qgstiledownloadmanager.h"
 #include "qgspointcloudindex.h"
-#include "qgspointcloudexpression.h"
 
 #define SIP_NO_FILE
-
-class QgsPointCloudAttributeCollection;
-class QgsPointCloudBlock;
 
 /**
  * \ingroup core

@@ -18,7 +18,6 @@
 #include "qgscopcpointcloudblockrequest.h"
 
 #include "qgstiledownloadmanager.h"
-#include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
 #include "qgsapplication.h"
 #include "qgsremotecopcpointcloudindex.h"
@@ -32,9 +31,9 @@
 QgsCopcPointCloudBlockRequest::QgsCopcPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &uri,
     const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
     const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression,
-    uint64_t blockOffset, int32_t blockSize, int pointCount, QByteArray lazHeader, QByteArray extraBytesData )
+    uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo )
   : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression ),
-    mBlockOffset( blockOffset ), mBlockSize( blockSize ), mPointCount( pointCount ), mLazHeader( lazHeader ), mExtrabytesData( extraBytesData )
+    mBlockOffset( blockOffset ), mBlockSize( blockSize ), mPointCount( pointCount ), mLazInfo( lazInfo )
 {
   QNetworkRequest nr( mUri );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
@@ -55,20 +54,14 @@ void QgsCopcPointCloudBlockRequest::blockFinishedLoading()
     try
     {
       mBlock = nullptr;
-#ifdef HAVE_COPC
-      std::istringstream file( mLazHeader.toStdString() );
-      lazperf::header14 header = lazperf::header14::create( file );
       if ( mBlockSize != mTileDownloadManagetReply->data().size() )
       {
         QString err = QStringLiteral( "Failed to load node %1 properly %2" ).arg( mNode.toString() ).arg( QString::fromStdString( mTileDownloadManagetReply->request().rawHeader( "Range" ).toStdString() ) );
       }
       else
       {
-        lazperf::eb_vlr ebVlr;
-        ebVlr.fill( mExtrabytesData.data(), mExtrabytesData.size() );
-        mBlock = QgsLazDecoder::decompressCopc( mTileDownloadManagetReply->data(), header, ebVlr, mPointCount, mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
+        mBlock = QgsLazDecoder::decompressCopc( mTileDownloadManagetReply->data(), mLazInfo, mPointCount, mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
       }
-#endif
     }
     catch ( std::exception &e )
     {

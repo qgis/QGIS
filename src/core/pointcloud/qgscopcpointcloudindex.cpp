@@ -55,8 +55,6 @@ void QgsCopcPointCloudIndex::load( const QString &fileName )
     return;
   }
 
-  mLazFile.reset( new lazperf::reader::generic_file( mCopcFile ) );
-
   bool success = loadSchema();
 
   if ( success )
@@ -69,99 +67,34 @@ void QgsCopcPointCloudIndex::load( const QString &fileName )
 
 bool QgsCopcPointCloudIndex::loadSchema()
 {
-  mPointCount = mLazFile->header().point_count;
+  mLazInfo.reset( new QgsLazInfo( mCopcFile ) );
+  return loadSchema( *mLazInfo.get() );
+}
 
-  mScale = QgsVector3D( mLazFile->header().scale.x, mLazFile->header().scale.y, mLazFile->header().scale.z );
-  mOffset = QgsVector3D( mLazFile->header().offset.x, mLazFile->header().offset.y, mLazFile->header().offset.z );
+bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
+{
+  mScale = lazInfo.scale();
+  mOffset = lazInfo.offset();
 
-  mOriginalMetadata[ QStringLiteral( "creation_year" ) ] = mLazFile->header().creation.year;
-  mOriginalMetadata[ QStringLiteral( "creation_day" ) ] = mLazFile->header().creation.day;
-  mOriginalMetadata[ QStringLiteral( "major_version" ) ] = mLazFile->header().version.major;
-  mOriginalMetadata[ QStringLiteral( "minor_version" ) ] = mLazFile->header().version.minor;
-  mOriginalMetadata[ QStringLiteral( "dataformat_id" ) ] = mLazFile->header().point_format_id;
-  mOriginalMetadata[ QStringLiteral( "scale_x" ) ] = mScale.x();
-  mOriginalMetadata[ QStringLiteral( "scale_y" ) ] = mScale.y();
-  mOriginalMetadata[ QStringLiteral( "scale_z" ) ] = mScale.z();
-  mOriginalMetadata[ QStringLiteral( "offset_x" ) ] = mOffset.x();
-  mOriginalMetadata[ QStringLiteral( "offset_y" ) ] = mOffset.y();
-  mOriginalMetadata[ QStringLiteral( "offset_z" ) ] = mOffset.z();
-  mOriginalMetadata[ QStringLiteral( "project_id" ) ] = QString( QByteArray( mLazFile->header().guid, 16 ).toHex() );
-  mOriginalMetadata[ QStringLiteral( "system_id" ) ] = QString::fromLocal8Bit( mLazFile->header().system_identifier, 32 );
-  mOriginalMetadata[ QStringLiteral( "software_id" ) ] = QString::fromLocal8Bit( mLazFile->header().generating_software, 32 );
+  mOriginalMetadata = lazInfo.toMetadata();
 
-  // The COPC format only uses PDRF 6, 7 or 8. So there should be a OGC Coordinate System WKT record
-  mWkt = QString();
-  std::vector<char> wktRecordData = mLazFile->vlrData( "LASF_Projection", 2112 );
-  if ( !wktRecordData.empty() )
-  {
-    lazperf::wkt_vlr wktVlr;
-    wktVlr.fill( wktRecordData.data(), wktRecordData.size() );
-    mWkt = QString::fromStdString( wktVlr.wkt );
-  }
+  QgsVector3D minCoords = lazInfo.minCoords();
+  QgsVector3D maxCoords = lazInfo.maxCoords();
+  mExtent.set( minCoords.x(), minCoords.y(), maxCoords.x(), maxCoords.y() );
+  mZMin = minCoords.z();
+  mZMax = maxCoords.z();
 
-  mExtent.set( mLazFile->header().minx, mLazFile->header().miny, mLazFile->header().maxx, mLazFile->header().maxy );
+  setAttributes( lazInfo.attributes() );
 
-  mZMin = mLazFile->header().minz;
-  mZMax = mLazFile->header().maxz;
+  QByteArray copcInfoVlrData = lazInfo.vlrData( "copc", 1 );
+  mCopcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
 
-
-  // Attributes for COPC format
-  // COPC supports only PDRF 6, 7 and 8
-
-  QgsPointCloudAttributeCollection attributes;
-  attributes.push_back( QgsPointCloudAttribute( "X", QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( "Y", QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( "Z", QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( "Intensity", QgsPointCloudAttribute::UShort ) );
-  attributes.push_back( QgsPointCloudAttribute( "ReturnNumber", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "NumberOfReturns", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "ScanDirectionFlag", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "EdgeOfFlightLine", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "Classification", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "ScanAngleRank", QgsPointCloudAttribute::Short ) );
-  attributes.push_back( QgsPointCloudAttribute( "UserData", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "PointSourceId", QgsPointCloudAttribute::UShort ) );
-  attributes.push_back( QgsPointCloudAttribute( "GpsTime", QgsPointCloudAttribute::Double ) );
-
-  switch ( mLazFile->header().point_format_id )
-  {
-    case 6:
-      break;
-    case 7:
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UShort ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Green" ), QgsPointCloudAttribute::UShort ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UShort ) );
-      break;
-    case 8:
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UShort ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Green" ), QgsPointCloudAttribute::UShort ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UShort ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "NIR" ), QgsPointCloudAttribute::UShort ) );
-      break;
-    default:
-      return false;
-  }
-
-  auto [ebVlr, pointRecordLength] = QgsLazDecoder::extractExtrabytesVlr( mCopcFile );
-  QVector<QgsLazDecoder::ExtraBytesAttributeDetails> extrabyteAttributes = QgsLazDecoder::readExtraByteAttributesFromVlr( ebVlr, pointRecordLength );
-  for ( QgsLazDecoder::ExtraBytesAttributeDetails attr : extrabyteAttributes )
-  {
-    attributes.push_back( QgsPointCloudAttribute( attr.attribute, attr.type ) );
-  }
-
-  setAttributes( attributes );
-
-  std::vector<char> copcInfoVlrData = mLazFile->vlrData( "copc", 1 );
-
-  lazperf::copc_info_vlr copcInfoVlr;
-  copcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
-
-  const double xmin = copcInfoVlr.center_x - copcInfoVlr.halfsize;
-  const double ymin = copcInfoVlr.center_y - copcInfoVlr.halfsize;
-  const double zmin = copcInfoVlr.center_z - copcInfoVlr.halfsize;
-  const double xmax = copcInfoVlr.center_x + copcInfoVlr.halfsize;
-  const double ymax = copcInfoVlr.center_y + copcInfoVlr.halfsize;
-  const double zmax = copcInfoVlr.center_z + copcInfoVlr.halfsize;
+  const double xmin = mCopcInfoVlr.center_x - mCopcInfoVlr.halfsize;
+  const double ymin = mCopcInfoVlr.center_y - mCopcInfoVlr.halfsize;
+  const double zmin = mCopcInfoVlr.center_z - mCopcInfoVlr.halfsize;
+  const double xmax = mCopcInfoVlr.center_x + mCopcInfoVlr.halfsize;
+  const double ymax = mCopcInfoVlr.center_y + mCopcInfoVlr.halfsize;
+  const double zmax = mCopcInfoVlr.center_z + mCopcInfoVlr.halfsize;
 
   mRootBounds = QgsPointCloudDataBounds(
                   ( xmin - mOffset.x() ) / mScale.x(),
@@ -172,7 +105,7 @@ bool QgsCopcPointCloudIndex::loadSchema()
                   ( zmax - mOffset.z() ) / mScale.z()
                 );
 
-  double calculatedSpan = nodeMapExtent( root() ).width() / copcInfoVlr.spacing;
+  double calculatedSpan = nodeMapExtent( root() ).width() / mCopcInfoVlr.spacing;
   mSpan = calculatedSpan;
 
 #ifdef QGIS_DEBUG
@@ -203,8 +136,7 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
-  lazperf::header14 header = mLazFile->header();
-  return QgsLazDecoder::decompressCopc( mFileName, header, blockOffset, blockSize, pointCount, attributes(), requestAttributes, scale(), offset(), filterExpression );
+  return QgsLazDecoder::decompressCopc( mFileName, *mLazInfo.get(), blockOffset, blockSize, pointCount, attributes(), requestAttributes, scale(), offset(), filterExpression );
 }
 
 QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
@@ -217,18 +149,17 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const IndexedP
 
 QgsCoordinateReferenceSystem QgsCopcPointCloudIndex::crs() const
 {
-  return QgsCoordinateReferenceSystem::fromWkt( mWkt );
+  return mLazInfo->crs();
 }
 
 qint64 QgsCopcPointCloudIndex::pointCount() const
 {
-  return mPointCount;
+  return mLazInfo->pointCount();
 }
 
 bool QgsCopcPointCloudIndex::loadHierarchy()
 {
-  std::vector<char> copcInfoVlrData = mLazFile->vlrData( "copc", 1 );
-
+  QByteArray copcInfoVlrData = mLazInfo->vlrData( "copc", 1 );
   lazperf::copc_info_vlr copcInfoVlr;
   copcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
 

@@ -37,6 +37,7 @@
 #include "qgsgeometry.h"
 #include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
+#include "qgslazinfo.h"
 
 /**
  * \ingroup UnitTests
@@ -446,10 +447,9 @@ void TestQgsEptProvider::testExtraBytesAttributesExtraction()
 {
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/ept/extrabytes-dataset/ept-data/0-0-0-0.laz" );
-    std::ifstream file( dataPath.toStdString(), std::ios::binary );
-
-    auto [ebVlr, pointRecordLength] = QgsLazDecoder::extractExtrabytesVlr( file );
-    QVector<QgsLazDecoder::ExtraBytesAttributeDetails> attributes = QgsLazDecoder::readExtraByteAttributesFromVlr( ebVlr, pointRecordLength );
+    QUrl url( dataPath );
+    QgsLazInfo lazInfo( url );
+    QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 4 );
 
     QCOMPARE( attributes[0].attribute, QStringLiteral( "Amplitude" ) );
@@ -476,8 +476,8 @@ void TestQgsEptProvider::testExtraBytesAttributesExtraction()
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/ept/no-extrabytes-dataset/ept-data/0-0-0-0.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
-    auto [ebVlr, pointRecordLength] = QgsLazDecoder::extractExtrabytesVlr( file );
-    QVector<QgsLazDecoder::ExtraBytesAttributeDetails> attributes = QgsLazDecoder::readExtraByteAttributesFromVlr( ebVlr, pointRecordLength );
+    QgsLazInfo lazInfo( file );
+    QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 0 );
   }
 }

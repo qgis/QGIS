@@ -33,13 +33,7 @@
 #include "qgsstatisticalsummary.h"
 #include "qgis_sip.h"
 
-namespace lazperf
-{
-  namespace reader
-  {
-    class generic_file;
-  }
-}
+#include "qgslazinfo.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -71,6 +65,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
   protected:
     bool loadSchema();
+    bool loadSchema( QgsLazInfo &lazInfo );
     bool loadHierarchy();
 
     //! Fetches all nodes leading to node \a node into memory
@@ -84,15 +79,13 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
     bool mIsValid = false;
     QString mFileName;
-    QString mWkt;
     mutable std::ifstream mCopcFile;
-    mutable std::unique_ptr<lazperf::reader::generic_file> mLazFile;
-
-    qint64 mPointCount = 0;
-
+    mutable lazperf::copc_info_vlr mCopcInfoVlr;
     mutable QHash<IndexedPointCloudNode, QPair<uint64_t, int32_t>> mHierarchyNodePos; //!< Additional data hierarchy for COPC
 
     QVariantMap mOriginalMetadata;
+
+    std::unique_ptr<QgsLazInfo> mLazInfo = nullptr;
 };
 
 ///@endcond
