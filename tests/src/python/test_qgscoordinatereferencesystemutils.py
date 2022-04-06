@@ -30,6 +30,14 @@ class TestQgsCoordinateReferenceSystemUtils(unittest.TestCase):
         self.assertEqual(QgsCoordinateReferenceSystemUtils.defaultCoordinateOrderForCrs(QgsCoordinateReferenceSystem('EPSG:3111')), Qgis.CoordinateOrder.XY)
         self.assertEqual(QgsCoordinateReferenceSystemUtils.defaultCoordinateOrderForCrs(QgsCoordinateReferenceSystem('EPSG:4326')), Qgis.CoordinateOrder.YX)
 
+    def test_axis_direction_to_abbreviation(self):
+        """
+        Test QgsCoordinateReferenceSystem.axisDirectionToAbbreviatedString()
+        """
+        self.assertEqual(QgsCoordinateReferenceSystemUtils.axisDirectionToAbbreviatedString(Qgis.CrsAxisDirection.North), 'N')
+        self.assertEqual(QgsCoordinateReferenceSystemUtils.axisDirectionToAbbreviatedString(Qgis.CrsAxisDirection.East), 'E')
+        self.assertEqual(QgsCoordinateReferenceSystemUtils.axisDirectionToAbbreviatedString(Qgis.CrsAxisDirection.CounterClockwise), 'CCW')
+
 
 if __name__ == '__main__':
     unittest.main()
