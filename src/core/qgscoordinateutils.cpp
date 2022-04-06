@@ -17,6 +17,7 @@
 
 #include "qgscoordinateutils.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatereferencesystemutils.h"
 #include "qgscoordinatetransform.h"
 #include "qgsproject.h"
 #include "qgis.h"
@@ -101,15 +102,19 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
     return QString();
 
   const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
+  const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
 
   QgsPointXY geo = point;
   if ( format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" ) || format == QLatin1String( "D" ) )
   {
     // degrees
+    QgsCoordinateReferenceSystem geographicCrs = destCrs;
     if ( destCrs.isValid() && !destCrs.isGeographic() )
     {
+      // default to EPSG:4326 if the project CRS isn't already geographic
+      geographicCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
       // need to transform to geographic coordinates
-      const QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), project );
+      const QgsCoordinateTransform ct( destCrs, geographicCrs, project );
       try
       {
         geo = ct.transform( point );
@@ -120,17 +125,20 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
       }
     }
 
+    const Qgis::CoordinateOrder order = axisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( geographicCrs ) : axisOrder;
+
     if ( format == QLatin1String( "DM" ) )
-      return QgsCoordinateFormatter::format( geo, QgsCoordinateFormatter::FormatDegreesMinutes, precision, QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter::FlagDegreesUseStringSuffix );
+      return QgsCoordinateFormatter::format( geo, QgsCoordinateFormatter::FormatDegreesMinutes, precision, QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter::FlagDegreesUseStringSuffix, order );
     else if ( format == QLatin1String( "DMS" ) )
-      return QgsCoordinateFormatter::format( geo, QgsCoordinateFormatter::FormatDegreesMinutesSeconds, precision, QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter::FlagDegreesUseStringSuffix );
+      return QgsCoordinateFormatter::format( geo, QgsCoordinateFormatter::FormatDegreesMinutesSeconds, precision, QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter::FlagDegreesUseStringSuffix, order );
     else
-      return QgsCoordinateFormatter::asPair( geo.x(), geo.y(), precision );
+      return QgsCoordinateFormatter::asPair( geo.x(), geo.y(), precision, order );
   }
   else
   {
     // coordinates in map units
-    return QgsCoordinateFormatter::asPair( point.x(), point.y(), precision );
+    const Qgis::CoordinateOrder order = axisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( destCrs ) : axisOrder;
+    return QgsCoordinateFormatter::asPair( point.x(), point.y(), precision, order );
   }
 }
 

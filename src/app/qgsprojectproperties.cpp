@@ -144,6 +144,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mCoordinateDisplayComboBox->addItem( tr( "Degrees, Minutes" ), DegreesMinutes );
   mCoordinateDisplayComboBox->addItem( tr( "Degrees, Minutes, Seconds" ), DegreesMinutesSeconds );
 
+  mCoordinateOrderComboBox->addItem( tr( "Default" ), static_cast< int >( Qgis::CoordinateOrder::Default ) );
+  mCoordinateOrderComboBox->addItem( tr( "Easting, Northing (Longitude, Latitude)" ), static_cast< int >( Qgis::CoordinateOrder::XY ) );
+  mCoordinateOrderComboBox->addItem( tr( "Northing, Easting (Latitude, Longitude)" ), static_cast< int >( Qgis::CoordinateOrder::YX ) );
+
   mDistanceUnitsCombo->addItem( tr( "Meters" ), QgsUnitTypes::DistanceMeters );
   mDistanceUnitsCombo->addItem( tr( "Kilometers" ), QgsUnitTypes::DistanceKilometers );
   mDistanceUnitsCombo->addItem( tr( "Feet" ), QgsUnitTypes::DistanceFeet );
@@ -393,6 +397,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DegreesMinutesSeconds ) );
   else
     mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DecimalDegrees ) );
+
+  const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
+  mCoordinateOrderComboBox->setCurrentIndex( mCoordinateOrderComboBox->findData( static_cast< int >( axisOrder ) ) );
 
   mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
   mAreaUnitsCombo->setCurrentIndex( mAreaUnitsCombo->findData( QgsProject::instance()->areaUnits() ) );
@@ -1148,6 +1155,7 @@ void QgsProjectProperties::apply()
   // can be used instead of the two part technique here
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), radAutomatic->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), spinBoxDP->value() );
+
   QString degreeFormat;
   switch ( static_cast< CoordinateFormat >( mCoordinateDisplayComboBox->currentData().toInt() ) )
   {
@@ -1165,6 +1173,7 @@ void QgsProjectProperties::apply()
       break;
   }
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), degreeFormat );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ), qgsEnumValueToKey( static_cast< Qgis::CoordinateOrder >( mCoordinateOrderComboBox->currentData().toInt() ) ) );
 
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
