@@ -41,7 +41,7 @@
 
 #include "qgsfileutils.h"
 #include "qgsapplication.h"
-#include "qgspointcloudblockrequest.h"
+#include "qgseptpointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
 
 ///@cond PRIVATE
@@ -146,9 +146,7 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
   QgsPointCloudExpression filterExpression = mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
-  QgsPointCloudBlockRequest *req = new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression );
-  req->startRequest();
-  return req;
+  return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression );
 }
 
 bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const

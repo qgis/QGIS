@@ -1933,11 +1933,13 @@ if (WITH_EPT)
       providers/ept/qgseptprovider.cpp
       pointcloud/qgseptpointcloudindex.cpp
       pointcloud/qgsremoteeptpointcloudindex.cpp
+      pointcloud/qgseptpointcloudblockrequest.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/ept/qgseptprovider.h
       pointcloud/qgseptpointcloudindex.h
       pointcloud/qgsremoteeptpointcloudindex.h
+      pointcloud/qgseptpointcloudblockrequest.h
   )
 
   add_definitions( -DWITH_EPT )
