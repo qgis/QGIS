@@ -287,11 +287,9 @@ QgsPointCloudBlockRequest *QgsRemoteCopcPointCloudIndex::asyncNodeData( const In
   auto [ blockOffset, blockSize ] = mHierarchyNodePos[n];
   int pointCount = mHierarchy[n];
 
-  QgsCopcPointCloudBlockRequest *req = new QgsCopcPointCloudBlockRequest( n, mUrl.toString(), attributes(), requestAttributes,
-      scale(), offset(), filterExpression,
-      blockOffset, blockSize, pointCount, mCopcHeaderData, mExtraBytesData );
-  req->startRequest();
-  return req;
+  return new QgsCopcPointCloudBlockRequest( n, mUrl.toString(), attributes(), requestAttributes,
+         scale(), offset(), filterExpression,
+         blockOffset, blockSize, pointCount, mCopcHeaderData, mExtraBytesData );
 }
 
 bool QgsRemoteCopcPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const

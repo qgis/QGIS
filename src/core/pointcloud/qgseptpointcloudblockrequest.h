@@ -1,7 +1,7 @@
 /***************************************************************************
-                         qgscopcpointcloudblockrequest.h
+                         qgseptpointcloudblockrequest.h
                          --------------------
-    begin                : March 2022
+    begin                : April 2022
     copyright            : (C) 2022 by Belgacem Nedjima
     email                : belgacem dot nedjima at gmail dot com
  ***************************************************************************/
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCOPCPOINTCLOUDBLOCKREQUEST_H
-#define QGSCOPCPOINTCLOUDBLOCKREQUEST_H
+#ifndef QGSEPTPOINTCLOUDBLOCKREQUEST_H
+#define QGSEPTPOINTCLOUDBLOCKREQUEST_H
 
 #include <QObject>
 
@@ -29,13 +29,13 @@ class QgsPointCloudBlock;
 
 /**
  * \ingroup core
- * \brief Base class for handling loading QgsPointCloudBlock asynchronously from a remote COPC dataset
+ * \brief Base class for handling loading QgsPointCloudBlock asynchronously from a remote EPT dataset
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsCopcPointCloudBlockRequest : public QgsPointCloudBlockRequest
+class CORE_EXPORT QgsEptPointCloudBlockRequest : public QgsPointCloudBlockRequest
 {
     Q_OBJECT
   public:
@@ -45,20 +45,15 @@ class CORE_EXPORT QgsCopcPointCloudBlockRequest : public QgsPointCloudBlockReque
      * Requests the block data of size \a blockSize at offset blockOffset
      * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
      */
-    QgsCopcPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri,
-                                   const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-                                   const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression,
-                                   uint64_t blockOffset, int32_t blockSize, int pointCount, QByteArray lazHeader, QByteArray extraBytesData );
+    QgsEptPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri, const QString &dataType,
+                                  const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
+                                  const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression );
 
-    ~QgsCopcPointCloudBlockRequest() = default;
+    ~QgsEptPointCloudBlockRequest() = default;
   private:
-    uint64_t mBlockOffset;
-    int32_t mBlockSize;
-    int mPointCount;
-    QByteArray mLazHeader;
-    QByteArray mExtrabytesData;
+    QString mDataType;
   protected:
     void blockFinishedLoading();
 };
 
-#endif // QGSCOPCPOINTCLOUDBLOCKREQUEST_H
+#endif // QGSEPTPOINTCLOUDBLOCKREQUEST_H
