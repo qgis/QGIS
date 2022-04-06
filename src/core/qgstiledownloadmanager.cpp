@@ -288,7 +288,7 @@ void QgsTileDownloadManager::updateEntry( const QgsTileDownloadManager::QueueEnt
 {
   for ( auto it = mQueue.begin(); it != mQueue.end(); ++it )
   {
-    if ( entry.request.url() == it->request.url() )
+    if ( entry.request.url() == it->request.url() && entry.request.rawHeader( "Range" ) == it->request.rawHeader( "Range" ) )
     {
       *it = entry;
       return;
@@ -302,7 +302,7 @@ void QgsTileDownloadManager::removeEntry( const QNetworkRequest &request )
   int i = 0;
   for ( auto it = mQueue.constBegin(); it != mQueue.constEnd(); ++it, ++i )
   {
-    if ( it->request.url() == request.url() )
+    if ( it->request.url() == request.url() && it->request.rawHeader( "Range" ) == request.rawHeader( "Range" ) )
     {
       mQueue.removeAt( i );
       return;

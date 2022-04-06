@@ -43,7 +43,6 @@
 #include "qgsapplication.h"
 #include "qgscopcpointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
-#include "qgsnetworkaccessmanager.h"
 
 ///@cond PRIVATE
 
@@ -91,167 +90,8 @@ void QgsRemoteCopcPointCloudIndex::load( const QString &url )
 
 bool QgsRemoteCopcPointCloudIndex::loadHeader()
 {
-  // Request header data
-  {
-    QNetworkRequest nr( mUrl );
-    nr.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
-    nr.setRawHeader( "Range", "bytes=0-548" );
-    QgsBlockingNetworkRequest req;
-    QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
-    if ( errCode != QgsBlockingNetworkRequest::NoError )
-    {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + mUrl.toString() );
-      return false;
-    }
-    const QgsNetworkReplyContent reply = req.reply();
-    mCopcHeaderData = reply.content();
-    {
-      std::istringstream file( mCopcHeaderData.toStdString() );
-      mCopcHeader = lazperf::header14::create( file );
-    }
-
-    mCopcInfoVlr.fill( mCopcHeaderData.data() + 375 + 54, 160 );
-
-    // Read VLR data (other than the already read COPC info)
-    QByteArray vlrRequestRange = QStringLiteral( "bytes=%1-%2" ).arg( 375 ).arg( mCopcHeader.point_offset - 1 ).toLocal8Bit();
-    nr.setRawHeader( "Range", vlrRequestRange );
-    errCode = req.get( nr );
-    if ( errCode != QgsBlockingNetworkRequest::NoError )
-    {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + mUrl.toString() );
-      return false;
-    }
-    mVlrData = req.reply().content();
-  }
-
-  mPointCount = mCopcHeader.point_count;
-
-  mScale = QgsVector3D( mCopcHeader.scale.x, mCopcHeader.scale.y, mCopcHeader.scale.z );
-  mOffset = QgsVector3D( mCopcHeader.offset.x, mCopcHeader.offset.y, mCopcHeader.offset.z );
-
-  mOriginalMetadata[ QStringLiteral( "creation_year" ) ] = mCopcHeader.creation.year;
-  mOriginalMetadata[ QStringLiteral( "creation_day" ) ] = mCopcHeader.creation.day;
-  mOriginalMetadata[ QStringLiteral( "major_version" ) ] = mCopcHeader.version.major;
-  mOriginalMetadata[ QStringLiteral( "minor_version" ) ] = mCopcHeader.version.minor;
-  mOriginalMetadata[ QStringLiteral( "dataformat_id" ) ] = mCopcHeader.point_format_id;
-  mOriginalMetadata[ QStringLiteral( "scale_x" ) ] = mScale.x();
-  mOriginalMetadata[ QStringLiteral( "scale_y" ) ] = mScale.y();
-  mOriginalMetadata[ QStringLiteral( "scale_z" ) ] = mScale.z();
-  mOriginalMetadata[ QStringLiteral( "offset_x" ) ] = mOffset.x();
-  mOriginalMetadata[ QStringLiteral( "offset_y" ) ] = mOffset.y();
-  mOriginalMetadata[ QStringLiteral( "offset_z" ) ] = mOffset.z();
-  mOriginalMetadata[ QStringLiteral( "project_id" ) ] = QString( QByteArray( mCopcHeader.guid, 16 ).toHex() );
-  mOriginalMetadata[ QStringLiteral( "system_id" ) ] = QString::fromLocal8Bit( mCopcHeader.system_identifier, 32 );
-  mOriginalMetadata[ QStringLiteral( "software_id" ) ] = QString::fromLocal8Bit( mCopcHeader.generating_software, 32 );
-
-  // The COPC format only uses PDRF 6, 7 or 8. So there should be a OGC Coordinate System WKT record
-  mWkt = QString();
-
-  lazperf::vlr_header vlrHeader;
-  int offset = 0;
-  while ( offset < mVlrData.size() )
-  {
-    char *data = mVlrData.data() + offset;
-    vlrHeader.fill( data, 54 );
-    if ( vlrHeader.user_id == "LASF_Projection" && vlrHeader.record_id == 2112 )
-    {
-      mWktVlr.fill( data + 54, vlrHeader.data_length );
-    }
-    else if ( vlrHeader.user_id == "LASF_Spec" && vlrHeader.record_id == 4 )
-    {
-      mExtraBytesVlr.fill( data + 54, vlrHeader.data_length );
-      mExtraBytesData = QByteArray( data + 54, vlrHeader.data_length );
-    }
-    offset += 54 + vlrHeader.data_length;
-  }
-
-  if ( !mWktVlr.wkt.empty() )
-  {
-    mWkt = QString::fromStdString( mWktVlr.wkt );
-  }
-  else
-  {
-    qDebug() << "Failed to load Wkt data";
-  }
-
-  mExtent.set( mCopcHeader.minx, mCopcHeader.miny, mCopcHeader.maxx, mCopcHeader.maxy );
-
-  mZMin = mCopcHeader.minz;
-  mZMax = mCopcHeader.maxz;
-
-
-  // Attributes for COPC format
-  // COPC supports only PDRF 6, 7 and 8
-
-  QgsPointCloudAttributeCollection attributes;
-  attributes.push_back( QgsPointCloudAttribute( "X", QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( "Y", QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( "Z", QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( "Intensity", QgsPointCloudAttribute::UShort ) );
-  attributes.push_back( QgsPointCloudAttribute( "ReturnNumber", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "NumberOfReturns", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "ScanDirectionFlag", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "EdgeOfFlightLine", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "Classification", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "ScanAngleRank", QgsPointCloudAttribute::Short ) );
-  attributes.push_back( QgsPointCloudAttribute( "UserData", QgsPointCloudAttribute::Char ) );
-  attributes.push_back( QgsPointCloudAttribute( "PointSourceId", QgsPointCloudAttribute::UShort ) );
-  attributes.push_back( QgsPointCloudAttribute( "GpsTime", QgsPointCloudAttribute::Double ) );
-
-  switch ( mCopcHeader.pointFormat() )
-  {
-    case 6:
-      break;
-    case 7:
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UShort ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Green" ), QgsPointCloudAttribute::UShort ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UShort ) );
-      break;
-    case 8:
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UShort ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Green" ), QgsPointCloudAttribute::UShort ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UShort ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "NIR" ), QgsPointCloudAttribute::UShort ) );
-      break;
-    default:
-      return false;
-  }
-
-  QVector<QgsLazDecoder::ExtraBytesAttributeDetails> extrabyteAttributes = QgsLazDecoder::readExtraByteAttributesFromVlr( mExtraBytesVlr, mCopcHeader.point_record_length );
-  for ( QgsLazDecoder::ExtraBytesAttributeDetails attr : extrabyteAttributes )
-  {
-    attributes.push_back( QgsPointCloudAttribute( attr.attribute, attr.type ) );
-  }
-
-  setAttributes( attributes );
-
-  const double xmin = mCopcInfoVlr.center_x - mCopcInfoVlr.halfsize;
-  const double ymin = mCopcInfoVlr.center_y - mCopcInfoVlr.halfsize;
-  const double zmin = mCopcInfoVlr.center_z - mCopcInfoVlr.halfsize;
-  const double xmax = mCopcInfoVlr.center_x + mCopcInfoVlr.halfsize;
-  const double ymax = mCopcInfoVlr.center_y + mCopcInfoVlr.halfsize;
-  const double zmax = mCopcInfoVlr.center_z + mCopcInfoVlr.halfsize;
-
-  mRootBounds = QgsPointCloudDataBounds(
-                  ( xmin - mOffset.x() ) / mScale.x(),
-                  ( ymin - mOffset.y() ) / mScale.y(),
-                  ( zmin - mOffset.z() ) / mScale.z(),
-                  ( xmax - mOffset.x() ) / mScale.x(),
-                  ( ymax - mOffset.y() ) / mScale.y(),
-                  ( zmax - mOffset.z() ) / mScale.z()
-                );
-
-  double calculatedSpan = nodeMapExtent( root() ).width() / mCopcInfoVlr.spacing;
-  mSpan = calculatedSpan;
-
-#ifdef QGIS_DEBUG
-  double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
-  QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl1 %1" ).arg( dx / mSpan / 2 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
-#endif
-  return true;
+  mLazInfo.reset( new QgsLazInfo( mUrl ) );
+  return loadSchema( *mLazInfo.get() );
 }
 
 QgsPointCloudBlock *QgsRemoteCopcPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
@@ -289,7 +129,7 @@ QgsPointCloudBlockRequest *QgsRemoteCopcPointCloudIndex::asyncNodeData( const In
 
   return new QgsCopcPointCloudBlockRequest( n, mUrl.toString(), attributes(), requestAttributes,
          scale(), offset(), filterExpression,
-         blockOffset, blockSize, pointCount, mCopcHeaderData, mExtraBytesData );
+         blockOffset, blockSize, pointCount, *mLazInfo.get() );
 }
 
 bool QgsRemoteCopcPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
@@ -330,7 +170,6 @@ bool QgsRemoteCopcPointCloudIndex::isValid() const
 void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
 {
   QNetworkRequest nr( mUrl );
-  nr.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
   QByteArray queryRange = QStringLiteral( "bytes=%1-%2" ).arg( offset ).arg( offset + byteSize - 1 ).toLocal8Bit();
   nr.setRawHeader( "Range", queryRange );
   QgsBlockingNetworkRequest req;
@@ -338,6 +177,7 @@ void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t
   if ( errCode != QgsBlockingNetworkRequest::NoError )
   {
     QgsDebugMsg( QStringLiteral( "Request failed: " ) + mUrl.toString() );
+    return;
   }
   const QgsNetworkReplyContent reply = req.reply();
   QByteArray data = reply.content();

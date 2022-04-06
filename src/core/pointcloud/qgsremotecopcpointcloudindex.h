@@ -31,10 +31,8 @@
 #include <sstream>
 
 #include "qgspointcloudindex.h"
-#include "qgspointcloudattribute.h"
-#include "qgsstatisticalsummary.h"
-#include "qgis_sip.h"
 #include "qgscopcpointcloudindex.h"
+#include "qgslazinfo.h"
 
 #include "lazperf/header.hpp"
 #include "lazperf/vlr.hpp"
@@ -56,7 +54,7 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
 
     QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
 
-    void load( const QString &fileName ) override;
+    void load( const QString &url ) override;
 
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
@@ -79,18 +77,7 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
      */
     void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
 
-
-    QString mUrlDirectoryPart;
-    QString mUrlFileNamePart;
-
     QUrl mUrl;
-    QByteArray mCopcHeaderData;
-    QByteArray mVlrData;
-    QByteArray mExtraBytesData;
-    lazperf::wkt_vlr mWktVlr;
-    lazperf::eb_vlr mExtraBytesVlr;
-    mutable lazperf::header14 mCopcHeader;
-    mutable lazperf::copc_info_vlr mCopcInfoVlr;
 
     mutable QSet<IndexedPointCloudNode> mHierarchyNodes;
 };

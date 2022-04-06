@@ -21,6 +21,7 @@
 #include "qgsvector3d.h"
 #include "qgsconfig.h"
 #include "qgslogger.h"
+#include "qgslazinfo.h"
 
 #include <QFile>
 #include <QDir>
@@ -46,7 +47,7 @@ bool __serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::Dat
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector< QgsLazDecoder::RequestedAttributeDetails > __prepareRequestedAttributeDetails( const QgsPointCloudAttributeCollection &requestedAttributes, QVector<QgsLazDecoder::ExtraBytesAttributeDetails> &extrabytesAttr )
+std::vector< QgsLazDecoder::RequestedAttributeDetails > __prepareRequestedAttributeDetails( const QgsPointCloudAttributeCollection &requestedAttributes, QVector<QgsLazInfo::ExtraBytesAttributeDetails> &extrabytesAttr )
 {
   const QVector<QgsPointCloudAttribute> requestedAttributesVector = requestedAttributes.attributes();
 
@@ -121,7 +122,7 @@ std::vector< QgsLazDecoder::RequestedAttributeDetails > __prepareRequestedAttrib
     else
     {
       bool foundAttr = false;
-      for ( QgsLazDecoder::ExtraBytesAttributeDetails &eba : extrabytesAttr )
+      for ( QgsLazInfo::ExtraBytesAttributeDetails &eba : extrabytesAttr )
       {
         if ( requestedAttribute.name().compare( eba.attribute.trimmed() ) == 0 )
         {
@@ -138,15 +139,6 @@ std::vector< QgsLazDecoder::RequestedAttributeDetails > __prepareRequestedAttrib
     }
   }
   return requestedAttributeDetails;
-}
-
-template<typename FileType>
-std::vector< QgsLazDecoder::RequestedAttributeDetails > __prepareRequestedAttributeDetails( FileType &file, const QgsPointCloudAttributeCollection &requestedAttributes )
-{
-  const QVector<QgsPointCloudAttribute> requestedAttributesVector = requestedAttributes.attributes();
-  auto [ebVlr, pointRecordLength] = QgsLazDecoder::extractExtrabytesVlr<FileType>( file );
-  QVector<QgsLazDecoder::ExtraBytesAttributeDetails> extrabytesAttr = QgsLazDecoder::readExtraByteAttributesFromVlr( ebVlr, pointRecordLength );
-  return __prepareRequestedAttributeDetails( requestedAttributes, extrabytesAttr );
 }
 
 void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &outputOffset, std::vector< QgsLazDecoder::RequestedAttributeDetails > &requestedAttributeDetails )
@@ -355,7 +347,9 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     return block.release();
   }
 
-  std::vector< QgsLazDecoder::RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( file, requestedAttributes );
+  std::vector<char> rawExtrabytes = f.vlrData( "LASF_Spec", 4 );
+  QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributesDetails = QgsLazInfo::parseExtrabytes( rawExtrabytes.data(), rawExtrabytes.size(), f.header().point_record_length );
+  std::vector< QgsLazDecoder::RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( requestedAttributes, extrabyteAttributesDetails );
 
   for ( size_t i = 0 ; i < count ; i ++ )
   {
@@ -407,12 +401,14 @@ QgsPointCloudBlock *QgsLazDecoder::decompressLaz( const QByteArray &byteArrayDat
 }
 
 
-QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QString &filename, const lazperf::header14 &header, uint64_t blockOffset, uint64_t blockSize, int32_t pointCount, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, QgsPointCloudExpression &filterExpression )
+QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QString &filename, QgsLazInfo &lazInfo, uint64_t blockOffset, uint64_t blockSize, int32_t pointCount, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, QgsPointCloudExpression &filterExpression )
 {
   Q_UNUSED( attributes );
   Q_UNUSED( _scale );
   Q_UNUSED( _offset );
   std::ifstream file( filename.toStdString(), std::ios::binary );
+
+  lazperf::header14 header = lazInfo.lazHeader();
 
   // COPC only supports point formats 6, 7 and 8
   int lasPointFormat = header.pointFormat();
@@ -440,7 +436,8 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QString &filename, cons
 
   std::size_t outputOffset = 0;
 
-  std::vector< RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( file, requestedAttributes );
+  QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributesDetails = lazInfo.extrabytes();
+  std::vector< RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( requestedAttributes, extrabyteAttributesDetails );
   std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
         pointCount,
         requestedAttributes,
@@ -481,11 +478,13 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QString &filename, cons
   return block.release();
 }
 
-QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, const lazperf::header14 &header, lazperf::eb_vlr &extraBytesVlr, int32_t pointCount, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, QgsPointCloudExpression &filterExpression )
+QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, QgsPointCloudExpression &filterExpression )
 {
   Q_UNUSED( attributes );
   Q_UNUSED( _scale );
   Q_UNUSED( _offset );
+
+  lazperf::header14 header = lazInfo.lazHeader();
 
   // COPC only supports point formats 6, 7 and 8
   int lasPointFormat = header.pointFormat();
@@ -509,8 +508,8 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, const
 
   std::size_t outputOffset = 0;
 
-  QVector<QgsLazDecoder::ExtraBytesAttributeDetails> extrabytesAttr = QgsLazDecoder::readExtraByteAttributesFromVlr( extraBytesVlr, header.point_record_length );
-  std::vector< RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( requestedAttributes, extrabytesAttr );
+  QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributesDetails = lazInfo.extrabytes();
+  std::vector< RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( requestedAttributes, extrabyteAttributesDetails );
   std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
         pointCount,
         requestedAttributes,

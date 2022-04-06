@@ -21,6 +21,7 @@
 #include <QObject>
 
 #include "qgspointcloudblockrequest.h"
+#include "qgslazinfo.h"
 
 #define SIP_NO_FILE
 
@@ -48,15 +49,14 @@ class CORE_EXPORT QgsCopcPointCloudBlockRequest : public QgsPointCloudBlockReque
     QgsCopcPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri,
                                    const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
                                    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression,
-                                   uint64_t blockOffset, int32_t blockSize, int pointCount, QByteArray lazHeader, QByteArray extraBytesData );
+                                   uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo );
 
     ~QgsCopcPointCloudBlockRequest() = default;
   private:
     uint64_t mBlockOffset;
     int32_t mBlockSize;
     int mPointCount;
-    QByteArray mLazHeader;
-    QByteArray mExtrabytesData;
+    QgsLazInfo mLazInfo;
   protected:
     void blockFinishedLoading();
 };

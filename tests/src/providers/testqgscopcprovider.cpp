@@ -461,8 +461,8 @@ void TestQgsCopcProvider::testExtraBytesAttributesExtraction()
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/copc/extrabytes-dataset.copc.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
-    auto [ebVlr, pointRecordLength] = QgsLazDecoder::extractExtrabytesVlr( file );
-    QVector<QgsLazDecoder::ExtraBytesAttributeDetails> attributes = QgsLazDecoder::readExtraByteAttributesFromVlr( ebVlr, pointRecordLength );
+    QgsLazInfo lazInfo( file );
+    QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 3 );
 
     QCOMPARE( attributes[0].attribute, QStringLiteral( "Reflectance" ) );
@@ -485,8 +485,8 @@ void TestQgsCopcProvider::testExtraBytesAttributesExtraction()
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/copc/no-extrabytes-dataset.copc.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
-    auto [ebVlr, pointRecordLength] = QgsLazDecoder::extractExtrabytesVlr( file );
-    QVector<QgsLazDecoder::ExtraBytesAttributeDetails> attributes = QgsLazDecoder::readExtraByteAttributesFromVlr( ebVlr, pointRecordLength );
+    QgsLazInfo lazInfo( file );
+    QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 0 );
   }
 }
