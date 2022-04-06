@@ -126,8 +126,6 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
 
     case Qt::ForegroundRole:
     {
-      if ( mHasSslErrors )
-        return QBrush( QColor( 180, 65, 210 ) );
       switch ( mStatus )
       {
         case QgsDatabaseQueryLoggerQueryGroup::Status::Pending:
@@ -188,23 +186,14 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::toVariant() const
 {
   QVariantMap res;
   res.insert( QStringLiteral( "SQL" ), mSql );
-  res.insert( QStringLiteral( "Total time (ms)" ), mTotalTime );
-#if 0
-  if ( mDetailsGroup )
+
+  for ( const auto &child : std::as_const( mChildren ) )
   {
-    const QVariantMap detailsMap = mDetailsGroup->toVariant().toMap();
-    for ( auto it = detailsMap.constBegin(); it != detailsMap.constEnd(); ++it )
-      res.insert( it.key(), it.value() );
+    if ( const QgsDevToolsModelValueNode *valueNode = dynamic_cast< const QgsDevToolsModelValueNode *>( child.get() ) )
+    {
+      res.insert( valueNode->key(), valueNode->value() );
+    }
   }
-  if ( mReplyGroup )
-  {
-    res.insert( QObject::tr( "Reply" ), mReplyGroup->toVariant() );
-  }
-  if ( mSslErrorsGroup )
-  {
-    res.insert( QObject::tr( "SSL Errors" ), mSslErrorsGroup->toVariant() );
-  }
-#endif
   return res;
 }
 
@@ -238,7 +227,11 @@ void QgsDatabaseQueryLoggerQueryGroup::setFinished( const QgsDatabaseQueryLogEnt
   mReplyGroup = replyGroup.get();
   addChild( std::move( replyGroup ) );
 #endif
-  addKeyValueNode( QObject::tr( "Total time" ), QLocale().toString( ( query.finishedTime - query.startedTime ) / 1000.0 ).append( QStringLiteral( " s" ) ) );
+  addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( query.finishedTime - query.startedTime ) );
+  if ( query.fetchedRows != -1 )
+  {
+    addKeyValueNode( QObject::tr( "Row count" ), QLocale().toString( query.fetchedRows ) );
+  }
 }
 
 void QgsDatabaseQueryLoggerQueryGroup::setTimedOut()

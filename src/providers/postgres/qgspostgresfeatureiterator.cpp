@@ -302,6 +302,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
       }
 
       QgsPostgresResult queryResult;
+      long long fetchedRows { 0 };
       for ( ;; )
       {
         queryResult = mConn->PQgetResult();
@@ -317,6 +318,8 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
         int rows = queryResult.PQntuples();
         if ( rows == 0 )
           continue;
+        else
+          fetchedRows += rows;
 
         mLastFetch = rows < mFeatureQueueSize;
 
@@ -327,6 +330,11 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
         } // for each row in queue
       }
       unlock();
+
+      if ( fetchedRows > 0 )
+      {
+        logWrapper.setFetchedRows( fetchedRows );
+      }
 
 #if 0 //disabled dynamic queue size
       if ( timer.elapsed() > 500 && mFeatureQueueSize > 1 )

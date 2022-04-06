@@ -122,18 +122,8 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
     int mQueryId = 0;
     QElapsedTimer mTimer;
     qint64 mTotalTime = 0;
-    int mHttpStatus = -1;
-    QString mContentType;
-    int mReplies = 0;
     QByteArray mData;
     Status mStatus = Status::Pending;
-    bool mHasSslErrors = false;
-    QList< QPair< QString, QString > > mHeaders;
-#if 0
-    QgsNetworkLoggerRequestDetailsGroup *mDetailsGroup = nullptr;
-    QgsNetworkLoggerReplyGroup *mReplyGroup = nullptr;
-    QgsNetworkLoggerSslErrorGroup *mSslErrorsGroup = nullptr;
-#endif
 };
 
 #endif // QGSDBQUERYLOGGERNODE_H

@@ -67,7 +67,7 @@ void QgsAppQueryLogger::queryFinished( const QgsDatabaseQueryLogEntry &query )
   if ( !requestIndex.isValid() )
     return;
 
-  beginInsertRows( requestIndex, queryGroup->childCount(), queryGroup->childCount() );
+  beginInsertRows( requestIndex, queryGroup->childCount(), queryGroup->childCount() + ( query.fetchedRows != -1 ? 1 : 0 ) );
   queryGroup->setFinished( query );
   endInsertRows();
 

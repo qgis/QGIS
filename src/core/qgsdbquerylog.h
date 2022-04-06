@@ -79,6 +79,11 @@ class CORE_EXPORT QgsDatabaseQueryLogEntry
      */
     QString origin;
 
+    /**
+     * Number of fetched rows
+     */
+    long long fetchedRows = -1;
+
   private:
 
     static QAtomicInt sQueryId;
@@ -222,9 +227,9 @@ class QgsDatabaseQueryLogWrapper
       QgsDatabaseQueryLog::finished( mEntry );
     }
 
-    QgsDatabaseQueryLogEntry &entry()
+    void setFetchedRows( long long fetchedRows )
     {
-      return mEntry;
+      mEntry.fetchedRows = fetchedRows;
     }
 
   private:

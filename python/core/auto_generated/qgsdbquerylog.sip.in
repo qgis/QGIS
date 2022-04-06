@@ -42,6 +42,8 @@ Constructor for QgsDatabaseQueryLogEntry.
 
     QString origin;
 
+    long long fetchedRows;
+
 };
 
 
