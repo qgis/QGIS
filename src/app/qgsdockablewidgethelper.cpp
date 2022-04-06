@@ -35,6 +35,7 @@ QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &
   , mTabifyWith( tabifyWith )
   , mRaiseTab( raiseTab )
   , mWindowGeometrySettingsKey( windowGeometrySettingsKey )
+  , mUuid( QUuid::createUuid().toString() )
 {
   toggleDockMode( isDocked );
 }
@@ -86,6 +87,22 @@ void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
   viewDom.setAttribute( QStringLiteral( "height" ), mDockGeometry.height() );
   viewDom.setAttribute( QStringLiteral( "floating" ), mIsDockFloating );
   viewDom.setAttribute( QStringLiteral( "area" ), mDockArea );
+  viewDom.setAttribute( QStringLiteral( "uuid" ), mUuid );
+
+  QStringList tabifiedDocks;
+  if ( mDock )
+  {
+    const QList<QDockWidget * > tabSiblings = mOwnerWindow->tabifiedDockWidgets( mDock );
+    QDomElement tabSiblingsElement = viewDom.ownerDocument().createElement( QStringLiteral( "tab_siblings" ) );
+    for ( QDockWidget *dock : tabSiblings )
+    {
+      QDomElement siblingElement = viewDom.ownerDocument().createElement( QStringLiteral( "sibling" ) );
+      siblingElement.setAttribute( QStringLiteral( "uuid" ), dock->property( "dock_uuid" ).toString() );
+      siblingElement.setAttribute( QStringLiteral( "object_name" ), dock->objectName() );
+      tabSiblingsElement.appendChild( siblingElement );
+    }
+    viewDom.appendChild( tabSiblingsElement );
+  }
 
   if ( mDialog )
     mDialogGeometry = mDialog->geometry();
@@ -98,6 +115,8 @@ void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
 
 void QgsDockableWidgetHelper::readXml( const QDomElement &viewDom )
 {
+  mUuid = viewDom.attribute( QStringLiteral( "uuid" ), mUuid );
+
   {
     int x = viewDom.attribute( QStringLiteral( "d_x" ), QStringLiteral( "0" ) ).toInt();
     int y = viewDom.attribute( QStringLiteral( "d_x" ), QStringLiteral( "0" ) ).toInt();
@@ -116,7 +135,27 @@ void QgsDockableWidgetHelper::readXml( const QDomElement &viewDom )
     mDockGeometry = QRect( x, y, w, h );
     mIsDockFloating = viewDom.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
     mDockArea = static_cast< Qt::DockWidgetArea >( viewDom.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
-    setupDockWidget();
+
+    QStringList tabSiblings;
+    const QDomElement tabSiblingsElement = viewDom.firstChildElement( QStringLiteral( "tab_siblings" ) );
+    const QDomNodeList tabSiblingNodes = tabSiblingsElement.childNodes();
+    for ( int i = 0; i < tabSiblingNodes.size(); ++i )
+    {
+      const QDomElement tabSiblingElement = tabSiblingNodes.at( i ).toElement();
+      // prefer uuid if set, as it's always unique
+      QString tabId = tabSiblingElement.attribute( QStringLiteral( "uuid" ) );
+      if ( tabId.isEmpty() )
+        tabId = tabSiblingElement.attribute( QStringLiteral( "object_name" ) );
+      if ( !tabId.isEmpty() )
+        tabSiblings.append( tabId );
+    }
+
+    setupDockWidget( tabSiblings );
+  }
+
+  if ( mDock )
+  {
+    mDock->setProperty( "dock_uuid", mUuid );
   }
 }
 
@@ -186,6 +225,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     mDock = new QgsDockWidget( mOwnerWindow );
     mDock->setWindowTitle( mWindowTitle );
     mDock->setWidget( mWidget );
+    mDock->setProperty( "dock_uuid", mUuid );
     setupDockWidget();
 
     connect( mDock, &QgsDockWidget::closed, [ = ]()
@@ -244,7 +284,7 @@ void QgsDockableWidgetHelper::setWindowTitle( const QString &title )
   }
 }
 
-void QgsDockableWidgetHelper::setupDockWidget()
+void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
 {
   if ( !mDock )
     return;
@@ -254,7 +294,11 @@ void QgsDockableWidgetHelper::setupDockWidget()
   {
     mDockGeometry = QRect( static_cast< int >( mWidget->rect().width() * 0.75 ), static_cast< int >( mWidget->rect().height() * 0.5 ), 400, 400 );
   }
-  if ( mRaiseTab )
+  if ( !tabSiblings.isEmpty() )
+  {
+    QgisApp::instance()->addTabifiedDockWidget( mDockArea, mDock, tabSiblings, false );
+  }
+  else if ( mRaiseTab )
   {
     QgisApp::instance()->addTabifiedDockWidget( mDockArea, mDock, mTabifyWith, mRaiseTab );
   }

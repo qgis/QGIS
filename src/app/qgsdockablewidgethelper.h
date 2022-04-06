@@ -88,7 +88,7 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
     void toggleDockMode( bool docked );
 
   private:
-    void setupDockWidget();
+    void setupDockWidget( const QStringList &tabSiblings = QStringList() );
 
     bool mIsDocked = true;
     QWidget *mWidget = nullptr;
@@ -108,6 +108,9 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
     bool mRaiseTab = false;
 
     QString mWindowGeometrySettingsKey;
+
+    // Unique identifier of dock
+    QString mUuid;
 };
 
 #endif // QGSDOCKABLEWIDGETHELPER_H
