@@ -110,7 +110,7 @@
 #include "qgsmaptoolmodifyannotation.h"
 #include "qgsannotationlayer.h"
 #include "qgsdockablewidgethelper.h"
-
+#include "vertextool/qgsvertexeditor.h"
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
 
@@ -1201,6 +1201,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   functionProfile( &QgisApp::createActionGroups, this, QStringLiteral( "Create action group" ) );
 
   // create map tools
+  mVertexEditorDock = new QgsVertexEditor( mMapCanvas );
+  mVertexEditorDock->setObjectName( QStringLiteral( "VertexEditor" ) );
+  addDockWidget( Qt::LeftDockWidgetArea, mVertexEditorDock );
+  mVertexEditorDock->hide();
+
   mMapTools = std::make_unique< QgsAppMapTools >( mMapCanvas, mAdvancedDigitizingDockWidget );
   mDigitizingTechniqueManager = new QgsMapToolsDigitizingTechniqueManager( this );
 
@@ -1221,7 +1226,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygon2PointsMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterPointMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterCornerMetadata() );
-
 
   functionProfile( &QgisApp::createToolBars, this, QStringLiteral( "Toolbars" ) );
   functionProfile( &QgisApp::createStatusBar, this, QStringLiteral( "Status bar" ) );
@@ -3713,6 +3717,13 @@ void QgisApp::createToolBars()
       defActionVertexTool = mActionVertexToolActiveLayer;
       break;
   }
+
+  QAction *showVertexEditorAction = new QAction( tr( "Show Vertex Editor" ), this );
+  showVertexEditorAction->setCheckable( true );
+  showVertexEditorAction->setProperty( "no_default_action", true );
+  vertexToolButton->addAction( showVertexEditorAction );
+  mVertexEditorDock->setToggleVisibilityAction( showVertexEditorAction );
+
   vertexToolButton->setDefaultAction( defActionVertexTool );
   QAction *actionVertexTool = mDigitizeToolBar->insertWidget( mActionMultiEditAttributes, vertexToolButton );
   actionVertexTool->setObjectName( QStringLiteral( "ActionVertexTool" ) );
@@ -17232,6 +17243,9 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
 {
   QToolButton *bt = qobject_cast<QToolButton *>( sender() );
   if ( !bt )
+    return;
+
+  if ( action && action->property( "no_default_action" ).toBool() )
     return;
 
   QgsSettings settings;
