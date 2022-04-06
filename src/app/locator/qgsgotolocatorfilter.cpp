@@ -296,7 +296,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
       QgsLocatorResult result;
       result.filter = this;
-      result.displayString = tr( "Go to %1° %2° %3(%4)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ),
+      result.displayString = tr( "Go to %1°N %2°E %3(%4)" ).arg( locale.toString( point.y(), 'g', 10 ), locale.toString( point.x(), 'g', 10 ),
                              scale > 0.0 ? tr( "at scale 1:%1 " ).arg( scale ) : QString(),
                              wgs84Crs.userFriendlyIdentifier() );
       result.userData = data;
