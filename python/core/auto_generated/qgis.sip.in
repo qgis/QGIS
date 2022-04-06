@@ -604,6 +604,13 @@ The development version
       Unspecified,
     };
 
+    enum class CoordinateOrder
+    {
+      Default,
+      XY,
+      YX,
+    };
+
     enum class AnnotationItemFlag
     {
       ScaleDependentBoundingBox,
