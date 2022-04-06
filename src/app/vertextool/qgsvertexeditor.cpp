@@ -37,6 +37,8 @@
 #include <QKeyEvent>
 #include <QLineEdit>
 #include <QVector2D>
+#include <QCheckBox>
+#include <QStackedWidget>
 
 static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
@@ -327,21 +329,45 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   QVBoxLayout *layout = new QVBoxLayout( content );
   layout->setContentsMargins( 0, 0, 0, 0 );
 
-  mHintLabel = new QLabel( this );
+  mStackedWidget = new QStackedWidget();
+  mPageHint = new QWidget();
+  mStackedWidget->addWidget( mPageHint );
+
+  QVBoxLayout *pageHintLayout = new QVBoxLayout();
+  mHintLabel = new QLabel();
   mHintLabel->setText( QStringLiteral( "%1\n\n%2" ).arg( tr( "Right click on an editable feature to show its table of vertices." ),
                        tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
   mHintLabel->setWordWrap( true );
-  mHintLabel->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
 
-  mTableView = new QTableView( this );
+  mAutoPopupDockCheckBox = new QCheckBox( tr( "Auto-open table" ) );
+  mAutoPopupDockCheckBox->setChecked( settingAutoPopupVertexEditorDock.value() );
+  connect( mAutoPopupDockCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    settingAutoPopupVertexEditorDock.setValue( checked );
+  } );
+  pageHintLayout->addStretch();
+  pageHintLayout->addWidget( mHintLabel );
+  pageHintLayout->addWidget( mAutoPopupDockCheckBox );
+  pageHintLayout->addStretch();
+  mPageHint->setLayout( pageHintLayout );
+
+  mPageTable = new QWidget();
+  mStackedWidget->addWidget( mPageTable );
+
+  QVBoxLayout *pageTableLayout = new QVBoxLayout();
+  pageTableLayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mTableView = new QTableView();
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
-  mTableView->setVisible( false );
   mTableView->setModel( mVertexModel );
   connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
 
-  layout->addWidget( mTableView );
-  layout->addWidget( mHintLabel );
+  pageTableLayout->addWidget( mTableView );
+  mPageTable->setLayout( pageTableLayout );
+
+  mStackedWidget->setCurrentWidget( mPageHint );
+  layout->addWidget( mStackedWidget );
 
   setWidget( content );
 }
@@ -357,8 +383,7 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
 
   if ( mLockedFeature )
   {
-    mHintLabel->setVisible( false );
-    mTableView->setVisible( true );
+    mStackedWidget->setCurrentWidget( mPageTable );
 
     connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
 
@@ -374,8 +399,7 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
   }
   else
   {
-    mHintLabel->setVisible( true );
-    mTableView->setVisible( false );
+    mStackedWidget->setCurrentWidget( mPageHint );
   }
 }
 
