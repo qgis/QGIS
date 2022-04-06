@@ -679,7 +679,12 @@ QgsTextFormat QgsLayoutItemAttributeTable::textFormatForCell( int row, int colum
       QFont newFont = format.font();
       // we want to keep all the other font settings, like word/letter spacing
       newFont.setFamily( styleFont.family() );
-      newFont.setStyleName( styleFont.styleName() );
+
+      // warning -- there's a potential trap here! We can't just read QFont::styleName(), as that may be blank even when
+      // the font has the bold or italic attributes set! Reading the style name via QFontInfo avoids this and always returns
+      // a correct style name
+      newFont.setStyleName( QFontInfo( styleFont ).styleName() );
+
       newFont.setStrikeOut( styleFont.strikeOut() );
       newFont.setUnderline( styleFont.underline() );
       format.setFont( newFont );
