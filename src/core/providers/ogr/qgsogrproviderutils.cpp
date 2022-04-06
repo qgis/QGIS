@@ -2826,12 +2826,11 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
   QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
   if ( driverName == QLatin1String( "GPKG" ) )
   {
+    // use feature count from meta data
     GIntBig totalFeatureCount = getTotalFeatureCountfromMetaData();
-    // use feature count from meta data for large layers
-    if ( totalFeatureCount > 100000 )
 
-      return totalFeatureCount;
-    else //if total feature count < 100.000 get those features in order to enumerate them
+    // Get features up to a limit of 100.000 for enumeration or when meta data couldn't be obtained (return value == -1)
+    if ( totalFeatureCount < 100000 )
     {
       CPLPushErrorHandler( CPLQuietErrorHandler );
       OGRLayerH hSqlLayer = GDALDatasetExecuteSQL(
@@ -2917,6 +2916,8 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
         }
       }
     }
+    else    // use feature count from meta data for large layers > 100000 features
+      return totalFeatureCount;
   }
   if ( driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) )
   {
