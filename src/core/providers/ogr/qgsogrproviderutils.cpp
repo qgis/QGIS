@@ -2826,131 +2826,26 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
   QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
   if ( driverName == QLatin1String( "GPKG" ) )
   {
-    GIntBig totalFeatureCount = getTotalFeatureCountfromMetaData();
-    // use feature count from meta data for large layers
-    if ( totalFeatureCount > 100000 )
-
-      return totalFeatureCount;
-    else //if total feature count < 100.000 get those features in order to enumerate them
-    {
-      CPLPushErrorHandler( CPLQuietErrorHandler );
-      OGRLayerH hSqlLayer = GDALDatasetExecuteSQL(
-                              ds->hDS, "SELECT 1 FROM gpkg_ogr_contents LIMIT 0", nullptr, nullptr );
-      CPLPopErrorHandler();
-      if ( hSqlLayer )
-      {
-        GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
-        // try an inexpensive count first
-        GIntBig featureCount = OGR_L_GetFeatureCount( hLayer, FALSE ); // FALSE to not force an expensive count
-        if ( featureCount != -1 )
-        {
-          return featureCount;
-        }
-        else // if inexpensive count was not successful
-        {
-          return OGR_L_GetFeatureCount( hLayer, TRUE );
-        }
-      }
-
-      // Enumerate features up to a limit of 100.000.
-      const GIntBig nLimit = CPLAtoGIntBig(
-                               CPLGetConfigOption( "QGIS_GPKG_FC_THRESHOLD", "100000" ) );
-      QByteArray layerName = OGR_L_GetName( hLayer );
-      QByteArray sql( "SELECT COUNT(*) FROM (SELECT 1 FROM " );
-      sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
-      sql += " LIMIT ";
-      sql += CPLSPrintf( CPL_FRMT_GIB, nLimit );
-      sql += ")";
-      hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
-      GIntBig res = -1;
-      if ( hSqlLayer )
-      {
-        gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
-        if ( fet )
-        {
-          res = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
-        }
-        GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
-      }
-      if ( res >= 0 && res < nLimit )
-      {
-        // Less than 100000 features ? This is the final count
-        return res;
-      }
-      if ( res == nLimit )
-      {
-        // If we reach the threshold, then use the min and max values of the rowid
-        // hoping there are not a lot of holes.
-        // Do it in 2 separate SQL queries otherwise SQLite apparently does a
-        // full table scan...
-        sql = "SELECT MAX(ROWID) FROM ";
-        sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
-        hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
-        GIntBig maxrowid = -1;
-        if ( hSqlLayer )
-        {
-          gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
-          if ( fet )
-          {
-            maxrowid = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
-          }
-          GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
-        }
-
-        sql = "SELECT MIN(ROWID) FROM ";
-        sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
-        hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
-        GIntBig minrowid = 0;
-        if ( hSqlLayer )
-        {
-          gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
-          if ( fet )
-          {
-            minrowid = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
-          }
-          GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
-        }
-
-        if ( maxrowid >= minrowid )
-        {
-          return maxrowid - minrowid + 1;
-        }
-      }
-    }
-  }
-  if ( driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) )
-  {
-    return -1;
-  }
-
-  return OGR_L_GetFeatureCount( hLayer, TRUE );
-}
-
-/**
- * Returns the total (unfiltered) feature count according to OGRGeoPackageTableLayer::GetFeatureCount used by GDAL's ogrinfo.
- */
-
-GIntBig QgsOgrLayer::getTotalFeatureCountfromMetaData() const
-{
-  // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
-  QByteArray layerName = OGR_L_GetName( hLayer );
-
-  QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
-  if ( driverName == QLatin1String( "GPKG" ) )
-  {
-    // QByteArray sql = "SELECT COUNT (*) FROM " + QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
-
-    QByteArray sql( "SELECT feature_count FROM gpkg_ogr_contents WHERE " );
-    sql += "lower(table_name) = lower(" + QgsOgrProviderUtils::quotedIdentifier( layerName, driverName ) + ") LIMIT 2";
-    //sql += ")";
-
     CPLPushErrorHandler( CPLQuietErrorHandler );
-    OGRLayerH hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+    OGRLayerH hSqlLayer = GDALDatasetExecuteSQL(
+                            ds->hDS, "SELECT 1 FROM gpkg_ogr_contents LIMIT 0", nullptr, nullptr );
     CPLPopErrorHandler();
+    if ( hSqlLayer )
+    {
+      GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+      return OGR_L_GetFeatureCount( hLayer, TRUE );
+    }
 
-    //QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
-    //if ( !l )
-
+    // Enumerate features up to a limit of 100000.
+    const GIntBig nLimit = CPLAtoGIntBig(
+                             CPLGetConfigOption( "QGIS_GPKG_FC_THRESHOLD", "100000" ) );
+    QByteArray layerName = OGR_L_GetName( hLayer );
+    QByteArray sql( "SELECT COUNT(*) FROM (SELECT 1 FROM " );
+    sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+    sql += " LIMIT ";
+    sql += CPLSPrintf( CPL_FRMT_GIB, nLimit );
+    sql += ")";
+    hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
     GIntBig res = -1;
     if ( hSqlLayer )
     {
@@ -2960,10 +2855,58 @@ GIntBig QgsOgrLayer::getTotalFeatureCountfromMetaData() const
         res = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
       }
       GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+    }
+    if ( res >= 0 && res < nLimit )
+    {
+      // Less than 100000 features ? This is the final count
       return res;
     }
+    if ( res == nLimit )
+    {
+      // If we reach the threshold, then use the min and max values of the rowid
+      // hoping there are not a lot of holes.
+      // Do it in 2 separate SQL queries otherwise SQLite apparently does a
+      // full table scan...
+      sql = "SELECT MAX(ROWID) FROM ";
+      sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+      hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+      GIntBig maxrowid = -1;
+      if ( hSqlLayer )
+      {
+        gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
+        if ( fet )
+        {
+          maxrowid = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
+        }
+        GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+      }
+
+      sql = "SELECT MIN(ROWID) FROM ";
+      sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+      hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+      GIntBig minrowid = 0;
+      if ( hSqlLayer )
+      {
+        gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
+        if ( fet )
+        {
+          minrowid = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
+        }
+        GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+      }
+
+      if ( maxrowid >= minrowid )
+      {
+        return maxrowid - minrowid + 1;
+      }
+    }
   }
-  return -1;
+  if ( driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) )
+  {
+    return -1;
+  }
+
+  return OGR_L_GetFeatureCount( hLayer, TRUE );
 }
 
 OGRErr QgsOgrLayer::GetExtent( OGREnvelope *psExtent, bool bForce )
