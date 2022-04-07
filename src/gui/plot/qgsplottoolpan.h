@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsplotpantool.h
+                          qgsplottoolpan.h
                           ---------------
     begin                : March 2022
     copyright            : (C) 2022 by Nyall Dawson
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPLOTPANTOOL_H
-#define QGSPLOTPANTOOL_H
+#ifndef QGSPLOTTOOLPAN_H
+#define QGSPLOTTOOLPAN_H
 
 #include "qgsplottool.h"
 #include "qgis_gui.h"
@@ -56,4 +56,4 @@ class GUI_EXPORT QgsPlotToolPan : public QgsPlotTool
 
 };
 
-#endif // QGSPLOTPANTOOL_H
+#endif // QGSPLOTTOOLPAN_H

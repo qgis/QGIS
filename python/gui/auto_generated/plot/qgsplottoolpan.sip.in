@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/plot/qgsplotpantool.h                                        *
+ * src/gui/plot/qgsplottoolpan.h                                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -19,7 +19,7 @@ Plot tool for panning/zoom/navigating plots.
 %End
 
 %TypeHeaderCode
-#include "qgsplotpantool.h"
+#include "qgsplottoolpan.h"
 %End
   public:
 
@@ -44,7 +44,7 @@ Constructor for QgsPlotToolPan, with the associated ``canvas``.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/plot/qgsplotpantool.h                                        *
+ * src/gui/plot/qgsplottoolpan.h                                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

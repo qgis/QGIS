@@ -317,9 +317,9 @@ set(QGIS_GUI_SRCS
   plot/qgsplotcanvas.cpp
   plot/qgsplotcanvasitem.cpp
   plot/qgsplotmouseevent.cpp
-  plot/qgsplotpantool.cpp
   plot/qgsplotrubberband.cpp
   plot/qgsplottool.cpp
+  plot/qgsplottoolpan.cpp
   plot/qgsplottoolzoom.cpp
   plot/qgsplottransienttools.cpp
 
@@ -1169,9 +1169,9 @@ set(QGIS_GUI_HDRS
   plot/qgsplotcanvas.h
   plot/qgsplotcanvasitem.h
   plot/qgsplotmouseevent.h
-  plot/qgsplotpantool.h
   plot/qgsplotrubberband.h
   plot/qgsplottool.h
+  plot/qgsplottoolpan.h
   plot/qgsplottoolzoom.h
   plot/qgsplottransienttools.h
 

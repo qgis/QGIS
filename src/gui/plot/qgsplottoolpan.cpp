@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsplotpantool.cpp
+                          qgsplottoolpan.cpp
                           ---------------
     begin                : March 2022
     copyright            : (C) 2022 by Nyall Dawson
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsplotpantool.h"
+#include "qgsplottoolpan.h"
 #include "qgsplotcanvas.h"
 #include "qgsplotmouseevent.h"
 
