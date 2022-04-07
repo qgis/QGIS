@@ -14,7 +14,8 @@
 
 %ModuleHeaderCode
 #include "qgsplottool.h"
-#include "qgsplotpantool.h"
+#include "qgsplottoolpan.h"
+#include "qgsplottoolzoom.h"
 %End
 
 
@@ -34,6 +35,8 @@ Plot tools are user tools for manipulating and interacting with a :py:class:`Qgs
 %ConvertToSubClassCode
     if ( qobject_cast<QgsPlotToolPan *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPlotToolPan;
+    else if ( qobject_cast<QgsPlotToolZoom *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotToolZoom;
     else if ( qobject_cast<QgsPlotTool *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPlotTool;
     else

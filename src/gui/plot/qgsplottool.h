@@ -41,7 +41,8 @@ class QAction;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsplottool.h"
-#include "qgsplotpantool.h"
+#include "qgsplottoolpan.h"
+#include "qgsplottoolzoom.h"
 % End
 #endif
 
@@ -60,6 +61,8 @@ class GUI_EXPORT QgsPlotTool : public QObject
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsPlotToolPan *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPlotToolPan;
+    else if ( qobject_cast<QgsPlotToolZoom *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotToolZoom;
     else if ( qobject_cast<QgsPlotTool *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPlotTool;
     else
