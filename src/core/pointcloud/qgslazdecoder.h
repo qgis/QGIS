@@ -57,6 +57,9 @@ class QgsLazDecoder
       Red,
       Green,
       Blue,
+      ScannerChannel,
+      ClassificationFlags,
+      NIR,
       ExtraBytes,
       MissingOrUnknown
     };

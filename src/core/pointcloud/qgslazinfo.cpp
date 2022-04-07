@@ -139,6 +139,11 @@ QVector<QgsLazInfo::ExtraBytesAttributeDetails> QgsLazInfo::extrabytes()
 
 void QgsLazInfo::parseAttributes()
 {
+  if ( mPointFormat < 0 || mPointFormat > 10 )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Invalid point record format %1" ).arg( mPointFormat ), 2 );
+    return;
+  }
   mAttributes.push_back( QgsPointCloudAttribute( "X", QgsPointCloudAttribute::Int32 ) );
   mAttributes.push_back( QgsPointCloudAttribute( "Y", QgsPointCloudAttribute::Int32 ) );
   mAttributes.push_back( QgsPointCloudAttribute( "Z", QgsPointCloudAttribute::Int32 ) );
@@ -156,9 +161,8 @@ void QgsLazInfo::parseAttributes()
   {
     mAttributes.push_back( QgsPointCloudAttribute( "ScannerChannel", QgsPointCloudAttribute::Char ) );
     mAttributes.push_back( QgsPointCloudAttribute( "ClassificationFlags", QgsPointCloudAttribute::Char ) );
-    mAttributes.push_back( QgsPointCloudAttribute( "GpsTime", QgsPointCloudAttribute::Double ) );
   }
-  if ( mPointFormat == 1 || mPointFormat == 3 || mPointFormat == 4 || mPointFormat == 5 )
+  if ( mPointFormat != 0 && mPointFormat != 2 )
   {
     mAttributes.push_back( QgsPointCloudAttribute( "GpsTime", QgsPointCloudAttribute::Double ) );
   }
