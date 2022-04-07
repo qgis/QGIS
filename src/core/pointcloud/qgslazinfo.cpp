@@ -31,8 +31,6 @@ void QgsLazInfo::parseRawHeader( char *data, uint64_t length )
   std::istringstream file( std::string( data, length ) );
   lazperf::header14 header = lazperf::header14::create( file );
   parseHeader( header );
-
-  parseAttributes();
 }
 
 void QgsLazInfo::parseRawVlrEntries( char *data, uint64_t length )
@@ -52,6 +50,7 @@ void QgsLazInfo::parseRawVlrEntries( char *data, uint64_t length )
   }
 
   parseCrs();
+  parseAttributes();
 }
 
 
