@@ -73,6 +73,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgsmapthemecollection.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgscoordinatereferencesystemutils.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
 #include "qgsexpressioncontextutils.h"
@@ -1065,16 +1066,36 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
         displayPrecision = crs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 5 : 3;
       }
 
-      QAction *copyCoordinateAction = new QAction( QStringLiteral( "%3 (%1, %2)" ).arg(
-            QString::number( transformedPoint.x(), 'f', displayPrecision ),
-            QString::number( transformedPoint.y(), 'f', displayPrecision ),
-            identifier ), &menu );
+      const QList< Qgis::CrsAxisDirection > axisList = crs.axisOrdering();
+      QString firstSuffix;
+      QString secondSuffix;
+      if ( axisList.size() >= 2 )
+      {
+        firstSuffix = QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( axisList.at( 0 ) );
+        secondSuffix = QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( axisList.at( 1 ) );
+      }
 
-      connect( copyCoordinateAction, &QAction::triggered, this, [displayPrecision, transformedPoint]
+      QString firstNumber;
+      QString secondNumber;
+      if ( QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( crs ) == Qgis::CoordinateOrder::YX )
+      {
+        firstNumber = QString::number( transformedPoint.y(), 'f', displayPrecision );
+        secondNumber = QString::number( transformedPoint.x(), 'f', displayPrecision );
+      }
+      else
+      {
+        firstNumber = QString::number( transformedPoint.x(), 'f', displayPrecision );
+        secondNumber = QString::number( transformedPoint.y(), 'f', displayPrecision );
+      }
+
+      QAction *copyCoordinateAction = new QAction( QStringLiteral( "%5 (%1%2, %3%4)" ).arg(
+            firstNumber, firstSuffix, secondNumber, secondSuffix, identifier ), &menu );
+
+      connect( copyCoordinateAction, &QAction::triggered, this, [firstNumber, secondNumber, transformedPoint]
       {
         QClipboard *clipboard = QApplication::clipboard();
 
-        const QString coordinates = QString::number( transformedPoint.x(), 'f', displayPrecision ) + ',' + QString::number( transformedPoint.y(), 'f', displayPrecision );
+        const QString coordinates = firstNumber + ',' + secondNumber;
 
         //if we are on x11 system put text into selection ready for middle button pasting
         if ( clipboard->supportsSelection() )

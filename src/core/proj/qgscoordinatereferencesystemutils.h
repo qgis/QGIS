@@ -40,6 +40,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystemUtils
      * Accordingly this method will default to returning Qgis::CoordinateOrder::XY unless we are reasonably certain of a Y/X order.
      */
     static Qgis::CoordinateOrder defaultCoordinateOrderForCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Returns a translated abbreviation representing an \a axis direction.
+     */
+    static QString axisDirectionToAbbreviatedString( Qgis::CrsAxisDirection axis );
 };
 
 #endif // QGSCOORDINATEREFERENCESYSTEMUTILS_H
