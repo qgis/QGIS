@@ -233,13 +233,24 @@ void QgsDatabaseQueryLoggerProxyModel::setFilterString( const QString &string )
 
 bool QgsDatabaseQueryLoggerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  QgsDevToolsModelNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
-#if 0
-  if ( QgsDatabaseQueryLoggerRequestGroup *request = dynamic_cast< QgsDatabaseQueryLoggerRequestGroup * >( node ) )
+  if ( ! mFilterString.isEmpty() )
   {
-    return mFilterString.isEmpty() || request->url().url().contains( mFilterString, Qt::CaseInsensitive );
+    QgsDevToolsModelNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
+    if ( QgsDatabaseQueryLoggerQueryGroup *request = dynamic_cast< QgsDatabaseQueryLoggerQueryGroup * >( node ) )
+    {
+      if ( request->data().toString().contains( mFilterString, Qt::CaseInsensitive ) )
+      {
+        return true;
+      }
+      for ( int i = 0; i < request->childCount(); i++ )
+      {
+        if ( QgsDevToolsModelValueNode *valueNode = static_cast<QgsDevToolsModelValueNode *>( request->childAt( i ) ); valueNode->value().contains( mFilterString, Qt::CaseInsensitive ) )
+        {
+          return true;
+        }
+      }
+      return false;
+    }
   }
-#endif
-
   return true;
 }

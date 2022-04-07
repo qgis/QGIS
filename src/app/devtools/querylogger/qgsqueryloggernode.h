@@ -50,26 +50,14 @@ class QgsDatabaseQueryLoggerRootNode final : public QgsDevToolsModelGroup
 /**
  * \ingroup app
  * \class QgsDatabaseQueryLoggerQueryGroup
- * \brief Parent group for all database queries, showing the query id, SQL, URI,
+ * \brief Parent group for all database queries, showing the query id, SQL
  * and containing child groups with detailed query and result information.
  *
  * Visually, a QgsDatabaseQueryLoggerQueryGroup is structured by:
  *
  * |__ QgsDatabaseQueryLoggerQueryGroup (showing sql, uri,...)
- *     |__ QgsNetworkLoggerRequestDetailsGroup (holding Request details)
- *         |__ QgsNetworkLoggerValueNode (key-value pairs with info)
- *             ...
- *         |__ QgsNetworkLoggerRequestQueryGroup (holding query info)
- *               |__ ...
- *         |__ QgsNetworkLoggerRequestHeadersGroup ('Headers')
- *               |__ ...
- *         |__ QgsNetworkLoggerPostContentGroup (showing Data in case of POST)
- *               |__ ...
- *     |__ QgsNetworkLoggerReplyGroup (holding Reply details)
- *         |__ QgsNetworkLoggerReplyHeadersGroup (Reply 'Headers')
- *             |__ ...
- *     |__ QgsNetworkLoggerSslErrorGroup (holding SSL error details, if encountered)
- *         |__ ...
+ *   |__ QgsDevToolsModelValueNode(key-value pairs with info)
+ *       ...
  */
 class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
 {
