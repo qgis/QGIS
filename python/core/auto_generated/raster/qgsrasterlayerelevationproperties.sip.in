@@ -57,6 +57,20 @@ Sets whether the elevation properties are enabled, i.e. the raster layer values 
 .. seealso:: :py:func:`isEnabled`
 %End
 
+    int bandNumber() const;
+%Docstring
+Returns the band number from which the elevation should be taken.
+
+.. seealso:: :py:func:`setBandNumber`
+%End
+
+    void setBandNumber( int band );
+%Docstring
+Sets the ``band`` number from which the elevation should be taken.
+
+.. seealso:: :py:func:`bandNumber`
+%End
+
     QgsLineSymbol *profileLineSymbol() const;
 %Docstring
 Returns the line symbol used to render the raster profile in elevation profile plots.

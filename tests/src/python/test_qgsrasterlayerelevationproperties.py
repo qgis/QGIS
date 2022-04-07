@@ -33,14 +33,17 @@ class TestQgsRasterLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props.zOffset(), 0)
         self.assertFalse(props.isEnabled())
         self.assertFalse(props.hasElevation())
+        self.assertEqual(props.bandNumber(), 1)
         self.assertIsInstance(props.profileLineSymbol(), QgsLineSymbol)
 
         props.setZOffset(0.5)
         props.setZScale(2)
+        props.setBandNumber(2)
         props.setEnabled(True)
         self.assertEqual(props.zScale(), 2)
         self.assertEqual(props.zOffset(), 0.5)
         self.assertTrue(props.isEnabled())
+        self.assertEqual(props.bandNumber(), 2)
         self.assertTrue(props.hasElevation())
 
         sym = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
@@ -56,6 +59,7 @@ class TestQgsRasterLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props2.zScale(), 2)
         self.assertEqual(props2.zOffset(), 0.5)
         self.assertTrue(props2.isEnabled())
+        self.assertEqual(props2.bandNumber(), 2)
         self.assertEqual(props2.profileLineSymbol().color().name(), '#ff4433')
 
 
