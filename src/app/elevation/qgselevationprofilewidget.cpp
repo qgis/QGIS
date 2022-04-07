@@ -171,7 +171,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mDockableWidgetHelper = new QgsDockableWidgetHelper( true, mCanvasName, this, QgisApp::instance(), Qt::BottomDockWidgetArea,  QStringList(), true );
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
-  toggleButton->setToolTip( tr( "Dock 3D Map View" ) );
+  toggleButton->setToolTip( tr( "Dock Elevation Profile View" ) );
   toolBar->addWidget( toggleButton );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, [ = ]()
   {
