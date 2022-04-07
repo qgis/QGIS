@@ -265,12 +265,15 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   const double xScale = ( chartAreaRight - chartAreaLeft ) / ( mMaxX - mMinX );
   const double yScale = ( chartAreaBottom - chartAreaTop ) / ( mMaxY - mMinY );
 
+  constexpr int MAX_OBJECTS = 1000;
+
   // grid lines
 
   // x
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
   double nextMajorXGrid = firstMajorXGrid;
-  for ( double currentX = firstMinorXGrid; currentX <= mMaxX && !qgsDoubleNear( currentX, mMaxX, xTolerance ); currentX += mXAxis.gridIntervalMinor() )
+  int objectNumber = 0;
+  for ( double currentX = firstMinorXGrid; objectNumber < MAX_OBJECTS && ( currentX <= mMaxX && !qgsDoubleNear( currentX, mMaxX, xTolerance ) ); currentX += mXAxis.gridIntervalMinor(), ++objectNumber )
   {
     bool isMinor = true;
     if ( qgsDoubleNear( currentX, nextMajorXGrid, xTolerance ) )
@@ -293,7 +296,8 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   // y
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
   double nextMajorYGrid = firstMajorYGrid;
-  for ( double currentY = firstMinorYGrid; currentY <= mMaxY && !qgsDoubleNear( currentY, mMaxY, yTolerance ); currentY += mYAxis.gridIntervalMinor() )
+  objectNumber = 0;
+  for ( double currentY = firstMinorYGrid; objectNumber < MAX_OBJECTS && ( currentY <= mMaxY && !qgsDoubleNear( currentY, mMaxY, yTolerance ) ); currentY += mYAxis.gridIntervalMinor(), ++objectNumber )
   {
     bool isMinor = true;
     if ( qgsDoubleNear( currentY, nextMajorYGrid, yTolerance ) )
@@ -317,7 +321,8 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
   // x
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
-  for ( double currentX = firstXLabel; currentX <= mMaxX || qgsDoubleNear( currentX, mMaxX, xTolerance ); currentX += mXAxis.labelInterval() )
+  objectNumber = 0;
+  for ( double currentX = firstXLabel; objectNumber < MAX_OBJECTS && ( currentX <= mMaxX || qgsDoubleNear( currentX, mMaxX, xTolerance ) ); currentX += mXAxis.labelInterval(), ++objectNumber )
   {
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
     const QString text = mXAxis.numericFormat()->formatDouble( currentX, numericContext );
@@ -327,7 +332,8 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
   // y
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
-  for ( double currentY = firstYLabel; currentY <= mMaxY || qgsDoubleNear( currentY, mMaxY, yTolerance ); currentY += mYAxis.labelInterval() )
+  objectNumber = 0;
+  for ( double currentY = firstYLabel; objectNumber < MAX_OBJECTS && ( currentY <= mMaxY || qgsDoubleNear( currentY, mMaxY, yTolerance ) ); currentY += mYAxis.labelInterval(), ++objectNumber )
   {
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
     const QString text = mYAxis.numericFormat()->formatDouble( currentY, numericContext );
@@ -389,10 +395,13 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
   const double xTolerance = mXAxis.gridIntervalMinor() / 100000;
   const double yTolerance = mYAxis.gridIntervalMinor() / 100000;
 
+  constexpr int MAX_LABELS = 1000;
+
   // calculate text metrics
+  int labelNumber = 0;
   double maxXAxisLabelHeight = 0;
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
-  for ( double currentX = firstXLabel; currentX <= mMaxX || qgsDoubleNear( currentX, mMaxX, xTolerance ); currentX += mXAxis.labelInterval() )
+  for ( double currentX = firstXLabel; labelNumber < MAX_LABELS && ( currentX <= mMaxX || qgsDoubleNear( currentX, mMaxX, xTolerance ) ); currentX += mXAxis.labelInterval(), labelNumber++ )
   {
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
     const QString text = mXAxis.numericFormat()->formatDouble( currentX, numericContext );
@@ -400,8 +409,9 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
   }
 
   double maxYAxisLabelWidth = 0;
+  labelNumber = 0;
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
-  for ( double currentY = firstMinorYGrid; currentY <= mMaxY || qgsDoubleNear( currentY, mMaxY, yTolerance ); currentY += mYAxis.gridIntervalMinor() )
+  for ( double currentY = firstMinorYGrid; labelNumber < MAX_LABELS && ( currentY <= mMaxY || qgsDoubleNear( currentY, mMaxY, yTolerance ) ); currentY += mYAxis.gridIntervalMinor(), labelNumber ++ )
   {
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
     const QString text = mYAxis.numericFormat()->formatDouble( currentY, numericContext );
@@ -426,6 +436,7 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
   // aim for about 40% coverage of label text to available space
   constexpr double IDEAL_WIDTH = 0.4;
   constexpr double TOLERANCE = 0.04;
+  constexpr int MAX_LABELS = 1000;
 
   const double leftMargin = context.convertToPainterUnits( mMargins.left(), QgsUnitTypes::RenderMillimeters );
   const double rightMargin = context.convertToPainterUnits( mMargins.right(), QgsUnitTypes::RenderMillimeters );
@@ -479,9 +490,12 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
         {
           totalSize += sizeForLabel( currentPos );
           numberLabels += 1;
+
+          if ( numberLabels > MAX_LABELS ) // avoid hangs if candidate size is very small
+            break;
         }
 
-        if ( totalSize <= availableSize * idealSizePercent )
+        if ( numberLabels <= MAX_LABELS && totalSize <= availableSize * idealSizePercent )
           break;
 
         if ( currentMultiplier == 1 )
