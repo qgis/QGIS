@@ -461,7 +461,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesExtraction()
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/copc/extrabytes-dataset.copc.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
-    QgsLazInfo lazInfo( file );
+    QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
     QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 3 );
 
@@ -485,7 +485,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesExtraction()
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/copc/no-extrabytes-dataset.copc.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
-    QgsLazInfo lazInfo( file );
+    QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
     QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 0 );
   }

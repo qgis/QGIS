@@ -68,7 +68,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     QString mDataType;
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudAttributeCollection mRequestedAttributes;
-    std::unique_ptr<QgsTileDownloadManagerReply> mTileDownloadManagetReply = nullptr;
+    std::unique_ptr<QgsTileDownloadManagerReply> mTileDownloadManagerReply = nullptr;
     QgsPointCloudBlock *mBlock = nullptr;
     QString mErrorStr;
     QgsVector3D mScale, mOffset;

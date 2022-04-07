@@ -42,38 +42,37 @@ QgsCopcPointCloudBlockRequest::QgsCopcPointCloudBlockRequest( const IndexedPoint
   QByteArray queryRange = QStringLiteral( "bytes=%1-%2" ).arg( mBlockOffset ).arg( ( int64_t ) mBlockOffset + mBlockSize - 1 ).toLocal8Bit();
   nr.setRawHeader( "Range", queryRange );
 
-  mTileDownloadManagetReply.reset( QgsApplication::tileDownloadManager()->get( nr ) );
-  connect( mTileDownloadManagetReply.get(), &QgsTileDownloadManagerReply::finished, this, &QgsCopcPointCloudBlockRequest::blockFinishedLoading );
+  mTileDownloadManagerReply.reset( QgsApplication::tileDownloadManager()->get( nr ) );
+  connect( mTileDownloadManagerReply.get(), &QgsTileDownloadManagerReply::finished, this, &QgsCopcPointCloudBlockRequest::blockFinishedLoading );
 }
 
 void QgsCopcPointCloudBlockRequest::blockFinishedLoading()
 {
   mBlock = nullptr;
-  if ( mTileDownloadManagetReply->error() == QNetworkReply::NetworkError::NoError )
+  QString error;
+  if ( mTileDownloadManagerReply->error() == QNetworkReply::NetworkError::NoError )
   {
-    try
+    if ( mBlockSize != mTileDownloadManagerReply->data().size() )
     {
-      mBlock = nullptr;
-      if ( mBlockSize != mTileDownloadManagetReply->data().size() )
+      error = QStringLiteral( "Returned HTTP range is incorrect, requested %1 bytes but got %2 bytes" ).arg( mBlockSize ).arg( mTileDownloadManagerReply->data().size() );
+    }
+    else
+    {
+      try
       {
-        QString err = QStringLiteral( "Failed to load node %1 properly %2" ).arg( mNode.toString() ).arg( QString::fromStdString( mTileDownloadManagetReply->request().rawHeader( "Range" ).toStdString() ) );
+        mBlock = QgsLazDecoder::decompressCopc( mTileDownloadManagerReply->data(), mLazInfo, mPointCount, mRequestedAttributes, mFilterExpression );
       }
-      else
+      catch ( std::exception &e )
       {
-        mBlock = QgsLazDecoder::decompressCopc( mTileDownloadManagetReply->data(), mLazInfo, mPointCount, mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
+        error = QStringLiteral( "Error while decompressing node %1: %2" ).arg( mNode.toString(), e.what() );
       }
     }
-    catch ( std::exception &e )
-    {
-      mErrorStr = QStringLiteral( "Error while decompressing node %1: %2" ).arg( mNode.toString(), e.what() );
-    }
-    if ( !mBlock )
-      mErrorStr = QStringLiteral( "Error loading point cloud tile: \" %1 \"" ).arg( mTileDownloadManagetReply->errorString() );
   }
   else
   {
-    mErrorStr = mTileDownloadManagetReply->errorString();
+    error = QStringLiteral( "Network request error: %1" ).arg( mTileDownloadManagerReply->errorString() );
   }
+  mErrorStr = QStringLiteral( "Error loading point tile %1: \"%2\"" ).arg( mNode.toString() ).arg( error );
   emit finished();
 }
 

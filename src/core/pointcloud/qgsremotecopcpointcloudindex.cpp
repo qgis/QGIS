@@ -1,8 +1,8 @@
 /***************************************************************************
-                         qgsremoteeptpointcloudindex.cpp
+                         qgsremotecopcpointcloudindex.cpp
                          --------------------
-    begin                : March 2021
-    copyright            : (C) 2021 by Belgacem Nedjima
+    begin                : March 2022
+    copyright            : (C) 2022 by Belgacem Nedjima
     email                : belgacem dot nedjima at gmail dot com
  ***************************************************************************/
 
@@ -87,10 +87,9 @@ void QgsRemoteCopcPointCloudIndex::load( const QString &url )
   fetchHierarchyPage( mCopcInfoVlr.root_hier_offset, mCopcInfoVlr.root_hier_size );
 }
 
-
 bool QgsRemoteCopcPointCloudIndex::loadHeader()
 {
-  mLazInfo.reset( new QgsLazInfo( mUrl ) );
+  mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( mUrl ) ) );
   return loadSchema( *mLazInfo.get() );
 }
 

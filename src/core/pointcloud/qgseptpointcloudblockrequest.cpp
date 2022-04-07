@@ -38,49 +38,47 @@ QgsEptPointCloudBlockRequest::QgsEptPointCloudBlockRequest( const IndexedPointCl
   QNetworkRequest nr( mUri );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-  mTileDownloadManagetReply.reset( QgsApplication::tileDownloadManager()->get( nr ) );
-  connect( mTileDownloadManagetReply.get(), &QgsTileDownloadManagerReply::finished, this, &QgsEptPointCloudBlockRequest::blockFinishedLoading );
+  mTileDownloadManagerReply.reset( QgsApplication::tileDownloadManager()->get( nr ) );
+  connect( mTileDownloadManagerReply.get(), &QgsTileDownloadManagerReply::finished, this, &QgsEptPointCloudBlockRequest::blockFinishedLoading );
 }
 
 void QgsEptPointCloudBlockRequest::blockFinishedLoading()
 {
   mBlock = nullptr;
-  if ( mTileDownloadManagetReply->error() == QNetworkReply::NetworkError::NoError )
+  QString error;
+  if ( mTileDownloadManagerReply->error() == QNetworkReply::NetworkError::NoError )
   {
-    bool invalidDataType = false;
     try
     {
       mBlock = nullptr;
       if ( mDataType == QLatin1String( "binary" ) )
       {
-        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
+        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
       }
       else if ( mDataType == QLatin1String( "zstandard" ) )
       {
-        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
+        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
       }
       else if ( mDataType == QLatin1String( "laszip" ) )
       {
-        mBlock = QgsLazDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
+        mBlock = QgsLazDecoder::decompressLaz( mTileDownloadManagerReply->data(), mRequestedAttributes, mFilterExpression );
       }
       else
       {
-        mErrorStr = QStringLiteral( "unknown data type %1;" ).arg( mDataType );
-        invalidDataType = true;
+        error = QStringLiteral( "unknown data type %1;" ).arg( mDataType );
       }
     }
     catch ( std::exception &e )
     {
-      mErrorStr = QStringLiteral( "Error while decompressing node %1: %2" ).arg( mNode.toString(), e.what() );
+      error = QStringLiteral( "Decompression error: %1" ).arg( e.what() );
     }
-    if ( invalidDataType && !mBlock )
-      mErrorStr = QStringLiteral( "Error loading point cloud tile: \" %1 \"" ).arg( mTileDownloadManagetReply->errorString() );
   }
   else
   {
-    mErrorStr = mTileDownloadManagetReply->errorString();
+    error = QStringLiteral( "Network request error: %1" ).arg( mTileDownloadManagerReply->errorString() );
   }
-  emit QgsPointCloudBlockRequest::finished();
+  mErrorStr = QStringLiteral( "Error loading point cloud tile %1: \" %2 \"" ).arg( mNode.toString() ).arg( error );
+  emit finished();
 }
 
 ///@endcond
