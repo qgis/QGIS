@@ -76,10 +76,10 @@ class QgsLazDecoder
       int offset; // Used in case the attribute is an extra byte attribute
     };
 
-    static QgsPointCloudBlock *decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression );
-    static QgsPointCloudBlock *decompressLaz( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression );
-    static QgsPointCloudBlock *decompressCopc( const QString &filename, QgsLazInfo &lazInfo, uint64_t blockOffset, uint64_t blockSize, int32_t pointCount, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, QgsPointCloudExpression &filterExpression );
-    static QgsPointCloudBlock *decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset, QgsPointCloudExpression &filterExpression );
+    static QgsPointCloudBlock *decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
+    static QgsPointCloudBlock *decompressLaz( const QByteArray &data, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
+    static QgsPointCloudBlock *decompressCopc( const QString &filename, QgsLazInfo &lazInfo, uint64_t blockOffset, uint64_t blockSize, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
+    static QgsPointCloudBlock *decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
 };
 
 ///@endcond

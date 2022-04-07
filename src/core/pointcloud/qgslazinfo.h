@@ -48,11 +48,12 @@ class CORE_EXPORT QgsLazInfo
       int offset;
     };
 
-    //! Constructor for reading informations from a local COPC file
-    QgsLazInfo( std::ifstream &file );
+    //! Constructor for an empty laz info parser
+    QgsLazInfo();
 
-    //! Constructor for reading informations from a remote COPC file
-    QgsLazInfo( QUrl &url );
+    void parseRawHeader( char *data, uint64_t length );
+
+    void parseRawVlrEntries( char *data, uint64_t length );
 
     uint64_t pointCount() const { return mPointCount; }
     QgsVector3D scale() const { return mScale; }
@@ -79,14 +80,15 @@ class CORE_EXPORT QgsLazInfo
     QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
 
     static QVector<ExtraBytesAttributeDetails> parseExtrabytes( char *rawData, int length, int pointRecordLength );
+
+    static QgsLazInfo fromFile( std::ifstream &file );
+    static QgsLazInfo fromUrl( QUrl &url );
+
   private:
     void parseHeader( lazperf::header14 &header );
-    void parseVlrData( char *vlrData, uint32_t size );
     void parseCrs();
     void parseAttributes();
   private:
-    bool mIsValid = false;
-
     lazperf::header14 mHeader;
 
     uint64_t mPointCount = 0;

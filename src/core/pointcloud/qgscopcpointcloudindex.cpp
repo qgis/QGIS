@@ -67,7 +67,7 @@ void QgsCopcPointCloudIndex::load( const QString &fileName )
 
 bool QgsCopcPointCloudIndex::loadSchema()
 {
-  mLazInfo.reset( new QgsLazInfo( mCopcFile ) );
+  mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
   return loadSchema( *mLazInfo.get() );
 }
 
@@ -136,7 +136,7 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
-  return QgsLazDecoder::decompressCopc( mFileName, *mLazInfo.get(), blockOffset, blockSize, pointCount, attributes(), requestAttributes, scale(), offset(), filterExpression );
+  return QgsLazDecoder::decompressCopc( mFileName, *mLazInfo.get(), blockOffset, blockSize, pointCount, requestAttributes, filterExpression );
 }
 
 QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )

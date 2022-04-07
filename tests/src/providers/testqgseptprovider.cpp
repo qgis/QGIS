@@ -448,7 +448,7 @@ void TestQgsEptProvider::testExtraBytesAttributesExtraction()
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/ept/extrabytes-dataset/ept-data/0-0-0-0.laz" );
     QUrl url( dataPath );
-    QgsLazInfo lazInfo( url );
+    QgsLazInfo lazInfo = QgsLazInfo::fromUrl( url );
     QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 4 );
 
@@ -476,7 +476,7 @@ void TestQgsEptProvider::testExtraBytesAttributesExtraction()
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/ept/no-extrabytes-dataset/ept-data/0-0-0-0.laz" );
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
-    QgsLazInfo lazInfo( file );
+    QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
     QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 0 );
   }
