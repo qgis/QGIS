@@ -136,7 +136,12 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
-  return QgsLazDecoder::decompressCopc( mFileName, *mLazInfo.get(), blockOffset, blockSize, pointCount, requestAttributes, filterExpression );
+  QByteArray rawBlockData( blockSize, Qt::Initialization::Uninitialized );
+  std::ifstream file( mFileName.toStdString(), std::ios::binary );
+  file.seekg( blockOffset );
+  file.read( rawBlockData.data(), blockSize );
+
+  return QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression );
 }
 
 QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
