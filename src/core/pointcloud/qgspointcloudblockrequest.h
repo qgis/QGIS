@@ -65,7 +65,6 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
   protected:
     IndexedPointCloudNode mNode;
     QString mUri;
-    QString mDataType;
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudAttributeCollection mRequestedAttributes;
     std::unique_ptr<QgsTileDownloadManagerReply> mTileDownloadManagerReply = nullptr;

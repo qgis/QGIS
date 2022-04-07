@@ -57,7 +57,7 @@ class CORE_EXPORT QgsCopcPointCloudBlockRequest : public QgsPointCloudBlockReque
     int32_t mBlockSize;
     int mPointCount;
     QgsLazInfo mLazInfo;
-  protected slots:
+  private slots:
     void blockFinishedLoading();
 };
 

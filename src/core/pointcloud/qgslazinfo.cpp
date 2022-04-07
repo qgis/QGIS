@@ -19,6 +19,7 @@
 
 #include "qgslogger.h"
 #include "qgsblockingnetworkrequest.h"
+
 #include "lazperf/readers.hpp"
 
 // QgsLazInfo
@@ -58,7 +59,6 @@ void QgsLazInfo::parseHeader( lazperf::header14 &header )
 {
   mHeader = header;
 
-  mPointCount = header.point_count_14;
   mScale = QgsVector3D( header.scale.x, header.scale.y, header.scale.z );
   mOffset = QgsVector3D( header.offset.x, header.offset.y, header.offset.z );
   mCreationYearDay = QPair<uint16_t, uint16_t>( header.creation.year, header.creation.day );
@@ -73,8 +73,6 @@ void QgsLazInfo::parseHeader( lazperf::header14 &header )
   mMaxCoords = QgsVector3D( header.maxx, header.maxy, header.maxz );
 
   mVlrCount = header.vlr_count;
-  mPointRecordsOffset = header.point_offset;
-  mPointRecordLength = header.point_record_length;
 }
 
 
@@ -126,7 +124,7 @@ QByteArray QgsLazInfo::vlrData( QString userId, int recordId )
 QVector<QgsLazInfo::ExtraBytesAttributeDetails> QgsLazInfo::extrabytes()
 {
   QByteArray ebVlrRaw = vlrData( "LASF_Spec", 4 );
-  return QgsLazInfo::parseExtrabytes( ebVlrRaw.data(), ebVlrRaw.size(), mPointRecordLength );
+  return QgsLazInfo::parseExtrabytes( ebVlrRaw.data(), ebVlrRaw.size(), mHeader.point_record_length );
 }
 
 void QgsLazInfo::parseAttributes()
@@ -253,10 +251,11 @@ QgsLazInfo QgsLazInfo::fromFile( std::ifstream &file )
   file.read( headerRawData, 375 );
   lazInfo.parseRawHeader( headerRawData, 375 );
 
-  std::unique_ptr<char> vlrEntriesRawData( new char[ lazInfo.lazHeader().point_offset - 375 ] );
+  int vlrDataSize = lazInfo.firstPointRecordOffset() - 375;
+  std::unique_ptr<char> vlrEntriesRawData( new char[ vlrDataSize ] );
   file.seekg( 375 );
-  file.read( vlrEntriesRawData.get(), lazInfo.lazHeader().point_offset - 375 );
-  lazInfo.parseRawVlrEntries( vlrEntriesRawData.get(), lazInfo.lazHeader().point_offset - 375 );
+  file.read( vlrEntriesRawData.get(), vlrDataSize );
+  lazInfo.parseRawVlrEntries( vlrEntriesRawData.get(), vlrDataSize );
 
   return lazInfo;
 }
@@ -267,6 +266,8 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
   // Fetch header data
   {
     QNetworkRequest nr( url );
+    nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
+    nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
     nr.setRawHeader( "Range", "bytes=0-374" );
     QgsBlockingNetworkRequest req;
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
@@ -284,7 +285,9 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
   // Fetch VLR data
   {
     QNetworkRequest nr( url );
-    QByteArray vlrRequestRange = QStringLiteral( "bytes=%1-%2" ).arg( 375 ).arg( lazInfo.lazHeader().point_offset - 1 ).toLocal8Bit();
+    nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
+    nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+    QByteArray vlrRequestRange = QStringLiteral( "bytes=%1-%2" ).arg( 375 ).arg( lazInfo.firstPointRecordOffset() - 1 ).toLocal8Bit();
     nr.setRawHeader( "Range", vlrRequestRange );
     QgsBlockingNetworkRequest req;
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );

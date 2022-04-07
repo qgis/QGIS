@@ -396,10 +396,8 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QString &filename, QgsL
 {
   std::ifstream file( filename.toStdString(), std::ios::binary );
 
-  lazperf::header14 header = lazInfo.lazHeader();
-
   // COPC only supports point formats 6, 7 and 8
-  int lasPointFormat = header.pointFormat();
+  int lasPointFormat = lazInfo.pointFormat();
   if ( lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
   {
     QgsDebugMsg( QStringLiteral( "Unexpected point format record (%1) - only 6, 7, 8 are supported for COPC format" ).arg( lasPointFormat ) );
@@ -410,12 +408,9 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QString &filename, QgsL
   std::unique_ptr<char> data( new char[ blockSize ] );
   file.seekg( blockOffset );
   file.read( data.get(), blockSize );
-  std::unique_ptr<char> decodedData( new char[ header.point_record_length ] );
+  std::unique_ptr<char> decodedData( new char[ lazInfo.pointRecordLength() ] );
 
-  lazperf::reader::chunk_decompressor decompressor( header.pointFormat(), header.ebCount(), data.get() );
-
-  const QgsVector3D hScale( header.scale.x, header.scale.y, header.scale.z );
-  const QgsVector3D hOffset( header.offset.x, header.offset.y, header.offset.z );
+  lazperf::reader::chunk_decompressor decompressor( lasPointFormat, lazInfo.extrabytesCount(), data.get() );
 
   const size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
   QByteArray blockData;
@@ -427,9 +422,8 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QString &filename, QgsL
   QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributesDetails = lazInfo.extrabytes();
   std::vector< RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( requestedAttributes, extrabyteAttributesDetails );
   std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
-        pointCount,
-        requestedAttributes,
-        blockData, hScale, hOffset
+        pointCount, requestedAttributes,
+        blockData, lazInfo.scale(), lazInfo.offset()
       );
 
   int skippedPoints = 0;
@@ -468,22 +462,17 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QString &filename, QgsL
 
 QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression )
 {
-  lazperf::header14 header = lazInfo.lazHeader();
-
   // COPC only supports point formats 6, 7 and 8
-  int lasPointFormat = header.pointFormat();
+  int lasPointFormat = lazInfo.pointFormat();
   if ( lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
   {
     QgsDebugMsg( QStringLiteral( "Unexpected point format record (%1) - only 6, 7, 8 are supported for COPC format" ).arg( lasPointFormat ) );
     return nullptr;
   }
 
-  std::unique_ptr<char> decodedData( new char[ header.point_record_length ] );
+  std::unique_ptr<char> decodedData( new char[ lazInfo.pointRecordLength() ] );
 
-  lazperf::reader::chunk_decompressor decompressor( header.pointFormat(), header.ebCount(), data.data() );
-
-  const QgsVector3D hScale( header.scale.x, header.scale.y, header.scale.z );
-  const QgsVector3D hOffset( header.offset.x, header.offset.y, header.offset.z );
+  lazperf::reader::chunk_decompressor decompressor( lasPointFormat, lazInfo.extrabytesCount(), data.data() );
 
   const size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
   QByteArray blockData;
@@ -495,9 +484,8 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLa
   QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributesDetails = lazInfo.extrabytes();
   std::vector< RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( requestedAttributes, extrabyteAttributesDetails );
   std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
-        pointCount,
-        requestedAttributes,
-        blockData, hScale, hOffset
+        pointCount, requestedAttributes,
+        blockData, lazInfo.scale(), lazInfo.offset()
       );
 
   int skippedPoints = 0;

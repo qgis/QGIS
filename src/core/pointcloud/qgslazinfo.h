@@ -20,16 +20,19 @@
 
 #include <fstream>
 
-#include "qgspointcloudblock.h"
 #include "qgspointcloudattribute.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgspointcloudindex.h"
 
-#include "lazperf/lazperf.hpp"
-#include "lazperf/readers.hpp"
+#include "lazperf/header.hpp"
 
 #define SIP_NO_FILE
 
+/**
+ * Class for extracting important informations contained in LAZ file such as the public header block
+ * and variable length records
+ *
+ * \since QGIS 3.26
+ */
 class CORE_EXPORT QgsLazInfo
 {
   public:
@@ -51,37 +54,65 @@ class CORE_EXPORT QgsLazInfo
     //! Constructor for an empty laz info parser
     QgsLazInfo();
 
+    //! Parses the raw header data loaded from a LAZ file
     void parseRawHeader( char *data, uint64_t length );
 
+    //! Parses the variable length records found in the array \a data of length \a length
     void parseRawVlrEntries( char *data, uint64_t length );
 
-    uint64_t pointCount() const { return mPointCount; }
+    //! Returns the number of points contained in the LAZ file
+    uint64_t pointCount() const
+    {
+      return mHeader.version.major == 1 && mHeader.version.minor == 4 ? mHeader.point_count_14 : mHeader.point_count;
+    }
+    //! Returns the scale of the points coordinates
     QgsVector3D scale() const { return mScale; }
+    //! Returns the offset of the points coordinates
     QgsVector3D offset() const { return mOffset; }
+    //! Returns the pair ( creation_year, creation_day ) extracted from the LAZ file public header block
     QPair<uint16_t, uint16_t> creationYearDay() const { return mCreationYearDay; }
+    //! Returns the LAZ specification version of the LAZ file
     QPair<uint8_t, uint8_t> version() const { return mVersion; }
+    //! Returns the point format of the point records contained in the LAZ file
     int pointFormat() const { return mPointFormat; }
+    //! Returns the project identifier contained in the LAZ file public header block (Optional field)
     QString projectId() const { return mProjectId; }
+    //! Returns the system identifier contained in the LAZ file public header block
     QString systemId() const { return mSystemId; }
+    //! Returns the identifier of the software used to generate the LAZ file public header block
     QString softwareId() const { return mSoftwareId; }
+    //! Returns the minimum coordinate across X, Y and Z axis
     QgsVector3D minCoords() const { return mMinCoords; }
+    //! Returns the maximum coordinate across X, Y and Z axis
     QgsVector3D maxCoords() const { return mMaxCoords; }
+    //! Returns the absolute offset to the first point record in the LAZ file
+    uint32_t firstPointRecordOffset() const { return mHeader.point_offset; }
+    //! Returns the length of each point record in bytes
+    int pointRecordLength() const { return mHeader.point_record_length; }
+    //! Returns the number of extrabytes contained in the LAZ dataset
+    int extrabytesCount() const { return mHeader.ebCount(); }
 
+    //! Returns the coordinate system stored in the LAZ file
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
+    //! Returns a map containing various metadata extracted from the LAZ file
     QVariantMap toMetadata() const;
 
+    //! Returns the binary data of the variable length record with the user identifier \a userId and record identifier \a recordId
     QByteArray vlrData( QString userId, int recordId );
 
-    lazperf::header14 lazHeader() const { return mHeader; }
-
+    //! Returns the list of extrabytes contained in the LAZ file
     QVector<ExtraBytesAttributeDetails> extrabytes();
 
+    //! Returns the list of attributes contained in the LAZ file
     QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
 
+    //! Static function to parse the raw extrabytes VLR into a list of recognizable extrabyte attributes
     static QVector<ExtraBytesAttributeDetails> parseExtrabytes( char *rawData, int length, int pointRecordLength );
 
+    //! Static function to create a QgsLazInfo class from a file
     static QgsLazInfo fromFile( std::ifstream &file );
+    //! Static function to create a QgsLazInfo class from a file over network
     static QgsLazInfo fromUrl( QUrl &url );
 
   private:
@@ -91,11 +122,10 @@ class CORE_EXPORT QgsLazInfo
   private:
     lazperf::header14 mHeader;
 
-    uint64_t mPointCount = 0;
     QgsVector3D mScale, mOffset;
     QPair<uint16_t, uint16_t> mCreationYearDay;
     QPair<uint8_t, uint8_t> mVersion;
-    int mPointFormat;
+    int mPointFormat = -1;
     QString mProjectId;
     QString mSystemId;
     QString mSoftwareId;
@@ -104,9 +134,7 @@ class CORE_EXPORT QgsLazInfo
 
     QgsVector3D mMinCoords, mMaxCoords;
 
-    int mVlrCount;
-    uint32_t mPointRecordsOffset;
-    int mPointRecordLength;
+    int mVlrCount = 0;
 
     QVector<LazVlr> mVlrVector;
 
