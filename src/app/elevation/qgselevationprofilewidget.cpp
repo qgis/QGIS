@@ -23,7 +23,7 @@
 #include "qgsmaptoolprofilecurve.h"
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
-#include "qgsplotpantool.h"
+#include "qgsplottoolpan.h"
 #include "qgsplottoolzoom.h"
 #include "qgselevationprofilepdfexportdialog.h"
 #include "qgselevationprofileimageexportdialog.h"
