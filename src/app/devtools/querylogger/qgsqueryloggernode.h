@@ -83,11 +83,6 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
     QVariant toVariant() const override;
 
     /**
-     * Returns the query's status.
-     */
-    Status status() const { return mStatus; }
-
-    /**
      * Called when the \a query is finished.
      *
      * Will automatically create children encapsulating the completed details.
@@ -95,9 +90,14 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
     void setFinished( const  QgsDatabaseQueryLogEntry &query );
 
     /**
-     * Flags the query as having timed out.
+     * Returns the query's status.
      */
-    void setTimedOut();
+    Status status() const { return mStatus; }
+
+    /**
+     * Set the query \a status
+     */
+    void setStatus( Status status );
 
     /**
      * Converts a request \a status to a translated string value.
@@ -108,8 +108,6 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
 
     QString mSql;
     int mQueryId = 0;
-    QElapsedTimer mTimer;
-    qint64 mTotalTime = 0;
     QByteArray mData;
     Status mStatus = Status::Pending;
 };

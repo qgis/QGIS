@@ -67,6 +67,7 @@ void QgsAppQueryLogger::queryFinished( const QgsDatabaseQueryLogEntry &query )
   if ( !requestIndex.isValid() )
     return;
 
+  // Calculate the number of children: if error or not fetched rows 1 row is added else 2 rows are added
   beginInsertRows( requestIndex, queryGroup->childCount(), queryGroup->childCount() + ( query.fetchedRows != -1 ? 1 : 0 ) );
   queryGroup->setFinished( query );
   endInsertRows();

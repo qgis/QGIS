@@ -1333,14 +1333,9 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
 
   QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
 
-  QgsDatabaseQueryLogEntry logEntry( query );
-  logEntry.provider = QStringLiteral( "postgres" );
-  logEntry.uri = mConnInfo;
-  logEntry.initiatorClass = originatorClass;
-  logEntry.origin = queryOrigin;
-  QgsDatabaseQueryLog::log( logEntry );
+  QgsDatabaseQueryLogWrapper logWrapper( query, mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
+
   PGresult *res = ::PQexec( mConn, query.toUtf8() );
-  QgsDatabaseQueryLog::finished( logEntry );
 
   // libpq may return a non null ptr with conn status not OK so we need to check for it to allow a retry below
   if ( res && PQstatus() == CONNECTION_OK )
@@ -1348,11 +1343,13 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
     int errorStatus = PQresultStatus( res );
     if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
     {
+      const QString error { tr( "Erroneous query: %1 returned %2 [%3]" )
+                            .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) };
+      logWrapper.setError( error );
+
       if ( logError )
       {
-        QgsMessageLog::logMessage( tr( "Erroneous query: %1 returned %2 [%3]" )
-                                   .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ),
-                                   tr( "PostGIS" ) );
+        QgsMessageLog::logMessage( error, tr( "PostGIS" ) );
       }
       else
       {
@@ -1364,10 +1361,12 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
   }
   if ( PQstatus() != CONNECTION_OK )
   {
+    const QString error { tr( "Connection error: %1 returned %2 [%3]" )
+                          .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) };
+    logWrapper.setError( error );
     if ( logError )
     {
-      QgsMessageLog::logMessage( tr( "Connection error: %1 returned %2 [%3]" )
-                                 .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ),
+      QgsMessageLog::logMessage( error,
                                  tr( "PostGIS" ) );
     }
     else
@@ -1378,9 +1377,11 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
   }
   else
   {
+    const QString error { tr( "Query failed: %1\nError: no result buffer" ).arg( query ) };
+    logWrapper.setError( error );
     if ( logError )
     {
-      QgsMessageLog::logMessage( tr( "Query failed: %1\nError: no result buffer" ).arg( query ), tr( "PostGIS" ) );
+      QgsMessageLog::logMessage( error, tr( "PostGIS" ) );
     }
     else
     {
@@ -1400,11 +1401,13 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
     {
       if ( res )
       {
+        logWrapper.setError( QString( ) );
         QgsMessageLog::logMessage( tr( "retry after reset succeeded." ), tr( "PostGIS" ) );
         return res;
       }
       else
       {
+
         QgsMessageLog::logMessage( tr( "retry after reset failed again." ), tr( "PostGIS" ) );
         return nullptr;
       }

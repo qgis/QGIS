@@ -199,44 +199,25 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::toVariant() const
 
 void QgsDatabaseQueryLoggerQueryGroup::setFinished( const QgsDatabaseQueryLogEntry &query )
 {
-#if 0
-  switch ( reply.error() )
+  if ( query.error.isEmpty() )
   {
-    case QNetworkReply::OperationCanceledError:
-      mStatus = Status::Canceled;
-      break;
-
-    case QNetworkReply::NoError:
-#endif
-      mStatus = Status::Complete;
-#if 0
-      break;
-
-    default:
-      mStatus = Status::Error;
-      break;
+    mStatus = Status::Complete;
+    addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( query.finishedTime - query.startedTime ) );
+    if ( query.fetchedRows != -1 )
+    {
+      addKeyValueNode( QObject::tr( "Row count" ), QLocale().toString( query.fetchedRows ) );
+    }
   }
-
-#endif
-#if 0
-  mTotalTime = mTimer.elapsed();
-  mHttpStatus = reply.attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
-  mContentType = reply.rawHeader( "Content - Type" );
-
-  std::unique_ptr< QgsNetworkLoggerReplyGroup > replyGroup = std::make_unique< QgsNetworkLoggerReplyGroup >( reply ) ;
-  mReplyGroup = replyGroup.get();
-  addChild( std::move( replyGroup ) );
-#endif
-  addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( query.finishedTime - query.startedTime ) );
-  if ( query.fetchedRows != -1 )
+  else
   {
-    addKeyValueNode( QObject::tr( "Row count" ), QLocale().toString( query.fetchedRows ) );
+    mStatus = Status::Error;
+    addKeyValueNode( QObject::tr( "Error" ), query.error );
   }
 }
 
-void QgsDatabaseQueryLoggerQueryGroup::setTimedOut()
+void QgsDatabaseQueryLoggerQueryGroup::setStatus( QgsDatabaseQueryLoggerQueryGroup::Status status )
 {
-  mStatus = Status::TimeOut;
+  mStatus = status;
 }
 
 QString QgsDatabaseQueryLoggerQueryGroup::statusToString( QgsDatabaseQueryLoggerQueryGroup::Status status )

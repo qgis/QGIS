@@ -84,6 +84,11 @@ class CORE_EXPORT QgsDatabaseQueryLogEntry
      */
     long long fetchedRows = -1;
 
+    /**
+     * Error reported by the provider, normally blank
+     */
+    QString error;
+
   private:
 
     static QAtomicInt sQueryId;
@@ -230,6 +235,11 @@ class QgsDatabaseQueryLogWrapper
     void setFetchedRows( long long fetchedRows )
     {
       mEntry.fetchedRows = fetchedRows;
+    }
+
+    void setError( const QString &error )
+    {
+      mEntry.error = error;
     }
 
   private:

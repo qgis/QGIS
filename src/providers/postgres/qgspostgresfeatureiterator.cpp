@@ -298,7 +298,9 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
 
       if ( mConn->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
       {
-        QgsMessageLog::logMessage( QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName, mConn->PQerrorMessage() ), QObject::tr( "PostGIS" ) );
+        const QString error { QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName, mConn->PQerrorMessage() ) };
+        QgsMessageLog::logMessage( error, QObject::tr( "PostGIS" ) );
+        logWrapper.setError( error );
       }
 
       QgsPostgresResult queryResult;
