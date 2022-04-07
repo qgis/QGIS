@@ -28,7 +28,9 @@
 #define SIP_NO_FILE
 
 /**
- * Class for extracting important informations contained in LAZ file such as the public header block
+ * \ingroup core
+ *
+ * Class for extracting informations contained in LAZ file such as the public header block
  * and variable length records
  *
  * \since QGIS 3.26
