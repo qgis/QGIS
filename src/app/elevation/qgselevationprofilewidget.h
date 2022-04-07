@@ -33,6 +33,7 @@ class QgsGeometry;
 class QgsRubberBand;
 class QgsPlotToolPan;
 class QgsPlotToolZoom;
+class QgsPlotToolXAxisZoom;
 
 class QgsElevationProfileWidget : public QWidget
 {
@@ -87,6 +88,7 @@ class QgsElevationProfileWidget : public QWidget
     QgsRubberBand *createRubberBand();
 
     QgsPlotToolPan *mPanTool = nullptr;
+    QgsPlotToolXAxisZoom *mXAxisZoomTool = nullptr;
     QgsPlotToolZoom *mZoomTool = nullptr;
 };
 

@@ -53,6 +53,41 @@ class GUI_EXPORT QgsPlotToolZoom : public QgsPlotTool
 
   protected:
 
+    /**
+     * Applies constraints to the start point of the zoom rubber band.
+     *
+     * \note Not available in Python bindings
+     */
+    virtual QPointF constrainStartPoint( QPointF scenePoint ) const SIP_SKIP;
+
+    /**
+     * Applies constraints to a move point of the zoom rubber band.
+     *
+     * \note Not available in Python bindings
+     */
+    virtual QPointF constrainMovePoint( QPointF scenePoint ) const SIP_SKIP;
+
+    /**
+     * Applies constraints to the overall bounds of the rubber band.
+     *
+     * \note Not available in Python bindings
+     */
+    virtual QRectF constrainBounds( const QRectF &sceneBounds ) const SIP_SKIP;
+
+    /**
+     * Handles a zoom out click on the given point.
+     *
+     * \note Not available in Python bindings
+     */
+    virtual void zoomOutClickOn( QPointF scenePoint ) SIP_SKIP;
+
+    /**
+     * Handles a zoom out click on the given point.
+     *
+     * \note Not available in Python bindings
+     */
+    virtual void zoomInClickOn( QPointF scenePoint ) SIP_SKIP;
+
     //! Will be TRUE will marquee zoom operation is in progress
     bool mMarqueeZoom = false;
 

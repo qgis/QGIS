@@ -320,6 +320,7 @@ set(QGIS_GUI_SRCS
   plot/qgsplotrubberband.cpp
   plot/qgsplottool.cpp
   plot/qgsplottoolpan.cpp
+  plot/qgsplottoolxaxiszoom.cpp
   plot/qgsplottoolzoom.cpp
   plot/qgsplottransienttools.cpp
 
@@ -1172,6 +1173,7 @@ set(QGIS_GUI_HDRS
   plot/qgsplotrubberband.h
   plot/qgsplottool.h
   plot/qgsplottoolpan.h
+  plot/qgsplottoolxaxiszoom.h
   plot/qgsplottoolzoom.h
   plot/qgsplottransienttools.h
 

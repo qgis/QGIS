@@ -48,9 +48,7 @@ void QgsPlotToolZoom::plotPressEvent( QgsPlotMouseEvent *event )
   mMousePressStartPos = event->pos();
   if ( event->modifiers() & Qt::AltModifier )
   {
-    //zoom out action, so zoom out and recenter on clicked point
-    canvas()->centerPlotOn( event->pos().x(), event->pos().y() );
-    canvas()->scalePlot( 0.5 );
+    zoomOutClickOn( event->pos() );
   }
   else
   {
@@ -67,7 +65,7 @@ void QgsPlotToolZoom::plotMoveEvent( QgsPlotMouseEvent *event )
     return;
   }
 
-  mRubberBand->update( event->pos(), Qt::KeyboardModifiers() );
+  mRubberBand->update( constrainMovePoint( event->pos() ), Qt::KeyboardModifiers() );
 }
 
 void QgsPlotToolZoom::plotReleaseEvent( QgsPlotMouseEvent *event )
@@ -79,19 +77,17 @@ void QgsPlotToolZoom::plotReleaseEvent( QgsPlotMouseEvent *event )
   }
 
   mMarqueeZoom = false;
-  QRectF newBoundsRect = mRubberBand->finish( event->pos() );
-
   // click? or click-and-drag?
   if ( !isClickAndDrag( mMousePressStartPos, event->pos() ) )
   {
-    //just a click, so zoom to clicked point and recenter
-    canvas()->centerPlotOn( event->pos().x(), event->pos().y() );
-    canvas()->scalePlot( 2.0 );
+    zoomInClickOn( event->pos() );
   }
   else
   {
+    QRectF newBoundsRect = mRubberBand->finish( constrainMovePoint( event->pos() ) );
+
     //zoom view to fit desired bounds
-    canvas()->zoomToRect( newBoundsRect );
+    canvas()->zoomToRect( constrainBounds( newBoundsRect ) );
   }
 }
 
@@ -131,10 +127,39 @@ void QgsPlotToolZoom::deactivate()
   QgsPlotTool::deactivate();
 }
 
+QPointF QgsPlotToolZoom::constrainStartPoint( QPointF scenePoint ) const
+{
+  return scenePoint;
+}
+
+QPointF QgsPlotToolZoom::constrainMovePoint( QPointF scenePoint ) const
+{
+  return scenePoint;
+}
+
+QRectF QgsPlotToolZoom::constrainBounds( const QRectF &sceneBounds ) const
+{
+  return sceneBounds;
+}
+
+void QgsPlotToolZoom::zoomOutClickOn( QPointF scenePoint )
+{
+  //just a click, so zoom to clicked point and recenter
+  canvas()->centerPlotOn( scenePoint.x(), scenePoint.y() );
+  canvas()->scalePlot( 0.5 );
+}
+
+void QgsPlotToolZoom::zoomInClickOn( QPointF scenePoint )
+{
+  //just a click, so zoom to clicked point and recenter
+  canvas()->centerPlotOn( scenePoint.x(), scenePoint.y() );
+  canvas()->scalePlot( 2.0 );
+}
+
 void QgsPlotToolZoom::startMarqueeZoom( QPointF scenePoint )
 {
   mMarqueeZoom = true;
 
   mRubberBandStartPos = scenePoint;
-  mRubberBand->start( scenePoint, Qt::KeyboardModifiers() );
+  mRubberBand->start( constrainStartPoint( scenePoint ), Qt::KeyboardModifiers() );
 }
