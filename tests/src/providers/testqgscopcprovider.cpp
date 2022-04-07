@@ -245,7 +245,7 @@ void TestQgsCopcProvider::attributes()
   QVERIFY( layer->isValid() );
 
   const QgsPointCloudAttributeCollection attributes = layer->attributes();
-  QCOMPARE( attributes.count(), 16 );
+  QCOMPARE( attributes.count(), 18 );
   QCOMPARE( attributes.at( 0 ).name(), QStringLiteral( "X" ) );
   QCOMPARE( attributes.at( 0 ).type(), QgsPointCloudAttribute::Int32 );
   QCOMPARE( attributes.at( 1 ).name(), QStringLiteral( "Y" ) );
@@ -270,14 +270,18 @@ void TestQgsCopcProvider::attributes()
   QCOMPARE( attributes.at( 10 ).type(), QgsPointCloudAttribute::Char );
   QCOMPARE( attributes.at( 11 ).name(), QStringLiteral( "PointSourceId" ) );
   QCOMPARE( attributes.at( 11 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 12 ).name(), QStringLiteral( "GpsTime" ) );
-  QCOMPARE( attributes.at( 12 ).type(), QgsPointCloudAttribute::Double );
-  QCOMPARE( attributes.at( 13 ).name(), QStringLiteral( "Red" ) );
-  QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 14 ).name(), QStringLiteral( "Green" ) );
-  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Blue" ) );
+  QCOMPARE( attributes.at( 12 ).name(), QStringLiteral( "ScannerChannel" ) );
+  QCOMPARE( attributes.at( 12 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 13 ).name(), QStringLiteral( "ClassificationFlags" ) );
+  QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 14 ).name(), QStringLiteral( "GpsTime" ) );
+  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::Double );
+  QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Red" ) );
   QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 16 ).name(), QStringLiteral( "Green" ) );
+  QCOMPARE( attributes.at( 16 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 17 ).name(), QStringLiteral( "Blue" ) );
+  QCOMPARE( attributes.at( 17 ).type(), QgsPointCloudAttribute::UShort );
 }
 
 void TestQgsCopcProvider::calculateZRange()
@@ -347,7 +351,9 @@ void TestQgsCopcProvider::testIdentify()
     // compare values using toDouble() so that fuzzy comparison is used in case of
     // tiny rounding errors (e.g. 74.6 vs 74.60000000000001)
     for ( const QString &k : expected.keys() )
+    {
       QCOMPARE( identifiedPoint[k].toDouble(), expected[k].toDouble() );
+    }
   }
 
   // identify 1 point (circular point shape)
@@ -389,7 +395,9 @@ void TestQgsCopcProvider::testIdentify()
     QCOMPARE( identifiedPoints.count(), 1 );
     const QStringList keys = expected[0].keys();
     for ( const QString &k : keys )
+    {
       QCOMPARE( identifiedPoints[0][k].toDouble(), expected[0][k].toDouble() );
+    }
   }
 
   // test rectangle selection
@@ -446,12 +454,13 @@ void TestQgsCopcProvider::testIdentify()
     }
 
     QVERIFY( expected.size() == identifiedPoints.size() );
-
     const QStringList keys = expected[0].keys();
     for ( int i = 0; i < expected.size(); ++i )
     {
       for ( const QString &k : keys )
+      {
         QCOMPARE( identifiedPoints[i][k].toDouble(), expected[i][k].toDouble() );
+      }
     }
   }
 }
@@ -555,7 +564,15 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
       expectedPoints.push_back( point );
     }
 
-    QCOMPARE( identifiedPoints, expectedPoints );
+    QVERIFY( identifiedPoints.size() == expectedPoints.size() );
+    const QStringList keys = expectedPoints[0].keys();
+    for ( int i = 0; i < identifiedPoints.size(); ++i )
+    {
+      for ( const QString &k : keys )
+      {
+        QCOMPARE( identifiedPoints[i][k].toDouble(), expectedPoints[i][k].toDouble() );
+      }
+    }
   }
 }
 
