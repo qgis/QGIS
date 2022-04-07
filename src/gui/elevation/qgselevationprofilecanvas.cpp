@@ -448,10 +448,20 @@ void QgsElevationProfileCanvas::zoomFull()
     return;
 
   const QgsDoubleRange zRange = mCurrentJob->zRange();
-  // add 5% margin to height range
-  const double margin = ( zRange.upper() - zRange.lower() ) * 0.05;
-  mPlotItem->setYMinimum( zRange.lower() - margin );
-  mPlotItem->setYMaximum( zRange.upper() + margin );
+
+  if ( zRange.upper() < zRange.lower() )
+  {
+    // invalid range, e.g. no features found in plot!
+    mPlotItem->setYMinimum( 0 );
+    mPlotItem->setYMaximum( 10 );
+  }
+  else
+  {
+    // add 5% margin to height range
+    const double margin = ( zRange.upper() - zRange.lower() ) * 0.05;
+    mPlotItem->setYMinimum( zRange.lower() - margin );
+    mPlotItem->setYMaximum( zRange.upper() + margin );
+  }
 
   const double profileLength = profileCurve()->length();
   mPlotItem->setXMinimum( 0 );
