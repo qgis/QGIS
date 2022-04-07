@@ -26,6 +26,17 @@
 
 QgsLazInfo::QgsLazInfo() { }
 
+uint32_t QgsLazInfo::firstVariableLengthRecord() const
+{
+  if ( mVersion.first == 1 && mVersion.second == 4 )
+    return 375;
+  if ( mVersion.first == 1 && mVersion.second == 3 )
+    return 227 + 8;
+  if ( mVersion.first == 1 && ( mVersion.second == 2 || mVersion.second == 1 ) )
+    return 227;
+  return 0;
+}
+
 void QgsLazInfo::parseRawHeader( char *data, uint64_t length )
 {
   std::istringstream file( std::string( data, length ) );
@@ -250,9 +261,9 @@ QgsLazInfo QgsLazInfo::fromFile( std::ifstream &file )
   file.read( headerRawData, 375 );
   lazInfo.parseRawHeader( headerRawData, 375 );
 
-  int vlrDataSize = lazInfo.firstPointRecordOffset() - 375;
+  int vlrDataSize = lazInfo.firstPointRecordOffset() - lazInfo.firstVariableLengthRecord();
   std::unique_ptr<char> vlrEntriesRawData( new char[ vlrDataSize ] );
-  file.seekg( 375 );
+  file.seekg( lazInfo.firstVariableLengthRecord() );
   file.read( vlrEntriesRawData.get(), vlrDataSize );
   lazInfo.parseRawVlrEntries( vlrEntriesRawData.get(), vlrDataSize );
 
@@ -286,7 +297,8 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     QNetworkRequest nr( url );
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
-    QByteArray vlrRequestRange = QStringLiteral( "bytes=%1-%2" ).arg( 375 ).arg( lazInfo.firstPointRecordOffset() - 1 ).toLocal8Bit();
+    uint32_t firstVlrOffset = lazInfo.firstVariableLengthRecord();
+    QByteArray vlrRequestRange = QStringLiteral( "bytes=%1-%2" ).arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 ).toLocal8Bit();
     nr.setRawHeader( "Range", vlrRequestRange );
     QgsBlockingNetworkRequest req;
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );

@@ -447,8 +447,8 @@ void TestQgsEptProvider::testExtraBytesAttributesExtraction()
 {
   {
     QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/ept/extrabytes-dataset/ept-data/0-0-0-0.laz" );
-    QUrl url( dataPath );
-    QgsLazInfo lazInfo = QgsLazInfo::fromUrl( url );
+    std::ifstream file( dataPath.toStdString(), std::ios::binary );
+    QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
     QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 4 );
 

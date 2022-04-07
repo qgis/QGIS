@@ -89,6 +89,8 @@ class CORE_EXPORT QgsLazInfo
     QgsVector3D maxCoords() const { return mMaxCoords; }
     //! Returns the absolute offset to the first point record in the LAZ file
     uint32_t firstPointRecordOffset() const { return mHeader.point_offset; }
+    //! Returns the absolute offset to the first variable length record in the LAZ file
+    uint32_t firstVariableLengthRecord() const;
     //! Returns the length of each point record in bytes
     int pointRecordLength() const { return mHeader.point_record_length; }
     //! Returns the number of extrabytes contained in the LAZ dataset
