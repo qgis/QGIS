@@ -141,7 +141,7 @@ QgsDoubleRange QgsProfilePlotRenderer::zRange() const
 
 QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax )
 {
-  QImage res( width + 200, height + 200, QImage::Format_ARGB32 );
+  QImage res( width, height, QImage::Format_ARGB32_Premultiplied );
   res.fill( Qt::transparent );
 
   QPainter p( &res );
