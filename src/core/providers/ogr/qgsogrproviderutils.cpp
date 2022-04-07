@@ -996,7 +996,10 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   QString filePath( QString::fromUtf8( pszPath ) );
 
   bool bIsGpkg = QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
-  bool bIsLocalGpkg = false;
+  const bool bIsLocalGpkg = bIsGpkg &&
+                            IsLocalFile( filePath ) &&
+                            !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
+                            QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool();
 
   if ( bIsGpkg )
   {
@@ -1004,18 +1007,15 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     papszOpenOptions = CSLSetNameValue( papszOpenOptions, "QGIS_FORCE_WAL", nullptr );
   }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
-  if ( bIsGpkg && !bUpdate )
+  if ( bIsLocalGpkg )
   {
-    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "NOLOCK", "ON" );
-  }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+    if ( !bUpdate )
+    {
+      papszOpenOptions = CSLSetNameValue( papszOpenOptions, "NOLOCK", "ON" );
+    }
 #endif
 
-  if ( bIsGpkg &&
-       IsLocalFile( filePath ) &&
-       !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
-       QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool() )
-  {
     // Starting with GDAL 3.4.2, QgsOgrProvider::open(OpenModeInitial) will set
     // a fake DO_NOT_ENABLE_WAL=ON when doing the initial open in update mode
     // to indicate that we should not enable WAL.
@@ -1034,7 +1034,6 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
 #endif
       CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
     }
-    bIsLocalGpkg = true;
   }
   else if ( bIsGpkg )
   {
