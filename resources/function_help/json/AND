@@ -2,7 +2,7 @@
   "name": "AND",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Returns TRUE when condition a and b are true.",
+  "description": "Returns TRUE when conditions a and b are true.",
   "arguments": [{
     "arg": "a",
     "description": "condition"
