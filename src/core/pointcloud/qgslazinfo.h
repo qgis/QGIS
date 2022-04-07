@@ -30,7 +30,7 @@
 /**
  * \ingroup core
  *
- * Class for extracting informations contained in LAZ file such as the public header block
+ * Class for extracting information contained in LAZ file such as the public header block
  * and variable length records
  *
  * \since QGIS 3.26
