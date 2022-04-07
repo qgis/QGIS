@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgsnumericformatregistry.h"
 #include "qgsexpressioncontextutils.h"
+#include <functional>
 
 QgsPlot::~QgsPlot() = default;
 
@@ -422,16 +423,9 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
 
 void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
 {
-  auto roundBase10 = []( double value )->double
-  {
-    return std::pow( 10, std::floor( std::log10( value ) ) );
-  };
-
   // aim for about 40% coverage of label text to available space
   constexpr double IDEAL_WIDTH = 0.4;
   constexpr double TOLERANCE = 0.04;
-
-  QgsNumericFormatContext numericContext;
 
   const double leftMargin = context.convertToPainterUnits( mMargins.left(), QgsUnitTypes::RenderMillimeters );
   const double rightMargin = context.convertToPainterUnits( mMargins.right(), QgsUnitTypes::RenderMillimeters );
@@ -441,127 +435,110 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
   const double availableWidth = mSize.width() - leftMargin - rightMargin;
   const double availableHeight = mSize.height() - topMargin - bottomMargin;
 
-  // if the current interval is good enough, don't change it!
-  double totalWidth = 0;
-  {
-    const double firstXLabel = std::ceil( mMinX / mXAxis.labelInterval() ) * mXAxis.labelInterval();
+  QgsNumericFormatContext numericContext;
 
-    for ( double currentX = firstXLabel; currentX <= mMaxX; currentX += mXAxis.labelInterval() )
+  auto refineIntervalForAxis = []( double axisMinimum, double axisMaximum,
+                                   const std::function< double( double ) > &sizeForLabel,
+                                   double availableSize, double idealSizePercent, double sizeTolerancePercent,
+                                   double & labelInterval, double & majorInterval, double & minorInterval )
+  {
+    auto roundBase10 = []( double value )->double
     {
-      const QString text = mXAxis.numericFormat()->formatDouble( currentX, numericContext );
-      totalWidth += QgsTextRenderer::textWidth( context, mXAxis.textFormat(), { text } );
+      return std::pow( 10, std::floor( std::log10( value ) ) );
+    };
+
+    // if the current interval is good enough, don't change it!
+    double totalSize = 0;
+    {
+      const double firstLabelPos = std::ceil( axisMinimum / labelInterval ) * labelInterval;
+
+      for ( double currentPos = firstLabelPos; currentPos <= axisMaximum; currentPos += labelInterval )
+      {
+        totalSize += sizeForLabel( currentPos );
+      }
     }
+
+    // we consider the current interval as "good enough" if it results in somewhere between 20-60% label text coverage over the size
+    if ( ( totalSize  / availableSize < ( idealSizePercent - sizeTolerancePercent ) ) || ( totalSize  / availableSize > ( idealSizePercent + sizeTolerancePercent ) ) )
+    {
+      // we start with trying to fit 30 labels in and then raise the interval till we're happy
+      int numberLabelsInitial = std::floor( availableSize / 30 );
+
+      double labelIntervalTest = ( axisMaximum - axisMinimum ) / numberLabelsInitial;
+      double baseValue = roundBase10( labelIntervalTest );
+      double candidate = baseValue;
+      int currentMultiplier = 1;
+
+      int numberLabels = 0;
+      while ( true )
+      {
+        const double firstLabelPosition = std::ceil( axisMinimum / candidate ) * candidate;
+        double totalSize = 0;
+        numberLabels = 0;
+        for ( double currentPos = firstLabelPosition; currentPos <= axisMaximum; currentPos += candidate )
+        {
+          totalSize += sizeForLabel( currentPos );
+          numberLabels += 1;
+        }
+
+        if ( totalSize <= availableSize * idealSizePercent )
+          break;
+
+        if ( currentMultiplier == 1 )
+          currentMultiplier = 2;
+        else if ( currentMultiplier == 2 )
+          currentMultiplier = 5;
+        else if ( currentMultiplier == 5 )
+        {
+          baseValue *= 10;
+          currentMultiplier = 1;
+        }
+
+        candidate = baseValue * currentMultiplier;
+      }
+      labelInterval = candidate;
+      if ( numberLabels < 10 )
+      {
+        minorInterval = labelInterval / 2;
+        majorInterval = minorInterval * 4;
+      }
+      else
+      {
+        minorInterval = labelInterval;
+        majorInterval = minorInterval * 5;
+      }
+    }
+  };
+
+  {
+    double labelIntervalX = mXAxis.labelInterval();
+    double majorIntervalX = mXAxis.gridIntervalMajor();
+    double minorIntervalX = mXAxis.gridIntervalMinor();
+    refineIntervalForAxis( mMinX, mMaxX, [ = ]( double position ) -> double
+    {
+      const QString text = mXAxis.numericFormat()->formatDouble( position, numericContext );
+      return QgsTextRenderer::textWidth( context,  mXAxis.textFormat(), { text } );
+
+    }, availableWidth,
+    IDEAL_WIDTH, TOLERANCE, labelIntervalX, majorIntervalX, minorIntervalX );
+    mXAxis.setLabelInterval( labelIntervalX );
+    mXAxis.setGridIntervalMajor( majorIntervalX );
+    mXAxis.setGridIntervalMinor( minorIntervalX );
   }
 
-  // we consider the current interval as "good enough" if it results in somewhere between 20-60% label text coverage over the width
-  if ( ( totalWidth / availableWidth < ( IDEAL_WIDTH - TOLERANCE ) ) || ( totalWidth / availableWidth > ( IDEAL_WIDTH + TOLERANCE ) ) )
   {
-    // we start with trying to fit 30 labels in and then raise the interval till we're happy
-    int numberLabelsX = std::floor( availableWidth / 30 );
-
-    double labelIntervalX = ( mMaxX - mMinX ) / numberLabelsX;
-    double baseValue = roundBase10( labelIntervalX );
-    double candidate = baseValue;
-    int currentMultiplier = 1;
-
-    int numberLabels = 0;
-    while ( true )
+    double labelIntervalY = mYAxis.labelInterval();
+    double majorIntervalY = mYAxis.gridIntervalMajor();
+    double minorIntervalY = mYAxis.gridIntervalMinor();
+    refineIntervalForAxis( mMinY, mMaxY, [ = ]( double position ) -> double
     {
-      const double firstXLabel = std::ceil( mMinX / candidate ) * candidate;
-      double totalWidth = 0;
-      numberLabels = 0;
-      for ( double currentX = firstXLabel; currentX <= mMaxX; currentX += candidate )
-      {
-        const QString text = mXAxis.numericFormat()->formatDouble( currentX, numericContext );
-        totalWidth += QgsTextRenderer::textWidth( context, mXAxis.textFormat(), { text } );
-        numberLabels += 1;
-      }
-
-      if ( totalWidth <= availableWidth * IDEAL_WIDTH )
-        break;
-
-      if ( currentMultiplier == 1 )
-        currentMultiplier = 2;
-      else if ( currentMultiplier == 2 )
-        currentMultiplier = 5;
-      else if ( currentMultiplier == 5 )
-      {
-        baseValue *= 10;
-        currentMultiplier = 1;
-      }
-
-      candidate = baseValue * currentMultiplier;
-    }
-    mXAxis.setLabelInterval( candidate );
-    if ( numberLabels < 10 )
-    {
-      mXAxis.setGridIntervalMinor( mXAxis.labelInterval() / 2 );
-      mXAxis.setGridIntervalMajor( mXAxis.gridIntervalMinor() * 4 );
-    }
-    else
-    {
-      mXAxis.setGridIntervalMinor( mXAxis.labelInterval() );
-      mXAxis.setGridIntervalMajor( mXAxis.gridIntervalMinor() * 5 );
-    }
-  }
-
-  // if the current interval is good enough, don't change it!
-  double totalHeight = 0;
-  {
-    const double firstYLabel = std::ceil( mMinY / mYAxis.labelInterval() ) * mYAxis.labelInterval();
-    for ( double currentY = firstYLabel; currentY <= mMaxY; currentY += mYAxis.labelInterval() )
-    {
-      const QString text = mYAxis.numericFormat()->formatDouble( currentY, numericContext );
-      totalHeight += QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { text } );
-    }
-  }
-
-  if ( ( totalHeight / availableHeight < ( IDEAL_WIDTH - TOLERANCE ) ) || ( totalHeight / availableHeight > ( IDEAL_WIDTH + TOLERANCE ) ) )
-  {
-    int numberLabelsY = std::floor( availableHeight / 30 );
-    double labelIntervalY = ( mMaxY - mMinY ) / numberLabelsY;
-    double baseValue = roundBase10( labelIntervalY );
-    double candidate = baseValue;
-    int currentMultiplier = 1;
-
-    int numberLabels = 0;
-    while ( true )
-    {
-      const double firstYLabel = std::ceil( mMinY / candidate ) * candidate;
-      totalHeight = 0;
-      numberLabels = 0;
-      for ( double currentY = firstYLabel; currentY <= mMaxY; currentY += candidate )
-      {
-        const QString text = mYAxis.numericFormat()->formatDouble( currentY, numericContext );
-        totalHeight += QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { text } );
-      }
-
-      if ( totalHeight <= availableHeight * 0.4 )
-        break;
-
-      if ( currentMultiplier == 1 )
-        currentMultiplier = 2;
-      else if ( currentMultiplier == 2 )
-        currentMultiplier = 5;
-      else if ( currentMultiplier == 5 )
-      {
-        baseValue *= 10;
-        currentMultiplier = 1;
-      }
-
-      candidate = baseValue * currentMultiplier;
-    }
-    mYAxis.setLabelInterval( candidate );
-    if ( numberLabels < 10 )
-    {
-      mYAxis.setGridIntervalMinor( mYAxis.labelInterval() / 2 );
-      mYAxis.setGridIntervalMajor( mYAxis.gridIntervalMinor() * 4 );
-    }
-    else
-    {
-      mYAxis.setGridIntervalMinor( mYAxis.labelInterval() );
-      mYAxis.setGridIntervalMajor( mYAxis.gridIntervalMinor() * 5 );
-    }
+      const QString text = mYAxis.numericFormat()->formatDouble( position, numericContext );
+      return QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { text } );
+    }, availableHeight,
+    IDEAL_WIDTH, TOLERANCE, labelIntervalY, majorIntervalY, minorIntervalY );
+    mYAxis.setLabelInterval( labelIntervalY );
+    mYAxis.setGridIntervalMajor( majorIntervalY );
+    mYAxis.setGridIntervalMinor( minorIntervalY );
   }
 }
 
