@@ -172,10 +172,7 @@ void QgsLazInfo::parseAttributes()
   {
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "NIR" ), QgsPointCloudAttribute::UShort ) );
   }
-  if ( mPointFormat == 4 || mPointFormat == 5 || mPointFormat == 9 )
-  {
-    // TODO: handle the Wave Packets attributes
-  }
+  // Note: wave packet attributes are not handled and are unreadable
 
   QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributes = extrabytes();
   for ( QgsLazInfo::ExtraBytesAttributeDetails attr : extrabyteAttributes )
