@@ -34,6 +34,7 @@
 #include "qgis_sip.h"
 
 #include "qgslazinfo.h"
+#include "lazperf/vlr.hpp"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

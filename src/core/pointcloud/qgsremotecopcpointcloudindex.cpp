@@ -169,6 +169,8 @@ bool QgsRemoteCopcPointCloudIndex::isValid() const
 void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
 {
   QNetworkRequest nr( mUrl );
+  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
+  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
   QByteArray queryRange = QStringLiteral( "bytes=%1-%2" ).arg( offset ).arg( offset + byteSize - 1 ).toLocal8Bit();
   nr.setRawHeader( "Range", queryRange );
   QgsBlockingNetworkRequest req;

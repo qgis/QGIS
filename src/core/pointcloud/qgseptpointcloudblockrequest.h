@@ -52,7 +52,7 @@ class CORE_EXPORT QgsEptPointCloudBlockRequest : public QgsPointCloudBlockReques
     ~QgsEptPointCloudBlockRequest() = default;
   private:
     QString mDataType;
-  protected:
+  private slots:
     void blockFinishedLoading();
 };
 

@@ -23,7 +23,6 @@
 #include "qgis_sip.h"
 #include "qgspointcloudblock.h"
 #include "qgspointcloudattribute.h"
-#include "qgslazinfo.h"
 
 #include "lazperf/lazperf.hpp"
 #include "lazperf/readers.hpp"
@@ -34,6 +33,7 @@
 #include <QString>
 
 class QgsPointCloudExpression;
+class QgsLazInfo;
 
 class QgsLazDecoder
 {
