@@ -109,9 +109,9 @@ QVariant QgsCopcProvider::metadataClassStatistic( const QString &attribute, cons
 
 void QgsCopcProvider::loadIndex( )
 {
-  mIndex->load( dataSourceUri() );
   if ( mIndex->isValid() )
     return;
+  mIndex->load( dataSourceUri() );
 }
 
 QVariantMap QgsCopcProvider::originalMetadata() const

@@ -64,7 +64,7 @@ void QgsCopcPointCloudBlockRequest::blockFinishedLoading()
       }
       catch ( std::exception &e )
       {
-        error = QStringLiteral( "Error while decompressing node %1: %2" ).arg( mNode.toString(), e.what() );
+        error = QStringLiteral( "Decompression error: %1" ).arg( e.what() );
       }
     }
   }
@@ -72,7 +72,10 @@ void QgsCopcPointCloudBlockRequest::blockFinishedLoading()
   {
     error = QStringLiteral( "Network request error: %1" ).arg( mTileDownloadManagerReply->errorString() );
   }
-  mErrorStr = QStringLiteral( "Error loading point tile %1: \"%2\"" ).arg( mNode.toString() ).arg( error );
+  if ( !error.isEmpty() )
+  {
+    mErrorStr = QStringLiteral( "Error loading point tile %1: \"%2\"" ).arg( mNode.toString() ).arg( error );
+  }
   emit finished();
 }
 

@@ -65,7 +65,7 @@ void QgsEptPointCloudBlockRequest::blockFinishedLoading()
       }
       else
       {
-        error = QStringLiteral( "unknown data type %1;" ).arg( mDataType );
+        error = QStringLiteral( "Unknown data type %1;" ).arg( mDataType );
       }
     }
     catch ( std::exception &e )
@@ -77,7 +77,10 @@ void QgsEptPointCloudBlockRequest::blockFinishedLoading()
   {
     error = QStringLiteral( "Network request error: %1" ).arg( mTileDownloadManagerReply->errorString() );
   }
-  mErrorStr = QStringLiteral( "Error loading point cloud tile %1: \" %2 \"" ).arg( mNode.toString() ).arg( error );
+  if ( !error.isEmpty() )
+  {
+    mErrorStr = QStringLiteral( "Error loading point cloud tile %1: \" %2 \"" ).arg( mNode.toString() ).arg( error );
+  }
   emit finished();
 }
 
