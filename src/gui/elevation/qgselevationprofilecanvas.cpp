@@ -180,7 +180,7 @@ void QgsElevationProfileCanvas::centerPlotOn( double x, double y )
     return;
 
   const double newCenterX = mPlotItem->xMinimum() + ( x - mPlotItem->plotArea().left() ) / mPlotItem->plotArea().width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() );
-  const double newCenterY = mPlotItem->yMinimum() + ( mPlotItem->plotArea().height() - y ) / mPlotItem->plotArea().height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() );
+  const double newCenterY = mPlotItem->yMinimum() + ( mPlotItem->plotArea().bottom() - y ) / mPlotItem->plotArea().height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() );
 
   const double dxPlot = newCenterX - ( mPlotItem->xMaximum() + mPlotItem->xMinimum() ) * 0.5;
   const double dyPlot = newCenterY - ( mPlotItem->yMaximum() + mPlotItem->yMinimum() ) * 0.5;
@@ -195,11 +195,16 @@ void QgsElevationProfileCanvas::centerPlotOn( double x, double y )
 
 void QgsElevationProfileCanvas::scalePlot( double factor )
 {
+  scalePlot( factor, factor );
+}
+
+void QgsElevationProfileCanvas::scalePlot( double xFactor, double yFactor )
+{
   const double currentWidth = mPlotItem->xMaximum() - mPlotItem->xMinimum();
   const double currentHeight = mPlotItem->yMaximum() - mPlotItem->yMinimum();
 
-  const double newWidth = currentWidth / factor;
-  const double newHeight = currentHeight / factor;
+  const double newWidth = currentWidth / xFactor;
+  const double newHeight = currentHeight / yFactor;
 
   const double currentCenterX = ( mPlotItem->xMinimum() + mPlotItem->xMaximum() ) * 0.5;
   const double currentCenterY = ( mPlotItem->yMinimum() + mPlotItem->yMaximum() ) * 0.5;
@@ -279,6 +284,11 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
   {
     scalePlot( 1 / zoomFactor );
   }
+}
+
+QRectF QgsElevationProfileCanvas::plotArea() const
+{
+  return mPlotItem->plotArea();
 }
 
 void QgsElevationProfileCanvas::refresh()

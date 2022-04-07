@@ -46,6 +46,11 @@ Constructor for QgsPlotToolZoom, with the associated ``canvas``.
   protected:
 
 
+
+
+
+
+
 };
 
 /************************************************************************

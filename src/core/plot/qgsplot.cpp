@@ -460,17 +460,18 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
 
     // if the current interval is good enough, don't change it!
     double totalSize = 0;
+    int initialLabelCount = 0;
     {
       const double firstLabelPos = std::ceil( axisMinimum / labelInterval ) * labelInterval;
 
-      for ( double currentPos = firstLabelPos; currentPos <= axisMaximum; currentPos += labelInterval )
+      for ( double currentPos = firstLabelPos; initialLabelCount <= MAX_LABELS && currentPos <= axisMaximum; currentPos += labelInterval, ++initialLabelCount )
       {
         totalSize += sizeForLabel( currentPos );
       }
     }
 
     // we consider the current interval as "good enough" if it results in somewhere between 20-60% label text coverage over the size
-    if ( ( totalSize  / availableSize < ( idealSizePercent - sizeTolerancePercent ) ) || ( totalSize  / availableSize > ( idealSizePercent + sizeTolerancePercent ) ) )
+    if ( initialLabelCount >= MAX_LABELS || ( totalSize  / availableSize < ( idealSizePercent - sizeTolerancePercent ) ) || ( totalSize  / availableSize > ( idealSizePercent + sizeTolerancePercent ) ) )
     {
       // we start with trying to fit 30 labels in and then raise the interval till we're happy
       int numberLabelsInitial = std::floor( availableSize / 30 );

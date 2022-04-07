@@ -24,6 +24,7 @@
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsplottoolpan.h"
+#include "qgsplottoolxaxiszoom.h"
 #include "qgsplottoolzoom.h"
 #include "qgselevationprofilepdfexportdialog.h"
 #include "qgselevationprofileimageexportdialog.h"
@@ -56,6 +57,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mCanvas->setTool( mPanTool );
 
   mZoomTool = new QgsPlotToolZoom( mCanvas );
+  mXAxisZoomTool = new QgsPlotToolXAxisZoom( mCanvas );
 
   mCaptureCurveAction = new QAction( tr( "Capture Curve" ), this );
   mCaptureCurveAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureLine.svg" ) ) );
@@ -83,6 +85,13 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mPanTool->setAction( panToolAction );
   connect( panToolAction, &QAction::triggered, mPanTool, [ = ] { mCanvas->setTool( mPanTool ); } );
   toolBar->addAction( panToolAction );
+
+  QAction *zoomXAxisToolAction = new QAction( tr( "Zoom X Axis" ), this );
+  zoomXAxisToolAction->setCheckable( true );
+  zoomXAxisToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomInXAxis.svg" ) ) );
+  mXAxisZoomTool->setAction( zoomXAxisToolAction );
+  connect( zoomXAxisToolAction, &QAction::triggered, mXAxisZoomTool, [ = ] { mCanvas->setTool( mXAxisZoomTool ); } );
+  toolBar->addAction( zoomXAxisToolAction );
 
   QAction *zoomToolAction = new QAction( tr( "Zoom" ), this );
   zoomToolAction->setCheckable( true );

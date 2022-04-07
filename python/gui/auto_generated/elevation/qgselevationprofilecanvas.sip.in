@@ -45,10 +45,21 @@ Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
 
     virtual void scalePlot( double factor );
 
+
+    void scalePlot( double xFactor, double yFactor );
+%Docstring
+Scales the plot axis by the given factors.
+%End
+
     virtual void zoomToRect( const QRectF rect );
 
     virtual void wheelZoom( QWheelEvent *event );
 
+
+    QRectF plotArea() const;
+%Docstring
+Returns the interior rectangle representing the surface of the plot, in canvas coordinates.
+%End
 
     virtual void refresh();
 
