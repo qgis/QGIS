@@ -35,7 +35,7 @@
 #include <zstd.h>
 
 #include "lazperf/las.hpp"
-
+#include <lazperf/lazperf.hpp>
 
 ///@cond PRIVATE
 
@@ -118,6 +118,18 @@ std::vector< QgsLazDecoder::RequestedAttributeDetails > __prepareRequestedAttrib
     else if ( requestedAttribute.name().compare( QLatin1String( "Blue" ), Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Blue, requestedAttribute.type(), requestedAttribute.size() ) );
+    }
+    else if ( requestedAttribute.name().compare( QLatin1String( "ScannerChannel" ), Qt::CaseInsensitive ) == 0 )
+    {
+      requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::ScannerChannel, requestedAttribute.type(), requestedAttribute.size() ) );
+    }
+    else if ( requestedAttribute.name().compare( QLatin1String( "ClassificationFlags" ), Qt::CaseInsensitive ) == 0 )
+    {
+      requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::ClassificationFlags, requestedAttribute.type(), requestedAttribute.size() ) );
+    }
+    else if ( requestedAttribute.name().compare( QLatin1String( "NIR" ), Qt::CaseInsensitive ) == 0 )
+    {
+      requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::NIR, requestedAttribute.type(), requestedAttribute.size() ) );
     }
     else
     {
@@ -242,6 +254,27 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
       case QgsLazDecoder::LazAttribute::Blue:
         _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.b );
         break;
+      case QgsLazDecoder::LazAttribute::ScannerChannel:
+        _storeToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, p14.scannerChannel() );
+        break;
+      case QgsLazDecoder::LazAttribute::ClassificationFlags:
+        _storeToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, p14.classFlags() );
+        break;
+      case QgsLazDecoder::LazAttribute::NIR:
+      {
+        if ( lasPointFormat == 8 || lasPointFormat == 10 )
+        {
+          lazperf::las::nir14 nir( buf + 36 );
+          _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, nir.val );
+        }
+        else
+        {
+          // just store 0 for missing attributes
+          _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, 0 );
+        }
+        break;
+
+      }
       case QgsLazDecoder::LazAttribute::ExtraBytes:
       {
         switch ( requestedAttribute.type )
