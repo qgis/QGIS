@@ -42,6 +42,7 @@ QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElem
   element.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
   element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+  element.setAttribute( QStringLiteral( "band" ), mBandNumber );
 
   QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
   profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
@@ -57,6 +58,7 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
   mEnabled = elevationElement.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mZOffset = elevationElement.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
   mZScale = elevationElement.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
+  mBandNumber = elevationElement.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt();
 
   const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
   mProfileLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context ) );
@@ -73,6 +75,7 @@ QgsRasterLayerElevationProperties *QgsRasterLayerElevationProperties::clone() co
   res->setZOffset( mZOffset );
   res->setZScale( mZScale );
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
+  res->setBandNumber( mBandNumber );
   return res.release();
 }
 

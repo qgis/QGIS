@@ -37,6 +37,7 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
   connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
   connect( mElevationGroupBox, &QGroupBox::toggled, this, &QgsRasterElevationPropertiesWidget::onChanged );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsRasterElevationPropertiesWidget::onChanged );
+  connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsRasterElevationPropertiesWidget::onChanged );
 }
 
 void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -51,6 +52,8 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mOffsetZSpinBox->setValue( props->zOffset() );
   mScaleZSpinBox->setValue( props->zScale() );
   mLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
+  mBandComboBox->setLayer( mLayer );
+  mBandComboBox->setBand( props->bandNumber() );
 
   mBlockUpdates = false;
 }
@@ -65,6 +68,7 @@ void QgsRasterElevationPropertiesWidget::apply()
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
   props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  props->setBandNumber( mBandComboBox->currentBand() );
   mLayer->trigger3DUpdate();
 }
 
