@@ -64,14 +64,9 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
     bool isValid() const override;
 
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Remote; }
-  private:
-    bool fetchNodeHierarchy( const IndexedPointCloudNode &nodeId ) const;
-
-    /**
-     * Fetches the COPC hierarchy page at offset \a offset and of size \a byteSize into memory
-     * \note: This function is NOT thread safe and the mutex mHierarchyMutex needs to be locked before entering
-     */
-    void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
+  protected:
+    virtual bool fetchNodeHierarchy( const IndexedPointCloudNode &nodeId ) const override;
+    virtual void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const override;
 
     QUrl mUrl;
 
