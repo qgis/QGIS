@@ -69,13 +69,13 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     bool loadHierarchy();
 
     //! Fetches all nodes leading to node \a node into memory
-    bool fetchNodeHierarchy( const IndexedPointCloudNode &n ) const;
+    virtual bool fetchNodeHierarchy( const IndexedPointCloudNode &n ) const;
 
     /**
      * Fetches the COPC hierarchy page at offset \a offset and of size \a byteSize into memory
      * \note: This function is NOT thread safe and the mutex mHierarchyMutex needs to be locked before entering
      */
-    void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
+    virtual void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
 
     bool mIsValid = false;
     QString mFileName;

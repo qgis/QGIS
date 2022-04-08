@@ -86,7 +86,7 @@ void QgsRemoteCopcPointCloudIndex::load( const QString &url )
     mIsValid = loadSchema( *mLazInfo.get() );
     if ( mIsValid )
     {
-      fetchHierarchyPage( mCopcInfoVlr.root_hier_offset, mCopcInfoVlr.root_hier_size );
+      loadHierarchy();
     }
   }
   if ( !mIsValid )
