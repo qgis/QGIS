@@ -1868,7 +1868,11 @@ namespace QgsWms
           const QgsAttributeEditorField *editorField = dynamic_cast<const QgsAttributeEditorField *>( child );
           if ( editorField )
           {
-            writeVectorLayerAttribute( editorField->idx(), layer, fields, featureAttributes, doc, nameElem.isNull() ? parentElem : nameElem, renderContext, attributes );
+            const int idx { fields.indexFromName( editorField->name() ) };
+            if ( idx >= 0 )
+            {
+              writeVectorLayerAttribute( idx, layer, fields, featureAttributes, doc, nameElem.isNull() ? parentElem : nameElem, renderContext, attributes );
+            }
           }
         }
       }
