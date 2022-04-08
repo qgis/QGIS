@@ -75,6 +75,15 @@ Qgis.DataType.__doc__ = 'Raster data types.\nThis is modified and extended copy 
 # --
 Qgis.DataType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.ProjectState.NoProject.__doc__ = "No project is loaded or has yet been loaded or a project has been closed"
+Qgis.ProjectState.OpeningProject.__doc__ = "A project is currently opening"
+Qgis.ProjectState.OpenedProject.__doc__ = "A project has completely been loaded"
+Qgis.ProjectState.WritingProject.__doc__ = "In writing state"
+Qgis.ProjectState.ClosingProject.__doc__ = "In closing state"
+Qgis.ProjectState.__doc__ = 'Enumeration of project states:\nWhether currently a project is loading, loaded, closed, writing or no project loaded\nUsed to regognize the current state for user communication especially during loading and saving.\n\n.. versionadded:: 3.26\n\n' + '* ``NoProject``: ' + Qgis.ProjectState.NoProject.__doc__ + '\n' + '* ``OpeningProject``: ' + Qgis.ProjectState.OpeningProject.__doc__ + '\n' + '* ``OpenedProject``: ' + Qgis.ProjectState.OpenedProject.__doc__ + '\n' + '* ``WritingProject``: ' + Qgis.ProjectState.WritingProject.__doc__ + '\n' + '* ``ClosingProject``: ' + Qgis.ProjectState.ClosingProject.__doc__
+# --
+Qgis.ProjectState.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.CaptureTechnique.StraightSegments.__doc__ = "Default capture mode - capture occurs with straight line segments"
 Qgis.CaptureTechnique.CircularString.__doc__ = "Capture in circular strings"
 Qgis.CaptureTechnique.Streaming.__doc__ = "Streaming points digitizing mode (points are automatically added as the mouse cursor moves)."

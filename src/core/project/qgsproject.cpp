@@ -4077,12 +4077,12 @@ void QgsProject::setProjectColors( const QgsNamedColorList &colors )
   emit projectColorsChanged();
 }
 
-QgsProject::ProjectState QgsProject::projectState()
+Qgis::ProjectState QgsProject::projectState()
 {
   return mprojectState;
 }
 
-void QgsProject::setProjectState( ProjectState projectState )
+void QgsProject::setProjectState( Qgis::ProjectState projectState )
 {
   mprojectState = projectState;
 }

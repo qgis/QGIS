@@ -145,6 +145,23 @@ class CORE_EXPORT Qgis
     Q_ENUM( DataType )
 
     /**
+     * Enumeration of project states:
+     * Whether currently a project is loading, loaded, closed, writing or no project loaded
+     * Used to regognize the current state for user communication especially during loading and saving.
+     *
+     * \since QGIS 3.26
+     */
+    enum class ProjectState : int
+    {
+      NoProject,        //!< No project is loaded or has yet been loaded or a project has been closed
+      OpeningProject,   //!< A project is currently opening
+      OpenedProject,    //!< A project has completely been loaded
+      WritingProject,   //!< In writing state
+      ClosingProject    //!< In closing state
+    };
+    Q_ENUM( ProjectState )
+
+    /**
      * Capture technique.
      *
      * \since QGIS 3.26

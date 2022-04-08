@@ -35,7 +35,7 @@ email                : sherman at mrcc.com
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgszipitem.h"
 #include "qgsprovidersublayerdetails.h"
-#include "qgsproject.h"
+#include "qgsproject.h" // to be removed
 #include "qgsvariantutils.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -1197,7 +1197,7 @@ QgsRectangle QgsOgrProvider::extent() const
     // raise progress bar for expensive extent calculation with large layers
     const long long maxfeatures = featureCount();
     QString userMessageProgress = QString();
-    if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && QgsProject::instance()->projectState() == QgsProject::OPENING_PROJECT )
+    if ( this->subsetString().length() > 0 && !( mReadFlags & FlagTrustDataSource ) && QgsProject::instance()->projectState() == Qgis::ProjectState::OpeningProject )
       userMessageProgress = QString( "<i>Note:</i><br>Extent calculation during project loading can be avoided using the trust option in the project preferences." );
     emit aboutToCalculateExtent( dataSourceUri(),  maxfeatures, userMessageProgress );
 

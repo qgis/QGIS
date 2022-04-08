@@ -6901,7 +6901,7 @@ bool QgisApp::addProject( const QString &projectFile )
 
   // close the previous opened project if any
   closeProject();
-  QgsProject::instance()->setProjectState( QgsProject::OPENING_PROJECT );
+  QgsProject::instance()->setProjectState( Qgis::ProjectState::OpeningProject );
 
   QFileInfo pfi( projectFile );
   mStatusBar->showMessage( tr( "Loading project: %1" ).arg( pfi.fileName() ) );
@@ -7050,7 +7050,7 @@ bool QgisApp::addProject( const QString &projectFile )
     QgsProject::instance()->setDirty( true );
   }
 
-  QgsProject::instance()->setProjectState( QgsProject::OPENED_PROJECT );
+  QgsProject::instance()->setProjectState( Qgis::ProjectState::OpenedProject );
   return returnCode;
 } // QgisApp::addProject(QString projectFile)
 
@@ -14174,7 +14174,7 @@ bool QgisApp::checkTasksDependOnProject()
 
 void QgisApp::closeProject()
 {
-  QgsProject::instance()->setProjectState( QgsProject::CLOSING_PROJECT );
+  QgsProject::instance()->setProjectState( Qgis::ProjectState::ClosingProject );
 
   QgsCanvasRefreshBlocker refreshBlocker;
 
@@ -14213,7 +14213,7 @@ void QgisApp::closeProject()
   mBlockActiveLayerChanged = false;
 
   onActiveLayerChanged( activeLayer() );
-  QgsProject::instance()->setProjectState( QgsProject::NO_PROJECT );
+  QgsProject::instance()->setProjectState( Qgis::ProjectState::NoProject );
 }
 
 
@@ -16642,8 +16642,8 @@ void QgisApp::writeProject( QDomDocument &doc )
   // can be opened in older versions of QGIS without losing information about layer groups.
 
   //remember previous project state to reset to it when finished
-  QgsProject::ProjectState previousProjectstate = QgsProject::instance()->projectState();
-  QgsProject::instance()->setProjectState( QgsProject::WRITING_PROJECT );
+  Qgis::ProjectState previousProjectstate = QgsProject::instance()->projectState();
+  QgsProject::instance()->setProjectState( Qgis::ProjectState::WritingProject );
 
   QgsLayerTree *clonedRoot = QgsProject::instance()->layerTreeRoot()->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );

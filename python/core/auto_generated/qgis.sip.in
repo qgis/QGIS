@@ -104,6 +104,15 @@ The development version
       ARGB32_Premultiplied
     };
 
+    enum class ProjectState
+    {
+      NoProject,
+      OpeningProject,
+      OpenedProject,
+      WritingProject,
+      ClosingProject
+    };
+
     enum class CaptureTechnique
     {
       StraightSegments,
