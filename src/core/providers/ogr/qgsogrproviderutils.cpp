@@ -2939,8 +2939,6 @@ GIntBig QgsOgrLayer::getTotalFeatureCountfromMetaData() const
   QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
   if ( driverName == QLatin1String( "GPKG" ) )
   {
-    // QByteArray sql = "SELECT COUNT (*) FROM " + QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
-
     QByteArray sql( "SELECT feature_count FROM gpkg_ogr_contents WHERE " );
     sql += "lower(table_name) = lower(" + QgsOgrProviderUtils::quotedIdentifier( layerName, driverName ) + ") LIMIT 2";
     //sql += ")";
@@ -2948,9 +2946,6 @@ GIntBig QgsOgrLayer::getTotalFeatureCountfromMetaData() const
     CPLPushErrorHandler( CPLQuietErrorHandler );
     OGRLayerH hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
     CPLPopErrorHandler();
-
-    //QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
-    //if ( !l )
 
     GIntBig res = -1;
     if ( hSqlLayer )
