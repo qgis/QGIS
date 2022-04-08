@@ -37,14 +37,14 @@ QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   } );
 }
 
-void QgsMdalSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+void QgsMdalSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-    mMapCanvas = mapCanvas;
+  mMapCanvas = mapCanvas;
 }
 
 QgsMapCanvas *QgsMdalSourceSelect::mapCanvas()
 {
-    return mMapCanvas;
+  return mMapCanvas;
 }
 
 

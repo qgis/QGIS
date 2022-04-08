@@ -43,7 +43,7 @@ Returns the dialog map canvas
 
 .. seealso:: :py:func:`setMapCanvas`
 
-.. versionadded:: 3.24
+.. versionadded:: 3.26
 %End
 
     virtual void setMapCanvas( QgsMapCanvas *mapCanvas ) = 0;
@@ -52,7 +52,7 @@ Sets the dialog map canvas
 
 .. seealso:: :py:func:`mapCanvas`
 
-.. versionadded:: 3.24
+.. versionadded:: 3.26
 %End
 
   public slots:

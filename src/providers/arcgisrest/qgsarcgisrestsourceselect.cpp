@@ -109,14 +109,14 @@ QgsArcGisRestSourceSelect::~QgsArcGisRestSourceSelect()
 {
 }
 
-void QgsArcGisRestSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+void QgsArcGisRestSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-    mMapCanvas = mapCanvas;
+  mMapCanvas = mapCanvas;
 }
 
 QgsMapCanvas *QgsArcGisRestSourceSelect::mapCanvas()
 {
-    return mMapCanvas;
+  return mMapCanvas;
 }
 
 void QgsArcGisRestSourceSelect::populateImageEncodings( const QString &formats )

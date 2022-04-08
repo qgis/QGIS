@@ -87,15 +87,15 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mOpenOptionsGroupBox->setVisible( false );
 }
 
-void QgsGdalSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+void QgsGdalSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-    mMapCanvas = mapCanvas;
+  mMapCanvas = mapCanvas;
 
 }
 
 QgsMapCanvas *QgsGdalSourceSelect::mapCanvas()
 {
-    return mMapCanvas;
+  return mMapCanvas;
 }
 
 

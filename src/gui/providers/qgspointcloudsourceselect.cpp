@@ -61,15 +61,15 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   }
 }
 
-void QgsPointCloudSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+void QgsPointCloudSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-    mMapCanvas = mapCanvas;
+  mMapCanvas = mapCanvas;
 
 }
 
 QgsMapCanvas *QgsPointCloudSourceSelect::mapCanvas()
 {
-    return mMapCanvas;
+  return mMapCanvas;
 }
 
 void QgsPointCloudSourceSelect::addButtonClicked()
