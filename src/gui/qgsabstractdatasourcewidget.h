@@ -58,14 +58,14 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * Returns the dialog map canvas
      * \see setMapCanvas()
      *
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     virtual QgsMapCanvas *mapCanvas() = 0;
 
     /**
      * Sets the dialog map canvas
      * \see mapCanvas()
-     * \since QGIS 3.24
+     * \since QGIS 3.26
      */
     virtual void setMapCanvas( QgsMapCanvas *mapCanvas ) = 0;
 

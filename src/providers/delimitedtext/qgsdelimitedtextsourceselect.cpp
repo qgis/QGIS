@@ -118,15 +118,15 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   mScanWidget->hide( );
 }
 
-void QgsDelimitedTextSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+void QgsDelimitedTextSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-    mMapCanvas = mapCanvas;
+  mMapCanvas = mapCanvas;
 
 }
 
 QgsMapCanvas *QgsDelimitedTextSourceSelect::mapCanvas()
 {
-    return mMapCanvas;
+  return mMapCanvas;
 }
 
 void QgsDelimitedTextSourceSelect::addButtonClicked()

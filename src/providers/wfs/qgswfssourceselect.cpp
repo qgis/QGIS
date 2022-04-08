@@ -130,14 +130,14 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   delete mBuildQueryButton;
 }
 
-void QgsWFSSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+void QgsWFSSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-    mMapCanvas = mapCanvas;
+  mMapCanvas = mapCanvas;
 }
 
 QgsMapCanvas *QgsWFSSourceSelect::mapCanvas()
 {
-    return mMapCanvas;
+  return mMapCanvas;
 }
 
 void QgsWFSSourceSelect::reset()

@@ -78,15 +78,15 @@ QgsGeoNodeSourceSelect::~QgsGeoNodeSourceSelect()
   emit abortRequests();
 }
 
-void QgsGeoNodeSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+void QgsGeoNodeSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-    mMapCanvas = mapCanvas;
+  mMapCanvas = mapCanvas;
 
 }
 
 QgsMapCanvas *QgsGeoNodeSourceSelect::mapCanvas()
 {
-    return mMapCanvas;
+  return mMapCanvas;
 }
 
 void QgsGeoNodeSourceSelect::reset()
