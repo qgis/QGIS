@@ -65,15 +65,15 @@ QgsVectorTileSourceSelect::QgsVectorTileSourceSelect( QWidget *parent, Qt::Windo
   populateConnectionList();
 }
 
-void QgsVectorTileSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+void QgsVectorTileSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-    mMapCanvas = mapCanvas;
+  mMapCanvas = mapCanvas;
 
 }
 
 QgsMapCanvas *QgsVectorTileSourceSelect::mapCanvas()
 {
-    return mMapCanvas;
+  return mMapCanvas;
 }
 
 void QgsVectorTileSourceSelect::btnNew_clicked()

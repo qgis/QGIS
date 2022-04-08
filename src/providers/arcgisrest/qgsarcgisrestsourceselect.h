@@ -72,7 +72,7 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
      *
      * \since QGIS 3.24
      */
-      void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
 
     /**
      * Returns the dialog map canvas

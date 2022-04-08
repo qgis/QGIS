@@ -24,11 +24,9 @@
 
 /**
  * \ingroup gui
- *
- * This widget allows to set and update OWS layers source URI.
+ * \brief This widget sets and updates OWS layers source URI.
  *
  * \since QGIS 3.26
- *
  */
 
 class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui::QgsOWSSourceWidgetBase
@@ -42,7 +40,7 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
     QString sourceUri() const override;
 
     /**
-     * Sets the spatial extent in the widget exent box.
+     * Sets the spatial extent in the widget extent box.
      *
      * \since QGIS 3.26
      */

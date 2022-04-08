@@ -64,21 +64,21 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     //! Returns whether the protocol is a cloud type
     bool isProtocolCloudType();
 
-  /**
-   * Sets the dialog map canvas
-   * \see mapCanvas()
-   *
-   * \since QGIS 3.24
-   */
+    /**
+     * Sets the dialog map canvas
+     * \see mapCanvas()
+     *
+     * \since QGIS 3.24
+     */
     void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
 
-  /**
-   * Returns the dialog map canvas
-   * \see setMapCanvas()
-   *
-   * \since QGIS 3.24
-   */
-  QgsMapCanvas *mapCanvas() override;
+    /**
+     * Returns the dialog map canvas
+     * \see setMapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    QgsMapCanvas *mapCanvas() override;
 
   private:
     //! Stores the file vector filters
