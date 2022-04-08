@@ -37,6 +37,7 @@
 class QgsCoordinateTransform;
 class QgsNetworkAccessManager;
 class QgsWmsCapabilities;
+class QgsTileDownloadManagerReply;
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -666,7 +667,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     bool mSmoothPixmapTransform;
 
     //! Running tile requests
-    QList<QNetworkReply *> mReplies;
+    QList<QgsTileDownloadManagerReply *> mReplies;
 
     QgsRasterBlockFeedback *mFeedback = nullptr;
 
