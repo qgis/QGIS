@@ -53,11 +53,18 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
     bool hasFinished() const { return mHasFinished; }
     //! Returns binary data returned in the reply (only valid when already finished)
     QByteArray data() const { return mData; }
+    //! Returns the reply URL
+    QUrl url() const { return mUrl; }
+    //! Returns the attribute associated with the \a code
+    QVariant attribute( QNetworkRequest::Attribute code );
+    //! Returns the value of the known header \a header.
+    QVariant header( QNetworkRequest::KnownHeaders header );
+    //! Returns a list of raw header pairs
+    const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs() const { return mRawHeaderPairs; }
     //! Returns error code (only valid when already finished)
     QNetworkReply::NetworkError error() const { return mError; }
     //! Returns error string (only valid when already finished)
     QString errorString() const { return mErrorString; }
-
     //! Returns the original request for this reply object
     QNetworkRequest request() const { return mRequest; }
 
@@ -66,7 +73,7 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
     void finished();
 
   private slots:
-    void requestFinished( QByteArray data, QNetworkReply::NetworkError error, const QString &errorString );
+    void requestFinished( QByteArray data, QUrl url, const QMap<QNetworkRequest::Attribute, QVariant> &attributes, const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers, const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs, QNetworkReply::NetworkError error, const QString &errorString );
 
   private:
     QgsTileDownloadManagerReply( QgsTileDownloadManager *manager, const QNetworkRequest &request );
@@ -81,6 +88,10 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
     QByteArray mData;
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
     QString mErrorString;
+    QUrl mUrl;
+    QMap<QNetworkRequest::Attribute, QVariant> mAttributes;
+    QMap<QNetworkRequest::KnownHeaders, QVariant> mHeaders;
+    QList<QNetworkReply::RawHeaderPair> mRawHeaderPairs;
 };
 
 
@@ -102,7 +113,7 @@ class QgsTileDownloadManagerReplyWorkerObject : public QObject
     void replyFinished();
 
   signals:
-    void finished( QByteArray data, QNetworkReply::NetworkError error, const QString &errorString );
+    void finished( QByteArray data, QUrl url, const QMap<QNetworkRequest::Attribute, QVariant> &attributes, const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers, const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs, QNetworkReply::NetworkError error, const QString &errorString );
 
   private:
     //! "parent" download manager of this worker object

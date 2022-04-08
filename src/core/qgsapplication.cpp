@@ -309,6 +309,9 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
     qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
     qRegisterMetaType<QList<QgsMapLayer *>>( "QList<QgsMapLayer*>" );
+    qRegisterMetaType<QMap<QNetworkRequest::Attribute, QVariant>>( "QMap<QNetworkRequest::Attribute,QVariant>" );
+    qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
+    qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
   } );
 
   ( void ) resolvePkgPath();
