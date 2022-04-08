@@ -43,14 +43,14 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWCSSourceSelect::showHelp );
 }
 
-void QgsWCSSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+void QgsWCSSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-    mMapCanvas = mapCanvas;
+  mMapCanvas = mapCanvas;
 }
 
 QgsMapCanvas *QgsWCSSourceSelect::mapCanvas()
 {
-    return mMapCanvas;
+  return mMapCanvas;
 }
 
 void QgsWCSSourceSelect::populateLayerList()
@@ -151,9 +151,9 @@ void QgsWCSSourceSelect::addButtonClicked()
     uri.setParam( QStringLiteral( "time" ), selectedTime() );
   }
 
-  if ( extentChecked() )
+  if ( mSpatialExtentBox->isChecked() )
   {
-    const QgsRectangle spatialExtent = outputExtent();
+    const QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
     bool inverted = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) );
     QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
                    .arg( qgsDoubleToString( spatialExtent.xMinimum() ),

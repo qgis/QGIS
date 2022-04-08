@@ -159,10 +159,6 @@ Sets the server connection combo box to that stored in the config file.
 Add a few example servers to the list.
 %End
 
-    bool extentChecked();
-
-    QgsRectangle outputExtent();
-
 
     virtual void populateLayerList();
 %Docstring
