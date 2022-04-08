@@ -152,10 +152,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Add a few example servers to the list.
     void addDefaultServers();
 
-    bool extentChecked();
-
-    QgsRectangle outputExtent();
-
     //! Service name
     QString mService;
 

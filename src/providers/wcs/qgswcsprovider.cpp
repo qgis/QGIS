@@ -1992,6 +1992,52 @@ QList< QgsDataItemProvider * > QgsWcsProviderMetadata::dataItemProviders() const
 QgsWcsProviderMetadata::QgsWcsProviderMetadata():
   QgsProviderMetadata( QgsWcsProvider::WCS_KEY, QgsWcsProvider::WCS_DESCRIPTION ) {}
 
+QVariantMap QgsWcsProviderMetadata::decodeUri( const QString &uri ) const
+{
+  const QUrlQuery query { uri };
+  const auto constItems { query.queryItems() };
+  QVariantMap decoded;
+  for ( const auto &item : constItems )
+  {
+    if ( item.first == QLatin1String( "url" ) )
+    {
+      const QUrl url( item.second );
+      if ( url.isLocalFile() )
+      {
+        decoded[ QStringLiteral( "path" ) ] = url.toLocalFile();
+      }
+      else
+      {
+        decoded[ item.first ] = item.second;
+      }
+    }
+    else
+    {
+      decoded[ item.first ] = item.second;
+    }
+  }
+  return decoded;
+}
+
+QString QgsWcsProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  QUrlQuery query;
+  QList<QPair<QString, QString> > items;
+  for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
+  {
+    if ( it.key() == QLatin1String( "path" ) )
+    {
+      items.push_back( { QStringLiteral( "url" ), QUrl::fromLocalFile( it.value().toString() ).toString() } );
+    }
+    else
+    {
+      items.push_back( { it.key(), it.value().toString() } );
+    }
+  }
+  query.setQueryItems( items );
+  return query.toString();
+}
+
 
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()

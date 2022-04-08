@@ -22,6 +22,15 @@
 #include "ui_qgsowssourcewidgetbase.h"
 #include <QVariantMap>
 
+/**
+ * \ingroup gui
+ *
+ * This widget allows to set and update OWS layers source URI.
+ *
+ * \since QGIS 3.26
+ *
+ */
+
 class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui::QgsOWSSourceWidgetBase
 {
     Q_OBJECT
@@ -32,51 +41,25 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
     void setSourceUri( const QString &uri ) override;
     QString sourceUri() const override;
 
-    void setTimes( const QStringList &times );
-    QStringList times() const;
+    /**
+     * Sets the spatial extent in the widget exent box.
+     *
+     * \since QGIS 3.26
+     */
+    void setExtent( QgsRectangle extent );
 
-    void hideInputWidgets();
-
-    void prepareExtent( QgsMapCanvas *mapCanvas );
-    bool extentChecked();
-    QgsRectangle outputExtent();
-
-    void clearFormats();
-
-    void clearCrs();
-
-    void populateTimes();
-    void clearTimes();
-    QString selectedTimeText();
-
-    void setCRSLabel( const QString &label );
-    void setSelectedCRSLabel( const QString &label );
-
-    void setChangeCRSButtonEnabled( bool enabled );
-
-    void insertItemFormat( int index, const QString &label );
-    void setFormatCurrentIndex( int index );
-    void setFormatEnabled( bool enabled );
-    int formatCurrentIndex();
-
-    QVariant cacheData();
-
-  signals:
-
-    void changeCRSButtonClicked();
-
-  private slots:
-
-    //! Opens the Spatial Reference System dialog.
-    void mChangeCRSButton_clicked();
+    /**
+     * Returns the spatial extent from the widget extent box.
+     *
+     * \since QGIS 3.26
+     */
+    QgsRectangle extent() const;
 
 
   private:
 
     QVariantMap mSourceParts;
     const QString mProviderKey;
-    QStringList mTimes;
-    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif // QGSOWSSOURCEWIDGET_H

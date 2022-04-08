@@ -30,7 +30,6 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsowsconnection.h"
-#include "qgsowssourcewidget.h"
 #include "qgsdataprovider.h"
 #include "qgsowssourceselect.h"
 #include "qgsnetworkaccessmanager.h"
@@ -67,6 +66,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   connect( mSaveButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mSaveButton_clicked );
   connect( mLoadButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mLoadButton_clicked );
   connect( mConnectButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mConnectButton_clicked );
+  connect( mChangeCRSButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mChangeCRSButton_clicked );
   connect( mLayersTreeWidget, &QTreeWidget::itemSelectionChanged, this, &QgsOWSSourceSelect::mLayersTreeWidget_itemSelectionChanged );
   connect( mConnectionsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsOWSSourceSelect::mConnectionsComboBox_activated );
   connect( mAddDefaultButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mAddDefaultButton_clicked );
@@ -78,17 +78,19 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
   setWindowTitle( tr( "Add Layer(s) from a %1 Server" ).arg( service ) );
 
-  QVBoxLayout *layout = new QVBoxLayout( mSourceFrame );
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  mSourceWidget = new QgsOWSSourceWidget( mService.toLower(), this );
-  mSourceWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout->addWidget( mSourceWidget );
-  mSourceFrame->setLayout( layout );
-  prepareExtent();
-
-  connect( mSourceWidget, &QgsOWSSourceWidget::changeCRSButtonClicked, this, &QgsOWSSourceSelect::mChangeCRSButton_clicked );
-
   clearCrs();
+
+  mTileWidthLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
+  mTileHeightLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
+  mFeatureCountLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
+
+  mCacheComboBox->addItem( tr( "Always Cache" ), QNetworkRequest::AlwaysCache );
+  mCacheComboBox->addItem( tr( "Prefer Cache" ), QNetworkRequest::PreferCache );
+  mCacheComboBox->addItem( tr( "Prefer Network" ), QNetworkRequest::PreferNetwork );
+  mCacheComboBox->addItem( tr( "Always Network" ), QNetworkRequest::AlwaysNetwork );
+
+  // 'Prefer network' is the default noted in the combobox's tool tip
+  mCacheComboBox->setCurrentIndex( mCacheComboBox->findData( QNetworkRequest::PreferNetwork ) );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
@@ -104,21 +106,16 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   {
     mTabWidget->removeTab( mTabWidget->indexOf( mLayerOrderTab ) );
     mTabWidget->removeTab( mTabWidget->indexOf( mTilesetsTab ) );
-    mSourceWidget->hideInputWidgets();
+    mTimeWidget->hide();
+    mFormatWidget->hide();
+    mCRSWidget->hide();
+    mCacheWidget->hide();
   }
+
+  prepareExtent();
 
   // set up the WMS connections we already know about
   populateConnectionList();
-}
-
-void QgsOWSSourceSelect::refresh()
-{
-  populateConnectionList();
-}
-
-void QgsOWSSourceSelect::reset()
-{
-  mLayersTreeWidget->clearSelection();
 }
 
 QgsMapCanvas *QgsOWSSourceSelect::mapCanvas()
@@ -132,25 +129,33 @@ void QgsOWSSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
   prepareExtent();
 }
 
-bool QgsOWSSourceSelect::extentChecked()
-{
-  return mSourceWidget->extentChecked();
-}
-
 void QgsOWSSourceSelect::prepareExtent()
 {
-  if ( mSourceWidget && mMapCanvas )
-    mSourceWidget->prepareExtent( mMapCanvas );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  mSpatialExtentBox->setOutputCrs( crs );
+  QgsMapCanvas *mapCanvas = mMapCanvas;
+  if ( !mapCanvas )
+    return;
+  QgsCoordinateReferenceSystem destinationCrs = mapCanvas->mapSettings().destinationCrs();
+  mSpatialExtentBox->setCurrentExtent( destinationCrs.bounds(), destinationCrs );
+  mSpatialExtentBox->setOutputExtentFromCurrent();
+  mSpatialExtentBox->setMapCanvas( mapCanvas );
 }
 
-QgsRectangle QgsOWSSourceSelect::outputExtent()
+void QgsOWSSourceSelect::refresh()
 {
-  return mSourceWidget->outputExtent();
+  populateConnectionList();
+}
+
+void QgsOWSSourceSelect::reset()
+{
+  mLayersTreeWidget->clearSelection();
 }
 
 void QgsOWSSourceSelect::clearFormats()
 {
-  mSourceWidget->clearFormats();
+  mFormatComboBox->clear();
+  mFormatComboBox->setEnabled( false );
 }
 
 void QgsOWSSourceSelect::populateFormats()
@@ -228,24 +233,27 @@ void QgsOWSSourceSelect::populateFormats()
       QgsDebugMsg( QStringLiteral( "format %1 unknown" ).arg( format ) );
     }
 
-    mSourceWidget->insertItemFormat( i, label );
+    mFormatComboBox->insertItem( i, label );
   }
   // Set preferred
   // TODO: all enabled for now, see above
   preferred = preferred >= 0 ? preferred : 0;
-  mSourceWidget->setFormatCurrentIndex( preferred );
-  mSourceWidget->setFormatEnabled( true );
+  mFormatComboBox->setCurrentIndex( preferred );
+
+  mFormatComboBox->setEnabled( true );
 }
 
 void QgsOWSSourceSelect::populateTimes()
 {
-  mSourceWidget->setTimes( selectedLayersTimes() );
-  mSourceWidget->populateTimes();
+  mTimeComboBox->clear();
+  mTimeComboBox->insertItems( 0, selectedLayersTimes() );
+  mTimeComboBox->setEnabled( !selectedLayersTimes().isEmpty() );
 }
 
 void QgsOWSSourceSelect::clearTimes()
 {
-  mSourceWidget->clearTimes();
+  mTimeComboBox->clear();
+  mTimeComboBox->setEnabled( false );
 }
 
 void QgsOWSSourceSelect::populateConnectionList()
@@ -424,7 +432,7 @@ void QgsOWSSourceSelect::mChangeCRSButton_clicked()
   mSelectedCRS = mySelector->crs().authid();
   delete mySelector;
 
-  mSourceWidget->setCRSLabel( descriptionForAuthId( mSelectedCRS ) );
+  mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
 
   for ( int i = 0; i < mLayersTreeWidget->topLevelItemCount(); i++ )
   {
@@ -442,9 +450,9 @@ void QgsOWSSourceSelect::populateCrs()
 {
   clearCrs();
   mSelectedLayersCRSs = qgis::listToSet( selectedLayersCrses() );
-  mSourceWidget->setCRSLabel( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) + ':' );
+  mCRSLabel->setText( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) + ':' );
 
-  mSourceWidget->setChangeCRSButtonEnabled( !mSelectedLayersCRSs.isEmpty() );
+  mChangeCRSButton->setDisabled( mSelectedLayersCRSs.isEmpty() );
 
   if ( !mSelectedLayersCRSs.isEmpty() )
   {
@@ -478,16 +486,18 @@ void QgsOWSSourceSelect::populateCrs()
         mSelectedCRS = defaultCRS;
       }
     }
-    mSourceWidget->setSelectedCRSLabel( descriptionForAuthId( mSelectedCRS ) );
-    mSourceWidget->setChangeCRSButtonEnabled( true );
+    mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
+    mChangeCRSButton->setEnabled( true );
   }
   QgsDebugMsg( "mSelectedCRS = " + mSelectedCRS );
 }
 
 void QgsOWSSourceSelect::clearCrs()
 {
+  mCRSLabel->setText( tr( "Coordinate Reference System" ) + ':' );
   mSelectedCRS.clear();
-  mSourceWidget->clearCrs();
+  mSelectedCRSLabel->clear();
+  mChangeCRSButton->setEnabled( false );
 }
 
 void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *item )
@@ -515,6 +525,7 @@ void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *ite
 }
 
 
+
 QString QgsOWSSourceSelect::connName()
 {
   return mConnName;
@@ -527,12 +538,12 @@ QString QgsOWSSourceSelect::connectionInfo()
 
 QString QgsOWSSourceSelect::selectedFormat()
 {
-  return selectedLayersFormats().value( mSourceWidget->formatCurrentIndex() );
+  return selectedLayersFormats().value( mFormatComboBox->currentIndex() );
 }
 
 QNetworkRequest::CacheLoadControl QgsOWSSourceSelect::selectedCacheLoadControl()
 {
-  const int cache = mSourceWidget->cacheData().toInt();
+  const int cache = mCacheComboBox->currentData().toInt();
   return static_cast<QNetworkRequest::CacheLoadControl>( cache );
 }
 
@@ -543,7 +554,7 @@ QString QgsOWSSourceSelect::selectedCrs()
 
 QString QgsOWSSourceSelect::selectedTime()
 {
-  return mSourceWidget->selectedTimeText();
+  return mTimeComboBox->currentText();
 }
 
 void QgsOWSSourceSelect::setConnectionListPosition()

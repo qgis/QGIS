@@ -54,8 +54,19 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     void setBrowserModel( QgsBrowserModel *model );
 
+    /**
+     * Returns the dialog map canvas
+     * \see setMapCanvas()
+     *
+     * \since QGIS 3.24
+     */
     virtual QgsMapCanvas *mapCanvas() = 0;
 
+    /**
+     * Sets the dialog map canvas
+     * \see mapCanvas()
+     * \since QGIS 3.24
+     */
     virtual void setMapCanvas( QgsMapCanvas *mapCanvas ) = 0;
 
   public slots:

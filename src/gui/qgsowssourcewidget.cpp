@@ -28,127 +28,27 @@ QgsOWSSourceWidget::QgsOWSSourceWidget( const QString &providerKey, QWidget *par
 {
   setupUi( this );
 
-  connect( mChangeCRSButton, &QPushButton::clicked, this, &QgsOWSSourceWidget::mChangeCRSButton_clicked );
-
-  mTileWidthLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
-  mTileHeightLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
-  mFeatureCountLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
-
-  mCacheComboBox->addItem( tr( "Always Cache" ), QNetworkRequest::AlwaysCache );
-  mCacheComboBox->addItem( tr( "Prefer Cache" ), QNetworkRequest::PreferCache );
-  mCacheComboBox->addItem( tr( "Prefer Network" ), QNetworkRequest::PreferNetwork );
-  mCacheComboBox->addItem( tr( "Always Network" ), QNetworkRequest::AlwaysNetwork );
-
-  // 'Prefer network' is the default noted in the combobox's tool tip
-  mCacheComboBox->setCurrentIndex( mCacheComboBox->findData( QNetworkRequest::PreferNetwork ) );
-
   if ( providerKey == QStringLiteral( "wcs" ) )
     mWMSGroupBox->hide();
 
 }
 
-void QgsOWSSourceWidget::clearCrs()
+void QgsOWSSourceWidget::setExtent( QgsRectangle extent )
 {
-  mCRSLabel->setText( tr( "Coordinate Reference System" ) + ':' );
-  mSelectedCRSLabel->clear();
-  mChangeCRSButton->setEnabled( false );
-}
-
-void QgsOWSSourceWidget::clearFormats()
-{
-  mFormatComboBox->clear();
-  mFormatComboBox->setEnabled( false );
-}
-
-void QgsOWSSourceWidget::clearTimes()
-{
-  mTimeComboBox->clear();
-  mTimeComboBox->setEnabled( false );
-}
-
-void QgsOWSSourceWidget::populateTimes()
-{
-  mTimeComboBox->clear();
-  mTimeComboBox->insertItems( 0, times() );
-  mTimeComboBox->setEnabled( !times().isEmpty() );
-}
-
-QString QgsOWSSourceWidget::selectedTimeText()
-{
-  return mTimeComboBox->currentText();
-}
-
-void QgsOWSSourceWidget::hideInputWidgets()
-{
-  mTimeWidget->hide();
-  mFormatWidget->hide();
-  mCRSWidget->hide();
-  mCacheWidget->hide();
-}
-
-void QgsOWSSourceWidget::insertItemFormat( int index, const QString &label )
-{
-  mFormatComboBox->insertItem( index, label );
-}
-
-void QgsOWSSourceWidget::setFormatCurrentIndex( int index )
-{
-  mFormatComboBox->setCurrentIndex( index );
-}
-
-int QgsOWSSourceWidget::formatCurrentIndex()
-{
-  return mFormatComboBox->currentIndex();
-}
-
-void QgsOWSSourceWidget::setFormatEnabled( bool enabled )
-{
-  mFormatComboBox->setEnabled( enabled );
-}
-
-void QgsOWSSourceWidget::mChangeCRSButton_clicked()
-{
-  emit changeCRSButtonClicked();
-}
-
-void QgsOWSSourceWidget::setSelectedCRSLabel( const QString &label )
-{
-  mCRSLabel->setText( label );
-}
-
-void QgsOWSSourceWidget::setCRSLabel( const QString &label )
-{
-  mSelectedCRSLabel->setText( label );
-}
-
-void QgsOWSSourceWidget::setChangeCRSButtonEnabled( bool enabled )
-{
-  mChangeCRSButton->setEnabled( enabled );
-}
-
-QVariant QgsOWSSourceWidget::cacheData()
-{
-  return mCacheComboBox->currentData();
-}
-
-void QgsOWSSourceWidget::prepareExtent( QgsMapCanvas *mapCanvas )
-{
+  QgsCoordinateReferenceSystem destinationCrs;
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   mSpatialExtentBox->setOutputCrs( crs );
-  if ( !mapCanvas )
-    return;
-  QgsCoordinateReferenceSystem destinationCrs = mapCanvas->mapSettings().destinationCrs();
-  mSpatialExtentBox->setCurrentExtent( destinationCrs.bounds(), destinationCrs );
+
+  if ( mapCanvas() && mapCanvas()->mapSettings().destinationCrs().isValid() )
+    destinationCrs = mapCanvas()->mapSettings().destinationCrs();
+  else
+    destinationCrs = crs;
+  mSpatialExtentBox->setCurrentExtent( extent, destinationCrs );
   mSpatialExtentBox->setOutputExtentFromCurrent();
-  mSpatialExtentBox->setMapCanvas( mapCanvas );
+  mSpatialExtentBox->setMapCanvas( mapCanvas() );
 }
 
-bool QgsOWSSourceWidget::extentChecked()
-{
-  return mSpatialExtentBox->isChecked();
-}
-
-QgsRectangle QgsOWSSourceWidget::outputExtent()
+QgsRectangle QgsOWSSourceWidget::extent() const
 {
   return mSpatialExtentBox->outputExtent();
 }
@@ -156,21 +56,41 @@ QgsRectangle QgsOWSSourceWidget::outputExtent()
 void QgsOWSSourceWidget::setSourceUri( const QString &uri )
 {
   mSourceParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, uri );
-  prepareExtent( QgsProviderSourceWidget::mapCanvas() );
+  bool inverted = mSourceParts.value( QStringLiteral( "InvertAxisOrientation" ) ).toBool();
 
+  QString bbox = mSourceParts.value( QStringLiteral( "bbox" ) ).toString();
+  if ( bbox.isEmpty() )
+    return;
+  QStringList coords = bbox.split( ',' );
+  QgsRectangle extent = inverted ? QgsRectangle(
+                          coords.takeAt( 1 ).toDouble(),
+                          coords.takeAt( 0 ).toDouble(),
+                          coords.takeAt( 2 ).toDouble(),
+                          coords.takeAt( 3 ).toDouble() ) :
+                        QgsRectangle(
+                          coords.takeAt( 0 ).toDouble(),
+                          coords.takeAt( 1 ).toDouble(),
+                          coords.takeAt( 2 ).toDouble(),
+                          coords.takeAt( 3 ).toDouble() );
+  mSpatialExtentBox->setChecked( true );
+  setExtent( extent );
 }
 
 QString QgsOWSSourceWidget::sourceUri() const
 {
-  return QgsProviderRegistry::instance()->encodeUri( mProviderKey, mSourceParts );
+  QVariantMap parts = mSourceParts;
+
+  QgsRectangle spatialExtent = extent();
+  bool inverted = parts.value( QStringLiteral( "InvertAxisOrientation" ) ).toBool();
+
+  QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+                 .arg( qgsDoubleToString( spatialExtent.xMinimum() ),
+                       qgsDoubleToString( spatialExtent.yMinimum() ),
+                       qgsDoubleToString( spatialExtent.xMaximum() ),
+                       qgsDoubleToString( spatialExtent.yMaximum() ) );
+
+  parts.insert( QStringLiteral( "bbox" ), bbox );
+
+  return QgsProviderRegistry::instance()->encodeUri( mProviderKey, parts );
 }
 
-void QgsOWSSourceWidget::setTimes( const QStringList &times )
-{
-  mTimes = times;
-}
-
-QStringList QgsOWSSourceWidget::times() const
-{
-  return mTimes;
-}
