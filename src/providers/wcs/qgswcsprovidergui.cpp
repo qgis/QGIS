@@ -42,31 +42,31 @@ class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
-class QgsWcsSourceWidgetProvider : public QgsProviderSourceWidgetProvider
+
+QgsWcsSourceWidgetProvider::QgsWcsSourceWidgetProvider() {}
+
+QString QgsWcsSourceWidgetProvider::providerKey() const
 {
-  public:
-    QgsWcsSourceWidgetProvider() : QgsProviderSourceWidgetProvider() {}
-    QString providerKey() const override
-    {
-      return QStringLiteral( "wcs" );
-    }
-    bool canHandleLayer( QgsMapLayer *layer ) const override
-    {
-      if ( layer->providerType() != QLatin1String( "wcs" ) )
-        return false;
+  return QStringLiteral( "wcs" );
+}
+bool QgsWcsSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer ) const
+{
+  if ( layer->providerType() != QLatin1String( "wcs" ) )
+    return false;
 
-      return true;
-    }
-    QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override
-    {
-     if ( layer->providerType() != QLatin1String( "wcs" ) )
-       return nullptr;
+  return true;
+}
 
-     QgsOWSSourceWidget *sourceWidget = new QgsOWSSourceWidget( QLatin1String( "wcs" ),  parent );
+QgsProviderSourceWidget *QgsWcsSourceWidgetProvider::createWidget( QgsMapLayer *layer, QWidget *parent )
+{
+  if ( layer->providerType() != QLatin1String( "wcs" ) )
+    return nullptr;
 
-     return sourceWidget;
-    }
-};
+  QgsOWSSourceWidget *sourceWidget = new QgsOWSSourceWidget( QLatin1String( "wcs" ),  parent );
+
+  return sourceWidget;
+}
+
 
 
 QgsWcsProviderGuiMetadata::QgsWcsProviderGuiMetadata()
@@ -85,6 +85,13 @@ QList<QgsDataItemGuiProvider *> QgsWcsProviderGuiMetadata::dataItemGuiProviders(
 {
   return QList<QgsDataItemGuiProvider *>()
          << new QgsWcsDataItemGuiProvider;
+}
+
+QList<QgsProviderSourceWidgetProvider *> QgsWcsProviderGuiMetadata::sourceWidgetProviders()
+{
+  QList<QgsProviderSourceWidgetProvider *> providers;
+  providers << new QgsWcsSourceWidgetProvider();
+  return providers;
 }
 
 
