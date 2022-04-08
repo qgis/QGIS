@@ -65,7 +65,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Local; };
 
   protected:
-    bool loadSchema();
     bool loadSchema( QgsLazInfo &lazInfo );
     bool loadHierarchy();
 

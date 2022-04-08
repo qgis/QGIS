@@ -31,14 +31,21 @@ uint32_t QgsLazInfo::firstVariableLengthRecord() const
   if ( mVersion.first == 1 && mVersion.second == 4 )
     return 375;
   if ( mVersion.first == 1 && mVersion.second == 3 )
-    return 227 + 8;
-  if ( mVersion.first == 1 && ( mVersion.second == 2 || mVersion.second == 1 ) )
+    return 235;
+  if ( mVersion.first == 1 && mVersion.second <= 2 )
     return 227;
   return 0;
 }
 
 void QgsLazInfo::parseRawHeader( char *data, uint64_t length )
 {
+  mIsValid = true;
+  if ( std::string( data, 4 ) != "LASF" )
+  {
+    mError = QStringLiteral( "Supplied header is not from a LAZ file" );
+    mIsValid = false;
+    return;
+  }
   std::istringstream file( std::string( data, length ) );
   lazperf::header14 header = lazperf::header14::create( file );
   parseHeader( header );
@@ -46,6 +53,8 @@ void QgsLazInfo::parseRawHeader( char *data, uint64_t length )
 
 void QgsLazInfo::parseRawVlrEntries( char *data, uint64_t length )
 {
+  if ( !mIsValid )
+    return;
   uint64_t currentOffset = 0;
   for ( uint64_t i = 0; i < ( uint64_t )mVlrCount && currentOffset < length; ++i )
   {
@@ -61,7 +70,7 @@ void QgsLazInfo::parseRawVlrEntries( char *data, uint64_t length )
   }
 
   parseCrs();
-  parseAttributes();
+  parseExtrabyteAttributes();
 }
 
 
@@ -83,6 +92,8 @@ void QgsLazInfo::parseHeader( lazperf::header14 &header )
   mMaxCoords = QgsVector3D( header.maxx, header.maxy, header.maxz );
 
   mVlrCount = header.vlr_count;
+
+  parseLazAttributes();
 }
 
 
@@ -131,13 +142,7 @@ QByteArray QgsLazInfo::vlrData( QString userId, int recordId )
   return QByteArray();
 }
 
-QVector<QgsLazInfo::ExtraBytesAttributeDetails> QgsLazInfo::extrabytes()
-{
-  QByteArray ebVlrRaw = vlrData( "LASF_Spec", 4 );
-  return QgsLazInfo::parseExtrabytes( ebVlrRaw.data(), ebVlrRaw.size(), mHeader.point_record_length );
-}
-
-void QgsLazInfo::parseAttributes()
+void QgsLazInfo::parseLazAttributes()
 {
   if ( mPointFormat < 0 || mPointFormat > 10 )
   {
@@ -177,9 +182,14 @@ void QgsLazInfo::parseAttributes()
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "NIR" ), QgsPointCloudAttribute::UShort ) );
   }
   // Note: wave packet attributes are not handled and are unreadable
+}
 
-  QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributes = extrabytes();
-  for ( QgsLazInfo::ExtraBytesAttributeDetails attr : extrabyteAttributes )
+void QgsLazInfo::parseExtrabyteAttributes()
+{
+  QByteArray ebVlrRaw = vlrData( "LASF_Spec", 4 );
+  mExtrabyteAttributes = QgsLazInfo::parseExtrabytes( ebVlrRaw.data(), ebVlrRaw.size(), mHeader.point_record_length );
+
+  for ( QgsLazInfo::ExtraBytesAttributeDetails attr : mExtrabyteAttributes )
   {
     mAttributes.push_back( QgsPointCloudAttribute( attr.attribute, attr.type ) );
   }
@@ -285,6 +295,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
       QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
+      lazInfo.mError = QStringLiteral( "Range query 0-374 to \"%1\" failed: \"%2\"" ).arg( url.toString() ).arg( req.errorMessage() );
       return lazInfo;
     }
     const QgsNetworkReplyContent reply = req.reply();
@@ -306,6 +317,9 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
       QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
+
+      lazInfo.mError = QStringLiteral( "Range query %1-%2 to \"%3\" failed: \"%4\"" ).arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 )
+                       .arg( url.toString() ).arg( req.errorMessage() );
       return lazInfo;
     }
     QByteArray vlrDataRaw = req.reply().content();

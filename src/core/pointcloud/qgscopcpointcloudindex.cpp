@@ -55,24 +55,28 @@ void QgsCopcPointCloudIndex::load( const QString &fileName )
     return;
   }
 
-  bool success = loadSchema();
-
-  if ( success )
-  {
-    success = loadHierarchy();
-  }
-
-  mIsValid = success;
-}
-
-bool QgsCopcPointCloudIndex::loadSchema()
-{
   mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
-  return loadSchema( *mLazInfo.get() );
+  mIsValid = mLazInfo->isValid();
+  if ( mIsValid )
+  {
+    mIsValid = loadSchema( *mLazInfo.get() );
+  }
+  if ( !mIsValid )
+  {
+    QgsMessageLog::logMessage( tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( fileName ).arg( mLazInfo->error() ) );
+  }
 }
 
 bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
 {
+  QByteArray copcInfoVlrData = lazInfo.vlrData( "copc", 1 );
+  if ( copcInfoVlrData.isEmpty() )
+  {
+    QgsDebugMsg( "Invalid COPC file" );
+    return false;
+  }
+  mCopcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
+
   mScale = lazInfo.scale();
   mOffset = lazInfo.offset();
 
@@ -85,9 +89,6 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
   mZMax = maxCoords.z();
 
   setAttributes( lazInfo.attributes() );
-
-  QByteArray copcInfoVlrData = lazInfo.vlrData( "copc", 1 );
-  mCopcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
 
   const double xmin = mCopcInfoVlr.center_x - mCopcInfoVlr.halfsize;
   const double ymin = mCopcInfoVlr.center_y - mCopcInfoVlr.halfsize;
@@ -164,12 +165,8 @@ qint64 QgsCopcPointCloudIndex::pointCount() const
 
 bool QgsCopcPointCloudIndex::loadHierarchy()
 {
-  QByteArray copcInfoVlrData = mLazInfo->vlrData( "copc", 1 );
-  lazperf::copc_info_vlr copcInfoVlr;
-  copcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
-
   QMutexLocker locker( &mHierarchyMutex );
-  fetchHierarchyPage( copcInfoVlr.root_hier_offset, copcInfoVlr.root_hier_size );
+  fetchHierarchyPage( mCopcInfoVlr.root_hier_offset, mCopcInfoVlr.root_hier_size );
   return true;
 }
 
