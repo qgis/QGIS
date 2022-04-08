@@ -717,7 +717,7 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
               }
               else
               {
-                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Label Anchor Percent" ), tr( "Error encountered while removing stored label anchor percent" ) );
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Anchor Percent" ), tr( "Error encountered while removing stored label anchor percent" ) );
               }
             }
           }
