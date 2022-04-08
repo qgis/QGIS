@@ -124,7 +124,16 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
       data = reply->readAll();
   }
 
-  emit finished( data, reply->error(), reply->errorString() );
+  QMap<QNetworkRequest::Attribute, QVariant> attributes;
+  attributes.insert( QNetworkRequest::SourceIsFromCacheAttribute, reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ) );
+  attributes.insert( QNetworkRequest::RedirectionTargetAttribute, reply->attribute( QNetworkRequest::RedirectionTargetAttribute ) );
+  attributes.insert( QNetworkRequest::HttpStatusCodeAttribute, reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ) );
+  attributes.insert( QNetworkRequest::HttpReasonPhraseAttribute, reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ) );
+
+  QMap<QNetworkRequest::KnownHeaders, QVariant> headers;
+  headers.insert( QNetworkRequest::ContentTypeHeader, reply->header( QNetworkRequest::ContentTypeHeader ) );
+
+  emit finished( data, reply->url(), attributes, headers, reply->rawHeaderPairs(), reply->error(), reply->errorString() );
 
   reply->deleteLater();
 
@@ -338,13 +347,27 @@ QgsTileDownloadManagerReply::~QgsTileDownloadManagerReply()
   }
 }
 
-void QgsTileDownloadManagerReply::requestFinished( QByteArray data, QNetworkReply::NetworkError error, const QString &errorString )
+void QgsTileDownloadManagerReply::requestFinished( QByteArray data, QUrl url, const QMap<QNetworkRequest::Attribute, QVariant> &attributes, const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers, const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs, QNetworkReply::NetworkError error, const QString &errorString )
 {
   QgsDebugMsgLevel( QStringLiteral( "Tile download manager: reply finished: " ) + mRequest.url().toString(), 2 );
 
   mHasFinished = true;
   mData = data;
+  mUrl = url;
+  mAttributes = attributes;
+  mHeaders = headers;
+  mRawHeaderPairs = rawHeaderPairs;
   mError = error;
   mErrorString = errorString;
   emit finished();
+}
+
+QVariant QgsTileDownloadManagerReply::attribute( QNetworkRequest::Attribute code )
+{
+  return mAttributes.contains( code ) ? mAttributes.value( code ) : QVariant();
+}
+
+QVariant QgsTileDownloadManagerReply::header( QNetworkRequest::KnownHeaders header )
+{
+  return mHeaders.contains( header ) ? mHeaders.value( header ) : QVariant();
 }
