@@ -56,6 +56,12 @@ class CORE_EXPORT QgsLazInfo
     //! Constructor for an empty laz info parser
     QgsLazInfo();
 
+    //! Returns whether the LAZ header data passed to this class is from a valid LAZ file
+    bool isValid() const { return mIsValid; }
+
+    //! Returns an error string detailing what went wrong with reading the LAZ info
+    QString error() const { return mError; }
+
     //! Parses the raw header data loaded from a LAZ file
     void parseRawHeader( char *data, uint64_t length );
 
@@ -105,11 +111,11 @@ class CORE_EXPORT QgsLazInfo
     //! Returns the binary data of the variable length record with the user identifier \a userId and record identifier \a recordId
     QByteArray vlrData( QString userId, int recordId );
 
-    //! Returns the list of extrabytes contained in the LAZ file
-    QVector<ExtraBytesAttributeDetails> extrabytes();
-
     //! Returns the list of attributes contained in the LAZ file
     QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
+
+    //! Returns the list of extrabytes contained in the LAZ file
+    QVector<ExtraBytesAttributeDetails> extrabytes() const { return mExtrabyteAttributes; }
 
     //! Static function to parse the raw extrabytes VLR into a list of recognizable extrabyte attributes
     static QVector<ExtraBytesAttributeDetails> parseExtrabytes( char *rawData, int length, int pointRecordLength );
@@ -122,8 +128,12 @@ class CORE_EXPORT QgsLazInfo
   private:
     void parseHeader( lazperf::header14 &header );
     void parseCrs();
-    void parseAttributes();
+    void parseLazAttributes();
+    void parseExtrabyteAttributes();
   private:
+    bool mIsValid = false;
+    QString mError;
+
     lazperf::header14 mHeader;
 
     QgsVector3D mScale, mOffset;
@@ -143,6 +153,7 @@ class CORE_EXPORT QgsLazInfo
     QVector<LazVlr> mVlrVector;
 
     QgsPointCloudAttributeCollection mAttributes;
+    QVector<ExtraBytesAttributeDetails> mExtrabyteAttributes;
 };
 
 #endif // QGSLAZINFO_H

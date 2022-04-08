@@ -79,18 +79,20 @@ QList<IndexedPointCloudNode> QgsRemoteCopcPointCloudIndex::nodeChildren( const I
 void QgsRemoteCopcPointCloudIndex::load( const QString &url )
 {
   mUrl = QUrl( url );
-
-  mIsValid = loadHeader();
-  if ( !mIsValid )
-    return;
-
-  fetchHierarchyPage( mCopcInfoVlr.root_hier_offset, mCopcInfoVlr.root_hier_size );
-}
-
-bool QgsRemoteCopcPointCloudIndex::loadHeader()
-{
   mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( mUrl ) ) );
-  return loadSchema( *mLazInfo.get() );
+  mIsValid = mLazInfo->isValid();
+  if ( mIsValid )
+  {
+    mIsValid = loadSchema( *mLazInfo.get() );
+    if ( mIsValid )
+    {
+      fetchHierarchyPage( mCopcInfoVlr.root_hier_offset, mCopcInfoVlr.root_hier_size );
+    }
+  }
+  if ( !mIsValid )
+  {
+    QgsMessageLog::logMessage( tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( url ).arg( mLazInfo->error() ) );
+  }
 }
 
 QgsPointCloudBlock *QgsRemoteCopcPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )

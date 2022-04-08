@@ -64,11 +64,7 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
     bool isValid() const override;
 
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Remote; }
-
-    friend QgsCopcPointCloudBlockRequest;
   private:
-    bool loadHeader();
-
     bool fetchNodeHierarchy( const IndexedPointCloudNode &nodeId ) const;
 
     /**
