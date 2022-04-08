@@ -24,6 +24,7 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
 #include "qgstriangularmesh.h"
+#include "qgslinesymbol.h"
 
 #include <memory>
 
@@ -31,7 +32,6 @@ class QgsProfileRequest;
 class QgsCurve;
 class QgsMeshLayer;
 class QgsAbstractTerrainProvider;
-class QgsLineSymbol;
 
 #define SIP_NO_FILE
 
