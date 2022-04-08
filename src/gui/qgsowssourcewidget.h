@@ -17,6 +17,8 @@
 #ifndef QGSOWSSOURCEWIDGET_H
 #define QGSOWSSOURCEWIDGET_H
 
+#define SIP_NO_FILE
+
 #include "qgsprovidersourcewidget.h"
 #include "qgsreadwritecontext.h"
 #include "ui_qgsowssourcewidgetbase.h"
@@ -34,6 +36,10 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor for QgsOWSSourceWidget with the specified \a provider key and \a parent widget.
+     */
     QgsOWSSourceWidget( const QString &providerKey, QWidget *parent = nullptr );
 
     void setSourceUri( const QString &uri ) override;
