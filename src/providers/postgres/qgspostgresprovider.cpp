@@ -66,13 +66,13 @@ inline qint32 FID2PKINT( qint64 x )
 
 static bool tableExists( QgsPostgresConn &conn, const QString &name )
 {
-  QgsPostgresResult res( conn.PQexec( "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname=" + QgsPostgresConn::quotedValue( name ) + ")" ) );
+  QgsPostgresResult res( conn.LoggedPQexec( QStringLiteral( "tableExists" ), "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname=" + QgsPostgresConn::quotedValue( name ) + ")" ) );
   return res.PQgetvalue( 0, 0 ).startsWith( 't' );
 }
 
 static bool columnExists( QgsPostgresConn &conn, const QString &table, const QString &column )
 {
-  QgsPostgresResult res( conn.PQexec( "SELECT COUNT(*) FROM information_schema.columns WHERE table_name=" + QgsPostgresConn::quotedValue( table ) + " and column_name=" + QgsPostgresConn::quotedValue( column ) ) );
+  QgsPostgresResult res( conn.LoggedPQexec( QStringLiteral( "columnExists" ), "SELECT COUNT(*) FROM information_schema.columns WHERE table_name=" + QgsPostgresConn::quotedValue( table ) + " and column_name=" + QgsPostgresConn::quotedValue( column ) ) );
   return res.PQgetvalue( 0, 0 ).toInt() > 0;
 }
 
@@ -435,7 +435,7 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::sridToCrs( int srid, QgsPostgr
   {
     if ( conn )
     {
-      QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
+      QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
       if ( result.PQresultStatus() == PGRES_TUPLES_OK )
       {
         if ( result.PQntuples() > 0 )
@@ -2041,7 +2041,7 @@ QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString
 
     sql = QStringLiteral( "SELECT %1 FROM (%2) foo" ).arg( connectionRO()->fieldExpression( fld ), sql );
 
-    QgsPostgresResult res( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql ) );
+    QgsPostgresResult res( connectionRO()->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), sql ) );
     if ( res.PQresultStatus() == PGRES_TUPLES_OK )
     {
       for ( int i = 0; i < res.PQntuples(); i++ )
@@ -2082,7 +2082,7 @@ void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
 
   //is type an enum?
   const QString typeSql = QStringLiteral( "SELECT typtype FROM pg_type WHERE typname=%1" ).arg( quotedValue( typeName ) );
-  QgsPostgresResult typeRes( connectionRO()->PQexec( typeSql ) );
+  QgsPostgresResult typeRes( connectionRO()->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), typeSql ) );
   if ( typeRes.PQresultStatus() != PGRES_TUPLES_OK || typeRes.PQntuples() < 1 )
   {
     mShared->setFieldSupportsEnumValues( index, false );
@@ -2115,7 +2115,7 @@ bool QgsPostgresProvider::parseEnumRange( QStringList &enumValues, const QString
   QString enumRangeSql = QStringLiteral( "SELECT enumlabel FROM pg_catalog.pg_enum WHERE enumtypid=(SELECT atttypid::regclass FROM pg_attribute WHERE attrelid=%1::regclass AND attname=%2)" )
                          .arg( quotedValue( mQuery ),
                                quotedValue( attributeName ) );
-  QgsPostgresResult enumRangeRes( connectionRO()->PQexec( enumRangeSql ) );
+  QgsPostgresResult enumRangeRes( connectionRO()->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), enumRangeSql ) );
   if ( enumRangeRes.PQresultStatus() != PGRES_TUPLES_OK )
     return false;
 
@@ -2133,7 +2133,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
 
   //is it a domain type with a check constraint?
   QString domainSql = QStringLiteral( "SELECT domain_name, domain_schema FROM information_schema.columns WHERE table_name=%1 AND column_name=%2" ).arg( quotedValue( mTableName ), quotedValue( attributeName ) );
-  QgsPostgresResult domainResult( connectionRO()->PQexec( domainSql ) );
+  QgsPostgresResult domainResult( connectionRO()->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), domainSql ) );
   if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 && !domainResult.PQgetvalue( 0, 0 ).isNull() )
   {
     QString domainCheckDefinitionSql;
@@ -2169,7 +2169,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
 
     }
 
-    QgsPostgresResult domainCheckRes( connectionRO()->PQexec( domainCheckDefinitionSql ) );
+    QgsPostgresResult domainCheckRes( connectionRO()->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), domainCheckDefinitionSql ) );
     if ( domainCheckRes.PQresultStatus() == PGRES_TUPLES_OK && domainCheckRes.PQntuples() > 0 )
     {
       QString checkDefinition = domainCheckRes.PQgetvalue( 0, 0 );
@@ -2279,7 +2279,7 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
   {
     QgsField fld = field( fieldId );
 
-    QgsPostgresResult res( connectionRO()->PQexec( QStringLiteral( "SELECT %1" ).arg( defVal ) ) );
+    QgsPostgresResult res( connectionRO()->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), QStringLiteral( "SELECT %1" ).arg( defVal ) ) );
 
     if ( res.result() )
     {
@@ -2316,7 +2316,7 @@ QString QgsPostgresProvider::paramValue( const QString &fieldValue, const QStrin
 
   if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
-    QgsPostgresResult result( connectionRO()->PQexec( QStringLiteral( "SELECT %1" ).arg( defaultValue ) ) );
+    QgsPostgresResult result( connectionRO()->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), QStringLiteral( "SELECT %1" ).arg( defaultValue ) ) );
     if ( result.PQresultStatus() != PGRES_TUPLES_OK )
       throw PGException( result );
 
@@ -3409,7 +3409,7 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
                           .arg( quotedIdentifier( mTopoLayerInfo.topologyName ) )
                           .arg( mTopoLayerInfo.layerId )
                           .arg( old_tg_id );
-        result = conn->PQexec( replace );
+        result = conn->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), replace );
         if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         {
           QgsDebugMsg( QStringLiteral( "Exception thrown due to PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
@@ -3424,7 +3424,7 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
                   .arg( mTopoLayerInfo.layerId )
                   .arg( new_tg_id );
         QgsDebugMsgLevel( "relation swap: " + replace, 2 );
-        result = conn->PQexec( replace );
+        result = conn->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), replace );
         if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         {
           QgsDebugMsg( QStringLiteral( "Exception thrown due to PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
@@ -4844,7 +4844,7 @@ QString  QgsPostgresProvider::description() const
     QgsPostgresResult result;
 
     /* TODO: expose a cached QgsPostgresConn::version() ? */
-    result = lConnectionRO->PQexec( QStringLiteral( "SELECT version()" ) );
+    result = lConnectionRO->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), QStringLiteral( "SELECT version()" ) );
     if ( result.PQresultStatus() == PGRES_TUPLES_OK )
     {
       pgVersion = result.PQgetvalue( 0, 0 );
@@ -5357,7 +5357,7 @@ bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString
                              .arg( wkbTypeString )
                              .arg( QgsPostgresConn::quotedValue( styleId.isEmpty() ? dsUri.table() : styleId ) );
 
-  QgsPostgresResult res( conn->PQexec( checkQuery ) );
+  QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), checkQuery ) );
   if ( res.PQresultStatus() == PGRES_TUPLES_OK )
   {
     return res.PQntuples() > 0;
@@ -5390,22 +5390,23 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
 
   if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
   {
-    QgsPostgresResult res( conn->PQexec( "CREATE TABLE layer_styles("
-                                         "id SERIAL PRIMARY KEY"
-                                         ",f_table_catalog varchar"
-                                         ",f_table_schema varchar"
-                                         ",f_table_name varchar"
-                                         ",f_geometry_column varchar"
-                                         ",styleName text"
-                                         ",styleQML xml"
-                                         ",styleSLD xml"
-                                         ",useAsDefault boolean"
-                                         ",description text"
-                                         ",owner varchar(63) DEFAULT CURRENT_USER"
-                                         ",ui xml"
-                                         ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
-                                         ",type varchar"
-                                         ")" ) );
+    QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ),
+                           "CREATE TABLE layer_styles("
+                           "id SERIAL PRIMARY KEY"
+                           ",f_table_catalog varchar"
+                           ",f_table_schema varchar"
+                           ",f_table_name varchar"
+                           ",f_geometry_column varchar"
+                           ",styleName text"
+                           ",styleQML xml"
+                           ",styleSLD xml"
+                           ",useAsDefault boolean"
+                           ",description text"
+                           ",owner varchar(63) DEFAULT CURRENT_USER"
+                           ",ui xml"
+                           ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
+                           ",type varchar"
+                           ")" ) );
     if ( res.PQresultStatus() != PGRES_COMMAND_OK )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
@@ -5417,7 +5418,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   {
     if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
     {
-      QgsPostgresResult res( conn->PQexec( "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
+      QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
       if ( res.PQresultStatus() != PGRES_COMMAND_OK )
       {
         errCause = QObject::tr( "Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
@@ -5482,7 +5483,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                        .arg( wkbTypeString )
                        .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
-  QgsPostgresResult res( conn->LoggedPQexec( "QgsPostgresProvider", checkQuery ) );
+  QgsPostgresResult res( conn->LoggedPQexec( "QgsPostgresProviderMetadata", checkQuery ) );
   if ( res.PQntuples() > 0 )
   {
     sql = QString( "UPDATE layer_styles"
@@ -5530,7 +5531,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
     sql = QStringLiteral( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql, sql );
   }
 
-  res = conn->LoggedPQexec( "QgsPostgresProvider", sql );
+  res = conn->LoggedPQexec( "QgsPostgresProviderMetadata", sql );
 
   bool saved = res.PQresultStatus() == PGRES_COMMAND_OK;
   if ( !saved )
@@ -5611,7 +5612,7 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
                      .arg( wkbTypeString );
   }
 
-  QgsPostgresResult result( conn->PQexec( selectQmlQuery ) );
+  QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), selectQmlQuery ) );
 
   QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : QString();
   conn->unref();
@@ -5661,7 +5662,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
                                      QString( "f_geometry_column=%1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) )
                                .arg( wkbTypeString );
 
-  QgsPostgresResult result( conn->PQexec( selectRelatedQuery ) );
+  QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), selectRelatedQuery ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
     QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectRelatedQuery ) );
@@ -5688,7 +5689,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
                               .arg( wkbTypeString );
 
-  result = conn->PQexec( selectOthersQuery );
+  result = conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), selectOthersQuery );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
     QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectOthersQuery ) );
@@ -5724,7 +5725,7 @@ bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, const QSt
   {
     QString deleteStyleQuery = QStringLiteral( "DELETE FROM layer_styles WHERE id=%1" ).arg(
                                  QgsPostgresConn::quotedValue( styleId ) );
-    QgsPostgresResult result( conn->PQexec( deleteStyleQuery ) );
+    QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), deleteStyleQuery ) );
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
     {
       QgsDebugMsg(
@@ -5756,7 +5757,7 @@ QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, const QSt
 
   QString style;
   QString selectQmlQuery = QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsPostgresConn::quotedValue( styleId ) );
-  QgsPostgresResult result( conn->PQexec( selectQmlQuery ) );
+  QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), selectQmlQuery ) );
   if ( result.PQresultStatus() == PGRES_TUPLES_OK )
   {
     if ( result.PQntuples() == 1 )
