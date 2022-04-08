@@ -93,14 +93,14 @@ QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
   settings.setValue( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 }
 
-void QgsSpatiaLiteSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+void QgsSpatiaLiteSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-    mMapCanvas = mapCanvas;
+  mMapCanvas = mapCanvas;
 }
 
 QgsMapCanvas *QgsSpatiaLiteSourceSelect::mapCanvas()
 {
-    return mMapCanvas;
+  return mMapCanvas;
 }
 
 
