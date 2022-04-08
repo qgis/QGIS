@@ -23,6 +23,9 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 #include <memory>
 
@@ -34,9 +37,6 @@ class QgsAbstractTerrainProvider;
 class QgsGeos;
 class QgsLineString;
 class QgsPolygon;
-class QgsLineSymbol;
-class QgsFillSymbol;
-class QgsMarkerSymbol;
 
 #define SIP_NO_FILE
 

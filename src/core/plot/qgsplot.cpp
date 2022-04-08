@@ -448,10 +448,10 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
 
   QgsNumericFormatContext numericContext;
 
-  auto refineIntervalForAxis = []( double axisMinimum, double axisMaximum,
-                                   const std::function< double( double ) > &sizeForLabel,
-                                   double availableSize, double idealSizePercent, double sizeTolerancePercent,
-                                   double & labelInterval, double & majorInterval, double & minorInterval )
+  auto refineIntervalForAxis = [&]( double axisMinimum, double axisMaximum,
+                                    const std::function< double( double ) > &sizeForLabel,
+                                    double availableSize, double idealSizePercent, double sizeTolerancePercent,
+                                    double & labelInterval, double & majorInterval, double & minorInterval )
   {
     auto roundBase10 = []( double value )->double
     {
