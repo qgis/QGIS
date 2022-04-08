@@ -207,7 +207,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     bool mIsValid = true;
 
     int mPrimitivesBudget = std::numeric_limits<int>::max();
-    double mGpuMemoryLimit = 100.0; // in megabytes
+    double mGpuMemoryLimit = 500.0; // in megabytes
 };
 
 /// @endcond
