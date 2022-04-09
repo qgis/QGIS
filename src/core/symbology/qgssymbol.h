@@ -30,7 +30,7 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 
 /**
  * \ingroup core
- * \class QgsSymbol
+ * \class QgsSymbolAnimationSettings
  *
  * \brief Contains settings relating to symbol animation.
  *
