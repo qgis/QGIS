@@ -25,6 +25,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgssymbolanimationsettingswidget.h"
 
 #include <QMessageBox>
 
@@ -50,7 +51,8 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   mStandardizeRingsAction = new QAction( tr( "Force Right-Hand-Rule Orientation" ), this );
   mStandardizeRingsAction->setCheckable( true );
   connect( mStandardizeRingsAction, &QAction::toggled, this, &QgsSymbolsListWidget::forceRHRToggled );
-
+  mAnimationSettingsAction = new QAction( tr( "Animation Settings…" ), this );
+  connect( mAnimationSettingsAction, &QAction::triggered, this, &QgsSymbolsListWidget::showAnimationSettings );
 
   // select correct page in stacked widget
   QgsPropertyOverrideButton *opacityDDBtn = nullptr;
@@ -136,6 +138,7 @@ QgsSymbolsListWidget::~QgsSymbolsListWidget()
   // The menu can be passed in the constructor, so may live longer than this widget
   mStyleItemsListWidget->advancedMenu()->removeAction( mClipFeaturesAction );
   mStyleItemsListWidget->advancedMenu()->removeAction( mStandardizeRingsAction );
+  mStyleItemsListWidget->advancedMenu()->removeAction( mAnimationSettingsAction );
 }
 
 void QgsSymbolsListWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
@@ -258,6 +261,32 @@ void QgsSymbolsListWidget::forceRHRToggled( bool checked )
 
   mSymbol->setForceRHR( checked );
   emit changed();
+}
+
+void QgsSymbolsListWidget::showAnimationSettings()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolAnimationSettingsWidget *widget = new QgsSymbolAnimationSettingsWidget( panel );
+    widget->setPanelTitle( tr( "Animation Settings" ) );
+    widget->setAnimationSettings( mSymbol->animationSettings() );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ this, widget ]()
+    {
+      mSymbol->setAnimationSettings( widget->animationSettings() );
+      emit changed();
+    } );
+    panel->openPanel( widget );
+    return;
+  }
+
+  QgsSymbolAnimationSettingsDialog d( this );
+  d.setAnimationSettings( mSymbol->animationSettings() );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    mSymbol->setAnimationSettings( d.animationSettings() );
+    emit changed();
+  }
 }
 
 void QgsSymbolsListWidget::saveSymbol()
@@ -474,7 +503,8 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
                                       << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
                                       << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
                                       << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
-                                      << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) );
+                                      << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" )
+                                      << QStringLiteral( "symbol_frame" ) );
 
   return expContext;
 }
@@ -546,6 +576,10 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     {
       mStyleItemsListWidget->advancedMenu()->removeAction( action );
     }
+    else if ( mAnimationSettingsAction->text() == action->text() )
+    {
+      mStyleItemsListWidget->advancedMenu()->removeAction( action );
+    }
   }
 
   if ( mSymbol->type() == Qgis::SymbolType::Line || mSymbol->type() == Qgis::SymbolType::Fill )
@@ -557,6 +591,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   {
     mStyleItemsListWidget->advancedMenu()->addAction( mStandardizeRingsAction );
   }
+  mStyleItemsListWidget->advancedMenu()->addAction( mAnimationSettingsAction );
 
   mStyleItemsListWidget->showAdvancedButton( mAdvancedMenu || !mStyleItemsListWidget->advancedMenu()->isEmpty() );
 
