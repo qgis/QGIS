@@ -352,6 +352,21 @@ void QgsSymbol::setMapUnitScale( const QgsMapUnitScale &scale )
   }
 }
 
+QgsSymbolAnimationSettings &QgsSymbol::animationSettings()
+{
+  return mAnimationSettings;
+}
+
+const QgsSymbolAnimationSettings &QgsSymbol::animationSettings() const
+{
+  return mAnimationSettings;
+}
+
+void QgsSymbol::setAnimationSettings( const QgsSymbolAnimationSettings &settings )
+{
+  mAnimationSettings = settings;
+}
+
 QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
 {
   std::unique_ptr< QgsSymbol > s;
@@ -498,6 +513,26 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
   QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr, fields );
 
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::updateSymbolScope( this, new QgsExpressionContextScope() ) );
+
+  if ( mAnimationSettings.isAnimated() )
+  {
+    const long long mapFrameNumber = context.currentFrame();
+    double animationTimeSeconds = 0;
+    if ( mapFrameNumber >= 0 && context.frameRate() > 0 )
+    {
+      // render is part of an animation, so we base the calculated frame on that
+      animationTimeSeconds = mapFrameNumber / context.frameRate();
+    }
+    else
+    {
+      // render is outside of animation, so base the calculated frame on the current epoch
+      animationTimeSeconds = QDateTime::currentMSecsSinceEpoch() / 1000.0;
+    }
+
+    const long long symbolFrame = static_cast< long long >( std::floor( animationTimeSeconds * mAnimationSettings.frameRate() ) );
+    scope->setVariable( QStringLiteral( "symbol_frame" ), symbolFrame, true );
+  }
+
   mSymbolRenderContext->setExpressionContextScope( scope.release() );
 
   mDataDefinedProperties.prepare( context.expressionContext() );

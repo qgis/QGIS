@@ -32,6 +32,61 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
  * \ingroup core
  * \class QgsSymbol
  *
+ * \brief Contains settings relating to symbol animation.
+ *
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsSymbolAnimationSettings
+{
+  public:
+
+    /**
+     * Sets whether the symbol is animated.
+     *
+     * This is a user-facing setting for symbols, which allows users to define whether a
+     * symbol is animated, and allows for creation of animated symbols via data
+     * defined properties.
+     *
+     * \see isAnimated()
+     */
+    void setIsAnimated( bool animated ) { mIsAnimated = animated; }
+
+    /**
+     * Returns TRUE if the symbol is animated.
+     *
+     * This is a user-facing setting for symbols, which allows users to define whether a
+     * symbol is animated, and allows for creation of animated symbols via data
+     * defined properties.
+     *
+     * \see setIsAnimated()
+     */
+    bool isAnimated() const { return mIsAnimated; }
+
+    /**
+     * Sets the symbol animation frame \a rate (in frames per second).
+     *
+     * \see frameRate()
+     */
+    void setFrameRate( double rate ) { mFrameRate = rate; }
+
+    /**
+     * Returns the symbol animation frame rate (in frames per second).
+     *
+     * \see setFrameRate()
+     */
+    double frameRate() const { return mFrameRate; }
+
+  private:
+
+    bool mIsAnimated = false;
+    double mFrameRate = 10;
+
+};
+
+/**
+ * \ingroup core
+ * \class QgsSymbol
+ *
  * \brief Abstract base class for all rendered symbols.
  */
 class CORE_EXPORT QgsSymbol
@@ -519,6 +574,30 @@ class CORE_EXPORT QgsSymbol
     bool forceRHR() const { return mForceRHR; }
 
     /**
+     * Returns a reference to the symbol animation settings.
+     *
+     * \see setAnimationSettings()
+     * \since QGIS 3.26
+     */
+    QgsSymbolAnimationSettings &animationSettings();
+
+    /**
+     * Returns a reference to the symbol animation settings.
+     *
+     * \see setAnimationSettings()
+     * \since QGIS 3.26
+     */
+    const QgsSymbolAnimationSettings &animationSettings() const SIP_SKIP;
+
+    /**
+     * Sets a the symbol animation \a settings.
+     *
+     * \see animationSettings()
+     * \since QGIS 3.26
+     */
+    void setAnimationSettings( const QgsSymbolAnimationSettings &settings );
+
+    /**
      * Returns a list of attributes required to render this feature.
      * This should include any attributes required by the symbology including
      * the ones required by expressions.
@@ -720,6 +799,8 @@ class CORE_EXPORT QgsSymbol
 
     bool mClipFeaturesToExtent = true;
     bool mForceRHR = false;
+
+    QgsSymbolAnimationSettings mAnimationSettings;
 
     Q_DECL_DEPRECATED const QgsVectorLayer *mLayer = nullptr; //current vectorlayer
 

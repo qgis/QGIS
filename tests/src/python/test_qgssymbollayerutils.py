@@ -635,6 +635,14 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         renderer = QgsSingleSymbolRenderer(marker_symbol)
         self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 60)
 
+        s = QgsMarkerSymbol()
+        renderer = QgsSingleSymbolRenderer(s.clone())
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), -1)
+        s.animationSettings().setIsAnimated(True)
+        s.animationSettings().setFrameRate(30)
+        renderer = QgsSingleSymbolRenderer(s.clone())
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 30)
+
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
