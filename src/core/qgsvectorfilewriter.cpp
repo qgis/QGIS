@@ -34,6 +34,7 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsgeometryengine.h"
+#include "qgsogrproviderutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsreadwritelocker.h"
@@ -2908,7 +2909,18 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
   }
 #endif
 
+  QString mFilename;
+  if ( mDS )
+  {
+    mFilename = QString::fromUtf8( GDALGetDescription( mDS.get() ) );
+  }
+
   mDS.reset();
+
+  if ( !mFilename.isEmpty() )
+  {
+    QgsOgrProviderUtils::invalidateCachedDatasets( mFilename );
+  }
 
   if ( mOgrRef )
   {
