@@ -36,7 +36,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsMemoryProviderUtils,
                        QgsLayerMetadata
                        )
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QByteArray
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QByteArray, QTemporaryDir
 import os
 import tempfile
 import osgeo.gdal  # NOQA
@@ -814,6 +814,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.VectorFormatOptions())
+        print([f.driverName for f in formats2])
         self.assertTrue(formats2[0].driverName < formats2[1].driverName)
         self.assertCountEqual([f.driverName for f in formats], [f.driverName for f in formats2])
         self.assertNotEqual(formats2[0].driverName, 'GeoPackage')
@@ -1491,6 +1492,44 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         vl = QgsVectorLayer(dest_file_name)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.crs().coordinateEpoch(), 2020.7)
+
+    def testAddingToOpenedGkg(self):
+        """ Test scenario of https://github.com/qgis/QGIS/issues/48154 """
+
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), 'testAddingToOpenedGkg.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        del (lyr)
+        del (ds)
+
+        vl = QgsVectorLayer(f'{tmpfile}|layername=test', 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # Test CreateOrOverwriteLayer
+        ml = QgsVectorLayer('Point?field=firstfield:int', 'test', 'memory')
+        provider = ml.dataProvider()
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
+        ft.setAttributes([2])
+        provider.addFeatures([ft])
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'test2'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            tmpfile,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Check that we can open the layer
+        vl2 = QgsVectorLayer(f'{tmpfile}|layername=test2', 'test', 'ogr')
+        self.assertTrue(vl2.isValid())
 
 
 if __name__ == '__main__':
