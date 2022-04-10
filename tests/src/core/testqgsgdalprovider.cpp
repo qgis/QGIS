@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <limits>
+#include "gdal.h"
 
 #include "qgstest.h"
 #include <QObject>
@@ -647,7 +648,11 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
+#else
   QVERIFY( !res.at( 0 ).skippedContainerScan() );
+#endif
 
   // geopackage with two raster layers
   res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg", Qgis::SublayerQueryFlag::FastScan );
