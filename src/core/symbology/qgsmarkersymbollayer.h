@@ -1126,11 +1126,15 @@ class CORE_EXPORT QgsAnimatedMarkerSymbolLayer : public QgsRasterMarkerSymbolLay
      */
     double frameRate() const { return mFrameRateFps; }
 
+    void startRender( QgsSymbolRenderContext &context ) override;
+
   protected:
     QImage fetchImage( QgsRenderContext &context, const QString &path, QSize size, bool preserveAspectRatio, double opacity ) const override SIP_SKIP;
 
   private:
     double mFrameRateFps = 10;
+    bool mStaticPath = false;
+    mutable QSet< QString > mPreparedPaths;
 
 };
 
