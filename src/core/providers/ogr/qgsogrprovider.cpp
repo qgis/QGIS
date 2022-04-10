@@ -3657,6 +3657,10 @@ void QgsOgrProvider::open( OpenMode mode )
         mValid = _setSubsetString( origSubsetString, false, false );
       }
     }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Cannot reopen %1: %2" ).arg( mFilePath ).arg( errCause ), tr( "OGR" ) );
+    }
   }
 
   // For debug/testing purposes
