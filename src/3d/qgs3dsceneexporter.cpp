@@ -194,12 +194,13 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
       const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
       for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
       {
-        Qt3DCore::QEntity *parent_entity = qobject_cast<Qt3DCore::QEntity *>( renderer->parent() );
-        if ( parent_entity == nullptr ) continue;
+        Qt3DCore::QEntity *parentEntity = qobject_cast<Qt3DCore::QEntity *>( renderer->parent() );
+        if ( !parentEntity )
+          continue;
         Qgs3DExportObject *object = processGeometryRenderer( renderer, layer->name() + QStringLiteral( "_" ) );
         if ( object == nullptr ) continue;
         if ( mExportTextures )
-          processEntityMaterial( parent_entity, object );
+          processEntityMaterial( parentEntity, object );
         mObjects.push_back( object );
       }
       return true;
