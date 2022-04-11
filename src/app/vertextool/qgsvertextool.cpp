@@ -330,7 +330,7 @@ void QgsVertexTool::activate()
     showVertexEditor();  //#spellok
   }
 
-  if ( QgsVertexEditor *editor = QgisApp::instance()->vertexEditor() )
+  if ( QgsVertexEditor *editor = vertexEditor() )
   {
     connect( editor, &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
     connect( editor, &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
@@ -346,7 +346,7 @@ void QgsVertexTool::deactivate()
   setHighlightedVertices( QList<Vertex>() );
   removeTemporaryRubberBands();
   cleanupVertexEditor();
-  if ( QgsVertexEditor *editor = QgisApp::instance()->vertexEditor() )
+  if ( QgsVertexEditor *editor = vertexEditor() )
   {
     disconnect( editor, &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
     disconnect( editor, &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
@@ -1479,7 +1479,7 @@ void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry
   if ( mLockedFeature && mLockedFeature->featureId() == fid && mLockedFeature->layer() == layer )
   {
     mLockedFeature->geometryChanged( fid, geom );
-    if ( QgsVertexEditor *editor = QgisApp::instance()->vertexEditor() )
+    if ( QgsVertexEditor *editor = vertexEditor() )
       editor->updateEditor( mLockedFeature.get() );
     updateLockedFeatureVertices();
   }
@@ -1532,7 +1532,7 @@ void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid 
   if ( QgsVertexEditor::settingAutoPopupVertexEditorDock.value() )
     showVertexEditor();  //#spellok
 
-  if ( QgsVertexEditor *editor = QgisApp::instance()->vertexEditor() )
+  if ( QgsVertexEditor *editor = vertexEditor() )
   {
     editor->updateEditor( mLockedFeature.get() );
   }
@@ -1542,7 +1542,7 @@ void QgsVertexTool::updateLockedFeatureVertices()
 {
   qDeleteAll( mLockedFeatureVerticesMarkers );
   mLockedFeatureVerticesMarkers.clear();
-  QgsVertexEditor *editor = QgisApp::instance()->vertexEditor();
+  QgsVertexEditor *editor = vertexEditor();
   if ( editor && mLockedFeature )
   {
     const QList<QgsVertexEntry *> &vertexMap = mLockedFeature->vertexMap();
@@ -1562,14 +1562,20 @@ void QgsVertexTool::updateLockedFeatureVertices()
   }
 }
 
+QgsVertexEditor *QgsVertexTool::vertexEditor()
+{
+  return QgisApp::instance() ? QgisApp::instance()->vertexEditor() : nullptr;
+}
+
 void QgsVertexTool::showVertexEditor()  //#spellok
 {
-  QgisApp::instance()->vertexEditor()->setUserVisible( true );
+  if ( QgsVertexEditor *editor = vertexEditor() )
+    editor->setUserVisible( true );
 }
 
 void QgsVertexTool::cleanupVertexEditor()
 {
-  if ( QgsVertexEditor *editor = QgisApp::instance()->vertexEditor() )
+  if ( QgsVertexEditor *editor = vertexEditor() )
   {
     cleanupLockedFeature();
     if ( QgsVertexEditor::settingAutoPopupVertexEditorDock.value() )
@@ -1582,7 +1588,7 @@ void QgsVertexTool::cleanupVertexEditor()
 void QgsVertexTool::cleanupLockedFeature()
 {
   mLockedFeature.reset();
-  if ( QgsVertexEditor *editor = QgisApp::instance()->vertexEditor() )
+  if ( QgsVertexEditor *editor = vertexEditor() )
   {
     editor->updateEditor( nullptr );
   }
@@ -2259,7 +2265,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   }
 
   updateLockedFeatureVertices();
-  if ( QgsVertexEditor *editor = QgisApp::instance()->vertexEditor() )
+  if ( QgsVertexEditor *editor = vertexEditor() )
     editor->updateEditor( mLockedFeature.get() );
 
   setHighlightedVertices( mSelectedVertices );  // update positions of existing highlighted vertices
@@ -2366,7 +2372,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
       edits[layer][it2.key()] = featGeom;
     }
 
-    if ( QgsVertexEditor *editor = QgisApp::instance()->vertexEditor() )
+    if ( QgsVertexEditor *editor = vertexEditor() )
       editor->updateEditor( mLockedFeature.get() );
   }
 
@@ -2419,7 +2425,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     layer->endEditCommand();
     layer->triggerRepaint();
 
-    if ( QgsVertexEditor *editor = QgisApp::instance()->vertexEditor() )
+    if ( QgsVertexEditor *editor = vertexEditor() )
       editor->updateEditor( mLockedFeature.get() );
   }
 
@@ -2594,7 +2600,7 @@ void QgsVertexTool::deleteVertex()
     }
   }
 
-  QgsVertexEditor *editor = QgisApp::instance()->vertexEditor();
+  QgsVertexEditor *editor = vertexEditor();
   if ( editor && mLockedFeature )
     editor->updateEditor( mLockedFeature.get() );
 }
@@ -2667,7 +2673,7 @@ void QgsVertexTool::toggleVertexCurve()
       Qgis::Warning );
   }
 
-  QgsVertexEditor *editor = QgisApp::instance()->vertexEditor();
+  QgsVertexEditor *editor = vertexEditor();
   if ( editor && mLockedFeature )
     editor->updateEditor( mLockedFeature.get() );
 }
