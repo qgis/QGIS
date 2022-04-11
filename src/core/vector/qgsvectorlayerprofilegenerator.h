@@ -26,6 +26,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsfeatureid.h"
 
 #include <memory>
 
@@ -54,8 +55,19 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
 
     QgsPointSequence rawPoints;
     QMap< double, double > mDistanceToHeightMap;
-    QVector< QgsGeometry > geometries;
-    QVector< QgsGeometry > distanceVHeightGeometries;
+
+    struct Feature
+    {
+      //! Original feature ID
+      QgsFeatureId featureId;
+      //! Feature's geometry with any terrain height adjustment and extrusion applied
+      QgsGeometry geometry;
+      //! Cross section distance vs height geometry for feature
+      QgsGeometry crossSectionGeometry;
+    };
+
+    QVector< Feature > features;
+
     double minZ = std::numeric_limits< double >::max();
     double maxZ = std::numeric_limits< double >::lowest();
 
