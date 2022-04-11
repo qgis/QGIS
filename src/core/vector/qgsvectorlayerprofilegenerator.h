@@ -116,10 +116,10 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
     bool generateProfileForPolygons();
 
     double terrainHeight( double x, double y );
-    double featureZToHeight( double x, double y, double z );
+    double featureZToHeight( double x, double y, double z, double offset );
 
-    void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid );
-    bool clampAltitudes( QgsPolygon *polygon );
+    void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid, double offset );
+    bool clampAltitudes( QgsPolygon *polygon, double offset );
 
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
@@ -145,6 +145,10 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
     Qgis::AltitudeBinding mBinding = Qgis::AltitudeBinding::Centroid;
     bool mExtrusionEnabled = false;
     double mExtrusionHeight = 0;
+
+    QgsExpressionContext mExpressionContext;
+    QgsFields mFields;
+    QgsPropertyCollection mDataDefinedProperties;
 
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     QgsCoordinateTransform mLayerToTargetTransform;
