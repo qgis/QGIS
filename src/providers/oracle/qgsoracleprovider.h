@@ -50,6 +50,7 @@ enum QgsOraclePrimaryKeyType
   PktFidMap
 };
 
+
 /**
   * \class QgsOracleProvider
   * \brief Data provider for oracle layers.
@@ -174,6 +175,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
     static bool exec( QSqlQuery &qry, QString sql, const QVariantList &args );
+    static bool execLoggedStatic( QSqlQuery &qry, const QString &sql, const QVariantList &args, const QString &uri, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
     void setTransaction( QgsTransaction *transaction ) override;

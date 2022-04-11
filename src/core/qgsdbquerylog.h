@@ -237,6 +237,11 @@ class QgsDatabaseQueryLogWrapper
       mEntry.fetchedRows = fetchedRows;
     }
 
+    void setQuery( const QString &query )
+    {
+      mEntry.query = query;
+    }
+
     void setError( const QString &error )
     {
       mEntry.error = error;

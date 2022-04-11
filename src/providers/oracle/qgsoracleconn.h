@@ -117,6 +117,7 @@ struct QgsOracleLayerProperty
 #include "qgsconfig.h"
 constexpr int sOracleConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
 #define LoggedExec(_class, query) execLogged( query, true, nullptr, _class, QString(QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+#define LoggedExecPrivate(_class, query, sql, params ) execLogged( query, sql, params, _class, QString(QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
 
 
 /**
@@ -266,6 +267,7 @@ class QgsOracleConn : public QObject
     ~QgsOracleConn() override;
 
     bool exec( QSqlQuery &qry, const QString &sql, const QVariantList &params );
+    bool execLogged( QSqlQuery &qry, const QString &sql, const QVariantList &params, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     //! reference count
     int mRef;

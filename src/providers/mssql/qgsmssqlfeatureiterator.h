@@ -38,6 +38,8 @@ class QgsMssqlFeatureSource final: public QgsAbstractFeatureSource
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
+    const QString &connInfo() const;
+
   private:
     QgsFields mFields;
     QgsMssqlPrimaryKeyType mPrimaryKeyType;
@@ -75,6 +77,9 @@ class QgsMssqlFeatureSource final: public QgsAbstractFeatureSource
 
     // Return True if this feature source has spatial attributes.
     bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
+
+    // Uri information for query logger
+    QString mConnInfo;
 
     friend class QgsMssqlFeatureIterator;
     friend class QgsMssqlExpressionCompiler;
