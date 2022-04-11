@@ -126,6 +126,26 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     void setExtrusionHeight( double height ) { mExtrusionHeight = height; }
 
     /**
+     * Returns TRUE if layer symbology should be respected when rendering elevation profile plots.
+     *
+     * Specifically, this will result in the layer's symbols (or symbol colors) being used to draw features in the
+     * profile plots.
+     *
+     * \see setRespectLayerSymbology()
+     */
+    bool respectLayerSymbology() const { return mRespectLayerSymbology; }
+
+    /**
+     * Sets whether layer symbology should be respected when rendering elevation profile plots.
+     *
+     * Specifically, this will result in the layer's symbols (or symbol colors) being used to draw features in the
+     * profile plots.
+     *
+     * \see respectLayerSymbology()
+     */
+    void setRespectLayerSymbology( bool enabled ) { mRespectLayerSymbology = enabled; }
+
+    /**
      * Returns the symbol used to render lines for the layer in elevation profile plots.
      *
      * The symbol will be used in the following circumstances:
@@ -218,6 +238,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
     std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
+    bool mRespectLayerSymbology = true;
 
 };
 

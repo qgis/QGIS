@@ -62,9 +62,12 @@ QVector<QgsGeometry> QgsVectorLayerProfileResults::asGeometries() const
 {
   QVector<QgsGeometry> res;
   res.reserve( features.size() );
-  for ( const Feature &feature : std::as_const( features ) )
+  for ( auto it = features.constBegin(); it != features.constEnd(); ++it )
   {
-    res.append( feature.geometry );
+    for ( const Feature &feature : it.value() )
+    {
+      res.append( feature.geometry );
+    }
   }
   return res;
 }
@@ -92,20 +95,16 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
 
   const QgsRectangle clipPathRect( clipPath.boundingRect() );
 
-  profileMarkerSymbol->startRender( context.renderContext() );
-  profileFillSymbol->startRender( context.renderContext() );
-  profileLineSymbol->startRender( context.renderContext() );
-
-  for ( const Feature &feature : std::as_const( features ) )
+  auto renderResult = [painter, &context, &clipPathRect]( const Feature & profileFeature, QgsMarkerSymbol * markerSymbol, QgsLineSymbol * lineSymbol, QgsFillSymbol * fillSymbol )
   {
-    if ( feature.crossSectionGeometry.isEmpty() )
-      continue;
+    if ( profileFeature.crossSectionGeometry.isEmpty() )
+      return;
 
-    QgsGeometry transformed = feature.crossSectionGeometry;
+    QgsGeometry transformed = profileFeature.crossSectionGeometry;
     transformed.transform( context.worldTransform() );
 
     if ( !transformed.boundingBoxIntersects( clipPathRect ) )
-      continue;
+      return;
 
     // we can take some shortcuts here, because we know that the geometry will already be segmentized and can't be a curved type
     switch ( transformed.type() )
@@ -114,14 +113,14 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
       {
         if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( transformed.constGet() ) )
         {
-          profileMarkerSymbol->renderPoint( QPointF( point->x(), point->y() ), nullptr, context.renderContext() );
+          markerSymbol->renderPoint( QPointF( point->x(), point->y() ), nullptr, context.renderContext() );
         }
         else if ( const QgsMultiPoint *multipoint = qgsgeometry_cast< const QgsMultiPoint * >( transformed.constGet() ) )
         {
           const int numGeometries = multipoint->numGeometries();
           for ( int i = 0; i < numGeometries; ++i )
           {
-            profileMarkerSymbol->renderPoint( QPointF( multipoint->pointN( i )->x(), multipoint->pointN( i )->y() ), nullptr, context.renderContext() );
+            markerSymbol->renderPoint( QPointF( multipoint->pointN( i )->x(), multipoint->pointN( i )->y() ), nullptr, context.renderContext() );
           }
         }
         break;
@@ -131,14 +130,14 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
       {
         if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( transformed.constGet() ) )
         {
-          profileLineSymbol->renderPolyline( line->asQPolygonF(), nullptr, context.renderContext() );
+          lineSymbol->renderPolyline( line->asQPolygonF(), nullptr, context.renderContext() );
         }
         else if ( const QgsMultiLineString *multiLinestring = qgsgeometry_cast< const QgsMultiLineString * >( transformed.constGet() ) )
         {
           const int numGeometries = multiLinestring->numGeometries();
           for ( int i = 0; i < numGeometries; ++i )
           {
-            profileLineSymbol->renderPolyline( multiLinestring->lineStringN( i )->asQPolygonF(), nullptr, context.renderContext() );
+            lineSymbol->renderPolyline( multiLinestring->lineStringN( i )->asQPolygonF(), nullptr, context.renderContext() );
           }
         }
         break;
@@ -149,14 +148,14 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
         if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( transformed.constGet() ) )
         {
           if ( const QgsCurve *exterior = polygon->exteriorRing() )
-            profileFillSymbol->renderPolygon( exterior->asQPolygonF(), nullptr, nullptr, context.renderContext() );
+            fillSymbol->renderPolygon( exterior->asQPolygonF(), nullptr, nullptr, context.renderContext() );
         }
         else if ( const QgsMultiPolygon *multiPolygon = qgsgeometry_cast< const QgsMultiPolygon * >( transformed.constGet() ) )
         {
           const int numGeometries = multiPolygon->numGeometries();
           for ( int i = 0; i < numGeometries; ++i )
           {
-            profileFillSymbol->renderPolygon( multiPolygon->polygonN( i )->exteriorRing()->asQPolygonF(), nullptr, nullptr, context.renderContext() );
+            fillSymbol->renderPolygon( multiPolygon->polygonN( i )->exteriorRing()->asQPolygonF(), nullptr, nullptr, context.renderContext() );
           }
         }
         break;
@@ -164,15 +163,77 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
 
       case QgsWkbTypes::UnknownGeometry:
       case QgsWkbTypes::NullGeometry:
-        continue;
+        return;
     }
 
     transformed.constGet()->draw( *painter );
-  }
+  };
 
-  profileMarkerSymbol->stopRender( context.renderContext() );
-  profileFillSymbol->stopRender( context.renderContext() );
-  profileLineSymbol->stopRender( context.renderContext() );
+  if ( respectLayerSymbology && mLayer && mLayer->renderer() )
+  {
+    std::unique_ptr< QgsFeatureRenderer > renderer( mLayer->renderer()->clone() );
+    renderer->startRender( context.renderContext(), mLayer->fields() );
+
+    // if we are respecting the layer's symbology then we'll fire off a feature request and iterate through
+    // features from the profile, rendering each in turn
+    QgsFeatureRequest req;
+    req.setFilterFids( qgis::listToSet( features.keys() ) );
+    req.setSubsetOfAttributes( renderer->usedAttributes( context.renderContext() ), mLayer->fields() );
+
+    std::unique_ptr< QgsMarkerSymbol > markerSymbol( profileMarkerSymbol->clone() );
+    std::unique_ptr< QgsLineSymbol > lineSymbol( profileLineSymbol->clone() );
+    std::unique_ptr< QgsFillSymbol > fillSymbol( profileFillSymbol->clone() );
+
+    QgsFeature feature;
+    QgsFeatureIterator it = mLayer->getFeatures( req );
+    while ( it.nextFeature( feature ) )
+    {
+      context.renderContext().expressionContext().setFeature( feature );
+      QgsSymbol *rendererSymbol = renderer->symbolForFeature( feature, context.renderContext() );
+      if ( !rendererSymbol )
+        continue;
+
+      markerSymbol->setColor( rendererSymbol->color() );
+      lineSymbol->setColor( rendererSymbol->color() );
+      fillSymbol->setColor( rendererSymbol->color() );
+
+      markerSymbol->startRender( context.renderContext() );
+      lineSymbol->startRender( context.renderContext() );
+      fillSymbol->startRender( context.renderContext() );
+
+      const QVector< Feature > profileFeatures = features.value( feature.id() );
+      for ( const Feature &profileFeature : profileFeatures )
+
+      {
+        renderResult( profileFeature,
+                      rendererSymbol->type() == Qgis::SymbolType::Marker ? qgis::down_cast< QgsMarkerSymbol * >( rendererSymbol ) : markerSymbol.get(),
+                      rendererSymbol->type() == Qgis::SymbolType::Line ? qgis::down_cast< QgsLineSymbol * >( rendererSymbol )  : lineSymbol.get(),
+                      rendererSymbol->type() == Qgis::SymbolType::Fill ? qgis::down_cast< QgsFillSymbol * >( rendererSymbol )  : fillSymbol.get() );
+      }
+
+      markerSymbol->stopRender( context.renderContext() );
+      lineSymbol->stopRender( context.renderContext() );
+      fillSymbol->stopRender( context.renderContext() );
+    }
+
+    renderer->stopRender( context.renderContext() );
+  }
+  else
+  {
+    profileMarkerSymbol->startRender( context.renderContext() );
+    profileFillSymbol->startRender( context.renderContext() );
+    profileLineSymbol->startRender( context.renderContext() );
+    for ( auto featureIt = features.constBegin(); featureIt != features.constEnd(); ++featureIt )
+    {
+      for ( auto resultIt = ( *featureIt ).constBegin(); resultIt != ( *featureIt ).constEnd(); ++resultIt )
+      {
+        renderResult( *resultIt, profileMarkerSymbol.get(), profileLineSymbol.get(), profileFillSymbol.get() );
+      }
+    }
+    profileMarkerSymbol->stopRender( context.renderContext() );
+    profileFillSymbol->stopRender( context.renderContext() );
+    profileLineSymbol->stopRender( context.renderContext() );
+  }
 }
 
 //
@@ -191,18 +252,19 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   , mSource( std::make_unique< QgsVectorLayerFeatureSource >( layer ) )
   , mOffset( layer->elevationProperties()->zOffset() )
   , mScale( layer->elevationProperties()->zScale() )
-  , mClamping( qgis::down_cast< QgsVectorLayerElevationProperties* >( layer->elevationProperties() )->clamping() )
-  , mBinding( qgis::down_cast< QgsVectorLayerElevationProperties* >( layer->elevationProperties() )->binding() )
-  , mExtrusionEnabled( qgis::down_cast< QgsVectorLayerElevationProperties* >( layer->elevationProperties() )->extrusionEnabled() )
-  , mExtrusionHeight( qgis::down_cast< QgsVectorLayerElevationProperties* >( layer->elevationProperties() )->extrusionHeight() )
+  , mClamping( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->clamping() )
+  , mBinding( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->binding() )
+  , mExtrusionEnabled( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->extrusionEnabled() )
+  , mExtrusionHeight( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->extrusionHeight() )
   , mWkbType( layer->wkbType() )
-  , mProfileLineSymbol( qgis::down_cast< QgsVectorLayerElevationProperties* >( layer->elevationProperties() )->profileLineSymbol()->clone() )
-  , mProfileFillSymbol( qgis::down_cast< QgsVectorLayerElevationProperties* >( layer->elevationProperties() )->profileFillSymbol()->clone() )
-  , mProfileMarkerSymbol( qgis::down_cast< QgsVectorLayerElevationProperties* >( layer->elevationProperties() )->profileMarkerSymbol()->clone() )
+  , mRespectLayerSymbology( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->respectLayerSymbology() )
+  , mProfileLineSymbol( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() )
+  , mProfileFillSymbol( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() )
+  , mProfileMarkerSymbol( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileMarkerSymbol()->clone() )
+  , mLayer( layer )
 {
   if ( mTerrainProvider )
     mTerrainProvider->prepare(); // must be done on main thread
-
 }
 
 QgsVectorLayerProfileGenerator::~QgsVectorLayerProfileGenerator() = default;
@@ -236,7 +298,9 @@ bool QgsVectorLayerProfileGenerator::generateProfile()
     return false;
 
   mResults = std::make_unique< QgsVectorLayerProfileResults >();
+  mResults->mLayer = mLayer;
 
+  mResults->respectLayerSymbology = mRespectLayerSymbology;
   mResults->profileLineSymbol.reset( mProfileLineSymbol->clone() );
   mResults->profileFillSymbol.reset( mProfileFillSymbol->clone() );
   mResults->profileMarkerSymbol.reset( mProfileMarkerSymbol->clone() );
@@ -318,7 +382,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
       resultFeature.geometry = QgsGeometry( new QgsPoint( point->x(), point->y(), height ) );
       resultFeature.crossSectionGeometry = QgsGeometry( new QgsPoint( distance, height ) );
     }
-    mResults->features.append( resultFeature );
+    mResults->features[resultFeature.featureId].append( resultFeature );
   };
 
   QgsFeature feature;
@@ -404,7 +468,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
           resultFeature.geometry = QgsGeometry( new QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
           resultFeature.crossSectionGeometry = QgsGeometry( new QgsPoint( distanceAlongProfileCurve, height ) );
         }
-        mResults->features.append( resultFeature );
+        mResults->features[resultFeature.featureId].append( resultFeature );
       }
     }
   };
@@ -686,7 +750,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
         unioned = unioned.mergeLines();
       resultFeature.crossSectionGeometry = unioned;
     }
-    mResults->features.append( resultFeature );
+    mResults->features[resultFeature.featureId].append( resultFeature );
   }
   return true;
 }

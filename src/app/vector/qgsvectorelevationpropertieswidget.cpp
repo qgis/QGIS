@@ -54,6 +54,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   connect( mComboClamping, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::clampingChanged );
   connect( mComboBinding, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::bindingChanged );
 
+  connect( mCheckRespectLayerSymbology, &QCheckBox::toggled, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mMarkerStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
@@ -87,6 +88,7 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mExtrusionGroupBox->setChecked( props->extrusionEnabled() );
   mExtrusionSpinBox->setValue( props->extrusionHeight() );
 
+  mCheckRespectLayerSymbology->setChecked( props->respectLayerSymbology() );
   mLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
   mFillStyleButton->setSymbol( props->profileFillSymbol()->clone() );
   mMarkerStyleButton->setSymbol( props->profileMarkerSymbol()->clone() );
@@ -113,6 +115,7 @@ void QgsVectorElevationPropertiesWidget::apply()
   props->setExtrusionEnabled( mExtrusionGroupBox->isChecked() );
   props->setExtrusionHeight( mExtrusionSpinBox->value() );
 
+  props->setRespectLayerSymbology( mCheckRespectLayerSymbology->isChecked() );
   props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
   props->setProfileMarkerSymbol( mMarkerStyleButton->clonedSymbol< QgsMarkerSymbol >() );
   props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );

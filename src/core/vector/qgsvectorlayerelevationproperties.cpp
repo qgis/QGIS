@@ -54,6 +54,8 @@ QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElem
   element.setAttribute( QStringLiteral( "clamping" ), qgsEnumValueToKey( mClamping ) );
   element.setAttribute( QStringLiteral( "binding" ), qgsEnumValueToKey( mBinding ) );
 
+  element.setAttribute( QStringLiteral( "respectLayerSymbol" ), mRespectLayerSymbology ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+
   QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
   profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
   element.appendChild( profileLineSymbolElement );
@@ -80,6 +82,8 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
   mBinding = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "binding" ) ), Qgis::AltitudeBinding::Centroid );
   mEnableExtrusion = elevationElement.attribute( QStringLiteral( "extrusionEnabled" ), QStringLiteral( "0" ) ).toInt();
   mExtrusionHeight = elevationElement.attribute( QStringLiteral( "extrusion" ), QStringLiteral( "0" ) ).toDouble();
+
+  mRespectLayerSymbology = elevationElement.attribute( QStringLiteral( "respectLayerSymbol" ), QStringLiteral( "1" ) ).toInt();
 
   const QColor color = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
@@ -113,6 +117,7 @@ QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() co
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
   res->setProfileFillSymbol( mProfileFillSymbol->clone() );
   res->setProfileMarkerSymbol( mProfileMarkerSymbol->clone() );
+  res->setRespectLayerSymbology( mRespectLayerSymbology );
   return res.release();
 }
 
