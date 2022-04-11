@@ -22,7 +22,9 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsFlatTerrainProvider,
-    QgsMeshTerrainProvider
+    QgsMeshTerrainProvider,
+    QgsExpressionContext,
+    QgsExpressionContextScope
 )
 
 from qgis.PyQt.QtXml import QDomDocument
@@ -52,6 +54,14 @@ class TestQgsProfileRequest(unittest.TestCase):
         self.assertEqual(req.transformContext().calculateCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
                                                                              QgsCoordinateReferenceSystem('EPSG:4283')), proj_string)
 
+        exp_context = QgsExpressionContext()
+        context_scope = QgsExpressionContextScope()
+        context_scope.setVariable('test_var', 5, True)
+        exp_context.appendScope(context_scope)
+        req.setExpressionContext(exp_context)
+
+        self.assertEqual(req.expressionContext().variable('test_var'), 5)
+
         terrain = QgsFlatTerrainProvider()
         terrain.setOffset(5)
         req.setTerrainProvider(terrain)
@@ -66,6 +76,7 @@ class TestQgsProfileRequest(unittest.TestCase):
                                                                               QgsCoordinateReferenceSystem('EPSG:4283')), proj_string)
         self.assertIsInstance(copy.terrainProvider(), QgsFlatTerrainProvider)
         self.assertEqual(copy.terrainProvider().offset(), 5)
+        self.assertEqual(copy.expressionContext().variable('test_var'), 5)
 
     def testEquality(self):
         """

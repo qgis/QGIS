@@ -21,6 +21,7 @@
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsexpressioncontext.h"
 
 #include <memory>
 
@@ -185,6 +186,24 @@ class CORE_EXPORT QgsProfileRequest
      */
     double stepDistance() const { return mStepDistance; }
 
+    /**
+     * Returns the expression context used to evaluate expressions.
+     * \see setExpressionContext()
+     */
+    QgsExpressionContext &expressionContext() { return mExpressionContext; }
+
+    /**
+     * Returns the expression context used to evaluate expressions.
+     * \see setExpressionContext()
+     */
+    const QgsExpressionContext &expressionContext() const SIP_SKIP { return mExpressionContext; }
+
+    /**
+     * Sets the expression context used to evaluate expressions.
+     * \see expressionContext()
+     */
+    QgsProfileRequest &setExpressionContext( const QgsExpressionContext &context );
+
   private:
 
     std::unique_ptr< QgsCurve> mCurve;
@@ -196,6 +215,7 @@ class CORE_EXPORT QgsProfileRequest
     double mStepDistance = std::numeric_limits<float>::quiet_NaN();
 
     std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
+    QgsExpressionContext mExpressionContext;
 
 };
 
