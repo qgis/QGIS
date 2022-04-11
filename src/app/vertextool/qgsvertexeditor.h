@@ -30,6 +30,7 @@
 #include "qgsvertexid.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettings.h"
+#include "qgspanelwidget.h"
 
 class QLabel;
 class QTableView;
@@ -99,6 +100,45 @@ class APP_EXPORT QgsVertexEditorModel : public QAbstractTableModel
 
 };
 
+class APP_EXPORT QgsVertexEditorWidget : public QgsPanelWidget
+{
+    Q_OBJECT
+  public:
+
+    QgsVertexEditorWidget( QgsMapCanvas *canvas );
+
+    void updateEditor( QgsLockedFeature *lockedFeature );
+    QgsLockedFeature *mLockedFeature = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QTableView *mTableView = nullptr;
+    QgsVertexEditorModel *mVertexModel = nullptr;
+
+    QMenu *menuButtonMenu() override;
+    QString menuButtonTooltip() const override;
+
+  signals:
+    void deleteSelectedRequested();
+
+  protected:
+    void keyPressEvent( QKeyEvent *event ) override;
+
+  private slots:
+    void updateTableSelection();
+    void updateVertexSelection( const QItemSelection &, const QItemSelection &deselected );
+
+  private:
+
+    QLabel *mHintLabel = nullptr;
+    QStackedWidget *mStackedWidget = nullptr;
+    QWidget *mPageHint = nullptr;
+    QWidget *mPageTable = nullptr;
+
+    QMenu *mWidgetMenu = nullptr;
+
+    bool mUpdatingTableSelection = false;
+    bool mUpdatingVertexSelection = false;
+};
+
 class APP_EXPORT QgsVertexEditor : public QgsDockWidget
 {
     Q_OBJECT
@@ -109,33 +149,18 @@ class APP_EXPORT QgsVertexEditor : public QgsDockWidget
     QgsVertexEditor( QgsMapCanvas *canvas );
 
     void updateEditor( QgsLockedFeature *lockedFeature );
-    QgsLockedFeature *mLockedFeature = nullptr;
-    QgsMapCanvas *mCanvas = nullptr;
-    QTableView *mTableView = nullptr;
-    QgsVertexEditorModel *mVertexModel = nullptr;
 
   signals:
     void deleteSelectedRequested();
     void editorClosed();
 
   protected:
-    void keyPressEvent( QKeyEvent *event ) override;
     void closeEvent( QCloseEvent *event ) override;
-
-  private slots:
-    void updateTableSelection();
-    void updateVertexSelection( const QItemSelection &, const QItemSelection &deselected );
 
   private:
 
-    QLabel *mHintLabel = nullptr;
-    QCheckBox *mAutoPopupDockCheckBox = nullptr;
-    QStackedWidget *mStackedWidget = nullptr;
-    QWidget *mPageHint = nullptr;
-    QWidget *mPageTable = nullptr;
+    QgsVertexEditorWidget *mWidget = nullptr;
 
-    bool mUpdatingTableSelection = false;
-    bool mUpdatingVertexSelection = false;
 };
 
 
