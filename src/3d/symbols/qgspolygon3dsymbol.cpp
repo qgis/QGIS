@@ -131,6 +131,22 @@ void QgsPolygon3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *la
   mAltClamping = props->clamping();
   mAltBinding = props->binding();
   mExtrusionHeight = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
+  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::ExtrusionHeight ) )
+  {
+    mDataDefinedProperties.setProperty( PropertyExtrusionHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::ExtrusionHeight ) );
+  }
+  else
+  {
+    mDataDefinedProperties.setProperty( PropertyExtrusionHeight, QgsProperty() );
+  }
+  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::ZOffset ) )
+  {
+    mDataDefinedProperties.setProperty( PropertyHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::ZOffset ) );
+  }
+  else
+  {
+    mDataDefinedProperties.setProperty( PropertyHeight, QgsProperty() );
+  }
   mHeight = static_cast< float >( props->zOffset() );
 }
 
