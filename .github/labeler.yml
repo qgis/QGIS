@@ -10,11 +10,21 @@
     'src/gui/annotations/**/*',
   ]
 
+"Chore":
+  - any: [
+    '.ci/**/*',
+    '.docker/**/*',
+    '.github/**/*',
+  ]
+
 "DB Manager":
   - any: ['python/plugins/db_manager/**/*']
 
 "Expressions":
-  - any: ['src/core/expression/**/*']
+  - any: [
+    'src/core/expression/**/*',
+    'resources/function_help/**/*',
+  ]
 
 "Form":
   - any: [
@@ -66,6 +76,11 @@
       'src/analysis/**/*',
       'src/core/processing/**/*',
       'src/process/**/*'
+  ]
+
+"Quick":
+  - any: [
+    'src/quickgui/**/*',
   ]
 
 "Server":
