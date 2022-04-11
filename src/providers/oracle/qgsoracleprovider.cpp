@@ -29,6 +29,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgslogger.h"
+#include "qgsdbquerylog.h"
 
 #include "qgsoracleprovider.h"
 #include "qgsoracletablemodel.h"
@@ -561,16 +562,20 @@ bool QgsOracleProvider::loadFields()
   QMap<QString, QVariant> defvalues;
   QMap<QString, bool> alwaysGenerated;
 
+  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper;
+
   if ( !mIsQuery )
   {
     QgsDebugMsgLevel( QStringLiteral( "Loading fields for table %1" ).arg( mTableName ), 2 );
 
-    if ( exec( qry, QString( "SELECT comments FROM all_tab_comments WHERE owner=? AND table_name=?" ),
+    logWrapper.reset( new QgsDatabaseQueryLogWrapper{ QStringLiteral( "SELECT comments FROM all_tab_comments WHERE owner=%1 AND table_name=%2" ).arg( mOwnerName, mTableName ), mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN } );
+
+    if ( exec( qry, QStringLiteral( "SELECT comments FROM all_tab_comments WHERE owner=? AND table_name=?" ),
                QVariantList() << mOwnerName << mTableName ) )
     {
       if ( qry.next() )
         mDataComment = qry.value( 0 ).toString();
-      else if ( exec( qry, QString( "SELECT comments FROM all_mview_comments WHERE owner=? AND mview_name=?" ),
+      else if ( exec( qry, QStringLiteral( "SELECT comments FROM all_mview_comments WHERE owner=? AND mview_name=?" ),
                       QVariantList() << mOwnerName << mTableName ) )
       {
         if ( qry.next() )
@@ -579,28 +584,38 @@ bool QgsOracleProvider::loadFields()
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Loading comment for table %1.%2 failed [%3]" )
-                                 .arg( mOwnerName )
-                                 .arg( mTableName )
-                                 .arg( qry.lastError().text() ),
+      const QString error { tr( "Loading comment for table %1.%2 failed [%3]" )
+                            .arg( mOwnerName )
+                            .arg( mTableName )
+                            .arg( qry.lastError().text() ) };
+      logWrapper->setError( error );
+      QgsMessageLog::logMessage( error,
                                  tr( "Oracle" ) );
     }
 
     qry.finish();
 
+    logWrapper.reset( new QgsDatabaseQueryLogWrapper{ QStringLiteral( "SELECT column_name,comments FROM all_col_comments t WHERE t.owner=%1 AND t.table_name=%2" ).arg( mOwnerName, mTableName ), mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN } );
+
     if ( exec( qry, QString( "SELECT column_name,comments FROM all_col_comments t WHERE t.owner=? AND t.table_name=?" ),
                QVariantList() << mOwnerName << mTableName ) )
     {
+      long long fetchedRows { 0 };
       while ( qry.next() )
       {
+        fetchedRows++;
         if ( qry.value( 0 ).toString() == mGeometryColumn )
           continue;
         comments.insert( qry.value( 0 ).toString(), qry.value( 1 ).toString() );
+
       }
+      logWrapper->setFetchedRows( fetchedRows );
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Loading comment for columns of table %1.%2 failed [%3]" ).arg( mOwnerName ).arg( mTableName ).arg( qry.lastError().text() ), tr( "Oracle" ) );
+      const QString error { tr( "Loading comment for columns of table %1.%2 failed [%3]" ).arg( mOwnerName ).arg( mTableName ).arg( qry.lastError().text() ) };
+      logWrapper->setError( error );
+      QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     }
 
     qry.finish();
@@ -638,10 +653,15 @@ bool QgsOracleProvider::loadFields()
 
     sql += " ORDER BY t.column_id";
 
+    logWrapper.reset( new QgsDatabaseQueryLogWrapper{ sql, mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN } );
+
+
     if ( exec( qry, sql, args ) )
     {
+      long long fetchedRows { 0 };
       while ( qry.next() )
       {
+        fetchedRows++;
         QString name      = qry.value( 0 ).toString();
         QString type      = qry.value( 1 ).toString();
         int prec          = qry.value( 2 ).toInt();
@@ -678,13 +698,16 @@ bool QgsOracleProvider::loadFields()
         defvalues.insert( name, defValue );
         alwaysGenerated.insert( name, alwaysGen );
       }
+      logWrapper->setFetchedRows( fetchedRows );
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Loading field types for table %1.%2 failed [%3]" )
-                                 .arg( mOwnerName )
-                                 .arg( mTableName )
-                                 .arg( qry.lastError().text() ),
+      const QString error { tr( "Loading field types for table %1.%2 failed [%3]" )
+                            .arg( mOwnerName )
+                            .arg( mTableName )
+                            .arg( qry.lastError().text() ) };
+      logWrapper->setError( error );
+      QgsMessageLog::logMessage( error,
                                  tr( "Oracle" ) );
     }
 
@@ -698,14 +721,21 @@ bool QgsOracleProvider::loadFields()
   {
     if ( !mHasSpatialIndex )
     {
-      mHasSpatialIndex = qry.exec( QString( "SELECT %2 FROM %1 WHERE sdo_filter(%2,mdsys.sdo_geometry(2003,%3,NULL,mdsys.sdo_elem_info_array(1,1003,3),mdsys.sdo_ordinate_array(-1,-1,1,1)))='TRUE'" )
-                                   .arg( mQuery )
-                                   .arg( quotedIdentifier( mGeometryColumn ) )
-                                   .arg( mSrid < 1 ? "NULL" : QString::number( mSrid ) ) );
+      const QString sql{ QStringLiteral( "SELECT %2 FROM %1 WHERE sdo_filter(%2,mdsys.sdo_geometry(2003,%3,NULL,mdsys.sdo_elem_info_array(1,1003,3),mdsys.sdo_ordinate_array(-1,-1,1,1)))='TRUE'" )
+                         .arg( mQuery )
+                         .arg( quotedIdentifier( mGeometryColumn ) )
+                         .arg( mSrid < 1 ? "NULL" : QString::number( mSrid ) ) };
+      logWrapper.reset( new QgsDatabaseQueryLogWrapper{ sql, mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN } );
+      mHasSpatialIndex = qry.exec( sql );
+      if ( qry.lastError().isValid() )
+      {
+        logWrapper->setError( qry.lastError().text() );
+      }
     }
 
     if ( !mHasSpatialIndex )
     {
+      const QString error { };
       QgsMessageLog::logMessage( tr( "No spatial index on column %1.%2.%3 found - expect poor performance." )
                                  .arg( mOwnerName )
                                  .arg( mTableName )
@@ -716,13 +746,19 @@ bool QgsOracleProvider::loadFields()
 
   qry.finish();
 
-  if ( !exec( qry, QString( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ), QVariantList() ) )
+  const QString sql { QStringLiteral( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ) };
+  logWrapper.reset( new QgsDatabaseQueryLogWrapper{ sql, mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN } );
+
+  if ( !exec( qry, sql, QVariantList() ) )
   {
-    QgsMessageLog::logMessage( tr( "Retrieving fields from '%1' failed [%2]" ).arg( mQuery ).arg( qry.lastError().text() ), tr( "Oracle" ) );
+    const QString error { tr( "Retrieving fields from '%1' failed [%2]" ).arg( mQuery ).arg( qry.lastError().text() ) };
+    logWrapper->setError( error );
+    QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     return false;
   }
 
   QSqlRecord record = qry.record();
+  logWrapper->setFetchedRows( record.count() );
 
   for ( int i = 0; i < record.count(); i++ )
   {
@@ -763,6 +799,9 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
   mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
 
   QgsOracleConn *conn = connectionRO();
+
+  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper;
+
   QSqlQuery qry( *conn );
   if ( !mIsQuery )
   {
@@ -778,58 +817,71 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
                               |  QgsVectorDataProvider::RenameAttributes
                               ;
     }
-    else if ( exec( qry, QString( "SELECT privilege FROM all_tab_privs WHERE table_schema=? AND table_name=? AND privilege IN ('DELETE','UPDATE','INSERT','ALTER TABLE')" ),
-                    QVariantList() << mOwnerName << mTableName ) )
-    {
-      // check grants
-      while ( qry.next() )
-      {
-        QString priv = qry.value( 0 ).toString();
-
-        if ( priv == "DELETE" )
-        {
-          mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
-        }
-        else if ( priv == "UPDATE" )
-        {
-          mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
-        }
-        else if ( priv == "INSERT" )
-        {
-          mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
-        }
-        else if ( priv == "ALTER TABLE" )
-        {
-          mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes | QgsVectorDataProvider::RenameAttributes;
-        }
-      }
-
-      if ( !mGeometryColumn.isNull() )
-      {
-        if ( exec( qry, QString( "SELECT 1 FROM all_col_privs WHERE table_schema=? AND table_name=? AND column_name=? AND privilege='UPDATE'" ),
-                   QVariantList() << mOwnerName << mTableName << mGeometryColumn ) )
-        {
-          if ( qry.next() )
-            mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
-        }
-        else
-        {
-          QgsMessageLog::logMessage( tr( "Unable to determine geometry column access privileges for column %1.%2.\nThe error message from the database was:\n%3.\nSQL: %4" )
-                                     .arg( mQuery )
-                                     .arg( mGeometryColumn )
-                                     .arg( qry.lastError().text() )
-                                     .arg( qry.lastQuery() ),
-                                     tr( "Oracle" ) );
-        }
-      }
-    }
     else
     {
-      QgsMessageLog::logMessage( tr( "Unable to determine table access privileges for the table %1.\nThe error message from the database was:\n%2.\nSQL: %3" )
-                                 .arg( mQuery )
-                                 .arg( qry.lastError().text() )
-                                 .arg( qry.lastQuery() ),
-                                 tr( "Oracle" ) );
+      logWrapper.reset( new QgsDatabaseQueryLogWrapper( QStringLiteral( "SELECT privilege FROM all_tab_privs WHERE table_schema=%1 AND table_name=%2 AND privilege IN ('DELETE','UPDATE','INSERT','ALTER TABLE')" ).arg( mOwnerName, mTableName ), mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN ) );
+      if ( exec( qry, QStringLiteral( "SELECT privilege FROM all_tab_privs WHERE table_schema=? AND table_name=? AND privilege IN ('DELETE','UPDATE','INSERT','ALTER TABLE')" ),
+                 QVariantList() << mOwnerName << mTableName ) )
+      {
+        // check grants
+        long long fetchedRows { 0 };
+        while ( qry.next() )
+        {
+          fetchedRows++;
+          QString priv = qry.value( 0 ).toString();
+
+          if ( priv == "DELETE" )
+          {
+            mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
+          }
+          else if ( priv == "UPDATE" )
+          {
+            mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
+          }
+          else if ( priv == "INSERT" )
+          {
+            mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
+          }
+          else if ( priv == "ALTER TABLE" )
+          {
+            mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes | QgsVectorDataProvider::RenameAttributes;
+          }
+        }
+
+        logWrapper->setFetchedRows( fetchedRows );
+
+        if ( !mGeometryColumn.isNull() )
+        {
+          logWrapper.reset( new QgsDatabaseQueryLogWrapper( QStringLiteral( "SELECT 1 FROM all_col_privs WHERE table_schema=%1? AND table_name=%2 AND column_name=%3 AND privilege='UPDATE'" ).arg( mOwnerName, mTableName, mGeometryColumn ), mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN ) );
+          if ( exec( qry, QStringLiteral( "SELECT 1 FROM all_col_privs WHERE table_schema=? AND table_name=? AND column_name=? AND privilege='UPDATE'" ),
+                     QVariantList() << mOwnerName << mTableName << mGeometryColumn ) )
+          {
+            if ( qry.next() )
+              mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+          }
+          else
+          {
+            const QString error { tr( "Unable to determine geometry column access privileges for column %1.%2.\nThe error message from the database was:\n%3.\nSQL: %4" )
+                                  .arg( mQuery )
+                                  .arg( mGeometryColumn )
+                                  .arg( qry.lastError().text() )
+                                  .arg( qry.lastQuery() ) };
+            logWrapper->setError( error );
+            QgsMessageLog::logMessage( error,
+                                       tr( "Oracle" ) );
+          }
+        }
+      }
+      else
+      {
+        const QString error { tr( "Unable to determine table access privileges for the table %1.\nThe error message from the database was:\n%2.\nSQL: %3" )
+                              .arg( mQuery )
+                              .arg( qry.lastError().text() )
+                              .arg( qry.lastQuery() ) };
+        logWrapper->setError( error );
+        QgsMessageLog::logMessage( error,
+                                   tr( "Oracle" ) );
+      }
     }
   }
   else
@@ -841,11 +893,15 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
       return false;
     }
 
-    if ( !exec( qry, QString( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ), QVariantList() ) )
+    const QString sql { QStringLiteral( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ) };
+    logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN ) );
+    if ( !exec( qry, sql, QVariantList() ) )
     {
-      QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                                 .arg( qry.lastError().text() )
-                                 .arg( qry.lastQuery() ), tr( "Oracle" ) );
+      const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
+                            .arg( qry.lastError().text() )
+                            .arg( qry.lastQuery() ) };
+      logWrapper->setError( error );
+      QgsMessageLog::logMessage( error, tr( "Oracle" ) );
       return false;
     }
   }

@@ -294,11 +294,14 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
     if ( mRewind )
     {
       mRewind = false;
+      QgsDatabaseQueryLogWrapper logWrapper { mSql, mConnection->connInfo(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleFeatureIterator" ), QGS_QUERY_LOG_ORIGIN };
       if ( !execQuery( mSql, mArgs, 1 ) )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
-                                   .arg( mQry.lastQuery(),
-                                         mQry.lastError().text() ),
+        const QString error { QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
+                              .arg( mQry.lastQuery(),
+                                    mQry.lastError().text() ) };
+        logWrapper.setError( error );
+        QgsMessageLog::logMessage( error,
                                    QObject::tr( "Oracle" ) );
         return false;
       }
@@ -531,13 +534,18 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
     QgsDebugMsgLevel( QStringLiteral( "Fetch features: %1" ).arg( query ), 2 );
     mSql = query;
     mArgs = args;
+
+    QgsDatabaseQueryLogWrapper logWrapper { query, mConnection->connInfo(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleFeatureIterator" ), QGS_QUERY_LOG_ORIGIN };
     if ( !execQuery( query, args, 1 ) )
     {
+
+      const QString error { QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
+                            .arg( mQry.lastQuery(),
+                                  mQry.lastError().text() ) };
+      logWrapper.setError( error );
       if ( showLog )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
-                                   .arg( mQry.lastQuery(),
-                                         mQry.lastError().text() ),
+        QgsMessageLog::logMessage( error,
                                    QObject::tr( "Oracle" ) );
       }
       return false;

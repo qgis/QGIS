@@ -31,6 +31,7 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectordataprovider.h"
+#include "qgsdbquerylog.h"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -112,6 +113,12 @@ struct QgsOracleLayerProperty
 #endif
 };
 
+
+#include "qgsconfig.h"
+constexpr int sOracleConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
+#define LoggedExec(_class, query) execLogged( query, true, nullptr, _class, QString(QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+
+
 /**
  * Wraps acquireConnection() and releaseConnection() from a QgsOracleConnPool.
  * This can be used to ensure a connection is correctly released when scope ends
@@ -157,6 +164,7 @@ class QgsOracleConn : public QObject
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
 
     bool exec( const QString &query, bool logError = true, QString *errorMessage = nullptr );
+    bool execLogged( const QString &sql, bool logError = true, QString *errorMessage = nullptr, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     bool begin( QSqlDatabase &db );
     bool commit( QSqlDatabase &db );
@@ -280,6 +288,9 @@ class QgsOracleConn : public QObject
     static QMap<QString, QgsOracleConn *> sConnections;
     static int snConnections;
     static QMap<QString, QDateTime> sBrokenConnections;
+
+    // Connection URI string representation for query logger
+    QString mConnInfo;
 };
 
 #endif
