@@ -28,28 +28,25 @@ bool QgsPointCloudLayerElevationProperties::hasElevation() const
   return true;
 }
 
-QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & )
+QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
-  element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
-  element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+  writeCommonProperties( element, document, context );
   parentElement.appendChild( element );
   return element;
 }
 
-bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext & )
+bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
-  mZOffset = elevationElement.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
-  mZScale = elevationElement.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
+  readCommonProperties( elevationElement, context );
   return true;
 }
 
 QgsPointCloudLayerElevationProperties *QgsPointCloudLayerElevationProperties::clone() const
 {
   std::unique_ptr< QgsPointCloudLayerElevationProperties > res = std::make_unique< QgsPointCloudLayerElevationProperties >( nullptr );
-  res->setZOffset( mZOffset );
-  res->setZScale( mZScale );
+  res->copyCommonProperties( this );
   return res.release();
 }
 

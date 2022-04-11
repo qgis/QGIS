@@ -46,8 +46,7 @@ bool QgsVectorLayerElevationProperties::hasElevation() const
 QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
-  element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
-  element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+  writeCommonProperties( element, document, context );
 
   element.setAttribute( QStringLiteral( "extrusionEnabled" ), mEnableExtrusion ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "extrusion" ), qgsDoubleToString( mExtrusionHeight ) );
@@ -75,8 +74,7 @@ QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElem
 bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
-  mZOffset = elevationElement.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
-  mZScale = elevationElement.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
+  readCommonProperties( elevationElement, context );
 
   mClamping = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "clamping" ) ), Qgis::AltitudeClamping::Terrain );
   mBinding = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "binding" ) ), Qgis::AltitudeBinding::Centroid );
@@ -108,8 +106,6 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
 QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() const
 {
   std::unique_ptr< QgsVectorLayerElevationProperties > res = std::make_unique< QgsVectorLayerElevationProperties >( nullptr );
-  res->setZOffset( mZOffset );
-  res->setZScale( mZScale );
   res->setClamping( mClamping );
   res->setBinding( mBinding );
   res->setExtrusionEnabled( mEnableExtrusion );
@@ -118,6 +114,7 @@ QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() co
   res->setProfileFillSymbol( mProfileFillSymbol->clone() );
   res->setProfileMarkerSymbol( mProfileMarkerSymbol->clone() );
   res->setRespectLayerSymbology( mRespectLayerSymbology );
+  res->copyCommonProperties( this );
   return res.release();
 }
 

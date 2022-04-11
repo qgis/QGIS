@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrange.h"
+#include "qgspropertycollection.h"
 
 #include <QObject>
 #include <QDomElement>
@@ -74,6 +75,16 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
 #endif
 
   public:
+
+    /**
+     * Data definable properties.
+     * \since QGIS 3.26
+     */
+    enum Property
+    {
+      ZOffset, //! Z offset
+      ExtrusionHeight, //!< Extrusion height
+    };
 
     /**
      * Flags attached to the elevation property.
@@ -179,6 +190,40 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      */
     void setZScale( double scale ) { mZScale = scale; }
 
+    /**
+     * Returns a reference to the object's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \since QGIS 3.26
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /**
+     * Returns a reference to the object's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \see Property
+     * \note not available in Python bindings
+     * \since QGIS 3.26
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
+
+    /**
+     * Sets the object's property \a collection, used for data defined overrides.
+     *
+     * Any existing properties will be discarded.
+     *
+     * \see dataDefinedProperties()
+     * \see Property
+     * \since QGIS 3.26
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+    /**
+     * Returns the definitions for data defined properties available for use in elevation properties.
+     *
+     * \since QGIS 3.26
+     */
+    static QgsPropertiesDefinition propertyDefinitions();
+
   signals:
 
     /**
@@ -191,6 +236,38 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     double mZScale = 1.0;
     //! Z offset
     double mZOffset = 0.0;
+
+    //! Property collection for data defined elevation settings
+    QgsPropertyCollection mDataDefinedProperties;
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
+    /**
+     * Writes common class properties to a DOM \a element, to be used later with readXml().
+     *
+     * \see readCommonProperties()
+     * \since QGIS 3.26
+     */
+    void writeCommonProperties( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
+
+    /**
+     * Reads common class properties from a DOM \a element previously written by writeXml().
+     *
+     * \see writeCommonProperties()
+     * \since QGIS 3.26
+     */
+    void readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+
+    /**
+     * Copies common properties from another object.
+     *
+     * \since QGIS 3.26
+     */
+    void copyCommonProperties( const QgsMapLayerElevationProperties *other );
+
+    static void initPropertyDefinitions();
+
 };
 
 #endif // QGSMAPLAYERELEVATIONPROPERTIES_H
