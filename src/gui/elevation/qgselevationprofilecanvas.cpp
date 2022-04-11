@@ -31,6 +31,7 @@
 #include "qgsplot.h"
 #include "qgsguiutils.h"
 #include "qgsnumericformat.h"
+#include "qgsexpressioncontextutils.h"
 #include <QWheelEvent>
 
 ///@cond PRIVATE
@@ -475,6 +476,10 @@ void QgsElevationProfileCanvas::refresh()
   request.setCrs( mCrs );
   request.setTransformContext( mProject->transformContext() );
   request.setTerrainProvider( mProject->elevationProperties()->terrainProvider() ? mProject->elevationProperties()->terrainProvider()->clone() : nullptr );
+  QgsExpressionContext context;
+  context.appendScope( QgsExpressionContextUtils::globalScope() );
+  context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+  request.setExpressionContext( context );
 
   const QList< QgsMapLayer * > layersToUpdate = layers();
   QList< QgsAbstractProfileSource * > sources;

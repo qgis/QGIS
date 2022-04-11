@@ -33,6 +33,7 @@ QgsProfileRequest::QgsProfileRequest( const QgsProfileRequest &other )
   , mTolerance( other.mTolerance )
   , mStepDistance( other.mStepDistance )
   , mTerrainProvider( other.mTerrainProvider ? other.mTerrainProvider->clone() : nullptr )
+  , mExpressionContext( other.mExpressionContext )
 {
 
 }
@@ -45,6 +46,7 @@ QgsProfileRequest &QgsProfileRequest::operator=( const QgsProfileRequest &other 
   mTolerance = other.mTolerance;
   mStepDistance = other.mStepDistance;
   mTerrainProvider.reset( other.mTerrainProvider ? other.mTerrainProvider->clone() : nullptr );
+  mExpressionContext = other.mExpressionContext;
   return *this;
 }
 
@@ -139,6 +141,12 @@ QgsAbstractTerrainProvider *QgsProfileRequest::terrainProvider() const
 QgsProfileRequest &QgsProfileRequest::setStepDistance( double distance )
 {
   mStepDistance = distance;
+  return *this;
+}
+
+QgsProfileRequest &QgsProfileRequest::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
   return *this;
 }
 

@@ -166,6 +166,21 @@ A NaN distance value indicates that an appropriate step distance will be automat
 .. seealso:: :py:func:`setStepDistance`
 %End
 
+    QgsExpressionContext &expressionContext();
+%Docstring
+Returns the expression context used to evaluate expressions.
+
+.. seealso:: :py:func:`setExpressionContext`
+%End
+
+
+    QgsProfileRequest &setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Sets the expression context used to evaluate expressions.
+
+.. seealso:: :py:func:`expressionContext`
+%End
+
 };
 
 /************************************************************************
