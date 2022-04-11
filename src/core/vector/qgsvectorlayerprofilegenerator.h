@@ -66,11 +66,13 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
       QgsGeometry crossSectionGeometry;
     };
 
-    QVector< Feature > features;
+    QHash< QgsFeatureId, QVector< Feature > > features;
+    QPointer< QgsVectorLayer > mLayer;
 
     double minZ = std::numeric_limits< double >::max();
     double maxZ = std::numeric_limits< double >::lowest();
 
+    bool respectLayerSymbology = true;
     std::unique_ptr< QgsLineSymbol > profileLineSymbol;
     std::unique_ptr< QgsFillSymbol > profileFillSymbol;
     std::unique_ptr< QgsMarkerSymbol > profileMarkerSymbol;
@@ -150,9 +152,13 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
 
     std::unique_ptr< QgsVectorLayerProfileResults > mResults;
 
+    bool mRespectLayerSymbology = true;
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
     std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
+
+    // NOT for use in the background thread!
+    QPointer< QgsVectorLayer > mLayer;
 
 };
 

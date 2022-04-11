@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>555</width>
-    <height>445</height>
+    <height>524</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -202,7 +202,7 @@
       <string>Profile Chart Appearance</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="1">
+      <item row="2" column="1">
        <widget class="QgsSymbolButton" name="mLineStyleButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -215,28 +215,41 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Line style</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>Marker style</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="1">
+       <widget class="QgsSymbolButton" name="mFillStyleButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>Fill style</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="1" column="1">
        <widget class="QgsSymbolButton" name="mMarkerStyleButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -249,16 +262,13 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QgsSymbolButton" name="mFillStyleButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckRespectLayerSymbology">
+        <property name="toolTip">
+         <string>If checked, then features will be shown in profile charts using the same symbols or colors as they use on 2D maps.</string>
         </property>
         <property name="text">
-         <string/>
+         <string>Respect layer's symbology</string>
         </property>
        </widget>
       </item>
@@ -294,8 +304,17 @@
  </customwidgets>
  <tabstops>
   <tabstop>mElevationGroupBox</tabstop>
+  <tabstop>mComboClamping</tabstop>
   <tabstop>mScaleZSpinBox</tabstop>
   <tabstop>mOffsetZSpinBox</tabstop>
+  <tabstop>mExtrusionGroupBox</tabstop>
+  <tabstop>mExtrusionSpinBox</tabstop>
+  <tabstop>mBindingGroupBox</tabstop>
+  <tabstop>mComboBinding</tabstop>
+  <tabstop>mCheckRespectLayerSymbology</tabstop>
+  <tabstop>mMarkerStyleButton</tabstop>
+  <tabstop>mLineStyleButton</tabstop>
+  <tabstop>mFillStyleButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

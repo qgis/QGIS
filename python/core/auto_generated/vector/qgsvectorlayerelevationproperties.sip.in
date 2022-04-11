@@ -129,6 +129,26 @@ Sets the feature extrusion height.
 .. seealso:: :py:func:`extrusionHeight`
 %End
 
+    bool respectLayerSymbology() const;
+%Docstring
+Returns ``True`` if layer symbology should be respected when rendering elevation profile plots.
+
+Specifically, this will result in the layer's symbols (or symbol colors) being used to draw features in the
+profile plots.
+
+.. seealso:: :py:func:`setRespectLayerSymbology`
+%End
+
+    void setRespectLayerSymbology( bool enabled );
+%Docstring
+Sets whether layer symbology should be respected when rendering elevation profile plots.
+
+Specifically, this will result in the layer's symbols (or symbol colors) being used to draw features in the
+profile plots.
+
+.. seealso:: :py:func:`respectLayerSymbology`
+%End
+
     QgsLineSymbol *profileLineSymbol() const;
 %Docstring
 Returns the symbol used to render lines for the layer in elevation profile plots.

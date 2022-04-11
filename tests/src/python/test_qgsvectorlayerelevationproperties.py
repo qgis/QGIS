@@ -39,6 +39,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertFalse(props.hasElevation())
         self.assertEqual(props.clamping(), Qgis.AltitudeClamping.Terrain)
         self.assertEqual(props.binding(), Qgis.AltitudeBinding.Centroid)
+        self.assertTrue(props.respectLayerSymbology())
 
         props.setZOffset(0.5)
         props.setZScale(2)
@@ -46,6 +47,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         props.setBinding(Qgis.AltitudeBinding.Vertex)
         props.setExtrusionHeight(10)
         props.setExtrusionEnabled(True)
+        props.setRespectLayerSymbology(False)
         self.assertEqual(props.zScale(), 2)
         self.assertEqual(props.zOffset(), 0.5)
         self.assertEqual(props.extrusionHeight(), 10)
@@ -53,6 +55,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertTrue(props.extrusionEnabled())
         self.assertEqual(props.clamping(), Qgis.AltitudeClamping.Relative)
         self.assertEqual(props.binding(), Qgis.AltitudeBinding.Vertex)
+        self.assertFalse(props.respectLayerSymbology())
 
         sym = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
         props.setProfileLineSymbol(sym)
@@ -78,6 +81,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props2.binding(), Qgis.AltitudeBinding.Vertex)
         self.assertEqual(props2.extrusionHeight(), 10)
         self.assertTrue(props2.extrusionEnabled())
+        self.assertFalse(props2.respectLayerSymbology())
 
         self.assertEqual(props2.profileLineSymbol().color().name(), '#ff4433')
         self.assertEqual(props2.profileFillSymbol().color().name(), '#ff4455')
