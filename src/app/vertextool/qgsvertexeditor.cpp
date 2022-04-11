@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdoublevalidator.h"
+#include "qgspanelwidgetstack.h"
 
 #include <QClipboard>
 #include <QLabel>
@@ -39,6 +40,7 @@
 #include <QVector2D>
 #include <QCheckBox>
 #include <QStackedWidget>
+#include <QMenu>
 
 static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
@@ -316,17 +318,19 @@ bool QgsVertexEditorModel::calcR( int row, double &r, double &minRadius ) const
   return true;
 }
 
+//
+// QgsVertexEditorWidget
+//
 
-QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
-  : mCanvas( canvas )
+QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
+  : QgsPanelWidget()
+  , mCanvas( canvas )
   , mVertexModel( new QgsVertexEditorModel( mCanvas, this ) )
 {
-  setWindowTitle( tr( "Vertex Editor" ) );
+  setPanelTitle( tr( "Vertex Editor" ) );
   setObjectName( QStringLiteral( "VertexEditor" ) );
 
-  QWidget *content = new QWidget( this );
-  content->setMinimumHeight( 160 );
-  QVBoxLayout *layout = new QVBoxLayout( content );
+  QVBoxLayout *layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
 
   mStackedWidget = new QStackedWidget();
@@ -339,15 +343,8 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
                        tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
   mHintLabel->setWordWrap( true );
 
-  mAutoPopupDockCheckBox = new QCheckBox( tr( "Auto-open table" ) );
-  mAutoPopupDockCheckBox->setChecked( settingAutoPopupVertexEditorDock.value() );
-  connect( mAutoPopupDockCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
-  {
-    settingAutoPopupVertexEditorDock.setValue( checked );
-  } );
   pageHintLayout->addStretch();
   pageHintLayout->addWidget( mHintLabel );
-  pageHintLayout->addWidget( mAutoPopupDockCheckBox );
   pageHintLayout->addStretch();
   mPageHint->setLayout( pageHintLayout );
 
@@ -361,7 +358,7 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
   mTableView->setModel( mVertexModel );
-  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
+  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditorWidget::updateVertexSelection );
 
   pageTableLayout->addWidget( mTableView );
   mPageTable->setLayout( pageTableLayout );
@@ -369,12 +366,21 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   mStackedWidget->setCurrentWidget( mPageHint );
   layout->addWidget( mStackedWidget );
 
-  setWidget( content );
+  setLayout( layout );
+
+  mWidgetMenu = new QMenu( this );
+  QAction *autoPopupAction = new QAction( tr( "Auto-open Table" ), this );
+  autoPopupAction->setCheckable( true );
+  autoPopupAction->setChecked( QgsVertexEditor::settingAutoPopupVertexEditorDock.value() );
+  connect( autoPopupAction, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    QgsVertexEditor::settingAutoPopupVertexEditorDock.setValue( checked );
+  } );
+  mWidgetMenu->addAction( autoPopupAction );
 }
 
-void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
+void QgsVertexEditorWidget::updateEditor( QgsLockedFeature *lockedFeature )
 {
-
   mLockedFeature = lockedFeature;
 
   mVertexModel->setFeature( mLockedFeature );
@@ -385,7 +391,7 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
   {
     mStackedWidget->setCurrentWidget( mPageTable );
 
-    connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+    connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditorWidget::updateTableSelection );
 
     if ( mLockedFeature->layer() )
     {
@@ -403,7 +409,17 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
   }
 }
 
-void QgsVertexEditor::updateTableSelection()
+QMenu *QgsVertexEditorWidget::menuButtonMenu()
+{
+  return mWidgetMenu;
+}
+
+QString QgsVertexEditorWidget::menuButtonTooltip() const
+{
+  return tr( "Options" );
+}
+
+void QgsVertexEditorWidget::updateTableSelection()
 {
   if ( !mLockedFeature || mUpdatingVertexSelection || mUpdatingTableSelection )
     return;
@@ -429,7 +445,7 @@ void QgsVertexEditor::updateTableSelection()
   mUpdatingTableSelection = false;
 }
 
-void QgsVertexEditor::updateVertexSelection( const QItemSelection &, const QItemSelection & )
+void QgsVertexEditorWidget::updateVertexSelection( const QItemSelection &, const QItemSelection & )
 {
   if ( !mLockedFeature || mUpdatingVertexSelection || mUpdatingTableSelection )
     return;
@@ -474,7 +490,7 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &, const QItem
   mUpdatingVertexSelection = false;
 }
 
-void QgsVertexEditor::keyPressEvent( QKeyEvent *e )
+void QgsVertexEditorWidget::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
@@ -499,6 +515,33 @@ void QgsVertexEditor::keyPressEvent( QKeyEvent *e )
     }
     QApplication::clipboard()->setText( text );
   }
+}
+
+
+//
+// QgsVertexEditor
+//
+
+QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
+{
+  setWindowTitle( tr( "Vertex Editor" ) );
+  setObjectName( QStringLiteral( "VertexEditor" ) );
+
+  QVBoxLayout *layout = new QVBoxLayout();
+  layout->setContentsMargins( 0, 0, 0, 0 );
+
+  QgsPanelWidgetStack *stack = new QgsPanelWidgetStack();
+  setWidget( stack );
+
+  mWidget = new QgsVertexEditorWidget( canvas );
+  stack->setMainPanel( mWidget );
+
+  connect( mWidget, &QgsVertexEditorWidget::deleteSelectedRequested, this, &QgsVertexEditor::deleteSelectedRequested );
+}
+
+void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
+{
+  mWidget->updateEditor( lockedFeature );
 }
 
 void QgsVertexEditor::closeEvent( QCloseEvent *event )
