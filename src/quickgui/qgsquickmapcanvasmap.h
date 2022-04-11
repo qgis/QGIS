@@ -166,6 +166,11 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
      */
     void refresh();
 
+    /**
+     * Clears rendering cache
+     */
+    void clearCache();
+
   private slots:
     void refreshMap( bool silent = false );
     void renderJobUpdated();
