@@ -28,9 +28,15 @@ QgsOWSSourceWidget::QgsOWSSourceWidget( const QString &providerKey, QWidget *par
 {
   setupUi( this );
 
-  if ( providerKey == QStringLiteral( "wcs" ) )
-    mWMSGroupBox->hide();
+  QgsCoordinateReferenceSystem destinationCrs;
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  mSpatialExtentBox->setOutputCrs( crs );
 
+  if ( mapCanvas() && mapCanvas()->mapSettings().destinationCrs().isValid() )
+    destinationCrs = mapCanvas()->mapSettings().destinationCrs();
+  else
+    destinationCrs = crs;
+  mSpatialExtentBox->setMapCanvas( mapCanvas() );
 }
 
 void QgsOWSSourceWidget::setExtent( QgsRectangle extent )
@@ -59,21 +65,28 @@ void QgsOWSSourceWidget::setSourceUri( const QString &uri )
   bool inverted = mSourceParts.value( QStringLiteral( "InvertAxisOrientation" ) ).toBool();
 
   QString bbox = mSourceParts.value( QStringLiteral( "bbox" ) ).toString();
-  if ( bbox.isEmpty() )
-    return;
-  QStringList coords = bbox.split( ',' );
-  QgsRectangle extent = inverted ? QgsRectangle(
-                          coords.takeAt( 1 ).toDouble(),
-                          coords.takeAt( 0 ).toDouble(),
-                          coords.takeAt( 2 ).toDouble(),
-                          coords.takeAt( 3 ).toDouble() ) :
-                        QgsRectangle(
-                          coords.takeAt( 0 ).toDouble(),
-                          coords.takeAt( 1 ).toDouble(),
-                          coords.takeAt( 2 ).toDouble(),
-                          coords.takeAt( 3 ).toDouble() );
-  mSpatialExtentBox->setChecked( true );
+  QgsRectangle extent;
+  if ( !bbox.isEmpty() )
+  {
+    QStringList coords = bbox.split( ',' );
+    extent = inverted ? QgsRectangle(
+               coords.takeAt( 1 ).toDouble(),
+               coords.takeAt( 0 ).toDouble(),
+               coords.takeAt( 2 ).toDouble(),
+               coords.takeAt( 3 ).toDouble() ) :
+             QgsRectangle(
+               coords.takeAt( 0 ).toDouble(),
+               coords.takeAt( 1 ).toDouble(),
+               coords.takeAt( 2 ).toDouble(),
+               coords.takeAt( 3 ).toDouble() );
+  }
+  else
+  {
+    extent = QgsRectangle();
+  }
+
   setExtent( extent );
+  mSpatialExtentBox->setChecked( !extent.isNull() );
 }
 
 QString QgsOWSSourceWidget::sourceUri() const
@@ -81,15 +94,20 @@ QString QgsOWSSourceWidget::sourceUri() const
   QVariantMap parts = mSourceParts;
 
   QgsRectangle spatialExtent = extent();
-  bool inverted = parts.value( QStringLiteral( "InvertAxisOrientation" ) ).toBool();
 
-  QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( qgsDoubleToString( spatialExtent.xMinimum() ),
-                       qgsDoubleToString( spatialExtent.yMinimum() ),
-                       qgsDoubleToString( spatialExtent.xMaximum() ),
-                       qgsDoubleToString( spatialExtent.yMaximum() ) );
+  if ( mSpatialExtentBox->isChecked() && !spatialExtent.isNull() )
+  {
+    bool inverted = parts.value( QStringLiteral( "InvertAxisOrientation" ) ).toBool();
 
-  parts.insert( QStringLiteral( "bbox" ), bbox );
+    QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+                   .arg( qgsDoubleToString( spatialExtent.xMinimum() ),
+                         qgsDoubleToString( spatialExtent.yMinimum() ),
+                         qgsDoubleToString( spatialExtent.xMaximum() ),
+                         qgsDoubleToString( spatialExtent.yMaximum() ) );
+
+    parts.insert( QStringLiteral( "bbox" ), bbox );
+  }
+
 
   return QgsProviderRegistry::instance()->encodeUri( mProviderKey, parts );
 }
