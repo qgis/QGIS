@@ -61,6 +61,7 @@ class TestQgsEptProvider : public QObject
     void uriIsBlocklisted();
     void querySublayers();
     void brokenPath();
+    void testLazInfo();
     void validLayer();
     void validLayerWithEptHierarchy();
     void attributes();
@@ -200,6 +201,41 @@ void TestQgsEptProvider::brokenPath()
   std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( !layer->isValid() );
 }
+
+void TestQgsEptProvider::testLazInfo()
+{
+  {
+    QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept.json" );
+    std::ifstream file( dataPath.toStdString(), std::ios::binary );
+    QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
+    QVERIFY( !lazInfo.isValid() );
+  }
+  {
+    QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept-data/0-0-0-0.laz" );
+    std::ifstream file( dataPath.toStdString(), std::ios::binary );
+    QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
+    QVERIFY( lazInfo.isValid() );
+    QCOMPARE( lazInfo.pointCount(), 41998 );
+    QCOMPARE( lazInfo.scale().toVector3D(), QVector3D( 0.00025, 0.00025, 0.00025 ) );
+    QCOMPARE( lazInfo.offset().toVector3D(), QVector3D( 515385, 4918360, 2331 ) );
+    QPair<uint16_t, uint16_t> creationYearDay = lazInfo.creationYearDay();
+    QCOMPARE( creationYearDay.first, 2019 );
+    QCOMPARE( creationYearDay.second, 172 );
+    QPair<uint8_t, uint8_t> version = lazInfo.version();
+    QCOMPARE( version.first, 1 );
+    QCOMPARE( version.second, 2 );
+    QCOMPARE( lazInfo.pointFormat(), 1 );
+    QCOMPARE( lazInfo.systemId(), "PDAL" );
+    QCOMPARE( lazInfo.softwareId(), QStringLiteral( "Entwine" ) );
+    QCOMPARE( lazInfo.minCoords().toVector3D(), QVector3D( 515368.63225000002421439, 4918340.36400000005960464, 2322.90050000000019281 ) );
+    QCOMPARE( lazInfo.maxCoords().toVector3D(), QVector3D( 515401.03749999997671694, 4918381.10350000020116568, 2338.56550000000015643 ) );
+    QCOMPARE( lazInfo.firstPointRecordOffset(), 865 );
+    QCOMPARE( lazInfo.firstVariableLengthRecord(), 227 );
+    QCOMPARE( lazInfo.pointRecordLength(), 32 );
+    QCOMPARE( lazInfo.extrabytesCount(), 4 );
+  }
+}
+
 
 void TestQgsEptProvider::validLayer()
 {

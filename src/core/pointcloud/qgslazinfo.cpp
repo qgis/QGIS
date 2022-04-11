@@ -86,7 +86,15 @@ void QgsLazInfo::parseHeader( lazperf::header14 &header )
 
   mProjectId = QString( QByteArray( header.guid, 16 ).toHex() );
   mSystemId = QString::fromLocal8Bit( header.system_identifier, 32 );
-  mSoftwareId = QString::fromLocal8Bit( header.generating_software, 32 );
+  while ( !mSystemId.isEmpty() && mSystemId.back() == '\0' )
+  {
+    mSystemId.remove( mSystemId.size() - 1, 1 );
+  }
+  mSoftwareId = QString::fromLocal8Bit( header.generating_software, 32 ).trimmed();
+  while ( !mSoftwareId.isEmpty() && mSoftwareId.back() == '\0' )
+  {
+    mSoftwareId.remove( mSoftwareId.size() - 1, 1 );
+  }
 
   mMinCoords = QgsVector3D( header.minx, header.miny, header.minz );
   mMaxCoords = QgsVector3D( header.maxx, header.maxy, header.maxz );
