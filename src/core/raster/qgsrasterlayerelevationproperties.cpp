@@ -40,8 +40,8 @@ QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElem
 {
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
   element.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
-  element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+
+  writeCommonProperties( element, document, context );
   element.setAttribute( QStringLiteral( "band" ), mBandNumber );
 
   QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
@@ -56,8 +56,8 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
 {
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
   mEnabled = elevationElement.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
-  mZOffset = elevationElement.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
-  mZScale = elevationElement.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
+
+  readCommonProperties( elevationElement, context );
   mBandNumber = elevationElement.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt();
 
   const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
@@ -72,10 +72,9 @@ QgsRasterLayerElevationProperties *QgsRasterLayerElevationProperties::clone() co
 {
   std::unique_ptr< QgsRasterLayerElevationProperties > res = std::make_unique< QgsRasterLayerElevationProperties >( nullptr );
   res->setEnabled( mEnabled );
-  res->setZOffset( mZOffset );
-  res->setZScale( mZScale );
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
   res->setBandNumber( mBandNumber );
+  res->copyCommonProperties( this );
   return res.release();
 }
 
