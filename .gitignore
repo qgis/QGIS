@@ -10,6 +10,8 @@
 *.orig
 *.out
 *.prepare
+.venv
+venv
 *.pyc
 *.py.temp
 *.sortinc
