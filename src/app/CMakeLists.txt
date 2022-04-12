@@ -178,6 +178,7 @@ set(QGIS_APP_SRCS
   elevation/qgselevationprofilepdfexportdialog.cpp
   elevation/qgselevationprofilewidget.cpp
   elevation/qgsmaptoolprofilecurve.cpp
+  elevation/qgsmaptoolprofilecurvefromfeature.cpp
 
   georeferencer/qgsvalidateddoublespinbox.cpp
 

@@ -24,6 +24,7 @@
 #include "qgsrendercontext.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsguiutils.h"
 
 #include <QPainter>
 
@@ -507,7 +508,7 @@ void QgsRubberBand::paint( QPainter *p )
       if ( i == 0 && iterations > 1 )
       {
         // first iteration with multi-pen painting, so use secondary pen
-        mSecondaryPen.setWidth( mPen.width() + 2 );
+        mSecondaryPen.setWidth( mPen.width() + QgsGuiUtils::scaleIconSize( 2 ) );
         p->setBrush( Qt::NoBrush );
         p->setPen( mSecondaryPen );
       }

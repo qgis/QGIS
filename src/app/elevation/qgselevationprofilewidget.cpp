@@ -21,6 +21,7 @@
 #include "qgsdockablewidgethelper.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolprofilecurve.h"
+#include "qgsmaptoolprofilecurvefromfeature.h"
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsplottoolpan.h"
@@ -31,6 +32,7 @@
 #include "qgsfileutils.h"
 #include "qgsmessagebar.h"
 #include "qgsplot.h"
+#include "qgsmulticurve.h"
 #include "qgsmaplayerutils.h"
 
 #include <QToolBar>
@@ -72,6 +74,18 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
     }
   } );
   toolBar->addAction( mCaptureCurveAction );
+
+  mCaptureCurveFromFeatureAction = new QAction( tr( "Capture Curve From Feature" ), this );
+  mCaptureCurveFromFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureCurveFromFeature.svg" ) ) );
+  mCaptureCurveFromFeatureAction->setCheckable( true );
+  connect( mCaptureCurveFromFeatureAction, &QAction::triggered, this, [ = ]
+  {
+    if ( mCaptureCurveFromFeatureMapTool && mMainCanvas )
+    {
+      mMainCanvas->setMapTool( mCaptureCurveFromFeatureMapTool.get() );
+    }
+  } );
+  toolBar->addAction( mCaptureCurveFromFeatureAction );
 
   QAction *clearAction = new QAction( tr( "Clear" ), this );
   clearAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconClearConsole.svg" ) ) );
@@ -223,7 +237,10 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
     if ( mRubberBand )
       mRubberBand->show();
   } );
-  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
+
+  mCaptureCurveFromFeatureMapTool = std::make_unique< QgsMapToolProfileCurveFromFeature >( canvas );
+  mCaptureCurveFromFeatureMapTool->setAction( mCaptureCurveFromFeatureAction );
+  connect( mCaptureCurveFromFeatureMapTool.get(), &QgsMapToolProfileCurveFromFeature::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
 
   mMapPointRubberBand.reset( new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry ) );
   mMapPointRubberBand->setIcon( QgsRubberBand::ICON_FULL_DIAMOND );
@@ -296,11 +313,21 @@ void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &point )
 
 void QgsElevationProfileWidget::updatePlot()
 {
-  if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( mProfileCurve.constGet() ) )
+  if ( !mProfileCurve.isEmpty() )
   {
-    mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
-    mCanvas->setProfileCurve( curve->clone() );
-    mCanvas->refresh();
+    if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
+    {
+      mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
+      mCanvas->setProfileCurve( curve->clone() );
+      mCanvas->refresh();
+    }
+    else if ( const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
+    {
+      // hm, just grab the first part!
+      mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
+      mCanvas->setProfileCurve( multiCurve->curveN( 0 )->clone() );
+      mCanvas->refresh();
+    }
   }
   mUpdateScheduled = false;
 }
@@ -448,12 +475,10 @@ void QgsElevationProfileWidget::exportAsImage()
 QgsRubberBand *QgsElevationProfileWidget::createRubberBand( )
 {
   QgsRubberBand *rb = new QgsRubberBand( mMainCanvas, QgsWkbTypes::LineGeometry );
-  rb->setWidth( QgsSettingsRegistryCore::settingsDigitizingLineWidth.value() );
-  QColor color = QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
-                         QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
-                         QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value(),
-                         QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() );
-  rb->setStrokeColor( color );
+  rb->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
+  rb->setStrokeColor( QColor( 255, 255, 255, 255 ) );
+  rb->setLineStyle( Qt::DashLine );
+  rb->setSecondaryStrokeColor( QColor( 40, 40, 40, 100 ) );
   rb->show();
   return rb;
 }
