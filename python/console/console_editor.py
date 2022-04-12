@@ -652,7 +652,7 @@ class EditorTab(QWidget):
             folder = self.pc.settings.value("pythonConsole/lastDirPath", QDir.homePath())
             self.path, filter = QFileDialog().getSaveFileName(self,
                                                               saveTr,
-                                                              os.path.join(folder, self.tw.tabText(index) + '.py'),
+                                                              os.path.join(folder, self.tw.tabText(index).replace('*', '') + '.py'),
                                                               "Script file (*.py)")
             # If the user didn't select a file, abort the save operation
             if len(self.path) == 0:
