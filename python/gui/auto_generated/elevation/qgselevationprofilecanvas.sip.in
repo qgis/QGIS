@@ -55,6 +55,8 @@ Scales the plot axis by the given factors.
 
     virtual void wheelZoom( QWheelEvent *event );
 
+    virtual void mouseMoveEvent( QMouseEvent *e );
+
 
     QRectF plotArea() const;
 %Docstring

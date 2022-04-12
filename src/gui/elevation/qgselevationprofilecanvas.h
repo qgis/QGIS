@@ -26,6 +26,7 @@
 #include "qgscoordinatereferencesystem.h"
 
 class QgsElevationProfilePlotItem;
+class QgsElevationProfileCrossHairsItem;
 class QgsAbstractProfileResults;
 class QgsProfilePlotRenderer;
 class QgsCurve;
@@ -67,6 +68,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     void zoomToRect( const QRectF rect ) override;
     void wheelZoom( QWheelEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *e ) override;
 
     /**
      * Returns the interior rectangle representing the surface of the plot, in canvas coordinates.
@@ -170,12 +172,18 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
   private:
 
+    /**
+     * Converts a canvas point to the equivalent plot point.
+     */
+    QgsPointXY canvasPointToPlotPoint( const QPointF &point ) const;
+
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;
 
     QgsWeakMapLayerPointerList mLayers;
 
     QgsElevationProfilePlotItem *mPlotItem = nullptr;
+    QgsElevationProfileCrossHairsItem *mCrossHairsItem = nullptr;
 
     QgsProfilePlotRenderer *mCurrentJob = nullptr;
 
