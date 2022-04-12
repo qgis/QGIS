@@ -52,6 +52,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mCanvas = new QgsElevationProfileCanvas( this );
   mCanvas->setProject( QgsProject::instance() );
   connect( mCanvas, &QgsElevationProfileCanvas::activeJobCountChanged, this, &QgsElevationProfileWidget::onTotalPendingJobsCountChanged );
+  connect( mCanvas, &QgsElevationProfileCanvas::canvasPointHovered, this, &QgsElevationProfileWidget::onCanvasPointHovered );
 
   mPanTool = new QgsPlotToolPan( mCanvas );
   mCanvas->setTool( mPanTool );
@@ -190,6 +191,9 @@ QgsElevationProfileWidget::~QgsElevationProfileWidget()
   if ( mRubberBand )
     mRubberBand.reset();
 
+  if ( mMapPointRubberBand )
+    mMapPointRubberBand.reset();
+
   delete mDockableWidgetHelper;
 }
 
@@ -219,6 +223,14 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
       mRubberBand->show();
   } );
   connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
+
+  mMapPointRubberBand.reset( new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry ) );
+  mMapPointRubberBand->setIcon( QgsRubberBand::ICON_FULL_DIAMOND );
+  mMapPointRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 8 ) );
+  mMapPointRubberBand->setIconSize( QgsGuiUtils::scaleIconSize( 4 ) );
+  mMapPointRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
+  mMapPointRubberBand->setColor( QColor( 0, 0, 0 ) );
+  mMapPointRubberBand->hide();
 
   // only do this from map tool!
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &QgsElevationProfileWidget::onMainCanvasLayersChanged );
@@ -250,6 +262,23 @@ void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve )
   scheduleUpdate();
 }
 
+void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &point )
+{
+  if ( !mMapPointRubberBand )
+    return;
+
+  const QgsPointXY mapPoint = mCanvas->toMapCoordinates( point );
+  if ( mapPoint.isEmpty() )
+  {
+    mMapPointRubberBand->hide();
+  }
+  else
+  {
+    mMapPointRubberBand->setToGeometry( QgsGeometry::fromPointXY( mapPoint ) );
+    mMapPointRubberBand->show();
+  }
+}
+
 void QgsElevationProfileWidget::updatePlot()
 {
   if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( mProfileCurve.constGet() ) )
@@ -273,6 +302,8 @@ void QgsElevationProfileWidget::scheduleUpdate()
 void QgsElevationProfileWidget::clear()
 {
   mRubberBand.reset();
+  if ( mMapPointRubberBand )
+    mMapPointRubberBand->hide();
   mCanvas->clear();
 }
 

@@ -154,6 +154,11 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void activeJobCountChanged( int count );
 
+    /**
+     * Emitted when the mouse hovers over the specified point (in canvas coordinates).
+     */
+    void canvasPointHovered( const QgsPointXY &point );
+
   public slots:
 
     /**

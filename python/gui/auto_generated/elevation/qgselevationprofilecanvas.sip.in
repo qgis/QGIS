@@ -137,6 +137,11 @@ Renders a portion of the profile using the specified render ``context``.
 Emitted when the number of active background jobs changes.
 %End
 
+    void canvasPointHovered( const QgsPointXY &point );
+%Docstring
+Emitted when the mouse hovers over the specified point (in canvas coordinates).
+%End
+
   public slots:
 
     void zoomFull();
