@@ -402,12 +402,10 @@ void QgsElevationProfileWidget::exportAsImage()
 QgsRubberBand *QgsElevationProfileWidget::createRubberBand( )
 {
   QgsRubberBand *rb = new QgsRubberBand( mMainCanvas, QgsWkbTypes::LineGeometry );
-  rb->setWidth( QgsSettingsRegistryCore::settingsDigitizingLineWidth.value() );
-  QColor color = QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
-                         QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
-                         QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value(),
-                         QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() );
-  rb->setStrokeColor( color );
+  rb->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
+  rb->setStrokeColor( QColor( 255, 255, 255, 255 ) );
+  rb->setLineStyle( Qt::DashLine );
+  rb->setSecondaryStrokeColor( QColor( 40, 40, 40, 100 ) );
   rb->show();
   return rb;
 }
