@@ -21,6 +21,7 @@
 #include "qgsdockablewidgethelper.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolprofilecurve.h"
+#include "qgsmaptoolprofilecurvefromfeature.h"
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsplottoolpan.h"
@@ -31,6 +32,7 @@
 #include "qgsfileutils.h"
 #include "qgsmessagebar.h"
 #include "qgsplot.h"
+#include "qgsmulticurve.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -70,6 +72,18 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
     }
   } );
   toolBar->addAction( mCaptureCurveAction );
+
+  mCaptureCurveFromFeatureAction = new QAction( tr( "Capture Curve From Feature" ), this );
+  mCaptureCurveFromFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureCurveFromFeature.svg" ) ) );
+  mCaptureCurveFromFeatureAction->setCheckable( true );
+  connect( mCaptureCurveFromFeatureAction, &QAction::triggered, this, [ = ]
+  {
+    if ( mCaptureCurveFromFeatureMapTool && mMainCanvas )
+    {
+      mMainCanvas->setMapTool( mCaptureCurveFromFeatureMapTool.get() );
+    }
+  } );
+  toolBar->addAction( mCaptureCurveFromFeatureAction );
 
   QAction *clearAction = new QAction( tr( "Clear" ), this );
   clearAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconClearConsole.svg" ) ) );
@@ -218,7 +232,10 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
     if ( mRubberBand )
       mRubberBand->show();
   } );
-  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
+
+  mCaptureCurveFromFeatureMapTool = std::make_unique< QgsMapToolProfileCurveFromFeature >( canvas );
+  mCaptureCurveFromFeatureMapTool->setAction( mCaptureCurveFromFeatureAction );
+  connect( mCaptureCurveFromFeatureMapTool.get(), &QgsMapToolProfileCurveFromFeature::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
 
   // only do this from map tool!
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &QgsElevationProfileWidget::onMainCanvasLayersChanged );
@@ -252,11 +269,21 @@ void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve )
 
 void QgsElevationProfileWidget::updatePlot()
 {
-  if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( mProfileCurve.constGet() ) )
+  if ( !mProfileCurve.isEmpty() )
   {
-    mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
-    mCanvas->setProfileCurve( curve->clone() );
-    mCanvas->refresh();
+    if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
+    {
+      mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
+      mCanvas->setProfileCurve( curve->clone() );
+      mCanvas->refresh();
+    }
+    else if ( const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
+    {
+      // hm, just grab the first part!
+      mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
+      mCanvas->setProfileCurve( multiCurve->curveN( 0 )->clone() );
+      mCanvas->refresh();
+    }
   }
   mUpdateScheduled = false;
 }
