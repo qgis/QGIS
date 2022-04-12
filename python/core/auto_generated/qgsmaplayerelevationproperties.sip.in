@@ -235,8 +235,6 @@ Copies common properties from another object.
 .. versionadded:: 3.26
 %End
 
-    static void initPropertyDefinitions();
-
 };
 
 /************************************************************************
