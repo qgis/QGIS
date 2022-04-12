@@ -61,6 +61,7 @@ class QgsElevationProfileWidget : public QWidget
     void onMainCanvasLayersChanged();
     void onTotalPendingJobsCountChanged( int count );
     void setProfileCurve( const QgsGeometry &curve );
+    void onCanvasPointHovered( const QgsPointXY &point );
     void updatePlot();
     void scheduleUpdate();
     void clear();
@@ -81,6 +82,7 @@ class QgsElevationProfileWidget : public QWidget
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;
     QgsGeometry mProfileCurve;
 
+    QObjectUniquePtr<QgsRubberBand> mMapPointRubberBand;
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
 
     QTimer *mSetCurveTimer = nullptr;
