@@ -98,6 +98,11 @@ Item {
     mapCanvasWrapper.zoom(point, 1.5)
   }
 
+  function refresh() {
+    mapCanvasWrapper.clearCache()
+    mapCanvasWrapper.refresh()
+  }
+
   QgsQuick.MapCanvasMap {
     id: mapCanvasWrapper
 
