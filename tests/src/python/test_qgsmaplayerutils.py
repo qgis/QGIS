@@ -20,7 +20,11 @@ from qgis.core import (
     QgsCoordinateTransformContext,
     QgsVectorLayer,
     QgsRasterLayer,
-    QgsRectangle
+    QgsAnnotationLayer,
+    QgsGroupLayer,
+    QgsRectangle,
+    QgsProject,
+    QgsMapLayerType
 )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -122,6 +126,38 @@ class TestQgsMapLayerUtils(unittest.TestCase):
         self.assertTrue(layer.isValid())
         self.assertFalse(QgsMapLayerUtils.updateLayerSourcePath(layer, unitTestDataPath() + '/mixed_layers22.gpkg'))
         self.assertEqual(layer.source(), old_source)
+
+    def test_sort_layers_by_type(self):
+        vl1 = QgsVectorLayer("Point?field=x:string", 'vector 1', "memory")
+        vl2 = QgsVectorLayer("Point?field=x:string", 'vector 2', "memory")
+        options = QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext())
+        al1 = QgsAnnotationLayer('annotations 1', options)
+        al2 = QgsAnnotationLayer('annotations 2', options)
+        rl1 = QgsRasterLayer(f'GPKG:{unitTestDataPath()}/mixed_layers.gpkg:band1', 'raster 1')
+        options = QgsGroupLayer.LayerOptions(QgsProject.instance().transformContext())
+        gp1 = QgsGroupLayer('group 1', options)
+
+        self.assertEqual(QgsMapLayerUtils.sortLayersByType([vl1, rl1, gp1, vl2, al2, al1], []), [vl1, rl1, gp1, vl2, al2, al1])
+        self.assertEqual(QgsMapLayerUtils.sortLayersByType([vl1, rl1, gp1, vl2, al2, al1], [QgsMapLayerType.VectorLayer]), [vl1, vl2, rl1, gp1, al2, al1])
+        self.assertEqual(QgsMapLayerUtils.sortLayersByType([vl1, rl1, gp1, vl2, al2, al1], [QgsMapLayerType.RasterLayer, QgsMapLayerType.VectorLayer]),
+                         [rl1, vl1, vl2, gp1, al2, al1])
+        self.assertEqual(QgsMapLayerUtils.sortLayersByType([vl1, rl1, gp1, vl2, al2, al1], [QgsMapLayerType.GroupLayer, QgsMapLayerType.VectorLayer]),
+                         [gp1, vl1, vl2, rl1, al2, al1])
+        self.assertEqual(QgsMapLayerUtils.sortLayersByType([vl1, rl1, gp1, vl2, al2, al1], [QgsMapLayerType.GroupLayer,
+                                                                                            QgsMapLayerType.VectorLayer,
+                                                                                            QgsMapLayerType.AnnotationLayer]),
+                         [gp1, vl1, vl2, al2, al1, rl1])
+        self.assertEqual(QgsMapLayerUtils.sortLayersByType([vl1, rl1, gp1, vl2, al2, al1], [QgsMapLayerType.GroupLayer,
+                                                                                            QgsMapLayerType.VectorLayer,
+                                                                                            QgsMapLayerType.RasterLayer,
+                                                                                            QgsMapLayerType.AnnotationLayer]),
+                         [gp1, vl1, vl2, rl1, al2, al1])
+        self.assertEqual(QgsMapLayerUtils.sortLayersByType([vl1, rl1, gp1, vl2], [QgsMapLayerType.GroupLayer,
+                                                                                  QgsMapLayerType.VectorLayer,
+                                                                                  QgsMapLayerType.RasterLayer]),
+                         [gp1, vl1, vl2, rl1])
+        self.assertEqual(QgsMapLayerUtils.sortLayersByType([vl1, rl1, gp1, vl2], [QgsMapLayerType.AnnotationLayer]),
+                         [vl1, rl1, gp1, vl2])
 
 
 if __name__ == '__main__':

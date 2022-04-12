@@ -155,6 +155,10 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
         }
         data[QStringLiteral( "point" )] = transformedPoint;
       }
+      else
+      {
+        data[QStringLiteral( "point" )] = point;
+      }
 
       QgsLocatorResult result;
       result.filter = this;
