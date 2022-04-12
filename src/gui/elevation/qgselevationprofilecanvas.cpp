@@ -30,6 +30,7 @@
 #include "qgsgeos.h"
 #include "qgsplot.h"
 #include "qgsguiutils.h"
+#include "qgsnumericformat.h"
 #include <QWheelEvent>
 
 ///@cond PRIVATE
@@ -195,6 +196,69 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       painter->setPen( crossHairPen );
       painter->drawLine( QPointF( mPlotItem->plotArea().left(), crossHairPlotPoint.y() ), QPointF( mPlotItem->plotArea().right(), crossHairPlotPoint.y() ) );
       painter->drawLine( QPointF( crossHairPlotPoint.x(), mPlotItem->plotArea().top() ), QPointF( crossHairPlotPoint.x(), mPlotItem->plotArea().bottom() ) );
+
+      // also render current point text
+      QgsNumericFormatContext numericContext;
+
+      const QString xCoordinateText = mPlotItem->xAxis().numericFormat()->formatDouble( mPoint.x(), numericContext );
+      const QString yCoordinateText = mPlotItem->yAxis().numericFormat()->formatDouble( mPoint.y(), numericContext );
+
+      QFont font;
+      const QFontMetrics fm( font );
+      const double height = fm.capHeight();
+      const double xWidth = fm.horizontalAdvance( xCoordinateText );
+      const double yWidth = fm.horizontalAdvance( yCoordinateText );
+      const double textAxisMargin = fm.horizontalAdvance( ' ' );
+
+      QPointF xCoordOrigin;
+      QPointF yCoordOrigin;
+
+      if ( mPoint.x() < ( mPlotItem->xMaximum() + mPlotItem->xMinimum() ) * 0.5 )
+      {
+        if ( mPoint.y() < ( mPlotItem->yMaximum() + mPlotItem->yMinimum() ) * 0.5 )
+        {
+          // render x coordinate on right top (left top align)
+          xCoordOrigin = QPointF( crossHairPlotPoint.x() + textAxisMargin, mPlotItem->plotArea().top() + height + textAxisMargin );
+          // render y coordinate on right top (right bottom align)
+          yCoordOrigin = QPointF( mPlotItem->plotArea().right() - yWidth - textAxisMargin, crossHairPlotPoint.y() - textAxisMargin );
+        }
+        else
+        {
+          // render x coordinate on right bottom (left bottom align)
+          xCoordOrigin = QPointF( crossHairPlotPoint.x() + textAxisMargin, mPlotItem->plotArea().bottom() - textAxisMargin );
+          // render y coordinate on right bottom (right top align)
+          yCoordOrigin = QPointF( mPlotItem->plotArea().right() - yWidth - textAxisMargin, crossHairPlotPoint.y() + height + textAxisMargin );
+        }
+      }
+      else
+      {
+        if ( mPoint.y() < ( mPlotItem->yMaximum() + mPlotItem->yMinimum() ) * 0.5 )
+        {
+          // render x coordinate on left top (right top align)
+          xCoordOrigin = QPointF( crossHairPlotPoint.x() - xWidth - textAxisMargin, mPlotItem->plotArea().top() + height + textAxisMargin );
+          // render y coordinate on left top (left bottom align)
+          yCoordOrigin = QPointF( mPlotItem->plotArea().left() + textAxisMargin, crossHairPlotPoint.y() - textAxisMargin );
+        }
+        else
+        {
+          // render x coordinate on left bottom (right bottom align)
+          xCoordOrigin = QPointF( crossHairPlotPoint.x() - xWidth - textAxisMargin, mPlotItem->plotArea().bottom() - textAxisMargin );
+          // render y coordinate on left bottom (left top align)
+          yCoordOrigin = QPointF( mPlotItem->plotArea().left() + textAxisMargin, crossHairPlotPoint.y() + height + textAxisMargin );
+        }
+      }
+
+      // semi opaque white background
+      painter->setBrush( QBrush( QColor( 255, 255, 255, 220 ) ) );
+      painter->setPen( Qt::NoPen );
+      painter->drawRect( QRectF( xCoordOrigin.x() - textAxisMargin + 1, xCoordOrigin.y() - textAxisMargin - height + 1, xWidth + 2 * textAxisMargin - 2, height + 2 * textAxisMargin - 2 ) );
+      painter->drawRect( QRectF( yCoordOrigin.x() - textAxisMargin + 1, yCoordOrigin.y() - textAxisMargin - height + 1, yWidth + 2 * textAxisMargin - 2, height + 2 * textAxisMargin - 2 ) );
+
+      painter->setBrush( Qt::NoBrush );
+      painter->setPen( Qt::black );
+
+      painter->drawText( xCoordOrigin, xCoordinateText );
+      painter->drawText( yCoordOrigin, yCoordinateText );
       painter->restore();
     }
 
