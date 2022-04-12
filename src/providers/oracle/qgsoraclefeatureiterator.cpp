@@ -294,13 +294,11 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
     if ( mRewind )
     {
       mRewind = false;
-      QgsDatabaseQueryLogWrapper logWrapper { mSql, mConnection->connInfo(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleFeatureIterator" ), QGS_QUERY_LOG_ORIGIN };
       if ( !execQuery( mSql, mArgs, 1 ) )
       {
         const QString error { QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
                               .arg( mQry.lastQuery(),
                                     mQry.lastError().text() ) };
-        logWrapper.setError( error );
         QgsMessageLog::logMessage( error,
                                    QObject::tr( "Oracle" ) );
         return false;
@@ -535,14 +533,12 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
     mSql = query;
     mArgs = args;
 
-    QgsDatabaseQueryLogWrapper logWrapper { query, mConnection->connInfo(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleFeatureIterator" ), QGS_QUERY_LOG_ORIGIN };
     if ( !execQuery( query, args, 1 ) )
     {
 
       const QString error { QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
                             .arg( mQry.lastQuery(),
                                   mQry.lastError().text() ) };
-      logWrapper.setError( error );
       if ( showLog )
       {
         QgsMessageLog::logMessage( error,
@@ -562,7 +558,7 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
 bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantList &args, int retryCount )
 {
   lock();
-  if ( !QgsOracleProvider::exec( mQry, query, args ) )
+  if ( !QgsOracleProvider::execLoggedStatic( mQry, query, args, mSource->mUri.uri(), QStringLiteral( "QgsOracleFeatureIterator" ), QGS_QUERY_LOG_ORIGIN ) )
   {
     unlock();
     if ( retryCount != 0 )

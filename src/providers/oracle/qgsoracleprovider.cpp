@@ -45,6 +45,7 @@
 #endif
 
 #include <QSqlRecord>
+#include <QSqlDriver>
 #include <QSqlField>
 #include <QUuid>
 
@@ -315,8 +316,10 @@ bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, co
 {
   QgsDatabaseQueryLogWrapper logWrapper { sql, uri, QStringLiteral( "oracle" ), originatorClass, queryOrigin };
   const bool res { exec( qry, sql, args ) };
-  logWrapper.setQuery( qry.lastQuery() );
+  logWrapper.setQuery( getLastExecutedQuery( qry ) );
   logWrapper.setError( qry.lastError().text() );
+  // ORACLE does not support size so this will always be -1
+  // we leave it here in case this changes in the future
   if ( qry.isSelect() )
   {
     logWrapper.setFetchedRows( qry.size() );
@@ -326,6 +329,29 @@ bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, co
     logWrapper.setFetchedRows( qry.numRowsAffected() );
   }
   return res;
+}
+
+QString QgsOracleProvider::getLastExecutedQuery( const QSqlQuery &query )
+{
+  QString str = query.lastQuery();
+  QMapIterator<QString, QVariant> it( query.boundValues() );
+  while ( it.hasNext() )
+  {
+    it.next();
+    const QVariant &var { it.value().toString() };
+    QSqlField field( QLatin1String( "" ), var.type() );
+    if ( var.isNull() )
+    {
+      field.clear();
+    }
+    else
+    {
+      field.setValue( var );
+    }
+    const QString formatV = query.driver()->formatValue( field );
+    str.replace( it.key(), formatV );
+  }
+  return str;
 }
 
 void QgsOracleProvider::setTransaction( QgsTransaction *transaction )

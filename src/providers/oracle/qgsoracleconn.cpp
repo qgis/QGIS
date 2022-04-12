@@ -301,26 +301,18 @@ QStringList QgsOracleConn::pkCandidates( const QString &ownerName, const QString
 
   QSqlQuery qry( mDatabase );
 
-  QgsDatabaseQueryLogWrapper logWrapper { QStringLiteral( "SELECT column_name FROM all_tab_columns WHERE owner='%1' AND table_name='%2' ORDER BY column_id" ).arg( ownerName, viewName ), mConnInfo, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !exec( qry, QStringLiteral( "SELECT column_name FROM all_tab_columns WHERE owner=? AND table_name=? ORDER BY column_id" ),
-              QVariantList() << ownerName << viewName ) )
+  if ( !LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, QStringLiteral( "SELECT column_name FROM all_tab_columns WHERE owner=? AND table_name=? ORDER BY column_id" ),
+                           QVariantList() << ownerName << viewName ) )
   {
     const QString error { tr( "SQL: %1 [owner: %2 table_name: %3]\nerror: %4\n" ).arg( qry.lastQuery(), qry.lastError().text(), ownerName, viewName ) };
-    logWrapper.setError( error );
     QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     return cols;
   }
 
-  long long fetchedRows { 0 };
-
   while ( qry.next() )
   {
     cols << qry.value( 0 ).toString();
-    fetchedRows++;
   }
-
-  logWrapper.setFetchedRows( fetchedRows );
 
   qry.finish();
 
@@ -362,17 +354,12 @@ bool QgsOracleConn::tableInfo( const QString &schema, bool geometryColumnsOnly, 
 
   QSqlQuery qry( mDatabase );
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, mConnInfo, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !exec( qry, sql, QVariantList() ) )
+  if ( !LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, sql, QVariantList() ) )
   {
     const QString error { tr( "Querying available tables failed.\nSQL: %1\nerror: %2\n" ).arg( qry.lastQuery(), qry.lastError().text() ) };
-    logWrapper.setError( error );
     QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     return false;
   }
-
-  long long fetchedRows { 0 };
 
   while ( qry.next() )
   {
@@ -387,10 +374,8 @@ bool QgsOracleConn::tableInfo( const QString &schema, bool geometryColumnsOnly, 
 
     mLayersSupported << layerProperty;
 
-    fetchedRows++;
   }
 
-  logWrapper.setFetchedRows( fetchedRows );
 
   if ( mLayersSupported.size() == 0 )
   {
@@ -698,17 +683,14 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
 
   sql += QLatin1String( " FROM %2 t WHERE NOT t.%1 IS NULL%3" );
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, mConnInfo, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !exec( qry, sql
-              .arg( quotedIdentifier( layerProperty.geometryColName ),
-                    table,
-                    where.isEmpty() ? QString() : QStringLiteral( " AND (%1)" ).arg( where ) ), QVariantList() ) )
+  if ( !LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, sql
+                           .arg( quotedIdentifier( layerProperty.geometryColName ),
+                                 table,
+                                 where.isEmpty() ? QString() : QStringLiteral( " AND (%1)" ).arg( where ) ), QVariantList() ) )
   {
     const QString error { tr( "SQL: %1\nerror: %2\n" )
                           .arg( qry.lastQuery(),
                                 qry.lastError().text() ) };
-    logWrapper.setError( error );
     QgsMessageLog::logMessage( error,
                                tr( "Oracle" ) );
     return;
@@ -745,8 +727,6 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
     layerProperty.srids << srid;
     srids << srid;
   }
-
-  logWrapper.setFetchedRows( fetchedRows );
 
   qry.finish();
 
@@ -1052,8 +1032,7 @@ bool QgsOracleConn::hasSpatial()
   {
     QSqlQuery qry( mDatabase );
     const QString sql { QStringLiteral( "SELECT 1 FROM v$option WHERE parameter='Spatial' AND value='TRUE'" ) };
-    QgsDatabaseQueryLogWrapper logWrapper { sql, mConnInfo, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
-    mHasSpatial = exec( qry, sql, QVariantList() ) && qry.next();
+    mHasSpatial = LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, sql, QVariantList() ) && qry.next();
   }
 
   return mHasSpatial;
@@ -1063,8 +1042,7 @@ int QgsOracleConn::version()
 {
   QSqlQuery qry( mDatabase );
   const QString sql = QStringLiteral( "SELECT VERSION FROM PRODUCT_COMPONENT_VERSION" );
-  QgsDatabaseQueryLogWrapper logWrapper { sql, mConnInfo, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
-  if ( exec( qry, sql, QVariantList() ) && qry.next() )
+  if ( LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, sql, QVariantList() ) && qry.next() )
   {
     return qry.value( 0 ).toString().split( '.' ).at( 0 ).toInt();
   }
@@ -1073,7 +1051,6 @@ int QgsOracleConn::version()
     const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
                           .arg( qry.lastError().text() )
                           .arg( qry.lastQuery() ) };
-    logWrapper.setError( error );
     QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     return -1;
   }
@@ -1087,8 +1064,7 @@ QString QgsOracleConn::currentUser()
   {
     QSqlQuery qry( mDatabase );
     const QString sql { QStringLiteral( "SELECT user FROM dual" ) };
-    QgsDatabaseQueryLogWrapper logWrapper { sql, mConnInfo, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
-    if ( exec( qry, sql, QVariantList() ) && qry.next() )
+    if ( LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, sql, QVariantList() ) && qry.next() )
     {
       mCurrentUser = qry.value( 0 ).toString();
     }
@@ -1126,15 +1102,11 @@ QString QgsOracleConn::getSpatialIndexName( const QString &ownerName, const QStr
 
   QSqlQuery qry( mDatabase );
 
-  QgsDatabaseQueryLogWrapper logWrapper { QStringLiteral( "SELECT i.index_name,i.domidx_opstatus"
-                                          " FROM all_indexes i"
-                                          " JOIN all_ind_columns c ON i.owner=c.index_owner AND i.index_name=c.index_name AND c.column_name=%1"
-                                          " WHERE i.table_owner=%2 AND i.table_name=%3 AND i.ityp_owner='MDSYS' AND i.ityp_name='SPATIAL_INDEX'" ).arg( geometryColumn, ownerName, tableName ), mConnInfo, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
-  if ( exec( qry, QStringLiteral( "SELECT i.index_name,i.domidx_opstatus"
-                                  " FROM all_indexes i"
-                                  " JOIN all_ind_columns c ON i.owner=c.index_owner AND i.index_name=c.index_name AND c.column_name=?"
-                                  " WHERE i.table_owner=? AND i.table_name=? AND i.ityp_owner='MDSYS' AND i.ityp_name='SPATIAL_INDEX'" ),
-             QVariantList() << geometryColumn << ownerName << tableName ) )
+  if ( LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, QStringLiteral( "SELECT i.index_name,i.domidx_opstatus"
+                          " FROM all_indexes i"
+                          " JOIN all_ind_columns c ON i.owner=c.index_owner AND i.index_name=c.index_name AND c.column_name=?"
+                          " WHERE i.table_owner=? AND i.table_name=? AND i.ityp_owner='MDSYS' AND i.ityp_name='SPATIAL_INDEX'" ),
+                          QVariantList() << geometryColumn << ownerName << tableName ) )
   {
     if ( qry.next() )
     {
@@ -1167,7 +1139,6 @@ QString QgsOracleConn::getSpatialIndexName( const QString &ownerName, const QStr
                           .arg( tableName )
                           .arg( geometryColumn )
                           .arg( qry.lastError().text() ) };
-    logWrapper.setError( error );
     QgsMessageLog::logMessage( error,
                                tr( "Oracle" ) );
 
@@ -1183,8 +1154,8 @@ QString QgsOracleConn::createSpatialIndex( const QString &ownerName, const QStri
 
   int n = 0;
   const QString sql { QStringLiteral( "SELECT coalesce(substr(max(index_name),10),'0') FROM all_indexes WHERE index_name LIKE 'QGIS_IDX_%' ESCAPE '#' ORDER BY index_name" ) };
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, mConnInfo, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN );
-  if ( exec( qry, sql, QVariantList() ) &&
+
+  if ( LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, sql, QVariantList() ) &&
        qry.next() )
   {
     n = qry.value( 0 ).toInt() + 1;
@@ -1195,13 +1166,11 @@ QString QgsOracleConn::createSpatialIndex( const QString &ownerName, const QStri
                        .arg( quotedIdentifier( ownerName ) )
                        .arg( quotedIdentifier( tableName ) )
                        .arg( quotedIdentifier( geometryColumn ) ) };
-  logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql2, mConnInfo, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN ) );
-  if ( !exec( qry, sql2, QVariantList() ) )
+  if ( !LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, sql2, QVariantList() ) )
   {
     const QString error { tr( "Creation spatial index failed.\nSQL: %1\nError: %2" )
                           .arg( qry.lastQuery() )
                           .arg( qry.lastError().text() ) };
-    logWrapper->setError( error );
     QgsMessageLog::logMessage( error,
                                tr( "Oracle" ) );
     return QString();
@@ -1216,33 +1185,24 @@ QStringList QgsOracleConn::getPrimaryKeys( const QString &ownerName, const QStri
 
   QStringList result;
 
-  QgsDatabaseQueryLogWrapper logWrapper { QStringLiteral( "SELECT column_name"
-                                          " FROM all_cons_columns a"
-                                          " JOIN all_constraints b ON a.constraint_name=b.constraint_name AND a.owner=b.owner"
-                                          " WHERE b.constraint_type='P' AND b.owner=%1 AND b.table_name=%2" ).arg( ownerName, tableName ), mConnInfo, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !exec( qry, QStringLiteral( "SELECT column_name"
-                                   " FROM all_cons_columns a"
-                                   " JOIN all_constraints b ON a.constraint_name=b.constraint_name AND a.owner=b.owner"
-                                   " WHERE b.constraint_type='P' AND b.owner=? AND b.table_name=?" ),
-              QVariantList() << ownerName << tableName ) )
+  if ( !LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, QStringLiteral( "SELECT column_name"
+                           " FROM all_cons_columns a"
+                           " JOIN all_constraints b ON a.constraint_name=b.constraint_name AND a.owner=b.owner"
+                           " WHERE b.constraint_type='P' AND b.owner=? AND b.table_name=?" ),
+                           QVariantList() << ownerName << tableName ) )
   {
     const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
                           .arg( qry.lastError().text() )
                           .arg( qry.lastQuery() ) };
-    logWrapper.setError( error );
     QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     return result;
   }
 
-  long long fetchedRows { 0 };
   while ( qry.next() )
   {
-    fetchedRows++;
     QString name = qry.value( 0 ).toString();
     result << name;
   }
-  logWrapper.setFetchedRows( fetchedRows );
 
   return result;
 }

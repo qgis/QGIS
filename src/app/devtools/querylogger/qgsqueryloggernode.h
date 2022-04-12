@@ -104,6 +104,16 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
      */
     static QString statusToString( Status status );
 
+    /**
+     * Sets the SQL to \a sql.
+     */
+    void setSql( const QString &newSql );
+
+    /**
+     * Returns the group SQL.
+     */
+    const QString &sql() const;
+
   private:
 
     QString mSql;

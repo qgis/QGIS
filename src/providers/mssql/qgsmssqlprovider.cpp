@@ -54,6 +54,12 @@
 #include "qgsmssqltransaction.h"
 
 
+#include "qgsconfig.h"
+constexpr int sMssqlConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
+#define LoggedExec(query, sql ) execLogged( query, sql, QString(QString( __FILE__ ).mid( sMssqlConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+#define LoggedExecMetadata(query, sql, uri ) execLogged( query, sql, uri, QString(QString( __FILE__ ).mid( sMssqlConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+
+
 const QString QgsMssqlProvider::MSSQL_PROVIDER_KEY = QStringLiteral( "mssql" );
 const QString QgsMssqlProvider::MSSQL_PROVIDER_DESCRIPTION = QStringLiteral( "MSSQL spatial data provider" );
 int QgsMssqlProvider::sConnectionId = 0;
@@ -315,7 +321,7 @@ void QgsMssqlProvider::loadMetadata()
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
-  if ( !query.exec( QStringLiteral( "SELECT f_geometry_column, srid, geometry_type, coord_dimension FROM geometry_columns WHERE f_table_schema=%1 AND f_table_name=%2" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ) ) ) )
+  if ( !LoggedExec( query, QStringLiteral( "SELECT f_geometry_column, srid, geometry_type, coord_dimension FROM geometry_columns WHERE f_table_schema=%1 AND f_table_name=%2" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ) ) ) )
   {
     QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
@@ -332,6 +338,29 @@ void QgsMssqlProvider::loadMetadata()
       detectedType += QLatin1String( "ZM" );
     mWkbType = getWkbType( detectedType );
   }
+}
+
+bool QgsMssqlProvider::execLogged( QSqlQuery &qry, const QString &sql, const QString &queryOrigin ) const
+{
+  QgsDatabaseQueryLogWrapper logWrapper{ sql, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ),  queryOrigin };
+  const bool res { qry.exec( sql ) };
+  if ( ! res )
+  {
+    logWrapper.setError( qry.lastError().text() );
+  }
+  else
+  {
+    if ( qry.isSelect() )
+    {
+      logWrapper.setFetchedRows( qry.size() );
+    }
+    else
+    {
+      logWrapper.setFetchedRows( qry.numRowsAffected() );
+    }
+  }
+  logWrapper.setQuery( qry.lastQuery() );
+  return res;
 }
 
 void QgsMssqlProvider::setLastError( const QString &error )
@@ -363,23 +392,18 @@ void QgsMssqlProvider::loadFields()
   query.setForwardOnly( true );
 
   const QString sql { QStringLiteral( "SELECT name FROM sys.columns WHERE is_computed = 1 AND object_id = OBJECT_ID('[%1].[%2]')" ).arg( mSchemaName, mTableName ) };
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN );
 
   // Get computed columns which need to be ignored on insert or update.
-  if ( !query.exec( sql ) )
+  if ( !LoggedExec( query, sql ) )
   {
-    logWrapper->setError( query.lastError().text() );
     pushError( query.lastError().text() );
     return;
   }
 
-  long long fetchedRows { 0 };
   while ( query.next() )
   {
-    fetchedRows++;
     mComputedColumns.append( query.value( 0 ).toString() );
   }
-  logWrapper->setFetchedRows( fetchedRows );
 
   // Field has unique constraint
   QSet<QString> setColumnUnique;
@@ -388,38 +412,29 @@ void QgsMssqlProvider::loadFields()
                                          " INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE CC ON TC.CONSTRAINT_NAME = CC.CONSTRAINT_NAME"
                                          " WHERE TC.CONSTRAINT_SCHEMA = '%1' AND TC.TABLE_NAME = '%2' AND TC.CONSTRAINT_TYPE = 'unique'" )
                          .arg( mSchemaName, mTableName ) };
-    logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql2, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
-    if ( !query.exec( sql2 ) )
+    if ( !LoggedExec( query, sql2 ) )
     {
-      logWrapper->setError( query.lastError().text() );
       pushError( query.lastError().text() );
       return;
     }
 
-    fetchedRows = 0;
     while ( query.next() )
     {
-      fetchedRows++;
       setColumnUnique.insert( query.value( QStringLiteral( "COLUMN_NAME" ) ).toString() );
     }
-    logWrapper->setFetchedRows( fetchedRows );
   }
 
   const QString sql3 { QStringLiteral( "exec sp_columns @table_name = N%1, @table_owner = %2" ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
-  logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql3, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
-  if ( !query.exec( sql3 ) )
+  if ( !LoggedExec( query, sql3 ) )
   {
     pushError( query.lastError().text() );
-    logWrapper->setError( query.lastError().text() );
     return;
   }
 
-  fetchedRows = 0;
   int i = 0;
   QStringList pkCandidates;
   while ( query.next() )
   {
-    fetchedRows++;
     const QString colName = query.value( QStringLiteral( "COLUMN_NAME" ) ).toString();
     const QString sqlTypeName = query.value( QStringLiteral( "TYPE_NAME" ) ).toString();
     bool columnIsIdentity = false;
@@ -518,7 +533,6 @@ void QgsMssqlProvider::loadFields()
 
       ++i;
     }
-    logWrapper->setFetchedRows( fetchedRows );
   }
 
   // get primary key
@@ -527,10 +541,8 @@ void QgsMssqlProvider::loadFields()
     query.clear();
     query.setForwardOnly( true );
     const QString sql4 { QStringLiteral( "exec sp_pkeys @table_name = N%1, @table_owner = %2 " ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
-    logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql4, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
-    if ( !query.exec( sql4 ) )
+    if ( !LoggedExec( query, sql4 ) )
     {
-      logWrapper->setError( query.lastError().text() );
       QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
     }
 
@@ -569,10 +581,8 @@ void QgsMssqlProvider::loadFields()
       query.setForwardOnly( true );
       const QString sql5 { QStringLiteral( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
                            .arg( pk, mSchemaName, mTableName ) };
-      logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql5, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
-      if ( !query.exec( sql5 ) )
+      if ( !LoggedExec( query, sql5 ) )
       {
-        logWrapper->setError( query.lastError().text() );
         QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
       }
 
@@ -664,13 +674,10 @@ QVariant QgsMssqlProvider::defaultValue( int fieldId ) const
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !query.exec( sql ) )
+  if ( !LoggedExec( query, sql ) )
   {
     const QString errorMessage( tr( "Could not execute query: %1" ).arg( query.lastError().text() ) );
     QgsDebugMsg( errorMessage );
-    logWrapper.setError( errorMessage );
     pushError( errorMessage );
     return QVariant();
   }
@@ -735,11 +742,8 @@ QVariant QgsMssqlProvider::minimumValue( int index ) const
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !query.exec( sql ) )
+  if ( !LoggedExec( query, sql ) )
   {
-    logWrapper.setError( query.lastError().text() );
     QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
@@ -779,11 +783,8 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !query.exec( sql ) )
+  if ( !LoggedExec( query, sql ) )
   {
-    logWrapper.setError( query.lastError().text() );
     QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
@@ -831,21 +832,16 @@ QSet<QVariant> QgsMssqlProvider::uniqueValues( int index, int limit ) const
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !query.exec( sql ) )
+  if ( !LoggedExec( query, sql ) )
   {
-    logWrapper.setError( query.lastError().text() );
     QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
   if ( query.isActive() )
   {
-    long long fetchedRows { 0 };
     // read all features
     while ( query.next() )
     {
-      fetchedRows++;
       QVariant v = query.value( 0 );
       if ( fld.type() == QVariant::Time )
         v = convertTimeValue( v );
@@ -853,7 +849,6 @@ QSet<QVariant> QgsMssqlProvider::uniqueValues( int index, int limit ) const
         v = convertValue( fld.type(), v.toString() );
       uniqueValues.insert( v );
     }
-    logWrapper.setFetchedRows( fetchedRows );
   }
   return uniqueValues;
 }
@@ -891,11 +886,8 @@ QStringList QgsMssqlProvider::uniqueStringsMatching( int index, const QString &s
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !query.exec( sql ) )
+  if ( !LoggedExec( query, sql ) )
   {
-    logWrapper.setError( query.lastError().text() );
     QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
@@ -908,7 +900,6 @@ QStringList QgsMssqlProvider::uniqueStringsMatching( int index, const QString &s
       if ( feedback && feedback->isCanceled() )
         break;
     }
-    logWrapper.setFetchedRows( results.length() );
   }
   return results;
 }
@@ -943,9 +934,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 
   statement = QString( sql ).arg( mSchemaName, mTableName );
 
-  QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( query.exec( statement ) )
+  if ( LoggedExec( query, statement ) )
   {
     if ( query.next() && ( !query.value( 0 ).isNull() ||
                            !query.value( 1 ).isNull() ||
@@ -962,7 +951,6 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   }
   else
   {
-    logWrapper.setError( query.lastError().text() );
     QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
@@ -1034,8 +1022,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 
     const QString statementSample = statement + ( mSqlWhereClause.isEmpty() ? " WHERE " : " AND " ) + sampleFilter;
 
-    QgsDatabaseQueryLogWrapper logWrapperNested { statementSample, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-    if ( query.exec( statementSample ) && query.next() &&
+    if ( LoggedExec( query, statementSample ) && query.next() &&
          !query.value( 0 ).isNull() && query.value( 4 ).toInt() >= minSampleCount )
     {
       mExtent.setXMinimum( query.value( 0 ).toDouble() );
@@ -1046,9 +1033,8 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     }
   }
 
-  if ( !query.exec( statement ) )
+  if ( !LoggedExec( query, statement ) )
   {
-    logWrapper.setError( query.lastError().text() );
     QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
@@ -1066,11 +1052,9 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     return;
   }
 
-  long long fetchedRows { 0 };
   // We have to read all the geometry if readAllGeography is true.
   while ( query.next() )
   {
-    fetchedRows++;
     QByteArray ar = query.value( 0 ).toByteArray();
     std::unique_ptr<QgsAbstractGeometry> geom = mParser.parseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() );
     if ( geom )
@@ -1090,7 +1074,6 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       mSRId = mParser.GetSRSId();
     }
   }
-  logWrapper.setFetchedRows( fetchedRows );
 }
 
 // Return the extent of the layer
@@ -1129,14 +1112,12 @@ long long QgsMssqlProvider::featureCount() const
                               " JOIN sys.partitions p ON t.object_id = p.object_id AND p.index_id IN (0,1)"
                               " WHERE SCHEMA_NAME(t.schema_id) = %1 AND OBJECT_NAME(t.OBJECT_ID) = %2" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ) );
 
-  QgsDatabaseQueryLogWrapper logWrapper{ statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN  };
-  if ( query.exec( statement ) && query.next() )
+  if ( LoggedExec( query, statement ) && query.next() )
   {
     return query.value( 0 ).toLongLong();
   }
   else
   {
-    logWrapper.setError( query.lastError().text() );
     // We couldn't get the rows from the sys tables. Can that ever happen?
     // Should just do a select count(*) here.
     return -1;
@@ -1408,13 +1389,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       }
     }
 
-    QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
     if ( !query.exec() )
     {
       const QString msg = query.lastError().text();
       QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
-      logWrapper.setError( msg );
-      logWrapper.setQuery( query.lastQuery() );
       if ( !mSkipFailures )
       {
         pushError( msg );
@@ -1492,10 +1470,8 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
-  QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-  if ( !query.exec( statement ) )
+  if ( !LoggedExec( query, statement ) )
   {
-    logWrapper.setError( query.lastError().text() );
     QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
     return false;
   }
@@ -1526,16 +1502,14 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN );
-  if ( !query.exec( statement ) )
+
+  if ( !LoggedExec( query, statement ) )
   {
-    logWrapper->setError( query.lastError().text() );
     QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
     return false;
   }
 
   query.finish();
-  logWrapper.release();
 
   loadFields();
 
@@ -1605,12 +1579,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     // set attribute filter
     statement += QStringLiteral( " WHERE " ) + whereClauseFid( fid );
 
-    QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
     // use prepared statement to prevent from sql injection
     if ( !query.prepare( statement ) )
     {
-      logWrapper.setError( query.lastError().text() );
       QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
       return false;
     }
@@ -1678,13 +1649,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 
     if ( !query.exec() )
     {
-      logWrapper.setQuery( query.lastQuery() );
-      logWrapper.setError( query.lastError().text() );
       QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
       return false;
     }
-
-    logWrapper.setQuery( query.lastQuery() );
 
     if ( pkChanged && mPrimaryKeyType == PktFidMap )
     {
@@ -1749,11 +1716,8 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
     // set attribute filter
     statement += QStringLiteral( " WHERE " ) + whereClauseFid( fid );
 
-    QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
     if ( !query.prepare( statement ) )
     {
-      logWrapper.setError( query.lastError().text() );
       pushError( query.lastError().text() );
       return false;
     }
@@ -1775,12 +1739,9 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
 
     if ( !query.exec() )
     {
-      logWrapper.setQuery( query.lastQuery() );
-      logWrapper.setError( query.lastError().text() );
       pushError( query.lastError().text() );
       return false;
     }
-    logWrapper.setQuery( query.lastQuery() );
   }
 
   if ( mTransaction )
@@ -1810,8 +1771,8 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
     query.setForwardOnly( true );
 
     const QString statement = QStringLiteral( "DELETE FROM [%1].[%2] WHERE [%3] IN (%4)" ).arg( mSchemaName, mTableName, mAttributeFields.at( mPrimaryKeyAttrs[0] ).name(), featureIds );
-    QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-    if ( query.exec( statement ) )
+
+    if ( LoggedExec( query, statement ) )
     {
       if ( query.numRowsAffected() == ids.size() )
       {
@@ -1824,7 +1785,6 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
     }
     else
     {
-      logWrapper.setError( query.lastError().text() );
       pushError( query.lastError().text() );
     }
   }
@@ -1836,10 +1796,9 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
     for ( QgsFeatureIds::const_iterator it = ids.begin(); it != ids.end(); ++it )
     {
       const QString statement = QStringLiteral( "DELETE FROM [%1].[%2] WHERE %3" ).arg( mSchemaName, mTableName, whereClauseFid( *it ) );
-      QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-      if ( query.exec( statement ) )
+
+      if ( LoggedExec( query, statement ) )
       {
-        logWrapper.setFetchedRows( query.numRowsAffected() );
         if ( query.numRowsAffected() == 1 )
         {
           mShared->removeFid( *it );
@@ -1848,7 +1807,6 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
       }
       else
       {
-        logWrapper.setError( query.lastError().text() );
         pushError( query.lastError().text() );
         break;
       }
@@ -1915,11 +1873,8 @@ bool QgsMssqlProvider::createSpatialIndex()
     statement += QLatin1String( " USING GEOGRAPHY_GRID" );
   }
 
-  QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !query.exec( statement ) )
+  if ( !LoggedExec( query, statement ) )
   {
-    logWrapper.setError( query.lastError().text() );
     pushError( query.lastError().text() );
     return false;
   }
@@ -1942,11 +1897,8 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
   statement = QStringLiteral( "CREATE NONCLUSTERED INDEX [qgs_%1_idx] ON [%2].[%3] ( [%4] )" ).arg(
                 mGeometryColName, mSchemaName, mTableName, mAttributeFields.at( field ).name() );
 
-  QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( !query.exec( statement ) )
+  if ( !LoggedExec( query, statement ) )
   {
-    logWrapper.setError( query.lastError().text() );
     pushError( query.lastError().text() );
     return false;
   }
@@ -1963,9 +1915,7 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs() const
     query.setForwardOnly( true );
     const QString statement { QStringLiteral( "SELECT srtext FROM spatial_ref_sys WHERE srid=%1" ).arg( mSRId ) };
 
-    std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN );
-
-    bool execOk = query.exec( statement );
+    bool execOk = LoggedExec( query, statement );
     if ( execOk && query.isActive() )
     {
       if ( query.next() )
@@ -1977,25 +1927,16 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs() const
 
       query.finish();
     }
-    else
-    {
-      logWrapper->setError( query.lastError().text() );
-    }
     query.clear();
     query.setForwardOnly( true );
 
     // Look in the system reference table for the data if we can't find it yet
-    logWrapper.reset( new  QgsDatabaseQueryLogWrapper( statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
-    execOk = query.exec( QStringLiteral( "SELECT well_known_text FROM sys.spatial_reference_systems WHERE spatial_reference_id=%1" ).arg( mSRId ) );
+    execOk = LoggedExec( query, QStringLiteral( "SELECT well_known_text FROM sys.spatial_reference_systems WHERE spatial_reference_id=%1" ).arg( mSRId ) );
     if ( execOk && query.isActive() && query.next() )
     {
       mCrs = QgsCoordinateReferenceSystem::fromWkt( query.value( 0 ).toString() );
       if ( mCrs.isValid() )
         return mCrs;
-    }
-    else
-    {
-      logWrapper->setError( query.lastError().text() );
     }
   }
   return mCrs;
@@ -2053,10 +1994,8 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
-  QgsDatabaseQueryLogWrapper logWrapper { sql, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-  if ( !query.exec( sql ) )
+  if ( !LoggedExec( query, sql ) )
   {
-    logWrapper.setError( query.lastError().text() );
     pushError( query.lastError().text() );
     mSqlWhereClause = prevWhere;
     return false;
@@ -2589,12 +2528,9 @@ bool QgsMssqlProviderMetadata::styleExists( const QString &uri, const QString &s
   query.setForwardOnly( true );
   const QString sql { QStringLiteral( "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'layer_styles'" ) };
 
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN );
-
-  if ( !query.exec( sql ) )
+  if ( !LoggedExecMetadata( query, sql, uri ) )
   {
     errorCause = QObject::tr( "Could not check if layer_styles table exists: %1" ).arg( query.lastError().text() );
-    logWrapper->setError( errorCause );
     return false;
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
@@ -2619,12 +2555,9 @@ bool QgsMssqlProviderMetadata::styleExists( const QString &uri, const QString &s
                              .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) )
                              .arg( QgsMssqlProvider::quotedValue( styleId.isEmpty() ? dsUri.table() : styleId ) );
 
-  logWrapper.reset( new QgsDatabaseQueryLogWrapper( checkQuery, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN ) );
-
-  if ( !query.exec( checkQuery ) )
+  if ( !LoggedExecMetadata( query, checkQuery, uri ) )
   {
     errorCause = QObject::tr( "Checking for style failed: %1" ).arg( query.lastError().text() );
-    logWrapper->setError( errorCause );
     return false;
   }
 
@@ -2662,9 +2595,8 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri,
   query.setForwardOnly( true );
 
   QString sql { QStringLiteral( "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME= N'layer_styles'" ) };
-  std::unique_ptr <QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN );
 
-  if ( !query.exec( sql ) )
+  if ( !LoggedExecMetadata( query, sql, uri ) )
   {
     QgsDebugMsg( query.lastError().text() );
     return false;
@@ -2689,12 +2621,10 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri,
                           "[update_time] [datetime] NULL"
                           ") ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]" );
 
-    logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN ) );
-    const bool execOk = query.exec( sql );
+    const bool execOk = LoggedExecMetadata( query, sql, uri );
     if ( !execOk )
     {
       const QString error { QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions. Please contact your database admin" ) };
-      logWrapper->setError( error );
       errCause = error;
       return false;
     }
@@ -2747,10 +2677,8 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri,
                              .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) )
                              .arg( QgsMssqlProvider::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
-  logWrapper.reset( new QgsDatabaseQueryLogWrapper( checkQuery, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN ) );
-  if ( !query.exec( checkQuery ) )
+  if ( !LoggedExecMetadata( query, checkQuery, uri ) )
   {
-    logWrapper->setError( query.lastError().text() );
     QgsDebugMsg( query.lastError().text() );
     QgsDebugMsg( QStringLiteral( "Check Query failed" ) );
     return false;
@@ -2798,14 +2726,11 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri,
   QgsDebugMsgLevel( QStringLiteral( "Inserting styles" ), 2 );
   QgsDebugMsgLevel( sql, 2 );
 
-  logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN ) );
-
-  const bool execOk = query.exec( sql );
+  const bool execOk = LoggedExecMetadata( query, sql, uri );
 
   if ( !execOk )
   {
     errCause = QObject::tr( "Unable to save layer style. It's not possible to insert a new record into the style table. Maybe this is due to table permissions. Please contact your database administrator." );
-    logWrapper->setError( query.lastError().text() );
   }
   return execOk;
 }
@@ -2830,12 +2755,10 @@ QString QgsMssqlProviderMetadata::loadStyle( const QString &uri, QString &errCau
   query.setForwardOnly( true );
 
   const QString sql { QStringLiteral( "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME= N'layer_styles'" ) };
-  std::unique_ptr <QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN );
 
-  if ( !query.exec( sql ) )
+  if ( !LoggedExecMetadata( query, sql, uri ) )
   {
     errCause = tr( "Could not check if layer_styles table exists: %1" ).arg( query.lastError().text() );
-    logWrapper->setError( errCause );
     return QString();
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
@@ -2861,13 +2784,10 @@ QString QgsMssqlProviderMetadata::loadStyle( const QString &uri, QString &errCau
                                  .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                                  .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
 
-  logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN ) );
-
-  if ( !query.exec( selectQmlQuery ) )
+  if ( !LoggedExecMetadata( query, selectQmlQuery, uri ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Load of style failed" ), 2 );
     const QString msg = query.lastError().text();
-    logWrapper->setError( msg );
     errCause = msg;
     QgsDebugMsg( msg );
     return QString();
@@ -2901,13 +2821,11 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri,
   query.setForwardOnly( true );
 
   QString sql  { QStringLiteral( "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME= N'layer_styles'" ) };
-  std::unique_ptr <QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN );
 
   // check if layer_styles table already exist
-  if ( !query.exec( sql ) )
+  if ( !LoggedExecMetadata( query, sql, uri ) )
   {
     const QString msg = query.lastError().text();
-    logWrapper->setError( msg );
     errCause = msg;
     QgsDebugMsg( msg );
     return -1;
@@ -2930,12 +2848,10 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri,
                                      .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                                      .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
 
-  logWrapper.reset( new QgsDatabaseQueryLogWrapper( selectRelatedQuery, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN ) );
 
-  bool queryOk = query.exec( selectRelatedQuery );
+  bool queryOk = LoggedExecMetadata( query, selectRelatedQuery, uri );
   if ( !queryOk )
   {
-    logWrapper->setError( query.lastError().text() );
     QgsDebugMsg( query.lastError().text() );
     return -1;
   }
@@ -2958,12 +2874,9 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri,
                                     .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
   QgsDebugMsgLevel( selectOthersQuery, 2 );
 
-  logWrapper.reset( new QgsDatabaseQueryLogWrapper( selectOthersQuery, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ), QGS_QUERY_LOG_ORIGIN ) );
-
-  queryOk = query.exec( selectOthersQuery );
+  queryOk = LoggedExecMetadata( query, selectOthersQuery, uri );
   if ( !queryOk )
   {
-    logWrapper->setError( query.lastError().text() );
     QgsDebugMsg( query.lastError().text() );
     return -1;
   }
@@ -2999,11 +2912,10 @@ QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, const QStrin
   query.setForwardOnly( true );
 
   const QString sql {  QStringLiteral( "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME= N'layer_styles'" ) };
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN );
-  if ( !query.exec( sql ) )
+
+  if ( !LoggedExecMetadata( query, sql, uri ) )
   {
     errCause = tr( "Could not check if layer_styles table exists: %1" ).arg( query.lastError().text() );
-    logWrapper->setError( errCause );
     return QString();
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
@@ -3020,13 +2932,11 @@ QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, const QStrin
   QString style;
   const QString selectQmlQuery = QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsMssqlProvider::quotedValue( styleId ) );
 
-  logWrapper.reset( new QgsDatabaseQueryLogWrapper( selectQmlQuery, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
-  const bool queryOk = query.exec( selectQmlQuery );
+  const bool queryOk = LoggedExecMetadata( query, selectQmlQuery, uri );
   if ( !queryOk )
   {
     QgsDebugMsg( query.lastError().text() );
     errCause = query.lastError().text();
-    logWrapper->setError( errCause );
     return QString();
   }
   if ( !query.next() )
@@ -3169,6 +3079,29 @@ QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts ) const
   if ( parts.contains( QStringLiteral( "primaryKeyInGeometryColumns" ) ) )
     dsUri.setParam( QStringLiteral( "primaryKeyInGeometryColumns" ), parts.value( QStringLiteral( "primaryKeyInGeometryColumns" ) ).toString() );
   return dsUri.uri();
+}
+
+bool QgsMssqlProviderMetadata::execLogged( QSqlQuery &qry, const QString &sql, const QString &uri, const QString &queryOrigin ) const
+{
+  QgsDatabaseQueryLogWrapper logWrapper{ sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ),  queryOrigin };
+  const bool res { qry.exec( sql ) };
+  if ( ! res )
+  {
+    logWrapper.setError( qry.lastError().text() );
+  }
+  else
+  {
+    if ( qry.isSelect() )
+    {
+      logWrapper.setFetchedRows( qry.size() );
+    }
+    else
+    {
+      logWrapper.setFetchedRows( qry.numRowsAffected() );
+    }
+  }
+  logWrapper.setQuery( qry.lastQuery() );
+  return res;
 }
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
@@ -3333,9 +3266,7 @@ bool QgsMssqlProvider::getExtentFromGeometryColumns( QgsRectangle &extent ) cons
 
   const QString statement = sql.arg( quotedValue( mTableName ), quotedValue( mSchemaName ) );
 
-  QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( query.exec( statement ) && query.isActive() )
+  if ( LoggedExec( query, statement ) && query.isActive() )
   {
     query.next();
     if ( query.isValid() )
@@ -3346,10 +3277,6 @@ bool QgsMssqlProvider::getExtentFromGeometryColumns( QgsRectangle &extent ) cons
       extent.setYMaximum( query.value( 3 ).toDouble() );
 
       return true;
-    }
-    else
-    {
-      logWrapper.setError( query.lastError().text() );
     }
   }
 
@@ -3366,9 +3293,7 @@ bool QgsMssqlProvider::getPrimaryKeyFromGeometryColumns( QStringList &primaryKey
   const QString sql = QStringLiteral( "SELECT qgis_pkey FROM geometry_columns WHERE f_table_name = '%1' AND NOT qgis_pkey IS NULL" );
   const QString statement = sql.arg( mTableName );
 
-  QgsDatabaseQueryLogWrapper logWrapper { statement, uri().uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN };
-
-  if ( query.exec( statement ) && query.isActive() )
+  if ( LoggedExec( query, statement ) && query.isActive() )
   {
     query.next();
     if ( query.isValid() )
@@ -3377,10 +3302,6 @@ bool QgsMssqlProvider::getPrimaryKeyFromGeometryColumns( QStringList &primaryKey
       if ( !primaryKeys.isEmpty() )
         return true;
     }
-  }
-  else
-  {
-    logWrapper.setError( query.lastError().text() );
   }
 
   return false;
