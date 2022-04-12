@@ -29,6 +29,7 @@
 #include "qgspoint.h"
 #include "qgsgeos.h"
 #include "qgsplot.h"
+#include "qgsguiutils.h"
 #include <QWheelEvent>
 
 ///@cond PRIVATE
@@ -85,6 +86,26 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       return mPlotArea;
     }
 
+    QgsPointXY canvasPointToPlotPoint( const QPointF &point )
+    {
+      if ( !mPlotArea.contains( point.x(), point.y() ) )
+        return QgsPointXY();
+
+      const double x = ( point.x() - mPlotArea.left() ) / mPlotArea.width() * ( xMaximum() - xMinimum() ) + xMinimum();
+      const double y = ( mPlotArea.bottom() - point.y() ) / mPlotArea.height() * ( yMaximum() - yMinimum() ) + yMinimum();
+      return QgsPointXY( x, y );
+    }
+
+    QgsPointXY plotPointToCanvasPoint( const QgsPointXY &point )
+    {
+      if ( point.x() < xMinimum() || point.x() > xMaximum() || point.y() < yMinimum() || point.y() > yMaximum() )
+        return QgsPointXY();
+
+      const double x = ( point.x() - xMinimum() ) / ( xMaximum() - xMinimum() ) * ( mPlotArea.width() ) + mPlotArea.left();
+      const double y = mPlotArea.bottom() - ( point.y() - yMinimum() ) / ( yMaximum() - yMinimum() ) * ( mPlotArea.height() );
+      return QgsPointXY( x, y );
+    }
+
     void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
     {
       mPlotArea = plotArea;
@@ -126,6 +147,63 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
     QRectF mPlotArea;
     QgsProfilePlotRenderer *mRenderer = nullptr;
 };
+
+class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
+{
+  public:
+
+    QgsElevationProfileCrossHairsItem( QgsElevationProfileCanvas *canvas, QgsElevationProfilePlotItem *plotItem )
+      : QgsPlotCanvasItem( canvas )
+      , mPlotItem( plotItem )
+    {
+    }
+
+    void updateRect()
+    {
+      mRect = mCanvas->rect();
+
+      prepareGeometryChange();
+      setPos( mRect.topLeft() );
+      update();
+    }
+
+    void setPoint( const QgsPointXY &point )
+    {
+      mPoint = point;
+      update();
+    }
+
+    QRectF boundingRect() const override
+    {
+      return mRect;
+    }
+
+    void paint( QPainter *painter ) override
+    {
+      const QgsPointXY crossHairPlotPoint  = mPlotItem->plotPointToCanvasPoint( mPoint );
+      if ( crossHairPlotPoint.isEmpty() )
+        return;
+
+      painter->save();
+      painter->setBrush( Qt::NoBrush );
+      QPen crossHairPen;
+      crossHairPen.setCosmetic( true );
+      crossHairPen.setWidthF( QgsGuiUtils::scaleIconSize( 2 ) );
+      crossHairPen.setStyle( Qt::DashLine );
+      crossHairPen.setCapStyle( Qt::FlatCap );
+      crossHairPen.setColor( QColor( 0, 0, 0, 150 ) );
+      painter->setPen( crossHairPen );
+      painter->drawLine( QPointF( mPlotItem->plotArea().left(), crossHairPlotPoint.y() ), QPointF( mPlotItem->plotArea().right(), crossHairPlotPoint.y() ) );
+      painter->drawLine( QPointF( crossHairPlotPoint.x(), mPlotItem->plotArea().top() ), QPointF( crossHairPlotPoint.x(), mPlotItem->plotArea().bottom() ) );
+      painter->restore();
+    }
+
+  private:
+
+    QRectF mRect;
+    QgsPointXY mPoint;
+    QgsElevationProfilePlotItem *mPlotItem = nullptr;
+};
 ///@endcond PRIVATE
 
 
@@ -133,6 +211,9 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   : QgsPlotCanvas( parent )
 {
   mPlotItem = new QgsElevationProfilePlotItem( this );
+  mCrossHairsItem = new QgsElevationProfileCrossHairsItem( this, mPlotItem );
+  mCrossHairsItem->setZValue( 100 );
+  mCrossHairsItem->hide();
 }
 
 QgsElevationProfileCanvas::~QgsElevationProfileCanvas()
@@ -286,6 +367,27 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
   }
 }
 
+void QgsElevationProfileCanvas::mouseMoveEvent( QMouseEvent *e )
+{
+  QgsPlotCanvas::mouseMoveEvent( e );
+  if ( e->isAccepted() )
+  {
+    mCrossHairsItem->hide();
+    return;
+  }
+
+  const QgsPointXY plotPoint = canvasPointToPlotPoint( e->pos() );
+  if ( plotPoint.isEmpty() )
+  {
+    mCrossHairsItem->hide();
+  }
+  else
+  {
+    mCrossHairsItem->setPoint( plotPoint );
+    mCrossHairsItem->show();
+  }
+}
+
 QRectF QgsElevationProfileCanvas::plotArea() const
 {
   return mPlotItem->plotArea();
@@ -336,6 +438,14 @@ void QgsElevationProfileCanvas::generationFinished()
   zoomFull();
 }
 
+QgsPointXY QgsElevationProfileCanvas::canvasPointToPlotPoint( const QPointF &point ) const
+{
+  if ( !mPlotItem->plotArea().contains( point.x(), point.y() ) )
+    return QgsPointXY();
+
+  return mPlotItem->canvasPointToPlotPoint( point );
+}
+
 void QgsElevationProfileCanvas::setProject( QgsProject *project )
 {
   mProject = project;
@@ -383,6 +493,7 @@ void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 {
   QgsPlotCanvas::resizeEvent( event );
   mPlotItem->updateRect();
+  mCrossHairsItem->updateRect();
 }
 
 void QgsElevationProfileCanvas::paintEvent( QPaintEvent *event )
@@ -394,6 +505,7 @@ void QgsElevationProfileCanvas::paintEvent( QPaintEvent *event )
     // on first show we need to update the visible rect of the plot. (Not sure why this doesn't work in showEvent, but it doesn't).
     mFirstDrawOccurred = true;
     mPlotItem->updateRect();
+    mCrossHairsItem->updateRect();
   }
 }
 
