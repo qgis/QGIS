@@ -266,6 +266,11 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      */
     void copyCommonProperties( const QgsMapLayerElevationProperties *other );
 
+  private:
+
+    /**
+     * Initializes property definitions.
+     */
     static void initPropertyDefinitions();
 
 };
