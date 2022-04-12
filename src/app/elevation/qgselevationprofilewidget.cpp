@@ -31,6 +31,7 @@
 #include "qgsfileutils.h"
 #include "qgsmessagebar.h"
 #include "qgsplot.h"
+#include "qgsmaplayerutils.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -233,7 +234,21 @@ void QgsElevationProfileWidget::cancelJobs()
 void QgsElevationProfileWidget::onMainCanvasLayersChanged()
 {
   // possibly not right -- do we always want to sync the profile layers to canvas layers?
-  mCanvas->setLayers( mMainCanvas->layers( true ) );
+
+  QList< QgsMapLayer * > layers = mMainCanvas->layers( true );
+
+  // sort layers so that types which are more likely to obscure others are rendered below
+  // e.g. vector features should be drawn above raster DEMS, or the DEM line may completely obscure
+  // the vector feature
+  layers = QgsMapLayerUtils::sortLayersByType( layers,
+  {
+    QgsMapLayerType::RasterLayer,
+    QgsMapLayerType::MeshLayer,
+    QgsMapLayerType::VectorLayer,
+    QgsMapLayerType::PointCloudLayer
+  } );
+
+  mCanvas->setLayers( layers );
   scheduleUpdate();
 }
 
