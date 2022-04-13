@@ -27,22 +27,22 @@ QgsRangeRequestCache::QgsRangeRequestCache()
 
 }
 
-QByteArray QgsRangeRequestCache::entry( const QUrl &url, QPair<qint64, qint64> range )
+QByteArray QgsRangeRequestCache::entry( const QNetworkRequest &request )
 {
-  QString hash = rangeFileName( url, range );
+  QString hash = rangeFileName( request );
   QByteArray arr = readFile( hash );
   return arr;
 }
 
-bool QgsRangeRequestCache::hasEntry( const QUrl &url, QPair<qint64, qint64> range )
+bool QgsRangeRequestCache::hasEntry( const QNetworkRequest &request )
 {
   QDir dir( mCacheDir );
-  return dir.exists( rangeFileName( url, range ) );
+  return dir.exists( rangeFileName( request ) );
 }
 
-void QgsRangeRequestCache::registerEntry( const QUrl &url, QPair<qint64, qint64> range, QByteArray data )
+void QgsRangeRequestCache::registerEntry( const QNetworkRequest &request, QByteArray data )
 {
-  QString hash = rangeFileName( url, range );
+  QString hash = rangeFileName( request );
   writeFile( hash, data );
   expire();
 }

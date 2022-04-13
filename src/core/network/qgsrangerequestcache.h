@@ -24,6 +24,7 @@
 #include <QUrl>
 #include <QFileInfoList>
 #include <QDir>
+#include <QNetworkRequest>
 
 #include "qgis_core.h"
 
@@ -43,11 +44,11 @@ class CORE_EXPORT QgsRangeRequestCache
     QgsRangeRequestCache();
 
     //! Checks whether the range request exists in the cache
-    bool hasEntry( const QUrl &url, QPair<qint64, qint64> range );
+    bool hasEntry( const QNetworkRequest &request );
     //! Returns the range request data stored in the cache and an empty byte array if the data is not in the cache
-    QByteArray entry( const QUrl &url, QPair<qint64, qint64> range );
+    QByteArray entry( const QNetworkRequest &request );
     //! Adds the range request data into the cache
-    void registerEntry( const QUrl &url, QPair<qint64, qint64> range, QByteArray data );
+    void registerEntry( const QNetworkRequest &request, QByteArray data );
 
     //! Clears the cache removing all of the files
     void clear();
@@ -61,9 +62,9 @@ class CORE_EXPORT QgsRangeRequestCache
     QString mCacheDir;
     qint64 mMaxDataSize = 256 * 1024 * 1024;
 
-    QString rangeFileName( const QUrl &url, QPair<qint64, qint64> range )
+    QString rangeFileName( const QNetworkRequest &request )
     {
-      return mCacheDir + QStringLiteral( "%1?%2-%3" ).arg( qHash( url.toString() ) ).arg( range.first ).arg( range.second );
+      return mCacheDir + QStringLiteral( "%1?%2" ).arg( qHash( request.url().toString() ) ).arg( QString::fromUtf8( request.rawHeader( "Range" ) ) );
     }
 
     QByteArray readFile( const QString &fileName );
