@@ -834,7 +834,7 @@ double QgsVectorLayerProfileGenerator::featureZToHeight( double x, double y, dou
     }
   }
 
-  return z * mScale + offset;
+  return ( std::isnan( z ) ? 0 : z ) * mScale + offset;
 }
 
 void QgsVectorLayerProfileGenerator::clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid, double offset )
@@ -884,7 +884,7 @@ void QgsVectorLayerProfileGenerator::clampAltitudes( QgsLineString *lineString, 
         break;
     }
 
-    const double z = ( terrainZ + geomZ ) * mScale + offset;
+    const double z = ( terrainZ + ( std::isnan( geomZ ) ?  0 : geomZ ) ) * mScale + offset;
     lineString->setZAt( i, z );
   }
 }
