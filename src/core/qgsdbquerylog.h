@@ -80,7 +80,8 @@ class CORE_EXPORT QgsDatabaseQueryLogEntry
     QString origin;
 
     /**
-     * Number of fetched rows
+     * Number of fetched/affected rows.
+     * \warning Not all providers support this information.
      */
     long long fetchedRows = -1;
 
@@ -88,6 +89,11 @@ class CORE_EXPORT QgsDatabaseQueryLogEntry
      * Error reported by the provider, normally blank
      */
     QString error;
+
+    /**
+     * Canceled flag for user canceled queries.
+     */
+    bool canceled = false;
 
   private:
 
@@ -245,6 +251,11 @@ class QgsDatabaseQueryLogWrapper
     void setError( const QString &error )
     {
       mEntry.error = error;
+    }
+
+    void setCanceled( )
+    {
+      mEntry.canceled = true;
     }
 
   private:

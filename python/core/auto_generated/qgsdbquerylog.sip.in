@@ -46,6 +46,8 @@ Constructor for QgsDatabaseQueryLogEntry.
 
     QString error;
 
+    bool canceled;
+
 };
 
 

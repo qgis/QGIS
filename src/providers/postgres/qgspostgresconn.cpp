@@ -1359,6 +1359,7 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
                      .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
       }
     }
+    logWrapper->setFetchedRows( PQntuples( res ) );
     return res;
   }
   if ( PQstatus() != CONNECTION_OK )

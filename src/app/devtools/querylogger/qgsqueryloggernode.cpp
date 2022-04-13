@@ -201,7 +201,7 @@ void QgsDatabaseQueryLoggerQueryGroup::setFinished( const QgsDatabaseQueryLogEnt
 {
   if ( query.error.isEmpty() )
   {
-    mStatus = Status::Complete;
+    mStatus = query.canceled ? Status::Canceled : Status::Complete;
     addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( query.finishedTime - query.startedTime ) );
     if ( query.fetchedRows != -1 )
     {
