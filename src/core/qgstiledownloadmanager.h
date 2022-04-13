@@ -30,6 +30,7 @@
 #include "qgis_core.h"
 
 class QgsTileDownloadManager;
+class QgsRangeRequestCache;
 
 /**
  * \ingroup core
@@ -302,6 +303,8 @@ class CORE_EXPORT QgsTileDownloadManager
     Stats mStats;
 
     int mIdleThreadTimeoutMs = 10000;
+
+    std::unique_ptr<QgsRangeRequestCache> mRangesCache;
 };
 
 #endif // QGSTILEDOWNLOADMANAGER_H

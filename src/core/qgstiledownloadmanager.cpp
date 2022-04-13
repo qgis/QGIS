@@ -19,10 +19,11 @@
 
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsrangerequestcache.h"
 
 #include <QElapsedTimer>
 #include <QNetworkReply>
-
+#include <QStandardPaths>
 
 /// @cond PRIVATE
 
@@ -67,6 +68,20 @@ void QgsTileDownloadManagerWorker::queueUpdated()
   {
     if ( !it->networkReply )
     {
+      bool loadedFromCache = false;
+      if ( !it->request.rawHeader( "Range" ).isEmpty() )
+      {
+        QString rangeStr = QString::fromStdString( it->request.rawHeader( "Range" ).toStdString().substr( 6 ) );
+        QStringList rangeSplit = rangeStr.split( "-" );
+        QPair<qint64, qint64> range( rangeSplit[0].toLongLong(), rangeSplit[1].toLongLong() );
+        QgsRangeRequestCache *cache = mManager->mRangesCache.get();
+        if ( cache->hasEntry( it->request.url(), range ) )
+        {
+          loadedFromCache = true;
+        }
+      }
+      if ( loadedFromCache )
+        continue;
       QgsDebugMsgLevel( QStringLiteral( "Tile download manager: starting request: " ) + it->request.url().toString(), 2 );
       // start entries which are not in progress
 
@@ -109,33 +124,64 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
   QgsDebugMsgLevel( QStringLiteral( "Tile download manager: internal reply finished: " ) + mRequest.url().toString(), 2 );
 
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
-  QByteArray data;
 
-  if ( reply->error() == QNetworkReply::NoError )
+  // Data should be loaded from cache
+  if ( reply == nullptr )
   {
-    ++mManager->mStats.networkRequestsOk;
-    data = reply->readAll();
+    QgsDebugMsgLevel( QStringLiteral( "Tile download manager: internal range request reply loaded from cache: " ) + mRequest.url().toString(), 2 );
+
+    QString rangeStr = QString::fromStdString( mRequest.rawHeader( "Range" ).toStdString().substr( 6 ) );
+    QStringList rangeSplit = rangeStr.split( "-" );
+    QPair<qint64, qint64> range( rangeSplit[0].toLongLong(), rangeSplit[1].toLongLong() );
+
+    QByteArray data = mManager->mRangesCache->entry( mRequest.url(), range );
+
+    QMap<QNetworkRequest::Attribute, QVariant> attributes;
+    QMap<QNetworkRequest::KnownHeaders, QVariant> headers;
+
+    emit finished( data, mRequest.url(), attributes, headers, QList<QPair<QByteArray, QByteArray>>(), QNetworkReply::NetworkError::NoError, QString() );
   }
   else
   {
-    ++mManager->mStats.networkRequestsFailed;
-    const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-    if ( contentType.startsWith( QLatin1String( "text/plain" ) ) )
+    QByteArray data;
+
+    if ( reply->error() == QNetworkReply::NoError )
+    {
+      ++mManager->mStats.networkRequestsOk;
       data = reply->readAll();
+    }
+    else
+    {
+      ++mManager->mStats.networkRequestsFailed;
+      const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+      if ( contentType.startsWith( QLatin1String( "text/plain" ) ) )
+        data = reply->readAll();
+    }
+
+    QMap<QNetworkRequest::Attribute, QVariant> attributes;
+    attributes.insert( QNetworkRequest::SourceIsFromCacheAttribute, reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ) );
+    attributes.insert( QNetworkRequest::RedirectionTargetAttribute, reply->attribute( QNetworkRequest::RedirectionTargetAttribute ) );
+    attributes.insert( QNetworkRequest::HttpStatusCodeAttribute, reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ) );
+    attributes.insert( QNetworkRequest::HttpReasonPhraseAttribute, reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ) );
+
+    QMap<QNetworkRequest::KnownHeaders, QVariant> headers;
+    headers.insert( QNetworkRequest::ContentTypeHeader, reply->header( QNetworkRequest::ContentTypeHeader ) );
+
+    // Save loaded data to cache
+    if ( !mRequest.rawHeader( "Range" ).isEmpty() )
+    {
+      QUrl url = mRequest.url();
+      QString rangeStr = QString::fromStdString( mRequest.rawHeader( "Range" ).toStdString().substr( 6 ) );
+      QStringList rangeSplit = rangeStr.split( "-" );
+      QPair<qint64, qint64> range( rangeSplit[0].toLongLong(), rangeSplit[1].toLongLong() );
+      QgsRangeRequestCache *cache = mManager->mRangesCache.get();
+      cache->registerEntry( url, range, data );
+    }
+
+    emit finished( data, reply->url(), attributes, headers, reply->rawHeaderPairs(), reply->error(), reply->errorString() );
+
+    reply->deleteLater();
   }
-
-  QMap<QNetworkRequest::Attribute, QVariant> attributes;
-  attributes.insert( QNetworkRequest::SourceIsFromCacheAttribute, reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ) );
-  attributes.insert( QNetworkRequest::RedirectionTargetAttribute, reply->attribute( QNetworkRequest::RedirectionTargetAttribute ) );
-  attributes.insert( QNetworkRequest::HttpStatusCodeAttribute, reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ) );
-  attributes.insert( QNetworkRequest::HttpReasonPhraseAttribute, reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ) );
-
-  QMap<QNetworkRequest::KnownHeaders, QVariant> headers;
-  headers.insert( QNetworkRequest::ContentTypeHeader, reply->header( QNetworkRequest::ContentTypeHeader ) );
-
-  emit finished( data, reply->url(), attributes, headers, reply->rawHeaderPairs(), reply->error(), reply->errorString() );
-
-  reply->deleteLater();
 
   // kill the worker obj
   deleteLater();
@@ -159,6 +205,16 @@ QgsTileDownloadManager::QgsTileDownloadManager()
   : mMutex( QMutex::Recursive )
 #endif
 {
+  mRangesCache.reset( new QgsRangeRequestCache );
+
+  const QgsSettings settings;
+  QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
+  if ( cacheDirectory.isEmpty() )
+    cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
+  const qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 256 * 1024 * 1024 ).toLongLong();
+
+  mRangesCache->setCacheDirectory( cacheDirectory );
+  mRangesCache->setCacheSize( cacheSize );
 }
 
 QgsTileDownloadManager::~QgsTileDownloadManager()
@@ -197,6 +253,18 @@ QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest 
     QObject::connect( entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::finished, reply, &QgsTileDownloadManagerReply::requestFinished );  // should be queued connection
 
     addEntry( entry );
+
+    if ( !request.rawHeader( "Range" ).isEmpty() )
+    {
+      QString rangeStr = QString::fromStdString( request.rawHeader( "Range" ).toStdString().substr( 6 ) );
+      QStringList rangeSplit = rangeStr.split( "-" );
+      QPair<qint64, qint64> range( rangeSplit[0].toLongLong(), rangeSplit[1].toLongLong() );
+      QgsRangeRequestCache *cache = mRangesCache.get();
+      if ( cache->hasEntry( request.url(), range ) )
+      {
+        QTimer::singleShot( 0, entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::replyFinished );
+      }
+    }
   }
   else
   {
@@ -289,7 +357,6 @@ void QgsTileDownloadManager::addEntry( const QgsTileDownloadManager::QueueEntry 
   {
     Q_ASSERT( entry.request.url() != it->request.url() || entry.request.rawHeader( "Range" ) != it->request.rawHeader( "Range" ) );
   }
-
   mQueue.append( entry );
 }
 
