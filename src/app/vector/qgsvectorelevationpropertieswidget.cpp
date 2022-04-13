@@ -160,8 +160,18 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
           tr( "Z values from the features will be used for elevation, and the terrain height will be ignored." ) )
       );
       enableBinding = false; // not used in absolute mode
+
+      if ( QgsWkbTypes::hasZ( mLayer->wkbType() ) )
+      {
+        mOffsetLabel->setText( tr( "Offset" ) );
+      }
+      else
+      {
+        mOffsetLabel->setText( tr( "Base height" ) );
+      }
       break;
     case Qgis::AltitudeClamping::Relative:
+      mOffsetLabel->setText( tr( "Offset" ) );
       mLabelClampingExplanation->setText(
         QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
           tr( "Elevation is relative to terrain height." ),
@@ -169,6 +179,7 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
       );
       break;
     case Qgis::AltitudeClamping::Terrain:
+      mOffsetLabel->setText( tr( "Offset" ) );
       mLabelClampingExplanation->setText(
         QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
           tr( "Feature elevation will be taken directly from the terrain height." ),
