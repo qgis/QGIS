@@ -29,17 +29,31 @@
 
 #define SIP_NO_FILE
 
+
+/**
+ * \ingroup core
+ * \brief A custom cache for handling the storage and retrieval of HTTP range requests on disk
+ *
+ * \since QGIS 3.26
+ */
 class CORE_EXPORT QgsRangeRequestCache
 {
   public:
+    //! Constructor
     QgsRangeRequestCache();
 
+    //! Checks whether the range request exists in the cache
     bool hasEntry( const QUrl &url, QPair<qint64, qint64> range );
+    //! Returns the range request data stored in the cache and an empty byte array if the data is not in the cache
     QByteArray entry( const QUrl &url, QPair<qint64, qint64> range );
+    //! Adds the range request data into the cache
     void registerEntry( const QUrl &url, QPair<qint64, qint64> range, QByteArray data );
 
+    //! Clears the cache removing all of the files
     void clear();
+    //! Sets the directory where data will be stored
     void setCacheDirectory( const QString &path );
+    //! Sets the cache size
     void setCacheSize( qint64 maxBytes );
 
     friend class TestQgsCopcProvider;
