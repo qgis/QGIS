@@ -292,6 +292,18 @@ Mulitline body
       VertexType type;
     }
 
+    class PublicMembersWithValue
+{
+
+%TypeHeaderCode
+#include "sipifyheader.h"
+%End
+      public:
+
+        double snappedDistanceAlongCurve;
+        double snappedHeight;
+    };
+
     void combinedAnnotations() /Factory,PyName=otherName/;
     void multiAnnotationArg( SomeClass **object /Out,TransferBack/, int &another /Out/ );
 
