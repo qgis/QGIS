@@ -197,6 +197,8 @@ QgsProperty QgsPropertyOverrideButton::toProperty() const
 void QgsPropertyOverrideButton::setVectorLayer( const QgsVectorLayer *layer )
 {
   mVectorLayer = layer;
+  updateFieldLists();
+  updateGui();
 }
 
 void QgsPropertyOverrideButton::registerCheckedWidget( QWidget *widget, bool natural )
