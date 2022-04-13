@@ -243,6 +243,7 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
   connect( mCaptureCurveFromFeatureMapTool.get(), &QgsMapToolProfileCurveFromFeature::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
 
   mMapPointRubberBand.reset( new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry ) );
+  mMapPointRubberBand->setZValue( 1000 );
   mMapPointRubberBand->setIcon( QgsRubberBand::ICON_FULL_DIAMOND );
   mMapPointRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 8 ) );
   mMapPointRubberBand->setIconSize( QgsGuiUtils::scaleIconSize( 4 ) );
