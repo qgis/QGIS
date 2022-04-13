@@ -350,6 +350,14 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       VertexType type;
     }
 
+    class PublicMembersWithValue
+    {
+      public:
+
+        double snappedDistanceAlongCurve = std::numeric_limits< double >::quiet_NaN();
+        double snappedHeight = std::numeric_limits< double >::quiet_NaN();
+    };
+
     void combinedAnnotations() SIP_FACTORY SIP_PYNAME( otherName );
     void multiAnnotationArg( SomeClass **object SIP_OUT SIP_TRANSFERBACK, int &another SIP_OUT );
 
