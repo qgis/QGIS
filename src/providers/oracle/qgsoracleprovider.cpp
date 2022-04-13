@@ -1397,7 +1397,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
     QgsDebugMsgLevel( QStringLiteral( "SQL prepare: %1" ).arg( insert ), 4 );
 
-    if ( !ins.prepare( insert + "$$fsdfsd" ) )
+    if ( !ins.prepare( insert ) )
     {
       throw OracleException( tr( "Could not prepare insert statement" ), ins );
     }
@@ -1433,12 +1433,12 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
       if ( !ins.exec() )
       {
-        logWrapper.setQuery( ins.lastQuery() );
+        logWrapper.setQuery( getLastExecutedQuery( ins ) );
         logWrapper.setError( ins.lastError().text() );
         throw OracleException( tr( "Could not insert feature %1" ).arg( features->id() ), ins );
       }
 
-      logWrapper.setQuery( ins.lastQuery() );
+      logWrapper.setQuery( getLastExecutedQuery( ins ) );
 
       if ( !( flags & QgsFeatureSink::FastInsert ) )
       {
@@ -1938,12 +1938,12 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       if ( !qry.exec() )
       {
         logWrapper.setError( qry.lastError().text() );
-        logWrapper.setQuery( qry.lastQuery() );
+        logWrapper.setQuery( getLastExecutedQuery( qry ) );
         throw OracleException( tr( "Update of feature %1 failed" ).arg( iter.key() ), qry );
       }
 
       qry.finish();
-      logWrapper.setQuery( qry.lastQuery() );
+      logWrapper.setQuery( getLastExecutedQuery( qry ) );
 
       // update feature id map if key was changed
       if ( pkChanged && mPrimaryKeyType == PktFidMap )
@@ -2421,11 +2421,11 @@ bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
 
       if ( !qry.exec() )
       {
-        logWrapper.setQuery( qry.lastQuery() );
+        logWrapper.setQuery( getLastExecutedQuery( qry ) );
         logWrapper.setError( qry.lastError().text() );
         throw OracleException( tr( "Update of feature %1 failed" ).arg( iter.key() ), qry );
       }
-      logWrapper.setQuery( qry.lastQuery() );
+      logWrapper.setQuery( getLastExecutedQuery( qry ) );
     }
 
     qry.finish();
@@ -2603,7 +2603,7 @@ QgsRectangle QgsOracleProvider::extent() const
           logWrapper.setError( qry.lastError().text() );
         }
 
-        logWrapper.setQuery( qry.lastQuery() );
+        logWrapper.setQuery( getLastExecutedQuery( qry ) );
       }
 
       if ( mHasSpatialIndex && mUseEstimatedMetadata )
@@ -2613,7 +2613,7 @@ QgsRectangle QgsOracleProvider::extent() const
         ok = exec( qry,
                    sql,
                    QVariantList() << QString( "%1.%2" ).arg( mOwnerName ).arg( mTableName ) << mGeometryColumn );
-        logWrapper.setQuery( qry.lastQuery() );
+        logWrapper.setQuery( getLastExecutedQuery( qry ) );
         if ( ! ok )
         {
           logWrapper.setError( qry.lastError().text() );
@@ -2742,7 +2742,7 @@ bool QgsOracleProvider::getGeometryDetails()
                                    .arg( qry.lastQuery() ), tr( "Oracle" ) );
       }
 
-      logWrapper.setQuery( qry.lastQuery() );
+      logWrapper.setQuery( getLastExecutedQuery( qry ) );
     }
 
     QString sql { mUseEstimatedMetadata ?
@@ -2889,7 +2889,7 @@ bool QgsOracleProvider::createSpatialIndex()
                   QVariantList() << r.xMinimum() << r.xMaximum() << r.yMinimum() << r.yMaximum() << mTableName << mGeometryColumn )
          )
       {
-        logWrapper.setQuery( qry.lastQuery() );
+        logWrapper.setQuery( getLastExecutedQuery( qry ) );
         logWrapper.setError( qry.lastError().text() );
         QgsMessageLog::logMessage( tr( "Could not update metadata for %1.%2.\nSQL: %3\nError: %4" )
                                    .arg( mTableName )
@@ -2900,7 +2900,7 @@ bool QgsOracleProvider::createSpatialIndex()
         return false;
       }
 
-      logWrapper.setQuery( qry.lastQuery() );
+      logWrapper.setQuery( getLastExecutedQuery( qry ) );
       logWrapper.setFetchedRows( qry.numRowsAffected() );
     }
 
@@ -2919,7 +2919,7 @@ bool QgsOracleProvider::createSpatialIndex()
                   << r.xMinimum() << r.xMaximum() << r.yMinimum() << r.yMaximum() )
          )
       {
-        logWrapper.setQuery( qry.lastQuery() );
+        logWrapper.setQuery( getLastExecutedQuery( qry ) );
         logWrapper.setError( qry.lastError().text() );
         QgsMessageLog::logMessage( tr( "Could not insert metadata for %1.%2.\nSQL: %3\nError: %4" )
                                    .arg( quotedValue( mTableName ) )
@@ -2929,7 +2929,7 @@ bool QgsOracleProvider::createSpatialIndex()
                                    tr( "Oracle" ) );
         return false;
       }
-      logWrapper.setQuery( qry.lastQuery() );
+      logWrapper.setQuery( getLastExecutedQuery( qry ) );
     }
   }
   else
@@ -3134,12 +3134,12 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer(
                   QVariantList() << ownerName << tableName
                 ) )
       {
-        logWrapper.setQuery( qry.lastQuery() );
+        logWrapper.setQuery( getLastExecutedQuery( qry ) );
         logWrapper.setError( qry.lastError().text() );
         throw OracleException( tr( "Could not determine table existence." ), qry );
       }
 
-      logWrapper.setQuery( qry.lastQuery() );
+      logWrapper.setQuery( getLastExecutedQuery( qry ) );
     }
 
     bool exists = qry.next();
@@ -3402,11 +3402,11 @@ void QgsOracleProvider::insertGeomMetadata( QgsOracleConn *conn, const QString &
       if ( !exec( qry, sql, QVariantList() << wkt ) )
       {
         logWrapper.setError( qry.lastError().text() );
-        logWrapper.setQuery( qry.lastQuery() );
+        logWrapper.setQuery( getLastExecutedQuery( qry ) );
         throw OracleException( tr( "Could not lookup WKT." ), qry );
       }
 
-      logWrapper.setQuery( qry.lastQuery() );
+      logWrapper.setQuery( getLastExecutedQuery( qry ) );
     }
 
     if ( qry.next() )
@@ -3439,10 +3439,10 @@ void QgsOracleProvider::insertGeomMetadata( QgsOracleConn *conn, const QString &
                   QVariantList() << srid << srs.description() << ( srs.isGeographic() ? "GEOGRAPHIC2D" : "PROJECTED" ) << wkt ) )
       {
         logWrapper.setError( qry.lastError().text() );
-        logWrapper.setQuery( qry.lastQuery() );
+        logWrapper.setQuery( getLastExecutedQuery( qry ) );
         throw OracleException( tr( "CRS not found and could not be created." ), qry );
       }
-      logWrapper.setQuery( qry.lastQuery() );
+      logWrapper.setQuery( getLastExecutedQuery( qry ) );
     }
   }
 
