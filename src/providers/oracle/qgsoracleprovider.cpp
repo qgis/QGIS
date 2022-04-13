@@ -339,7 +339,7 @@ QString QgsOracleProvider::getLastExecutedQuery( const QSqlQuery &query )
   {
     it.next();
     const QVariant &var { it.value().toString() };
-    QSqlField field( QLatin1String( "" ), var.type() );
+    QSqlField field( QString( ), var.type() );
     if ( var.isNull() )
     {
       field.clear();
