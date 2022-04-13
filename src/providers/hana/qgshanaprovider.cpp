@@ -1624,6 +1624,14 @@ Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer(
     return Qgis::VectorExportResult::ErrorCreatingLayer;
   }
 
+  if ( wkbType != QgsWkbTypes::Unknown && wkbType != QgsWkbTypes::NoGeometry &&
+       !QgsHanaUtils::isGeometryTypeSupported( wkbType ) )
+  {
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Geometry type '%1' is not supported" ).arg( QgsWkbTypes::displayString( wkbType ) );
+    return Qgis::VectorExportResult::ErrorCreatingLayer;
+  }
+
   QString geometryColumn = dsUri.geometryColumn();
   QString schemaTableName = QgsHanaUtils::quotedIdentifier( schemaName ) + '.' +
                             QgsHanaUtils::quotedIdentifier( tableName );
