@@ -1,0 +1,152 @@
+/***************************************************************************
+                         qgsrangerequestcache.cpp
+                         --------------------
+    begin                : April 2022
+    copyright            : (C) 2022 by Belgacem Nedjima
+    email                : belgacem dot nedjima at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsrangerequestcache.h"
+
+#include <QtDebug>
+#include <QFile>
+#include <QDir>
+#include <QDateTime>
+
+QgsRangeRequestCache::QgsRangeRequestCache()
+{
+
+}
+
+QByteArray QgsRangeRequestCache::entry( const QUrl &url, QPair<qint64, qint64> range )
+{
+  QString hash = rangeFileName( url, range );
+  QByteArray arr = readFile( hash );
+  return arr;
+}
+
+bool QgsRangeRequestCache::hasEntry( const QUrl &url, QPair<qint64, qint64> range )
+{
+  QDir dir( mCacheDir );
+  return dir.exists( rangeFileName( url, range ) );
+}
+
+void QgsRangeRequestCache::registerEntry( const QUrl &url, QPair<qint64, qint64> range, QByteArray data )
+{
+  QString hash = rangeFileName( url, range );
+  writeFile( hash, data );
+  expire();
+}
+
+void QgsRangeRequestCache::clear()
+{
+  QDir dir( mCacheDir );
+  for ( QFileInfo info : dir.entryInfoList() )
+  {
+    removeFile( info.filePath() );
+  }
+}
+
+void QgsRangeRequestCache::setCacheDirectory( const QString &path )
+{
+  QString cachePath = path;
+  if ( !cachePath.endsWith( QDir::separator() ) )
+  {
+    cachePath.push_back( QDir::separator() );
+  }
+  mCacheDir = cachePath;
+}
+
+void QgsRangeRequestCache::setCacheSize( qint64 cacheSize )
+{
+  mMaxDataSize = cacheSize;
+  expire();
+}
+
+QByteArray QgsRangeRequestCache::readFile( const QString &fileName )
+{
+  QFile file( fileName );
+  file.open( QFile::OpenModeFlag::ReadOnly );
+  if ( !file.isOpen() || !file.isReadable() )
+    return QByteArray();
+  return file.readAll();
+}
+
+void QgsRangeRequestCache::writeFile( const QString &fileName, QByteArray data )
+{
+  QFile file( fileName );
+  file.open( QFile::OpenModeFlag::WriteOnly );
+  if ( !file.isOpen() || !file.isWritable() )
+    return;
+  file.write( data );
+  file.close();
+}
+
+void QgsRangeRequestCache::removeFile( const QString &fileName )
+{
+  if ( fileName.isEmpty() )
+    return;
+  QFile::remove( fileName );
+}
+
+QFileInfoList QgsRangeRequestCache::cacheFiles()
+{
+  QDir dir( mCacheDir );
+  QFileInfoList filesList = dir.entryInfoList( QDir::Filter::Files );
+  std::sort( filesList.begin(), filesList.end(), []( QFileInfo & f1, QFileInfo & f2 )
+  {
+    QDateTime t1 = f1.fileTime( QFile::FileTime::FileAccessTime );
+    QDateTime t2 = f2.fileTime( QFile::FileTime::FileAccessTime );
+    return t1 > t2;
+  } );
+  return filesList;
+}
+
+void QgsRangeRequestCache::expire()
+{
+  QDir dir( mCacheDir );
+  QFileInfoList filesList = cacheFiles();
+  qint64 totalSize = 0;
+  for ( QFileInfo info : filesList )
+  {
+    totalSize += info.size();
+  }
+  while ( totalSize > mMaxDataSize )
+  {
+    QFileInfo info = filesList.back();
+    filesList.pop_back();
+    totalSize -= info.size();
+    removeFile( info.filePath() );
+  }
+}
+
+QStringList QgsRangeRequestCache::cacheEntries()
+{
+  QStringList list;
+  QDir dir( mCacheDir );
+  QFileInfoList filesList = dir.entryInfoList( QDir::Filter::Files, QDir::SortFlags() );
+  std::sort( filesList.begin(), filesList.end(), []( QFileInfo & f1, QFileInfo & f2 )
+  {
+    QDateTime t1 = f1.fileTime( QFile::FileTime::FileAccessTime );
+    if ( !t1.isValid() )
+      t1 = f1.fileTime( QFile::FileTime::FileBirthTime );
+    QDateTime t2 = f2.fileTime( QFile::FileTime::FileAccessTime );
+    if ( !t2.isValid() )
+      t2 = f2.fileTime( QFile::FileTime::FileBirthTime );
+    return t1 > t2;
+  } );
+  for ( QFileInfo info : filesList )
+  {
+    list.push_back( info.baseName() );
+  }
+  return list;
+}

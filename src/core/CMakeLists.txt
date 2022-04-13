@@ -221,6 +221,7 @@ set(QGIS_CORE_SRCS
   network/qgsnewsfeedmodel.cpp
   network/qgsnewsfeedparser.cpp
   network/qgshttpheaders.cpp
+  network/qgsrangerequestcache.cpp
 
   processing/qgsprocessing.cpp
   processing/qgsprocessingalgorithm.cpp
@@ -1570,6 +1571,7 @@ set(QGIS_CORE_HDRS
   network/qgsnewsfeedmodel.h
   network/qgsnewsfeedparser.h
   network/qgshttpheaders.h
+  network/qgsrangerequestcache.h
 
   numericformats/qgsbasicnumericformat.h
   numericformats/qgsbearingnumericformat.h
