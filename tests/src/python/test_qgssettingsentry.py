@@ -344,6 +344,15 @@ class TestQgsSettingsEntry(unittest.TestCase):
         qgsSettingsValue = QgsSettings().enumValue(settingsKeyComplete, QgsUnitTypes.LayoutMeters)
         self.assertEqual(qgsSettingsValue, QgsUnitTypes.LayoutPicas)
 
+        # With save as integer option
+        settingsEntryEnumAsInteger = QgsSettingsEntryEnumFlag(settingsKey, self.pluginName, defaultValue, description, Qgis.SettingsOption.SaveEnumFlagAsInt)
+        settingsEntryEnumAsInteger.remove()
+        self.assertEqual(settingsEntryEnumAsInteger.value(), defaultValue)
+        success = settingsEntryEnumAsInteger.setValue(QgsUnitTypes.LayoutFeet)
+        self.assertEqual(success, True)
+        qgsSettingsValue = QgsSettings().value(settingsKeyComplete, int(QgsUnitTypes.LayoutMeters))
+        self.assertEqual(qgsSettingsValue, int(QgsUnitTypes.LayoutFeet))
+
     def test_settings_entry_flag(self):
         settingsKey = "settingsEntryFlag/flagValue"
         settingsKeyComplete = "plugins/{}/{}".format(self.pluginName, settingsKey)
