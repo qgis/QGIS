@@ -121,6 +121,13 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( resetViewAction, &QAction::triggered, mCanvas, &QgsElevationProfileCanvas::zoomFull );
   toolBar->addAction( resetViewAction );
 
+  QAction *enabledSnappingAction = new QAction( tr( "Enable Snapping" ), this );
+  enabledSnappingAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnapping.svg" ) ) );
+  enabledSnappingAction->setCheckable( true );
+  enabledSnappingAction->setChecked( true );
+  connect( enabledSnappingAction, &QAction::toggled, mCanvas, &QgsElevationProfileCanvas::setSnappingEnabled );
+  toolBar->addAction( enabledSnappingAction );
+
   toolBar->addSeparator();
 
   QAction *exportAsPdfAction = new QAction( tr( "Export as PDF" ), this );

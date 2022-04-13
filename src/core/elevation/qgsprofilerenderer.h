@@ -107,6 +107,36 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
      */
     void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax );
 
+    /**
+     * \brief Encapsulates results of snapping a point to the profile.
+     * \ingroup core
+     */
+    class SnapResult
+    {
+      public:
+        //! Snapped point distance along curve
+        double snappedDistanceAlongCurve = std::numeric_limits< double >::quiet_NaN();
+
+        //! Snapped point height
+        double snappedHeight = std::numeric_limits< double >::quiet_NaN();
+
+        //! Distance snapped
+        double snapDistance = std::numeric_limits< double >::max();
+
+        /**
+         * Returns TRUE if the result is a valid point.
+         */
+        bool isValid() const { return !std::isnan( snappedDistanceAlongCurve ); }
+    };
+
+    /**
+     * Snap a point to the results.
+     *
+     * The \a maximumCurveDelta and \a maximumHeightDelta arguments specify the maximum allowed difference in the distance along
+     * curve and height values from the snapped result.
+     */
+    SnapResult snapPoint( double distanceAlongCurve, double height, double maximumCurveDelta, double maximumHeightDelta );
+
   signals:
 
     //! Emitted when the profile generation is finished (or canceled).

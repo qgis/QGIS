@@ -45,6 +45,8 @@ Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
 
     virtual void scalePlot( double factor );
 
+    virtual QgsPointXY snapToPlot( QPoint point );
+
 
     void scalePlot( double xFactor, double yFactor );
 %Docstring
@@ -152,6 +154,11 @@ Zooms to the full extent of the profile.
     void clear();
 %Docstring
 Clears the current profile.
+%End
+
+    void setSnappingEnabled( bool enabled );
+%Docstring
+Sets whether snapping of cursor points is enabled.
 %End
 
 };

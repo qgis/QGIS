@@ -776,7 +776,6 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
-        print([g.asWkt(1) for g in results.asGeometries()])
         self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
                               ['MultiPolygonZ (((321906.5 129918.5 36, 321907.7 129918.8 36, 321907.7 129918.8 53, 321906.5 129918.5 53, 321906.5 129918.5 36)),((321902.8 129917.9 36, 321906.5 129918.5 36, 321906.5 129918.5 53, 321902.8 129917.9 53, 321902.8 129917.9 36)),((321917.9 129920.6 36, 321921 129921.1 36, 321921 129921.1 53, 321917.9 129920.6 53, 321917.9 129920.6 36)),((321912.4 129919.6 36, 321917.9 129920.6 36, 321917.9 129920.6 53, 321912.4 129919.6 53, 321912.4 129919.6 36)))',
                                'MultiPolygonZ (((321922.9 129921.5 37, 321927.8 129922.4 37, 321927.8 129922.4 54, 321922.9 129921.5 54, 321922.9 129921.5 37)),((321927.8 129922.4 37, 321929.5 129922.7 37, 321929.5 129922.7 54, 321927.8 129922.4 54, 321927.8 129922.4 37)))'])
@@ -791,10 +790,216 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
-        print([g.asWkt(1) for g in results.asGeometries()])
         self.assertCountEqual([g.asWkt(1) for g in results.asGeometries()],
                               ['MultiPolygonZ (((321922.9 129921.5 4, 321927.8 129922.4 4, 321927.8 129922.4 6, 321922.9 129921.5 6, 321922.9 129921.5 4)),((321927.8 129922.4 4, 321929.5 129922.7 4, 321929.5 129922.7 6, 321927.8 129922.4 6, 321927.8 129922.4 4)))',
                                'MultiPolygonZ (((321906.5 129918.5 8, 321907.7 129918.8 8, 321907.7 129918.8 9, 321906.5 129918.5 9, 321906.5 129918.5 8)),((321902.8 129917.9 8, 321906.5 129918.5 8, 321906.5 129918.5 9, 321902.8 129917.9 9, 321902.8 129917.9 8)),((321917.9 129920.6 8, 321921 129921.1 8, 321921 129921.1 9, 321917.9 129920.6 9, 321917.9 129920.6 8)),((321912.4 129919.6 8, 321917.9 129920.6 8, 321917.9 129920.6 9, 321912.4 129919.6 9, 321912.4 129919.6 8)))'])
+
+    def testSnappingPoints(self):
+        vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
+        self.assertTrue(vl.isValid())
+        vl.setCrs(QgsCoordinateReferenceSystem())
+
+        for line in ['LineStringZ(322006 129874 12, 322008 129910 13, 322038 129909 14, 322037 129868 15)',
+                     'LineStringZ(322068 129900 16, 322128 129813 17)']:
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromWkt(line))
+            self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+
+        curve = QgsLineString()
+        curve.fromWkt('LineStringZ (322021.96201738982927054 129896.83061585001996718 0, 322116.8371042063809 129880.94244341662852094 0)')
+        req = QgsProfileRequest(curve)
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+
+        # try snapping some points
+        res = r.snapPoint(-10, -10, 0, 0)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(15, 14, 1, 3)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 15.89, 1)
+        self.assertAlmostEqual(res.snappedHeight, 14.36, 1)
+        self.assertAlmostEqual(res.snapDistance, 0.965, 1)
+
+        res = r.snapPoint(55, 16, 2, 2)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 55.279, 1)
+        self.assertAlmostEqual(res.snappedHeight, 16.141, 1)
+        self.assertAlmostEqual(res.snapDistance, 0.3133, 1)
+
+        res = r.snapPoint(55, 16, 0.1, 0.1)
+        self.assertFalse(res.isValid())
+
+    def testSnappingVerticalLines(self):
+        vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
+        self.assertTrue(vl.isValid())
+        vl.setCrs(QgsCoordinateReferenceSystem())
+
+        for line in ['LineStringZ(322006 129874 12, 322008 129910 13, 322038 129909 14, 322037 129868 15)',
+                     'LineStringZ(322068 129900 16, 322128 129813 17)']:
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromWkt(line))
+            self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+        vl.elevationProperties().setExtrusionEnabled(True)
+        vl.elevationProperties().setExtrusionHeight(17)
+
+        curve = QgsLineString()
+        curve.fromWkt('LineStringZ (322021.96201738982927054 129896.83061585001996718 0, 322116.8371042063809 129880.94244341662852094 0)')
+        req = QgsProfileRequest(curve)
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+
+        # try snapping some points
+        res = r.snapPoint(-10, -10, 0, 0)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(15, 14, 1, 3)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 15.89, 1)
+        self.assertAlmostEqual(res.snappedHeight, 14.36, 1)
+        self.assertAlmostEqual(res.snapDistance, 0.965, 1)
+
+        res = r.snapPoint(15, 31, 1, 3)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 15.89, 1)
+        self.assertAlmostEqual(res.snappedHeight, 31.36, 1)
+        self.assertAlmostEqual(res.snapDistance, 0.965, 1)
+
+        res = r.snapPoint(15, 35, 1, 3)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(55, 16, 2, 2)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 55.279, 1)
+        self.assertAlmostEqual(res.snappedHeight, 16.141, 1)
+        self.assertAlmostEqual(res.snapDistance, 0.3133, 1)
+
+        res = r.snapPoint(55, 33, 2, 2)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 55.279, 1)
+        self.assertAlmostEqual(res.snappedHeight, 33.1413, 1)
+        self.assertAlmostEqual(res.snapDistance, 0.3133, 1)
+
+        res = r.snapPoint(55, 36, 2, 2)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(55, 16, 0.1, 0.1)
+        self.assertFalse(res.isValid())
+
+    def testSnappingPolygons(self):
+        vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
+        self.assertTrue(vl.isValid())
+        vl.setCrs(QgsCoordinateReferenceSystem())
+
+        for poly in ['PolygonZ ((321829.48893365426920354 129991.38697145861806348 1, 321847.89668515208177269 129996.63588572069420479 1, 321848.97131609614007175 129979.22330882755341008 1, 321830.31725845142500475 129978.07136809575604275 1, 321829.48893365426920354 129991.38697145861806348 1))',
+                     'PolygonZ ((321920.00953056826256216 129924.58260190498549491 2, 321924.65299345907988027 129908.43546159457764588 2, 321904.78543491888558492 129903.99811821122420952 2, 321900.80605239619035274 129931.39860145389684476 2, 321904.84799937985371798 129931.71552911199978553 2, 321908.93646715773502365 129912.90030360443051904 2, 321914.20495146053144708 129913.67693978428724222 2, 321911.30165811872575432 129923.01272751353099011 2, 321920.00953056826256216 129924.58260190498549491 2))']:
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromWkt(poly))
+            self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+
+        curve = QgsLineString()
+        curve.fromWkt('LineStringZ (321944.79089414176996797 129899.10035476912162267 0, 321818.13946245843544602 129991.70570266660070047 0)')
+        req = QgsProfileRequest(curve)
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+
+        # try snapping some points
+        res = r.snapPoint(-10, -10, 0, 0)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(27, 1.9, 1, 3)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 27.37797, 1)
+        self.assertAlmostEqual(res.snappedHeight, 2.0, 1)
+        self.assertAlmostEqual(res.snapDistance, 0.3909, 1)
+
+        res = r.snapPoint(27, 7, 1, 3)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(42, 3, 3, 2)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 40.7058, 1)
+        self.assertAlmostEqual(res.snappedHeight, 2.000, 1)
+        self.assertAlmostEqual(res.snapDistance, 1.6354, 1)
+
+        res = r.snapPoint(42, 3, .01, 2)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(55, 16, 0.1, 0.1)
+        self.assertFalse(res.isValid())
+
+    def testSnappingExtrudedPolygons(self):
+        vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
+        self.assertTrue(vl.isValid())
+        vl.setCrs(QgsCoordinateReferenceSystem())
+
+        for poly in ['PolygonZ ((321829.48893365426920354 129991.38697145861806348 1, 321847.89668515208177269 129996.63588572069420479 1, 321848.97131609614007175 129979.22330882755341008 1, 321830.31725845142500475 129978.07136809575604275 1, 321829.48893365426920354 129991.38697145861806348 1))',
+                     'PolygonZ ((321920.00953056826256216 129924.58260190498549491 2, 321924.65299345907988027 129908.43546159457764588 2, 321904.78543491888558492 129903.99811821122420952 2, 321900.80605239619035274 129931.39860145389684476 2, 321904.84799937985371798 129931.71552911199978553 2, 321908.93646715773502365 129912.90030360443051904 2, 321914.20495146053144708 129913.67693978428724222 2, 321911.30165811872575432 129923.01272751353099011 2, 321920.00953056826256216 129924.58260190498549491 2))']:
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromWkt(poly))
+            self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+        vl.elevationProperties().setExtrusionEnabled(True)
+        vl.elevationProperties().setExtrusionHeight(17)
+
+        curve = QgsLineString()
+        curve.fromWkt('LineStringZ (321944.79089414176996797 129899.10035476912162267 0, 321818.13946245843544602 129991.70570266660070047 0)')
+        req = QgsProfileRequest(curve)
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+
+        # try snapping some points
+        res = r.snapPoint(-10, -10, 0, 0)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(27, 1.9, 1, 3)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 27.37797, 1)
+        self.assertAlmostEqual(res.snappedHeight, 2.0, 1)
+        self.assertAlmostEqual(res.snapDistance, 0.3909, 1)
+
+        res = r.snapPoint(27, 18.9, 1, 3)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 27.37797, 1)
+        self.assertAlmostEqual(res.snappedHeight, 19.0, 1)
+        self.assertAlmostEqual(res.snapDistance, 0.3909, 1)
+
+        res = r.snapPoint(27, 22.9, 1, 3)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(27, 7, 1, 3)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(42, 3, 3, 2)
+        self.assertTrue(res.isValid())
+        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 40.7058, 1)
+        self.assertAlmostEqual(res.snappedHeight, 2.000, 1)
+        self.assertAlmostEqual(res.snapDistance, 1.6354, 1)
+
+        res = r.snapPoint(42, 3, .01, 2)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(55, 16, 0.1, 0.1)
+        self.assertFalse(res.isValid())
 
     def testRenderProfile(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')

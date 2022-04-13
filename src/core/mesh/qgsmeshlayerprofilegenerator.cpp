@@ -104,6 +104,37 @@ void QgsMeshLayerProfileResults::renderResults( QgsProfileRenderContext &context
   lineSymbol->stopRender( context.renderContext() );
 }
 
+QgsAbstractProfileResults::SnapResult QgsMeshLayerProfileResults::snapPoint( double distanceAlongCurve, double height, double, double maximumHeightDelta )
+{
+  // TODO -- consider an index if performance is an issue
+  QgsAbstractProfileResults::SnapResult result;
+
+  double prevDistance = std::numeric_limits< double >::max();
+  double prevHeight = 0;
+  for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
+  {
+    // find segment which corresponds to the given distance along curve
+    if ( it != results.constBegin() && prevDistance <= distanceAlongCurve && it.key() >= distanceAlongCurve )
+    {
+      const double dx = it.key() - prevDistance;
+      const double dy = it.value() - prevHeight;
+      const double snappedZ = ( dy / dx ) * ( distanceAlongCurve - prevDistance ) + prevHeight;
+
+      result.snapDistance = std::fabs( height - snappedZ );
+      if ( result.snapDistance > maximumHeightDelta )
+        return QgsAbstractProfileResults::SnapResult();
+
+      result.snappedDistanceAlongCurve = distanceAlongCurve;
+      result.snappedHeight = snappedZ;
+      break;
+    }
+
+    prevDistance = it.key();
+    prevHeight = it.value();
+  }
+  return result;
+}
+
 //
 // QgsMeshLayerProfileGenerator
 //

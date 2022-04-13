@@ -107,6 +107,39 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         self.assertEqual(r.zRange().lower(), 74)
         self.assertEqual(r.zRange().upper(), 154)
 
+    def testSnapping(self):
+        rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
+        self.assertTrue(rl.isValid())
+        rl.elevationProperties().setEnabled(True)
+
+        curve = QgsLineString()
+        curve.fromWkt('LineString (321621.3770066662109457 129734.87810317709227093, 321894.21278918092139065 129858.49142702402605209)')
+        req = QgsProfileRequest(curve)
+
+        generator = rl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+
+        # try snapping some points
+        res = r.snapPoint(-10, -10, 0, 0)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(0, 70, 0, 3)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.snappedDistanceAlongCurve, 0)
+        self.assertEqual(res.snappedHeight, 72)
+        self.assertEqual(res.snapDistance, 2)
+
+        res = r.snapPoint(200, 79, 0, 5)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.snappedDistanceAlongCurve, 200)
+        self.assertEqual(res.snappedHeight, 75)
+        self.assertEqual(res.snapDistance, 4)
+
+        res = r.snapPoint(200, 85, 0, 5)
+        self.assertFalse(res.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()

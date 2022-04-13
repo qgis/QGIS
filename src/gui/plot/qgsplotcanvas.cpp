@@ -290,6 +290,11 @@ void QgsPlotCanvas::zoomToRect( const QRectF )
 
 }
 
+QgsPointXY QgsPlotCanvas::snapToPlot( QPoint )
+{
+  return QgsPointXY();
+}
+
 bool QgsPlotCanvas::viewportEvent( QEvent *event )
 {
   if ( event->type() == QEvent::ToolTip && mTool && mTool->canvasToolTipEvent( qgis::down_cast<QHelpEvent *>( event ) ) )
