@@ -163,6 +163,7 @@ The development version
     enum class SettingsOption
     {
       SaveFormerValue,
+      SaveEnumFlagAsInt,
     };
     typedef QFlags<Qgis::SettingsOption> SettingsOptions;
 

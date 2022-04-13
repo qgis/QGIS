@@ -126,6 +126,12 @@ class CORE_EXPORT QgsSettingsEntryBase
     bool hasDynamicKey() const;
 
     /**
+     * Returns the settings options
+     * \since QGIS 3.26
+     */
+    Qgis::SettingsOptions options() const {return mOptions;}
+
+    /**
      * Returns TRUE if the settings is contained in the underlying QSettings.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.

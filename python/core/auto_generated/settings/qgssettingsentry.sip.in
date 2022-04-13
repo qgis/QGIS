@@ -98,6 +98,13 @@ included. For non-dynamic settings returns the same as :py:func:`~QgsSettingsEnt
 Returns ``True`` if a part of the settings key is built dynamically.
 %End
 
+    Qgis::SettingsOptions options() const;
+%Docstring
+Returns the settings options
+
+.. versionadded:: 3.26
+%End
+
     bool exists( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Returns ``True`` if the settings is contained in the underlying QSettings.

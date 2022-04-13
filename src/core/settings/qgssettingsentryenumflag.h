@@ -101,11 +101,19 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
       }
 
       QVariant variantValue;
-      bool ok = false;
-      if ( !mMetaEnum.isFlag() )
-        variantValue = qgsEnumValueToKey( value, &ok );
+      bool ok = true;
+
+      if ( this->options().testFlag( Qgis::SettingsOption::SaveEnumFlagAsInt ) )
+      {
+        variantValue = static_cast<int>( value );
+      }
       else
-        variantValue = qgsFlagValueToKeys( value, &ok );
+      {
+        if ( !mMetaEnum.isFlag() )
+          variantValue = qgsEnumValueToKey( value, &ok );
+        else
+          variantValue = qgsFlagValueToKeys( value, &ok );
+      }
 
       if ( ok )
         return this->setVariantValuePrivate( variantValue, dynamicKeyPartList );
