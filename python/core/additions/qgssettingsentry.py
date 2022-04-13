@@ -50,7 +50,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
                 defaultValueStr = self.__metaEnum.valueToKey(defaultValue)
             self.__enumFlagClass = defaultValue.__class__
 
-        super().__init__(key, 'plugins/{}'.format(pluginName), defaultValueStr, description)
+        super().__init__(key, 'plugins/{}'.format(pluginName), defaultValueStr, description, options)
 
     def value(self, dynamicKeyPart=None):
         """
