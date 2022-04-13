@@ -59,7 +59,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="mOffsetLabel">
         <property name="text">
          <string>Offset</string>
         </property>
