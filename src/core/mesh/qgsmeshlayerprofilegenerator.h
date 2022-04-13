@@ -61,6 +61,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileResults
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
     void renderResults( QgsProfileRenderContext &context ) override;
+    SnapResult snapPoint( double distanceAlongCurve, double height,  double maximumCurveDelta, double maximumHeightDelta ) override;
 };
 
 

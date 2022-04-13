@@ -18,6 +18,7 @@
 #include "qgsabstractprofilesource.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgscurve.h"
+#include "qgsgeos.h"
 
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
@@ -177,6 +178,30 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
     if ( job.complete && job.results )
       job.results->renderResults( profileRenderContext );
   }
+}
+
+QgsProfilePlotRenderer::SnapResult QgsProfilePlotRenderer::snapPoint( double distanceAlongCurve, double height, double maximumCurveDelta, double maximumHeightDelta )
+{
+  QgsProfilePlotRenderer::SnapResult result;
+  QgsAbstractProfileResults::SnapResult bestSnapResult;
+  if ( !mRequest.profileCurve() )
+    return result;
+
+  for ( const ProfileJob &job : mJobs )
+  {
+    if ( job.complete && job.results )
+    {
+      const QgsAbstractProfileResults::SnapResult jobSnapResult = job.results->snapPoint( distanceAlongCurve, height, maximumCurveDelta, maximumHeightDelta );
+      if ( jobSnapResult.isValid() && ( !bestSnapResult.isValid() || jobSnapResult.snapDistance < bestSnapResult.snapDistance ) )
+        bestSnapResult = jobSnapResult;
+    }
+  }
+
+  result.snappedDistanceAlongCurve = bestSnapResult.snappedDistanceAlongCurve;
+  result.snappedHeight = bestSnapResult.snappedHeight;
+  result.snapDistance = bestSnapResult.snapDistance;
+
+  return result;
 }
 
 void QgsProfilePlotRenderer::onGeneratingFinished()

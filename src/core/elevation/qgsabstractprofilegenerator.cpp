@@ -58,3 +58,8 @@ void QgsProfileRenderContext::setElevationRange( const QgsDoubleRange &range )
 QgsAbstractProfileGenerator::~QgsAbstractProfileGenerator() = default;
 
 QgsAbstractProfileResults::~QgsAbstractProfileResults() = default;
+
+QgsAbstractProfileResults::SnapResult QgsAbstractProfileResults::snapPoint( double, double, double, double )
+{
+  return QgsAbstractProfileResults::SnapResult();
+}

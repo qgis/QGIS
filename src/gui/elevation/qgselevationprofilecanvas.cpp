@@ -190,7 +190,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       painter->setBrush( Qt::NoBrush );
       QPen crossHairPen;
       crossHairPen.setCosmetic( true );
-      crossHairPen.setWidthF( QgsGuiUtils::scaleIconSize( 2 ) );
+      crossHairPen.setWidthF( 1 );
       crossHairPen.setStyle( Qt::DashLine );
       crossHairPen.setCapStyle( Qt::FlatCap );
       crossHairPen.setColor( QColor( 0, 0, 0, 150 ) );
@@ -344,6 +344,24 @@ void QgsElevationProfileCanvas::scalePlot( double factor )
   scalePlot( factor, factor );
 }
 
+QgsPointXY QgsElevationProfileCanvas::snapToPlot( QPoint point )
+{
+  if ( !mCurrentJob || !mSnappingEnabled )
+    return QgsPointXY();
+
+  const QgsPointXY plotPoint = canvasPointToPlotPoint( point );
+
+  const double toleranceInPixels = QFontMetrics( font() ).horizontalAdvance( ' ' );
+  const double xToleranceInPlotUnits = 2 * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
+  const double yToleranceInPlotUnits = 10 * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
+
+  const QgsProfilePlotRenderer::SnapResult snappedPoint = mCurrentJob->snapPoint( plotPoint.x(), plotPoint.y(), xToleranceInPlotUnits, yToleranceInPlotUnits );
+  if ( !snappedPoint.isValid() )
+    return QgsPointXY();
+
+  return plotPointToCanvasPoint( QgsPointXY( snappedPoint.snappedDistanceAlongCurve, snappedPoint.snappedHeight ) );
+}
+
 void QgsElevationProfileCanvas::scalePlot( double xFactor, double yFactor )
 {
   const double currentWidth = mPlotItem->xMaximum() - mPlotItem->xMinimum();
@@ -441,7 +459,18 @@ void QgsElevationProfileCanvas::mouseMoveEvent( QMouseEvent *e )
     return;
   }
 
-  const QgsPointXY plotPoint = canvasPointToPlotPoint( e->pos() );
+  QgsPointXY plotPoint = canvasPointToPlotPoint( e->pos() );
+  if ( mCurrentJob && mSnappingEnabled && !plotPoint.isEmpty() )
+  {
+    const double toleranceInPixels = QFontMetrics( font() ).horizontalAdvance( ' ' );
+    const double xToleranceInPlotUnits = 2 * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
+    const double yToleranceInPlotUnits = 10 * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
+
+    const QgsProfilePlotRenderer::SnapResult snappedPoint = mCurrentJob->snapPoint( plotPoint.x(), plotPoint.y(), xToleranceInPlotUnits, yToleranceInPlotUnits );
+    if ( snappedPoint.isValid() )
+      plotPoint = QgsPointXY( snappedPoint.snappedDistanceAlongCurve, snappedPoint.snappedHeight );
+  }
+
   if ( plotPoint.isEmpty() )
   {
     mCrossHairsItem->hide();
@@ -514,6 +543,11 @@ QgsPointXY QgsElevationProfileCanvas::canvasPointToPlotPoint( const QPointF &poi
     return QgsPointXY();
 
   return mPlotItem->canvasPointToPlotPoint( point );
+}
+
+QgsPointXY QgsElevationProfileCanvas::plotPointToCanvasPoint( const QgsPointXY &point ) const
+{
+  return mPlotItem->plotPointToCanvasPoint( point );
 }
 
 void QgsElevationProfileCanvas::setProject( QgsProject *project )
@@ -726,4 +760,9 @@ void QgsElevationProfileCanvas::clear()
   setProfileCurve( nullptr );
   mPlotItem->setRenderer( nullptr );
   mPlotItem->updatePlot();
+}
+
+void QgsElevationProfileCanvas::setSnappingEnabled( bool enabled )
+{
+  mSnappingEnabled = enabled;
 }

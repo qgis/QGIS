@@ -91,6 +91,39 @@ class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
         self.assertAlmostEqual(r.zRange().lower(), 80, 2)
         self.assertAlmostEqual(r.zRange().upper(), 152.874, 0)
 
+    def testSnapping(self):
+        ml = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')
+        self.assertTrue(ml.isValid())
+        ml.setCrs(QgsCoordinateReferenceSystem('EPSG:27700'))
+
+        curve = QgsLineString()
+        curve.fromWkt('LineString (321621.3770066662109457 129734.87810317709227093, 321894.21278918092139065 129858.49142702402605209)')
+        req = QgsProfileRequest(curve)
+
+        generator = ml.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+
+        # try snapping some points
+        res = r.snapPoint(-10, -10, 0, 0)
+        self.assertFalse(res.isValid())
+
+        res = r.snapPoint(0, 70, 0, 3)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.snappedDistanceAlongCurve, 0)
+        self.assertAlmostEqual(res.snappedHeight, 71.8, 0)
+        self.assertAlmostEqual(res.snapDistance, 1.82, 1)
+
+        res = r.snapPoint(200, 79, 0, 5)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.snappedDistanceAlongCurve, 200)
+        self.assertAlmostEqual(res.snappedHeight, 75.841, 1)
+        self.assertAlmostEqual(res.snapDistance, 3.158, 1)
+
+        res = r.snapPoint(200, 85, 0, 5)
+        self.assertFalse(res.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()

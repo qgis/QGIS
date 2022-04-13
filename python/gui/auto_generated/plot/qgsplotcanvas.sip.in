@@ -116,6 +116,15 @@ Zooms the plot to the specified ``rect`` in canvas units.
 The default implementation does nothing.
 %End
 
+    virtual QgsPointXY snapToPlot( QPoint point );
+%Docstring
+Snap a canvas point to the plot
+
+Returns an empty point if snapping was not possible.
+
+:param point: point in canvas coordinates
+%End
+
   public slots:
 
     virtual void refresh();

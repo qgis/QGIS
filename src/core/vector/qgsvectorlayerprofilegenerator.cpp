@@ -72,6 +72,165 @@ QVector<QgsGeometry> QgsVectorLayerProfileResults::asGeometries() const
   return res;
 }
 
+QgsAbstractProfileResults::SnapResult QgsVectorLayerProfileResults::snapPoint( double distanceAlongCurve, double height, double maximumCurveDelta, double maximumHeightDelta )
+{
+  // TODO -- add spatial index if performance is an issue
+  QgsAbstractProfileResults::SnapResult res;
+
+  for ( auto it = features.constBegin(); it != features.constEnd(); ++it )
+  {
+    for ( const Feature &feature : it.value() )
+    {
+      const QgsRectangle featureBounds = feature.crossSectionGeometry.boundingBox();
+      if ( ( featureBounds.xMinimum() - maximumCurveDelta <= distanceAlongCurve ) && ( featureBounds.xMaximum() + maximumCurveDelta >= distanceAlongCurve ) )
+      {
+        switch ( feature.crossSectionGeometry.type() )
+        {
+          case QgsWkbTypes::PointGeometry:
+          {
+            for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
+            {
+              if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( *partIt ) )
+              {
+                const double snapDistanceDelta = std::fabs( distanceAlongCurve - point->x() );
+                if ( snapDistanceDelta > maximumCurveDelta )
+                  continue;
+
+                const double snapHeightDelta = std::fabs( height - point->y() );
+                if ( snapHeightDelta > maximumHeightDelta )
+                  continue;
+
+                const double snapDistance = point->distance( QgsPoint( distanceAlongCurve, height ) );
+                if ( std::isnan( res.snapDistance ) || snapDistance < res.snapDistance )
+                {
+                  res.snapDistance = snapDistance;
+                  res.snappedDistanceAlongCurve = point->x();
+                  res.snappedHeight = point->y();
+                }
+              }
+            }
+            break;
+          }
+
+          case QgsWkbTypes::LineGeometry:
+          {
+            for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
+            {
+              if ( const QgsCurve *line = qgsgeometry_cast< const QgsCurve * >( *partIt ) )
+              {
+                // might be a vertical line
+                if ( const QgsLineString *lineString = qgsgeometry_cast< const QgsLineString * >( line ) )
+                {
+                  if ( lineString->numPoints() == 2 && qgsDoubleNear( lineString->pointN( 0 ).x(), lineString->pointN( 1 ).x() ) )
+                  {
+                    const double snapDistanceDelta = std::fabs( distanceAlongCurve - lineString->pointN( 0 ).x() );
+                    if ( snapDistanceDelta > maximumCurveDelta )
+                      continue;
+
+                    const double snapHeightDelta = std::fabs( height - lineString->pointN( 0 ).y() );
+                    if ( snapHeightDelta <= maximumHeightDelta )
+                    {
+                      const double snapDistanceP1 = lineString->pointN( 0 ).distance( QgsPoint( distanceAlongCurve, height ) );
+                      if ( std::isnan( res.snapDistance ) || snapDistanceP1 < res.snapDistance )
+                      {
+                        res.snapDistance = snapDistanceP1;
+                        res.snappedDistanceAlongCurve = lineString->pointN( 0 ).x();
+                        res.snappedHeight = lineString->pointN( 0 ).y();
+                      }
+                    }
+
+                    const double snapHeightDelta2 = std::fabs( height - lineString->pointN( 1 ).y() );
+                    if ( snapHeightDelta2 <= maximumHeightDelta )
+                    {
+                      const double snapDistanceP2 = lineString->pointN( 1 ).distance( QgsPoint( distanceAlongCurve, height ) );
+                      if ( std::isnan( res.snapDistance ) || snapDistanceP2 < res.snapDistance )
+                      {
+                        res.snapDistance = snapDistanceP2;
+                        res.snappedDistanceAlongCurve = lineString->pointN( 1 ).x();
+                        res.snappedHeight = lineString->pointN( 1 ).y();
+                      }
+                    }
+                    continue;
+                  }
+                }
+
+                const QgsRectangle partBounds = ( *partIt )->boundingBox();
+                if ( distanceAlongCurve < partBounds.xMinimum() - maximumCurveDelta || distanceAlongCurve > partBounds.xMaximum() + maximumCurveDelta )
+                  continue;
+
+                const double snappedDistance = distanceAlongCurve < partBounds.xMinimum() ? partBounds.xMinimum()
+                                               : distanceAlongCurve > partBounds.xMaximum() ? partBounds.xMaximum() : distanceAlongCurve;
+
+                const QgsGeometry cutLine( new QgsLineString( QgsPoint( snappedDistance, minZ ), QgsPoint( snappedDistance, maxZ ) ) );
+                QgsGeos cutLineGeos( cutLine.constGet() );
+
+                const QgsGeometry points( cutLineGeos.intersection( line ) );
+
+                for ( auto vertexIt = points.vertices_begin(); vertexIt != points.vertices_end(); ++vertexIt )
+                {
+                  const double snapHeightDelta = std::fabs( height - ( *vertexIt ).y() );
+                  if ( snapHeightDelta > maximumHeightDelta )
+                    continue;
+
+                  const double snapDistance = ( *vertexIt ).distance( QgsPoint( distanceAlongCurve, height ) );
+                  if ( std::isnan( res.snapDistance ) || snapDistance < res.snapDistance )
+                  {
+                    res.snapDistance = snapDistance;
+                    res.snappedDistanceAlongCurve = ( *vertexIt ).x();
+                    res.snappedHeight = ( *vertexIt ).y();
+                  }
+                }
+              }
+            }
+            break;
+          }
+
+          case QgsWkbTypes::PolygonGeometry:
+          {
+            for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
+            {
+              if ( const QgsCurve *exterior = qgsgeometry_cast< const QgsPolygon * >( *partIt )->exteriorRing() )
+              {
+                const QgsRectangle partBounds = ( *partIt )->boundingBox();
+                if ( distanceAlongCurve < partBounds.xMinimum() - maximumCurveDelta || distanceAlongCurve > partBounds.xMaximum() + maximumCurveDelta )
+                  continue;
+
+                const double snappedDistance = distanceAlongCurve < partBounds.xMinimum() ? partBounds.xMinimum()
+                                               : distanceAlongCurve > partBounds.xMaximum() ? partBounds.xMaximum() : distanceAlongCurve;
+
+                const QgsGeometry cutLine( new QgsLineString( QgsPoint( snappedDistance, minZ ), QgsPoint( snappedDistance, maxZ ) ) );
+                QgsGeos cutLineGeos( cutLine.constGet() );
+
+                const QgsGeometry points( cutLineGeos.intersection( exterior ) );
+                for ( auto vertexIt = points.vertices_begin(); vertexIt != points.vertices_end(); ++vertexIt )
+                {
+                  const double snapHeightDelta = std::fabs( height - ( *vertexIt ).y() );
+                  if ( snapHeightDelta > maximumHeightDelta )
+                    continue;
+
+                  const double snapDistance = ( *vertexIt ).distance( QgsPoint( distanceAlongCurve, height ) );
+                  if ( std::isnan( res.snapDistance ) || snapDistance < res.snapDistance )
+                  {
+                    res.snapDistance = snapDistance;
+                    res.snappedDistanceAlongCurve = ( *vertexIt ).x();
+                    res.snappedHeight = ( *vertexIt ).y();
+                  }
+                }
+              }
+            }
+            break;
+          }
+          case QgsWkbTypes::UnknownGeometry:
+          case QgsWkbTypes::NullGeometry:
+            break;
+        }
+      }
+    }
+  }
+
+  return res;
+}
+
 void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
@@ -691,7 +850,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     }
     else
     {
-      clampedPolygon.reset( qgsgeometry_cast< QgsPolygon * >( p->segmentize() ) );
+      clampedPolygon.reset( qgsgeometry_cast< QgsPolygon * >( polygon->segmentize() ) );
     }
     clampAltitudes( clampedPolygon.get(), offset );
 
