@@ -18,7 +18,7 @@
 """
 
 from .metaenum import metaEnumFromValue
-from qgis.core import QgsSettings, QgsSettingsEntryBase, QgsLogger
+from qgis.core import QgsSettings, QgsSettingsEntryBase, QgsLogger, Qgis
 import qgis  # required to get base class of enums
 
 
@@ -29,7 +29,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
     since QGIS 3.20
     """
 
-    def __init__(self, key, pluginName, defaultValue, description=str()):
+    def __init__(self, key, pluginName, defaultValue, description=str(), options=Qgis.SettingsOptions()):
         """
         Constructor for PyQgsSettingsEntryEnumFlag.
         :param key: argument specifies the final part of the settings key.
@@ -38,6 +38,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         :param description: argument specifies a description for the settings entry.
         """
 
+        self.options = options
         defaultValueStr = str()
         self.__metaEnum = metaEnumFromValue(defaultValue)
         if self.__metaEnum is None or not self.__metaEnum.isValid():
@@ -105,20 +106,23 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             QgsLogger.debug("Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{0}'".format(self.key()))
             return False
 
-        if self.__metaEnum.isFlag():
-            enumFlagKey = self.__metaEnum.valueToKeys(value)
+        if self.options & Qgis.SettingsOption.SaveEnumFlagAsInt:
+            enum_flag_key = int(value)
         else:
-            enumFlagKey = self.__metaEnum.valueToKey(value)
-        if not enumFlagKey:
-            QgsLogger.debug("Invalid enum/flag value '{0}'.".format(value))
-            return False
+            if self.__metaEnum.isFlag():
+                enum_flag_key = self.__metaEnum.valueToKeys(value)
+            else:
+                enum_flag_key = self.__metaEnum.valueToKey(value)
+            if not enum_flag_key:
+                QgsLogger.debug("Invalid enum/flag value '{0}'.".format(value))
+                return False
 
         if type(dynamicKeyPart) == str:
             dynamicKeyPart = [dynamicKeyPart]
         elif dynamicKeyPart is None:
             dynamicKeyPart = []
 
-        return super().setVariantValuePrivate(enumFlagKey, dynamicKeyPart)
+        return super().setVariantValuePrivate(enum_flag_key, dynamicKeyPart)
 
     def settingsType(self):
         """
