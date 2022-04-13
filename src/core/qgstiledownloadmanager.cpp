@@ -24,6 +24,7 @@
 #include <QElapsedTimer>
 #include <QNetworkReply>
 #include <QStandardPaths>
+#include <QRegularExpression>
 
 /// @cond PRIVATE
 
@@ -68,19 +69,7 @@ void QgsTileDownloadManagerWorker::queueUpdated()
   {
     if ( !it->networkReply )
     {
-      bool loadedFromCache = false;
-      if ( !it->request.rawHeader( "Range" ).isEmpty() )
-      {
-        QString rangeStr = QString::fromStdString( it->request.rawHeader( "Range" ).toStdString().substr( 6 ) );
-        QStringList rangeSplit = rangeStr.split( "-" );
-        QPair<qint64, qint64> range( rangeSplit[0].toLongLong(), rangeSplit[1].toLongLong() );
-        QgsRangeRequestCache *cache = mManager->mRangesCache.get();
-        if ( cache->hasEntry( it->request.url(), range ) )
-        {
-          loadedFromCache = true;
-        }
-      }
-      if ( loadedFromCache )
+      if ( mManager->isCached( it->request ) )
         continue;
       QgsDebugMsgLevel( QStringLiteral( "Tile download manager: starting request: " ) + it->request.url().toString(), 2 );
       // start entries which are not in progress
@@ -130,11 +119,7 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
   {
     QgsDebugMsgLevel( QStringLiteral( "Tile download manager: internal range request reply loaded from cache: " ) + mRequest.url().toString(), 2 );
 
-    QString rangeStr = QString::fromStdString( mRequest.rawHeader( "Range" ).toStdString().substr( 6 ) );
-    QStringList rangeSplit = rangeStr.split( "-" );
-    QPair<qint64, qint64> range( rangeSplit[0].toLongLong(), rangeSplit[1].toLongLong() );
-
-    QByteArray data = mManager->mRangesCache->entry( mRequest.url(), range );
+    QByteArray data = mManager->mRangesCache->entry( mRequest );
 
     QMap<QNetworkRequest::Attribute, QVariant> attributes;
     QMap<QNetworkRequest::KnownHeaders, QVariant> headers;
@@ -168,14 +153,9 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
     headers.insert( QNetworkRequest::ContentTypeHeader, reply->header( QNetworkRequest::ContentTypeHeader ) );
 
     // Save loaded data to cache
-    if ( !mRequest.rawHeader( "Range" ).isEmpty() )
+    if ( mManager->isRangeRequest( mRequest ) )
     {
-      QUrl url = mRequest.url();
-      QString rangeStr = QString::fromStdString( mRequest.rawHeader( "Range" ).toStdString().substr( 6 ) );
-      QStringList rangeSplit = rangeStr.split( "-" );
-      QPair<qint64, qint64> range( rangeSplit[0].toLongLong(), rangeSplit[1].toLongLong() );
-      QgsRangeRequestCache *cache = mManager->mRangesCache.get();
-      cache->registerEntry( url, range, data );
+      mManager->mRangesCache->registerEntry( mRequest, data );
     }
 
     emit finished( data, reply->url(), attributes, headers, reply->rawHeaderPairs(), reply->error(), reply->errorString() );
@@ -254,16 +234,9 @@ QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest 
 
     addEntry( entry );
 
-    if ( !request.rawHeader( "Range" ).isEmpty() )
+    if ( isCached( request ) )
     {
-      QString rangeStr = QString::fromStdString( request.rawHeader( "Range" ).toStdString().substr( 6 ) );
-      QStringList rangeSplit = rangeStr.split( "-" );
-      QPair<qint64, qint64> range( rangeSplit[0].toLongLong(), rangeSplit[1].toLongLong() );
-      QgsRangeRequestCache *cache = mRangesCache.get();
-      if ( cache->hasEntry( request.url(), range ) )
-      {
-        QTimer::singleShot( 0, entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::replyFinished );
-      }
+      QTimer::singleShot( 0, entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::replyFinished );
     }
   }
   else
@@ -392,6 +365,19 @@ void QgsTileDownloadManager::signalQueueModified()
   QMetaObject::invokeMethod( mWorker, &QgsTileDownloadManagerWorker::queueUpdated, Qt::QueuedConnection );
 }
 
+bool QgsTileDownloadManager::isRangeRequest( const QNetworkRequest &request )
+{
+  if ( request.rawHeader( "Range" ).isEmpty() )
+    return false;
+  QRegularExpression regex( "^bytes=\\d+-\\d+$" );
+  QRegularExpressionMatch match = regex.match( QString::fromUtf8( request.rawHeader( "Range" ) ) );
+  return match.hasMatch();
+}
+
+bool QgsTileDownloadManager::isCached( const QNetworkRequest &request )
+{
+  return isRangeRequest( request ) && mRangesCache->hasEntry( request );
+}
 
 ///
 
