@@ -235,6 +235,6 @@ void QgsGCPCanvasItem::setPointColor( const QColor &color )
 
 double QgsGCPCanvasItem::fontSizePainterUnits( double points, const QgsRenderContext &c )
 {
-  return points * 0.3527 * c.scaleFactor();
+  return points * c.scaleFactor() * 25.4 / 72;
 }
 

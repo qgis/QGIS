@@ -672,7 +672,7 @@ QUrl QgsLayoutItemLabel::createStylesheetUrl() const
   switch ( mFormat.sizeUnit() )
   {
     case QgsUnitTypes::RenderMillimeters:
-      f.setPointSizeF( mFormat.size() / 0.352778 );
+      f.setPointSizeF( mFormat.size() * 72 / 25.4 );
       break;
     case QgsUnitTypes::RenderPixels:
       f.setPixelSize( mFormat.size() );
@@ -690,7 +690,7 @@ QUrl QgsLayoutItemLabel::createStylesheetUrl() const
       break;
   }
 
-  stylesheet += QgsFontUtils::asCSS( f, 0.352778 * mHtmlUnitsToLayoutUnits );
+  stylesheet += QgsFontUtils::asCSS( f, mHtmlUnitsToLayoutUnits * 25.4 / 72 );
   stylesheet += QStringLiteral( "color: rgba(%1,%2,%3,%4);" ).arg( mFormat.color().red() ).arg( mFormat.color().green() ).arg( mFormat.color().blue() ).arg( QString::number( mFormat.color().alphaF(), 'f', 4 ) );
   stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? QStringLiteral( "left" ) : mHAlignment == Qt::AlignRight ? QStringLiteral( "right" ) : mHAlignment == Qt::AlignHCenter ? QStringLiteral( "center" ) : QStringLiteral( "justify" ) );
 

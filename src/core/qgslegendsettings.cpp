@@ -152,7 +152,7 @@ QFont QgsLegendSettings::scaledFontPixelSize( const QFont &font ) const
 
 double QgsLegendSettings::pixelFontSize( double pointSize ) const
 {
-  return ( pointSize * 0.3527 );
+  return ( pointSize * 25.4 / 72 );
 }
 
 double QgsLegendSettings::textWidthMillimeters( const QFont &font, const QString &text ) const

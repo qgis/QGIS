@@ -59,7 +59,7 @@
 #include <QMimeData>
 #include <QRegularExpression>
 
-#define POINTS_TO_MM 2.83464567
+#define POINTS_TO_MM ( 72 / 25.4 )
 
 QString QgsSymbolLayerUtils::encodeColor( const QColor &color )
 {

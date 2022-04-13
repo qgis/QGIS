@@ -25,7 +25,7 @@
 #include "qgslogger.h"
 #include "qgspoint.h"
 
-#define POINTS_TO_MM 2.83464567
+#define POINTS_TO_MM ( 72 / 25.4 )
 #define INCH_TO_MM 25.4
 
 QgsRenderContext::QgsRenderContext()

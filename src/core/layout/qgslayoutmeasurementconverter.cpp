@@ -146,9 +146,9 @@ double QgsLayoutMeasurementConverter::convertToMillimeters( const QgsLayoutMeasu
     case QgsUnitTypes::LayoutFeet:
       return measurement.length() * 304.8;
     case QgsUnitTypes::LayoutPoints:
-      return measurement.length() * 0.352777778;
+      return measurement.length() * 25.4 / 72;
     case QgsUnitTypes::LayoutPicas:
-      return measurement.length() * 4.23333333;
+      return measurement.length() * 25.4 / 6;
     case QgsUnitTypes::LayoutPixels:
       return measurement.length() * 25.4 / mDpi;
   }
@@ -179,12 +179,12 @@ double QgsLayoutMeasurementConverter::convertToFeet( const QgsLayoutMeasurement 
 
 double QgsLayoutMeasurementConverter::convertToPoints( const QgsLayoutMeasurement measurement ) const
 {
-  return convertToMillimeters( measurement ) * 2.83464567;
+  return convertToMillimeters( measurement ) * 72 / 25.4;
 }
 
 double QgsLayoutMeasurementConverter::convertToPicas( const QgsLayoutMeasurement measurement ) const
 {
-  return convertToMillimeters( measurement ) * 0.236220472;
+  return convertToMillimeters( measurement ) * 6 / 25.4;
 }
 
 double QgsLayoutMeasurementConverter::convertToPixels( const QgsLayoutMeasurement measurement ) const

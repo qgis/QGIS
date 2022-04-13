@@ -2405,7 +2405,7 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
       QgsRectangle extent = crsTransform.transformBoundingBox( crs.bounds() );
       // Constant
       int tileSize = 256;
-      double POINTS_TO_M = 2.83464567 / 10000;
+      double POINTS_TO_M = 72 / 25.4 / 10000;
       // Calculate scale denominator
       int colRes = ( extent.xMaximum() - extent.xMinimum() ) / tileSize;
       int rowRes = ( extent.yMaximum() - extent.yMinimum() ) / tileSize;
