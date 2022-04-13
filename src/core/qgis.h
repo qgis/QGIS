@@ -246,6 +246,7 @@ class CORE_EXPORT Qgis
     enum class SettingsOption : int
     {
       SaveFormerValue = 1 << 1, //<! Save the former value of the settings
+      SaveEnumFlagAsInt = 1 << 2, //! The enum/flag will be saved as an integer value instead of text
     };
     Q_ENUM( SettingsOption )
     Q_DECLARE_FLAGS( SettingsOptions, SettingsOption )

@@ -176,7 +176,8 @@ Qgis.SettingsType.__doc__ = 'Types of settings entries\n\n.. versionadded:: 3.26
 Qgis.SettingsType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SettingsOption.SaveFormerValue.__doc__ = ""
-Qgis.SettingsOption.__doc__ = 'Settings options\n\n.. versionadded:: 3.26\n\n' + '* ``SaveFormerValue``: ' + Qgis.SettingsOption.SaveFormerValue.__doc__
+Qgis.SettingsOption.SaveEnumFlagAsInt.__doc__ = ""
+Qgis.SettingsOption.__doc__ = 'Settings options\n\n.. versionadded:: 3.26\n\n' + '* ``SaveFormerValue``: ' + Qgis.SettingsOption.SaveFormerValue.__doc__ + '\n' + '* ``SaveEnumFlagAsInt``: ' + Qgis.SettingsOption.SaveEnumFlagAsInt.__doc__
 # --
 Qgis.SettingsOption.baseClass = Qgis
 Qgis.SettingsOptions.baseClass = Qgis
