@@ -10,6 +10,7 @@ RUN dnf -y install \
     expat-devel \
     fcgi-devel \
     flex \
+    git \
     gdal-devel \
     geos-devel \
     gsl-devel \
