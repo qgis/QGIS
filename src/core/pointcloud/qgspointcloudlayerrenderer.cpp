@@ -280,95 +280,73 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
   QElapsedTimer downloadTimer;
   downloadTimer.start();
 
-  // Instead of loading all point blocks in parallel and then rendering the one by one,
-  // we split the processing into groups of size groupSize where we load the blocks of the group
-  // in parallel and then render the group's blocks sequentially.
-  // This way helps QGIS stay responsive if the nodes vector size is big
-  const int groupSize = 4;
-  for ( int groupIndex = 0; groupIndex < nodes.size(); groupIndex += groupSize )
+  if ( context.feedback() && context.feedback()->isCanceled() )
+    return 0;
+
+  // Async loading of nodes
+  QVector<QgsPointCloudBlockRequest *> blockRequests;
+  QEventLoop loop;
+  if ( context.feedback() )
+    QObject::connect( context.feedback(), &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+
+  for ( int i = 0; i < nodes.size(); ++i )
   {
-    if ( context.feedback() && context.feedback()->isCanceled() )
-      break;
-    // Async loading of nodes
-    const int currentGroupSize = std::min< size_t >( std::max< size_t >( nodes.size() - groupIndex, 0 ), groupSize );
-    QVector<QgsPointCloudBlockRequest *> blockRequests( currentGroupSize, nullptr );
-    QVector<bool> finishedLoadingBlock( currentGroupSize, false );
-    QEventLoop loop;
-    if ( context.feedback() )
-      QObject::connect( context.feedback(), &QgsFeedback::canceled, &loop, &QEventLoop::quit );
-    // Note: All capture by reference warnings here shouldn't be an issue since we have an event loop, so locals won't be deallocated
-    for ( int i = 0; i < blockRequests.size(); ++i )
+    const IndexedPointCloudNode &n = nodes[i];
+    const QString nStr = n.toString();
+    QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
+    blockRequests.append( blockRequest );
+    QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop,
+                      [ this, &canceled, &nodesDrawn, &loop, &blockRequests, &context, nStr, blockRequest ]()
     {
-      int nodeIndex = groupIndex + i;
-      const IndexedPointCloudNode &n = nodes[nodeIndex];
-      const QString nStr = n.toString();
-      QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
-      blockRequests[ i ] = blockRequest;
-      QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop, [ &, i, nStr, blockRequest ]()
+      blockRequests.removeOne( blockRequest );
+
+      // If all blocks are loaded, exit the event loop
+      if ( blockRequests.isEmpty() )
+        loop.exit();
+
+      std::unique_ptr<QgsPointCloudBlock> block( blockRequest->block() );
+
+      blockRequest->deleteLater();
+
+      if ( context.feedback() && context.feedback()->isCanceled() )
       {
-        if ( !blockRequest->block() )
-        {
-          QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
-        }
-        finishedLoadingBlock[ i ] = true;
-        // If all blocks are loaded, exit the event loop
-        if ( !finishedLoadingBlock.contains( false ) ) loop.exit();
-      } );
-    }
-    // Wait for all point cloud nodes to finish loading
-    loop.exec();
-
-    QgsDebugMsgLevel( QStringLiteral( "Downloaded in : %1ms" ).arg( downloadTimer.elapsed() ), 2 );
-    if ( !context.feedback()->isCanceled() )
-    {
-      // Render all the point cloud blocks sequentially
-      for ( int i = 0; i < blockRequests.size(); ++i )
-      {
-        if ( context.renderContext().renderingStopped() )
-        {
-          QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
-          canceled = true;
-          break;
-        }
-
-        if ( !blockRequests[ i ]->block() )
-          continue;
-
-        QgsVector3D contextScale = context.scale();
-        QgsVector3D contextOffset = context.offset();
-
-        context.setScale( blockRequests[ i ]->block()->scale() );
-        context.setOffset( blockRequests[ i ]->block()->offset() );
-
-        context.setAttributes( blockRequests[ i ]->block()->attributes() );
-
-        mRenderer->renderBlock( blockRequests[ i ]->block(), context );
-
-        context.setScale( contextScale );
-        context.setOffset( contextOffset );
-
-        ++nodesDrawn;
-
-        // as soon as first block is rendered, we can start showing layer updates.
-        // but if we are blocking render updates (so that a previously cached image is being shown), we wait
-        // at most e.g. 3 seconds before we start forcing progressive updates.
-        if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
-        {
-          mReadyToCompose = true;
-        }
+        canceled = true;
+        return;
       }
-    }
 
-    for ( int i = 0; i < blockRequests.size(); ++i )
-    {
-      if ( blockRequests[ i ] )
+      if ( !block )
       {
-        if ( blockRequests[ i ]->block() )
-          delete blockRequests[ i ]->block();
-        blockRequests[ i ]->deleteLater();
+        QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
+        return;
       }
-    }
+
+      QgsVector3D contextScale = context.scale();
+      QgsVector3D contextOffset = context.offset();
+
+      context.setScale( block->scale() );
+      context.setOffset( block->offset() );
+      context.setAttributes( block->attributes() );
+
+      mRenderer->renderBlock( block.get(), context );
+
+      context.setScale( contextScale );
+      context.setOffset( contextOffset );
+
+      ++nodesDrawn;
+
+      // as soon as first block is rendered, we can start showing layer updates.
+      // but if we are blocking render updates (so that a previously cached image is being shown), we wait
+      // at most e.g. 3 seconds before we start forcing progressive updates.
+      if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+      {
+        mReadyToCompose = true;
+      }
+
+    } );
   }
+
+  // Wait for all point cloud nodes to finish loading
+  loop.exec();
 
   return nodesDrawn;
 }
