@@ -32,6 +32,8 @@
 #include "qgsguiutils.h"
 #include "qgsnumericformat.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsprofilesnapping.h"
+
 #include <QWheelEvent>
 
 ///@cond PRIVATE
@@ -355,7 +357,7 @@ QgsPointXY QgsElevationProfileCanvas::snapToPlot( QPoint point )
   const double xToleranceInPlotUnits = 2 * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
   const double yToleranceInPlotUnits = 10 * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
 
-  const QgsProfilePlotRenderer::SnapResult snappedPoint = mCurrentJob->snapPoint( plotPoint, xToleranceInPlotUnits, yToleranceInPlotUnits );
+  const QgsProfileSnapResult snappedPoint = mCurrentJob->snapPoint( plotPoint, xToleranceInPlotUnits, yToleranceInPlotUnits );
   if ( !snappedPoint.isValid() )
     return QgsPointXY();
 
@@ -466,7 +468,7 @@ void QgsElevationProfileCanvas::mouseMoveEvent( QMouseEvent *e )
     const double xToleranceInPlotUnits = 2 * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
     const double yToleranceInPlotUnits = 10 * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
 
-    const QgsProfilePlotRenderer::SnapResult snapResult = mCurrentJob->snapPoint( plotPoint, xToleranceInPlotUnits, yToleranceInPlotUnits );
+    const QgsProfileSnapResult snapResult = mCurrentJob->snapPoint( plotPoint, xToleranceInPlotUnits, yToleranceInPlotUnits );
     if ( snapResult.isValid() )
       plotPoint = snapResult.snappedPoint;
   }

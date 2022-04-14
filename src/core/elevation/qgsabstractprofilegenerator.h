@@ -23,10 +23,11 @@
 
 #include "qgspoint.h"
 #include "qgsrendercontext.h"
-#include "qgsprofilepoint.h"
 
 #include <QTransform>
 
+class QgsProfileSnapResult;
+class QgsProfilePoint;
 class QgsGeometry;
 
 /**
@@ -159,30 +160,12 @@ class CORE_EXPORT QgsAbstractProfileResults
     virtual QgsDoubleRange zRange() const = 0;
 
     /**
-     * \brief Encapsulates results of snapping a point.
-     * \ingroup core
-     * \since QGIS 3.26
-     */
-    class SnapResult
-    {
-      public:
-
-        //! Snapped point
-        QgsProfilePoint snappedPoint;
-
-        /**
-         * Returns TRUE if the result is a valid point.
-         */
-        bool isValid() const { return !snappedPoint.isEmpty(); }
-    };
-
-    /**
      * Snaps a \a point to the generated elevation profile.
      *
      * The \a maximumCurveDelta and \a maximumHeightDelta arguments specify the maximum allowed difference in the distance along
      * curve and height values from the snapped result.
      */
-    virtual SnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
+    virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
 };
 
 /**
