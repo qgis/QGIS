@@ -38,7 +38,7 @@ class CORE_EXPORT QgsProfileSnapContext
     double maximumElevationDelta = 0;
 
     //! Display ratio of elevation vs distance units
-    double displayRationElevationVsDistance = 1;
+    double displayRatioElevationVsDistance = 1;
 
 };
 

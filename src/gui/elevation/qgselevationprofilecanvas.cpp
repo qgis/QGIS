@@ -355,6 +355,8 @@ QgsProfileSnapContext QgsElevationProfileCanvas::snapContext() const
   QgsProfileSnapContext context;
   context.maximumDistanceDelta = xToleranceInPlotUnits;
   context.maximumElevationDelta = yToleranceInPlotUnits;
+  context.displayRatioElevationVsDistance = ( ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) )
+      / ( ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) );
 
   return context;
 }
