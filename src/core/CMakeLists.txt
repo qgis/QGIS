@@ -1274,6 +1274,7 @@ set(QGIS_CORE_HDRS
 
   elevation/qgsabstractprofilegenerator.h
   elevation/qgsabstractprofilesource.h
+  elevation/qgsprofilepoint.h
   elevation/qgsprofilerenderer.h
   elevation/qgsprofilerequest.h
   elevation/qgsterrainprovider.h
