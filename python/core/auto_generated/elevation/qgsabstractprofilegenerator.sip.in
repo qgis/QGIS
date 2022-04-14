@@ -141,6 +141,8 @@ Returns the range of the retrieved elevation values
 {
 %Docstring(signature="appended")
 Encapsulates results of snapping a point.
+
+.. versionadded:: 3.26
 %End
 
 %TypeHeaderCode

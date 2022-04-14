@@ -110,6 +110,7 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     /**
      * \brief Encapsulates results of snapping a point to the profile.
      * \ingroup core
+     * \since QGIS 3.26
      */
     class SnapResult
     {

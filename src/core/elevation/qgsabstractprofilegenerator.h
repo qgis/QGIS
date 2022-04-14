@@ -160,6 +160,7 @@ class CORE_EXPORT QgsAbstractProfileResults
     /**
      * \brief Encapsulates results of snapping a point.
      * \ingroup core
+     * \since QGIS 3.26
      */
     class SnapResult
     {
