@@ -32,7 +32,8 @@ from qgis.core import (
     QgsCategorizedSymbolRenderer,
     QgsRendererCategory,
     QgsMapLayerElevationProperties,
-    QgsProperty
+    QgsProperty,
+    QgsProfilePoint
 )
 from qgis.testing import start_app, unittest
 
@@ -817,22 +818,20 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         r = generator.takeResults()
 
         # try snapping some points
-        res = r.snapPoint(-10, -10, 0, 0)
+        res = r.snapPoint(QgsProfilePoint(-10, -10), 0, 0)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(15, 14, 1, 3)
+        res = r.snapPoint(QgsProfilePoint(15, 14), 1, 3)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 15.89, 1)
-        self.assertAlmostEqual(res.snappedHeight, 14.36, 1)
-        self.assertAlmostEqual(res.snapDistance, 0.965, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 15.89, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 14.36, 1)
 
-        res = r.snapPoint(55, 16, 2, 2)
+        res = r.snapPoint(QgsProfilePoint(55, 16), 2, 2)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 55.279, 1)
-        self.assertAlmostEqual(res.snappedHeight, 16.141, 1)
-        self.assertAlmostEqual(res.snapDistance, 0.3133, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 55.279, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 16.141, 1)
 
-        res = r.snapPoint(55, 16, 0.1, 0.1)
+        res = r.snapPoint(QgsProfilePoint(55, 16), 0.1, 0.1)
         self.assertFalse(res.isValid())
 
     def testSnappingVerticalLines(self):
@@ -860,40 +859,36 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         r = generator.takeResults()
 
         # try snapping some points
-        res = r.snapPoint(-10, -10, 0, 0)
+        res = r.snapPoint(QgsProfilePoint(-10, -10), 0, 0)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(15, 14, 1, 3)
+        res = r.snapPoint(QgsProfilePoint(15, 14), 1, 3)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 15.89, 1)
-        self.assertAlmostEqual(res.snappedHeight, 14.36, 1)
-        self.assertAlmostEqual(res.snapDistance, 0.965, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 15.89, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 14.36, 1)
 
-        res = r.snapPoint(15, 31, 1, 3)
+        res = r.snapPoint(QgsProfilePoint(15, 31), 1, 3)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 15.89, 1)
-        self.assertAlmostEqual(res.snappedHeight, 31.36, 1)
-        self.assertAlmostEqual(res.snapDistance, 0.965, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 15.89, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 31.36, 1)
 
-        res = r.snapPoint(15, 35, 1, 3)
+        res = r.snapPoint(QgsProfilePoint(15, 35), 1, 3)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(55, 16, 2, 2)
+        res = r.snapPoint(QgsProfilePoint(55, 16), 2, 2)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 55.279, 1)
-        self.assertAlmostEqual(res.snappedHeight, 16.141, 1)
-        self.assertAlmostEqual(res.snapDistance, 0.3133, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 55.279, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 16.141, 1)
 
-        res = r.snapPoint(55, 33, 2, 2)
+        res = r.snapPoint(QgsProfilePoint(55, 33), 2, 2)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 55.279, 1)
-        self.assertAlmostEqual(res.snappedHeight, 33.1413, 1)
-        self.assertAlmostEqual(res.snapDistance, 0.3133, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 55.279, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 33.1413, 1)
 
-        res = r.snapPoint(55, 36, 2, 2)
+        res = r.snapPoint(QgsProfilePoint(55, 36), 2, 2)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(55, 16, 0.1, 0.1)
+        res = r.snapPoint(QgsProfilePoint(55, 16), 0.1, 0.1)
         self.assertFalse(res.isValid())
 
     def testSnappingPolygons(self):
@@ -919,28 +914,26 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         r = generator.takeResults()
 
         # try snapping some points
-        res = r.snapPoint(-10, -10, 0, 0)
+        res = r.snapPoint(QgsProfilePoint(-10, -10), 0, 0)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(27, 1.9, 1, 3)
+        res = r.snapPoint(QgsProfilePoint(27, 1.9), 1, 3)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 27.37797, 1)
-        self.assertAlmostEqual(res.snappedHeight, 2.0, 1)
-        self.assertAlmostEqual(res.snapDistance, 0.3909, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 27.37797, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 2.0, 1)
 
-        res = r.snapPoint(27, 7, 1, 3)
+        res = r.snapPoint(QgsProfilePoint(27, 7), 1, 3)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(42, 3, 3, 2)
+        res = r.snapPoint(QgsProfilePoint(42, 3), 3, 2)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 40.7058, 1)
-        self.assertAlmostEqual(res.snappedHeight, 2.000, 1)
-        self.assertAlmostEqual(res.snapDistance, 1.6354, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 40.7058, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 2.000, 1)
 
-        res = r.snapPoint(42, 3, .01, 2)
+        res = r.snapPoint(QgsProfilePoint(42, 3), .01, 2)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(55, 16, 0.1, 0.1)
+        res = r.snapPoint(QgsProfilePoint(55, 16), 0.1, 0.1)
         self.assertFalse(res.isValid())
 
     def testSnappingExtrudedPolygons(self):
@@ -968,37 +961,34 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         r = generator.takeResults()
 
         # try snapping some points
-        res = r.snapPoint(-10, -10, 0, 0)
+        res = r.snapPoint(QgsProfilePoint(-10, -10), 0, 0)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(27, 1.9, 1, 3)
+        res = r.snapPoint(QgsProfilePoint(27, 1.9), 1, 3)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 27.37797, 1)
-        self.assertAlmostEqual(res.snappedHeight, 2.0, 1)
-        self.assertAlmostEqual(res.snapDistance, 0.3909, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 27.37797, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 2.0, 1)
 
-        res = r.snapPoint(27, 18.9, 1, 3)
+        res = r.snapPoint(QgsProfilePoint(27, 18.9), 1, 3)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 27.37797, 1)
-        self.assertAlmostEqual(res.snappedHeight, 19.0, 1)
-        self.assertAlmostEqual(res.snapDistance, 0.3909, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 27.37797, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 19.0, 1)
 
-        res = r.snapPoint(27, 22.9, 1, 3)
+        res = r.snapPoint(QgsProfilePoint(27, 22.9), 1, 3)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(27, 7, 1, 3)
+        res = r.snapPoint(QgsProfilePoint(27, 7), 1, 3)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(42, 3, 3, 2)
+        res = r.snapPoint(QgsProfilePoint(42, 3), 3, 2)
         self.assertTrue(res.isValid())
-        self.assertAlmostEqual(res.snappedDistanceAlongCurve, 40.7058, 1)
-        self.assertAlmostEqual(res.snappedHeight, 2.000, 1)
-        self.assertAlmostEqual(res.snapDistance, 1.6354, 1)
+        self.assertAlmostEqual(res.snappedPoint.distance(), 40.7058, 1)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 2.000, 1)
 
-        res = r.snapPoint(42, 3, .01, 2)
+        res = r.snapPoint(QgsProfilePoint(42, 3), .01, 2)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(55, 16, 0.1, 0.1)
+        res = r.snapPoint(QgsProfilePoint(55, 16), 0.1, 0.1)
         self.assertFalse(res.isValid())
 
     def testRenderProfile(self):

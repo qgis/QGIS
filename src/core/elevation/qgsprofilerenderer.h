@@ -21,6 +21,7 @@
 #include "qgis_sip.h"
 #include "qgsprofilerequest.h"
 #include "qgsrange.h"
+#include "qgsprofilepoint.h"
 
 #include <QObject>
 #include <QFutureWatcher>
@@ -115,28 +116,23 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     class SnapResult
     {
       public:
-        //! Snapped point distance along curve
-        double snappedDistanceAlongCurve = std::numeric_limits< double >::quiet_NaN();
 
-        //! Snapped point height
-        double snappedHeight = std::numeric_limits< double >::quiet_NaN();
-
-        //! Distance snapped
-        double snapDistance = std::numeric_limits< double >::max();
+        //! Snapped point
+        QgsProfilePoint snappedPoint;
 
         /**
          * Returns TRUE if the result is a valid point.
          */
-        bool isValid() const { return !std::isnan( snappedDistanceAlongCurve ); }
+        bool isValid() const { return !snappedPoint.isEmpty(); }
     };
 
     /**
-     * Snap a point to the results.
+     * Snap a \a point to the results.
      *
      * The \a maximumCurveDelta and \a maximumHeightDelta arguments specify the maximum allowed difference in the distance along
      * curve and height values from the snapped result.
      */
-    SnapResult snapPoint( double distanceAlongCurve, double height, double maximumCurveDelta, double maximumHeightDelta );
+    SnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
 
   signals:
 

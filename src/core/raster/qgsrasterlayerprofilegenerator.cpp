@@ -61,33 +61,31 @@ QVector<QgsGeometry> QgsRasterLayerProfileResults::asGeometries() const
   return res;
 }
 
-QgsAbstractProfileResults::SnapResult QgsRasterLayerProfileResults::snapPoint( double distanceAlongCurve, double height, double, double maximumHeightDelta )
+QgsAbstractProfileResults::SnapResult QgsRasterLayerProfileResults::snapPoint( const QgsProfilePoint &point, double, double maximumHeightDelta )
 {
   // TODO -- consider an index if performance is an issue
   QgsAbstractProfileResults::SnapResult result;
 
   double prevDistance = std::numeric_limits< double >::max();
-  double prevHeight = 0;
+  double prevElevation = 0;
   for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
   {
     // find segment which corresponds to the given distance along curve
-    if ( it != results.constBegin() && prevDistance <= distanceAlongCurve && it.key() >= distanceAlongCurve )
+    if ( it != results.constBegin() && prevDistance <= point.distance() && it.key() >= point.distance() )
     {
       const double dx = it.key() - prevDistance;
-      const double dy = it.value() - prevHeight;
-      const double snappedZ = ( dy / dx ) * ( distanceAlongCurve - prevDistance ) + prevHeight;
+      const double dy = it.value() - prevElevation;
+      const double snappedZ = ( dy / dx ) * ( point.distance() - prevDistance ) + prevElevation;
 
-      result.snapDistance = std::fabs( height - snappedZ );
-      if ( result.snapDistance > maximumHeightDelta )
+      if ( std::fabs( point.elevation() - snappedZ ) > maximumHeightDelta )
         return QgsAbstractProfileResults::SnapResult();
 
-      result.snappedDistanceAlongCurve = distanceAlongCurve;
-      result.snappedHeight = snappedZ;
+      result.snappedPoint = QgsProfilePoint( point.distance(), snappedZ );
       break;
     }
 
     prevDistance = it.key();
-    prevHeight = it.value();
+    prevElevation = it.value();
   }
   return result;
 }

@@ -102,11 +102,8 @@ Encapsulates results of snapping a point to the profile.
 #include "qgsprofilerenderer.h"
 %End
       public:
-        double snappedDistanceAlongCurve;
 
-        double snappedHeight;
-
-        double snapDistance;
+        QgsProfilePoint snappedPoint;
 
         bool isValid() const;
 %Docstring
@@ -114,9 +111,9 @@ Returns ``True`` if the result is a valid point.
 %End
     };
 
-    SnapResult snapPoint( double distanceAlongCurve, double height, double maximumCurveDelta, double maximumHeightDelta );
+    SnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
 %Docstring
-Snap a point to the results.
+Snap a ``point`` to the results.
 
 The ``maximumCurveDelta`` and ``maximumHeightDelta`` arguments specify the maximum allowed difference in the distance along
 curve and height values from the snapped result.

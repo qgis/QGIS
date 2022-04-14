@@ -24,6 +24,7 @@
 #include "qgsplotcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsprofilepoint.h"
 
 class QgsElevationProfilePlotItem;
 class QgsElevationProfileCrossHairsItem;
@@ -186,12 +187,12 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     /**
      * Converts a canvas point to the equivalent plot point.
      */
-    QgsPointXY canvasPointToPlotPoint( const QPointF &point ) const;
+    QgsProfilePoint canvasPointToPlotPoint( const QPointF &point ) const;
 
     /**
      * Converts a plot point to the equivalent canvas point.
      */
-    QgsPointXY plotPointToCanvasPoint( const QgsPointXY &point ) const;
+    QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;

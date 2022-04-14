@@ -150,11 +150,7 @@ Encapsulates results of snapping a point.
 %End
       public:
 
-        double snappedDistanceAlongCurve;
-
-        double snappedHeight;
-
-        double snapDistance;
+        QgsProfilePoint snappedPoint;
 
         bool isValid() const;
 %Docstring
@@ -162,9 +158,9 @@ Returns ``True`` if the result is a valid point.
 %End
     };
 
-    virtual SnapResult snapPoint( double distanceAlongCurve, double height, double maximumCurveDelta, double maximumHeightDelta );
+    virtual SnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
 %Docstring
-Snaps a point to the generated elevation profile.
+Snaps a ``point`` to the generated elevation profile.
 
 The ``maximumCurveDelta`` and ``maximumHeightDelta`` arguments specify the maximum allowed difference in the distance along
 curve and height values from the snapped result.

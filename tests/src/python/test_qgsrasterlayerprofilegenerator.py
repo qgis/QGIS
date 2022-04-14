@@ -23,7 +23,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsFlatTerrainProvider,
-    QgsMeshTerrainProvider
+    QgsMeshTerrainProvider,
+    QgsProfilePoint,
 )
 
 from qgis.PyQt.QtXml import QDomDocument
@@ -122,22 +123,20 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         r = generator.takeResults()
 
         # try snapping some points
-        res = r.snapPoint(-10, -10, 0, 0)
+        res = r.snapPoint(QgsProfilePoint(-10, -10), 0, 0)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(0, 70, 0, 3)
+        res = r.snapPoint(QgsProfilePoint(0, 70), 0, 3)
         self.assertTrue(res.isValid())
-        self.assertEqual(res.snappedDistanceAlongCurve, 0)
-        self.assertEqual(res.snappedHeight, 72)
-        self.assertEqual(res.snapDistance, 2)
+        self.assertEqual(res.snappedPoint.distance(), 0)
+        self.assertEqual(res.snappedPoint.elevation(), 72)
 
-        res = r.snapPoint(200, 79, 0, 5)
+        res = r.snapPoint(QgsProfilePoint(200, 79), 0, 5)
         self.assertTrue(res.isValid())
-        self.assertEqual(res.snappedDistanceAlongCurve, 200)
-        self.assertEqual(res.snappedHeight, 75)
-        self.assertEqual(res.snapDistance, 4)
+        self.assertEqual(res.snappedPoint.distance(), 200)
+        self.assertEqual(res.snappedPoint.elevation(), 75)
 
-        res = r.snapPoint(200, 85, 0, 5)
+        res = r.snapPoint(QgsProfilePoint(200, 85), 0, 5)
         self.assertFalse(res.isValid())
 
 

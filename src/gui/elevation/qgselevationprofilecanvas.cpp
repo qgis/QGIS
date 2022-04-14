@@ -88,23 +88,23 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       return mPlotArea;
     }
 
-    QgsPointXY canvasPointToPlotPoint( const QPointF &point )
+    QgsProfilePoint canvasPointToPlotPoint( const QPointF &point )
     {
       if ( !mPlotArea.contains( point.x(), point.y() ) )
-        return QgsPointXY();
+        return QgsProfilePoint();
 
-      const double x = ( point.x() - mPlotArea.left() ) / mPlotArea.width() * ( xMaximum() - xMinimum() ) + xMinimum();
-      const double y = ( mPlotArea.bottom() - point.y() ) / mPlotArea.height() * ( yMaximum() - yMinimum() ) + yMinimum();
-      return QgsPointXY( x, y );
+      const double distance = ( point.x() - mPlotArea.left() ) / mPlotArea.width() * ( xMaximum() - xMinimum() ) + xMinimum();
+      const double elevation = ( mPlotArea.bottom() - point.y() ) / mPlotArea.height() * ( yMaximum() - yMinimum() ) + yMinimum();
+      return QgsProfilePoint( distance, elevation );
     }
 
-    QgsPointXY plotPointToCanvasPoint( const QgsPointXY &point )
+    QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point )
     {
-      if ( point.x() < xMinimum() || point.x() > xMaximum() || point.y() < yMinimum() || point.y() > yMaximum() )
+      if ( point.distance() < xMinimum() || point.distance() > xMaximum() || point.elevation() < yMinimum() || point.elevation() > yMaximum() )
         return QgsPointXY();
 
-      const double x = ( point.x() - xMinimum() ) / ( xMaximum() - xMinimum() ) * ( mPlotArea.width() ) + mPlotArea.left();
-      const double y = mPlotArea.bottom() - ( point.y() - yMinimum() ) / ( yMaximum() - yMinimum() ) * ( mPlotArea.height() );
+      const double x = ( point.distance() - xMinimum() ) / ( xMaximum() - xMinimum() ) * ( mPlotArea.width() ) + mPlotArea.left();
+      const double y = mPlotArea.bottom() - ( point.elevation() - yMinimum() ) / ( yMaximum() - yMinimum() ) * ( mPlotArea.height() );
       return QgsPointXY( x, y );
     }
 
@@ -169,7 +169,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       update();
     }
 
-    void setPoint( const QgsPointXY &point )
+    void setPoint( const QgsProfilePoint &point )
     {
       mPoint = point;
       update();
@@ -201,8 +201,8 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       // also render current point text
       QgsNumericFormatContext numericContext;
 
-      const QString xCoordinateText = mPlotItem->xAxis().numericFormat()->formatDouble( mPoint.x(), numericContext );
-      const QString yCoordinateText = mPlotItem->yAxis().numericFormat()->formatDouble( mPoint.y(), numericContext );
+      const QString xCoordinateText = mPlotItem->xAxis().numericFormat()->formatDouble( mPoint.distance(), numericContext );
+      const QString yCoordinateText = mPlotItem->yAxis().numericFormat()->formatDouble( mPoint.elevation(), numericContext );
 
       QFont font;
       const QFontMetrics fm( font );
@@ -214,9 +214,9 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       QPointF xCoordOrigin;
       QPointF yCoordOrigin;
 
-      if ( mPoint.x() < ( mPlotItem->xMaximum() + mPlotItem->xMinimum() ) * 0.5 )
+      if ( mPoint.distance() < ( mPlotItem->xMaximum() + mPlotItem->xMinimum() ) * 0.5 )
       {
-        if ( mPoint.y() < ( mPlotItem->yMaximum() + mPlotItem->yMinimum() ) * 0.5 )
+        if ( mPoint.elevation() < ( mPlotItem->yMaximum() + mPlotItem->yMinimum() ) * 0.5 )
         {
           // render x coordinate on right top (left top align)
           xCoordOrigin = QPointF( crossHairPlotPoint.x() + textAxisMargin, mPlotItem->plotArea().top() + height + textAxisMargin );
@@ -233,7 +233,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       }
       else
       {
-        if ( mPoint.y() < ( mPlotItem->yMaximum() + mPlotItem->yMinimum() ) * 0.5 )
+        if ( mPoint.elevation() < ( mPlotItem->yMaximum() + mPlotItem->yMinimum() ) * 0.5 )
         {
           // render x coordinate on left top (right top align)
           xCoordOrigin = QPointF( crossHairPlotPoint.x() - xWidth - textAxisMargin, mPlotItem->plotArea().top() + height + textAxisMargin );
@@ -266,7 +266,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
   private:
 
     QRectF mRect;
-    QgsPointXY mPoint;
+    QgsProfilePoint mPoint;
     QgsElevationProfilePlotItem *mPlotItem = nullptr;
 };
 ///@endcond PRIVATE
@@ -349,17 +349,17 @@ QgsPointXY QgsElevationProfileCanvas::snapToPlot( QPoint point )
   if ( !mCurrentJob || !mSnappingEnabled )
     return QgsPointXY();
 
-  const QgsPointXY plotPoint = canvasPointToPlotPoint( point );
+  const QgsProfilePoint plotPoint = canvasPointToPlotPoint( point );
 
   const double toleranceInPixels = QFontMetrics( font() ).horizontalAdvance( ' ' );
   const double xToleranceInPlotUnits = 2 * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
   const double yToleranceInPlotUnits = 10 * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
 
-  const QgsProfilePlotRenderer::SnapResult snappedPoint = mCurrentJob->snapPoint( plotPoint.x(), plotPoint.y(), xToleranceInPlotUnits, yToleranceInPlotUnits );
+  const QgsProfilePlotRenderer::SnapResult snappedPoint = mCurrentJob->snapPoint( plotPoint, xToleranceInPlotUnits, yToleranceInPlotUnits );
   if ( !snappedPoint.isValid() )
     return QgsPointXY();
 
-  return plotPointToCanvasPoint( QgsPointXY( snappedPoint.snappedDistanceAlongCurve, snappedPoint.snappedHeight ) );
+  return plotPointToCanvasPoint( snappedPoint.snappedPoint );
 }
 
 void QgsElevationProfileCanvas::scalePlot( double xFactor, double yFactor )
@@ -459,16 +459,16 @@ void QgsElevationProfileCanvas::mouseMoveEvent( QMouseEvent *e )
     return;
   }
 
-  QgsPointXY plotPoint = canvasPointToPlotPoint( e->pos() );
+  QgsProfilePoint plotPoint = canvasPointToPlotPoint( e->pos() );
   if ( mCurrentJob && mSnappingEnabled && !plotPoint.isEmpty() )
   {
     const double toleranceInPixels = QFontMetrics( font() ).horizontalAdvance( ' ' );
     const double xToleranceInPlotUnits = 2 * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
     const double yToleranceInPlotUnits = 10 * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
 
-    const QgsProfilePlotRenderer::SnapResult snappedPoint = mCurrentJob->snapPoint( plotPoint.x(), plotPoint.y(), xToleranceInPlotUnits, yToleranceInPlotUnits );
-    if ( snappedPoint.isValid() )
-      plotPoint = QgsPointXY( snappedPoint.snappedDistanceAlongCurve, snappedPoint.snappedHeight );
+    const QgsProfilePlotRenderer::SnapResult snapResult = mCurrentJob->snapPoint( plotPoint, xToleranceInPlotUnits, yToleranceInPlotUnits );
+    if ( snapResult.isValid() )
+      plotPoint = snapResult.snappedPoint;
   }
 
   if ( plotPoint.isEmpty() )
@@ -537,15 +537,15 @@ void QgsElevationProfileCanvas::generationFinished()
   zoomFull();
 }
 
-QgsPointXY QgsElevationProfileCanvas::canvasPointToPlotPoint( const QPointF &point ) const
+QgsProfilePoint QgsElevationProfileCanvas::canvasPointToPlotPoint( const QPointF &point ) const
 {
   if ( !mPlotItem->plotArea().contains( point.x(), point.y() ) )
-    return QgsPointXY();
+    return QgsProfilePoint();
 
   return mPlotItem->canvasPointToPlotPoint( point );
 }
 
-QgsPointXY QgsElevationProfileCanvas::plotPointToCanvasPoint( const QgsPointXY &point ) const
+QgsPointXY QgsElevationProfileCanvas::plotPointToCanvasPoint( const QgsProfilePoint &point ) const
 {
   return mPlotItem->plotPointToCanvasPoint( point );
 }

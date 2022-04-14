@@ -23,7 +23,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsFlatTerrainProvider,
-    QgsMeshTerrainProvider
+    QgsMeshTerrainProvider,
+    QgsProfilePoint
 )
 
 from qgis.PyQt.QtXml import QDomDocument
@@ -106,22 +107,20 @@ class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
         r = generator.takeResults()
 
         # try snapping some points
-        res = r.snapPoint(-10, -10, 0, 0)
+        res = r.snapPoint(QgsProfilePoint(-10, -10), 0, 0)
         self.assertFalse(res.isValid())
 
-        res = r.snapPoint(0, 70, 0, 3)
+        res = r.snapPoint(QgsProfilePoint(0, 70), 0, 3)
         self.assertTrue(res.isValid())
-        self.assertEqual(res.snappedDistanceAlongCurve, 0)
-        self.assertAlmostEqual(res.snappedHeight, 71.8, 0)
-        self.assertAlmostEqual(res.snapDistance, 1.82, 1)
+        self.assertEqual(res.snappedPoint.distance(), 0)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 71.8, 0)
 
-        res = r.snapPoint(200, 79, 0, 5)
+        res = r.snapPoint(QgsProfilePoint(200, 79), 0, 5)
         self.assertTrue(res.isValid())
-        self.assertEqual(res.snappedDistanceAlongCurve, 200)
-        self.assertAlmostEqual(res.snappedHeight, 75.841, 1)
-        self.assertAlmostEqual(res.snapDistance, 3.158, 1)
+        self.assertEqual(res.snappedPoint.distance(), 200)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 75.841, 1)
 
-        res = r.snapPoint(200, 85, 0, 5)
+        res = r.snapPoint(QgsProfilePoint(200, 85), 0, 5)
         self.assertFalse(res.isValid())
 
 
