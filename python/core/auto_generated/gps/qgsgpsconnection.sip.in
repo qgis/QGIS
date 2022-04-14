@@ -12,7 +12,8 @@
 
 
 %ModuleHeaderCode
-#include "qgsgpsconnection.h"
+#include <qgsgpsdconnection.h>
+#include <qgsnmeaconnection.h>
 %End
 
 class QgsSatelliteInfo
@@ -126,6 +127,7 @@ Returns a descriptive string for the signal quality.
 %End
 };
 
+
 class QgsGpsConnection : QObject
 {
 %Docstring(signature="appended")
@@ -134,8 +136,6 @@ Abstract base class for connection to a GPS device
 
 %TypeHeaderCode
 #include "qgsgpsconnection.h"
-#include <qgsgpsdconnection.h>
-#include <qgsnmeaconnection.h>
 %End
 %ConvertToSubClassCode
     if ( qobject_cast<QgsGpsdConnection *>( sipCpp ) )

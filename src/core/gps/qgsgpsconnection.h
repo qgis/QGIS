@@ -29,7 +29,8 @@ class QIODevice;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
-#include "qgsgpsconnection.h"
+#include <qgsgpsdconnection.h>
+#include <qgsnmeaconnection.h>
 % End
 #endif
 
@@ -266,17 +267,13 @@ class CORE_EXPORT QgsGpsInformation
     QString qualityDescription() const;
 };
 
+
 /**
  * \ingroup core
  * \brief Abstract base class for connection to a GPS device
 */
 class CORE_EXPORT QgsGpsConnection : public QObject
 {
-#ifdef SIP_RUN
-#include <qgsgpsdconnection.h>
-#include <qgsnmeaconnection.h>
-#endif
-
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
