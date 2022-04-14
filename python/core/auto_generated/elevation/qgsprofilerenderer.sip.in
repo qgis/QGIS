@@ -94,6 +94,8 @@ Renders a portion of the profile using the specified render ``context``.
 {
 %Docstring(signature="appended")
 Encapsulates results of snapping a point to the profile.
+
+.. versionadded:: 3.26
 %End
 
 %TypeHeaderCode
