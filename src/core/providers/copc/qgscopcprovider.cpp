@@ -109,6 +109,7 @@ QVariant QgsCopcProvider::metadataClassStatistic( const QString &attribute, cons
 
 void QgsCopcProvider::loadIndex( )
 {
+  // Index already loaded -> no need to load
   if ( mIndex->isValid() )
     return;
   mIndex->load( dataSourceUri() );
