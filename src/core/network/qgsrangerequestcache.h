@@ -33,7 +33,10 @@
 
 /**
  * \ingroup core
+ *
  * \brief A custom cache for handling the storage and retrieval of HTTP range requests on disk
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
  * \since QGIS 3.26
  */
@@ -62,20 +65,15 @@ class CORE_EXPORT QgsRangeRequestCache
     QString mCacheDir;
     qint64 mMaxDataSize = 256 * 1024 * 1024;
 
-    QString rangeFileName( const QNetworkRequest &request )
-    {
-      return mCacheDir + QStringLiteral( "%1?%2" ).arg( qHash( request.url().toString() ) ).arg( QString::fromUtf8( request.rawHeader( "Range" ) ) );
-    }
+    QString rangeFileName( const QNetworkRequest &request );
 
     QByteArray readFile( const QString &fileName );
     void writeFile( const QString &fileName, QByteArray data );
     void removeFile( const QString &fileName );
 
-    QFileInfoList cacheFiles();
-
     void expire();
 
-    QStringList cacheEntries();
+    QFileInfoList cacheEntries();
 };
 
 #endif // QGSRANGEREQUESTCACHE_H

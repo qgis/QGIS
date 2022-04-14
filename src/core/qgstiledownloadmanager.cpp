@@ -69,8 +69,6 @@ void QgsTileDownloadManagerWorker::queueUpdated()
   {
     if ( !it->networkReply )
     {
-      if ( mManager->isCached( it->request ) )
-        continue;
       QgsDebugMsgLevel( QStringLiteral( "Tile download manager: starting request: " ) + it->request.url().toString(), 2 );
       // start entries which are not in progress
 
@@ -153,7 +151,8 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
     headers.insert( QNetworkRequest::ContentTypeHeader, reply->header( QNetworkRequest::ContentTypeHeader ) );
 
     // Save loaded data to cache
-    if ( mManager->isRangeRequest( mRequest ) )
+    int httpStatusCode = reply->attribute( QNetworkRequest::Attribute::HttpStatusCodeAttribute ).toInt();
+    if ( httpStatusCode == 206 && mManager->isRangeRequest( mRequest ) )
     {
       mManager->mRangesCache->registerEntry( mRequest, data );
     }
@@ -161,12 +160,12 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
     emit finished( data, reply->url(), attributes, headers, reply->rawHeaderPairs(), reply->error(), reply->errorString() );
 
     reply->deleteLater();
+
+    mManager->removeEntry( mRequest );
   }
 
   // kill the worker obj
   deleteLater();
-
-  mManager->removeEntry( mRequest );
 
   if ( mManager->mQueue.isEmpty() )
   {
@@ -191,6 +190,14 @@ QgsTileDownloadManager::QgsTileDownloadManager()
   QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
+  if ( !cacheDirectory.endsWith( QDir::separator() ) )
+  {
+    cacheDirectory.push_back( QDir::separator() );
+  }
+  cacheDirectory += QStringLiteral( "http-ranges" );
+  cacheDirectory.push_back( QDir::separator() );
+  // Create directory if it doesn't exist
+  QDir().mkdir( cacheDirectory );
   const qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 256 * 1024 * 1024 ).toLongLong();
 
   mRangesCache->setCacheDirectory( cacheDirectory );
@@ -232,11 +239,13 @@ QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest 
 
     QObject::connect( entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::finished, reply, &QgsTileDownloadManagerReply::requestFinished );  // should be queued connection
 
-    addEntry( entry );
-
-    if ( isCached( request ) )
+    if ( isCachedRangeRequest( request ) )
     {
       QTimer::singleShot( 0, entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::replyFinished );
+    }
+    else
+    {
+      addEntry( entry );
     }
   }
   else
@@ -374,9 +383,11 @@ bool QgsTileDownloadManager::isRangeRequest( const QNetworkRequest &request )
   return match.hasMatch();
 }
 
-bool QgsTileDownloadManager::isCached( const QNetworkRequest &request )
+bool QgsTileDownloadManager::isCachedRangeRequest( const QNetworkRequest &request )
 {
-  return isRangeRequest( request ) && mRangesCache->hasEntry( request );
+  QNetworkRequest::CacheLoadControl loadControl = ( QNetworkRequest::CacheLoadControl ) request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt();
+  bool saveControl = request.attribute( QNetworkRequest::CacheSaveControlAttribute ).toBool();
+  return isRangeRequest( request ) && saveControl && loadControl != QNetworkRequest::AlwaysNetwork && mRangesCache->hasEntry( request );
 }
 
 ///

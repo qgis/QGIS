@@ -290,7 +290,7 @@ class CORE_EXPORT QgsTileDownloadManager
     void signalQueueModified();
 
     bool isRangeRequest( const QNetworkRequest &request );
-    bool isCached( const QNetworkRequest &request );
+    bool isCachedRangeRequest( const QNetworkRequest &request );
 
   private:
 

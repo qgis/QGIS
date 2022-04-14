@@ -25,6 +25,7 @@
 #include <fstream>
 #include <QVector>
 #include <QTest>
+#include <QStandardPaths>
 
 //qgis includes...
 #include "qgis.h"
@@ -672,9 +673,16 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
     return req;
   };
 
+  QTemporaryDir cacheDir;
+  if ( !cacheDir.isValid() )
+  {
+    QVERIFY( false );
+    return;
+  }
+
   QUrl url( QStringLiteral( "0.0.0.0/laz.copc.laz" ) );
   QgsRangeRequestCache cache;
-  cache.setCacheDirectory( QStringLiteral( "/tmp/" ) );
+  cache.setCacheDirectory( cacheDir.path() );
   cache.clear();
   cache.setCacheSize( 2 );
 
@@ -689,10 +697,10 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
 
   // (5, 6) -> (3, 4)
   {
-    QStringList files = cache.cacheEntries();
+    QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QCOMPARE( files[0], "3937831480?bytes=5-6" );
-    QCOMPARE( files[1], "3937831480?bytes=3-4" );
+    QCOMPARE( files[0].baseName(), "3937831480-bytes=5-6" );
+    QCOMPARE( files[1].baseName(), "3937831480-bytes=3-4" );
   }
 
   cache.entry( constructRequest( url, QStringLiteral( "bytes=3-4" ) ) );
@@ -700,10 +708,10 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
 
   // -> (3, 4) -> (5, 6)
   {
-    QStringList files = cache.cacheEntries();
+    QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QCOMPARE( files[0], "3937831480?bytes=3-4" );
-    QCOMPARE( files[1], "3937831480?bytes=5-6" );
+    QCOMPARE( files[0].baseName(), "3937831480-bytes=3-4" );
+    QCOMPARE( files[1].baseName(), "3937831480-bytes=5-6" );
   }
 
   cache.registerEntry( constructRequest( url, QStringLiteral( "bytes=7-8" ) ), QByteArray( 1, '3' ) );
@@ -711,19 +719,19 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
 
   // (7, 8) -> (3, 4)
   {
-    QStringList files = cache.cacheEntries();
+    QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QCOMPARE( files[0], "3937831480?bytes=7-8" );
-    QCOMPARE( files[1], "3937831480?bytes=3-4" );
+    QCOMPARE( files[0].baseName(), "3937831480-bytes=7-8" );
+    QCOMPARE( files[1].baseName(), "3937831480-bytes=3-4" );
   }
 
   cache.registerEntry( constructRequest( url, QStringLiteral( "bytes=9-10" ) ), QByteArray( 1, '4' ) );
   // (9, 10) -> (7, 8)
   {
-    QStringList files = cache.cacheEntries();
+    QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QCOMPARE( files[0], "3937831480?bytes=9-10" );
-    QCOMPARE( files[1], "3937831480?bytes=7-8" );
+    QCOMPARE( files[0].baseName(), "3937831480-bytes=9-10" );
+    QCOMPARE( files[1].baseName(), "3937831480-bytes=7-8" );
   }
 }
 

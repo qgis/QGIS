@@ -72,11 +72,15 @@ void QgsRangeRequestCache::setCacheSize( qint64 cacheSize )
   expire();
 }
 
+QString QgsRangeRequestCache::rangeFileName( const QNetworkRequest &request )
+{
+  return mCacheDir + QStringLiteral( "%1-%2" ).arg( qHash( request.url().toString() ) ).arg( QString::fromUtf8( request.rawHeader( "Range" ) ) );
+}
+
 QByteArray QgsRangeRequestCache::readFile( const QString &fileName )
 {
   QFile file( fileName );
-  file.open( QFile::OpenModeFlag::ReadOnly );
-  if ( !file.isOpen() || !file.isReadable() )
+  if ( !file.open( QFile::OpenModeFlag::ReadOnly ) )
     return QByteArray();
   return file.readAll();
 }
@@ -84,8 +88,7 @@ QByteArray QgsRangeRequestCache::readFile( const QString &fileName )
 void QgsRangeRequestCache::writeFile( const QString &fileName, QByteArray data )
 {
   QFile file( fileName );
-  file.open( QFile::OpenModeFlag::WriteOnly );
-  if ( !file.isOpen() || !file.isWritable() )
+  if ( !file.open( QFile::OpenModeFlag::WriteOnly ) )
     return;
   file.write( data );
   file.close();
@@ -98,23 +101,10 @@ void QgsRangeRequestCache::removeFile( const QString &fileName )
   QFile::remove( fileName );
 }
 
-QFileInfoList QgsRangeRequestCache::cacheFiles()
-{
-  QDir dir( mCacheDir );
-  QFileInfoList filesList = dir.entryInfoList( QDir::Filter::Files );
-  std::sort( filesList.begin(), filesList.end(), []( QFileInfo & f1, QFileInfo & f2 )
-  {
-    QDateTime t1 = f1.fileTime( QFile::FileTime::FileAccessTime );
-    QDateTime t2 = f2.fileTime( QFile::FileTime::FileAccessTime );
-    return t1 > t2;
-  } );
-  return filesList;
-}
-
 void QgsRangeRequestCache::expire()
 {
   QDir dir( mCacheDir );
-  QFileInfoList filesList = cacheFiles();
+  QFileInfoList filesList = cacheEntries();
   qint64 totalSize = 0;
   for ( QFileInfo info : filesList )
   {
@@ -129,7 +119,7 @@ void QgsRangeRequestCache::expire()
   }
 }
 
-QStringList QgsRangeRequestCache::cacheEntries()
+QFileInfoList QgsRangeRequestCache::cacheEntries()
 {
   QStringList list;
   QDir dir( mCacheDir );
@@ -144,9 +134,5 @@ QStringList QgsRangeRequestCache::cacheEntries()
       t2 = f2.fileTime( QFile::FileTime::FileBirthTime );
     return t1 > t2;
   } );
-  for ( QFileInfo info : filesList )
-  {
-    list.push_back( info.baseName() );
-  }
-  return list;
+  return filesList;
 }
