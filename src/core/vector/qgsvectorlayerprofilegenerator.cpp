@@ -32,6 +32,8 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgsprofilepoint.h"
+#include "qgsprofilesnapping.h"
 #include <QPolygonF>
 
 //
@@ -72,10 +74,10 @@ QVector<QgsGeometry> QgsVectorLayerProfileResults::asGeometries() const
   return res;
 }
 
-QgsAbstractProfileResults::SnapResult QgsVectorLayerProfileResults::snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta )
+QgsProfileSnapResult QgsVectorLayerProfileResults::snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta )
 {
   // TODO -- add spatial index if performance is an issue
-  QgsAbstractProfileResults::SnapResult res;
+  QgsProfileSnapResult res;
   double bestSnapDistance = std::numeric_limits< double >::max();
 
   const QgsPoint targetPoint( point.distance(), point.elevation() );

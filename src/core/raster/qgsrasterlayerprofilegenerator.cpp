@@ -24,6 +24,8 @@
 #include "qgsgeos.h"
 #include "qgslinesymbol.h"
 #include "qgsgeometryutils.h"
+#include "qgsprofilesnapping.h"
+#include "qgsprofilepoint.h"
 
 #include <QPolygonF>
 
@@ -61,10 +63,10 @@ QVector<QgsGeometry> QgsRasterLayerProfileResults::asGeometries() const
   return res;
 }
 
-QgsAbstractProfileResults::SnapResult QgsRasterLayerProfileResults::snapPoint( const QgsProfilePoint &point, double, double maximumHeightDelta )
+QgsProfileSnapResult QgsRasterLayerProfileResults::snapPoint( const QgsProfilePoint &point, double, double maximumHeightDelta )
 {
   // TODO -- consider an index if performance is an issue
-  QgsAbstractProfileResults::SnapResult result;
+  QgsProfileSnapResult result;
 
   double prevDistance = std::numeric_limits< double >::max();
   double prevElevation = 0;
@@ -78,7 +80,7 @@ QgsAbstractProfileResults::SnapResult QgsRasterLayerProfileResults::snapPoint( c
       const double snappedZ = ( dy / dx ) * ( point.distance() - prevDistance ) + prevElevation;
 
       if ( std::fabs( point.elevation() - snappedZ ) > maximumHeightDelta )
-        return QgsAbstractProfileResults::SnapResult();
+        return QgsProfileSnapResult();
 
       result.snappedPoint = QgsProfilePoint( point.distance(), snappedZ );
       break;

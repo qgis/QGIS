@@ -137,28 +137,7 @@ Renders the results to the specified ``context``.
 Returns the range of the retrieved elevation values
 %End
 
-    class SnapResult
-{
-%Docstring(signature="appended")
-Encapsulates results of snapping a point.
-
-.. versionadded:: 3.26
-%End
-
-%TypeHeaderCode
-#include "qgsabstractprofilegenerator.h"
-%End
-      public:
-
-        QgsProfilePoint snappedPoint;
-
-        bool isValid() const;
-%Docstring
-Returns ``True`` if the result is a valid point.
-%End
-    };
-
-    virtual SnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
+    virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
 %Docstring
 Snaps a ``point`` to the generated elevation profile.
 

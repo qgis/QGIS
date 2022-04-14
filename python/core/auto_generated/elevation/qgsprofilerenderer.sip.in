@@ -90,28 +90,7 @@ Renders a portion of the profile to an image with the given ``width`` and ``heig
 Renders a portion of the profile using the specified render ``context``.
 %End
 
-    class SnapResult
-{
-%Docstring(signature="appended")
-Encapsulates results of snapping a point to the profile.
-
-.. versionadded:: 3.26
-%End
-
-%TypeHeaderCode
-#include "qgsprofilerenderer.h"
-%End
-      public:
-
-        QgsProfilePoint snappedPoint;
-
-        bool isValid() const;
-%Docstring
-Returns ``True`` if the result is a valid point.
-%End
-    };
-
-    SnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
+    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
 %Docstring
 Snap a ``point`` to the results.
 

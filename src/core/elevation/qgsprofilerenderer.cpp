@@ -19,6 +19,7 @@
 #include "qgsabstractprofilegenerator.h"
 #include "qgscurve.h"
 #include "qgsgeos.h"
+#include "qgsprofilesnapping.h"
 
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
@@ -180,12 +181,11 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
   }
 }
 
-QgsProfilePlotRenderer::SnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta )
+QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta )
 {
-  QgsProfilePlotRenderer::SnapResult result;
-  QgsAbstractProfileResults::SnapResult bestSnapResult;
+  QgsProfileSnapResult bestSnapResult;
   if ( !mRequest.profileCurve() )
-    return result;
+    return bestSnapResult;
 
   double bestSnapDistance = std::numeric_limits< double >::max();
 
@@ -193,7 +193,7 @@ QgsProfilePlotRenderer::SnapResult QgsProfilePlotRenderer::snapPoint( const QgsP
   {
     if ( job.complete && job.results )
     {
-      const QgsAbstractProfileResults::SnapResult jobSnapResult = job.results->snapPoint( point, maximumCurveDelta, maximumHeightDelta );
+      const QgsProfileSnapResult jobSnapResult = job.results->snapPoint( point, maximumCurveDelta, maximumHeightDelta );
       if ( jobSnapResult.isValid() )
       {
         const double snapDistance = std::pow( point.distance() - jobSnapResult.snappedPoint.distance(), 2 )
@@ -208,9 +208,7 @@ QgsProfilePlotRenderer::SnapResult QgsProfilePlotRenderer::snapPoint( const QgsP
     }
   }
 
-  result.snappedPoint = bestSnapResult.snappedPoint;
-
-  return result;
+  return bestSnapResult;
 }
 
 void QgsProfilePlotRenderer::onGeneratingFinished()

@@ -21,7 +21,6 @@
 #include "qgis_sip.h"
 #include "qgsprofilerequest.h"
 #include "qgsrange.h"
-#include "qgsprofilepoint.h"
 
 #include <QObject>
 #include <QFutureWatcher>
@@ -31,6 +30,8 @@ class QgsAbstractProfileGenerator;
 class QgsAbstractProfileResults;
 class QgsFeedback;
 class QgsRenderContext;
+class QgsProfileSnapResult;
+class QgsProfilePoint;
 
 /**
  * \brief Generates and renders elevation profile plots.
@@ -109,30 +110,12 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax );
 
     /**
-     * \brief Encapsulates results of snapping a point to the profile.
-     * \ingroup core
-     * \since QGIS 3.26
-     */
-    class SnapResult
-    {
-      public:
-
-        //! Snapped point
-        QgsProfilePoint snappedPoint;
-
-        /**
-         * Returns TRUE if the result is a valid point.
-         */
-        bool isValid() const { return !snappedPoint.isEmpty(); }
-    };
-
-    /**
      * Snap a \a point to the results.
      *
      * The \a maximumCurveDelta and \a maximumHeightDelta arguments specify the maximum allowed difference in the distance along
      * curve and height values from the snapped result.
      */
-    SnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
+    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
 
   signals:
 
