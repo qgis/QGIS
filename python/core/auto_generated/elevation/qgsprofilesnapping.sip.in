@@ -25,7 +25,7 @@ Encapsulates the context of snapping a profile point.
 
     double maximumElevationDelta;
 
-    double displayRationElevationVsDistance;
+    double displayRatioElevationVsDistance;
 
 };
 
