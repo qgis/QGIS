@@ -639,7 +639,7 @@ void TestQgsCopcProvider::testPointCloudIndex()
 
 void TestQgsCopcProvider::testQgsRangeRequestCache()
 {
-  auto constructRequest = []( const QUrl & url, const QString & range )
+  auto request = []( const QUrl & url, const QString & range )
   {
     QNetworkRequest req( url );
     req.setRawHeader( "Range", range.toUtf8() );
@@ -659,13 +659,13 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
   cache.clear();
   cache.setCacheSize( 2 );
 
-  cache.registerEntry( constructRequest( url, QStringLiteral( "bytes=1-2" ) ), QByteArray( 1, '0' ) );
+  cache.registerEntry( request( url, QStringLiteral( "bytes=1-2" ) ), QByteArray( 1, '0' ) );
   QTest::qSleep( 10 );
 
-  cache.registerEntry( constructRequest( url, QStringLiteral( "bytes=3-4" ) ), QByteArray( 1, '1' ) );
+  cache.registerEntry( request( url, QStringLiteral( "bytes=3-4" ) ), QByteArray( 1, '1' ) );
   QTest::qSleep( 10 );
 
-  cache.registerEntry( constructRequest( url, QStringLiteral( "bytes=5-6" ) ), QByteArray( 1, '2' ) );
+  cache.registerEntry( request( url, QStringLiteral( "bytes=5-6" ) ), QByteArray( 1, '2' ) );
   QTest::qSleep( 10 );
 
   // (5, 6) -> (3, 4)
@@ -676,7 +676,7 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
     QCOMPARE( files[1].baseName(), "3937831480-bytes=3-4" );
   }
 
-  cache.entry( constructRequest( url, QStringLiteral( "bytes=3-4" ) ) );
+  cache.entry( request( url, QStringLiteral( "bytes=3-4" ) ) );
   QTest::qSleep( 10 );
 
   // -> (3, 4) -> (5, 6)
@@ -687,7 +687,7 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
     QCOMPARE( files[1].baseName(), "3937831480-bytes=5-6" );
   }
 
-  cache.registerEntry( constructRequest( url, QStringLiteral( "bytes=7-8" ) ), QByteArray( 1, '3' ) );
+  cache.registerEntry( request( url, QStringLiteral( "bytes=7-8" ) ), QByteArray( 1, '3' ) );
   QTest::qSleep( 10 );
 
   // (7, 8) -> (3, 4)
@@ -698,7 +698,7 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
     QCOMPARE( files[1].baseName(), "3937831480-bytes=3-4" );
   }
 
-  cache.registerEntry( constructRequest( url, QStringLiteral( "bytes=9-10" ) ), QByteArray( 1, '4' ) );
+  cache.registerEntry( request( url, QStringLiteral( "bytes=9-10" ) ), QByteArray( 1, '4' ) );
   // (9, 10) -> (7, 8)
   {
     QFileInfoList files = cache.cacheEntries();
