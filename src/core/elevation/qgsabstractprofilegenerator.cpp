@@ -59,7 +59,7 @@ QgsAbstractProfileGenerator::~QgsAbstractProfileGenerator() = default;
 
 QgsAbstractProfileResults::~QgsAbstractProfileResults() = default;
 
-QgsProfileSnapResult QgsAbstractProfileResults::snapPoint( const QgsProfilePoint &, double, double )
+QgsProfileSnapResult QgsAbstractProfileResults::snapPoint( const QgsProfilePoint &, const QgsProfileSnapContext & )
 {
   return QgsProfileSnapResult();
 }

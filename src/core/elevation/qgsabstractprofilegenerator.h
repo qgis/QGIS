@@ -27,6 +27,7 @@
 #include <QTransform>
 
 class QgsProfileSnapResult;
+class QgsProfileSnapContext;
 class QgsProfilePoint;
 class QgsGeometry;
 
@@ -161,11 +162,8 @@ class CORE_EXPORT QgsAbstractProfileResults
 
     /**
      * Snaps a \a point to the generated elevation profile.
-     *
-     * The \a maximumCurveDelta and \a maximumHeightDelta arguments specify the maximum allowed difference in the distance along
-     * curve and height values from the snapped result.
      */
-    virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
+    virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 };
 
 /**

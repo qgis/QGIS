@@ -31,6 +31,7 @@ class QgsAbstractProfileResults;
 class QgsFeedback;
 class QgsRenderContext;
 class QgsProfileSnapResult;
+class QgsProfileSnapContext;
 class QgsProfilePoint;
 
 /**
@@ -111,11 +112,8 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
 
     /**
      * Snap a \a point to the results.
-     *
-     * The \a maximumCurveDelta and \a maximumHeightDelta arguments specify the maximum allowed difference in the distance along
-     * curve and height values from the snapped result.
      */
-    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
+    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 
   signals:
 

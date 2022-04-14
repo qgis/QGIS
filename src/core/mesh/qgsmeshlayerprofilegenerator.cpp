@@ -106,7 +106,7 @@ void QgsMeshLayerProfileResults::renderResults( QgsProfileRenderContext &context
   lineSymbol->stopRender( context.renderContext() );
 }
 
-QgsProfileSnapResult QgsMeshLayerProfileResults::snapPoint( const QgsProfilePoint &point, double, double maximumHeightDelta )
+QgsProfileSnapResult QgsMeshLayerProfileResults::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
 {
   // TODO -- consider an index if performance is an issue
   QgsProfileSnapResult result;
@@ -122,7 +122,7 @@ QgsProfileSnapResult QgsMeshLayerProfileResults::snapPoint( const QgsProfilePoin
       const double dy = it.value() - prevElevation;
       const double snappedZ = ( dy / dx ) * ( point.distance() - prevDistance ) + prevElevation;
 
-      if ( std::fabs( point.elevation() - snappedZ ) > maximumHeightDelta )
+      if ( std::fabs( point.elevation() - snappedZ ) > context.maximumElevationDelta )
         return QgsProfileSnapResult();
 
       result.snappedPoint = QgsProfilePoint( point.distance(), snappedZ );

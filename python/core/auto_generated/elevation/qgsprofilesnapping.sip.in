@@ -8,6 +8,27 @@
 
 
 
+class QgsProfileSnapContext
+{
+%Docstring(signature="appended")
+Encapsulates the context of snapping a profile point.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprofilesnapping.h"
+%End
+  public:
+
+    double maximumDistanceDelta;
+
+    double maximumElevationDelta;
+
+    double displayRationElevationVsDistance;
+
+};
+
 class QgsProfileSnapResult
 {
 %Docstring(signature="appended")
