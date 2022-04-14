@@ -57,7 +57,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->inherits( "QgsLayerTreeModel" ) )
+    if ( qobject_cast<QgsLayerTreeModel *>( sipCpp ) )
       sipType = sipType_QgsLayerTreeModel;
     else
       sipType = 0;

@@ -138,9 +138,9 @@ Abstract base class for connection to a GPS device
 #include <qgsnmeaconnection.h>
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->inherits( "QgsGpsdConnection" ) )
+    if ( qobject_cast<QgsGpsdConnection *>( sipCpp ) )
       sipType = sipType_QgsGpsdConnection;
-    else if ( sipCpp->inherits( "QgsNmeaConnection" ) )
+    else if ( qobject_cast<QgsNmeaConnection *>( sipCpp ) )
       sipType = sipType_QgsNmeaConnection;
     else
       sipType = NULL;

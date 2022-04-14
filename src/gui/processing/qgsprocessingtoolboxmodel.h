@@ -43,7 +43,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->inherits( "QgsProcessingToolboxModelNode" ) )
+    if ( qobject_cast<QgsProcessingToolboxModelNode *>( sipCpp ) )
     {
       sipType = sipType_QgsProcessingToolboxModelNode;
       QgsProcessingToolboxModelNode *node = qobject_cast<QgsProcessingToolboxModelNode *>( sipCpp );

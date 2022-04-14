@@ -26,7 +26,7 @@ Abstract base class for nodes contained within a :py:class:`QgsProcessingToolbox
 #include "qgsprocessingtoolboxmodel.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->inherits( "QgsProcessingToolboxModelNode" ) )
+    if ( qobject_cast<QgsProcessingToolboxModelNode *>( sipCpp ) )
     {
       sipType = sipType_QgsProcessingToolboxModelNode;
       QgsProcessingToolboxModelNode *node = qobject_cast<QgsProcessingToolboxModelNode *>( sipCpp );

@@ -77,7 +77,7 @@ with a set of default actions that can be used when building context menu.
 #include "qgslayertreeview.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->inherits( "QgsLayerTreeView" ) )
+    if ( qobject_cast<QgsLayerTreeView *>( sipCpp ) )
       sipType = sipType_QgsLayerTreeView;
     else
       sipType = 0;

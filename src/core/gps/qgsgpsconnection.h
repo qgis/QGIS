@@ -280,9 +280,9 @@ class CORE_EXPORT QgsGpsConnection : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->inherits( "QgsGpsdConnection" ) )
+    if ( qobject_cast<QgsGpsdConnection *>( sipCpp ) )
       sipType = sipType_QgsGpsdConnection;
-    else if ( sipCpp->inherits( "QgsNmeaConnection" ) )
+    else if ( qobject_cast<QgsNmeaConnection *>( sipCpp ) )
       sipType = sipType_QgsNmeaConnection;
     else
       sipType = NULL;

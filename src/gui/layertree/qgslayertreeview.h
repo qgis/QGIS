@@ -105,7 +105,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->inherits( "QgsLayerTreeView" ) )
+    if ( qobject_cast<QgsLayerTreeView *>( sipCpp ) )
       sipType = sipType_QgsLayerTreeView;
     else
       sipType = 0;

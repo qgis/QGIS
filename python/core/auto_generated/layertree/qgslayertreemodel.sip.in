@@ -33,7 +33,7 @@ whether to allow changes to the layer tree.
 #include "qgslayertreemodel.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->inherits( "QgsLayerTreeModel" ) )
+    if ( qobject_cast<QgsLayerTreeModel *>( sipCpp ) )
       sipType = sipType_QgsLayerTreeModel;
     else
       sipType = 0;
