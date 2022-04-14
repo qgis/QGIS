@@ -191,6 +191,10 @@ class QgsTileDownloadManagerWorker : public QObject
  *   it is waiting for map rendering to finish.
  * - There is a shared download queue (protected by a mutex) with a list of active requests
  *   and requests waiting to be processed.
+ * - Added in QGIS 3.26: If the request is an HTTP range request, the data may be cached
+ *   into a local directory using QgsRangeRequestCache to avoid requesting the same data
+ *   excessively. Caching will be disabled for requests with CacheLoadControlAttribute set
+ *   to AlwaysNetwork or CacheSaveControlAttribute set to false
  *
  * \since QGIS 3.18
  */
