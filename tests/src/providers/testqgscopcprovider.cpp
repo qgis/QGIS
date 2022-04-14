@@ -639,6 +639,8 @@ void TestQgsCopcProvider::testPointCloudIndex()
 
 void TestQgsCopcProvider::testQgsRangeRequestCache()
 {
+  // Note: the QTest::qSleep calls were added to prevent 2 files from being created at very close times
+
   auto request = []( const QUrl & url, const QString & range )
   {
     QNetworkRequest req( url );

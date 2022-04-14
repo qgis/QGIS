@@ -22,6 +22,8 @@
 #include <QDir>
 #include <QDateTime>
 
+#include "qgsmessagelog.h"
+
 QgsRangeRequestCache::QgsRangeRequestCache()
 {
 
@@ -64,6 +66,11 @@ void QgsRangeRequestCache::setCacheDirectory( const QString &path )
     cachePath.push_back( QDir::separator() );
   }
   mCacheDir = cachePath;
+
+  if ( QDir().mkdir( mCacheDir ) )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Unable to create cache directory \"%1\"" ).arg( mCacheDir ) );
+  }
 }
 
 void QgsRangeRequestCache::setCacheSize( qint64 cacheSize )
@@ -81,7 +88,10 @@ QByteArray QgsRangeRequestCache::readFile( const QString &fileName )
 {
   QFile file( fileName );
   if ( !file.open( QFile::OpenModeFlag::ReadOnly ) )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Unable to read cache file \"%1\"" ).arg( fileName ) );
     return QByteArray();
+  }
   return file.readAll();
 }
 
@@ -89,7 +99,10 @@ void QgsRangeRequestCache::writeFile( const QString &fileName, QByteArray data )
 {
   QFile file( fileName );
   if ( !file.open( QFile::OpenModeFlag::WriteOnly ) )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Unable to open cache file \"%1\"" ).arg( fileName ) );
     return;
+  }
   file.write( data );
   file.close();
 }
