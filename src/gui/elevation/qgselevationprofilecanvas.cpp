@@ -346,6 +346,19 @@ void QgsElevationProfileCanvas::scalePlot( double factor )
   scalePlot( factor, factor );
 }
 
+QgsProfileSnapContext QgsElevationProfileCanvas::snapContext() const
+{
+  const double toleranceInPixels = QFontMetrics( font() ).horizontalAdvance( ' ' );
+  const double xToleranceInPlotUnits = 2 * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
+  const double yToleranceInPlotUnits = 10 * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
+
+  QgsProfileSnapContext context;
+  context.maximumDistanceDelta = xToleranceInPlotUnits;
+  context.maximumElevationDelta = yToleranceInPlotUnits;
+
+  return context;
+}
+
 QgsPointXY QgsElevationProfileCanvas::snapToPlot( QPoint point )
 {
   if ( !mCurrentJob || !mSnappingEnabled )
@@ -353,11 +366,7 @@ QgsPointXY QgsElevationProfileCanvas::snapToPlot( QPoint point )
 
   const QgsProfilePoint plotPoint = canvasPointToPlotPoint( point );
 
-  const double toleranceInPixels = QFontMetrics( font() ).horizontalAdvance( ' ' );
-  const double xToleranceInPlotUnits = 2 * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
-  const double yToleranceInPlotUnits = 10 * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
-
-  const QgsProfileSnapResult snappedPoint = mCurrentJob->snapPoint( plotPoint, xToleranceInPlotUnits, yToleranceInPlotUnits );
+  const QgsProfileSnapResult snappedPoint = mCurrentJob->snapPoint( plotPoint, snapContext() );
   if ( !snappedPoint.isValid() )
     return QgsPointXY();
 
@@ -464,11 +473,7 @@ void QgsElevationProfileCanvas::mouseMoveEvent( QMouseEvent *e )
   QgsProfilePoint plotPoint = canvasPointToPlotPoint( e->pos() );
   if ( mCurrentJob && mSnappingEnabled && !plotPoint.isEmpty() )
   {
-    const double toleranceInPixels = QFontMetrics( font() ).horizontalAdvance( ' ' );
-    const double xToleranceInPlotUnits = 2 * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
-    const double yToleranceInPlotUnits = 10 * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
-
-    const QgsProfileSnapResult snapResult = mCurrentJob->snapPoint( plotPoint, xToleranceInPlotUnits, yToleranceInPlotUnits );
+    const QgsProfileSnapResult snapResult = mCurrentJob->snapPoint( plotPoint, snapContext() );
     if ( snapResult.isValid() )
       plotPoint = snapResult.snappedPoint;
   }

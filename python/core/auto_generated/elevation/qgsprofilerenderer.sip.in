@@ -90,12 +90,9 @@ Renders a portion of the profile to an image with the given ``width`` and ``heig
 Renders a portion of the profile using the specified render ``context``.
 %End
 
-    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
+    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 %Docstring
 Snap a ``point`` to the results.
-
-The ``maximumCurveDelta`` and ``maximumHeightDelta`` arguments specify the maximum allowed difference in the distance along
-curve and height values from the snapped result.
 %End
 
   signals:

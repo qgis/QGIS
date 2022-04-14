@@ -181,7 +181,7 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
   }
 }
 
-QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta )
+QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
 {
   QgsProfileSnapResult bestSnapResult;
   if ( !mRequest.profileCurve() )
@@ -193,7 +193,7 @@ QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &p
   {
     if ( job.complete && job.results )
     {
-      const QgsProfileSnapResult jobSnapResult = job.results->snapPoint( point, maximumCurveDelta, maximumHeightDelta );
+      const QgsProfileSnapResult jobSnapResult = job.results->snapPoint( point, context );
       if ( jobSnapResult.isValid() )
       {
         const double snapDistance = std::pow( point.distance() - jobSnapResult.snappedPoint.distance(), 2 )

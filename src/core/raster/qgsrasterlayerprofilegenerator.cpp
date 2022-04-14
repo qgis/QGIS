@@ -63,7 +63,7 @@ QVector<QgsGeometry> QgsRasterLayerProfileResults::asGeometries() const
   return res;
 }
 
-QgsProfileSnapResult QgsRasterLayerProfileResults::snapPoint( const QgsProfilePoint &point, double, double maximumHeightDelta )
+QgsProfileSnapResult QgsRasterLayerProfileResults::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
 {
   // TODO -- consider an index if performance is an issue
   QgsProfileSnapResult result;
@@ -79,7 +79,7 @@ QgsProfileSnapResult QgsRasterLayerProfileResults::snapPoint( const QgsProfilePo
       const double dy = it.value() - prevElevation;
       const double snappedZ = ( dy / dx ) * ( point.distance() - prevDistance ) + prevElevation;
 
-      if ( std::fabs( point.elevation() - snappedZ ) > maximumHeightDelta )
+      if ( std::fabs( point.elevation() - snappedZ ) > context.maximumElevationDelta )
         return QgsProfileSnapResult();
 
       result.snappedPoint = QgsProfilePoint( point.distance(), snappedZ );

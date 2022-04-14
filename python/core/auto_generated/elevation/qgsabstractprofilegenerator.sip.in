@@ -137,12 +137,9 @@ Renders the results to the specified ``context``.
 Returns the range of the retrieved elevation values
 %End
 
-    virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta );
+    virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 %Docstring
 Snaps a ``point`` to the generated elevation profile.
-
-The ``maximumCurveDelta`` and ``maximumHeightDelta`` arguments specify the maximum allowed difference in the distance along
-curve and height values from the snapped result.
 %End
 };
 

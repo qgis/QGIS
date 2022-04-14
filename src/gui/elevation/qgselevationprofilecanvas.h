@@ -32,6 +32,7 @@ class QgsAbstractProfileResults;
 class QgsProfilePlotRenderer;
 class QgsCurve;
 class Qgs2DPlot;
+class QgsProfileSnapContext;
 
 /**
  * \ingroup gui
@@ -193,6 +194,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * Converts a plot point to the equivalent canvas point.
      */
     QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
+
+    QgsProfileSnapContext snapContext() const;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;

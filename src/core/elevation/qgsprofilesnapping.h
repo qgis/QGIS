@@ -23,6 +23,26 @@
 #include "qgsprofilepoint.h"
 
 /**
+ * \brief Encapsulates the context of snapping a profile point.
+ * \ingroup core
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsProfileSnapContext
+{
+  public:
+
+    //! Maximum allowed snapping delta for the distance values
+    double maximumDistanceDelta = 0;
+
+    //! Maximum allowed snapping delta for the elavation values
+    double maximumElevationDelta = 0;
+
+    //! Display ratio of elevation vs distance units
+    double displayRationElevationVsDistance = 1;
+
+};
+
+/**
  * \brief Encapsulates results of snapping a profile point.
  * \ingroup core
  * \since QGIS 3.26
