@@ -180,26 +180,35 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
   }
 }
 
-QgsProfilePlotRenderer::SnapResult QgsProfilePlotRenderer::snapPoint( double distanceAlongCurve, double height, double maximumCurveDelta, double maximumHeightDelta )
+QgsProfilePlotRenderer::SnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &point, double maximumCurveDelta, double maximumHeightDelta )
 {
   QgsProfilePlotRenderer::SnapResult result;
   QgsAbstractProfileResults::SnapResult bestSnapResult;
   if ( !mRequest.profileCurve() )
     return result;
 
+  double bestSnapDistance = std::numeric_limits< double >::max();
+
   for ( const ProfileJob &job : mJobs )
   {
     if ( job.complete && job.results )
     {
-      const QgsAbstractProfileResults::SnapResult jobSnapResult = job.results->snapPoint( distanceAlongCurve, height, maximumCurveDelta, maximumHeightDelta );
-      if ( jobSnapResult.isValid() && ( !bestSnapResult.isValid() || jobSnapResult.snapDistance < bestSnapResult.snapDistance ) )
-        bestSnapResult = jobSnapResult;
+      const QgsAbstractProfileResults::SnapResult jobSnapResult = job.results->snapPoint( point, maximumCurveDelta, maximumHeightDelta );
+      if ( jobSnapResult.isValid() )
+      {
+        const double snapDistance = std::pow( point.distance() - jobSnapResult.snappedPoint.distance(), 2 )
+                                    + std::pow( point.elevation() - jobSnapResult.snappedPoint.elevation(), 2 );
+
+        if ( snapDistance < bestSnapDistance )
+        {
+          bestSnapDistance = snapDistance;
+          bestSnapResult = jobSnapResult;
+        }
+      }
     }
   }
 
-  result.snappedDistanceAlongCurve = bestSnapResult.snappedDistanceAlongCurve;
-  result.snappedHeight = bestSnapResult.snappedHeight;
-  result.snapDistance = bestSnapResult.snapDistance;
+  result.snappedPoint = bestSnapResult.snappedPoint;
 
   return result;
 }
