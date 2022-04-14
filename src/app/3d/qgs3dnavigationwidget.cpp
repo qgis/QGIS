@@ -169,9 +169,6 @@ void Qgs3DNavigationWidget::updateAxisMode( int modeIndex )
       case ( int )Qgs3DAxis::Mode::Crs:
         m = Qgs3DAxis::Mode::Crs;
         break;
-      case ( int )Qgs3DAxis::Mode::NorthEastUp:
-        m = Qgs3DAxis::Mode::NorthEastUp;
-        break;
       case ( int )Qgs3DAxis::Mode::Cube:
         m = Qgs3DAxis::Mode::Cube;
         break;
