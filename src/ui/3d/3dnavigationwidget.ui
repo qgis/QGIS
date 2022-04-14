@@ -238,11 +238,6 @@
        </item>
        <item>
         <property name="text">
-         <string>North-East-Up</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>Cube</string>
         </property>
        </item>
