@@ -35,6 +35,11 @@
 class QgsPointCloudExpression;
 class QgsLazInfo;
 
+template <typename T>
+bool _lazStoreToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value );
+bool _lazSerialize( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
+                    const char *input, QgsPointCloudAttribute::DataType inputType, int inputSize, size_t inputPosition );
+
 class QgsLazDecoder
 {
   public:
