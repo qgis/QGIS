@@ -34,7 +34,7 @@ class CORE_EXPORT QgsProfileSnapContext
     //! Maximum allowed snapping delta for the distance values
     double maximumDistanceDelta = 0;
 
-    //! Maximum allowed snapping delta for the elavation values
+    //! Maximum allowed snapping delta for the elevation values
     double maximumElevationDelta = 0;
 
     //! Display ratio of elevation vs distance units
