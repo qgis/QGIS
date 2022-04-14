@@ -699,8 +699,8 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
   {
     QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QCOMPARE( files[0].baseName(), "3937831480-bytes=5-6" );
-    QCOMPARE( files[1].baseName(), "3937831480-bytes=3-4" );
+    QVERIFY( files[0].baseName().endsWith( QStringLiteral( "bytes=5-6" ) ) );
+    QVERIFY( files[1].baseName().endsWith( QStringLiteral( "bytes=3-4" ) ) );
   }
 
   cache.entry( request( url, QStringLiteral( "bytes=3-4" ) ) );
@@ -710,8 +710,8 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
   {
     QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QCOMPARE( files[0].baseName(), "3937831480-bytes=3-4" );
-    QCOMPARE( files[1].baseName(), "3937831480-bytes=5-6" );
+    QVERIFY( files[0].baseName().endsWith( QStringLiteral( "bytes=3-4" ) ) );
+    QVERIFY( files[1].baseName().endsWith( QStringLiteral( "bytes=5-6" ) ) );
   }
 
   cache.registerEntry( request( url, QStringLiteral( "bytes=7-8" ) ), QByteArray( 1, '3' ) );
@@ -721,8 +721,8 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
   {
     QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QCOMPARE( files[0].baseName(), "3937831480-bytes=7-8" );
-    QCOMPARE( files[1].baseName(), "3937831480-bytes=3-4" );
+    QVERIFY( files[0].baseName().endsWith( QStringLiteral( "bytes=7-8" ) ) );
+    QVERIFY( files[1].baseName().endsWith( QStringLiteral( "bytes=3-4" ) ) );
   }
 
   cache.registerEntry( request( url, QStringLiteral( "bytes=9-10" ) ), QByteArray( 1, '4' ) );
@@ -730,8 +730,8 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
   {
     QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QCOMPARE( files[0].baseName(), "3937831480-bytes=9-10" );
-    QCOMPARE( files[1].baseName(), "3937831480-bytes=7-8" );
+    QVERIFY( files[0].baseName().endsWith( QStringLiteral( "bytes=9-10" ) ) );
+    QVERIFY( files[1].baseName().endsWith( QStringLiteral( "bytes=7-8" ) ) );
   }
 }
 
