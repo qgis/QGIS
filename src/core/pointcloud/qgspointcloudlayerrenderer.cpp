@@ -348,6 +348,14 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
   // Wait for all point cloud nodes to finish loading
   loop.exec();
 
+  // Rendering may have got canceled and the event loop exited before finished()
+  // was called for all blocks, so let's clean up anything that is left
+  for ( QgsPointCloudBlockRequest *blockRequest : std::as_const( blockRequests ) )
+  {
+    delete blockRequest->block();
+    blockRequest->deleteLater();
+  }
+
   return nodesDrawn;
 }
 
