@@ -642,6 +642,8 @@ Sets whether the camera's view frustum is visualized on the 2D map canvas
 .. versionadded:: 3.26
 %End
 
+
+
   signals:
 
     void settingsChanged();
@@ -861,6 +863,13 @@ Emitted when the FPS counter is enabled or disabled
     void viewFrustumVisualizationEnabledChanged();
 %Docstring
 Emitted when the camera's view frustum visualization on the main 2D map canvas is enabled or disabled
+
+.. versionadded:: 3.26
+%End
+
+    void axisSettingsChanged();
+%Docstring
+Emitted when 3d axis rendering settings are changed
 
 .. versionadded:: 3.26
 %End
