@@ -31,6 +31,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
+#include "qgs3daxissettings.h"
 #include "qgsskyboxsettings.h"
 #include "qgsshadowsettings.h"
 #include "qgscameracontroller.h"
@@ -627,6 +628,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setViewFrustumVisualizationEnabled( bool enabled );
 
+    /**
+     * Returns the current configuration of 3d axis
+     * \return QGIS 3.26
+     */
+    Qgs3DAxisSettings get3dAxisSettings() const SIP_SKIP { return m3dAxisSettings; }
+
+    /**
+     * Sets the current configuration of shadow rendering
+     * \since QGIS 3.26
+     */
+    void set3dAxisSettings( const Qgs3DAxisSettings &axisSettings ) SIP_SKIP;
+
   signals:
 
     /**
@@ -807,6 +820,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void viewFrustumVisualizationEnabledChanged();
 
+    /**
+     * Emitted when 3d axis rendering settings are changed
+     * \since QGIS 3.26
+     */
+    void axisSettingsChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -873,6 +892,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mTerrainRenderingEnabled = true;
 
     Qgis::RendererUsage mRendererUsage;
+
+    Qgs3DAxisSettings m3dAxisSettings; //!< 3d axis related configuration
+
 };
 
 

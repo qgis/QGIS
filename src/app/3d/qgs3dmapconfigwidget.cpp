@@ -35,6 +35,7 @@
 #include "qgsshadowrenderingsettingswidget.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
+#include "qgs3daxis.h"
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent )
   : QWidget( parent )
@@ -172,11 +173,15 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   onTerrainTypeChanged();
 
+  // ==================
+  // Page: Skybox
   mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
   mSkyboxSettingsWidget->setSkyboxSettings( map->skyboxSettings() );
   groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
   groupSkyboxSettings->setChecked( mMap->isSkyboxEnabled() );
 
+  // ==================
+  // Page: Shadows
   mShadowSettingsWidget = new QgsShadowRenderingSettingsWidget( this );
   mShadowSettingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLightCount() );
   mShadowSettingsWidget->setShadowSettings( map->shadowSettings() );
@@ -188,14 +193,23 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
 
-  edlGroupBox->setChecked( map->eyeDomeLightingEnabled() );
-  edlStrengthSpinBox->setValue( map->eyeDomeLightingStrength() );
-  edlDistanceSpinBox->setValue( map->eyeDomeLightingDistance() );
+  // ==================
+  // Page: 3D axis
+  init3dAxisPage();
 
-
+  // ==================
+  // Page: 2D/3D canvas sync
   mSync2DTo3DCheckbox->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   mSync3DTo2DCheckbox->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   mVisualizeExtentCheckBox->setChecked( map->viewFrustumVisualizationEnabled() );
+
+  // ==================
+  // Page: Advanced
+
+  // EyeDomeLight
+  edlGroupBox->setChecked( map->eyeDomeLightingEnabled() );
+  edlStrengthSpinBox->setValue( map->eyeDomeLightingStrength() );
+  edlDistanceSpinBox->setValue( map->eyeDomeLightingDistance() );
 
   mDebugShadowMapCornerComboBox->addItem( tr( "Top Left" ) );
   mDebugShadowMapCornerComboBox->addItem( tr( "Top Right" ) );
@@ -490,4 +504,73 @@ void Qgs3DMapConfigWidget::validate()
   }
 
   emit isValidChanged( valid );
+}
+
+void Qgs3DMapConfigWidget::init3dAxisPage()
+{
+  connect( mGroupBox3dAxis, &QGroupBox::toggled, this, [this]( bool )
+  {
+    update3dAxisMode();
+  } );
+
+  connect( mCbo3dAxisType, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [this]( int )
+  {
+    update3dAxisMode();
+  } );
+
+  connect( mCbo3dAxisHorizPos, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [this]( int )
+  {
+    update3dAxisPosition();
+  } );
+
+  connect( mCbo3dAxisVertPos, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [this]( int )
+  {
+    update3dAxisPosition();
+  } );
+
+  Qgs3DAxisSettings s = mMap->get3dAxisSettings();
+
+  if ( s.mode() == Qgs3DAxis::Mode::Off )
+    mGroupBox3dAxis->setChecked( false );
+  else
+  {
+    mGroupBox3dAxis->setChecked( true );
+    mCbo3dAxisType->setCurrentIndex( ( int )s.mode() - 2 );
+  }
+
+  mCbo3dAxisHorizPos->setCurrentIndex( ( int )s.horizontalPosition() - 1 );
+  mCbo3dAxisVertPos->setCurrentIndex( ( int )s.verticalPosition() - 1 );
+}
+
+void Qgs3DMapConfigWidget::update3dAxisMode()
+{
+  if ( m3DMapCanvas->get3DAxis() )
+  {
+    Qgs3DAxis::Mode m;
+    if ( mGroupBox3dAxis->isChecked() )
+      m = ( Qgs3DAxis::Mode )( mCbo3dAxisType->currentIndex() + 2 );
+    else
+      m = Qgs3DAxis::Mode::Off;
+
+    m3DMapCanvas->get3DAxis()->setMode( m );
+    Qgs3DAxisSettings s = mMap->get3dAxisSettings();
+    s.setMode( m );
+    mMap->set3dAxisSettings( s );
+  }
+}
+
+void Qgs3DMapConfigWidget::update3dAxisPosition()
+{
+  if ( m3DMapCanvas->get3DAxis() )
+  {
+    Qgs3DAxis::AxisViewportPosition hPos = ( Qgs3DAxis::AxisViewportPosition )( mCbo3dAxisHorizPos->currentIndex() + 1 );
+    Qgs3DAxis::AxisViewportPosition vPos = ( Qgs3DAxis::AxisViewportPosition )( mCbo3dAxisVertPos->currentIndex() + 1 );
+
+    m3DMapCanvas->get3DAxis()->setAxisViewportPosition( m3DMapCanvas->get3DAxis()->axisViewportSize(),
+        vPos, hPos );
+    Qgs3DAxisSettings s = mMap->get3dAxisSettings();
+    s.setHorizontalPosition( hPos );
+    s.setVerticalPosition( vPos );
+    mMap->set3dAxisSettings( s );
+  }
 }

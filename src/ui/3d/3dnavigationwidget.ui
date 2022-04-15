@@ -213,39 +213,6 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="mAxisLayout">
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="mLabel">
-       <property name="text">
-        <string>3D axis</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mCbo3DAxis">
-       <item>
-        <property name="text">
-         <string>Off</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string extracomment="Coordinate Reference System">Crs</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Cube</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
     <layout class="QVBoxLayout" name="cameraInfoLayout" stretch="0,0">
      <property name="topMargin">
       <number>0</number>

@@ -16,9 +16,10 @@
 #include "qgs3daxis.h"
 
 #include <Qt3DCore/QTransform>
-#include <Qt3DExtras/QConeMesh>
+#include <Qt3DRender/QAttribute>
 #include <Qt3DExtras/QCylinderMesh>
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QConeMesh>
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>
@@ -27,8 +28,9 @@
 #include <Qt3DRender/QPointLight>
 #include<ctime>
 
-#include <Qt3DRender/QAttribute>
+#include "qgs3dmapsettings.h"
 #include "qgscoordinatereferencesystemutils.h"
+#include "qgscoordinatereferencesystem.h"
 
 Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow, Qt3DCore::QEntity *parent3DScene, QgsCameraController *cameraCtrl, const Qgs3DMapSettings *map )
   : QObject( parentWindow ), mParentWindow( parentWindow ), mParentCamera( cameraCtrl->camera() ),
@@ -39,6 +41,10 @@ Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow, Qt3DCore::QEntity *p
 
   mTwoDLabelViewport = constructLabelViewport( parent3DScene, QRectF( 0.0f, 0.0f, 1.0f, 1.0f ) );
   mTwoDLabelViewport->setParent( mParentWindow->activeFrameGraph() );
+
+  Qgs3DAxisSettings s = map->get3dAxisSettings();
+  setAxisViewportPosition( mAxisViewportSize, s.verticalPosition(), s.horizontalPosition() );
+  mMode = s.mode();
 
   connect( cameraCtrl, &QgsCameraController::cameraChanged, this, &Qgs3DAxis::updateCamera );
   connect( mParentWindow, &Qt3DExtras::Qt3DWindow::widthChanged, this, &Qgs3DAxis::updateAxisViewportSize );
@@ -503,6 +509,7 @@ void Qgs3DAxis::setAxisViewportPosition( int axisViewportSize, AxisViewportPosit
   mAxisViewportVertPos = axisViewportVertPos;
   mAxisViewportHorizPos = axisViewportHorizPos;
   updateAxisViewportSize();
+  mParentWindow->requestUpdate();
 }
 
 void Qgs3DAxis::updateAxisViewportSize( int )
@@ -618,6 +625,11 @@ Qgs3DWiredMesh::Qgs3DWiredMesh( Qt3DCore::QNode *parent )
   setFirstInstance( 0 );
   setPrimitiveType( Qt3DRender::QGeometryRenderer::Lines );
   setGeometry( mGeom );
+}
+
+Qgs3DWiredMesh::~Qgs3DWiredMesh()
+{
+  // nope
 }
 
 void Qgs3DWiredMesh::setVertices( const QList<QVector3D> &vertices )
