@@ -67,7 +67,7 @@ void QgsInstallGridShiftFileDialog::installFromFile()
   const QString destPath = QFileInfo( destFilePath ).absolutePath();
 
   if ( !QDir( destPath ).exists() )
-    QDir().mkdir( destPath );
+    QDir().mkpath( destPath );
 
   if ( QFile::copy( gridFilePath, destFilePath ) )
   {
