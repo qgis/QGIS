@@ -40,8 +40,10 @@ QgsVectorLayerElevationProperties::~QgsVectorLayerElevationProperties() = defaul
 
 bool QgsVectorLayerElevationProperties::hasElevation() const
 {
-  // layer is considered as having non-default elevation settings if we aren't clamping to terrain
-  return mClamping != Qgis::AltitudeClamping::Terrain;
+  // layer is always considered as having elevation -- even if no z values are present or any
+  // offset/extrusion etc is set, then we are still considering the features as sitting on the terrain
+  // height
+  return true;
 }
 
 QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
