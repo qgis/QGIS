@@ -41,7 +41,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props.zOffset(), 0)
         self.assertFalse(props.extrusionEnabled())
         self.assertEqual(props.extrusionHeight(), 0)
-        self.assertFalse(props.hasElevation())
+        self.assertTrue(props.hasElevation())
         self.assertEqual(props.clamping(), Qgis.AltitudeClamping.Terrain)
         self.assertEqual(props.binding(), Qgis.AltitudeBinding.Centroid)
         self.assertTrue(props.respectLayerSymbology())
