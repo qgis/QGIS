@@ -411,7 +411,7 @@ if(WITH_CORE)
     message(STATUS "Qt WebKit support DISABLED.")
   endif()
 
-  set (WITH_INTERNAL_LAZPERF FALSE CACHE BOOL "Determines whether LazPerf should be built from internal copy")
+  set (WITH_INTERNAL_LAZPERF TRUE CACHE BOOL "Determines whether LazPerf should be built from internal copy")
   if (WITH_EPT OR WITH_COPC)
     if (NOT WITH_INTERNAL_LAZPERF)
       find_package(LazPerf) # for decompression of point clouds
