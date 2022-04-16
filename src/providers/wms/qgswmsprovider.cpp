@@ -2240,8 +2240,7 @@ int QgsWmsProvider::capabilities() const
     }
   }
 
-  // Prevent prefetch of XYZ openstreetmap images, see: https://github.com/qgis/QGIS/issues/34813
-  if ( mSettings.mXyz && !dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) ) )
+  if ( mSettings.mXyz )
   {
     capability |= Capability::Prefetch;
   }
