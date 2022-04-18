@@ -2240,13 +2240,9 @@ int QgsWmsProvider::capabilities() const
     }
   }
 
-  // Prevent prefetch of XYZ openstreetmap images, see: https://github.com/qgis/QGIS/issues/34813
-  // But also prevent prefetching if service is a true WMS (mSettings.mTiled = True)
-  // See https://github.com/qgis/QGIS/issues/34813
-  if ( mSettings.mTiled && !( mSettings.mXyz && dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) ) ) )
+  if ( mSettings.mXyz )
   {
-    // March 2021: *never* prefetch tile based layers, see: https://github.com/qgis/QGIS/pull/41953
-    // capability |= Capability::Prefetch;
+    capability |= Capability::Prefetch;
   }
 
   if ( mSettings.mTiled || mSettings.mXyz )

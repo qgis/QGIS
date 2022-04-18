@@ -22,6 +22,7 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -43,6 +44,9 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   mComboBinding->addItem( tr( "Vertex" ), static_cast< int >( Qgis::AltitudeBinding::Vertex ) );
   mComboBinding->addItem( tr( "Centroid" ), static_cast< int >( Qgis::AltitudeBinding::Centroid ) );
 
+  initializeDataDefinedButton( mOffsetDDBtn, QgsMapLayerElevationProperties::ZOffset );
+  initializeDataDefinedButton( mExtrusionDDBtn, QgsMapLayerElevationProperties::ExtrusionHeight );
+
   syncToLayer( layer );
 
   connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
@@ -54,11 +58,13 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   connect( mComboClamping, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::clampingChanged );
   connect( mComboBinding, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::bindingChanged );
 
+  connect( mCheckRespectLayerSymbology, &QCheckBox::toggled, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mMarkerStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
 
   connect( mExtrusionGroupBox, &QGroupBox::toggled, this, &QgsVectorElevationPropertiesWidget::toggleSymbolWidgets );
+
 }
 
 void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -66,6 +72,9 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mLayer = qobject_cast< QgsVectorLayer * >( layer );
   if ( !mLayer )
     return;
+
+  mContext = QgsExpressionContext();
+  mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   if ( !QgsWkbTypes::hasZ( mLayer->wkbType() ) )
   {
@@ -87,9 +96,13 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mExtrusionGroupBox->setChecked( props->extrusionEnabled() );
   mExtrusionSpinBox->setValue( props->extrusionHeight() );
 
+  mCheckRespectLayerSymbology->setChecked( props->respectLayerSymbology() );
   mLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
   mFillStyleButton->setSymbol( props->profileFillSymbol()->clone() );
   mMarkerStyleButton->setSymbol( props->profileMarkerSymbol()->clone() );
+
+  mPropertyCollection = props->dataDefinedProperties();
+  updateDataDefinedButtons();
 
   toggleSymbolWidgets();
 
@@ -97,6 +110,11 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
   clampingChanged();
   bindingChanged();
+}
+
+QgsExpressionContext QgsVectorElevationPropertiesWidget::createExpressionContext() const
+{
+  return mContext;
 }
 
 void QgsVectorElevationPropertiesWidget::apply()
@@ -113,9 +131,12 @@ void QgsVectorElevationPropertiesWidget::apply()
   props->setExtrusionEnabled( mExtrusionGroupBox->isChecked() );
   props->setExtrusionHeight( mExtrusionSpinBox->value() );
 
+  props->setRespectLayerSymbology( mCheckRespectLayerSymbology->isChecked() );
   props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
   props->setProfileMarkerSymbol( mMarkerStyleButton->clonedSymbol< QgsMarkerSymbol >() );
   props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
+
+  props->setDataDefinedProperties( mPropertyCollection );
 
   mLayer->trigger3DUpdate();
 }
@@ -139,8 +160,18 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
           tr( "Z values from the features will be used for elevation, and the terrain height will be ignored." ) )
       );
       enableBinding = false; // not used in absolute mode
+
+      if ( QgsWkbTypes::hasZ( mLayer->wkbType() ) )
+      {
+        mOffsetLabel->setText( tr( "Offset" ) );
+      }
+      else
+      {
+        mOffsetLabel->setText( tr( "Base height" ) );
+      }
       break;
     case Qgis::AltitudeClamping::Relative:
+      mOffsetLabel->setText( tr( "Offset" ) );
       mLabelClampingExplanation->setText(
         QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
           tr( "Elevation is relative to terrain height." ),
@@ -148,6 +179,7 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
       );
       break;
     case Qgis::AltitudeClamping::Terrain:
+      mOffsetLabel->setText( tr( "Offset" ) );
       mLabelClampingExplanation->setText(
         QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
           tr( "Feature elevation will be taken directly from the terrain height." ),
@@ -217,6 +249,44 @@ void QgsVectorElevationPropertiesWidget::toggleSymbolWidgets()
       mFillStyleButton->setEnabled( false );
       break;
   }
+}
+
+void QgsVectorElevationPropertiesWidget::updateProperty()
+{
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  QgsMapLayerElevationProperties::Property key = static_cast<  QgsMapLayerElevationProperties::Property >( button->propertyKey() );
+  mPropertyCollection.setProperty( key, button->toProperty() );
+}
+
+void QgsVectorElevationPropertiesWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsMapLayerElevationProperties::Property key )
+{
+  button->blockSignals( true );
+  button->init( key, mPropertyCollection, QgsMapLayerElevationProperties::propertyDefinitions(), nullptr );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsVectorElevationPropertiesWidget::updateProperty );
+  button->registerExpressionContextGenerator( this );
+  button->blockSignals( false );
+}
+
+void QgsVectorElevationPropertiesWidget::updateDataDefinedButtons()
+{
+  const auto propertyOverrideButtons { findChildren< QgsPropertyOverrideButton * >() };
+  for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
+  {
+    updateDataDefinedButton( button );
+  }
+}
+
+void QgsVectorElevationPropertiesWidget::updateDataDefinedButton( QgsPropertyOverrideButton *button )
+{
+  if ( !button )
+    return;
+
+  if ( button->propertyKey() < 0 )
+    return;
+
+  QgsMapLayerElevationProperties::Property key = static_cast< QgsMapLayerElevationProperties::Property >( button->propertyKey() );
+  whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
+  whileBlocking( button )->setVectorLayer( mLayer );
 }
 
 

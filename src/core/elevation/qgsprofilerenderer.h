@@ -30,6 +30,9 @@ class QgsAbstractProfileGenerator;
 class QgsAbstractProfileResults;
 class QgsFeedback;
 class QgsRenderContext;
+class QgsProfileSnapResult;
+class QgsProfileSnapContext;
+class QgsProfilePoint;
 
 /**
  * \brief Generates and renders elevation profile plots.
@@ -106,6 +109,11 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
      * Renders a portion of the profile using the specified render \a context.
      */
     void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax );
+
+    /**
+     * Snap a \a point to the results.
+     */
+    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 
   signals:
 

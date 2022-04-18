@@ -22,6 +22,108 @@ which are not wrapped by PyQt:
 - NULL QVariant which is missing in PyQt5 with sip.enableautoconversion
 */
 
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<QgsMapLayerType>
+        /TypeHintIn="Iterable[QgsMapLayerType]",
+        TypeHintOut="List[QgsMapLayerType]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_QgsMapLayerType);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<QgsMapLayerType> *ql = new QList<QgsMapLayerType>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_QgsMapLayerType);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'QgsMapLayerType' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<QgsMapLayerType>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
 
 template <TYPE>
 %MappedType QVector< QVector<TYPE> >

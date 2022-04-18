@@ -64,6 +64,7 @@ void QgsCopcPointCloudIndex::load( const QString &fileName )
   if ( !mIsValid )
   {
     QgsMessageLog::logMessage( tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( fileName ).arg( mLazInfo->error() ) );
+    return;
   }
 
   loadHierarchy();

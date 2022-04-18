@@ -23,6 +23,10 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsfeatureid.h"
 
 #include <memory>
 
@@ -34,9 +38,7 @@ class QgsAbstractTerrainProvider;
 class QgsGeos;
 class QgsLineString;
 class QgsPolygon;
-class QgsLineSymbol;
-class QgsFillSymbol;
-class QgsMarkerSymbol;
+class QgsProfileSnapContext;
 
 #define SIP_NO_FILE
 
@@ -54,11 +56,24 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
 
     QgsPointSequence rawPoints;
     QMap< double, double > mDistanceToHeightMap;
-    QVector< QgsGeometry > geometries;
-    QVector< QgsGeometry > distanceVHeightGeometries;
+
+    struct Feature
+    {
+      //! Original feature ID
+      QgsFeatureId featureId;
+      //! Feature's geometry with any terrain height adjustment and extrusion applied
+      QgsGeometry geometry;
+      //! Cross section distance vs height geometry for feature
+      QgsGeometry crossSectionGeometry;
+    };
+
+    QHash< QgsFeatureId, QVector< Feature > > features;
+    QPointer< QgsVectorLayer > mLayer;
+
     double minZ = std::numeric_limits< double >::max();
     double maxZ = std::numeric_limits< double >::lowest();
 
+    bool respectLayerSymbology = true;
     std::unique_ptr< QgsLineSymbol > profileLineSymbol;
     std::unique_ptr< QgsFillSymbol > profileFillSymbol;
     std::unique_ptr< QgsMarkerSymbol > profileMarkerSymbol;
@@ -68,6 +83,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
     QgsDoubleRange zRange() const override;
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
+    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
 };
 
@@ -102,10 +118,10 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
     bool generateProfileForPolygons();
 
     double terrainHeight( double x, double y );
-    double featureZToHeight( double x, double y, double z );
+    double featureZToHeight( double x, double y, double z, double offset );
 
-    void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid );
-    bool clampAltitudes( QgsPolygon *polygon );
+    void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid, double offset );
+    bool clampAltitudes( QgsPolygon *polygon, double offset );
 
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
@@ -132,15 +148,23 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
     bool mExtrusionEnabled = false;
     double mExtrusionHeight = 0;
 
+    QgsExpressionContext mExpressionContext;
+    QgsFields mFields;
+    QgsPropertyCollection mDataDefinedProperties;
+
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     QgsCoordinateTransform mLayerToTargetTransform;
     QgsCoordinateTransform mTargetToTerrainProviderTransform;
 
     std::unique_ptr< QgsVectorLayerProfileResults > mResults;
 
+    bool mRespectLayerSymbology = true;
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
     std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
+
+    // NOT for use in the background thread!
+    QPointer< QgsVectorLayer > mLayer;
 
 };
 

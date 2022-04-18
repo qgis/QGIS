@@ -62,6 +62,18 @@ Returns the point in map coordinates corresponding to the event.
 May return an empty point if the event cannot be converted to a map point.
 %End
 
+    QgsPointXY snappedPoint();
+%Docstring
+Returns the point snapped to the plot, if possible.
+
+Returns the original canvas point if snapping was not possible.
+%End
+
+    bool isSnapped();
+%Docstring
+Returns ``True`` if the point can be snapped to the plot.
+%End
+
 };
 
 /************************************************************************

@@ -21,6 +21,7 @@
 #include "qgsdockablewidgethelper.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolprofilecurve.h"
+#include "qgsmaptoolprofilecurvefromfeature.h"
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsplottoolpan.h"
@@ -31,6 +32,8 @@
 #include "qgsfileutils.h"
 #include "qgsmessagebar.h"
 #include "qgsplot.h"
+#include "qgsmulticurve.h"
+#include "qgsmaplayerutils.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -52,6 +55,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mCanvas = new QgsElevationProfileCanvas( this );
   mCanvas->setProject( QgsProject::instance() );
   connect( mCanvas, &QgsElevationProfileCanvas::activeJobCountChanged, this, &QgsElevationProfileWidget::onTotalPendingJobsCountChanged );
+  connect( mCanvas, &QgsElevationProfileCanvas::canvasPointHovered, this, &QgsElevationProfileWidget::onCanvasPointHovered );
 
   mPanTool = new QgsPlotToolPan( mCanvas );
   mCanvas->setTool( mPanTool );
@@ -70,6 +74,18 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
     }
   } );
   toolBar->addAction( mCaptureCurveAction );
+
+  mCaptureCurveFromFeatureAction = new QAction( tr( "Capture Curve From Feature" ), this );
+  mCaptureCurveFromFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureCurveFromFeature.svg" ) ) );
+  mCaptureCurveFromFeatureAction->setCheckable( true );
+  connect( mCaptureCurveFromFeatureAction, &QAction::triggered, this, [ = ]
+  {
+    if ( mCaptureCurveFromFeatureMapTool && mMainCanvas )
+    {
+      mMainCanvas->setMapTool( mCaptureCurveFromFeatureMapTool.get() );
+    }
+  } );
+  toolBar->addAction( mCaptureCurveFromFeatureAction );
 
   QAction *clearAction = new QAction( tr( "Clear" ), this );
   clearAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconClearConsole.svg" ) ) );
@@ -104,6 +120,13 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   resetViewAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomFullExtent.svg" ) ) );
   connect( resetViewAction, &QAction::triggered, mCanvas, &QgsElevationProfileCanvas::zoomFull );
   toolBar->addAction( resetViewAction );
+
+  QAction *enabledSnappingAction = new QAction( tr( "Enable Snapping" ), this );
+  enabledSnappingAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnapping.svg" ) ) );
+  enabledSnappingAction->setCheckable( true );
+  enabledSnappingAction->setChecked( true );
+  connect( enabledSnappingAction, &QAction::toggled, mCanvas, &QgsElevationProfileCanvas::setSnappingEnabled );
+  toolBar->addAction( enabledSnappingAction );
 
   toolBar->addSeparator();
 
@@ -190,6 +213,9 @@ QgsElevationProfileWidget::~QgsElevationProfileWidget()
   if ( mRubberBand )
     mRubberBand.reset();
 
+  if ( mMapPointRubberBand )
+    mMapPointRubberBand.reset();
+
   delete mDockableWidgetHelper;
 }
 
@@ -218,7 +244,19 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
     if ( mRubberBand )
       mRubberBand->show();
   } );
-  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
+
+  mCaptureCurveFromFeatureMapTool = std::make_unique< QgsMapToolProfileCurveFromFeature >( canvas );
+  mCaptureCurveFromFeatureMapTool->setAction( mCaptureCurveFromFeatureAction );
+  connect( mCaptureCurveFromFeatureMapTool.get(), &QgsMapToolProfileCurveFromFeature::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
+
+  mMapPointRubberBand.reset( new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry ) );
+  mMapPointRubberBand->setZValue( 1000 );
+  mMapPointRubberBand->setIcon( QgsRubberBand::ICON_FULL_DIAMOND );
+  mMapPointRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 8 ) );
+  mMapPointRubberBand->setIconSize( QgsGuiUtils::scaleIconSize( 4 ) );
+  mMapPointRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
+  mMapPointRubberBand->setColor( QColor( 0, 0, 0 ) );
+  mMapPointRubberBand->hide();
 
   // only do this from map tool!
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &QgsElevationProfileWidget::onMainCanvasLayersChanged );
@@ -233,7 +271,21 @@ void QgsElevationProfileWidget::cancelJobs()
 void QgsElevationProfileWidget::onMainCanvasLayersChanged()
 {
   // possibly not right -- do we always want to sync the profile layers to canvas layers?
-  mCanvas->setLayers( mMainCanvas->layers( true ) );
+
+  QList< QgsMapLayer * > layers = mMainCanvas->layers( true );
+
+  // sort layers so that types which are more likely to obscure others are rendered below
+  // e.g. vector features should be drawn above raster DEMS, or the DEM line may completely obscure
+  // the vector feature
+  layers = QgsMapLayerUtils::sortLayersByType( layers,
+  {
+    QgsMapLayerType::RasterLayer,
+    QgsMapLayerType::MeshLayer,
+    QgsMapLayerType::VectorLayer,
+    QgsMapLayerType::PointCloudLayer
+  } );
+
+  mCanvas->setLayers( layers );
   scheduleUpdate();
 }
 
@@ -250,13 +302,40 @@ void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve )
   scheduleUpdate();
 }
 
+void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &point )
+{
+  if ( !mMapPointRubberBand )
+    return;
+
+  const QgsPointXY mapPoint = mCanvas->toMapCoordinates( point );
+  if ( mapPoint.isEmpty() )
+  {
+    mMapPointRubberBand->hide();
+  }
+  else
+  {
+    mMapPointRubberBand->setToGeometry( QgsGeometry::fromPointXY( mapPoint ) );
+    mMapPointRubberBand->show();
+  }
+}
+
 void QgsElevationProfileWidget::updatePlot()
 {
-  if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( mProfileCurve.constGet() ) )
+  if ( !mProfileCurve.isEmpty() )
   {
-    mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
-    mCanvas->setProfileCurve( curve->clone() );
-    mCanvas->refresh();
+    if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
+    {
+      mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
+      mCanvas->setProfileCurve( curve->clone() );
+      mCanvas->refresh();
+    }
+    else if ( const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
+    {
+      // hm, just grab the first part!
+      mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
+      mCanvas->setProfileCurve( multiCurve->curveN( 0 )->clone() );
+      mCanvas->refresh();
+    }
   }
   mUpdateScheduled = false;
 }
@@ -273,6 +352,8 @@ void QgsElevationProfileWidget::scheduleUpdate()
 void QgsElevationProfileWidget::clear()
 {
   mRubberBand.reset();
+  if ( mMapPointRubberBand )
+    mMapPointRubberBand->hide();
   mCanvas->clear();
 }
 
@@ -402,12 +483,10 @@ void QgsElevationProfileWidget::exportAsImage()
 QgsRubberBand *QgsElevationProfileWidget::createRubberBand( )
 {
   QgsRubberBand *rb = new QgsRubberBand( mMainCanvas, QgsWkbTypes::LineGeometry );
-  rb->setWidth( QgsSettingsRegistryCore::settingsDigitizingLineWidth.value() );
-  QColor color = QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
-                         QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
-                         QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value(),
-                         QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() );
-  rb->setStrokeColor( color );
+  rb->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
+  rb->setStrokeColor( QColor( 255, 255, 255, 255 ) );
+  rb->setLineStyle( Qt::DashLine );
+  rb->setSecondaryStrokeColor( QColor( 40, 40, 40, 100 ) );
   rb->show();
   return rb;
 }

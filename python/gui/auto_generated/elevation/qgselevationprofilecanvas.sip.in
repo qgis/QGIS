@@ -45,6 +45,8 @@ Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
 
     virtual void scalePlot( double factor );
 
+    virtual QgsPointXY snapToPlot( QPoint point );
+
 
     void scalePlot( double xFactor, double yFactor );
 %Docstring
@@ -54,6 +56,8 @@ Scales the plot axis by the given factors.
     virtual void zoomToRect( const QRectF rect );
 
     virtual void wheelZoom( QWheelEvent *event );
+
+    virtual void mouseMoveEvent( QMouseEvent *e );
 
 
     QRectF plotArea() const;
@@ -135,6 +139,11 @@ Renders a portion of the profile using the specified render ``context``.
 Emitted when the number of active background jobs changes.
 %End
 
+    void canvasPointHovered( const QgsPointXY &point );
+%Docstring
+Emitted when the mouse hovers over the specified point (in canvas coordinates).
+%End
+
   public slots:
 
     void zoomFull();
@@ -145,6 +154,11 @@ Zooms to the full extent of the profile.
     void clear();
 %Docstring
 Clears the current profile.
+%End
+
+    void setSnappingEnabled( bool enabled );
+%Docstring
+Sets whether snapping of cursor points is enabled.
 %End
 
 };

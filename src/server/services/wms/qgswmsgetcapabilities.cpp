@@ -1265,6 +1265,11 @@ namespace QgsWms
               }
               dimElem.setAttribute( QStringLiteral( "multipleValues" ), QStringLiteral( "1" ) );
               dimElem.setAttribute( QStringLiteral( "nearestValue" ), QStringLiteral( "0" ) );
+              if ( projectSettings )
+              {
+                dimElem.setAttribute( QStringLiteral( "fieldName" ), dim.fieldName );
+                dimElem.setAttribute( QStringLiteral( "endFieldName" ), dim.endFieldName );
+              }
               // values list
               QStringList strValues;
               for ( const QVariant &v : values )

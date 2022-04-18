@@ -694,69 +694,15 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
     case SelectingByPolygon:
     case ForceByLines:
       return QgsMapTool::Flags();
-      break;
   }
 
   return QgsMapTool::Flags();
 }
 
-static QList<QgsMapToolIdentify::IdentifyResult> searchFeatureOnMap( QgsMapMouseEvent *e, QgsMapCanvas *canvas, const QList<QgsWkbTypes::GeometryType> &geomType )
-{
-  QList<QgsMapToolIdentify::IdentifyResult> results;
-  const QMap< QString, QString > derivedAttributes;
-
-  QgsPointXY mapPoint = e->mapPoint();
-  double x = mapPoint.x(), y = mapPoint.y();
-  const double sr = QgsMapTool::searchRadiusMU( canvas );
-
-  const QList<QgsMapLayer *> layers = canvas->layers( true );
-  for ( QgsMapLayer *layer : layers )
-  {
-    if ( layer->type() == QgsMapLayerType::VectorLayer )
-    {
-      QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( layer );
-
-      bool typeIsSelectable = false;
-      for ( const QgsWkbTypes::GeometryType &type : geomType )
-        if ( vectorLayer->geometryType() == type )
-        {
-          typeIsSelectable = true;
-          break;
-        }
-      if ( typeIsSelectable )
-      {
-        QgsRectangle rect( x - sr, y - sr, x + sr, y + sr );
-        QgsCoordinateTransform transform = canvas->mapSettings().layerTransform( vectorLayer );
-        transform.setBallparkTransformsAreAppropriate( true );
-
-        try
-        {
-          rect = transform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
-        }
-        catch ( QgsCsException & )
-        {
-          QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
-        }
-
-        QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
-                                 .setFilterRect( rect )
-                                 .setFlags( QgsFeatureRequest::ExactIntersect ) );
-        QgsFeature f;
-        while ( fit.nextFeature( f ) )
-        {
-          results << QgsMapToolIdentify::IdentifyResult( vectorLayer, f, derivedAttributes );
-        }
-      }
-    }
-  }
-
-  return results;
-}
-
 void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e )
 {
   const QList<QgsMapToolIdentify::IdentifyResult> &results =
-    searchFeatureOnMap( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry << QgsWkbTypes::LineGeometry );
+    QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry << QgsWkbTypes::LineGeometry );
 
   QgsIdentifyMenu *menu = new QgsIdentifyMenu( mCanvas );
   menu->setExecWithSingleResult( true );
@@ -821,7 +767,7 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
           // The workaround is to check if a feature exist under the mouse before sending the event to the selection handler.
           // This is not ideal because that leads to a double search but no better idea for now to allow the editing context menu with selecting by polygon
 
-          bool hasSelectableFeature = !searchFeatureOnMap( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ).isEmpty();
+          bool hasSelectableFeature = ! QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ).isEmpty();
 
           if ( hasSelectableFeature || mIsSelectingPolygonInProgress )
             mSelectionHandler->canvasPressEvent( e );

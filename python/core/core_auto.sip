@@ -271,8 +271,10 @@
 %Include auto_generated/editform/qgsattributeeditorqmlelement.sip
 %Include auto_generated/elevation/qgsabstractprofilegenerator.sip
 %Include auto_generated/elevation/qgsabstractprofilesource.sip
+%Include auto_generated/elevation/qgsprofilepoint.sip
 %Include auto_generated/elevation/qgsprofilerenderer.sip
 %Include auto_generated/elevation/qgsprofilerequest.sip
+%Include auto_generated/elevation/qgsprofilesnapping.sip
 %Include auto_generated/elevation/qgsterrainprovider.sip
 %Include auto_generated/externalstorage/qgsexternalstorage.sip
 %Include auto_generated/externalstorage/qgsexternalstorageregistry.sip

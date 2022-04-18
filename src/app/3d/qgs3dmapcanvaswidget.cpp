@@ -194,7 +194,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
   mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-  connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, [ = ]( const QString fileName )
+  connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, [ = ]( const QString & fileName )
   {
     QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the 3D map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
   } );
@@ -571,12 +571,12 @@ void Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> ex
       if ( mCanvas->map()->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) )
       {
         whileBlocking( mMainCanvas )->setExtent( extentRect );
-        mMainCanvas->refresh();
       }
       else
       {
         mMainCanvas->setExtent( extentRect );
       }
+      mMainCanvas->refresh();
     }
   }
 

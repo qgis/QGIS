@@ -24,6 +24,7 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
 #include "qgstriangularmesh.h"
+#include "qgslinesymbol.h"
 
 #include <memory>
 
@@ -31,7 +32,7 @@ class QgsProfileRequest;
 class QgsCurve;
 class QgsMeshLayer;
 class QgsAbstractTerrainProvider;
-class QgsLineSymbol;
+class QgsProfileSnapContext;
 
 #define SIP_NO_FILE
 
@@ -61,6 +62,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileResults
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
     void renderResults( QgsProfileRenderContext &context ) override;
+    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
 };
 
 

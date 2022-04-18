@@ -65,6 +65,7 @@ class QgsHanaUtils
     static QVariant toVariant( const NS_ODBC::Binary &value );
 
     static const char16_t *toUtf16( const QString &sql );
+    static bool isGeometryTypeSupported( QgsWkbTypes::Type wkbType );
     static QgsWkbTypes::Type toWkbType( const NS_ODBC::String &type, const NS_ODBC::Int &hasZ, const NS_ODBC::Int &hasM );
     static QVersionNumber toHANAVersion( const QString &dbVersion );
     static int toPlanarSRID( int srid );

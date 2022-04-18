@@ -24,6 +24,8 @@
 #include "qgsmeshlayerutils.h"
 #include "qgslinesymbol.h"
 #include "qgsmeshlayerelevationproperties.h"
+#include "qgsprofilesnapping.h"
+#include "qgsprofilepoint.h"
 
 //
 // QgsMeshLayerProfileGenerator
@@ -102,6 +104,35 @@ void QgsMeshLayerProfileResults::renderResults( QgsProfileRenderContext &context
   }
 
   lineSymbol->stopRender( context.renderContext() );
+}
+
+QgsProfileSnapResult QgsMeshLayerProfileResults::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
+{
+  // TODO -- consider an index if performance is an issue
+  QgsProfileSnapResult result;
+
+  double prevDistance = std::numeric_limits< double >::max();
+  double prevElevation = 0;
+  for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
+  {
+    // find segment which corresponds to the given distance along curve
+    if ( it != results.constBegin() && prevDistance <= point.distance() && it.key() >= point.distance() )
+    {
+      const double dx = it.key() - prevDistance;
+      const double dy = it.value() - prevElevation;
+      const double snappedZ = ( dy / dx ) * ( point.distance() - prevDistance ) + prevElevation;
+
+      if ( std::fabs( point.elevation() - snappedZ ) > context.maximumElevationDelta )
+        return QgsProfileSnapResult();
+
+      result.snappedPoint = QgsProfilePoint( point.distance(), snappedZ );
+      break;
+    }
+
+    prevDistance = it.key();
+    prevElevation = it.value();
+  }
+  return result;
 }
 
 //

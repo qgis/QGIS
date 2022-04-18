@@ -23,7 +23,9 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsFlatTerrainProvider,
-    QgsMeshTerrainProvider
+    QgsMeshTerrainProvider,
+    QgsProfilePoint,
+    QgsProfileSnapContext
 )
 
 from qgis.PyQt.QtXml import QDomDocument
@@ -106,6 +108,42 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
 
         self.assertEqual(r.zRange().lower(), 74)
         self.assertEqual(r.zRange().upper(), 154)
+
+    def testSnapping(self):
+        rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
+        self.assertTrue(rl.isValid())
+        rl.elevationProperties().setEnabled(True)
+
+        curve = QgsLineString()
+        curve.fromWkt('LineString (321621.3770066662109457 129734.87810317709227093, 321894.21278918092139065 129858.49142702402605209)')
+        req = QgsProfileRequest(curve)
+
+        generator = rl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+
+        # try snapping some points
+        context = QgsProfileSnapContext()
+        res = r.snapPoint(QgsProfilePoint(-10, -10), context)
+        self.assertFalse(res.isValid())
+
+        context.maximumDistanceDelta = 0
+        context.maximumElevationDelta = 3
+        res = r.snapPoint(QgsProfilePoint(0, 70), context)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.snappedPoint.distance(), 0)
+        self.assertEqual(res.snappedPoint.elevation(), 72)
+
+        context.maximumDistanceDelta = 0
+        context.maximumElevationDelta = 5
+        res = r.snapPoint(QgsProfilePoint(200, 79), context)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.snappedPoint.distance(), 200)
+        self.assertEqual(res.snappedPoint.elevation(), 75)
+
+        res = r.snapPoint(QgsProfilePoint(200, 85), context)
+        self.assertFalse(res.isValid())
 
 
 if __name__ == '__main__':

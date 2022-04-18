@@ -137,6 +137,10 @@ Renders the results to the specified ``context``.
 Returns the range of the retrieved elevation values
 %End
 
+    virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
+%Docstring
+Snaps a ``point`` to the generated elevation profile.
+%End
 };
 
 class QgsAbstractProfileGenerator

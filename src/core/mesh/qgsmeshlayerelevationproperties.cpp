@@ -39,8 +39,7 @@ bool QgsMeshLayerElevationProperties::hasElevation() const
 QDomElement QgsMeshLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
-  element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
-  element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+  writeCommonProperties( element, document, context );
 
   QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
   profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
@@ -53,8 +52,8 @@ QDomElement QgsMeshLayerElevationProperties::writeXml( QDomElement &parentElemen
 bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
-  mZOffset = elevationElement.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
-  mZScale = elevationElement.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
+
+  readCommonProperties( elevationElement, context );
 
   const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
   mProfileLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context ) );
@@ -67,9 +66,8 @@ bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const
 QgsMeshLayerElevationProperties *QgsMeshLayerElevationProperties::clone() const
 {
   std::unique_ptr< QgsMeshLayerElevationProperties > res = std::make_unique< QgsMeshLayerElevationProperties >( nullptr );
-  res->setZOffset( mZOffset );
-  res->setZScale( mZScale );
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
+  res->copyCommonProperties( this );
   return res.release();
 }
 

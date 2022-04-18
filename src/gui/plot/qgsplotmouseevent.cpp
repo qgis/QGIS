@@ -34,3 +34,30 @@ QgsPoint QgsPlotMouseEvent::mapPoint() const
 {
   return mMapPoint;
 }
+
+QgsPointXY QgsPlotMouseEvent::snappedPoint()
+{
+  if ( mHasCachedSnapResult )
+    return mSnappedPoint;
+
+  snapPoint();
+  return mSnappedPoint;
+}
+
+bool QgsPlotMouseEvent::isSnapped()
+{
+  if ( mHasCachedSnapResult )
+    return mIsSnapped;
+
+  snapPoint();
+  return mIsSnapped;
+}
+
+void QgsPlotMouseEvent::snapPoint()
+{
+  mHasCachedSnapResult = true;
+
+  const QgsPointXY result = mCanvas->snapToPlot( pos() );
+  mIsSnapped = !result.isEmpty();
+  mSnappedPoint = !mIsSnapped ? pos() : result;
+}

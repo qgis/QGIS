@@ -150,6 +150,15 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
      */
     virtual void zoomToRect( const QRectF rect );
 
+    /**
+     * Snap a canvas point to the plot
+     *
+     * Returns an empty point if snapping was not possible.
+     *
+     * \param point point in canvas coordinates
+     */
+    virtual QgsPointXY snapToPlot( QPoint point );
+
   public slots:
 
     /**

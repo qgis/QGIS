@@ -117,6 +117,18 @@ void TestQgsSettingsEntry::enumValue()
   QSettings().setValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), static_cast<int>( QgsUnitTypes::LayoutCentimeters ) );
   QCOMPARE( settingsEntryEnum.valueAsVariant().toInt(), QgsUnitTypes::LayoutCentimeters );
   QCOMPARE( settingsEntryEnum.value(), QgsUnitTypes::LayoutCentimeters );
+
+  // save as int instead of string
+  const QgsSettingsEntryEnumFlag settingsEntryEnumAsInteger( settingsKey, mSettingsSection, QgsUnitTypes::LayoutMeters, QStringLiteral( "Layout unit" ), Qgis::SettingsOption::SaveEnumFlagAsInt );
+  settingsEntryEnumAsInteger.remove();
+  {
+    int qgsSettingsValue = static_cast<int>( settingsEntryEnumAsInteger.value() );
+    QCOMPARE( qgsSettingsValue, static_cast<int>( QgsUnitTypes::LayoutMeters ) );
+    const bool success = settingsEntryEnumAsInteger.setValue( QgsUnitTypes::LayoutFeet );
+    QCOMPARE( success, true );
+    qgsSettingsValue = QgsSettings().value( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), static_cast<int>( QgsUnitTypes::LayoutMeters ) ).toInt();
+    QCOMPARE( qgsSettingsValue, static_cast<int>( QgsUnitTypes::LayoutFeet ) );
+  }
 }
 
 void TestQgsSettingsEntry::flagValue()

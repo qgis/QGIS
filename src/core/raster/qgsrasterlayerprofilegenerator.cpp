@@ -23,6 +23,9 @@
 #include "qgsgeometryengine.h"
 #include "qgsgeos.h"
 #include "qgslinesymbol.h"
+#include "qgsgeometryutils.h"
+#include "qgsprofilesnapping.h"
+#include "qgsprofilepoint.h"
 
 #include <QPolygonF>
 
@@ -58,6 +61,35 @@ QVector<QgsGeometry> QgsRasterLayerProfileResults::asGeometries() const
     res.append( QgsGeometry( point.clone() ) );
 
   return res;
+}
+
+QgsProfileSnapResult QgsRasterLayerProfileResults::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
+{
+  // TODO -- consider an index if performance is an issue
+  QgsProfileSnapResult result;
+
+  double prevDistance = std::numeric_limits< double >::max();
+  double prevElevation = 0;
+  for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
+  {
+    // find segment which corresponds to the given distance along curve
+    if ( it != results.constBegin() && prevDistance <= point.distance() && it.key() >= point.distance() )
+    {
+      const double dx = it.key() - prevDistance;
+      const double dy = it.value() - prevElevation;
+      const double snappedZ = ( dy / dx ) * ( point.distance() - prevDistance ) + prevElevation;
+
+      if ( std::fabs( point.elevation() - snappedZ ) > context.maximumElevationDelta )
+        return QgsProfileSnapResult();
+
+      result.snappedPoint = QgsProfilePoint( point.distance(), snappedZ );
+      break;
+    }
+
+    prevDistance = it.key();
+    prevElevation = it.value();
+  }
+  return result;
 }
 
 void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &context )
@@ -114,13 +146,13 @@ void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &conte
 QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *layer, const QgsProfileRequest &request )
   : mFeedback( std::make_unique< QgsRasterBlockFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
-  , mLineSymbol( qgis::down_cast< QgsRasterLayerElevationProperties* >( layer->elevationProperties() )->profileLineSymbol()->clone() )
+  , mLineSymbol( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() )
   , mSourceCrs( layer->crs() )
   , mTargetCrs( request.crs() )
   , mTransformContext( request.transformContext() )
   , mOffset( layer->elevationProperties()->zOffset() )
   , mScale( layer->elevationProperties()->zScale() )
-  , mBand( qgis::down_cast< QgsRasterLayerElevationProperties* >( layer->elevationProperties() )->bandNumber() )
+  , mBand( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->bandNumber() )
   , mRasterUnitsPerPixelX( layer->rasterUnitsPerPixelX() )
   , mRasterUnitsPerPixelY( layer->rasterUnitsPerPixelY() )
   , mStepDistance( request.stepDistance() )

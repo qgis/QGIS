@@ -22,8 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmaplayerelevationproperties.h"
-
-class QgsLineSymbol;
+#include "qgslinesymbol.h"
 
 /**
  * \class QgsRasterLayerElevationProperties

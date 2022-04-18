@@ -23,7 +23,9 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsFlatTerrainProvider,
-    QgsMeshTerrainProvider
+    QgsMeshTerrainProvider,
+    QgsProfilePoint,
+    QgsProfileSnapContext
 )
 
 from qgis.PyQt.QtXml import QDomDocument
@@ -90,6 +92,42 @@ class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
 
         self.assertAlmostEqual(r.zRange().lower(), 80, 2)
         self.assertAlmostEqual(r.zRange().upper(), 152.874, 0)
+
+    def testSnapping(self):
+        ml = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')
+        self.assertTrue(ml.isValid())
+        ml.setCrs(QgsCoordinateReferenceSystem('EPSG:27700'))
+
+        curve = QgsLineString()
+        curve.fromWkt('LineString (321621.3770066662109457 129734.87810317709227093, 321894.21278918092139065 129858.49142702402605209)')
+        req = QgsProfileRequest(curve)
+
+        generator = ml.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+
+        # try snapping some points
+        context = QgsProfileSnapContext()
+        res = r.snapPoint(QgsProfilePoint(-10, -10), context)
+        self.assertFalse(res.isValid())
+
+        context.maximumDistanceDelta = 0
+        context.maximumElevationDelta = 3
+        res = r.snapPoint(QgsProfilePoint(0, 70), context)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.snappedPoint.distance(), 0)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 71.8, 0)
+
+        context.maximumDistanceDelta = 0
+        context.maximumElevationDelta = 5
+        res = r.snapPoint(QgsProfilePoint(200, 79), context)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.snappedPoint.distance(), 200)
+        self.assertAlmostEqual(res.snappedPoint.elevation(), 75.841, 1)
+
+        res = r.snapPoint(QgsProfilePoint(200, 85), context)
+        self.assertFalse(res.isValid())
 
 
 if __name__ == '__main__':

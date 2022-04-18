@@ -62,19 +62,21 @@ void QgsInstallGridShiftFileDialog::installFromFile()
   settings.setValue( QStringLiteral( "lastTransformGridFolder" ), fi.absolutePath(), QgsSettings::App );
 
   const QString baseGridPath = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "proj" );
-  if ( !QDir( baseGridPath ).exists() )
-    QDir().mkdir( baseGridPath );
 
-  const QString destPath = baseGridPath + '/' + fi.fileName();
+  const QString destFilePath = baseGridPath + '/' + mGridName;
+  const QString destPath = QFileInfo( destFilePath ).absolutePath();
 
-  if ( QFile::copy( gridFilePath, destPath ) )
+  if ( !QDir( destPath ).exists() )
+    QDir().mkpath( destPath );
+
+  if ( QFile::copy( gridFilePath, destFilePath ) )
   {
     QMessageBox::information( this, tr( "Install Grid File" ), tr( "The %1 grid shift file has been successfully installed. Please restart QGIS for this change to take effect." ).arg( mGridName ) );
     accept();
   }
   else
   {
-    QMessageBox::critical( this, tr( "Install Grid File" ), tr( "Could not copy %1 to %2. Please check folder permissions and retry." ).arg( mGridName, destPath ) );
+    QMessageBox::critical( this, tr( "Install Grid File" ), tr( "Could not copy %1 to %2. Please check folder permissions and retry." ).arg( mGridName, destFilePath ) );
   }
 }
 

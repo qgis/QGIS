@@ -113,6 +113,7 @@ class QgsAbstractMapToolHandler;
 class QgsAppMapTools;
 class QgsMapToolIdentifyAction;
 class Qgs3DMapCanvasWidget;
+class QgsVertexEditor;
 
 class QDomDocument;
 class QNetworkReply;
@@ -893,6 +894,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * is automatically registered within the QgsApplication::gpsConnectionRegistry().
      */
     void setGpsPanelConnection( QgsGpsConnection *connection );
+
+    //! Returns the application vertex editor
+    QgsVertexEditor *vertexEditor() { return mVertexEditorDock; }
 
   public slots:
     //! save current vector layer
@@ -2477,6 +2481,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsDockWidget *mOverviewDock = nullptr;
     QgsDockWidget *mpGpsDock = nullptr;
     QgsDockWidget *mLogDock = nullptr;
+    QgsVertexEditor *mVertexEditorDock = nullptr;
 
 #ifdef Q_OS_MAC
     //! Window menu action to select this window

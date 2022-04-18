@@ -707,7 +707,7 @@ class PythonConsoleWidget(QWidget):
         if not index:
             index = self.tabEditorWidget.currentIndex()
         if not tabWidget.path:
-            fileName = self.tabEditorWidget.tabText(index) + '.py'
+            fileName = self.tabEditorWidget.tabText(index).replace('*', '') + '.py'
             folder = self.settings.value("pythonConsole/lastDirPath", QDir.homePath())
             pathFileName = os.path.join(folder, fileName)
             fileNone = True

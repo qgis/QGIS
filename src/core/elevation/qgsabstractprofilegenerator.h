@@ -26,6 +26,9 @@
 
 #include <QTransform>
 
+class QgsProfileSnapResult;
+class QgsProfileSnapContext;
+class QgsProfilePoint;
 class QgsGeometry;
 
 /**
@@ -157,6 +160,10 @@ class CORE_EXPORT QgsAbstractProfileResults
      */
     virtual QgsDoubleRange zRange() const = 0;
 
+    /**
+     * Snaps a \a point to the generated elevation profile.
+     */
+    virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 };
 
 /**

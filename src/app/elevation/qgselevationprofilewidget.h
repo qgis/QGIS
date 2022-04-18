@@ -29,6 +29,7 @@ class QProgressBar;
 class QToolButton;
 class QgsElevationProfileCanvas;
 class QgsMapToolProfileCurve;
+class QgsMapToolProfileCurveFromFeature;
 class QgsGeometry;
 class QgsRubberBand;
 class QgsPlotToolPan;
@@ -61,6 +62,7 @@ class QgsElevationProfileWidget : public QWidget
     void onMainCanvasLayersChanged();
     void onTotalPendingJobsCountChanged( int count );
     void setProfileCurve( const QgsGeometry &curve );
+    void onCanvasPointHovered( const QgsPointXY &point );
     void updatePlot();
     void scheduleUpdate();
     void clear();
@@ -76,11 +78,14 @@ class QgsElevationProfileWidget : public QWidget
     QMenu *mOptionsMenu = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QAction *mCaptureCurveAction = nullptr;
+    QAction *mCaptureCurveFromFeatureAction = nullptr;
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;
+    std::unique_ptr< QgsMapToolProfileCurveFromFeature > mCaptureCurveFromFeatureMapTool;
     QgsGeometry mProfileCurve;
 
+    QObjectUniquePtr<QgsRubberBand> mMapPointRubberBand;
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
 
     QTimer *mSetCurveTimer = nullptr;

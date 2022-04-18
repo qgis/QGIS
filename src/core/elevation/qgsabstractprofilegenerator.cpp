@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractprofilegenerator.h"
-
+#include "qgsprofilesnapping.h"
 
 
 QgsProfileRenderContext::QgsProfileRenderContext( QgsRenderContext &context )
@@ -58,3 +58,8 @@ void QgsProfileRenderContext::setElevationRange( const QgsDoubleRange &range )
 QgsAbstractProfileGenerator::~QgsAbstractProfileGenerator() = default;
 
 QgsAbstractProfileResults::~QgsAbstractProfileResults() = default;
+
+QgsProfileSnapResult QgsAbstractProfileResults::snapPoint( const QgsProfilePoint &, const QgsProfileSnapContext & )
+{
+  return QgsProfileSnapResult();
+}

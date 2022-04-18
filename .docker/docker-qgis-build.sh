@@ -96,6 +96,9 @@ cmake \
  ${CMAKE_EXTRA_ARGS[*]} ..
 echo "::endgroup::"
 
+# Workaround https://github.com/actions/checkout/issues/760
+git config --global --add safe.directory /root/QGIS
+
 #######
 # Build
 #######

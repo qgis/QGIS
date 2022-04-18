@@ -90,6 +90,7 @@
 #include "qgsfeaturerenderergenerator.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsvectorlayerprofilegenerator.h"
+#include "qgsprofilerequest.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -692,7 +693,9 @@ QgsMapLayerElevationProperties *QgsVectorLayer::elevationProperties()
 
 QgsAbstractProfileGenerator *QgsVectorLayer::createProfileGenerator( const QgsProfileRequest &request )
 {
-  return new QgsVectorLayerProfileGenerator( this, request );
+  QgsProfileRequest modifiedRequest( request );
+  modifiedRequest.expressionContext().appendScope( createExpressionContextScope() );
+  return new QgsVectorLayerProfileGenerator( this, modifiedRequest );
 }
 
 void QgsVectorLayer::setProviderEncoding( const QString &encoding )

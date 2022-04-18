@@ -31,6 +31,7 @@ class QgsRasterLayer;
 class QgsRasterDataProvider;
 class QgsRasterBlockFeedback;
 class QgsLineSymbol;
+class QgsProfileSnapContext;
 
 #define SIP_NO_FILE
 
@@ -59,6 +60,7 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileResult
     QgsDoubleRange zRange() const override;
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
+    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
 };
 

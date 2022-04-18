@@ -37,13 +37,147 @@
 #include "lazperf/las.hpp"
 #include <lazperf/lazperf.hpp>
 
+
 ///@cond PRIVATE
 
 template <typename T>
-bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value );
+bool _lazStoreToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value )
+{
+  switch ( type )
+  {
+    case QgsPointCloudAttribute::Char:
+    {
+      const char val = char( value );
+      s[position] = val;
+      break;
+    }
+    case QgsPointCloudAttribute::UChar:
+    {
+      const unsigned char val = ( unsigned char )( value );
+      s[position] = val;
+      break;
+    }
 
-bool __serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
-                  const char *input, QgsPointCloudAttribute::DataType inputType, int inputSize, size_t inputPosition );
+    case QgsPointCloudAttribute::Short:
+    {
+      short val = short( value );
+      memcpy( s + position, reinterpret_cast<char * >( &val ), sizeof( short ) );
+      break;
+    }
+    case QgsPointCloudAttribute::UShort:
+    {
+      unsigned short val = static_cast< unsigned short>( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( unsigned short ) );
+      break;
+    }
+
+    case QgsPointCloudAttribute::Int32:
+    {
+      qint32 val = qint32( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( qint32 ) );
+      break;
+    }
+    case QgsPointCloudAttribute::UInt32:
+    {
+      quint32 val = quint32( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( quint32 ) );
+      break;
+    }
+
+    case QgsPointCloudAttribute::Int64:
+    {
+      qint64 val = qint64( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( qint64 ) );
+      break;
+    }
+    case QgsPointCloudAttribute::UInt64:
+    {
+      quint64 val = quint64( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( quint64 ) );
+      break;
+    }
+
+    case QgsPointCloudAttribute::Float:
+    {
+      float val = float( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ),  sizeof( float ) );
+      break;
+    }
+    case QgsPointCloudAttribute::Double:
+    {
+      double val = double( value );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( double ) );
+      break;
+    }
+  }
+
+  return true;
+}
+
+bool _lazSerialize( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
+                    const char *input, QgsPointCloudAttribute::DataType inputType, int inputSize, size_t inputPosition )
+{
+  if ( outputType == inputType )
+  {
+    memcpy( data + outputPosition, input + inputPosition, inputSize );
+    return true;
+  }
+
+  switch ( inputType )
+  {
+    case QgsPointCloudAttribute::Char:
+    {
+      const char val = *( input + inputPosition );
+      return _lazStoreToStream<char>( data, outputPosition, outputType, val );
+    }
+    case QgsPointCloudAttribute::UChar:
+    {
+      const unsigned char val = *( input + inputPosition );
+      return _lazStoreToStream<unsigned char>( data, outputPosition, outputType, val );
+    }
+    case QgsPointCloudAttribute::Short:
+    {
+      const short val = *reinterpret_cast< const short * >( input + inputPosition );
+      return _lazStoreToStream<short>( data, outputPosition, outputType, val );
+    }
+    case QgsPointCloudAttribute::UShort:
+    {
+      const unsigned short val = *reinterpret_cast< const unsigned short * >( input + inputPosition );
+      return _lazStoreToStream<unsigned short>( data, outputPosition, outputType, val );
+    }
+    case QgsPointCloudAttribute::Int32:
+    {
+      const qint32 val = *reinterpret_cast<const qint32 * >( input + inputPosition );
+      return _lazStoreToStream<qint32>( data, outputPosition, outputType, val );
+    }
+    case QgsPointCloudAttribute::UInt32:
+    {
+      const quint32 val = *reinterpret_cast<const quint32 * >( input + inputPosition );
+      return _lazStoreToStream<quint32>( data, outputPosition, outputType, val );
+    }
+    case QgsPointCloudAttribute::Int64:
+    {
+      const qint64 val = *reinterpret_cast<const qint64 * >( input + inputPosition );
+      return _lazStoreToStream<qint64>( data, outputPosition, outputType, val );
+    }
+    case QgsPointCloudAttribute::UInt64:
+    {
+      const quint64 val = *reinterpret_cast<const quint64 * >( input + inputPosition );
+      return _lazStoreToStream<quint64>( data, outputPosition, outputType, val );
+    }
+    case QgsPointCloudAttribute::Float:
+    {
+      const float val = *reinterpret_cast< const float * >( input + inputPosition );
+      return _lazStoreToStream<float>( data, outputPosition, outputType, val );
+    }
+    case QgsPointCloudAttribute::Double:
+    {
+      const double val = *reinterpret_cast< const double * >( input + inputPosition );
+      return _lazStoreToStream<double>( data, outputPosition, outputType, val );
+    }
+  }
+  return true;
+}
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -205,72 +339,72 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
     switch ( requestedAttribute.attribute )
     {
       case QgsLazDecoder::LazAttribute::X:
-        _storeToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.x() : p10.x );
+        _lazStoreToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.x() : p10.x );
         break;
       case QgsLazDecoder::LazAttribute::Y:
-        _storeToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.y() : p10.y );
+        _lazStoreToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.y() : p10.y );
         break;
       case QgsLazDecoder::LazAttribute::Z:
-        _storeToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.z() : p10.z );
+        _lazStoreToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.z() : p10.z );
         break;
       case QgsLazDecoder::LazAttribute::Classification:
-        _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.classification() : p10.classification );
+        _lazStoreToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.classification() : p10.classification );
         break;
       case QgsLazDecoder::LazAttribute::Intensity:
-        _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.intensity() : p10.intensity );
+        _lazStoreToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.intensity() : p10.intensity );
         break;
       case QgsLazDecoder::LazAttribute::ReturnNumber:
-        _storeToStream<unsigned char>( dataBuffer,  outputOffset, requestedAttribute.type, isLas14 ? p14.returnNum() : p10.return_number );
+        _lazStoreToStream<unsigned char>( dataBuffer,  outputOffset, requestedAttribute.type, isLas14 ? p14.returnNum() : p10.return_number );
         break;
       case QgsLazDecoder::LazAttribute::NumberOfReturns:
-        _storeToStream<unsigned char>( dataBuffer,  outputOffset, requestedAttribute.type, isLas14 ? p14.numReturns() : p10.number_of_returns_of_given_pulse );
+        _lazStoreToStream<unsigned char>( dataBuffer,  outputOffset, requestedAttribute.type, isLas14 ? p14.numReturns() : p10.number_of_returns_of_given_pulse );
         break;
       case QgsLazDecoder::LazAttribute::ScanDirectionFlag:
-        _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.scanDirFlag() : p10.scan_direction_flag );
+        _lazStoreToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.scanDirFlag() : p10.scan_direction_flag );
         break;
       case QgsLazDecoder::LazAttribute::EdgeOfFlightLine:
-        _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.eofFlag() : p10.edge_of_flight_line );
+        _lazStoreToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.eofFlag() : p10.edge_of_flight_line );
         break;
       case QgsLazDecoder::LazAttribute::ScanAngleRank:
-        _storeToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.scanAngle() : p10.scan_angle_rank );
+        _lazStoreToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.scanAngle() : p10.scan_angle_rank );
         break;
       case QgsLazDecoder::LazAttribute::UserData:
-        _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.userData() : p10.user_data );
+        _lazStoreToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.userData() : p10.user_data );
         break;
       case QgsLazDecoder::LazAttribute::PointSourceId:
-        _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.pointSourceID() : p10.point_source_ID );
+        _lazStoreToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.pointSourceID() : p10.point_source_ID );
         break;
       case QgsLazDecoder::LazAttribute::GpsTime:
         // lazperf internally stores gps value as int64 field, but in fact it is a double value
-        _storeToStream<double>( dataBuffer, outputOffset, requestedAttribute.type,
-                                isLas14 ? p14.gpsTime() : *reinterpret_cast<const double *>( reinterpret_cast<const void *>( &gps.value ) ) );
+        _lazStoreToStream<double>( dataBuffer, outputOffset, requestedAttribute.type,
+                                   isLas14 ? p14.gpsTime() : *reinterpret_cast<const double *>( reinterpret_cast<const void *>( &gps.value ) ) );
         break;
       case QgsLazDecoder::LazAttribute::Red:
-        _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.r );
+        _lazStoreToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.r );
         break;
       case QgsLazDecoder::LazAttribute::Green:
-        _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.g );
+        _lazStoreToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.g );
         break;
       case QgsLazDecoder::LazAttribute::Blue:
-        _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.b );
+        _lazStoreToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.b );
         break;
       case QgsLazDecoder::LazAttribute::ScannerChannel:
-        _storeToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, p14.scannerChannel() );
+        _lazStoreToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, p14.scannerChannel() );
         break;
       case QgsLazDecoder::LazAttribute::ClassificationFlags:
-        _storeToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, p14.classFlags() );
+        _lazStoreToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, p14.classFlags() );
         break;
       case QgsLazDecoder::LazAttribute::NIR:
       {
         if ( lasPointFormat == 8 || lasPointFormat == 10 )
         {
           lazperf::las::nir14 nir( buf + 36 );
-          _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, nir.val );
+          _lazStoreToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, nir.val );
         }
         else
         {
           // just store 0 for missing attributes
-          _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, 0 );
+          _lazStoreToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, 0 );
         }
         break;
 
@@ -280,41 +414,41 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
         switch ( requestedAttribute.type )
         {
           case QgsPointCloudAttribute::Char:
-            _storeToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<char * >( &buf[requestedAttribute.offset] ) );
+            _lazStoreToStream<char>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<char * >( &buf[requestedAttribute.offset] ) );
             break;
           case QgsPointCloudAttribute::UChar:
-            _storeToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<unsigned char * >( &buf[requestedAttribute.offset] ) );
+            _lazStoreToStream<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<unsigned char * >( &buf[requestedAttribute.offset] ) );
             break;
           case QgsPointCloudAttribute::Short:
-            _storeToStream<qint16>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<qint16 * >( &buf[requestedAttribute.offset] ) );
+            _lazStoreToStream<qint16>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<qint16 * >( &buf[requestedAttribute.offset] ) );
             break;
           case QgsPointCloudAttribute::UShort:
-            _storeToStream<quint16>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<quint16 * >( &buf[requestedAttribute.offset] ) );
+            _lazStoreToStream<quint16>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<quint16 * >( &buf[requestedAttribute.offset] ) );
             break;
           case QgsPointCloudAttribute::Int32:
-            _storeToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<qint32 * >( &buf[requestedAttribute.offset] ) );
+            _lazStoreToStream<qint32>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<qint32 * >( &buf[requestedAttribute.offset] ) );
             break;
           case QgsPointCloudAttribute::UInt32:
-            _storeToStream<quint32>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<quint32 * >( &buf[requestedAttribute.offset] ) );
+            _lazStoreToStream<quint32>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<quint32 * >( &buf[requestedAttribute.offset] ) );
             break;
           case QgsPointCloudAttribute::Int64:
-            _storeToStream<qint64>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<qint64 * >( &buf[requestedAttribute.offset] ) );
+            _lazStoreToStream<qint64>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<qint64 * >( &buf[requestedAttribute.offset] ) );
             break;
           case QgsPointCloudAttribute::UInt64:
-            _storeToStream<quint64>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<quint64 * >( &buf[requestedAttribute.offset] ) );
+            _lazStoreToStream<quint64>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<quint64 * >( &buf[requestedAttribute.offset] ) );
             break;
           case QgsPointCloudAttribute::Float:
-            _storeToStream<float>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<float * >( &buf[requestedAttribute.offset] ) );
+            _lazStoreToStream<float>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<float * >( &buf[requestedAttribute.offset] ) );
             break;
           case QgsPointCloudAttribute::Double:
-            _storeToStream<double>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<double * >( &buf[requestedAttribute.offset] ) );
+            _lazStoreToStream<double>( dataBuffer, outputOffset, requestedAttribute.type, *reinterpret_cast<double * >( &buf[requestedAttribute.offset] ) );
             break;
         }
       }
       break;
       case QgsLazDecoder::LazAttribute::MissingOrUnknown:
         // just store 0 for unknown/missing attributes
-        _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, 0 );
+        _lazStoreToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, 0 );
         break;
     }
 

@@ -90,6 +90,11 @@ Renders a portion of the profile to an image with the given ``width`` and ``heig
 Renders a portion of the profile using the specified render ``context``.
 %End
 
+    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
+%Docstring
+Snap a ``point`` to the results.
+%End
+
   signals:
 
     void generationFinished();

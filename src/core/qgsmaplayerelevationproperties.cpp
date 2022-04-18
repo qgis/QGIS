@@ -16,6 +16,10 @@
  ***************************************************************************/
 
 #include "qgsmaplayerelevationproperties.h"
+#include <mutex>
+
+
+QgsPropertiesDefinition QgsMapLayerElevationProperties::sPropertyDefinitions;
 
 QgsMapLayerElevationProperties::QgsMapLayerElevationProperties( QObject *parent )
   : QObject( parent )
@@ -27,6 +31,33 @@ bool QgsMapLayerElevationProperties::hasElevation() const
   return false;
 }
 
+void QgsMapLayerElevationProperties::writeCommonProperties( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext & )
+{
+  QDomElement elemDataDefinedProperties = doc.createElement( QStringLiteral( "data-defined-properties" ) );
+  mDataDefinedProperties.writeXml( elemDataDefinedProperties, propertyDefinitions() );
+  element.appendChild( elemDataDefinedProperties );
+
+  element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
+  element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+}
+
+void QgsMapLayerElevationProperties::readCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
+{
+  const QDomElement elemDataDefinedProperties = element.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+  if ( !elemDataDefinedProperties.isNull() )
+    mDataDefinedProperties.readXml( elemDataDefinedProperties, propertyDefinitions() );
+
+  mZOffset = element.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
+  mZScale = element.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
+}
+
+void QgsMapLayerElevationProperties::copyCommonProperties( const QgsMapLayerElevationProperties *other )
+{
+  mDataDefinedProperties = other->dataDefinedProperties();
+  mZScale = other->zScale();
+  mZOffset = other->zOffset();
+}
+
 bool QgsMapLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
 {
   return true;
@@ -35,4 +66,25 @@ bool QgsMapLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & )
 QgsDoubleRange QgsMapLayerElevationProperties::calculateZRange( QgsMapLayer * ) const
 {
   return QgsDoubleRange();
+}
+
+QgsPropertiesDefinition QgsMapLayerElevationProperties::propertyDefinitions()
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]( )
+  {
+    initPropertyDefinitions();
+  } );
+  return sPropertyDefinitions;
+}
+
+void QgsMapLayerElevationProperties::initPropertyDefinitions()
+{
+  const QString origin = QStringLiteral( "elevation" );
+
+  sPropertyDefinitions = QgsPropertiesDefinition
+  {
+    { QgsMapLayerElevationProperties::ZOffset, QgsPropertyDefinition( "ZOffset", QObject::tr( "Offset" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsMapLayerElevationProperties::ExtrusionHeight, QgsPropertyDefinition( "ExtrusionHeight", QObject::tr( "Extrusion height" ), QgsPropertyDefinition::DoublePositive, origin ) },
+  };
 }

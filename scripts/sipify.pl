@@ -1222,8 +1222,8 @@ while ($LINE_IDX < $LINE_COUNT){
     };
 
     # remove struct member assignment
-    # https://regex101.com/r/tWRGkY/2
-    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = [\-\w\:\.]+(<\w+( \*)?>)?(\([^()]*\))?\s*;/ ){
+    # https://regex101.com/r/OUwV75/1
+    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = ([\-\w\:\.]+(< *\w+( \*)? *>)?)+(\([^()]*\))?\s*;/ ){
         dbg_info("remove struct member assignment");
         $LINE = "$1;";
     }

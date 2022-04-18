@@ -18,6 +18,8 @@
 #include "qgsabstractprofilesource.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgscurve.h"
+#include "qgsgeos.h"
+#include "qgsprofilesnapping.h"
 
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
@@ -177,6 +179,36 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
     if ( job.complete && job.results )
       job.results->renderResults( profileRenderContext );
   }
+}
+
+QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
+{
+  QgsProfileSnapResult bestSnapResult;
+  if ( !mRequest.profileCurve() )
+    return bestSnapResult;
+
+  double bestSnapDistance = std::numeric_limits< double >::max();
+
+  for ( const ProfileJob &job : mJobs )
+  {
+    if ( job.complete && job.results )
+    {
+      const QgsProfileSnapResult jobSnapResult = job.results->snapPoint( point, context );
+      if ( jobSnapResult.isValid() )
+      {
+        const double snapDistance = std::pow( point.distance() - jobSnapResult.snappedPoint.distance(), 2 )
+                                    + std::pow( ( point.elevation() - jobSnapResult.snappedPoint.elevation() ) * context.displayRatioElevationVsDistance, 2 );
+
+        if ( snapDistance < bestSnapDistance )
+        {
+          bestSnapDistance = snapDistance;
+          bestSnapResult = jobSnapResult;
+        }
+      }
+    }
+  }
+
+  return bestSnapResult;
 }
 
 void QgsProfilePlotRenderer::onGeneratingFinished()

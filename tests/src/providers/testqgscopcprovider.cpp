@@ -40,6 +40,7 @@
 #include "qgsgeometry.h"
 #include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
+#include "qgslazinfo.h"
 
 /**
  * \ingroup UnitTests
@@ -63,6 +64,7 @@ class TestQgsCopcProvider : public QObject
     void uriIsBlocklisted();
     void querySublayers();
     void brokenPath();
+    void testLazInfo();
     void validLayer();
     void validLayerWithCopcHierarchy();
     void attributes();
@@ -205,6 +207,33 @@ void TestQgsCopcProvider::brokenPath()
   QVERIFY( !layer->isValid() );
 }
 
+void TestQgsCopcProvider::testLazInfo()
+{
+  QString dataPath = mTestDataDir + QStringLiteral( "point_clouds/copc/lone-star.copc.laz" );
+  std::ifstream file( dataPath.toStdString(), std::ios::binary );
+  QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
+
+  QVERIFY( lazInfo.isValid() );
+  QCOMPARE( lazInfo.pointCount(), 518862 );
+  QCOMPARE( lazInfo.scale().toVector3D(), QVector3D( 0.0001, 0.0001, 0.0001 ) );
+  QCOMPARE( lazInfo.offset().toVector3D(), QVector3D( 515385, 4918361, 2330.5 ) );
+  QPair<uint16_t, uint16_t> creationYearDay = lazInfo.creationYearDay();
+  QCOMPARE( creationYearDay.first, 1 );
+  QCOMPARE( creationYearDay.second, 1 );
+  QPair<uint8_t, uint8_t> version = lazInfo.version();
+  QCOMPARE( version.first, 1 );
+  QCOMPARE( version.second, 4 );
+  QCOMPARE( lazInfo.pointFormat(), 6 );
+  QCOMPARE( lazInfo.systemId(), QString() );
+  QCOMPARE( lazInfo.softwareId(), QString() );
+  QCOMPARE( lazInfo.minCoords().toVector3D(), QVector3D( 515368.60224999999627471, 4918340.36400000005960464, 2322.89624999999978172 ) );
+  QCOMPARE( lazInfo.maxCoords().toVector3D(), QVector3D( 515401.04300000000512227, 4918381.12375000026077032, 2338.57549999999991996 ) );
+  QCOMPARE( lazInfo.firstPointRecordOffset(), 1628 );
+  QCOMPARE( lazInfo.firstVariableLengthRecord(), 375 );
+  QCOMPARE( lazInfo.pointRecordLength(), 34 );
+  QCOMPARE( lazInfo.extrabytesCount(), 4 );
+}
+
 void TestQgsCopcProvider::validLayer()
 {
   std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ), QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
@@ -224,8 +253,6 @@ void TestQgsCopcProvider::validLayer()
   QVERIFY( layer->dataProvider()->index()->hasNode( IndexedPointCloudNode::fromString( "0-0-0-0" ) ) );
   QVERIFY( !layer->dataProvider()->index()->hasNode( IndexedPointCloudNode::fromString( "1-0-0-0" ) ) );
 }
-
-#include "qgscopcpointcloudindex.h"
 
 void TestQgsCopcProvider::validLayerWithCopcHierarchy()
 {

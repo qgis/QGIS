@@ -48,6 +48,7 @@ set(QGIS_CORE_SRCS
   elevation/qgsabstractprofilesource.cpp
   elevation/qgsprofilerenderer.cpp
   elevation/qgsprofilerequest.cpp
+  elevation/qgsprofilesnapping.cpp
   elevation/qgsterrainprovider.cpp
 
   geocoding/qgsabstractgeocoderlocatorfilter.cpp
@@ -1275,8 +1276,10 @@ set(QGIS_CORE_HDRS
 
   elevation/qgsabstractprofilegenerator.h
   elevation/qgsabstractprofilesource.h
+  elevation/qgsprofilepoint.h
   elevation/qgsprofilerenderer.h
   elevation/qgsprofilerequest.h
+  elevation/qgsprofilesnapping.h
   elevation/qgsterrainprovider.h
 
   externalstorage/qgsexternalstorage.h

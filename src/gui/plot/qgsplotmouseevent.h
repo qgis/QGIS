@@ -78,6 +78,18 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
      */
     QgsPoint mapPoint() const;
 
+    /**
+     * Returns the point snapped to the plot, if possible.
+     *
+     * Returns the original canvas point if snapping was not possible.
+     */
+    QgsPointXY snappedPoint();
+
+    /**
+     * Returns TRUE if the point can be snapped to the plot.
+     */
+    bool isSnapped();
+
   private:
 
     //! The canvas on which the event was triggered.
@@ -85,6 +97,12 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
 
     //! Location in map coordinates
     QgsPoint mMapPoint;
+
+    bool mHasCachedSnapResult = false;
+    QgsPointXY mSnappedPoint;
+    bool mIsSnapped = false;
+
+    void snapPoint();
 
 };
 

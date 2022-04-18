@@ -46,13 +46,14 @@ bool QgsVectorLayerElevationProperties::hasElevation() const
 QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
-  element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
-  element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+  writeCommonProperties( element, document, context );
 
   element.setAttribute( QStringLiteral( "extrusionEnabled" ), mEnableExtrusion ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "extrusion" ), qgsDoubleToString( mExtrusionHeight ) );
   element.setAttribute( QStringLiteral( "clamping" ), qgsEnumValueToKey( mClamping ) );
   element.setAttribute( QStringLiteral( "binding" ), qgsEnumValueToKey( mBinding ) );
+
+  element.setAttribute( QStringLiteral( "respectLayerSymbol" ), mRespectLayerSymbology ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
   profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
@@ -73,13 +74,14 @@ QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElem
 bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
-  mZOffset = elevationElement.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
-  mZScale = elevationElement.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
+  readCommonProperties( elevationElement, context );
 
   mClamping = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "clamping" ) ), Qgis::AltitudeClamping::Terrain );
   mBinding = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "binding" ) ), Qgis::AltitudeBinding::Centroid );
   mEnableExtrusion = elevationElement.attribute( QStringLiteral( "extrusionEnabled" ), QStringLiteral( "0" ) ).toInt();
   mExtrusionHeight = elevationElement.attribute( QStringLiteral( "extrusion" ), QStringLiteral( "0" ) ).toDouble();
+
+  mRespectLayerSymbology = elevationElement.attribute( QStringLiteral( "respectLayerSymbol" ), QStringLiteral( "1" ) ).toInt();
 
   const QColor color = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
@@ -104,8 +106,6 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
 QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() const
 {
   std::unique_ptr< QgsVectorLayerElevationProperties > res = std::make_unique< QgsVectorLayerElevationProperties >( nullptr );
-  res->setZOffset( mZOffset );
-  res->setZScale( mZScale );
   res->setClamping( mClamping );
   res->setBinding( mBinding );
   res->setExtrusionEnabled( mEnableExtrusion );
@@ -113,6 +113,8 @@ QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() co
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
   res->setProfileFillSymbol( mProfileFillSymbol->clone() );
   res->setProfileMarkerSymbol( mProfileMarkerSymbol->clone() );
+  res->setRespectLayerSymbology( mRespectLayerSymbology );
+  res->copyCommonProperties( this );
   return res.release();
 }
 
