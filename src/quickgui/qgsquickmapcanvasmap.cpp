@@ -94,7 +94,7 @@ void QgsQuickMapCanvasMap::pan( QPointF oldPos, QPointF newPos )
   mMapSettings->setExtent( extent );
 }
 
-void QgsQuickMapCanvasMap::refreshMap( bool silent )
+void QgsQuickMapCanvasMap::refreshMap()
 {
   stopRendering(); // if any...
 
@@ -140,9 +140,13 @@ void QgsQuickMapCanvasMap::refreshMap( bool silent )
 
   mJob->start();
 
-  if ( !silent )
+  if ( !mSilentRefresh )
   {
     emit renderStarting();
+  }
+  else
+  {
+    mSilentRefresh = false;
   }
 }
 
@@ -202,7 +206,8 @@ void QgsQuickMapCanvasMap::renderJobFinished()
   if ( mDeferredRefreshPending )
   {
     mDeferredRefreshPending = false;
-    refreshMap( true );
+    mSilentRefresh = true;
+    refresh();
   }
 }
 
@@ -213,13 +218,21 @@ void QgsQuickMapCanvasMap::layerRepaintRequested( bool deferred )
 
   if ( !mFreeze )
   {
-    if ( !deferred || !mJob )
+    if ( deferred )
     {
-      refreshMap( deferred );
+      if ( !mJob )
+      {
+        mSilentRefresh = true;
+        refresh();
+      }
+      else
+      {
+        mDeferredRefreshPending = true;
+      }
     }
     else
     {
-      mDeferredRefreshPending = true;
+      refresh();
     }
   }
 }
