@@ -166,7 +166,7 @@ class QgsPluginInstaller(QObject):
                 tabIndex = 3  # PLUGMAN_TAB_UPGRADEABLE
         # finally set the notify label
         if status:
-            self.statusLabel.setText(u'<a href="%d"><img src="qrc:/images/themes/default/%s"></a>' % (tabIndex, icon))
+            self.statusLabel.setText(u'<a href="%d"><img src=":/images/themes/default/%s"></a>' % (tabIndex, icon))
             self.statusLabel.setToolTip(status)
         else:
             iface.mainWindow().statusBar().removeWidget(self.statusLabel)
