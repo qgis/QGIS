@@ -40,15 +40,21 @@
 #include "qgsfillsymbollayer.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgslayertree.h"
+#include "qgslayertreeregistrybridge.h"
+#include "qgselevationprofilelayertreeview.h"
 
 #include <QToolBar>
 #include <QProgressBar>
 #include <QTimer>
 #include <QPrinter>
+#include <QSplitter>
 
 QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   : QWidget( nullptr )
   , mCanvasName( name )
+  , mLayerTree( new QgsLayerTree() )
+  , mLayerTreeBridge( new QgsLayerTreeRegistryBridge( mLayerTree.get(), QgsProject::instance(), this ) )
 {
   setObjectName( QStringLiteral( "ElevationProfile" ) );
 
@@ -58,6 +64,9 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   QToolBar *toolBar = new QToolBar( this );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
 
+  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasLayers );
+  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasLayers );
+
   mCanvas = new QgsElevationProfileCanvas( this );
   mCanvas->setProject( QgsProject::instance() );
   connect( mCanvas, &QgsElevationProfileCanvas::activeJobCountChanged, this, &QgsElevationProfileWidget::onTotalPendingJobsCountChanged );
@@ -65,6 +74,16 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mPanTool = new QgsPlotToolPan( mCanvas );
   mCanvas->setTool( mPanTool );
+
+  mLayerTreeView = new QgsElevationProfileLayerTreeView( mLayerTree.get() );
+
+  connect( mLayerTreeView, &QAbstractItemView::doubleClicked, this, [ = ]( const QModelIndex & index )
+  {
+    if ( QgsMapLayer *layer = mLayerTreeView->indexToLayer( index ) )
+    {
+      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Elevation" ) );
+    }
+  } );
 
   mZoomTool = new QgsPlotToolZoom( mCanvas );
   mXAxisZoomTool = new QgsPlotToolXAxisZoom( mCanvas );
@@ -187,15 +206,29 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
   layout->addLayout( topLayout );
-  layout->addWidget( mCanvas );
 
+  QSplitter *splitter = new QSplitter( Qt::Horizontal );
+  splitter->addWidget( mLayerTreeView ) ;
+  splitter->addWidget( mCanvas );
+  layout->addWidget( splitter );
+  splitter->setCollapsible( 0, false );
+  splitter->setCollapsible( 1, false );
+  splitter->setSizes( { QFontMetrics( font() ).horizontalAdvance( '0' ) * 10, splitter->width() } );
+  QgsSettings settings;
+  splitter->restoreState( settings.value( QStringLiteral( "Windows/ElevationProfile/SplitState" ) ).toByteArray() );
+
+  connect( splitter, &QSplitter::splitterMoved, this, [splitter]
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "Windows/ElevationProfile/SplitState" ), splitter->saveState() );
+  } );
   setLayout( layout );
 
   mDockableWidgetHelper = new QgsDockableWidgetHelper( true, mCanvasName, this, QgisApp::instance(), Qt::BottomDockWidgetArea,  QStringList(), true );
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock Elevation Profile View" ) );
   toolBar->addWidget( toggleButton );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, [ = ]()
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [ = ]()
   {
     close();
   } );
@@ -205,6 +238,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mSetCurveTimer->setSingleShot( true );
   mSetCurveTimer->stop();
   connect( mSetCurveTimer, &QTimer::timeout, this, &QgsElevationProfileWidget::updatePlot );
+
+  // initially populate layer tree with project layers
+  populateInitialLayers();
+
+  updateCanvasLayers();
 }
 
 QgsElevationProfileWidget::~QgsElevationProfileWidget()
@@ -262,10 +300,6 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
   mMapPointRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
   mMapPointRubberBand->setColor( QColor( 0, 0, 0 ) );
   mMapPointRubberBand->hide();
-
-  // only do this from map tool!
-  connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &QgsElevationProfileWidget::onMainCanvasLayersChanged );
-  onMainCanvasLayersChanged();
 }
 
 void QgsElevationProfileWidget::cancelJobs()
@@ -273,16 +307,14 @@ void QgsElevationProfileWidget::cancelJobs()
   mCanvas->cancelJobs();
 }
 
-void QgsElevationProfileWidget::onMainCanvasLayersChanged()
+void QgsElevationProfileWidget::populateInitialLayers()
 {
-  // possibly not right -- do we always want to sync the profile layers to canvas layers?
-
-  QList< QgsMapLayer * > layers = mMainCanvas->layers( true );
+  const QVector< QgsMapLayer * > layers = QgsProject::instance()->layers< QgsMapLayer * >();
 
   // sort layers so that types which are more likely to obscure others are rendered below
   // e.g. vector features should be drawn above raster DEMS, or the DEM line may completely obscure
   // the vector feature
-  layers = QgsMapLayerUtils::sortLayersByType( layers,
+  QList< QgsMapLayer * > sortedLayers = QgsMapLayerUtils::sortLayersByType( QList< QgsMapLayer * >( layers.begin(), layers.end() ),
   {
     QgsMapLayerType::RasterLayer,
     QgsMapLayerType::MeshLayer,
@@ -290,6 +322,25 @@ void QgsElevationProfileWidget::onMainCanvasLayersChanged()
     QgsMapLayerType::PointCloudLayer
   } );
 
+  std::reverse( sortedLayers.begin(), sortedLayers.end() );
+  for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
+  {
+    mLayerTree->addLayer( layer );
+  }
+}
+
+void QgsElevationProfileWidget::updateCanvasLayers()
+{
+  QList<QgsMapLayer *> layers;
+  const QList< QgsMapLayer * > layerOrder = mLayerTree->layerOrder();
+  layers.reserve( layerOrder.size() );
+  for ( QgsMapLayer *layer : layerOrder )
+  {
+    if ( mLayerTree->findLayer( layer )->isVisible() )
+      layers << layer;
+  }
+
+  std::reverse( layers.begin(), layers.end() );
   mCanvas->setLayers( layers );
   scheduleUpdate();
 }

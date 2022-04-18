@@ -353,8 +353,11 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
         continue;
 
       markerSymbol->setColor( rendererSymbol->color() );
+      markerSymbol->setOpacity( rendererSymbol->opacity() );
       lineSymbol->setColor( rendererSymbol->color() );
+      lineSymbol->setOpacity( rendererSymbol->opacity() );
       fillSymbol->setColor( rendererSymbol->color() );
+      fillSymbol->setOpacity( rendererSymbol->opacity() );
 
       markerSymbol->startRender( context.renderContext() );
       lineSymbol->startRender( context.renderContext() );

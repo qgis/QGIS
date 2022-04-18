@@ -25,6 +25,7 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
+  setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
 
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );

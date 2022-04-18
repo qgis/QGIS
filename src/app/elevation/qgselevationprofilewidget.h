@@ -40,6 +40,9 @@ class QgsPlotToolZoom;
 class QgsPlotToolXAxisZoom;
 class QgsDoubleSpinBox;
 class QgsElevationProfileWidgetSettingsAction;
+class QgsElevationProfileLayerTreeView;
+class QgsLayerTree;
+class QgsLayerTreeRegistryBridge;
 
 class QgsElevationProfileWidget : public QWidget
 {
@@ -67,7 +70,8 @@ class QgsElevationProfileWidget : public QWidget
     void toggleDockModeRequested( bool docked );
 
   private slots:
-    void onMainCanvasLayersChanged();
+    void populateInitialLayers();
+    void updateCanvasLayers();
     void onTotalPendingJobsCountChanged( int count );
     void setProfileCurve( const QgsGeometry &curve );
     void onCanvasPointHovered( const QgsPointXY &point );
@@ -106,6 +110,10 @@ class QgsElevationProfileWidget : public QWidget
     QgsPlotToolZoom *mZoomTool = nullptr;
 
     QgsElevationProfileWidgetSettingsAction *mSettingsAction = nullptr;
+
+    std::unique_ptr< QgsLayerTree > mLayerTree;
+    QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
+    QgsElevationProfileLayerTreeView *mLayerTreeView = nullptr;
 };
 
 
