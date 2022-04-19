@@ -141,11 +141,6 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
 
   mScene->cameraController()->setViewport( viewportRect );
 
-  m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( mEngine->window() ),
-                           mEngine->root(),
-                           mScene->cameraController(),
-                           map );
-
   resetView();
 
   // Connect the camera to the navigation widget.

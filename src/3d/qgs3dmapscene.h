@@ -44,6 +44,7 @@ namespace Qt3DExtras
   class QSkyboxEntity;
 }
 
+class Qgs3DAxis;
 class QgsAbstract3DEngine;
 class QgsAbstract3DRenderer;
 class QgsMapLayer;
@@ -141,6 +142,14 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      * \since QGIS 3.20
      */
     QgsRectangle sceneExtent();
+
+    /**
+     * Returns the 3D axis object
+     *
+     * \since QGIS 3.26
+     */
+    Qgs3DAxis *get3DAxis() { return m3DAxis; }
+
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
@@ -191,6 +200,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onCameraMovementSpeedChanged();
     void onCameraNavigationModeChanged();
 
+    void on3DAxisSettingsChanged();
+
     bool updateCameraNearFarPlanes();
 
   private:
@@ -227,6 +238,10 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QgsSkyboxEntity *mSkybox = nullptr;
     //! Entity that shows rotation center = useful for debugging camera issues
     Qt3DCore::QEntity *mEntityRotationCenter = nullptr;
+
+    //! 3d axis visualization
+    Qgs3DAxis *m3DAxis = nullptr;
+
 };
 
 #endif // QGS3DMAPSCENE_H
