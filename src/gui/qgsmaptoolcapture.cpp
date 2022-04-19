@@ -676,6 +676,10 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
       }
     }
   }
+  else
+  {
+    layerPoint = QgsPoint( point );
+  }
   const QgsPoint mapPoint = toMapCoordinates( layer(), layerPoint );
 
   if ( mCaptureMode == CapturePoint )
