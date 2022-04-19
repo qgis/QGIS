@@ -51,6 +51,11 @@ class QgsElevationProfileLayerTreeView : public QTreeView
      */
     QgsMapLayer *indexToLayer( const QModelIndex &index );
 
+  protected:
+
+    void contextMenuEvent( QContextMenuEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
+
   private:
 
     QgsElevationProfileLayerTreeModel *mModel = nullptr;

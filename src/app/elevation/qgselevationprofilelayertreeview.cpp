@@ -20,8 +20,11 @@
 #include "qgselevationprofilelayertreemodel.h"
 #include "qgslayertreenode.h"
 #include "qgslayertree.h"
+#include "qgisapp.h"
 
 #include <QHeaderView>
+#include <QContextMenuEvent>
+#include <QMenu>
 
 QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent )
   : QTreeView( parent )
@@ -59,4 +62,32 @@ QgsMapLayer *QgsElevationProfileLayerTreeView::indexToLayer( const QModelIndex &
     }
   }
   return nullptr;
+}
+
+void QgsElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
+{
+  const QModelIndex index = indexAt( event->pos() );
+  if ( !index.isValid() )
+    setCurrentIndex( QModelIndex() );
+
+  if ( QgsMapLayer *layer = indexToLayer( index ) )
+  {
+    QMenu *menu = new QMenu();
+
+    QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
+    connect( propertiesAction, &QAction::triggered, this, [layer]
+    {
+      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Elevation" ) );
+    } );
+    menu->addAction( propertiesAction );
+
+    menu->exec( mapToGlobal( event->pos() ) );
+    delete menu;
+  }
+}
+
+void QgsElevationProfileLayerTreeView::resizeEvent( QResizeEvent *event )
+{
+  header()->setMinimumSectionSize( viewport()->width() );
+  QTreeView::resizeEvent( event );
 }
