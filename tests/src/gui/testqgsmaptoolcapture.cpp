@@ -35,6 +35,7 @@ class TestQgsMapToolCapture : public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
 
+    void addVertexNoLayer();
     void addVertexNonVectorLayer();
     void addVertexNonVectorLayerTransform();
 
@@ -58,6 +59,34 @@ void TestQgsMapToolCapture::init()
 
 void TestQgsMapToolCapture::cleanup()
 {
+}
+
+void TestQgsMapToolCapture::addVertexNoLayer()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  canvas.setCurrentLayer( nullptr );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CaptureLine );
+  canvas.setMapTool( &tool );
+
+  // even though we don't have any asssociated layer, adding vertices should still be allowed
+  QCOMPARE( tool.addVertex( QgsPoint( 5, 5 ), QgsPointLocator::Match() ), 0 );
+
+  QCOMPARE( tool.captureCurve()->asWkt(), QStringLiteral( "CompoundCurve ((5 5))" ) );
+
+  // the nextPoint method must also handle no layer
+  QgsPoint layerPoint;
+  QCOMPARE( tool.nextPoint( QgsPoint( 5, 6 ), layerPoint ), 0 );
+  QCOMPARE( layerPoint.x(), 5.0 );
+  QCOMPARE( layerPoint.y(), 6.0 );
 }
 
 void TestQgsMapToolCapture::addVertexNonVectorLayer()
