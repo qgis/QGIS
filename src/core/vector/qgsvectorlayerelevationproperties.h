@@ -53,6 +53,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     void setDefaultsFromLayer( QgsMapLayer *layer ) override;
     QgsVectorLayerElevationProperties *clone() const override SIP_FACTORY;
+    QString htmlSummary() const override;
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
 

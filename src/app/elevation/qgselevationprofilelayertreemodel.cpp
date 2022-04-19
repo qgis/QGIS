@@ -132,6 +132,35 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
       }
       break;
     }
+
+    case Qt::ToolTipRole:
+    {
+      // override default tooltip with elevation specific one
+      QgsLayerTreeNode *node = index2node( index );
+      if ( node && node->nodeType() == QgsLayerTreeNode::NodeLayer )
+      {
+        if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
+        {
+          QString title =
+            !layer->title().isEmpty() ? layer->title() :
+            !layer->shortName().isEmpty() ? layer->shortName() :
+            layer->name();
+
+          title = "<b>" + title.toHtmlEscaped() + "</b>";
+
+          QStringList parts;
+          parts << title;
+
+          const QString elevationPropertiesSummary = layer->elevationProperties() ? layer->elevationProperties()->htmlSummary() : QString();
+          if ( !elevationPropertiesSummary.isEmpty( ) )
+            parts << elevationPropertiesSummary;
+
+          return parts.join( QLatin1String( "<br/>" ) );
+        }
+      }
+      break;
+    }
+
     default:
       break;
   }

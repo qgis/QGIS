@@ -63,6 +63,14 @@ bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const
   return true;
 }
 
+QString QgsMeshLayerElevationProperties::htmlSummary() const
+{
+  QStringList properties;
+  properties << tr( "Scale: %1" ).arg( mZScale );
+  properties << tr( "Offset: %1" ).arg( mZOffset );
+  return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QStringLiteral( "</li><li>" ) ) );
+}
+
 QgsMeshLayerElevationProperties *QgsMeshLayerElevationProperties::clone() const
 {
   std::unique_ptr< QgsMeshLayerElevationProperties > res = std::make_unique< QgsMeshLayerElevationProperties >( nullptr );

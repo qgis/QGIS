@@ -50,6 +50,14 @@ QgsPointCloudLayerElevationProperties *QgsPointCloudLayerElevationProperties::cl
   return res.release();
 }
 
+QString QgsPointCloudLayerElevationProperties::htmlSummary() const
+{
+  QStringList properties;
+  properties << tr( "Scale: %1" ).arg( mZScale );
+  properties << tr( "Offset: %1" ).arg( mZOffset );
+  return QStringLiteral( "<ul><li>%1</li></ul>" ).arg( properties.join( QStringLiteral( "</li><li>" ) ) );
+}
+
 bool QgsPointCloudLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
 {
   // TODO -- test actual point cloud z range
