@@ -183,43 +183,7 @@ void QgsChunkedEntity::update( const SceneState &state )
     ++disabled;
   }
 
-  //
-
-  int uselessTiles = 0;
-  QList<QgsChunkNode *> toRemoveFromLoaderQueue;
-  QgsChunkListEntry *e = mChunkLoaderQueue->first();
-  while ( e )
-  {
-    Q_ASSERT( e->chunk->state() == QgsChunkNode::QueuedForLoad || e->chunk->state() == QgsChunkNode::QueuedForUpdate );  // TODO: after full reload (e.g. change point budget) this may explode
-    if ( Qgs3DUtils::isCullable( e->chunk->bbox(), state.viewProjectionMatrix ) )
-    {
-      toRemoveFromLoaderQueue.append( e->chunk );
-      uselessTiles++;
-    }
-    e = e->next;
-  }
-  for ( QgsChunkNode *n : toRemoveFromLoaderQueue )
-  {
-    mChunkLoaderQueue->takeEntry( n->loaderQueueEntry() );
-    if ( n->state() == QgsChunkNode::QueuedForLoad )
-      n->cancelQueuedForLoad();
-    else  // queued for update
-    {
-      n->cancelQueuedForUpdate();
-      mReplacementQueue->takeEntry( n->replacementQueueEntry() );
-      n->unloadChunk();
-    }
-  }
-  qDebug() << "removed useless tiles in loading queue" << uselessTiles;
-
-  double usedGpuActive = 0;
-  for ( QgsChunkNode *node : std::as_const( mActiveNodes ) )
-  {
-    usedGpuActive += QgsChunkedEntity::calculateEntityGpuMemorySize( node->entity() );
-  }
-
   double usedGpuMemory = QgsChunkedEntity::calculateEntityGpuMemorySize( this );
-  qDebug() << "using: active " << mActiveNodes.count() << " (" << usedGpuActive << " MB) / total " << mReplacementQueue->count() << " (" << usedGpuMemory << " MB)";
 
   // unload those that are over the limit for replacement
   // TODO: what to do when our cache is too small and nodes are being constantly evicted + loaded again
