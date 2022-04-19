@@ -466,7 +466,7 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DMapSetti
       geomZ = pt.z();
     }
     const float terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale() : 0;
-    float h;
+    float h = 0.0f;
     switch ( altClamp )
     {
       case Qgis::AltitudeClamping::Absolute:
