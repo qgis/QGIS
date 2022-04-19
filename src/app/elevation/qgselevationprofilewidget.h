@@ -46,7 +46,7 @@ class QgsElevationProfileWidget : public QWidget
     Q_OBJECT
   public:
 
-    static const inline QgsSettingsEntryDouble settingTolerance = QgsSettingsEntryDouble( QStringLiteral( "tolerance" ), QgsSettings::Prefix::ELEVATION_PROFILE, 10, QStringLiteral( "Tolerance distance for elevation profile plots" ), Qgis::SettingsOptions(), 0 );
+    static const inline QgsSettingsEntryDouble settingTolerance = QgsSettingsEntryDouble( QStringLiteral( "tolerance" ), QgsSettings::Prefix::ELEVATION_PROFILE, 0.1, QStringLiteral( "Tolerance distance for elevation profile plots" ), Qgis::SettingsOptions(), 0 );
 
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();
@@ -95,10 +95,11 @@ class QgsElevationProfileWidget : public QWidget
 
     QObjectUniquePtr<QgsRubberBand> mMapPointRubberBand;
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
+    QObjectUniquePtr<QgsRubberBand> mToleranceRubberBand;
 
     QTimer *mSetCurveTimer = nullptr;
     bool mUpdateScheduled = false;
-    QgsRubberBand *createRubberBand();
+    void createOrUpdateRubberBands();
 
     QgsPlotToolPan *mPanTool = nullptr;
     QgsPlotToolXAxisZoom *mXAxisZoomTool = nullptr;
