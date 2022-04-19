@@ -95,7 +95,8 @@ void QgsPlotCanvas::showContextMenu( QgsPlotMouseEvent *event )
 
   emit contextMenuAboutToShow( &menu, event );
 
-  menu.exec( event->globalPos() );
+  if ( !menu.isEmpty() )
+    menu.exec( event->globalPos() );
 }
 
 void QgsPlotCanvas::keyPressEvent( QKeyEvent *event )
@@ -168,6 +169,7 @@ void QgsPlotCanvas::mousePressEvent( QMouseEvent *event )
     {
       std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
       showContextMenu( me.get() );
+      event->accept();
       return;
     }
     else
