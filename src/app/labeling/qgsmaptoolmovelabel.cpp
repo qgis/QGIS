@@ -108,7 +108,8 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       const double offsetX = pointMapCoords.x() - mStartPointMapCoords.x();
       const double offsetY = pointMapCoords.y() - mStartPointMapCoords.y();
-      mOffsetFromLineStartRubberBand->hide();
+      if ( mOffsetFromLineStartRubberBand )
+        mOffsetFromLineStartRubberBand->hide();
       mLabelRubberBand->setTranslationOffset( offsetX, offsetY );
       mLabelRubberBand->updatePosition();
       mLabelRubberBand->update();
