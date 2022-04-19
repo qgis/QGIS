@@ -519,8 +519,18 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
   request.setSubsetOfAttributes( mDataDefinedProperties.referencedFields( mExpressionContext ), mFields );
   request.setFeedback( mFeedback.get() );
 
-  auto processPoint = [this]( const QgsFeature & feature, const QgsPoint * point )
+  // our feature request is using the optimised distance within check (allowing use of spatial index)
+  // BUT this will also include points which are within the tolerance distance before/after the end of line.
+  // So we also need to double check that they fall within the flat buffered curve too.
+  std::unique_ptr< QgsAbstractGeometry > bufferedCurve( mProfileCurveEngine->buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  QgsGeos bufferedCurveEngine( bufferedCurve.get() );
+  bufferedCurveEngine.prepareGeometry();
+
+  auto processPoint = [this, &bufferedCurveEngine]( const QgsFeature & feature, const QgsPoint * point )
   {
+    if ( !bufferedCurveEngine.intersects( point ) )
+      return;
+
     const double offset = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::ZOffset, mExpressionContext, mOffset );
 
     const double height = featureZToHeight( point->x(), point->y(), point->z(), offset );
