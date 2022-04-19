@@ -2802,6 +2802,10 @@ void QgsAttributeForm::updateFieldDependencies()
 void QgsAttributeForm::updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapper *eww )
 {
   QgsExpression exp( eww->field().defaultValueDefinition().expression() );
+
+  if ( exp.needsGeometry() )
+    mNeedsGeometry = true;
+
   const QSet<QString> referencedColumns = exp.referencedColumns();
   for ( const QString &referencedColumn : referencedColumns )
   {
@@ -2828,6 +2832,10 @@ void QgsAttributeForm::updateFieldDependenciesVirtualFields( QgsEditorWidgetWrap
     return;
 
   QgsExpression exp( expressionField );
+
+  if ( exp.needsGeometry() )
+    mNeedsGeometry = true;
+
   const QSet<QString> referencedColumns = exp.referencedColumns();
   for ( const QString &referencedColumn : referencedColumns )
   {
