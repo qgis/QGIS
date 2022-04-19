@@ -25,6 +25,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
+#include "qgsvectorlayer.h"
 
 QgsVectorLayerElevationProperties::QgsVectorLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )
@@ -74,6 +75,9 @@ QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElem
 bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
+  if ( elevationElement.isNull() )
+    return false;
+
   readCommonProperties( elevationElement, context );
 
   mClamping = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "clamping" ) ), Qgis::AltitudeClamping::Terrain );
@@ -101,6 +105,32 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
     setDefaultProfileMarkerSymbol( color );
 
   return true;
+}
+
+void QgsVectorLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer *layer )
+{
+  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
+  if ( !vlayer )
+    return;
+
+  mZOffset = 0;
+  mZScale = 1;
+
+  mEnableExtrusion = false;
+  mExtrusionHeight = 0;
+
+  mDataDefinedProperties.clear();
+
+  mBinding = Qgis::AltitudeBinding::Centroid;
+
+  if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
+  {
+    mClamping = Qgis::AltitudeClamping::Relative;
+  }
+  else
+  {
+    mClamping = Qgis::AltitudeClamping::Terrain;
+  }
 }
 
 QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() const

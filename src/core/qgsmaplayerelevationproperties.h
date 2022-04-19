@@ -120,6 +120,13 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 
     /**
+     * Sets default properties based on sensible choices for the given map \a layer.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void setDefaultsFromLayer( QgsMapLayer *layer );
+
+    /**
      * Creates a clone of the properties.
      *
      * \since QGIS 3.26
