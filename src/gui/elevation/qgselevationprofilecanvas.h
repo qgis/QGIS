@@ -134,6 +134,28 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsCurve *profileCurve() const;
 
     /**
+     * Sets the profile tolerance (in crs() units).
+     *
+     * This value determines how far from the profileCurve() is appropriate for inclusion of results. For instance,
+     * when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+     * actual profile curve a point can reside within to be included in the results.
+     *
+     * \see tolerance()
+     */
+    void setTolerance( double tolerance );
+
+    /**
+     * Returns the tolerance of the profile (in crs() units).
+     *
+     * This value determines how far from the profileCurve() is appropriate for inclusion of results. For instance,
+     * when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+     * actual profile curve a point can reside within to be included in the results.
+     *
+     * \see setTolerance()
+     */
+    double tolerance() const { return mTolerance; }
+
+    /**
      * Sets the visible area of the plot.
      */
     void setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation );
@@ -208,6 +230,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsProfilePlotRenderer *mCurrentJob = nullptr;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
+    double mTolerance = 0;
 
     bool mFirstDrawOccurred = false;
 

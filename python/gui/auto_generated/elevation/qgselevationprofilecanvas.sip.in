@@ -121,6 +121,28 @@ The CRS associated with the curve is retrieved via :py:func:`~QgsElevationProfil
 .. seealso:: :py:func:`setProfileCurve`
 %End
 
+    void setTolerance( double tolerance );
+%Docstring
+Sets the profile tolerance (in :py:func:`~QgsElevationProfileCanvas.crs` units).
+
+This value determines how far from the :py:func:`~QgsElevationProfileCanvas.profileCurve` is appropriate for inclusion of results. For instance,
+when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the results.
+
+.. seealso:: :py:func:`tolerance`
+%End
+
+    double tolerance() const;
+%Docstring
+Returns the tolerance of the profile (in :py:func:`~QgsElevationProfileCanvas.crs` units).
+
+This value determines how far from the :py:func:`~QgsElevationProfileCanvas.profileCurve` is appropriate for inclusion of results. For instance,
+when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the results.
+
+.. seealso:: :py:func:`setTolerance`
+%End
+
     void setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation );
 %Docstring
 Sets the visible area of the plot.

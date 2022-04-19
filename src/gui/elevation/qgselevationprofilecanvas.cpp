@@ -512,6 +512,7 @@ void QgsElevationProfileCanvas::refresh()
 
   QgsProfileRequest request( profileCurve()->clone() );
   request.setCrs( mCrs );
+  request.setTolerance( mTolerance );
   request.setTransformContext( mProject->transformContext() );
   request.setTerrainProvider( mProject->elevationProperties()->terrainProvider() ? mProject->elevationProperties()->terrainProvider()->clone() : nullptr );
   QgsExpressionContext context;
@@ -577,6 +578,11 @@ void QgsElevationProfileCanvas::setProfileCurve( QgsCurve *curve )
 QgsCurve *QgsElevationProfileCanvas::profileCurve() const
 {
   return mProfileCurve.get();
+}
+
+void QgsElevationProfileCanvas::setTolerance( double tolerance )
+{
+  mTolerance = tolerance;
 }
 
 QgsCoordinateReferenceSystem QgsElevationProfileCanvas::crs() const
