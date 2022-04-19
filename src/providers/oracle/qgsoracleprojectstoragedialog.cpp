@@ -65,7 +65,7 @@ QgsOracleProjectStorageDialog::QgsOracleProjectStorageDialog( bool saving, QWidg
   populateProjects();
 
   connect( mCboOwner, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::populateProjects );
-  connect( mCboProject, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::projectChanged );
+  connect( mCboProject, &QComboBox::currentTextChanged, this, &QgsOracleProjectStorageDialog::projectChanged );
 
   projectChanged();
 }
