@@ -99,6 +99,11 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     Q_ENUM( Mode )
 
     /**
+     * \brief Returns axis mode
+     */
+    Qgs3DAxis::Mode mode() { return mMode; }
+
+    /**
      * \brief set axis representation mode
      * \param axisMode new node
      */
@@ -113,17 +118,17 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void setAxisViewportPosition( int axisViewportSize, AxisViewportPosition axisViewportVertPos, AxisViewportPosition axisViewportHorizPos );
 
     /**
-     * \brief get axis viewport size
+     * \brief Returns axis viewport size
      */
     int axisViewportSize() const { return mAxisViewportSize;}
 
     /**
-     * \brief get axis viewport horizontal position
+     * \brief Returns axis viewport horizontal position
      */
     AxisViewportPosition axisViewportHorizontalPosition() const { return mAxisViewportHorizPos;}
 
     /**
-     * \brief get axis viewport vertical position
+     * \brief Returns axis viewport vertical position
      */
     AxisViewportPosition axisViewportVerticalPosition() const { return mAxisViewportVertPos;}
 
@@ -143,14 +148,16 @@ class _3D_EXPORT Qgs3DAxis : public QObject
                                        Qt3DRender::QCamera *destCamera, Qt3DRender::QViewport *destViewport,
                                        const QSize &destSize );
 
+  private slots:
+    void onCameraUpdate( );
+    void onAxisViewportSizeUpdate( int val = 0 );
+
   private:
     void createAxisScene();
     void createAxis( const Axis &axis );
     void createCube( );
     void setEnableCube( bool show );
     void setEnableAxis( bool show );
-    void updateCamera( );
-    void updateAxisViewportSize( int val = 0 );
     void updateAxisLabelPosition();
 
     Qt3DRender::QViewport *constructAxisViewport( Qt3DCore::QEntity *parent3DScene );

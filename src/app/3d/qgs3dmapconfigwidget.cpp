@@ -195,7 +195,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   // ==================
   // Page: 3D axis
-  init3dAxisPage();
+  init3DAxisPage();
 
   // ==================
   // Page: 2D/3D canvas sync
@@ -504,26 +504,26 @@ void Qgs3DMapConfigWidget::validate()
   emit isValidChanged( valid );
 }
 
-void Qgs3DMapConfigWidget::init3dAxisPage()
+void Qgs3DMapConfigWidget::init3DAxisPage()
 {
   connect( mGroupBox3dAxis, &QGroupBox::toggled, this, [this]( bool )
   {
-    update3dAxisMode();
+    on3DAxisChanged();
   } );
 
-  connect( mCbo3dAxisType, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [this]( int )
+  connect( mCbo3dAxisType, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [this]( int ) // skip-keyword-check
   {
-    update3dAxisMode();
+    on3DAxisChanged();
   } );
 
-  connect( mCbo3dAxisHorizPos, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [this]( int )
+  connect( mCbo3dAxisHorizPos, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [this]( int ) // skip-keyword-check
   {
-    update3dAxisPosition();
+    on3DAxisChanged();
   } );
 
-  connect( mCbo3dAxisVertPos, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [this]( int )
+  connect( mCbo3dAxisVertPos, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [this]( int ) // skip-keyword-check
   {
-    update3dAxisPosition();
+    on3DAxisChanged();
   } );
 
   Qgs3DAxisSettings s = mMap->get3dAxisSettings();
@@ -540,35 +540,40 @@ void Qgs3DMapConfigWidget::init3dAxisPage()
   mCbo3dAxisVertPos->setCurrentIndex( ( int )s.verticalPosition() - 1 );
 }
 
-void Qgs3DMapConfigWidget::update3dAxisMode()
+void Qgs3DMapConfigWidget::on3DAxisChanged()
 {
-  if ( m3DMapCanvas->get3DAxis() )
+  if ( m3DMapCanvas->scene()->get3DAxis() )
   {
+    Qgs3DAxisSettings s = mMap->get3dAxisSettings();
+    bool asChanges = false;
     Qgs3DAxis::Mode m;
     if ( mGroupBox3dAxis->isChecked() )
       m = ( Qgs3DAxis::Mode )( mCbo3dAxisType->currentIndex() + 2 );
     else
       m = Qgs3DAxis::Mode::Off;
 
-    m3DMapCanvas->get3DAxis()->setMode( m );
-    Qgs3DAxisSettings s = mMap->get3dAxisSettings();
-    s.setMode( m );
-    mMap->set3dAxisSettings( s );
-  }
-}
+    if ( m3DMapCanvas->scene()->get3DAxis()->mode() != m )
+    {
+      m3DMapCanvas->scene()->get3DAxis()->setMode( m );
+      s.setMode( m );
+      asChanges = true;
+    }
+    else
+    {
+      Qgs3DAxis::AxisViewportPosition hPos = ( Qgs3DAxis::AxisViewportPosition )( mCbo3dAxisHorizPos->currentIndex() + 1 );
+      Qgs3DAxis::AxisViewportPosition vPos = ( Qgs3DAxis::AxisViewportPosition )( mCbo3dAxisVertPos->currentIndex() + 1 );
 
-void Qgs3DMapConfigWidget::update3dAxisPosition()
-{
-  if ( m3DMapCanvas->get3DAxis() )
-  {
-    Qgs3DAxis::AxisViewportPosition hPos = ( Qgs3DAxis::AxisViewportPosition )( mCbo3dAxisHorizPos->currentIndex() + 1 );
-    Qgs3DAxis::AxisViewportPosition vPos = ( Qgs3DAxis::AxisViewportPosition )( mCbo3dAxisVertPos->currentIndex() + 1 );
+      if ( m3DMapCanvas->scene()->get3DAxis()->axisViewportHorizontalPosition() != hPos
+           || m3DMapCanvas->scene()->get3DAxis()->axisViewportVerticalPosition() != vPos )
+        m3DMapCanvas->scene()->get3DAxis()->setAxisViewportPosition( m3DMapCanvas->scene()->get3DAxis()->axisViewportSize(),
+            vPos, hPos );
+      s.setHorizontalPosition( hPos );
+      s.setVerticalPosition( vPos );
+      asChanges = true;
+    }
 
-    m3DMapCanvas->get3DAxis()->setAxisViewportPosition( m3DMapCanvas->get3DAxis()->axisViewportSize(),
-        vPos, hPos );
-    Qgs3DAxisSettings s = mMap->get3dAxisSettings();
-    s.setHorizontalPosition( hPos );
-    s.setVerticalPosition( vPos );
-    mMap->set3dAxisSettings( s );
+    if ( asChanges )
+      mMap->set3dAxisSettings( s );
+
   }
 }

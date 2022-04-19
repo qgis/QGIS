@@ -736,7 +736,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea3dAxis">
+            <widget class="QgsScrollArea" name="scrollArea3dAxis">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
