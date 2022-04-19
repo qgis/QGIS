@@ -36,6 +36,11 @@ void QgsMapLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer * )
 
 }
 
+QString QgsMapLayerElevationProperties::htmlSummary() const
+{
+  return QString();
+}
+
 void QgsMapLayerElevationProperties::writeCommonProperties( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext & )
 {
   QDomElement elemDataDefinedProperties = doc.createElement( QStringLiteral( "data-defined-properties" ) );

@@ -78,6 +78,15 @@ QgsRasterLayerElevationProperties *QgsRasterLayerElevationProperties::clone() co
   return res.release();
 }
 
+QString QgsRasterLayerElevationProperties::htmlSummary() const
+{
+  QStringList properties;
+  properties << tr( "Elevation band: %1" ).arg( mBandNumber );
+  properties << tr( "Scale: %1" ).arg( mZScale );
+  properties << tr( "Offset: %1" ).arg( mZOffset );
+  return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QStringLiteral( "</li><li>" ) ) );
+}
+
 bool QgsRasterLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
 {
   // TODO -- test actual raster z range

@@ -127,6 +127,13 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     virtual void setDefaultsFromLayer( QgsMapLayer *layer );
 
     /**
+     * Returns a HTML formatted summary of the properties.
+     *
+     * \since QGIS 3.26
+     */
+    virtual QString htmlSummary() const;
+
+    /**
      * Creates a clone of the properties.
      *
      * \since QGIS 3.26

@@ -36,6 +36,8 @@ Constructor for QgsMeshLayerElevationProperties, with the specified ``parent`` o
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
+    virtual QString htmlSummary() const;
+
     virtual QgsMeshLayerElevationProperties *clone() const /Factory/;
 
     virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;

@@ -150,6 +150,71 @@ QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() co
   return res.release();
 }
 
+QString QgsVectorLayerElevationProperties::htmlSummary() const
+{
+  QStringList properties;
+
+  switch ( mClamping )
+  {
+    case Qgis::AltitudeClamping::Terrain:
+      properties << tr( "Clamped to Terrain" );
+      break;
+    case Qgis::AltitudeClamping::Relative:
+      properties << tr( "Relative to Terrain" );
+      break;
+    case Qgis::AltitudeClamping::Absolute:
+      properties << tr( "Absolute" );
+      break;
+  }
+
+  if ( mDataDefinedProperties.isActive( Property::ZOffset ) )
+  {
+    switch ( mDataDefinedProperties.property( Property::ZOffset ).propertyType() )
+    {
+      case QgsProperty::InvalidProperty:
+      case QgsProperty::StaticProperty:
+        break;
+      case QgsProperty::FieldBasedProperty:
+        properties << tr( "Offset: %1" ).arg( mDataDefinedProperties.property( Property::ZOffset ).field() );
+        break;
+      case QgsProperty::ExpressionBasedProperty:
+        properties << tr( "Offset: %1" ).arg( mDataDefinedProperties.property( Property::ZOffset ).expressionString() );
+        break;
+    }
+  }
+  else
+  {
+    properties << tr( "Offset: %1" ).arg( mZOffset );
+  }
+
+  if ( mEnableExtrusion )
+  {
+    if ( mDataDefinedProperties.isActive( Property::ExtrusionHeight ) )
+    {
+      switch ( mDataDefinedProperties.property( Property::ExtrusionHeight ).propertyType() )
+      {
+        case QgsProperty::InvalidProperty:
+        case QgsProperty::StaticProperty:
+          break;
+        case QgsProperty::FieldBasedProperty:
+          properties << tr( "Extrusion: %1" ).arg( mDataDefinedProperties.property( Property::ExtrusionHeight ).field() );
+          break;
+        case QgsProperty::ExpressionBasedProperty:
+          properties << tr( "Extrusion: %1" ).arg( mDataDefinedProperties.property( Property::ExtrusionHeight ).expressionString() );
+          break;
+      }
+    }
+    else
+    {
+      properties << tr( "Extrusion: %1" ).arg( mExtrusionHeight );
+    }
+  }
+
+  properties << tr( "Scale: %1" ).arg( mZScale );
+
+  return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QStringLiteral( "</li><li>" ) ) );
+}
+
 bool QgsVectorLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
 {
   // TODO -- test actual layer z range
