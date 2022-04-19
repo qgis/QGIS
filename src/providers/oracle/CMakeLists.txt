@@ -16,6 +16,7 @@ set(ORACLE_SRCS
   qgsoracleexpressioncompiler.cpp
   qgsoracletransaction.cpp
   qgsoracleproviderconnection.cpp
+  qgsoracleprojectstorage.cpp
 )
 
 if (WITH_GUI)
