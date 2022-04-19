@@ -534,4 +534,3 @@ QgsMarkerSymbol *QgsMarkerSymbol::clone() const
   cloneSymbol->setAnimationSettings( mAnimationSettings );
   return cloneSymbol;
 }
-

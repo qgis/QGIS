@@ -30,6 +30,11 @@ QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings &sett
   : QgsMapRendererQImageJob( settings )
   , mStatus( Idle )
 {
+  if ( mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Vector rendering in parallel job is not supported, so Qgis::MapSettingsFlag::ForceVectorOutput option will be ignored!" ) );
+    mSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
+  }
 }
 
 QgsMapRendererParallelJob::~QgsMapRendererParallelJob()
@@ -437,4 +442,3 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
     }
   }
 }
-
