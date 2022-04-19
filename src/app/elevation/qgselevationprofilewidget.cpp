@@ -309,12 +309,12 @@ void QgsElevationProfileWidget::cancelJobs()
 
 void QgsElevationProfileWidget::populateInitialLayers()
 {
-  const QVector< QgsMapLayer * > layers = QgsProject::instance()->layers< QgsMapLayer * >();
+  const QList< QgsMapLayer * > layers = QgsProject::instance()->layers< QgsMapLayer * >().toList();
 
   // sort layers so that types which are more likely to obscure others are rendered below
   // e.g. vector features should be drawn above raster DEMS, or the DEM line may completely obscure
   // the vector feature
-  QList< QgsMapLayer * > sortedLayers = QgsMapLayerUtils::sortLayersByType( QList< QgsMapLayer * >( layers.begin(), layers.end() ),
+  QList< QgsMapLayer * > sortedLayers = QgsMapLayerUtils::sortLayersByType( layers,
   {
     QgsMapLayerType::RasterLayer,
     QgsMapLayerType::MeshLayer,
