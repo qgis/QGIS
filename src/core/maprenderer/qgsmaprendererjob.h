@@ -31,6 +31,7 @@
 #include "qgsmaskidprovider.h"
 #include "qgssettingsentryimpl.h"
 
+class QPicture;
 
 class QgsLabelingEngine;
 class QgsLabelingResults;
@@ -148,14 +149,25 @@ class LayerRenderJob
      *   pass by another job. We then need to know which first pass image and which masks correspond.
      */
 
-    //! Mask image, needed during the first pass if a mask is defined
+    //! Mask image, needed during the first pass if a mask is defined and we need rasterization
     QImage *maskImage = nullptr;
+
+    /**
+     * If effects are involved in masking we need to rasterize the layer rendering even if
+     * vector output has been requested
+     */
+    bool needRasterization = false;
 
     /**
      * Pointer to the first pass job, needed during the second pass
      * to access first pass painter and image.
      */
     LayerRenderJob *firstPassJob = nullptr;
+
+    /**
+     * Used for vector rendering
+     */
+    std::unique_ptr<QPicture> imgPic;
 
     /**
      * Pointer to first pass jobs that carry a mask image, needed during the second pass.
@@ -183,6 +195,9 @@ struct LabelRenderJob
    * Note that if complete is FALSE then img will be uninitialized and contain random data!.
    */
   QImage *img = nullptr;
+
+  //! Used for vector rendering
+  std::unique_ptr<QPicture> imgPic;
 
   /**
    * Mask images
@@ -546,7 +561,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
-    static void composeSecondPass( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
+    static void composeSecondPass( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob, bool forceVector = false ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void logRenderingTime( const std::vector< LayerRenderJob > &jobs, const std::vector< LayerRenderJob > &secondPassJobs, const LabelRenderJob &labelJob ) SIP_SKIP;
@@ -607,6 +622,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     QgsLabelSink *mLabelSink = nullptr;
     QgsLabelingEngineFeedback *mLabelingEngineFeedback = nullptr;
 
+    typedef std::pair<QPicture *, QPainter *> PictureAndPainter;
+
+    //! Convenient method to allocate a new qpicture and associated qpainter
+    PictureAndPainter allocatePictureAndPainter();
 };
 
 

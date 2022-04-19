@@ -70,6 +70,7 @@ RUN  apt-get update \
     python3-sip \
     python3-termcolor \
     python3-yaml \
+    qpdf \
     qt3d-assimpsceneimport-plugin \
     qt3d-defaultgeometryloader-plugin \
     qt3d-gltfsceneio-plugin \

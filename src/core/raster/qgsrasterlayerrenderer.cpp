@@ -202,8 +202,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mRasterViewPort->mWidth = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.x() - mRasterViewPort->mTopLeftPoint.x() ) );
   mRasterViewPort->mHeight = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() ) );
 
-
-  const double dpi = 25.4 * rendererContext.scaleFactor();
+  // painter could be null (in parallel rendering for instance) so we fallback on scaleFactor which
+  // should be equal to outputDpi and so logicalDpiX (except for QPicture)
+  const double dpi = rendererContext.painter() ? rendererContext.painter()->device()->logicalDpiX() :
+                     25.4 * rendererContext.scaleFactor();
   if ( mProviderCapabilities & QgsRasterDataProvider::DpiDependentData
        && rendererContext.dpiTarget() >= 0.0 )
   {

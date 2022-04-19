@@ -532,6 +532,7 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
       continue;
 
     layer->prepareExpressions( symbolContext );
+    layer->prepareMasks( symbolContext );
     layer->startRender( symbolContext );
   }
 }

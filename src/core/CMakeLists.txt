@@ -94,8 +94,8 @@ set(QGIS_CORE_SRCS
   symbology/qgsmarkersymbollayer.cpp
   symbology/qgsmasksymbollayer.cpp
   symbology/qgsmergedfeaturerenderer.cpp
-  symbology/qgspainterswapper.cpp
   symbology/qgsnullsymbolrenderer.cpp
+  symbology/qgspainterswapper.cpp
   symbology/qgspointclusterrenderer.cpp
   symbology/qgspointdisplacementrenderer.cpp
   symbology/qgspointdistancerenderer.cpp
@@ -434,6 +434,7 @@ set(QGIS_CORE_SRCS
   qgsmargins.cpp
   qgsmaskidprovider.cpp
   qgsmbtiles.cpp
+  qgsmaskpaintdevice.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -1099,6 +1100,7 @@ set(QGIS_CORE_HDRS
   qgsmapunitscale.h
   qgsmargins.h
   qgsmaskidprovider.h
+  qgsmaskpaintdevice.h
   qgsmbtiles.h
   qgsmessagelog.h
   qgsmessageoutput.h
