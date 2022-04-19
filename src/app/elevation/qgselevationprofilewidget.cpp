@@ -38,6 +38,8 @@
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -500,6 +502,24 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands( )
     bottomLayer->setColor( QColor( 40, 40, 40, 100 ) );
     bottomLayer->setPenCapStyle( Qt::PenCapStyle::FlatCap );
     layers.append( bottomLayer.release() );
+
+    std::unique_ptr< QgsMarkerLineSymbolLayer > arrowLayer = std::make_unique< QgsMarkerLineSymbolLayer >();
+    arrowLayer->setPlacements( Qgis::MarkerLinePlacement::CentralPoint );
+
+    QgsSymbolLayerList markerLayers;
+    std::unique_ptr< QgsSimpleMarkerSymbolLayer > arrowSymbolLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::EquilateralTriangle );
+    arrowSymbolLayer->setSize( 4 );
+    arrowSymbolLayer->setAngle( 90 );
+    arrowSymbolLayer->setSizeUnit( QgsUnitTypes::RenderMillimeters );
+    arrowSymbolLayer->setColor( QColor( 40, 40, 40, 100 ) );
+    arrowSymbolLayer->setStrokeColor( QColor( 255, 255, 255, 255 ) );
+    arrowSymbolLayer->setStrokeWidth( 0.2 );
+    markerLayers.append( arrowSymbolLayer.release() );
+
+    std::unique_ptr< QgsMarkerSymbol > markerSymbol = std::make_unique< QgsMarkerSymbol >( markerLayers );
+    arrowLayer->setSubSymbol( markerSymbol.release() );
+
+    layers.append( arrowLayer.release() );
 
     std::unique_ptr< QgsSimpleLineSymbolLayer > topLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
     topLayer->setWidth( 0.4 );
