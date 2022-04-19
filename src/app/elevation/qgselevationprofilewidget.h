@@ -22,6 +22,9 @@
 #include "qgis_app.h"
 #include "qgsgeometry.h"
 #include "qobjectuniqueptr.h"
+#include "qgssettingsentryimpl.h"
+
+#include <QWidgetAction>
 
 class QgsDockableWidgetHelper;
 class QgsMapCanvas;
@@ -35,11 +38,16 @@ class QgsRubberBand;
 class QgsPlotToolPan;
 class QgsPlotToolZoom;
 class QgsPlotToolXAxisZoom;
+class QgsDoubleSpinBox;
+class QgsElevationProfileWidgetSettingsAction;
 
 class QgsElevationProfileWidget : public QWidget
 {
     Q_OBJECT
   public:
+
+    static const inline QgsSettingsEntryDouble settingTolerance = QgsSettingsEntryDouble( QStringLiteral( "tolerance" ), QgsSettings::Prefix::ELEVATION_PROFILE, 10, QStringLiteral( "Tolerance distance for elevation profile plots" ), Qgis::SettingsOptions(), 0 );
+
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();
 
@@ -95,6 +103,23 @@ class QgsElevationProfileWidget : public QWidget
     QgsPlotToolPan *mPanTool = nullptr;
     QgsPlotToolXAxisZoom *mXAxisZoomTool = nullptr;
     QgsPlotToolZoom *mZoomTool = nullptr;
+
+    QgsElevationProfileWidgetSettingsAction *mSettingsAction = nullptr;
+};
+
+
+class QgsElevationProfileWidgetSettingsAction: public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+
+    QgsElevationProfileWidgetSettingsAction( QWidget *parent = nullptr );
+
+    QgsDoubleSpinBox *toleranceSpinBox() { return mToleranceWidget; }
+
+  private:
+    QgsDoubleSpinBox *mToleranceWidget = nullptr;
 };
 
 #endif // QGSELEVATIONPROFILEWIDGET_H

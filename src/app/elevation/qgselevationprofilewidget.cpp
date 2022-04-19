@@ -140,9 +140,21 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( exportAsImageAction, &QAction::triggered, this, &QgsElevationProfileWidget::exportAsImage );
   toolBar->addAction( exportAsImageAction );
 
-#if 0
+  toolBar->addSeparator();
+
   // Options Menu
   mOptionsMenu = new QMenu( this );
+
+  mSettingsAction = new QgsElevationProfileWidgetSettingsAction( mOptionsMenu );
+
+  mSettingsAction->toleranceSpinBox()->setValue( settingTolerance.value() );
+  connect( mSettingsAction->toleranceSpinBox(), qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    settingTolerance.setValue( value );
+    scheduleUpdate();
+  } );
+
+  mOptionsMenu->addAction( mSettingsAction );
 
   mBtnOptions = new QToolButton();
   mBtnOptions->setAutoRaise( true );
@@ -152,26 +164,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mBtnOptions->setMenu( mOptionsMenu );
 
   toolBar->addWidget( mBtnOptions );
-
-
-  mActionEnableShadows = new QAction( tr( "Show Shadows" ), this );
-  mActionEnableShadows->setCheckable( true );
-  connect( mActionEnableShadows, &QAction::toggled, this, [ = ]( bool enabled )
-  {
-    QgsShadowSettings settings = mCanvas->map()->shadowSettings();
-    settings.setRenderShadows( enabled );
-    mCanvas->map()->setShadowSettings( settings );
-  } );
-  mOptionsMenu->addAction( mActionEnableShadows );
-
-
-  mOptionsMenu->addSeparator();
-
-  QAction *configureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
-                                          tr( "Configure…" ), this );
-  connect( configureAction, &QAction::triggered, this, &QgsElevationProfileWidget::configure );
-  mOptionsMenu->addAction( configureAction );
-#endif
 
   mProgressPendingJobs = new QProgressBar( this );
   mProgressPendingJobs->setRange( 0, 0 );
@@ -321,18 +313,19 @@ void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &point )
 
 void QgsElevationProfileWidget::updatePlot()
 {
+  mCanvas->setTolerance( mSettingsAction->toleranceSpinBox()->value() );
+  mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
+
   if ( !mProfileCurve.isEmpty() )
   {
     if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
     {
-      mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
       mCanvas->setProfileCurve( curve->clone() );
       mCanvas->refresh();
     }
     else if ( const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
     {
       // hm, just grab the first part!
-      mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
       mCanvas->setProfileCurve( multiCurve->curveN( 0 )->clone() );
       mCanvas->refresh();
     }
@@ -491,3 +484,26 @@ QgsRubberBand *QgsElevationProfileWidget::createRubberBand( )
   return rb;
 }
 
+
+QgsElevationProfileWidgetSettingsAction::QgsElevationProfileWidgetSettingsAction( QWidget *parent )
+  : QWidgetAction( parent )
+{
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
+
+  mToleranceWidget = new QgsDoubleSpinBox();
+  mToleranceWidget->setClearValue( 1.0 );
+  mToleranceWidget->setKeyboardTracking( false );
+  mToleranceWidget->setMaximumWidth( QFontMetrics( mToleranceWidget->font() ).horizontalAdvance( '0' ) * 50 );
+  mToleranceWidget->setDecimals( 2 );
+  mToleranceWidget->setRange( 0, 9999999999 );
+  mToleranceWidget->setSingleStep( 1.0 );
+
+  QLabel *label = new QLabel( tr( "Tolerance" ) );
+  gLayout->addWidget( label, 0, 0 );
+  gLayout->addWidget( mToleranceWidget, 0, 1 );
+
+  QWidget *w = new QWidget();
+  w->setLayout( gLayout );
+  setDefaultWidget( w );
+}
