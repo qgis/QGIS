@@ -57,7 +57,7 @@ void QgsPdalEptGenerationTask::cleanTemp()
   QDir tmpDir( mOutputDir + QStringLiteral( "/temp" ) );
   if ( tmpDir.exists() )
   {
-    QgsMessageLog::logMessage( tr( "Removing temporary files in %1" ).arg( tmpDir.dirName() ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
+    QgsDebugMsgLevel( QStringLiteral( "Removing temporary files in %1" ).arg( tmpDir.dirName() ), 2 );
     tmpDir.removeRecursively();
   }
 }
@@ -72,7 +72,7 @@ bool QgsPdalEptGenerationTask::runUntwine()
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Using executable %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
+    QgsDebugMsgLevel( QStringLiteral( "Using executable %1" ).arg( mUntwineExecutableBinary ), 2 );
   }
 
   untwine::QgisUntwine untwineProcess( mUntwineExecutableBinary.toStdString() );
@@ -91,10 +91,13 @@ bool QgsPdalEptGenerationTask::runUntwine()
     const int percent = untwineProcess.progressPercent();
     if ( lastPercent != percent )
     {
+#ifdef QGISDEBUG
       const QString message = QString::fromStdString( untwineProcess.progressMessage() );
       if ( !message.isEmpty() )
-        QgsMessageLog::logMessage( message, QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
-
+      {
+        QgsDebugMsgLevel( message, 2 );
+      }
+#endif
       setProgress( percent );
     }
 
