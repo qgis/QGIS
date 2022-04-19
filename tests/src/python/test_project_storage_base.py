@@ -89,6 +89,7 @@ class TestPyQgsProjectStorageBase:
         self.assertEqual(prj2.baseName(), "abc")
         self.assertEqual(prj2.absoluteFilePath(), "")  # path not supported for project storages
         self.assertTrue(abs(prj2.lastModified().secsTo(QDateTime.currentDateTime())) < 10)
+        lastModified = prj2.lastModified()
 
         # try to see project's metadata
 
@@ -99,6 +100,28 @@ class TestPyQgsProjectStorageBase:
         time_now = QDateTime.currentDateTime()
         time_diff = time_now.secsTo(time_project)
         self.assertTrue(abs(time_diff) < 10)
+
+
+        # try to update the project
+        vl1.setName("testNew")
+        prj.write()
+
+        prj3 = QgsProject()
+        prj3.setFileName(project_uri)
+        res = prj3.read()
+        self.assertTrue(res)
+
+        prj4 = QgsProject()
+        prj4.setFileName(project_uri)
+        res = prj4.read()
+        self.assertTrue(res)
+
+        self.assertEqual(len(prj4.mapLayers()), 1)
+        self.assertEqual(list(prj4.mapLayers().values())[0].name(), "testNew")
+
+        self.assertEqual(prj4.baseName(), "abc")
+        self.assertEqual(prj4.absoluteFilePath(), "")  # path not supported for project storages
+        self.assertTrue(prj4.lastModified() > lastModified)
 
         # try to remove the project
 

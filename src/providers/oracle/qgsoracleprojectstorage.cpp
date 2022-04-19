@@ -195,11 +195,16 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
   // sql += QString::fromLatin1( content.toHex() );
   // sql += "') ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata;";
 
+
   QSqlQuery qry( *pconn.get() );
-  qry.prepare( QStringLiteral( "INSERT INTO %1.\"qgis_projects\" VALUES (?, %2, ?)" )
+  qry.prepare( QStringLiteral( "MERGE INTO %1.\"qgis_projects\" "
+                               "USING dual "
+                               "ON (name = :projectname) "
+                               "WHEN MATCHED THEN UPDATE SET metadata = %2, content = :content "
+                               "WHEN NOT MATCHED THEN INSERT VALUES (:projectname, %2, :content)" )
                .arg( QgsOracleConn::quotedIdentifier( projectUri.owner ), metadataExpr ) );
-  qry.addBindValue( projectUri.projectName );
-  qry.addBindValue( content );
+  qry.bindValue( QStringLiteral( ":projectname" ), projectUri.projectName );
+  qry.bindValue( QStringLiteral( ":content" ), content );
 
   if ( !qry.exec() )
   {
