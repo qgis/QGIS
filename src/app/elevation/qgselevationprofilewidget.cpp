@@ -34,6 +34,10 @@
 #include "qgsplot.h"
 #include "qgsmulticurve.h"
 #include "qgsmaplayerutils.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -151,6 +155,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( mSettingsAction->toleranceSpinBox(), qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
   {
     settingTolerance.setValue( value );
+    createOrUpdateRubberBands();
     scheduleUpdate();
   } );
 
@@ -204,6 +209,8 @@ QgsElevationProfileWidget::~QgsElevationProfileWidget()
 {
   if ( mRubberBand )
     mRubberBand.reset();
+  if ( mToleranceRubberBand )
+    mToleranceRubberBand.reset();
 
   if ( mMapPointRubberBand )
     mMapPointRubberBand.reset();
@@ -230,11 +237,15 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
     // re-show the old curve rubber band
     if ( mRubberBand )
       mRubberBand->hide();
+    if ( mToleranceRubberBand )
+      mToleranceRubberBand->hide();
   } );
   connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::captureCanceled, this, [ = ]
   {
     if ( mRubberBand )
       mRubberBand->show();
+    if ( mToleranceRubberBand )
+      mToleranceRubberBand->show();
   } );
 
   mCaptureCurveFromFeatureMapTool = std::make_unique< QgsMapToolProfileCurveFromFeature >( canvas );
@@ -289,8 +300,7 @@ void QgsElevationProfileWidget::onTotalPendingJobsCountChanged( int count )
 void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve )
 {
   mProfileCurve = curve;
-  mRubberBand.reset( createRubberBand() );
-  mRubberBand->setToGeometry( mProfileCurve );
+  createOrUpdateRubberBands();
   scheduleUpdate();
 }
 
@@ -345,6 +355,7 @@ void QgsElevationProfileWidget::scheduleUpdate()
 void QgsElevationProfileWidget::clear()
 {
   mRubberBand.reset();
+  mToleranceRubberBand.reset();
   if ( mMapPointRubberBand )
     mMapPointRubberBand->hide();
   mCanvas->clear();
@@ -473,17 +484,69 @@ void QgsElevationProfileWidget::exportAsImage()
 
 }
 
-QgsRubberBand *QgsElevationProfileWidget::createRubberBand( )
+void QgsElevationProfileWidget::createOrUpdateRubberBands( )
 {
-  QgsRubberBand *rb = new QgsRubberBand( mMainCanvas, QgsWkbTypes::LineGeometry );
-  rb->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
-  rb->setStrokeColor( QColor( 255, 255, 255, 255 ) );
-  rb->setLineStyle( Qt::DashLine );
-  rb->setSecondaryStrokeColor( QColor( 40, 40, 40, 100 ) );
-  rb->show();
-  return rb;
-}
+  if ( !mRubberBand )
+  {
+    mRubberBand.reset( new QgsRubberBand( mMainCanvas, QgsWkbTypes::LineGeometry ) );
+    mRubberBand->setZValue( 1000 );
+    mRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
 
+    QgsSymbolLayerList layers;
+
+    std::unique_ptr< QgsSimpleLineSymbolLayer > bottomLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
+    bottomLayer->setWidth( 0.8 );
+    bottomLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+    bottomLayer->setColor( QColor( 40, 40, 40, 100 ) );
+    bottomLayer->setPenCapStyle( Qt::PenCapStyle::FlatCap );
+    layers.append( bottomLayer.release() );
+
+    std::unique_ptr< QgsSimpleLineSymbolLayer > topLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
+    topLayer->setWidth( 0.4 );
+    topLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+    topLayer->setColor( QColor( 255, 255, 255, 255 ) );
+    topLayer->setPenStyle( Qt::DashLine );
+    topLayer->setPenCapStyle( Qt::PenCapStyle::FlatCap );
+    layers.append( topLayer.release() );
+
+    std::unique_ptr< QgsLineSymbol > symbol = std::make_unique< QgsLineSymbol >( layers );
+
+    mRubberBand->setSymbol( symbol.release() );
+    mRubberBand->updatePosition();
+    mRubberBand->show();
+  }
+
+  mRubberBand->setToGeometry( mProfileCurve );
+
+  const double tolerance = mSettingsAction->toleranceSpinBox()->value();
+  if ( !qgsDoubleNear( tolerance, 0, 0.000001 ) )
+  {
+    if ( !mToleranceRubberBand )
+    {
+      mToleranceRubberBand.reset( new QgsRubberBand( mMainCanvas, QgsWkbTypes::PolygonGeometry ) );
+      mToleranceRubberBand->setZValue( 999 );
+
+      QgsSymbolLayerList layers;
+
+      std::unique_ptr< QgsSimpleFillSymbolLayer > bottomLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
+      bottomLayer->setColor( QColor( 40, 40, 40, 50 ) );
+      bottomLayer->setStrokeColor( QColor( 255, 255, 255, 150 ) );
+      layers.append( bottomLayer.release() );
+
+      std::unique_ptr< QgsFillSymbol > symbol = std::make_unique< QgsFillSymbol >( layers );
+      mToleranceRubberBand->setSymbol( symbol.release() );
+    }
+
+    const QgsGeometry buffered = mProfileCurve.buffer( tolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 );
+    mToleranceRubberBand->setToGeometry( buffered );
+    mToleranceRubberBand->show();
+  }
+  else
+  {
+    if ( mToleranceRubberBand )
+      mToleranceRubberBand->hide();
+  }
+}
 
 QgsElevationProfileWidgetSettingsAction::QgsElevationProfileWidgetSettingsAction( QWidget *parent )
   : QWidgetAction( parent )
@@ -492,7 +555,8 @@ QgsElevationProfileWidgetSettingsAction::QgsElevationProfileWidgetSettingsAction
   gLayout->setContentsMargins( 3, 2, 3, 2 );
 
   mToleranceWidget = new QgsDoubleSpinBox();
-  mToleranceWidget->setClearValue( 1.0 );
+  mToleranceWidget->setClearValue( QgsElevationProfileWidget::settingTolerance.defaultValue() );
+  mToleranceWidget->setValue( QgsElevationProfileWidget::settingTolerance.defaultValue() );
   mToleranceWidget->setKeyboardTracking( false );
   mToleranceWidget->setMaximumWidth( QFontMetrics( mToleranceWidget->font() ).horizontalAdvance( '0' ) * 50 );
   mToleranceWidget->setDecimals( 2 );
