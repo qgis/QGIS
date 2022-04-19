@@ -132,6 +132,13 @@ void QgsChunkedEntity::update( const SceneState &state )
   if ( !mIsValid )
     return;
 
+  // Let's start the update by removing from loader queue chunks that
+  // would get frustum culled if loaded (outside of the current view
+  // of the camera). Removing them keeps the loading queue shorter,
+  // and we avoid loading chunks that we only wanted for a short period
+  // of time when camera was moving.
+  pruneLoaderQueue( state );
+
   QElapsedTimer t;
   t.start();
 
@@ -291,6 +298,47 @@ void QgsChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunk
   startJobs();
 }
 
+void QgsChunkedEntity::pruneLoaderQueue( const SceneState &state )
+{
+  QList<QgsChunkNode *> toRemoveFromLoaderQueue;
+
+  // Step 1: collect all entries from chunk loader queue that would get frustum culled
+  // (i.e. they are outside of the current view of the camera) and therefore loading
+  // such chunks would be probably waste of time.
+  QgsChunkListEntry *e = mChunkLoaderQueue->first();
+  while ( e )
+  {
+    Q_ASSERT( e->chunk->state() == QgsChunkNode::QueuedForLoad || e->chunk->state() == QgsChunkNode::QueuedForUpdate );
+    if ( Qgs3DUtils::isCullable( e->chunk->bbox(), state.viewProjectionMatrix ) )
+    {
+      toRemoveFromLoaderQueue.append( e->chunk );
+    }
+    e = e->next;
+  }
+
+  // Step 2: remove collected chunks from the loading queue
+  for ( QgsChunkNode *n : toRemoveFromLoaderQueue )
+  {
+    mChunkLoaderQueue->takeEntry( n->loaderQueueEntry() );
+    if ( n->state() == QgsChunkNode::QueuedForLoad )
+    {
+      n->cancelQueuedForLoad();
+    }
+    else  // queued for update
+    {
+      n->cancelQueuedForUpdate();
+      mReplacementQueue->takeEntry( n->replacementQueueEntry() );
+      n->unloadChunk();
+    }
+  }
+
+  if ( !toRemoveFromLoaderQueue.isEmpty() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Pruned %1 chunks in loading queue" ).arg( toRemoveFromLoaderQueue.count() ), 2 );
+  }
+}
+
+
 int QgsChunkedEntity::pendingJobsCount() const
 {
   return mChunkLoaderQueue->count() + mActiveJobs.count();
@@ -375,32 +423,64 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
       // acceptable error for the current chunk - let's render it
       becomesActive = true;
     }
-    else if ( node->allChildChunksResident( mCurrentTime ) )
-    {
-      // error is not acceptable and children are ready to be used - recursive descent
-      if ( mAdditiveStrategy )
-      {
-        // With additive strategy enabled, also all parent nodes are added to active nodes.
-        // This is desired when child nodes add more detailed data rather than just replace
-        // coarser data in parents. We use this e.g. with point cloud data.
-        becomesActive = true;
-      }
-      QgsChunkNode *const *children = node->children();
-      for ( int i = 0; i < node->childCount(); ++i )
-        pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
-    }
     else
     {
-      // error is not acceptable but children are not ready either - still use parent but request children
-      becomesActive = true;
+      // This chunk does not have acceptable error (it does not provide enough detail)
+      // so we'll try to use its children. The exact logic depends on whether the entity
+      // has additive strategy. With additive strategy, child nodes should be rendered
+      // it addition to the parent nodes (rather than child nodes replacing parent entirely)
 
-      QgsChunkNode *const *children = node->children();
-      for ( int i = 0; i < node->childCount(); ++i )
+      if ( mAdditiveStrategy )
       {
-        double dist = children[i]->bbox().center().distanceToPoint( state.cameraPos );
-        residencyRequests.push_back( ResidencyRequest( children[i], dist, children[i]->level() ) );
+        // Logic of the additive strategy:
+        // - children that are not loaded will get requested to be loaded
+        // - children that are already loaded get recursively visited
+        becomesActive = true;
+
+        QgsChunkNode *const *children = node->children();
+        for ( int i = 0; i < node->childCount(); ++i )
+        {
+          if ( children[i]->entity() || !children[i]->hasData() )
+          {
+            // chunk is resident - let's visit it recursively
+            pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
+          }
+          else
+          {
+            // chunk is not yet resident - let's try to load it
+            if ( Qgs3DUtils::isCullable( children[i]->bbox(), state.viewProjectionMatrix ) )
+              continue;
+
+            double dist = children[i]->bbox().center().distanceToPoint( state.cameraPos );
+            residencyRequests.push_back( ResidencyRequest( children[i], dist, children[i]->level() ) );
+          }
+        }
+      }
+      else
+      {
+        // Logic of the replace strategy:
+        // - if we have all children loaded, we use them instead of the parent node
+        // - if we do not have all children loaded, we request to load them and keep using the parent for the time being
+        if ( node->allChildChunksResident( mCurrentTime ) )
+        {
+          QgsChunkNode *const *children = node->children();
+          for ( int i = 0; i < node->childCount(); ++i )
+            pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
+        }
+        else
+        {
+          becomesActive = true;
+
+          QgsChunkNode *const *children = node->children();
+          for ( int i = 0; i < node->childCount(); ++i )
+          {
+            double dist = children[i]->bbox().center().distanceToPoint( state.cameraPos );
+            residencyRequests.push_back( ResidencyRequest( children[i], dist, children[i]->level() ) );
+          }
+        }
       }
     }
+
     if ( becomesActive )
     {
       mActiveNodes << node;
