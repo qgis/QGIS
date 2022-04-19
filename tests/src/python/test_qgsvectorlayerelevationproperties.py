@@ -14,6 +14,7 @@ import qgis  # NOQA
 
 from qgis.core import (
     Qgis,
+    QgsVectorLayer,
     QgsVectorLayerElevationProperties,
     QgsReadWriteContext,
     QgsLineSymbol,
@@ -23,6 +24,7 @@ from qgis.core import (
     QgsMapLayerElevationProperties,
     QgsPropertyCollection
 )
+from utilities import unitTestDataPath
 
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -121,6 +123,19 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(
             props_clone.dataDefinedProperties().property(QgsMapLayerElevationProperties.ZOffset).asExpression(),
             '9')
+
+    def test_defaults(self):
+        # a layer without z values present should default to terrain clamping mode
+        vl = QgsVectorLayer(unitTestDataPath() + '/3d/trees.shp')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Terrain)
+
+        # a layer WITH z values present should default to relative mode
+        vl = QgsVectorLayer(unitTestDataPath() + '/3d/points_with_z.shp')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Relative)
 
 
 if __name__ == '__main__':

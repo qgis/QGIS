@@ -90,6 +90,13 @@ Reads the elevation properties from a DOM ``element`` previously written by :py:
 .. seealso:: :py:func:`writeXml`
 %End
 
+    virtual void setDefaultsFromLayer( QgsMapLayer *layer );
+%Docstring
+Sets default properties based on sensible choices for the given map ``layer``.
+
+.. versionadded:: 3.26
+%End
+
     virtual QgsMapLayerElevationProperties *clone() const = 0 /Factory/;
 %Docstring
 Creates a clone of the properties.

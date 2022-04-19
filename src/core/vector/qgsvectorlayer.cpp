@@ -214,6 +214,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
       // selections
       mTemporalProperties->guessDefaultsFromFields( mFields );
     }
+
+    mElevationProperties->setDefaultsFromLayer( this );
   }
 
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { triggerRepaint(); } );
