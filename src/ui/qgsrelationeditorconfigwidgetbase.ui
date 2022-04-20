@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>274</width>
-    <height>215</height>
+    <width>472</width>
+    <height>288</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,72 +16,72 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QCheckBox" name="mShowFirstFeature">
-     <property name="text">
-      <string>Automatically select first child feature and show attribute form</string>
-     </property>
      <property name="toolTip">
       <string>Unchecking this can lead to faster loading time of attribute forms and avoid unnecessary queries.</string>
+     </property>
+     <property name="text">
+      <string>Automatically select first child feature and show attribute form</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="mButtonsVisibility">
      <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>4</verstretch>
-        </sizepolicy>
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>4</verstretch>
+      </sizepolicy>
      </property>
      <property name="title">
-        <string>Toolbar settings</string>
+      <string>Toolbar buttons</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QCheckBox" name="mRelationShowLinkCheckBox">
         <property name="text">
-         <string>Show link button</string>
+         <string>Link child feature</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="mRelationShowUnlinkCheckBox">
         <property name="text">
-         <string>Show unlink button</string>
+         <string>Unlink child feature</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="mRelationShowSaveChildEditsCheckBox">
         <property name="text">
-         <string>Show save child layer edits button</string>
+         <string>Save child layer edits</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="mRelationShowAddChildCheckBox">
         <property name="text">
-         <string>Add child feature button</string>
+         <string>Add child feature</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="mRelationShowDuplicateChildFeatureCheckBox">
         <property name="text">
-         <string>Duplicate child feature button</string>
+         <string>Duplicate child feature</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="mRelationDeleteChildFeatureCheckBox">
         <property name="text">
-         <string>Delete child feature button</string>
+         <string>Delete child feature</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="mRelationShowZoomToFeatureCheckBox">
         <property name="text">
-         <string>Zoom to child feature button</string>
+         <string>Zoom to child feature</string>
         </property>
        </widget>
       </item>
