@@ -167,8 +167,10 @@ void Qgs3DMapCanvas::resetView( bool resetExtent )
 {
   if ( resetExtent )
   {
-    if ( map()->terrainGenerator() && ( map()->terrainGenerator()->type() == QgsTerrainGenerator::Flat ||
-                                        map()->terrainGenerator()->type() == QgsTerrainGenerator::Online ) )
+    if ( map()->terrainRenderingEnabled()
+         && map()->terrainGenerator()
+         && ( map()->terrainGenerator()->type() == QgsTerrainGenerator::Flat ||
+              map()->terrainGenerator()->type() == QgsTerrainGenerator::Online ) )
     {
       const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
       QgsCoordinateTransform ct( extent.crs(), map()->crs(), QgsProject::instance()->transformContext() );
@@ -182,14 +184,13 @@ void Qgs3DMapCanvas::resetView( bool resetExtent )
       {
         rect = extent;
       }
-      if ( map()->terrainGenerator() )
-        map()->terrainGenerator()->setExtent( rect );
+      map()->terrainGenerator()->setExtent( rect );
 
       const QgsRectangle te = mScene->sceneExtent();
       const QgsPointXY center = te.center();
       map()->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
     }
-    if ( !map()->terrainGenerator() )
+    if ( !map()->terrainRenderingEnabled() || !map()->terrainGenerator() )
     {
       const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
       QgsCoordinateTransform ct( extent.crs(), map()->crs(), QgsProject::instance()->transformContext() );

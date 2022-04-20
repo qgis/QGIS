@@ -321,7 +321,7 @@ float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altCl
     case Qgis::AltitudeClamping::Terrain:
     {
       const QgsPointXY pt = altBind == Qgis::AltitudeBinding::Vertex ? p : centroid;
-      terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
+      terrainZ = map.terrainRenderingEnabled() && map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
       break;
     }
 
@@ -371,7 +371,7 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClampi
             break;
         }
 
-        terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
+        terrainZ = map.terrainRenderingEnabled() && map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
         break;
       }
 
@@ -465,7 +465,7 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DMapSetti
     {
       geomZ = pt.z();
     }
-    const float terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale() : 0;
+    const float terrainZ = map.terrainRenderingEnabled() && map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale() : 0;
     float h = 0.0f;
     switch ( altClamp )
     {
