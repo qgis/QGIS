@@ -90,8 +90,17 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
               {
                 if ( QgsSingleSymbolRenderer *renderer = dynamic_cast< QgsSingleSymbolRenderer * >( qobject_cast< QgsVectorLayer * >( layer )->renderer() ) )
                 {
-                  symbol->setColor( renderer->symbol()->color() );
-                  symbol->setOpacity( renderer->symbol()->opacity() );
+                  if ( renderer->symbol()->type() == symbol->type() )
+                  {
+                    // take the whole renderer symbol if we can
+                    symbol.reset( renderer->symbol()->clone() );
+                  }
+                  else
+                  {
+                    // otherwise emulate what happens when rendering the actual chart and just copy the color and opacity
+                    symbol->setColor( renderer->symbol()->color() );
+                    symbol->setOpacity( renderer->symbol()->opacity() );
+                  }
                 }
                 else
                 {
