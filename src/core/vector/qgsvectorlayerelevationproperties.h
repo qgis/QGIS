@@ -56,6 +56,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     QString htmlSummary() const override;
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+    bool showByDefaultInElevationProfilePlots() const override;
 
     /**
      * Returns the altitude clamping method, which dictates how feature heights are interpreted

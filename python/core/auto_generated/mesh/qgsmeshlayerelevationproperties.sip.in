@@ -44,6 +44,8 @@ Constructor for QgsMeshLayerElevationProperties, with the specified ``parent`` o
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
+    virtual bool showByDefaultInElevationProfilePlots() const;
+
 
     QgsLineSymbol *profileLineSymbol() const;
 %Docstring

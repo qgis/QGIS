@@ -227,6 +227,16 @@ QgsDoubleRange QgsVectorLayerElevationProperties::calculateZRange( QgsMapLayer *
   return QgsDoubleRange();
 }
 
+bool QgsVectorLayerElevationProperties::showByDefaultInElevationProfilePlots() const
+{
+  // show by default if the features aren't just directly clamped onto the terrain with
+  // no other changes
+  return !qgsDoubleNear( mZOffset, 0 )
+         || !qgsDoubleNear( mZScale, 1 )
+         || mEnableExtrusion
+         || mClamping != Qgis::AltitudeClamping::Terrain;
+}
+
 QgsLineSymbol *QgsVectorLayerElevationProperties::profileLineSymbol() const
 {
   return mProfileLineSymbol.get();

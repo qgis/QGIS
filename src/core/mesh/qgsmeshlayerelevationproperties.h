@@ -52,6 +52,7 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     QgsMeshLayerElevationProperties *clone() const override SIP_FACTORY;
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+    bool showByDefaultInElevationProfilePlots() const override;
 
     /**
      * Returns the line symbol used to render the mesh profile in elevation profile plots.

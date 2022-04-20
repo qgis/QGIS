@@ -49,6 +49,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     QString htmlSummary() const override;
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+    bool showByDefaultInElevationProfilePlots() const override;
 
 };
 

@@ -42,6 +42,8 @@ Constructor for QgsPointCloudLayerElevationProperties, with the specified ``pare
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
+    virtual bool showByDefaultInElevationProfilePlots() const;
+
 
 };
 

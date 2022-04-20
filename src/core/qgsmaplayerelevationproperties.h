@@ -159,6 +159,17 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
     /**
+     * Returns TRUE if the layer should be visible by default in newly created elevation
+     * profile plots.
+     *
+     * Subclasses should override this with logic which determines whether the layer is
+     * likely desirable to be initially checked in these plots.
+     *
+     * \since QGIS 3.26
+     */
+    virtual bool showByDefaultInElevationProfilePlots() const;
+
+    /**
      * Returns the z offset, which is a fixed offset amount which should be added to z values from
      * the layer.
      *

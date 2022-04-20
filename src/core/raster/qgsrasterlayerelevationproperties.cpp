@@ -99,6 +99,11 @@ QgsDoubleRange QgsRasterLayerElevationProperties::calculateZRange( QgsMapLayer *
   return QgsDoubleRange();
 }
 
+bool QgsRasterLayerElevationProperties::showByDefaultInElevationProfilePlots() const
+{
+  return mEnabled;
+}
+
 QgsLineSymbol *QgsRasterLayerElevationProperties::profileLineSymbol() const
 {
   return mProfileLineSymbol.get();
