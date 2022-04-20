@@ -253,6 +253,7 @@ Returns the elevation offset of the terrain (used to move the terrain up or down
 %End
 
 
+
     void setTerrainShadingEnabled( bool enabled );
 %Docstring
 Sets whether terrain shading is enabled.
@@ -585,7 +586,7 @@ Sets whether FPS counter label is enabled
 .. versionadded:: 3.18
 %End
 
-    bool terrainRenderingEnabled();
+    bool terrainRenderingEnabled() const;
 %Docstring
 Returns whether the 2D terrain surface will be rendered.
 

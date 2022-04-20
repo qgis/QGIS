@@ -320,7 +320,7 @@ void Qgs3DMapConfigWidget::apply()
     break;
   }
 
-  if ( needsUpdateOrigin && mMap->terrainGenerator() )
+  if ( needsUpdateOrigin && mMap->terrainRenderingEnabled() && mMap->terrainGenerator() )
   {
     const QgsRectangle te = m3DMapCanvas->scene()->sceneExtent();
 

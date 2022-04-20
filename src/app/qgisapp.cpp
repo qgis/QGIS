@@ -16635,7 +16635,7 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
   // these things are not saved in project
   map->setSelectionColor( mMapCanvas->selectionColor() );
   map->setBackgroundColor( mMapCanvas->canvasColor() );
-  if ( map->terrainGenerator() && map->terrainGenerator()->type() == QgsTerrainGenerator::Flat )
+  if ( map->terrainRenderingEnabled() && map->terrainGenerator() && map->terrainGenerator()->type() == QgsTerrainGenerator::Flat )
   {
     QgsFlatTerrainGenerator *flatTerrainGen = static_cast<QgsFlatTerrainGenerator *>( map->terrainGenerator() );
     flatTerrainGen->setExtent( mMapCanvas->projectExtent() );

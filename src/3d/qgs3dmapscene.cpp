@@ -607,7 +607,7 @@ void Qgs3DMapScene::createTerrain()
 
 void Qgs3DMapScene::createTerrainDeferred()
 {
-  if ( mMap.terrainGenerator() )
+  if ( mMap.terrainRenderingEnabled() && mMap.terrainGenerator() )
   {
     double tile0width = mMap.terrainGenerator()->extent().width();
     int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
@@ -1213,13 +1213,16 @@ QgsRectangle Qgs3DMapScene::sceneExtent()
     extent.combineExtentWith( layerExtent );
   }
 
-  if ( QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator() )
+  if ( mMap.terrainRenderingEnabled() )
   {
-    QgsRectangle terrainExtent = terrainGenerator->extent();
-    QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
-    terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
-    terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
-    extent.combineExtentWith( terrainExtent );
+    if ( QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator() )
+    {
+      QgsRectangle terrainExtent = terrainGenerator->extent();
+      QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
+      terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
+      terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
+      extent.combineExtentWith( terrainExtent );
+    }
   }
 
   return extent;
