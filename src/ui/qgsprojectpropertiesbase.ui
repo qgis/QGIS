@@ -1490,8 +1490,8 @@
          </widget>
          <widget class="QWidget" name="mTab_DataSources">
           <layout class="QGridLayout" name="mTab_DataSourcesGridLayout">
-           <item row="1" column="0" colspan="2">
-            <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
+           <item row="1" column="0">
+            <widget class="QgsCollapsibleGroupBox" name="mLayerCapabilitiesGrpBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -1554,8 +1554,8 @@
              </layout>
             </widget>
            </item>
-           <item row="0" column="0" colspan="2">
-            <widget class="QGroupBox" name="groupBox_3">
+           <item row="0" column="0">
+            <widget class="QGroupBox" name="mEditingBehaviorGrpBox">
              <property name="title">
               <string>Editing Behavior</string>
              </property>
@@ -1570,7 +1570,20 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="2">
+              <item row="0" column="2">
+               <spacer name="horizontalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0" colspan="3">
                <widget class="QCheckBox" name="mEvaluateDefaultValues">
                 <property name="toolTip">
                  <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres, GPKG, spatialite and oracle.</string>
@@ -1580,7 +1593,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0" colspan="2">
+              <item row="2" column="0" colspan="3">
                <widget class="QCheckBox" name="mCheckRememberEditStatus">
                 <property name="text">
                  <string>Remember editable layer status between sessions</string>
@@ -1590,8 +1603,8 @@
              </layout>
             </widget>
            </item>
-           <item row="2" column="0" colspan="2">
-            <widget class="QGroupBox" name="groupBox_8">
+           <item row="2" column="0">
+            <widget class="QGroupBox" name="mDatasourcesAdvancedSettingsGrpBox">
              <property name="title">
               <string>Advanced Settings</string>
              </property>
@@ -3472,7 +3485,6 @@
   <tabstop>mCalculateFromLayerButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

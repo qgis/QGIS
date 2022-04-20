@@ -71,6 +71,11 @@ void QgsMapToolProfileCurve::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     emit captureStarted();
 }
 
+QgsMapLayer *QgsMapToolProfileCurve::layer() const
+{
+  return nullptr; // we always want to run in map crs, regardless of active layer
+}
+
 void QgsMapToolProfileCurve::lineCaptured( const QgsCurve *line )
 {
   const QgsGeometry geom( line->clone() );
