@@ -186,16 +186,7 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
                            QgsOracleConn::quotedValue( "\" }" )
                          );
 
-  // TODO add update if not exist
-  // QString sql( "INSERT INTO %1.qgis_projects VALUES (%2, %3, E'\\\\x" );
-  // sql = sql.arg( QgsOracleConn::quotedIdentifier( projectUri.schemaName ),
-  //                QgsOracleConn::quotedValue( projectUri.projectName ),
-  //                metadataExpr  // no need to quote: already quoted
-  //              );
-  // sql += QString::fromLatin1( content.toHex() );
-  // sql += "') ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata;";
-
-
+  // Upsert into projects table
   QSqlQuery qry( *pconn.get() );
   qry.prepare( QStringLiteral( "MERGE INTO %1.\"qgis_projects\" "
                                "USING dual "
@@ -288,8 +279,6 @@ QString QgsOracleProjectStorage::encodeUri( const QgsOracleProjectUri &postUri )
     urlQuery.addQueryItem( "service", postUri.connInfo.service() );
   if ( !postUri.connInfo.authConfigId().isEmpty() )
     urlQuery.addQueryItem( "authcfg", postUri.connInfo.authConfigId() );
-  if ( postUri.connInfo.sslMode() != QgsDataSourceUri::SslPrefer )
-    urlQuery.addQueryItem( "sslmode", QgsDataSourceUri::encodeSslMode( postUri.connInfo.sslMode() ) );
 
   urlQuery.addQueryItem( "dbname", postUri.connInfo.database() );
 
@@ -315,14 +304,17 @@ QgsOracleProjectUri QgsOracleProjectStorage::decodeUri( const QString &uri )
   QString port = u.port() != -1 ? QString::number( u.port() ) : QString();
   QString username = u.userName();
   QString password = u.password();
-  QgsDataSourceUri::SslMode sslMode = QgsDataSourceUri::decodeSslMode( urlQuery.queryItemValue( "sslmode" ) );
   QString authConfigId = urlQuery.queryItemValue( "authcfg" );
   QString dbName = urlQuery.queryItemValue( "dbname" );
   QString service = urlQuery.queryItemValue( "service" );
   if ( !service.isEmpty() )
-    projectUri.connInfo.setConnection( service, dbName, username, password, sslMode, authConfigId );
+    projectUri.connInfo.setConnection( service, dbName, username, password,
+                                       QgsDataSourceUri::SslPrefer /* meaningless for oracle */,
+                                       authConfigId );
   else
-    projectUri.connInfo.setConnection( host, port, dbName, username, password, sslMode, authConfigId );
+    projectUri.connInfo.setConnection( host, port, dbName, username, password,
+                                       QgsDataSourceUri::SslPrefer /* meaningless for oracle */,
+                                       authConfigId );
 
   projectUri.owner = urlQuery.queryItemValue( "schema" );
   projectUri.projectName = urlQuery.queryItemValue( "project" );

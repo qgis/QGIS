@@ -60,7 +60,7 @@ QgsOracleProjectStorageDialog::QgsOracleProjectStorageDialog( bool saving, QWidg
   mCboConnection->addItems( QgsOracleConn::connectionList() );
 
   // If possible, set the item currently displayed database
-  QString toSelect = QgsOracleConn::selectedConnection();
+  const QString toSelect = QgsOracleConn::selectedConnection();
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
   populateProjects();
 
@@ -90,10 +90,10 @@ void QgsOracleProjectStorageDialog::populateOwners()
   mCboOwner->clear();
   mCboProject->clear();
 
-  QString name = mCboConnection->currentText();
-  QgsDataSourceUri uri = QgsOracleConn::connUri( name );
+  const QString name = mCboConnection->currentText();
+  const QgsDataSourceUri uri = QgsOracleConn::connUri( name );
 
-  bool projectsAllowed = QgsOracleConn::allowProjectsInDatabase( name );
+  const bool projectsAllowed = QgsOracleConn::allowProjectsInDatabase( name );
   mLblProjectsNotAllowed->setVisible( !projectsAllowed );
   if ( !projectsAllowed )
     return;
@@ -125,7 +125,7 @@ void QgsOracleProjectStorageDialog::populateProjects()
   mCboProject->clear();
   mExistingProjects.clear();
 
-  QString uri = currentProjectUri();
+  const QString uri = currentProjectUri();
   QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "oracle" ) );
   Q_ASSERT( storage );
   mExistingProjects = storage->listProjects( uri );
@@ -143,9 +143,9 @@ void QgsOracleProjectStorageDialog::onOK()
   {
     if ( mExistingProjects.contains( mCboProject->currentText() ) )
     {
-      int res = QMessageBox::question( this, tr( "Overwrite project" ),
-                                       tr( "A project with the same name already exists. Would you like to overwrite it?" ),
-                                       QMessageBox::Yes | QMessageBox::No );
+      const int res = QMessageBox::question( this, tr( "Overwrite project" ),
+                                             tr( "A project with the same name already exists. Would you like to overwrite it?" ),
+                                             QMessageBox::Yes | QMessageBox::No );
       if ( res != QMessageBox::Yes )
         return;
     }
@@ -161,9 +161,9 @@ void QgsOracleProjectStorageDialog::projectChanged()
 
 void QgsOracleProjectStorageDialog::removeProject()
 {
-  int res = QMessageBox::question( this, tr( "Remove project" ),
-                                   tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ),
-                                   QMessageBox::Yes | QMessageBox::No );
+  const int res = QMessageBox::question( this, tr( "Remove project" ),
+                                         tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ),
+                                         QMessageBox::Yes | QMessageBox::No );
   if ( res != QMessageBox::Yes )
     return;
 
