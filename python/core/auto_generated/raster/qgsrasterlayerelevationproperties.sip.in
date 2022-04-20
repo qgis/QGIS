@@ -43,6 +43,8 @@ Constructor for QgsRasterLayerElevationProperties, with the specified ``parent``
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
+    virtual bool showByDefaultInElevationProfilePlots() const;
+
 
     bool isEnabled() const;
 %Docstring

@@ -46,6 +46,8 @@ Constructor for QgsVectorLayerElevationProperties, with the specified ``parent``
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
+    virtual bool showByDefaultInElevationProfilePlots() const;
+
 
     Qgis::AltitudeClamping clamping() const;
 %Docstring

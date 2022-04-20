@@ -82,3 +82,8 @@ QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLay
 
   return QgsDoubleRange();
 }
+
+bool QgsPointCloudLayerElevationProperties::showByDefaultInElevationProfilePlots() const
+{
+  return true;
+}

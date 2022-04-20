@@ -129,6 +129,17 @@ the settings defined by this elevation properties object.
 May return an infinite range if the extent could not be calculated.
 %End
 
+    virtual bool showByDefaultInElevationProfilePlots() const;
+%Docstring
+Returns ``True`` if the layer should be visible by default in newly created elevation
+profile plots.
+
+Subclasses should override this with logic which determines whether the layer is
+likely desirable to be initially checked in these plots.
+
+.. versionadded:: 3.26
+%End
+
     double zOffset() const;
 %Docstring
 Returns the z offset, which is a fixed offset amount which should be added to z values from

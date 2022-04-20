@@ -137,6 +137,26 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
 
         self.assertEqual(vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Relative)
 
+    def test_show_by_default(self):
+        props = QgsVectorLayerElevationProperties(None)
+        self.assertFalse(props.showByDefaultInElevationProfilePlots())
+
+        props = QgsVectorLayerElevationProperties(None)
+        props.setZOffset(1)
+        self.assertTrue(props.showByDefaultInElevationProfilePlots())
+
+        props = QgsVectorLayerElevationProperties(None)
+        props.setZScale(2)
+        self.assertTrue(props.showByDefaultInElevationProfilePlots())
+
+        props = QgsVectorLayerElevationProperties(None)
+        props.setExtrusionEnabled(True)
+        self.assertTrue(props.showByDefaultInElevationProfilePlots())
+
+        props = QgsVectorLayerElevationProperties(None)
+        props.setClamping(Qgis.AltitudeClamping.Absolute)
+        self.assertTrue(props.showByDefaultInElevationProfilePlots())
+
 
 if __name__ == '__main__':
     unittest.main()

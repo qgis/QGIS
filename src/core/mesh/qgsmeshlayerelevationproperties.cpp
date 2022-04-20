@@ -91,6 +91,11 @@ QgsDoubleRange QgsMeshLayerElevationProperties::calculateZRange( QgsMapLayer * )
   return QgsDoubleRange();
 }
 
+bool QgsMeshLayerElevationProperties::showByDefaultInElevationProfilePlots() const
+{
+  return true;
+}
+
 QgsLineSymbol *QgsMeshLayerElevationProperties::profileLineSymbol() const
 {
   return mProfileLineSymbol.get();

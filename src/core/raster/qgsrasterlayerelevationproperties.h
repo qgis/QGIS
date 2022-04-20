@@ -51,6 +51,7 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
     QString htmlSummary() const override;
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+    bool showByDefaultInElevationProfilePlots() const override;
 
     /**
      * Returns TRUE if the elevation properties are enabled, i.e. the raster layer values represent an elevation surface.

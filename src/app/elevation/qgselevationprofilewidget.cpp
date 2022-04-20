@@ -43,6 +43,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgselevationprofilelayertreeview.h"
+#include "qgsmaplayerelevationproperties.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -325,7 +326,8 @@ void QgsElevationProfileWidget::populateInitialLayers()
   std::reverse( sortedLayers.begin(), sortedLayers.end() );
   for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
   {
-    mLayerTree->addLayer( layer );
+    QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
+    node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
   }
 }
 
