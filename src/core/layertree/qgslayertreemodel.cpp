@@ -1530,6 +1530,9 @@ QVariant QgsLayerTreeModel::legendNodeData( QgsLayerTreeModelLegendNode *node, i
 {
   if ( role == Qt::CheckStateRole && !testFlag( AllowLegendChangeState ) )
     return QVariant();
+  else if ( role == Qt::DecorationRole )
+    return QIcon( qvariant_cast<QPixmap>( node->data( Qt::DecorationRole ) ) );
+
   return node->data( role );
 }
 
