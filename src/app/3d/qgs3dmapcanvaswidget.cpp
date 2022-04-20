@@ -125,6 +125,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   toolBar->addWidget( mBtnMapThemes );
 
+  toolBar->addSeparator();
+
   // Options Menu
   mOptionsMenu = new QMenu( this );
 
@@ -154,6 +156,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mCanvas->map()->setEyeDomeLightingEnabled( enabled );
   } );
   mOptionsMenu->addAction( mActionEnableEyeDome );
+  mOptionsMenu->addSeparator();
 
   mActionSync2DNavTo3D = new QAction( tr( "2D Map View Follows 3D Camera" ), this );
   mActionSync2DNavTo3D->setCheckable( true );
