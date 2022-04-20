@@ -101,7 +101,6 @@ class TestPyQgsProjectStorageBase:
         time_diff = time_now.secsTo(time_project)
         self.assertTrue(abs(time_diff) < 10)
 
-
         # try to update the project
         vl1.setName("testNew")
         prj.write()
