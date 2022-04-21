@@ -3009,7 +3009,7 @@ void QgsOptions::customizeBearingFormat()
 
 void QgsOptions::customizeCoordinateFormat()
 {
-  QgsGeographicCoordinateNumericFormatDialog dlg( mCoordinateFormat.get(), this );
+  QgsGeographicCoordinateNumericFormatDialog dlg( mCoordinateFormat.get(), false, this );
   dlg.setWindowTitle( tr( "Coordinate Format" ) );
   if ( dlg.exec() )
   {

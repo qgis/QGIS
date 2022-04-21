@@ -181,7 +181,7 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatWidget : public QgsNumericF
     /**
      * Constructor for QgsGeographicCoordinateNumericFormatWidget, initially showing the specified \a format.
      */
-    QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsGeographicCoordinateNumericFormatWidget() override;
 
     void setFormat( QgsNumericFormat *format ) override;
@@ -210,7 +210,7 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatDialog : public QDialog
     /**
      * Constructor for QgsGeographicCoordinateNumericFormatDialog, initially showing the specified \a format.
      */
-    QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the format defined by the current settings in the dialog.

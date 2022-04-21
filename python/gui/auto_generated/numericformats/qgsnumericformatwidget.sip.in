@@ -154,7 +154,7 @@ A widget which allow control over the properties of a :py:class:`QgsGeographicCo
 %End
   public:
 
-    QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+    QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGeographicCoordinateNumericFormatWidget, initially showing the specified ``format``.
 %End
@@ -182,7 +182,7 @@ A dialog which allow control over the properties of a :py:class:`QgsGeographicCo
 %End
   public:
 
-    QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+    QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGeographicCoordinateNumericFormatDialog, initially showing the specified ``format``.
 %End

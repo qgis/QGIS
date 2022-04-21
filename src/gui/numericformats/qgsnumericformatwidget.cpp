@@ -225,7 +225,7 @@ QgsBearingNumericFormat *QgsBearingNumericFormatDialog::format()
 // QgsGeographicCoordinateNumericFormatWidget
 //
 
-QgsGeographicCoordinateNumericFormatWidget::QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent )
+QgsGeographicCoordinateNumericFormatWidget::QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, bool hidePrecisionControl, QWidget *parent )
   : QgsNumericFormatWidget( parent )
 {
   setupUi( this );
@@ -235,6 +235,11 @@ QgsGeographicCoordinateNumericFormatWidget::QgsGeographicCoordinateNumericFormat
   mFormatComboBox->addItem( QObject::tr( "Degrees, Minutes" ), static_cast< int >( QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutes ) );
   mFormatComboBox->addItem( QObject::tr( "Degrees, Minutes, Seconds" ), static_cast< int >( QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutesSeconds ) );
 
+  if ( hidePrecisionControl )
+  {
+    mLabelDecimalPlaces->hide();
+    mDecimalsSpinBox->hide();
+  }
   setFormat( format->clone() );
 
   connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
@@ -305,11 +310,11 @@ QgsNumericFormat *QgsGeographicCoordinateNumericFormatWidget::format()
 // QgsGeographicCoordinateNumericFormatDialog
 //
 
-QgsGeographicCoordinateNumericFormatDialog::QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, QWidget *parent )
+QgsGeographicCoordinateNumericFormatDialog::QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, bool hidePrecisionControl, QWidget *parent )
   : QDialog( parent )
 {
   setLayout( new QVBoxLayout() );
-  mWidget = new QgsGeographicCoordinateNumericFormatWidget( format );
+  mWidget = new QgsGeographicCoordinateNumericFormatWidget( format, hidePrecisionControl );
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );

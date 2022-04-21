@@ -2733,7 +2733,7 @@ void QgsProjectProperties::customizeBearingFormat()
 
 void QgsProjectProperties::customizeGeographicCoordinateFormat()
 {
-  QgsGeographicCoordinateNumericFormatDialog dlg( mGeographicCoordinateFormat.get(), this );
+  QgsGeographicCoordinateNumericFormatDialog dlg( mGeographicCoordinateFormat.get(), true, this );
   dlg.setWindowTitle( tr( "Coordinate Format" ) );
   if ( dlg.exec() )
   {
