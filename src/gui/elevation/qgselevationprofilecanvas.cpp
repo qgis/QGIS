@@ -690,6 +690,12 @@ void QgsElevationProfileCanvas::zoomFull()
     mPlotItem->setYMinimum( 0 );
     mPlotItem->setYMaximum( 10 );
   }
+  else if ( qgsDoubleNear( zRange.lower(), zRange.upper(), 0.0000001 ) )
+  {
+    // corner case ... a zero height plot! Just pick an arbitrary +/- 5 height range.
+    mPlotItem->setYMinimum( zRange.lower() - 5 );
+    mPlotItem->setYMaximum( zRange.lower() + 5 );
+  }
   else
   {
     // add 5% margin to height range
