@@ -392,7 +392,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
       // This chunk does not have acceptable error (it does not provide enough detail)
       // so we'll try to use its children. The exact logic depends on whether the entity
       // has additive strategy. With additive strategy, child nodes should be rendered
-      // it addition to the parent nodes (rather than child nodes replacing parent entirely)
+      // in addition to the parent nodes (rather than child nodes replacing parent entirely)
 
       if ( mAdditiveStrategy )
       {
