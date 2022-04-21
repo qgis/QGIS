@@ -163,16 +163,24 @@ void TestQgsTessellator::testBasic()
   polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
 
   QgsPolygon polygonZ;
-  polygonZ.fromWkt( "POLYGONZ((1 1 0, 2 1 0, 3 2 0, 1 2 0, 1 1 0))" );
+  polygonZ.fromWkt( "POLYGONZ((1 1 3, 2 1 3, 3 2 3, 1 2 3, 1 1 3))" );
 
   QList<TriangleCoords> tc;
   tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
   tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
 
+  QList<TriangleCoords> tcZ;
+  tcZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ) );
+  tcZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ) );
+
   const QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
   QList<TriangleCoords> tcNormals;
   tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
   tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
+
+  QList<TriangleCoords> tcNormalsZ;
+  tcNormalsZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ), up, up, up );
+  tcNormalsZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), up, up, up );
 
   // without normals
 
@@ -180,9 +188,15 @@ void TestQgsTessellator::testBasic()
   t.addPolygon( polygon, 0 );
   QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
 
+  QCOMPARE( t.zMinimum(), 0 );
+  QCOMPARE( t.zMaximum(), 0 );
+
   QgsTessellator tZ( 0, 0, false );
   tZ.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tZ.data(), false, tc ) );
+  QVERIFY( checkTriangleOutput( tZ.data(), false, tcZ ) );
+
+  QCOMPARE( tZ.zMinimum(), 3 );
+  QCOMPARE( tZ.zMaximum(), 3 );
 
   // with normals
 
@@ -190,9 +204,15 @@ void TestQgsTessellator::testBasic()
   tN.addPolygon( polygon, 0 );
   QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
 
+  QCOMPARE( tN.zMinimum(), 0 );
+  QCOMPARE( tN.zMaximum(), 0 );
+
   QgsTessellator tNZ( 0, 0, true );
   tNZ.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tNZ.data(), true, tcNormals ) );
+  QVERIFY( checkTriangleOutput( tNZ.data(), true, tcNormalsZ ) );
+
+  QCOMPARE( tNZ.zMinimum(), 3 );
+  QCOMPARE( tNZ.zMaximum(), 3 );
 }
 
 void TestQgsTessellator::testWalls()

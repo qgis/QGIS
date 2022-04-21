@@ -105,7 +105,7 @@ class CORE_EXPORT QgsTessellator
     float mTextureRotation = 0.0f;
 
     float mZMin = std::numeric_limits<float>::max();
-    float mZMax = std::numeric_limits<float>::min();
+    float mZMax = -std::numeric_limits<float>::max();
 };
 
 #endif // QGSTESSELLATOR_H
