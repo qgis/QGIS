@@ -107,7 +107,7 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
     /**
      * Sets the SQL to \a sql.
      */
-    void setSql( const QString &newSql );
+    void setSql( const QString &sql );
 
     /**
      * Returns the group SQL.

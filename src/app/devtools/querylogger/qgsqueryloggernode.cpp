@@ -238,9 +238,9 @@ QString QgsDatabaseQueryLoggerQueryGroup::statusToString( QgsDatabaseQueryLogger
   return QString();
 }
 
-void QgsDatabaseQueryLoggerQueryGroup::setSql( const QString &newSql )
+void QgsDatabaseQueryLoggerQueryGroup::setSql( const QString &sql )
 {
-  mSql = newSql;
+  mSql = sql;
 }
 
 const QString &QgsDatabaseQueryLoggerQueryGroup::sql() const
