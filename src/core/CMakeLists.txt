@@ -166,6 +166,7 @@ set(QGIS_CORE_SRCS
 
   numericformats/qgsbasicnumericformat.cpp
   numericformats/qgsbearingnumericformat.cpp
+  numericformats/qgscoordinatenumericformat.cpp
   numericformats/qgscurrencynumericformat.cpp
   numericformats/qgsfallbacknumericformat.cpp
   numericformats/qgsfractionnumericformat.cpp
@@ -1576,6 +1577,7 @@ set(QGIS_CORE_HDRS
 
   numericformats/qgsbasicnumericformat.h
   numericformats/qgsbearingnumericformat.h
+  numericformats/qgscoordinatenumericformat.h
   numericformats/qgscurrencynumericformat.h
   numericformats/qgsfallbacknumericformat.h
   numericformats/qgsfractionnumericformat.h

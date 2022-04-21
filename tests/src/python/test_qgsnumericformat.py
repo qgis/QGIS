@@ -22,6 +22,7 @@ from qgis.core import (QgsFallbackNumericFormat,
                        QgsNumericFormatRegistry,
                        QgsNumericFormat,
                        QgsFractionNumericFormat,
+                       QgsGeographicCoordinateNumericFormat,
                        QgsReadWriteContext)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
@@ -768,6 +769,653 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f3.thousandsSeparator(), f.thousandsSeparator())
         self.assertEqual(f3.useDedicatedUnicodeCharacters(), f.useDedicatedUnicodeCharacters())
         self.assertEqual(f3.useUnicodeSuperSubscript(), f.useUnicodeSuperSubscript())
+
+    def testGeographicFormat(self):
+        """ test geographic formatter """
+        f = QgsGeographicCoordinateNumericFormat()
+        f.setNumberDecimalPlaces(3)
+        f.setShowDirectionalSuffix(True)
+        f.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+        f.setShowLeadingZeros(True)
+        f.setShowDegreeLeadingZeros(True)
+
+        f2 = f.clone()
+        self.assertIsInstance(f2, QgsGeographicCoordinateNumericFormat)
+
+        self.assertEqual(f2.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f2.showDirectionalSuffix(), f.showDirectionalSuffix())
+        self.assertEqual(f2.angleFormat(), f.angleFormat())
+        self.assertEqual(f2.showLeadingZeros(), f.showLeadingZeros())
+        self.assertEqual(f2.showDegreeLeadingZeros(), f.showDegreeLeadingZeros())
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        f2.writeXml(elem, doc, QgsReadWriteContext())
+
+        f3 = QgsNumericFormatRegistry().createFromXml(elem, QgsReadWriteContext())
+        self.assertIsInstance(f3, QgsGeographicCoordinateNumericFormat)
+
+        self.assertEqual(f3.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f3.showDirectionalSuffix(), f.showDirectionalSuffix())
+        self.assertEqual(f3.angleFormat(), f.angleFormat())
+        self.assertEqual(f3.showLeadingZeros(), f.showLeadingZeros())
+        self.assertEqual(f3.showDegreeLeadingZeros(), f.showDegreeLeadingZeros())
+
+    def testGeographicCoordinateFormatLongitudeDms(self):
+        """Test formatting longitude as DMS"""
+
+        f = QgsGeographicCoordinateNumericFormat()
+        context = QgsNumericFormatContext()
+        context.setInterpretation(QgsNumericFormatContext.Interpretation.Longitude)
+
+        f.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+        f.setNumberDecimalPlaces(2)
+        f.setShowDirectionalSuffix(True)
+        f.setShowTrailingZeros(True)
+
+        self.assertEqual(f.formatDouble(80, context), "80°0′0.00″E")
+
+        # check precision
+        f.setNumberDecimalPlaces(4)
+        self.assertEqual(f.formatDouble(80, context), "80°0′0.0000″E")
+        self.assertEqual(f.formatDouble(80.12345678, context), "80°7′24.4444″E")
+        f.setNumberDecimalPlaces(0)
+        self.assertEqual(f.formatDouble(80.12345678, context), "80°7′24″E")
+
+        # check if longitudes > 180 or <-180 wrap around
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(370, context),
+                         "10°0′0.00″E")
+        self.assertEqual(f.formatDouble(-370, context),
+                         "10°0′0.00″W")
+        self.assertEqual(f.formatDouble(181, context),
+                         "179°0′0.00″W")
+        self.assertEqual(f.formatDouble(-181, context),
+                         "179°0′0.00″E")
+        self.assertEqual(f.formatDouble(359, context),
+                         "1°0′0.00″W")
+        self.assertEqual(f.formatDouble(-359, context),
+                         "1°0′0.00″E")
+
+        # should be no directional suffixes for 0 degree coordinates
+        self.assertEqual(f.formatDouble(0, context),
+                         "0°0′0.00″")
+        # should also be no directional suffix for 0 degree coordinates within specified precision
+        self.assertEqual(f.formatDouble(-0.000001, context),
+                         "0°0′0.00″")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(
+            f.formatDouble(-0.000001, context),
+            "0°0′0.00360″W")
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(
+            f.formatDouble(0.000001, context),
+            "0°0′0.00″")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(
+            f.formatDouble(0.000001, context),
+            "0°0′0.00360″E")
+
+        # should be no directional suffixes for 180 degree longitudes
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(180, context),
+                         "180°0′0.00″")
+        self.assertEqual(
+            f.formatDouble(179.999999, context),
+            "180°0′0.00″")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(
+            f.formatDouble(179.999999, context),
+            "179°59′59.99640″E")
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(
+            f.formatDouble(180.000001, context),
+            "180°0′0.00″")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(
+            f.formatDouble(180.000001, context),
+            "179°59′59.99640″W")
+
+        # test rounding does not create seconds >= 60
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(
+            f.formatDouble(99.999999, context),
+            "100°0′0.00″E")
+        self.assertEqual(
+            f.formatDouble(89.999999, context),
+            "90°0′0.00″E")
+
+        # test without direction suffix
+        f.setShowDirectionalSuffix(False)
+        self.assertEqual(f.formatDouble(80, context), "80°0′0.00″")
+
+        # test 0 longitude
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(0, context), "0°0′0.00″")
+        # test near zero longitude
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0′0.00″")
+        # should be no "-" prefix for near-zero longitude when rounding to 2 decimal places
+        self.assertEqual(
+            f.formatDouble(-0.000001, context), "0°0′0.00″")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0′0.00360″")
+        self.assertEqual(
+            f.formatDouble(-0.000001, context), "-0°0′0.00360″")
+
+        # test with padding
+        f.setShowLeadingZeros(True)
+        f.setShowDirectionalSuffix(True)
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(80, context), "80°00′00.00″E")
+        self.assertEqual(f.formatDouble(85.44, context), "85°26′24.00″E")
+        self.assertEqual(f.formatDouble(0, context), "0°00′00.00″")
+        self.assertEqual(
+            f.formatDouble(-0.000001, context), "0°00′00.00″")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°00′00.00″")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(
+            f.formatDouble(-0.000001, context), "0°00′00.00360″W")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°00′00.00360″E")
+
+        # with degree padding
+        f.setShowDegreeLeadingZeros(True)
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(100, context), "100°00′00.00″E")
+        self.assertEqual(f.formatDouble(-100, context), "100°00′00.00″W")
+        self.assertEqual(f.formatDouble(80, context), "080°00′00.00″E")
+        self.assertEqual(f.formatDouble(-80, context), "080°00′00.00″W")
+        self.assertEqual(f.formatDouble(5.44, context), "005°26′24.00″E")
+        self.assertEqual(f.formatDouble(-5.44, context), "005°26′24.00″W")
+        f.setShowDirectionalSuffix(False)
+        self.assertEqual(f.formatDouble(100, context), "100°00′00.00″")
+        self.assertEqual(f.formatDouble(-100, context), "-100°00′00.00″")
+        self.assertEqual(f.formatDouble(80, context), "080°00′00.00″")
+        self.assertEqual(f.formatDouble(-80, context), "-080°00′00.00″")
+        self.assertEqual(f.formatDouble(5.44, context), "005°26′24.00″")
+        self.assertEqual(f.formatDouble(-5.44, context), "-005°26′24.00″")
+
+        f.setShowTrailingZeros(False)
+        f.setShowDirectionalSuffix(True)
+        f.setShowDegreeLeadingZeros(False)
+        self.assertEqual(f.formatDouble(5.44, context), "5°26′24″E")
+        self.assertEqual(f.formatDouble(-5.44, context), "5°26′24″W")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5°26′27.64″W")
+
+        context.setDecimalSeparator('☕')
+        self.assertEqual(f.formatDouble(5.44, context), "5°26′24″E")
+        self.assertEqual(f.formatDouble(-5.44, context), "5°26′24″W")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5°26′27☕64″W")
+
+    def testGeographicCoordinateFormatLatitudeDms(self):
+        """Test formatting latitude as DMS"""
+
+        f = QgsGeographicCoordinateNumericFormat()
+        context = QgsNumericFormatContext()
+        context.setInterpretation(QgsNumericFormatContext.Interpretation.Latitude)
+
+        f.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+        f.setNumberDecimalPlaces(2)
+        f.setShowDirectionalSuffix(True)
+        f.setShowTrailingZeros(True)
+
+        self.assertEqual(f.formatDouble(20, context), "20°0′0.00″N")
+
+        # check precision
+        f.setNumberDecimalPlaces(4)
+        self.assertEqual(f.formatDouble(20, context), "20°0′0.0000″N")
+        self.assertEqual(f.formatDouble(20.12345678, context), "20°7′24.4444″N")
+        f.setNumberDecimalPlaces(0)
+        self.assertEqual(f.formatDouble(20.12345678, context), "20°7′24″N")
+
+        # check if latitudes > 90 or <-90 wrap around
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(190, context), "10°0′0.00″N")
+        self.assertEqual(f.formatDouble(-190, context), "10°0′0.00″S")
+        self.assertEqual(f.formatDouble(91, context), "89°0′0.00″S")
+        self.assertEqual(f.formatDouble(-91, context), "89°0′0.00″N")
+        self.assertEqual(f.formatDouble(179, context), "1°0′0.00″S")
+        self.assertEqual(f.formatDouble(-179, context), "1°0′0.00″N")
+
+        # should be no directional suffixes for 0 degree coordinates
+        self.assertEqual(f.formatDouble(0, context), "0°0′0.00″")
+        # should also be no directional suffix for 0 degree coordinates within specified precision
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0′0.00″")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0′0.00360″N")
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°0′0.00″")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°0′0.00360″S")
+
+        # test rounding does not create seconds >= 60
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(89.999999, context), "90°0′0.00″N")
+
+        # test without direction suffix
+        f.setShowDirectionalSuffix(False)
+        self.assertEqual(f.formatDouble(20, context), "20°0′0.00″")
+
+        # test 0 latitude
+        self.assertEqual(f.formatDouble(0, context), "0°0′0.00″")
+        # test near zero lat/long
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0′0.00″")
+        # should be no "-" prefix for near-zero latitude when rounding to 2 decimal places
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°0′0.00″")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0′0.00360″")
+        self.assertEqual(f.formatDouble(-0.000001, context), "-0°0′0.00360″")
+
+        # test with padding
+        f.setNumberDecimalPlaces(2)
+        f.setShowLeadingZeros(True)
+        f.setShowDirectionalSuffix(True)
+        self.assertEqual(f.formatDouble(20, context), "20°00′00.00″N")
+        self.assertEqual(f.formatDouble(85.44, context), "85°26′24.00″N")
+        self.assertEqual(f.formatDouble(0, context), "0°00′00.00″")
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°00′00.00″")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°00′00.00″")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°00′00.00360″S")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°00′00.00360″N")
+
+        # with degree padding
+        f.setShowDegreeLeadingZeros(True)
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(80, context), "80°00′00.00″N")
+        self.assertEqual(f.formatDouble(-80, context), "80°00′00.00″S")
+        self.assertEqual(f.formatDouble(5.44, context), "05°26′24.00″N")
+        self.assertEqual(f.formatDouble(-5.44, context), "05°26′24.00″S")
+        f.setShowDirectionalSuffix(False)
+        self.assertEqual(f.formatDouble(80, context), "80°00′00.00″")
+        self.assertEqual(f.formatDouble(-80, context), "-80°00′00.00″")
+        self.assertEqual(f.formatDouble(5.44, context), "05°26′24.00″")
+        self.assertEqual(f.formatDouble(-5.44, context), "-05°26′24.00″")
+
+        f.setShowTrailingZeros(False)
+        f.setShowDirectionalSuffix(True)
+        f.setShowDegreeLeadingZeros(False)
+        self.assertEqual(f.formatDouble(5.44, context), "5°26′24″N")
+        self.assertEqual(f.formatDouble(-5.44, context), "5°26′24″S")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5°26′27.64″S")
+
+        context.setDecimalSeparator('☕')
+        self.assertEqual(f.formatDouble(5.44, context), "5°26′24″N")
+        self.assertEqual(f.formatDouble(-5.44, context), "5°26′24″S")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5°26′27☕64″S")
+
+    def testGeographicCoordinateFormatLongitudeMinutes(self):
+        """Test formatting longitude as DM"""
+
+        f = QgsGeographicCoordinateNumericFormat()
+        context = QgsNumericFormatContext()
+        context.setInterpretation(QgsNumericFormatContext.Interpretation.Longitude)
+
+        f.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+        f.setNumberDecimalPlaces(2)
+        f.setShowDirectionalSuffix(True)
+        f.setShowTrailingZeros(True)
+
+        self.assertEqual(f.formatDouble(80, context), "80°0.00′E")
+
+        # check precision
+        f.setNumberDecimalPlaces(4)
+        self.assertEqual(f.formatDouble(80, context), "80°0.0000′E")
+        self.assertEqual(f.formatDouble(80.12345678, context), "80°7.4074′E")
+        f.setNumberDecimalPlaces(0)
+        self.assertEqual(f.formatDouble(80.12345678, context), "80°7′E")
+
+        # check if longitudes > 180 or <-180 wrap around
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(370, context), "10°0.00′E")
+        self.assertEqual(f.formatDouble(-370, context), "10°0.00′W")
+        self.assertEqual(f.formatDouble(181, context), "179°0.00′W")
+        self.assertEqual(f.formatDouble(-181, context), "179°0.00′E")
+        self.assertEqual(f.formatDouble(359, context), "1°0.00′W")
+        self.assertEqual(f.formatDouble(-359, context), "1°0.00′E")
+
+        # should be no directional suffixes for 0 degree coordinates
+        self.assertEqual(f.formatDouble(0, context), "0°0.00′")
+        # should also be no directional suffix for 0 degree coordinates within specified precision
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°0.00′")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0.00′")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°0.00006′W")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0.00006′E")
+
+        # test rounding does not create minutes >= 60
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(99.999999, context), "100°0.00′E")
+
+        # should be no directional suffixes for 180 degree longitudes
+        self.assertEqual(f.formatDouble(180, context), "180°0.00′")
+
+        # should also be no directional suffix for 180 degree longitudes within specified precision
+        self.assertEqual(f.formatDouble(180.000001, context), "180°0.00′")
+        self.assertEqual(f.formatDouble(179.999999, context), "180°0.00′")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(180.000001, context), "179°59.99994′W")
+        self.assertEqual(f.formatDouble(179.999999, context), "179°59.99994′E")
+
+        # test without direction suffix
+        f.setNumberDecimalPlaces(2)
+        f.setShowDirectionalSuffix(False)
+        self.assertEqual(f.formatDouble(80, context), "80°0.00′")
+        # test 0 longitude
+        self.assertEqual(f.formatDouble(0, context), "0°0.00′")
+        # test near zero longitude
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0.00′")
+        # should be no "-" prefix for near-zero longitude when rounding to 2 decimal places
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°0.00′")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0.00006′")
+        self.assertEqual(f.formatDouble(-0.000001, context), "-0°0.00006′")
+
+        # test with padding
+        f.setNumberDecimalPlaces(2)
+        f.setShowLeadingZeros(True)
+        f.setShowDirectionalSuffix(True)
+        self.assertEqual(f.formatDouble(80, context), "80°00.00′E")
+        self.assertEqual(f.formatDouble(0, context), "0°00.00′")
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°00.00′")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°00.00′")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°00.00006′W")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°00.00006′E")
+
+        # with degree padding
+        f.setShowDegreeLeadingZeros(True)
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(100, context), "100°00.00′E")
+        self.assertEqual(f.formatDouble(-100, context), "100°00.00′W")
+        self.assertEqual(f.formatDouble(80, context), "080°00.00′E")
+        self.assertEqual(f.formatDouble(-80, context), "080°00.00′W")
+        self.assertEqual(f.formatDouble(5.44, context), "005°26.40′E")
+        self.assertEqual(f.formatDouble(-5.44, context), "005°26.40′W")
+        f.setShowDirectionalSuffix(False)
+        self.assertEqual(f.formatDouble(100, context), "100°00.00′")
+        self.assertEqual(f.formatDouble(-100, context), "-100°00.00′")
+        self.assertEqual(f.formatDouble(80, context), "080°00.00′")
+        self.assertEqual(f.formatDouble(-80, context), "-080°00.00′")
+        self.assertEqual(f.formatDouble(5.44, context), "005°26.40′")
+        self.assertEqual(f.formatDouble(-5.44, context), "-005°26.40′")
+
+        f.setShowTrailingZeros(False)
+        f.setShowDirectionalSuffix(True)
+        f.setShowDegreeLeadingZeros(False)
+        self.assertEqual(f.formatDouble(5.44, context), "5°26.4′E")
+        self.assertEqual(f.formatDouble(-5.44, context), "5°26.4′W")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5°26.46′W")
+
+        context.setDecimalSeparator('☕')
+        self.assertEqual(f.formatDouble(5.44, context), "5°26☕4′E")
+        self.assertEqual(f.formatDouble(-5.44, context), "5°26☕4′W")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5°26☕46′W")
+
+    def testGeographicCoordinateFormatLatitudeMinutes(self):
+        """Test formatting latitude as DM"""
+
+        f = QgsGeographicCoordinateNumericFormat()
+        context = QgsNumericFormatContext()
+        context.setInterpretation(QgsNumericFormatContext.Interpretation.Latitude)
+
+        f.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+        f.setNumberDecimalPlaces(2)
+        f.setShowDirectionalSuffix(True)
+        f.setShowTrailingZeros(True)
+
+        self.assertEqual(f.formatDouble(20, context), "20°0.00′N")
+
+        # check precision
+        f.setNumberDecimalPlaces(4)
+        self.assertEqual(f.formatDouble(20, context), "20°0.0000′N")
+        self.assertEqual(f.formatDouble(20.12345678, context), "20°7.4074′N")
+        f.setNumberDecimalPlaces(0)
+        self.assertEqual(f.formatDouble(20.12345678, context), "20°7′N")
+
+        # check if latitudes > 90 or <-90 wrap around
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(190, context), "10°0.00′N")
+        self.assertEqual(f.formatDouble(-190, context), "10°0.00′S")
+        self.assertEqual(f.formatDouble(91, context), "89°0.00′S")
+        self.assertEqual(f.formatDouble(-91, context), "89°0.00′N")
+        self.assertEqual(f.formatDouble(179, context), "1°0.00′S")
+        self.assertEqual(f.formatDouble(-179, context), "1°0.00′N")
+
+        # should be no directional suffixes for 0 degree coordinates
+        self.assertEqual(f.formatDouble(0, context), "0°0.00′")
+        # should also be no directional suffix for 0 degree coordinates within specified precision
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°0.00′")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0.00′")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°0.00006′S")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0.00006′N")
+
+        # test rounding does not create minutes >= 60
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(79.999999, context), "80°0.00′N")
+
+        # test without direction suffix
+        f.setShowDirectionalSuffix(False)
+        self.assertEqual(f.formatDouble(20, context), "20°0.00′")
+        # test 0 latitude
+        self.assertEqual(f.formatDouble(0, context), "0°0.00′")
+        # test near zero latitude
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0.00′")
+        # should be no "-" prefix for near-zero latitude when rounding to 2 decimal places
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°0.00′")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(0.000001, context), "0°0.00006′")
+        self.assertEqual(f.formatDouble(-0.000001, context), "-0°0.00006′")
+
+        # test with padding
+        f.setNumberDecimalPlaces(2)
+        f.setShowLeadingZeros(True)
+        f.setShowDirectionalSuffix(True)
+        self.assertEqual(f.formatDouble(20, context), "20°00.00′N")
+        self.assertEqual(f.formatDouble(0, context), "0°00.00′")
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°00.00′")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°00.00′")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(-0.000001, context), "0°00.00006′S")
+        self.assertEqual(f.formatDouble(0.000001, context), "0°00.00006′N")
+
+        # with degree padding
+        f.setShowDegreeLeadingZeros(True)
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(80, context), "80°00.00′N")
+        self.assertEqual(f.formatDouble(-80, context), "80°00.00′S")
+        self.assertEqual(f.formatDouble(5.44, context), "05°26.40′N")
+        self.assertEqual(f.formatDouble(-5.44, context), "05°26.40′S")
+        f.setShowDirectionalSuffix(False)
+        self.assertEqual(f.formatDouble(80, context), "80°00.00′")
+        self.assertEqual(f.formatDouble(-80, context), "-80°00.00′")
+        self.assertEqual(f.formatDouble(5.44, context), "05°26.40′")
+        self.assertEqual(f.formatDouble(-5.44, context), "-05°26.40′")
+
+        f.setShowTrailingZeros(False)
+        f.setShowDirectionalSuffix(True)
+        f.setShowDegreeLeadingZeros(False)
+        self.assertEqual(f.formatDouble(5.44, context), "5°26.4′N")
+        self.assertEqual(f.formatDouble(-5.44, context), "5°26.4′S")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5°26.46′S")
+
+        context.setDecimalSeparator('☕')
+        self.assertEqual(f.formatDouble(5.44, context), "5°26☕4′N")
+        self.assertEqual(f.formatDouble(-5.44, context), "5°26☕4′S")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5°26☕46′S")
+
+    def testGeographicCoordinateFormatLongitudeDegrees(self):
+        """Test formatting longitude as decimal degrees"""
+
+        f = QgsGeographicCoordinateNumericFormat()
+        context = QgsNumericFormatContext()
+        context.setInterpretation(QgsNumericFormatContext.Interpretation.Longitude)
+
+        f.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DecimalDegrees)
+        f.setNumberDecimalPlaces(2)
+        f.setShowDirectionalSuffix(True)
+        f.setShowTrailingZeros(True)
+
+        self.assertEqual(f.formatDouble(80, context), "80.00°E")
+
+        # check precision
+        f.setNumberDecimalPlaces(4)
+        self.assertEqual(f.formatDouble(80, context), "80.0000°E")
+        self.assertEqual(f.formatDouble(80.12345678, context), "80.1235°E")
+        f.setNumberDecimalPlaces(0)
+        self.assertEqual(f.formatDouble(80.12345678, context), "80°E")
+
+        # check if longitudes > 180 or <-180 wrap around
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(370, context), "10.00°E")
+        self.assertEqual(f.formatDouble(-370, context), "10.00°W")
+        self.assertEqual(f.formatDouble(181, context), "179.00°W")
+        self.assertEqual(f.formatDouble(-181, context), "179.00°E")
+        self.assertEqual(f.formatDouble(359, context), "1.00°W")
+        self.assertEqual(f.formatDouble(-359, context), "1.00°E")
+
+        # should be no directional suffixes for 0 degree coordinates
+        self.assertEqual(f.formatDouble(0, context), "0.00°")
+        # should also be no directional suffix for 0 degree coordinates within specified precision
+        self.assertEqual(f.formatDouble(-0.00001, context), "0.00°")
+        self.assertEqual(f.formatDouble(0.00001, context), "0.00°")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(-0.00001, context), "0.00001°W")
+        self.assertEqual(f.formatDouble(0.00001, context), "0.00001°E")
+
+        # should be no directional suffixes for 180 degree longitudes
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(180, context), "180.00°")
+
+        # should also be no directional suffix for 180 degree longitudes within specified precision
+        self.assertEqual(f.formatDouble(180.000001, context), "180.00°")
+        self.assertEqual(f.formatDouble(179.999999, context), "180.00°")
+        f.setNumberDecimalPlaces(6)
+        self.assertEqual(f.formatDouble(180.000001, context), "179.999999°W")
+        self.assertEqual(f.formatDouble(179.999999, context), "179.999999°E")
+
+        # test without direction suffix
+        f.setShowDirectionalSuffix(False)
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(80, context), "80.00°")
+        # test 0 longitude
+        self.assertEqual(f.formatDouble(0, context), "0.00°")
+        # test near zero longitude
+        self.assertEqual(f.formatDouble(0.000001, context), "0.00°")
+        # should be no "-" prefix for near-zero longitude when rounding to 2 decimal places
+        self.assertEqual(f.formatDouble(-0.000001, context), "0.00°")
+        f.setNumberDecimalPlaces(6)
+        self.assertEqual(f.formatDouble(0.000001, context), "0.000001°")
+        self.assertEqual(f.formatDouble(-0.000001, context), "-0.000001°")
+
+        # with degree padding
+        f.setShowDegreeLeadingZeros(True)
+        f.setNumberDecimalPlaces(2)
+        f.setShowDirectionalSuffix(True)
+        self.assertEqual(f.formatDouble(100, context), "100.00°E")
+        self.assertEqual(f.formatDouble(-100, context), "100.00°W")
+        self.assertEqual(f.formatDouble(80, context), "080.00°E")
+        self.assertEqual(f.formatDouble(-80, context), "080.00°W")
+        self.assertEqual(f.formatDouble(5.44, context), "005.44°E")
+        self.assertEqual(f.formatDouble(-5.44, context), "005.44°W")
+        f.setShowDirectionalSuffix(False)
+        self.assertEqual(f.formatDouble(100, context), "100.00°")
+        self.assertEqual(f.formatDouble(-100, context), "-100.00°")
+        self.assertEqual(f.formatDouble(80, context), "080.00°")
+        self.assertEqual(f.formatDouble(-80, context), "-080.00°")
+        self.assertEqual(f.formatDouble(5.44, context), "005.44°")
+        self.assertEqual(f.formatDouble(-5.44, context), "-005.44°")
+
+        f.setShowTrailingZeros(False)
+        f.setShowDirectionalSuffix(True)
+        f.setShowDegreeLeadingZeros(False)
+        self.assertEqual(f.formatDouble(5.44, context), "5.44°E")
+        self.assertEqual(f.formatDouble(-5.44, context), "5.44°W")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5.44°W")
+
+        context.setDecimalSeparator('☕')
+        self.assertEqual(f.formatDouble(5.44, context), "5☕44°E")
+        self.assertEqual(f.formatDouble(-5.44, context), "5☕44°W")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5☕44°W")
+
+    def testGeographicCoordinateFormatLatitudeDegrees(self):
+        """Test formatting latitude as decimal degrees"""
+
+        f = QgsGeographicCoordinateNumericFormat()
+        context = QgsNumericFormatContext()
+        context.setInterpretation(QgsNumericFormatContext.Interpretation.Latitude)
+
+        f.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DecimalDegrees)
+        f.setNumberDecimalPlaces(2)
+        f.setShowDirectionalSuffix(True)
+        f.setShowTrailingZeros(True)
+
+        self.assertEqual(f.formatDouble(20, context), "20.00°N")
+
+        # check precision
+        f.setNumberDecimalPlaces(4)
+        self.assertEqual(f.formatDouble(20, context), "20.0000°N")
+        self.assertEqual(f.formatDouble(20.12345678, context), "20.1235°N")
+        f.setNumberDecimalPlaces(0)
+        self.assertEqual(f.formatDouble(20.12345678, context), "20°N")
+
+        # check if latitudes > 90 or <-90 wrap around
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(190, context), "10.00°N")
+        self.assertEqual(f.formatDouble(-190, context), "10.00°S")
+        self.assertEqual(f.formatDouble(91, context), "89.00°S")
+        self.assertEqual(f.formatDouble(-91, context), "89.00°N")
+        self.assertEqual(f.formatDouble(179, context), "1.00°S")
+        self.assertEqual(f.formatDouble(-179, context), "1.00°N")
+
+        # should be no directional suffixes for 0 degree coordinates
+        self.assertEqual(f.formatDouble(0, context), "0.00°")
+        # should also be no directional suffix for 0 degree coordinates within specified precision
+        self.assertEqual(f.formatDouble(-0.00001, context), "0.00°")
+        self.assertEqual(f.formatDouble(0.00001, context), "0.00°")
+        f.setNumberDecimalPlaces(5)
+        self.assertEqual(f.formatDouble(-0.00001, context), "0.00001°S")
+        self.assertEqual(f.formatDouble(0.00001, context), "0.00001°N")
+
+        # test without direction suffix
+        f.setShowDirectionalSuffix(False)
+        f.setNumberDecimalPlaces(2)
+        self.assertEqual(f.formatDouble(80, context), "80.00°")
+        # test 0 longitude
+        self.assertEqual(f.formatDouble(0, context), "0.00°")
+        # test near zero latitude
+        self.assertEqual(f.formatDouble(0.000001, context), "0.00°")
+        # should be no "-" prefix for near-zero latitude when rounding to 2 decimal places
+        self.assertEqual(f.formatDouble(-0.000001, context), "0.00°")
+        f.setNumberDecimalPlaces(6)
+        self.assertEqual(f.formatDouble(0.000001, context), "0.000001°")
+        self.assertEqual(f.formatDouble(-0.000001, context), "-0.000001°")
+
+        # with degree padding
+        f.setShowDegreeLeadingZeros(True)
+        f.setNumberDecimalPlaces(2)
+        f.setShowDirectionalSuffix(True)
+        self.assertEqual(f.formatDouble(80, context), "80.00°N")
+        self.assertEqual(f.formatDouble(-80, context), "80.00°S")
+        self.assertEqual(f.formatDouble(5.44, context), "05.44°N")
+        self.assertEqual(f.formatDouble(-5.44, context), "05.44°S")
+        f.setShowDirectionalSuffix(False)
+        self.assertEqual(f.formatDouble(80, context), "80.00°")
+        self.assertEqual(f.formatDouble(-80, context), "-80.00°")
+        self.assertEqual(f.formatDouble(5.44, context), "05.44°")
+        self.assertEqual(f.formatDouble(-5.44, context), "-05.44°")
+
+        f.setShowTrailingZeros(False)
+        f.setShowDirectionalSuffix(True)
+        f.setShowDegreeLeadingZeros(False)
+        self.assertEqual(f.formatDouble(5.44, context), "5.44°N")
+        self.assertEqual(f.formatDouble(-5.44, context), "5.44°S")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5.44°S")
+
+        context.setDecimalSeparator('☕')
+        self.assertEqual(f.formatDouble(5.44, context), "5☕44°N")
+        self.assertEqual(f.formatDouble(-5.44, context), "5☕44°S")
+        self.assertEqual(f.formatDouble(-5.44101, context), "5☕44°S")
 
     def testRegistry(self):
         registry = QgsNumericFormatRegistry()
