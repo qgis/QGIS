@@ -63,6 +63,7 @@
 #include "qgswelcomepage.h"
 #include "qgsnewsfeedparser.h"
 #include "qgsbearingnumericformat.h"
+#include "qgscoordinatenumericformat.h"
 #include "qgssublayersdialog.h"
 #include "options/qgsadvancedoptions.h"
 #include "qgslayout.h"
@@ -1366,7 +1367,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mRestoreDefaultWindowStateBtn, &QAbstractButton::clicked, this, &QgsOptions::restoreDefaultWindowState );
 
   mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsOptions::customizeBearingFormat );
+  connect( mCustomizeCoordinateFormatButton, &QPushButton::clicked, this, &QgsOptions::customizeCoordinateFormat );
 
   restoreOptionsBaseUi();
 
@@ -1984,6 +1987,7 @@ void QgsOptions::saveOptions()
   QgsApplication::settingsLocaleShowGroupSeparator.setValue( cbShowGroupSeparator->isChecked( ) );
 
   QgsLocalDefaultSettings::setBearingFormat( mBearingFormat.get() );
+  QgsLocalDefaultSettings::setGeographicCoordinateFormat( mCoordinateFormat.get() );
 
 #ifdef HAVE_OPENCL
   // OpenCL settings
@@ -3000,5 +3004,15 @@ void QgsOptions::customizeBearingFormat()
   if ( dlg.exec() )
   {
     mBearingFormat.reset( dlg.format() );
+  }
+}
+
+void QgsOptions::customizeCoordinateFormat()
+{
+  QgsGeographicCoordinateNumericFormatDialog dlg( mCoordinateFormat.get(), this );
+  dlg.setWindowTitle( tr( "Coordinate Format" ) );
+  if ( dlg.exec() )
+  {
+    mCoordinateFormat.reset( dlg.format() );
   }
 }

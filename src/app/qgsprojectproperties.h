@@ -39,6 +39,7 @@ class QgsMetadataWidget;
 class QgsTreeWidgetItem;
 class QgsLayerCapabilitiesModel;
 class QgsBearingNumericFormat;
+class QgsGeographicCoordinateNumericFormat;
 class QgsOptionsPageWidget;
 
 /**
@@ -189,6 +190,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
   private slots:
 
     void customizeBearingFormat();
+    void customizeGeographicCoordinateFormat();
 
     /**
      * Sets the start and end dates input values from the project
@@ -212,9 +214,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Formats for displaying coordinates
     enum CoordinateFormat
     {
-      DecimalDegrees, //!< Decimal degrees
-      DegreesMinutes, //!< Degrees, decimal minutes
-      DegreesMinutesSeconds, //!< Degrees, minutes, seconds
+      Geographic, //!< Geographic
       MapUnits, //!< Show coordinates in map units
     };
 
@@ -254,6 +254,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QList< QgsOptionsPageWidget * > mAdditionalProjectPropertiesWidgets;
 
     std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
+    std::unique_ptr< QgsGeographicCoordinateNumericFormat > mGeographicCoordinateFormat;
 
     //! populate WMTS tree
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );

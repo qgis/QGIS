@@ -25,6 +25,7 @@ class QDomElement;
 class QgsReadWriteContext;
 class QDomDocument;
 class QgsBearingNumericFormat;
+class QgsGeographicCoordinateNumericFormat;
 
 /**
  * \brief Contains settings and properties relating to how a QgsProject should display
@@ -70,6 +71,26 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     const QgsBearingNumericFormat *bearingFormat() const;
 
     /**
+     * Sets the project geographic coordinate \a format, which controls how geographic coordinates associated with the project are displayed.
+     *
+     * Ownership of \a format is transferred to the settings.
+     *
+     * \see geographicCoordinateFormat()
+     * \see geographicCoordinateFormatChanged()
+     *
+     * \since QGIS 3.26
+     */
+    void setGeographicCoordinateFormat( QgsGeographicCoordinateNumericFormat *format SIP_TRANSFER );
+
+    /**
+     * Returns the project's geographic coordinate format, which controls how geographic coordinates associated with the project are displayed.
+     *
+     * \see setGeographicCoordinateFormat()
+     * \see geographicCoordinateFormatChanged()
+     */
+    const QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() const;
+
+    /**
      * Reads the settings's state from a DOM element.
      * \see writeXml()
      */
@@ -91,8 +112,17 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      */
     void bearingFormatChanged();
 
+    /**
+     * Emitted when the geographic coordinate format changes.
+     *
+     * \see setGeographicCoordinateFormat()
+     * \see geographicCoordinateFormat()
+     */
+    void geographicCoordinateFormatChanged();
+
   private:
     std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
+    std::unique_ptr< QgsGeographicCoordinateNumericFormat > mGeographicCoordinateFormat;
 
 };
 

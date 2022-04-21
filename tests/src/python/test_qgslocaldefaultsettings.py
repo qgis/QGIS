@@ -14,7 +14,8 @@ import qgis  # NOQA
 
 from qgis.core import (QgsSettings,
                        QgsLocalDefaultSettings,
-                       QgsBearingNumericFormat)
+                       QgsBearingNumericFormat,
+                       QgsGeographicCoordinateNumericFormat)
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -58,6 +59,27 @@ class TestQgsLocalDefaultSettings(unittest.TestCase):
         s2 = QgsLocalDefaultSettings()
         self.assertEqual(s2.bearingFormat().numberDecimalPlaces(), 3)
         self.assertEqual(s2.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
+
+    def testGeographicCoordinateFormat(self):
+        s = QgsLocalDefaultSettings()
+
+        format = QgsGeographicCoordinateNumericFormat()
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+
+        s.setGeographicCoordinateFormat(format)
+        self.assertEqual(s.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+
+        format = QgsGeographicCoordinateNumericFormat()
+        format.setNumberDecimalPlaces(3)
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+        s.setGeographicCoordinateFormat(format)
+        self.assertEqual(s.geographicCoordinateFormat().numberDecimalPlaces(), 3)
+        self.assertEqual(s.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+
+        # new settings object, should persist.
+        s2 = QgsLocalDefaultSettings()
+        self.assertEqual(s2.geographicCoordinateFormat().numberDecimalPlaces(), 3)
+        self.assertEqual(s2.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
 
 
 if __name__ == '__main__':

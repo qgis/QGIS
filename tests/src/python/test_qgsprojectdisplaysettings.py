@@ -15,6 +15,7 @@ import qgis  # NOQA
 from qgis.core import (QgsProjectDisplaySettings,
                        QgsReadWriteContext,
                        QgsBearingNumericFormat,
+                       QgsGeographicCoordinateNumericFormat,
                        QgsSettings,
                        QgsLocalDefaultSettings)
 
@@ -62,6 +63,27 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 3)
         self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
 
+    def testGeographicCoordinateFormat(self):
+        p = QgsProjectDisplaySettings()
+
+        format = QgsGeographicCoordinateNumericFormat()
+        format.setNumberDecimalPlaces(9)
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+
+        spy = QSignalSpy(p.geographicCoordinateFormatChanged)
+        p.setGeographicCoordinateFormat(format)
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 9)
+        self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+
+        format = QgsGeographicCoordinateNumericFormat()
+        format.setNumberDecimalPlaces(3)
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+        p.setGeographicCoordinateFormat(format)
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 3)
+        self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+
     def testReset(self):
         """
         Test that resetting inherits local default settings
@@ -74,6 +96,13 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 3)
         self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
 
+        format = QgsGeographicCoordinateNumericFormat()
+        format.setNumberDecimalPlaces(7)
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+        p.setGeographicCoordinateFormat(format)
+        self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 7)
+        self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+
         # setup a local default bearing format
         s = QgsLocalDefaultSettings()
         format = QgsBearingNumericFormat()
@@ -81,12 +110,22 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         format.setDirectionFormat(QgsBearingNumericFormat.UseRange0To360)
         s.setBearingFormat(format)
 
+        format = QgsGeographicCoordinateNumericFormat()
+        format.setNumberDecimalPlaces(5)
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+        s.setGeographicCoordinateFormat(format)
+
         spy = QSignalSpy(p.bearingFormatChanged)
+        spy2 = QSignalSpy(p.geographicCoordinateFormatChanged)
         p.reset()
         self.assertEqual(len(spy), 1)
+        self.assertEqual(len(spy2), 1)
         # project should default to local default format
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 9)
         self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRange0To360)
+
+        self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 5)
+        self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
 
     def testReadWrite(self):
         p = QgsProjectDisplaySettings()
@@ -96,15 +135,24 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         format.setDirectionFormat(QgsBearingNumericFormat.UseRange0To360)
         p.setBearingFormat(format)
 
+        format = QgsGeographicCoordinateNumericFormat()
+        format.setNumberDecimalPlaces(7)
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+        p.setGeographicCoordinateFormat(format)
+
         doc = QDomDocument("testdoc")
         elem = p.writeXml(doc, QgsReadWriteContext())
 
         p2 = QgsProjectDisplaySettings()
         spy = QSignalSpy(p2.bearingFormatChanged)
+        spy2 = QSignalSpy(p2.geographicCoordinateFormatChanged)
         self.assertTrue(p2.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(len(spy), 1)
+        self.assertEqual(len(spy2), 1)
         self.assertEqual(p2.bearingFormat().numberDecimalPlaces(), 9)
         self.assertEqual(p2.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRange0To360)
+        self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 7)
+        self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
 
 
 if __name__ == '__main__':
