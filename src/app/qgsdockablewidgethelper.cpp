@@ -292,7 +292,11 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
   mDock->setFloating( mIsDockFloating );
   if ( mDockGeometry.isEmpty() )
   {
-    mDockGeometry = QRect( static_cast< int >( mOwnerWindow->rect().width() * 0.75 ), static_cast< int >( mOwnerWindow->rect().height() * 0.5 ), 400, 400 );
+    const QFontMetrics fm( mOwnerWindow->font() );
+    const int initialDockSize = fm.horizontalAdvance( '0' ) * 50;
+    mDockGeometry = QRect( static_cast< int >( mOwnerWindow->rect().width() * 0.75 ),
+                           static_cast< int >( mOwnerWindow->rect().height() * 0.5 ),
+                           initialDockSize, initialDockSize );
   }
   if ( !tabSiblings.isEmpty() )
   {
