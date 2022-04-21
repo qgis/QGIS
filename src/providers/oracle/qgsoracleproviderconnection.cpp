@@ -1377,8 +1377,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   }
 
   if ( feedback && feedback->isCanceled() )
+  {
     logWrapper.setCanceled();
-  return QgsAbstractDatabaseProviderConnection::QueryResult();
+    return QgsAbstractDatabaseProviderConnection::QueryResult();
+  }
 
   if ( qry.isActive() )
   {
