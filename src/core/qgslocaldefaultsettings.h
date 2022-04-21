@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 
 class QgsBearingNumericFormat;
+class QgsGeographicCoordinateNumericFormat;
 
 /**
  * \brief Contains local default settings which should be respected when creating new objects
@@ -56,6 +57,26 @@ class CORE_EXPORT QgsLocalDefaultSettings
      * \see setBearingFormat()
      */
     static QgsBearingNumericFormat *bearingFormat() SIP_FACTORY;
+
+    /**
+     * Sets the default geographic coordinate \a format, which controls how geographic coordinates are displayed.
+     *
+     * \see geographicCoordinateFormat()
+     *
+     * \since QGIS 3.26
+     */
+    static void setGeographicCoordinateFormat( const QgsGeographicCoordinateNumericFormat *format );
+
+    /**
+     * Returns the default geographic coordinate format, which controls how geographic coordinates are displayed.
+     *
+     * This method returns a new object and the caller takes ownership of the returned value.
+     *
+     * \see setGeographicCoordinateFormat()
+     *
+     * \since QGIS 3.26
+     */
+    static QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() SIP_FACTORY;
 
 };
 

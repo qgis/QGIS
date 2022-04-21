@@ -24,6 +24,8 @@
 #include "qgsexception.h"
 #include "qgscoordinateformatter.h"
 #include "qgsrectangle.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgscoordinatenumericformat.h"
 #include <QRegularExpression>
 
 ///@cond NOT_STABLE_API
@@ -39,7 +41,8 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
   if ( automatic )
   {
     const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
-    const bool formatGeographic = ( format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" ) || format == QLatin1String( "D" ) );
+    // only MU or D is used now, but older projects may have DM/DMS
+    const bool formatGeographic = format == QLatin1String( "D" ) || format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" );
 
     // we can only calculate an automatic precision if one of these is true:
     // - both map CRS and format are geographic
@@ -55,10 +58,16 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
     }
     else
     {
-      if ( format == QLatin1String( "D" ) )
-        dp = 4;
-      else
-        dp = 2;
+      switch ( project->displaySettings()->geographicCoordinateFormat()->angleFormat() )
+      {
+        case QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutesSeconds:
+        case QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutes:
+          dp = 2;
+          break;
+        case QgsGeographicCoordinateNumericFormat::AngleFormat::DecimalDegrees:
+          dp = 4;
+          break;
+      }
     }
   }
   else
@@ -104,8 +113,11 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
   const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
   const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
 
+  // only MU or D is used now, but older projects may have DM/DMS
+  const bool formatGeographic = format == QLatin1String( "D" ) || format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" );
+
   QgsPointXY geo = point;
-  if ( format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" ) || format == QLatin1String( "D" ) )
+  if ( formatGeographic )
   {
     // degrees
     QgsCoordinateReferenceSystem geographicCrs = destCrs;
@@ -127,12 +139,25 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
 
     const Qgis::CoordinateOrder order = axisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( geographicCrs ) : axisOrder;
 
-    if ( format == QLatin1String( "DM" ) )
-      return QgsCoordinateFormatter::format( geo, QgsCoordinateFormatter::FormatDegreesMinutes, precision, QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter::FlagDegreesUseStringSuffix, order );
-    else if ( format == QLatin1String( "DMS" ) )
-      return QgsCoordinateFormatter::format( geo, QgsCoordinateFormatter::FormatDegreesMinutesSeconds, precision, QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter::FlagDegreesUseStringSuffix, order );
-    else
-      return QgsCoordinateFormatter::asPair( geo.x(), geo.y(), precision, order );
+    std::unique_ptr< QgsGeographicCoordinateNumericFormat > format( project->displaySettings()->geographicCoordinateFormat()->clone() );
+    format->setNumberDecimalPlaces( precision );
+
+    QgsNumericFormatContext context;
+    context.setInterpretation( QgsNumericFormatContext::Interpretation::Longitude );
+    const QString formattedX = format->formatDouble( geo.x(), context );
+    context.setInterpretation( QgsNumericFormatContext::Interpretation::Latitude );
+    const QString formattedY = format->formatDouble( geo.y(), context );
+
+    switch ( order )
+    {
+      case Qgis::CoordinateOrder::Default:
+      case Qgis::CoordinateOrder::XY:
+        return QStringLiteral( "%1%2%3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
+
+      case Qgis::CoordinateOrder::YX:
+        return QStringLiteral( "%1%2%3" ).arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
+    }
+    BUILTIN_UNREACHABLE
   }
   else
   {
