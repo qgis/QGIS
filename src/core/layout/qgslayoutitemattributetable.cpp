@@ -34,6 +34,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsgeometryengine.h"
 #include "qgsconditionalstyle.h"
+#include "qgsfontutils.h"
 
 //
 // QgsLayoutItemAttributeTable
@@ -683,7 +684,9 @@ QgsTextFormat QgsLayoutItemAttributeTable::textFormatForCell( int row, int colum
       // warning -- there's a potential trap here! We can't just read QFont::styleName(), as that may be blank even when
       // the font has the bold or italic attributes set! Reading the style name via QFontInfo avoids this and always returns
       // a correct style name
-      newFont.setStyleName( QFontInfo( styleFont ).styleName() );
+      const QString styleName = QgsFontUtils::resolveFontStyleName( styleFont );
+      if ( !styleName.isEmpty() )
+        newFont.setStyleName( styleName );
 
       newFont.setStrikeOut( styleFont.strikeOut() );
       newFont.setUnderline( styleFont.underline() );
