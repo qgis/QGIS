@@ -1609,6 +1609,11 @@ void QgsAttributeForm::init()
         {
           tabWidget = nullptr;
           WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
+          if ( widgetInfo.overrideLabelStyle )
+          {
+            widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: rgba(%1,%2,%3,%4); }" ).arg( widgetInfo.labelColor.red() ).arg( widgetInfo.labelColor.green() ).arg( widgetInfo.labelColor.blue() ).arg( QString::number( widgetInfo.labelColor.alphaF(), 'f', 4 ) ) );
+            widgetInfo.widget->setFont( widgetInfo.labelFont );
+          }
           layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
           if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
           {
@@ -1647,8 +1652,12 @@ void QgsAttributeForm::init()
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
         QgsCollapsibleGroupBox *collapsibleGroupBox = new QgsCollapsibleGroupBox();
 
-        if ( widgetInfo.showLabel )
+        if ( widgetInfo.showLabel && widgetInfo.overrideLabelStyle )
+        {
+          collapsibleGroupBox->setFont( widgetInfo.labelFont );
+          collapsibleGroupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
           collapsibleGroupBox->setTitle( widgetInfo.labelText );
+        }
 
         QVBoxLayout *collapsibleGroupBoxLayout = new QVBoxLayout();
         collapsibleGroupBoxLayout->addWidget( widgetInfo.widget );
@@ -1668,6 +1677,11 @@ void QgsAttributeForm::init()
         tabWidget = nullptr;
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
         QLabel *label = new QLabel( widgetInfo.labelText );
+        if ( widgetInfo.overrideLabelStyle )
+        {
+          label->setFont( widgetInfo.labelFont );
+          label->setStyleSheet( QStringLiteral( "QLabel { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
+        }
         label->setToolTip( widgetInfo.toolTip );
         if ( columnCount > 1 && !widgetInfo.labelOnTop )
         {
@@ -2134,6 +2148,10 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 {
   WidgetInfo newWidgetInfo;
 
+  newWidgetInfo.labelColor = widgetDef->labelColor();
+  newWidgetInfo.labelFont = widgetDef->labelFont();
+  newWidgetInfo.overrideLabelStyle = widgetDef->overrideLabelStyle();
+
   switch ( widgetDef->type() )
   {
     case QgsAttributeEditorElement::AeTypeAction:
@@ -2234,7 +2252,14 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         QgsCollapsibleGroupBoxBasic *groupBox = new QgsCollapsibleGroupBoxBasic();
         widgetName = QStringLiteral( "QGroupBox" );
         if ( container->showLabel() )
+        {
           groupBox->setTitle( container->name() );
+          if ( newWidgetInfo.overrideLabelStyle )
+          {
+            groupBox->setFont( newWidgetInfo.labelFont );
+            groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: rgba(%1,%2,%3,%4); }" ).arg( newWidgetInfo.labelColor.red() ).arg( newWidgetInfo.labelColor.green() ).arg( newWidgetInfo.labelColor.blue() ).arg( QString::number( newWidgetInfo.labelColor.alphaF(), 'f', 4 ) ) );
+          }
+        }
         myContainer = groupBox;
         newWidgetInfo.widget = myContainer;
         groupBox->setCollapsed( container->collapsed() );
@@ -2289,6 +2314,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         else
         {
           QLabel *mypLabel = new QLabel( widgetInfo.labelText );
+
+          if ( widgetInfo.overrideLabelStyle )
+          {
+            mypLabel->setFont( widgetInfo.labelFont );
+            mypLabel->setStyleSheet( QStringLiteral( "QLabel { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
+          }
 
           // Alias DD overrides
           if ( childDef->type() == QgsAttributeEditorElement::AeTypeField )

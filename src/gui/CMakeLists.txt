@@ -502,10 +502,11 @@ set(QGIS_GUI_SRCS
   qgsfilewidget.cpp
   qgsexternalstoragefilewidget.cpp
   qgsfilterlineedit.cpp
-  qgsfindfilesbypatternwidget.cpp
+  qgsfindfilesbypatternwidget.cpp  
   qgsfloatingwidget.cpp
   qgsfocuskeeper.cpp
   qgsfocuswatcher.cpp
+  qgsformlabelformatwidget.cpp
   qgsfontbutton.cpp
   qgsformannotation.cpp
   qgsgeocoderlocatorfilter.cpp
@@ -765,6 +766,7 @@ set(QGIS_GUI_HDRS
   qgsfocuswatcher.h
   qgsfontbutton.h
   qgsformannotation.h
+  qgsformlabelformatwidget.h
   qgsgeocoderlocatorfilter.h
   qgsgeometryrubberband.h
   qgsgradientcolorrampdialog.h

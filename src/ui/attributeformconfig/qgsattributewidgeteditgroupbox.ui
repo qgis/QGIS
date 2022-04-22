@@ -17,6 +17,13 @@
    <string>Widget Display</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="4" column="0">
+    <widget class="QgsCollapsibleGroupBox" name="mWidgetSpecificConfigGroupBox">
+     <property name="title">
+      <string>GroupBox</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QCheckBox" name="mShowLabelCheckBox">
      <property name="text">
@@ -25,10 +32,24 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QgsCollapsibleGroupBox" name="mWidgetSpecificConfigGroupBox">
-     <property name="title">
-      <string>GroupBox</string>
+    <widget class="QgsCollapsibleGroupBox" name="mLabelStyleOverrideGroupBox">
+     <property name="toolTip">
+      <string>Overrides the style defined by the active theme</string>
      </property>
+     <property name="title">
+      <string>Override Label Style</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QgsFormLabelFormatWidget" name="mFormLabelFormatWidget" native="true"/>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -38,6 +59,12 @@
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFormLabelFormatWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsformlabelformatwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

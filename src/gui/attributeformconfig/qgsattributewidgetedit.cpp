@@ -30,6 +30,16 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
   // common configs
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
 
+  mFormLabelFormatWidget->setColor( itemData.labelColor( ) );
+  mFormLabelFormatWidget->setFont( itemData.labelFont( ) );
+
+  connect( mShowLabelCheckBox, &QCheckBox::stateChanged, mLabelStyleOverrideGroupBox, &QGroupBox::setEnabled );
+
+  mLabelStyleOverrideGroupBox->setSaveCheckedState( false );
+  mLabelStyleOverrideGroupBox->setSaveCollapsedState( false );
+  mLabelStyleOverrideGroupBox->setChecked( itemData.overrideLabelStyle( ) );
+  mLabelStyleOverrideGroupBox->setCollapsed( ! itemData.overrideLabelStyle( ) );
+
   switch ( itemData.type() )
   {
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
@@ -54,6 +64,8 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
       mWidgetSpecificConfigGroupBox->hide();
       break;
   }
+
+  connect( mShowLabelCheckBox, &QCheckBox::stateChanged, mLabelStyleOverrideGroupBox, &QGroupBox::setEnabled );
 }
 
 void QgsAttributeWidgetEdit::updateItemData()
@@ -62,6 +74,9 @@ void QgsAttributeWidgetEdit::updateItemData()
 
   // common configs
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
+  itemData.setOverrideLabelStyle( mLabelStyleOverrideGroupBox->isChecked() );
+  itemData.setLabelColor( mFormLabelFormatWidget->color() );
+  itemData.setLabelFont( mFormLabelFormatWidget->font() );
 
   // specific configs
   switch ( itemData.type() )
