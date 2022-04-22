@@ -47,6 +47,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   addSettingsEntry( &QgsVertexEditor::settingAutoPopupVertexEditorDock );
 
   addSettingsEntry( &QgsElevationProfileWidget::settingTolerance );
+  addSettingsEntry( &QgsElevationProfileWidget::settingShowLayerTree );
 
   QgsApplication::settingsRegistryCore()->addSubRegistry( this );
 }

@@ -89,6 +89,19 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mZoomTool = new QgsPlotToolZoom( mCanvas );
   mXAxisZoomTool = new QgsPlotToolXAxisZoom( mCanvas );
 
+  QAction *showLayerTree = new QAction( tr( "Show Layer Tree" ), this );
+  showLayerTree->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconLayerTree.svg" ) ) );
+  showLayerTree->setCheckable( true );
+  connect( showLayerTree, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    settingShowLayerTree.setValue( checked );
+    mLayerTreeView->setVisible( checked );
+  } );
+  showLayerTree->setChecked( settingShowLayerTree.value() );
+  mLayerTreeView->setVisible( settingShowLayerTree.value() );
+  toolBar->addAction( showLayerTree );
+  toolBar->addSeparator();
+
   mCaptureCurveAction = new QAction( tr( "Capture Curve" ), this );
   mCaptureCurveAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureLine.svg" ) ) );
   mCaptureCurveAction->setCheckable( true );
