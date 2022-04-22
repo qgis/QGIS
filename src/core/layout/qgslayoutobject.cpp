@@ -101,9 +101,9 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::MapCrs, QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. \"EPSG:4326\"), a proj string prefixes by \"PROJ:\" (e.g. \"PROJ: +proj=...\") or a WKT string prefixed by \"WKT:\" (e.g. \"WKT:GEOGCS[\"WGS 84\"...)" ) ) },
     { QgsLayoutObject::StartDateTime, QgsPropertyDefinition( "dataDefinedStartDateTime", QObject::tr( "Temporal range start date / time" ), QgsPropertyDefinition::DateTime ) },
     { QgsLayoutObject::EndDateTime, QgsPropertyDefinition( "dataDefinedEndDateTime", QObject::tr( "Temporal range end date / time" ), QgsPropertyDefinition::DateTime ) },
-    { QgsLayoutObject::ScalebarLeftSegments, QgsPropertyDefinition ( "dataDefinedScaleBarLeftSegments", QObject::tr( "Segments to the left of 0" ), QgsPropertyDefinition::IntegerPositive )},
+    { QgsLayoutObject::ScalebarLeftSegments, QgsPropertyDefinition( "dataDefinedScaleBarLeftSegments", QObject::tr( "Segments to the left of 0" ), QgsPropertyDefinition::IntegerPositive )},
     { QgsLayoutObject::ScalebarRightSegments, QgsPropertyDefinition( "dataDefinedScaleBarRightSegments", QObject::tr( "Segments to the right of 0" ), QgsPropertyDefinition::IntegerPositive ) },
-    { QgsLayoutObject::ScalebarSegmentWidth, QgsPropertyDefinition( "dataDefinedScalebarSegmentWidth", QObject::tr( "Length of a segment in map units" ), QgsPropertyDefinition::DoublePositive) },
+    { QgsLayoutObject::ScalebarSegmentWidth, QgsPropertyDefinition( "dataDefinedScalebarSegmentWidth", QObject::tr( "Length of a segment in map units" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ScalebarMinWidth, QgsPropertyDefinition( "dataDefinedScalebarMinWidth", QObject::tr( "Minimum length of a segment in mm" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ScalebarMaxWidth, QgsPropertyDefinition( "dataDefinedScalebarMaxWidth", QObject::tr( "Maximum length of a segment in mm" ), QgsPropertyDefinition::DoublePositive ) },
   };

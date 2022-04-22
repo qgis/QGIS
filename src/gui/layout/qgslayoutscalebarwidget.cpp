@@ -59,13 +59,13 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
 
   connect( mSegmentsLeftDDBtn, &QgsPropertyOverrideButton::activated, mSegmentsLeftSpinBox, &QSpinBox::setDisabled );
   registerDataDefinedButton( mSegmentsLeftDDBtn, QgsLayoutObject::ScalebarLeftSegments );
-  connect(mSegmentsRightDDBtn, &QgsPropertyOverrideButton::activated, mNumberOfSegmentsSpinBox, &QSpinBox::setDisabled );
+  connect( mSegmentsRightDDBtn, &QgsPropertyOverrideButton::activated, mNumberOfSegmentsSpinBox, &QSpinBox::setDisabled );
   registerDataDefinedButton( mSegmentsRightDDBtn, QgsLayoutObject::ScalebarRightSegments );
-  connect(mSegmentSizeDDBtn, &QgsPropertyOverrideButton::activated, mSegmentSizeSpinBox, &QDoubleSpinBox::setDisabled );
+  connect( mSegmentSizeDDBtn, &QgsPropertyOverrideButton::activated, mSegmentSizeSpinBox, &QDoubleSpinBox::setDisabled );
   registerDataDefinedButton( mSegmentSizeDDBtn, QgsLayoutObject::ScalebarSegmentWidth );
-  connect(mMinWidthDDBtn, &QgsPropertyOverrideButton::activated, mMinWidthSpinBox, &QDoubleSpinBox::setDisabled );
+  connect( mMinWidthDDBtn, &QgsPropertyOverrideButton::activated, mMinWidthSpinBox, &QDoubleSpinBox::setDisabled );
   registerDataDefinedButton( mMinWidthDDBtn, QgsLayoutObject::ScalebarMinWidth );
-  connect(mMaxWidthDDBtn, &QgsPropertyOverrideButton::activated, mMaxWidthSpinBox, &QDoubleSpinBox::setDisabled );
+  connect( mMaxWidthDDBtn, &QgsPropertyOverrideButton::activated, mMaxWidthSpinBox, &QDoubleSpinBox::setDisabled );
   registerDataDefinedButton( mMaxWidthDDBtn, QgsLayoutObject::ScalebarMaxWidth );
 
   /*
