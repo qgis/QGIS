@@ -269,6 +269,8 @@ class QgsTextSettingsPrivate : public QSharedData
       , textFont( other.textFont )
       , families( other.families )
       , textNamedStyle( other.textNamedStyle )
+      , forcedBold( other.forcedBold )
+      , forcedItalic( other.forcedItalic )
       , fontSizeUnits( other.fontSizeUnits )
       , fontSizeMapUnitScale( other.fontSizeMapUnitScale )
       , fontSize( other.fontSize )
@@ -288,6 +290,8 @@ class QgsTextSettingsPrivate : public QSharedData
     QFont textFont;
     QStringList families;
     QString textNamedStyle;
+    bool forcedBold = false;
+    bool forcedItalic = false;
     QgsUnitTypes::RenderUnit fontSizeUnits = QgsUnitTypes::RenderPoints;
     QgsMapUnitScale fontSizeMapUnitScale;
     double fontSize = 10 ; //may differ from size in textFont due to units (e.g., size in map units)
