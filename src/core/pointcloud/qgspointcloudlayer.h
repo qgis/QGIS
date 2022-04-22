@@ -230,6 +230,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
+    void onPointCloudStatisticsGenerationStateChanged( QgsPointCloudDataProvider::PointCloudStatisticsGenerationState state );
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 
   private:

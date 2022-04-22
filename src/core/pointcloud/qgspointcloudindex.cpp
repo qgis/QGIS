@@ -162,6 +162,12 @@ bool QgsPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
   return mHierarchy.contains( n );
 }
 
+qint64 QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n ) const
+{
+  QMutexLocker locker( &mHierarchyMutex );
+  return mHierarchy.value( n, -1 );
+}
+
 QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
   QMutexLocker locker( &mHierarchyMutex );

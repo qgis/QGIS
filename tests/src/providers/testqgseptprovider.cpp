@@ -72,6 +72,8 @@ class TestQgsEptProvider : public QObject
     void testExtraBytesAttributesValues();
     void testPointCloudIndex();
 
+    void testStatsCalculator();
+
   private:
     QString mTestDataDir;
     QString mReport;
@@ -640,6 +642,39 @@ void TestQgsEptProvider::testPointCloudIndex()
     QVERIFY( bounds.xMax() == 88000 );
     QVERIFY( bounds.yMax() == 88000 );
     QVERIFY( bounds.zMax() == 0 );
+  }
+}
+
+#include "qgspointcloudstatscalculator.h"
+#include "qgsstatisticalsummary.h"
+
+void TestQgsEptProvider::testStatsCalculator()
+{
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/extrabytes-dataset/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  QgsPointCloudIndex *index = layer->dataProvider()->index();
+  QgsPointCloudStatsCalculator calculator( index );
+
+
+  QVector<QgsPointCloudAttribute> attributes = index->attributes().attributes();
+  for ( int i = 0; i < attributes.size(); ++i )
+  {
+    QString name = attributes.at( i ).name();
+    if ( name == QStringLiteral( "X" ) || name == QStringLiteral( "Y" ) || name == QStringLiteral( "Z" ) )
+    {
+      attributes.removeAt( i );
+      --i;
+    }
+  }
+
+  calculator.calculateStats( attributes );
+
+  QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> stats = calculator.statistics();
+
+  for ( QString attr : stats.keys() )
+  {
+    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[attr];
+    QCOMPARE( ( float )s.minimum, index->metadataStatistic( attr, QgsStatisticalSummary::Min ).toFloat() );
+    QCOMPARE( ( float )s.maximum, index->metadataStatistic( attr, QgsStatisticalSummary::Max ).toFloat() );
   }
 }
 

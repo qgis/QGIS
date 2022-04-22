@@ -31,6 +31,7 @@ class IndexedPointCloudNode;
 class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
 class QgsGeometry;
+class QgsPointCloudStatsCalculator;
 
 /**
  * \ingroup core
@@ -68,6 +69,16 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
       NotIndexed = 0, //!< Provider has no index available
       Indexing = 1 << 0, //!< Provider try to index the source data
       Indexed = 1 << 1 //!< The index is ready to be used
+    };
+
+    /**
+     * Point cloud statistics generation state
+     */
+    enum PointCloudStatisticsGenerationState
+    {
+      NotCalculated = 0, //!< Provider has no statistics available
+      Calculating = 1 << 0, //!< Provider try to calculate the statistics
+      Calculated = 1 << 1 //!< The statistics are ready to be used
     };
 
     //! Ctor
@@ -190,6 +201,23 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     virtual QgsGeometry polygonBounds() const;
 
     /**
+     * Triggers generation of the point cloud index
+     *
+     * emits statisticsGenerationStateChanged()
+     *
+     * \sa statsCalculator()
+     */
+    void generateStatistics();
+
+    /**
+     * Gets the current statistics generation state
+     * \see statsCalculator()
+     *
+     * \since QGIS 3.26
+     */
+    virtual PointCloudStatisticsGenerationState statisticsState() const { return mStatisticsGenerationState; }
+
+    /**
      * Returns a representation of the original metadata included in a point cloud dataset.
      *
      * This is a free-form dictionary of values, the contents and structure of which will vary by provider and
@@ -211,6 +239,14 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * providers will return NULLPTR.
      */
     virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
+
+    /**
+     * Returns whether the dataset contains statistics metadata
+     *
+     * \since QGIS 3.26
+     */
+    virtual bool containsStatisticsMetadata() const;
+
 #ifndef SIP_RUN
 
     /**
@@ -313,6 +349,14 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
 
     /**
+     * Returns the statistics calculator object for the data provider
+     * The returned object can be used to increase the number of samples used in the statistcs calculation
+     *
+     * \since QGIS 3.26
+     */
+    QgsPointCloudStatsCalculator *statsCalculator() const;
+
+    /**
      * Returns the map of LAS classification code to untranslated string value, corresponding to the ASPRS Standard
      * Lidar Point Classes.
      *
@@ -349,11 +393,20 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      */
     void indexGenerationStateChanged( PointCloudIndexGenerationState state );
 
+    /**
+     * Emitted when point cloud statistics calculation state is changed
+     *
+     * \since QGIS 3.26
+     */
+    void statisticsGenerationStateChanged( PointCloudStatisticsGenerationState state );
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 
     //! String used to define a subset of the layer
     QString mSubsetString;
+    mutable std::unique_ptr<QgsPointCloudStatsCalculator> mStatsCalculator;
+
+    PointCloudStatisticsGenerationState mStatisticsGenerationState = PointCloudStatisticsGenerationState::NotCalculated;
 };
 
 #endif // QGSMESHDATAPROVIDER_H

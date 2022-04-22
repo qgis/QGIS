@@ -113,6 +113,8 @@ void QgsCopcProvider::loadIndex( )
   if ( mIndex->isValid() )
     return;
   mIndex->load( dataSourceUri() );
+
+  generateStatistics();
 }
 
 QVariantMap QgsCopcProvider::originalMetadata() const
@@ -123,11 +125,6 @@ QVariantMap QgsCopcProvider::originalMetadata() const
 void QgsCopcProvider::generateIndex()
 {
   //no-op, index is always generated
-}
-
-QVariant QgsCopcProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
-{
-  return mIndex->metadataStatistic( attribute, statistic );
 }
 
 QgsCopcProviderMetadata::QgsCopcProviderMetadata():

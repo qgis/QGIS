@@ -59,6 +59,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
+    bool containsStatisticsMetadata() const override { return false; };
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
 
     bool isValid() const override;

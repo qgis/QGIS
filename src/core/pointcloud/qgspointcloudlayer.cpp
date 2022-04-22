@@ -343,6 +343,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   {
     disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
     disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, &QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged );
+    disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::statisticsGenerationStateChanged, this, &QgsPointCloudLayer::onPointCloudStatisticsGenerationStateChanged );
   }
 
   setName( baseName );
@@ -369,6 +370,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
 
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, &QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged );
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
+  connect( mDataProvider.get(), &QgsPointCloudDataProvider::statisticsGenerationStateChanged, this, &QgsPointCloudLayer::onPointCloudStatisticsGenerationStateChanged );
 
   // Load initial extent, crs and renderer
   setCrs( mDataProvider->crs() );
@@ -473,6 +475,21 @@ void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudD
       break;
   }
 }
+
+void QgsPointCloudLayer::onPointCloudStatisticsGenerationStateChanged( QgsPointCloudDataProvider::PointCloudStatisticsGenerationState state )
+{
+  if ( state == QgsPointCloudDataProvider::Calculated )
+  {
+    if ( mRenderer->type() == QLatin1String( "extent" ) )
+    {
+      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
+    }
+    triggerRepaint();
+
+    emit rendererChanged();
+  }
+}
+
 
 QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 {

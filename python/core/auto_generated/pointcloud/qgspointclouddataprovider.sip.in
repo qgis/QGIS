@@ -47,6 +47,13 @@ Responsible for reading native point cloud data and returning the indexed data.
       Indexed
     };
 
+    enum PointCloudStatisticsGenerationState
+    {
+      NotCalculated,
+      Calculating,
+      Calculated
+    };
+
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
@@ -146,6 +153,24 @@ This method will not attempt to calculate the data bounds, rather it will return
 are included in the data source's metadata.
 %End
 
+    void generateStatistics();
+%Docstring
+Triggers generation of the point cloud index
+
+emits :py:func:`~QgsPointCloudDataProvider.statisticsGenerationStateChanged`
+
+\sa :py:func:`~QgsPointCloudDataProvider.statsCalculator`
+%End
+
+    virtual PointCloudStatisticsGenerationState statisticsState() const;
+%Docstring
+Gets the current statistics generation state
+
+.. seealso:: :py:func:`statsCalculator`
+
+.. versionadded:: 3.26
+%End
+
     virtual QVariantMap originalMetadata() const;
 %Docstring
 Returns a representation of the original metadata included in a point cloud dataset.
@@ -168,6 +193,14 @@ This method returns a new renderer and the caller takes ownership of the returne
 Only providers which report the CreateRenderer capability will return a 2D renderer. Other
 providers will return ``None``.
 %End
+
+    virtual bool containsStatisticsMetadata() const;
+%Docstring
+Returns whether the dataset contains statistics metadata
+
+.. versionadded:: 3.26
+%End
+
 
     SIP_PYOBJECT metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 %Docstring
@@ -240,6 +273,14 @@ in the metadata, and even for sources with statistical metadata only some ``stat
     virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = false );
 
 
+    QgsPointCloudStatsCalculator *statsCalculator() const;
+%Docstring
+Returns the statistics calculator object for the data provider
+The returned object can be used to increase the number of samples used in the statistcs calculation
+
+.. versionadded:: 3.26
+%End
+
     static QMap< int, QString > lasClassificationCodes();
 %Docstring
 Returns the map of LAS classification code to untranslated string value, corresponding to the ASPRS Standard
@@ -277,6 +318,12 @@ Returns the map of LAS data format ID to translated string value.
 Emitted when point cloud generation state is changed
 %End
 
+    void statisticsGenerationStateChanged( PointCloudStatisticsGenerationState state );
+%Docstring
+Emitted when point cloud statistics calculation state is changed
+
+.. versionadded:: 3.26
+%End
 };
 
 /************************************************************************

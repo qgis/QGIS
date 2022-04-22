@@ -44,7 +44,6 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QString name() const override;
     QString description() const override;
     QgsPointCloudIndex *index() const override;
-    QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantList metadataClasses( const QString &attribute ) const override;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
     void loadIndex( ) override;

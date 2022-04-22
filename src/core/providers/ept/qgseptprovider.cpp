@@ -109,6 +109,10 @@ void QgsEptProvider::loadIndex( )
     return;
 
   mIndex->load( dataSourceUri() );
+  if ( !containsStatisticsMetadata() )
+  {
+    generateStatistics();
+  }
 }
 
 QVariantMap QgsEptProvider::originalMetadata() const
@@ -119,11 +123,6 @@ QVariantMap QgsEptProvider::originalMetadata() const
 void QgsEptProvider::generateIndex()
 {
   //no-op, index is always generated
-}
-
-QVariant QgsEptProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
-{
-  return mIndex->metadataStatistic( attribute, statistic );
 }
 
 QgsEptProviderMetadata::QgsEptProviderMetadata():

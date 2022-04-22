@@ -119,6 +119,12 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
     mClassificationStatsGroupBox->hide();
   }
 
+  mStatisticsCalculationWarningLabel->hide();
+  if ( mLayer->dataProvider() )
+  {
+    connect( mLayer->dataProvider(), &QgsPointCloudDataProvider::statisticsGenerationStateChanged, this, &QgsPointCloudLayerProperties::updateStatisticsGenerationLabel );
+  }
+
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
@@ -454,6 +460,12 @@ void QgsPointCloudLayerProperties::optionsStackedWidget_CurrentChanged( int inde
   const bool isMetadataPanel = ( index == mOptStackedWidget->indexOf( mOptsPage_Metadata ) );
   mBtnStyle->setVisible( ! isMetadataPanel );
   mBtnMetadata->setVisible( isMetadataPanel );
+}
+
+void QgsPointCloudLayerProperties::updateStatisticsGenerationLabel( QgsPointCloudDataProvider::PointCloudStatisticsGenerationState state )
+{
+  if ( state == QgsPointCloudDataProvider::Calculated )
+    mStatisticsCalculationWarningLabel->show();
 }
 
 //

@@ -51,6 +51,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
 
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
+    bool containsStatisticsMetadata() const override;
     QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantList metadataClasses( const QString &attribute ) const override;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;

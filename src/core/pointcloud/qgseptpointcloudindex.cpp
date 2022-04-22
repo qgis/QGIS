@@ -214,19 +214,39 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
     // store any metadata stats which are present for the attribute
     AttributeStatistics stats;
+    bool foundStats = false;
     if ( schemaObj.contains( QLatin1String( "count" ) ) )
+    {
       stats.count = schemaObj.value( QLatin1String( "count" ) ).toInt();
+      foundStats = true;
+    }
     if ( schemaObj.contains( QLatin1String( "minimum" ) ) )
+    {
       stats.minimum = schemaObj.value( QLatin1String( "minimum" ) ).toDouble();
+      foundStats = true;
+    }
     if ( schemaObj.contains( QLatin1String( "maximum" ) ) )
+    {
       stats.maximum = schemaObj.value( QLatin1String( "maximum" ) ).toDouble();
+      foundStats = true;
+    }
     if ( schemaObj.contains( QLatin1String( "count" ) ) )
+    {
       stats.mean = schemaObj.value( QLatin1String( "mean" ) ).toDouble();
+      foundStats = true;
+    }
     if ( schemaObj.contains( QLatin1String( "stddev" ) ) )
+    {
       stats.stDev = schemaObj.value( QLatin1String( "stddev" ) ).toDouble();
+      foundStats = true;
+    }
     if ( schemaObj.contains( QLatin1String( "variance" ) ) )
+    {
       stats.variance = schemaObj.value( QLatin1String( "variance" ) ).toDouble();
-    mMetadataStats.insert( name, stats );
+      foundStats = true;
+    }
+    if ( foundStats )
+      mMetadataStats.insert( name, stats );
 
     if ( schemaObj.contains( QLatin1String( "counts" ) ) )
     {
@@ -325,6 +345,11 @@ QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
 qint64 QgsEptPointCloudIndex::pointCount() const
 {
   return mPointCount;
+}
+
+bool QgsEptPointCloudIndex::containsStatisticsMetadata() const
+{
+  return !mMetadataStats.isEmpty();
 }
 
 QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const

@@ -21,6 +21,8 @@
 #include "qgsgeometry.h"
 #include "qgspointcloudrequest.h"
 #include "qgsgeometryengine.h"
+#include "qgspointcloudstatscalculator.h"
+
 #include <mutex>
 #include <QDebug>
 #include <QtMath>
@@ -51,6 +53,32 @@ bool QgsPointCloudDataProvider::hasValidIndex() const
 QgsGeometry QgsPointCloudDataProvider::polygonBounds() const
 {
   return QgsGeometry::fromRect( extent() );
+}
+
+void QgsPointCloudDataProvider::generateStatistics()
+{
+  QgsPointCloudIndex *index = this->index();
+  mStatisticsGenerationState = PointCloudStatisticsGenerationState::Calculating;
+  mStatsCalculator.reset( new QgsPointCloudStatsCalculator( index ) );
+  QVector<QgsPointCloudAttribute> attributes = index->attributes().attributes();
+  for ( int i = 0; i < attributes.size(); ++i )
+  {
+    QString name = attributes.at( i ).name();
+    if ( name == QStringLiteral( "X" ) || name == QStringLiteral( "Y" ) || name == QStringLiteral( "Z" ) )
+    {
+      attributes.removeAt( i );
+      --i;
+    }
+  }
+  connect( mStatsCalculator.get(), &QgsPointCloudStatsCalculator::statisticsCalculated, this, [this]
+  {
+    mStatisticsGenerationState = PointCloudStatisticsGenerationState::Calculated;
+    emit statisticsGenerationStateChanged( mStatisticsGenerationState );
+  } );
+
+  QgsDebugMsgLevel( "Statistics Calculation Task Created", 2 );
+  emit statisticsGenerationStateChanged( PointCloudStatisticsGenerationState::Calculating );
+  mStatsCalculator->calculateStats( attributes, 10000000 );
 }
 
 QVariantMap QgsPointCloudDataProvider::originalMetadata() const
@@ -169,8 +197,55 @@ QMap<int, QString> QgsPointCloudDataProvider::translatedDataFormatIds()
   return sCodes;
 }
 
-QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &, QgsStatisticalSummary::Statistic ) const
+bool QgsPointCloudDataProvider::containsStatisticsMetadata() const
 {
+  return index() && index()->containsStatisticsMetadata();
+}
+
+QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+{
+  QgsPointCloudIndex *pcIndex = index();
+  // Exception for X, Y & Z coordinates: always picked up directly from point cloud index (because it's in the header)
+  if ( attribute == QStringLiteral( "X" ) || attribute == QStringLiteral( "Y" ) || attribute == QStringLiteral( "Z" ) )
+  {
+    if ( pcIndex )
+      return pcIndex->metadataStatistic( attribute, statistic );
+    return QVariant();
+  }
+
+  if ( containsStatisticsMetadata() || mStatisticsGenerationState != PointCloudStatisticsGenerationState::Calculated )
+  {
+    return pcIndex->metadataStatistic( attribute, statistic );
+  }
+  QgsPointCloudStatsCalculator *calculator = statsCalculator();
+  QgsPointCloudStatsCalculator::AttributeStatistics stats = calculator->statisticsOf( attribute );
+  switch ( statistic )
+  {
+    case QgsStatisticalSummary::Min:
+      return stats.minimum;
+
+    case QgsStatisticalSummary::Max:
+      return stats.maximum;
+
+    case QgsStatisticalSummary::Count:
+    case QgsStatisticalSummary::Mean:
+    case QgsStatisticalSummary::StDev:
+    case QgsStatisticalSummary::Range:
+    case QgsStatisticalSummary::CountMissing:
+    case QgsStatisticalSummary::Sum:
+    case QgsStatisticalSummary::Median:
+    case QgsStatisticalSummary::StDevSample:
+    case QgsStatisticalSummary::Minority:
+    case QgsStatisticalSummary::Majority:
+    case QgsStatisticalSummary::Variety:
+    case QgsStatisticalSummary::FirstQuartile:
+    case QgsStatisticalSummary::ThirdQuartile:
+    case QgsStatisticalSummary::InterQuartileRange:
+    case QgsStatisticalSummary::First:
+    case QgsStatisticalSummary::Last:
+    case QgsStatisticalSummary::All:
+      return QVariant();
+  }
   return QVariant();
 }
 
@@ -316,4 +391,9 @@ bool QgsPointCloudDataProvider::setSubsetString( const QString &subset, bool upd
 QString QgsPointCloudDataProvider::subsetString() const
 {
   return mSubsetString;
+}
+
+QgsPointCloudStatsCalculator *QgsPointCloudDataProvider::statsCalculator() const
+{
+  return mStatsCalculator.get();
 }

@@ -93,6 +93,10 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     return new QgsPointCloudExtentRenderer();
   }
 
+  // When there are no statistics, we default to using extent renderer
+  if ( !provider->containsStatisticsMetadata() && provider->statisticsState() != QgsPointCloudDataProvider::Calculated )
+    return new QgsPointCloudExtentRenderer();
+
   const QgsPointCloudAttributeCollection attributes = provider->attributes();
 
   //if red/green/blue attributes are present, then default to a RGB renderer

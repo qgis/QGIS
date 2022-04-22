@@ -154,6 +154,10 @@ void QgsPdalProvider::onGenerateIndexFinished()
   }
   if ( !sIndexingQueue.empty() )
     sIndexingQueue.takeFirst()->generateIndex();
+  if ( !containsStatisticsMetadata() )
+  {
+    generateStatistics();
+  }
 }
 
 void QgsPdalProvider::onGenerateIndexFailed()
@@ -186,14 +190,6 @@ bool QgsPdalProvider::anyIndexingTaskExists()
     }
   }
   return false;
-}
-
-QVariant QgsPdalProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
-{
-  if ( mIndex )
-    return mIndex->metadataStatistic( attribute, statistic );
-  else
-    return QVariant();
 }
 
 qint64 QgsPdalProvider::pointCount() const

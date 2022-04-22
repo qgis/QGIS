@@ -118,6 +118,8 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
 
+    void updateStatisticsGenerationLabel( QgsPointCloudDataProvider::PointCloudStatisticsGenerationState state );
+
   private:
     void syncToLayer();
 

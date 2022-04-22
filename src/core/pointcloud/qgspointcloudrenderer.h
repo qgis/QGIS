@@ -180,7 +180,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * \a type indicates the original data type for the attribute.
      */
     template <typename T>
-    void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value ) const
+    static void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value )
     {
       switch ( type )
       {

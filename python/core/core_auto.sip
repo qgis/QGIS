@@ -271,10 +271,8 @@
 %Include auto_generated/editform/qgsattributeeditorqmlelement.sip
 %Include auto_generated/elevation/qgsabstractprofilegenerator.sip
 %Include auto_generated/elevation/qgsabstractprofilesource.sip
-%Include auto_generated/elevation/qgsprofilepoint.sip
 %Include auto_generated/elevation/qgsprofilerenderer.sip
 %Include auto_generated/elevation/qgsprofilerequest.sip
-%Include auto_generated/elevation/qgsprofilesnapping.sip
 %Include auto_generated/elevation/qgsterrainprovider.sip
 %Include auto_generated/externalstorage/qgsexternalstorage.sip
 %Include auto_generated/externalstorage/qgsexternalstorageregistry.sip
@@ -469,6 +467,7 @@
 %Include auto_generated/pointcloud/qgspointcloudrenderer.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererregistry.sip
 %Include auto_generated/pointcloud/qgspointcloudrgbrenderer.sip
+%Include auto_generated/pointcloud/qgspointcloudstatscalculator.sip
 %Include auto_generated/proj/qgscelestialbody.sip
 %Include auto_generated/proj/qgscoordinatereferencesystem.sip
 %Include auto_generated/proj/qgscoordinatereferencesystemregistry.sip

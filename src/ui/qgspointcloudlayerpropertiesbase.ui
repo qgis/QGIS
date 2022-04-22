@@ -188,7 +188,7 @@
           <enum>QFrame::Plain</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -390,6 +390,17 @@
                  <bool>true</bool>
                 </property>
                </widget>
+              </item>
+              <item>
+               <layout class="QGridLayout" name="gridLayout_4">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="mStatisticsCalculationWarningLabel">
+                  <property name="text">
+                   <string>Note: The displayed statistics are estimated based on sampling data from the dataset and it is not guaranteed to be accurate!</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>

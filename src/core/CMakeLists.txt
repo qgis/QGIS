@@ -48,7 +48,6 @@ set(QGIS_CORE_SRCS
   elevation/qgsabstractprofilesource.cpp
   elevation/qgsprofilerenderer.cpp
   elevation/qgsprofilerequest.cpp
-  elevation/qgsprofilesnapping.cpp
   elevation/qgsterrainprovider.cpp
 
   geocoding/qgsabstractgeocoderlocatorfilter.cpp
@@ -747,6 +746,8 @@ set(QGIS_CORE_SRCS
   pointcloud/expression/qgspointcloudexpression.cpp
   pointcloud/expression/qgspointcloudexpressionnode.cpp
   pointcloud/expression/qgspointcloudexpressionnodeimpl.cpp
+
+  pointcloud/qgspointcloudstatscalculator.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -1540,6 +1541,8 @@ set(QGIS_CORE_HDRS
   pointcloud/expression/qgspointcloudexpression.h
   pointcloud/expression/qgspointcloudexpressionnode.h
   pointcloud/expression/qgspointcloudexpressionnodeimpl.h
+
+  pointcloud/qgspointcloudstatscalculator.h
 
   proj/qgscelestialbody.h
   proj/qgscoordinatereferencesystem.h
