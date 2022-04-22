@@ -50,6 +50,19 @@ Check whether font family on system has specific style
 .. versionadded:: 2.1
 %End
 
+    static QString resolveFontStyleName( const QFont &font );
+%Docstring
+Attempts to resolve the style name corresponding to the specified ``font`` object.
+
+If a font has been modified by calling QFont.setBold or QFont.setItalic, then its QFont.styleName
+may return an empty string. This method attempts to determine the correct style name which
+corresponds to the font's bold and italic settings.
+
+Returns an empty string if a matching style name could not be found.
+
+.. versionadded:: 3.26
+%End
+
     static bool fontFamilyMatchOnSystem( const QString &family, QString *chosen = 0, bool *match = 0 );
 %Docstring
 Check whether font family is on system
