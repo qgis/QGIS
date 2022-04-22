@@ -3389,7 +3389,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
                     "f_table_catalog VARCHAR2(30) NOT NULL,"
                     "f_table_schema VARCHAR2(30) NOT NULL,"
                     "f_table_name VARCHAR2(30) NOT NULL,"
-                    "f_geometry_column VARCHAR2(30) NOT NULL,"
+                    "f_geometry_column VARCHAR2(30),"
                     "stylename VARCHAR2(2047),"
                     "styleqml CLOB,"
                     "stylesld CLOB,"
@@ -3408,21 +3408,25 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
 
   int id;
   QString sql;
-
-  if ( !qry.prepare( QStringLiteral( "SELECT id,stylename FROM layer_styles"
-                                     " WHERE f_table_catalog=?"
-                                     " AND f_table_schema=?"
-                                     " AND f_table_name=?"
-                                     " AND f_geometry_column=?"
-                                     " AND styleName=?" ) ) ||
-       !(
-         qry.addBindValue( dsUri.database() ),
-         qry.addBindValue( dsUri.schema() ),
-         qry.addBindValue( dsUri.table() ),
-         qry.addBindValue( dsUri.geometryColumn() ),
-         qry.addBindValue( styleName.isEmpty() ? dsUri.table() : styleName ),
-         qry.exec()
-       ) )
+  if ( !qry.prepare( "SELECT id,stylename FROM layer_styles"
+                     " WHERE f_table_catalog=?"
+                     " AND f_table_schema=?"
+                     " AND f_table_name=?"
+                     " AND f_geometry_column" +
+                     QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
+                     " AND styleName=?" ) )
+  {
+    errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+  qry.addBindValue( dsUri.database() );
+  qry.addBindValue( dsUri.schema() );
+  qry.addBindValue( dsUri.table() );
+  if ( !dsUri.geometryColumn().isEmpty() )
+    qry.addBindValue( dsUri.geometryColumn() );
+  qry.addBindValue( styleName.isEmpty() ? dsUri.table() : styleName );
+  if ( !qry.exec() )
   {
     errCause = QObject::tr( "Unable to check style existence [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
@@ -3560,21 +3564,29 @@ QString QgsOracleProviderMetadata::loadStyle( const QString &uri, QString &errCa
     conn->disconnect();
     return QString();
   }
-  else if ( !qry.prepare( QStringLiteral( "SELECT styleQML FROM ("
-                                          "SELECT styleQML"
-                                          " FROM layer_styles"
-                                          " WHERE f_table_catalog=?"
-                                          " AND f_table_schema=?"
-                                          " AND f_table_name=?"
-                                          " AND f_geometry_column=?"
-                                          " ORDER BY useAsDefault DESC"
-                                          ") WHERE rownum=1" ) ) ||
-            !(
-              qry.addBindValue( dsUri.database() ),
-              qry.addBindValue( dsUri.schema() ),
-              qry.addBindValue( dsUri.table() ),
-              qry.addBindValue( dsUri.geometryColumn() ),
-              qry.exec() ) )
+
+  if ( !qry.prepare( "SELECT styleQML FROM ("
+                     "SELECT styleQML"
+                     " FROM layer_styles"
+                     " WHERE f_table_catalog=?"
+                     " AND f_table_schema=?"
+                     " AND f_table_name=?"
+                     " AND f_geometry_column" +
+                     QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
+                     " ORDER BY useAsDefault DESC"
+                     ") WHERE rownum=1" ) )
+  {
+    errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
+    conn->disconnect();
+    return QString();
+  }
+  qry.addBindValue( dsUri.database() );
+  qry.addBindValue( dsUri.schema() );
+  qry.addBindValue( dsUri.table() );
+  if ( !dsUri.geometryColumn().isEmpty() )
+    qry.addBindValue( dsUri.geometryColumn() );
+
+  if ( !qry.exec() )
   {
     errCause = QObject::tr( "Could not retrieve style [%1]" ).arg( qry.lastError().text() );
   }
@@ -3609,60 +3621,73 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri,
 
   QSqlQuery qry( *conn );
 
-  int res = -1;
   if ( !qry.exec( "SELECT count(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ) || !qry.next() )
   {
     errCause = QObject::tr( "Could not verify existence of layer style table [%1]" ).arg( qry.lastError().text() );
+    conn->disconnect();
+    return -1;
   }
-  else if ( qry.value( 0 ).toInt() == 0 )
+  if ( qry.value( 0 ).toInt() == 0 )
   {
     errCause = QObject::tr( "Layer style table does not exist [%1]" ).arg( qry.value( 0 ).toString() );
+    conn->disconnect();
+    return -1;
   }
-  else
+
+  if ( !qry.prepare( "SELECT id,styleName,description FROM layer_styles WHERE f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column"
+                     + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) ) )
   {
-    if ( !qry.prepare( QStringLiteral( "SELECT id,styleName,description FROM layer_styles WHERE f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column=?" ) ) ||
-         !(
-           qry.addBindValue( dsUri.database() ),
-           qry.addBindValue( dsUri.schema() ),
-           qry.addBindValue( dsUri.table() ),
-           qry.addBindValue( dsUri.geometryColumn() ),
-           qry.exec() ) )
-    {
-      errCause = QObject::tr( "No style for layer found" );
-    }
-    else
-    {
-      res = 0;
-      while ( qry.next() )
-      {
-        ids << qry.value( 0 ).toString();
-        names << qry.value( 1 ).toString();
-        descriptions << qry.value( 2 ).toString();
-        res++;
-      }
+    errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
+    conn->disconnect();
+    return -1;
+  }
+  qry.addBindValue( dsUri.database() );
+  qry.addBindValue( dsUri.schema() );
+  qry.addBindValue( dsUri.table() );
+  if ( !dsUri.geometryColumn().isEmpty() )
+    qry.addBindValue( dsUri.geometryColumn() );
+  if ( !qry.exec() )
+  {
+    conn->disconnect();
+    errCause = QObject::tr( "No style for layer found" );
+    return -1;
+  }
 
-      qry.finish();
+  int res = 0;
+  while ( qry.next() )
+  {
+    ids << qry.value( 0 ).toString();
+    names << qry.value( 1 ).toString();
+    descriptions << qry.value( 2 ).toString();
+    res++;
+  }
 
-      if ( qry.prepare( QStringLiteral( "SELECT id,styleName,description FROM layer_styles WHERE NOT (f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column=?) ORDER BY update_time DESC" ) ) &&
-           (
-             qry.addBindValue( dsUri.database() ),
-             qry.addBindValue( dsUri.schema() ),
-             qry.addBindValue( dsUri.table() ),
-             qry.addBindValue( dsUri.geometryColumn() ),
-             qry.exec() ) )
-      {
-        while ( qry.next() )
-        {
-          ids << qry.value( 0 ).toString();
-          names << qry.value( 1 ).toString();
-          descriptions << qry.value( 2 ).toString();
-        }
-      }
+  qry.finish();
+
+  if ( !qry.prepare( "SELECT id,styleName,description FROM layer_styles WHERE NOT (f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column"
+                     + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" )
+                     + ") ORDER BY update_time DESC" ) )
+  {
+    errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
+    conn->disconnect();
+    return -1;
+  }
+  qry.addBindValue( dsUri.database() );
+  qry.addBindValue( dsUri.schema() );
+  qry.addBindValue( dsUri.table() );
+  if ( !dsUri.geometryColumn().isEmpty() )
+    qry.addBindValue( dsUri.geometryColumn() );
+  if ( qry.exec() )
+  {
+    while ( qry.next() )
+    {
+      ids << qry.value( 0 ).toString();
+      names << qry.value( 1 ).toString();
+      descriptions << qry.value( 2 ).toString();
     }
   }
 
   conn->disconnect();
-
   return res;
 }
 
