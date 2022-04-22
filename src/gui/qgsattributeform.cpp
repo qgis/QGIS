@@ -1634,6 +1634,12 @@ void QgsAttributeForm::init()
 
           tabWidget->addTab( tabPage, widgDef->name() );
 
+          if ( widgDef->overrideLabelStyle() )
+          {
+            tabWidget->setTabFont( tabWidget->tabBar()->count() - 1, widgDef->labelFont() );
+            tabWidget->tabBar()->setTabTextColor( tabWidget->tabBar()->count() - 1, widgDef->labelColor() );
+          }
+
           if ( containerDef->visibilityExpression().enabled() )
           {
             registerContainerInformation( new ContainerInformation( tabWidget, tabPage, containerDef->visibilityExpression().data() ) );

@@ -20,6 +20,11 @@
 QgsTabWidget::QgsTabWidget( QWidget *parent )
   : QTabWidget( parent )
 {
+  QgsTabBar *qgsTabBar = new QgsTabBar( this );
+  setTabBar( qgsTabBar );
+  mTabBarStyle = std::make_unique<QgsTabBarProxyStyle>( tabBar() );
+  qgsTabBar->setTabBarStyle( mTabBarStyle.get() );
+  setStyle( mTabBarStyle.get() );
 }
 
 void QgsTabWidget::hideTab( QWidget *tab )
@@ -67,6 +72,11 @@ int QgsTabWidget::realTabIndex( QWidget *widget )
     ++realIndex;
   }
   return -1;
+}
+
+void QgsTabWidget::setTabFont( int tabIndex, const QFont &customFont )
+{
+  mTabBarStyle->addStyle( tabIndex, QgsTabBarProxyStyle::TabStyle{ customFont } );
 }
 
 void QgsTabWidget::tabInserted( int index )

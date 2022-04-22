@@ -644,6 +644,7 @@ set(QGIS_GUI_SRCS
   qgsstatusbar.cpp
   qgssymbolbutton.cpp
   qgssymbollayerselectionwidget.cpp
+  qgstabbarproxystyle.cpp
   qgstableview.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
@@ -907,6 +908,7 @@ set(QGIS_GUI_HDRS
   qgssubstitutionlistwidget.h
   qgssymbolbutton.h
   qgssymbollayerselectionwidget.h
+  qgstabbarproxystyle.h
   qgstableview.h
   qgstablewidgetbase.h
   qgstablewidgetitem.h
