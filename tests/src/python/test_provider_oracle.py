@@ -29,7 +29,8 @@ from qgis.core import (
     QgsField,
     QgsFields,
     QgsCoordinateReferenceSystem,
-    QgsProjUtils
+    QgsProjUtils,
+    QgsProviderRegistry
 )
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
@@ -48,7 +49,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = "host=localhost/XEPDB1 port=1521 user='QGIS' password='qgis'"
+        cls.dbconn = "host=localhost dbname=XEPDB1 port=1521 user='QGIS' password='qgis'"
         if 'QGIS_ORACLETEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_ORACLETEST_DB']
         # Create test layers
@@ -306,6 +307,33 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         fid += 1
         self.check_geom(multipoints_z, fid, 'MultiPointZ ((1 2 7),(3 4 8))')
+
+    def testLayerStyles(self):
+        # Table without geometry column
+        vl_no_geom = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'id\' table="QGIS"."DATE_TIMES" sql=', 'test', 'oracle')
+
+        # Save layer styles
+        self.assertEqual(self.vl.saveStyleToDatabase("mystyle", "the best", True, "something.ui"), "")
+        self.assertEqual(vl_no_geom.saveStyleToDatabase("my_other_style", "the very best", True, "else.ui"), "")
+
+        # Verify presence of styles in database
+        res, err = QgsProviderRegistry.instance().styleExists('oracle', self.vl.source(), 'mystyle')
+        self.assertTrue(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('oracle', vl_no_geom.source(), 'my_other_style')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        # Verify listing and loading of styles
+        self.assertEqual(self.vl.listStylesInDatabase(), (1, ['0', '1'], ['mystyle', 'my_other_style'], ['the best', 'the very best'], ''))
+        _, res = self.vl.loadNamedStyle(self.vl.source())
+        self.assertTrue(res)
+        self.assertEqual(vl_no_geom.listStylesInDatabase(), (1, ['1', '0'], ['my_other_style', 'mystyle'], ['the very best', 'the best'], ''))
+        _, res = vl_no_geom.loadNamedStyle(vl_no_geom.source())
+        self.assertTrue(res)
+
+        self.execSQLCommand('DROP TABLE "QGIS"."LAYER_STYLES"')
 
     def testCurves(self):
         vl = QgsVectorLayer('%s table="QGIS"."LINE_DATA" (GEOM) srid=4326 type=LINESTRING sql=' %
