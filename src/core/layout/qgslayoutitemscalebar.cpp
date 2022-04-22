@@ -301,10 +301,10 @@ void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *
 
   mHasExpressionError = false;
 
-  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarSegmentWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarSegmentWidth ) )
   {
     bool ok = false;
-    unitsPerSegment = mDataDefinedProperties.valueAsDouble(QgsLayoutObject::ScalebarSegmentWidth, *evalContext, unitsPerSegment, &ok);
+    unitsPerSegment = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarSegmentWidth, *evalContext, unitsPerSegment, &ok );
 
     if ( !ok )
     {
@@ -315,7 +315,7 @@ void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *
     }
   }
 
-  setUnitsPerSegment(unitsPerSegment);
+  setUnitsPerSegment( unitsPerSegment );
 }
 
 void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *context )
@@ -325,15 +325,15 @@ void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *
 
   mDataDefinedProperties.prepare( *evalContext );
 
-    //mSettings.setMinimumBarWidth( minWidth );
+  //mSettings.setMinimumBarWidth( minWidth );
   double minimumBarWidth = mSettings.minimumBarWidth();
 
   mHasExpressionError = false;
 
-  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarMinWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMinWidth ) )
   {
     bool ok = false;
-    minimumBarWidth = mDataDefinedProperties.valueAsDouble(QgsLayoutObject::ScalebarMinWidth, *evalContext, minimumBarWidth, &ok);
+    minimumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMinWidth, *evalContext, minimumBarWidth, &ok );
 
     if ( !ok )
     {
@@ -354,15 +354,15 @@ void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *
 
   mDataDefinedProperties.prepare( *evalContext );
 
-    //mSettings.setMinimumBarWidth( minWidth );
+  //mSettings.setMinimumBarWidth( minWidth );
   double maximumBarWidth = mSettings.maximumBarWidth();
 
   mHasExpressionError = false;
 
-  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarMaxWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMaxWidth ) )
   {
     bool ok = false;
-    maximumBarWidth = mDataDefinedProperties.valueAsDouble(QgsLayoutObject::ScalebarMaxWidth, *evalContext, maximumBarWidth, &ok);
+    maximumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMaxWidth, *evalContext, maximumBarWidth, &ok );
 
     if ( !ok )
     {
@@ -375,7 +375,7 @@ void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *
   setMaximumBarWidth( maximumBarWidth );
 }
 
-void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft(const QgsExpressionContext *context)
+void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft( const QgsExpressionContext *context )
 {
   const QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
@@ -386,10 +386,10 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft(const QgsExpressionConte
 
   mHasExpressionError = false;
 
-  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarLeftSegments ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarLeftSegments ) )
   {
     bool ok = false;
-    leftSegments = mDataDefinedProperties.valueAsInt(QgsLayoutObject::ScalebarLeftSegments, *evalContext, leftSegments, &ok);
+    leftSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarLeftSegments, *evalContext, leftSegments, &ok );
 
     if ( !ok )
     {
@@ -400,10 +400,10 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft(const QgsExpressionConte
     }
   }
 
-  setNumberOfSegmentsLeft(leftSegments);
+  setNumberOfSegmentsLeft( leftSegments );
 }
 
-void QgsLayoutItemScaleBar::refreshNumberOfSegmentsRight(const QgsExpressionContext *context)
+void QgsLayoutItemScaleBar::refreshNumberOfSegmentsRight( const QgsExpressionContext *context )
 {
   const QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
@@ -414,10 +414,10 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsRight(const QgsExpressionCont
 
   mHasExpressionError = false;
 
-  if ( mDataDefinedProperties.isActive(QgsLayoutObject::ScalebarRightSegments ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarRightSegments ) )
   {
     bool ok = false;
-    rightSegments = mDataDefinedProperties.valueAsInt(QgsLayoutObject::ScalebarRightSegments, *evalContext, rightSegments, &ok);
+    rightSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarRightSegments, *evalContext, rightSegments, &ok );
 
     if ( !ok )
     {
@@ -428,7 +428,7 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsRight(const QgsExpressionCont
     }
   }
 
-  setNumberOfSegments(rightSegments);
+  setNumberOfSegments( rightSegments );
 }
 
 void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
@@ -437,31 +437,31 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
 
   bool forceUpdate = false;
 
-  if (property == QgsLayoutObject::ScalebarLeftSegments || property == QgsLayoutObject::AllProperties)
+  if ( property == QgsLayoutObject::ScalebarLeftSegments || property == QgsLayoutObject::AllProperties )
   {
     refreshNumberOfSegmentsLeft( &context );
     forceUpdate = true;
   }
 
-  if (property == QgsLayoutObject::ScalebarRightSegments || property == QgsLayoutObject::AllProperties)
+  if ( property == QgsLayoutObject::ScalebarRightSegments || property == QgsLayoutObject::AllProperties )
   {
     refreshNumberOfSegmentsRight( &context );
     forceUpdate = true;
   }
 
-  if (property == QgsLayoutObject::ScalebarSegmentWidth || property == QgsLayoutObject::AllProperties)
+  if ( property == QgsLayoutObject::ScalebarSegmentWidth || property == QgsLayoutObject::AllProperties )
   {
     refreshUnitsPerSegment( &context );
     forceUpdate = true;
   }
 
-  if (property == QgsLayoutObject::ScalebarMinWidth || property == QgsLayoutObject::AllProperties)
+  if ( property == QgsLayoutObject::ScalebarMinWidth || property == QgsLayoutObject::AllProperties )
   {
     refreshMinimumBarWidth( &context );
     forceUpdate = true;
   }
 
-  if (property == QgsLayoutObject::ScalebarMaxWidth || property == QgsLayoutObject::AllProperties)
+  if ( property == QgsLayoutObject::ScalebarMaxWidth || property == QgsLayoutObject::AllProperties )
   {
     refreshMaximumBarWidth( &context );
     forceUpdate = true;
