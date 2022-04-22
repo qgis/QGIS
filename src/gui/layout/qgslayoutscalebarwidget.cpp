@@ -57,11 +57,24 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsLayoutScaleBarWidget::changeNumberFormat );
 
+  connect( mSegmentsLeftDDBtn, &QgsPropertyOverrideButton::activated, mSegmentsLeftSpinBox, &QSpinBox::setDisabled );
   registerDataDefinedButton( mSegmentsLeftDDBtn, QgsLayoutObject::ScalebarLeftSegments );
+  connect(mSegmentsRightDDBtn, &QgsPropertyOverrideButton::activated, mNumberOfSegmentsSpinBox, &QSpinBox::setDisabled );
   registerDataDefinedButton( mSegmentsRightDDBtn, QgsLayoutObject::ScalebarRightSegments );
+  connect(mSegmentSizeDDBtn, &QgsPropertyOverrideButton::activated, mSegmentSizeSpinBox, &QDoubleSpinBox::setDisabled );
   registerDataDefinedButton( mSegmentSizeDDBtn, QgsLayoutObject::ScalebarSegmentWidth );
+  connect(mMinWidthDDBtn, &QgsPropertyOverrideButton::activated, mMinWidthSpinBox, &QDoubleSpinBox::setDisabled );
   registerDataDefinedButton( mMinWidthDDBtn, QgsLayoutObject::ScalebarMinWidth );
+  connect(mMaxWidthDDBtn, &QgsPropertyOverrideButton::activated, mMaxWidthSpinBox, &QDoubleSpinBox::setDisabled );
   registerDataDefinedButton( mMaxWidthDDBtn, QgsLayoutObject::ScalebarMaxWidth );
+
+  /*
+  mSegmentsLeftDDBtn->registerLinkedWidget( mSegmentsLeftSpinBox );
+  mSegmentsRightDDBtn->registerLinkedWidget( mNumberOfSegmentsSpinBox );
+  mSegmentSizeDDBtn->registerLinkedWidget( mSegmentSizeSpinBox );
+  mMinWidthDDBtn->registerLinkedWidget( mMinWidthSpinBox );
+  mMaxWidthDDBtn->registerLinkedWidget( mMaxWidthSpinBox );
+  */
 
   setPanelTitle( tr( "Scalebar Properties" ) );
 
@@ -796,4 +809,10 @@ void QgsLayoutScaleBarWidget::populateDataDefinedButtons()
   updateDataDefinedButton( mSegmentSizeDDBtn );
   updateDataDefinedButton( mMinWidthDDBtn );
   updateDataDefinedButton( mMaxWidthDDBtn );
+
+  mSegmentsLeftSpinBox->setEnabled( !mSegmentsLeftDDBtn->isActive() );
+  mNumberOfSegmentsSpinBox->setEnabled( !mSegmentsRightDDBtn->isActive() );
+  mSegmentSizeSpinBox->setEnabled( !mSegmentSizeDDBtn->isActive() );
+  mMinWidthSpinBox->setEnabled( !mMinWidthDDBtn->isActive() );
+  mMaxWidthSpinBox->setEnabled( !mMaxWidthDDBtn->isActive() );
 }
