@@ -136,6 +136,7 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
     box.yMin = mHandler->zMinimum();
     box.yMax = mHandler->zMaximum();
     mNode->setExactBbox( box );
+    mNode->updateParentBoundingBoxesRecursively();
   }
 
   return entity;
