@@ -372,7 +372,6 @@ void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *
       QgsMessageLog::logMessage( tr( "Scalebar maximum segment width expression eval error" ) );
     }
   }
-
   setMaximumBarWidth( maximumBarWidth );
 }
 
@@ -492,6 +491,7 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
   {
     refreshItemSize();
     update();
+    emit changed();
   }
 
   QgsLayoutItem::refreshDataDefinedProperty( property );

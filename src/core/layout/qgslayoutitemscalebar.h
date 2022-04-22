@@ -132,7 +132,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     /**
      * Recalculates the number of scalebar units per segment
-     * (if using an expression for the value)
      * \param expression context for evaluating data defined units per segment
      */
     void refreshUnitsPerSegment( const QgsExpressionContext *context = nullptr );
@@ -725,7 +724,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     QgsScaleBarRenderer::ScaleBarContext createScaleContext() const;
 
     friend class QgsCompositionConverter;
-
 };
 
 #endif //QGSLAYOUTITEMSCALEBAR_H
