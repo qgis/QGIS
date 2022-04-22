@@ -12140,7 +12140,8 @@ void QgisApp::saveLastMousePosition( const QgsPointXY &p )
     if ( mMapCanvas->underMouse() )
     {
       // Clear the maptip (this is done conditionally)
-      mpMaptip->clear( mMapCanvas );
+      int interval = std::min( 300, mpMapTipsTimer->interval() );
+      mpMaptip->clear( mMapCanvas, interval );
       // don't start the timer if the mouse is not over the map canvas
       mpMapTipsTimer->start();
     }
