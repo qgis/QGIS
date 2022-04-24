@@ -128,8 +128,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::maxTerrainScreenErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
-  connect( &map, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapScene::updateLights );
-  connect( &map, &Qgs3DMapSettings::directionalLightsChanged, this, &Qgs3DMapScene::updateLights );
+  connect( &map, &Qgs3DMapSettings::lightSourcesChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
@@ -657,16 +656,10 @@ void Qgs3DMapScene::updateLights()
     entity->deleteLater();
   mLightEntities.clear();
 
-  const auto newPointLights = mMap.pointLights();
-  for ( const QgsPointLightSettings &pointLightSettings : newPointLights )
+  const QList< QgsLightSource * > newLights = mMap.lightSources();
+  for ( const QgsLightSource *source : newLights )
   {
-    mLightEntities.append( pointLightSettings.createEntities( mMap, this ) );
-  }
-
-  const auto newDirectionalLights = mMap.directionalLights();
-  for ( const QgsDirectionalLightSettings &directionalLightSettings : newDirectionalLights )
-  {
-    mLightEntities.append( directionalLightSettings.createEntities( mMap, this ) );
+    mLightEntities.append( source->createEntities( mMap, this ) );
   }
 
   onShadowSettingsChanged();
@@ -1034,15 +1027,24 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 {
   QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
 
-  QList<QgsDirectionalLightSettings> directionalLights = mMap.directionalLights();
+  const QList< QgsLightSource * > lightSources = mMap.lightSources();
+  QList< QgsDirectionalLightSettings * > directionalLightSources;
+  for ( QgsLightSource *source : lightSources )
+  {
+    if ( source->type() == Qgis::LightSourceType::Directional )
+    {
+      directionalLightSources << qgis::down_cast< QgsDirectionalLightSettings * >( source );
+    }
+  }
+
   QgsShadowSettings shadowSettings = mMap.shadowSettings();
   int selectedLight = shadowSettings.selectedDirectionalLight();
-  if ( shadowSettings.renderShadows() && selectedLight >= 0 && selectedLight < directionalLights.count() )
+  if ( shadowSettings.renderShadows() && selectedLight >= 0 && selectedLight < directionalLightSources.count() )
   {
     shadowRenderingFrameGraph->setShadowRenderingEnabled( true );
     shadowRenderingFrameGraph->setShadowBias( shadowSettings.shadowBias() );
     shadowRenderingFrameGraph->setShadowMapResolution( shadowSettings.shadowMapResolution() );
-    QgsDirectionalLightSettings light = directionalLights[selectedLight];
+    QgsDirectionalLightSettings light = *directionalLightSources.at( selectedLight );
     shadowRenderingFrameGraph->setupDirectionalLight( light, shadowSettings.maximumShadowRenderingDistance() );
   }
   else

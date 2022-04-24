@@ -26,6 +26,14 @@ Definition of a directional light in a 3D map scene
 Construct a directional light with default values
 %End
 
+    virtual Qgis::LightSourceType type() const;
+
+    virtual QgsDirectionalLightSettings *clone() const /Factory/;
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
+
 
     QgsVector3D direction() const;
 %Docstring
@@ -52,15 +60,6 @@ Returns intensity of the light
     void setIntensity( float intensity );
 %Docstring
 Sets intensity of the light
-%End
-
-    QDomElement writeXml( QDomDocument &doc ) const;
-%Docstring
-Writes configuration to a new DOM element and returns it
-%End
-    void readXml( const QDomElement &elem );
-%Docstring
-Reads configuration from a DOM element previously written using :py:func:`~QgsDirectionalLightSettings.writeXml`
 %End
 
     bool operator==( const QgsDirectionalLightSettings &other );

@@ -32,6 +32,14 @@ constant, linear and quadratic attenuation.
 Construct a point light with default values
 %End
 
+    virtual Qgis::LightSourceType type() const;
+
+    virtual QgsPointLightSettings *clone() const /Factory/;
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
+
 
     QgsVector3D position() const;
 %Docstring
@@ -85,15 +93,6 @@ Returns quadratic attenuation (A_2)
     void setQuadraticAttenuation( float value );
 %Docstring
 Sets quadratic attenuation (A_2)
-%End
-
-    QDomElement writeXml( QDomDocument &doc ) const;
-%Docstring
-Writes configuration to a new DOM element and returns it
-%End
-    void readXml( const QDomElement &elem );
-%Docstring
-Reads configuration from a DOM element previously written using :py:func:`~QgsPointLightSettings.writeXml`
 %End
 
     bool operator==( const QgsPointLightSettings &other );

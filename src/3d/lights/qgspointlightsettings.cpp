@@ -24,9 +24,19 @@
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSphereMesh>
 
+Qgis::LightSourceType QgsPointLightSettings::type() const
+{
+  return Qgis::LightSourceType::Point;
+}
+
+QgsPointLightSettings *QgsPointLightSettings::clone() const
+{
+  return new QgsPointLightSettings( *this );
+}
+
 QList<Qt3DCore::QEntity *> QgsPointLightSettings::createEntities( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const
 {
-  Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
+  Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity( parent );
   Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
   lightTransform->setTranslation( QVector3D( position().x(),
                                   position().y(),
@@ -42,13 +52,12 @@ QList<Qt3DCore::QEntity *> QgsPointLightSettings::createEntities( const Qgs3DMap
 
   lightEntity->addComponent( light );
   lightEntity->addComponent( lightTransform );
-  lightEntity->setParent( parent );
 
   QList<Qt3DCore::QEntity *> res { lightEntity };
 
   if ( map.showLightSourceOrigins() )
   {
-    Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity;
+    Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity( parent );
 
     Qt3DCore::QTransform *trLightOriginCenter = new Qt3DCore::QTransform;
     trLightOriginCenter->setTranslation( lightTransform->translation() );
@@ -63,7 +72,6 @@ QList<Qt3DCore::QEntity *> QgsPointLightSettings::createEntities( const Qgs3DMap
     originEntity->addComponent( rendererLightOriginCenter );
 
     originEntity->setEnabled( true );
-    originEntity->setParent( parent );
 
     res << originEntity;
   }
@@ -71,7 +79,7 @@ QList<Qt3DCore::QEntity *> QgsPointLightSettings::createEntities( const Qgs3DMap
   return res;
 }
 
-QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc ) const
+QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   QDomElement elemLight = doc.createElement( QStringLiteral( "point-light" ) );
   elemLight.setAttribute( QStringLiteral( "x" ), mPosition.x() );
@@ -85,7 +93,7 @@ QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc ) const
   return elemLight;
 }
 
-void QgsPointLightSettings::readXml( const QDomElement &elem )
+void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
   mPosition.set( elem.attribute( QStringLiteral( "x" ) ).toDouble(),
                  elem.attribute( QStringLiteral( "y" ) ).toDouble(),

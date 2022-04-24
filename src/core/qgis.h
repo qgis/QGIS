@@ -1637,6 +1637,18 @@ class CORE_EXPORT Qgis
     Q_FLAG( PlotToolFlags )
 
     /**
+     * Light source types for 3D scenes.
+     *
+     * \since QGIS 3.26
+     */
+    enum class LightSourceType : int
+    {
+      Point, //!< Point light source
+      Directional, //!< Directional light source
+    };
+    Q_ENUM( LightSourceType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

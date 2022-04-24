@@ -1470,3 +1470,9 @@ Qgis.PlotToolFlag.__doc__ = 'Flags that control the way the :py:class:`QgsPlotTo
 Qgis.PlotToolFlag.baseClass = Qgis
 Qgis.PlotToolFlags.baseClass = Qgis
 PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.LightSourceType.Point.__doc__ = "Point light source"
+Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
+Qgis.LightSourceType.__doc__ = 'Light source types for 3D scenes.\n\n.. versionadded:: 3.26\n\n' + '* ``Point``: ' + Qgis.LightSourceType.Point.__doc__ + '\n' + '* ``Directional``: ' + Qgis.LightSourceType.Directional.__doc__
+# --
+Qgis.LightSourceType.baseClass = Qgis

@@ -42,9 +42,11 @@ class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
     //! Construct a point light with default values
     QgsPointLightSettings() = default;
 
+    Qgis::LightSourceType type() const override;
+    QgsPointLightSettings *clone() const override SIP_FACTORY;
     QList<Qt3DCore::QEntity *> createEntities( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const override SIP_SKIP;
-    QDomElement writeXml( QDomDocument &doc ) const override;
-    void readXml( const QDomElement &elem ) override;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() ) override;
 
     //! Returns position of the light (in 3D world coordinates)
     QgsVector3D position() const { return mPosition; }
