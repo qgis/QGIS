@@ -14,11 +14,62 @@
  ***************************************************************************/
 
 #include "qgspointlightsettings.h"
+#include "qgssymbollayerutils.h"
+#include "qgs3dmapsettings.h"
 
 #include <QDomDocument>
 
-#include "qgssymbollayerutils.h"
+#include <Qt3DCore/QEntity>
+#include <Qt3DRender/QPointLight>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QSphereMesh>
 
+QList<Qt3DCore::QEntity *> QgsPointLightSettings::createEntities( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const
+{
+  Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
+  Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
+  lightTransform->setTranslation( QVector3D( position().x(),
+                                  position().y(),
+                                  position().z() ) );
+
+  Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
+  light->setColor( color() );
+  light->setIntensity( intensity() );
+
+  light->setConstantAttenuation( constantAttenuation() );
+  light->setLinearAttenuation( linearAttenuation() );
+  light->setQuadraticAttenuation( quadraticAttenuation() );
+
+  lightEntity->addComponent( light );
+  lightEntity->addComponent( lightTransform );
+  lightEntity->setParent( parent );
+
+  QList<Qt3DCore::QEntity *> res { lightEntity };
+
+  if ( map.showLightSourceOrigins() )
+  {
+    Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity;
+
+    Qt3DCore::QTransform *trLightOriginCenter = new Qt3DCore::QTransform;
+    trLightOriginCenter->setTranslation( lightTransform->translation() );
+    originEntity->addComponent( trLightOriginCenter );
+
+    Qt3DExtras::QPhongMaterial *materialLightOriginCenter = new Qt3DExtras::QPhongMaterial;
+    materialLightOriginCenter->setAmbient( color() );
+    originEntity->addComponent( materialLightOriginCenter );
+
+    Qt3DExtras::QSphereMesh *rendererLightOriginCenter = new Qt3DExtras::QSphereMesh;
+    rendererLightOriginCenter->setRadius( 20 );
+    originEntity->addComponent( rendererLightOriginCenter );
+
+    originEntity->setEnabled( true );
+    originEntity->setParent( parent );
+
+    res << originEntity;
+  }
+
+  return res;
+}
 
 QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc ) const
 {

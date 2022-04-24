@@ -32,6 +32,7 @@ constant, linear and quadratic attenuation.
 Construct a point light with default values
 %End
 
+
     QgsVector3D position() const;
 %Docstring
 Returns position of the light (in 3D world coordinates)

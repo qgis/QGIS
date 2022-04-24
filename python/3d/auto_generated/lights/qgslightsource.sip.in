@@ -9,7 +9,10 @@
 
 
 
-class QgsLightSource
+
+
+
+class QgsLightSource /Abstract/
 {
 %Docstring(signature="appended")
 Base class for light sources in 3d scenes.
@@ -24,6 +27,20 @@ Base class for light sources in 3d scenes.
 
     virtual ~QgsLightSource();
 
+
+    virtual QDomElement writeXml( QDomDocument &doc ) const = 0;
+%Docstring
+Writes the light source's configuration to a new DOM element and returns it.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    virtual void readXml( const QDomElement &elem ) = 0;
+%Docstring
+Reads configuration from a DOM element previously written using :py:func:`~QgsLightSource.writeXml`.
+
+.. seealso:: :py:func:`writeXml`
+%End
 };
 
 

@@ -42,6 +42,10 @@ class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
     //! Construct a point light with default values
     QgsPointLightSettings() = default;
 
+    QList<Qt3DCore::QEntity *> createEntities( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const override SIP_SKIP;
+    QDomElement writeXml( QDomDocument &doc ) const override;
+    void readXml( const QDomElement &elem ) override;
+
     //! Returns position of the light (in 3D world coordinates)
     QgsVector3D position() const { return mPosition; }
     //! Sets position of the light (in 3D world coordinates)
@@ -71,11 +75,6 @@ class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
     float quadraticAttenuation() const { return mQuadraticAttenuation; }
     //! Sets quadratic attenuation (A_2)
     void setQuadraticAttenuation( float value ) { mQuadraticAttenuation = value; }
-
-    //! Writes configuration to a new DOM element and returns it
-    QDomElement writeXml( QDomDocument &doc ) const;
-    //! Reads configuration from a DOM element previously written using writeXml()
-    void readXml( const QDomElement &elem );
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsPointLightSettings &other );
