@@ -10,7 +10,7 @@
 
 
 
-class QgsPointLightSettings
+class QgsPointLightSettings : QgsLightSource
 {
 %Docstring(signature="appended")
 Definition of a point light in a 3D map scene

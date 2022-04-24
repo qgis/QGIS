@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 
 #include "qgsvector3d.h"
+#include "qgslightsource.h"
 #include <QColor>
 
 class QDomDocument;
@@ -35,7 +36,7 @@ class QDomElement;
  *
  * \since QGIS 3.6
  */
-class _3D_EXPORT QgsPointLightSettings
+class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
 {
   public:
     //! Construct a point light with default values
