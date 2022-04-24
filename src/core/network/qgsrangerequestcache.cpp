@@ -67,7 +67,7 @@ void QgsRangeRequestCache::setCacheDirectory( const QString &path )
   }
   mCacheDir = cachePath;
 
-  if ( QDir().mkdir( mCacheDir ) )
+  if ( !QDir().mkpath( mCacheDir ) )
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to create cache directory \"%1\"" ).arg( mCacheDir ) );
   }
