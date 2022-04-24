@@ -19,8 +19,6 @@ set(QGIS_3D_SRCS
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
   qgsoffscreen3dengine.cpp
-  qgspointlightsettings.cpp
-  qgsdirectionallightsettings.cpp
   qgsraycastingutils_p.cpp
   qgsrulebased3drenderer.cpp
   qgsrulebasedchunkloader_p.cpp
@@ -48,6 +46,9 @@ set(QGIS_3D_SRCS
   chunks/qgschunkloader_p.cpp
   chunks/qgschunknode_p.cpp
   chunks/qgschunkqueuejob_p.cpp
+
+  lights/qgsdirectionallightsettings.cpp
+  lights/qgspointlightsettings.cpp
 
   materials/qgsabstractmaterialsettings.cpp
   materials/qgsgoochmaterialsettings.cpp
@@ -112,8 +113,6 @@ set(QGIS_3D_HDRS
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h
   qgsoffscreen3dengine.h
-  qgspointlightsettings.h
-  qgsdirectionallightsettings.h
   qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstilingscheme.h
@@ -126,6 +125,9 @@ set(QGIS_3D_HDRS
   qgspreviewquad.h
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
+
+  lights/qgsdirectionallightsettings.h
+  lights/qgspointlightsettings.h
 
   materials/qgsabstractmaterialsettings.h
   materials/qgsgoochmaterialsettings.h
@@ -208,6 +210,7 @@ endif()
 target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/chunks
+  ${CMAKE_CURRENT_SOURCE_DIR}/lights
   ${CMAKE_CURRENT_SOURCE_DIR}/materials
   ${CMAKE_CURRENT_SOURCE_DIR}/mesh
   ${CMAKE_CURRENT_SOURCE_DIR}/processing
