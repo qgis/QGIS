@@ -48,6 +48,7 @@ set(QGIS_3D_SRCS
   chunks/qgschunkqueuejob_p.cpp
 
   lights/qgsdirectionallightsettings.cpp
+  lights/qgslightsource.cpp
   lights/qgspointlightsettings.cpp
 
   materials/qgsabstractmaterialsettings.cpp
@@ -127,6 +128,7 @@ set(QGIS_3D_HDRS
   qgspointcloudlayer3drenderer.h
 
   lights/qgsdirectionallightsettings.h
+  lights/qgslightsource.h
   lights/qgspointlightsettings.h
 
   materials/qgsabstractmaterialsettings.h

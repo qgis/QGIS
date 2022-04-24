@@ -1,0 +1,36 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/lights/qgslightsource.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLightSource
+{
+%Docstring(signature="appended")
+Base class for light sources in 3d scenes.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgslightsource.h"
+%End
+  public:
+
+    virtual ~QgsLightSource();
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/lights/qgslightsource.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

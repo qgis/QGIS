@@ -18,6 +18,7 @@
 #include "qgis_3d.h"
 
 #include "qgsvector3d.h"
+#include "qgslightsource.h"
 #include <QColor>
 
 class QDomDocument;
@@ -29,7 +30,7 @@ class QDomElement;
  *
  * \since QGIS 3.16
  */
-class _3D_EXPORT QgsDirectionalLightSettings
+class _3D_EXPORT QgsDirectionalLightSettings : public QgsLightSource
 {
   public:
     //! Construct a directional light with default values
