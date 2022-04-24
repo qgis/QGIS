@@ -19,11 +19,14 @@
 #define QGSLIGHTSOURCE_H
 
 #include "qgis_3d.h"
+#include "qgis.h"
 #include "qgis_sip.h"
+#include "qgsreadwritecontext.h"
 
 #include <QList>
 
 class Qgs3DMapSettings;
+class QgsProject;
 class QDomElement;
 class QDomDocument;
 
@@ -38,7 +41,7 @@ namespace Qt3DCore
  * \ingroup 3d
  * \brief Base class for light sources in 3d scenes.
  *
- * \since QGIS 3.16
+ * \since QGIS 3.26
  */
 class _3D_EXPORT QgsLightSource SIP_ABSTRACT
 {
@@ -46,6 +49,16 @@ class _3D_EXPORT QgsLightSource SIP_ABSTRACT
   public:
 
     virtual ~QgsLightSource();
+
+    /**
+     * Returns the light source type.
+     */
+    virtual Qgis::LightSourceType type() const = 0;
+
+    /**
+     * Returns a copy of the light source.
+     */
+    virtual QgsLightSource *clone() const = 0 SIP_FACTORY;
 
     /**
      * Creates entities representing the light source.
@@ -57,14 +70,24 @@ class _3D_EXPORT QgsLightSource SIP_ABSTRACT
      *
      * \see readXml()
      */
-    virtual QDomElement writeXml( QDomDocument &doc ) const = 0;
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const = 0;
 
     /**
      * Reads configuration from a DOM element previously written using writeXml().
      *
      * \see writeXml()
      */
-    virtual void readXml( const QDomElement &elem ) = 0;
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() ) = 0;
+
+    /**
+     * After reading from XML, resolve references to any layers that have been read as layer IDs.
+     */
+    virtual void resolveReferences( const QgsProject &project );
+
+    /**
+     * Creates a new light source from an XML element.
+     */
+    static QgsLightSource *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 };
 
 

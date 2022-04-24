@@ -20,9 +20,19 @@
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DCore/QEntity>
 
+Qgis::LightSourceType QgsDirectionalLightSettings::type() const
+{
+  return Qgis::LightSourceType::Directional;
+}
+
+QgsDirectionalLightSettings *QgsDirectionalLightSettings::clone() const
+{
+  return new QgsDirectionalLightSettings( *this );
+}
+
 QList<Qt3DCore::QEntity *> QgsDirectionalLightSettings::createEntities( const Qgs3DMapSettings &, Qt3DCore::QEntity *parent ) const
 {
-  Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
+  Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity( parent );
   Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
 
   Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
@@ -33,12 +43,11 @@ QList<Qt3DCore::QEntity *> QgsDirectionalLightSettings::createEntities( const Qg
 
   lightEntity->addComponent( light );
   lightEntity->addComponent( lightTransform );
-  lightEntity->setParent( parent );
 
   return {lightEntity};
 }
 
-QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc ) const
+QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   QDomElement elemLight = doc.createElement( QStringLiteral( "directional-light" ) );
   elemLight.setAttribute( QStringLiteral( "x" ), mDirection.x() );
@@ -49,7 +58,7 @@ QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc ) const
   return elemLight;
 }
 
-void QgsDirectionalLightSettings::readXml( const QDomElement &elem )
+void QgsDirectionalLightSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
   mDirection.set( elem.attribute( QStringLiteral( "x" ) ).toFloat(),
                   elem.attribute( QStringLiteral( "y" ) ).toFloat(),

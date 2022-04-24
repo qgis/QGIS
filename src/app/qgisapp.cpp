@@ -13965,7 +13965,7 @@ void QgisApp::new3DMapCanvas()
     map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), fullExtent );
 
     // new scenes default to a single directional light
-    map->setDirectionalLights( QList<QgsDirectionalLightSettings>() << QgsDirectionalLightSettings() );
+    map->setLightSources( QList<QgsLightSource *>() << new QgsDirectionalLightSettings() );
     map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
     map->setRendererUsage( Qgis::RendererUsage::View );
 

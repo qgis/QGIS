@@ -469,32 +469,56 @@ Returns the corner where the shadow map preview is displayed
 Returns the size of the shadow map preview
 %End
 
-    QList<QgsPointLightSettings> pointLights() const;
+ QList<QgsPointLightSettings> pointLights() const /Deprecated/;
 %Docstring
 Returns list of point lights defined in the scene
 
-.. versionadded:: 3.6
+.. deprecated::
+   use :py:func:`~Qgs3DMapSettings.lightSources` instead
 %End
 
-    QList<QgsDirectionalLightSettings> directionalLights() const;
+ QList<QgsDirectionalLightSettings> directionalLights() const /Deprecated/;
 %Docstring
 Returns list of directional lights defined in the scene
 
-.. versionadded:: 3.16
+.. deprecated::
+   use :py:func:`~Qgs3DMapSettings.lightSources` instead
 %End
 
-    void setPointLights( const QList<QgsPointLightSettings> &pointLights );
+ void setPointLights( const QList<QgsPointLightSettings> &pointLights ) /Deprecated/;
 %Docstring
 Sets list of point lights defined in the scene
 
-.. versionadded:: 3.6
+.. deprecated::
+   use :py:func:`~Qgs3DMapSettings.setLightSources` instead
 %End
 
-    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
+ void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights ) /Deprecated/;
 %Docstring
 Sets list of directional lights defined in the scene
 
-.. versionadded:: 3.16
+.. deprecated::
+   use :py:func:`~Qgs3DMapSettings.setLightSources` instead
+%End
+
+    QList<QgsLightSource *> lightSources() const;
+%Docstring
+Returns list of directional light sources defined in the scene.
+
+.. seealso:: :py:func:`setLightSources`
+
+.. versionadded:: 3.26
+%End
+
+    void setLightSources( const QList<QgsLightSource *> &lights /Transfer/ );
+%Docstring
+Sets the list of ``light`` sources defined in the scene.
+
+Ownership of the lights is transferred to the settings.
+
+.. seealso:: :py:func:`lightSources`
+
+.. versionadded:: 3.26
 %End
 
     float fieldOfView() const;
@@ -801,6 +825,13 @@ Emitted when depth map debugging has changed
 Emitted when the list of point lights changes
 
 .. versionadded:: 3.6
+%End
+
+    void lightSourcesChanged();
+%Docstring
+Emitted when any of the light source settings in the map changes.
+
+.. versionadded:: 3.26
 %End
 
     void directionalLightsChanged();

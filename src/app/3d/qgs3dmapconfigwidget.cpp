@@ -161,7 +161,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   QgsPhongMaterialSettings terrainShadingMaterial = mMap->terrainShadingMaterial();
   widgetTerrainMaterial->setSettings( &terrainShadingMaterial, nullptr );
 
-  widgetLights->setLights( mMap->pointLights(), mMap->directionalLights() );
+  widgetLights->setLights( mMap->lightSources() );
 
   connect( cboTerrainType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainTypeChanged );
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
@@ -177,11 +177,11 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
   groupSkyboxSettings->setChecked( mMap->isSkyboxEnabled() );
 
-  mShadowSetiingsWidget = new QgsShadowRenderingSettingsWidget( this );
-  mShadowSetiingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLights().count() );
-  mShadowSetiingsWidget->setShadowSettings( map->shadowSettings() );
-  groupShadowRendering->layout()->addWidget( mShadowSetiingsWidget );
-  connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSetiingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
+  mShadowSettingsWidget = new QgsShadowRenderingSettingsWidget( this );
+  mShadowSettingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLightCount() );
+  mShadowSettingsWidget->setShadowSettings( map->shadowSettings() );
+  groupShadowRendering->layout()->addWidget( mShadowSettingsWidget );
+  connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSettingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
 
   connect( widgetLights, &QgsLightsWidget::lightsAdded, this, &Qgs3DMapConfigWidget::validate );
   connect( widgetLights, &QgsLightsWidget::lightsRemoved, this, &Qgs3DMapConfigWidget::validate );
@@ -351,11 +351,10 @@ void Qgs3DMapConfigWidget::apply()
   if ( QgsPhongMaterialSettings *phongMaterial = dynamic_cast< QgsPhongMaterialSettings * >( terrainMaterial.get() ) )
     mMap->setTerrainShadingMaterial( *phongMaterial );
 
-  mMap->setPointLights( widgetLights->pointLights() );
-  mMap->setDirectionalLights( widgetLights->directionalLights() );
+  mMap->setLightSources( widgetLights->lightSources() );
   mMap->setIsSkyboxEnabled( groupSkyboxSettings->isChecked() );
   mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
-  QgsShadowSettings shadowSettings = mShadowSetiingsWidget->toShadowSettings();
+  QgsShadowSettings shadowSettings = mShadowSettingsWidget->toShadowSettings();
   shadowSettings.setRenderShadows( groupShadowRendering->isChecked() );
   mMap->setShadowSettings( shadowSettings );
 
@@ -484,7 +483,7 @@ void Qgs3DMapConfigWidget::validate()
       break;
   }
 
-  if ( valid && widgetLights->directionalLights().empty() && widgetLights->pointLights().empty() )
+  if ( valid && widgetLights->lightSourceCount() == 0 )
   {
     mMessageBar->pushMessage( tr( "No lights exist in the scene" ), Qgis::MessageLevel::Warning );
   }
