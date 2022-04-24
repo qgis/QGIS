@@ -21,8 +21,6 @@
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QPickingSettings>
 #include <Qt3DRender/QPickTriangleEvent>
-#include <Qt3DRender/QPointLight>
-#include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
@@ -658,74 +656,17 @@ void Qgs3DMapScene::updateLights()
   for ( Qt3DCore::QEntity *entity : std::as_const( mLightEntities ) )
     entity->deleteLater();
   mLightEntities.clear();
-  for ( Qt3DCore::QEntity *entity : std::as_const( mLightOriginEntities ) )
-    entity->deleteLater();
-  mLightOriginEntities.clear();
-
-  auto createLightOriginEntity = [ = ]( QVector3D translation, const QColor & color )->Qt3DCore::QEntity *
-  {
-    Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity;
-
-    Qt3DCore::QTransform *trLightOriginCenter = new Qt3DCore::QTransform;
-    trLightOriginCenter->setTranslation( translation );
-    originEntity->addComponent( trLightOriginCenter );
-
-    Qt3DExtras::QPhongMaterial *materialLightOriginCenter = new Qt3DExtras::QPhongMaterial;
-    materialLightOriginCenter->setAmbient( color );
-    originEntity->addComponent( materialLightOriginCenter );
-
-    Qt3DExtras::QSphereMesh *rendererLightOriginCenter = new Qt3DExtras::QSphereMesh;
-    rendererLightOriginCenter->setRadius( 20 );
-    originEntity->addComponent( rendererLightOriginCenter );
-
-    originEntity->setEnabled( true );
-    originEntity->setParent( this );
-
-    return originEntity;
-  };
 
   const auto newPointLights = mMap.pointLights();
   for ( const QgsPointLightSettings &pointLightSettings : newPointLights )
   {
-    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
-    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
-    lightTransform->setTranslation( QVector3D( pointLightSettings.position().x(),
-                                    pointLightSettings.position().y(),
-                                    pointLightSettings.position().z() ) );
-
-    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
-    light->setColor( pointLightSettings.color() );
-    light->setIntensity( pointLightSettings.intensity() );
-
-    light->setConstantAttenuation( pointLightSettings.constantAttenuation() );
-    light->setLinearAttenuation( pointLightSettings.linearAttenuation() );
-    light->setQuadraticAttenuation( pointLightSettings.quadraticAttenuation() );
-
-    lightEntity->addComponent( light );
-    lightEntity->addComponent( lightTransform );
-    lightEntity->setParent( this );
-    mLightEntities << lightEntity;
-
-    if ( mMap.showLightSourceOrigins() )
-      mLightOriginEntities << createLightOriginEntity( lightTransform->translation(), pointLightSettings.color() );
+    mLightEntities.append( pointLightSettings.createEntities( mMap, this ) );
   }
 
   const auto newDirectionalLights = mMap.directionalLights();
   for ( const QgsDirectionalLightSettings &directionalLightSettings : newDirectionalLights )
   {
-    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
-    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
-
-    Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
-    light->setColor( directionalLightSettings.color() );
-    light->setIntensity( directionalLightSettings.intensity() );
-    QgsVector3D direction = directionalLightSettings.direction();
-    light->setWorldDirection( QVector3D( direction.x(), direction.y(), direction.z() ) );
-
-    lightEntity->addComponent( light );
-    lightEntity->addComponent( lightTransform );
-    lightEntity->setParent( this );
-    mLightEntities << lightEntity;
+    mLightEntities.append( directionalLightSettings.createEntities( mMap, this ) );
   }
 
   onShadowSettingsChanged();

@@ -14,11 +14,29 @@
  ***************************************************************************/
 
 #include "qgsdirectionallightsettings.h"
-
-#include <QDomDocument>
-
 #include "qgssymbollayerutils.h"
 
+#include <QDomDocument>
+#include <Qt3DRender/QDirectionalLight>
+#include <Qt3DCore/QEntity>
+
+QList<Qt3DCore::QEntity *> QgsDirectionalLightSettings::createEntities( const Qgs3DMapSettings &, Qt3DCore::QEntity *parent ) const
+{
+  Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
+  Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
+
+  Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
+  light->setColor( color() );
+  light->setIntensity( intensity() );
+  QgsVector3D direction = QgsDirectionalLightSettings::direction();
+  light->setWorldDirection( QVector3D( direction.x(), direction.y(), direction.z() ) );
+
+  lightEntity->addComponent( light );
+  lightEntity->addComponent( lightTransform );
+  lightEntity->setParent( parent );
+
+  return {lightEntity};
+}
 
 QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc ) const
 {

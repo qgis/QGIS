@@ -26,6 +26,7 @@ Definition of a directional light in a 3D map scene
 Construct a directional light with default values
 %End
 
+
     QgsVector3D direction() const;
 %Docstring
 Returns the direction of the light in degrees

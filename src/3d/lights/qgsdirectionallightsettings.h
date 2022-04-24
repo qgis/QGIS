@@ -36,6 +36,10 @@ class _3D_EXPORT QgsDirectionalLightSettings : public QgsLightSource
     //! Construct a directional light with default values
     QgsDirectionalLightSettings() = default;
 
+    QList<Qt3DCore::QEntity *> createEntities( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const override SIP_SKIP;
+    QDomElement writeXml( QDomDocument &doc ) const override;
+    void readXml( const QDomElement &elem ) override;
+
     //! Returns the direction of the light in degrees
     QgsVector3D direction() const { return mDirection; }
     //! Sets the direction of the light in degrees
@@ -50,11 +54,6 @@ class _3D_EXPORT QgsDirectionalLightSettings : public QgsLightSource
     float intensity() const { return mIntensity; }
     //! Sets intensity of the light
     void setIntensity( float intensity ) { mIntensity = intensity; }
-
-    //! Writes configuration to a new DOM element and returns it
-    QDomElement writeXml( QDomDocument &doc ) const;
-    //! Reads configuration from a DOM element previously written using writeXml()
-    void readXml( const QDomElement &elem );
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsDirectionalLightSettings &other );
