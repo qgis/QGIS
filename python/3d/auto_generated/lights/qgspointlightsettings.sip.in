@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/3d/qgspointlightsettings.h                                       *
+ * src/3d/lights/qgspointlightsettings.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -102,7 +102,7 @@ Reads configuration from a DOM element previously written using :py:func:`~QgsPo
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/3d/qgspointlightsettings.h                                       *
+ * src/3d/lights/qgspointlightsettings.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
