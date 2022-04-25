@@ -60,9 +60,16 @@ Returns the list of registered child QgsSettingsRegistry.
 
   protected:
 
-    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
+    bool addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
 %Docstring
-Add ``settingsEntry`` to the register.
+Adds ``settingsEntry`` to the registry.
+%End
+
+    void addSettingsEntryGroup( const QgsSettingsEntryGroup *settingsGroup );
+%Docstring
+Adds a group of setting to the registry
+
+.. versionadded:: 3.26
 %End
 
 };
