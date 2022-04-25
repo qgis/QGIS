@@ -77,7 +77,6 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
     QVariant convertFromVariant( const QVariant &value ) const override SIP_FORCE {return value;}
 };
 
-
 /**
  * \class QgsSettingsEntryString
  * \ingroup core
