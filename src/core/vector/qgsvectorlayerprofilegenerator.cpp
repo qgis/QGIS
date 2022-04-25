@@ -403,7 +403,8 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
 //
 
 QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *layer, const QgsProfileRequest &request )
-  : mFeedback( std::make_unique< QgsFeedback >() )
+  : mId( layer->id() )
+  , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mTerrainProvider( request.terrainProvider() ? request.terrainProvider()->clone() : nullptr )
   , mTolerance( request.tolerance() )
@@ -430,6 +431,11 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
 {
   if ( mTerrainProvider )
     mTerrainProvider->prepare(); // must be done on main thread
+}
+
+QString QgsVectorLayerProfileGenerator::sourceId() const
+{
+  return mId;
 }
 
 QgsVectorLayerProfileGenerator::~QgsVectorLayerProfileGenerator() = default;

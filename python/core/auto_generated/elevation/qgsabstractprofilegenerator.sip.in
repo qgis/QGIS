@@ -177,6 +177,11 @@ The scenario will be:
 
     virtual ~QgsAbstractProfileGenerator();
 
+    virtual QString sourceId() const = 0;
+%Docstring
+Returns a unique identifier representing the source of the profile.
+%End
+
     virtual bool generateProfile() = 0;
 %Docstring
 Generate the profile (based on data stored in the class).

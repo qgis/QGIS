@@ -144,7 +144,8 @@ void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &conte
 //
 
 QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *layer, const QgsProfileRequest &request )
-  : mFeedback( std::make_unique< QgsRasterBlockFeedback >() )
+  : mId( layer->id() )
+  , mFeedback( std::make_unique< QgsRasterBlockFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mLineSymbol( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() )
   , mSourceCrs( layer->crs() )
@@ -158,6 +159,11 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
   , mStepDistance( request.stepDistance() )
 {
   mRasterProvider.reset( layer->dataProvider()->clone() );
+}
+
+QString QgsRasterLayerProfileGenerator::sourceId() const
+{
+  return mId;
 }
 
 QgsRasterLayerProfileGenerator::~QgsRasterLayerProfileGenerator() = default;
