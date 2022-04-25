@@ -40,17 +40,17 @@ class CORE_EXPORT QgsOwsConnection : public QObject
 
   public:
 
-    /*
+    /**
      * DpiMode enum
      * \since QGIS 3.26
      */
     enum class DpiMode
     {
-      All = 7,
-      Off = 0,
-      QGIS = 1,
-      UMN = 2,
-      GeoServer = 4,
+      All = 7, //!< All
+      Off = 0, //!< Off
+      QGIS = 1, //!< QGIS
+      UMN = 2, //!< UMN
+      GeoServer = 4, //!< GeoServer
     };
     Q_ENUM( DpiMode )
 
