@@ -75,7 +75,7 @@ for MODULE in "${MODULES[@]}"; do
         RETURN_CODE=1
       fi
     else
-      COUNT=$((${COUNT}+${!GROUP_COUNT_VAR_NAME}))
+      COUNT=$((COUNT+${!GROUP_COUNT_VAR_NAME}))
     fi
   done 3< <(git grep --only-matching -E 'addSettingsEntryGroup\( *(\&\w+::)?(\w+) *\)' ${REG_FILE})
   COUNT_VAR="COUNT_${MODULE}"

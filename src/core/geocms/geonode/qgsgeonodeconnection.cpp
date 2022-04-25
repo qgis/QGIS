@@ -82,11 +82,6 @@ QgsDataSourceUri &QgsGeoNodeConnection::addWcsConnectionSettings( QgsDataSourceU
   return QgsOwsConnection::addWmsWcsConnectionSettings( uri, QgsGeoNodeConnectionUtils::sGeoNodeConnection, detailedConnectionName );
 }
 
-QString QgsGeoNodeConnection::settingsKey() const
-{
-  return QgsGeoNodeConnectionUtils::sGeoNodeConnection + QStringLiteral( "/" ) + mConnName;
-}
-
 //
 // QgsGeoNodeConnectionUtils
 //

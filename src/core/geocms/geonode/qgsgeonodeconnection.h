@@ -122,8 +122,6 @@ class CORE_EXPORT QgsGeoNodeConnection
 
     //! Property of mUri
     QgsDataSourceUri mUri;
-
-    QString settingsKey() const;
 };
 
 
