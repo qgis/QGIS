@@ -379,6 +379,8 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
 
   labelTerrainResolution->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
   spinTerrainResolution->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
+  labelTerrainScale->setVisible( !( genType == QgsTerrainGenerator::Flat ) );
+  spinTerrainScale->setVisible( !( genType == QgsTerrainGenerator::Flat ) );
   labelTerrainSkirtHeight->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
   spinTerrainSkirtHeight->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
   labelTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh );
