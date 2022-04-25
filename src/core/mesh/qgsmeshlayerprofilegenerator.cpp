@@ -140,7 +140,8 @@ QgsProfileSnapResult QgsMeshLayerProfileResults::snapPoint( const QgsProfilePoin
 //
 
 QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer, const QgsProfileRequest &request )
-  : mFeedback( std::make_unique< QgsFeedback >() )
+  : mId( layer->id() )
+  , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mLineSymbol( qgis::down_cast< QgsMeshLayerElevationProperties* >( layer->elevationProperties() )->profileLineSymbol()->clone() )
   , mSourceCrs( layer->crs() )
@@ -152,6 +153,11 @@ QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer,
 {
   layer->updateTriangularMesh();
   mTriangularMesh = *layer->triangularMesh();
+}
+
+QString QgsMeshLayerProfileGenerator::sourceId() const
+{
+  return mId;
 }
 
 QgsMeshLayerProfileGenerator::~QgsMeshLayerProfileGenerator() = default;

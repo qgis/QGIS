@@ -199,6 +199,11 @@ class CORE_EXPORT QgsAbstractProfileGenerator
     virtual ~QgsAbstractProfileGenerator();
 
     /**
+     * Returns a unique identifier representing the source of the profile.
+     */
+    virtual QString sourceId() const = 0;
+
+    /**
      * Generate the profile (based on data stored in the class).
      *
      * Returns TRUE if the profile was generated successfully (i.e. the generation
