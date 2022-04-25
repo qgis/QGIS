@@ -75,7 +75,7 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 
 void QgsRelationWidgetWrapper::aboutToSave()
 {
-  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer() ==  mRelation.referencedLayer() )
+  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer() ==  mRelation.referencedLayer() || ( mNmRelation.isValid() && mNmRelation.referencedLayer() ==  mRelation.referencedLayer() ) )
     return;
 
   // If the layer is already saved before, return
