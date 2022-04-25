@@ -64,7 +64,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   defaultPointLight.setConstantAttenuation( 0 );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultPointLight );
+  map->setLightSources( {defaultPointLight.clone() } );
   map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
 
   canvas->setMap( map );
