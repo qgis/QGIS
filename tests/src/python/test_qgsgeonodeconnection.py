@@ -35,6 +35,8 @@ class TestQgsGeoNodeConnection(unittest.TestCase):
         settings = QgsSettings()
         key = QgsGeoNodeConnectionUtils.pathGeoNodeConnection() + '/test/'
 
+        print("xxx" + key)
+
         settings.setValue(key + 'wms/referer', 'my_ref')
         settings.setValue(key + 'wms/ignoreGetMapURI', True)
         settings.setValue(key + 'wms/ignoreGetFeatureInfoURI', True)
