@@ -15,7 +15,7 @@ usr/lib/qgis/plugins/libprovider_gpx.so
 usr/lib/qgis/plugins/libprovider_hana.so
 usr/lib/qgis/plugins/libprovider_mdal.so
 usr/lib/qgis/plugins/libprovider_mssql.so
-usr/lib/qgis/plugins/libprovider_pdal.so
+#!sid#usr/lib/qgis/plugins/libprovider_pdal.so
 usr/lib/qgis/plugins/libprovider_postgres.so
 usr/lib/qgis/plugins/libprovider_postgresraster.so
 usr/lib/qgis/plugins/libprovider_spatialite.so
