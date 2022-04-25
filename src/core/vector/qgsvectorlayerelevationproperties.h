@@ -72,7 +72,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \see clamping()
      */
-    void setClamping( Qgis::AltitudeClamping clamping ) { mClamping = clamping; }
+    void setClamping( Qgis::AltitudeClamping clamping );
 
     /**
      * Returns the altitude binding method, which determines how altitude is bound to individual vertices in features.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \see binding()
      */
-    void setBinding( Qgis::AltitudeBinding binding ) { mBinding = binding; }
+    void setBinding( Qgis::AltitudeBinding binding );
 
     /**
      * Returns TRUE if extrusion is enabled.
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      * \see extrusionEnabled()
      * \see setExtrusionHeight()
      */
-    void setExtrusionEnabled( bool enabled ) { mEnableExtrusion = enabled; }
+    void setExtrusionEnabled( bool enabled );
 
     /**
      * Returns the feature extrusion height.
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \see extrusionHeight()
      */
-    void setExtrusionHeight( double height ) { mExtrusionHeight = height; }
+    void setExtrusionHeight( double height );
 
     /**
      * Returns TRUE if layer symbology should be respected when rendering elevation profile plots.
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \see respectLayerSymbology()
      */
-    void setRespectLayerSymbology( bool enabled ) { mRespectLayerSymbology = enabled; }
+    void setRespectLayerSymbology( bool enabled );
 
     /**
      * Returns the symbol used to render lines for the layer in elevation profile plots.

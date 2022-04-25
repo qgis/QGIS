@@ -187,7 +187,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      *
      * \see zOffset()
      */
-    void setZOffset( double offset ) { mZOffset = offset; }
+    void setZOffset( double offset );
 
     /**
      * Returns the z scale, which is a scaling factor which should be applied to z values from
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      *
      * \see zScale()
      */
-    void setZScale( double scale ) { mZScale = scale; }
+    void setZScale( double scale );
 
     /**
      * Returns a reference to the object's property collection, used for data defined overrides.
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      * \see Property
      * \since QGIS 3.26
      */
-    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
 
     /**
      * Returns the definitions for data defined properties available for use in elevation properties.
@@ -252,9 +252,31 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
   signals:
 
     /**
-     * Emitted when the elevation properties have changed.
+     * Emitted when any of the elevation properties have changed.
+     *
+     * See renderingPropertyChanged() and profileGenerationPropertyChanged() for more fine-grained signals.
      */
     void changed();
+
+    /**
+     * Emitted when any of the elevation properties which relate solely to presentation of elevation
+     * results have changed.
+     *
+     * \see changed()
+     * \see profileGenerationPropertyChanged()
+     * \since QGIS 3.26
+     */
+    void renderingPropertyChanged();
+
+    /**
+     * Emitted when any of the elevation properties which relate solely to generation of elevation
+     * profiles have changed.
+     *
+     * \see changed()
+     * \see renderingPropertyChanged()
+     * \since QGIS 3.26
+     */
+    void profileGenerationPropertyChanged();
 
   protected:
     //! Z scale

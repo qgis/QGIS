@@ -104,6 +104,8 @@ QgsLineSymbol *QgsMeshLayerElevationProperties::profileLineSymbol() const
 void QgsMeshLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
 {
   mProfileLineSymbol.reset( symbol );
+  emit changed();
+  emit renderingPropertyChanged();
 }
 
 void QgsMeshLayerElevationProperties::setDefaultProfileLineSymbol()
