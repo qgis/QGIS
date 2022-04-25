@@ -104,6 +104,26 @@ bool QgsRasterLayerElevationProperties::showByDefaultInElevationProfilePlots() c
   return mEnabled;
 }
 
+void QgsRasterLayerElevationProperties::setEnabled( bool enabled )
+{
+  if ( enabled == mEnabled )
+    return;
+
+  mEnabled = enabled;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsRasterLayerElevationProperties::setBandNumber( int band )
+{
+  if ( mBandNumber == band )
+    return;
+
+  mBandNumber = band;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
 QgsLineSymbol *QgsRasterLayerElevationProperties::profileLineSymbol() const
 {
   return mProfileLineSymbol.get();
@@ -112,6 +132,8 @@ QgsLineSymbol *QgsRasterLayerElevationProperties::profileLineSymbol() const
 void QgsRasterLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
 {
   mProfileLineSymbol.reset( symbol );
+  emit changed();
+  emit renderingPropertyChanged();
 }
 
 void QgsRasterLayerElevationProperties::setDefaultProfileLineSymbol()

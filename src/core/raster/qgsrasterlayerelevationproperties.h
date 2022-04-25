@@ -65,7 +65,7 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \see isEnabled()
      */
-    void setEnabled( bool enabled ) { mEnabled = enabled; }
+    void setEnabled( bool enabled );
 
     /**
      * Returns the band number from which the elevation should be taken.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \see bandNumber()
      */
-    void setBandNumber( int band ) { mBandNumber = band; }
+    void setBandNumber( int band );
 
     /**
      * Returns the line symbol used to render the raster profile in elevation profile plots.
