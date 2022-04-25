@@ -394,7 +394,7 @@ void QgsElevationProfileCanvas::scalePlot( double xFactor, double yFactor )
   mPlotItem->updatePlot();
 }
 
-void QgsElevationProfileCanvas::zoomToRect( const QRectF rect )
+void QgsElevationProfileCanvas::zoomToRect( const QRectF &rect )
 {
   const QRectF intersected = rect.intersected( mPlotItem->plotArea() );
 

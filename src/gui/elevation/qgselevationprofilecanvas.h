@@ -69,7 +69,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void scalePlot( double xFactor, double yFactor );
 
-    void zoomToRect( const QRectF rect ) override;
+    void zoomToRect( const QRectF &rect ) override;
     void wheelZoom( QWheelEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *e ) override;
 
@@ -210,7 +210,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     /**
      * Converts a canvas point to the equivalent plot point.
      */
-    QgsProfilePoint canvasPointToPlotPoint( const QPointF &point ) const;
+    QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
 
     /**
      * Converts a plot point to the equivalent canvas point.
