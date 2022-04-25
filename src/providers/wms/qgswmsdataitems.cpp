@@ -25,7 +25,6 @@
 
 #include "qgsgeonodeconnection.h"
 #include "qgsgeonoderequest.h"
-#include "qgssettings.h"
 
 
 // ---------------------------------------------------------------------------
@@ -636,14 +635,13 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
         {
           QgsDebugMsgLevel( encodedUri, 3 );
           QgsDataSourceUri uri;
-          QgsSettings settings;
-          QString key( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + "/" + connectionName );
 
-          QString dpiMode = settings.value( key + "/wms/dpiMode", "all" ).toString();
+          QStringList serviceConnectionDetails = {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), QStringLiteral( "%1/wms" ).arg( connectionName )};
+
           uri.setParam( QStringLiteral( "url" ), encodedUri );
-          if ( !dpiMode.isEmpty() )
+          if ( QgsOwsConnection::settingsConnectionDpiMode.exists( serviceConnectionDetails ) )
           {
-            uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
+            uri.setParam( QStringLiteral( "dpiMode" ), QString::number( static_cast<int>( QgsOwsConnection::settingsConnectionDpiMode.value( serviceConnectionDetails ) ) ) );
           }
 
           QgsDebugMsgLevel( QStringLiteral( "WMS full uri: '%1'." ).arg( QString( uri.encodedUri() ) ), 2 );

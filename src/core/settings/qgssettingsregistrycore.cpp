@@ -15,16 +15,17 @@
 
 #include "qgssettingsregistrycore.h"
 
-#include "qgslayout.h"
-#include "qgslocator.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsnewsfeedparser.h"
-#include "qgsprocessing.h"
 #include "qgsapplication.h"
 #include "qgsgeometryoptions.h"
+#include "qgslayout.h"
 #include "qgslocalizeddatapathregistry.h"
+#include "qgslocator.h"
 #include "qgsmaprendererjob.h"
-
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnewsfeedparser.h"
+#include "qgsowsconnection.h"
+#include "qgsprocessing.h"
+#include "qgsvectorlayer.h"
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
@@ -100,6 +101,10 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingTracingMaxFeatureCount );
   addSettingsEntry( &settingsGpsBabelPath );
   addSettingsEntry( &settingsLayerTreeShowFeatureCountForNewLayers );
+
+  addSettingsEntry( &QgsOwsConnection::settingsConnectionSelected );
+  addSettingsEntryGroup( &QgsOwsConnection::settingsServiceConnectionDetailsGroup );
+  addSettingsEntryGroup( &QgsOwsConnection::settingsServiceConnectionCredentialsGroup );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
