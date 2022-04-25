@@ -102,12 +102,15 @@ CMAKE_OPTS := \
 	-DWITH_3D=TRUE \
 	-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
 	-DWITH_HANA=TRUE \
-	-DWITH_PDAL=TRUE \
 	-DWITH_EPT=TRUE \
 	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS"
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
+endif
+
+ifeq (,$(findstring $(DISTRIBUTION),"sid"))
+	CMAKE_OPTS += -DWITH_PDAL=TRUE
 endif
 
 ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
