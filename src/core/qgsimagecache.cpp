@@ -41,6 +41,7 @@
 #include <QImageReader>
 #include <QSvgRenderer>
 #include <QTemporaryDir>
+#include <QUUid>
 
 ///@cond PRIVATE
 
