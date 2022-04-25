@@ -107,7 +107,7 @@ void QgsOracleProjectStorageDialog::populateOwners()
 
     QApplication::restoreOverrideCursor();
 
-    for ( const QString schema : schemas )
+    for ( const QString &schema : schemas )
       mCboOwner->addItem( schema );
   }
   catch ( const QgsProviderConnectionException &ex )
