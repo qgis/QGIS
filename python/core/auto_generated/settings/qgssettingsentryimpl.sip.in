@@ -73,7 +73,6 @@ The ``options`` arguments specifies the options for the settings entry.
 };
 
 
-
 typedef QgsSettingsEntryByReference<QString> QgsSettingsEntryByReferenceQStringBase;
 
 class QgsSettingsEntryString : QgsSettingsEntryByReferenceQStringBase
