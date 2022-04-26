@@ -27,6 +27,8 @@
 #include "qgsvariantutils.h"
 
 #include <QSqlError>
+#include <QSqlField>
+#include <QSqlDriver>
 
 QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
@@ -227,6 +229,29 @@ void QgsOracleConn::unref()
   delete this;
 }
 
+QString QgsOracleConn::getLastExecutedQuery( const QSqlQuery &query )
+{
+  QString str = query.lastQuery();
+  QMapIterator<QString, QVariant> it( query.boundValues() );
+  while ( it.hasNext() )
+  {
+    it.next();
+    const QVariant &var { it.value().toString() };
+    QSqlField field( QString( ), var.type() );
+    if ( var.isNull() )
+    {
+      field.clear();
+    }
+    else
+    {
+      field.setValue( var );
+    }
+    const QString formatV = query.driver()->formatValue( field );
+    str.replace( it.key(), formatV );
+  }
+  return str;
+}
+
 bool QgsOracleConn::execLogged( QSqlQuery &qry, const QString &sql, const QVariantList &params, const QString &originatorClass, const QString &queryOrigin )
 {
   QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( sql ), 4 );
@@ -245,7 +270,7 @@ bool QgsOracleConn::execLogged( QSqlQuery &qry, const QString &sql, const QVaria
     res = qry.exec();
   }
 
-  logWrapper.setQuery( qry.lastQuery() );
+  logWrapper.setQuery( getLastExecutedQuery( qry ) );
 
   if ( !res )
   {

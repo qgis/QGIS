@@ -261,6 +261,8 @@ class QgsOracleConn : public QObject
 
     operator QSqlDatabase() { return mDatabase; }
 
+    static QString getLastExecutedQuery( const QSqlQuery &query );
+
   private:
     explicit QgsOracleConn( QgsDataSourceUri uri, bool transaction );
     ~QgsOracleConn() override;

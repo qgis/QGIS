@@ -176,8 +176,6 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     static bool execLoggedStatic( QSqlQuery &qry, const QString &sql, const QVariantList &args, const QString &uri, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
-    static  QString getLastExecutedQuery( const QSqlQuery &query );
-
     bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
     void setTransaction( QgsTransaction *transaction ) override;
     QgsTransaction *transaction() const override;

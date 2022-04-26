@@ -45,7 +45,6 @@
 #endif
 
 #include <QSqlRecord>
-#include <QSqlDriver>
 #include <QSqlField>
 #include <QUuid>
 
@@ -310,7 +309,7 @@ bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, co
                  .arg( qry.lastError().text() ) );
   }
 
-  logWrapper.setQuery( getLastExecutedQuery( qry ) );
+  logWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( qry ) );
   logWrapper.setError( qry.lastError().text() );
   // ORACLE does not support size so this will always be -1
   // we leave it here in case this changes in the future
@@ -323,29 +322,6 @@ bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, co
     logWrapper.setFetchedRows( qry.numRowsAffected() );
   }
   return res;
-}
-
-QString QgsOracleProvider::getLastExecutedQuery( const QSqlQuery &query )
-{
-  QString str = query.lastQuery();
-  QMapIterator<QString, QVariant> it( query.boundValues() );
-  while ( it.hasNext() )
-  {
-    it.next();
-    const QVariant &var { it.value().toString() };
-    QSqlField field( QString( ), var.type() );
-    if ( var.isNull() )
-    {
-      field.clear();
-    }
-    else
-    {
-      field.setValue( var );
-    }
-    const QString formatV = query.driver()->formatValue( field );
-    str.replace( it.key(), formatV );
-  }
-  return str;
 }
 
 void QgsOracleProvider::setTransaction( QgsTransaction *transaction )
@@ -1921,12 +1897,12 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       if ( !qry.exec() )
       {
         logWrapper.setError( qry.lastError().text() );
-        logWrapper.setQuery( getLastExecutedQuery( qry ) );
+        logWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( qry ) );
         throw OracleException( tr( "Update of feature %1 failed" ).arg( iter.key() ), qry );
       }
 
       qry.finish();
-      logWrapper.setQuery( getLastExecutedQuery( qry ) );
+      logWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( qry ) );
 
       // update feature id map if key was changed
       if ( pkChanged && mPrimaryKeyType == PktFidMap )
@@ -2404,11 +2380,11 @@ bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
 
       if ( !qry.exec() )
       {
-        logWrapper.setQuery( getLastExecutedQuery( qry ) );
+        logWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( qry ) );
         logWrapper.setError( qry.lastError().text() );
         throw OracleException( tr( "Update of feature %1 failed" ).arg( iter.key() ), qry );
       }
-      logWrapper.setQuery( getLastExecutedQuery( qry ) );
+      logWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( qry ) );
     }
 
     qry.finish();
