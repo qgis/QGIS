@@ -788,54 +788,6 @@ void Qgs3DMapSettings::setEyeDomeLightingDistance( int distance )
   emit eyeDomeLightingDistanceChanged();
 }
 
-void Qgs3DMapSettings::setPointLights( const QList<QgsPointLightSettings> &pointLights )
-{
-  for ( auto it = mLightSources.begin(); it != mLightSources.end(); )
-  {
-    if ( ( *it )->type() == Qgis::LightSourceType::Point )
-    {
-      delete *it;
-      it = mLightSources.erase( it );
-    }
-    else
-    {
-      ++it;
-    }
-  }
-
-  for ( const QgsPointLightSettings &settings : pointLights )
-  {
-    mLightSources.append( settings.clone() );
-  }
-
-  emit pointLightsChanged();
-  emit lightSourcesChanged();
-}
-
-void Qgs3DMapSettings::setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights )
-{
-  for ( auto it = mLightSources.begin(); it != mLightSources.end(); )
-  {
-    if ( ( *it )->type() == Qgis::LightSourceType::Directional )
-    {
-      delete *it;
-      it = mLightSources.erase( it );
-    }
-    else
-    {
-      ++it;
-    }
-  }
-
-  for ( const QgsDirectionalLightSettings &settings : directionalLights )
-  {
-    mLightSources.append( settings.clone() );
-  }
-
-  emit directionalLightsChanged();
-  emit lightSourcesChanged();
-}
-
 QList<QgsLightSource *> Qgs3DMapSettings::lightSources() const
 {
   return mLightSources;
@@ -913,28 +865,6 @@ void Qgs3DMapSettings::setDebugDepthMapSettings( bool enabled, Qt::Corner corner
   mDebugDepthMapCorner = corner;
   mDebugDepthMapSize = size;
   emit debugDepthMapSettingsChanged();
-}
-
-QList<QgsPointLightSettings> Qgs3DMapSettings::pointLights() const
-{
-  QList<QgsPointLightSettings> res;
-  for ( QgsLightSource *source : mLightSources )
-  {
-    if ( source->type() == Qgis::LightSourceType::Point )
-      res  << *qgis::down_cast< QgsPointLightSettings * >( source );
-  }
-  return res;
-}
-
-QList<QgsDirectionalLightSettings> Qgs3DMapSettings::directionalLights() const
-{
-  QList<QgsDirectionalLightSettings> res;
-  for ( QgsLightSource *source : mLightSources )
-  {
-    if ( source->type() == Qgis::LightSourceType::Directional )
-      res  << *qgis::down_cast< QgsDirectionalLightSettings * >( source );
-  }
-  return res;
 }
 
 void Qgs3DMapSettings::setIsFpsCounterEnabled( bool fpsCounterEnabled )
