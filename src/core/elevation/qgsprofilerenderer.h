@@ -114,18 +114,18 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
      *
      * Returns TRUE if results were previously stored for the matching source and have been invalidated.
      *
-     * \see updateInvalidatedResults()
+     * \see regenerateInvalidatedResults()
      */
     bool invalidateResults( QgsAbstractProfileSource *source );
 
     /**
-     * Starts a background update of any invalidate results and immediately returns.
+     * Starts a background regeneration of any invalidated results and immediately returns.
      *
      * Does nothing if the generation is already in progress.
      *
      * \see invalidateResults()
      */
-    void updateInvalidatedResults();
+    void regenerateInvalidatedResults();
 
     /**
      * Returns the limits of the retrieved elevation values.

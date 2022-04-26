@@ -68,7 +68,7 @@ Returns the interior rectangle representing the surface of the plot, in canvas c
     virtual void refresh();
 
 %Docstring
-Triggers an update of the profile, causing the profile extraction to perform in the
+Triggers a complete regeneration of the profile, causing the profile extraction to perform in the
 background.
 %End
 

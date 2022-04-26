@@ -315,10 +315,10 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   mCrossHairsItem->hide();
 
   // updating the profile plot is deferred on a timer, so that we don't trigger it too often
-  mDeferredUpdateTimer = new QTimer( this );
-  mDeferredUpdateTimer->setSingleShot( true );
-  mDeferredUpdateTimer->stop();
-  connect( mDeferredUpdateTimer, &QTimer::timeout, this, &QgsElevationProfileCanvas::startDeferredUpdate );
+  mDeferredRegenerationTimer = new QTimer( this );
+  mDeferredRegenerationTimer->setSingleShot( true );
+  mDeferredRegenerationTimer->stop();
+  connect( mDeferredRegenerationTimer, &QTimer::timeout, this, &QgsElevationProfileCanvas::startDeferredRegeneration );
 
   mDeferredRedrawTimer = new QTimer( this );
   mDeferredRedrawTimer->setSingleShot( true );
@@ -411,13 +411,13 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
   {
     disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
     disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::renderingPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged );
-    disconnect( layer, &QgsMapLayer::dataChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+    disconnect( layer, &QgsMapLayer::dataChanged, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
   }
   else
   {
     connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
     connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::renderingPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged );
-    connect( layer, &QgsMapLayer::dataChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+    connect( layer, &QgsMapLayer::dataChanged, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
   }
 
   switch ( layer->type() )
@@ -427,17 +427,17 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
       if ( isDisconnect )
       {
-        disconnect( vl, &QgsVectorLayer::featureAdded, this, &QgsElevationProfileCanvas::updateResultsForLayer );
-        disconnect( vl, &QgsVectorLayer::featureDeleted, this, &QgsElevationProfileCanvas::updateResultsForLayer );
-        disconnect( vl, &QgsVectorLayer::geometryChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
-        disconnect( vl, &QgsVectorLayer::attributeValueChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+        disconnect( vl, &QgsVectorLayer::featureAdded, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
+        disconnect( vl, &QgsVectorLayer::featureDeleted, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
+        disconnect( vl, &QgsVectorLayer::geometryChanged, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
+        disconnect( vl, &QgsVectorLayer::attributeValueChanged, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
       }
       else
       {
-        connect( vl, &QgsVectorLayer::featureAdded, this, &QgsElevationProfileCanvas::updateResultsForLayer );
-        connect( vl, &QgsVectorLayer::featureDeleted, this, &QgsElevationProfileCanvas::updateResultsForLayer );
-        connect( vl, &QgsVectorLayer::geometryChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
-        connect( vl, &QgsVectorLayer::attributeValueChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+        connect( vl, &QgsVectorLayer::featureAdded, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
+        connect( vl, &QgsVectorLayer::featureDeleted, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
+        connect( vl, &QgsVectorLayer::geometryChanged, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
+        connect( vl, &QgsVectorLayer::attributeValueChanged, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
       }
       break;
     }
@@ -611,10 +611,10 @@ void QgsElevationProfileCanvas::refresh()
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   request.setExpressionContext( context );
 
-  const QList< QgsMapLayer * > layersToUpdate = layers();
+  const QList< QgsMapLayer * > layersToGenerate = layers();
   QList< QgsAbstractProfileSource * > sources;
-  sources.reserve( layersToUpdate.size() );
-  for ( QgsMapLayer *layer : layersToUpdate )
+  sources.reserve( layersToGenerate .size() );
+  for ( QgsMapLayer *layer : layersToGenerate )
   {
     if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
       sources.append( source );
@@ -653,7 +653,7 @@ void QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
     if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
     {
       if ( mCurrentJob->invalidateResults( source ) )
-        scheduleDeferredUpdate();
+        scheduleDeferredRegeneration();
     }
   }
 }
@@ -679,24 +679,24 @@ void QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged()
   }
 }
 
-void QgsElevationProfileCanvas::updateResultsForLayer()
+void QgsElevationProfileCanvas::regenerateResultsForLayer()
 {
   if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( sender() ) )
   {
     if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
     {
       if ( mCurrentJob->invalidateResults( source ) )
-        scheduleDeferredUpdate();
+        scheduleDeferredRegeneration();
     }
   }
 }
 
-void QgsElevationProfileCanvas::scheduleDeferredUpdate()
+void QgsElevationProfileCanvas::scheduleDeferredRegeneration()
 {
-  if ( !mDeferredUpdateScheduled )
+  if ( !mDeferredRegenerationScheduled )
   {
-    mDeferredUpdateTimer->start( 1 );
-    mDeferredUpdateScheduled = true;
+    mDeferredRegenerationTimer->start( 1 );
+    mDeferredRegenerationScheduled = true;
   }
 }
 
@@ -709,14 +709,14 @@ void QgsElevationProfileCanvas::scheduleDeferredRedraw()
   }
 }
 
-void QgsElevationProfileCanvas::startDeferredUpdate()
+void QgsElevationProfileCanvas::startDeferredRegeneration()
 {
   if ( mCurrentJob && !mCurrentJob->isActive() )
   {
-    mCurrentJob->updateInvalidatedResults();
+    mCurrentJob->regenerateInvalidatedResults();
   }
 
-  mDeferredUpdateScheduled = false;
+  mDeferredRegenerationScheduled = false;
 }
 
 void QgsElevationProfileCanvas::startDeferredRedraw()
