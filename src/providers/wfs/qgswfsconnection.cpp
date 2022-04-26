@@ -31,7 +31,7 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
     mUri.setParam( QgsWFSConstants::URI_PARAM_VERSION, version );
   }
 
-  const QString maxnumfeatures = settingsConnectionMaxnumFeatures.value( {service(), connName} );
+  const QString maxnumfeatures = settingsConnectionMaxNumFeatures.value( {service(), connName} );
   if ( !maxnumfeatures.isEmpty() )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES ); // setParam allow for duplicates!
@@ -45,10 +45,10 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
     mUri.setParam( QgsWFSConstants::URI_PARAM_PAGE_SIZE, pagesize );
   }
 
-  if ( settingsConnectionPagingenabled.exists( {service(), connName} ) )
+  if ( settingsConnectionPagingEnabled.exists( {service(), connName} ) )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ); // setParam allow for duplicates!
-    mUri.setParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED, settingsConnectionPagingenabled.value( {service(), connName} ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+    mUri.setParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED, settingsConnectionPagingEnabled.value( {service(), connName} ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   }
 
   if ( settingsConnectionPreferCoordinatesForWfsT11.exists( {service(), connName} ) )

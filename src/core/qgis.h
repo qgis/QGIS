@@ -1386,6 +1386,20 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( DashPatternSizeAdjustment )
 
+    /**
+     * DpiMode enum
+     * \since QGIS 3.26
+     */
+    enum class DpiMode
+    {
+      All = 7, //!< All
+      Off = 0, //!< Off
+      QGIS = 1, //!< QGIS
+      UMN = 2, //!< UMN
+      GeoServer = 4, //!< GeoServer
+    };
+    Q_ENUM( DpiMode )
+
 
     // NOTE -- the hardcoded numbers here must match QFont::Capitalization!
 

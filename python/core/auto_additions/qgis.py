@@ -1308,6 +1308,15 @@ Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__ = "Only gap lengths are adju
 Qgis.DashPatternSizeAdjustment.__doc__ = 'Dash pattern size adjustment options.\n\n.. versionadded:: 3.24\n\n' + '* ``ScaleBothDashAndGap``: ' + Qgis.DashPatternSizeAdjustment.ScaleBothDashAndGap.__doc__ + '\n' + '* ``ScaleDashOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleDashOnly.__doc__ + '\n' + '* ``ScaleGapOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__
 # --
 Qgis.DashPatternSizeAdjustment.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DpiMode.All.__doc__ = "All"
+Qgis.DpiMode.Off.__doc__ = "Off"
+Qgis.DpiMode.QGIS.__doc__ = "QGIS"
+Qgis.DpiMode.UMN.__doc__ = "UMN"
+Qgis.DpiMode.GeoServer.__doc__ = "GeoServer"
+Qgis.DpiMode.__doc__ = 'DpiMode enum\n\n.. versionadded:: 3.26\n\n' + '* ``All``: ' + Qgis.DpiMode.All.__doc__ + '\n' + '* ``Off``: ' + Qgis.DpiMode.Off.__doc__ + '\n' + '* ``QGIS``: ' + Qgis.DpiMode.QGIS.__doc__ + '\n' + '* ``UMN``: ' + Qgis.DpiMode.UMN.__doc__ + '\n' + '* ``GeoServer``: ' + Qgis.DpiMode.GeoServer.__doc__
+# --
+Qgis.DpiMode.baseClass = Qgis
 QgsStringUtils.Capitalization = Qgis.Capitalization
 # monkey patching scoped based enum
 QgsStringUtils.MixedCase = Qgis.Capitalization.MixedCase

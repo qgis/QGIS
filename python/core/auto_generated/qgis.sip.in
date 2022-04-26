@@ -861,6 +861,15 @@ The development version
       ScaleGapOnly,
     };
 
+    enum class DpiMode
+    {
+      All,
+      Off,
+      QGIS,
+      UMN,
+      GeoServer,
+    };
+
 
 
     enum class Capitalization
