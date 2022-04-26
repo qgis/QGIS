@@ -204,6 +204,9 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
   private slots:
 
     void generationFinished();
+    void onLayerProfileGenerationPropertyChanged();
+    void scheduleDeferredUpdate();
+    void startDeferredUpdate();
 
   private:
 
@@ -228,6 +231,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsElevationProfileCrossHairsItem *mCrossHairsItem = nullptr;
 
     QgsProfilePlotRenderer *mCurrentJob = nullptr;
+    QTimer *mDeferredUpdateTimer = nullptr;
+    bool mDeferredUpdateScheduled = false;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
     double mTolerance = 0;

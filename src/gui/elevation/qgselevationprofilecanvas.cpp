@@ -33,8 +33,10 @@
 #include "qgsnumericformat.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsprofilesnapping.h"
+#include "qgsmaplayerelevationproperties.h"
 
 #include <QWheelEvent>
+#include <QTimer>
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
@@ -281,6 +283,13 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   mCrossHairsItem = new QgsElevationProfileCrossHairsItem( this, mPlotItem );
   mCrossHairsItem->setZValue( 100 );
   mCrossHairsItem->hide();
+
+  // updating the profile plot is deferred on a timer, so that we don't trigger it too often
+  mDeferredUpdateTimer = new QTimer( this );
+  mDeferredUpdateTimer->setSingleShot( true );
+  mDeferredUpdateTimer->stop();
+  connect( mDeferredUpdateTimer, &QTimer::timeout, this, &QgsElevationProfileCanvas::startDeferredUpdate );
+
 }
 
 QgsElevationProfileCanvas::~QgsElevationProfileCanvas()
@@ -547,7 +556,46 @@ void QgsElevationProfileCanvas::generationFinished()
   zoomFull();
 }
 
-QgsProfilePoint QgsElevationProfileCanvas::canvasPointToPlotPoint( const QPointF &point ) const
+void QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
+{
+  // TODO -- handle nicely when existing job is in progress
+  if ( !mCurrentJob || mCurrentJob->isActive() )
+    return;
+
+  QgsMapLayerElevationProperties *properties = qobject_cast< QgsMapLayerElevationProperties * >( sender() );
+  if ( !properties )
+    return;
+
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( properties->parent() ) )
+  {
+    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
+    {
+      if ( mCurrentJob->invalidateResults( source ) )
+        scheduleDeferredUpdate();
+    }
+  }
+}
+
+void QgsElevationProfileCanvas::scheduleDeferredUpdate()
+{
+  if ( !mDeferredUpdateScheduled )
+  {
+    mDeferredUpdateTimer->start( 1 );
+    mDeferredUpdateScheduled = true;
+  }
+}
+
+void QgsElevationProfileCanvas::startDeferredUpdate()
+{
+  if ( mCurrentJob && !mCurrentJob->isActive() )
+  {
+    mCurrentJob->updateInvalidatedResults();
+  }
+
+  mDeferredUpdateScheduled = false;
+}
+
+QgsProfilePoint QgsElevationProfileCanvas::canvasPointToPlotPoint( QPointF point ) const
 {
   if ( !mPlotItem->plotArea().contains( point.x(), point.y() ) )
     return QgsProfilePoint();
@@ -592,6 +640,11 @@ QgsCoordinateReferenceSystem QgsElevationProfileCanvas::crs() const
 
 void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 {
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
+  }
+
   // filter list, removing null layers and invalid layers
   auto filteredList = layers;
   filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(),
@@ -601,6 +654,10 @@ void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
   } ), filteredList.end() );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
+  }
 }
 
 QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
