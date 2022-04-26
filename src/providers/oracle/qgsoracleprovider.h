@@ -174,7 +174,6 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     QString description() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
-    static bool exec( QSqlQuery &qry, QString sql, const QVariantList &args );
     static bool execLoggedStatic( QSqlQuery &qry, const QString &sql, const QVariantList &args, const QString &uri, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     static  QString getLastExecutedQuery( const QSqlQuery &query );

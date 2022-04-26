@@ -17,7 +17,7 @@
 #include "qgsguiutils.h"
 #include "qgsjsonutils.h"
 #include "qgsqueryloggerpanelwidget.h"
-#include "qgsqueryloggernode.h"
+#include "qgsdatabasequeryloggernode.h"
 #include "qgsappquerylogger.h"
 #include "qgssettings.h"
 

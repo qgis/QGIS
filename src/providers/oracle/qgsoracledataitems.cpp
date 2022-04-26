@@ -60,10 +60,10 @@ bool deleteLayer( const QString &uri, QString &errCause )
   QSqlQuery qry( *conn );
 
   // check the geometry column count
-  if ( !QgsOracleProvider::exec( qry, QString( "SELECT count(*)"
-                                 " FROM user_tab_columns"
-                                 " WHERE table_name=? AND data_type='SDO_GEOMETRY' AND data_type_owner='MDSYS'" ),
-                                 QVariantList() << tableName )
+  if ( !QgsOracleProvider::execLoggedStatic( qry, QString( "SELECT count(*)"
+       " FROM user_tab_columns"
+       " WHERE table_name=? AND data_type='SDO_GEOMETRY' AND data_type_owner='MDSYS'" ),
+       QVariantList() << tableName, dsUri.uri(), QStringLiteral( "QgsOracleLayerItem" ), QGS_QUERY_LOG_ORIGIN )
        || !qry.next() )
   {
     errCause = QObject::tr( "Unable to determine number of geometry columns of layer %1.%2: \n%3" )
@@ -97,7 +97,7 @@ bool deleteLayer( const QString &uri, QString &errCause )
     args << tableName;
   }
 
-  if ( !QgsOracleProvider::exec( qry, dropTable, QVariantList() ) )
+  if ( !QgsOracleProvider::execLoggedStatic( qry, dropTable, QVariantList(), dsUri.uri(), QStringLiteral( "QgsOracleLayerItem" ), QGS_QUERY_LOG_ORIGIN ) )
   {
     errCause = QObject::tr( "Unable to delete layer %1.%2: \n%3" )
                .arg( ownerName )
@@ -107,7 +107,7 @@ bool deleteLayer( const QString &uri, QString &errCause )
     return false;
   }
 
-  if ( !QgsOracleProvider::exec( qry, cleanView, args ) )
+  if ( !QgsOracleProvider::execLoggedStatic( qry, cleanView, args, dsUri.uri(), QStringLiteral( "QgsOracleLayerItem" ), QGS_QUERY_LOG_ORIGIN ) )
   {
     errCause = QObject::tr( "Unable to clean metadata %1.%2: \n%3" )
                .arg( ownerName )
@@ -544,7 +544,7 @@ QVector<QgsDataItem *> QgsOracleRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
   const QStringList list = QgsOracleConn::connectionList();
-  for ( QString connName : list )
+  for ( const QString &connName : std::as_const( list ) )
   {
     connections << new QgsOracleConnectionItem( this, connName, mPath + '/' + connName );
   }
