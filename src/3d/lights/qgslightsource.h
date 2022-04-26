@@ -61,9 +61,9 @@ class _3D_EXPORT QgsLightSource SIP_ABSTRACT
     virtual QgsLightSource *clone() const = 0 SIP_FACTORY;
 
     /**
-     * Creates entities representing the light source.
+     * Creates an entity representing the light source.
      */
-    virtual QList< Qt3DCore::QEntity * > createEntities( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const = 0 SIP_SKIP;
+    virtual Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const = 0 SIP_SKIP;
 
     /**
      * Writes the light source's configuration to a new DOM element and returns it.
