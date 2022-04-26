@@ -21,15 +21,6 @@ Connections management
 %End
   public:
 
-    enum class DpiMode
-    {
-      All,
-      Off,
-      QGIS,
-      UMN,
-      GeoServer,
-    };
-
 
 
 

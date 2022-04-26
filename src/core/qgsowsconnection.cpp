@@ -198,7 +198,7 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
     uri.setParam( QStringLiteral( "version" ), version );
   }
 
-  const QString maxnumFeatures = settingsConnectionMaxnumFeatures.value( {service.toLower(), connName} );
+  const QString maxnumFeatures = settingsConnectionMaxNumFeatures.value( {service.toLower(), connName} );
   if ( !maxnumFeatures.isEmpty() )
   {
     uri.setParam( QStringLiteral( "maxNumFeatures" ), maxnumFeatures );

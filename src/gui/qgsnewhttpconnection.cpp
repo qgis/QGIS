@@ -66,11 +66,11 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 
   cmbDpiMode->clear();
 
-  cmbDpiMode->addItem( tr( "all" ), static_cast<int>( QgsOwsConnection::DpiMode::All ) );
-  cmbDpiMode->addItem( tr( "off" ), static_cast<int>( QgsOwsConnection::DpiMode::Off ) );
-  cmbDpiMode->addItem( tr( "QGIS" ), static_cast<int>( QgsOwsConnection::DpiMode::QGIS ) );
-  cmbDpiMode->addItem( tr( "UMN" ), static_cast<int>( QgsOwsConnection::DpiMode::UMN ) );
-  cmbDpiMode->addItem( tr( "GeoServer" ), static_cast<int>( QgsOwsConnection::DpiMode::GeoServer ) );
+  cmbDpiMode->addItem( tr( "all" ), static_cast<int>( Qgis::DpiMode::All ) );
+  cmbDpiMode->addItem( tr( "off" ), static_cast<int>( Qgis::DpiMode::Off ) );
+  cmbDpiMode->addItem( tr( "QGIS" ), static_cast<int>( Qgis::DpiMode::QGIS ) );
+  cmbDpiMode->addItem( tr( "UMN" ), static_cast<int>( Qgis::DpiMode::UMN ) );
+  cmbDpiMode->addItem( tr( "GeoServer" ), static_cast<int>( Qgis::DpiMode::GeoServer ) );
 
   cmbVersion->clear();
   cmbVersion->addItem( tr( "Maximum" ) );
@@ -299,7 +299,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   cbxIgnoreGetFeatureInfoURI->setChecked( QgsOwsConnection::settingsConnectionIgnoreGetFeatureInfoURI.value( detailsParameters ) );
   cbxSmoothPixmapTransform->setChecked( QgsOwsConnection::settingsConnectionSmoothPixmapTransform.value( detailsParameters ) );
 
-  QgsOwsConnection::DpiMode dpiMode = QgsOwsConnection::settingsConnectionDpiMode.value( detailsParameters );
+  Qgis::DpiMode dpiMode = QgsOwsConnection::settingsConnectionDpiMode.value( detailsParameters );
   cmbDpiMode->setCurrentIndex( cmbDpiMode->findData( static_cast<int>( dpiMode ) ) );
 
   const QString version = QgsOwsConnection::settingsConnectionVersion.value( detailsParameters );
@@ -319,10 +319,10 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 
   mHttpHeaders->setFromSettings( QgsSettings(), QStringLiteral( "qgis/connections-%1/%2" ).arg( mServiceName.toLower(), mOriginalConnName ) );
 
-  txtMaxNumFeatures->setText( QgsOwsConnection::settingsConnectionMaxnumFeatures.value( detailsParameters ) );
+  txtMaxNumFeatures->setText( QgsOwsConnection::settingsConnectionMaxNumFeatures.value( detailsParameters ) );
 
   // Only default to paging enabled if WFS 2.0.0 or higher
-  const bool pagingEnabled = QgsOwsConnection::settingsConnectionPagingenabled.valueWithDefaultOverride( versionIdx == WFS_VERSION_MAX || versionIdx >= WFS_VERSION_2_0, detailsParameters );
+  const bool pagingEnabled = QgsOwsConnection::settingsConnectionPagingEnabled.valueWithDefaultOverride( versionIdx == WFS_VERSION_MAX || versionIdx >= WFS_VERSION_2_0, detailsParameters );
   txtPageSize->setText( QgsOwsConnection::settingsConnectionPagesize.value( detailsParameters ) );
   cbxWfsFeaturePaging->setChecked( pagingEnabled );
 }
@@ -393,7 +393,7 @@ void QgsNewHttpConnection::accept()
     QgsOwsConnection::settingsConnectionIgnoreGetMapURI.setValue( cbxIgnoreGetMapURI->isChecked(), detailsParameters );
     QgsOwsConnection::settingsConnectionSmoothPixmapTransform.setValue( cbxSmoothPixmapTransform->isChecked(), detailsParameters );
 
-    QgsOwsConnection::DpiMode dpiMode = cmbDpiMode->currentData().value<QgsOwsConnection::DpiMode>();
+    Qgis::DpiMode dpiMode = cmbDpiMode->currentData().value<Qgis::DpiMode>();
     QgsOwsConnection::settingsConnectionDpiMode.setValue( dpiMode, detailsParameters );
 
     mHttpHeaders->updateSettings( settings, QStringLiteral( "qgis/connections-%1/%2" ).arg( mServiceName.toLower(), newConnectionName ) );
@@ -424,9 +424,9 @@ void QgsNewHttpConnection::accept()
         break;
     }
     QgsOwsConnection::settingsConnectionVersion.setValue( version, detailsParameters );
-    QgsOwsConnection::settingsConnectionMaxnumFeatures.setValue( txtMaxNumFeatures->text(), detailsParameters );
+    QgsOwsConnection::settingsConnectionMaxNumFeatures.setValue( txtMaxNumFeatures->text(), detailsParameters );
     QgsOwsConnection::settingsConnectionPagesize.setValue( txtPageSize->text(), detailsParameters );
-    QgsOwsConnection::settingsConnectionPagingenabled.setValue( cbxWfsFeaturePaging->isChecked(), detailsParameters );
+    QgsOwsConnection::settingsConnectionPagingEnabled.setValue( cbxWfsFeaturePaging->isChecked(), detailsParameters );
   }
 
   QStringList credentialsParameters = {mServiceName, newConnectionName};
