@@ -96,6 +96,26 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     bool isActive() const;
 
     /**
+     * Invalidates the profile results from the source with matching ID.
+     *
+     * The matching stored source will be deleted and replaced with \a source.
+     *
+     * Returns TRUE if results were previously stored for the matching source and have been invalidated.
+     *
+     * \see updateInvalidatedResults()
+     */
+    bool invalidateResults( QgsAbstractProfileSource *source );
+
+    /**
+     * Starts a background update of any invalidate results and immediately returns.
+     *
+     * Does nothing if the generation is already in progress.
+     *
+     * \see invalidateResults()
+     */
+    void updateInvalidatedResults();
+
+    /**
      * Returns the limits of the retrieved elevation values.
      */
     QgsDoubleRange zRange() const;
