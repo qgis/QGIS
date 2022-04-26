@@ -116,6 +116,7 @@ class CORE_EXPORT QgsProfileRenderContext
 
 };
 
+class QgsAbstractProfileGenerator;
 
 /**
  * \brief Abstract base class for storage of elevation profiles.
@@ -164,6 +165,16 @@ class CORE_EXPORT QgsAbstractProfileResults
      * Snaps a \a point to the generated elevation profile.
      */
     virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
+
+    /**
+     * Updates the results to match the properties from the specified \a generator.
+     *
+     * For instance, this method can be used to replace any stored properties relating to rendering
+     * the gathered results to reflect the \a generator's current properties.
+     *
+     * The base class method does nothing.
+     */
+    virtual void updateFromGenerator( const QgsAbstractProfileGenerator *generator );
 };
 
 /**

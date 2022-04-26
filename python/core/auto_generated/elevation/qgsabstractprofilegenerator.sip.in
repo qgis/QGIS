@@ -141,6 +141,16 @@ Returns the range of the retrieved elevation values
 %Docstring
 Snaps a ``point`` to the generated elevation profile.
 %End
+
+    virtual void updateFromGenerator( const QgsAbstractProfileGenerator *generator );
+%Docstring
+Updates the results to match the properties from the specified ``generator``.
+
+For instance, this method can be used to replace any stored properties relating to rendering
+the gathered results to reflect the ``generator``'s current properties.
+
+The base class method does nothing.
+%End
 };
 
 class QgsAbstractProfileGenerator

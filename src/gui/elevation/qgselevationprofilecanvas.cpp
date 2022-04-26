@@ -64,6 +64,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       setPos( mRect.topLeft() );
 
       mImage = QImage();
+      mCachedImages.clear();
       mPlotArea = QRectF();
       update();
     }
@@ -71,8 +72,20 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
     void updatePlot()
     {
       mImage = QImage();
+      mCachedImages.clear();
       mPlotArea = QRectF();
       update();
+    }
+
+    bool redrawResults( const QString &sourceId )
+    {
+      auto it = mCachedImages.find( sourceId );
+      if ( it == mCachedImages.end() )
+        return false;
+
+      mCachedImages.erase( it );
+      mImage = QImage();
+      return true;
     }
 
     QRectF boundingRect() const override
@@ -92,7 +105,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       return mPlotArea;
     }
 
-    QgsProfilePoint canvasPointToPlotPoint( const QPointF &point )
+    QgsProfilePoint canvasPointToPlotPoint( QPointF point )
     {
       if ( !mPlotArea.contains( point.x(), point.y() ) )
         return QgsProfilePoint();
@@ -119,8 +132,22 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       if ( !mRenderer )
         return;
 
-      const QImage plot = mRenderer->renderToImage( plotArea.width(), plotArea.height(), xMinimum(), xMaximum(), yMinimum(), yMaximum() );
-      rc.painter()->drawImage( plotArea.left(), plotArea.top(), plot );
+      const QStringList sourceIds = mRenderer->sourceIds();
+      for ( const QString &source : sourceIds )
+      {
+        QImage plot;
+        auto it = mCachedImages.constFind( source );
+        if ( it != mCachedImages.constEnd() )
+        {
+          plot = it.value();
+        }
+        else
+        {
+          plot = mRenderer->renderToImage( plotArea.width(), plotArea.height(), xMinimum(), xMaximum(), yMinimum(), yMaximum(), source );
+          mCachedImages.insert( source, plot );
+        }
+        rc.painter()->drawImage( plotArea.left(), plotArea.top(), plot );
+      }
     }
 
     void paint( QPainter *painter ) override
@@ -149,6 +176,9 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
   private:
 
     QImage mImage;
+
+    QMap< QString, QImage > mCachedImages;
+
     QRectF mRect;
     QRectF mPlotArea;
     QgsProfilePlotRenderer *mRenderer = nullptr;
@@ -290,6 +320,11 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   mDeferredUpdateTimer->stop();
   connect( mDeferredUpdateTimer, &QTimer::timeout, this, &QgsElevationProfileCanvas::startDeferredUpdate );
 
+  mDeferredRedrawTimer = new QTimer( this );
+  mDeferredRedrawTimer->setSingleShot( true );
+  mDeferredRedrawTimer->stop();
+  connect( mDeferredRedrawTimer, &QTimer::timeout, this, &QgsElevationProfileCanvas::startDeferredRedraw );
+
 }
 
 QgsElevationProfileCanvas::~QgsElevationProfileCanvas()
@@ -375,11 +410,13 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
   if ( isDisconnect )
   {
     disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
+    disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::renderingPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged );
     disconnect( layer, &QgsMapLayer::dataChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
   }
   else
   {
     connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
+    connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::renderingPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged );
     connect( layer, &QgsMapLayer::dataChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
   }
 
@@ -412,7 +449,6 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
     case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::GroupLayer:
       break;
-
   }
 }
 
@@ -622,6 +658,27 @@ void QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
   }
 }
 
+void QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged()
+{
+  // TODO -- handle nicely when existing job is in progress
+  if ( !mCurrentJob || mCurrentJob->isActive() )
+    return;
+
+  QgsMapLayerElevationProperties *properties = qobject_cast< QgsMapLayerElevationProperties * >( sender() );
+  if ( !properties )
+    return;
+
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( properties->parent() ) )
+  {
+    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
+    {
+      mCurrentJob->replaceSource( source );
+    }
+    if ( mPlotItem->redrawResults( layer->id() ) )
+      scheduleDeferredRedraw();
+  }
+}
+
 void QgsElevationProfileCanvas::updateResultsForLayer()
 {
   if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( sender() ) )
@@ -643,6 +700,15 @@ void QgsElevationProfileCanvas::scheduleDeferredUpdate()
   }
 }
 
+void QgsElevationProfileCanvas::scheduleDeferredRedraw()
+{
+  if ( !mDeferredRedrawScheduled )
+  {
+    mDeferredRedrawTimer->start( 1 );
+    mDeferredRedrawScheduled = true;
+  }
+}
+
 void QgsElevationProfileCanvas::startDeferredUpdate()
 {
   if ( mCurrentJob && !mCurrentJob->isActive() )
@@ -651,6 +717,12 @@ void QgsElevationProfileCanvas::startDeferredUpdate()
   }
 
   mDeferredUpdateScheduled = false;
+}
+
+void QgsElevationProfileCanvas::startDeferredRedraw()
+{
+  mPlotItem->update();
+  mDeferredRedrawScheduled = false;
 }
 
 QgsProfilePoint QgsElevationProfileCanvas::canvasPointToPlotPoint( QPointF point ) const

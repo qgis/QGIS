@@ -46,6 +46,17 @@ QgsProfilePlotRenderer::~QgsProfilePlotRenderer()
   }
 }
 
+QStringList QgsProfilePlotRenderer::sourceIds() const
+{
+  QStringList res;
+  res.reserve( mGenerators.size() );
+  for ( const auto &it : mGenerators )
+  {
+    res.append( it->sourceId() );
+  }
+  return res;
+}
+
 void QgsProfilePlotRenderer::startGeneration()
 {
   if ( isActive() )
@@ -125,7 +136,17 @@ bool QgsProfilePlotRenderer::isActive() const
   return mStatus != Idle;
 }
 
+void QgsProfilePlotRenderer::replaceSource( QgsAbstractProfileSource *source )
+{
+  replaceSourceInternal( source, false );
+}
+
 bool QgsProfilePlotRenderer::invalidateResults( QgsAbstractProfileSource *source )
+{
+  return replaceSourceInternal( source, true );
+}
+
+bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *source, bool clearPreviousResults )
 {
   if ( !source )
     return false;
@@ -141,9 +162,16 @@ bool QgsProfilePlotRenderer::invalidateResults( QgsAbstractProfileSource *source
     if ( job.generator && job.generator->sourceId() == sourceId )
     {
       res = true;
-      job.results.reset();
+      if ( clearPreviousResults )
+      {
+        job.results.reset();
+        job.complete = false;
+      }
+      else if ( job.results )
+      {
+        job.results->updateFromGenerator( generator.get() );
+      }
       job.generator = generator.get();
-      job.complete = false;
       for ( auto it = mGenerators.begin(); it != mGenerators.end(); )
       {
         if ( ( *it )->sourceId() == sourceId )
@@ -186,7 +214,7 @@ QgsDoubleRange QgsProfilePlotRenderer::zRange() const
   return QgsDoubleRange( min, max );
 }
 
-QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax )
+QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId )
 {
   QImage res( width, height, QImage::Format_ARGB32_Premultiplied );
   res.fill( Qt::transparent );
@@ -196,13 +224,13 @@ QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double dist
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context.setPainterFlagsUsingContext( &p );
-  render( context, width, height, distanceMin, distanceMax, zMin, zMax );
+  render( context, width, height, distanceMin, distanceMax, zMin, zMax, sourceId );
   p.end();
 
   return res;
 }
 
-void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax )
+void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId )
 {
   QPainter *painter = context.painter();
   if ( !painter )
@@ -221,7 +249,7 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
 
   for ( const ProfileJob &job : mJobs )
   {
-    if ( job.complete && job.results )
+    if ( job.complete && job.results && ( sourceId.isEmpty() || job.generator->sourceId() == sourceId ) )
       job.results->renderResults( profileRenderContext );
   }
 }
@@ -272,3 +300,4 @@ void QgsProfilePlotRenderer::generateProfileStatic( ProfileJob &job )
   job.results.reset( job.generator->takeResults() );
   job.complete = true;
 }
+

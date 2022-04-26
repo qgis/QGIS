@@ -62,6 +62,7 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileResult
     QVector< QgsGeometry > asGeometries() const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
+    void updateFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 };
 
 /**
@@ -112,6 +113,8 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileGene
     double mRasterUnitsPerPixelY = 1;
 
     double mStepDistance = std::numeric_limits<double>::quiet_NaN();
+
+    friend class QgsRasterLayerProfileResults;
 
 };
 

@@ -398,6 +398,16 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
   }
 }
 
+void QgsVectorLayerProfileResults::updateFromGenerator( const QgsAbstractProfileGenerator *generator )
+{
+  const QgsVectorLayerProfileGenerator *vlGenerator = qgis::down_cast<  const QgsVectorLayerProfileGenerator * >( generator );
+
+  respectLayerSymbology = vlGenerator->mRespectLayerSymbology;
+  profileLineSymbol.reset( vlGenerator->mProfileLineSymbol->clone() );
+  profileFillSymbol.reset( vlGenerator->mProfileFillSymbol->clone() );
+  profileMarkerSymbol.reset( vlGenerator->mProfileMarkerSymbol->clone() );
+}
+
 //
 // QgsVectorLayerProfileGenerator
 //

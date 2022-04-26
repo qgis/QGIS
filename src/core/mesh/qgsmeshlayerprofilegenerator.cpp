@@ -135,6 +135,13 @@ QgsProfileSnapResult QgsMeshLayerProfileResults::snapPoint( const QgsProfilePoin
   return result;
 }
 
+void QgsMeshLayerProfileResults::updateFromGenerator( const QgsAbstractProfileGenerator *generator )
+{
+  const QgsMeshLayerProfileGenerator *mlGenerator = qgis::down_cast<  const QgsMeshLayerProfileGenerator * >( generator );
+
+  lineSymbol.reset( mlGenerator->mLineSymbol->clone() );
+}
+
 //
 // QgsMeshLayerProfileGenerator
 //

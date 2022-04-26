@@ -205,9 +205,12 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     void generationFinished();
     void onLayerProfileGenerationPropertyChanged();
+    void onLayerProfileRendererPropertyChanged();
     void updateResultsForLayer();
     void scheduleDeferredUpdate();
+    void scheduleDeferredRedraw();
     void startDeferredUpdate();
+    void startDeferredRedraw();
 
   private:
 
@@ -236,6 +239,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsProfilePlotRenderer *mCurrentJob = nullptr;
     QTimer *mDeferredUpdateTimer = nullptr;
     bool mDeferredUpdateScheduled = false;
+    QTimer *mDeferredRedrawTimer = nullptr;
+    bool mDeferredRedrawScheduled = false;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
     double mTolerance = 0;
