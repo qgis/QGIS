@@ -164,6 +164,7 @@ class QgsOracleConn : public QObject
      */
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
 
+    bool exec( const QString &query, bool logError = true, QString *errorMessage = nullptr );
     bool execLogged( const QString &sql, bool logError = true, QString *errorMessage = nullptr, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     bool begin( QSqlDatabase &db );
@@ -267,6 +268,7 @@ class QgsOracleConn : public QObject
     explicit QgsOracleConn( QgsDataSourceUri uri, bool transaction );
     ~QgsOracleConn() override;
 
+    bool exec( QSqlQuery &qry, const QString &sql, const QVariantList &params );
     bool execLogged( QSqlQuery &qry, const QString &sql, const QVariantList &params, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     //! reference count
