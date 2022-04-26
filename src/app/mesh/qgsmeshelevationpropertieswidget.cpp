@@ -20,6 +20,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerelevationproperties.h"
 #include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -30,12 +31,30 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
+  mFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationLine.svg" ) ), tr( "Line" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::Line ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillBelow ) );
 
   syncToLayer( layer );
 
   connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsMeshElevationPropertiesWidget::onChanged );
+  connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsMeshElevationPropertiesWidget::onChanged );
+  connect( mStyleComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    switch ( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) )
+    {
+      case Qgis::ProfileSurfaceSymbology::Line:
+        mSymbologyStackedWidget->setCurrentWidget( mPageLine );
+        break;
+      case Qgis::ProfileSurfaceSymbology::FillBelow:
+        mSymbologyStackedWidget->setCurrentWidget( mPageFill );
+        break;
+    }
+
+    onChanged();
+  } );
 }
 
 void QgsMeshElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -49,6 +68,18 @@ void QgsMeshElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mOffsetZSpinBox->setValue( props->zOffset() );
   mScaleZSpinBox->setValue( props->zScale() );
   mLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
+  mFillStyleButton->setSymbol( props->profileFillSymbol()->clone() );
+
+  mStyleComboBox->setCurrentIndex( mStyleComboBox->findData( static_cast <int >( props->profileSymbology() ) ) );
+  switch ( props->profileSymbology() )
+  {
+    case Qgis::ProfileSurfaceSymbology::Line:
+      mSymbologyStackedWidget->setCurrentWidget( mPageLine );
+      break;
+    case Qgis::ProfileSurfaceSymbology::FillBelow:
+      mSymbologyStackedWidget->setCurrentWidget( mPageFill );
+      break;
+  }
 
   mBlockUpdates = false;
 }
@@ -62,6 +93,8 @@ void QgsMeshElevationPropertiesWidget::apply()
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
   props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
+  props->setProfileSymbology( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) );
   mLayer->trigger3DUpdate();
 }
 

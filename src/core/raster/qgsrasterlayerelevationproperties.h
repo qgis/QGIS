@@ -97,12 +97,45 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
      */
     void setProfileLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns the fill symbol used to render the raster profile in elevation profile plots.
+     *
+     * \see setProfileFillSymbol()
+     */
+    QgsFillSymbol *profileFillSymbol() const;
+
+    /**
+     * Sets the fill \a symbol used to render the raster profile in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * \see profileFillSymbol()
+     */
+    void setProfileFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the symbology option used to render the raster profile in elevation profile plots.
+     *
+     * \see setProfileSymbology()
+     */
+    Qgis::ProfileSurfaceSymbology profileSymbology() const { return mSymbology; }
+
+    /**
+     * Sets the \a symbology option used to render the raster profile in elevation profile plots.
+     *
+     * \see setProfileSymbology()
+     */
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+
   private:
 
-    void setDefaultProfileLineSymbol();
+    void setDefaultProfileLineSymbol( const QColor &color );
+    void setDefaultProfileFillSymbol( const QColor &color );
 
     bool mEnabled = false;
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
+    std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
+    Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
     int mBandNumber = 1;
 
 };

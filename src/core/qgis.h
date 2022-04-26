@@ -1649,6 +1649,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( LightSourceType )
 
     /**
+     * Surface symbology type for elevation profile plots.
+     *
+     * \since QGIS 3.26
+     */
+    enum class ProfileSurfaceSymbology
+    {
+      Line, //!< The elevation surface will be rendered using a line symbol
+      FillBelow, //!< The elevation surface will be rendered using a fill symbol below the surface level
+    };
+    Q_ENUM( ProfileSurfaceSymbology );
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

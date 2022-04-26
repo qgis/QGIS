@@ -1476,3 +1476,9 @@ Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
 Qgis.LightSourceType.__doc__ = 'Light source types for 3D scenes.\n\n.. versionadded:: 3.26\n\n' + '* ``Point``: ' + Qgis.LightSourceType.Point.__doc__ + '\n' + '* ``Directional``: ' + Qgis.LightSourceType.Directional.__doc__
 # --
 Qgis.LightSourceType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProfileSurfaceSymbology.Line.__doc__ = "The elevation surface will be rendered using a line symbol"
+Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be rendered using a fill symbol below the surface level"
+Qgis.ProfileSurfaceSymbology.__doc__ = 'Surface symbology type for elevation profile plots.\n\n.. versionadded:: 3.26\n\n' + '* ``Line``: ' + Qgis.ProfileSurfaceSymbology.Line.__doc__ + '\n' + '* ``FillBelow``: ' + Qgis.ProfileSurfaceSymbology.FillBelow.__doc__
+# --
+Qgis.ProfileSurfaceSymbology.baseClass = Qgis
