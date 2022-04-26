@@ -205,6 +205,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     void generationFinished();
     void onLayerProfileGenerationPropertyChanged();
+    void updateResultsForLayer();
     void scheduleDeferredUpdate();
     void startDeferredUpdate();
 
@@ -221,6 +222,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
 
     QgsProfileSnapContext snapContext() const;
+
+    void setupLayerConnections( QgsMapLayer *layer, bool isDisconnect );
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;

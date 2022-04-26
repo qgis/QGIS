@@ -370,6 +370,52 @@ QgsProfileSnapContext QgsElevationProfileCanvas::snapContext() const
   return context;
 }
 
+void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool isDisconnect )
+{
+  if ( isDisconnect )
+  {
+    disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
+    disconnect( layer, &QgsMapLayer::dataChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+  }
+  else
+  {
+    connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
+    connect( layer, &QgsMapLayer::dataChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+  }
+
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
+      if ( isDisconnect )
+      {
+        disconnect( vl, &QgsVectorLayer::featureAdded, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+        disconnect( vl, &QgsVectorLayer::featureDeleted, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+        disconnect( vl, &QgsVectorLayer::geometryChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+        disconnect( vl, &QgsVectorLayer::attributeValueChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+      }
+      else
+      {
+        connect( vl, &QgsVectorLayer::featureAdded, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+        connect( vl, &QgsVectorLayer::featureDeleted, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+        connect( vl, &QgsVectorLayer::geometryChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+        connect( vl, &QgsVectorLayer::attributeValueChanged, this, &QgsElevationProfileCanvas::updateResultsForLayer );
+      }
+      break;
+    }
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
+      break;
+
+  }
+}
+
 QgsPointXY QgsElevationProfileCanvas::snapToPlot( QPoint point )
 {
   if ( !mCurrentJob || !mSnappingEnabled )
@@ -576,6 +622,18 @@ void QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
   }
 }
 
+void QgsElevationProfileCanvas::updateResultsForLayer()
+{
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( sender() ) )
+  {
+    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
+    {
+      if ( mCurrentJob->invalidateResults( source ) )
+        scheduleDeferredUpdate();
+    }
+  }
+}
+
 void QgsElevationProfileCanvas::scheduleDeferredUpdate()
 {
   if ( !mDeferredUpdateScheduled )
@@ -642,7 +700,7 @@ void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 {
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
   {
-    disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
+    setupLayerConnections( layer, true );
   }
 
   // filter list, removing null layers and invalid layers
@@ -656,7 +714,7 @@ void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
   mLayers = _qgis_listRawToQPointer( filteredList );
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
   {
-    connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
+    setupLayerConnections( layer, false );
   }
 }
 
