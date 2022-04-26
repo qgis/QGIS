@@ -30,7 +30,7 @@ QgsDirectionalLightSettings *QgsDirectionalLightSettings::clone() const
   return new QgsDirectionalLightSettings( *this );
 }
 
-QList<Qt3DCore::QEntity *> QgsDirectionalLightSettings::createEntities( const Qgs3DMapSettings &, Qt3DCore::QEntity *parent ) const
+Qt3DCore::QEntity *QgsDirectionalLightSettings::createEntity( const Qgs3DMapSettings &, Qt3DCore::QEntity *parent ) const
 {
   Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity( parent );
   Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
@@ -44,7 +44,7 @@ QList<Qt3DCore::QEntity *> QgsDirectionalLightSettings::createEntities( const Qg
   lightEntity->addComponent( light );
   lightEntity->addComponent( lightTransform );
 
-  return {lightEntity};
+  return lightEntity;
 }
 
 QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const

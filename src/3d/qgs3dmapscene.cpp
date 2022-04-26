@@ -659,7 +659,7 @@ void Qgs3DMapScene::updateLights()
   const QList< QgsLightSource * > newLights = mMap.lightSources();
   for ( const QgsLightSource *source : newLights )
   {
-    mLightEntities.append( source->createEntities( mMap, this ) );
+    mLightEntities.append( source->createEntity( mMap, this ) );
   }
 
   onShadowSettingsChanged();
