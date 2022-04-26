@@ -75,6 +75,26 @@ Block until the current job has finished.
 Returns ``True`` if the generation job is currently running in background.
 %End
 
+    bool invalidateResults( QgsAbstractProfileSource *source );
+%Docstring
+Invalidates the profile results from the source with matching ID.
+
+The matching stored source will be deleted and replaced with ``source``.
+
+Returns ``True`` if results were previously stored for the matching source and have been invalidated.
+
+.. seealso:: :py:func:`updateInvalidatedResults`
+%End
+
+    void updateInvalidatedResults();
+%Docstring
+Starts a background update of any invalidate results and immediately returns.
+
+Does nothing if the generation is already in progress.
+
+.. seealso:: :py:func:`invalidateResults`
+%End
+
     QgsDoubleRange zRange() const;
 %Docstring
 Returns the limits of the retrieved elevation values.

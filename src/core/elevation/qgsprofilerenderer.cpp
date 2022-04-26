@@ -125,6 +125,51 @@ bool QgsProfilePlotRenderer::isActive() const
   return mStatus != Idle;
 }
 
+bool QgsProfilePlotRenderer::invalidateResults( QgsAbstractProfileSource *source )
+{
+  if ( !source )
+    return false;
+
+  std::unique_ptr< QgsAbstractProfileGenerator > generator{ source->createProfileGenerator( mRequest ) };
+  if ( !generator )
+    return false;
+
+  QString sourceId = generator->sourceId();
+  bool res = false;
+  for ( auto &job : mJobs )
+  {
+    if ( job.generator && job.generator->sourceId() == sourceId )
+    {
+      res = true;
+      job.results.reset();
+      job.generator = generator.get();
+      job.complete = false;
+      for ( auto it = mGenerators.begin(); it != mGenerators.end(); )
+      {
+        if ( ( *it )->sourceId() == sourceId )
+          it = mGenerators.erase( it );
+        else
+          it++;
+      }
+      mGenerators.emplace_back( std::move( generator ) );
+    }
+  }
+  return res;
+}
+
+void QgsProfilePlotRenderer::updateInvalidatedResults()
+{
+  if ( isActive() )
+    return;
+
+  mStatus = Generating;
+
+  connect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsProfilePlotRenderer::onGeneratingFinished );
+
+  mFuture = QtConcurrent::map( mJobs, generateProfileStatic );
+  mFutureWatcher.setFuture( mFuture );
+}
+
 QgsDoubleRange QgsProfilePlotRenderer::zRange() const
 {
   double min = std::numeric_limits< double >::max();
@@ -219,6 +264,9 @@ void QgsProfilePlotRenderer::onGeneratingFinished()
 
 void QgsProfilePlotRenderer::generateProfileStatic( ProfileJob &job )
 {
+  if ( job.results )
+    return;
+
   Q_ASSERT( job.generator );
   job.generator->generateProfile();
   job.results.reset( job.generator->takeResults() );
