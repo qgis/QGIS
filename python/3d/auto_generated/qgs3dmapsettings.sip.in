@@ -469,38 +469,6 @@ Returns the corner where the shadow map preview is displayed
 Returns the size of the shadow map preview
 %End
 
- QList<QgsPointLightSettings> pointLights() const /Deprecated/;
-%Docstring
-Returns list of point lights defined in the scene
-
-.. deprecated::
-   use :py:func:`~Qgs3DMapSettings.lightSources` instead
-%End
-
- QList<QgsDirectionalLightSettings> directionalLights() const /Deprecated/;
-%Docstring
-Returns list of directional lights defined in the scene
-
-.. deprecated::
-   use :py:func:`~Qgs3DMapSettings.lightSources` instead
-%End
-
- void setPointLights( const QList<QgsPointLightSettings> &pointLights ) /Deprecated/;
-%Docstring
-Sets list of point lights defined in the scene
-
-.. deprecated::
-   use :py:func:`~Qgs3DMapSettings.setLightSources` instead
-%End
-
- void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights ) /Deprecated/;
-%Docstring
-Sets list of directional lights defined in the scene
-
-.. deprecated::
-   use :py:func:`~Qgs3DMapSettings.setLightSources` instead
-%End
-
     QList<QgsLightSource *> lightSources() const;
 %Docstring
 Returns list of directional light sources defined in the scene.

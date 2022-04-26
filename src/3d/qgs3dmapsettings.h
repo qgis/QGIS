@@ -435,30 +435,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double debugDepthMapSize() const { return mDebugDepthMapSize; }
 
     /**
-     * Returns list of point lights defined in the scene
-     * \deprecated use lightSources() instead
-     */
-    Q_DECL_DEPRECATED QList<QgsPointLightSettings> pointLights() const SIP_DEPRECATED;
-
-    /**
-     * Returns list of directional lights defined in the scene
-     * \deprecated use lightSources() instead
-     */
-    Q_DECL_DEPRECATED QList<QgsDirectionalLightSettings> directionalLights() const SIP_DEPRECATED;
-
-    /**
-     * Sets list of point lights defined in the scene
-     * \deprecated use setLightSources() instead
-     */
-    Q_DECL_DEPRECATED void setPointLights( const QList<QgsPointLightSettings> &pointLights ) SIP_DEPRECATED;
-
-    /**
-     * Sets list of directional lights defined in the scene
-     * \deprecated use setLightSources() instead
-     */
-    Q_DECL_DEPRECATED void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights ) SIP_DEPRECATED;
-
-    /**
      * Returns list of directional light sources defined in the scene.
      * \see setLightSources()
      * \since QGIS 3.26
