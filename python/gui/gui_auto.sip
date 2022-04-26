@@ -460,4 +460,3 @@
 %Include auto_generated/tableeditor/qgstableeditorwidget.sip
 %Include auto_generated/editorwidgets/qgsqmlwidgetwrapper.sip
 %Include auto_generated/qgsadvanceddigitizingcanvasitem.sip
-%Include auto_generated/qgsfindfilesbypatternwidget.cpp
