@@ -79,7 +79,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QRectF plotArea() const;
 
     /**
-     * Triggers an update of the profile, causing the profile extraction to perform in the
+     * Triggers a complete regeneration of the profile, causing the profile extraction to perform in the
      * background.
      */
     void refresh() override;
@@ -206,10 +206,10 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void generationFinished();
     void onLayerProfileGenerationPropertyChanged();
     void onLayerProfileRendererPropertyChanged();
-    void updateResultsForLayer();
-    void scheduleDeferredUpdate();
+    void regenerateResultsForLayer();
+    void scheduleDeferredRegeneration();
     void scheduleDeferredRedraw();
-    void startDeferredUpdate();
+    void startDeferredRegeneration();
     void startDeferredRedraw();
 
   private:
@@ -237,8 +237,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsElevationProfileCrossHairsItem *mCrossHairsItem = nullptr;
 
     QgsProfilePlotRenderer *mCurrentJob = nullptr;
-    QTimer *mDeferredUpdateTimer = nullptr;
-    bool mDeferredUpdateScheduled = false;
+    QTimer *mDeferredRegenerationTimer = nullptr;
+    bool mDeferredRegenerationScheduled = false;
     QTimer *mDeferredRedrawTimer = nullptr;
     bool mDeferredRedrawScheduled = false;
 

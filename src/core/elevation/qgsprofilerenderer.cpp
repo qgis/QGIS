@@ -185,7 +185,7 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
   return res;
 }
 
-void QgsProfilePlotRenderer::updateInvalidatedResults()
+void QgsProfilePlotRenderer::regenerateInvalidatedResults()
 {
   if ( isActive() )
     return;
