@@ -80,9 +80,9 @@ Is used to keep track of currently available and visible tabs.
 .. versionadded:: 3.0
 %End
 
-    void setTabFont( int tabIndex, const QFont &font );
+    void setTabStyle( int tabIndex, const QFont &font, const QColor &color );
 %Docstring
-Sets the optional custom ``font`` for the tab idenfied by ``tabIndex``.
+Sets the optional custom ``font`` and ``color`` for the tab idenfied by ``tabIndex``.
 
 .. versionadded:: 3.26
 %End

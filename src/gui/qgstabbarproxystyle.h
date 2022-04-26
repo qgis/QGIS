@@ -38,6 +38,7 @@ class QgsTabBarProxyStyle : public QProxyStyle
     struct TabStyle
     {
       QFont font;
+      QColor color;
     };
 
     QgsTabBarProxyStyle( QTabBar *tabBar );

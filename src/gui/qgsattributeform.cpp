@@ -1611,7 +1611,7 @@ void QgsAttributeForm::init()
           WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
           if ( widgetInfo.overrideLabelStyle )
           {
-            widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: rgba(%1,%2,%3,%4); }" ).arg( widgetInfo.labelColor.red() ).arg( widgetInfo.labelColor.green() ).arg( widgetInfo.labelColor.blue() ).arg( QString::number( widgetInfo.labelColor.alphaF(), 'f', 4 ) ) );
+            widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
             widgetInfo.widget->setFont( widgetInfo.labelFont );
           }
           layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
@@ -1636,8 +1636,7 @@ void QgsAttributeForm::init()
 
           if ( widgDef->overrideLabelStyle() )
           {
-            tabWidget->setTabFont( tabWidget->tabBar()->count() - 1, widgDef->labelFont() );
-            tabWidget->tabBar()->setTabTextColor( tabWidget->tabBar()->count() - 1, widgDef->labelColor() );
+            tabWidget->setTabStyle( tabWidget->tabBar()->count() - 1, widgDef->labelFont(), widgDef->labelColor() );
           }
 
           if ( containerDef->visibilityExpression().enabled() )
@@ -2263,7 +2262,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           if ( newWidgetInfo.overrideLabelStyle )
           {
             groupBox->setFont( newWidgetInfo.labelFont );
-            groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: rgba(%1,%2,%3,%4); }" ).arg( newWidgetInfo.labelColor.red() ).arg( newWidgetInfo.labelColor.green() ).arg( newWidgetInfo.labelColor.blue() ).arg( QString::number( newWidgetInfo.labelColor.alphaF(), 'f', 4 ) ) );
+            groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( newWidgetInfo.labelColor.name( QColor::HexArgb ) ) );
           }
         }
         myContainer = groupBox;

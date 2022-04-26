@@ -30,16 +30,20 @@ void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOptio
 {
   if ( element == CE_TabBarTab && mTabStyles.contains( mTabBar->tabAt( option->rect.center() ) ) )
   {
-    painter->save(); // save the painter to restore later
-    const TabStyle &style { mTabStyles.value( mTabBar->tabAt( option->rect.center() ) ) };
-    painter->setFont( style.font ); // change the defaul font of painter
-    QProxyStyle::drawControl( element, option, painter, widget ); // paint the TabBarTab using the default drawControl
-    painter->restore(); // restore to default painter
+    if ( const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>( option ) )
+    {
+      painter->save();
+      const TabStyle &style { mTabStyles.value( mTabBar->tabAt( option->rect.center() ) ) };
+      painter->setFont( style.font );
+      QStyleOptionTab opt { *tab };
+      QProxyStyle::drawControl( element, &opt, painter, widget );
+      painter->restore();
+      return;
+    }
   }
-  else
-  {
-    QProxyStyle::drawControl( element, option, painter, widget ); // use default drawControl to paint all other components without changes.
-  }
+
+  QProxyStyle::drawControl( element, option, painter, widget );
+
 }
 
 void QgsTabBarProxyStyle::addStyle( int tabIndex, const TabStyle &style )
