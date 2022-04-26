@@ -36,6 +36,7 @@ void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOptio
       const TabStyle &style { mTabStyles.value( mTabBar->tabAt( option->rect.center() ) ) };
       painter->setFont( style.font );
       QStyleOptionTab opt { *tab };
+      opt.palette.setBrush( QPalette::WindowText, style.color );
       QProxyStyle::drawControl( element, &opt, painter, widget );
       painter->restore();
       return;
