@@ -138,6 +138,13 @@ void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &conte
   lineSymbol->stopRender( context.renderContext() );
 }
 
+void QgsRasterLayerProfileResults::updateFromGenerator( const QgsAbstractProfileGenerator *generator )
+{
+  const QgsRasterLayerProfileGenerator *rlGenerator = qgis::down_cast<  const QgsRasterLayerProfileGenerator * >( generator );
+
+  lineSymbol.reset( rlGenerator->mLineSymbol->clone() );
+}
+
 
 //
 // QgsRasterLayerProfileGenerator

@@ -85,6 +85,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
     QVector< QgsGeometry > asGeometries() const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
+    void updateFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 };
 
 
@@ -167,6 +168,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
 
     // NOT for use in the background thread!
     QPointer< QgsVectorLayer > mLayer;
+
+    friend class QgsVectorLayerProfileResults;
 
 };
 

@@ -63,6 +63,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileResults
     QVector< QgsGeometry > asGeometries() const override;
     void renderResults( QgsProfileRenderContext &context ) override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
+    void updateFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 };
 
 
@@ -115,6 +116,8 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileGenera
     QgsCoordinateTransform mLayerToTargetTransform;
 
     std::unique_ptr< QgsMeshLayerProfileResults > mResults;
+
+    friend class QgsMeshLayerProfileResults;
 
 
 };

@@ -71,6 +71,11 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     ~QgsProfilePlotRenderer() override;
 
     /**
+     * Returns the ordered list of source IDs for the sources used by the renderer.
+     */
+    QStringList sourceIds() const;
+
+    /**
      * Start the generation job and immediately return.
      * Does nothing if the generation is already in progress.
      */
@@ -94,6 +99,13 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
 
     //! Returns TRUE if the generation job is currently running in background.
     bool isActive() const;
+
+    /**
+     * Replaces the existing source with matching ID.
+     *
+     * The matching stored source will be deleted and replaced with \a source.
+     */
+    void replaceSource( QgsAbstractProfileSource *source );
 
     /**
      * Invalidates the profile results from the source with matching ID.
@@ -122,13 +134,17 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
 
     /**
      * Renders a portion of the profile to an image with the given \a width and \a height.
+     *
+     * If \a sourceId is empty then all sources will be rendered, otherwise only the matching source will be rendered.
      */
-    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax );
+    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString() );
 
     /**
      * Renders a portion of the profile using the specified render \a context.
+     *
+     * If \a sourceId is empty then all sources will be rendered, otherwise only the matching source will be rendered.
      */
-    void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax );
+    void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString() );
 
     /**
      * Snap a \a point to the results.
@@ -154,6 +170,7 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     };
 
     static void generateProfileStatic( ProfileJob &job );
+    bool replaceSourceInternal( QgsAbstractProfileSource *source, bool clearPreviousResults );
 
     std::vector< std::unique_ptr< QgsAbstractProfileGenerator > > mGenerators;
     QgsProfileRequest mRequest;
