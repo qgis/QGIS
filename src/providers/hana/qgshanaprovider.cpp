@@ -374,12 +374,6 @@ QgsHanaProvider::QgsHanaProvider(
     this->appendError( QgsErrorMessage( message, QStringLiteral( "SAP HANA" ) ) );
   };
 
-  if ( mSchemaName.isEmpty() || mTableName.isEmpty() )
-  {
-    appendError( tr( "Schema or table name cannot be empty" ) );
-    return;
-  }
-
   QgsHanaConnectionRef conn( mUri );
   if ( conn.isNull() )
   {
@@ -395,6 +389,12 @@ QgsHanaProvider::QgsHanaProvider(
   }
   else
   {
+    if ( mSchemaName.isEmpty() || mTableName.isEmpty() )
+    {
+      appendError( tr( "Schema or table name cannot be empty" ) );
+      return;
+    }
+
     mIsQuery = false;
     mQuerySource = QStringLiteral( "%1.%2" ).arg(
                      QgsHanaUtils::quotedIdentifier( mSchemaName ),

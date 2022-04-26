@@ -82,6 +82,21 @@ QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &uri, const 
 
 void QgsHanaProviderConnection::setCapabilities()
 {
+  mGeometryColumnCapabilities =
+  {
+    //GeometryColumnCapability::Curves, not fully supported yet
+    GeometryColumnCapability::Z,
+    GeometryColumnCapability::M,
+    GeometryColumnCapability::SinglePart
+  };
+  mSqlLayerDefinitionCapabilities =
+  {
+    Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
+    Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
+    Qgis::SqlLayerDefinitionCapability::GeometryColumn,
+    Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
+  };
+
   /*
    * Capability::DropSchema         | CREATE SCHEMA from SYSTEMPRIVILEGE
    * Capability::CreateSchema       | CREATE SCHEMA from SYSTEMPRIVILEGE
