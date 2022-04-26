@@ -398,7 +398,7 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
   }
 }
 
-void QgsVectorLayerProfileResults::updateFromGenerator( const QgsAbstractProfileGenerator *generator )
+void QgsVectorLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
   const QgsVectorLayerProfileGenerator *vlGenerator = qgis::down_cast<  const QgsVectorLayerProfileGenerator * >( generator );
 
@@ -480,11 +480,7 @@ bool QgsVectorLayerProfileGenerator::generateProfile()
 
   mResults = std::make_unique< QgsVectorLayerProfileResults >();
   mResults->mLayer = mLayer;
-
-  mResults->respectLayerSymbology = mRespectLayerSymbology;
-  mResults->profileLineSymbol.reset( mProfileLineSymbol->clone() );
-  mResults->profileFillSymbol.reset( mProfileFillSymbol->clone() );
-  mResults->profileMarkerSymbol.reset( mProfileMarkerSymbol->clone() );
+  mResults->copyPropertiesFromGenerator( this );
 
   mProfileCurveEngine.reset( new QgsGeos( mProfileCurve.get() ) );
   mProfileCurveEngine->prepareGeometry();

@@ -142,11 +142,11 @@ Returns the range of the retrieved elevation values
 Snaps a ``point`` to the generated elevation profile.
 %End
 
-    virtual void updateFromGenerator( const QgsAbstractProfileGenerator *generator );
+    virtual void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator );
 %Docstring
-Updates the results to match the properties from the specified ``generator``.
+Copies properties from specified ``generator`` to the results object.
 
-For instance, this method can be used to replace any stored properties relating to rendering
+For instance, this method can be used to copy any properties relating to rendering
 the gathered results to reflect the ``generator``'s current properties.
 
 The base class method does nothing.
@@ -192,7 +192,7 @@ The scenario will be:
 Returns a unique identifier representing the source of the profile.
 
 For generators associated with a map layer the source ID will match the layer's :py:func:`QgsMapLayer.id()`. Other (non-map-layer) sources
-will have a different unique ID with its own custom interpretation.
+will have a different unique ID with its own custom interpretation.gen
 %End
 
     virtual bool generateProfile() = 0;
