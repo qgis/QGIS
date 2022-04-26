@@ -26,21 +26,37 @@
 /**
  * \ingroup gui
  * \class QgsFormLabelFormatWidget
- * \brief A widget for customizing drag and drop form labels and tabs.
- * \since QGIS 2.26
+ * \brief A widget for customizing drag and drop form labels and tabs font and color.
+ * \since QGIS 3.26
  */
-class QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormLabelFormatWidget
+class GUI_EXPORT QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormLabelFormatWidget
 {
     Q_OBJECT
   public:
+
+    /**
+     * Creates a QgsFormLabelFormatWidget with given \a parent.
+     */
     explicit QgsFormLabelFormatWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Sets label \a color.
+     */
     void setColor( const QColor &color );
 
+    /**
+     * Sets label font.
+     */
     void setFont( const QFont &font );
 
+    /**
+     * Returns label color.
+     */
     QColor color() const;
 
+    /**
+     * Returns label font.
+     */
     QFont font() const;
 
 };
