@@ -502,7 +502,7 @@ set(QGIS_GUI_SRCS
   qgsfilewidget.cpp
   qgsexternalstoragefilewidget.cpp
   qgsfilterlineedit.cpp
-  qgsfindfilesbypatternwidget.cpp  
+  qgsfindfilesbypatternwidget.cpp
   qgsfloatingwidget.cpp
   qgsfocuskeeper.cpp
   qgsfocuswatcher.cpp
