@@ -64,7 +64,7 @@ QgsProfileSnapResult QgsAbstractProfileResults::snapPoint( const QgsProfilePoint
   return QgsProfileSnapResult();
 }
 
-void QgsAbstractProfileResults::updateFromGenerator( const QgsAbstractProfileGenerator * )
+void QgsAbstractProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator * )
 {
 
 }

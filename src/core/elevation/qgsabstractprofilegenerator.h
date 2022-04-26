@@ -167,14 +167,14 @@ class CORE_EXPORT QgsAbstractProfileResults
     virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 
     /**
-     * Updates the results to match the properties from the specified \a generator.
+     * Copies properties from specified \a generator to the results object.
      *
-     * For instance, this method can be used to replace any stored properties relating to rendering
+     * For instance, this method can be used to copy any properties relating to rendering
      * the gathered results to reflect the \a generator's current properties.
      *
      * The base class method does nothing.
      */
-    virtual void updateFromGenerator( const QgsAbstractProfileGenerator *generator );
+    virtual void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator );
 };
 
 /**
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsAbstractProfileGenerator
      * Returns a unique identifier representing the source of the profile.
      *
      * For generators associated with a map layer the source ID will match the layer's QgsMapLayer::id(). Other (non-map-layer) sources
-     * will have a different unique ID with its own custom interpretation.
+     * will have a different unique ID with its own custom interpretation.gen
      */
     virtual QString sourceId() const = 0;
 

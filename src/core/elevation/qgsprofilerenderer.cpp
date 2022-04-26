@@ -169,7 +169,7 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
       }
       else if ( job.results )
       {
-        job.results->updateFromGenerator( generator.get() );
+        job.results->copyPropertiesFromGenerator( generator.get() );
       }
       job.generator = generator.get();
       for ( auto it = mGenerators.begin(); it != mGenerators.end(); )

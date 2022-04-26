@@ -138,7 +138,7 @@ void QgsRasterLayerProfileResults::renderResults( QgsProfileRenderContext &conte
   lineSymbol->stopRender( context.renderContext() );
 }
 
-void QgsRasterLayerProfileResults::updateFromGenerator( const QgsAbstractProfileGenerator *generator )
+void QgsRasterLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
   const QgsRasterLayerProfileGenerator *rlGenerator = qgis::down_cast<  const QgsRasterLayerProfileGenerator * >( generator );
 
@@ -204,7 +204,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
     return false;
 
   mResults = std::make_unique< QgsRasterLayerProfileResults >();
-  mResults->lineSymbol.reset( mLineSymbol->clone() );
+  mResults->copyPropertiesFromGenerator( this );
 
   std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );
   curveEngine->prepareGeometry();

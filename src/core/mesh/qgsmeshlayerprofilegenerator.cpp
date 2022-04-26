@@ -135,7 +135,7 @@ QgsProfileSnapResult QgsMeshLayerProfileResults::snapPoint( const QgsProfilePoin
   return result;
 }
 
-void QgsMeshLayerProfileResults::updateFromGenerator( const QgsAbstractProfileGenerator *generator )
+void QgsMeshLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
   const QgsMeshLayerProfileGenerator *mlGenerator = qgis::down_cast<  const QgsMeshLayerProfileGenerator * >( generator );
 
@@ -192,7 +192,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile()
     return false;
 
   mResults = std::make_unique< QgsMeshLayerProfileResults >();
-  mResults->lineSymbol.reset( mLineSymbol->clone() );
+  mResults->copyPropertiesFromGenerator( this );
 
   // we don't currently have any method to determine line->mesh intersection points, so for now we just sample at about 100(?) points over the line
   const double curveLength = transformedCurve.length();

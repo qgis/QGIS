@@ -63,7 +63,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileResults
     QVector< QgsGeometry > asGeometries() const override;
     void renderResults( QgsProfileRenderContext &context ) override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
-    void updateFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
+    void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 };
 
 
