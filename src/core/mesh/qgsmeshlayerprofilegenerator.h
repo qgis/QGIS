@@ -54,7 +54,9 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileResults
     double minZ = std::numeric_limits< double >::max();
     double maxZ = std::numeric_limits< double >::lowest();
 
+    Qgis::ProfileSurfaceSymbology symbology = Qgis::ProfileSurfaceSymbology::Line;
     std::unique_ptr< QgsLineSymbol > lineSymbol;
+    std::unique_ptr< QgsFillSymbol > fillSymbol;
 
     QString type() const override;
     QMap< double, double > distanceToHeightMap() const override;
@@ -100,7 +102,9 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileGenera
 
     std::unique_ptr< QgsCurve > mProfileCurve;
 
+    Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
+    std::unique_ptr< QgsFillSymbol > mFillSymbol;
 
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;

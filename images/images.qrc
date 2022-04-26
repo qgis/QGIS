@@ -953,6 +953,8 @@
         <file>themes/default/mActionZoomInXAxis.svg</file>
         <file>themes/default/mActionCaptureCurveFromFeature.svg</file>
         <file>themes/default/mIconLayerTree.svg</file>
+        <file>themes/default/mIconSurfaceElevationFillBelow.svg</file>
+        <file>themes/default/mIconSurfaceElevationLine.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -112,18 +112,46 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
             }
 
             case QgsMapLayerType::RasterLayer:
-              if ( QgsLineSymbol *lineSymbol = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol() )
+            {
+              QgsRasterLayerElevationProperties *rlProps = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() );
+              switch ( rlProps->profileSymbology() )
               {
-                symbol.reset( lineSymbol->clone() );
+                case Qgis::ProfileSurfaceSymbology::Line:
+                  if ( QgsLineSymbol *lineSymbol = rlProps->profileLineSymbol() )
+                  {
+                    symbol.reset( lineSymbol->clone() );
+                  }
+                  break;
+                case Qgis::ProfileSurfaceSymbology::FillBelow:
+                  if ( QgsFillSymbol *fillSymbol = rlProps->profileFillSymbol() )
+                  {
+                    symbol.reset( fillSymbol->clone() );
+                  }
+                  break;
               }
               break;
+            }
 
             case QgsMapLayerType::MeshLayer:
-              if ( QgsLineSymbol *lineSymbol = qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol() )
+            {
+              QgsMeshLayerElevationProperties *mlProps = qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() );
+              switch ( mlProps->profileSymbology() )
               {
-                symbol.reset( lineSymbol->clone() );
+                case Qgis::ProfileSurfaceSymbology::Line:
+                  if ( QgsLineSymbol *lineSymbol = mlProps->profileLineSymbol() )
+                  {
+                    symbol.reset( lineSymbol->clone() );
+                  }
+                  break;
+                case Qgis::ProfileSurfaceSymbology::FillBelow:
+                  if ( QgsFillSymbol *fillSymbol = mlProps->profileFillSymbol() )
+                  {
+                    symbol.reset( fillSymbol->clone() );
+                  }
+                  break;
               }
               break;
+            }
 
             case QgsMapLayerType::PluginLayer:
             case QgsMapLayerType::VectorTileLayer:
