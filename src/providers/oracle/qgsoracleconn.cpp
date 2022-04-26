@@ -227,32 +227,6 @@ void QgsOracleConn::unref()
   delete this;
 }
 
-bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList &params )
-{
-  QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( sql ), 4 );
-
-  bool res = qry.prepare( sql );
-  if ( res )
-  {
-    for ( const auto &param : params )
-    {
-      QgsDebugMsgLevel( QStringLiteral( " ARG: %1 [%2]" ).arg( param.toString(), param.typeName() ), 4 );
-      qry.addBindValue( param );
-    }
-
-    res = qry.exec();
-  }
-
-  if ( !res )
-  {
-    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
-                 .arg( qry.lastQuery(),
-                       qry.lastError().text() ) );
-  }
-
-  return res;
-}
-
 bool QgsOracleConn::execLogged( QSqlQuery &qry, const QString &sql, const QVariantList &params, const QString &originatorClass, const QString &queryOrigin )
 {
   QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( sql ), 4 );
@@ -460,54 +434,16 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
   return v.prepend( '\'' ).append( '\'' );
 }
 
-bool QgsOracleConn::exec( const QString &query, bool logError, QString *errorMessage )
-{
-  QMutexLocker locker( &mLock );
-  QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
-
-  QSqlQuery qry( mDatabase );
-
-  if ( !exec( qry, query, QVariantList() ) )
-  {
-    QString error = qry.lastError().text();
-    if ( logError )
-    {
-      const QString errorMsg { tr( "Connection error: %1 returned %2" )
-                               .arg( query, error ) };
-      QgsMessageLog::logMessage( errorMsg,
-                                 tr( "Oracle" ) );
-    }
-    else
-    {
-      const QString errorMsg { QStringLiteral( "Connection error: %1 returned %2" )
-                               .arg( query, error ) };
-      QgsDebugMsg( errorMsg );
-    }
-    if ( errorMessage )
-      *errorMessage = error;
-    return false;
-  }
-  return true;
-}
-
 bool QgsOracleConn::execLogged( const QString &query, bool logError, QString *errorMessage, const QString &originatorClass, const QString &queryOrigin )
 {
 
-  QMutexLocker locker( &mLock );
-  QgsDatabaseQueryLogWrapper logWrapper { query, mConnInfo, QStringLiteral( "oracle" ), originatorClass, queryOrigin };
-
-  QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
-
   QSqlQuery qry( mDatabase );
 
-  const bool res { !exec( qry, query, QVariantList() ) };
-
-  logWrapper.setQuery( qry.lastQuery() );
+  const bool res { !execLogged( qry, query, QVariantList(), originatorClass, queryOrigin ) };
 
   if ( ! res )
   {
     const QString error = qry.lastError().text();
-    logWrapper.setError( error );
     if ( logError )
     {
       const QString errorMsg { tr( "Connection error: %1 returned %2" )
@@ -524,17 +460,6 @@ bool QgsOracleConn::execLogged( const QString &query, bool logError, QString *er
     if ( errorMessage )
       *errorMessage = error;
     return false;
-  }
-  else
-  {
-    if ( qry.isSelect() )
-    {
-      logWrapper.setFetchedRows( qry.size() );
-    }
-    else
-    {
-      logWrapper.setFetchedRows( qry.numRowsAffected() );
-    }
   }
 
   return true;

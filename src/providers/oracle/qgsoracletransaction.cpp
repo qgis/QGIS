@@ -74,12 +74,8 @@ bool QgsOracleTransaction::executeSql( const QString &sql, QString &errorMsg, bo
 
   QgsDebugMsg( QStringLiteral( "Transaction sql: %1" ).arg( sql ) );
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, mConnString, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
-  const bool res = mConn->exec( sql, true, &errorMsg );
-  if ( ! errorMsg.isEmpty() )
-  {
-    logWrapper.setError( errorMsg );
-  }
+  const bool res = mConn->execLogged( sql, true, &errorMsg );
+
   if ( !res )
   {
     if ( isDirty )
