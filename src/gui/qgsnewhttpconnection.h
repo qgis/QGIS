@@ -72,7 +72,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      */
     QgsNewHttpConnection( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                           QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
-                          const QString &serviceName = "WMS",
+                          const QString &serviceName SIP_PYARGRENAME( settingsKey ) = "WMS", // TODO QGIS 4 remove arg rename
                           const QString &connectionName = QString(),
                           QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(),
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
