@@ -26,6 +26,7 @@
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsvectorlayer.h"
+#include "qgsogrdbconnection.h"
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
@@ -59,6 +60,9 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths );
 
   addSettingsEntry( &QgsMapRendererJob::settingsLogCanvasRefreshEvent );
+
+  addSettingsEntry( &QgsOgrDbConnection::settingsOgrConnectionSelected );
+  addSettingsEntry( &QgsOgrDbConnection::settingsOgrConnectionPath );
 
   addSettingsEntry( &settingsDigitizingStreamTolerance );
   addSettingsEntry( &settingsDigitizingLineWidth );
