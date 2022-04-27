@@ -27,15 +27,21 @@
 
 #include "qgspointcloudrequest.h"
 
+#define SIP_NO_FILE
+
 class QgsPointCloudIndex;
 class QgsPointCloudBlock;
 class QgsPointCloudAttribute;
 class IndexedPointCloudNode;
 
-#include "qgstaskmanager.h"
-
-class QgsPointCloudStatsCalculationTask;
-
+/**
+ * \ingroup core
+ * \class QgsPointCloudStatsCalculator
+ *
+ * \brief Class used to calculate statistics of a point cloud dataset.
+ *
+ * \since QGIS 3.26
+ */
 class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
 {
     Q_OBJECT
@@ -93,20 +99,5 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
     QgsPointCloudRequest mRequest;
 };
 
-class CORE_EXPORT QgsPointCloudStatsCalculationTask : public QgsTask
-{
-    Q_OBJECT
-
-  public:
-    QgsPointCloudStatsCalculationTask( QgsPointCloudIndex *index, const QVector<QgsPointCloudAttribute> &attributes, const QVector<IndexedPointCloudNode> &nodes );
-
-    bool run() override;
-
-    QgsPointCloudIndex *mIndex = nullptr;
-    QVector<IndexedPointCloudNode> mNodes;
-    QgsPointCloudRequest mAttributesRequest;
-    QFuture<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>> mFuture;
-    QFutureWatcher<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>> mFutureWatcher;
-};
 
 #endif // QGSPOINTCLOUDSTATSCALCULATOR_H

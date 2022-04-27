@@ -155,18 +155,18 @@ are included in the data source's metadata.
 
     void generateStatistics();
 %Docstring
-Triggers generation of the point cloud index
+Triggers generation of the statistics of the point cloud dataset
+This will start the task of calculating the statistics of the point cloud in a background thread
+Once the task has finished, the signal statisticsGenerationStateChanged will be emitted
+If a statistics generation task is already running no new task will be started.
+If statistics are already calculated, another set of points will be used to enhance the quality of statistics
 
 emits :py:func:`~QgsPointCloudDataProvider.statisticsGenerationStateChanged`
-
-\sa :py:func:`~QgsPointCloudDataProvider.statsCalculator`
 %End
 
     virtual PointCloudStatisticsGenerationState statisticsState() const;
 %Docstring
 Gets the current statistics generation state
-
-.. seealso:: :py:func:`statsCalculator`
 
 .. versionadded:: 3.26
 %End
@@ -194,7 +194,7 @@ Only providers which report the CreateRenderer capability will return a 2D rende
 providers will return ``None``.
 %End
 
-    virtual bool containsStatisticsMetadata() const;
+    virtual bool hasStatisticsMetadata() const;
 %Docstring
 Returns whether the dataset contains statistics metadata
 
@@ -272,14 +272,6 @@ in the metadata, and even for sources with statistical metadata only some ``stat
 
     virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = false );
 
-
-    QgsPointCloudStatsCalculator *statsCalculator() const;
-%Docstring
-Returns the statistics calculator object for the data provider
-The returned object can be used to increase the number of samples used in the statistcs calculation
-
-.. versionadded:: 3.26
-%End
 
     static QMap< int, QString > lasClassificationCodes();
 %Docstring

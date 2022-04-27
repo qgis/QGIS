@@ -73,16 +73,6 @@ QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
   return mIndex->attributes();
 }
 
-QVariantList QgsPdalProvider::metadataClasses( const QString &attribute ) const
-{
-  return mIndex->metadataClasses( attribute );
-}
-
-QVariant QgsPdalProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
-{
-  return mIndex->metadataClassStatistic( attribute, value, statistic );
-}
-
 static QString _outdir( const QString &filename )
 {
   const QFileInfo fi( filename );
@@ -154,7 +144,7 @@ void QgsPdalProvider::onGenerateIndexFinished()
   }
   if ( !sIndexingQueue.empty() )
     sIndexingQueue.takeFirst()->generateIndex();
-  if ( !containsStatisticsMetadata() )
+  if ( !hasStatisticsMetadata() )
   {
     generateStatistics();
   }

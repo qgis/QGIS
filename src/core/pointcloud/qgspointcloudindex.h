@@ -193,7 +193,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns the number of points in the point cloud
     virtual qint64 pointCount() const = 0;
     //! Returns whether the dataset contains metadata of statistics
-    virtual bool containsStatisticsMetadata() const = 0;
+    virtual bool hasStatisticsMetadata() const = 0;
     //! Returns the statistic \a statistic of \a attribute
     virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
     //! Returns the classes of \a attribute

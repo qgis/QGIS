@@ -347,7 +347,7 @@ qint64 QgsEptPointCloudIndex::pointCount() const
   return mPointCount;
 }
 
-bool QgsEptPointCloudIndex::containsStatisticsMetadata() const
+bool QgsEptPointCloudIndex::hasStatisticsMetadata() const
 {
   return !mMetadataStats.isEmpty();
 }

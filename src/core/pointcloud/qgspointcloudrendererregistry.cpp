@@ -94,7 +94,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   }
 
   // When there are no statistics, we default to using extent renderer
-  if ( !provider->containsStatisticsMetadata() && provider->statisticsState() != QgsPointCloudDataProvider::Calculated )
+  if ( !provider->hasStatisticsMetadata() && provider->statisticsState() != QgsPointCloudDataProvider::Calculated )
     return new QgsPointCloudExtentRenderer();
 
   const QgsPointCloudAttributeCollection attributes = provider->attributes();

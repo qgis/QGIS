@@ -97,16 +97,6 @@ qint64 QgsCopcProvider::pointCount() const
   return mIndex->pointCount();
 }
 
-QVariantList QgsCopcProvider::metadataClasses( const QString &attribute ) const
-{
-  return mIndex->metadataClasses( attribute );
-}
-
-QVariant QgsCopcProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
-{
-  return mIndex->metadataClassStatistic( attribute, value, statistic );
-}
-
 void QgsCopcProvider::loadIndex( )
 {
   // Index already loaded -> no need to load

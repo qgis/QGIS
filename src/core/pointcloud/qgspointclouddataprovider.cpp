@@ -58,9 +58,16 @@ QgsGeometry QgsPointCloudDataProvider::polygonBounds() const
 void QgsPointCloudDataProvider::generateStatistics()
 {
   QgsPointCloudIndex *index = this->index();
-  mStatisticsGenerationState = PointCloudStatisticsGenerationState::Calculating;
-  mStatsCalculator.reset( new QgsPointCloudStatsCalculator( index ) );
+  if ( !mStatsCalculator.get() )
+  {
+    mStatsCalculator.reset( new QgsPointCloudStatsCalculator( index ) );
+  }
+  if ( mStatisticsGenerationState == PointCloudStatisticsGenerationState::Calculating )
+  {
+    return;
+  }
   QVector<QgsPointCloudAttribute> attributes = index->attributes().attributes();
+  // We skip X, Y & Z attributes because these are always available in the point cloud index
   for ( int i = 0; i < attributes.size(); ++i )
   {
     QString name = attributes.at( i ).name();
@@ -77,9 +84,11 @@ void QgsPointCloudDataProvider::generateStatistics()
   } );
 
   QgsDebugMsgLevel( "Statistics Calculation Task Created", 2 );
+  mStatisticsGenerationState = PointCloudStatisticsGenerationState::Calculating;
   emit statisticsGenerationStateChanged( PointCloudStatisticsGenerationState::Calculating );
-  mStatsCalculator->calculateStats( attributes, 10000000 );
+  mStatsCalculator->calculateStats( attributes, 2000000 );
 }
+
 
 QVariantMap QgsPointCloudDataProvider::originalMetadata() const
 {
@@ -197,9 +206,9 @@ QMap<int, QString> QgsPointCloudDataProvider::translatedDataFormatIds()
   return sCodes;
 }
 
-bool QgsPointCloudDataProvider::containsStatisticsMetadata() const
+bool QgsPointCloudDataProvider::hasStatisticsMetadata() const
 {
-  return index() && index()->containsStatisticsMetadata();
+  return index() && index()->hasStatisticsMetadata();
 }
 
 QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
@@ -213,11 +222,11 @@ QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute,
     return QVariant();
   }
 
-  if ( containsStatisticsMetadata() || mStatisticsGenerationState != PointCloudStatisticsGenerationState::Calculated )
+  if ( hasStatisticsMetadata() || mStatisticsGenerationState != PointCloudStatisticsGenerationState::Calculated )
   {
     return pcIndex->metadataStatistic( attribute, statistic );
   }
-  QgsPointCloudStatsCalculator *calculator = statsCalculator();
+  QgsPointCloudStatsCalculator *calculator = mStatsCalculator.get();
   QgsPointCloudStatsCalculator::AttributeStatistics stats = calculator->statisticsOf( attribute );
   switch ( statistic )
   {
@@ -249,14 +258,20 @@ QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute,
   return QVariant();
 }
 
-QVariantList QgsPointCloudDataProvider::metadataClasses( const QString & ) const
+QVariantList QgsPointCloudDataProvider::metadataClasses( const QString &attribute ) const
 {
-  return QVariantList();
+  QgsPointCloudIndex *pcIndex = index();
+  if ( !pcIndex )
+    return QVariantList();
+  return pcIndex->metadataClasses( attribute );
 }
 
-QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &, const QVariant &, QgsStatisticalSummary::Statistic ) const
+QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
 {
-  return QVariant();
+  QgsPointCloudIndex *pcIndex = index();
+  if ( !pcIndex )
+    return QVariant();
+  return pcIndex->metadataClassStatistic( attribute, value, statistic );
 }
 
 struct MapIndexedPointCloudNode
@@ -393,7 +408,3 @@ QString QgsPointCloudDataProvider::subsetString() const
   return mSubsetString;
 }
 
-QgsPointCloudStatsCalculator *QgsPointCloudDataProvider::statsCalculator() const
-{
-  return mStatsCalculator.get();
-}

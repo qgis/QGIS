@@ -93,23 +93,13 @@ qint64 QgsEptProvider::pointCount() const
   return mIndex->pointCount();
 }
 
-QVariantList QgsEptProvider::metadataClasses( const QString &attribute ) const
-{
-  return mIndex->metadataClasses( attribute );
-}
-
-QVariant QgsEptProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
-{
-  return mIndex->metadataClassStatistic( attribute, value, statistic );
-}
-
 void QgsEptProvider::loadIndex( )
 {
   if ( mIndex->isValid() )
     return;
 
   mIndex->load( dataSourceUri() );
-  if ( !containsStatisticsMetadata() )
+  if ( !hasStatisticsMetadata() )
   {
     generateStatistics();
   }

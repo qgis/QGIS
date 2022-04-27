@@ -5873,6 +5873,15 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
               if ( renderer3D )
                 layerPointer->setRenderer3D( renderer3D.release() );
             } );
+            connect( pcLayer->dataProvider(), &QgsPointCloudDataProvider::statisticsGenerationStateChanged, this, [layerPointer]( QgsPointCloudDataProvider::PointCloudStatisticsGenerationState state )
+            {
+              if ( !layerPointer || state != QgsPointCloudDataProvider::Calculated )
+                return;
+
+              std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DUtils::convert2DPointCloudRendererTo3D( layerPointer->renderer() );
+              if ( renderer3D )
+                layerPointer->setRenderer3D( renderer3D.release() );
+            } );
           }
         }
       }

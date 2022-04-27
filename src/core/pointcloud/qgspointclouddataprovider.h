@@ -201,17 +201,18 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     virtual QgsGeometry polygonBounds() const;
 
     /**
-     * Triggers generation of the point cloud index
+     * Triggers generation of the statistics of the point cloud dataset
+     * This will start the task of calculating the statistics of the point cloud in a background thread
+     * Once the task has finished, the signal statisticsGenerationStateChanged will be emitted
+     * If a statistics generation task is already running no new task will be started.
+     * If statistics are already calculated, another set of points will be used to enhance the quality of statistics
      *
      * emits statisticsGenerationStateChanged()
-     *
-     * \sa statsCalculator()
      */
     void generateStatistics();
 
     /**
      * Gets the current statistics generation state
-     * \see statsCalculator()
      *
      * \since QGIS 3.26
      */
@@ -245,7 +246,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \since QGIS 3.26
      */
-    virtual bool containsStatisticsMetadata() const;
+    virtual bool hasStatisticsMetadata() const;
 
 #ifndef SIP_RUN
 
@@ -347,14 +348,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     bool supportsSubsetString() const override { return true; }
     QString subsetString() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
-
-    /**
-     * Returns the statistics calculator object for the data provider
-     * The returned object can be used to increase the number of samples used in the statistcs calculation
-     *
-     * \since QGIS 3.26
-     */
-    QgsPointCloudStatsCalculator *statsCalculator() const;
 
     /**
      * Returns the map of LAS classification code to untranslated string value, corresponding to the ASPRS Standard
