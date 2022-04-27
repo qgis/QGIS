@@ -44,12 +44,15 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgselevationprofilelayertreeview.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsgui.h"
+#include "qgsshortcutsmanager.h"
 
 #include <QToolBar>
 #include <QProgressBar>
 #include <QTimer>
 #include <QPrinter>
 #include <QSplitter>
+#include <QShortcut>
 
 QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   : QWidget( nullptr )
@@ -125,6 +128,26 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
     }
   } );
   toolBar->addAction( mCaptureCurveFromFeatureAction );
+
+  mNudgeLeftAction = new QAction( tr( "Nudge Left" ), this );
+  mNudgeLeftAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionArrowLeft.svg" ) ) );
+  connect( mNudgeLeftAction, &QAction::triggered, this, &QgsElevationProfileWidget::nudgeLeft );
+  mNudgeLeftAction->setEnabled( false );
+  toolBar->addAction( mNudgeLeftAction );
+
+  mNudgeRightAction = new QAction( tr( "Nudge Right" ), this );
+  mNudgeRightAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionArrowRight.svg" ) ) );
+  connect( mNudgeRightAction, &QAction::triggered, this, &QgsElevationProfileWidget::nudgeRight );
+  mNudgeRightAction->setEnabled( false );
+  toolBar->addAction( mNudgeRightAction );
+
+  auto createShortcuts = [ = ]( const QString & objectName, void ( QgsElevationProfileWidget::* slot )() )
+  {
+    if ( QShortcut *sc = QgsGui::shortcutsManager()->shortcutByName( objectName ) )
+      connect( sc, &QShortcut::activated, this, slot );
+  };
+  createShortcuts( QStringLiteral( "mProfileToolNudgeLeft" ), &QgsElevationProfileWidget::nudgeLeft );
+  createShortcuts( QStringLiteral( "mProfileToolNudgeRight" ), &QgsElevationProfileWidget::nudgeRight );
 
   QAction *clearAction = new QAction( tr( "Clear" ), this );
   clearAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconClearConsole.svg" ) ) );
@@ -367,6 +390,9 @@ void QgsElevationProfileWidget::onTotalPendingJobsCountChanged( int count )
 
 void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve )
 {
+  mNudgeLeftAction->setEnabled( !curve.isEmpty() );
+  mNudgeRightAction->setEnabled( !curve.isEmpty() );
+
   mProfileCurve = curve;
   createOrUpdateRubberBands();
   scheduleUpdate();
@@ -427,6 +453,8 @@ void QgsElevationProfileWidget::clear()
   if ( mMapPointRubberBand )
     mMapPointRubberBand->hide();
   mCanvas->clear();
+  mNudgeLeftAction->setEnabled( false );
+  mNudgeRightAction->setEnabled( false );
 }
 
 void QgsElevationProfileWidget::exportAsPdf()
@@ -550,6 +578,27 @@ void QgsElevationProfileWidget::exportAsImage()
 
   QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the profile to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileWithExtension.first ).toString(), QDir::toNativeSeparators( fileWithExtension.first ) ) );
 
+}
+
+void QgsElevationProfileWidget::nudgeLeft()
+{
+  nudgeCurve( Qgis::BufferSide::Left );
+}
+
+void QgsElevationProfileWidget::nudgeRight()
+{
+  nudgeCurve( Qgis::BufferSide::Right );
+}
+
+void QgsElevationProfileWidget::nudgeCurve( Qgis::BufferSide side )
+{
+  // for now we match the nudge distance to the tolerance distance, so that nudging results in
+  // a completely different set of point features in the curve. We may want to revisit and expose
+  // this as a user configurable setting at some point...
+  const double distance = mSettingsAction->toleranceSpinBox()->value() * 2;
+
+  const QgsGeometry nudgedCurve = mProfileCurve.offsetCurve( side == Qgis::BufferSide::Left ? distance : -distance, 8, Qgis::JoinStyle::Miter, 2 );
+  setProfileCurve( nudgedCurve );
 }
 
 void QgsElevationProfileWidget::createOrUpdateRubberBands( )
