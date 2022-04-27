@@ -60,14 +60,14 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      *
      * \since QGIS 3.26
      */
-    virtual QgsMapCanvas *mapCanvas() = 0;
+    virtual QgsMapCanvas *mapCanvas() {return mMapCanvas; }
 
     /**
      * Sets the dialog map canvas
      * \see mapCanvas()
      * \since QGIS 3.26
      */
-    virtual void setMapCanvas( QgsMapCanvas *mapCanvas ) = 0;
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas ) { mMapCanvas = mapCanvas; }
 
   public slots:
 
@@ -203,6 +203,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     QPushButton *mAddButton  = nullptr;
     QgsProviderRegistry::WidgetMode mWidgetMode;
     QgsBrowserModel *mBrowserModel = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
 };
 

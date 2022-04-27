@@ -77,22 +77,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     //! Connection info (database, host, user, password)
     QString connectionInfo();
 
-    /**
-     * Sets the dialog map canvas
-     * \see mapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
-
-    /**
-     * Returns the dialog map canvas
-     * \see setMapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    QgsMapCanvas *mapCanvas() override;
-
     void reset() override;
 
   signals:
@@ -160,8 +144,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsMssqlTableModel *mTableModel = nullptr;
-
-    QgsMapCanvas *mMapCanvas = nullptr;
 
     void finishList();
 

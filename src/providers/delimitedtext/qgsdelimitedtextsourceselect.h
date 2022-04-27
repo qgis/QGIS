@@ -95,22 +95,6 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
   public:
     QgsDelimitedTextSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    /**
-     * Sets the dialog map canvas
-     * \see mapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
-
-    /**
-     * Returns the dialog map canvas
-     * \see setMapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    QgsMapCanvas *mapCanvas() override;
-
   private:
     bool loadDelimitedFileDefinition();
     void updateFieldLists();
@@ -135,7 +119,6 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     QPointer<QgsDelimitedTextFileScanTask> mScanTask;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
-    QgsMapCanvas *mMapCanvas = nullptr;
     void showHelp();
     void updateCrsWidgetVisibility();
     QString url( bool skipOverriddenTypes = false );

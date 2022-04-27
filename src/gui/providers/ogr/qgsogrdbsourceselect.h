@@ -70,21 +70,6 @@ class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
     //! Open file selector to add new connection
     static bool newConnection( QWidget *parent );
 
-    /**
-     * Sets the dialog map canvas
-     * \see mapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
-
-    /**
-     * Returns the dialog map canvas
-     * \see setMapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    QgsMapCanvas *mapCanvas() override;
 
   public slots:
 
@@ -122,7 +107,6 @@ class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
     QString mOgrDriverName;
     QString mName;
     QString mExtension;
-    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 ///@endcond

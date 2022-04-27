@@ -101,16 +101,6 @@ void QgsVirtualLayerSourceSelect::refresh()
   updateLayersList();
 }
 
-void QgsVirtualLayerSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
-{
-  mMapCanvas = mapCanvas;
-}
-
-QgsMapCanvas *QgsVirtualLayerSourceSelect::mapCanvas()
-{
-  return mMapCanvas;
-}
-
 void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
 {
   if ( idx == -1 )

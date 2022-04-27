@@ -78,17 +78,6 @@ QgsOgrDbSourceSelect::~QgsOgrDbSourceSelect()
   settings.setValue( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName( ) ), mHoldDialogOpen->isChecked(), QgsSettings::Section::Providers );
 }
 
-void QgsOgrDbSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
-{
-  mMapCanvas = mapCanvas;
-
-}
-
-QgsMapCanvas *QgsOgrDbSourceSelect::mapCanvas()
-{
-  return mMapCanvas;
-}
-
 
 // Remember which database is selected
 void QgsOgrDbSourceSelect::cmbConnections_activated( int )
