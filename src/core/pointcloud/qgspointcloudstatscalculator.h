@@ -86,6 +86,7 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
      */
     AttributeStatistics statisticsOf( const QString &attribute );
   signals:
+    //! Emitted when the statistics have been calculated
     void statisticsCalculated();
   private slots:
     void statsCalculationFinished();
