@@ -1482,3 +1482,12 @@ Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be 
 Qgis.ProfileSurfaceSymbology.__doc__ = 'Surface symbology type for elevation profile plots.\n\n.. versionadded:: 3.26\n\n' + '* ``Line``: ' + Qgis.ProfileSurfaceSymbology.Line.__doc__ + '\n' + '* ``FillBelow``: ' + Qgis.ProfileSurfaceSymbology.FillBelow.__doc__
 # --
 Qgis.ProfileSurfaceSymbology.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProfileGeneratorFlag.RespectsMaximumErrorMapUnit.__doc__ = "Generated profile respects the QgsProfileGenerationContext.maximumErrorMapUnits() property."
+Qgis.ProfileGeneratorFlag.RespectsDistanceRange.__doc__ = "Generated profile respects the QgsProfileGenerationContext.distanceRange() property."
+Qgis.ProfileGeneratorFlag.RespectsElevationRange.__doc__ = "Generated profile respects the QgsProfileGenerationContext.elevationRange() property."
+Qgis.ProfileGeneratorFlag.__doc__ = 'Flags that control the way the :py:class:`QgsAbstractProfileGenerator` operate.\n\n.. versionadded:: 3.26\n\n' + '* ``RespectsMaximumErrorMapUnit``: ' + Qgis.ProfileGeneratorFlag.RespectsMaximumErrorMapUnit.__doc__ + '\n' + '* ``RespectsDistanceRange``: ' + Qgis.ProfileGeneratorFlag.RespectsDistanceRange.__doc__ + '\n' + '* ``RespectsElevationRange``: ' + Qgis.ProfileGeneratorFlag.RespectsElevationRange.__doc__
+# --
+Qgis.ProfileGeneratorFlag.baseClass = Qgis
+Qgis.ProfileGeneratorFlags.baseClass = Qgis
+ProfileGeneratorFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module

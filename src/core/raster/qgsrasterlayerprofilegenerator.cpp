@@ -70,6 +70,11 @@ QString QgsRasterLayerProfileGenerator::sourceId() const
   return mId;
 }
 
+Qgis::ProfileGeneratorFlags QgsRasterLayerProfileGenerator::flags() const
+{
+  return Qgis::ProfileGeneratorFlag::RespectsDistanceRange | Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit;
+}
+
 QgsRasterLayerProfileGenerator::~QgsRasterLayerProfileGenerator() = default;
 
 bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGenerationContext &context )

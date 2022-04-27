@@ -84,3 +84,8 @@ bool QgsProfileGenerationContext::operator!=( const QgsProfileGenerationContext 
 {
   return !( *this == other );
 }
+
+Qgis::ProfileGeneratorFlags QgsAbstractProfileGenerator::flags() const
+{
+  return Qgis::ProfileGeneratorFlags();
+}
