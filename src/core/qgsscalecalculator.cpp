@@ -30,7 +30,7 @@ void QgsScaleCalculator::setDpi( double dpi )
 {
   mDpi = dpi;
 }
-double QgsScaleCalculator::dpi()
+double QgsScaleCalculator::dpi() const
 {
   return mDpi;
 }

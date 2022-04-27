@@ -2927,9 +2927,9 @@ void QgsOgrLayer::SetSpatialFilter( OGRGeometryH hGeometry )
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QMutex *&mutex )
+GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QMutex *&mutex ) const
 #else
-GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QRecursiveMutex *&mutex )
+GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QRecursiveMutex *&mutex ) const
 #endif
 {
   mutex = &( ds->mutex );
@@ -2937,9 +2937,9 @@ GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QRecursiveMutex *&mutex )
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-OGRLayerH QgsOgrLayer::getHandleAndMutex( QMutex *&mutex )
+OGRLayerH QgsOgrLayer::getHandleAndMutex( QMutex *&mutex ) const
 #else
-OGRLayerH QgsOgrLayer::getHandleAndMutex( QRecursiveMutex *&mutex )
+OGRLayerH QgsOgrLayer::getHandleAndMutex( QRecursiveMutex *&mutex ) const
 #endif
 {
   mutex = &( ds->mutex );
@@ -3207,7 +3207,7 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
   return false;
 }
 
-void QgsOgrLayerReleaser::operator()( QgsOgrLayer *layer )
+void QgsOgrLayerReleaser::operator()( QgsOgrLayer *layer ) const
 {
   QgsOgrProviderUtils::release( layer );
 }

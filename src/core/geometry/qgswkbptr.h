@@ -105,7 +105,7 @@ class CORE_EXPORT QgsWkbPtr
     //! Append data from a byte array
     inline QgsWkbPtr &operator<<( const QByteArray &data ) { write( data ); return *this; } SIP_SKIP
 
-    inline void operator+=( int n ) { verifyBound( n ); mP += n; } SIP_SKIP
+    inline void operator+=( int n ) const { verifyBound( n ); mP += n; } SIP_SKIP
 
     inline operator unsigned char *() const { return mP; } SIP_SKIP
 
@@ -183,8 +183,8 @@ class CORE_EXPORT QgsConstWkbPtr
     //! Read a point array
     const QgsConstWkbPtr &operator>>( QPolygonF &points ) const; SIP_SKIP
 
-    inline void operator+=( int n ) { verifyBound( n ); mP += n; } SIP_SKIP
-    inline void operator-=( int n ) { mP -= n; } SIP_SKIP
+    inline void operator+=( int n ) const { verifyBound( n ); mP += n; } SIP_SKIP
+    inline void operator-=( int n ) const { mP -= n; } SIP_SKIP
 
     inline operator const unsigned char *() const { return mP; } SIP_SKIP
 

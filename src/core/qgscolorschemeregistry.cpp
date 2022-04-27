@@ -85,7 +85,7 @@ void QgsColorSchemeRegistry::addColorScheme( QgsColorScheme *scheme )
   mColorSchemeList.append( scheme );
 }
 
-QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes() const
+QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes() const const
 {
   QList< QgsColorScheme * > allSchemes;
   QList<QgsColorScheme *>::const_iterator schemeIt;

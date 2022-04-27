@@ -571,7 +571,7 @@ class CORE_EXPORT QgsRasterInterface
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
                          int stats = QgsRasterBandStats::All,
                          const QgsRectangle &boundingBox = QgsRectangle(),
-                         int binCount = 0 );
+                         int binCount = 0 ) const;
 
   private:
 #ifdef SIP_RUN
@@ -583,5 +583,3 @@ class CORE_EXPORT QgsRasterInterface
 };
 
 #endif
-
-

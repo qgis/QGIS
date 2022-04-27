@@ -351,7 +351,7 @@ class CORE_EXPORT QgsSymbol
      *
      * \see color()
      */
-    void setColor( const QColor &color );
+    void setColor( const QColor &color ) const;
 
     /**
      * Returns the symbol's color.
@@ -464,7 +464,7 @@ class CORE_EXPORT QgsSymbol
      * \param unit output units
      * \see outputUnit()
      */
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) const;
 
     /**
      * Returns the map unit scale for the symbol.
@@ -485,7 +485,7 @@ class CORE_EXPORT QgsSymbol
      *
      * \see mapUnitScale()
      */
-    void setMapUnitScale( const QgsMapUnitScale &scale );
+    void setMapUnitScale( const QgsMapUnitScale &scale ) const;
 
     /**
      * Returns the opacity for the symbol.

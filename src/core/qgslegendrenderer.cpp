@@ -250,7 +250,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext &context )
   return size;
 }
 
-void QgsLegendRenderer::widthAndOffsetForTitleText( const Qt::AlignmentFlag halignment, const double legendWidth, double &textBoxWidth, double &textBoxLeft )
+void QgsLegendRenderer::widthAndOffsetForTitleText( const Qt::AlignmentFlag halignment, const double legendWidth, double &textBoxWidth, double &textBoxLeft ) const
 {
   switch ( halignment )
   {

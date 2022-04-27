@@ -55,7 +55,7 @@ struct QgsOracleLayerProperty
 
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
-  bool operator==( const QgsOracleLayerProperty &other )
+  bool operator==( const QgsOracleLayerProperty &other ) const
   {
     return types == other.types && srids == other.srids && ownerName == other.ownerName &&
            tableName == other.tableName && geometryColName == other.geometryColName &&

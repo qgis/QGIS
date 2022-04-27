@@ -52,25 +52,25 @@ namespace geos
      * Destroys the GEOS geometry \a geom, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSGeometry *geom );
+    void CORE_EXPORT operator()( GEOSGeometry *geom ) const;
 
     /**
      * Destroys the GEOS prepared geometry \a geom, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( const GEOSPreparedGeometry *geom );
+    void CORE_EXPORT operator()( const GEOSPreparedGeometry *geom ) const;
 
     /**
      * Destroys the GEOS buffer params \a params, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSBufferParams *params );
+    void CORE_EXPORT operator()( GEOSBufferParams *params ) const;
 
     /**
      * Destroys the GEOS coordinate sequence \a sequence, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSCoordSequence *sequence );
+    void CORE_EXPORT operator()( GEOSCoordSequence *sequence ) const;
   };
 
   /**

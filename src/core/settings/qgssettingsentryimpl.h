@@ -148,7 +148,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
     /**
      * Returns the string minimum length.
      */
-    int minLength();
+    int minLength() const;
 
     /**
      * Set the string maximum length.
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
     /**
      * Returns the string maximum length. By -1 there is no limitation.
      */
-    int maxLength();
+    int maxLength() const;
 
   private:
     bool checkValue( const QString &value ) const override SIP_FORCE;
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
     /**
      * Returns the minimum value.
      */
-    qlonglong minValue();
+    qlonglong minValue() const;
 
     /**
      * Set the maximum value.
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
     /**
      * Returns the maximum value.
      */
-    qlonglong maxValue();
+    qlonglong maxValue() const;
 
   private:
     bool checkValue( qlonglong value ) const override SIP_FORCE;

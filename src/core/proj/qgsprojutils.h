@@ -131,7 +131,7 @@ class CORE_EXPORT QgsProjUtils
       /**
        * Destroys an PJ \a object, using the correct proj calls.
        */
-      void CORE_EXPORT operator()( PJ *object );
+      void CORE_EXPORT operator()( PJ *object ) const;
 
     };
 

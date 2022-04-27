@@ -327,13 +327,13 @@ namespace pal
        * Returns the minimum number of iterations used for POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN.
        * \see getMaxIt()
        */
-      int getMinIt();
+      int getMinIt() const;
 
       /**
        * Returns the maximum number of iterations allowed for POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN.
        * \see getMinIt()
        */
-      int getMaxIt();
+      int getMaxIt() const;
 
   };
 

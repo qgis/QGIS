@@ -75,7 +75,7 @@ void QgsTerrainDownloader::adjustExtentAndResolution( double mupp, const QgsRect
 }
 
 
-double QgsTerrainDownloader::findBestTileResolution( double requestedMupp )
+double QgsTerrainDownloader::findBestTileResolution( double requestedMupp ) const
 {
   int zoom = 0;
   for ( ; zoom <= 15; ++zoom )
