@@ -69,8 +69,9 @@ void QgsProfilePlotRenderer::startGeneration()
   mJobs.reserve( mGenerators.size() );
   for ( const auto &it : mGenerators )
   {
-    ProfileJob job;
-    job.generator = it.get();
+    std::unique_ptr< ProfileJob > job = std::make_unique< ProfileJob >();
+    job->generator = it.get();
+    job->context = mContext;
     mJobs.emplace_back( std::move( job ) );
   }
 
@@ -87,11 +88,11 @@ void QgsProfilePlotRenderer::cancelGeneration()
 
   disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsProfilePlotRenderer::onGeneratingFinished );
 
-  for ( const ProfileJob &job : mJobs )
+  for ( const auto &job : mJobs )
   {
-    if ( job.generator )
+    if ( job->generator )
     {
-      if ( QgsFeedback *feedback = job.generator->feedback() )
+      if ( QgsFeedback *feedback = job->generator->feedback() )
       {
         feedback->cancel();
       }
@@ -108,11 +109,11 @@ void QgsProfilePlotRenderer::cancelGenerationWithoutBlocking()
   if ( !isActive() )
     return;
 
-  for ( const ProfileJob &job : mJobs )
+  for ( const auto &job : mJobs )
   {
-    if ( job.generator )
+    if ( job->generator )
     {
-      if ( QgsFeedback *feedback = job.generator->feedback() )
+      if ( QgsFeedback *feedback = job->generator->feedback() )
       {
         feedback->cancel();
       }
@@ -134,6 +135,26 @@ void QgsProfilePlotRenderer::waitForFinished()
 bool QgsProfilePlotRenderer::isActive() const
 {
   return mStatus != Idle;
+}
+
+void QgsProfilePlotRenderer::setContext( const QgsProfileGenerationContext &context )
+{
+  if ( mContext == context )
+    return;
+
+  mContext = context;
+
+  // TODO -- regenerate only those results which are refinable
+  for ( auto &job : mJobs )
+  {
+    job->mutex.lock();
+    job->context = mContext;
+    if ( job->results && job->complete )
+      job->invalidatedResults = std::move( job->results );
+    job->results.reset();
+    job->complete = false;
+    job->mutex.unlock();
+  }
 }
 
 void QgsProfilePlotRenderer::replaceSource( QgsAbstractProfileSource *source )
@@ -159,19 +180,19 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
   bool res = false;
   for ( auto &job : mJobs )
   {
-    if ( job.generator && job.generator->sourceId() == sourceId )
+    if ( job->generator && job->generator->sourceId() == sourceId )
     {
       res = true;
       if ( clearPreviousResults )
       {
-        job.results.reset();
-        job.complete = false;
+        job->results.reset();
+        job->complete = false;
       }
-      else if ( job.results )
+      else if ( job->results )
       {
-        job.results->copyPropertiesFromGenerator( generator.get() );
+        job->results->copyPropertiesFromGenerator( generator.get() );
       }
-      job.generator = generator.get();
+      job->generator = generator.get();
       for ( auto it = mGenerators.begin(); it != mGenerators.end(); )
       {
         if ( ( *it )->sourceId() == sourceId )
@@ -202,11 +223,11 @@ QgsDoubleRange QgsProfilePlotRenderer::zRange() const
 {
   double min = std::numeric_limits< double >::max();
   double max = std::numeric_limits< double >::lowest();
-  for ( const ProfileJob &job : mJobs )
+  for ( const auto &job : mJobs )
   {
-    if ( job.complete && job.results )
+    if ( job->complete && job->results )
     {
-      const QgsDoubleRange jobRange = job.results->zRange();
+      const QgsDoubleRange jobRange = job->results->zRange();
       min = std::min( min, jobRange.lower() );
       max = std::max( max, jobRange.upper() );
     }
@@ -247,10 +268,22 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
   profileRenderContext.setDistanceRange( QgsDoubleRange( distanceMin, distanceMax ) );
   profileRenderContext.setElevationRange( QgsDoubleRange( zMin, zMax ) );
 
-  for ( const ProfileJob &job : mJobs )
+  for ( auto &job : mJobs )
   {
-    if ( job.complete && job.results && ( sourceId.isEmpty() || job.generator->sourceId() == sourceId ) )
-      job.results->renderResults( profileRenderContext );
+    if ( ( sourceId.isEmpty() || job->generator->sourceId() == sourceId ) )
+    {
+      job->mutex.lock();
+      if ( job->complete && job->results )
+      {
+        job->results->renderResults( profileRenderContext );
+      }
+      else if ( !job->complete && job->invalidatedResults )
+      {
+        // draw the outdated results while we wait for refinement to complete
+        job->invalidatedResults->renderResults( profileRenderContext );
+      }
+      job->mutex.unlock();
+    }
   }
 }
 
@@ -262,11 +295,12 @@ QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &p
 
   double bestSnapDistance = std::numeric_limits< double >::max();
 
-  for ( const ProfileJob &job : mJobs )
+  for ( const auto &job : mJobs )
   {
-    if ( job.complete && job.results )
+    job->mutex.lock();
+    if ( job->complete && job->results )
     {
-      const QgsProfileSnapResult jobSnapResult = job.results->snapPoint( point, context );
+      const QgsProfileSnapResult jobSnapResult = job->results->snapPoint( point, context );
       if ( jobSnapResult.isValid() )
       {
         const double snapDistance = std::pow( point.distance() - jobSnapResult.snappedPoint.distance(), 2 )
@@ -279,6 +313,7 @@ QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &p
         }
       }
     }
+    job->mutex.unlock();
   }
 
   return bestSnapResult;
@@ -290,14 +325,18 @@ void QgsProfilePlotRenderer::onGeneratingFinished()
   emit generationFinished();
 }
 
-void QgsProfilePlotRenderer::generateProfileStatic( ProfileJob &job )
+void QgsProfilePlotRenderer::generateProfileStatic( std::unique_ptr< ProfileJob > &job )
 {
-  if ( job.results )
+  if ( job->results )
     return;
 
-  Q_ASSERT( job.generator );
-  job.generator->generateProfile();
-  job.results.reset( job.generator->takeResults() );
-  job.complete = true;
+  Q_ASSERT( job->generator );
+
+  job->generator->generateProfile( job->context );
+  job->mutex.lock();
+  job->results.reset( job->generator->takeResults() );
+  job->complete = true;
+  job->invalidatedResults.reset();
+  job->mutex.unlock();
 }
 

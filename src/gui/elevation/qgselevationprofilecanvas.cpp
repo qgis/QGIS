@@ -363,6 +363,8 @@ void QgsElevationProfileCanvas::panContentsBy( double dx, double dy )
   mPlotItem->setYMinimum( mPlotItem->yMinimum() + dyPlot );
   mPlotItem->setYMaximum( mPlotItem->yMaximum() + dyPlot );
 
+  refineResults();
+
   mPlotItem->updatePlot();
 }
 
@@ -381,6 +383,8 @@ void QgsElevationProfileCanvas::centerPlotOn( double x, double y )
   mPlotItem->setXMaximum( mPlotItem->xMaximum() + dxPlot );
   mPlotItem->setYMinimum( mPlotItem->yMinimum() + dyPlot );
   mPlotItem->setYMaximum( mPlotItem->yMaximum() + dyPlot );
+
+  refineResults();
 
   mPlotItem->updatePlot();
 }
@@ -482,6 +486,7 @@ void QgsElevationProfileCanvas::scalePlot( double xFactor, double yFactor )
   mPlotItem->setYMinimum( currentCenterY - newHeight * 0.5 );
   mPlotItem->setYMaximum( currentCenterY + newHeight * 0.5 );
 
+  refineResults();
   mPlotItem->updatePlot();
 }
 
@@ -499,6 +504,7 @@ void QgsElevationProfileCanvas::zoomToRect( const QRectF &rect )
   mPlotItem->setYMinimum( minY );
   mPlotItem->setYMaximum( maxY );
 
+  refineResults();
   mPlotItem->updatePlot();
 }
 
@@ -621,7 +627,14 @@ void QgsElevationProfileCanvas::refresh()
   }
 
   mCurrentJob = new QgsProfilePlotRenderer( sources, request );
+  mZoomFullWhenJobFinished = true;
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
+
+  QgsProfileGenerationContext generationContext;
+
+  generationContext.setMaximumErrorMapUnits( MAX_ERROR_PIXELS * ( mProfileCurve->length() ) / mPlotItem->plotArea().width() );
+  mCurrentJob->setContext( generationContext );
+
   mCurrentJob->startGeneration();
   mPlotItem->setRenderer( mCurrentJob );
 
@@ -635,7 +648,20 @@ void QgsElevationProfileCanvas::generationFinished()
 
   emit activeJobCountChanged( 0 );
 
-  zoomFull();
+  if ( mZoomFullWhenJobFinished )
+  {
+    // we only zoom full for the initial generation
+    mZoomFullWhenJobFinished = false;
+    zoomFull();
+  }
+  else
+  {
+    // here we should invalidate cached results only for the layers which have been refined
+
+    // and if no layers are being refeined, don't invalidate anything
+
+    mPlotItem->updatePlot();
+  }
 }
 
 void QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
@@ -713,6 +739,7 @@ void QgsElevationProfileCanvas::startDeferredRegeneration()
 {
   if ( mCurrentJob && !mCurrentJob->isActive() )
   {
+    emit activeJobCountChanged( 1 );
     mCurrentJob->regenerateInvalidatedResults();
   }
 
@@ -723,6 +750,23 @@ void QgsElevationProfileCanvas::startDeferredRedraw()
 {
   mPlotItem->update();
   mDeferredRedrawScheduled = false;
+}
+
+void QgsElevationProfileCanvas::refineResults()
+{
+  if ( mCurrentJob )
+  {
+    QgsProfileGenerationContext context;
+    const double plotDistanceRange = mPlotItem->xMaximum() - mPlotItem->xMinimum();
+    const double plotElevationRange = mPlotItem->yMaximum() - mPlotItem->yMinimum();
+    context.setMaximumErrorMapUnits( MAX_ERROR_PIXELS * plotDistanceRange / mPlotItem->plotArea().width() );
+    context.setDistanceRange( QgsDoubleRange( std::max( 0.0, mPlotItem->xMinimum() - plotDistanceRange * 0.05 ),
+                              mPlotItem->xMaximum() + plotDistanceRange * 0.05 ) );
+    context.setElevationRange( QgsDoubleRange( mPlotItem->yMinimum() - plotElevationRange * 0.05,
+                               mPlotItem->yMaximum() + plotElevationRange * 0.05 ) );
+    mCurrentJob->setContext( context );
+  }
+  scheduleDeferredRegeneration();
 }
 
 QgsProfilePoint QgsElevationProfileCanvas::canvasPointToPlotPoint( QPointF point ) const
@@ -902,6 +946,7 @@ void QgsElevationProfileCanvas::zoomFull()
   // just 2% margin to max distance -- any more is overkill and wasted space
   mPlotItem->setXMaximum( profileLength  * 1.02 );
 
+  refineResults();
   mPlotItem->updatePlot();
 }
 
@@ -911,6 +956,7 @@ void QgsElevationProfileCanvas::setVisiblePlotRange( double minimumDistance, dou
   mPlotItem->setYMaximum( maximumElevation );
   mPlotItem->setXMinimum( minimumDistance );
   mPlotItem->setXMaximum( maximumDistance );
+  refineResults();
   mPlotItem->updatePlot();
 }
 

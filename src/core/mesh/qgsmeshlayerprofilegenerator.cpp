@@ -67,7 +67,7 @@ QString QgsMeshLayerProfileGenerator::sourceId() const
 
 QgsMeshLayerProfileGenerator::~QgsMeshLayerProfileGenerator() = default;
 
-bool QgsMeshLayerProfileGenerator::generateProfile()
+bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationContext & )
 {
   if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;

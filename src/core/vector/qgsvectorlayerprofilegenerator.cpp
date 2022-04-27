@@ -450,7 +450,7 @@ QString QgsVectorLayerProfileGenerator::sourceId() const
 
 QgsVectorLayerProfileGenerator::~QgsVectorLayerProfileGenerator() = default;
 
-bool QgsVectorLayerProfileGenerator::generateProfile()
+bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGenerationContext & )
 {
   if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;

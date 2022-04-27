@@ -153,6 +153,78 @@ The base class method does nothing.
 %End
 };
 
+class QgsProfileGenerationContext
+{
+%Docstring(signature="appended")
+Encapsulates the context in which an elevation profile is to be generated.
+%End
+
+%TypeHeaderCode
+#include "qgsabstractprofilegenerator.h"
+%End
+  public:
+
+    double maximumErrorMapUnits() const;
+%Docstring
+Returns the maximum allowed error in the generated result, in profile curve map units.
+
+By default this is NaN, which indicates that the profile should be generated in the highest precision possible.
+Larger values will result in a faster profile to generate.
+
+.. seealso:: :py:func:`setMaximumErrorMapUnits`
+%End
+
+    void setMaximumErrorMapUnits( double error );
+%Docstring
+Sets the maximum allowed ``error`` in the generated result, in profile curve map units.
+
+By default this is NaN, which indicates that the profile should be generated in the highest precision possible.
+Larger values will result in a faster profile to generate.
+
+.. seealso:: :py:func:`maximumErrorMapUnits`
+%End
+
+    QgsDoubleRange distanceRange() const;
+%Docstring
+Returns the range of distances to include in the generation.
+
+Distances outside this range may be excluded from the generation (if it results in faster profile generation).
+
+.. seealso:: :py:func:`setDistanceRange`
+%End
+
+    void setDistanceRange( const QgsDoubleRange &range );
+%Docstring
+Sets the ``range`` of distances to include in the generation.
+
+Distances outside this range may be excluded from the generation (if it results in faster profile generation).
+
+.. seealso:: :py:func:`distanceRange`
+%End
+
+    QgsDoubleRange elevationRange() const;
+%Docstring
+Returns the range of elevations to include in the generation.
+
+Elevations outside this range may be excluded from the generation (if it results in faster profile generation).
+
+.. seealso:: :py:func:`setElevationRange`
+%End
+
+    void setElevationRange( const QgsDoubleRange &range );
+%Docstring
+Sets the ``range`` of elevations to include in the generation.
+
+Elevations outside this range may be excluded from the generation (if it results in faster profile generation).
+
+.. seealso:: :py:func:`elevationRange`
+%End
+
+    bool operator==( const QgsProfileGenerationContext &other ) const;
+    bool operator!=( const QgsProfileGenerationContext &other ) const;
+
+};
+
 class QgsAbstractProfileGenerator
 {
 %Docstring(signature="appended")
@@ -175,7 +247,7 @@ The scenario will be:
   additional calls to the source.
 # profile job (still in GUI thread) stores the generator for later use.
 # profile job (in worker thread) calls :py:func:`QgsAbstractProfileGenerator.generateProfile()`
-# profile job (again in GUI thread) will check :py:func:`~QgsAbstractProfileResults.errors` and report them
+# profile job (again in GUI thread) will check :py:func:`~QgsProfileGenerationContext.errors` and report them
 
 .. versionadded:: 3.26
 %End
@@ -195,7 +267,7 @@ For generators associated with a map layer the source ID will match the layer's 
 will have a different unique ID with its own custom interpretation.gen
 %End
 
-    virtual bool generateProfile() = 0;
+    virtual bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) = 0;
 %Docstring
 Generate the profile (based on data stored in the class).
 
