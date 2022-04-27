@@ -82,7 +82,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;
 
-  const double startDistanceOffset = !context.distanceRange().isInfinite() ? context.distanceRange().lower() : 0;
+  const double startDistanceOffset = std::max( !context.distanceRange().isInfinite() ? context.distanceRange().lower() : 0, 0.0 );
   const double endDistance = context.distanceRange().upper();
 
   std::unique_ptr< QgsCurve > trimmedCurve;

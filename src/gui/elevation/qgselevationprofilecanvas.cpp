@@ -759,9 +759,20 @@ void QgsElevationProfileCanvas::refineResults()
     QgsProfileGenerationContext context;
     const double plotDistanceRange = mPlotItem->xMaximum() - mPlotItem->xMinimum();
     const double plotElevationRange = mPlotItem->yMaximum() - mPlotItem->yMinimum();
-    context.setMaximumErrorMapUnits( MAX_ERROR_PIXELS * plotDistanceRange / mPlotItem->plotArea().width() );
-    context.setDistanceRange( QgsDoubleRange( std::max( 0.0, mPlotItem->xMinimum() - plotDistanceRange * 0.05 ),
+    const double plotDistanceUnitsPerPixel = plotDistanceRange / mPlotItem->plotArea().width();
+
+    // we round the actual desired map error down to just one significant figure, to avoid tiny differences
+    // as the plot is panned
+    const double targetMaxErrorInMapUnits = MAX_ERROR_PIXELS * plotDistanceUnitsPerPixel;
+    const double factor = std::pow( 10.0, 1 - std::ceil( std::log10( std::fabs( targetMaxErrorInMapUnits ) ) ) );
+    const double roundedErrorInMapUnits = std::floor( targetMaxErrorInMapUnits * factor ) / factor;
+    context.setMaximumErrorMapUnits( roundedErrorInMapUnits );
+
+    // for similar reasons we round the minimum distance off to multiples of the maximum error in map units
+    const double distanceMin = std::floor( ( mPlotItem->xMinimum() - plotDistanceRange * 0.05 ) / context.maximumErrorMapUnits() ) * context.maximumErrorMapUnits();
+    context.setDistanceRange( QgsDoubleRange( std::max( 0.0, distanceMin ),
                               mPlotItem->xMaximum() + plotDistanceRange * 0.05 ) );
+
     context.setElevationRange( QgsDoubleRange( mPlotItem->yMinimum() - plotElevationRange * 0.05,
                                mPlotItem->yMaximum() + plotElevationRange * 0.05 ) );
     mCurrentJob->setContext( context );
