@@ -77,7 +77,6 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     QgsMapCanvas *mMapCanvas = nullptr;
 
     QString selectedIdentifier();
-    void populateExtent();
 
     // QgsWcsCapabilities virtual methods
     void populateLayerList() override;

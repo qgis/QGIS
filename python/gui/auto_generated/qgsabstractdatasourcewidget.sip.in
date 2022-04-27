@@ -37,7 +37,7 @@ Sets a browser ``model`` to use with the widget.
 .. versionadded:: 3.18
 %End
 
-    virtual QgsMapCanvas *mapCanvas() = 0;
+    virtual QgsMapCanvas *mapCanvas();
 %Docstring
 Returns the dialog map canvas
 
@@ -46,7 +46,7 @@ Returns the dialog map canvas
 .. versionadded:: 3.26
 %End
 
-    virtual void setMapCanvas( QgsMapCanvas *mapCanvas ) = 0;
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas );
 %Docstring
 Sets the dialog map canvas
 

@@ -111,21 +111,15 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
     mCRSWidget->hide();
     mCacheWidget->hide();
   }
-
   prepareExtent();
 
   // set up the WMS connections we already know about
   populateConnectionList();
 }
 
-QgsMapCanvas *QgsOWSSourceSelect::mapCanvas()
-{
-  return mMapCanvas;
-}
-
 void QgsOWSSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-  mMapCanvas = mapCanvas;
+  QgsAbstractDataSourceWidget::setMapCanvas( mapCanvas );
   prepareExtent();
 }
 
@@ -133,13 +127,13 @@ void QgsOWSSourceSelect::prepareExtent()
 {
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   mSpatialExtentBox->setOutputCrs( crs );
-  QgsMapCanvas *mapCanvas = mMapCanvas;
-  if ( !mapCanvas )
+  QgsMapCanvas *canvas = mapCanvas();
+  if ( !canvas )
     return;
-  QgsCoordinateReferenceSystem destinationCrs = mapCanvas->mapSettings().destinationCrs();
+  QgsCoordinateReferenceSystem destinationCrs = canvas->mapSettings().destinationCrs();
   mSpatialExtentBox->setCurrentExtent( destinationCrs.bounds(), destinationCrs );
   mSpatialExtentBox->setOutputExtentFromCurrent();
-  mSpatialExtentBox->setMapCanvas( mapCanvas );
+  mSpatialExtentBox->setMapCanvas( canvas );
 }
 
 void QgsOWSSourceSelect::refresh()

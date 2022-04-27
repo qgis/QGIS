@@ -51,10 +51,7 @@ QString QgsWcsSourceWidgetProvider::providerKey() const
 }
 bool QgsWcsSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer ) const
 {
-  if ( layer->providerType() != QLatin1String( "wcs" ) )
-    return false;
-
-  return true;
+  return layer->providerType() == QLatin1String( "wcs" );
 }
 
 QgsProviderSourceWidget *QgsWcsSourceWidgetProvider::createWidget( QgsMapLayer *layer, QWidget *parent )

@@ -50,7 +50,7 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
      *
      * \since QGIS 3.26
      */
-    void setExtent( QgsRectangle extent );
+    void setExtent( const QgsRectangle &extent );
 
     /**
      * Returns the spatial extent from the widget extent box.
