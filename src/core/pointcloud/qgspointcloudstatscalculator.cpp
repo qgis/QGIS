@@ -87,7 +87,7 @@ void QgsPointCloudStatsCalculator::calculateStats( const QVector<QgsPointCloudAt
   QObject::connect( task, &QgsTask::taskCompleted, this, &QgsPointCloudStatsCalculator::statsCalculationFinished );
   QObject::connect( task, &QgsTask::taskTerminated, this, [this]
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Statistics generation cancelled" ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Statistics generation canceled" ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
     mStatsCalculationTaskId = 0;
   } );
 
