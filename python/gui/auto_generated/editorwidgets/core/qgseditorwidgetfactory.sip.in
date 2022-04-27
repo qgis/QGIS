@@ -51,7 +51,7 @@ instead of calling this method directly.
 
     virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const /Factory/;
 
-    QString name();
+    QString name() const;
 %Docstring
 Returns The human readable identifier name of this widget type
 
@@ -70,7 +70,7 @@ Create a new configuration widget for this widget type.
 :return: A configuration widget
 %End
 
-    bool supportsField( const QgsVectorLayer *vl, int fieldIdx );
+    bool supportsField( const QgsVectorLayer *vl, int fieldIdx ) const;
 %Docstring
 Check if this editor widget type supports a certain field.
 

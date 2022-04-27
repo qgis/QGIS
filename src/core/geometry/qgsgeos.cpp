@@ -115,22 +115,22 @@ class GEOSInit
 
 Q_GLOBAL_STATIC( GEOSInit, geosinit )
 
-void geos::GeosDeleter::operator()( GEOSGeometry *geom )
+void geos::GeosDeleter::operator()( GEOSGeometry *geom ) const
 {
   GEOSGeom_destroy_r( geosinit()->ctxt, geom );
 }
 
-void geos::GeosDeleter::operator()( const GEOSPreparedGeometry *geom )
+void geos::GeosDeleter::operator()( const GEOSPreparedGeometry *geom ) const
 {
   GEOSPreparedGeom_destroy_r( geosinit()->ctxt, geom );
 }
 
-void geos::GeosDeleter::operator()( GEOSBufferParams *params )
+void geos::GeosDeleter::operator()( GEOSBufferParams *params ) const
 {
   GEOSBufferParams_destroy_r( geosinit()->ctxt, params );
 }
 
-void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence )
+void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence ) const
 {
   GEOSCoordSeq_destroy_r( geosinit()->ctxt, sequence );
 }

@@ -93,7 +93,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     int G_read_fp_range( const char *name, const char *mapset, struct FPRange *drange );
 
     int readRasterRow( int fd, void *buf, int row, RASTER_MAP_TYPE data_type, bool noDataAsZero = false );
-    int G_get_null_value_row( int fd, char *flags, int row );
+    int G_get_null_value_row( int fd, char *flags, int row ) const;
     int putRasterRow( int fd, const void *buf, RASTER_MAP_TYPE data_type );
     int G_get_cellhd( const char *name, const char *mapset, struct Cell_head *cellhd );
 

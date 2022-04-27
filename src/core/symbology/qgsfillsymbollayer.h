@@ -117,7 +117,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
      * \see setOffset()
      * \see offsetUnit()
      */
-    QPointF offset() { return mOffset; }
+    QPointF offset() const { return mOffset; }
 
     /**
      * Sets the units for the width of the fill's stroke.

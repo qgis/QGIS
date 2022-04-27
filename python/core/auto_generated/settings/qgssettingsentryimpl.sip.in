@@ -143,7 +143,7 @@ Set the string minimum length.
 minLength The string minimum length.
 %End
 
-    int minLength();
+    int minLength() const;
 %Docstring
 Returns the string minimum length.
 %End
@@ -155,7 +155,7 @@ Set the string maximum length.
 maxLength The string maximum length.
 %End
 
-    int maxLength();
+    int maxLength() const;
 %Docstring
 Returns the string maximum length. By -1 there is no limitation.
 %End
@@ -367,7 +367,7 @@ Set the minimum value.
 minValue The minimum value.
 %End
 
-    qlonglong minValue();
+    qlonglong minValue() const;
 %Docstring
 Returns the minimum value.
 %End
@@ -379,7 +379,7 @@ Set the maximum value.
 maxValue The maximum value.
 %End
 
-    qlonglong maxValue();
+    qlonglong maxValue() const;
 %Docstring
 Returns the maximum value.
 %End

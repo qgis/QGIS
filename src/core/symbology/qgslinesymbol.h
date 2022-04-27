@@ -49,14 +49,14 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
      *
      * \see width()
      */
-    void setWidth( double width );
+    void setWidth( double width ) const;
 
     /**
      * Sets the width units for the whole symbol (including all symbol layers).
      * \param unit size units
      * \since QGIS 3.16
      */
-    void setWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setWidthUnit( QgsUnitTypes::RenderUnit unit ) const;
 
 
     /**
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
      * \see dataDefinedWidth()
      * \since QGIS 3.0
      */
-    void setDataDefinedWidth( const QgsProperty &property );
+    void setDataDefinedWidth( const QgsProperty &property ) const;
 
     /**
      * Returns data defined width for whole symbol (including all symbol layers).

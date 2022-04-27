@@ -334,7 +334,7 @@ QgsMapUnitScale QgsSymbol::mapUnitScale() const
   return scale;
 }
 
-void QgsSymbol::setOutputUnit( QgsUnitTypes::RenderUnit u )
+void QgsSymbol::setOutputUnit( QgsUnitTypes::RenderUnit u ) const
 {
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
@@ -343,7 +343,7 @@ void QgsSymbol::setOutputUnit( QgsUnitTypes::RenderUnit u )
   }
 }
 
-void QgsSymbol::setMapUnitScale( const QgsMapUnitScale &scale )
+void QgsSymbol::setMapUnitScale( const QgsMapUnitScale &scale ) const
 {
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
@@ -573,7 +573,7 @@ void QgsSymbol::stopRender( QgsRenderContext &context )
   Q_NOWARN_DEPRECATED_POP
 }
 
-void QgsSymbol::setColor( const QColor &color )
+void QgsSymbol::setColor( const QColor &color ) const
 {
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )

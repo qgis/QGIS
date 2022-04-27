@@ -80,7 +80,7 @@ Saves expressions to xml under the layer node
 Reads expressions from project file
 %End
 
-    void updateFields( QgsFields &flds );
+    void updateFields( QgsFields &flds ) const;
 %Docstring
 Adds fields with the expressions buffered in this object to a :py:class:`QgsFields` object
 

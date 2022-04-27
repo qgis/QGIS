@@ -33,7 +33,7 @@ Constructor for QgsLineSymbol, with the specified list of initial symbol ``layer
 Ownership of the ``layers`` are transferred to the symbol.
 %End
 
-    void setWidth( double width );
+    void setWidth( double width ) const;
 %Docstring
 Sets the ``width`` for the whole line symbol. Individual symbol layer sizes
 will be scaled to maintain their current relative size to the whole symbol size.
@@ -41,7 +41,7 @@ will be scaled to maintain their current relative size to the whole symbol size.
 .. seealso:: :py:func:`width`
 %End
 
-    void setWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setWidthUnit( QgsUnitTypes::RenderUnit unit ) const;
 %Docstring
 Sets the width units for the whole symbol (including all symbol layers).
 
@@ -78,7 +78,7 @@ width of each symbol layer using the provided render ``context``.
 .. versionadded:: 3.4.5
 %End
 
-    void setDataDefinedWidth( const QgsProperty &property );
+    void setDataDefinedWidth( const QgsProperty &property ) const;
 %Docstring
 Set data defined width for whole symbol (including all symbol layers).
 

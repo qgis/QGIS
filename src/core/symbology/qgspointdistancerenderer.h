@@ -275,7 +275,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \param group group of clustered features to label
      * \note may not be available in Python bindings on some platforms
      */
-    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group );
+    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group ) const;
 
   private:
 
@@ -285,7 +285,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \param context destination render context
      * \param group contents of group
      */
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0 SIP_FORCE;
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) const = 0 SIP_FORCE;
 
     //! Creates a search rectangle with specified distance tolerance.
     QgsRectangle searchRect( const QgsPointXY &p, double distance ) const;
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     QString getLabel( const QgsFeature &feature ) const;
 
     //! Internal group rendering helper
-    void drawGroup( const ClusteredGroup &group, QgsRenderContext &context );
+    void drawGroup( const ClusteredGroup &group, QgsRenderContext &context ) const;
 
     /**
      * Returns first symbol from the embedded renderer for a feature or NULLPTR if none

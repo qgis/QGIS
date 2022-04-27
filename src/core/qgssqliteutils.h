@@ -43,7 +43,7 @@ struct CORE_EXPORT QgsSqlite3Closer
   /**
    * Closes an sqlite \a database.
    */
-  void operator()( sqlite3 *database );
+  void operator()( sqlite3 *database ) const;
 };
 
 /**
@@ -55,7 +55,7 @@ struct CORE_EXPORT  QgsSqlite3StatementFinalizer
   /**
    * Finalizes an sqlite3 \a statement.
    */
-  void operator()( sqlite3_stmt *statement );
+  void operator()( sqlite3_stmt *statement ) const;
 };
 
 /**

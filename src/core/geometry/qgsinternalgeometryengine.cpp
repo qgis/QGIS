@@ -271,7 +271,7 @@ class Cell
 
 struct GreaterThanByMax
 {
-  bool operator()( const Cell *lhs, const Cell *rhs )
+  bool operator()( const Cell *lhs, const Cell *rhs ) const
   {
     return rhs->max > lhs->max;
   }

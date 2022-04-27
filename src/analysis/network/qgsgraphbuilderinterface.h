@@ -70,13 +70,13 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     }
 
     //! Returns coordinate transformation enabled
-    bool coordinateTransformationEnabled()
+    bool coordinateTransformationEnabled() const
     {
       return mCtfEnabled;
     }
 
     //! Returns topology tolerance
-    double topologyTolerance()
+    double topologyTolerance() const
     {
       return mTopologyTolerance;
     }

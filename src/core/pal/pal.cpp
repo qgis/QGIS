@@ -637,12 +637,12 @@ bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPositio
   return res;
 }
 
-int Pal::getMinIt()
+int Pal::getMinIt() const
 {
   return mTabuMaxIt;
 }
 
-int Pal::getMaxIt()
+int Pal::getMaxIt() const
 {
   return mTabuMinIt;
 }

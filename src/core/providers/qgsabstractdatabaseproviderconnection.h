@@ -210,7 +210,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         /**
          * Returns the query execution time in milliseconds.
          */
-        double queryExecutionTime( );
+        double queryExecutionTime( ) const;
 
         /**
          * Sets the query execution time to \a queryExecutionTime milliseconds.

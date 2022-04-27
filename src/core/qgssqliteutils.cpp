@@ -28,12 +28,12 @@
 #include <algorithm>
 // end temporary
 
-void QgsSqlite3Closer::operator()( sqlite3 *database )
+void QgsSqlite3Closer::operator()( sqlite3 *database ) const
 {
   sqlite3_close_v2( database );
 }
 
-void QgsSqlite3StatementFinalizer::operator()( sqlite3_stmt *statement )
+void QgsSqlite3StatementFinalizer::operator()( sqlite3_stmt *statement ) const
 {
   sqlite3_finalize( statement );
 }
