@@ -75,7 +75,7 @@ class QgsTabBar: public QTabBar
     QgsTabBar( QWidget *parent );
 
     /**
-     * Set the \a tabStyle, ownership is not transfered.
+     * Set the \a tabStyle, ownership is not transferred.
      */
     void setTabBarStyle( QgsTabBarProxyStyle *tabStyle );
 
