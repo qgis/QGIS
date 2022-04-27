@@ -136,6 +136,41 @@ Sets the number of scalebar ``units`` per segment.
 .. seealso:: :py:func:`unitsPerSegment`
 %End
 
+    void refreshUnitsPerSegment( const QgsExpressionContext *context = 0 );
+%Docstring
+Recalculates the number of scalebar units per segment
+
+:param context: for evaluating data defined units per segment
+%End
+
+    void refreshNumberOfSegmentsLeft( const QgsExpressionContext *context = 0 );
+%Docstring
+Recalculates the number of segments to the left of 0.
+
+:param context: for evaluating data defined number of segments to the left.
+%End
+
+    void refreshNumberOfSegmentsRight( const QgsExpressionContext *context = 0 );
+%Docstring
+Recalculates the number of segments to the right of 0.
+
+:param context: for evaluating data defined number of segments to the left.
+%End
+
+    void refreshMinimumBarWidth( const QgsExpressionContext *context = 0 );
+%Docstring
+Recalculates the minimum size of a bar segment in mm.
+
+:param context: for evaluating data defined minimum width of a segment.
+%End
+
+    void refreshMaximumBarWidth( const QgsExpressionContext *context = 0 );
+%Docstring
+Recalculates the maximum size of a bar segment in mm.
+
+:param context: for evaluating data defined maximum width of a segment.
+%End
+
     QgsScaleBarSettings::SegmentSizeMode segmentSizeMode() const;
 %Docstring
 Returns the size mode for the scale bar segments.
