@@ -524,6 +524,7 @@ sub fix_annotations {
 
     # unprinted annotations
     $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+    $line =~ s/(\w+)\s+SIP_PYARGRENAME\(\s*(\w+)\s*\)/$2/g;
     $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
     # remove argument
     if ($line =~ m/SIP_PYARGREMOVE/){
@@ -1326,7 +1327,8 @@ while ($LINE_IDX < $LINE_COUNT){
         # support Docstring for template based classes in SIP 4.19.7+
         $COMMENT_TEMPLATE_DOCSTRING = 1;
     }
-    elsif ( $LINE =~ m/\/\// ||
+    elsif ( $MULTILINE_DEFINITION == MULTILINE_NO &&
+           ($LINE =~ m/\/\// ||
             $LINE =~ m/^\s*typedef / ||
             $LINE =~ m/\s*struct / ||
             $LINE =~ m/operator\[\]\(/ ||
@@ -1335,7 +1337,9 @@ while ($LINE_IDX < $LINE_COUNT){
             $LINE =~ m/^\s*%\w+(.*)?$/ ||
             $LINE =~ m/^\s*namespace\s+\w+/ ||
             $LINE =~ m/^\s*(virtual\s*)?~/ ||
-            detect_non_method_member() == 1 ){
+            detect_non_method_member() == 1
+           )
+          ){
         dbg_info('skipping comment');
         dbg_info('because typedef') if ($LINE =~ m/\s*typedef.*?(?!SIP_DOC_TEMPLATE)/);
         $COMMENT = '';
