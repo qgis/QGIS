@@ -50,7 +50,14 @@ static bool _parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage:
 static bool _projectsTableExists( QgsOracleConn *conn, const QString &owner )
 {
   QSqlQuery qry( *conn );
-  qry.prepare( QStringLiteral( "SELECT 1 FROM all_tables WHERE owner=? AND table_name=?" ) );
+  if ( !qry.prepare( QStringLiteral( "SELECT 1 FROM all_tables WHERE owner=? AND table_name=?" ) ) )
+  {
+    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
+                 .arg( qry.lastQuery() )
+                 .arg( qry.lastError().text() ) );
+    return false;
+  }
+
   qry.addBindValue( owner );
   qry.addBindValue( "qgis_projects" );
 
@@ -120,7 +127,14 @@ bool QgsOracleProjectStorage::readProject( const QString &uri, QIODevice *device
 
   QString sql( QStringLiteral( "SELECT content FROM %1.\"qgis_projects\" WHERE name = ?" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
   QSqlQuery qry( *pconn.get() );
-  qry.prepare( sql );
+  if ( !qry.prepare( sql ) )
+  {
+    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
+                 .arg( qry.lastQuery() )
+                 .arg( qry.lastError().text() ) );
+    return false;
+  }
+
   qry.addBindValue( projectUri.projectName );
 
   if ( !qry.exec() )
@@ -188,12 +202,18 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
 
   // Upsert into projects table
   QSqlQuery qry( *pconn.get() );
-  qry.prepare( QStringLiteral( "MERGE INTO %1.\"qgis_projects\" "
-                               "USING dual "
-                               "ON (name = :projectname) "
-                               "WHEN MATCHED THEN UPDATE SET metadata = %2, content = :content "
-                               "WHEN NOT MATCHED THEN INSERT VALUES (:projectname, %2, :content)" )
-               .arg( QgsOracleConn::quotedIdentifier( projectUri.owner ), metadataExpr ) );
+  if ( !qry.prepare( QStringLiteral( "MERGE INTO %1.\"qgis_projects\" "
+                                     "USING dual "
+                                     "ON (name = :projectname) "
+                                     "WHEN MATCHED THEN UPDATE SET metadata = %2, content = :content "
+                                     "WHEN NOT MATCHED THEN INSERT VALUES (:projectname, %2, :content)" )
+                     .arg( QgsOracleConn::quotedIdentifier( projectUri.owner ), metadataExpr ) ) )
+  {
+    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
+                 .arg( qry.lastQuery(), qry.lastError().text() ) );
+    return false;
+  }
+
   qry.bindValue( QStringLiteral( ":projectname" ), projectUri.projectName );
   qry.bindValue( QStringLiteral( ":content" ), content );
 
@@ -221,7 +241,13 @@ bool QgsOracleProjectStorage::removeProject( const QString &uri )
   if ( _projectsTableExists( pconn.get(), projectUri.owner ) )
   {
     QSqlQuery qry( *pconn.get() );
-    qry.prepare( QStringLiteral( "DELETE FROM %1.\"qgis_projects\" WHERE name = ?" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
+    if ( !qry.prepare( QStringLiteral( "DELETE FROM %1.\"qgis_projects\" WHERE name = ?" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) ) )
+    {
+      QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
+                   .arg( qry.lastQuery(), qry.lastError().text() ) );
+      return false;
+    }
+
     qry.addBindValue( projectUri.projectName );
     return qry.exec();
   }
@@ -245,7 +271,13 @@ bool QgsOracleProjectStorage::readProjectStorageMetadata( const QString &uri, Qg
 
   QString sql( QStringLiteral( "SELECT metadata FROM %1.\"qgis_projects\" WHERE name = ?" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
   QSqlQuery qry( *pconn.get() );
-  qry.prepare( sql );
+  if ( !qry.prepare( sql ) )
+  {
+    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
+                 .arg( qry.lastQuery(), qry.lastError().text() ) );
+    return false;
+  }
+
   qry.addBindValue( projectUri.projectName );
 
   if ( !qry.exec() )
