@@ -37,161 +37,6 @@ QString QgsMeshLayerProfileResults::type() const
   return QStringLiteral( "mesh" );
 }
 
-QMap<double, double> QgsMeshLayerProfileResults::distanceToHeightMap() const
-{
-  return results;
-}
-
-QgsPointSequence QgsMeshLayerProfileResults::sampledPoints() const
-{
-  return rawPoints;
-}
-
-QVector<QgsGeometry> QgsMeshLayerProfileResults::asGeometries() const
-{
-  QVector<QgsGeometry> res;
-  res.reserve( rawPoints.size() );
-  for ( const QgsPoint &point : rawPoints )
-    res.append( QgsGeometry( point.clone() ) );
-
-  return res;
-}
-
-QgsDoubleRange QgsMeshLayerProfileResults::zRange() const
-{
-  return QgsDoubleRange( minZ, maxZ );
-}
-
-void QgsMeshLayerProfileResults::renderResults( QgsProfileRenderContext &context )
-{
-  QPainter *painter = context.renderContext().painter();
-  if ( !painter )
-    return;
-
-  const QgsScopedQPainterState painterState( painter );
-
-  painter->setBrush( Qt::NoBrush );
-  painter->setPen( Qt::NoPen );
-
-  const double minDistance = context.distanceRange().lower();
-  const double maxDistance = context.distanceRange().upper();
-  const double minZ = context.elevationRange().lower();
-  const double maxZ = context.elevationRange().upper();
-
-  const QRectF visibleRegion( minDistance, minZ, maxDistance - minDistance, maxZ - minZ );
-  QPainterPath clipPath;
-  clipPath.addPolygon( context.worldTransform().map( visibleRegion ) );
-  painter->setClipPath( clipPath, Qt::ClipOperation::IntersectClip );
-
-  switch ( symbology )
-  {
-    case Qgis::ProfileSurfaceSymbology::Line:
-      lineSymbol->startRender( context.renderContext() );
-      break;
-    case Qgis::ProfileSurfaceSymbology::FillBelow:
-      fillSymbol->startRender( context.renderContext() );
-      break;
-  }
-
-  QPolygonF currentLine;
-  double prevDistance = std::numeric_limits< double >::quiet_NaN();
-  double currentPartStartDistance = 0;
-  for ( auto pointIt = results.constBegin(); pointIt != results.constEnd(); ++pointIt )
-  {
-    if ( std::isnan( prevDistance ) )
-    {
-      currentPartStartDistance = pointIt.key();
-    }
-    if ( std::isnan( pointIt.value() ) )
-    {
-      if ( currentLine.length() > 1 )
-      {
-        switch ( symbology )
-        {
-          case Qgis::ProfileSurfaceSymbology::Line:
-            lineSymbol->renderPolyline( currentLine, nullptr, context.renderContext() );
-            break;
-          case Qgis::ProfileSurfaceSymbology::FillBelow:
-            currentLine.append( context.worldTransform().map( QPointF( prevDistance, minZ ) ) );
-            currentLine.append( context.worldTransform().map( QPointF( currentPartStartDistance, minZ ) ) );
-            currentLine.append( currentLine.at( 0 ) );
-            fillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
-            break;
-        }
-      }
-      prevDistance = pointIt.key();
-      currentLine.clear();
-      continue;
-    }
-
-    currentLine.append( context.worldTransform().map( QPointF( pointIt.key(), pointIt.value() ) ) );
-    prevDistance = pointIt.key();
-  }
-  if ( currentLine.length() > 1 )
-  {
-    switch ( symbology )
-    {
-      case Qgis::ProfileSurfaceSymbology::Line:
-        lineSymbol->renderPolyline( currentLine, nullptr, context.renderContext() );
-        break;
-      case Qgis::ProfileSurfaceSymbology::FillBelow:
-        currentLine.append( context.worldTransform().map( QPointF( prevDistance, minZ ) ) );
-        currentLine.append( context.worldTransform().map( QPointF( currentPartStartDistance, minZ ) ) );
-        currentLine.append( currentLine.at( 0 ) );
-        fillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
-        break;
-    }
-  }
-
-  switch ( symbology )
-  {
-    case Qgis::ProfileSurfaceSymbology::Line:
-      lineSymbol->stopRender( context.renderContext() );
-      break;
-    case Qgis::ProfileSurfaceSymbology::FillBelow:
-      fillSymbol->stopRender( context.renderContext() );
-      break;
-  }
-}
-
-QgsProfileSnapResult QgsMeshLayerProfileResults::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
-{
-  // TODO -- consider an index if performance is an issue
-  QgsProfileSnapResult result;
-
-  double prevDistance = std::numeric_limits< double >::max();
-  double prevElevation = 0;
-  for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
-  {
-    // find segment which corresponds to the given distance along curve
-    if ( it != results.constBegin() && prevDistance <= point.distance() && it.key() >= point.distance() )
-    {
-      const double dx = it.key() - prevDistance;
-      const double dy = it.value() - prevElevation;
-      const double snappedZ = ( dy / dx ) * ( point.distance() - prevDistance ) + prevElevation;
-
-      if ( std::fabs( point.elevation() - snappedZ ) > context.maximumElevationDelta )
-        return QgsProfileSnapResult();
-
-      result.snappedPoint = QgsProfilePoint( point.distance(), snappedZ );
-      break;
-    }
-
-    prevDistance = it.key();
-    prevElevation = it.value();
-  }
-  return result;
-}
-
-void QgsMeshLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
-{
-  const QgsMeshLayerProfileGenerator *mlGenerator = qgis::down_cast<  const QgsMeshLayerProfileGenerator * >( generator );
-
-  lineSymbol.reset( mlGenerator->mLineSymbol->clone() );
-  fillSymbol.reset( mlGenerator->mFillSymbol->clone() );
-  symbology = mlGenerator->mSymbology;
-}
-
 //
 // QgsMeshLayerProfileGenerator
 //
@@ -200,9 +45,6 @@ QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer,
   : mId( layer->id() )
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
-  , mSymbology( qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology() )
-  , mLineSymbol( qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() )
-  , mFillSymbol( qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() )
   , mSourceCrs( layer->crs() )
   , mTargetCrs( request.crs() )
   , mTransformContext( request.transformContext() )
@@ -212,6 +54,10 @@ QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer,
 {
   layer->updateTriangularMesh();
   mTriangularMesh = *layer->triangularMesh();
+
+  mSymbology = qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
+  mLineSymbol.reset( qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() );
+  mFillSymbol.reset( qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
 
 QString QgsMeshLayerProfileGenerator::sourceId() const
