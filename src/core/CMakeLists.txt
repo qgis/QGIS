@@ -45,6 +45,7 @@ set(QGIS_CORE_SRCS
   classification/qgsclassificationlogarithmic.cpp
 
   elevation/qgsabstractprofilegenerator.cpp
+  elevation/qgsabstractprofilesurfacegenerator.cpp
   elevation/qgsabstractprofilesource.cpp
   elevation/qgsprofilerenderer.cpp
   elevation/qgsprofilerequest.cpp
@@ -1276,6 +1277,7 @@ set(QGIS_CORE_HDRS
   editform/qgsattributeeditorqmlelement.h
 
   elevation/qgsabstractprofilegenerator.h
+  elevation/qgsabstractprofilesurfacegenerator.h
   elevation/qgsabstractprofilesource.h
   elevation/qgsprofilepoint.h
   elevation/qgsprofilerenderer.h

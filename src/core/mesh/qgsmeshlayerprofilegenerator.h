@@ -19,12 +19,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsabstractprofilegenerator.h"
+#include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
 #include "qgstriangularmesh.h"
-#include "qgslinesymbol.h"
 
 #include <memory>
 
@@ -44,28 +43,12 @@ class QgsProfileSnapContext;
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileResults
+class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
 
   public:
 
-    QgsPointSequence rawPoints;
-    QMap< double, double> results;
-    double minZ = std::numeric_limits< double >::max();
-    double maxZ = std::numeric_limits< double >::lowest();
-
-    Qgis::ProfileSurfaceSymbology symbology = Qgis::ProfileSurfaceSymbology::Line;
-    std::unique_ptr< QgsLineSymbol > lineSymbol;
-    std::unique_ptr< QgsFillSymbol > fillSymbol;
-
     QString type() const override;
-    QMap< double, double > distanceToHeightMap() const override;
-    QgsDoubleRange zRange() const override;
-    QgsPointSequence sampledPoints() const override;
-    QVector< QgsGeometry > asGeometries() const override;
-    void renderResults( QgsProfileRenderContext &context ) override;
-    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
-    void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 };
 
 
@@ -76,7 +59,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileResults
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileGenerator
+class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfaceGenerator
 {
 
   public:
@@ -101,10 +84,6 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileGenera
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
-
-    Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
-    std::unique_ptr< QgsLineSymbol > mLineSymbol;
-    std::unique_ptr< QgsFillSymbol > mFillSymbol;
 
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;
