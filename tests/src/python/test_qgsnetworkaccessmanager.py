@@ -58,6 +58,45 @@ class TestQgsNetworkAccessManager(unittest.TestCase):
         cls.httpd_thread.setDaemon(True)
         cls.httpd_thread.start()
 
+    def test_request_preprocessor(self):
+        """Test request preprocessor."""
+        url = 'http://localhost:' + str(TestQgsNetworkAccessManager.port) + '/qgis_local_server/index.html'
+
+        TestQgsNetworkAccessManager.preprocessed = False
+
+        def _preprocessor(request):
+            self.assertIsInstance(request, QNetworkRequest)
+            self.assertEqual(request.url(), QUrl(url))
+            TestQgsNetworkAccessManager.preprocessed = True
+
+        _id = QgsNetworkAccessManager.setRequestPreprocessor(_preprocessor)
+
+        reply = QgsNetworkAccessManager.instance().get(QNetworkRequest(QUrl(url)))
+        spy = QSignalSpy(reply.finished)
+        spy.wait(1000)
+
+        self.assertTrue(TestQgsNetworkAccessManager.preprocessed)
+
+        # test a second time
+        TestQgsNetworkAccessManager.preprocessed = False
+        reply = QgsNetworkAccessManager.instance().get(QNetworkRequest(QUrl(url)))
+        self.assertTrue(TestQgsNetworkAccessManager.preprocessed)
+        spy = QSignalSpy(reply.finished)
+        spy.wait(1000)
+
+        # remove preprocessor and ensure that it's no longer called
+        QgsNetworkAccessManager.removeRequestPreprocessor(_id)
+        TestQgsNetworkAccessManager.preprocessed = False
+        reply = QgsNetworkAccessManager.instance().get(QNetworkRequest(QUrl(url)))
+        spy = QSignalSpy(reply.finished)
+        spy.wait(1000)
+
+        self.assertFalse(TestQgsNetworkAccessManager.preprocessed)
+
+        # no longer exists, so a key error should be raised
+        with self.assertRaises(KeyError):
+            QgsNetworkAccessManager.removeRequestPreprocessor(_id)
+
     def _on_reply_ready_read(self, reply):
         _bytes = reply.peek(reply.bytesAvailable())
         self.assertEqual(_bytes.data().decode()[:14], '<!DOCTYPE html')
