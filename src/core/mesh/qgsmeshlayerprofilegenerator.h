@@ -72,7 +72,7 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
     ~QgsMeshLayerProfileGenerator() override;
 
     QString sourceId() const override;
-    bool generateProfile() override;
+    bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
 

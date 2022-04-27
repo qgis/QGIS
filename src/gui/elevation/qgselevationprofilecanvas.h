@@ -211,6 +211,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void scheduleDeferredRedraw();
     void startDeferredRegeneration();
     void startDeferredRedraw();
+    void refineResults();
 
   private:
 
@@ -248,6 +249,10 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     bool mFirstDrawOccurred = false;
 
     bool mSnappingEnabled = true;
+
+    bool mZoomFullWhenJobFinished = true;
+
+    static constexpr double MAX_ERROR_PIXELS = 2;
 };
 
 #endif // QGSELEVATIONPROFILECANVAS_H

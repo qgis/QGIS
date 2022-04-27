@@ -178,6 +178,79 @@ class CORE_EXPORT QgsAbstractProfileResults
 };
 
 /**
+ * Encapsulates the context in which an elevation profile is to be generated.
+ */
+class CORE_EXPORT QgsProfileGenerationContext
+{
+  public:
+
+    /**
+     * Returns the maximum allowed error in the generated result, in profile curve map units.
+     *
+     * By default this is NaN, which indicates that the profile should be generated in the highest precision possible.
+     * Larger values will result in a faster profile to generate.
+     *
+     * \see setMaximumErrorMapUnits()
+     */
+    double maximumErrorMapUnits() const { return mMaxErrorMapUnits; }
+
+    /**
+     * Sets the maximum allowed \a error in the generated result, in profile curve map units.
+     *
+     * By default this is NaN, which indicates that the profile should be generated in the highest precision possible.
+     * Larger values will result in a faster profile to generate.
+     *
+     * \see maximumErrorMapUnits()
+     */
+    void setMaximumErrorMapUnits( double error ) { mMaxErrorMapUnits = error; }
+
+    /**
+     * Returns the range of distances to include in the generation.
+     *
+     * Distances outside this range may be excluded from the generation (if it results in faster profile generation).
+     *
+     * \see setDistanceRange()
+     */
+    QgsDoubleRange distanceRange() const { return mDistanceRange; }
+
+    /**
+     * Sets the \a range of distances to include in the generation.
+     *
+     * Distances outside this range may be excluded from the generation (if it results in faster profile generation).
+     *
+     * \see distanceRange()
+     */
+    void setDistanceRange( const QgsDoubleRange &range ) { mDistanceRange = range; }
+
+    /**
+     * Returns the range of elevations to include in the generation.
+     *
+     * Elevations outside this range may be excluded from the generation (if it results in faster profile generation).
+     *
+     * \see setElevationRange()
+     */
+    QgsDoubleRange elevationRange() const { return mElevationRange; }
+
+    /**
+     * Sets the \a range of elevations to include in the generation.
+     *
+     * Elevations outside this range may be excluded from the generation (if it results in faster profile generation).
+     *
+     * \see elevationRange()
+     */
+    void setElevationRange( const QgsDoubleRange &range ) { mElevationRange = range; }
+
+    bool operator==( const QgsProfileGenerationContext &other ) const;
+    bool operator!=( const QgsProfileGenerationContext &other ) const;
+
+  private:
+
+    double mMaxErrorMapUnits = std::numeric_limits< double >::quiet_NaN();
+    QgsDoubleRange mDistanceRange;
+    QgsDoubleRange mElevationRange;
+};
+
+/**
  * \brief Abstract base class for objects which generate elevation profiles.
  *
  * The generation is typically done in a background
@@ -223,7 +296,7 @@ class CORE_EXPORT QgsAbstractProfileGenerator
      * Returns TRUE if the profile was generated successfully (i.e. the generation
      * was not canceled early).
      */
-    virtual bool generateProfile() = 0;
+    virtual bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) = 0;
 
     /**
      * Access to feedback object of the generator (may be NULLPTR)

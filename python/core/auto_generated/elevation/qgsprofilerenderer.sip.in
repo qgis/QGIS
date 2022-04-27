@@ -80,6 +80,13 @@ Block until the current job has finished.
 Returns ``True`` if the generation job is currently running in background.
 %End
 
+    void setContext( const QgsProfileGenerationContext &context );
+%Docstring
+Sets the ``context`` in which the profile generation will occur.
+
+Depending on the sources present, this may trigger automatically a regeneration of results.
+%End
+
     void replaceSource( QgsAbstractProfileSource *source );
 %Docstring
 Replaces the existing source with matching ID.

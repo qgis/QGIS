@@ -72,13 +72,28 @@ QString QgsRasterLayerProfileGenerator::sourceId() const
 
 QgsRasterLayerProfileGenerator::~QgsRasterLayerProfileGenerator() = default;
 
-bool QgsRasterLayerProfileGenerator::generateProfile()
+bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGenerationContext &context )
 {
   if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;
 
+  const double startDistanceOffset = !context.distanceRange().isInfinite() ? context.distanceRange().lower() : 0;
+  const double endDistance = context.distanceRange().upper();
+
+  std::unique_ptr< QgsCurve > trimmedCurve;
+  QgsCurve *sourceCurve = nullptr;
+  if ( startDistanceOffset > 0 || endDistance < mProfileCurve->length() )
+  {
+    trimmedCurve.reset( mProfileCurve->curveSubstring( startDistanceOffset, endDistance ) );
+    sourceCurve = trimmedCurve.get();
+  }
+  else
+  {
+    sourceCurve = mProfileCurve.get();
+  }
+
   // we need to transform the profile curve to the raster's CRS
-  std::unique_ptr< QgsCurve > transformedCurve( mProfileCurve->clone() );
+  std::unique_ptr< QgsCurve > transformedCurve( sourceCurve->clone() );
   const QgsCoordinateTransform rasterToTargetTransform( mSourceCrs, mTargetCrs, mTransformContext );
   try
   {
@@ -109,12 +124,23 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
   if ( mFeedback->isCanceled() )
     return false;
 
+  double stepDistance = mStepDistance;
+  if ( !std::isnan( context.maximumErrorMapUnits() ) )
+  {
+    // convert the maximum error in curve units to a step distance
+    // TODO -- there's no point in this being << pixel size!
+    if ( std::isnan( stepDistance ) || context.maximumErrorMapUnits() > stepDistance )
+    {
+      stepDistance = context.maximumErrorMapUnits();
+    }
+  }
+
   QSet< QgsPointXY > profilePoints;
-  if ( !std::isnan( mStepDistance ) )
+  if ( !std::isnan( stepDistance ) )
   {
     // if specific step distance specified, use this to generate points along the curve
-    QgsGeometry densifiedCurve( mProfileCurve->clone() );
-    densifiedCurve = densifiedCurve.densifyByDistance( mStepDistance );
+    QgsGeometry densifiedCurve( sourceCurve->clone() );
+    densifiedCurve = densifiedCurve.densifyByDistance( stepDistance );
     densifiedCurve.transform( rasterToTargetTransform, Qgis::TransformDirection::Reverse );
     profilePoints.reserve( densifiedCurve.constGet()->nCoordinates() );
     for ( auto it = densifiedCurve.vertices_begin(); it != densifiedCurve.vertices_end(); ++it )
@@ -179,7 +205,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
 
     // there's two potential code paths we use here, depending on if we want to sample at every pixel, or if we only want to
     // sample at specific points
-    if ( !std::isnan( mStepDistance ) )
+    if ( !std::isnan( stepDistance ) )
     {
       auto it = profilePoints.begin();
       while ( it != profilePoints.end() )
@@ -265,7 +291,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
     return false;
 
   // convert x/y values back to distance/height values
-  QgsGeos originalCurveGeos( mProfileCurve.get() );
+  QgsGeos originalCurveGeos( sourceCurve );
   originalCurveGeos.prepareGeometry();
   QString lastError;
   for ( const QgsPoint &pixel : std::as_const( mResults->rawPoints ) )
@@ -273,7 +299,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile()
     if ( mFeedback->isCanceled() )
       return false;
 
-    const double distance = originalCurveGeos.lineLocatePoint( pixel, &lastError );
+    const double distance = originalCurveGeos.lineLocatePoint( pixel, &lastError ) + startDistanceOffset;
 
     if ( !std::isnan( pixel.z() ) )
     {
