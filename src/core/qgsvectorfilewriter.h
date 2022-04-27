@@ -821,10 +821,10 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static QString convertCodecNameForEncodingOption( const QString &codecName );
 
     //! Checks whether there were any errors in constructor
-    QgsVectorFileWriter::WriterError hasError();
+    QgsVectorFileWriter::WriterError hasError() const;
 
     //! Retrieves error message
-    QString errorMessage();
+    QString errorMessage() const;
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
