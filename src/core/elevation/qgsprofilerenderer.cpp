@@ -142,11 +142,20 @@ void QgsProfilePlotRenderer::setContext( const QgsProfileGenerationContext &cont
   if ( mContext == context )
     return;
 
+  const double maxErrorChanged = !qgsDoubleNear( context.maximumErrorMapUnits(), mContext.maximumErrorMapUnits() );
+  const double distanceRangeChanged = context.distanceRange() != mContext.distanceRange();
+  const double elevationRangeChanged = context.elevationRange() != mContext.elevationRange();
   mContext = context;
 
-  // TODO -- regenerate only those results which are refinable
   for ( auto &job : mJobs )
   {
+    // regenerate only those results which are refinable
+    const bool jobNeedsRegeneration = ( maxErrorChanged && ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit ) )
+                                      || ( distanceRangeChanged && ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsDistanceRange ) )
+                                      || ( elevationRangeChanged && ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsElevationRange ) );
+    if ( !jobNeedsRegeneration )
+      continue;
+
     job->mutex.lock();
     job->context = mContext;
     if ( job->results && job->complete )

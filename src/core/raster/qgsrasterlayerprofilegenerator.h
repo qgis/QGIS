@@ -70,6 +70,7 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurf
     ~QgsRasterLayerProfileGenerator() override;
 
     QString sourceId() const override;
+    Qgis::ProfileGeneratorFlags flags() const override;
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;

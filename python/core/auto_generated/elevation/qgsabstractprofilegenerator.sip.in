@@ -267,6 +267,11 @@ For generators associated with a map layer the source ID will match the layer's 
 will have a different unique ID with its own custom interpretation.gen
 %End
 
+    virtual Qgis::ProfileGeneratorFlags flags() const;
+%Docstring
+Returns flags which reflect how the profile generator operates.
+%End
+
     virtual bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) = 0;
 %Docstring
 Generate the profile (based on data stored in the class).

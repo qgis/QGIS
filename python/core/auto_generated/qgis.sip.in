@@ -1007,6 +1007,15 @@ The development version
       FillBelow,
     };
 
+    enum class ProfileGeneratorFlag
+    {
+      RespectsMaximumErrorMapUnit,
+      RespectsDistanceRange,
+      RespectsElevationRange,
+    };
+    typedef QFlags<Qgis::ProfileGeneratorFlag> ProfileGeneratorFlags;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -1120,6 +1129,8 @@ QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis:
 QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
 
 QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
+
+QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
 
 
 

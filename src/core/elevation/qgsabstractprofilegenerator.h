@@ -291,6 +291,11 @@ class CORE_EXPORT QgsAbstractProfileGenerator
     virtual QString sourceId() const = 0;
 
     /**
+     * Returns flags which reflect how the profile generator operates.
+     */
+    virtual Qgis::ProfileGeneratorFlags flags() const;
+
+    /**
      * Generate the profile (based on data stored in the class).
      *
      * Returns TRUE if the profile was generated successfully (i.e. the generation
