@@ -3402,7 +3402,7 @@ bool QgsOracleProviderMetadata::styleExists( const QString &uri, const QString &
                      " AND f_table_schema=?"
                      " AND f_table_name=?"
                      " AND f_geometry_column" +
-                     QString( dsUri.geometryColumn().isNull() ? " IS NULL" : "=?" ) +
+                     QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
                      " AND styleName=?" ) )
   {
     errorCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
@@ -3412,7 +3412,7 @@ bool QgsOracleProviderMetadata::styleExists( const QString &uri, const QString &
   qry.addBindValue( dsUri.database() );
   qry.addBindValue( dsUri.schema() );
   qry.addBindValue( dsUri.table() );
-  if ( !dsUri.geometryColumn().isNull() )
+  if ( !dsUri.geometryColumn().isEmpty() )
     qry.addBindValue( dsUri.geometryColumn() );
   qry.addBindValue( styleId.isEmpty() ? dsUri.table() : styleId );
   if ( !qry.exec() )
@@ -3491,7 +3491,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
                      " AND f_table_schema=?"
                      " AND f_table_name=?"
                      " AND f_geometry_column" +
-                     QString( dsUri.geometryColumn().isNull() ? " IS NULL" : "=?" ) +
+                     QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
                      " AND styleName=?" ) )
   {
     errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
@@ -3501,7 +3501,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
   qry.addBindValue( dsUri.database() );
   qry.addBindValue( dsUri.schema() );
   qry.addBindValue( dsUri.table() );
-  if ( !dsUri.geometryColumn().isNull() )
+  if ( !dsUri.geometryColumn().isEmpty() )
     qry.addBindValue( dsUri.geometryColumn() );
   qry.addBindValue( styleName.isEmpty() ? dsUri.table() : styleName );
   if ( !qry.exec() )
@@ -3640,7 +3640,7 @@ QString QgsOracleProviderMetadata::loadStyle( const QString &uri, QString &errCa
                      " AND f_table_schema=?"
                      " AND f_table_name=?"
                      " AND f_geometry_column" +
-                     QString( dsUri.geometryColumn().isNull() ? " IS NULL" : "=?" ) +
+                     QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
                      " ORDER BY useAsDefault DESC"
                      ") WHERE rownum=1" ) )
   {
@@ -3651,7 +3651,7 @@ QString QgsOracleProviderMetadata::loadStyle( const QString &uri, QString &errCa
   qry.addBindValue( dsUri.database() );
   qry.addBindValue( dsUri.schema() );
   qry.addBindValue( dsUri.table() );
-  if ( !dsUri.geometryColumn().isNull() )
+  if ( !dsUri.geometryColumn().isEmpty() )
     qry.addBindValue( dsUri.geometryColumn() );
 
   if ( !qry.exec() )
@@ -3703,7 +3703,7 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri,
   }
 
   if ( !qry.prepare( "SELECT id,styleName,description FROM layer_styles WHERE f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column"
-                     + QString( dsUri.geometryColumn().isNull() ? " IS NULL" : "=?" ) ) )
+                     + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) ) )
   {
     errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
@@ -3712,7 +3712,7 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri,
   qry.addBindValue( dsUri.database() );
   qry.addBindValue( dsUri.schema() );
   qry.addBindValue( dsUri.table() );
-  if ( !dsUri.geometryColumn().isNull() )
+  if ( !dsUri.geometryColumn().isEmpty() )
     qry.addBindValue( dsUri.geometryColumn() );
   if ( !qry.exec() )
   {
@@ -3733,7 +3733,7 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri,
   qry.finish();
 
   if ( !qry.prepare( "SELECT id,styleName,description FROM layer_styles WHERE NOT (f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column"
-                     + QString( dsUri.geometryColumn().isNull() ? " IS NULL" : "=?" )
+                     + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" )
                      + ") ORDER BY update_time DESC" ) )
   {
     errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
@@ -3743,7 +3743,7 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri,
   qry.addBindValue( dsUri.database() );
   qry.addBindValue( dsUri.schema() );
   qry.addBindValue( dsUri.table() );
-  if ( !dsUri.geometryColumn().isNull() )
+  if ( !dsUri.geometryColumn().isEmpty() )
     qry.addBindValue( dsUri.geometryColumn() );
   if ( qry.exec() )
   {
