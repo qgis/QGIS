@@ -34,30 +34,13 @@ class QgsMdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsM
     //! Constructor
     QgsMdalSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-
-    /**
-     * Sets the dialog map canvas
-     * \see mapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
-
-    /**
-     * Returns the dialog map canvas
-     * \see setMapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    QgsMapCanvas *mapCanvas() override;
-
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
 
   private:
     QString mMeshPath;
-    QgsMapCanvas *mMapCanvas = nullptr;
+
 };
 
 #endif // QGMDALSOURCESELECT_H

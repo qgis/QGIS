@@ -169,16 +169,6 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   cbxAllowGeometrylessTables->setDisabled( true );
 }
 
-void QgsMssqlSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
-{
-  mMapCanvas = mapCanvas;
-}
-
-QgsMapCanvas *QgsMssqlSourceSelect::mapCanvas()
-{
-  return mMapCanvas;
-}
-
 void QgsMssqlSourceSelect::btnNew_clicked()
 {
   QgsMssqlNewConnection nc( this );

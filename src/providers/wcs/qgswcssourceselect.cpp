@@ -192,11 +192,6 @@ void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
   emit enableButtons( true );
 }
 
-void QgsWCSSourceSelect::populateExtent()
-{
-  QgsOWSSourceSelect::prepareExtent();
-}
-
 void QgsWCSSourceSelect::updateButtons()
 {
 

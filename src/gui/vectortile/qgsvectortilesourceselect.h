@@ -44,22 +44,6 @@ class QgsVectorTileSourceSelect : public QgsAbstractDataSourceWidget, private Ui
     //! Determines the layers the user selected
     void addButtonClicked() override;
 
-    /**
-     * Sets the dialog map canvas
-     * \see mapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
-
-    /**
-     * Returns the dialog map canvas
-     * \see setMapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    QgsMapCanvas *mapCanvas() override;
-
   private slots:
 
     //! Opens the create connection dialog to build a new connection
@@ -80,8 +64,6 @@ class QgsVectorTileSourceSelect : public QgsAbstractDataSourceWidget, private Ui
     void populateConnectionList();
     void setConnectionListPosition();
     void showHelp();
-
-    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 ///@endcond

@@ -60,22 +60,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     void reset() override;
 
-    /**
-     * Sets the dialog map canvas
-     * \see mapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
-
-    /**
-     * Returns the dialog map canvas
-     * \see setMapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    QgsMapCanvas *mapCanvas() override;
-
   private slots:
 
     //! Opens the create connection dialog to build a new connection
@@ -207,7 +191,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
 
     QgsWmsInterpretationComboBox *mInterpretationCombo = nullptr;
-    QgsMapCanvas *mMapCanvas = nullptr;
 
   private slots:
     void lstTilesets_itemClicked( QTableWidgetItem *item );

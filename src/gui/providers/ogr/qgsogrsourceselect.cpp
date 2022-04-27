@@ -144,17 +144,6 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mOpenOptionsGroupBox->setVisible( false );
 }
 
-void QgsOgrSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
-{
-  mMapCanvas = mapCanvas;
-
-}
-
-QgsMapCanvas *QgsOgrSourceSelect::mapCanvas()
-{
-  return mMapCanvas;
-}
-
 QStringList QgsOgrSourceSelect::dataSources()
 {
   return mDataSources;

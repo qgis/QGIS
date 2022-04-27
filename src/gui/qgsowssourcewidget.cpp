@@ -39,7 +39,7 @@ QgsOWSSourceWidget::QgsOWSSourceWidget( const QString &providerKey, QWidget *par
   mSpatialExtentBox->setMapCanvas( mapCanvas() );
 }
 
-void QgsOWSSourceWidget::setExtent( QgsRectangle extent )
+void QgsOWSSourceWidget::setExtent( const QgsRectangle &extent )
 {
   QgsCoordinateReferenceSystem destinationCrs;
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );

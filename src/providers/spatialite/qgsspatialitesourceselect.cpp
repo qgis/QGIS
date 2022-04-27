@@ -93,16 +93,6 @@ QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
   settings.setValue( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 }
 
-void QgsSpatiaLiteSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
-{
-  mMapCanvas = mapCanvas;
-}
-
-QgsMapCanvas *QgsSpatiaLiteSourceSelect::mapCanvas()
-{
-  return mMapCanvas;
-}
-
 
 // Remember which database is selected
 void QgsSpatiaLiteSourceSelect::cmbConnections_activated( int )

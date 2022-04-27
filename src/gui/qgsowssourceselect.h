@@ -69,29 +69,8 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     void reset() override;
 
-    /**
-     * Prepares the spatial extent box with the general settings
-     * including original crs, destination crs and the map
-     * canvas if it is available.
-     *
-     * \since QGIS 3.24
-     */
-    void prepareExtent() SIP_SKIP;
-
-    /**
-     * Sets the dialog map canvas
-     * \see mapCanvas()
-     * \since QGIS 3.24
-     */
     void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
 
-    /**
-     * Returns the dialog map canvas
-     * \see setMapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    QgsMapCanvas *mapCanvas() override;
 
   protected slots:
     //! show whatever error is exposed.
@@ -195,6 +174,15 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Returns currently selected cache load control
     QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
 
+    /**
+     * Prepares the spatial extent box with the general settings
+     * including original crs, destination crs and the map
+     * canvas if it is available.
+     *
+     * \since QGIS 3.26
+     */
+    void prepareExtent();
+
     QList<QTreeWidgetItem *> mCurrentSelection;
     QTableWidgetItem *mCurrentTileset = nullptr;
 
@@ -255,8 +243,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     //! Layer specific settings widget
     QgsOWSSourceWidget *mSourceWidget = nullptr;
-
-    QgsMapCanvas *mMapCanvas = nullptr;
 
   private slots:
     void mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );

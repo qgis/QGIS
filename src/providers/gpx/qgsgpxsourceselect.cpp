@@ -41,18 +41,6 @@ QgsGpxSourceSelect::QgsGpxSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
            this, &QgsGpxSourceSelect::enableRelevantControls );
 }
 
-void QgsGpxSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
-{
-  mMapCanvas = mapCanvas;
-
-}
-
-QgsMapCanvas *QgsGpxSourceSelect::mapCanvas()
-{
-  return mMapCanvas;
-}
-
-
 void QgsGpxSourceSelect::addButtonClicked()
 {
   if ( mGpxPath.isEmpty() )

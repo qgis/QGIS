@@ -64,22 +64,6 @@ class QgsSpatiaLiteSourceSelect:  public QgsAbstractDbSourceSelect
     // Store the selected database
     void dbChanged();
 
-    /**
-     * Sets the dialog map canvas
-     * \see mapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
-
-    /**
-     * Returns the dialog map canvas
-     * \see setMapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    QgsMapCanvas *mapCanvas() override;
-
   public slots:
 
     //! Triggered when the provider's connections need to be refreshed
@@ -138,7 +122,6 @@ class QgsSpatiaLiteSourceSelect:  public QgsAbstractDbSourceSelect
 
     QString layerURI( const QModelIndex &index );
     QPushButton *mStatsButton = nullptr;
-    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H

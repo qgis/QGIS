@@ -34,22 +34,6 @@ class QgsGpxSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsGp
     //! Constructor
     QgsGpxSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    /**
-     * Sets the dialog map canvas
-     * \see mapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
-
-    /**
-     * Returns the dialog map canvas
-     * \see setMapCanvas()
-     *
-     * \since QGIS 3.24
-     */
-    QgsMapCanvas *mapCanvas() override;
-
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
@@ -60,7 +44,6 @@ class QgsGpxSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsGp
 
   private:
     QString mGpxPath;
-    QgsMapCanvas *mMapCanvas = nullptr;
 
 };
 
