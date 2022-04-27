@@ -81,6 +81,9 @@ class QgsElevationProfileWidget : public QWidget
     void clear();
     void exportAsPdf();
     void exportAsImage();
+    void nudgeLeft();
+    void nudgeRight();
+    void nudgeCurve( Qgis::BufferSide side );
 
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
@@ -92,6 +95,8 @@ class QgsElevationProfileWidget : public QWidget
     QToolButton *mBtnOptions = nullptr;
     QAction *mCaptureCurveAction = nullptr;
     QAction *mCaptureCurveFromFeatureAction = nullptr;
+    QAction *mNudgeLeftAction = nullptr;
+    QAction *mNudgeRightAction = nullptr;
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;

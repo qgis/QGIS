@@ -1807,6 +1807,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   registerShortcuts( QStringLiteral( "Ctrl+Alt+[" ), QStringLiteral( "mAttributeTablePreviousEditedFeature" ), tr( "Edit previous feature in attribute table" ) );
   registerShortcuts( QStringLiteral( "Ctrl+Alt+]" ), QStringLiteral( "mAttributeTableNextEditedFeature" ), tr( "Edit next feature in attribute table" ) );
   registerShortcuts( QStringLiteral( "Ctrl+Alt+}" ), QStringLiteral( "mAttributeTableLastEditedFeature" ), tr( "Edit last feature in attribute table" ) );
+  registerShortcuts( QStringLiteral( "Ctrl+Alt+," ), QStringLiteral( "mProfileToolNudgeLeft" ), tr( "Nudge profile tool curve to the left" ) );
+  registerShortcuts( QStringLiteral( "Ctrl+Alt+." ), QStringLiteral( "mProfileToolNudgeRight" ), tr( "Nudge profile tool curve to the right" ) );
 
   QgsGui::providerGuiRegistry()->registerGuis( this );
 
