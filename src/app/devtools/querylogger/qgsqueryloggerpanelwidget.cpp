@@ -1,5 +1,5 @@
 /***************************************************************************
-    QgsDatabaseQueryLoggerpanelwidget.cpp
+    qgsqueryloggerpanelwidget.cpp
     -------------------------
     begin                : October 2021
     copyright            : (C) 2021 by Nyall Dawson

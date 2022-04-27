@@ -1,5 +1,5 @@
 /***************************************************************************
-    QgsDatabaseQueryLoggerpanelwidget.h
+    qgsqueryloggerpanelwidget.h
     -------------------------
     begin                : October 2021
     copyright            : (C) 2021 by Nyall Dawson
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QgsDatabaseQueryLoggerPANELWIDGET_H
-#define QgsDatabaseQueryLoggerPANELWIDGET_H
+#ifndef QGSQUERYLOGGERPANELWIDGET_H
+#define QGSQUERYLOGGERPANELWIDGET_H
 
 #include "qgsdevtoolwidget.h"
 #include "ui_qgsqueryloggerpanelbase.h"
@@ -81,4 +81,4 @@ class QgsDatabaseQueryLoggerPanelWidget : public QgsDevToolWidget, private Ui::Q
 };
 
 
-#endif // QgsDatabaseQueryLoggerPANELWIDGET_H
+#endif // QGSQUERYLOGGERPANELWIDGET_H

@@ -1,5 +1,5 @@
 /***************************************************************************
-    QgsDatabaseQueryLoggerwidgetfactory.h
+    qgsqueryloggerwidgetfactory.h
     -------------------------
     begin                : October 2021
     copyright            : (C) 2021 by Nyall Dawson
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QgsDatabaseQueryLoggerWIDGETFACTORY_H
-#define QgsDatabaseQueryLoggerWIDGETFACTORY_H
+#ifndef QGSQUERYLOGGERWIDGETFACTORY_H
+#define QGSQUERYLOGGERWIDGETFACTORY_H
 
 #include "qgsdevtoolwidgetfactory.h"
 
@@ -32,4 +32,4 @@ class QgsDatabaseQueryLoggerWidgetFactory: public QgsDevToolWidgetFactory
 };
 
 
-#endif // QgsDatabaseQueryLoggerWIDGETFACTORY_H
+#endif // QGSQUERYLOGGERWIDGETFACTORY_H
