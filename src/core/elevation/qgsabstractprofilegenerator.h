@@ -178,7 +178,10 @@ class CORE_EXPORT QgsAbstractProfileResults
 };
 
 /**
- * Encapsulates the context in which an elevation profile is to be generated.
+ * \brief Encapsulates the context in which an elevation profile is to be generated.
+ *
+ * \ingroup core
+ * \since QGIS 3.26
  */
 class CORE_EXPORT QgsProfileGenerationContext
 {
