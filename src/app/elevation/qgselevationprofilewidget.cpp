@@ -385,7 +385,35 @@ void QgsElevationProfileWidget::updateCanvasLayers()
 
 void QgsElevationProfileWidget::onTotalPendingJobsCountChanged( int count )
 {
-  mProgressPendingJobs->setVisible( count );
+  if ( count )
+  {
+    mLastJobTime.restart();
+    // if previous job took less than 0.5 seconds, delay the appearance of the
+    // job in progress status bar by 0.5 seconds - this avoids the status bar
+    // rapidly appearing and then disappearing for very fast jobs
+    if ( mLastJobTimeSeconds > 0 && mLastJobTimeSeconds < 0.5 )
+    {
+      mJobProgressBarTimer.setSingleShot( true );
+      mJobProgressBarTimer.setInterval( 500 );
+      disconnect( mJobProgressBarTimerConnection );
+      mJobProgressBarTimerConnection = connect( &mJobProgressBarTimer, &QTimer::timeout, this, [ = ]()
+      {
+        mProgressPendingJobs->setVisible( true );
+      }
+                                              );
+      mJobProgressBarTimer.start();
+    }
+    else
+    {
+      mProgressPendingJobs->setVisible( true );
+    }
+  }
+  else
+  {
+    mJobProgressBarTimer.stop();
+    mLastJobTimeSeconds = mLastJobTime.elapsed() / 1000.0;
+    mProgressPendingJobs->setVisible( false );
+  }
 }
 
 void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve )

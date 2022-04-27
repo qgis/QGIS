@@ -25,6 +25,8 @@
 #include "qgssettingsentryimpl.h"
 
 #include <QWidgetAction>
+#include <QElapsedTimer>
+#include <QTimer>
 
 class QgsDockableWidgetHelper;
 class QgsMapCanvas;
@@ -90,7 +92,13 @@ class QgsElevationProfileWidget : public QWidget
 
     QString mCanvasName;
     QgsMapCanvas *mMainCanvas = nullptr;
+
     QProgressBar *mProgressPendingJobs = nullptr;
+    QElapsedTimer mLastJobTime;
+    double mLastJobTimeSeconds = 0;
+    QTimer mJobProgressBarTimer;
+    QMetaObject::Connection mJobProgressBarTimerConnection;
+
     QMenu *mOptionsMenu = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QAction *mCaptureCurveAction = nullptr;
