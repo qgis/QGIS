@@ -157,6 +157,8 @@ class QgsProfileGenerationContext
 {
 %Docstring(signature="appended")
 Encapsulates the context in which an elevation profile is to be generated.
+
+.. versionadded:: 3.26
 %End
 
 %TypeHeaderCode
