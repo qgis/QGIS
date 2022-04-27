@@ -124,7 +124,7 @@ Controls if this element should be labeled with a title (field, relation or grou
 .. versionadded:: 2.18
 %End
 
-    const QFont labelFont() const;
+    QFont labelFont() const;
 %Docstring
 Returns the custom label font, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideStyleLabel` is also set.
 
@@ -150,7 +150,7 @@ Sets the custom ``labelFont``, this is only effective if :py:func:`~QgsAttribute
 .. versionadded:: 3.26
 %End
 
-    const QColor labelColor() const;
+    QColor labelColor() const;
 %Docstring
 Returns the custom label color, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideStyleLabel` is also set.
 

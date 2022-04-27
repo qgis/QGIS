@@ -1611,7 +1611,10 @@ void QgsAttributeForm::init()
           WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
           if ( widgetInfo.overrideLabelStyle )
           {
-            widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
+            if ( widgetInfo.labelColor.isValid() )
+            {
+              widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
+            }
             widgetInfo.widget->setFont( widgetInfo.labelFont );
           }
           layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
@@ -1659,8 +1662,11 @@ void QgsAttributeForm::init()
 
         if ( widgetInfo.showLabel && widgetInfo.overrideLabelStyle )
         {
+          if ( widgetInfo.labelColor.isValid() )
+          {
+            collapsibleGroupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
+          }
           collapsibleGroupBox->setFont( widgetInfo.labelFont );
-          collapsibleGroupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
           collapsibleGroupBox->setTitle( widgetInfo.labelText );
         }
 
@@ -1685,7 +1691,10 @@ void QgsAttributeForm::init()
         if ( widgetInfo.overrideLabelStyle )
         {
           label->setFont( widgetInfo.labelFont );
-          label->setStyleSheet( QStringLiteral( "QLabel { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
+          if ( widgetInfo.labelColor.isValid() )
+          {
+            label->setStyleSheet( QStringLiteral( "QLabel { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
+          }
         }
         label->setToolTip( widgetInfo.toolTip );
         if ( columnCount > 1 && !widgetInfo.labelOnTop )
@@ -2262,7 +2271,10 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           if ( newWidgetInfo.overrideLabelStyle )
           {
             groupBox->setFont( newWidgetInfo.labelFont );
-            groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( newWidgetInfo.labelColor.name( QColor::HexArgb ) ) );
+            if ( newWidgetInfo.labelColor.isValid() )
+            {
+              groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( newWidgetInfo.labelColor.name( QColor::HexArgb ) ) );
+            }
           }
         }
         myContainer = groupBox;
@@ -2323,7 +2335,10 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           if ( widgetInfo.overrideLabelStyle )
           {
             mypLabel->setFont( widgetInfo.labelFont );
-            mypLabel->setStyleSheet( QStringLiteral( "QLabel { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
+            if ( widgetInfo.labelColor.isValid() )
+            {
+              mypLabel->setStyleSheet( QStringLiteral( "QLabel { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
+            }
           }
 
           // Alias DD overrides

@@ -16,8 +16,6 @@
 #ifndef QGSTABWIDGET_H
 #define QGSTABWIDGET_H
 
-#include <memory>
-
 #include <QTabWidget>
 #include "qgstabbarproxystyle.h"
 
@@ -123,7 +121,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
 
     QList<TabInformation> mTabs;
     bool mSetTabVisibleFlag = false;
-    std::unique_ptr<QgsTabBarProxyStyle> mTabBarStyle;
+    QgsTabBarProxyStyle *mTabBarStyle = nullptr;
 };
 
 #endif // QGSTABWIDGET_H

@@ -32,7 +32,7 @@ QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
   elem.setAttribute( QStringLiteral( "labelColor" ), QgsSymbolLayerUtils::encodeColor( mLabelColor ) );
   elem.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, QStringLiteral( "labelFont" ) ) );
-  elem.setAttribute( QStringLiteral( "overrideLabelStyle" ), mOverrideLabelStyle );
+  elem.setAttribute( QStringLiteral( "overrideLabelStyle" ), mOverrideLabelStyle ? QChar( '1' ) : QChar( '0' ) );
   saveConfiguration( elem, doc );
   return elem;
 }
@@ -47,7 +47,7 @@ void QgsAttributeEditorElement::setShowLabel( bool showLabel )
   mShowLabel = showLabel;
 }
 
-const QFont QgsAttributeEditorElement::labelFont() const
+QFont QgsAttributeEditorElement::labelFont() const
 {
   return mLabelFont;
 }
@@ -57,7 +57,7 @@ void QgsAttributeEditorElement::setLabelFont( const QFont &labelFont )
   mLabelFont = labelFont;
 }
 
-const QColor QgsAttributeEditorElement::labelColor() const
+QColor QgsAttributeEditorElement::labelColor() const
 {
   return mLabelColor;
 }

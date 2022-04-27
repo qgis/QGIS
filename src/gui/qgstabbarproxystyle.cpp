@@ -21,25 +21,33 @@
 ///@cond PRIVATE
 
 QgsTabBarProxyStyle::QgsTabBarProxyStyle( QTabBar *tabBar )
-  : QProxyStyle()
-  , mTabBar( tabBar )
+  : QgsProxyStyle( tabBar )
 {
 }
 
 void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const
 {
-  if ( element == CE_TabBarTab && mTabStyles.contains( mTabBar->tabAt( option->rect.center() ) ) )
+
+  QTabBar *tabBar { qobject_cast<QTabBar *>( parent() ) };
+
+  if ( tabBar )
   {
-    if ( const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>( option ) )
+    if ( element == CE_TabBarTab && mTabStyles.contains( tabBar->tabAt( option->rect.center() ) ) )
     {
-      painter->save();
-      const TabStyle &style { mTabStyles.value( mTabBar->tabAt( option->rect.center() ) ) };
-      painter->setFont( style.font );
-      QStyleOptionTab opt { *tab };
-      opt.palette.setBrush( QPalette::WindowText, style.color );
-      QProxyStyle::drawControl( element, &opt, painter, widget );
-      painter->restore();
-      return;
+      if ( const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>( option ) )
+      {
+        painter->save();
+        const TabStyle &style { mTabStyles.value( tabBar->tabAt( option->rect.center() ) ) };
+        painter->setFont( style.font );
+        QStyleOptionTab opt { *tab };
+        if ( style.color.isValid( ) )
+        {
+          opt.palette.setBrush( QPalette::WindowText, style.color );
+        }
+        QProxyStyle::drawControl( element, &opt, painter, widget );
+        painter->restore();
+        return;
+      }
     }
   }
 

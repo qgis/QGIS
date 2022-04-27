@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>384</width>
-    <height>77</height>
+    <height>69</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,6 +20,18 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="0" colspan="2">
     <widget class="QFrame" name="horizontalFrame_2">
      <layout class="QVBoxLayout" name="verticalLayout_2">

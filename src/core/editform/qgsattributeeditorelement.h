@@ -151,7 +151,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * \see setOverrideLabelStyle()
      * \since QGIS 3.26
      */
-    const QFont labelFont() const;
+    QFont labelFont() const;
 
     /**
      * Sets the custom \a labelFont, this is only effective if overrideStyleLabel() is also set.
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * \see setOverrideLabelStyle()
      * \since QGIS 3.26
      */
-    const QColor labelColor() const;
+    QColor labelColor() const;
 
     /**
      * Sets the custom \a labelColor, this is only effective if overrideStyleLabel() is also set.

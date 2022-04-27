@@ -15,6 +15,8 @@
 #ifndef QGSTABBARPROXYSTYLE_H
 #define QGSTABBARPROXYSTYLE_H
 
+#include "qgsproxystyle.h"
+
 #include <QProxyStyle>
 #include <QFont>
 #include <QColor>
@@ -25,13 +27,13 @@
 
 #include "qgis_gui.h"
 
-///@cond PRIVATE
+///@cond private
 
 /**
  * The QgsTabBarProxyStyle class provides a proxy style to set font for a tab bar.
  * This class is an implementation detail and it is not exposed to public API.
  */
-class QgsTabBarProxyStyle : public QProxyStyle
+class GUI_EXPORT QgsTabBarProxyStyle : public QgsProxyStyle
 {
   public:
 
@@ -52,7 +54,6 @@ class QgsTabBarProxyStyle : public QProxyStyle
   private:
 
     QMap<int, TabStyle> mTabStyles;
-    QTabBar *mTabBar;
 
 };
 
@@ -74,7 +75,7 @@ class QgsTabBar: public QTabBar
     QgsTabBar( QWidget *parent );
 
     /**
-     * Set the \a tabStyle.
+     * Set the \a tabStyle, ownership is not transfered.
      */
     void setTabBarStyle( QgsTabBarProxyStyle *tabStyle );
 
@@ -87,6 +88,6 @@ class QgsTabBar: public QTabBar
 
 };
 
-/// @endcond
+/// @endcond private
 
 #endif // QGSTABBARPROXYSTYLE_H

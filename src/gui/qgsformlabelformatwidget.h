@@ -16,6 +16,12 @@
 #ifndef QGSFORMLABELFORMATWIDGET_H
 #define QGSFORMLABELFORMATWIDGET_H
 
+
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+/// @cond private
+
 #include "ui_qgsformlabelformatwidget.h"
 #include "qgsconditionalstyle.h"
 #include "qgis_gui.h"
@@ -27,6 +33,7 @@
  * \ingroup gui
  * \class QgsFormLabelFormatWidget
  * \brief A widget for customizing drag and drop form labels and tabs font and color.
+ * \note This class is not a part of public API
  * \since QGIS 3.26
  */
 class GUI_EXPORT QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormLabelFormatWidget
@@ -37,7 +44,7 @@ class GUI_EXPORT QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormL
     /**
      * Creates a QgsFormLabelFormatWidget with given \a parent.
      */
-    explicit QgsFormLabelFormatWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsFormLabelFormatWidget( QWidget *parent = nullptr );
 
     /**
      * Sets label \a color.
@@ -60,5 +67,7 @@ class GUI_EXPORT QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormL
     QFont font() const;
 
 };
+
+/// @endcond private
 
 #endif // QGSFORMLABELFORMATWIDGET_H

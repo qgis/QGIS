@@ -16,6 +16,8 @@
 #include "qgsformlabelformatwidget.h"
 #include "qgsguiutils.h"
 
+/// @cond private
+
 QgsFormLabelFormatWidget::QgsFormLabelFormatWidget( QWidget *parent )
   : QWidget( parent )
 {
@@ -35,7 +37,7 @@ QgsFormLabelFormatWidget::QgsFormLabelFormatWidget( QWidget *parent )
   mFontItalicBtn->setMaximumSize( buttonSize, buttonSize );
 
   btnTextColor->setAllowOpacity( true );
-  btnTextColor->setShowNoColor( true );
+  btnTextColor->setShowNull( true, tr( "Default color" ) );
 
 }
 
@@ -68,3 +70,5 @@ QFont QgsFormLabelFormatWidget::font() const
   currentFont.setStrikeOut( mFontStrikethroughBtn->isChecked() );
   return currentFont;
 }
+
+/// @endcond private

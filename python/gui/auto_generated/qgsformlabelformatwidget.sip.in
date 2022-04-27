@@ -8,10 +8,17 @@
 
 
 
+
+
+
 class QgsFormLabelFormatWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget for customizing drag and drop form labels and tabs font and color.
+
+.. note::
+
+   This class is not a part of public API
 
 .. versionadded:: 3.26
 %End
@@ -21,7 +28,7 @@ A widget for customizing drag and drop form labels and tabs font and color.
 %End
   public:
 
-    explicit QgsFormLabelFormatWidget( QWidget *parent /TransferThis/ = 0 );
+    explicit QgsFormLabelFormatWidget( QWidget *parent = 0 );
 %Docstring
 Creates a QgsFormLabelFormatWidget with given ``parent``.
 %End
@@ -47,6 +54,7 @@ Returns label font.
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

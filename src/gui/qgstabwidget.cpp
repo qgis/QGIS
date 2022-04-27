@@ -22,9 +22,9 @@ QgsTabWidget::QgsTabWidget( QWidget *parent )
 {
   QgsTabBar *qgsTabBar = new QgsTabBar( this );
   setTabBar( qgsTabBar );
-  mTabBarStyle = std::make_unique<QgsTabBarProxyStyle>( tabBar() );
-  qgsTabBar->setTabBarStyle( mTabBarStyle.get() );
-  setStyle( mTabBarStyle.get() );
+  mTabBarStyle = new QgsTabBarProxyStyle( tabBar() );
+  qgsTabBar->setTabBarStyle( mTabBarStyle );
+  setStyle( mTabBarStyle );
 }
 
 void QgsTabWidget::hideTab( QWidget *tab )
