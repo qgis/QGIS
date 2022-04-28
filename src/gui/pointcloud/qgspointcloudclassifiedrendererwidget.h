@@ -99,20 +99,29 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererWidget: public QgsPointCloudRend
     QgsPointCloudCategoryList categoriesList();
     QString attribute();
 
+    /**
+     * Sets the selected attribute and categories based on a 2D renderer.
+     * If the renderer is not a QgsPointCloudClassifiedRenderer, the widget is reinitialized
+     */
+    void setFromRenderer( const QgsPointCloudRenderer *r );
     void setFromCategories( QgsPointCloudCategoryList categories, const QString &attribute );
-
-  public slots:
-    void addCategories();
 
   private slots:
 
+    /**
+     * Gets the available classes for the selected attribute from the layer and adds any categories that are missing.
+     * Categories for the Classification attribute get a default color and name
+     */
+    void addCategories();
     void emitWidgetChanged();
     void categoriesDoubleClicked( const QModelIndex &idx );
     void addCategory();
     void deleteCategories();
     void deleteAllCategories();
+    void attributeChanged();
   private:
-    void setFromRenderer( const QgsPointCloudRenderer *r );
+    //! Sets default category and available classes
+    void initialize();
     void changeCategorySymbol();
     //! Returns a list of indexes for the categories under selection
     QList<int> selectedCategories();

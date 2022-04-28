@@ -389,7 +389,6 @@ QgsPointCloudClassifiedRendererWidget::QgsPointCloudClassifiedRendererWidget( Qg
 
     setFromRenderer( layer->renderer() );
   }
-  addCategories();
 
   viewCategories->setModel( mModel );
   viewCategories->resizeColumnToContents( 0 );
@@ -399,7 +398,7 @@ QgsPointCloudClassifiedRendererWidget::QgsPointCloudClassifiedRendererWidget( Qg
   viewCategories->setStyle( new QgsPointCloudClassifiedRendererViewStyle( viewCategories ) );
 
   connect( mAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
-           this, &QgsPointCloudClassifiedRendererWidget::emitWidgetChanged );
+           this, &QgsPointCloudClassifiedRendererWidget::attributeChanged );
   connect( mModel, &QgsPointCloudClassifiedRendererModel::categoriesChanged, this, &QgsPointCloudClassifiedRendererWidget::emitWidgetChanged );
 
   connect( viewCategories, &QAbstractItemView::doubleClicked, this, &QgsPointCloudClassifiedRendererWidget::categoriesDoubleClicked );
@@ -437,6 +436,13 @@ QgsPointCloudCategoryList QgsPointCloudClassifiedRendererWidget::categoriesList(
 QString QgsPointCloudClassifiedRendererWidget::attribute()
 {
   return mAttributeComboBox->currentAttribute();
+}
+
+void QgsPointCloudClassifiedRendererWidget::attributeChanged()
+{
+  mModel->removeAllRows();
+  addCategories();
+  emit widgetChanged();
 }
 
 void QgsPointCloudClassifiedRendererWidget::emitWidgetChanged()
@@ -479,6 +485,7 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
     if ( found )
       continue;
 
+    // When using the "Classification" attribute, we'll use our standard class names and colors
     const QColor color = isClassification && newValue < defaultCategories.size() ? defaultCategories.at( newValue ).color() : QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
     const QString label = isClassification && QgsPointCloudDataProvider::translatedLasClassificationCodes().contains( newValue ) ? QgsPointCloudDataProvider::translatedLasClassificationCodes().value( newValue, QString::number( newValue ) ) : QString::number( newValue );
     mModel->addCategory( QgsPointCloudCategory( newValue, color, label ) );
@@ -518,14 +525,7 @@ void QgsPointCloudClassifiedRendererWidget::setFromRenderer( const QgsPointCloud
   }
   else
   {
-    if ( mAttributeComboBox->findText( QStringLiteral( "Classification" ) ) > -1 )
-    {
-      mAttributeComboBox->setAttribute( QStringLiteral( "Classification" ) );
-    }
-    else
-    {
-      mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
-    }
+    initialize();
   }
   mBlockChangedSignal = false;
 }
@@ -540,16 +540,23 @@ void QgsPointCloudClassifiedRendererWidget::setFromCategories( QgsPointCloudCate
   }
   else
   {
-    if ( mAttributeComboBox->findText( QStringLiteral( "Classification" ) ) > -1 )
-    {
-      mAttributeComboBox->setAttribute( QStringLiteral( "Classification" ) );
-    }
-    else
-    {
-      mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
-    }
+    initialize();
   }
   mBlockChangedSignal = false;
+}
+
+void QgsPointCloudClassifiedRendererWidget::initialize()
+{
+  if ( mAttributeComboBox->findText( QStringLiteral( "Classification" ) ) > -1 )
+  {
+    mAttributeComboBox->setAttribute( QStringLiteral( "Classification" ) );
+  }
+  else
+  {
+    mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
+  }
+  mModel->removeAllRows();
+  addCategories();
 }
 
 void QgsPointCloudClassifiedRendererWidget::changeCategorySymbol()

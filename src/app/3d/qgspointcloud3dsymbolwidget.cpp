@@ -478,20 +478,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
     }
     else if ( newSymbolType == QLatin1String( "classification" ) )
     {
-      const QgsPointCloudClassifiedRenderer *renderer2d = dynamic_cast< const QgsPointCloudClassifiedRenderer * >( mLayer->renderer() );
-      mBlockChangedSignals++;
-      if ( renderer2d )
-      {
-        mClassifiedRendererWidget->setFromCategories( renderer2d->categories(), renderer2d->attribute() );
-      }
-      else
-      {
-        mClassifiedRendererWidget->setFromCategories( QgsPointCloudCategoryList(), QString() );
-        mClassifiedRendererWidget->addCategories();
-      }
-
-      ( void )( renderer2d );
-      mBlockChangedSignals--;
+      mClassifiedRendererWidget->setFromRenderer( mLayer->renderer() );
     }
   }
 

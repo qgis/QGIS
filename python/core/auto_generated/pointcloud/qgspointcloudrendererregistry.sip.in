@@ -159,7 +159,6 @@ Returns a new default point cloud renderer for a layer with the specified ``prov
 
 Caller takes ownership of the returned renderer.
 %End
-
   private:
     QgsPointCloudRendererRegistry( const QgsPointCloudRendererRegistry &rh );
 };
