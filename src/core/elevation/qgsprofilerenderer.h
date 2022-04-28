@@ -109,6 +109,11 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     void setContext( const QgsProfileGenerationContext &context );
 
     /**
+     * Invalidates previous resutls from all refinable sources.
+     */
+    void invalidateAllRefinableSources();
+
+    /**
      * Replaces the existing source with matching ID.
      *
      * The matching stored source will be deleted and replaced with \a source.

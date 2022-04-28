@@ -252,6 +252,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     bool mZoomFullWhenJobFinished = true;
 
+    bool mForceRegenerationAfterCurrentJobCompletes = false;
+
     static constexpr double MAX_ERROR_PIXELS = 2;
 };
 

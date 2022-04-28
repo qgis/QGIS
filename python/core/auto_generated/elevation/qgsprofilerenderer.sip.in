@@ -87,6 +87,11 @@ Sets the ``context`` in which the profile generation will occur.
 Depending on the sources present, this may trigger automatically a regeneration of results.
 %End
 
+    void invalidateAllRefinableSources();
+%Docstring
+Invalidates previous resutls from all refinable sources.
+%End
+
     void replaceSource( QgsAbstractProfileSource *source );
 %Docstring
 Replaces the existing source with matching ID.

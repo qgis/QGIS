@@ -166,6 +166,27 @@ void QgsProfilePlotRenderer::setContext( const QgsProfileGenerationContext &cont
   }
 }
 
+void QgsProfilePlotRenderer::invalidateAllRefinableSources()
+{
+  for ( auto &job : mJobs )
+  {
+    // regenerate only those results which are refinable
+    const bool jobNeedsRegeneration = ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit )
+                                      || ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsDistanceRange )
+                                      || ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsElevationRange );
+    if ( !jobNeedsRegeneration )
+      continue;
+
+    job->mutex.lock();
+    job->context = mContext;
+    if ( job->results && job->complete )
+      job->invalidatedResults = std::move( job->results );
+    job->results.reset();
+    job->complete = false;
+    job->mutex.unlock();
+  }
+}
+
 void QgsProfilePlotRenderer::replaceSource( QgsAbstractProfileSource *source )
 {
   replaceSourceInternal( source, false );
@@ -191,6 +212,7 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
   {
     if ( job->generator && job->generator->sourceId() == sourceId )
     {
+      job->mutex.lock();
       res = true;
       if ( clearPreviousResults )
       {
@@ -202,6 +224,8 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
         job->results->copyPropertiesFromGenerator( generator.get() );
       }
       job->generator = generator.get();
+      job->mutex.unlock();
+
       for ( auto it = mGenerators.begin(); it != mGenerators.end(); )
       {
         if ( ( *it )->sourceId() == sourceId )
