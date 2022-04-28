@@ -181,6 +181,19 @@ Updates the layer's 3D renderer's symbol to match that of the layer's 2D rendere
 %End
 
 
+    QVariant statistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+%Docstring
+Returns the statistic ``statistic`` of ``attribute``
+
+.. versionadded:: 3.26
+%End
+
+    bool hasCalculatedStatistics() const;
+%Docstring
+Returns whether the point cloud layer contains calculated statistics
+
+.. versionadded:: 3.26
+%End
   signals:
 
     void subsetStringChanged();
@@ -193,6 +206,13 @@ Emitted when the layer's subset string has changed.
     void raiseError( const QString &msg );
 %Docstring
 Signals an error related to this point cloud layer.
+
+.. versionadded:: 3.26
+%End
+
+    void hasCalculatedStatisticsChanged( bool contained );
+%Docstring
+Emitted when hasCalculatedStatistics attribute has changed
 
 .. versionadded:: 3.26
 %End

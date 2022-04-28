@@ -71,16 +71,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
       Indexed = 1 << 1 //!< The index is ready to be used
     };
 
-    /**
-     * Point cloud statistics generation state
-     */
-    enum PointCloudStatisticsGenerationState
-    {
-      NotCalculated = 0, //!< Provider has no statistics available
-      Calculating = 1 << 0, //!< Provider try to calculate the statistics
-      Calculated = 1 << 1 //!< The statistics are ready to be used
-    };
-
     //! Ctor
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
@@ -199,24 +189,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * are included in the data source's metadata.
      */
     virtual QgsGeometry polygonBounds() const;
-
-    /**
-     * Triggers generation of the statistics of the point cloud dataset
-     * This will start the task of calculating the statistics of the point cloud in a background thread
-     * Once the task has finished, the signal statisticsGenerationStateChanged will be emitted
-     * If a statistics generation task is already running no new task will be started.
-     * If statistics are already calculated, another set of points will be used to enhance the quality of statistics
-     *
-     * emits statisticsGenerationStateChanged()
-     */
-    void generateStatistics();
-
-    /**
-     * Gets the current statistics generation state
-     *
-     * \since QGIS 3.26
-     */
-    virtual PointCloudStatisticsGenerationState statisticsState() const { return mStatisticsGenerationState; }
 
     /**
      * Returns a representation of the original metadata included in a point cloud dataset.
@@ -385,21 +357,11 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * Emitted when point cloud generation state is changed
      */
     void indexGenerationStateChanged( PointCloudIndexGenerationState state );
-
-    /**
-     * Emitted when point cloud statistics calculation state is changed
-     *
-     * \since QGIS 3.26
-     */
-    void statisticsGenerationStateChanged( PointCloudStatisticsGenerationState state );
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 
     //! String used to define a subset of the layer
     QString mSubsetString;
-    mutable std::unique_ptr<QgsPointCloudStatsCalculator> mStatsCalculator;
-
-    PointCloudStatisticsGenerationState mStatisticsGenerationState = PointCloudStatisticsGenerationState::NotCalculated;
 };
 
 #endif // QGSMESHDATAPROVIDER_H

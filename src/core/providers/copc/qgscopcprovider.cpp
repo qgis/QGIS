@@ -103,8 +103,6 @@ void QgsCopcProvider::loadIndex( )
   if ( mIndex->isValid() )
     return;
   mIndex->load( dataSourceUri() );
-
-  generateStatistics();
 }
 
 QVariantMap QgsCopcProvider::originalMetadata() const

@@ -120,10 +120,6 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   }
 
   mStatisticsCalculationWarningLabel->hide();
-  if ( mLayer->dataProvider() )
-  {
-    connect( mLayer->dataProvider(), &QgsPointCloudDataProvider::statisticsGenerationStateChanged, this, &QgsPointCloudLayerProperties::updateStatisticsGenerationLabel );
-  }
 
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
@@ -462,12 +458,6 @@ void QgsPointCloudLayerProperties::optionsStackedWidget_CurrentChanged( int inde
   mBtnMetadata->setVisible( isMetadataPanel );
 }
 
-void QgsPointCloudLayerProperties::updateStatisticsGenerationLabel( QgsPointCloudDataProvider::PointCloudStatisticsGenerationState state )
-{
-  if ( state == QgsPointCloudDataProvider::Calculated )
-    mStatisticsCalculationWarningLabel->show();
-}
-
 //
 // QgsPointCloudAttributeStatisticsModel
 //
@@ -507,16 +497,16 @@ QVariant QgsPointCloudAttributeStatisticsModel::data( const QModelIndex &index, 
           return attr.name();
 
         case Min:
-          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::Min ) : QVariant();
+          return mLayer->dataProvider() ? mLayer->statistic( attr.name(), QgsStatisticalSummary::Min ) : QVariant();
 
         case Max:
-          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::Max ) : QVariant();
+          return mLayer->dataProvider() ? mLayer->statistic( attr.name(), QgsStatisticalSummary::Max ) : QVariant();
 
         case Mean:
-          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::Mean ) : QVariant();
+          return mLayer->dataProvider() ? mLayer->statistic( attr.name(), QgsStatisticalSummary::Mean ) : QVariant();
 
         case StDev:
-          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::StDev ) : QVariant();
+          return mLayer->dataProvider() ? mLayer->statistic( attr.name(), QgsStatisticalSummary::StDev ) : QVariant();
 
       }
       return QVariant();

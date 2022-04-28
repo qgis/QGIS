@@ -26,6 +26,7 @@
 #include <QFutureWatcher>
 
 #include "qgspointcloudrequest.h"
+#include "qgsstatisticalsummary.h"
 
 #define SIP_NO_FILE
 
@@ -33,6 +34,7 @@ class QgsPointCloudIndex;
 class QgsPointCloudBlock;
 class QgsPointCloudAttribute;
 class IndexedPointCloudNode;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -74,7 +76,7 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
      * Calculates the statistics of given attributes \a attributes up to new \a pointsLimit points
      * Note: the already calculated statistics are kept and another set of \a pointsLimit are processed
      */
-    void calculateStats( const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit = -1 );
+    bool calculateStats( QgsFeedback *feedback, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit = -1 );
 
     /**
      * Returns the calculated statistics of each attribute processed
@@ -85,11 +87,8 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
      * Returns the calculated statistics of attribute \a attribute
      */
     AttributeStatistics statisticsOf( const QString &attribute );
-  signals:
-    //! Emitted when the statistics have been calculated
-    void statisticsCalculated();
-  private slots:
-    void statsCalculationFinished();
+
+    QVariant statisticsOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic );
   private:
     QgsPointCloudIndex *mIndex = nullptr;
 
@@ -98,6 +97,9 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
 
     long mStatsCalculationTaskId = 0;
     QgsPointCloudRequest mRequest;
+
+    QFuture<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>> mFuture;
+    QFutureWatcher<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>> mFutureWatcher;
 };
 
 

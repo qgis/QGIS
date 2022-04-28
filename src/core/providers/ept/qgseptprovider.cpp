@@ -99,10 +99,6 @@ void QgsEptProvider::loadIndex( )
     return;
 
   mIndex->load( dataSourceUri() );
-  if ( !hasStatisticsMetadata() )
-  {
-    generateStatistics();
-  }
 }
 
 QVariantMap QgsEptProvider::originalMetadata() const

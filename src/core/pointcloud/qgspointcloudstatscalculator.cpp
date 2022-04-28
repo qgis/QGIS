@@ -26,9 +26,97 @@
 
 #include "qgsapplication.h"
 #include "qgspointcloudstatscalculationtask.h"
+#include "qgsfeedback.h"
+#include "qgspointcloudblockrequest.h"
 
 #include <QQueue>
 #include <QtConcurrent/QtConcurrentMap>
+
+struct StatsProcessor
+{
+    typedef QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> result_type;
+
+    StatsProcessor( QgsPointCloudIndex *index, QgsPointCloudRequest request, QgsFeedback *feedback )
+      : mIndex( index ), mRequest( request ), mFeedback( feedback )
+    {
+
+    }
+
+    QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> operator()( IndexedPointCloudNode node )
+    {
+      QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> statsMap;
+      for ( QgsPointCloudAttribute attribute : mRequest.attributes().attributes() )
+      {
+        QgsPointCloudStatsCalculator::AttributeStatistics summary;
+        summary.minimum = std::numeric_limits<double>::max();
+        summary.maximum = std::numeric_limits<double>::lowest();
+        summary.count = 0;
+        summary.classCount.clear();
+        statsMap[ attribute.name() ] = summary;
+      }
+
+      std::unique_ptr<QgsPointCloudBlock> block;
+      if ( mIndex->accessType() == QgsPointCloudIndex::Local )
+      {
+        block.reset( mIndex->nodeData( node, mRequest ) );
+      }
+      else
+      {
+        QgsPointCloudBlockRequest *request = mIndex->asyncNodeData( node, mRequest );
+        QEventLoop loop;
+        QObject::connect( request, &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
+        QObject::connect( mFeedback, &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+        loop.exec();
+        if ( !mFeedback->isCanceled() )
+          block.reset( request->block() );
+        if ( !request->block() )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Unable to calculate statistics for node %1, error: \"%2\"" ).arg( node.toString() ).arg( request->errorStr() ) );
+          return result_type();
+        }
+      }
+
+      if ( !block.get() )
+      {
+        return result_type();
+      }
+
+      const char *ptr = block->data();
+      int count = block->pointCount();
+      const QgsPointCloudAttributeCollection attributes = block->attributes();
+      int recordSize = attributes.pointRecordSize();
+
+      for ( int i = 0; i < count; ++i )
+      {
+        for ( QgsPointCloudAttribute attribute : attributes.attributes() )
+        {
+          if ( mFeedback->isCanceled() )
+          {
+            return result_type();
+          }
+          double attributeValue = 0;
+          int attributeOffset = 0;
+          attributes.find( attribute.name(), attributeOffset );
+
+          QgsPointCloudStatsCalculator::AttributeStatistics &stats = statsMap[ attribute.name() ];
+          QgsPointCloudRenderContext::getAttribute( ptr, i * recordSize + attributeOffset, attribute.type(), attributeValue );
+          stats.minimum = std::min( stats.minimum, attributeValue );
+          stats.maximum = std::max( stats.maximum, attributeValue );
+          stats.count++;
+          if ( attribute.name() == QStringLiteral( "Classification" ) )
+          {
+            stats.classCount[( int )attributeValue ]++;
+          }
+        }
+      }
+      return statsMap;
+    }
+  private:
+    QgsPointCloudIndex *mIndex = nullptr;
+    QgsPointCloudRequest mRequest;
+    QgsFeedback *mFeedback = nullptr;
+};
+
 
 QgsPointCloudStatsCalculator::QgsPointCloudStatsCalculator( QgsPointCloudIndex *index )
   : mIndex( index )
@@ -51,14 +139,13 @@ void QgsPointCloudStatsCalculator::clear( const QVector<QgsPointCloudAttribute> 
   mProcessedNodes.clear();
 }
 
-void QgsPointCloudStatsCalculator::calculateStats( const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit )
+bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit )
 {
-  if ( mStatsCalculationTaskId != 0 )
-    return;
+  using FeatureWatcher = QFutureWatcher<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>>;
   if ( !mIndex->isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to calculate statistics of an invalid index" ) );
-    return;
+    return false;
   }
   mRequest.setAttributes( attributes );
 
@@ -83,27 +170,25 @@ void QgsPointCloudStatsCalculator::calculateStats( const QVector<QgsPointCloudAt
     }
   }
 
-  QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mIndex, attributes, nodes );
-  QObject::connect( task, &QgsTask::taskCompleted, this, &QgsPointCloudStatsCalculator::statsCalculationFinished );
-  QObject::connect( task, &QgsTask::taskTerminated, this, [this]
+  mFuture = QtConcurrent::mapped( nodes, StatsProcessor( mIndex, mRequest, feedback ) );
+  mFutureWatcher.setFuture( mFuture );
+
+  connect( &mFutureWatcher, &FeatureWatcher::progressValueChanged,
+           this, [feedback, this]( int progressValue )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Statistics generation canceled" ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
-    mStatsCalculationTaskId = 0;
+    double percent = 100.0 * ( ( double )progressValue - mFutureWatcher.progressMinimum() ) / ( mFutureWatcher.progressMaximum() - mFutureWatcher.progressMinimum() );
+    feedback->setProgress( percent );
   } );
 
-  mStatsCalculationTaskId = QgsApplication::taskManager()->addTask( task );
-}
+  connect( feedback, &QgsFeedback::canceled, &mFutureWatcher, &FeatureWatcher::cancel );
 
-void QgsPointCloudStatsCalculator::statsCalculationFinished()
-{
-  QgsPointCloudStatsCalculationTask *task = qobject_cast<QgsPointCloudStatsCalculationTask *>( QObject::sender() );
-  if ( !task )
+  mFutureWatcher.waitForFinished();
+
+  if ( mFutureWatcher.isCanceled() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Statistics generation error: Invalid task" ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
-    return;
+    return false;
   }
 
-  QVector<QgsPointCloudAttribute> attributes = mRequest.attributes().attributes();
   // TODO: use reduce
   for ( QgsPointCloudAttribute attribute : attributes )
   {
@@ -115,7 +200,7 @@ void QgsPointCloudStatsCalculator::statsCalculationFinished()
     mStatisticsMap[ attribute.name() ] = summary;
   }
 
-  for ( QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> statsMap : task->mFuture )
+  for ( QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> statsMap : mFuture )
   {
     for ( QgsPointCloudAttribute attribute : attributes )
     {
@@ -131,9 +216,7 @@ void QgsPointCloudStatsCalculator::statsCalculationFinished()
     }
   }
 
-  mStatsCalculationTaskId = 0;
-
-  emit statisticsCalculated();
+  return true;
 }
 
 QgsPointCloudStatsCalculator::AttributeStatistics QgsPointCloudStatsCalculator::statisticsOf( const QString &attribute )
@@ -143,4 +226,43 @@ QgsPointCloudStatsCalculator::AttributeStatistics QgsPointCloudStatsCalculator::
   defaultVal.maximum = std::numeric_limits<double>::lowest();
   defaultVal.count = 0;
   return mStatisticsMap.value( attribute, defaultVal );
+}
+
+QVariant QgsPointCloudStatsCalculator::statisticsOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic )
+{
+  if ( !mStatisticsMap.contains( attribute ) )
+    return QVariant();
+  const AttributeStatistics &stats = mStatisticsMap[ attribute ];
+  switch ( statistic )
+  {
+    case QgsStatisticalSummary::Count:
+      return stats.count >= 0 ? QVariant( stats.count ) : QVariant();
+
+    case QgsStatisticalSummary::Min:
+      return stats.minimum;
+
+    case QgsStatisticalSummary::Max:
+      return stats.maximum;
+
+    case QgsStatisticalSummary::Range:
+      return QVariant( stats.maximum - stats.minimum );
+
+    case QgsStatisticalSummary::Mean:
+    case QgsStatisticalSummary::StDev:
+    case QgsStatisticalSummary::CountMissing:
+    case QgsStatisticalSummary::Sum:
+    case QgsStatisticalSummary::Median:
+    case QgsStatisticalSummary::StDevSample:
+    case QgsStatisticalSummary::Minority:
+    case QgsStatisticalSummary::Majority:
+    case QgsStatisticalSummary::Variety:
+    case QgsStatisticalSummary::FirstQuartile:
+    case QgsStatisticalSummary::ThirdQuartile:
+    case QgsStatisticalSummary::InterQuartileRange:
+    case QgsStatisticalSummary::First:
+    case QgsStatisticalSummary::Last:
+    case QgsStatisticalSummary::All:
+      return QVariant();
+  }
+  return QVariant();
 }

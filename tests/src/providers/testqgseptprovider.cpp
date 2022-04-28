@@ -647,6 +647,7 @@ void TestQgsEptProvider::testPointCloudIndex()
 
 #include "qgspointcloudstatscalculator.h"
 #include "qgsstatisticalsummary.h"
+#include "qgsfeedback.h"
 
 void TestQgsEptProvider::testStatsCalculator()
 {
@@ -666,7 +667,9 @@ void TestQgsEptProvider::testStatsCalculator()
     }
   }
 
-  calculator.calculateStats( attributes );
+  QgsFeedback feedback;
+
+  calculator.calculateStats( &feedback, attributes );
 
   QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> stats = calculator.statistics();
 

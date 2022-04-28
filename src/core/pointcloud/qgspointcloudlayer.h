@@ -30,6 +30,7 @@ class QgsPointCloudLayerRenderer;
 class QgsPointCloudRenderer;
 class QgsPointCloudLayerElevationProperties;
 class QgsAbstractPointCloud3DRenderer;
+class QgsPointCloudStatsCalculator;
 
 /**
  * \ingroup core
@@ -212,6 +213,19 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     bool convertRenderer3DFromRenderer2D();
 
 
+    /**
+     * Returns the statistic \a statistic of \a attribute
+     *
+     * \since QGIS 3.26
+     */
+    QVariant statistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+
+    /**
+     * Returns whether the point cloud layer contains calculated statistics
+     *
+     * \since QGIS 3.26
+     */
+    bool hasCalculatedStatistics() const { return mStatisticsCalculated; }
   signals:
 
     /**
@@ -228,14 +242,22 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     void raiseError( const QString &msg );
 
+    /**
+     * Emitted when hasCalculatedStatistics attribute has changed
+     *
+     * \since QGIS 3.26
+     */
+    void hasCalculatedStatisticsChanged( bool contained );
+
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
-    void onPointCloudStatisticsGenerationStateChanged( QgsPointCloudDataProvider::PointCloudStatisticsGenerationState state );
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 
   private:
 
     bool isReadOnly() const override {return true;}
+
+    void calculateStatistics();
 
 #ifdef SIP_RUN
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
@@ -248,6 +270,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     QgsPointCloudLayerElevationProperties *mElevationProperties = nullptr;
 
     bool mSync3DRendererTo2DRenderer = false;
+    std::unique_ptr<QgsPointCloudStatsCalculator> mStatsCalculator;
+    bool mStatisticsCalculated = false;
 };
 
 

@@ -55,41 +55,6 @@ QgsGeometry QgsPointCloudDataProvider::polygonBounds() const
   return QgsGeometry::fromRect( extent() );
 }
 
-void QgsPointCloudDataProvider::generateStatistics()
-{
-  QgsPointCloudIndex *index = this->index();
-  if ( !mStatsCalculator.get() )
-  {
-    mStatsCalculator.reset( new QgsPointCloudStatsCalculator( index ) );
-  }
-  if ( mStatisticsGenerationState == PointCloudStatisticsGenerationState::Calculating )
-  {
-    return;
-  }
-  QVector<QgsPointCloudAttribute> attributes = index->attributes().attributes();
-  // We skip X, Y & Z attributes because these are always available in the point cloud index
-  for ( int i = 0; i < attributes.size(); ++i )
-  {
-    QString name = attributes.at( i ).name();
-    if ( name == QStringLiteral( "X" ) || name == QStringLiteral( "Y" ) || name == QStringLiteral( "Z" ) )
-    {
-      attributes.removeAt( i );
-      --i;
-    }
-  }
-  connect( mStatsCalculator.get(), &QgsPointCloudStatsCalculator::statisticsCalculated, this, [this]
-  {
-    mStatisticsGenerationState = PointCloudStatisticsGenerationState::Calculated;
-    emit statisticsGenerationStateChanged( mStatisticsGenerationState );
-  } );
-
-  QgsDebugMsgLevel( "Statistics Calculation Task Created", 2 );
-  mStatisticsGenerationState = PointCloudStatisticsGenerationState::Calculating;
-  emit statisticsGenerationStateChanged( PointCloudStatisticsGenerationState::Calculating );
-  mStatsCalculator->calculateStats( attributes, 2000000 );
-}
-
-
 QVariantMap QgsPointCloudDataProvider::originalMetadata() const
 {
   return QVariantMap();
@@ -214,46 +179,9 @@ bool QgsPointCloudDataProvider::hasStatisticsMetadata() const
 QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
   QgsPointCloudIndex *pcIndex = index();
-  // Exception for X, Y & Z coordinates: always picked up directly from point cloud index (because it's in the header)
-  if ( attribute == QStringLiteral( "X" ) || attribute == QStringLiteral( "Y" ) || attribute == QStringLiteral( "Z" ) )
-  {
-    if ( pcIndex )
-      return pcIndex->metadataStatistic( attribute, statistic );
-    return QVariant();
-  }
-
-  if ( hasStatisticsMetadata() || mStatisticsGenerationState != PointCloudStatisticsGenerationState::Calculated )
+  if ( pcIndex )
   {
     return pcIndex->metadataStatistic( attribute, statistic );
-  }
-  QgsPointCloudStatsCalculator *calculator = mStatsCalculator.get();
-  QgsPointCloudStatsCalculator::AttributeStatistics stats = calculator->statisticsOf( attribute );
-  switch ( statistic )
-  {
-    case QgsStatisticalSummary::Min:
-      return stats.minimum;
-
-    case QgsStatisticalSummary::Max:
-      return stats.maximum;
-
-    case QgsStatisticalSummary::Count:
-    case QgsStatisticalSummary::Mean:
-    case QgsStatisticalSummary::StDev:
-    case QgsStatisticalSummary::Range:
-    case QgsStatisticalSummary::CountMissing:
-    case QgsStatisticalSummary::Sum:
-    case QgsStatisticalSummary::Median:
-    case QgsStatisticalSummary::StDevSample:
-    case QgsStatisticalSummary::Minority:
-    case QgsStatisticalSummary::Majority:
-    case QgsStatisticalSummary::Variety:
-    case QgsStatisticalSummary::FirstQuartile:
-    case QgsStatisticalSummary::ThirdQuartile:
-    case QgsStatisticalSummary::InterQuartileRange:
-    case QgsStatisticalSummary::First:
-    case QgsStatisticalSummary::Last:
-    case QgsStatisticalSummary::All:
-      return QVariant();
   }
   return QVariant();
 }

@@ -43,15 +43,17 @@ class QgsPointCloudStatsCalculationTask : public QgsTask
     Q_OBJECT
 
   public:
-    QgsPointCloudStatsCalculationTask( QgsPointCloudIndex *index, const QVector<QgsPointCloudAttribute> &attributes, const QVector<IndexedPointCloudNode> &nodes );
+    QgsPointCloudStatsCalculationTask( QgsPointCloudStatsCalculator *calculator, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointLimit );
 
     bool run() override;
 
-    QgsPointCloudIndex *mIndex = nullptr;
+    void cancel() override;
+  private:
+    QgsPointCloudStatsCalculator *mCalculator = nullptr;
     QVector<IndexedPointCloudNode> mNodes;
-    QgsPointCloudRequest mAttributesRequest;
-    QFuture<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>> mFuture;
-    QFutureWatcher<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>> mFutureWatcher;
+    QVector<QgsPointCloudAttribute> mAttributes;
+    qint64 mPointLimit;
+    QgsFeedback *mFeedback = nullptr;
 };
 
 /// @endcond

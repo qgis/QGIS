@@ -144,10 +144,6 @@ void QgsPdalProvider::onGenerateIndexFinished()
   }
   if ( !sIndexingQueue.empty() )
     sIndexingQueue.takeFirst()->generateIndex();
-  if ( !hasStatisticsMetadata() )
-  {
-    generateStatistics();
-  }
 }
 
 void QgsPdalProvider::onGenerateIndexFailed()

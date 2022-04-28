@@ -153,7 +153,7 @@ renderer was not found in the registry.
 Returns a list of available renderers.
 %End
 
-    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudDataProvider *provider ) /Factory/;
+    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudLayer *provider ) /Factory/;
 %Docstring
 Returns a new default point cloud renderer for a layer with the specified ``provider``.
 

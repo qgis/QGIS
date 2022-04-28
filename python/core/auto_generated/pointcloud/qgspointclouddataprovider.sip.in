@@ -47,13 +47,6 @@ Responsible for reading native point cloud data and returning the indexed data.
       Indexed
     };
 
-    enum PointCloudStatisticsGenerationState
-    {
-      NotCalculated,
-      Calculating,
-      Calculated
-    };
-
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
@@ -151,24 +144,6 @@ will be returned.
 
 This method will not attempt to calculate the data bounds, rather it will return only whatever precomputed bounds
 are included in the data source's metadata.
-%End
-
-    void generateStatistics();
-%Docstring
-Triggers generation of the statistics of the point cloud dataset
-This will start the task of calculating the statistics of the point cloud in a background thread
-Once the task has finished, the signal statisticsGenerationStateChanged will be emitted
-If a statistics generation task is already running no new task will be started.
-If statistics are already calculated, another set of points will be used to enhance the quality of statistics
-
-emits :py:func:`~QgsPointCloudDataProvider.statisticsGenerationStateChanged`
-%End
-
-    virtual PointCloudStatisticsGenerationState statisticsState() const;
-%Docstring
-Gets the current statistics generation state
-
-.. versionadded:: 3.26
 %End
 
     virtual QVariantMap originalMetadata() const;
@@ -308,13 +283,6 @@ Returns the map of LAS data format ID to translated string value.
     void indexGenerationStateChanged( PointCloudIndexGenerationState state );
 %Docstring
 Emitted when point cloud generation state is changed
-%End
-
-    void statisticsGenerationStateChanged( PointCloudStatisticsGenerationState state );
-%Docstring
-Emitted when point cloud statistics calculation state is changed
-
-.. versionadded:: 3.26
 %End
 };
 
