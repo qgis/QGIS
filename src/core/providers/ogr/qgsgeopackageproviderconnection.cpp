@@ -28,6 +28,7 @@
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
 #include "qgsfielddomain.h"
+#include "qgsdbquerylog.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
@@ -351,8 +352,11 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
 QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
 {
 
+  QgsDatabaseQueryLogWrapper logWrapper( sql, uri(), providerKey(), QStringLiteral( "QgsGeoPackageProviderConnection" ), QGS_QUERY_LOG_ORIGIN );
+
   if ( feedback && feedback->isCanceled() )
   {
+    logWrapper.setCanceled();
     return QgsAbstractDatabaseProviderConnection::QueryResult();
   }
 
@@ -363,6 +367,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
 
     if ( feedback && feedback->isCanceled() )
     {
+      logWrapper.setCanceled();
       return QgsAbstractDatabaseProviderConnection::QueryResult();
     }
 
@@ -379,9 +384,9 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
       results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
 
       gdal::ogr_feature_unique_ptr fet;
+
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
-
         // pk column name
         QString pkColumnName;
 
@@ -453,11 +458,13 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
 
       if ( ! errCause.isEmpty() )
       {
+        logWrapper.setError( errCause );
         throw QgsProviderConnectionException( QObject::tr( "Error executing SQL statement %1: %2" ).arg( sql, errCause ) );
       }
 
       OGR_L_ResetReading( ogrLayer );
       iterator->nextRow();
+
       return results;
     }
 
@@ -475,6 +482,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
 
   if ( !errCause.isEmpty() )
   {
+    logWrapper.setError( errCause );
     throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errCause ) );
   }
 

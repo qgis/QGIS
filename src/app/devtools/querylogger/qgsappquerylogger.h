@@ -1,8 +1,8 @@
 /***************************************************************************
-    qgsnetworklogger.h
+    qgsappquerylogger.h
     -------------------------
-    begin                : March 2020
-    copyright            : (C) 2020 by Nyall Dawson
+    begin                : October 2021
+    copyright            : (C) 2021 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -12,46 +12,40 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSNETWORKLOGGER_H
-#define QGSNETWORKLOGGER_H
+#ifndef QGSAPPQUERYLOGGER_H
+#define QGSAPPQUERYLOGGER_H
 
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QElapsedTimer>
-#include "qgsnetworkaccessmanager.h"
+#include "qgsdbquerylog.h"
+#include <memory>
 
 class QgsDevToolsModelNode;
-class QgsNetworkLoggerRequestGroup;
-class QgsNetworkLoggerRootNode;
+class QgsDevToolsModelGroup;
+class QgsDatabaseQueryLoggerRootNode;
+class QgsDatabaseQueryLoggerQueryGroup;
 class QAction;
 
 /**
  * \ingroup app
- * \class QgsNetworkLogger
- * \brief Logs network requests from a QgsNetworkAccessManager, converting them
+ * \class QgsAppQueryLogger
+ * \brief Logs sql queries, converting them
  * to a QAbstractItemModel representing the request and response details.
- *
- * \since QGIS 3.14
  */
-class QgsNetworkLogger : public QAbstractItemModel
+class QgsAppQueryLogger : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
 
     /**
-     * Constructor for QgsNetworkLogger, logging requests from the specified \a manager.
+     * Constructor for QgsAppQueryLogger, logging requests from the specified \a manager.
      *
-     * \warning QgsNetworkLogger must be created on the main thread, using the main thread's
-     * QgsNetworkAccessManager instance.
+     * \warning QgsAppQueryLogger must be created on the main thread.
      */
-    QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *parent );
-    ~QgsNetworkLogger() override;
-
-    /**
-     * Returns TRUE if the logger is currently logging activity.
-     */
-    bool isLogging() const;
+    QgsAppQueryLogger( QObject *parent );
+    ~QgsAppQueryLogger() override;
 
     // Implementation of virtual functions from QAbstractItemModel
 
@@ -83,16 +77,11 @@ class QgsNetworkLogger : public QAbstractItemModel
     /**
      * Returns the root node of the log.
      */
-    QgsNetworkLoggerRootNode *rootGroup();
+    QgsDatabaseQueryLoggerRootNode *rootGroup();
 
     static constexpr int MAX_LOGGED_REQUESTS = 1000;
 
   public slots:
-
-    /**
-     * Enables or disables logging, depending on the value of \a enabled.
-     */
-    void enableLogging( bool enabled );
 
     /**
      * Clears all logged entries.
@@ -100,11 +89,8 @@ class QgsNetworkLogger : public QAbstractItemModel
     void clear();
 
   private slots:
-    void requestAboutToBeCreated( QgsNetworkRequestParameters parameters );
-    void requestFinished( QgsNetworkReplyContent content );
-    void requestTimedOut( QgsNetworkRequestParameters parameters );
-    void downloadProgress( int requestId, qint64 bytesReceived, qint64 bytesTotal );
-    void requestEncounteredSslErrors( int requestId, const QList<QSslError> &errors );
+    void queryLogged( const QgsDatabaseQueryLogEntry &query );
+    void queryFinished( const QgsDatabaseQueryLogEntry &query );
 
   private:
 
@@ -112,63 +98,40 @@ class QgsNetworkLogger : public QAbstractItemModel
     QModelIndex node2index( QgsDevToolsModelNode *node ) const;
     QModelIndex indexOfParentLayerTreeNode( QgsDevToolsModelNode *parentNode ) const;
 
-    QgsNetworkAccessManager *mNam = nullptr;
-    bool mIsLogging = false;
+    std::unique_ptr< QgsDatabaseQueryLoggerRootNode > mRootNode;
 
-    std::unique_ptr< QgsNetworkLoggerRootNode > mRootNode;
-
-    QHash< int, QgsNetworkLoggerRequestGroup * > mRequestGroups;
+    QHash< int, QgsDatabaseQueryLoggerQueryGroup * > mQueryGroups;
 
 };
 
 /**
  * \ingroup app
- * \class QgsNetworkLoggerProxyModel
+ * \class QgsDatabaseQueryLoggerProxyModel
  * \brief A proxy model for filtering QgsNetworkLogger models by url string subsets
  * or request status.
- *
- * \since QGIS 3.14
  */
-class QgsNetworkLoggerProxyModel : public QSortFilterProxyModel
+class QgsDatabaseQueryLoggerProxyModel : public QSortFilterProxyModel
 {
   public:
 
     /**
-     * Constructor for QgsNetworkLoggerProxyModel, filtering the specified network \a logger.
+     * Constructor for QgsDatabaseQueryLoggerProxyModel, filtering the specified network \a logger.
      */
-    QgsNetworkLoggerProxyModel( QgsNetworkLogger *logger, QObject *parent );
+    QgsDatabaseQueryLoggerProxyModel( QgsAppQueryLogger *logger, QObject *parent );
 
     /**
-     * Sets a filter \a string to apply to request URLs.
+     * Sets a filter \a string to apply to request queries.
      */
     void setFilterString( const QString &string );
-
-    /**
-     * Sets whether successful requests should be shown.
-     */
-    void setShowSuccessful( bool show );
-
-    /**
-     * Sets whether timed out requests should be shown.
-     */
-    void setShowTimeouts( bool show );
-
-    /**
-     * Sets whether requests served directly from cache are shown
-     */
-    void setShowCached( bool show );
 
   protected:
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
 
-    QgsNetworkLogger *mLogger = nullptr;
+    QgsAppQueryLogger *mLogger = nullptr;
 
     QString mFilterString;
-    bool mShowSuccessful = true;
-    bool mShowTimeouts = true;
-    bool mShowCached = true;
 };
 
-#endif // QGSNETWORKLOGGER_H
+#endif // QGSAPPQUERYLOGGER_H
