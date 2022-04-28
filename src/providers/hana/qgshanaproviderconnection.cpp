@@ -34,8 +34,9 @@
 
 using namespace NS_ODBC;
 
-QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaResultSetRef &&resultSet )
-  : mResultSet( std::move( resultSet ) )
+QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaConnectionRef &&conn, QgsHanaResultSetRef &&resultSet )
+  : mConnection( std::move( conn ) )
+  , mResultSet( std::move( resultSet ) )
   , mNumColumns( mResultSet->getMetadata().getColumnCount() )
   , mNextRow( mResultSet->next() )
 {}
@@ -285,17 +286,20 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
 
   try
   {
-
     PreparedStatementRef stmt = conn->prepareStatement( sql );
     bool isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
     if ( isQuery )
     {
       QgsHanaResultSetRef rs = conn->executeQuery( sql );
       ResultSetMetaDataUnicode &md = rs->getMetadata();
-      QueryResult ret( std::make_shared<QgsHanaProviderResultIterator>( std::move( rs ) ) );
       unsigned short numColumns = md.getColumnCount();
+      QStringList columns;
+      columns.reserve( numColumns );
       for ( unsigned short i = 1; i <= numColumns; ++i )
-        ret.appendColumn( QgsHanaUtils::toQString( md.getColumnName( i ) ) );
+        columns << QgsHanaUtils::toQString( md.getColumnName( i ) );
+      QueryResult ret( std::make_shared<QgsHanaProviderResultIterator>( std::move( conn ), std::move( rs ) ) );
+      for ( unsigned short i = 0; i < numColumns; ++i )
+        ret.appendColumn( columns[i] );
       return ret;
     }
     else
