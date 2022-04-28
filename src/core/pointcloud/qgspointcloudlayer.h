@@ -23,6 +23,7 @@ class QgsPointCloudLayerRenderer;
 #include "qgspointclouddataprovider.h"
 #include "qgsmaplayer.h"
 #include "qgis_core.h"
+#include "qgsabstractprofilesource.h"
 
 #include <QString>
 #include <memory>
@@ -40,7 +41,7 @@ class QgsAbstractPointCloud3DRenderer;
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
+class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractProfileSource
 {
     Q_OBJECT
   public:
@@ -112,6 +113,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     QgsPointCloudLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     QgsPointCloudDataProvider *dataProvider() override;
     const QgsPointCloudDataProvider *dataProvider() const override SIP_SKIP;

@@ -73,10 +73,51 @@ void QgsAbstractProfileResults::copyPropertiesFromGenerator( const QgsAbstractPr
 // QgsProfileGenerationContext
 //
 
+#define POINTS_TO_MM 2.83464567
+#define INCH_TO_MM 25.4
+
+double QgsProfileGenerationContext::convertDistanceToPixels( double size, QgsUnitTypes::RenderUnit unit ) const
+{
+  double conversionFactor = 1.0;
+  switch ( unit )
+  {
+    case QgsUnitTypes::RenderMillimeters:
+      conversionFactor = mScaleFactor;
+      break;
+
+    case QgsUnitTypes::RenderPoints:
+      conversionFactor = mScaleFactor / POINTS_TO_MM;
+      break;
+
+    case QgsUnitTypes::RenderInches:
+      conversionFactor = mScaleFactor * INCH_TO_MM;
+      break;
+
+    case QgsUnitTypes::RenderMapUnits:
+    {
+      conversionFactor = 1.0 / mMapUnitsPerDistancePixel;
+      break;
+    }
+    case QgsUnitTypes::RenderPixels:
+      conversionFactor = 1.0;
+      break;
+
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+    case QgsUnitTypes::RenderMetersInMapUnits:
+      //not supported
+      conversionFactor = 1.0;
+      break;
+  }
+
+  return size * conversionFactor;
+}
+
 bool QgsProfileGenerationContext::operator==( const QgsProfileGenerationContext &other ) const
 {
   return qgsDoubleNear( mMaxErrorMapUnits, other.mMaxErrorMapUnits )
          && qgsDoubleNear( mMapUnitsPerDistancePixel, other.mMapUnitsPerDistancePixel )
+         && qgsDoubleNear( mScaleFactor, other.mScaleFactor )
          && mDistanceRange == other.mDistanceRange
          && mElevationRange == other.mElevationRange;
 }

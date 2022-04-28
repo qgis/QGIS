@@ -740,6 +740,7 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudblockrequest.cpp
   pointcloud/qgspointcloudlayer.cpp
   pointcloud/qgspointcloudlayerelevationproperties.cpp
+  pointcloud/qgspointcloudlayerprofilegenerator.cpp
   pointcloud/qgspointcloudlayerrenderer.cpp
   pointcloud/qgspointcloudindex.cpp
   pointcloud/qgspointclouddataprovider.cpp
@@ -1534,6 +1535,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudblockrequest.h
   pointcloud/qgspointcloudlayer.h
   pointcloud/qgspointcloudlayerelevationproperties.h
+  pointcloud/qgspointcloudlayerprofilegenerator.h
   pointcloud/qgspointcloudlayerrenderer.h
   pointcloud/qgspointcloudindex.h
   pointcloud/qgspointclouddataprovider.h
