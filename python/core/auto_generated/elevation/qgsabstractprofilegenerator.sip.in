@@ -236,22 +236,18 @@ Elevations outside this range may be excluded from the generation (if it results
 .. seealso:: :py:func:`elevationRange`
 %End
 
-    double scaleFactor() const;
+    void setDpi( double dpi );
 %Docstring
-Returns the scaling factor for converting pixels to physical sizes.
+Sets the ``dpi`` (dots per inch) for the profie, to be used in size conversions.
 
-This is usually equal to the number of pixels per millimeter.
-
-.. seealso:: :py:func:`setScaleFactor`
+.. seealso:: :py:func:`dpi`
 %End
 
-    void setScaleFactor( double factor );
+    double dpi() const;
 %Docstring
-Sets the scaling factor for the render to convert pixels to physical sizes.
+Returns the DPI (dots per inch) for the profie, to be used in size conversions.
 
-This should usually be equal to the number of pixels per millimeter.
-
-.. seealso:: :py:func:`scaleFactor`
+.. seealso:: :py:func:`setDpi`
 %End
 
     double convertDistanceToPixels( double size, QgsUnitTypes::RenderUnit unit ) const;

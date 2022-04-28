@@ -79,18 +79,19 @@ void QgsAbstractProfileResults::copyPropertiesFromGenerator( const QgsAbstractPr
 double QgsProfileGenerationContext::convertDistanceToPixels( double size, QgsUnitTypes::RenderUnit unit ) const
 {
   double conversionFactor = 1.0;
+  const double pixelsPerMillimeter = mDpi / 25.4;
   switch ( unit )
   {
     case QgsUnitTypes::RenderMillimeters:
-      conversionFactor = mScaleFactor;
+      conversionFactor = pixelsPerMillimeter;
       break;
 
     case QgsUnitTypes::RenderPoints:
-      conversionFactor = mScaleFactor / POINTS_TO_MM;
+      conversionFactor = pixelsPerMillimeter / POINTS_TO_MM;
       break;
 
     case QgsUnitTypes::RenderInches:
-      conversionFactor = mScaleFactor * INCH_TO_MM;
+      conversionFactor = pixelsPerMillimeter * INCH_TO_MM;
       break;
 
     case QgsUnitTypes::RenderMapUnits:
@@ -117,7 +118,7 @@ bool QgsProfileGenerationContext::operator==( const QgsProfileGenerationContext 
 {
   return qgsDoubleNear( mMaxErrorMapUnits, other.mMaxErrorMapUnits )
          && qgsDoubleNear( mMapUnitsPerDistancePixel, other.mMapUnitsPerDistancePixel )
-         && qgsDoubleNear( mScaleFactor, other.mScaleFactor )
+         && qgsDoubleNear( mDpi, other.mDpi )
          && mDistanceRange == other.mDistanceRange
          && mElevationRange == other.mElevationRange;
 }

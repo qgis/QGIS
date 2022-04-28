@@ -258,22 +258,18 @@ class CORE_EXPORT QgsProfileGenerationContext
     void setElevationRange( const QgsDoubleRange &range ) { mElevationRange = range; }
 
     /**
-     * Returns the scaling factor for converting pixels to physical sizes.
+     * Sets the \a dpi (dots per inch) for the profie, to be used in size conversions.
      *
-     * This is usually equal to the number of pixels per millimeter.
-     *
-     * \see setScaleFactor()
+     * \see dpi()
      */
-    double scaleFactor() const {return mScaleFactor;}
+    void setDpi( double dpi ) { mDpi = dpi; }
 
     /**
-     * Sets the scaling factor for the render to convert pixels to physical sizes.
+     * Returns the DPI (dots per inch) for the profie, to be used in size conversions.
      *
-     * This should usually be equal to the number of pixels per millimeter.
-     *
-     * \see scaleFactor()
+     * \see setDpi()
      */
-    void setScaleFactor( double factor ) {mScaleFactor = factor;}
+    double dpi() const { return mDpi; }
 
     /**
      * Converts a distance size from the specified units to pixels.
@@ -289,7 +285,7 @@ class CORE_EXPORT QgsProfileGenerationContext
     double mMapUnitsPerDistancePixel = 1;
     QgsDoubleRange mDistanceRange;
     QgsDoubleRange mElevationRange;
-    double mScaleFactor = 1;
+    double mDpi = 96;
 };
 
 /**
