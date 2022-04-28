@@ -144,7 +144,6 @@ class QgsPgSourceSelect : public QgsAbstractDbSourceSelect
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsPgTableModel *mTableModel = nullptr;
-    QgsMapCanvas *mMapCanvas = nullptr;
 
     void finishList();
 
