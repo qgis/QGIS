@@ -1,6 +1,6 @@
 /***************************************************************************
                          qgspointcloudlayerprofilegenerator.cpp
-                         ---------------fun!
+                         ---------------
     begin                : April 2022
     copyright            : (C) 2022 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
@@ -544,8 +544,6 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
       }
 
       res.color = mPointColor.rgba();
-
-      // TODO we may hit the limit of QVector size?
       mResults->results.append( res );
     }
   }
