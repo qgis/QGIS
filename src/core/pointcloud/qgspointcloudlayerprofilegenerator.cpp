@@ -45,7 +45,7 @@ QMap<double, double> QgsPointCloudLayerProfileResults::distanceToHeightMap() con
   QMap< double, double > res;
   for ( const PointResult &point : results )
   {
-    res.insert( point.distance, point.z );
+    res.insert( point.distanceAlongCurve, point.z );
   }
   return res;
 }
@@ -115,10 +115,10 @@ void QgsPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &c
 
   for ( const PointResult &point : std::as_const( results ) )
   {
-    QPointF p = context.worldTransform().map( QPointF( point.distance, point.z ) );
+    QPointF p = context.worldTransform().map( QPointF( point.distanceAlongCurve, point.z ) );
     QColor color = pointColor;
     if ( opacityByDistanceEffect )
-      color.setAlphaF( color.alphaF() * ( 1.0 - std::pow( point.curveDistance / tolerance, 0.5 ) ) );
+      color.setAlphaF( color.alphaF() * ( 1.0 - std::pow( point.distanceFromCurve / tolerance, 0.5 ) ) );
 
     switch ( pointSymbol )
     {
@@ -351,8 +351,9 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     if ( mFeedback->isCanceled() )
       return false;
 
-    pointData->distance = startDistanceOffset + originalCurveGeos.lineLocatePoint( pointData->x, pointData->y, &lastError );
-    pointData->curveDistance = originalCurveGeos.distance( pointData->x, pointData->y );
+    pointData->distanceAlongCurve = startDistanceOffset + originalCurveGeos.lineLocatePoint( pointData->x, pointData->y, &lastError );
+    if ( mOpacityByDistanceEffect ) // don't calculate this if we don't need it
+      pointData->distanceFromCurve = originalCurveGeos.distance( pointData->x, pointData->y );
 
     mResults->minZ = std::min( pointData->z, mResults->minZ );
     mResults->maxZ = std::max( pointData->z, mResults->maxZ );
