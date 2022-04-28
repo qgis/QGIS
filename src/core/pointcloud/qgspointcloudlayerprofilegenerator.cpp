@@ -434,68 +434,55 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPo
 
   // see notes about this logic in QgsPointCloudLayerRenderer::renderNodesAsync
 
-  const int groupSize = 4;
-  for ( int groupIndex = 0; groupIndex < nodes.size(); groupIndex += groupSize )
+  // Async loading of nodes
+  QVector<QgsPointCloudBlockRequest *> blockRequests;
+  QEventLoop loop;
+  QObject::connect( mFeedback.get(), &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+
+  for ( int i = 0; i < nodes.size(); ++i )
   {
-    if ( mFeedback->isCanceled() )
-      break;
-    // Async loading of nodes
-    const int currentGroupSize = std::min< size_t >( std::max< size_t >( nodes.size() - groupIndex, 0 ), groupSize );
-    QVector<QgsPointCloudBlockRequest *> blockRequests( currentGroupSize, nullptr );
-    QVector<bool> finishedLoadingBlock( currentGroupSize, false );
-    QEventLoop loop;
-
-    QObject::connect( mFeedback.get(), &QgsFeedback::canceled, &loop, &QEventLoop::quit );
-    // Note: All capture by reference warnings here shouldn't be an issue since we have an event loop, so locals won't be deallocated
-    for ( int i = 0; i < blockRequests.size(); ++i )
+    const IndexedPointCloudNode &n = nodes[i];
+    const QString nStr = n.toString();
+    QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
+    blockRequests.append( blockRequest );
+    QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop,
+                      [ this, &nodesDrawn, &loop, &blockRequests, nStr, blockRequest ]()
     {
-      int nodeIndex = groupIndex + i;
-      const IndexedPointCloudNode &n = nodes[nodeIndex];
-      const QString nStr = n.toString();
-      QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
-      blockRequests[ i ] = blockRequest;
-      QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop, [ &, i, nStr, blockRequest ]()
+      blockRequests.removeOne( blockRequest );
+
+      // If all blocks are loaded, exit the event loop
+      if ( blockRequests.isEmpty() )
+        loop.exit();
+
+      std::unique_ptr<QgsPointCloudBlock> block( blockRequest->block() );
+
+      blockRequest->deleteLater();
+
+      if ( mFeedback->isCanceled() )
       {
-        if ( !blockRequest->block() )
-        {
-          QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
-        }
-        finishedLoadingBlock[ i ] = true;
-        // If all blocks are loaded, exit the event loop
-        if ( !finishedLoadingBlock.contains( false ) ) loop.exit();
-      } );
-    }
-    // Wait for all point cloud nodes to finish loading
-    loop.exec();
-
-    if ( !mFeedback->isCanceled() )
-    {
-      // Render all the point cloud blocks sequentially
-      for ( int i = 0; i < blockRequests.size(); ++i )
-      {
-        if ( mFeedback->isCanceled() )
-        {
-          break;
-        }
-
-        if ( !blockRequests[ i ]->block() )
-          continue;
-
-        visitBlock( blockRequests[ i ]->block() );
-
-        ++nodesDrawn;
+        return;
       }
-    }
 
-    for ( int i = 0; i < blockRequests.size(); ++i )
-    {
-      if ( blockRequests[ i ] )
+      if ( !block )
       {
-        if ( blockRequests[ i ]->block() )
-          delete blockRequests[ i ]->block();
-        blockRequests[ i ]->deleteLater();
+        QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
+        return;
       }
-    }
+
+      visitBlock( block.get() );
+      ++nodesDrawn;
+    } );
+  }
+
+  // Wait for all point cloud nodes to finish loading
+  loop.exec();
+
+  // Generation may have got canceled and the event loop exited before finished()
+  // was called for all blocks, so let's clean up anything that is left
+  for ( QgsPointCloudBlockRequest *blockRequest : std::as_const( blockRequests ) )
+  {
+    delete blockRequest->block();
+    blockRequest->deleteLater();
   }
 
   return nodesDrawn;
