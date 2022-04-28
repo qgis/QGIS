@@ -196,7 +196,7 @@ void QgsMssqlGeometryParser::DumpMemoryToLog( const char *pszMsg, unsigned char 
 #endif
 }
 
-QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint ) const const
+QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint ) const
 {
   if ( mIsGeography )
   {
