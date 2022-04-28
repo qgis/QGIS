@@ -663,6 +663,13 @@ void QgsElevationProfileCanvas::generationFinished()
 
     mPlotItem->updatePlot();
   }
+
+  if ( mForceRegenerationAfterCurrentJobCompletes )
+  {
+    mForceRegenerationAfterCurrentJobCompletes = false;
+    mCurrentJob->invalidateAllRefinableSources();
+    scheduleDeferredRegeneration();
+  }
 }
 
 void QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
@@ -742,6 +749,10 @@ void QgsElevationProfileCanvas::startDeferredRegeneration()
   {
     emit activeJobCountChanged( 1 );
     mCurrentJob->regenerateInvalidatedResults();
+  }
+  else if ( mCurrentJob )
+  {
+    mForceRegenerationAfterCurrentJobCompletes = true;
   }
 
   mDeferredRegenerationScheduled = false;
