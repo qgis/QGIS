@@ -275,26 +275,6 @@ class CORE_EXPORT QgsPointCloudRenderer
   public:
 
     /**
-     * Rendering symbols for points.
-     */
-    enum PointSymbol
-    {
-      Square, //!< Renders points as squares
-      Circle, //!< Renders points as circles
-    };
-
-    /**
-     * Pointcloud rendering order for 2d views
-     * /since QGIS 3.24
-     */
-    enum class DrawOrder : int
-    {
-      Default, //!< Draw points in the order they are stored
-      BottomToTop, //!< Draw points with larger Z values last
-      TopToBottom, //!< Draw points with larger Z values first
-    };
-
-    /**
      * Constructor for QgsPointCloudRenderer.
      */
     QgsPointCloudRenderer() = default;
@@ -464,7 +444,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see setDrawOrder2d()
      * \since QGIS 3.24
      */
-    DrawOrder drawOrder2d() const;
+    Qgis::PointCloudDrawOrder drawOrder2d() const;
 
     /**
      * Sets the drawing \a order used by the renderer for drawing points.
@@ -472,21 +452,21 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see drawOrder2d()
      * \since QGIS 3.24
      */
-    void setDrawOrder2d( DrawOrder order );
+    void setDrawOrder2d( Qgis::PointCloudDrawOrder order );
 
     /**
      * Returns the symbol used by the renderer for drawing points.
      *
      * \see setPointSymbol()
      */
-    PointSymbol pointSymbol() const;
+    Qgis::PointCloudSymbol pointSymbol() const;
 
     /**
      * Sets the \a symbol used by the renderer for drawing points.
      *
      * \see pointSymbol()
      */
-    void setPointSymbol( PointSymbol symbol );
+    void setPointSymbol( Qgis::PointCloudSymbol symbol );
 
     /**
      * Returns the maximum screen error allowed when rendering the point cloud.
@@ -574,13 +554,13 @@ class CORE_EXPORT QgsPointCloudRenderer
       QPainter *painter = context.renderContext().painter();
       switch ( mPointSymbol )
       {
-        case Square:
+        case Qgis::PointCloudSymbol::Square:
           painter->fillRect( QRectF( x - mPainterPenWidth * 0.5,
                                      y - mPainterPenWidth * 0.5,
                                      mPainterPenWidth, mPainterPenWidth ), color );
           break;
 
-        case Circle:
+        case Qgis::PointCloudSymbol::Circle:
           painter->setBrush( QBrush( color ) );
           painter->setPen( Qt::NoPen );
           painter->drawEllipse( QRectF( x - mPainterPenWidth * 0.5,
@@ -628,9 +608,9 @@ class CORE_EXPORT QgsPointCloudRenderer
     QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mPointSizeMapUnitScale;
 
-    PointSymbol mPointSymbol = Square;
+    Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
     int mPainterPenWidth = 1;
-    DrawOrder mDrawOrder2d = DrawOrder::Default;
+    Qgis::PointCloudDrawOrder mDrawOrder2d = Qgis::PointCloudDrawOrder::Default;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

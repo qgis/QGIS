@@ -1025,6 +1025,19 @@ The development version
     typedef QFlags<Qgis::ProfileGeneratorFlag> ProfileGeneratorFlags;
 
 
+    enum PointCloudSymbol
+    {
+      Square,
+      Circle,
+    };
+
+    enum class PointCloudDrawOrder
+      {
+      Default,
+      BottomToTop,
+      TopToBottom,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

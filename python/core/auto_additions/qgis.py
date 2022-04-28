@@ -1500,3 +1500,19 @@ Qgis.ProfileGeneratorFlag.__doc__ = 'Flags that control the way the :py:class:`Q
 Qgis.ProfileGeneratorFlag.baseClass = Qgis
 Qgis.ProfileGeneratorFlags.baseClass = Qgis
 ProfileGeneratorFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsPointCloudRenderer.PointSymbol = Qgis.PointCloudSymbol
+Qgis.PointCloudSymbol.baseClass = Qgis
+QgsPointCloudRenderer.DrawOrder = Qgis.PointCloudDrawOrder
+# monkey patching scoped based enum
+QgsPointCloudRenderer.Default = Qgis.PointCloudDrawOrder.Default
+QgsPointCloudRenderer.Default.is_monkey_patched = True
+QgsPointCloudRenderer.Default.__doc__ = "Draw points in the order they are stored"
+QgsPointCloudRenderer.BottomToTop = Qgis.PointCloudDrawOrder.BottomToTop
+QgsPointCloudRenderer.BottomToTop.is_monkey_patched = True
+QgsPointCloudRenderer.BottomToTop.__doc__ = "Draw points with larger Z values last"
+QgsPointCloudRenderer.TopToBottom = Qgis.PointCloudDrawOrder.TopToBottom
+QgsPointCloudRenderer.TopToBottom.is_monkey_patched = True
+QgsPointCloudRenderer.TopToBottom.__doc__ = "Draw points with larger Z values first"
+Qgis.PointCloudDrawOrder.__doc__ = 'Pointcloud rendering order for 2d views\n\n/since QGIS 3.26\n\n' + '* ``Default``: ' + Qgis.PointCloudDrawOrder.Default.__doc__ + '\n' + '* ``BottomToTop``: ' + Qgis.PointCloudDrawOrder.BottomToTop.__doc__ + '\n' + '* ``TopToBottom``: ' + Qgis.PointCloudDrawOrder.TopToBottom.__doc__
+# --
+Qgis.PointCloudDrawOrder.baseClass = Qgis

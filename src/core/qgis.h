@@ -1690,6 +1690,31 @@ class CORE_EXPORT Qgis
     Q_FLAG( ProfileGeneratorFlags )
 
     /**
+     * Rendering symbols for point cloud points.
+     *
+     * \since QGIS 3.26
+     */
+    enum PointCloudSymbol SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, PointSymbol ) : int
+    {
+      Square, //!< Renders points as squares
+      Circle, //!< Renders points as circles
+    };
+    Q_ENUM( PointCloudSymbol )
+
+    /**
+     * Pointcloud rendering order for 2d views
+     *
+     * /since QGIS 3.26
+     */
+    enum class PointCloudDrawOrder SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, DrawOrder ) : int
+      {
+      Default, //!< Draw points in the order they are stored
+      BottomToTop, //!< Draw points with larger Z values last
+      TopToBottom, //!< Draw points with larger Z values first
+    };
+    Q_ENUM( PointCloudDrawOrder )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
