@@ -277,9 +277,6 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
 {
   int nodesDrawn = 0;
 
-  QElapsedTimer downloadTimer;
-  downloadTimer.start();
-
   if ( context.feedback() && context.feedback()->isCanceled() )
     return 0;
 
