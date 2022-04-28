@@ -117,8 +117,8 @@ bool QgsPointCloudLayerRenderer::render()
   mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
 
   if ( !context.renderContext().zRange().isInfinite() ||
-       mRenderer->drawOrder2d() == QgsPointCloudRenderer::DrawOrder::BottomToTop ||
-       mRenderer->drawOrder2d() == QgsPointCloudRenderer::DrawOrder::TopToBottom )
+       mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::BottomToTop ||
+       mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::TopToBottom )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
 
   // collect attributes required by renderer
@@ -193,13 +193,13 @@ bool QgsPointCloudLayerRenderer::render()
 
   switch ( mRenderer->drawOrder2d() )
   {
-    case QgsPointCloudRenderer::DrawOrder::BottomToTop:
-    case QgsPointCloudRenderer::DrawOrder::TopToBottom:
+    case Qgis::PointCloudDrawOrder::BottomToTop:
+    case Qgis::PointCloudDrawOrder::TopToBottom:
     {
       nodesDrawn += renderNodesSorted( nodes, pc, context, request, canceled, mRenderer->drawOrder2d() );
       break;
     }
-    case QgsPointCloudRenderer::DrawOrder::Default:
+    case Qgis::PointCloudDrawOrder::Default:
     {
       switch ( pc->accessType() )
       {
@@ -359,7 +359,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
   return nodesDrawn;
 }
 
-int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, QgsPointCloudRenderer::DrawOrder order )
+int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order )
 {
   int blockCount = 0;
   int pointCount = 0;
@@ -448,13 +448,13 @@ int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<IndexedPointClo
 
   switch ( order )
   {
-    case QgsPointCloudRenderer::DrawOrder::BottomToTop:
+    case Qgis::PointCloudDrawOrder::BottomToTop:
       std::sort( allPairs.begin(), allPairs.end(), []( QPair<int, double> a, QPair<int, double> b ) { return a.second < b.second; } );
       break;
-    case QgsPointCloudRenderer::DrawOrder::TopToBottom:
+    case Qgis::PointCloudDrawOrder::TopToBottom:
       std::sort( allPairs.begin(), allPairs.end(), []( QPair<int, double> a, QPair<int, double> b ) { return a.second > b.second; } );
       break;
-    case QgsPointCloudRenderer::DrawOrder::Default:
+    case Qgis::PointCloudDrawOrder::Default:
       break;
   }
 
