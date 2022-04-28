@@ -79,10 +79,9 @@ Is used to keep track of currently available and visible tabs.
 .. versionadded:: 3.0
 %End
 
-    void setTabStyle( int tabIndex, const QColor &color, const QFont &font, bool overrideLabelColor, bool overrideLabelFont );
+    void setTabStyle( int tabIndex, const QgsAttributeEditorElement::LabelStyle &labelStyle );
 %Docstring
-Sets the optional custom ``font`` and ``color`` for the tab identified by ``tabIndex``,
-also sets if they are overridden with ``overrideLabelColor`` and ``overrideLabelFont``.
+Sets the optional custom ``labelStyle`` for the tab identified by ``tabIndex``.
 
 .. versionadded:: 3.26
 %End

@@ -37,7 +37,7 @@ void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOptio
       if ( const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>( option ) )
       {
         painter->save();
-        const TabStyle &style { mTabStyles.value( tabBar->tabAt( option->rect.center() ) ) };
+        const QgsAttributeEditorElement::LabelStyle &style { mTabStyles.value( tabBar->tabAt( option->rect.center() ) ) };
         if ( style.overrideFont )
         {
           painter->setFont( style.font );
@@ -58,12 +58,12 @@ void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOptio
 
 }
 
-void QgsTabBarProxyStyle::addStyle( int tabIndex, const TabStyle &style )
+void QgsTabBarProxyStyle::addStyle( int tabIndex, const QgsAttributeEditorElement::LabelStyle &style )
 {
   mTabStyles.insert( tabIndex, style );
 }
 
-const QMap<int, QgsTabBarProxyStyle::TabStyle> &QgsTabBarProxyStyle::tabStyles() const
+const QMap<int, QgsAttributeEditorElement::LabelStyle> &QgsTabBarProxyStyle::tabStyles() const
 {
   return mTabStyles;
 }

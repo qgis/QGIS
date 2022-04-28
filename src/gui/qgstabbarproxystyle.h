@@ -16,6 +16,7 @@
 #define QGSTABBARPROXYSTYLE_H
 
 #include "qgsproxystyle.h"
+#include "qgsattributeeditorelement.h"
 
 #include <QProxyStyle>
 #include <QFont>
@@ -37,25 +38,17 @@ class GUI_EXPORT QgsTabBarProxyStyle : public QgsProxyStyle
 {
   public:
 
-    struct TabStyle
-    {
-      QColor color;
-      QFont font;
-      bool overrideColor;
-      bool overrideFont;
-    };
-
     QgsTabBarProxyStyle( QTabBar *tabBar );
 
     void drawControl( ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const override;
 
-    void addStyle( int tabIndex, const TabStyle &style );
+    void addStyle( int tabIndex, const QgsAttributeEditorElement::LabelStyle &style );
 
-    const QMap<int, TabStyle> &tabStyles() const;
+    const QMap<int, QgsAttributeEditorElement::LabelStyle> &tabStyles() const;
 
   private:
 
-    QMap<int, TabStyle> mTabStyles;
+    QMap<int, QgsAttributeEditorElement::LabelStyle> mTabStyles;
 
 };
 

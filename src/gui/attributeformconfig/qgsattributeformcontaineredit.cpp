@@ -51,11 +51,7 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mControlCollapsedGroupBox->setEnabled( itemData.showAsGroupBox() );
   mCollapsedExpressionWidget->setExpression( itemData.collapsedExpression()->expression() );
 
-
-  mFormLabelFormatWidget->setColor( itemData.labelColor() );
-  mFormLabelFormatWidget->setFont( itemData.labelFont() );
-  mFormLabelFormatWidget->setOverrideLabelColor( itemData.overrideLabelColor() );
-  mFormLabelFormatWidget->setOverrideLabelFont( itemData.overrideLabelFont() );
+  mFormLabelFormatWidget->setLabelStyle( itemData.labelStyle() );
 
   // show label makes sense for group box, not for tabs
   connect( mShowAsGroupBox, &QCheckBox::stateChanged, mShowLabelCheckBox, &QCheckBox::setEnabled );
@@ -78,10 +74,7 @@ void QgsAttributeFormContainerEdit::updateItemData()
   itemData.setName( mTitleLineEdit->text() );
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
   itemData.setBackgroundColor( mBackgroundColorButton->color() );
-  itemData.setLabelColor( mFormLabelFormatWidget->color() );
-  itemData.setLabelFont( mFormLabelFormatWidget->font() );
-  itemData.setOverrideLabelColor( mFormLabelFormatWidget->overrideLabelColor() );
-  itemData.setOverrideLabelFont( mFormLabelFormatWidget->overrideLabelFont() );
+  itemData.setLabelStyle( mFormLabelFormatWidget->labelStyle() );
 
   QgsOptionalExpression visibilityExpression;
   visibilityExpression.setData( QgsExpression( mVisibilityExpressionWidget->expression() ) );

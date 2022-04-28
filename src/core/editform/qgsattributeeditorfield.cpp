@@ -18,10 +18,7 @@
 QgsAttributeEditorElement *QgsAttributeEditorField::clone( QgsAttributeEditorElement *parent ) const
 {
   QgsAttributeEditorField *element = new QgsAttributeEditorField( name(), mIdx, parent );
-  element->mOverrideLabelColor = mOverrideLabelColor;
-  element->mOverrideLabelFont = mOverrideLabelFont;
-  element->mLabelColor = mLabelColor;
-  element->mLabelFont = mLabelFont;
+  element->mLabelStyle = mLabelStyle;
   return element;
 }
 

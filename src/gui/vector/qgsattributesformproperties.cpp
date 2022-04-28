@@ -428,10 +428,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     {
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, widgetDef->name(), widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
-      itemData.setLabelColor( widgetDef->labelColor() );
-      itemData.setLabelFont( widgetDef->labelFont() );
-      itemData.setOverrideLabelColor( widgetDef->overrideLabelColor() );
-      itemData.setOverrideLabelFont( widgetDef->overrideLabelFont() );
+      itemData.setLabelStyle( widgetDef->labelStyle() );
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -444,10 +441,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       {
         DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, action.id().toString(), action.shortTitle().isEmpty() ? action.name() : action.shortTitle() );
         itemData.setShowLabel( widgetDef->showLabel() );
-        itemData.setLabelColor( widgetDef->labelColor() );
-        itemData.setLabelFont( widgetDef->labelFont() );
-        itemData.setOverrideLabelColor( widgetDef->overrideLabelColor() );
-        itemData.setOverrideLabelFont( widgetDef->overrideLabelFont() );
+        itemData.setLabelStyle( widgetDef->labelStyle() );
         newWidget = tree->addItem( parent, itemData );
       }
       else
@@ -462,10 +456,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relationEditor->relation().id(), relationEditor->relation().name() );
       itemData.setShowLabel( widgetDef->showLabel() );
-      itemData.setLabelColor( widgetDef->labelColor() );
-      itemData.setLabelFont( widgetDef->labelFont() );
-      itemData.setOverrideLabelColor( widgetDef->overrideLabelColor() );
-      itemData.setOverrideLabelFont( widgetDef->overrideLabelFont() );
+      itemData.setLabelStyle( widgetDef->labelStyle() );
 
       RelationEditorConfiguration relEdConfig;
 //      relEdConfig.buttons = relationEditor->visibleButtons();
@@ -494,10 +485,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       itemData.setVisibilityExpression( container->visibilityExpression() );
       itemData.setCollapsedExpression( container->collapsedExpression() );
       itemData.setCollapsed( container->collapsed() );
-      itemData.setLabelColor( widgetDef->labelColor() );
-      itemData.setLabelFont( widgetDef->labelFont() );
-      itemData.setOverrideLabelColor( widgetDef->overrideLabelColor() );
-      itemData.setOverrideLabelFont( widgetDef->overrideLabelFont() );
+      itemData.setLabelStyle( widgetDef->labelStyle() );
       newWidget = tree->addItem( parent, itemData );
 
       const QList<QgsAttributeEditorElement *> children = container->children();
@@ -516,10 +504,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       QmlElementEditorConfiguration qmlEdConfig;
       qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
       itemData.setQmlElementEditorConfiguration( qmlEdConfig );
-      itemData.setLabelColor( widgetDef->labelColor() );
-      itemData.setLabelFont( widgetDef->labelFont() );
-      itemData.setOverrideLabelColor( widgetDef->overrideLabelColor() );
-      itemData.setOverrideLabelFont( widgetDef->overrideLabelFont() );
+      itemData.setLabelStyle( widgetDef->labelStyle() );
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -532,10 +517,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       HtmlElementEditorConfiguration htmlEdConfig;
       htmlEdConfig.htmlCode = htmlElementEditor->htmlCode();
       itemData.setHtmlElementEditorConfiguration( htmlEdConfig );
-      itemData.setLabelColor( widgetDef->labelColor() );
-      itemData.setLabelFont( widgetDef->labelFont() );
-      itemData.setOverrideLabelColor( widgetDef->overrideLabelColor() );
-      itemData.setOverrideLabelFont( widgetDef->overrideLabelFont() );
+      itemData.setLabelStyle( widgetDef->labelStyle() );
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -800,10 +782,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
   if ( widgetDef )
   {
     widgetDef->setShowLabel( itemData.showLabel() );
-    widgetDef->setLabelColor( itemData.labelColor() );
-    widgetDef->setLabelFont( itemData.labelFont() );
-    widgetDef->setOverrideLabelColor( itemData.overrideLabelColor() );
-    widgetDef->setOverrideLabelFont( itemData.overrideLabelFont() );
+    widgetDef->setLabelStyle( itemData.labelStyle() );
   }
 
   return widgetDef;
@@ -1557,6 +1536,16 @@ void QgsAttributesFormProperties::DnDTreeItemData::setShowAsGroupBox( bool showA
   mShowAsGroupBox = showAsGroupBox;
 }
 
+const QgsAttributeEditorElement::LabelStyle QgsAttributesFormProperties::DnDTreeItemData::labelStyle() const
+{
+  return mLabelStyle;
+}
+
+void QgsAttributesFormProperties::DnDTreeItemData::setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle )
+{
+  mLabelStyle = labelStyle;
+}
+
 bool QgsAttributesFormProperties::DnDTreeItemData::showLabel() const
 {
   return mShowLabel;
@@ -1565,46 +1554,6 @@ bool QgsAttributesFormProperties::DnDTreeItemData::showLabel() const
 void QgsAttributesFormProperties::DnDTreeItemData::setShowLabel( bool showLabel )
 {
   mShowLabel = showLabel;
-}
-
-const QFont QgsAttributesFormProperties::DnDTreeItemData::labelFont() const
-{
-  return mLabelFont;
-}
-
-void QgsAttributesFormProperties::DnDTreeItemData::setLabelFont( const QFont &newLabelFont )
-{
-  mLabelFont = newLabelFont;
-}
-
-bool QgsAttributesFormProperties::DnDTreeItemData::overrideLabelColor() const
-{
-  return mOverrideLabelColor;
-}
-
-void QgsAttributesFormProperties::DnDTreeItemData::setOverrideLabelColor( bool overrideLabelColor )
-{
-  mOverrideLabelColor = overrideLabelColor;
-}
-
-bool QgsAttributesFormProperties::DnDTreeItemData::overrideLabelFont() const
-{
-  return mOverrideLabelFont;
-}
-
-void QgsAttributesFormProperties::DnDTreeItemData::setOverrideLabelFont( bool overrideLabelFont )
-{
-  mOverrideLabelFont = overrideLabelFont;
-}
-
-const QColor QgsAttributesFormProperties::DnDTreeItemData::labelColor() const
-{
-  return mLabelColor;
-}
-
-void QgsAttributesFormProperties::DnDTreeItemData::setLabelColor( const QColor &newLabelColor )
-{
-  mLabelColor = newLabelColor;
 }
 
 QgsOptionalExpression QgsAttributesFormProperties::DnDTreeItemData::visibilityExpression() const

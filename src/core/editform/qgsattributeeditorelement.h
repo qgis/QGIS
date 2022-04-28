@@ -60,6 +60,43 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     SIP_END
 #endif
   public:
+
+    /**
+     * The TabStyle struct defines color and font overrides for form fields, tabs and groups labels.
+     * \since QGIS 3.26
+     */
+    struct LabelStyle
+    {
+
+      //! Label font
+      QColor color;
+
+      //! Label font
+      QFont font;
+
+      //! Override label color
+      bool overrideColor = false;
+
+      //! Override label font
+      bool overrideFont = false;
+
+      /**
+       * Reads configuration from \a node.
+       */
+      void readXml( const QDomNode &node );
+
+      /**
+       * Creates the XML configuration from \a document.
+       */
+      QDomElement writeXml( QDomDocument &document ) const;
+
+      /**
+       * Returns TRUE if the style is equal to \a other.
+       */
+      bool operator==( LabelStyle const  &other ) const;
+    };
+
+
     enum AttributeEditorType
     {
       AeTypeContainer, //!< A container
@@ -145,76 +182,19 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     void setShowLabel( bool showLabel );
 
     /**
-     * Returns the custom label font, this is only effective if overrideLabelFont() is also set.
-     * \see setLabelFont()
-     * \see overrideLabelFont()
-     * \see setOverrideLabelFont()
+     * Returns the label style.
+     * \see setLabelStyle()
      * \since QGIS 3.26
      */
-    QFont labelFont() const;
+    LabelStyle labelStyle() const;
 
     /**
-     * Sets the custom \a labelFont, this is only effective if overrideLabelFont() is also set.
-     * \see setLabelFont()
-     * \see overrideLabelFont()
-     * \see setOverrideLabelFont()
+     * Sets the \a labelStyle.
+     * \see labelStyle()
      * \since QGIS 3.26
      */
-    void setLabelFont( const QFont &labelFont );
+    void setLabelStyle( const LabelStyle &labelStyle );
 
-    /**
-     * Returns the custom label color, this is only effective if overrideLabelColor() is also set.
-     * \see setLabelColor()
-     * \see overrideLabelColor()
-     * \see setOverrideLabelColor()
-     * \since QGIS 3.26
-     */
-    QColor labelColor() const;
-
-    /**
-     * Sets the custom \a labelColor, this is only effective if overrideLabelColor() is also set.
-     * \see setLabelColor()
-     * \see overrideLabelColor()
-     * \see setOverrideLabelColor()
-     * \since QGIS 3.26
-     */
-    void setLabelColor( const QColor &labelColor );
-
-    /**
-     * Returns TRUE if the label color is overridden.
-     * \see labelColor()
-     * \see labelFont()
-     * \see setOverrideLabelColor()
-     * \since QGIS 3.26
-     */
-    bool overrideLabelColor() const;
-
-    /**
-     * Sets \a overrideLabelColor flag which determines if label color is overridden.
-     * \see labelColor()
-     * \see labelFont()
-     * \see overrideLabelColor()
-     * \since QGIS 3.26
-     */
-    void setOverrideLabelColor( bool overrideLabelColor );
-
-    /**
-     * Sets \a overrideLabelFont flag which determines if label font is overridden.
-     * \see labelColor()
-     * \see labelFont()
-     * \see overrideLabelColor()
-     * \since QGIS 3.26
-     */
-    bool overrideLabelFont() const;
-
-    /**
-     * Sets \a overrideLabelFont flag which determines if label font is overridden.
-     * \see labelColor()
-     * \see labelFont()
-     * \see overrideLabelFont()
-     * \since QGIS 3.26
-     */
-    void setOverrideLabelFont( bool overrideLabelFont );
 
   protected:
 #ifndef SIP_RUN
@@ -222,10 +202,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     QString mName;
     QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;
-    QFont mLabelFont;
-    QColor mLabelColor;
-    bool mOverrideLabelColor = false;
-    bool mOverrideLabelFont = false;
+    LabelStyle mLabelStyle;
 #endif
 
   private:

@@ -401,10 +401,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       bool labelOnTop = false;
       bool labelAlignRight = false;
       bool showLabel = true;
-      QFont labelFont;
-      QColor labelColor;
-      bool overrideLabelColor = false;
-      bool overrideLabelFont = false;
+      QgsAttributeEditorElement::LabelStyle labelStyle;
     };
 
     WidgetInfo createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context );

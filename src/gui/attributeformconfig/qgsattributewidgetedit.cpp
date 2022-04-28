@@ -30,10 +30,7 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
   // common configs
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
 
-  mFormLabelFormatWidget->setColor( itemData.labelColor( ) );
-  mFormLabelFormatWidget->setFont( itemData.labelFont( ) );
-  mFormLabelFormatWidget->setOverrideLabelColor( itemData.overrideLabelColor( ) );
-  mFormLabelFormatWidget->setOverrideLabelFont( itemData.overrideLabelFont( ) );
+  mFormLabelFormatWidget->setLabelStyle( itemData.labelStyle() );
 
   switch ( itemData.type() )
   {
@@ -68,10 +65,7 @@ void QgsAttributeWidgetEdit::updateItemData()
 
   // common configs
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
-  itemData.setOverrideLabelColor( mFormLabelFormatWidget->overrideLabelColor() );
-  itemData.setOverrideLabelFont( mFormLabelFormatWidget->overrideLabelFont() );
-  itemData.setLabelColor( mFormLabelFormatWidget->color() );
-  itemData.setLabelFont( mFormLabelFormatWidget->font() );
+  itemData.setLabelStyle( mFormLabelFormatWidget->labelStyle() );
 
   // specific configs
   switch ( itemData.type() )

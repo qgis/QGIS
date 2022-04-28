@@ -24,6 +24,7 @@
 
 #include "ui_qgsformlabelformatwidget.h"
 #include "qgsconditionalstyle.h"
+#include "qgsattributeeditorelement.h"
 #include "qgis_gui.h"
 
 #include <QColor>
@@ -47,44 +48,14 @@ class GUI_EXPORT QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormL
     explicit QgsFormLabelFormatWidget( QWidget *parent = nullptr );
 
     /**
-     * Sets label \a color.
+     * Sets the widget style to \a labelStyle.
      */
-    void setColor( const QColor &color );
+    void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
 
     /**
-     * Sets label font.
+     * Returns the current label style from the wiget.
      */
-    void setFont( const QFont &font );
-
-    /**
-     * Returns label color.
-     */
-    QColor color() const;
-
-    /**
-     * Returns label font.
-     */
-    QFont font() const;
-
-    /**
-     * Sets the group box to override label color checked state to \a overrideLabelColor.
-     */
-    void setOverrideLabelColor( bool overrideLabelColor );
-
-    /**
-     * Returns the group box to override label color checked state.
-     */
-    bool overrideLabelColor( ) const;
-
-    /**
-     * Sets the group box to override label font checked state to \a overrideLabelfont.
-     */
-    void setOverrideLabelFont( bool overrideLabelFont );
-
-    /**
-     * Returns the group box to override label font checked state.
-     */
-    bool overrideLabelFont( ) const;
+    QgsAttributeEditorElement::LabelStyle labelStyle( ) const;
 
 };
 

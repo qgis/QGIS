@@ -47,54 +47,41 @@ QgsFormLabelFormatWidget::QgsFormLabelFormatWidget( QWidget *parent )
 
 }
 
-void QgsFormLabelFormatWidget::setColor( const QColor &color )
+void QgsFormLabelFormatWidget::setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle )
 {
-  btnTextColor->setColor( color );
+  mFontFamilyCmbBx->setCurrentFont( labelStyle.font );
+  mFontUnderlineBtn->setChecked( labelStyle.font.underline() );
+  mFontItalicBtn->setChecked( labelStyle.font.italic() );
+  mFontBoldBtn->setChecked( labelStyle.font.bold() );
+  mFontStrikethroughBtn->setChecked( labelStyle.font.strikeOut() );
+  if ( labelStyle.color.isValid() )
+  {
+    btnTextColor->setColor( labelStyle.color );
+  }
+  else
+  {
+    btnTextColor->setToNull();
+  }
+  mOverrideLabelColorGroupBox->setChecked( labelStyle.overrideColor );
+  mOverrideLabelFontGroupBox->setChecked( labelStyle.overrideFont );
+  mOverrideLabelColorGroupBox->setCollapsed( ! labelStyle.overrideColor );
+  mOverrideLabelFontGroupBox->setCollapsed( ! labelStyle.overrideFont );
 }
 
-void QgsFormLabelFormatWidget::setFont( const QFont &font )
+QgsAttributeEditorElement::LabelStyle QgsFormLabelFormatWidget::labelStyle() const
 {
-  mFontFamilyCmbBx->setCurrentFont( font );
-  mFontUnderlineBtn->setChecked( font.underline() );
-  mFontItalicBtn->setChecked( font.italic() );
-  mFontBoldBtn->setChecked( font.bold() );
-  mFontStrikethroughBtn->setChecked( font.strikeOut() );
-}
-
-QColor QgsFormLabelFormatWidget::color() const
-{
-  return btnTextColor->color();
-}
-
-QFont QgsFormLabelFormatWidget::font() const
-{
+  QgsAttributeEditorElement::LabelStyle style;
+  style.color = btnTextColor->color();
   QFont currentFont;
   currentFont.setFamily( mFontFamilyCmbBx->currentFont().family() );
   currentFont.setBold( mFontBoldBtn->isChecked() );
   currentFont.setItalic( mFontItalicBtn->isChecked() );
   currentFont.setUnderline( mFontUnderlineBtn->isChecked() );
   currentFont.setStrikeOut( mFontStrikethroughBtn->isChecked() );
-  return currentFont;
-}
-
-void QgsFormLabelFormatWidget::setOverrideLabelColor( bool overrideLabelColor )
-{
-  mOverrideLabelColorGroupBox->setChecked( overrideLabelColor );
-}
-
-bool QgsFormLabelFormatWidget::overrideLabelColor() const
-{
-  return mOverrideLabelColorGroupBox->isChecked( );
-}
-
-void QgsFormLabelFormatWidget::setOverrideLabelFont( bool overrideLabelFont )
-{
-  mOverrideLabelFontGroupBox->setChecked( overrideLabelFont );
-}
-
-bool QgsFormLabelFormatWidget::overrideLabelFont() const
-{
-  return mOverrideLabelFontGroupBox->isChecked( );
+  style.font = currentFont;
+  style.overrideColor = mOverrideLabelColorGroupBox->isChecked( );
+  style.overrideFont = mOverrideLabelFontGroupBox->isChecked( );
+  return style;
 }
 
 /// @endcond private
