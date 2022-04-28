@@ -126,78 +126,104 @@ Controls if this element should be labeled with a title (field, relation or grou
 
     QFont labelFont() const;
 %Docstring
-Returns the custom label font, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideStyleLabel` is also set.
+Returns the custom label font, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideLabelFont` is also set.
 
 .. seealso:: :py:func:`setLabelFont`
 
-.. seealso:: :py:func:`overrideLabelStyle`
+.. seealso:: :py:func:`overrideLabelFont`
 
-.. seealso:: :py:func:`setOverrideLabelStyle`
+.. seealso:: :py:func:`setOverrideLabelFont`
 
 .. versionadded:: 3.26
 %End
 
     void setLabelFont( const QFont &labelFont );
 %Docstring
-Sets the custom ``labelFont``, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideStyleLabel` is also set.
+Sets the custom ``labelFont``, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideLabelFont` is also set.
 
 .. seealso:: :py:func:`setLabelFont`
 
-.. seealso:: :py:func:`overrideLabelStyle`
+.. seealso:: :py:func:`overrideLabelFont`
 
-.. seealso:: :py:func:`setOverrideLabelStyle`
+.. seealso:: :py:func:`setOverrideLabelFont`
 
 .. versionadded:: 3.26
 %End
 
     QColor labelColor() const;
 %Docstring
-Returns the custom label color, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideStyleLabel` is also set.
+Returns the custom label color, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideLabelColor` is also set.
 
 .. seealso:: :py:func:`setLabelColor`
 
-.. seealso:: :py:func:`overrideLabelStyle`
+.. seealso:: :py:func:`overrideLabelColor`
 
-.. seealso:: :py:func:`setOverrideLabelStyle`
+.. seealso:: :py:func:`setOverrideLabelColor`
 
 .. versionadded:: 3.26
 %End
 
     void setLabelColor( const QColor &labelColor );
 %Docstring
-Sets the custom ``labelColor``, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideStyleLabel` is also set.
+Sets the custom ``labelColor``, this is only effective if :py:func:`~QgsAttributeEditorElement.overrideLabelColor` is also set.
 
 .. seealso:: :py:func:`setLabelColor`
 
-.. seealso:: :py:func:`overrideLabelStyle`
+.. seealso:: :py:func:`overrideLabelColor`
 
-.. seealso:: :py:func:`setOverrideLabelStyle`
+.. seealso:: :py:func:`setOverrideLabelColor`
 
 .. versionadded:: 3.26
 %End
 
-    bool overrideLabelStyle() const;
+    bool overrideLabelColor() const;
 %Docstring
-Returns ``True`` if the label style (font and color) is overridden.
+Returns ``True`` if the label color is overridden.
 
 .. seealso:: :py:func:`labelColor`
 
 .. seealso:: :py:func:`labelFont`
 
-.. seealso:: :py:func:`setOverrideLabelStyle`
+.. seealso:: :py:func:`setOverrideLabelColor`
 
 .. versionadded:: 3.26
 %End
 
-    void setOverrideLabelStyle( bool overrideLabelStyle );
+    void setOverrideLabelColor( bool overrideLabelColor );
 %Docstring
-Sets ``overrideLabelStyle`` flag which determines if label style (font and color) is overridden.
+Sets ``overrideLabelColor`` flag which determines if label color is overridden.
 
 .. seealso:: :py:func:`labelColor`
 
 .. seealso:: :py:func:`labelFont`
 
-.. seealso:: :py:func:`overrideLabelStyle`
+.. seealso:: :py:func:`overrideLabelColor`
+
+.. versionadded:: 3.26
+%End
+
+    bool overrideLabelFont() const;
+%Docstring
+Sets ``overrideLabelFont`` flag which determines if label font is overridden.
+
+.. seealso:: :py:func:`labelColor`
+
+.. seealso:: :py:func:`labelFont`
+
+.. seealso:: :py:func:`overrideLabelColor`
+
+.. versionadded:: 3.26
+%End
+
+    void setOverrideLabelFont( bool overrideLabelFont );
+%Docstring
+Sets ``overrideLabelFont`` flag which determines if label font is overridden.
+
+.. seealso:: :py:func:`labelColor`
+
+.. seealso:: :py:func:`labelFont`
+
+.. seealso:: :py:func:`overrideLabelFont`
 
 .. versionadded:: 3.26
 %End

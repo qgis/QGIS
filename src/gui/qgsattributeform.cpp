@@ -1609,12 +1609,15 @@ void QgsAttributeForm::init()
         {
           tabWidget = nullptr;
           WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
-          if ( widgetInfo.overrideLabelStyle )
+          if ( widgetInfo.overrideLabelColor )
           {
             if ( widgetInfo.labelColor.isValid() )
             {
               widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
             }
+          }
+          if ( widgetInfo.overrideLabelFont )
+          {
             widgetInfo.widget->setFont( widgetInfo.labelFont );
           }
           layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
@@ -1636,11 +1639,7 @@ void QgsAttributeForm::init()
           QWidget *tabPage = new QWidget( tabWidget );
 
           tabWidget->addTab( tabPage, widgDef->name() );
-
-          if ( widgDef->overrideLabelStyle() )
-          {
-            tabWidget->setTabStyle( tabWidget->tabBar()->count() - 1, widgDef->labelFont(), widgDef->labelColor() );
-          }
+          tabWidget->setTabStyle( tabWidget->tabBar()->count() - 1, widgDef->labelColor(), widgDef->labelFont(), widgDef->overrideLabelColor(),  widgDef->overrideLabelFont() );
 
           if ( containerDef->visibilityExpression().enabled() )
           {
@@ -1660,13 +1659,18 @@ void QgsAttributeForm::init()
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
         QgsCollapsibleGroupBox *collapsibleGroupBox = new QgsCollapsibleGroupBox();
 
-        if ( widgetInfo.showLabel && widgetInfo.overrideLabelStyle )
+        if ( widgetInfo.showLabel )
         {
-          if ( widgetInfo.labelColor.isValid() )
+          if ( widgetInfo.overrideLabelColor && widgetInfo.labelColor.isValid() )
           {
             collapsibleGroupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelColor.name( QColor::HexArgb ) ) );
           }
-          collapsibleGroupBox->setFont( widgetInfo.labelFont );
+
+          if ( widgetInfo.overrideLabelFont )
+          {
+            collapsibleGroupBox->setFont( widgetInfo.labelFont );
+          }
+
           collapsibleGroupBox->setTitle( widgetInfo.labelText );
         }
 
@@ -1688,7 +1692,7 @@ void QgsAttributeForm::init()
         tabWidget = nullptr;
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
         QLabel *label = new QLabel( widgetInfo.labelText );
-        if ( widgetInfo.overrideLabelStyle )
+        if ( widgetInfo.overrideLabelColor )
         {
           label->setFont( widgetInfo.labelFont );
           if ( widgetInfo.labelColor.isValid() )
@@ -2164,7 +2168,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
   newWidgetInfo.labelColor = widgetDef->labelColor();
   newWidgetInfo.labelFont = widgetDef->labelFont();
-  newWidgetInfo.overrideLabelStyle = widgetDef->overrideLabelStyle();
+  newWidgetInfo.overrideLabelColor = widgetDef->overrideLabelColor();
+  newWidgetInfo.overrideLabelFont = widgetDef->overrideLabelFont();
 
   switch ( widgetDef->type() )
   {
@@ -2268,13 +2273,16 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         if ( container->showLabel() )
         {
           groupBox->setTitle( container->name() );
-          if ( newWidgetInfo.overrideLabelStyle )
+          if ( newWidgetInfo.overrideLabelColor )
           {
-            groupBox->setFont( newWidgetInfo.labelFont );
             if ( newWidgetInfo.labelColor.isValid() )
             {
               groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( newWidgetInfo.labelColor.name( QColor::HexArgb ) ) );
             }
+          }
+          if ( newWidgetInfo.overrideLabelFont )
+          {
+            groupBox->setFont( newWidgetInfo.labelFont );
           }
         }
         myContainer = groupBox;
@@ -2332,7 +2340,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         {
           QLabel *mypLabel = new QLabel( widgetInfo.labelText );
 
-          if ( widgetInfo.overrideLabelStyle )
+          if ( widgetInfo.overrideLabelColor )
           {
             mypLabel->setFont( widgetInfo.labelFont );
             if ( widgetInfo.labelColor.isValid() )

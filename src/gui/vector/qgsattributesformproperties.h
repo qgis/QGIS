@@ -157,58 +157,72 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         void setCollapsed( bool collapsed ) { mCollapsed = collapsed; };
 
         /**
-         * Returns the custom label font, this is only effective if overrideStyleLabel() is also set.
+         * Returns the custom label font, this is only effective if overrideLabelFont() is also set.
          * \see setLabelFont()
-         * \see overrideLabelStyle()
-         * \see setOverrideLabelStyle()
+         * \see overrideLabelFont()
+         * \see setOverrideLabelFont()
          * \since QGIS 3.26
          */
         const QFont labelFont() const;
 
         /**
-         * Sets the custom \a labelFont, this is only effective if overrideStyleLabel() is also set.
-         * \see setLabelFont()
-         * \see overrideLabelStyle()
-         * \see setOverrideLabelStyle()
+         * Sets the custom \a labelFont, this is only effective if overrideLabelFont() is also set.
+         * \see labelFont()
+         * \see overrideLabelColor()
+         * \see setOverrideLabelColor()
          * \since QGIS 3.26
          */
         void setLabelFont( const QFont &labelFont );
 
         /**
-         * Returns the custom label color, this is only effective if overrideStyleLabel() is also set.
+         * Returns the custom label color, this is only effective if overrideLabelColor() is also set.
          * \see setLabelColor()
-         * \see overrideLabelStyle()
-         * \see setOverrideLabelStyle()
+         * \see overrideLabelColor()
+         * \see setOverrideLabelColor()
          * \since QGIS 3.26
          */
         const QColor labelColor() const;
 
         /**
-         * Sets the custom \a labelColor, this is only effective if overrideStyleLabel() is also set.
-         * \see setLabelColor()
-         * \see overrideLabelStyle()
-         * \see setOverrideLabelStyle()
+         * Sets the custom \a labelColor, this is only effective if overrideLabelColor() is also set.
+         * \see labelColor()
+         * \see overrideLabelColor()
+         * \see setOverrideLabelColor()
          * \since QGIS 3.26
          */
         void setLabelColor( const QColor &labelColor );
 
         /**
-         * Returns TRUE if the label style (font and color) is overridden.
+         * Returns TRUE if the label style color is overridden.
          * \see labelColor()
-         * \see labelFont()
-         * \see setOverrideLabelStyle()
+         * \see setOverrideLabelColor()
          * \since QGIS 3.26
          */
-        bool overrideLabelStyle() const;
+        bool overrideLabelColor() const;
 
         /**
-         * Sets \a overrideLabelStyle flag which determines if label style (font and color) is overridden.
+         * Sets \a overrideLabelColor flag which determines if label color is overridden.
          * \see labelColor()
-         * \see labelFont()
-         * \see overrideLabelStyle()
+         * \see overrideLabelColor()
          * \since QGIS 3.26
          */
-        void setOverrideLabelStyle( bool overrideLabelStyle );
+        void setOverrideLabelColor( bool overrideLabelColor );
+
+        /**
+         * Returns TRUE if the label style color is overridden.
+         * \see labelFont()
+         * \see setOverrideLabelFont()
+         * \since QGIS 3.26
+         */
+        bool overrideLabelFont() const;
+
+        /**
+         * Sets \a overrideLabelFont flag which determines if label font is overridden.
+         * \see labelFont()
+         * \see overrideLabelFont()
+         * \since QGIS 3.26
+         */
+        void setOverrideLabelFont( bool overrideLabelFont );
 
         bool showLabel() const;
         void setShowLabel( bool showLabel );
@@ -271,7 +285,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QgsOptionalExpression mCollapsedExpression;
         QColor mLabelColor;
         QFont mLabelFont;
-        bool mOverrideLabelStyle = false;
+        bool mOverrideLabelColor = false;
+        bool mOverrideLabelFont = false;
     };
 
 
@@ -361,7 +376,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QString mInitCode;
     QColor mLabelColor;
     QFont mLabelFont;
-    bool mOverrideLabelStyle = false;
+    bool mOverrideLabelColor = false;
 
   private slots:
     void addTabOrGroupButton();

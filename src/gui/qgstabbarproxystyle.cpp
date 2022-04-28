@@ -38,9 +38,12 @@ void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOptio
       {
         painter->save();
         const TabStyle &style { mTabStyles.value( tabBar->tabAt( option->rect.center() ) ) };
-        painter->setFont( style.font );
+        if ( style.overrideFont )
+        {
+          painter->setFont( style.font );
+        }
         QStyleOptionTab opt { *tab };
-        if ( style.color.isValid( ) )
+        if ( style.overrideColor && style.color.isValid( ) )
         {
           opt.palette.setBrush( QPalette::WindowText, style.color );
         }

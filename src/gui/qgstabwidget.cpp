@@ -74,9 +74,9 @@ int QgsTabWidget::realTabIndex( QWidget *widget )
   return -1;
 }
 
-void QgsTabWidget::setTabStyle( int tabIndex, const QFont &font, const QColor &color )
+void QgsTabWidget::setTabStyle( int tabIndex, const QColor &color, const QFont &font, bool overrideLabelColor, bool overrideLabelFont )
 {
-  mTabBarStyle->addStyle( tabIndex, QgsTabBarProxyStyle::TabStyle{ font, color } );
+  mTabBarStyle->addStyle( tabIndex, QgsTabBarProxyStyle::TabStyle{ color, font, overrideLabelColor, overrideLabelFont } );
 }
 
 void QgsTabWidget::tabInserted( int index )

@@ -90,10 +90,11 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
     void tabRemoved( int index ) override;
 
     /**
-     * Sets the optional custom \a font and \a color for the tab identified by \a tabIndex.
+     * Sets the optional custom \a font and \a color for the tab identified by \a tabIndex,
+     * also sets if they are overridden with \a overrideLabelColor and \a overrideLabelFont.
      * \since QGIS 3.26
      */
-    void setTabStyle( int tabIndex, const QFont &font, const QColor &color );
+    void setTabStyle( int tabIndex, const QColor &color, const QFont &font, bool overrideLabelColor, bool overrideLabelFont );
 
   private:
     void synchronizeIndexes();

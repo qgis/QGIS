@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgsformlabelformatwidget.h"
 #include "qgsguiutils.h"
+#include <QGroupBox>
 
 /// @cond private
 
@@ -35,6 +36,11 @@ QgsFormLabelFormatWidget::QgsFormLabelFormatWidget( QWidget *parent )
   mFontBoldBtn->setMaximumSize( buttonSize, buttonSize );
   mFontItalicBtn->setMinimumSize( buttonSize, buttonSize );
   mFontItalicBtn->setMaximumSize( buttonSize, buttonSize );
+
+  mOverrideLabelColorGroupBox->setSaveCheckedState( false );
+  mOverrideLabelFontGroupBox->setSaveCheckedState( false );
+  mOverrideLabelColorGroupBox->setSaveCollapsedState( false );
+  mOverrideLabelFontGroupBox->setSaveCollapsedState( false );
 
   btnTextColor->setAllowOpacity( true );
   btnTextColor->setShowNull( true, tr( "Default color" ) );
@@ -69,6 +75,26 @@ QFont QgsFormLabelFormatWidget::font() const
   currentFont.setUnderline( mFontUnderlineBtn->isChecked() );
   currentFont.setStrikeOut( mFontStrikethroughBtn->isChecked() );
   return currentFont;
+}
+
+void QgsFormLabelFormatWidget::setOverrideLabelColor( bool overrideLabelColor )
+{
+  mOverrideLabelColorGroupBox->setChecked( overrideLabelColor );
+}
+
+bool QgsFormLabelFormatWidget::overrideLabelColor() const
+{
+  return mOverrideLabelColorGroupBox->isChecked( );
+}
+
+void QgsFormLabelFormatWidget::setOverrideLabelFont( bool overrideLabelFont )
+{
+  mOverrideLabelFontGroupBox->setChecked( overrideLabelFont );
+}
+
+bool QgsFormLabelFormatWidget::overrideLabelFont() const
+{
+  return mOverrideLabelFontGroupBox->isChecked( );
 }
 
 /// @endcond private

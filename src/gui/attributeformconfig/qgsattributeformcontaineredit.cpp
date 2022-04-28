@@ -51,18 +51,16 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mControlCollapsedGroupBox->setEnabled( itemData.showAsGroupBox() );
   mCollapsedExpressionWidget->setExpression( itemData.collapsedExpression()->expression() );
 
-  mLabelStyleOverrideGroupBox->setSaveCheckedState( false );
-  mLabelStyleOverrideGroupBox->setSaveCollapsedState( false );
-  mLabelStyleOverrideGroupBox->setChecked( itemData.overrideLabelStyle() );
-  mLabelStyleOverrideGroupBox->setCollapsed( ! itemData.overrideLabelStyle( ) );
+
   mFormLabelFormatWidget->setColor( itemData.labelColor() );
   mFormLabelFormatWidget->setFont( itemData.labelFont() );
+  mFormLabelFormatWidget->setOverrideLabelColor( itemData.overrideLabelColor() );
+  mFormLabelFormatWidget->setOverrideLabelFont( itemData.overrideLabelFont() );
 
   // show label makes sense for group box, not for tabs
   connect( mShowAsGroupBox, &QCheckBox::stateChanged, mShowLabelCheckBox, &QCheckBox::setEnabled );
   connect( mShowAsGroupBox, &QCheckBox::stateChanged, mCollapsedCheckBox, &QCheckBox::setEnabled );
   connect( mShowAsGroupBox, &QCheckBox::stateChanged, mControlCollapsedGroupBox, &QCheckBox::setEnabled );
-  connect( mShowLabelCheckBox, &QCheckBox::stateChanged, mLabelStyleOverrideGroupBox, &QGroupBox::setEnabled );
 }
 
 void QgsAttributeFormContainerEdit::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
@@ -82,7 +80,8 @@ void QgsAttributeFormContainerEdit::updateItemData()
   itemData.setBackgroundColor( mBackgroundColorButton->color() );
   itemData.setLabelColor( mFormLabelFormatWidget->color() );
   itemData.setLabelFont( mFormLabelFormatWidget->font() );
-  itemData.setOverrideLabelStyle( mLabelStyleOverrideGroupBox->isChecked() );
+  itemData.setOverrideLabelColor( mFormLabelFormatWidget->overrideLabelColor() );
+  itemData.setOverrideLabelFont( mFormLabelFormatWidget->overrideLabelFont() );
 
   QgsOptionalExpression visibilityExpression;
   visibilityExpression.setData( QgsExpression( mVisibilityExpressionWidget->expression() ) );

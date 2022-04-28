@@ -66,6 +66,26 @@ class GUI_EXPORT QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormL
      */
     QFont font() const;
 
+    /**
+     * Sets the group box to override label color checked state to \a overrideLabelColor.
+     */
+    void setOverrideLabelColor( bool overrideLabelColor );
+
+    /**
+     * Returns the group box to override label color checked state.
+     */
+    bool overrideLabelColor( ) const;
+
+    /**
+     * Sets the group box to override label font checked state to \a overrideLabelfont.
+     */
+    void setOverrideLabelFont( bool overrideLabelFont );
+
+    /**
+     * Returns the group box to override label font checked state.
+     */
+    bool overrideLabelFont( ) const;
+
 };
 
 /// @endcond private

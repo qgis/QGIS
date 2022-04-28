@@ -33,7 +33,8 @@ QgsAttributeEditorElement *QgsAttributeEditorRelation::clone( QgsAttributeEditor
   element->mLabel = mLabel;
   element->mRelationEditorConfig = mRelationEditorConfig;
   element->mRelationWidgetTypeId = mRelationWidgetTypeId;
-  element->mOverrideLabelStyle = mOverrideLabelStyle;
+  element->mOverrideLabelColor = mOverrideLabelColor;
+  element->mOverrideLabelFont = mOverrideLabelFont;
   element->mLabelColor = mLabelColor;
   element->mLabelFont = mLabelFont;
 

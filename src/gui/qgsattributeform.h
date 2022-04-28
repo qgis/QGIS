@@ -403,7 +403,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       bool showLabel = true;
       QFont labelFont;
       QColor labelColor;
-      bool overrideLabelStyle = false;
+      bool overrideLabelColor = false;
+      bool overrideLabelFont = false;
     };
 
     WidgetInfo createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context );

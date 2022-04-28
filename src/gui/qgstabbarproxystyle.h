@@ -39,8 +39,10 @@ class GUI_EXPORT QgsTabBarProxyStyle : public QgsProxyStyle
 
     struct TabStyle
     {
-      QFont font;
       QColor color;
+      QFont font;
+      bool overrideColor;
+      bool overrideFont;
     };
 
     QgsTabBarProxyStyle( QTabBar *tabBar );

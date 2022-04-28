@@ -32,7 +32,13 @@ QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
   elem.setAttribute( QStringLiteral( "labelColor" ), QgsSymbolLayerUtils::encodeColor( mLabelColor ) );
   elem.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, QStringLiteral( "labelFont" ) ) );
-  elem.setAttribute( QStringLiteral( "overrideLabelStyle" ), mOverrideLabelStyle ? QChar( '1' ) : QChar( '0' ) );
+  elem.setAttribute( QStringLiteral( "overrideLabelColor" ), mOverrideLabelColor ? QChar( '1' ) : QChar( '0' ) );
+  elem.setAttribute( QStringLiteral( "overrideLabelFont" ), mOverrideLabelFont ? QChar( '1' ) : QChar( '0' ) );
+  // Font properties
+  elem.setAttribute( QStringLiteral( "fontBold" ), mLabelFont.bold() );
+  elem.setAttribute( QStringLiteral( "fontItalic" ), mLabelFont.italic() );
+  elem.setAttribute( QStringLiteral( "fontUnderline" ), mLabelFont.underline() );
+  elem.setAttribute( QStringLiteral( "fontStrikethrough" ), mLabelFont.strikeOut() );
   saveConfiguration( elem, doc );
   return elem;
 }
@@ -67,14 +73,24 @@ void QgsAttributeEditorElement::setLabelColor( const QColor &labelColor )
   mLabelColor = labelColor;
 }
 
-bool QgsAttributeEditorElement::overrideLabelStyle() const
+bool QgsAttributeEditorElement::overrideLabelColor() const
 {
-  return mOverrideLabelStyle;
+  return mOverrideLabelColor;
 }
 
-void QgsAttributeEditorElement::setOverrideLabelStyle( bool overrideLabelStyle )
+void QgsAttributeEditorElement::setOverrideLabelColor( bool overrideLabelColor )
 {
-  mOverrideLabelStyle = overrideLabelStyle;
+  mOverrideLabelColor = overrideLabelColor;
+}
+
+bool QgsAttributeEditorElement::overrideLabelFont() const
+{
+  return mOverrideLabelFont;
+}
+
+void QgsAttributeEditorElement::setOverrideLabelFont( bool overrideLabelFont )
+{
+  mOverrideLabelFont = overrideLabelFont;
 }
 
 QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent )
@@ -127,11 +143,35 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
 
     QFont font;
     QgsFontUtils::setFromXmlChildNode( font, element, QStringLiteral( "labelFont" ) );
+
+    // Font properties
+    if ( element.hasAttribute( QStringLiteral( "fontBold" ) ) )
+    {
+      font.setBold( element.attribute( QStringLiteral( "fontBold" ) ) == QChar( '1' ) );
+    }
+    if ( element.hasAttribute( QStringLiteral( "fontItalic" ) ) )
+    {
+      font.setItalic( element.attribute( QStringLiteral( "fontItalic" ) ) == QChar( '1' ) );
+    }
+    if ( element.hasAttribute( QStringLiteral( "fontUnderline" ) ) )
+    {
+      font.setUnderline( element.attribute( QStringLiteral( "fontUnderline" ) ) == QChar( '1' ) );
+    }
+    if ( element.hasAttribute( QStringLiteral( "fontStrikethrough" ) ) )
+    {
+      font.setStrikeOut( element.attribute( QStringLiteral( "fontStrikethrough" ) ) == QChar( '1' ) );
+    }
+
     newElement->setLabelFont( font );
 
-    if ( element.hasAttribute( QStringLiteral( "overrideLabelStyle" ) ) )
+    if ( element.hasAttribute( QStringLiteral( "overrideLabelColor" ) ) )
     {
-      newElement->setOverrideLabelStyle( element.attribute( QStringLiteral( "overrideLabelStyle" ) ) == QChar( '1' ) );
+      newElement->setOverrideLabelColor( element.attribute( QStringLiteral( "overrideLabelColor" ) ) == QChar( '1' ) );
+    }
+
+    if ( element.hasAttribute( QStringLiteral( "overrideLabelFont" ) ) )
+    {
+      newElement->setOverrideLabelFont( element.attribute( QStringLiteral( "overrideLabelFont" ) ) == QChar( '1' ) );
     }
 
     newElement->loadConfiguration( element, layerId, context, fields );

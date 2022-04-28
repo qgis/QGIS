@@ -79,9 +79,10 @@ Is used to keep track of currently available and visible tabs.
 .. versionadded:: 3.0
 %End
 
-    void setTabStyle( int tabIndex, const QFont &font, const QColor &color );
+    void setTabStyle( int tabIndex, const QColor &color, const QFont &font, bool overrideLabelColor, bool overrideLabelFont );
 %Docstring
-Sets the optional custom ``font`` and ``color`` for the tab identified by ``tabIndex``.
+Sets the optional custom ``font`` and ``color`` for the tab identified by ``tabIndex``,
+also sets if they are overridden with ``overrideLabelColor`` and ``overrideLabelFont``.
 
 .. versionadded:: 3.26
 %End
