@@ -35,10 +35,10 @@ QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "overrideLabelColor" ), mOverrideLabelColor ? QChar( '1' ) : QChar( '0' ) );
   elem.setAttribute( QStringLiteral( "overrideLabelFont" ), mOverrideLabelFont ? QChar( '1' ) : QChar( '0' ) );
   // Font properties
-  elem.setAttribute( QStringLiteral( "fontBold" ), mLabelFont.bold() );
-  elem.setAttribute( QStringLiteral( "fontItalic" ), mLabelFont.italic() );
-  elem.setAttribute( QStringLiteral( "fontUnderline" ), mLabelFont.underline() );
-  elem.setAttribute( QStringLiteral( "fontStrikethrough" ), mLabelFont.strikeOut() );
+  elem.setAttribute( QStringLiteral( "fontBold" ), mLabelFont.bold() ? QChar( '1' ) : QChar( '0' ) );
+  elem.setAttribute( QStringLiteral( "fontItalic" ), mLabelFont.italic() ? QChar( '1' ) : QChar( '0' ) );
+  elem.setAttribute( QStringLiteral( "fontUnderline" ), mLabelFont.underline() ? QChar( '1' ) : QChar( '0' ) );
+  elem.setAttribute( QStringLiteral( "fontStrikethrough" ), mLabelFont.strikeOut() ? QChar( '1' ) : QChar( '0' ) );
   saveConfiguration( elem, doc );
   return elem;
 }
