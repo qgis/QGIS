@@ -30,11 +30,31 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
 
+  mPointStyleComboBox->addItem( tr( "Square" ), Qgis::PointCloudSymbol::Square );
+  mPointStyleComboBox->addItem( tr( "Circle" ), Qgis::PointCloudSymbol::Circle );
+  mPointSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  mMaxErrorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                 << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mMaxErrorSpinBox->setClearValue( 0.3 );
+
+  mPointSizeSpinBox->setClearValue( 1.0 );
+
+  mPointColorButton->setAllowOpacity( true );
+  mPointColorButton->setColorDialogTitle( tr( "Point Color" ) );
+
   syncToLayer( layer );
 
   connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mShifPointCloudZAxisButton, &QPushButton::clicked, this, &QgsPointCloudElevationPropertiesWidget::shiftPointCloudZAxis );
+  connect( mPointSizeSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mPointStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mPointColorButton, &QgsColorButton::colorChanged, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
 }
 
 void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -43,9 +63,18 @@ void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   if ( !mLayer )
     return;
 
+  const QgsPointCloudLayerElevationProperties *properties = qgis::down_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() );
+
   mBlockUpdates = true;
-  mOffsetZSpinBox->setValue( static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset() );
-  mScaleZSpinBox->setValue( static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zScale() );
+  mOffsetZSpinBox->setValue( properties->zOffset() );
+  mScaleZSpinBox->setValue( properties->zScale() );
+  mPointSizeSpinBox->setValue( properties->pointSize() );
+  mPointSizeUnitWidget->setUnit( properties->pointSizeUnit() );
+  mPointStyleComboBox->setCurrentIndex( mPointStyleComboBox->findData( properties->pointSymbol() ) );
+  mMaxErrorSpinBox->setValue( properties->maximumScreenError() );
+  mMaxErrorUnitWidget->setUnit( properties->maximumScreenErrorUnit() );
+  mPointColorButton->setColor( properties->pointColor() );
+
   mBlockUpdates = false;
 }
 
@@ -54,8 +83,17 @@ void QgsPointCloudElevationPropertiesWidget::apply()
   if ( !mLayer )
     return;
 
-  static_cast< QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->setZOffset( mOffsetZSpinBox->value() );
-  static_cast< QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->setZScale( mScaleZSpinBox->value() );
+  QgsPointCloudLayerElevationProperties *properties = qgis::down_cast< QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() );
+
+  properties->setZOffset( mOffsetZSpinBox->value() );
+  properties->setZScale( mScaleZSpinBox->value() );
+  properties->setPointSize( mPointSizeSpinBox->value() );
+  properties->setPointSizeUnit( mPointSizeUnitWidget->unit() );
+  properties->setPointSymbol( static_cast< Qgis::PointCloudSymbol >( mPointStyleComboBox->currentData().toInt() ) );
+  properties->setMaximumScreenError( mMaxErrorSpinBox->value() );
+  properties->setMaximumScreenErrorUnit( mMaxErrorUnitWidget->unit() );
+  properties->setPointColor( mPointColorButton->color() );
+
   mLayer->trigger3DUpdate();
 }
 
