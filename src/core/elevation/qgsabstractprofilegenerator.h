@@ -208,6 +208,20 @@ class CORE_EXPORT QgsProfileGenerationContext
     void setMaximumErrorMapUnits( double error ) { mMaxErrorMapUnits = error; }
 
     /**
+     * Returns the number of map units per pixel in the distance dimension.
+     *
+     * \see setMapUnitsPerDistancePixel()
+     */
+    double mapUnitsPerDistancePixel() const { return mMapUnitsPerDistancePixel; }
+
+    /**
+     * Sets the number of map \a units per pixel in the distance dimension.
+     *
+     * \see mapUnitsPerDistancePixel()
+     */
+    void setMapUnitsPerDistancePixel( double units ) { mMapUnitsPerDistancePixel = units; }
+
+    /**
      * Returns the range of distances to include in the generation.
      *
      * Distances outside this range may be excluded from the generation (if it results in faster profile generation).
@@ -249,6 +263,7 @@ class CORE_EXPORT QgsProfileGenerationContext
   private:
 
     double mMaxErrorMapUnits = std::numeric_limits< double >::quiet_NaN();
+    double mMapUnitsPerDistancePixel = 1;
     QgsDoubleRange mDistanceRange;
     QgsDoubleRange mElevationRange;
 };

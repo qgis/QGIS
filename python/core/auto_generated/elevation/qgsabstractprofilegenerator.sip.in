@@ -186,6 +186,20 @@ Larger values will result in a faster profile to generate.
 .. seealso:: :py:func:`maximumErrorMapUnits`
 %End
 
+    double mapUnitsPerDistancePixel() const;
+%Docstring
+Returns the number of map units per pixel in the distance dimension.
+
+.. seealso:: :py:func:`setMapUnitsPerDistancePixel`
+%End
+
+    void setMapUnitsPerDistancePixel( double units );
+%Docstring
+Sets the number of map ``units`` per pixel in the distance dimension.
+
+.. seealso:: :py:func:`mapUnitsPerDistancePixel`
+%End
+
     QgsDoubleRange distanceRange() const;
 %Docstring
 Returns the range of distances to include in the generation.
