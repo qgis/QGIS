@@ -55,6 +55,7 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
   connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mPointStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mPointColorButton, &QgsColorButton::colorChanged, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mOpacityByDistanceCheckBox, &QCheckBox::toggled, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
 }
 
 void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -74,6 +75,7 @@ void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mMaxErrorSpinBox->setValue( properties->maximumScreenError() );
   mMaxErrorUnitWidget->setUnit( properties->maximumScreenErrorUnit() );
   mPointColorButton->setColor( properties->pointColor() );
+  mOpacityByDistanceCheckBox->setChecked( properties->applyOpacityByDistanceEffect() );
 
   mBlockUpdates = false;
 }
@@ -93,6 +95,7 @@ void QgsPointCloudElevationPropertiesWidget::apply()
   properties->setMaximumScreenError( mMaxErrorSpinBox->value() );
   properties->setMaximumScreenErrorUnit( mMaxErrorUnitWidget->unit() );
   properties->setPointColor( mPointColorButton->color() );
+  properties->setApplyOpacityByDistanceEffect( mOpacityByDistanceCheckBox->isChecked() );
 
   mLayer->trigger3DUpdate();
 }

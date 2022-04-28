@@ -43,6 +43,7 @@ QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parent
   element.setAttribute( QStringLiteral( "point_size_unit" ), QgsUnitTypes::encodeUnit( mPointSizeUnit ) );
   element.setAttribute( QStringLiteral( "point_symbol" ), qgsEnumValueToKey( mPointSymbol ) );
   element.setAttribute( QStringLiteral( "point_color" ), QgsSymbolLayerUtils::encodeColor( mPointColor ) );
+  element.setAttribute( QStringLiteral( "opacity_by_distance" ), mApplyOpacityByDistanceEffect ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   parentElement.appendChild( element );
   return element;
@@ -72,6 +73,8 @@ bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element,
   {
     mPointColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
   }
+  mApplyOpacityByDistanceEffect = elevationElement.attribute( QStringLiteral( "opacity_by_distance" ) ).toInt();
+
   return true;
 }
 
@@ -86,6 +89,7 @@ QgsPointCloudLayerElevationProperties *QgsPointCloudLayerElevationProperties::cl
   res->mPointSizeUnit = mPointSizeUnit;
   res->mPointSymbol = mPointSymbol;
   res->mPointColor = mPointColor;
+  res->mApplyOpacityByDistanceEffect = mApplyOpacityByDistanceEffect;
 
   return res.release();
 }
@@ -169,6 +173,16 @@ void QgsPointCloudLayerElevationProperties::setPointColor( const QColor &color )
     return;
 
   mPointColor = color;
+  emit changed();
+  emit renderingPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setApplyOpacityByDistanceEffect( bool apply )
+{
+  if ( apply == mApplyOpacityByDistanceEffect )
+    return;
+
+  mApplyOpacityByDistanceEffect = apply;
   emit changed();
   emit renderingPropertyChanged();
 }

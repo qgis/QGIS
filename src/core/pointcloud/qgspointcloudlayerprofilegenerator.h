@@ -75,6 +75,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     QgsUnitTypes::RenderUnit pointSizeUnit = QgsUnitTypes::RenderMillimeters;
     Qgis::PointCloudSymbol pointSymbol = Qgis::PointCloudSymbol::Square;
     QColor pointColor;
+    bool opacityByDistanceEffect = false;
 
     QString type() const override;
     QMap< double, double > distanceToHeightMap() const override;
@@ -127,6 +128,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
     QColor mPointColor;
+    bool mOpacityByDistanceEffect = false;
 
     QString mId;
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
