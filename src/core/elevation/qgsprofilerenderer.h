@@ -109,7 +109,7 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     void setContext( const QgsProfileGenerationContext &context );
 
     /**
-     * Invalidates previous resutls from all refinable sources.
+     * Invalidates previous results from all refinable sources.
      */
     void invalidateAllRefinableSources();
 
