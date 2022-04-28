@@ -633,7 +633,7 @@ void QgsElevationProfileCanvas::refresh()
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
 
   QgsProfileGenerationContext generationContext;
-  generationContext.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+  generationContext.setDpi( QgsApplication::desktop()->logicalDpiX() );
   generationContext.setMaximumErrorMapUnits( MAX_ERROR_PIXELS * ( mProfileCurve->length() ) / mPlotItem->plotArea().width() );
   generationContext.setMapUnitsPerDistancePixel( mProfileCurve->length() / mPlotItem->plotArea().width() );
   mCurrentJob->setContext( generationContext );
@@ -771,7 +771,7 @@ void QgsElevationProfileCanvas::refineResults()
   if ( mCurrentJob )
   {
     QgsProfileGenerationContext context;
-    context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+    context.setDpi( QgsApplication::desktop()->logicalDpiX() );
     const double plotDistanceRange = mPlotItem->xMaximum() - mPlotItem->xMinimum();
     const double plotElevationRange = mPlotItem->yMaximum() - mPlotItem->yMinimum();
     const double plotDistanceUnitsPerPixel = plotDistanceRange / mPlotItem->plotArea().width();
