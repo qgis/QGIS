@@ -44,7 +44,7 @@ bool QgsPointCloudCategory::operator==( const QgsPointCloudCategory &other ) con
 //
 
 QgsPointCloudClassifiedRenderer::QgsPointCloudClassifiedRenderer()
-  :  mCategories( defaultCategories() )
+  :  mCategories( QgsPointCloudCategoryList() )
 {
 }
 

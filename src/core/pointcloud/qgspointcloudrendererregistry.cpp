@@ -185,3 +185,36 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   return renderer.release();
 }
 
+QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const QgsPointCloudLayer *layer )
+{
+  if ( !layer )
+    return new QgsPointCloudAttributeByRampRenderer();
+
+  QgsPointCloudRenderer *renderer = defaultRenderer( layer->dataProvider() );
+  QgsPointCloudClassifiedRenderer *classifiedRenderer = dynamic_cast< QgsPointCloudClassifiedRenderer *>( renderer );
+  if ( classifiedRenderer )
+  {
+    const QgsPointCloudCategoryList categories = defaultCategories( layer );
+    classifiedRenderer->setCategories( categories );
+  }
+  return renderer;
+}
+
+QgsPointCloudCategoryList QgsPointCloudRendererRegistry::defaultCategories( const QgsPointCloudLayer *layer )
+{
+  if ( !layer || !layer->dataProvider() )
+    return QgsPointCloudCategoryList();
+
+  QgsPointCloudCategoryList categories;
+  const QVariantList layerClasses = layer->dataProvider()->metadataClasses( QStringLiteral( "Classification" ) );
+  const QgsPointCloudCategoryList defaultCategories = QgsPointCloudClassifiedRenderer::defaultCategories();
+
+  for ( const QVariant &layerClass : layerClasses )
+  {
+    const int value = layerClass.toInt();
+    const QColor color = defaultCategories.at( value ).color();
+    const QString label = QgsPointCloudDataProvider::translatedLasClassificationCodes().value( value, QString::number( value ) );
+    categories.append( QgsPointCloudCategory( value, color, label ) );
+  }
+  return categories;
+}
