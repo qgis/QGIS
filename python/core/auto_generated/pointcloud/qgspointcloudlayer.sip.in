@@ -12,7 +12,7 @@
 
 
 
-class QgsPointCloudLayer : QgsMapLayer
+class QgsPointCloudLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 
@@ -73,6 +73,8 @@ QgsPointCloudLayer cannot be copied.
     virtual QgsRectangle extent() const;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
 
     virtual QgsPointCloudDataProvider *dataProvider();

@@ -236,6 +236,29 @@ Elevations outside this range may be excluded from the generation (if it results
 .. seealso:: :py:func:`elevationRange`
 %End
 
+    double scaleFactor() const;
+%Docstring
+Returns the scaling factor for converting pixels to physical sizes.
+
+This is usually equal to the number of pixels per millimeter.
+
+.. seealso:: :py:func:`setScaleFactor`
+%End
+
+    void setScaleFactor( double factor );
+%Docstring
+Sets the scaling factor for the render to convert pixels to physical sizes.
+
+This should usually be equal to the number of pixels per millimeter.
+
+.. seealso:: :py:func:`scaleFactor`
+%End
+
+    double convertDistanceToPixels( double size, QgsUnitTypes::RenderUnit unit ) const;
+%Docstring
+Converts a distance size from the specified units to pixels.
+%End
+
     bool operator==( const QgsProfileGenerationContext &other ) const;
     bool operator!=( const QgsProfileGenerationContext &other ) const;
 

@@ -257,6 +257,29 @@ class CORE_EXPORT QgsProfileGenerationContext
      */
     void setElevationRange( const QgsDoubleRange &range ) { mElevationRange = range; }
 
+    /**
+     * Returns the scaling factor for converting pixels to physical sizes.
+     *
+     * This is usually equal to the number of pixels per millimeter.
+     *
+     * \see setScaleFactor()
+     */
+    double scaleFactor() const {return mScaleFactor;}
+
+    /**
+     * Sets the scaling factor for the render to convert pixels to physical sizes.
+     *
+     * This should usually be equal to the number of pixels per millimeter.
+     *
+     * \see scaleFactor()
+     */
+    void setScaleFactor( double factor ) {mScaleFactor = factor;}
+
+    /**
+     * Converts a distance size from the specified units to pixels.
+     */
+    double convertDistanceToPixels( double size, QgsUnitTypes::RenderUnit unit ) const;
+
     bool operator==( const QgsProfileGenerationContext &other ) const;
     bool operator!=( const QgsProfileGenerationContext &other ) const;
 
@@ -266,6 +289,7 @@ class CORE_EXPORT QgsProfileGenerationContext
     double mMapUnitsPerDistancePixel = 1;
     QgsDoubleRange mDistanceRange;
     QgsDoubleRange mElevationRange;
+    double mScaleFactor = 1;
 };
 
 /**

@@ -34,9 +34,11 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsprofilesnapping.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsapplication.h"
 
 #include <QWheelEvent>
 #include <QTimer>
+#include <QDesktopWidget>
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
@@ -631,7 +633,7 @@ void QgsElevationProfileCanvas::refresh()
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
 
   QgsProfileGenerationContext generationContext;
-
+  generationContext.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
   generationContext.setMaximumErrorMapUnits( MAX_ERROR_PIXELS * ( mProfileCurve->length() ) / mPlotItem->plotArea().width() );
   generationContext.setMapUnitsPerDistancePixel( mProfileCurve->length() / mPlotItem->plotArea().width() );
   mCurrentJob->setContext( generationContext );
@@ -769,6 +771,7 @@ void QgsElevationProfileCanvas::refineResults()
   if ( mCurrentJob )
   {
     QgsProfileGenerationContext context;
+    context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
     const double plotDistanceRange = mPlotItem->xMaximum() - mPlotItem->xMinimum();
     const double plotElevationRange = mPlotItem->yMaximum() - mPlotItem->yMinimum();
     const double plotDistanceUnitsPerPixel = plotDistanceRange / mPlotItem->plotArea().width();
