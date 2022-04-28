@@ -101,11 +101,13 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererWidget: public QgsPointCloudRend
 
     void setFromCategories( QgsPointCloudCategoryList categories, const QString &attribute );
 
+  public slots:
+    void addCategories();
+
   private slots:
 
     void emitWidgetChanged();
     void categoriesDoubleClicked( const QModelIndex &idx );
-    void addCategories();
     void addCategory();
     void deleteCategories();
     void deleteAllCategories();

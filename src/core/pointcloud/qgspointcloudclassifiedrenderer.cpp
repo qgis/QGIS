@@ -190,7 +190,8 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
 
 QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::defaultCategories()
 {
-  return QgsPointCloudCategoryList() << QgsPointCloudCategory( 1, QColor( "#AAAAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 1 ) )
+  return QgsPointCloudCategoryList() << QgsPointCloudCategory( 0, QColor( "#BABABA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 0 ) )
+         << QgsPointCloudCategory( 1, QColor( "#AAAAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 1 ) )
          << QgsPointCloudCategory( 2, QColor( "#AA5500" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 2 ) )
          << QgsPointCloudCategory( 3, QColor( "#00AAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 3 ) )
          << QgsPointCloudCategory( 4, QColor( "#55FF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 4 ) )
@@ -207,7 +208,7 @@ QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::defaultCategories()
          << QgsPointCloudCategory( 15, QColor( "#FF55FF" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 15 ) )
          << QgsPointCloudCategory( 16, QColor( "#FFFF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 16 ) )
          << QgsPointCloudCategory( 17, QColor( "#5555FF" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 17 ) )
-         << QgsPointCloudCategory( 18, QColor( 100, 100, 100 ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 18 ) );
+         << QgsPointCloudCategory( 18, QColor( "#646464" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 18 ) );
 }
 
 QDomElement QgsPointCloudClassifiedRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const

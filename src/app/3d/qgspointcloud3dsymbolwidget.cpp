@@ -486,7 +486,8 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       }
       else
       {
-        mClassifiedRendererWidget->setFromCategories( QgsPointCloudClassifiedRenderer::defaultCategories(), QString() );
+        mClassifiedRendererWidget->setFromCategories( QgsPointCloudCategoryList(), QString() );
+        mClassifiedRendererWidget->addCategories();
       }
 
       ( void )( renderer2d );
