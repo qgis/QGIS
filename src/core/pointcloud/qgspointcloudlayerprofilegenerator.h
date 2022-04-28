@@ -60,8 +60,8 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
       double x;
       double y;
       double z;
-      double distance;
-      double curveDistance;
+      double distanceAlongCurve;
+      double distanceFromCurve; // only used when the opacity by distance effect is enabled
       QRgb color;
     };
 
