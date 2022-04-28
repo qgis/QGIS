@@ -633,6 +633,7 @@ void QgsElevationProfileCanvas::refresh()
   QgsProfileGenerationContext generationContext;
 
   generationContext.setMaximumErrorMapUnits( MAX_ERROR_PIXELS * ( mProfileCurve->length() ) / mPlotItem->plotArea().width() );
+  generationContext.setMapUnitsPerDistancePixel( mProfileCurve->length() / mPlotItem->plotArea().width() );
   mCurrentJob->setContext( generationContext );
 
   mCurrentJob->startGeneration();
@@ -767,6 +768,8 @@ void QgsElevationProfileCanvas::refineResults()
     const double factor = std::pow( 10.0, 1 - std::ceil( std::log10( std::fabs( targetMaxErrorInMapUnits ) ) ) );
     const double roundedErrorInMapUnits = std::floor( targetMaxErrorInMapUnits * factor ) / factor;
     context.setMaximumErrorMapUnits( roundedErrorInMapUnits );
+
+    context.setMapUnitsPerDistancePixel( plotDistanceUnitsPerPixel );
 
     // for similar reasons we round the minimum distance off to multiples of the maximum error in map units
     const double distanceMin = std::floor( ( mPlotItem->xMinimum() - plotDistanceRange * 0.05 ) / context.maximumErrorMapUnits() ) * context.maximumErrorMapUnits();

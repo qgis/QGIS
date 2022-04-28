@@ -76,6 +76,7 @@ void QgsAbstractProfileResults::copyPropertiesFromGenerator( const QgsAbstractPr
 bool QgsProfileGenerationContext::operator==( const QgsProfileGenerationContext &other ) const
 {
   return qgsDoubleNear( mMaxErrorMapUnits, other.mMaxErrorMapUnits )
+         && qgsDoubleNear( mMapUnitsPerDistancePixel, other.mMapUnitsPerDistancePixel )
          && mDistanceRange == other.mDistanceRange
          && mElevationRange == other.mElevationRange;
 }
