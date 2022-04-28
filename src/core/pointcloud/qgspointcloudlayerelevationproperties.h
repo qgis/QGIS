@@ -132,6 +132,24 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     void setPointColor( const QColor &color );
 
     /**
+     * Returns TRUE if a reduced opacity by distance from profile curve effect should
+     * be applied when drawing points in elevation profile charts.
+     *
+     * \see setApplyOpacityByDistanceEffect()
+     * \since QGIS 3.26
+     */
+    bool applyOpacityByDistanceEffect() const { return mApplyOpacityByDistanceEffect; }
+
+    /**
+     * Sets whether a reduced opacity by distance from profile curve effect should
+     * be applied when drawing points in elevation profile charts.
+     *
+     * \see applyOpacityByDistanceEffect()
+     * \since QGIS 3.26
+     */
+    void setApplyOpacityByDistanceEffect( bool apply );
+
+    /**
      * Sets the point \a size used for drawing points in elevation profile charts.
      *
      * Point size units are specified via setPointSizeUnit().
@@ -182,6 +200,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
     QColor mPointColor;
+    bool mApplyOpacityByDistanceEffect = false;
 };
 
 #endif // QGSPOINTCLOUDLAYERELEVATIONPROPERTIES_H

@@ -117,7 +117,8 @@ void QgsPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &c
   {
     QPointF p = context.worldTransform().map( QPointF( point.distance, point.z ) );
     QColor color = pointColor;
-    //  color.setAlphaF( 1.0 - point.curveDistance / tolerance );
+    if ( opacityByDistanceEffect )
+      color.setAlphaF( color.alphaF() * ( 1.0 - std::pow( point.curveDistance / tolerance, 0.5 ) ) );
 
     switch ( pointSymbol )
     {
@@ -178,6 +179,7 @@ void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbs
   pointSizeUnit = pcGenerator->mPointSizeUnit;
   pointSymbol = pcGenerator->mPointSymbol;
   pointColor = pcGenerator->mPointColor;
+  opacityByDistanceEffect = pcGenerator->mOpacityByDistanceEffect;
 }
 
 //
@@ -193,6 +195,7 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mPointSizeUnit( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSizeUnit() )
   , mPointSymbol( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSymbol() )
   , mPointColor( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointColor() )
+  , mOpacityByDistanceEffect( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->applyOpacityByDistanceEffect() )
   , mId( layer->id() )
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )

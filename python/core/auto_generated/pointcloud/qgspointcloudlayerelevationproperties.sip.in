@@ -133,6 +133,26 @@ Sets the ``color`` used drawing points in elevation profile charts.
 .. versionadded:: 3.26
 %End
 
+    bool applyOpacityByDistanceEffect() const;
+%Docstring
+Returns ``True`` if a reduced opacity by distance from profile curve effect should
+be applied when drawing points in elevation profile charts.
+
+.. seealso:: :py:func:`setApplyOpacityByDistanceEffect`
+
+.. versionadded:: 3.26
+%End
+
+    void setApplyOpacityByDistanceEffect( bool apply );
+%Docstring
+Sets whether a reduced opacity by distance from profile curve effect should
+be applied when drawing points in elevation profile charts.
+
+.. seealso:: :py:func:`applyOpacityByDistanceEffect`
+
+.. versionadded:: 3.26
+%End
+
     void setPointSize( double size );
 %Docstring
 Sets the point ``size`` used for drawing points in elevation profile charts.
