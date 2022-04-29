@@ -31,6 +31,7 @@ class QgsPointCloudElevationPropertiesWidget : public QgsMapLayerConfigWidget, p
     QgsPointCloudElevationPropertiesWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
     void syncToLayer( QgsMapLayer *layer ) final;
+    bool shouldTriggerLayerRepaint() const override { return false; }
 
   public slots:
     void apply() override;
