@@ -823,22 +823,24 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         res = r.snapPoint(QgsProfilePoint(-10, -10), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 1
-        context.maximumElevationDelta = 3
+        context.maximumPointDistanceDelta = 1
+        context.maximumPointElevationDelta = 3
+        context.maximumSurfaceDistanceDelta = 0
+        context.maximumSurfaceElevationDelta = 0
         res = r.snapPoint(QgsProfilePoint(15, 14), context)
         self.assertTrue(res.isValid())
         self.assertAlmostEqual(res.snappedPoint.distance(), 15.89, 1)
         self.assertAlmostEqual(res.snappedPoint.elevation(), 14.36, 1)
 
-        context.maximumDistanceDelta = 2
-        context.maximumElevationDelta = 2
+        context.maximumPointDistanceDelta = 2
+        context.maximumPointElevationDelta = 2
         res = r.snapPoint(QgsProfilePoint(55, 16), context)
         self.assertTrue(res.isValid())
         self.assertAlmostEqual(res.snappedPoint.distance(), 55.279, 1)
         self.assertAlmostEqual(res.snappedPoint.elevation(), 16.141, 1)
 
-        context.maximumDistanceDelta = 0.1
-        context.maximumElevationDelta = 0.1
+        context.maximumPointDistanceDelta = 0.1
+        context.maximumPointElevationDelta = 0.1
         res = r.snapPoint(QgsProfilePoint(55, 16), context)
         self.assertFalse(res.isValid())
 
@@ -871,8 +873,10 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         res = r.snapPoint(QgsProfilePoint(-10, -10), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 1
-        context.maximumElevationDelta = 3
+        context.maximumPointDistanceDelta = 1
+        context.maximumPointElevationDelta = 3
+        context.maximumSurfaceElevationDelta = 0
+        context.maximumSurfaceDistanceDelta = 0
         res = r.snapPoint(QgsProfilePoint(15, 14), context)
         self.assertTrue(res.isValid())
         self.assertAlmostEqual(res.snappedPoint.distance(), 15.89, 1)
@@ -886,8 +890,8 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         res = r.snapPoint(QgsProfilePoint(15, 35), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 2
-        context.maximumElevationDelta = 2
+        context.maximumPointDistanceDelta = 2
+        context.maximumPointElevationDelta = 2
         res = r.snapPoint(QgsProfilePoint(55, 16), context)
         self.assertTrue(res.isValid())
         self.assertAlmostEqual(res.snappedPoint.distance(), 55.279, 1)
@@ -901,8 +905,8 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         res = r.snapPoint(QgsProfilePoint(55, 36), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 0.1
-        context.maximumElevationDelta = 0.1
+        context.maximumPointDistanceDelta = 0.1
+        context.maximumPointElevationDelta = 0.1
         res = r.snapPoint(QgsProfilePoint(55, 16), context)
         self.assertFalse(res.isValid())
 
@@ -933,8 +937,10 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         res = r.snapPoint(QgsProfilePoint(-10, -10), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 1
-        context.maximumElevationDelta = 3
+        context.maximumPointDistanceDelta = 1
+        context.maximumSurfaceElevationDelta = 3
+        context.maximumPointElevationDelta = 0
+        context.maximumSurfaceDistanceDelta = 0
         res = r.snapPoint(QgsProfilePoint(27, 1.9), context)
         self.assertTrue(res.isValid())
         self.assertAlmostEqual(res.snappedPoint.distance(), 27.37797, 1)
@@ -943,20 +949,20 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         res = r.snapPoint(QgsProfilePoint(27, 7), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 3
-        context.maximumElevationDelta = 2
+        context.maximumPointDistanceDelta = 3
+        context.maximumSurfaceElevationDelta = 2
         res = r.snapPoint(QgsProfilePoint(42, 3), context)
         self.assertTrue(res.isValid())
         self.assertAlmostEqual(res.snappedPoint.distance(), 40.7058, 1)
         self.assertAlmostEqual(res.snappedPoint.elevation(), 2.000, 1)
 
-        context.maximumDistanceDelta = 0.01
-        context.maximumElevationDelta = 2
+        context.maximumPointDistanceDelta = 0.01
+        context.maximumSurfaceElevationDelta = 2
         res = r.snapPoint(QgsProfilePoint(42, 3), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 0.1
-        context.maximumElevationDelta = 0.1
+        context.maximumPointDistanceDelta = 0.1
+        context.maximumSurfaceElevationDelta = 0.1
         res = r.snapPoint(QgsProfilePoint(55, 16), context)
         self.assertFalse(res.isValid())
 
@@ -989,8 +995,10 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         res = r.snapPoint(QgsProfilePoint(-10, -10), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 1
-        context.maximumElevationDelta = 3
+        context.maximumPointDistanceDelta = 1
+        context.maximumSurfaceElevationDelta = 3
+        context.maximumSurfaceDistanceDelta = 0
+        context.maximumPointElevationDelta = 0
         res = r.snapPoint(QgsProfilePoint(27, 1.9), context)
         self.assertTrue(res.isValid())
         self.assertAlmostEqual(res.snappedPoint.distance(), 27.37797, 1)
@@ -1007,20 +1015,20 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         res = r.snapPoint(QgsProfilePoint(27, 7), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 3
-        context.maximumElevationDelta = 2
+        context.maximumPointDistanceDelta = 3
+        context.maximumSurfaceElevationDelta = 2
         res = r.snapPoint(QgsProfilePoint(42, 3), context)
         self.assertTrue(res.isValid())
         self.assertAlmostEqual(res.snappedPoint.distance(), 40.7058, 1)
         self.assertAlmostEqual(res.snappedPoint.elevation(), 2.000, 1)
 
-        context.maximumDistanceDelta = 0.01
-        context.maximumElevationDelta = 2
+        context.maximumPointDistanceDelta = 0.01
+        context.maximumSurfaceElevationDelta = 2
         res = r.snapPoint(QgsProfilePoint(42, 3), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 0.1
-        context.maximumElevationDelta = 0.1
+        context.maximumPointDistanceDelta = 0.1
+        context.maximumSurfaceElevationDelta = 0.1
         res = r.snapPoint(QgsProfilePoint(55, 16), context)
         self.assertFalse(res.isValid())
 
