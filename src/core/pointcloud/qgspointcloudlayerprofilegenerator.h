@@ -25,7 +25,9 @@
 #include "qgscoordinatetransform.h"
 #include "qgslinesymbol.h"
 #include "qgsvector3d.h"
+#include "qgsgeos.h"
 
+#include <geos_c.h>
 #include <memory>
 
 class QgsProfileRequest;
@@ -55,6 +57,9 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
 
   public:
 
+    QgsPointCloudLayerProfileResults();
+    ~QgsPointCloudLayerProfileResults() override;
+
     struct PointResult
     {
       double x;
@@ -65,7 +70,12 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
       QRgb color;
     };
 
-    QVector< PointResult > results;
+    /**
+     * Finalizes results -- should be called after last point is added.
+     */
+    void finalize( QgsFeedback *feedback );
+
+    std::vector< PointResult > results;
     double tolerance;
 
     double minZ = std::numeric_limits< double >::max();
@@ -85,6 +95,15 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     void renderResults( QgsProfileRenderContext &context ) override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
+
+  private:
+
+    GEOSSTRtree *mPointIndex = nullptr;
+
+    // only required for GEOS < 3.9
+#if GEOS_VERSION_MAJOR<4 && GEOS_VERSION_MINOR<9
+    std::vector< geos::unique_ptr > mSTRTreeItems;
+#endif
 };
 
 
@@ -155,6 +174,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     QgsRectangle mMaxSearchExtentInLayerCrs;
 
     std::unique_ptr< QgsPointCloudLayerProfileResults > mResults;
+    QVector< QgsPointCloudLayerProfileResults::PointResult > mGatheredPoints;
 
     friend class QgsPointCloudLayerProfileResults;
 
