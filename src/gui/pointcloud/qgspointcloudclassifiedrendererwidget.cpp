@@ -26,6 +26,7 @@
 #include "qgscolordialog.h"
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
+#include "qgspointcloudrendererregistry.h"
 
 #include <QMimeData>
 
@@ -440,6 +441,8 @@ QString QgsPointCloudClassifiedRendererWidget::attribute()
 
 void QgsPointCloudClassifiedRendererWidget::attributeChanged()
 {
+  if ( mBlockChangedSignal )
+    return;
   mModel->removeAllRows();
   addCategories();
   emit widgetChanged();
@@ -463,11 +466,19 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
     return;
 
   const QString currentAttribute = mAttributeComboBox->currentAttribute();
-  QVariantList providerCategories = mLayer->dataProvider()->metadataClasses( currentAttribute );
   const QgsPointCloudCategoryList currentCategories = mModel->categories();
-  const bool isClassification = ! currentAttribute.compare( QStringLiteral( "Classification" ), Qt::CaseInsensitive );
-  const QgsPointCloudCategoryList defaultCategories = QgsPointCloudClassifiedRenderer::defaultCategories();
+  if ( ! currentAttribute.compare( QStringLiteral( "Classification" ), Qt::CaseInsensitive ) )
+  {
+    const QgsPointCloudCategoryList defaultLayerCategories = QgsPointCloudRendererRegistry::defaultCategories( mLayer );
+    for ( const QgsPointCloudCategory &category : defaultLayerCategories )
+    {
+      if ( !currentCategories.contains( category ) )
+        mModel->addCategory( category );
+    }
+    return;
+  }
 
+  QVariantList providerCategories = mLayer->dataProvider()->metadataClasses( currentAttribute );
   for ( const QVariant &providerCategory : providerCategories )
   {
     const int newValue = providerCategory.toInt();
@@ -485,10 +496,7 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
     if ( found )
       continue;
 
-    // When using the "Classification" attribute, we'll use our standard class names and colors
-    const QColor color = isClassification && newValue < defaultCategories.size() ? defaultCategories.at( newValue ).color() : QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
-    const QString label = isClassification && QgsPointCloudDataProvider::translatedLasClassificationCodes().contains( newValue ) ? QgsPointCloudDataProvider::translatedLasClassificationCodes().value( newValue, QString::number( newValue ) ) : QString::number( newValue );
-    mModel->addCategory( QgsPointCloudCategory( newValue, color, label ) );
+    mModel->addCategory( QgsPointCloudCategory( newValue, QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), QString::number( newValue ) ) );
   }
 }
 
