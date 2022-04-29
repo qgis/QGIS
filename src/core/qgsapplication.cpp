@@ -77,6 +77,7 @@
 #include "qgslocator.h"
 #include "qgsreadwritelocker.h"
 #include "qgsbabelformatregistry.h"
+#include "qgsdbquerylog.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -265,6 +266,7 @@ void QgsApplication::init( QString profileFolder )
   std::call_once( sMetaTypesRegistered, []
   {
     qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
+    qRegisterMetaType<QgsDatabaseQueryLogEntry>( "QgsDatabaseQueryLogEntry" );
     qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
     qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
     qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
@@ -2433,6 +2435,11 @@ QgsRecentStyleHandler *QgsApplication::recentStyleHandler()
   return members()->mRecentStyleHandler;
 }
 
+QgsDatabaseQueryLog *QgsApplication::databaseQueryLog()
+{
+  return members()->mQueryLogger;
+}
+
 QgsStyleModel *QgsApplication::defaultStyleModel()
 {
   return members()->mStyleModel;
@@ -2512,6 +2519,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mMessageLog = new QgsMessageLog();
   QgsRuntimeProfiler *profiler = QgsRuntimeProfiler::threadLocalInstance();
 
+  {
+    profiler->start( tr( "Create query logger" ) );
+    mQueryLogger = new QgsDatabaseQueryLog();
+    profiler->end();
+  }
   {
     profiler->start( tr( "Setup coordinate reference system registry" ) );
     mCrsRegistry = new QgsCoordinateReferenceSystemRegistry();
@@ -2726,6 +2738,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mConnectionRegistry;
   delete mLocalizedDataPathRegistry;
   delete mCrsRegistry;
+  delete mQueryLogger;
   delete mSettingsRegistryCore;
 }
 

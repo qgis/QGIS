@@ -228,7 +228,33 @@ Returns the definitions for data defined properties available for use in elevati
 
     void changed();
 %Docstring
-Emitted when the elevation properties have changed.
+Emitted when any of the elevation properties have changed.
+
+See :py:func:`~QgsMapLayerElevationProperties.renderingPropertyChanged` and :py:func:`~QgsMapLayerElevationProperties.profileGenerationPropertyChanged` for more fine-grained signals.
+%End
+
+    void renderingPropertyChanged();
+%Docstring
+Emitted when any of the elevation properties which relate solely to presentation of elevation
+results have changed.
+
+.. seealso:: :py:func:`changed`
+
+.. seealso:: :py:func:`profileGenerationPropertyChanged`
+
+.. versionadded:: 3.26
+%End
+
+    void profileGenerationPropertyChanged();
+%Docstring
+Emitted when any of the elevation properties which relate solely to generation of elevation
+profiles have changed.
+
+.. seealso:: :py:func:`changed`
+
+.. seealso:: :py:func:`renderingPropertyChanged`
+
+.. versionadded:: 3.26
 %End
 
   protected:

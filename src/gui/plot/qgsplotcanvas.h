@@ -148,7 +148,7 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
      *
      * The default implementation does nothing.
      */
-    virtual void zoomToRect( const QRectF rect );
+    virtual void zoomToRect( const QRectF &rect );
 
     /**
      * Snap a canvas point to the plot

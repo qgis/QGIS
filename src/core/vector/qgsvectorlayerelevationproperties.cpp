@@ -237,6 +237,56 @@ bool QgsVectorLayerElevationProperties::showByDefaultInElevationProfilePlots() c
          || mClamping != Qgis::AltitudeClamping::Terrain;
 }
 
+void QgsVectorLayerElevationProperties::setClamping( Qgis::AltitudeClamping clamping )
+{
+  if ( mClamping == clamping )
+    return;
+
+  mClamping = clamping;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsVectorLayerElevationProperties::setBinding( Qgis::AltitudeBinding binding )
+{
+  if ( mBinding == binding )
+    return;
+
+  mBinding = binding;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsVectorLayerElevationProperties::setExtrusionEnabled( bool enabled )
+{
+  if ( mEnableExtrusion == enabled )
+    return;
+
+  mEnableExtrusion = enabled;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsVectorLayerElevationProperties::setExtrusionHeight( double height )
+{
+  if ( mExtrusionHeight == height )
+    return;
+
+  mExtrusionHeight = height;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsVectorLayerElevationProperties::setRespectLayerSymbology( bool enabled )
+{
+  if ( mRespectLayerSymbology == enabled )
+    return;
+
+  mRespectLayerSymbology = enabled;
+  emit changed();
+  emit renderingPropertyChanged();
+}
+
 QgsLineSymbol *QgsVectorLayerElevationProperties::profileLineSymbol() const
 {
   return mProfileLineSymbol.get();
@@ -245,6 +295,8 @@ QgsLineSymbol *QgsVectorLayerElevationProperties::profileLineSymbol() const
 void QgsVectorLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
 {
   mProfileLineSymbol.reset( symbol );
+  emit changed();
+  emit renderingPropertyChanged();
 }
 
 QgsFillSymbol *QgsVectorLayerElevationProperties::profileFillSymbol() const
@@ -255,6 +307,8 @@ QgsFillSymbol *QgsVectorLayerElevationProperties::profileFillSymbol() const
 void QgsVectorLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
   mProfileFillSymbol.reset( symbol );
+  emit changed();
+  emit renderingPropertyChanged();
 }
 
 QgsMarkerSymbol *QgsVectorLayerElevationProperties::profileMarkerSymbol() const
@@ -265,6 +319,8 @@ QgsMarkerSymbol *QgsVectorLayerElevationProperties::profileMarkerSymbol() const
 void QgsVectorLayerElevationProperties::setProfileMarkerSymbol( QgsMarkerSymbol *symbol )
 {
   mProfileMarkerSymbol.reset( symbol );
+  emit changed();
+  emit renderingPropertyChanged();
 }
 
 void QgsVectorLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )

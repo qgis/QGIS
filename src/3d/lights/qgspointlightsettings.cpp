@@ -14,13 +14,77 @@
  ***************************************************************************/
 
 #include "qgspointlightsettings.h"
+#include "qgssymbollayerutils.h"
+#include "qgs3dmapsettings.h"
 
 #include <QDomDocument>
 
-#include "qgssymbollayerutils.h"
+#include <Qt3DCore/QEntity>
+#include <Qt3DRender/QPointLight>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QSphereMesh>
 
+Qgis::LightSourceType QgsPointLightSettings::type() const
+{
+  return Qgis::LightSourceType::Point;
+}
 
-QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc ) const
+QgsPointLightSettings *QgsPointLightSettings::clone() const
+{
+  return new QgsPointLightSettings( *this );
+}
+
+Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const
+{
+  Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity();
+  Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
+  lightTransform->setTranslation( QVector3D( position().x(),
+                                  position().y(),
+                                  position().z() ) );
+
+  Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
+  light->setColor( color() );
+  light->setIntensity( intensity() );
+
+  light->setConstantAttenuation( constantAttenuation() );
+  light->setLinearAttenuation( linearAttenuation() );
+  light->setQuadraticAttenuation( quadraticAttenuation() );
+
+  lightEntity->addComponent( light );
+  lightEntity->addComponent( lightTransform );
+
+  if ( !map.showLightSourceOrigins() )
+  {
+    lightEntity->setParent( parent );
+    return lightEntity;
+  }
+  else
+  {
+    Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity();
+
+    Qt3DCore::QTransform *trLightOriginCenter = new Qt3DCore::QTransform;
+    trLightOriginCenter->setTranslation( lightTransform->translation() );
+    originEntity->addComponent( trLightOriginCenter );
+
+    Qt3DExtras::QPhongMaterial *materialLightOriginCenter = new Qt3DExtras::QPhongMaterial;
+    materialLightOriginCenter->setAmbient( color() );
+    originEntity->addComponent( materialLightOriginCenter );
+
+    Qt3DExtras::QSphereMesh *rendererLightOriginCenter = new Qt3DExtras::QSphereMesh;
+    rendererLightOriginCenter->setRadius( 20 );
+    originEntity->addComponent( rendererLightOriginCenter );
+
+    originEntity->setEnabled( true );
+
+    Qt3DCore::QEntity *groupEntity = new Qt3DCore::QEntity( parent );
+    lightEntity->setParent( groupEntity );
+    originEntity->setParent( groupEntity );
+    groupEntity->setEnabled( true );
+    return groupEntity;
+  }
+}
+
+QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   QDomElement elemLight = doc.createElement( QStringLiteral( "point-light" ) );
   elemLight.setAttribute( QStringLiteral( "x" ), mPosition.x() );
@@ -34,7 +98,7 @@ QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc ) const
   return elemLight;
 }
 
-void QgsPointLightSettings::readXml( const QDomElement &elem )
+void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
   mPosition.set( elem.attribute( QStringLiteral( "x" ) ).toDouble(),
                  elem.attribute( QStringLiteral( "y" ) ).toDouble(),

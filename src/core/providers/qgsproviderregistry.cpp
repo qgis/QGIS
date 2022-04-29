@@ -753,7 +753,7 @@ QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
 }
 
 QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
-    QString const &functionName )
+    QString const &functionName ) const
 {
   Q_NOWARN_DEPRECATED_PUSH
   const QString lib = library( providerKey );

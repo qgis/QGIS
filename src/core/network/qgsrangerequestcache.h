@@ -65,7 +65,7 @@ class CORE_EXPORT QgsRangeRequestCache
     QString mCacheDir;
     qint64 mMaxDataSize = 256 * 1024 * 1024;
 
-    QString rangeFileName( const QNetworkRequest &request );
+    QString rangeFileName( const QNetworkRequest &request ) const;
 
     QByteArray readFile( const QString &fileName );
     void writeFile( const QString &fileName, QByteArray data );

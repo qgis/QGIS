@@ -18,6 +18,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdbquerylog.h"
 
 extern "C"
 {
@@ -113,6 +114,11 @@ class QgsSpatiaLiteFeatureIterator final: public QgsAbstractFeatureIteratorFromS
     QgsCoordinateTransform mTransform;
     QgsGeometry mDistanceWithinGeom;
     std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+
+    // Last prepared sql statement for logging purposes
+    QString mLastSql;
+
+    std::unique_ptr<QgsDatabaseQueryLogWrapper> mQueryLogWrapper;
 };
 
 #endif // QGSSPATIALITEFEATUREITERATOR_H

@@ -362,7 +362,7 @@ public:
     QString description() const;
 
     /** Returns true if there is another entry in the source stream */
-    bool hasNextEntry();
+    bool hasNextEntry() const;
     /** Returns the next entry found in the source stream */
     KeyboardTranslator::Entry nextEntry();
 

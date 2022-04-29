@@ -36,7 +36,7 @@ QgsLineSymbol::QgsLineSymbol( const QgsSymbolLayerList &layers )
     mLayers.append( new QgsSimpleLineSymbolLayer() );
 }
 
-void QgsLineSymbol::setWidth( double w )
+void QgsLineSymbol::setWidth( double w ) const
 {
   const double origWidth = width();
 
@@ -63,7 +63,7 @@ void QgsLineSymbol::setWidth( double w )
   }
 }
 
-void QgsLineSymbol::setWidthUnit( QgsUnitTypes::RenderUnit unit )
+void QgsLineSymbol::setWidthUnit( QgsUnitTypes::RenderUnit unit ) const
 {
   const auto constLLayers = mLayers;
   for ( QgsSymbolLayer *layer : constLLayers )
@@ -111,7 +111,7 @@ double QgsLineSymbol::width( const QgsRenderContext &context ) const
   return maxWidth;
 }
 
-void QgsLineSymbol::setDataDefinedWidth( const QgsProperty &property )
+void QgsLineSymbol::setDataDefinedWidth( const QgsProperty &property ) const
 {
   const double symbolWidth = width();
 

@@ -196,7 +196,7 @@ void QgsMssqlGeometryParser::DumpMemoryToLog( const char *pszMsg, unsigned char 
 #endif
 }
 
-QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint )
+QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint ) const
 {
   if ( mIsGeography )
   {
@@ -222,7 +222,7 @@ QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint )
   }
 }
 
-void QgsMssqlGeometryParser::readCoordinates( int iPoint, int iNextPoint, double *x, double *y, double *z, double *m )
+void QgsMssqlGeometryParser::readCoordinates( int iPoint, int iNextPoint, double *x, double *y, double *z, double *m ) const
 {
   int i = 0;
   if ( mIsGeography )
@@ -321,7 +321,7 @@ void QgsMssqlGeometryParser::readCoordinates( int iPoint, int iNextPoint, double
   }
 }
 
-const QgsPointSequence QgsMssqlGeometryParser::readPointSequence( int iPoint, int iNextPoint )
+const QgsPointSequence QgsMssqlGeometryParser::readPointSequence( int iPoint, int iNextPoint ) const
 {
   if ( iPoint >= iNextPoint )
     return QgsPointSequence();
@@ -785,4 +785,3 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
 
   return poGeom;
 }
-

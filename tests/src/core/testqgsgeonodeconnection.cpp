@@ -20,6 +20,7 @@
 #include "qgsgeonoderequest.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsowsconnection.h"
 
 /**
  * \ingroup UnitTests
@@ -85,11 +86,11 @@ void TestQgsGeoNodeConnection::initTestCase()
   QgsSettings settings;
 
   // Testing real server, demo.geonode.org. Need to be changed later.
-  settings.setValue( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mDemoGeoNodeName ), mDemoGeoNodeURL );
+  QgsOwsConnection::settingsConnectionUrl.setValue( mDemoGeoNodeURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mDemoGeoNodeName} );
   // Testing real server, staging.geonode.kartoza.com. Need to be changed later.
-  settings.setValue( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mKartozaGeoNodeQGISServerName ), mKartozaGeoNodeQGISServerURL );
+  QgsOwsConnection::settingsConnectionUrl.setValue( mKartozaGeoNodeQGISServerURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mKartozaGeoNodeQGISServerName} );
   // Testing real server, staginggs.geonode.kartoza.com. Need to be changed later.
-  settings.setValue( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mKartozaGeoNodeGeoServerName ), mKartozaGeoNodeGeoServerURL );
+  QgsOwsConnection::settingsConnectionUrl.setValue( mKartozaGeoNodeGeoServerURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mKartozaGeoNodeGeoServerName} );
 }
 
 // Test the creation of geonode connection
@@ -107,9 +108,7 @@ void TestQgsGeoNodeConnection::testCreation()
   QVERIFY( !connectionList.contains( mGeoNodeConnectionName ) );
 
   // Add new GeoNode Connection
-  QgsSettings settings;
-
-  settings.setValue( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mGeoNodeConnectionName ), mGeoNodeConnectionURL );
+  QgsOwsConnection::settingsConnectionUrl.setValue( mGeoNodeConnectionURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mGeoNodeConnectionName} );
 
   const QStringList newConnectionList = QgsGeoNodeConnectionUtils::connectionList();
   const int newNumberOfConnection = newConnectionList.count();
@@ -158,7 +157,6 @@ void TestQgsGeoNodeConnection::testStyleAPI()
   const QList<QgsGeoNodeStyle> geoNodeStyles = geonodeRequest.fetchStylesBlocking( QStringLiteral( "airports" ) );
   QgsDebugMsg( QString::number( geoNodeStyles.count() ) );
   QVERIFY( geoNodeStyles.count() == 2 );
-
 }
 
 QGSTEST_MAIN( TestQgsGeoNodeConnection )

@@ -45,6 +45,7 @@ set(QGIS_CORE_SRCS
   classification/qgsclassificationlogarithmic.cpp
 
   elevation/qgsabstractprofilegenerator.cpp
+  elevation/qgsabstractprofilesurfacegenerator.cpp
   elevation/qgsabstractprofilesource.cpp
   elevation/qgsprofilerenderer.cpp
   elevation/qgsprofilerequest.cpp
@@ -355,6 +356,7 @@ set(QGIS_CORE_SRCS
   qgsdataprovidertemporalcapabilities.cpp
   qgsdatetimestatisticalsummary.cpp
   qgsdbfilterproxymodel.cpp
+  qgsdbquerylog.cpp
   qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
@@ -1004,6 +1006,7 @@ set(QGIS_CORE_HDRS
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
   qgsdbfilterproxymodel.h
+  qgsdbquerylog.h
   qgsdefaultvalue.h
   qgsdiagramrenderer.h
   qgsdistancearea.h
@@ -1276,6 +1279,7 @@ set(QGIS_CORE_HDRS
   editform/qgsattributeeditorqmlelement.h
 
   elevation/qgsabstractprofilegenerator.h
+  elevation/qgsabstractprofilesurfacegenerator.h
   elevation/qgsabstractprofilesource.h
   elevation/qgsprofilepoint.h
   elevation/qgsprofilerenderer.h

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/3d/qgspointlightsettings.h                                       *
+ * src/3d/lights/qgspointlightsettings.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,7 +10,7 @@
 
 
 
-class QgsPointLightSettings
+class QgsPointLightSettings : QgsLightSource
 {
 %Docstring(signature="appended")
 Definition of a point light in a 3D map scene
@@ -31,6 +31,15 @@ constant, linear and quadratic attenuation.
 %Docstring
 Construct a point light with default values
 %End
+
+    virtual Qgis::LightSourceType type() const;
+
+    virtual QgsPointLightSettings *clone() const /Factory/;
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
+
 
     QgsVector3D position() const;
 %Docstring
@@ -86,15 +95,6 @@ Returns quadratic attenuation (A_2)
 Sets quadratic attenuation (A_2)
 %End
 
-    QDomElement writeXml( QDomDocument &doc ) const;
-%Docstring
-Writes configuration to a new DOM element and returns it
-%End
-    void readXml( const QDomElement &elem );
-%Docstring
-Reads configuration from a DOM element previously written using :py:func:`~QgsPointLightSettings.writeXml`
-%End
-
     bool operator==( const QgsPointLightSettings &other );
 
 };
@@ -102,7 +102,7 @@ Reads configuration from a DOM element previously written using :py:func:`~QgsPo
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/3d/qgspointlightsettings.h                                       *
+ * src/3d/lights/qgspointlightsettings.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

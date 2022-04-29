@@ -115,22 +115,22 @@ class GEOSInit
 
 Q_GLOBAL_STATIC( GEOSInit, geosinit )
 
-void geos::GeosDeleter::operator()( GEOSGeometry *geom )
+void geos::GeosDeleter::operator()( GEOSGeometry *geom ) const
 {
   GEOSGeom_destroy_r( geosinit()->ctxt, geom );
 }
 
-void geos::GeosDeleter::operator()( const GEOSPreparedGeometry *geom )
+void geos::GeosDeleter::operator()( const GEOSPreparedGeometry *geom ) const
 {
   GEOSPreparedGeom_destroy_r( geosinit()->ctxt, geom );
 }
 
-void geos::GeosDeleter::operator()( GEOSBufferParams *params )
+void geos::GeosDeleter::operator()( GEOSBufferParams *params ) const
 {
   GEOSBufferParams_destroy_r( geosinit()->ctxt, params );
 }
 
-void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence )
+void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence ) const
 {
   GEOSCoordSeq_destroy_r( geosinit()->ctxt, sequence );
 }
@@ -475,6 +475,38 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
   return distance;
 }
 
+double QgsGeos::distance( double x, double y, QString *errorMsg ) const
+{
+  double distance = -1.0;
+  if ( !mGeos )
+  {
+    return distance;
+  }
+
+  geos::unique_ptr point = createGeosPointXY( x, y, false, 0, false, 0, 2, 0 );
+  if ( !point )
+    return distance;
+
+  try
+  {
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+    if ( mGeosPrepared )
+    {
+      GEOSPreparedDistance_r( geosinit()->ctxt, mGeosPrepared.get(), point.get(), &distance );
+    }
+    else
+    {
+      GEOSDistance_r( geosinit()->ctxt, mGeos.get(), point.get(), &distance );
+    }
+#else
+    GEOSDistance_r( geosinit()->ctxt, mGeos.get(), point.get(), &distance );
+#endif
+  }
+  CATCH_GEOS_WITH_ERRMSG( -1.0 )
+
+  return distance;
+}
+
 bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, QString *errorMsg ) const
 {
   if ( !mGeos )
@@ -520,6 +552,35 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
   CATCH_GEOS_WITH_ERRMSG( false )
 
   return distance <= maxdist;
+}
+
+bool QgsGeos::contains( double x, double y, QString *errorMsg ) const
+{
+  geos::unique_ptr point = createGeosPointXY( x, y, false, 0, false, 0, 2, 0 );
+  if ( !point )
+    return false;
+
+  bool result = false;
+  try
+  {
+    if ( mGeosPrepared ) //use faster version with prepared geometry
+    {
+      return GEOSPreparedContains_r( geosinit()->ctxt, mGeosPrepared.get(), point.get() ) == 1;
+    }
+
+    result = ( GEOSContains_r( geosinit()->ctxt, mGeos.get(), point.get() ) == 1 );
+  }
+  catch ( GEOSException &e )
+  {
+    logError( QStringLiteral( "GEOS" ), e.what() );
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    return false;
+  }
+
+  return result;
 }
 
 double QgsGeos::hausdorffDistance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
@@ -2686,6 +2747,35 @@ double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg ) cons
   try
   {
     distance = GEOSProject_r( geosinit()->ctxt, mGeos.get(), otherGeom.get() );
+  }
+  catch ( GEOSException &e )
+  {
+    logError( QStringLiteral( "GEOS" ), e.what() );
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    return -1;
+  }
+
+  return distance;
+}
+
+double QgsGeos::lineLocatePoint( double x, double y, QString *errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return -1;
+  }
+
+  geos::unique_ptr point = createGeosPointXY( x, y, false, 0, false, 0, 2, 0 );
+  if ( !point )
+    return false;
+
+  double distance = -1;
+  try
+  {
+    distance = GEOSProject_r( geosinit()->ctxt, mGeos.get(), point.get() );
   }
   catch ( GEOSException &e )
   {

@@ -79,7 +79,7 @@ void QgsRangeRequestCache::setCacheSize( qint64 cacheSize )
   expire();
 }
 
-QString QgsRangeRequestCache::rangeFileName( const QNetworkRequest &request )
+QString QgsRangeRequestCache::rangeFileName( const QNetworkRequest &request ) const
 {
   return mCacheDir + QStringLiteral( "%1-%2" ).arg( qHash( request.url().toString() ) ).arg( QString::fromUtf8( request.rawHeader( "Range" ) ) );
 }

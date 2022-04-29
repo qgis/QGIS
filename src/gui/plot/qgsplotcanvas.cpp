@@ -287,7 +287,7 @@ void QgsPlotCanvas::scalePlot( double )
 
 }
 
-void QgsPlotCanvas::zoomToRect( const QRectF )
+void QgsPlotCanvas::zoomToRect( const QRectF & )
 {
 
 }

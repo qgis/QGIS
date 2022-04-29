@@ -69,7 +69,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void scalePlot( double xFactor, double yFactor );
 
-    void zoomToRect( const QRectF rect ) override;
+    void zoomToRect( const QRectF &rect ) override;
     void wheelZoom( QWheelEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *e ) override;
 
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QRectF plotArea() const;
 
     /**
-     * Triggers an update of the profile, causing the profile extraction to perform in the
+     * Triggers a complete regeneration of the profile, causing the profile extraction to perform in the
      * background.
      */
     void refresh() override;
@@ -204,13 +204,21 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
   private slots:
 
     void generationFinished();
+    void onLayerProfileGenerationPropertyChanged();
+    void onLayerProfileRendererPropertyChanged();
+    void regenerateResultsForLayer();
+    void scheduleDeferredRegeneration();
+    void scheduleDeferredRedraw();
+    void startDeferredRegeneration();
+    void startDeferredRedraw();
+    void refineResults();
 
   private:
 
     /**
      * Converts a canvas point to the equivalent plot point.
      */
-    QgsProfilePoint canvasPointToPlotPoint( const QPointF &point ) const;
+    QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
 
     /**
      * Converts a plot point to the equivalent canvas point.
@@ -218,6 +226,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
 
     QgsProfileSnapContext snapContext() const;
+
+    void setupLayerConnections( QgsMapLayer *layer, bool isDisconnect );
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;
@@ -228,6 +238,10 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsElevationProfileCrossHairsItem *mCrossHairsItem = nullptr;
 
     QgsProfilePlotRenderer *mCurrentJob = nullptr;
+    QTimer *mDeferredRegenerationTimer = nullptr;
+    bool mDeferredRegenerationScheduled = false;
+    QTimer *mDeferredRedrawTimer = nullptr;
+    bool mDeferredRedrawScheduled = false;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
     double mTolerance = 0;
@@ -235,6 +249,10 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     bool mFirstDrawOccurred = false;
 
     bool mSnappingEnabled = true;
+
+    bool mZoomFullWhenJobFinished = true;
+
+    static constexpr double MAX_ERROR_PIXELS = 2;
 };
 
 #endif // QGSELEVATIONPROFILECANVAS_H

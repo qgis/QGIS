@@ -86,7 +86,7 @@ bool QgsSnapIndex::SegmentSnapItem::getIntersection( const QgsPoint &p1, const Q
   return !( lambdaw < 0. + 1E-8 || lambdaw >= wl - 1E-8 );
 }
 
-bool QgsSnapIndex::SegmentSnapItem::getProjection( const QgsPoint &p, QgsPoint &pProj )
+bool QgsSnapIndex::SegmentSnapItem::getProjection( const QgsPoint &p, QgsPoint &pProj ) const
 {
   const QgsPoint &s1 = idxFrom->point();
   const QgsPoint &s2 = idxTo->point();

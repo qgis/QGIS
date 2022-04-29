@@ -63,3 +63,29 @@ QgsProfileSnapResult QgsAbstractProfileResults::snapPoint( const QgsProfilePoint
 {
   return QgsProfileSnapResult();
 }
+
+void QgsAbstractProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator * )
+{
+
+}
+
+//
+// QgsProfileGenerationContext
+//
+
+bool QgsProfileGenerationContext::operator==( const QgsProfileGenerationContext &other ) const
+{
+  return qgsDoubleNear( mMaxErrorMapUnits, other.mMaxErrorMapUnits )
+         && mDistanceRange == other.mDistanceRange
+         && mElevationRange == other.mElevationRange;
+}
+
+bool QgsProfileGenerationContext::operator!=( const QgsProfileGenerationContext &other ) const
+{
+  return !( *this == other );
+}
+
+Qgis::ProfileGeneratorFlags QgsAbstractProfileGenerator::flags() const
+{
+  return Qgis::ProfileGeneratorFlags();
+}

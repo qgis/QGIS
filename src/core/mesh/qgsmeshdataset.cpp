@@ -973,12 +973,12 @@ QDomElement QgsMeshMemoryDatasetGroup::writeXml( QDomDocument &doc, const QgsRea
   return QDomElement();
 }
 
-void QgsMeshDatasetGroup::calculateStatistic()
+void QgsMeshDatasetGroup::calculateStatistic() const
 {
   updateStatictic();
 }
 
-void QgsMeshDatasetGroup::setStatisticObsolete()
+void QgsMeshDatasetGroup::setStatisticObsolete() const
 {
   mIsStatisticObsolete = true;
 }
@@ -1046,7 +1046,7 @@ double QgsMeshDatasetGroup::maximum() const
   return mMaximum;
 }
 
-void QgsMeshDatasetGroup::setMinimumMaximum( double min, double max )
+void QgsMeshDatasetGroup::setMinimumMaximum( double min, double max ) const
 {
   mMinimum = min;
   mMaximum = max;

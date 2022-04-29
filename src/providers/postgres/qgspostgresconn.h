@@ -200,6 +200,12 @@ class QgsPoolPostgresConn
     class QgsPostgresConn *get() const { return mPgConn; }
 };
 
+#include "qgsconfig.h"
+constexpr int sPostgresConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
+#define LoggedPQexecNR(_class, query) PQexecNR( query, _class, QString(QString( __FILE__ ).mid( sPostgresConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+#define LoggedPQexec(_class, query) PQexec( query, true, true, _class, QString(QString( __FILE__ ).mid( sPostgresConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+#define LoggedPQexecNoLogError(_class, query ) PQexec( query, false, true, _class, QString(QString( __FILE__ ).mid( sPostgresConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+
 class QgsPostgresConn : public QObject
 {
     Q_OBJECT
@@ -247,7 +253,7 @@ class QgsPostgresConn : public QObject
     int pgVersion() const { return mPostgresqlVersion; }
 
     //! run a query and free result buffer
-    bool PQexecNR( const QString &query );
+    bool PQexecNR( const QString &query, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     //! cursor handling
     bool openCursor( const QString &cursorName, const QString &declare );
@@ -264,7 +270,7 @@ class QgsPostgresConn : public QObject
     //
 
     // run a query and check for errors, thread-safe
-    PGresult *PQexec( const QString &query, bool logError = true, bool retry = true ) const;
+    PGresult *PQexec( const QString &query, bool logError = true, bool retry = true, const QString &originatorClass = QString(), const QString &queryOrigin = QString() ) const;
     int PQCancel();
     void PQfinish();
     QString PQerrorMessage() const;

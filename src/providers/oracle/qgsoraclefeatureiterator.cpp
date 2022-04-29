@@ -296,9 +296,10 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       mRewind = false;
       if ( !execQuery( mSql, mArgs, 1 ) )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
-                                   .arg( mQry.lastQuery(),
-                                         mQry.lastError().text() ),
+        const QString error { QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
+                              .arg( mQry.lastQuery(),
+                                    mQry.lastError().text() ) };
+        QgsMessageLog::logMessage( error,
                                    QObject::tr( "Oracle" ) );
         return false;
       }
@@ -531,13 +532,16 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
     QgsDebugMsgLevel( QStringLiteral( "Fetch features: %1" ).arg( query ), 2 );
     mSql = query;
     mArgs = args;
+
     if ( !execQuery( query, args, 1 ) )
     {
+
+      const QString error { QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
+                            .arg( mQry.lastQuery(),
+                                  mQry.lastError().text() ) };
       if ( showLog )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
-                                   .arg( mQry.lastQuery(),
-                                         mQry.lastError().text() ),
+        QgsMessageLog::logMessage( error,
                                    QObject::tr( "Oracle" ) );
       }
       return false;
@@ -554,7 +558,7 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
 bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantList &args, int retryCount )
 {
   lock();
-  if ( !QgsOracleProvider::exec( mQry, query, args ) )
+  if ( !QgsOracleProvider::execLoggedStatic( mQry, query, args, mSource->mUri.uri(), QStringLiteral( "QgsOracleFeatureIterator" ), QGS_QUERY_LOG_ORIGIN ) )
   {
     unlock();
     if ( retryCount != 0 )

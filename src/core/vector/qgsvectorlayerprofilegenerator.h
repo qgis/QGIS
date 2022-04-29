@@ -85,6 +85,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
     QVector< QgsGeometry > asGeometries() const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
+    void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 };
 
 
@@ -107,7 +108,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
 
     ~QgsVectorLayerProfileGenerator() override;
 
-    bool generateProfile() override;
+    QString sourceId() const override;
+    bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
 
@@ -123,6 +125,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
     void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid, double offset );
     bool clampAltitudes( QgsPolygon *polygon, double offset );
 
+    QString mId;
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
@@ -165,6 +168,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
 
     // NOT for use in the background thread!
     QPointer< QgsVectorLayer > mLayer;
+
+    friend class QgsVectorLayerProfileResults;
 
 };
 

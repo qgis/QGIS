@@ -398,12 +398,23 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
   }
 }
 
+void QgsVectorLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
+{
+  const QgsVectorLayerProfileGenerator *vlGenerator = qgis::down_cast<  const QgsVectorLayerProfileGenerator * >( generator );
+
+  respectLayerSymbology = vlGenerator->mRespectLayerSymbology;
+  profileLineSymbol.reset( vlGenerator->mProfileLineSymbol->clone() );
+  profileFillSymbol.reset( vlGenerator->mProfileFillSymbol->clone() );
+  profileMarkerSymbol.reset( vlGenerator->mProfileMarkerSymbol->clone() );
+}
+
 //
 // QgsVectorLayerProfileGenerator
 //
 
 QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *layer, const QgsProfileRequest &request )
-  : mFeedback( std::make_unique< QgsFeedback >() )
+  : mId( layer->id() )
+  , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mTerrainProvider( request.terrainProvider() ? request.terrainProvider()->clone() : nullptr )
   , mTolerance( request.tolerance() )
@@ -432,9 +443,14 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
     mTerrainProvider->prepare(); // must be done on main thread
 }
 
+QString QgsVectorLayerProfileGenerator::sourceId() const
+{
+  return mId;
+}
+
 QgsVectorLayerProfileGenerator::~QgsVectorLayerProfileGenerator() = default;
 
-bool QgsVectorLayerProfileGenerator::generateProfile()
+bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGenerationContext & )
 {
   if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;
@@ -464,11 +480,7 @@ bool QgsVectorLayerProfileGenerator::generateProfile()
 
   mResults = std::make_unique< QgsVectorLayerProfileResults >();
   mResults->mLayer = mLayer;
-
-  mResults->respectLayerSymbology = mRespectLayerSymbology;
-  mResults->profileLineSymbol.reset( mProfileLineSymbol->clone() );
-  mResults->profileFillSymbol.reset( mProfileFillSymbol->clone() );
-  mResults->profileMarkerSymbol.reset( mProfileMarkerSymbol->clone() );
+  mResults->copyPropertiesFromGenerator( this );
 
   mProfileCurveEngine.reset( new QgsGeos( mProfileCurve.get() ) );
   mProfileCurveEngine->prepareGeometry();

@@ -127,7 +127,7 @@ Returns the log level.
 :return: the log level.
 %End
 
-    bool logProfile();
+    bool logProfile() const;
 %Docstring
 Returns ``True`` if profile information has to be added to the logs, default value is ``False``.
 

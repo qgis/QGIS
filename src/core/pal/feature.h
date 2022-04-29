@@ -321,7 +321,7 @@ namespace pal
        *
        * E.g. small lines or polygons get higher cost so that larger features are more likely to be labeled.
        */
-      void addSizePenalty( std::vector<std::unique_ptr<LabelPosition> > &lPos, double bbx[4], double bby[4] );
+      void addSizePenalty( std::vector<std::unique_ptr<LabelPosition> > &lPos, double bbx[4], double bby[4] ) const;
 
       /**
        * Calculates the priority for the feature. This will be the feature's priority if set,

@@ -469,32 +469,24 @@ Returns the corner where the shadow map preview is displayed
 Returns the size of the shadow map preview
 %End
 
-    QList<QgsPointLightSettings> pointLights() const;
+    QList<QgsLightSource *> lightSources() const;
 %Docstring
-Returns list of point lights defined in the scene
+Returns list of directional light sources defined in the scene.
 
-.. versionadded:: 3.6
+.. seealso:: :py:func:`setLightSources`
+
+.. versionadded:: 3.26
 %End
 
-    QList<QgsDirectionalLightSettings> directionalLights() const;
+    void setLightSources( const QList<QgsLightSource *> &lights /Transfer/ );
 %Docstring
-Returns list of directional lights defined in the scene
+Sets the list of ``light`` sources defined in the scene.
 
-.. versionadded:: 3.16
-%End
+Ownership of the lights is transferred to the settings.
 
-    void setPointLights( const QList<QgsPointLightSettings> &pointLights );
-%Docstring
-Sets list of point lights defined in the scene
+.. seealso:: :py:func:`lightSources`
 
-.. versionadded:: 3.6
-%End
-
-    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
-%Docstring
-Sets list of directional lights defined in the scene
-
-.. versionadded:: 3.16
+.. versionadded:: 3.26
 %End
 
     float fieldOfView() const;
@@ -801,6 +793,13 @@ Emitted when depth map debugging has changed
 Emitted when the list of point lights changes
 
 .. versionadded:: 3.6
+%End
+
+    void lightSourcesChanged();
+%Docstring
+Emitted when any of the light source settings in the map changes.
+
+.. versionadded:: 3.26
 %End
 
     void directionalLightsChanged();

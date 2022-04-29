@@ -83,6 +83,36 @@ bool QgsMapLayerElevationProperties::showByDefaultInElevationProfilePlots() cons
   return false;
 }
 
+void QgsMapLayerElevationProperties::setZOffset( double offset )
+{
+  if ( qgsDoubleNear( offset, mZOffset ) )
+    return;
+
+  mZOffset = offset;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsMapLayerElevationProperties::setZScale( double scale )
+{
+  if ( qgsDoubleNear( scale, mZScale ) )
+    return;
+
+  mZScale = scale;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsMapLayerElevationProperties::setDataDefinedProperties( const QgsPropertyCollection &collection )
+{
+  if ( mDataDefinedProperties == collection )
+    return;
+
+  mDataDefinedProperties = collection;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
 QgsPropertiesDefinition QgsMapLayerElevationProperties::propertyDefinitions()
 {
   static std::once_flag initialized;

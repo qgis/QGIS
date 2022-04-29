@@ -2218,7 +2218,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
   return lPos;
 }
 
-void FeaturePart::addSizePenalty( std::vector< std::unique_ptr< LabelPosition > > &lPos, double bbx[4], double bby[4] )
+void FeaturePart::addSizePenalty( std::vector< std::unique_ptr< LabelPosition > > &lPos, double bbx[4], double bby[4] ) const
 {
   if ( !mGeos )
     createGeosGeom();
@@ -2390,4 +2390,3 @@ bool FeaturePart::onlyShowUprightLabels() const
   }
   return uprightLabel;
 }
-

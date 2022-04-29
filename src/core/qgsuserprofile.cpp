@@ -89,7 +89,7 @@ const QString QgsUserProfile::alias() const
   return profileAlias;
 }
 
-QgsError QgsUserProfile::setAlias( const QString &alias )
+QgsError QgsUserProfile::setAlias( const QString &alias ) const
 {
   QgsError error;
   const QString dbFile = qgisDB();

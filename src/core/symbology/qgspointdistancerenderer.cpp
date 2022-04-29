@@ -139,7 +139,7 @@ bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRend
   return true;
 }
 
-void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRenderContext &context )
+void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRenderContext &context ) const
 {
   //calculate centroid of all points, this will be center of group
   QgsMultiPoint *groupMultiPoint = new QgsMultiPoint();
@@ -406,7 +406,7 @@ QString QgsPointDistanceRenderer::getLabel( const QgsFeature &feature ) const
   return attribute;
 }
 
-void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group )
+void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group ) const
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )

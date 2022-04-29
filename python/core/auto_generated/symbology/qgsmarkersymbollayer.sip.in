@@ -1193,6 +1193,9 @@ Returns the marker frame rate in frame per second.
 .. seealso:: :py:func:`setFrameRate`
 %End
 
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+
   protected:
 
 };

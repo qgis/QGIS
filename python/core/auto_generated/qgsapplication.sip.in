@@ -856,6 +856,13 @@ Returns the handler for recently used style items.
 .. versionadded:: 3.22
 %End
 
+    static QgsDatabaseQueryLog *databaseQueryLog() /KeepReference/;
+%Docstring
+Returns the database query log.
+
+.. versionadded:: 3.24
+%End
+
     static QgsStyleModel *defaultStyleModel();
 %Docstring
 Returns a shared :py:class:`QgsStyleModel` containing the default style library (see :py:func:`QgsStyle.defaultStyle()`).

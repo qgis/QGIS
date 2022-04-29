@@ -25,6 +25,8 @@
 #include "qgssettingsentryimpl.h"
 
 #include <QWidgetAction>
+#include <QElapsedTimer>
+#include <QTimer>
 
 class QgsDockableWidgetHelper;
 class QgsMapCanvas;
@@ -81,17 +83,28 @@ class QgsElevationProfileWidget : public QWidget
     void clear();
     void exportAsPdf();
     void exportAsImage();
+    void nudgeLeft();
+    void nudgeRight();
+    void nudgeCurve( Qgis::BufferSide side );
 
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
 
     QString mCanvasName;
     QgsMapCanvas *mMainCanvas = nullptr;
+
     QProgressBar *mProgressPendingJobs = nullptr;
+    QElapsedTimer mLastJobTime;
+    double mLastJobTimeSeconds = 0;
+    QTimer mJobProgressBarTimer;
+    QMetaObject::Connection mJobProgressBarTimerConnection;
+
     QMenu *mOptionsMenu = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QAction *mCaptureCurveAction = nullptr;
     QAction *mCaptureCurveFromFeatureAction = nullptr;
+    QAction *mNudgeLeftAction = nullptr;
+    QAction *mNudgeRightAction = nullptr;
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;

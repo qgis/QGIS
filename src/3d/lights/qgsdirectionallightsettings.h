@@ -18,6 +18,7 @@
 #include "qgis_3d.h"
 
 #include "qgsvector3d.h"
+#include "qgslightsource.h"
 #include <QColor>
 
 class QDomDocument;
@@ -29,11 +30,17 @@ class QDomElement;
  *
  * \since QGIS 3.16
  */
-class _3D_EXPORT QgsDirectionalLightSettings
+class _3D_EXPORT QgsDirectionalLightSettings : public QgsLightSource
 {
   public:
     //! Construct a directional light with default values
     QgsDirectionalLightSettings() = default;
+
+    Qgis::LightSourceType type() const override;
+    QgsDirectionalLightSettings *clone() const override SIP_FACTORY;
+    Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const override SIP_SKIP;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() ) override;
 
     //! Returns the direction of the light in degrees
     QgsVector3D direction() const { return mDirection; }
@@ -49,11 +56,6 @@ class _3D_EXPORT QgsDirectionalLightSettings
     float intensity() const { return mIntensity; }
     //! Sets intensity of the light
     void setIntensity( float intensity ) { mIntensity = intensity; }
-
-    //! Writes configuration to a new DOM element and returns it
-    QDomElement writeXml( QDomDocument &doc ) const;
-    //! Reads configuration from a DOM element previously written using writeXml()
-    void readXml( const QDomElement &elem );
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsDirectionalLightSettings &other );
