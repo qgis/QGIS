@@ -337,7 +337,7 @@ QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &p
       if ( jobSnapResult.isValid() )
       {
         const double snapDistance = std::pow( point.distance() - jobSnapResult.snappedPoint.distance(), 2 )
-                                    + std::pow( ( point.elevation() - jobSnapResult.snappedPoint.elevation() ) * context.displayRatioElevationVsDistance, 2 );
+                                    + std::pow( ( point.elevation() - jobSnapResult.snappedPoint.elevation() ) / context.displayRatioElevationVsDistance, 2 );
 
         if ( snapDistance < bestSnapDistance )
         {

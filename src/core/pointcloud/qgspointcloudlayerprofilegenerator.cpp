@@ -34,6 +34,45 @@
 // QgsPointCloudLayerProfileGenerator
 //
 
+QgsPointCloudLayerProfileResults::QgsPointCloudLayerProfileResults()
+{
+  mPointIndex = GEOSSTRtree_create_r( QgsGeos::getGEOSHandler(), ( size_t )10 );
+}
+
+QgsPointCloudLayerProfileResults::~QgsPointCloudLayerProfileResults()
+{
+  GEOSSTRtree_destroy_r( QgsGeos::getGEOSHandler(), mPointIndex );
+  mPointIndex = nullptr;
+}
+
+void QgsPointCloudLayerProfileResults::finalize( QgsFeedback *feedback )
+{
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+
+  const std::size_t size = results.size();
+  PointResult *pointData = results.data();
+  for ( std::size_t i = 0; i < size; ++i, ++pointData )
+  {
+    if ( feedback->isCanceled() )
+      break;
+
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    geos::unique_ptr geosPoint( GEOSGeom_createPointFromXY_r( geosctxt, pointData->distanceAlongCurve, pointData->z ) );
+#else
+    GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+    GEOSCoordSeq_setX_r( geosctxt, seq, 0, point.distanceAlongCurve );
+    GEOSCoordSeq_setY_r( geosctxt, seq, 0, point.z );
+    geos::unique_ptr geosPoint( GEOSGeom_createPoint_r( geosctxt, seq ) );
+#endif
+
+    GEOSSTRtree_insert_r( geosctxt, mPointIndex, geosPoint.get(), pointData );
+    // only required for GEOS < 3.9
+#if GEOS_VERSION_MAJOR<4 && GEOS_VERSION_MINOR<9
+    mSTRTreeItems.emplace_back( std::move( geosPoint ) );
+#endif
+  }
+}
+
 QString QgsPointCloudLayerProfileResults::type() const
 {
   return QStringLiteral( "pointcloud" );
@@ -139,35 +178,61 @@ void QgsPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &c
   }
 }
 
+struct _GEOSQueryCallbackData
+{
+  QList< const QgsPointCloudLayerProfileResults::PointResult * > *list;
+};
+void _GEOSQueryCallback( void *item, void *userdata )
+{
+  reinterpret_cast<_GEOSQueryCallbackData *>( userdata )->list->append( reinterpret_cast<const QgsPointCloudLayerProfileResults::PointResult *>( item ) );
+}
+
 QgsProfileSnapResult QgsPointCloudLayerProfileResults::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
 {
   QgsProfileSnapResult result;
-  Q_UNUSED( point )
-  Q_UNUSED( context )
-#if 0
-  // TODO -- index
-  double prevDistance = std::numeric_limits< double >::max();
-  double prevElevation = 0;
-  for ( const PointResult &point : results )
-  {
-    // find segment which corresponds to the given distance along curve
-    if ( it != results.constBegin() && prevDistance <= point.distance() && it.key() >= point.distance() )
-    {
-      const double dx = it.key() - prevDistance;
-      const double dy = it.value() - prevElevation;
-      const double snappedZ = ( dy / dx ) * ( point.distance() - prevDistance ) + prevElevation;
 
-      if ( std::fabs( point.elevation() - snappedZ ) > context.maximumElevationDelta )
-        return QgsProfileSnapResult();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
-      result.snappedPoint = QgsProfilePoint( point.distance(), snappedZ );
-      break;
-    }
+  const double minDistance = point.distance() - context.maximumPointDistanceDelta;
+  const double maxDistance = point.distance() + context.maximumPointDistanceDelta;
+  const double minElevation = point.elevation() - context.maximumPointElevationDelta;
+  const double maxElevation = point.elevation() + context.maximumPointElevationDelta;
 
-    prevDistance = it.key();
-    prevElevation = it.value();
-  }
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 2, 2 );
+#if GEOS_VERSION_MAJOR<4 && GEOS_VERSION_MINOR<9
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 0, minDistance, minElevation );
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 1, maxDistance, maxElevation );
+#else
+  GEOSCoordSeq_setX_r( geosctxt, coord, 0, minDistance );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 0, minElevation );
+  GEOSCoordSeq_setX_r( geosctxt, coord, 1, maxDistance );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 1, maxElevation );
 #endif
+  geos::unique_ptr searchDiagonal( GEOSGeom_createLineString_r( geosctxt, coord ) );
+
+  QList<const PointResult *> items;
+  struct _GEOSQueryCallbackData callbackData;
+  callbackData.list = &items;
+  GEOSSTRtree_query_r( geosctxt, mPointIndex, searchDiagonal.get(), _GEOSQueryCallback, &callbackData );
+  if ( items.empty() )
+    return result;
+
+  double bestMatchDistance = std::numeric_limits< double >::max();
+  const PointResult *bestMatch = nullptr;
+  for ( const PointResult *candidate : std::as_const( items ) )
+  {
+    const double distance = std::sqrt( std::pow( candidate->distanceAlongCurve - point.distance(), 2 )
+                                       + std::pow( ( candidate->z - point.elevation() ) / context.displayRatioElevationVsDistance, 2 ) );
+    if ( distance < bestMatchDistance )
+    {
+      bestMatchDistance = distance;
+      bestMatch = candidate;
+    }
+  }
+  if ( !bestMatch )
+    return result;
+
+  result.snappedPoint = QgsProfilePoint( bestMatch->distanceAlongCurve, bestMatch->z );
   return result;
 }
 
@@ -344,20 +409,24 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   // convert x/y values back to distance/height values
 
   QString lastError;
-  QgsPointCloudLayerProfileResults::PointResult *pointData = mResults->results.data();
-  const int size = mResults->results.size();
-  for ( int i = 0; i < size; ++i, ++pointData )
+  QgsPointCloudLayerProfileResults::PointResult *pointData = mGatheredPoints.data();
+  const int size = mGatheredPoints.size();
+  mResults->results.resize( size );
+  QgsPointCloudLayerProfileResults::PointResult *destData = mResults->results.data();
+  for ( int i = 0; i < size; ++i, ++pointData, ++destData )
   {
     if ( mFeedback->isCanceled() )
       return false;
 
-    pointData->distanceAlongCurve = startDistanceOffset + originalCurveGeos.lineLocatePoint( pointData->x, pointData->y, &lastError );
+    *destData = *pointData;
+    destData->distanceAlongCurve = startDistanceOffset + originalCurveGeos.lineLocatePoint( destData->x, destData->y, &lastError );
     if ( mOpacityByDistanceEffect ) // don't calculate this if we don't need it
-      pointData->distanceFromCurve = originalCurveGeos.distance( pointData->x, pointData->y );
+      destData->distanceFromCurve = originalCurveGeos.distance( destData->x, destData->y );
 
-    mResults->minZ = std::min( pointData->z, mResults->minZ );
-    mResults->maxZ = std::max( pointData->z, mResults->maxZ );
+    mResults->minZ = std::min( destData->z, mResults->minZ );
+    mResults->maxZ = std::max( destData->z, mResults->maxZ );
   }
+  mResults->finalize( mFeedback.get() );
 
   return true;
 }
@@ -532,7 +601,7 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
       }
 
       res.color = mPointColor.rgba();
-      mResults->results.append( res );
+      mGatheredPoints.append( res );
     }
   }
 }
