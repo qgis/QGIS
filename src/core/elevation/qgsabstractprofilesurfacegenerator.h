@@ -22,8 +22,8 @@
 #include "qgsabstractprofilegenerator.h"
 #include <memory>
 
-class QgsLineSymbol;
-class QgsFillSymbol;
+#include <qgslinesymbol.h>
+#include <qgsfillsymbol.h>
 
 #define SIP_NO_FILE
 
