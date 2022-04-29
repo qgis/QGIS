@@ -989,6 +989,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
      * \param uiFileContent
      * \param msgError will be set to a descriptive error message if any occurs
+     * \param categories the style categories to be saved.
      *
      *
      * \note Prior to QGIS 3.24, this method would show a message box warning when a
@@ -999,7 +1000,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
                                       bool useAsDefault, const QString &uiFileContent,
-                                      QString &msgError SIP_OUT );
+                                      QString &msgError SIP_OUT,
+                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
     /**
      * Lists all the style in db split into related to the layer and not related to

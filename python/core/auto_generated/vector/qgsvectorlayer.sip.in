@@ -934,7 +934,8 @@ Resolves references to other layers (kept as layer IDs after reading XML) into l
 
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
                                       bool useAsDefault, const QString &uiFileContent,
-                                      QString &msgError /Out/ );
+                                      QString &msgError /Out/,
+                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 %Docstring
 Saves named and sld style of the layer to the style table in the db.
 
@@ -942,6 +943,8 @@ Saves named and sld style of the layer to the style table in the db.
 :param description: A description of the style
 :param useAsDefault: Set to ``True`` if style should be used as the default style for the layer
 :param uiFileContent:
+:param msgError: will be set to a descriptive error message if any occurs
+:param categories: the style categories to be saved.
 
 .. note::
 

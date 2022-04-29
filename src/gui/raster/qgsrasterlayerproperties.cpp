@@ -1553,9 +1553,13 @@ void QgsRasterLayerProperties::saveDefaultStyle_clicked()
 
   // a flag passed by reference
   bool defaultSavedFlag = false;
+  // One the deprecated `saveDefaultStyle()` method is gone, just
+  // remove the NOWARN_DEPRECATED tags
+  Q_NOWARN_DEPRECATED_PUSH
   // after calling this the above flag will be set true for success
   // or false if the save operation failed
   QString myMessage = mRasterLayer->saveDefaultStyle( defaultSavedFlag );
+  Q_NOWARN_DEPRECATED_POP
   if ( !defaultSavedFlag )
   {
     //let the user know what went wrong

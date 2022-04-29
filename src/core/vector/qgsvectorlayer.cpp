@@ -5442,13 +5442,13 @@ bool QgsVectorLayer::deleteStyleFromDatabase( const QString &styleId, QString &m
 
 
 void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &description,
-    bool useAsDefault, const QString &uiFileContent, QString &msgError )
+    bool useAsDefault, const QString &uiFileContent, QString &msgError, QgsMapLayer::StyleCategories categories )
 {
 
   QString sldStyle, qmlStyle;
   QDomDocument qmlDocument, sldDocument;
   QgsReadWriteContext context;
-  exportNamedStyle( qmlDocument, msgError, context );
+  exportNamedStyle( qmlDocument, msgError, context, categories );
   if ( !msgError.isNull() )
   {
     return;
