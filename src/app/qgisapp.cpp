@@ -9152,6 +9152,20 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
             }
             break;
           }
+          case QgsVectorLayerProperties::Local:
+          {
+            const QString infoWindowTitle = tr( "Save default style to local database" );
+            errorMessage = vlayer->saveDefaultStyle( resultFlag, dlg.styleCategories() );
+            if ( !resultFlag )
+            {
+              mInfoBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
+            }
+            else
+            {
+              mInfoBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::MessageLevel::Success );
+            }
+            break;
+          }
         }
       }
       break;
