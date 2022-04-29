@@ -90,6 +90,7 @@ void QgsMapLayerElevationProperties::setZOffset( double offset )
 
   mZOffset = offset;
   emit changed();
+  emit zOffsetChanged();
   emit profileGenerationPropertyChanged();
 }
 
@@ -100,6 +101,7 @@ void QgsMapLayerElevationProperties::setZScale( double scale )
 
   mZScale = scale;
   emit changed();
+  emit zScaleChanged();
   emit profileGenerationPropertyChanged();
 }
 
