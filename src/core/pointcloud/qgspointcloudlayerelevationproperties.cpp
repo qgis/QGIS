@@ -43,6 +43,7 @@ QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parent
   element.setAttribute( QStringLiteral( "point_size_unit" ), QgsUnitTypes::encodeUnit( mPointSizeUnit ) );
   element.setAttribute( QStringLiteral( "point_symbol" ), qgsEnumValueToKey( mPointSymbol ) );
   element.setAttribute( QStringLiteral( "point_color" ), QgsSymbolLayerUtils::encodeColor( mPointColor ) );
+  element.setAttribute( QStringLiteral( "respect_layer_colors" ), mRespectLayerColors ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "opacity_by_distance" ), mApplyOpacityByDistanceEffect ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   parentElement.appendChild( element );
@@ -73,6 +74,7 @@ bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element,
   {
     mPointColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
   }
+  mRespectLayerColors = elevationElement.attribute( QStringLiteral( "respect_layer_colors" ), QStringLiteral( "1" ) ).toInt();
   mApplyOpacityByDistanceEffect = elevationElement.attribute( QStringLiteral( "opacity_by_distance" ) ).toInt();
 
   return true;
@@ -89,6 +91,7 @@ QgsPointCloudLayerElevationProperties *QgsPointCloudLayerElevationProperties::cl
   res->mPointSizeUnit = mPointSizeUnit;
   res->mPointSymbol = mPointSymbol;
   res->mPointColor = mPointColor;
+  res->mRespectLayerColors = mRespectLayerColors;
   res->mApplyOpacityByDistanceEffect = mApplyOpacityByDistanceEffect;
 
   return res.release();
@@ -184,7 +187,12 @@ void QgsPointCloudLayerElevationProperties::setApplyOpacityByDistanceEffect( boo
 
   mApplyOpacityByDistanceEffect = apply;
   emit changed();
-  emit renderingPropertyChanged();
+
+  // turning ON opacity by distance requires a profile regeneration, turning it off does not.
+  if ( mApplyOpacityByDistanceEffect )
+    emit profileGenerationPropertyChanged();
+  else
+    emit renderingPropertyChanged();
 }
 
 void QgsPointCloudLayerElevationProperties::setPointSize( double size )
@@ -205,4 +213,19 @@ void QgsPointCloudLayerElevationProperties::setPointSizeUnit( const QgsUnitTypes
   mPointSizeUnit = units;
   emit changed();
   emit renderingPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setRespectLayerColors( bool enabled )
+{
+  if ( mRespectLayerColors == enabled )
+    return;
+
+  mRespectLayerColors = enabled;
+  emit changed();
+
+  // turning ON respect layer colors requires a profile regeneration, turning it off does not.
+  if ( mRespectLayerColors )
+    emit profileGenerationPropertyChanged();
+  else
+    emit renderingPropertyChanged();
 }

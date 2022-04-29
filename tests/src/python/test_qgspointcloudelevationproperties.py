@@ -33,6 +33,7 @@ class TestQgsPointCloudElevationProperties(unittest.TestCase):
         props = QgsPointCloudLayerElevationProperties(None)
         self.assertEqual(props.zScale(), 1)
         self.assertEqual(props.zOffset(), 0)
+        self.assertTrue(props.respectLayerColors())
         self.assertTrue(props.pointColor().isValid())
 
         props.setZOffset(0.5)
@@ -43,6 +44,7 @@ class TestQgsPointCloudElevationProperties(unittest.TestCase):
         props.setPointColor(QColor(255, 0, 255))
         props.setPointSize(1.2)
         props.setPointSizeUnit(QgsUnitTypes.RenderPoints)
+        props.setRespectLayerColors(False)
 
         self.assertEqual(props.zScale(), 2)
         self.assertEqual(props.zOffset(), 0.5)
@@ -52,6 +54,7 @@ class TestQgsPointCloudElevationProperties(unittest.TestCase):
         self.assertEqual(props.pointColor().name(), '#ff00ff')
         self.assertEqual(props.pointSize(), 1.2)
         self.assertEqual(props.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertFalse(props.respectLayerColors())
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
@@ -67,6 +70,7 @@ class TestQgsPointCloudElevationProperties(unittest.TestCase):
         self.assertEqual(props2.pointColor().name(), '#ff00ff')
         self.assertEqual(props2.pointSize(), 1.2)
         self.assertEqual(props2.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertFalse(props2.respectLayerColors())
 
         props2 = props.clone()
         self.assertEqual(props2.zScale(), 2)
@@ -77,6 +81,7 @@ class TestQgsPointCloudElevationProperties(unittest.TestCase):
         self.assertEqual(props2.pointColor().name(), '#ff00ff')
         self.assertEqual(props2.pointSize(), 1.2)
         self.assertEqual(props2.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertFalse(props2.respectLayerColors())
 
 
 if __name__ == '__main__':

@@ -201,6 +201,20 @@ Returns the units used for the point size used for drawing points in elevation p
 .. versionadded:: 3.26
 %End
 
+    bool respectLayerColors() const;
+%Docstring
+Returns ``True`` if layer coloring should be respected when rendering elevation profile plots.
+
+.. seealso:: :py:func:`setRespectLayerColors`
+%End
+
+    void setRespectLayerColors( bool enabled );
+%Docstring
+Sets whether layer coloring should be respected when rendering elevation profile plots.
+
+.. seealso:: :py:func:`respectLayerColors`
+%End
+
 };
 
 /************************************************************************
