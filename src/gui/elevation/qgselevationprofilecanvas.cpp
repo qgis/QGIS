@@ -399,12 +399,14 @@ void QgsElevationProfileCanvas::scalePlot( double factor )
 QgsProfileSnapContext QgsElevationProfileCanvas::snapContext() const
 {
   const double toleranceInPixels = QFontMetrics( font() ).horizontalAdvance( ' ' );
-  const double xToleranceInPlotUnits = 2 * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
-  const double yToleranceInPlotUnits = 10 * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
+  const double xToleranceInPlotUnits = ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
+  const double yToleranceInPlotUnits = ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
 
   QgsProfileSnapContext context;
-  context.maximumDistanceDelta = xToleranceInPlotUnits;
-  context.maximumElevationDelta = yToleranceInPlotUnits;
+  context.maximumSurfaceDistanceDelta = 2 * xToleranceInPlotUnits;
+  context.maximumSurfaceElevationDelta = 10 * yToleranceInPlotUnits;
+  context.maximumPointDistanceDelta = 4 * xToleranceInPlotUnits;
+  context.maximumPointElevationDelta = 4 * yToleranceInPlotUnits;
   context.displayRatioElevationVsDistance = ( ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) )
       / ( ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) );
 
