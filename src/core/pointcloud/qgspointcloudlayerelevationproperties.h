@@ -210,7 +210,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     double mMaximumScreenError = 0.3;
     QgsUnitTypes::RenderUnit mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
 
-    double mPointSize = 1;
+    double mPointSize = 0.6;
     QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
     QColor mPointColor;

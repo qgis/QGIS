@@ -60,7 +60,7 @@ bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element,
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( elevationElement.attribute( QStringLiteral( "max_screen_error_unit" ) ), &ok );
   if ( !ok )
     mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
-  mPointSize = elevationElement.attribute( QStringLiteral( "point_size" ), QStringLiteral( "1" ) ).toDouble();
+  mPointSize = elevationElement.attribute( QStringLiteral( "point_size" ), QStringLiteral( "0.6" ) ).toDouble();
   mPointSizeUnit = QgsUnitTypes::decodeRenderUnit( elevationElement.attribute( QStringLiteral( "point_size_unit" ) ), &ok );
   if ( !ok )
     mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
