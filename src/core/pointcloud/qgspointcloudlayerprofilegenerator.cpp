@@ -29,6 +29,7 @@
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudblockrequest.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmessagelog.h"
 
 //
 // QgsPointCloudLayerProfileGenerator
@@ -155,7 +156,7 @@ void QgsPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &c
   for ( const PointResult &point : std::as_const( results ) )
   {
     QPointF p = context.worldTransform().map( QPointF( point.distanceAlongCurve, point.z ) );
-    QColor color = pointColor;
+    QColor color = point.color; //pointColor;
     if ( opacityByDistanceEffect )
       color.setAlphaF( color.alphaF() * ( 1.0 - std::pow( point.distanceFromCurve / tolerance, 0.5 ) ) );
 
@@ -253,6 +254,7 @@ void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbs
 
 QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPointCloudLayer *layer, const QgsProfileRequest &request )
   : mLayer( layer )
+  , mLayerAttributes( layer->attributes() )
   , mRenderer( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr )
   , mMaximumScreenError( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenError() )
   , mMaximumScreenErrorUnit( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenErrorUnit() )
@@ -378,10 +380,37 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
 
   QgsPointCloudRequest request;
   QgsPointCloudAttributeCollection attributes;
-  // TODO -- add renderer attributes
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+
+  if ( mRenderer )
+  {
+    mPreparedRendererData = mRenderer->prepare();
+    if ( mPreparedRendererData )
+    {
+      const QSet< QString > rendererAttributes = mPreparedRendererData->usedAttributes();
+      for ( const QString &attribute : std::as_const( rendererAttributes ) )
+      {
+        if ( attributes.indexOf( attribute ) >= 0 )
+          continue; // don't re-add attributes we are already going to fetch
+
+        const int layerIndex = mLayerAttributes.indexOf( attribute );
+        if ( layerIndex < 0 )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Required attribute %1 not found in layer" ).arg( attribute ), QObject::tr( "Point Cloud" ) );
+          continue;
+        }
+
+        attributes.push_back( mLayerAttributes.at( layerIndex ) );
+      }
+    }
+  }
+  else
+  {
+    mPreparedRendererData.reset();
+  }
+
   request.setAttributes( attributes );
 
   switch ( pc->accessType() )
@@ -568,6 +597,13 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
   const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
   const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
 
+  bool useRenderer = false;
+  if ( mPreparedRendererData )
+  {
+    useRenderer = mPreparedRendererData->prepareBlock( block );
+  }
+
+  QColor color;
   const bool reproject = !mLayerToTargetTransform.isShortCircuited();
   for ( int i = 0; i < count; ++i )
   {
@@ -583,6 +619,19 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
     if ( !zRange.contains( res.z ) )
       continue;
 
+    if ( useRenderer )
+    {
+      color = mRenderer->pointColor( mPreparedRendererData.get(), block, ptr, i, recordSize, res.x, res.y, res.z );
+      if ( !color.isValid() )
+        continue;
+
+      res.color = color.rgba();
+    }
+    else
+    {
+      res.color = mPointColor.rgba();
+    }
+
     if ( mSearchGeometryInLayerCrsGeometryEngine->contains( res.x, res.y ) )
     {
       if ( reproject )
@@ -597,7 +646,6 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
         }
       }
 
-      res.color = mPointColor.rgba();
       mGatheredPoints.append( res );
     }
   }

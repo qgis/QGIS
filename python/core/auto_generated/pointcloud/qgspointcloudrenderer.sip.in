@@ -162,6 +162,7 @@ Returns the feedback object used to cancel rendering
 };
 
 
+
 class QgsPointCloudRenderer
 {
 %Docstring(signature="appended")
@@ -250,6 +251,8 @@ not be requested from the provider at rendering time.
    the "X" and "Y" attributes will always be fetched and do not need to be explicitly
    returned here.
 %End
+
+
 
     virtual void startRender( QgsPointCloudRenderContext &context );
 %Docstring
