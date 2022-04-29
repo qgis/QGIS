@@ -78,16 +78,13 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
      */
     bool calculateStats( QgsFeedback *feedback, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit = -1 );
 
-    /**
-     * Returns the calculated statistics of each attribute processed
-     */
+    //! Returns the calculated statistics of each attribute processed
     QMap<QString, AttributeStatistics> statistics() const { return mStatisticsMap; }
 
-    /**
-     * Returns the calculated statistics of attribute \a attribute
-     */
+    //! Returns the calculated statistics of attribute \a attribute
     AttributeStatistics statisticsOf( const QString &attribute );
 
+    //! Returns the statistic \a statistic of \a attribute
     QVariant statisticsOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic );
   private:
     QgsPointCloudIndex *mIndex = nullptr;
