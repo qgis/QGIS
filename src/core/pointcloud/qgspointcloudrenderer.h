@@ -180,7 +180,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * \a type indicates the original data type for the attribute.
      */
     template <typename T>
-    void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value ) const
+    static void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value )
     {
       switch ( type )
       {
@@ -241,6 +241,39 @@ class CORE_EXPORT QgsPointCloudRenderContext
 
     QgsFeedback *mFeedback = nullptr;
 };
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * \class QgsPreparedPointCloudRendererData
+ *
+ * \brief Base class for 2d point cloud renderer prepared data containers.
+ * \note Not available in Python bindings
+ *
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsPreparedPointCloudRendererData
+{
+  public:
+
+    virtual ~QgsPreparedPointCloudRendererData();
+
+    /**
+     * Returns the set of attributes used by the prepared point cloud renderer.
+     */
+    virtual QSet< QString > usedAttributes() const = 0;
+
+    /**
+     * Prepares the renderer for using the specified \a block.
+     *
+     * Returns FALSE if preparation failed.
+     */
+    virtual bool prepareBlock( const QgsPointCloudBlock *block ) = 0;
+
+};
+
+#endif
 
 
 /**
@@ -348,6 +381,25 @@ class CORE_EXPORT QgsPointCloudRenderer
      * returned here.
      */
     virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
+
+    /**
+     * Returns prepared data container for bulk point color retrieval.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.26
+     */
+    virtual std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() SIP_SKIP;
+
+    /**
+     * An optimised method of retrieving the color of a point from a point cloud block.
+     *
+     * Before calling this method the \a preparedData should be created once upfront by
+     * calling prepare().
+     *
+     * \note Not avaiable in Python bindings
+     * \since QGIS 3.26
+     */
+    virtual QColor pointColor( QgsPreparedPointCloudRendererData *preparedData, const QgsPointCloudBlock *block, const char *ptr, int i, std::size_t pointRecordSize, double x, double y, double z ) SIP_SKIP;
 
     /**
      * Must be called when a new render cycle is started. A call to startRender() must always
