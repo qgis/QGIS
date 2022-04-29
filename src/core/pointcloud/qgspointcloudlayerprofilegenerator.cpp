@@ -293,6 +293,7 @@ QgsPointCloudLayerProfileGenerator::~QgsPointCloudLayerProfileGenerator() = defa
 
 bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenerationContext &context )
 {
+  mGatheredPoints.clear();
   if ( !mLayer || !mProfileCurve || mFeedback->isCanceled() )
     return false;
 
@@ -320,21 +321,15 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     sourceCurve = mProfileCurve.get();
   }
 
-  const QgsRectangle maxSearchExtentInCurveCrs = sourceCurve->boundingBox().buffered( mTolerance );
-
   // we need to transform the profile curve and max search extent to the layer's CRS
   QgsGeos originalCurveGeos( sourceCurve );
   originalCurveGeos.prepareGeometry();
   mSearchGeometryInLayerCrs.reset( originalCurveGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
   mLayerToTargetTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
 
-  QgsRectangle maxSearchExtentInLayerCrs;
   try
   {
     mSearchGeometryInLayerCrs->transform( mLayerToTargetTransform, Qgis::TransformDirection::Reverse );
-    QgsCoordinateTransform layerToTargetBallparkTransform( mLayerToTargetTransform );
-    layerToTargetBallparkTransform.setBallparkTransformsAreAppropriate( true );
-    maxSearchExtentInLayerCrs = layerToTargetBallparkTransform.transformBoundingBox( maxSearchExtentInCurveCrs, Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException & )
   {
@@ -393,12 +388,12 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   {
     case QgsPointCloudIndex::AccessType::Local:
     {
-      visitNodesSync( nodes, pc, request );
+      visitNodesSync( nodes, pc, request, context.elevationRange() );
       break;
     }
     case QgsPointCloudIndex::AccessType::Remote:
     {
-      visitNodesAsync( nodes, pc, request );
+      visitNodesAsync( nodes, pc, request, context.elevationRange() );
       break;
     }
   }
@@ -409,7 +404,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   // convert x/y values back to distance/height values
 
   QString lastError;
-  QgsPointCloudLayerProfileResults::PointResult *pointData = mGatheredPoints.data();
+  const QgsPointCloudLayerProfileResults::PointResult *pointData = mGatheredPoints.constData();
   const int size = mGatheredPoints.size();
   mResults->results.resize( size );
   QgsPointCloudLayerProfileResults::PointResult *destData = mResults->results.data();
@@ -478,7 +473,7 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerProfileGenerator::traverseTree(
   return nodes;
 }
 
-int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request )
+int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
 {
   int nodesDrawn = 0;
   for ( const IndexedPointCloudNode &n : nodes )
@@ -491,14 +486,14 @@ int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<IndexedPoi
     if ( !block )
       continue;
 
-    visitBlock( block.get() );
+    visitBlock( block.get(), zRange );
 
     ++nodesDrawn;
   }
   return nodesDrawn;
 }
 
-int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request )
+int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
 {
   int nodesDrawn = 0;
 
@@ -516,7 +511,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPo
     QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
     blockRequests.append( blockRequest );
     QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop,
-                      [ this, &nodesDrawn, &loop, &blockRequests, nStr, blockRequest ]()
+                      [ this, &nodesDrawn, &loop, &blockRequests, &zRange, nStr, blockRequest ]()
     {
       blockRequests.removeOne( blockRequest );
 
@@ -539,7 +534,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPo
         return;
       }
 
-      visitBlock( block.get() );
+      visitBlock( block.get(), zRange );
       ++nodesDrawn;
     } );
   }
@@ -558,7 +553,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPo
   return nodesDrawn;
 }
 
-void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *block )
+void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange )
 {
   const char *ptr = block->data();
   int count = block->pointCount();
@@ -585,6 +580,8 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
     QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, block->scale(), block->offset(), res.x, res.y, res.z );
 
     res.z = res.z * mZScale + mZOffset;
+    if ( !zRange.contains( res.z ) )
+      continue;
 
     if ( mSearchGeometryInLayerCrsGeometryEngine->contains( res.x, res.y ) )
     {

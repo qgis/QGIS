@@ -62,11 +62,11 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
 
     struct PointResult
     {
-      double x;
-      double y;
-      double z;
-      double distanceAlongCurve;
-      double distanceFromCurve; // only used when the opacity by distance effect is enabled
+      double x = 0;
+      double y = 0;
+      double z = 0;
+      double distanceAlongCurve = 0;
+      double distanceFromCurve = 0; // only used when the opacity by distance effect is enabled
       QRgb color;
     };
 
@@ -134,9 +134,9 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
 
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange );
-    int visitNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request );
-    int visitNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc,  QgsPointCloudRequest &request );
-    void visitBlock( const QgsPointCloudBlock *block );
+    int visitNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+    int visitNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+    void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange );
 
     QPointer< QgsPointCloudLayer > mLayer;
     std::unique_ptr< QgsPointCloudRenderer > mRenderer;
