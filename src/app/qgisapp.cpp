@@ -9093,6 +9093,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
       if ( dlg.exec() )
       {
         bool resultFlag = false;
+        QString errorMessage;
 
         QgsVectorLayerProperties::StyleType type = dlg.currentStyleType();
         switch ( type )
@@ -9100,12 +9101,11 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
           case QgsVectorLayerProperties::QML:
           case QgsVectorLayerProperties::SLD:
           {
-            QString message;
             QString filePath = dlg.outputFilePath();
             if ( type == QgsVectorLayerProperties::QML )
-              message = vlayer->saveNamedStyle( filePath, resultFlag, dlg.styleCategories() );
+              errorMessage = vlayer->saveNamedStyle( filePath, resultFlag, dlg.styleCategories() );
             else
-              message = vlayer->saveSldStyle( filePath, resultFlag );
+              errorMessage = vlayer->saveSldStyle( filePath, resultFlag );
 
             if ( resultFlag )
             {
@@ -9113,7 +9113,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
             }
             else
             {
-              mInfoBar->pushMessage( tr( "Save Style" ), message, Qgis::MessageLevel::Warning );
+              mInfoBar->pushMessage( tr( "Save Style" ), errorMessage, Qgis::MessageLevel::Warning );
             }
 
             break;
@@ -9125,7 +9125,6 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 
             QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
 
-            QString errorMessage;
             if ( QgsProviderRegistry::instance()->styleExists( vlayer->providerType(), vlayer->source(), dbSettings.name, errorMessage ) )
             {
               if ( QMessageBox::question( nullptr, tr( "Save style in database" ),
@@ -9141,7 +9140,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
               return;
             }
 
-            vlayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
+            vlayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError, dlg.styleCategories() );
 
             if ( !msgError.isNull() )
             {

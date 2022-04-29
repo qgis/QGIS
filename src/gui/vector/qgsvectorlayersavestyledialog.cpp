@@ -46,9 +46,10 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
   connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     const QgsVectorLayerProperties::StyleType type = currentStyleType();
-    mSaveToFileWidget->setVisible( type != QgsVectorLayerProperties::DB );
+    mFileLabel->setVisible( type != QgsVectorLayerProperties::DB );
+    mFileWidget->setVisible( type != QgsVectorLayerProperties::DB );
     mSaveToDbWidget->setVisible( type == QgsVectorLayerProperties::DB );
-    mStyleCategoriesListView->setEnabled( type == QgsVectorLayerProperties::QML );
+    mStyleCategoriesListView->setEnabled( type != QgsVectorLayerProperties::SLD );
     mFileWidget->setFilter( type == QgsVectorLayerProperties::QML ? tr( "QGIS Layer Style File (*.qml)" ) : tr( "SLD File (*.sld)" ) );
     updateSaveButtonState();
   } );
