@@ -191,6 +191,20 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      */
     QgsUnitTypes::RenderUnit pointSizeUnit() const { return mPointSizeUnit; }
 
+    /**
+     * Returns TRUE if layer coloring should be respected when rendering elevation profile plots.
+     *
+     * \see setRespectLayerColors()
+     */
+    bool respectLayerColors() const { return mRespectLayerColors; }
+
+    /**
+     * Sets whether layer coloring should be respected when rendering elevation profile plots.
+     *
+     * \see respectLayerColors()
+     */
+    void setRespectLayerColors( bool enabled );
+
   private:
 
     double mMaximumScreenError = 0.3;
@@ -200,6 +214,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
     QColor mPointColor;
+    bool mRespectLayerColors = true;
     bool mApplyOpacityByDistanceEffect = false;
 };
 

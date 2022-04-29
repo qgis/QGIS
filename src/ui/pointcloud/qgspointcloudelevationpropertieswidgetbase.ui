@@ -188,7 +188,34 @@
       <string>Profile Chart Appearance</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" columnstretch="1,2,1">
-      <item row="2" column="1" colspan="2">
+      <item row="0" column="1">
+       <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="maximum">
+         <double>99999999999.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="3">
+       <widget class="QCheckBox" name="mOpacityByDistanceCheckBox">
+        <property name="text">
+         <string>Apply opacity by distance from curve effect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QComboBox" name="mPointStyleComboBox"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Color</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
        <widget class="QgsColorButton" name="mPointColorButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -204,26 +231,6 @@
         </property>
         <property name="text">
          <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
-        <property name="decimals">
-         <number>6</number>
-        </property>
-        <property name="maximum">
-         <double>99999999999.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QComboBox" name="mPointStyleComboBox"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Color</string>
         </property>
        </widget>
       </item>
@@ -248,10 +255,10 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="3">
-       <widget class="QCheckBox" name="mOpacityByDistanceCheckBox">
+      <item row="4" column="0" colspan="3">
+       <widget class="QCheckBox" name="mCheckBoxRespectLayerColors">
         <property name="text">
-         <string>Apply opacity by distance from curve effect</string>
+         <string>Respect layer's coloring</string>
         </property>
        </widget>
       </item>

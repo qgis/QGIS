@@ -86,6 +86,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     double pointSize = 1;
     QgsUnitTypes::RenderUnit pointSizeUnit = QgsUnitTypes::RenderMillimeters;
     Qgis::PointCloudSymbol pointSymbol = Qgis::PointCloudSymbol::Square;
+    bool respectLayerColors = true;
     QColor pointColor;
     bool opacityByDistanceEffect = false;
 

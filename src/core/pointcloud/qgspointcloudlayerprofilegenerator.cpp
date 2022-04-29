@@ -156,7 +156,7 @@ void QgsPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &c
   for ( const PointResult &point : std::as_const( results ) )
   {
     QPointF p = context.worldTransform().map( QPointF( point.distanceAlongCurve, point.z ) );
-    QColor color = point.color; //pointColor;
+    QColor color = respectLayerColors ? point.color : pointColor;
     if ( opacityByDistanceEffect )
       color.setAlphaF( color.alphaF() * ( 1.0 - std::pow( point.distanceFromCurve / tolerance, 0.5 ) ) );
 
@@ -245,6 +245,7 @@ void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbs
   pointSizeUnit = pcGenerator->mPointSizeUnit;
   pointSymbol = pcGenerator->mPointSymbol;
   pointColor = pcGenerator->mPointColor;
+  respectLayerColors = static_cast< bool >( pcGenerator->mRenderer );
   opacityByDistanceEffect = pcGenerator->mOpacityByDistanceEffect;
 }
 
@@ -255,7 +256,7 @@ void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbs
 QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPointCloudLayer *layer, const QgsProfileRequest &request )
   : mLayer( layer )
   , mLayerAttributes( layer->attributes() )
-  , mRenderer( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr )
+  , mRenderer( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->respectLayerColors() && mLayer->renderer() ? mLayer->renderer()->clone() : nullptr )
   , mMaximumScreenError( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenError() )
   , mMaximumScreenErrorUnit( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenErrorUnit() )
   , mPointSize( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSize() )
