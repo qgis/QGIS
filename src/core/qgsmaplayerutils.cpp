@@ -55,7 +55,7 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
       QgsDebugMsgLevel( "Output extent: " + extent.toString(), 5 );
       fullExtent.combineExtentWith( extent );
     }
-    catch ( QgsCsException & )
+    catch ( ... )
     {
       QgsDebugMsg( QStringLiteral( "Could not reproject layer extent" ) );
     }

@@ -514,6 +514,8 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     return QgsRectangle( p, p );
   }
 
+  double xMin = rect.xMinimum();
+  double xMax = rect.xMaximum();
   double yMin = rect.yMinimum();
   double yMax = rect.yMaximum();
   if ( d->mGeographicToWebMercator &&
@@ -538,6 +540,18 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
         throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS" ) );
       yMax = 90 - EPS;
     }
+    if (xMin < -180)
+    {
+      if (xMax < -180)
+        throw QgsCsException(QObject::tr("Could not transform bounding box to target CRS"));
+      xMin = -180;
+    }
+    if (xMax > 180)
+    {
+      if (xMin > 180)
+        throw QgsCsException(QObject::tr("Could not transform bounding box to target CRS"));
+      xMax = 180;
+    }
   }
 
   // 64 points (<=2.12) is not enough, see #13665, for EPSG:4326 -> EPSG:3574 (say that it is a hard one),
@@ -545,9 +559,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // even with 1000 points it takes < 1ms.
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
-  const double d = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
-  const int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / d ) ) + 1, 1000 );
-  const int nYPoints = std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / d ) ) + 1, 1000 );
+  const double d = std::sqrt( ( ( xMax - xMin ) * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
+  const int nXPoints = std::max( 3, std::min( static_cast< int >( std::ceil( ( xMax - xMin ) / d ) ) + 1, 1000 ) );
+  const int nYPoints = std::max( 3, std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / d ) ) + 1, 1000 ) );
 
   QgsRectangle bb_rect;
   bb_rect.setMinimal();
@@ -562,7 +576,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   // Populate the vectors
 
-  const double dx = rect.width()  / static_cast< double >( nXPoints - 1 );
+  const double dx = ( xMax - xMin ) / static_cast< double >( nXPoints - 1 );
   const double dy = ( yMax - yMin ) / static_cast< double >( nYPoints - 1 );
 
   double pointY = yMin;
@@ -571,7 +585,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   {
 
     // Start at right edge
-    double pointX = rect.xMinimum();
+    double pointX = xMin;
 
     for ( int j = 0; j < nXPoints; j++ )
     {
