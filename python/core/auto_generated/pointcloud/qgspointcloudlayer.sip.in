@@ -210,7 +210,7 @@ Signals an error related to this point cloud layer.
 .. versionadded:: 3.26
 %End
 
-    void hasCalculatedStatisticsChanged( bool contained );
+    void hasCalculatedStatisticsChanged( bool calculated );
 %Docstring
 Emitted when hasCalculatedStatistics attribute has changed
 

@@ -247,7 +247,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      *
      * \since QGIS 3.26
      */
-    void hasCalculatedStatisticsChanged( bool contained );
+    void hasCalculatedStatisticsChanged( bool calculated );
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
@@ -268,6 +268,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     std::unique_ptr<QgsPointCloudRenderer> mRenderer;
 
     QgsPointCloudLayerElevationProperties *mElevationProperties = nullptr;
+
+    LayerOptions mLayerOptions;
 
     bool mSync3DRendererTo2DRenderer = false;
     std::unique_ptr<QgsPointCloudStatsCalculator> mStatsCalculator;

@@ -46,6 +46,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, uri )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
+  , mLayerOptions( options )
 {
   if ( !uri.isEmpty() && !providerLib.isEmpty() )
   {
@@ -56,15 +57,6 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
       providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
     }
     setDataSource( uri, baseName, providerLib, providerOptions, providerFlags );
-
-    if ( !options.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
-    {
-      mDataProvider.get()->generateIndex();
-      if ( !mDataProvider->hasStatisticsMetadata() && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed )
-      {
-        calculateStatistics();
-      }
-    }
   }
 
   setLegend( QgsMapLayerLegend::defaultPointCloudLegend( this ) );
@@ -75,12 +67,7 @@ QgsPointCloudLayer::~QgsPointCloudLayer() = default;
 
 QgsPointCloudLayer *QgsPointCloudLayer::clone() const
 {
-  LayerOptions options;
-  options.loadDefaultStyle = false;
-  options.transformContext = transformContext();
-  options.skipCrsValidation = true;
-
-  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
+  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, mLayerOptions );
   QgsMapLayer::clone( layer );
 
   layer->mElevationProperties = mElevationProperties->clone();
@@ -390,6 +377,15 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
   {
     loadDefaultStyleFlag = true;
+  }
+
+  if ( !mLayerOptions.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
+  {
+    mDataProvider->generateIndex();
+    if ( !mDataProvider->hasStatisticsMetadata() && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed )
+    {
+      calculateStatistics();
+    }
   }
 
   if ( !mRenderer || loadDefaultStyleFlag )

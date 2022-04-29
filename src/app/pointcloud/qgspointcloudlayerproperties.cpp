@@ -31,6 +31,8 @@
 #include "qgsdatumtransformdialog.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgspointcloudquerybuilder.h"
+#include "qgspointcloudrenderer.h"
+
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -119,7 +121,12 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
     mClassificationStatsGroupBox->hide();
   }
 
-  mStatisticsCalculationWarningLabel->hide();
+  mStatisticsCalculationWarningLabel->setHidden( !mLayer->hasCalculatedStatistics() );
+
+  connect( mLayer, &QgsPointCloudLayer::hasCalculatedStatisticsChanged, this, [this]( bool calculated )
+  {
+    mStatisticsCalculationWarningLabel->setHidden( !calculated );
+  } );
 
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
@@ -144,8 +151,6 @@ void QgsPointCloudLayerProperties::addPropertiesPageFactory( const QgsMapLayerCo
 
   page->syncToLayer( mLayer );
 }
-
-#include "qgspointcloudrenderer.h"
 
 void QgsPointCloudLayerProperties::apply()
 {
@@ -206,6 +211,8 @@ void QgsPointCloudLayerProperties::syncToLayer()
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->syncToLayer( mLayer );
+
+  mStatisticsCalculationWarningLabel->setHidden( !mLayer->hasCalculatedStatistics() );
 }
 
 
