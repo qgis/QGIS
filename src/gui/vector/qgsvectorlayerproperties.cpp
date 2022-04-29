@@ -1277,6 +1277,20 @@ void QgsVectorLayerProperties::saveStyleAs()
         }
         break;
       }
+      case Local:
+      {
+        QString infoWindowTitle = tr( "Save default style to local database" );
+        errorMessage = mLayer->saveDefaultStyle( defaultLoadedFlag, dlg.styleCategories() );
+        if ( !defaultLoadedFlag )
+        {
+          mMessageBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
+        }
+        else
+        {
+          mMessageBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::MessageLevel::Success );
+        }
+        break;
+      }
     }
   }
 }
@@ -1408,6 +1422,8 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             }
             break;
           }
+          case Local:
+            break;
         }
         styleIndex ++;
       }
@@ -1513,6 +1529,20 @@ void QgsVectorLayerProperties::loadStyle()
           QMessageBox::warning( this, tr( "Load Styles from Database" ),
                                 tr( "The retrieved style is not a valid named style. Error message: %1" )
                                 .arg( errorMsg ) );
+        }
+        break;
+      }
+      case Local:
+      {
+        errorMsg = mLayer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag, true, categories );
+        //reset if the default style was loaded OK only
+        if ( defaultLoadedFlag )
+        {
+          syncToLayer();
+        }
+        else
+        {
+          QMessageBox::warning( this, tr( "Load Default Style" ), errorMsg );
         }
         break;
       }
