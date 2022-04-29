@@ -30,8 +30,8 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
 
-  mPointStyleComboBox->addItem( tr( "Square" ), Qgis::PointCloudSymbol::Square );
-  mPointStyleComboBox->addItem( tr( "Circle" ), Qgis::PointCloudSymbol::Circle );
+  mPointStyleComboBox->addItem( tr( "Square" ), static_cast< int >( Qgis::PointCloudSymbol::Square ) );
+  mPointStyleComboBox->addItem( tr( "Circle" ), static_cast< int >( Qgis::PointCloudSymbol::Circle ) );
   mPointSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
@@ -71,7 +71,7 @@ void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mScaleZSpinBox->setValue( properties->zScale() );
   mPointSizeSpinBox->setValue( properties->pointSize() );
   mPointSizeUnitWidget->setUnit( properties->pointSizeUnit() );
-  mPointStyleComboBox->setCurrentIndex( mPointStyleComboBox->findData( properties->pointSymbol() ) );
+  mPointStyleComboBox->setCurrentIndex( mPointStyleComboBox->findData( static_cast< int >( properties->pointSymbol() ) ) );
   mMaxErrorSpinBox->setValue( properties->maximumScreenError() );
   mMaxErrorUnitWidget->setUnit( properties->maximumScreenErrorUnit() );
   mPointColorButton->setColor( properties->pointColor() );
