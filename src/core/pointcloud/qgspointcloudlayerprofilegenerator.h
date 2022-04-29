@@ -76,7 +76,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     void finalize( QgsFeedback *feedback );
 
     std::vector< PointResult > results;
-    double tolerance;
+    double tolerance = 0;
 
     double minZ = std::numeric_limits< double >::max();
     double maxZ = std::numeric_limits< double >::lowest();
