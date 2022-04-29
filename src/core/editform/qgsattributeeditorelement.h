@@ -82,13 +82,15 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
       /**
        * Reads configuration from \a node.
+       * \note Not available in Python bindings
        */
-      void readXml( const QDomNode &node );
+      void readXml( const QDomNode &node ) SIP_SKIP;
 
       /**
        * Creates the XML configuration from \a document.
+       * \note Not available in Python bindings
        */
-      QDomElement writeXml( QDomDocument &document ) const;
+      QDomElement writeXml( QDomDocument &document ) const SIP_SKIP;
 
       /**
        * Returns TRUE if the style is equal to \a other.
