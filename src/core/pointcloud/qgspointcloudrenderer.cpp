@@ -80,6 +80,16 @@ QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderCo
   return QSet< QString >();
 }
 
+std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRenderer::prepare()
+{
+  return nullptr;
+}
+
+QColor QgsPointCloudRenderer::pointColor( QgsPreparedPointCloudRendererData *, const QgsPointCloudBlock *, const char *, int, std::size_t, double, double, double )
+{
+  return QColor();
+}
+
 void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
 {
 #ifdef QGISDEBUG
@@ -306,3 +316,8 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
 
   return selectedPoints;
 }
+
+//
+// QgsPreparedPointCloudRendererData
+//
+QgsPreparedPointCloudRendererData::~QgsPreparedPointCloudRendererData() = default;

@@ -24,6 +24,40 @@
 
 #include "qgscontrastenhancement.h"
 
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * \brief Prepared data container for QgsPointCloudRgbRenderer.
+ *
+ * \note Not available in Python bindings.
+ *
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsPointCloudRgbRendererPreparedData: public QgsPreparedPointCloudRendererData
+{
+  public:
+
+    QSet< QString > usedAttributes() const override;
+    bool prepareBlock( const QgsPointCloudBlock *block ) override;
+
+    QString redAttribute = QStringLiteral( "Red" );
+    QString greenAttribute = QStringLiteral( "Green" );
+    QString blueAttribute = QStringLiteral( "Blue" );
+
+    int redOffset = 0;
+    QgsPointCloudAttribute::DataType redType;
+    bool useRedContrastEnhancement = false;
+    int greenOffset = 0;
+    QgsPointCloudAttribute::DataType greenType;
+    bool useGreenContrastEnhancement = false;
+    int blueOffset = 0;
+    QgsPointCloudAttribute::DataType blueType;
+    bool useBlueContrastEnhancement = false;
+};
+#endif
+
 /**
  * \ingroup core
  * \brief An RGB renderer for 2d visualisation of point clouds using embedded red, green and blue attributes.
@@ -44,6 +78,8 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
+    std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() override SIP_SKIP;
+    QColor pointColor( QgsPreparedPointCloudRendererData *preparedData, const QgsPointCloudBlock *block, const char *ptr, int i, std::size_t pointRecordSize, double x, double y, double z ) override SIP_SKIP;
 
     /**
      * Creates an RGB renderer from an XML \a element.

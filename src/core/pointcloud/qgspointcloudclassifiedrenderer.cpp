@@ -321,3 +321,45 @@ void QgsPointCloudClassifiedRenderer::addCategory( const QgsPointCloudCategory &
   mCategories.append( category );
 }
 
+std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudClassifiedRenderer::prepare()
+{
+  std::unique_ptr< QgsPointCloudClassifiedRendererPreparedData > data = std::make_unique< QgsPointCloudClassifiedRendererPreparedData >();
+  data->attributeName = mAttribute;
+
+  for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
+  {
+    if ( !category.renderState() )
+      continue;
+
+    data->colors.insert( category.value(), category.color() );
+  }
+
+  return data;
+}
+
+QSet<QString> QgsPointCloudClassifiedRendererPreparedData::usedAttributes() const
+{
+  return { attributeName };
+}
+
+bool QgsPointCloudClassifiedRendererPreparedData::prepareBlock( const QgsPointCloudBlock *block )
+{
+  const QgsPointCloudAttributeCollection attributes = block->attributes();
+  const QgsPointCloudAttribute *attribute = attributes.find( attributeName, attributeOffset );
+  if ( !attribute )
+    return false;
+
+  attributeType = attribute->type();
+  return true;
+}
+
+QColor QgsPointCloudClassifiedRenderer::pointColor( QgsPreparedPointCloudRendererData *preparedData, const QgsPointCloudBlock *, const char *ptr, int i, std::size_t pointRecordSize, double, double, double )
+{
+  QgsPointCloudClassifiedRendererPreparedData *data = qgis::down_cast< QgsPointCloudClassifiedRendererPreparedData * >( preparedData );
+
+  int attributeValue = 0;
+  QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + data->attributeOffset, data->attributeType, attributeValue );
+  return data->colors.value( attributeValue );
+}
+
+

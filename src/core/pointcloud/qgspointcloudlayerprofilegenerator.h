@@ -23,6 +23,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
+#include "qgspointcloudattribute.h"
 #include "qgslinesymbol.h"
 #include "qgsvector3d.h"
 #include "qgsgeos.h"
@@ -41,6 +42,7 @@ class QgsPointCloudIndex;
 class QgsPointCloudRequest;
 class QgsPointCloudBlock;
 class QgsGeos;
+class QgsPreparedPointCloudRendererData;
 
 #define SIP_NO_FILE
 
@@ -139,6 +141,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange );
 
     QPointer< QgsPointCloudLayer > mLayer;
+    QgsPointCloudAttributeCollection mLayerAttributes;
     std::unique_ptr< QgsPointCloudRenderer > mRenderer;
     double mMaximumScreenError = 0.3;
     QgsUnitTypes::RenderUnit mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
@@ -172,6 +175,8 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     std::unique_ptr< QgsAbstractGeometry > mSearchGeometryInLayerCrs;
     std::unique_ptr< QgsGeos > mSearchGeometryInLayerCrsGeometryEngine;
     QgsRectangle mMaxSearchExtentInLayerCrs;
+
+    std::unique_ptr< QgsPreparedPointCloudRendererData > mPreparedRendererData;
 
     std::unique_ptr< QgsPointCloudLayerProfileResults > mResults;
     QVector< QgsPointCloudLayerProfileResults::PointResult > mGatheredPoints;
