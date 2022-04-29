@@ -66,7 +66,6 @@ Reads configuration from ``node``.
 Creates the XML configuration from ``document``.
 %End
 
-      bool operator==( LabelStyle const  &other ) const;
     };
 
 

@@ -92,8 +92,9 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
       /**
        * Returns TRUE if the style is equal to \a other.
+       * \note Not available in Python bindings
        */
-      bool operator==( LabelStyle const  &other ) const;
+      bool operator==( LabelStyle const  &other ) const SIP_SKIP;
     };
 
 
