@@ -23,6 +23,7 @@ QgsMapLayer *QgsProviderSublayerDetails::toLayer( const LayerOptions &options ) 
 {
   QgsMapLayerFactory::LayerOptions layerOptions( options.transformContext );
   layerOptions.loadDefaultStyle = options.loadDefaultStyle;
+  layerOptions.skipStatisticsCalculation = options.skipStatisticsCalculation;
   return QgsMapLayerFactory::createLayer( mUri, mName, mType, layerOptions, mProviderKey );
 }
 

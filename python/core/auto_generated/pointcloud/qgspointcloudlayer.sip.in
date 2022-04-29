@@ -45,6 +45,8 @@ Constructor for LayerOptions with optional ``transformContext``.
       bool skipCrsValidation;
 
       bool skipIndexGeneration;
+
+      bool skipStatisticsCalculation;
     };
 
 

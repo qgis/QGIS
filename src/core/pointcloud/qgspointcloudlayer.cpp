@@ -382,7 +382,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   if ( !mLayerOptions.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
   {
     mDataProvider->generateIndex();
-    if ( !mDataProvider->hasStatisticsMetadata() && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed )
+    if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed )
     {
       calculateStatistics();
     }
@@ -455,7 +455,7 @@ void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudD
     case QgsPointCloudDataProvider::Indexed:
     {
       mDataProvider.get()->loadIndex();
-      if ( !mDataProvider->hasStatisticsMetadata() && !hasCalculatedStatistics() )
+      if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && !hasCalculatedStatistics() )
       {
         calculateStatistics();
       }
@@ -780,6 +780,17 @@ QVariant QgsPointCloudLayer::statistic( const QString &attribute, QgsStatistical
 
 void QgsPointCloudLayer::calculateStatistics()
 {
+  qDebug() << __PRETTY_FUNCTION__;
+  if ( !mDataProvider.get() || !mDataProvider->hasValidIndex() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
+    return;
+  }
+  if ( mStatsCalculationTask )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "A statistics calculation task for the point cloud %1 is already in progress" ).arg( this->name() ) );
+    return;
+  }
   if ( !mStatsCalculator.get() )
   {
     mStatsCalculator.reset( new QgsPointCloudStatsCalculator( mDataProvider->index() ) );
@@ -801,12 +812,14 @@ void QgsPointCloudLayer::calculateStatistics()
     mStatisticsCalculated = true;
     emit hasCalculatedStatisticsChanged( true );
     onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::Indexed );
+    mStatsCalculationTask = 0;
   } );
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
   connect( task, &QgsTask::taskTerminated, this, [this]()
   {
     QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
+    mStatsCalculationTask = 0;
   } );
 
-  QgsApplication::taskManager()->addTask( task );
+  mStatsCalculationTask = QgsApplication::taskManager()->addTask( task );
 }

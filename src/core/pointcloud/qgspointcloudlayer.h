@@ -84,6 +84,12 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
        * Set to TRUE if point cloud index generation should be skipped.
        */
       bool skipIndexGeneration = false;
+
+      /**
+       * Set to true if the statistics calculation for this point cloud is disabled
+       * \since QGIS 3.26
+       */
+      bool skipStatisticsCalculation = false;
     };
 
 
@@ -274,6 +280,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     bool mSync3DRendererTo2DRenderer = false;
     std::unique_ptr<QgsPointCloudStatsCalculator> mStatsCalculator;
     bool mStatisticsCalculated = false;
+    long mStatsCalculationTask = 0;
 };
 
 
