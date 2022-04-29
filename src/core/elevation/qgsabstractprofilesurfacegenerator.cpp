@@ -68,7 +68,7 @@ QgsProfileSnapResult QgsAbstractProfileSurfaceResults::snapPoint( const QgsProfi
       const double dy = it.value() - prevElevation;
       const double snappedZ = ( dy / dx ) * ( point.distance() - prevDistance ) + prevElevation;
 
-      if ( std::fabs( point.elevation() - snappedZ ) > context.maximumElevationDelta )
+      if ( std::fabs( point.elevation() - snappedZ ) > context.maximumSurfaceElevationDelta )
         return QgsProfileSnapResult();
 
       result.snappedPoint = QgsProfilePoint( point.distance(), snappedZ );
