@@ -87,8 +87,8 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
   cboRenderers->setCurrentIndex( -1 ); // set no current renderer
 
-  mPointStyleComboBox->addItem( tr( "Square" ), Qgis::PointCloudSymbol::Square );
-  mPointStyleComboBox->addItem( tr( "Circle" ), Qgis::PointCloudSymbol::Circle );
+  mPointStyleComboBox->addItem( tr( "Square" ), static_cast< int >( Qgis::PointCloudSymbol::Square ) );
+  mPointStyleComboBox->addItem( tr( "Circle" ), static_cast< int >( Qgis::PointCloudSymbol::Circle ) );
 
   connect( cboRenderers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::rendererChanged );
 
@@ -151,7 +151,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mPointSizeUnitWidget->setUnit( mLayer->renderer()->pointSizeUnit() );
     mPointSizeUnitWidget->setMapUnitScale( mLayer->renderer()->pointSizeMapUnitScale() );
 
-    mPointStyleComboBox->setCurrentIndex( mPointStyleComboBox->findData( mLayer->renderer()->pointSymbol() ) );
+    mPointStyleComboBox->setCurrentIndex( mPointStyleComboBox->findData( static_cast< int >( mLayer->renderer()->pointSymbol() ) ) );
     mDrawOrderComboBox->setCurrentIndex( mDrawOrderComboBox->findData( static_cast< int >( mLayer->renderer()->drawOrder2d() ) ) );
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
