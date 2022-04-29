@@ -167,7 +167,7 @@ void QgsPointCloudLayerElevationProperties::setPointSymbol( Qgis::PointCloudSymb
 
   mPointSymbol = symbol;
   emit changed();
-  emit renderingPropertyChanged();
+  emit profileRenderingPropertyChanged();
 }
 
 void QgsPointCloudLayerElevationProperties::setPointColor( const QColor &color )
@@ -177,7 +177,7 @@ void QgsPointCloudLayerElevationProperties::setPointColor( const QColor &color )
 
   mPointColor = color;
   emit changed();
-  emit renderingPropertyChanged();
+  emit profileRenderingPropertyChanged();
 }
 
 void QgsPointCloudLayerElevationProperties::setApplyOpacityByDistanceEffect( bool apply )
@@ -192,7 +192,7 @@ void QgsPointCloudLayerElevationProperties::setApplyOpacityByDistanceEffect( boo
   if ( mApplyOpacityByDistanceEffect )
     emit profileGenerationPropertyChanged();
   else
-    emit renderingPropertyChanged();
+    emit profileRenderingPropertyChanged();
 }
 
 void QgsPointCloudLayerElevationProperties::setPointSize( double size )
@@ -202,7 +202,7 @@ void QgsPointCloudLayerElevationProperties::setPointSize( double size )
 
   mPointSize = size;
   emit changed();
-  emit renderingPropertyChanged();
+  emit profileRenderingPropertyChanged();
 }
 
 void QgsPointCloudLayerElevationProperties::setPointSizeUnit( const QgsUnitTypes::RenderUnit units )
@@ -212,7 +212,7 @@ void QgsPointCloudLayerElevationProperties::setPointSizeUnit( const QgsUnitTypes
 
   mPointSizeUnit = units;
   emit changed();
-  emit renderingPropertyChanged();
+  emit profileRenderingPropertyChanged();
 }
 
 void QgsPointCloudLayerElevationProperties::setRespectLayerColors( bool enabled )
@@ -227,5 +227,5 @@ void QgsPointCloudLayerElevationProperties::setRespectLayerColors( bool enabled 
   if ( mRespectLayerColors )
     emit profileGenerationPropertyChanged();
   else
-    emit renderingPropertyChanged();
+    emit profileRenderingPropertyChanged();
 }
