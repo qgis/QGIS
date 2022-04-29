@@ -102,7 +102,9 @@ QgsDataSourceUri QgsOwsConnection::uri() const
 
 QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   addCommonConnectionSettings( uri, settingsKey );
+  Q_NOWARN_DEPRECATED_POP
 
   const QgsSettings settings;
   const QString referer = settings.value( settingsKey + "/referer" ).toString();
@@ -170,7 +172,9 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
 
 QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   addCommonConnectionSettings( uri, settingsKey );
+  Q_NOWARN_DEPRECATED_POP
 
   const QgsSettings settings;
   const QString version = settings.value( settingsKey + "/version" ).toString();
