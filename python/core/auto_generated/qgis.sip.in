@@ -1016,8 +1016,8 @@ The development version
     typedef QFlags<Qgis::ProfileGeneratorFlag> ProfileGeneratorFlags;
 
 
-    enum PointCloudSymbol
-    {
+    enum class PointCloudSymbol
+      {
       Square,
       Circle,
     };

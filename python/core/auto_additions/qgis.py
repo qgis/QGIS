@@ -1492,6 +1492,15 @@ Qgis.ProfileGeneratorFlag.baseClass = Qgis
 Qgis.ProfileGeneratorFlags.baseClass = Qgis
 ProfileGeneratorFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsPointCloudRenderer.PointSymbol = Qgis.PointCloudSymbol
+# monkey patching scoped based enum
+QgsPointCloudRenderer.Square = Qgis.PointCloudSymbol.Square
+QgsPointCloudRenderer.Square.is_monkey_patched = True
+QgsPointCloudRenderer.Square.__doc__ = "Renders points as squares"
+QgsPointCloudRenderer.Circle = Qgis.PointCloudSymbol.Circle
+QgsPointCloudRenderer.Circle.is_monkey_patched = True
+QgsPointCloudRenderer.Circle.__doc__ = "Renders points as circles"
+Qgis.PointCloudSymbol.__doc__ = 'Rendering symbols for point cloud points.\n\n.. versionadded:: 3.26\n\n' + '* ``Square``: ' + Qgis.PointCloudSymbol.Square.__doc__ + '\n' + '* ``Circle``: ' + Qgis.PointCloudSymbol.Circle.__doc__
+# --
 Qgis.PointCloudSymbol.baseClass = Qgis
 QgsPointCloudRenderer.DrawOrder = Qgis.PointCloudDrawOrder
 # monkey patching scoped based enum

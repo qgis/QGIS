@@ -1680,8 +1680,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum PointCloudSymbol SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, PointSymbol ) : int
-    {
+    enum class PointCloudSymbol SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, PointSymbol ) : int
+      {
       Square, //!< Renders points as squares
       Circle, //!< Renders points as circles
     };
