@@ -37,6 +37,8 @@
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 
+#include <QtGlobal>
+
 #include "odbc/PreparedStatement.h"
 #include "odbc/ResultSet.h"
 #include "odbc/ResultSetMetaDataUnicode.h"
@@ -1792,6 +1794,26 @@ void QgsHanaProviderMetadata::cleanupProvider()
 QgsHanaProvider *QgsHanaProviderMetadata::createProvider(
   const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
+  QgsDataSourceUri dsUri { uri };
+  QgsHanaDriver *drv = QgsHanaDriver::instance();
+
+  auto isDriverValid = [&drv]( const QString & driver )
+  {
+#ifdef Q_OS_WIN
+    return drv->isInstalled( driver );
+#else
+    return drv->isInstalled( driver ) || QgsHanaDriver::isValidPath( driver );
+#endif
+  };
+
+  // The following block is intended to resolve an issue when a data source was created under
+  // another operating system. In this case, the driver parameter may differ.
+  if ( !drv->driver().isEmpty() && drv->driver() != dsUri.driver() &&
+       !isDriverValid( dsUri.driver() ) && isDriverValid( drv->driver() ) )
+  {
+    dsUri.setDriver( drv->driver() );
+    return new QgsHanaProvider( dsUri.uri(), options, flags );
+  }
   return new QgsHanaProvider( uri, options, flags );
 }
 
