@@ -418,13 +418,13 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
   if ( isDisconnect )
   {
     disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
-    disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::renderingPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged );
+    disconnect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileRenderingPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged );
     disconnect( layer, &QgsMapLayer::dataChanged, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
   }
   else
   {
     connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged );
-    connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::renderingPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged );
+    connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::profileRenderingPropertyChanged, this, &QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged );
     connect( layer, &QgsMapLayer::dataChanged, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
   }
 

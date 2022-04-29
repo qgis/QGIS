@@ -284,7 +284,7 @@ void QgsVectorLayerElevationProperties::setRespectLayerSymbology( bool enabled )
 
   mRespectLayerSymbology = enabled;
   emit changed();
-  emit renderingPropertyChanged();
+  emit profileRenderingPropertyChanged();
 }
 
 QgsLineSymbol *QgsVectorLayerElevationProperties::profileLineSymbol() const
@@ -296,7 +296,7 @@ void QgsVectorLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *sym
 {
   mProfileLineSymbol.reset( symbol );
   emit changed();
-  emit renderingPropertyChanged();
+  emit profileRenderingPropertyChanged();
 }
 
 QgsFillSymbol *QgsVectorLayerElevationProperties::profileFillSymbol() const
@@ -308,7 +308,7 @@ void QgsVectorLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *sym
 {
   mProfileFillSymbol.reset( symbol );
   emit changed();
-  emit renderingPropertyChanged();
+  emit profileRenderingPropertyChanged();
 }
 
 QgsMarkerSymbol *QgsVectorLayerElevationProperties::profileMarkerSymbol() const
@@ -320,7 +320,7 @@ void QgsVectorLayerElevationProperties::setProfileMarkerSymbol( QgsMarkerSymbol 
 {
   mProfileMarkerSymbol.reset( symbol );
   emit changed();
-  emit renderingPropertyChanged();
+  emit profileRenderingPropertyChanged();
 }
 
 void QgsVectorLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )

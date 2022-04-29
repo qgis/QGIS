@@ -152,7 +152,7 @@ void QgsRasterLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *sym
 {
   mProfileLineSymbol.reset( symbol );
   emit changed();
-  emit renderingPropertyChanged();
+  emit profileRenderingPropertyChanged();
 }
 
 QgsFillSymbol *QgsRasterLayerElevationProperties::profileFillSymbol() const

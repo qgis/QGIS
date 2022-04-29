@@ -266,14 +266,14 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      * \see profileGenerationPropertyChanged()
      * \since QGIS 3.26
      */
-    void renderingPropertyChanged();
+    void profileRenderingPropertyChanged();
 
     /**
      * Emitted when any of the elevation properties which relate solely to generation of elevation
      * profiles have changed.
      *
      * \see changed()
-     * \see renderingPropertyChanged()
+     * \see profileRenderingPropertyChanged()
      * \since QGIS 3.26
      */
     void profileGenerationPropertyChanged();

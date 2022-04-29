@@ -124,7 +124,7 @@ void QgsMeshLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbo
 {
   mProfileLineSymbol.reset( symbol );
   emit changed();
-  emit renderingPropertyChanged();
+  emit profileRenderingPropertyChanged();
 }
 
 QgsFillSymbol *QgsMeshLayerElevationProperties::profileFillSymbol() const
