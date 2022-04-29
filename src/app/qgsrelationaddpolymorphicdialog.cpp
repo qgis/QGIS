@@ -118,7 +118,7 @@ void QgsRelationAddPolymorphicDialog::addFieldsRow()
 
   referencingField->setLayer( mReferencingLayerComboBox->currentLayer() );
 
-  connect( referencingField, &QgsFieldComboBox::fieldChanged, this, [ = ]( QString fieldName ) { Q_UNUSED( fieldName ); updateDialogButtons(); } );
+  connect( referencingField, &QgsFieldComboBox::fieldChanged, this, [ = ]( const QString & ) { updateDialogButtons(); } );
 
   mFieldsMappingTable->insertRow( index );
   mFieldsMappingTable->setCellWidget( index, 0, referencedPolymorphicField );
