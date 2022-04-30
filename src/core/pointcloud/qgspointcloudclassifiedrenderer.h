@@ -131,6 +131,7 @@ class CORE_EXPORT QgsPointCloudClassifiedRendererPreparedData: public QgsPrepare
 
     QSet< QString > usedAttributes() const override;
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
+    QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override SIP_SKIP;
 
     QgsPointCloudAttribute::DataType attributeType;
     QHash< int, QColor > colors;
@@ -165,7 +166,6 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
     bool legendItemChecked( const QString &key ) override;
     void checkLegendItem( const QString &key, bool state = true ) override;
     std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() override SIP_SKIP;
-    QColor pointColor( QgsPreparedPointCloudRendererData *preparedData, const QgsPointCloudBlock *block, const char *ptr, int i, std::size_t pointRecordSize, double x, double y, double z ) override SIP_SKIP;
 
     /**
      * Creates an RGB renderer from an XML \a element.

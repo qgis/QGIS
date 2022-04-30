@@ -353,13 +353,11 @@ bool QgsPointCloudClassifiedRendererPreparedData::prepareBlock( const QgsPointCl
   return true;
 }
 
-QColor QgsPointCloudClassifiedRenderer::pointColor( QgsPreparedPointCloudRendererData *preparedData, const QgsPointCloudBlock *, const char *ptr, int i, std::size_t pointRecordSize, double, double, double )
+QColor QgsPointCloudClassifiedRendererPreparedData::pointColor( const QgsPointCloudBlock *block, int i, double )
 {
-  QgsPointCloudClassifiedRendererPreparedData *data = qgis::down_cast< QgsPointCloudClassifiedRendererPreparedData * >( preparedData );
-
   int attributeValue = 0;
-  QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + data->attributeOffset, data->attributeType, attributeValue );
-  return data->colors.value( attributeValue );
+  QgsPointCloudRenderContext::getAttribute( block->data(), i * block->pointRecordSize() + attributeOffset, attributeType, attributeValue );
+  return colors.value( attributeValue );
 }
 
 

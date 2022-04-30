@@ -622,7 +622,7 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
 
     if ( useRenderer )
     {
-      color = mRenderer->pointColor( mPreparedRendererData.get(), block, ptr, i, recordSize, res.x, res.y, res.z );
+      color = mPreparedRendererData->pointColor( block, i, res.z );
       if ( !color.isValid() )
         continue;
 

@@ -253,7 +253,6 @@ not be requested from the provider at rendering time.
 %End
 
 
-
     virtual void startRender( QgsPointCloudRenderContext &context );
 %Docstring
 Must be called when a new render cycle is started. A call to :py:func:`~QgsPointCloudRenderer.startRender` must always

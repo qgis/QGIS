@@ -39,8 +39,10 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRendererPreparedData: public QgsPr
 
     QSet< QString > usedAttributes() const override;
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
+    QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override SIP_SKIP;
 
     QString attributeName;
+    QgsColorRampShader colorRampShader;
     int attributeOffset = 0;
     bool attributeIsX = false;
     bool attributeIsY = false;
@@ -72,7 +74,6 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override SIP_FACTORY;
     std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() override SIP_SKIP;
-    QColor pointColor( QgsPreparedPointCloudRendererData *preparedData, const QgsPointCloudBlock *block, const char *ptr, int i, std::size_t pointRecordSize, double x, double y, double z ) override SIP_SKIP;
 
     /**
      * Creates an RGB renderer from an XML \a element.

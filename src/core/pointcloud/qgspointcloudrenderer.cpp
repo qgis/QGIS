@@ -85,11 +85,6 @@ std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRenderer::prepar
   return nullptr;
 }
 
-QColor QgsPointCloudRenderer::pointColor( QgsPreparedPointCloudRendererData *, const QgsPointCloudBlock *, const char *, int, std::size_t, double, double, double )
-{
-  return QColor();
-}
-
 void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
 {
 #ifdef QGISDEBUG

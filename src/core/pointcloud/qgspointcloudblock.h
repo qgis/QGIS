@@ -51,6 +51,13 @@ class CORE_EXPORT QgsPointCloudBlock
     //! Returns number of points that are stored in the block
     int pointCount() const;
 
+    /**
+     * Returns the total size of each individual point record.
+     *
+     * \since QGIS 3.26
+     */
+    int pointRecordSize() const { return mRecordSize; }
+
     //! Returns the attributes that are stored in the data block, along with their size
     QgsPointCloudAttributeCollection attributes() const;
 
@@ -68,9 +75,12 @@ class CORE_EXPORT QgsPointCloudBlock
      * \since QGIS 3.26
      */
     void setPointCount( int size );
+
   private:
-    int mPointCount;
+
+    int mPointCount = 0;
     QgsPointCloudAttributeCollection mAttributes;
+    int mRecordSize = 0;
     QByteArray mStorage;
     QgsVector3D mScale, mOffset;
 };

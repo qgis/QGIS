@@ -252,6 +252,7 @@ std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudAttributeByRampR
 {
   std::unique_ptr< QgsPointCloudAttributeByRampRendererPreparedData> data = std::make_unique< QgsPointCloudAttributeByRampRendererPreparedData >();
   data->attributeName = mAttribute;
+  data->colorRampShader = mColorRampShader;
 
   data->attributeIsX = mAttribute == QLatin1String( "X" );
   data->attributeIsY = mAttribute == QLatin1String( "Y" );
@@ -259,25 +260,24 @@ std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudAttributeByRampR
   return data;
 }
 
-QColor QgsPointCloudAttributeByRampRenderer::pointColor( QgsPreparedPointCloudRendererData *preparedData, const QgsPointCloudBlock *, const char *ptr, int i, std::size_t pointRecordSize, double x, double y, double z )
+QColor QgsPointCloudAttributeByRampRendererPreparedData::pointColor( const QgsPointCloudBlock *block, int i, double z )
 {
-  QgsPointCloudAttributeByRampRendererPreparedData *data = qgis::down_cast< QgsPointCloudAttributeByRampRendererPreparedData * >( preparedData );
-
   double attributeValue = 0;
-  if ( data->attributeIsX )
-    attributeValue = x;
-  else if ( data->attributeIsY )
-    attributeValue = y;
-  else if ( data->attributeIsZ )
+  if ( attributeIsZ )
     attributeValue = z;
   else
-    QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + data->attributeOffset, data->attributeType, attributeValue );
+    QgsPointCloudRenderContext::getAttribute( block->data(), i * block->pointRecordSize() + attributeOffset, attributeType, attributeValue );
+
+  if ( attributeIsX )
+    attributeValue = block->offset().x() + block->scale().x() * attributeValue;
+  else if ( attributeIsY )
+    attributeValue = block->offset().y() + block->scale().y() * attributeValue;
 
   int red = 0;
   int green = 0;
   int blue = 0;
   int alpha = 0;
-  mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
+  colorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
   return QColor( red, green, blue, alpha );
 }
 

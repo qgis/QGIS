@@ -252,8 +252,14 @@ std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRgbRenderer::pre
 {
   std::unique_ptr< QgsPointCloudRgbRendererPreparedData > data = std::make_unique< QgsPointCloudRgbRendererPreparedData >();
   data->redAttribute = mRedAttribute;
+  if ( mRedContrastEnhancement )
+    data->redContrastEnhancement.reset( new QgsContrastEnhancement( *mRedContrastEnhancement ) );
   data->greenAttribute = mGreenAttribute;
+  if ( mGreenContrastEnhancement )
+    data->greenContrastEnhancement.reset( new QgsContrastEnhancement( *mGreenContrastEnhancement ) );
   data->blueAttribute = mBlueAttribute;
+  if ( mBlueContrastEnhancement )
+    data->blueContrastEnhancement.reset( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
 
   data->useRedContrastEnhancement = mRedContrastEnhancement && mRedContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
   data->useBlueContrastEnhancement = mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
@@ -290,37 +296,38 @@ bool QgsPointCloudRgbRendererPreparedData::prepareBlock( const QgsPointCloudBloc
   return true;
 }
 
-QColor QgsPointCloudRgbRenderer::pointColor( QgsPreparedPointCloudRendererData *preparedData, const QgsPointCloudBlock *, const char *ptr, int i, std::size_t pointRecordSize, double, double, double )
+QColor QgsPointCloudRgbRendererPreparedData::pointColor( const QgsPointCloudBlock *block, int i, double )
 {
-  QgsPointCloudRgbRendererPreparedData *data = qgis::down_cast< QgsPointCloudRgbRendererPreparedData * >( preparedData );
+  const char *ptr = block->data();
+  const int pointRecordSize = block->pointRecordSize();
 
   int red = 0;
-  QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + data->redOffset, data->redType, red );
+  QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + redOffset, redType, red );
   int green = 0;
-  QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + data->greenOffset, data->greenType, green );
+  QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + greenOffset, greenType, green );
   int blue = 0;
-  QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + data->blueOffset, data->blueType, blue );
+  QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + blueOffset, blueType, blue );
 
   //skip if red, green or blue not in displayable range
-  if ( ( data->useRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( red ) )
-       || ( data->useGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( green ) )
-       || ( data->useBlueContrastEnhancement && !mBlueContrastEnhancement->isValueInDisplayableRange( blue ) ) )
+  if ( ( useRedContrastEnhancement && !redContrastEnhancement->isValueInDisplayableRange( red ) )
+       || ( useGreenContrastEnhancement && !greenContrastEnhancement->isValueInDisplayableRange( green ) )
+       || ( useBlueContrastEnhancement && !blueContrastEnhancement->isValueInDisplayableRange( blue ) ) )
   {
     return QColor();
   }
 
   //stretch color values
-  if ( data->useRedContrastEnhancement )
+  if ( useRedContrastEnhancement )
   {
-    red = mRedContrastEnhancement->enhanceContrast( red );
+    red = redContrastEnhancement->enhanceContrast( red );
   }
-  if ( data->useGreenContrastEnhancement )
+  if ( useGreenContrastEnhancement )
   {
-    green = mGreenContrastEnhancement->enhanceContrast( green );
+    green = greenContrastEnhancement->enhanceContrast( green );
   }
-  if ( data->useBlueContrastEnhancement )
+  if ( useBlueContrastEnhancement )
   {
-    blue = mBlueContrastEnhancement->enhanceContrast( blue );
+    blue = blueContrastEnhancement->enhanceContrast( blue );
   }
 
   red = std::max( 0, std::min( 255, red ) );
