@@ -29,12 +29,12 @@ QgsAbstractProfileSurfaceResults::~QgsAbstractProfileSurfaceResults() = default;
 
 QMap<double, double> QgsAbstractProfileSurfaceResults::distanceToHeightMap() const
 {
-  return results;
+  return mDistanceToHeightMap;
 }
 
 QgsPointSequence QgsAbstractProfileSurfaceResults::sampledPoints() const
 {
-  return rawPoints;
+  return mRawPoints;
 }
 
 QgsDoubleRange QgsAbstractProfileSurfaceResults::zRange() const
@@ -45,8 +45,8 @@ QgsDoubleRange QgsAbstractProfileSurfaceResults::zRange() const
 QVector<QgsGeometry> QgsAbstractProfileSurfaceResults::asGeometries() const
 {
   QVector<QgsGeometry> res;
-  res.reserve( rawPoints.size() );
-  for ( const QgsPoint &point : rawPoints )
+  res.reserve( mRawPoints.size() );
+  for ( const QgsPoint &point : mRawPoints )
     res.append( QgsGeometry( point.clone() ) );
 
   return res;
@@ -59,10 +59,10 @@ QgsProfileSnapResult QgsAbstractProfileSurfaceResults::snapPoint( const QgsProfi
 
   double prevDistance = std::numeric_limits< double >::max();
   double prevElevation = 0;
-  for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
+  for ( auto it = mDistanceToHeightMap.constBegin(); it != mDistanceToHeightMap.constEnd(); ++it )
   {
     // find segment which corresponds to the given distance along curve
-    if ( it != results.constBegin() && prevDistance <= point.distance() && it.key() >= point.distance() )
+    if ( it != mDistanceToHeightMap.constBegin() && prevDistance <= point.distance() && it.key() >= point.distance() )
     {
       const double dx = it.key() - prevDistance;
       const double dy = it.value() - prevElevation;
@@ -105,17 +105,17 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
   switch ( symbology )
   {
     case Qgis::ProfileSurfaceSymbology::Line:
-      lineSymbol->startRender( context.renderContext() );
+      mLineSymbol->startRender( context.renderContext() );
       break;
     case Qgis::ProfileSurfaceSymbology::FillBelow:
-      fillSymbol->startRender( context.renderContext() );
+      mFillSymbol->startRender( context.renderContext() );
       break;
   }
 
   QPolygonF currentLine;
   double prevDistance = std::numeric_limits< double >::quiet_NaN();
   double currentPartStartDistance = 0;
-  for ( auto pointIt = results.constBegin(); pointIt != results.constEnd(); ++pointIt )
+  for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
   {
     if ( std::isnan( prevDistance ) )
     {
@@ -128,13 +128,13 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
         switch ( symbology )
         {
           case Qgis::ProfileSurfaceSymbology::Line:
-            lineSymbol->renderPolyline( currentLine, nullptr, context.renderContext() );
+            mLineSymbol->renderPolyline( currentLine, nullptr, context.renderContext() );
             break;
           case Qgis::ProfileSurfaceSymbology::FillBelow:
             currentLine.append( context.worldTransform().map( QPointF( prevDistance, minZ ) ) );
             currentLine.append( context.worldTransform().map( QPointF( currentPartStartDistance, minZ ) ) );
             currentLine.append( currentLine.at( 0 ) );
-            fillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
+            mFillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
             break;
         }
       }
@@ -151,13 +151,13 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
     switch ( symbology )
     {
       case Qgis::ProfileSurfaceSymbology::Line:
-        lineSymbol->renderPolyline( currentLine, nullptr, context.renderContext() );
+        mLineSymbol->renderPolyline( currentLine, nullptr, context.renderContext() );
         break;
       case Qgis::ProfileSurfaceSymbology::FillBelow:
         currentLine.append( context.worldTransform().map( QPointF( prevDistance, minZ ) ) );
         currentLine.append( context.worldTransform().map( QPointF( currentPartStartDistance, minZ ) ) );
         currentLine.append( currentLine.at( 0 ) );
-        fillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
+        mFillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
         break;
     }
   }
@@ -165,10 +165,10 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
   switch ( symbology )
   {
     case Qgis::ProfileSurfaceSymbology::Line:
-      lineSymbol->stopRender( context.renderContext() );
+      mLineSymbol->stopRender( context.renderContext() );
       break;
     case Qgis::ProfileSurfaceSymbology::FillBelow:
-      fillSymbol->stopRender( context.renderContext() );
+      mFillSymbol->stopRender( context.renderContext() );
       break;
   }
 }
@@ -178,8 +178,8 @@ void QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( const QgsAbs
 {
   const QgsAbstractProfileSurfaceGenerator *surfaceGenerator = qgis::down_cast<  const QgsAbstractProfileSurfaceGenerator * >( generator );
 
-  lineSymbol.reset( surfaceGenerator->lineSymbol()->clone() );
-  fillSymbol.reset( surfaceGenerator->fillSymbol()->clone() );
+  mLineSymbol.reset( surfaceGenerator->lineSymbol()->clone() );
+  mFillSymbol.reset( surfaceGenerator->fillSymbol()->clone() );
   symbology = surfaceGenerator->symbology();
 }
 
