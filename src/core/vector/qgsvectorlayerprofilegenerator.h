@@ -19,7 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsabstractprofilegenerator.h"
+#include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
@@ -50,12 +50,9 @@ class QgsProfileSnapContext;
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResults
+class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
   public:
-
-    QgsPointSequence rawPoints;
-    QMap< double, double > mDistanceToHeightMap;
 
     struct Feature
     {
@@ -70,18 +67,10 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
     QHash< QgsFeatureId, QVector< Feature > > features;
     QPointer< QgsVectorLayer > mLayer;
 
-    double minZ = std::numeric_limits< double >::max();
-    double maxZ = std::numeric_limits< double >::lowest();
-
     bool respectLayerSymbology = true;
-    std::unique_ptr< QgsLineSymbol > profileLineSymbol;
-    std::unique_ptr< QgsFillSymbol > profileFillSymbol;
-    std::unique_ptr< QgsMarkerSymbol > profileMarkerSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     QString type() const override;
-    QMap< double, double > distanceToHeightMap() const override;
-    QgsDoubleRange zRange() const override;
-    QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
@@ -96,7 +85,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileResult
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGenerator
+class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurfaceGenerator
 {
 
   public:
@@ -162,8 +151,6 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileGene
     std::unique_ptr< QgsVectorLayerProfileResults > mResults;
 
     bool mRespectLayerSymbology = true;
-    std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
-    std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
 
     // NOT for use in the background thread!
