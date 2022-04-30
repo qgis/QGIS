@@ -307,7 +307,7 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
 
   mCaptureCurveMapTool = std::make_unique< QgsMapToolProfileCurve >( canvas, QgisApp::instance()->cadDockWidget() );
   mCaptureCurveMapTool->setAction( mCaptureCurveAction );
-  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
+  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::curveCaptured, this, [ = ]( const QgsGeometry & curve ) {  setProfileCurve( curve, true ); } );
   connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::captureStarted, this, [ = ]
   {
     // if capturing a new curve, we just hide the existing rubber band -- if the user cancels the new curve digitizing then we'll
@@ -327,7 +327,7 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
 
   mCaptureCurveFromFeatureMapTool = std::make_unique< QgsMapToolProfileCurveFromFeature >( canvas );
   mCaptureCurveFromFeatureMapTool->setAction( mCaptureCurveFromFeatureAction );
-  connect( mCaptureCurveFromFeatureMapTool.get(), &QgsMapToolProfileCurveFromFeature::curveCaptured, this, &QgsElevationProfileWidget::setProfileCurve );
+  connect( mCaptureCurveFromFeatureMapTool.get(), &QgsMapToolProfileCurveFromFeature::curveCaptured, this, [ = ]( const QgsGeometry & curve ) { setProfileCurve( curve, true ); } );
 
   mMapPointRubberBand.reset( new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry ) );
   mMapPointRubberBand->setZValue( 1000 );
@@ -416,13 +416,15 @@ void QgsElevationProfileWidget::onTotalPendingJobsCountChanged( int count )
   }
 }
 
-void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve )
+void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve, bool resetView )
 {
   mNudgeLeftAction->setEnabled( !curve.isEmpty() );
   mNudgeRightAction->setEnabled( !curve.isEmpty() );
 
   mProfileCurve = curve;
   createOrUpdateRubberBands();
+  if ( resetView )
+    mCanvas->invalidateCurrentPlotExtent();
   scheduleUpdate();
 }
 
@@ -626,7 +628,7 @@ void QgsElevationProfileWidget::nudgeCurve( Qgis::BufferSide side )
   const double distance = mSettingsAction->toleranceSpinBox()->value() * 2;
 
   const QgsGeometry nudgedCurve = mProfileCurve.offsetCurve( side == Qgis::BufferSide::Left ? distance : -distance, 8, Qgis::JoinStyle::Miter, 2 );
-  setProfileCurve( nudgedCurve );
+  setProfileCurve( nudgedCurve, false );
 }
 
 void QgsElevationProfileWidget::createOrUpdateRubberBands( )

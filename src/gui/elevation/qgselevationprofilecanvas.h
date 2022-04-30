@@ -85,6 +85,12 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void refresh() override;
 
     /**
+     * Invalidates the current plot extent, which means that the visible plot area will be
+     * recalculated and "zoom full" operation occur when the next profile generation completes.
+     */
+    void invalidateCurrentPlotExtent();
+
+    /**
      * Sets the \a project associated with the profile.
      *
      * This must be set before any layers which utilize terrain based elevation settings can be
