@@ -40,14 +40,14 @@ class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileRe
 
     ~QgsAbstractProfileSurfaceResults() override;
 
-    QgsPointSequence rawPoints;
-    QMap< double, double > results;
+    QgsPointSequence mRawPoints;
+    QMap< double, double > mDistanceToHeightMap;
     double minZ = std::numeric_limits< double >::max();
     double maxZ = std::numeric_limits< double >::lowest();
 
     Qgis::ProfileSurfaceSymbology symbology = Qgis::ProfileSurfaceSymbology::Line;
-    std::unique_ptr< QgsLineSymbol > lineSymbol;
-    std::unique_ptr< QgsFillSymbol > fillSymbol;
+    std::unique_ptr< QgsLineSymbol > mLineSymbol;
+    std::unique_ptr< QgsFillSymbol > mFillSymbol;
 
     QMap< double, double > distanceToHeightMap() const override;
     QgsPointSequence sampledPoints() const override;

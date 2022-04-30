@@ -242,7 +242,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
           {
             continue;
           }
-          mResults->rawPoints.append( pixel );
+          mResults->mRawPoints.append( pixel );
 
           it = profilePoints.erase( it );
         }
@@ -285,7 +285,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
           {
             continue;
           }
-          mResults->rawPoints.append( pixel );
+          mResults->mRawPoints.append( pixel );
         }
         currentY -= mRasterUnitsPerPixelY;
       }
@@ -299,7 +299,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   QgsGeos originalCurveGeos( sourceCurve );
   originalCurveGeos.prepareGeometry();
   QString lastError;
-  for ( const QgsPoint &pixel : std::as_const( mResults->rawPoints ) )
+  for ( const QgsPoint &pixel : std::as_const( mResults->mRawPoints ) )
   {
     if ( mFeedback->isCanceled() )
       return false;
@@ -311,7 +311,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
       mResults->minZ = std::min( pixel.z(), mResults->minZ );
       mResults->maxZ = std::max( pixel.z(), mResults->maxZ );
     }
-    mResults->results.insert( distance, pixel.z() );
+    mResults->mDistanceToHeightMap.insert( distance, pixel.z() );
   }
 
   return true;

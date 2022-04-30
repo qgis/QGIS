@@ -119,7 +119,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
     {
       continue;
     }
-    mResults->rawPoints.append( QgsPoint( point.x(), point.y(), height ) );
+    mResults->mRawPoints.append( QgsPoint( point.x(), point.y(), height ) );
   }
 
   if ( mFeedback->isCanceled() )
@@ -129,7 +129,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
   QgsGeos originalCurveGeos( mProfileCurve.get() );
   originalCurveGeos.prepareGeometry();
   QString lastError;
-  for ( const QgsPoint &pixel : std::as_const( mResults->rawPoints ) )
+  for ( const QgsPoint &pixel : std::as_const( mResults->mRawPoints ) )
   {
     if ( mFeedback->isCanceled() )
       return false;
@@ -141,7 +141,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
       mResults->minZ = std::min( pixel.z(), mResults->minZ );
       mResults->maxZ = std::max( pixel.z(), mResults->maxZ );
     }
-    mResults->results.insert( distance, pixel.z() );
+    mResults->mDistanceToHeightMap.insert( distance, pixel.z() );
   }
 
   return true;
