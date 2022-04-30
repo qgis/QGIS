@@ -67,6 +67,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
     QHash< QgsFeatureId, QVector< Feature > > features;
     QPointer< QgsVectorLayer > mLayer;
 
+    Qgis::VectorProfileType profileType = Qgis::VectorProfileType::IndividualFeatures;
     bool respectLayerSymbology = true;
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
@@ -75,6 +76,11 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
     void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
+
+  private:
+    void renderResultsAsIndividualFeatures( QgsProfileRenderContext &context );
+    QgsProfileSnapResult snapPointToIndividualFeatures( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
+
 };
 
 
@@ -135,6 +141,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
 
     double mOffset = 0;
     double mScale = 1;
+    Qgis::VectorProfileType mType = Qgis::VectorProfileType::IndividualFeatures;
     Qgis::AltitudeClamping mClamping = Qgis::AltitudeClamping::Terrain;
     Qgis::AltitudeBinding mBinding = Qgis::AltitudeBinding::Centroid;
     bool mExtrusionEnabled = false;

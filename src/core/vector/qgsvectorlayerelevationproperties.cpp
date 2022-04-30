@@ -55,7 +55,8 @@ QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElem
   element.setAttribute( QStringLiteral( "extrusion" ), qgsDoubleToString( mExtrusionHeight ) );
   element.setAttribute( QStringLiteral( "clamping" ), qgsEnumValueToKey( mClamping ) );
   element.setAttribute( QStringLiteral( "binding" ), qgsEnumValueToKey( mBinding ) );
-
+  element.setAttribute( QStringLiteral( "type" ), qgsEnumValueToKey( mType ) );
+  element.setAttribute( QStringLiteral( "symbology" ), qgsEnumValueToKey( mSymbology ) );
   element.setAttribute( QStringLiteral( "respectLayerSymbol" ), mRespectLayerSymbology ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
@@ -84,8 +85,10 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
 
   mClamping = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "clamping" ) ), Qgis::AltitudeClamping::Terrain );
   mBinding = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "binding" ) ), Qgis::AltitudeBinding::Centroid );
+  mType = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "type" ) ), Qgis::VectorProfileType::IndividualFeatures );
   mEnableExtrusion = elevationElement.attribute( QStringLiteral( "extrusionEnabled" ), QStringLiteral( "0" ) ).toInt();
   mExtrusionHeight = elevationElement.attribute( QStringLiteral( "extrusion" ), QStringLiteral( "0" ) ).toDouble();
+  mSymbology = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "symbology" ) ), Qgis::ProfileSurfaceSymbology::Line );
 
   mRespectLayerSymbology = elevationElement.attribute( QStringLiteral( "respectLayerSymbol" ), QStringLiteral( "1" ) ).toInt();
 
@@ -140,12 +143,14 @@ QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() co
   std::unique_ptr< QgsVectorLayerElevationProperties > res = std::make_unique< QgsVectorLayerElevationProperties >( nullptr );
   res->setClamping( mClamping );
   res->setBinding( mBinding );
+  res->setType( mType );
   res->setExtrusionEnabled( mEnableExtrusion );
   res->setExtrusionHeight( mExtrusionHeight );
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
   res->setProfileFillSymbol( mProfileFillSymbol->clone() );
   res->setProfileMarkerSymbol( mProfileMarkerSymbol->clone() );
   res->setRespectLayerSymbology( mRespectLayerSymbology );
+  res->setProfileSymbology( mSymbology );
   res->copyCommonProperties( this );
   return res.release();
 }
@@ -257,6 +262,16 @@ void QgsVectorLayerElevationProperties::setBinding( Qgis::AltitudeBinding bindin
   emit profileGenerationPropertyChanged();
 }
 
+void QgsVectorLayerElevationProperties::setType( Qgis::VectorProfileType type )
+{
+  if ( type == mType )
+    return;
+
+  mType = type;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
 void QgsVectorLayerElevationProperties::setExtrusionEnabled( bool enabled )
 {
   if ( mEnableExtrusion == enabled )
@@ -319,6 +334,16 @@ QgsMarkerSymbol *QgsVectorLayerElevationProperties::profileMarkerSymbol() const
 void QgsVectorLayerElevationProperties::setProfileMarkerSymbol( QgsMarkerSymbol *symbol )
 {
   mProfileMarkerSymbol.reset( symbol );
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+void QgsVectorLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology )
+{
+  if ( mSymbology == symbology )
+    return;
+
+  mSymbology = symbology;
   emit changed();
   emit profileRenderingPropertyChanged();
 }

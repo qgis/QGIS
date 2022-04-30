@@ -61,6 +61,18 @@ QVector<QgsGeometry> QgsVectorLayerProfileResults::asGeometries() const
 
 QgsProfileSnapResult QgsVectorLayerProfileResults::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
 {
+  switch ( profileType )
+  {
+    case Qgis::VectorProfileType::IndividualFeatures:
+      return snapPointToIndividualFeatures( point, context );
+    case Qgis::VectorProfileType::ContinuousSurface:
+      return QgsAbstractProfileSurfaceResults::snapPoint( point, context );
+  }
+  BUILTIN_UNREACHABLE
+}
+
+QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
+{
   // TODO -- add spatial index if performance is an issue
   QgsProfileSnapResult res;
   double bestSnapDistance = std::numeric_limits< double >::max();
@@ -217,6 +229,19 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPoint( const QgsProfilePo
 }
 
 void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &context )
+{
+  switch ( profileType )
+  {
+    case Qgis::VectorProfileType::IndividualFeatures:
+      renderResultsAsIndividualFeatures( context );
+      break;
+    case Qgis::VectorProfileType::ContinuousSurface:
+      QgsAbstractProfileSurfaceResults::renderResults( context );
+      break;
+  }
+}
+
+void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfileRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
   if ( !painter )
@@ -388,6 +413,7 @@ void QgsVectorLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstrac
   QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( generator );
   const QgsVectorLayerProfileGenerator *vlGenerator = qgis::down_cast<  const QgsVectorLayerProfileGenerator * >( generator );
 
+  profileType = vlGenerator->mType;
   respectLayerSymbology = vlGenerator->mRespectLayerSymbology;
   mMarkerSymbol.reset( vlGenerator->mProfileMarkerSymbol->clone() );
 }
@@ -409,6 +435,7 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   , mSource( std::make_unique< QgsVectorLayerFeatureSource >( layer ) )
   , mOffset( layer->elevationProperties()->zOffset() )
   , mScale( layer->elevationProperties()->zScale() )
+  , mType( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->type() )
   , mClamping( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->clamping() )
   , mBinding( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->binding() )
   , mExtrusionEnabled( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->extrusionEnabled() )
@@ -424,6 +451,7 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   if ( mTerrainProvider )
     mTerrainProvider->prepare(); // must be done on main thread
 
+  mSymbology = qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
   mLineSymbol.reset( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() );
   mFillSymbol.reset( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }

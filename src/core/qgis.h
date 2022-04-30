@@ -1667,12 +1667,24 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum class ProfileSurfaceSymbology
+    enum class ProfileSurfaceSymbology : int
     {
       Line, //!< The elevation surface will be rendered using a line symbol
       FillBelow, //!< The elevation surface will be rendered using a fill symbol below the surface level
     };
     Q_ENUM( ProfileSurfaceSymbology );
+
+    /**
+     * Types of elevation profiles to generate for vector sources.
+     *
+     * \since QGIS 3.26
+     */
+    enum class VectorProfileType : int
+    {
+      IndividualFeatures, //!< Treat each feature as an individual object (eg buildings)
+      ContinuousSurface, //!< The features should be treated as representing values on a continuous surface (eg contour lines)
+    };
+    Q_ENUM( VectorProfileType );
 
     /**
      * Flags that control the way the QgsAbstractProfileGenerator operate.

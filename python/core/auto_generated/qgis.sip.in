@@ -1016,6 +1016,12 @@ The development version
       FillBelow,
     };
 
+    enum class VectorProfileType
+    {
+      IndividualFeatures,
+      ContinuousSurface,
+    };
+
     enum class ProfileGeneratorFlag
     {
       RespectsMaximumErrorMapUnit,

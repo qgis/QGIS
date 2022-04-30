@@ -1492,6 +1492,12 @@ Qgis.ProfileSurfaceSymbology.__doc__ = 'Surface symbology type for elevation pro
 # --
 Qgis.ProfileSurfaceSymbology.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.VectorProfileType.IndividualFeatures.__doc__ = "Treat each feature as an individual object (eg buildings)"
+Qgis.VectorProfileType.ContinuousSurface.__doc__ = "The features should be treated as representing values on a continuous surface (eg contour lines)"
+Qgis.VectorProfileType.__doc__ = 'Types of elevation profiles to generate for vector sources.\n\n.. versionadded:: 3.26\n\n' + '* ``IndividualFeatures``: ' + Qgis.VectorProfileType.IndividualFeatures.__doc__ + '\n' + '* ``ContinuousSurface``: ' + Qgis.VectorProfileType.ContinuousSurface.__doc__
+# --
+Qgis.VectorProfileType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ProfileGeneratorFlag.RespectsMaximumErrorMapUnit.__doc__ = "Generated profile respects the QgsProfileGenerationContext.maximumErrorMapUnits() property."
 Qgis.ProfileGeneratorFlag.RespectsDistanceRange.__doc__ = "Generated profile respects the QgsProfileGenerationContext.distanceRange() property."
 Qgis.ProfileGeneratorFlag.RespectsElevationRange.__doc__ = "Generated profile respects the QgsProfileGenerationContext.elevationRange() property."
