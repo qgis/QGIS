@@ -87,6 +87,20 @@ Sets the altitude ``binding`` method, which determines how altitude is bound to 
 .. seealso:: :py:func:`binding`
 %End
 
+    Qgis::VectorProfileType type() const;
+%Docstring
+Returns the type of profile the layer represents.
+
+.. seealso:: :py:func:`setType`
+%End
+
+    void setType( Qgis::VectorProfileType type );
+%Docstring
+Sets the ``type`` of profile the layer represents.
+
+.. seealso:: :py:func:`type`
+%End
+
     bool extrusionEnabled() const;
 %Docstring
 Returns ``True`` if extrusion is enabled.
@@ -231,6 +245,28 @@ The symbol will be used in the following circumstances:
 - A line feature is intersected by a profile line and :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``False``
 
 .. seealso:: :py:func:`profileMarkerSymbol`
+%End
+
+    Qgis::ProfileSurfaceSymbology profileSymbology() const;
+%Docstring
+Returns the symbology option used to render the vector profile in elevation profile plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsVectorLayerElevationProperties.type` is Qgis.VectorProfileType.ContinuousSurface.
+
+.. seealso:: :py:func:`setProfileSymbology`
+%End
+
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+%Docstring
+Sets the ``symbology`` option used to render the vector profile in elevation profile plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsVectorLayerElevationProperties.type` is Qgis.VectorProfileType.ContinuousSurface.
+
+.. seealso:: :py:func:`setProfileSymbology`
 %End
 
 };

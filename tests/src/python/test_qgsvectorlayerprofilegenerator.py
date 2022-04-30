@@ -34,7 +34,8 @@ from qgis.core import (
     QgsMapLayerElevationProperties,
     QgsProperty,
     QgsProfilePoint,
-    QgsProfileSnapContext
+    QgsProfileSnapContext,
+    QgsLineSymbol
 )
 from qgis.testing import start_app, unittest
 
@@ -1068,6 +1069,83 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
 
         res = plot_renderer.renderToImage(400, 400, 0, curve.length(), 0, 14)
         self.assertTrue(self.imageCheck('vector_polygon_no_layer_symbology', 'vector_polygon_no_layer_symbology', res))
+
+    def testRenderProfileAsSurfaceLines(self):
+        vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
+        vl.setCrs(QgsCoordinateReferenceSystem())
+        self.assertTrue(vl.isValid())
+
+        for line in [
+            'LineStringZ (321829.48893365426920354 129991.38697145861806348 1, 321847.89668515208177269 129996.63588572069420479 1, 321848.97131609614007175 129979.22330882755341008 1, 321830.31725845142500475 129978.07136809575604275 1, 321829.48893365426920354 129991.38697145861806348 1)',
+            'LineStringZ (321920.00953056826256216 129924.58260190498549491 2, 321924.65299345907988027 129908.43546159457764588 2, 321904.78543491888558492 129903.99811821122420952 2, 321900.80605239619035274 129931.39860145389684476 2, 321904.84799937985371798 129931.71552911199978553 2, 321908.93646715773502365 129912.90030360443051904 2, 321914.20495146053144708 129913.67693978428724222 2, 321911.30165811872575432 129923.01272751353099011 2, 321920.00953056826256216 129924.58260190498549491 2)',
+            'LineStringZ (321923.10517279652412981 129919.61521573827485554 3, 321922.23537852568551898 129928.3598982143739704 3, 321928.60423935484141111 129934.22530528216157109 3, 321929.39881197665818036 129923.29054521876969375 3, 321930.55804549407912418 129916.53248518184409477 3, 321923.10517279652412981 129919.61521573827485554 3)',
+            'LineStringZ (321990.47451346553862095 129909.63588680300745182 4, 321995.04325810901354998 129891.84052284323843196 4, 321989.66826330573530868 129890.5092018858413212 4, 321990.78512359503656626 129886.49917887404444627 4, 321987.37291929306229576 129885.64982962771318853 4, 321985.2254804756375961 129893.81317058412241749 4, 321987.63158903241856024 129894.41078495365218259 4, 321984.34022761805681512 129907.57450046355370432 4, 321990.47451346553862095 129909.63588680300745182 4)',
+                'LineStringZ (322103.03910495212767273 129795.91051736124791205 5, 322108.25568856322206557 129804.76113295342656784 5, 322113.29666162584908307 129803.9285887333098799 5, 322117.78645010641776025 129794.48194090687320568 5, 322103.03910495212767273 129795.91051736124791205 5)']:
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromWkt(line))
+            self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+        vl.elevationProperties().setType(Qgis.VectorProfileType.ContinuousSurface)
+        fill_symbol = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_style': 'no'})
+        vl.elevationProperties().setRespectLayerSymbology(False)
+        vl.elevationProperties().setProfileFillSymbol(fill_symbol)
+        line_symbol = QgsLineSymbol.createSimple({'color': '#ff00ff', 'width': '0.8'})
+        vl.elevationProperties().setProfileLineSymbol(line_symbol)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (321897.18831187387695536 129916.86947759155009408, 321942.11597351566888392 129924.94403429214435164)')
+        req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
+
+        req.setCrs(QgsCoordinateReferenceSystem())
+
+        plot_renderer = QgsProfilePlotRenderer([vl], req)
+        plot_renderer.startGeneration()
+        plot_renderer.waitForFinished()
+
+        res = plot_renderer.renderToImage(400, 400, 0, curve.length(), 0, 14)
+        self.assertTrue(self.imageCheck('vector_lines_as_surface', 'vector_lines_as_surface', res))
+
+    def testRenderProfileAsSurfaceFillBelow(self):
+        vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
+        vl.setCrs(QgsCoordinateReferenceSystem())
+        self.assertTrue(vl.isValid())
+
+        for line in [
+            'LineStringZ (321829.48893365426920354 129991.38697145861806348 1, 321847.89668515208177269 129996.63588572069420479 1, 321848.97131609614007175 129979.22330882755341008 1, 321830.31725845142500475 129978.07136809575604275 1, 321829.48893365426920354 129991.38697145861806348 1)',
+            'LineStringZ (321920.00953056826256216 129924.58260190498549491 2, 321924.65299345907988027 129908.43546159457764588 2, 321904.78543491888558492 129903.99811821122420952 2, 321900.80605239619035274 129931.39860145389684476 2, 321904.84799937985371798 129931.71552911199978553 2, 321908.93646715773502365 129912.90030360443051904 2, 321914.20495146053144708 129913.67693978428724222 2, 321911.30165811872575432 129923.01272751353099011 2, 321920.00953056826256216 129924.58260190498549491 2)',
+            'LineStringZ (321923.10517279652412981 129919.61521573827485554 3, 321922.23537852568551898 129928.3598982143739704 3, 321928.60423935484141111 129934.22530528216157109 3, 321929.39881197665818036 129923.29054521876969375 3, 321930.55804549407912418 129916.53248518184409477 3, 321923.10517279652412981 129919.61521573827485554 3)',
+            'LineStringZ (321990.47451346553862095 129909.63588680300745182 4, 321995.04325810901354998 129891.84052284323843196 4, 321989.66826330573530868 129890.5092018858413212 4, 321990.78512359503656626 129886.49917887404444627 4, 321987.37291929306229576 129885.64982962771318853 4, 321985.2254804756375961 129893.81317058412241749 4, 321987.63158903241856024 129894.41078495365218259 4, 321984.34022761805681512 129907.57450046355370432 4, 321990.47451346553862095 129909.63588680300745182 4)',
+                'LineStringZ (322103.03910495212767273 129795.91051736124791205 5, 322108.25568856322206557 129804.76113295342656784 5, 322113.29666162584908307 129803.9285887333098799 5, 322117.78645010641776025 129794.48194090687320568 5, 322103.03910495212767273 129795.91051736124791205 5)']:
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromWkt(line))
+            self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+        vl.elevationProperties().setType(Qgis.VectorProfileType.ContinuousSurface)
+        vl.elevationProperties().setProfileSymbology(Qgis.ProfileSurfaceSymbology.FillBelow)
+        fill_symbol = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_style': 'no'})
+        vl.elevationProperties().setRespectLayerSymbology(False)
+        vl.elevationProperties().setProfileFillSymbol(fill_symbol)
+        line_symbol = QgsLineSymbol.createSimple({'color': '#ff00ff', 'width': '0.8'})
+        vl.elevationProperties().setProfileLineSymbol(line_symbol)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (321897.18831187387695536 129916.86947759155009408, 321942.11597351566888392 129924.94403429214435164)')
+        req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
+
+        req.setCrs(QgsCoordinateReferenceSystem())
+
+        plot_renderer = QgsProfilePlotRenderer([vl], req)
+        plot_renderer.startGeneration()
+        plot_renderer.waitForFinished()
+
+        res = plot_renderer.renderToImage(400, 400, 0, curve.length(), 0, 14)
+        self.assertTrue(self.imageCheck('vector_lines_as_fill_below_surface', 'vector_lines_as_fill_below_surface', res))
 
     def testRenderLayerSymbology(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700', 'lines', 'memory')
