@@ -631,7 +631,6 @@ void QgsElevationProfileCanvas::refresh()
   }
 
   mCurrentJob = new QgsProfilePlotRenderer( sources, request );
-  mZoomFullWhenJobFinished = true;
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
 
   QgsProfileGenerationContext generationContext;
@@ -644,6 +643,11 @@ void QgsElevationProfileCanvas::refresh()
   mPlotItem->setRenderer( mCurrentJob );
 
   emit activeJobCountChanged( 1 );
+}
+
+void QgsElevationProfileCanvas::invalidateCurrentPlotExtent()
+{
+  mZoomFullWhenJobFinished = true;
 }
 
 void QgsElevationProfileCanvas::generationFinished()

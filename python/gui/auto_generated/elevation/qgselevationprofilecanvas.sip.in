@@ -72,6 +72,12 @@ Triggers a complete regeneration of the profile, causing the profile extraction 
 background.
 %End
 
+    void invalidateCurrentPlotExtent();
+%Docstring
+Invalidates the current plot extent, which means that the visible plot area will be
+recalculated and "zoom full" operation occur when the next profile generation completes.
+%End
+
     void setProject( QgsProject *project );
 %Docstring
 Sets the ``project`` associated with the profile.

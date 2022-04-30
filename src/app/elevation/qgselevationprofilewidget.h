@@ -76,7 +76,7 @@ class QgsElevationProfileWidget : public QWidget
     void populateInitialLayers();
     void updateCanvasLayers();
     void onTotalPendingJobsCountChanged( int count );
-    void setProfileCurve( const QgsGeometry &curve );
+    void setProfileCurve( const QgsGeometry &curve, bool resetView );
     void onCanvasPointHovered( const QgsPointXY &point );
     void updatePlot();
     void scheduleUpdate();
