@@ -271,6 +271,15 @@ class CORE_EXPORT QgsPreparedPointCloudRendererData
      */
     virtual bool prepareBlock( const QgsPointCloudBlock *block ) = 0;
 
+    /**
+     * An optimised method of retrieving the color of a point from a point cloud block.
+     *
+     * Before calling this method prepareBlock() must be called for each incoming point cloud block.
+     *
+     * \since QGIS 3.26
+     */
+    virtual QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) = 0;
+
 };
 
 #endif
@@ -389,17 +398,6 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \since QGIS 3.26
      */
     virtual std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() SIP_SKIP;
-
-    /**
-     * An optimised method of retrieving the color of a point from a point cloud block.
-     *
-     * Before calling this method the \a preparedData should be created once upfront by
-     * calling prepare().
-     *
-     * \note Not available in Python bindings
-     * \since QGIS 3.26
-     */
-    virtual QColor pointColor( QgsPreparedPointCloudRendererData *preparedData, const QgsPointCloudBlock *block, const char *ptr, int i, std::size_t pointRecordSize, double x, double y, double z ) SIP_SKIP;
 
     /**
      * Must be called when a new render cycle is started. A call to startRender() must always
