@@ -125,24 +125,6 @@ void QgsAttributeEditorElement::LabelStyle::readXml( const QDomNode &node )
     QFont newFont;
     QgsFontUtils::setFromXmlChildNode( newFont, element, QStringLiteral( "labelFont" ) );
 
-    // Font properties
-    if ( element.hasAttribute( QStringLiteral( "fontBold" ) ) )
-    {
-      newFont.setBold( element.attribute( QStringLiteral( "fontBold" ) ) == QChar( '1' ) );
-    }
-    if ( element.hasAttribute( QStringLiteral( "fontItalic" ) ) )
-    {
-      newFont.setItalic( element.attribute( QStringLiteral( "fontItalic" ) ) == QChar( '1' ) );
-    }
-    if ( element.hasAttribute( QStringLiteral( "fontUnderline" ) ) )
-    {
-      newFont.setUnderline( element.attribute( QStringLiteral( "fontUnderline" ) ) == QChar( '1' ) );
-    }
-    if ( element.hasAttribute( QStringLiteral( "fontStrikethrough" ) ) )
-    {
-      newFont.setStrikeOut( element.attribute( QStringLiteral( "fontStrikethrough" ) ) == QChar( '1' ) );
-    }
-
     font = newFont;
 
     if ( element.hasAttribute( QStringLiteral( "overrideLabelColor" ) ) )
@@ -164,11 +146,6 @@ QDomElement QgsAttributeEditorElement::LabelStyle::writeXml( QDomDocument &docum
   elem.appendChild( QgsFontUtils::toXmlElement( font, document, QStringLiteral( "labelFont" ) ) );
   elem.setAttribute( QStringLiteral( "overrideLabelColor" ), overrideColor ? QChar( '1' ) : QChar( '0' ) );
   elem.setAttribute( QStringLiteral( "overrideLabelFont" ), overrideFont ? QChar( '1' ) : QChar( '0' ) );
-  // Font properties
-  elem.setAttribute( QStringLiteral( "fontBold" ), font.bold() ? QChar( '1' ) : QChar( '0' ) );
-  elem.setAttribute( QStringLiteral( "fontItalic" ), font.italic() ? QChar( '1' ) : QChar( '0' ) );
-  elem.setAttribute( QStringLiteral( "fontUnderline" ), font.underline() ? QChar( '1' ) : QChar( '0' ) );
-  elem.setAttribute( QStringLiteral( "fontStrikethrough" ), font.strikeOut() ? QChar( '1' ) : QChar( '0' ) );
   return elem;
 }
 

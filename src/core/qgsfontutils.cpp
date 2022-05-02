@@ -356,6 +356,10 @@ QDomElement QgsFontUtils::toXmlElement( const QFont &font, QDomDocument &documen
   QDomElement fontElem = document.createElement( elementName );
   fontElem.setAttribute( QStringLiteral( "description" ), font.toString() );
   fontElem.setAttribute( QStringLiteral( "style" ), untranslateNamedStyle( font.styleName() ) );
+  fontElem.setAttribute( QStringLiteral( "bold" ), font.bold() ? QChar( '1' ) : QChar( '0' ) );
+  fontElem.setAttribute( QStringLiteral( "italic" ), font.italic() ? QChar( '1' ) : QChar( '0' ) );
+  fontElem.setAttribute( QStringLiteral( "underline" ), font.underline() ? QChar( '1' ) : QChar( '0' ) );
+  fontElem.setAttribute( QStringLiteral( "strikethrough" ), font.strikeOut() ? QChar( '1' ) : QChar( '0' ) );
   return fontElem;
 }
 
@@ -367,6 +371,24 @@ bool QgsFontUtils::setFromXmlElement( QFont &font, const QDomElement &element )
   }
 
   font.fromString( element.attribute( QStringLiteral( "description" ) ) );
+
+  if ( element.hasAttribute( QStringLiteral( "bold" ) ) )
+  {
+    font.setBold( element.attribute( QStringLiteral( "bold" ) ) == QChar( '1' ) );
+  }
+  if ( element.hasAttribute( QStringLiteral( "italic" ) ) )
+  {
+    font.setItalic( element.attribute( QStringLiteral( "italic" ) ) == QChar( '1' ) );
+  }
+  if ( element.hasAttribute( QStringLiteral( "underline" ) ) )
+  {
+    font.setUnderline( element.attribute( QStringLiteral( "underline" ) ) == QChar( '1' ) );
+  }
+  if ( element.hasAttribute( QStringLiteral( "strikethrough" ) ) )
+  {
+    font.setStrikeOut( element.attribute( QStringLiteral( "strikethrough" ) ) == QChar( '1' ) );
+  }
+
   if ( element.hasAttribute( QStringLiteral( "style" ) ) )
   {
     ( void )updateFontViaStyle( font, translateNamedStyle( element.attribute( QStringLiteral( "style" ) ) ) );
