@@ -237,6 +237,8 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
       break;
     case Qgis::VectorProfileType::ContinuousSurface:
       QgsAbstractProfileSurfaceResults::renderResults( context );
+      if ( mShowMarkerSymbolInSurfacePlots )
+        renderMarkersOverContinousSurfacePlot( context );
       break;
   }
 }
@@ -408,6 +410,39 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
   }
 }
 
+void QgsVectorLayerProfileResults::renderMarkersOverContinousSurfacePlot( QgsProfileRenderContext &context )
+{
+  QPainter *painter = context.renderContext().painter();
+  if ( !painter )
+    return;
+
+  const QgsScopedQPainterState painterState( painter );
+
+  painter->setBrush( Qt::NoBrush );
+  painter->setPen( Qt::NoPen );
+
+  const double minDistance = context.distanceRange().lower();
+  const double maxDistance = context.distanceRange().upper();
+  const double minZ = context.elevationRange().lower();
+  const double maxZ = context.elevationRange().upper();
+
+  const QRectF visibleRegion( minDistance, minZ, maxDistance - minDistance, maxZ - minZ );
+  QPainterPath clipPath;
+  clipPath.addPolygon( context.worldTransform().map( visibleRegion ) );
+  painter->setClipPath( clipPath, Qt::ClipOperation::IntersectClip );
+
+  mMarkerSymbol->startRender( context.renderContext() );
+
+  for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+  {
+    if ( std::isnan( pointIt.value() ) )
+      continue;
+
+    mMarkerSymbol->renderPoint( context.worldTransform().map( QPointF( pointIt.key(), pointIt.value() ) ), nullptr, context.renderContext() );
+  }
+  mMarkerSymbol->stopRender( context.renderContext() );
+}
+
 void QgsVectorLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
   QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( generator );
@@ -416,6 +451,7 @@ void QgsVectorLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstrac
   profileType = vlGenerator->mType;
   respectLayerSymbology = vlGenerator->mRespectLayerSymbology;
   mMarkerSymbol.reset( vlGenerator->mProfileMarkerSymbol->clone() );
+  mShowMarkerSymbolInSurfacePlots = vlGenerator->mShowMarkerSymbolInSurfacePlots;
 }
 
 //
@@ -446,6 +482,7 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   , mWkbType( layer->wkbType() )
   , mRespectLayerSymbology( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->respectLayerSymbology() )
   , mProfileMarkerSymbol( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileMarkerSymbol()->clone() )
+  , mShowMarkerSymbolInSurfacePlots( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->showMarkerSymbolInSurfacePlots() )
   , mLayer( layer )
 {
   if ( mTerrainProvider )

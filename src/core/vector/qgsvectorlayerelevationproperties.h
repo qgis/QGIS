@@ -258,6 +258,24 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      */
     void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
 
+    /**
+     * Returns TRUE if the marker symbol should also be shown in continuous surface plots.
+     *
+     * \note This setting is only used when type() is Qgis::VectorProfileType::ContinuousSurface.
+     *
+     * \see setShowMarkerSymbolInSurfacePlots()
+     */
+    bool showMarkerSymbolInSurfacePlots() const { return mShowMarkerSymbolInSurfacePlots; }
+
+    /**
+     * Sets whehter the marker symbol should also be shown in continuous surface plots.
+     *
+     * \note This setting is only used when type() is Qgis::VectorProfileType::ContinuousSurface.
+     *
+     * \see showMarkerSymbolInSurfacePlots()
+     */
+    void setShowMarkerSymbolInSurfacePlots( bool show );
+
   private:
 
     void setDefaultProfileLineSymbol( const QColor &color );
@@ -277,6 +295,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
     bool mRespectLayerSymbology = true;
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
+    bool mShowMarkerSymbolInSurfacePlots = false;
 
 };
 

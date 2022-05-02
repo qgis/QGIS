@@ -269,6 +269,28 @@ Sets the ``symbology`` option used to render the vector profile in elevation pro
 .. seealso:: :py:func:`setProfileSymbology`
 %End
 
+    bool showMarkerSymbolInSurfacePlots() const;
+%Docstring
+Returns ``True`` if the marker symbol should also be shown in continuous surface plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsVectorLayerElevationProperties.type` is Qgis.VectorProfileType.ContinuousSurface.
+
+.. seealso:: :py:func:`setShowMarkerSymbolInSurfacePlots`
+%End
+
+    void setShowMarkerSymbolInSurfacePlots( bool show );
+%Docstring
+Sets whehter the marker symbol should also be shown in continuous surface plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsVectorLayerElevationProperties.type` is Qgis.VectorProfileType.ContinuousSurface.
+
+.. seealso:: :py:func:`showMarkerSymbolInSurfacePlots`
+%End
+
 };
 
 /************************************************************************

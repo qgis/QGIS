@@ -47,6 +47,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertTrue(props.respectLayerSymbology())
         self.assertEqual(props.type(), Qgis.VectorProfileType.IndividualFeatures)
         self.assertEqual(props.profileSymbology(), Qgis.ProfileSurfaceSymbology.Line)
+        self.assertFalse(props.showMarkerSymbolInSurfacePlots())
 
         props.setZOffset(0.5)
         props.setZScale(2)
@@ -57,6 +58,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         props.setRespectLayerSymbology(False)
         props.setType(Qgis.VectorProfileType.ContinuousSurface)
         props.setProfileSymbology(Qgis.ProfileSurfaceSymbology.FillBelow)
+        props.setShowMarkerSymbolInSurfacePlots(True)
 
         self.assertEqual(props.zScale(), 2)
         self.assertEqual(props.zOffset(), 0.5)
@@ -68,6 +70,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertFalse(props.respectLayerSymbology())
         self.assertEqual(props.type(), Qgis.VectorProfileType.ContinuousSurface)
         self.assertEqual(props.profileSymbology(), Qgis.ProfileSurfaceSymbology.FillBelow)
+        self.assertTrue(props.showMarkerSymbolInSurfacePlots())
 
         props.dataDefinedProperties().setProperty(QgsMapLayerElevationProperties.ExtrusionHeight, QgsProperty.fromExpression('1*5'))
         self.assertEqual(props.dataDefinedProperties().property(QgsMapLayerElevationProperties.ExtrusionHeight).asExpression(), '1*5')
@@ -107,6 +110,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertFalse(props2.respectLayerSymbology())
         self.assertEqual(props2.type(), Qgis.VectorProfileType.ContinuousSurface)
         self.assertEqual(props2.profileSymbology(), Qgis.ProfileSurfaceSymbology.FillBelow)
+        self.assertTrue(props2.showMarkerSymbolInSurfacePlots())
 
         self.assertEqual(props2.profileLineSymbol().color().name(), '#ff4433')
         self.assertEqual(props2.profileFillSymbol().color().name(), '#ff4455')
@@ -126,6 +130,7 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertFalse(props_clone.respectLayerSymbology())
         self.assertEqual(props_clone.type(), Qgis.VectorProfileType.ContinuousSurface)
         self.assertEqual(props_clone.profileSymbology(), Qgis.ProfileSurfaceSymbology.FillBelow)
+        self.assertTrue(props_clone.showMarkerSymbolInSurfacePlots())
 
         self.assertEqual(props_clone.profileLineSymbol().color().name(), '#ff4433')
         self.assertEqual(props_clone.profileFillSymbol().color().name(), '#ff4455')

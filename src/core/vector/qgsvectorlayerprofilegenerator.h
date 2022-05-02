@@ -70,6 +70,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
     Qgis::VectorProfileType profileType = Qgis::VectorProfileType::IndividualFeatures;
     bool respectLayerSymbology = true;
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
+    bool mShowMarkerSymbolInSurfacePlots = false;
 
     QString type() const override;
     QVector< QgsGeometry > asGeometries() const override;
@@ -79,6 +80,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
 
   private:
     void renderResultsAsIndividualFeatures( QgsProfileRenderContext &context );
+    void renderMarkersOverContinousSurfacePlot( QgsProfileRenderContext &context );
     QgsProfileSnapResult snapPointToIndividualFeatures( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 
 };
@@ -159,6 +161,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
 
     bool mRespectLayerSymbology = true;
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
+    bool mShowMarkerSymbolInSurfacePlots = false;
 
     // NOT for use in the background thread!
     QPointer< QgsVectorLayer > mLayer;
