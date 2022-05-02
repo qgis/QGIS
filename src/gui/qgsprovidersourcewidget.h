@@ -59,14 +59,14 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
      *
      * \since QGIS 3.26
      */
-    void setMapCanvas( QgsMapCanvas *canvas );
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas ) { mMapCanvas = mapCanvas; }
 
     /**
      * Returns the map canvas associated with the widget.
      *
      * \since QGIS 3.26
      */
-    QgsMapCanvas *mapCanvas();
+    virtual QgsMapCanvas *mapCanvas() {return mMapCanvas; }
 
   signals:
 
