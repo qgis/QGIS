@@ -27,7 +27,6 @@
 #include <qgsrasterchecker.h>
 #include <qgsproviderregistry.h>
 #include <qgsapplication.h>
-#include <qgswcsprovider.h>
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
