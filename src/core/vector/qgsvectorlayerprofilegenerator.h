@@ -80,7 +80,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
 
   private:
     void renderResultsAsIndividualFeatures( QgsProfileRenderContext &context );
-    void renderMarkersOverContinousSurfacePlot( QgsProfileRenderContext &context );
+    void renderMarkersOverContinuousSurfacePlot( QgsProfileRenderContext &context );
     QgsProfileSnapResult snapPointToIndividualFeatures( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 
 };

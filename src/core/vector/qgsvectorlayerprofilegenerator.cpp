@@ -238,7 +238,7 @@ void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &conte
     case Qgis::VectorProfileType::ContinuousSurface:
       QgsAbstractProfileSurfaceResults::renderResults( context );
       if ( mShowMarkerSymbolInSurfacePlots )
-        renderMarkersOverContinousSurfacePlot( context );
+        renderMarkersOverContinuousSurfacePlot( context );
       break;
   }
 }
@@ -410,7 +410,7 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
   }
 }
 
-void QgsVectorLayerProfileResults::renderMarkersOverContinousSurfacePlot( QgsProfileRenderContext &context )
+void QgsVectorLayerProfileResults::renderMarkersOverContinuousSurfacePlot( QgsProfileRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
   if ( !painter )
