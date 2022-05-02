@@ -60,53 +60,77 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
               QgsVectorLayerElevationProperties *elevationProperties = qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() );
               QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
 
-              if ( ( vLayer->geometryType() == QgsWkbTypes::PointGeometry && !elevationProperties->extrusionEnabled() )
-                   || ( vLayer->geometryType() == QgsWkbTypes::LineGeometry && !elevationProperties->extrusionEnabled() )
-                 )
+              switch ( elevationProperties->type() )
               {
-                if ( QgsMarkerSymbol *markerSymbol = elevationProperties->profileMarkerSymbol() )
-                {
-                  symbol.reset( markerSymbol->clone() );
-                }
-              }
-
-              if ( !symbol && vLayer->geometryType() == QgsWkbTypes::PolygonGeometry && elevationProperties->extrusionEnabled() )
-              {
-                if ( QgsFillSymbol *fillSymbol = elevationProperties->profileFillSymbol() )
-                {
-                  symbol.reset( fillSymbol->clone() );
-                }
-              }
-
-              if ( !symbol )
-              {
-                if ( QgsLineSymbol *lineSymbol = elevationProperties->profileLineSymbol() )
-                {
-                  symbol.reset( lineSymbol->clone() );
-                }
-              }
-
-              if ( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->respectLayerSymbology() )
-              {
-                if ( QgsSingleSymbolRenderer *renderer = dynamic_cast< QgsSingleSymbolRenderer * >( qobject_cast< QgsVectorLayer * >( layer )->renderer() ) )
-                {
-                  if ( renderer->symbol()->type() == symbol->type() )
+                case Qgis::VectorProfileType::IndividualFeatures:
+                  if ( ( vLayer->geometryType() == QgsWkbTypes::PointGeometry && !elevationProperties->extrusionEnabled() )
+                       || ( vLayer->geometryType() == QgsWkbTypes::LineGeometry && !elevationProperties->extrusionEnabled() )
+                     )
                   {
-                    // take the whole renderer symbol if we can
-                    symbol.reset( renderer->symbol()->clone() );
+                    if ( QgsMarkerSymbol *markerSymbol = elevationProperties->profileMarkerSymbol() )
+                    {
+                      symbol.reset( markerSymbol->clone() );
+                    }
                   }
-                  else
+
+                  if ( !symbol && vLayer->geometryType() == QgsWkbTypes::PolygonGeometry && elevationProperties->extrusionEnabled() )
                   {
-                    // otherwise emulate what happens when rendering the actual chart and just copy the color and opacity
-                    symbol->setColor( renderer->symbol()->color() );
-                    symbol->setOpacity( renderer->symbol()->opacity() );
+                    if ( QgsFillSymbol *fillSymbol = elevationProperties->profileFillSymbol() )
+                    {
+                      symbol.reset( fillSymbol->clone() );
+                    }
                   }
-                }
-                else
-                {
-                  // just use default layer icon
-                  return QgsLayerTreeModel::data( index, role );
-                }
+
+                  if ( !symbol )
+                  {
+                    if ( QgsLineSymbol *lineSymbol = elevationProperties->profileLineSymbol() )
+                    {
+                      symbol.reset( lineSymbol->clone() );
+                    }
+                  }
+
+                  if ( elevationProperties->respectLayerSymbology() )
+                  {
+                    if ( QgsSingleSymbolRenderer *renderer = dynamic_cast< QgsSingleSymbolRenderer * >( qobject_cast< QgsVectorLayer * >( layer )->renderer() ) )
+                    {
+                      if ( renderer->symbol()->type() == symbol->type() )
+                      {
+                        // take the whole renderer symbol if we can
+                        symbol.reset( renderer->symbol()->clone() );
+                      }
+                      else
+                      {
+                        // otherwise emulate what happens when rendering the actual chart and just copy the color and opacity
+                        symbol->setColor( renderer->symbol()->color() );
+                        symbol->setOpacity( renderer->symbol()->opacity() );
+                      }
+                    }
+                    else
+                    {
+                      // just use default layer icon
+                      return QgsLayerTreeModel::data( index, role );
+                    }
+                  }
+                  break;
+
+                case Qgis::VectorProfileType::ContinuousSurface:
+                  switch ( elevationProperties->profileSymbology() )
+                  {
+                    case Qgis::ProfileSurfaceSymbology::Line:
+                      if ( QgsLineSymbol *lineSymbol = elevationProperties->profileLineSymbol() )
+                      {
+                        symbol.reset( lineSymbol->clone() );
+                      }
+                      break;
+                    case Qgis::ProfileSurfaceSymbology::FillBelow:
+                      if ( QgsFillSymbol *fillSymbol = elevationProperties->profileFillSymbol() )
+                      {
+                        symbol.reset( fillSymbol->clone() );
+                      }
+                      break;
+                  }
+                  break;
+
               }
               break;
             }
