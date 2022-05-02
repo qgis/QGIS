@@ -39,6 +39,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   mMarkerStyleButton->setSymbolType( Qgis::SymbolType::Marker );
   mSurfaceLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mSurfaceFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
+  mSurfaceMarkerStyleButton->setSymbolType( Qgis::SymbolType::Marker );
 
   mComboClamping->addItem( tr( "Clamped to Terrain" ), static_cast< int >( Qgis::AltitudeClamping::Terrain ) );
   mComboClamping->addItem( tr( "Relative to Terrain" ), static_cast< int >( Qgis::AltitudeClamping::Relative ) );
@@ -96,11 +97,13 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   } );
 
   connect( mCheckRespectLayerSymbology, &QCheckBox::toggled, this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mCheckBoxShowMarkersAtSampledPoints, &QCheckBox::toggled, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mMarkerStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mSurfaceFillStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mSurfaceLineStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mSurfaceMarkerStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mExtrusionGroupBox, &QGroupBox::toggled, this, &QgsVectorElevationPropertiesWidget::toggleSymbolWidgets );
 }
 
@@ -154,11 +157,13 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   }
 
   mCheckRespectLayerSymbology->setChecked( props->respectLayerSymbology() );
+  mCheckBoxShowMarkersAtSampledPoints->setChecked( props->showMarkerSymbolInSurfacePlots() );
   mLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
   mFillStyleButton->setSymbol( props->profileFillSymbol()->clone() );
   mSurfaceLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
   mSurfaceFillStyleButton->setSymbol( props->profileFillSymbol()->clone() );
   mMarkerStyleButton->setSymbol( props->profileMarkerSymbol()->clone() );
+  mSurfaceMarkerStyleButton->setSymbol( props->profileMarkerSymbol()->clone() );
 
   mPropertyCollection = props->dataDefinedProperties();
   updateDataDefinedButtons();
@@ -192,8 +197,7 @@ void QgsVectorElevationPropertiesWidget::apply()
   props->setExtrusionHeight( mExtrusionSpinBox->value() );
 
   props->setRespectLayerSymbology( mCheckRespectLayerSymbology->isChecked() );
-
-  props->setProfileMarkerSymbol( mMarkerStyleButton->clonedSymbol< QgsMarkerSymbol >() );
+  props->setShowMarkerSymbolInSurfacePlots( mCheckBoxShowMarkersAtSampledPoints->isChecked() );
 
   props->setProfileSymbology( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) );
   switch ( props->type() )
@@ -201,10 +205,12 @@ void QgsVectorElevationPropertiesWidget::apply()
     case Qgis::VectorProfileType::IndividualFeatures:
       props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
       props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
+      props->setProfileMarkerSymbol( mMarkerStyleButton->clonedSymbol< QgsMarkerSymbol >() );
       break;
     case Qgis::VectorProfileType::ContinuousSurface:
       props->setProfileLineSymbol( mSurfaceLineStyleButton->clonedSymbol< QgsLineSymbol >() );
       props->setProfileFillSymbol( mSurfaceFillStyleButton->clonedSymbol< QgsFillSymbol >() );
+      props->setProfileMarkerSymbol( mSurfaceMarkerStyleButton->clonedSymbol< QgsMarkerSymbol >() );
       break;
   }
 

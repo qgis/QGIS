@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>555</width>
-    <height>604</height>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -245,23 +245,6 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="mCheckRespectLayerSymbology">
-            <property name="toolTip">
-             <string>If checked, then features will be shown in profile charts using the same symbols or colors as they use on 2D maps.</string>
-            </property>
-            <property name="text">
-             <string>Respect layer's symbology</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Marker style</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
            <widget class="QgsSymbolButton" name="mMarkerStyleButton">
             <property name="sizePolicy">
@@ -275,10 +258,23 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
+          <item row="3" column="1">
+           <widget class="QgsSymbolButton" name="mFillStyleButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Line style</string>
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Marker style</string>
             </property>
            </widget>
           </item>
@@ -302,16 +298,20 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QgsSymbolButton" name="mFillStyleButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="mCheckRespectLayerSymbology">
+            <property name="toolTip">
+             <string>If checked, then features will be shown in profile charts using the same symbols or colors as they use on 2D maps.</string>
             </property>
             <property name="text">
-             <string/>
+             <string>Respect layer's symbology</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Line style</string>
             </property>
            </widget>
           </item>
@@ -331,8 +331,35 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Marker style</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QComboBox" name="mStyleComboBox"/>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="mCheckBoxShowMarkersAtSampledPoints">
+            <property name="text">
+             <string>Show markers at sampled points</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsSymbolButton" name="mSurfaceMarkerStyleButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_8">
@@ -340,19 +367,6 @@
              <string>Style</string>
             </property>
            </widget>
-          </item>
-          <item row="2" column="0">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
           <item row="1" column="0" colspan="2">
            <widget class="QStackedWidget" name="mSymbologyStackedWidget">
@@ -363,7 +377,7 @@
              </sizepolicy>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="mPageLine">
              <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,2">
