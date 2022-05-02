@@ -372,9 +372,9 @@ bool QgsFontUtils::setFromXmlElement( QFont &font, const QDomElement &element )
 
   font.fromString( element.attribute( QStringLiteral( "description" ) ) );
 
-  if ( element.hasAttribute( QStringLiteral( "bold" ) ) )
+  if ( element.hasAttribute( QStringLiteral( "bold" ) ) && element.attribute( QStringLiteral( "bold" ) ) == QChar( '1' ) )
   {
-    font.setBold( element.attribute( QStringLiteral( "bold" ) ) == QChar( '1' ) );
+    font.setBold( true );
   }
   if ( element.hasAttribute( QStringLiteral( "italic" ) ) )
   {
