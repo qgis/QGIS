@@ -234,6 +234,7 @@ class CORE_EXPORT QgsRenderChecker
   private:
     void emitDashMessage( const QgsDartMeasurement &dashMessage );
     void emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value );
+    void dumpRenderedImageAsBase64();
 
     QString mBasePath;
 
