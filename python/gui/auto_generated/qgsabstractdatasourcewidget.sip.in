@@ -42,8 +42,6 @@ Sets a browser ``model`` to use with the widget.
 Returns the dialog map canvas
 
 .. seealso:: :py:func:`setMapCanvas`
-
-.. versionadded:: 3.26
 %End
 
     virtual void setMapCanvas( QgsMapCanvas *mapCanvas );
@@ -51,8 +49,6 @@ Returns the dialog map canvas
 Sets the dialog map canvas
 
 .. seealso:: :py:func:`mapCanvas`
-
-.. versionadded:: 3.26
 %End
 
   public slots:

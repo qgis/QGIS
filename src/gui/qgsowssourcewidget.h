@@ -60,6 +60,9 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
     QgsRectangle extent() const;
 
 
+    void setMapCanvas( QgsMapCanvas *canvas ) override;
+
+
   private:
 
     QVariantMap mSourceParts;

@@ -31,13 +31,25 @@ QgsOWSSourceWidget::QgsOWSSourceWidget( const QString &providerKey, QWidget *par
   QgsCoordinateReferenceSystem destinationCrs;
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   mSpatialExtentBox->setOutputCrs( crs );
+}
+
+
+void QgsOWSSourceWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  QgsProviderSourceWidget::setMapCanvas( canvas );
+
+  QgsCoordinateReferenceSystem destinationCrs;
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
 
   if ( mapCanvas() && mapCanvas()->mapSettings().destinationCrs().isValid() )
     destinationCrs = mapCanvas()->mapSettings().destinationCrs();
   else
     destinationCrs = crs;
+
+  mSpatialExtentBox->setOutputCrs( destinationCrs );
   mSpatialExtentBox->setMapCanvas( mapCanvas() );
 }
+
 
 void QgsOWSSourceWidget::setExtent( const QgsRectangle &extent )
 {
