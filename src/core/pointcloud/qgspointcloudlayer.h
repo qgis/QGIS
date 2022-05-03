@@ -94,6 +94,18 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
 
     /**
+     * Point cloud statistics calculation task
+     * \since QGIS 3.26
+     */
+    enum PointCloudStatisticsCalculationState
+    {
+      NotStarted = 0, //!< The statistics calculation task has not been started
+      Calculating = 1 << 0, //!< The statistics calculation task is running
+      Calculated = 1 << 1 //!< The statistics calculation task is done and statistics are available
+    };
+
+
+    /**
      * Constructor - creates a point cloud layer
      */
     explicit QgsPointCloudLayer( const QString &uri = QString(),
@@ -224,14 +236,14 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      *
      * \since QGIS 3.26
      */
-    QVariant statistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    QVariant statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 
     /**
-     * Returns whether the point cloud layer contains calculated statistics
+     * Returns the status of point cloud statistics calculation
      *
      * \since QGIS 3.26
      */
-    bool hasCalculatedStatistics() const { return mStatisticsCalculated; }
+    PointCloudStatisticsCalculationState statisticsCalculationState() const { return mStatisticsCalculationState; }
   signals:
 
     /**
@@ -249,11 +261,11 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     void raiseError( const QString &msg );
 
     /**
-     * Emitted when hasCalculatedStatistics attribute has changed
+     * Emitted when statistics calculation state has changed
      *
      * \since QGIS 3.26
      */
-    void hasCalculatedStatisticsChanged( bool calculated );
+    void statisticsCalculationStateChanged( PointCloudStatisticsCalculationState state );
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
@@ -264,6 +276,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     bool isReadOnly() const override {return true;}
 
     void calculateStatistics();
+
+    void resetRenderer();
 
 #ifdef SIP_RUN
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
@@ -279,7 +293,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
     bool mSync3DRendererTo2DRenderer = false;
     std::unique_ptr<QgsPointCloudStatsCalculator> mStatsCalculator;
-    bool mStatisticsCalculated = false;
+    PointCloudStatisticsCalculationState mStatisticsCalculationState = PointCloudStatisticsCalculationState::NotStarted;
     long mStatsCalculationTask = 0;
 };
 

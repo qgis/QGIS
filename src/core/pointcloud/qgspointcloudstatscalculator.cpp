@@ -44,17 +44,6 @@ struct StatsProcessor
 
     QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> operator()( IndexedPointCloudNode node )
     {
-      QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> statsMap;
-      for ( QgsPointCloudAttribute attribute : mRequest.attributes().attributes() )
-      {
-        QgsPointCloudStatsCalculator::AttributeStatistics summary;
-        summary.minimum = std::numeric_limits<double>::max();
-        summary.maximum = std::numeric_limits<double>::lowest();
-        summary.count = 0;
-        summary.classCount.clear();
-        statsMap[ attribute.name() ] = summary;
-      }
-
       std::unique_ptr<QgsPointCloudBlock> block;
       if ( mIndex->accessType() == QgsPointCloudIndex::Local )
       {
@@ -81,29 +70,56 @@ struct StatsProcessor
         return result_type();
       }
 
+      const QgsPointCloudAttributeCollection attributesCollection = block->attributes();
+      const QVector<QgsPointCloudAttribute> attributes = attributesCollection.attributes();
       const char *ptr = block->data();
       int count = block->pointCount();
-      const QgsPointCloudAttributeCollection attributes = block->attributes();
-      int recordSize = attributes.pointRecordSize();
+      int recordSize = attributesCollection.pointRecordSize();
+
+      QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> statsMap;
+      for ( QgsPointCloudAttribute attribute : attributes )
+      {
+        QgsPointCloudStatsCalculator::AttributeStatistics summary;
+        summary.minimum = std::numeric_limits<double>::max();
+        summary.maximum = std::numeric_limits<double>::lowest();
+        summary.count = 0;
+        summary.classCount.clear();
+        statsMap[ attribute.name() ] = summary;
+      }
+
+      QVector<int> attributeOffsetVector;
+      QSet<int> classifiableAttributesOffsetSet;
+      for ( const QgsPointCloudAttribute &attribute : attributes )
+      {
+        int attributeOffset = 0;
+        attributesCollection.find( attribute.name(), attributeOffset );
+        attributeOffsetVector.push_back( attributeOffset );
+        if ( attribute.name() == QStringLiteral( "Classification" ) )
+        {
+          classifiableAttributesOffsetSet.insert( attributeOffset );
+        }
+      }
 
       for ( int i = 0; i < count; ++i )
       {
-        for ( QgsPointCloudAttribute attribute : attributes.attributes() )
+        for ( int j = 0; j < attributes.size(); ++j )
         {
           if ( mFeedback->isCanceled() )
           {
             return result_type();
           }
-          double attributeValue = 0;
-          int attributeOffset = 0;
-          attributes.find( attribute.name(), attributeOffset );
+          QString attributeName = attributes.at( j ).name();
+          QgsPointCloudAttribute::DataType attributeType = attributes.at( j ).type();
 
-          QgsPointCloudStatsCalculator::AttributeStatistics &stats = statsMap[ attribute.name() ];
-          QgsPointCloudRenderContext::getAttribute( ptr, i * recordSize + attributeOffset, attribute.type(), attributeValue );
+          double attributeValue = 0;
+          int attributeOffset = attributeOffsetVector[ i ];
+
+          QgsPointCloudStatsCalculator::AttributeStatistics &stats = statsMap[ attributeName ];
+          QgsPointCloudRenderContext::getAttribute( ptr, i * recordSize + attributeOffset, attributeType, attributeValue );
           stats.minimum = std::min( stats.minimum, attributeValue );
           stats.maximum = std::max( stats.maximum, attributeValue );
           stats.count++;
-          if ( attribute.name() == QStringLiteral( "Classification" ) )
+          if ( classifiableAttributesOffsetSet.contains( attributeOffset ) )
           {
             stats.classCount[( int )attributeValue ]++;
           }

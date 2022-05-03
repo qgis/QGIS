@@ -105,12 +105,6 @@ class CORE_EXPORT QgsProviderSublayerDetails
 
       //! Set to TRUE if the default layer style should be loaded
       bool loadDefaultStyle = true;
-
-      /**
-       *  Set to TRUE if the statistics calculation should be skipped
-       *  \since QGIS 3.26
-       */
-      bool skipStatisticsCalculation = false;
     };
 
     /**

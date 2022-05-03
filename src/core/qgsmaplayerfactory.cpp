@@ -123,7 +123,6 @@ QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString 
       QgsPointCloudLayer::LayerOptions pointCloudOptions;
       pointCloudOptions.loadDefaultStyle = options.loadDefaultStyle;
       pointCloudOptions.transformContext = options.transformContext;
-      pointCloudOptions.skipStatisticsCalculation = options.skipStatisticsCalculation;
       return new QgsPointCloudLayer( uri, name, provider, pointCloudOptions );
     }
 

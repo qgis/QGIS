@@ -509,8 +509,8 @@ void QgsPointCloud3DSymbolWidget::rampAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant min = mLayer->statistic( mRenderingParameterComboBox->currentAttribute(), QgsStatisticalSummary::Min );
-    const QVariant max = mLayer->statistic( mRenderingParameterComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    const QVariant min = mLayer->statisticOf( mRenderingParameterComboBox->currentAttribute(), QgsStatisticalSummary::Min );
+    const QVariant max = mLayer->statisticOf( mRenderingParameterComboBox->currentAttribute(), QgsStatisticalSummary::Max );
     if ( min.isValid() && max.isValid() )
     {
       mProviderMin = min.toDouble();
@@ -591,7 +591,7 @@ void QgsPointCloud3DSymbolWidget::redAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->statistic( mRedAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    const QVariant max = mLayer->statisticOf( mRedAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
     if ( max.isValid() )
     {
       const int maxValue = max.toInt();
@@ -611,7 +611,7 @@ void QgsPointCloud3DSymbolWidget::greenAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->statistic( mGreenAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    const QVariant max = mLayer->statisticOf( mGreenAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
     if ( max.isValid() )
     {
       const int maxValue = max.toInt();
@@ -631,7 +631,7 @@ void QgsPointCloud3DSymbolWidget::blueAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->statistic( mBlueAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    const QVariant max = mLayer->statisticOf( mBlueAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
     if ( max.isValid() )
     {
       const int maxValue = max.toInt();

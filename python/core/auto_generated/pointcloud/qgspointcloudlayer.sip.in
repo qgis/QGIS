@@ -50,6 +50,14 @@ Constructor for LayerOptions with optional ``transformContext``.
     };
 
 
+    enum PointCloudStatisticsCalculationState
+    {
+      NotStarted,
+      Calculating,
+      Calculated
+    };
+
+
     explicit QgsPointCloudLayer( const QString &uri = QString(),
                                  const QString &baseName = QString(),
                                  const QString &providerLib = QStringLiteral( "pointcloud" ),
@@ -183,16 +191,16 @@ Updates the layer's 3D renderer's symbol to match that of the layer's 2D rendere
 %End
 
 
-    QVariant statistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    QVariant statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 %Docstring
 Returns the statistic ``statistic`` of ``attribute``
 
 .. versionadded:: 3.26
 %End
 
-    bool hasCalculatedStatistics() const;
+    PointCloudStatisticsCalculationState statisticsCalculationState() const;
 %Docstring
-Returns whether the point cloud layer contains calculated statistics
+Returns the status of point cloud statistics calculation
 
 .. versionadded:: 3.26
 %End
@@ -212,9 +220,9 @@ Signals an error related to this point cloud layer.
 .. versionadded:: 3.26
 %End
 
-    void hasCalculatedStatisticsChanged( bool calculated );
+    void statisticsCalculationStateChanged( PointCloudStatisticsCalculationState state );
 %Docstring
-Emitted when hasCalculatedStatistics attribute has changed
+Emitted when statistics calculation state has changed
 
 .. versionadded:: 3.26
 %End

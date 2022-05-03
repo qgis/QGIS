@@ -121,11 +121,11 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
     mClassificationStatsGroupBox->hide();
   }
 
-  mStatisticsCalculationWarningLabel->setHidden( !mLayer->hasCalculatedStatistics() );
+  mStatisticsCalculationWarningLabel->setHidden( mLayer->statisticsCalculationState() != QgsPointCloudLayer::Calculated );
 
-  connect( mLayer, &QgsPointCloudLayer::hasCalculatedStatisticsChanged, this, [this]( bool calculated )
+  connect( mLayer, &QgsPointCloudLayer::statisticsCalculationStateChanged, this, [this]( QgsPointCloudLayer::PointCloudStatisticsCalculationState state )
   {
-    mStatisticsCalculationWarningLabel->setHidden( !calculated );
+    mStatisticsCalculationWarningLabel->setHidden( mLayer->statisticsCalculationState() != QgsPointCloudLayer::Calculated );
   } );
 
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
@@ -212,7 +212,7 @@ void QgsPointCloudLayerProperties::syncToLayer()
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->syncToLayer( mLayer );
 
-  mStatisticsCalculationWarningLabel->setHidden( !mLayer->hasCalculatedStatistics() );
+  mStatisticsCalculationWarningLabel->setHidden( mLayer->statisticsCalculationState() != QgsPointCloudLayer::Calculated );
 }
 
 
@@ -504,16 +504,10 @@ QVariant QgsPointCloudAttributeStatisticsModel::data( const QModelIndex &index, 
           return attr.name();
 
         case Min:
-          return mLayer->dataProvider() ? mLayer->statistic( attr.name(), QgsStatisticalSummary::Min ) : QVariant();
-
         case Max:
-          return mLayer->dataProvider() ? mLayer->statistic( attr.name(), QgsStatisticalSummary::Max ) : QVariant();
-
         case Mean:
-          return mLayer->dataProvider() ? mLayer->statistic( attr.name(), QgsStatisticalSummary::Mean ) : QVariant();
-
         case StDev:
-          return mLayer->dataProvider() ? mLayer->statistic( attr.name(), QgsStatisticalSummary::StDev ) : QVariant();
+          return mLayer->statisticOf( attr.name(), ( QgsStatisticalSummary::Statistic ) index.column() );
 
       }
       return QVariant();

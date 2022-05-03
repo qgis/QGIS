@@ -37,6 +37,7 @@
 #include "qgspointcloudstatscalculator.h"
 #include "qgspointcloudstatscalculationtask.h"
 #include "qgsmessagelog.h"
+#include "qgstaskmanager.h"
 
 #include <QUrl>
 
@@ -63,7 +64,21 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
   connect( this, &QgsPointCloudLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
 }
 
-QgsPointCloudLayer::~QgsPointCloudLayer() = default;
+QgsPointCloudLayer::~QgsPointCloudLayer()
+{
+  // If the statistics calculation task is still running we need to cancel it and wait for the task to get actually terminated or completed properly
+  if ( QgsTask *task = QgsApplication::taskManager()->task( mStatsCalculationTask ) )
+  {
+    if ( task->isActive() )
+    {
+      QEventLoop loop;
+      connect( task, &QgsTask::taskCompleted, &loop, &QEventLoop::quit );
+      connect( task, &QgsTask::taskTerminated, &loop, &QEventLoop::quit );
+      task->cancel();
+      loop.exec();
+    }
+  }
+}
 
 QgsPointCloudLayer *QgsPointCloudLayer::clone() const
 {
@@ -454,18 +469,7 @@ void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudD
   {
     case QgsPointCloudDataProvider::Indexed:
     {
-      mDataProvider.get()->loadIndex();
-      if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && !hasCalculatedStatistics() )
-      {
-        calculateStatistics();
-      }
-      if ( mRenderer->type() == QLatin1String( "extent" ) )
-      {
-        setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
-      }
-      triggerRepaint();
-
-      emit rendererChanged();
+      resetRenderer();
       break;
     }
     case QgsPointCloudDataProvider::NotIndexed:
@@ -765,7 +769,7 @@ void QgsPointCloudLayer::setSync3DRendererTo2DRenderer( bool sync )
 }
 
 
-QVariant QgsPointCloudLayer::statistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+QVariant QgsPointCloudLayer::statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
   if ( attribute == QStringLiteral( "X" ) || attribute == QStringLiteral( "Y" ) || attribute == QStringLiteral( "Z" ) || dataProvider()->hasStatisticsMetadata() )
   {
@@ -780,7 +784,6 @@ QVariant QgsPointCloudLayer::statistic( const QString &attribute, QgsStatistical
 
 void QgsPointCloudLayer::calculateStatistics()
 {
-  qDebug() << __PRETTY_FUNCTION__;
   if ( !mDataProvider.get() || !mDataProvider->hasValidIndex() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
@@ -806,12 +809,12 @@ void QgsPointCloudLayer::calculateStatistics()
     }
   }
 
-  QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mStatsCalculator.get(), attributes, 10000000 );
+  QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mStatsCalculator.get(), attributes, 1000000 );
   connect( task, &QgsTask::taskCompleted, this, [this]()
   {
-    mStatisticsCalculated = true;
-    emit hasCalculatedStatisticsChanged( true );
-    onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::Indexed );
+    mStatisticsCalculationState = QgsPointCloudLayer::Calculated;
+    emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+    resetRenderer();
     mStatsCalculationTask = 0;
   } );
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
@@ -822,4 +825,23 @@ void QgsPointCloudLayer::calculateStatistics()
   } );
 
   mStatsCalculationTask = QgsApplication::taskManager()->addTask( task );
+
+  mStatisticsCalculationState = QgsPointCloudLayer::Calculating;
+  emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+}
+
+void QgsPointCloudLayer::resetRenderer()
+{
+  mDataProvider.get()->loadIndex();
+  if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && statisticsCalculationState() == QgsPointCloudLayer::NotStarted )
+  {
+    calculateStatistics();
+  }
+  if ( mRenderer->type() == QLatin1String( "extent" ) )
+  {
+    setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
+  }
+  triggerRepaint();
+
+  emit rendererChanged();
 }

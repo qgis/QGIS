@@ -102,9 +102,9 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     std::unique_ptr< QgsPointCloudRgbRenderer > renderer = std::make_unique< QgsPointCloudRgbRenderer >();
 
     // set initial guess for rgb ranges
-    const QVariant redMax = layer->statistic( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
-    const QVariant greenMax = layer->statistic( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
-    const QVariant blueMax = layer->statistic( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
+    const QVariant redMax = layer->statisticOf( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
+    const QVariant greenMax = layer->statisticOf( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
+    const QVariant blueMax = layer->statisticOf( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
     if ( redMax.isValid() && greenMax.isValid() && blueMax.isValid() )
     {
       const int maxValue = std::max( blueMax.toInt(), std::max( redMax.toInt(), greenMax.toInt() ) );
@@ -170,8 +170,8 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   renderer->setAttribute( QStringLiteral( "Z" ) );
 
   // set initial range for z values if possible
-  const QVariant zMin = layer->statistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
-  const QVariant zMax = layer->statistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
+  const QVariant zMin = layer->statisticOf( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
+  const QVariant zMax = layer->statisticOf( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
   if ( zMin.isValid() && zMax.isValid() )
   {
     renderer->setMinimum( zMin.toDouble() );

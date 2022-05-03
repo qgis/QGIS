@@ -224,7 +224,7 @@ class CORE_EXPORT QgsPointCloudRendererRegistry
      *
      * Caller takes ownership of the returned renderer.
      */
-    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudLayer *provider ) SIP_FACTORY;
+    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudLayer *layer ) SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN

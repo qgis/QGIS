@@ -50,7 +50,6 @@ class QgsPointCloudStatsCalculationTask : public QgsTask
     void cancel() override;
   private:
     QgsPointCloudStatsCalculator *mCalculator = nullptr;
-    QVector<IndexedPointCloudNode> mNodes;
     QVector<QgsPointCloudAttribute> mAttributes;
     qint64 mPointLimit;
     QgsFeedback *mFeedback = nullptr;
