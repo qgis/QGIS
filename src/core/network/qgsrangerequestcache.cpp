@@ -116,7 +116,6 @@ void QgsRangeRequestCache::removeFile( const QString &fileName )
 
 void QgsRangeRequestCache::expire()
 {
-  QDir dir( mCacheDir );
   QFileInfoList filesList = cacheEntries();
   qint64 totalSize = 0;
   for ( QFileInfo info : filesList )
