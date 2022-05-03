@@ -14,6 +14,7 @@ import qgis  # NOQA
 
 from qgis.core import (
     Qgis,
+    QgsVectorLayer,
     QgsVectorLayerElevationProperties,
     QgsReadWriteContext,
     QgsLineSymbol,
@@ -23,6 +24,7 @@ from qgis.core import (
     QgsMapLayerElevationProperties,
     QgsPropertyCollection
 )
+from utilities import unitTestDataPath
 
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -39,10 +41,13 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props.zOffset(), 0)
         self.assertFalse(props.extrusionEnabled())
         self.assertEqual(props.extrusionHeight(), 0)
-        self.assertFalse(props.hasElevation())
+        self.assertTrue(props.hasElevation())
         self.assertEqual(props.clamping(), Qgis.AltitudeClamping.Terrain)
         self.assertEqual(props.binding(), Qgis.AltitudeBinding.Centroid)
         self.assertTrue(props.respectLayerSymbology())
+        self.assertEqual(props.type(), Qgis.VectorProfileType.IndividualFeatures)
+        self.assertEqual(props.profileSymbology(), Qgis.ProfileSurfaceSymbology.Line)
+        self.assertFalse(props.showMarkerSymbolInSurfacePlots())
 
         props.setZOffset(0.5)
         props.setZScale(2)
@@ -51,6 +56,10 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         props.setExtrusionHeight(10)
         props.setExtrusionEnabled(True)
         props.setRespectLayerSymbology(False)
+        props.setType(Qgis.VectorProfileType.ContinuousSurface)
+        props.setProfileSymbology(Qgis.ProfileSurfaceSymbology.FillBelow)
+        props.setShowMarkerSymbolInSurfacePlots(True)
+
         self.assertEqual(props.zScale(), 2)
         self.assertEqual(props.zOffset(), 0.5)
         self.assertEqual(props.extrusionHeight(), 10)
@@ -59,6 +68,9 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props.clamping(), Qgis.AltitudeClamping.Relative)
         self.assertEqual(props.binding(), Qgis.AltitudeBinding.Vertex)
         self.assertFalse(props.respectLayerSymbology())
+        self.assertEqual(props.type(), Qgis.VectorProfileType.ContinuousSurface)
+        self.assertEqual(props.profileSymbology(), Qgis.ProfileSurfaceSymbology.FillBelow)
+        self.assertTrue(props.showMarkerSymbolInSurfacePlots())
 
         props.dataDefinedProperties().setProperty(QgsMapLayerElevationProperties.ExtrusionHeight, QgsProperty.fromExpression('1*5'))
         self.assertEqual(props.dataDefinedProperties().property(QgsMapLayerElevationProperties.ExtrusionHeight).asExpression(), '1*5')
@@ -96,6 +108,9 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props2.extrusionHeight(), 10)
         self.assertTrue(props2.extrusionEnabled())
         self.assertFalse(props2.respectLayerSymbology())
+        self.assertEqual(props2.type(), Qgis.VectorProfileType.ContinuousSurface)
+        self.assertEqual(props2.profileSymbology(), Qgis.ProfileSurfaceSymbology.FillBelow)
+        self.assertTrue(props2.showMarkerSymbolInSurfacePlots())
 
         self.assertEqual(props2.profileLineSymbol().color().name(), '#ff4433')
         self.assertEqual(props2.profileFillSymbol().color().name(), '#ff4455')
@@ -113,6 +128,9 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(props_clone.extrusionHeight(), 10)
         self.assertTrue(props_clone.extrusionEnabled())
         self.assertFalse(props_clone.respectLayerSymbology())
+        self.assertEqual(props_clone.type(), Qgis.VectorProfileType.ContinuousSurface)
+        self.assertEqual(props_clone.profileSymbology(), Qgis.ProfileSurfaceSymbology.FillBelow)
+        self.assertTrue(props_clone.showMarkerSymbolInSurfacePlots())
 
         self.assertEqual(props_clone.profileLineSymbol().color().name(), '#ff4433')
         self.assertEqual(props_clone.profileFillSymbol().color().name(), '#ff4455')
@@ -121,6 +139,39 @@ class TestQgsVectorLayerElevationProperties(unittest.TestCase):
         self.assertEqual(
             props_clone.dataDefinedProperties().property(QgsMapLayerElevationProperties.ZOffset).asExpression(),
             '9')
+
+    def test_defaults(self):
+        # a layer without z values present should default to terrain clamping mode
+        vl = QgsVectorLayer(unitTestDataPath() + '/3d/trees.shp')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Terrain)
+
+        # a layer WITH z values present should default to relative mode
+        vl = QgsVectorLayer(unitTestDataPath() + '/3d/points_with_z.shp')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Relative)
+
+    def test_show_by_default(self):
+        props = QgsVectorLayerElevationProperties(None)
+        self.assertFalse(props.showByDefaultInElevationProfilePlots())
+
+        props = QgsVectorLayerElevationProperties(None)
+        props.setZOffset(1)
+        self.assertTrue(props.showByDefaultInElevationProfilePlots())
+
+        props = QgsVectorLayerElevationProperties(None)
+        props.setZScale(2)
+        self.assertTrue(props.showByDefaultInElevationProfilePlots())
+
+        props = QgsVectorLayerElevationProperties(None)
+        props.setExtrusionEnabled(True)
+        self.assertTrue(props.showByDefaultInElevationProfilePlots())
+
+        props = QgsVectorLayerElevationProperties(None)
+        props.setClamping(Qgis.AltitudeClamping.Absolute)
+        self.assertTrue(props.showByDefaultInElevationProfilePlots())
 
 
 if __name__ == '__main__':

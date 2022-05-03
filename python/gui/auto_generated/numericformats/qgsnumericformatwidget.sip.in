@@ -141,6 +141,63 @@ Ownership of the returned object is transferred to the caller
 
 
 
+class QgsGeographicCoordinateNumericFormatWidget : QgsNumericFormatWidget
+{
+%Docstring(signature="appended")
+A widget which allow control over the properties of a :py:class:`QgsGeographicCoordinateNumericFormat`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsGeographicCoordinateNumericFormatWidget, initially showing the specified ``format``.
+%End
+    ~QgsGeographicCoordinateNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
+
+
+class QgsGeographicCoordinateNumericFormatDialog : QDialog
+{
+%Docstring(signature="appended")
+A dialog which allow control over the properties of a :py:class:`QgsGeographicCoordinateNumericFormat`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsGeographicCoordinateNumericFormatDialog, initially showing the specified ``format``.
+%End
+
+    QgsGeographicCoordinateNumericFormat *format() /Factory/;
+%Docstring
+Returns the format defined by the current settings in the dialog.
+
+Ownership of the returned object is transferred to the caller
+%End
+
+};
+
+
+
 
 
 class QgsCurrencyNumericFormatWidget : QgsNumericFormatWidget

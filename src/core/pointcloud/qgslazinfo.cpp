@@ -187,7 +187,7 @@ void QgsLazInfo::parseLazAttributes()
   }
   if ( mPointFormat == 8 || mPointFormat == 10 )
   {
-    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "NIR" ), QgsPointCloudAttribute::UShort ) );
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Infrared" ), QgsPointCloudAttribute::UShort ) );
   }
   // Note: wave packet attributes are not handled and are unreadable
 }

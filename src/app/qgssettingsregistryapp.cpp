@@ -23,6 +23,7 @@
 #include "georeferencer/qgsgeorefmainwindow.h"
 #include "georeferencer/qgstransformsettingsdialog.h"
 #include "vertextool/qgsvertexeditor.h"
+#include "elevation/qgselevationprofilewidget.h"
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
@@ -44,6 +45,9 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   addSettingsEntry( &QgsTransformSettingsDialog::settingLastPdfFolder );
 
   addSettingsEntry( &QgsVertexEditor::settingAutoPopupVertexEditorDock );
+
+  addSettingsEntry( &QgsElevationProfileWidget::settingTolerance );
+  addSettingsEntry( &QgsElevationProfileWidget::settingShowLayerTree );
 
   QgsApplication::settingsRegistryCore()->addSubRegistry( this );
 }

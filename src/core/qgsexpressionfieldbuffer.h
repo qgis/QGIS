@@ -101,7 +101,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      *
      * \param flds The fields to be updated
      */
-    void updateFields( QgsFields &flds );
+    void updateFields( QgsFields &flds ) const;
 
     QList<QgsExpressionFieldBuffer::ExpressionField> expressions() const { return mExpressions; }
 

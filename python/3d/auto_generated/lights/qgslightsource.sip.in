@@ -1,0 +1,73 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/lights/qgslightsource.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsLightSource /Abstract/
+{
+%Docstring(signature="appended")
+Base class for light sources in 3d scenes.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgslightsource.h"
+%End
+  public:
+
+    virtual ~QgsLightSource();
+
+    virtual Qgis::LightSourceType type() const = 0;
+%Docstring
+Returns the light source type.
+%End
+
+    virtual QgsLightSource *clone() const = 0 /Factory/;
+%Docstring
+Returns a copy of the light source.
+%End
+
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const = 0;
+%Docstring
+Writes the light source's configuration to a new DOM element and returns it.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() ) = 0;
+%Docstring
+Reads configuration from a DOM element previously written using :py:func:`~QgsLightSource.writeXml`.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    virtual void resolveReferences( const QgsProject &project );
+%Docstring
+After reading from XML, resolve references to any layers that have been read as layer IDs.
+%End
+
+    static QgsLightSource *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a new light source from an XML element.
+%End
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/lights/qgslightsource.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -125,6 +125,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   toolBar->addWidget( mBtnMapThemes );
 
+  toolBar->addSeparator();
+
   // Options Menu
   mOptionsMenu = new QMenu( this );
 
@@ -154,6 +156,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mCanvas->map()->setEyeDomeLightingEnabled( enabled );
   } );
   mOptionsMenu->addAction( mActionEnableEyeDome );
+  mOptionsMenu->addSeparator();
 
   mActionSync2DNavTo3D = new QAction( tr( "2D Map View Follows 3D Camera" ), this );
   mActionSync2DNavTo3D->setCheckable( true );
@@ -355,7 +358,9 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mAnimationWidget->setMap( map );
 
   // Disable button for switching the map theme if the terrain generator is a mesh, or if there is no terrain
-  mBtnMapThemes->setDisabled( !mCanvas->map()->terrainGenerator() || mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+  mBtnMapThemes->setDisabled( !mCanvas->map()->terrainRenderingEnabled()
+                              || !mCanvas->map()->terrainGenerator()
+                              || mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
 
   connect( map, &Qgs3DMapSettings::viewFrustumVisualizationEnabledChanged, this, &Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged );
@@ -416,7 +421,9 @@ void Qgs3DMapCanvasWidget::configure()
     }
 
     // Disable map theme button if the terrain generator is a mesh, or if there is no terrain
-    mBtnMapThemes->setDisabled( !mCanvas->map()->terrainGenerator() || map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+    mBtnMapThemes->setDisabled( !mCanvas->map()->terrainRenderingEnabled()
+                                || !mCanvas->map()->terrainGenerator()
+                                || map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   };
 
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );

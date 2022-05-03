@@ -117,8 +117,9 @@ if [ ${RUN_ORACLE:-"NO"} == "YES" ]; then
   echo "${bold}Load Oracle database...🙏${endbold}"
 
   export ORACLE_HOST="oracle"
-  export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/XEPDB1"
-  export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' password='qgis'"
+  export ORACLE_PDB="XEPDB1"
+  export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/${ORACLE_PDB}"
+  export QGIS_ORACLETEST_DB="host=${ORACLE_HOST} dbname=${ORACLE_PDB} port=1521 user='QGIS' password='qgis'"
 
   echo "Wait a moment while loading Oracle database."
   COUNT=0

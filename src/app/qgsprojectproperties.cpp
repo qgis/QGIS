@@ -70,6 +70,7 @@
 #include "qgsprojectviewsettings.h"
 #include "qgsnumericformatwidget.h"
 #include "qgsbearingnumericformat.h"
+#include "qgscoordinatenumericformat.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttimesettings.h"
 #include "qgstemporalutils.h"
@@ -132,6 +133,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonAddColor, &QToolButton::clicked, this, &QgsProjectProperties::mButtonAddColor_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectProperties::showHelp );
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeBearingFormat );
+  connect( mCustomizeCoordinateFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeGeographicCoordinateFormat );
   connect( mCalculateFromLayerButton, &QPushButton::clicked, this, &QgsProjectProperties::calculateFromLayersButton_clicked );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -140,9 +142,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   initOptionsBase( false );
 
   mCoordinateDisplayComboBox->addItem( tr( "Map Units" ), MapUnits );
-  mCoordinateDisplayComboBox->addItem( tr( "Decimal Degrees" ), DecimalDegrees );
-  mCoordinateDisplayComboBox->addItem( tr( "Degrees, Minutes" ), DegreesMinutes );
-  mCoordinateDisplayComboBox->addItem( tr( "Degrees, Minutes, Seconds" ), DegreesMinutesSeconds );
+  mCoordinateDisplayComboBox->addItem( tr( "Geographic (Latitude / Longitude)" ), Geographic );
 
   mCoordinateOrderComboBox->addItem( tr( "Default" ), static_cast< int >( Qgis::CoordinateOrder::Default ) );
   mCoordinateOrderComboBox->addItem( tr( "Easting, Northing (Longitude, Latitude)" ), static_cast< int >( Qgis::CoordinateOrder::XY ) );
@@ -388,15 +388,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     updateEllipsoidUI( index );
   }
 
-  QString format = QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
+  const QString format = QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
   if ( format == QLatin1String( "MU" ) )
     mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( MapUnits ) );
-  else if ( format == QLatin1String( "DM" ) )
-    mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DegreesMinutes ) );
-  else if ( format == QLatin1String( "DMS" ) )
-    mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DegreesMinutesSeconds ) );
   else
-    mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DecimalDegrees ) );
+    mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( Geographic ) );
 
   const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
   mCoordinateOrderComboBox->setCurrentIndex( mCoordinateOrderComboBox->findData( static_cast< int >( axisOrder ) ) );
@@ -1036,6 +1032,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   setCurrentEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mBearingFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
+  mGeographicCoordinateFormat.reset( QgsProject::instance()->displaySettings()->geographicCoordinateFormat()->clone() );
 
   const auto constOptionsFactories = optionsFactories;
   for ( QgsOptionsWidgetFactory *factory : constOptionsFactories )
@@ -1159,17 +1156,11 @@ void QgsProjectProperties::apply()
   QString degreeFormat;
   switch ( static_cast< CoordinateFormat >( mCoordinateDisplayComboBox->currentData().toInt() ) )
   {
-    case DegreesMinutes:
-      degreeFormat = QStringLiteral( "DM" );
-      break;
-    case DegreesMinutesSeconds:
-      degreeFormat = QStringLiteral( "DMS" );
+    case Geographic:
+      degreeFormat = QStringLiteral( "D" );
       break;
     case MapUnits:
       degreeFormat = QStringLiteral( "MU" );
-      break;
-    case DecimalDegrees:
-      degreeFormat = QStringLiteral( "D" );
       break;
   }
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), degreeFormat );
@@ -1665,12 +1656,12 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setCustomVariables( mVariableEditor->variablesInActiveScope() );
 
   QgsProject::instance()->displaySettings()->setBearingFormat( mBearingFormat->clone() );
+  QgsProject::instance()->displaySettings()->setGeographicCoordinateFormat( mGeographicCoordinateFormat->clone() );
 
   for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
   {
     widget->apply();
   }
-
   //refresh canvases to reflect new properties, eg background color and scale bar after changing display units.
   for ( QgsMapCanvas *canvas : constMapCanvases )
   {
@@ -1812,19 +1803,19 @@ void QgsProjectProperties::updateGuiForMapUnits()
     int idx = mDistanceUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit );
     if ( idx >= 0 )
     {
-      mDistanceUnitsCombo->setItemText( idx, tr( "Unknown units" ) );
+      mDistanceUnitsCombo->setItemText( idx, tr( "Unknown Units" ) );
       mDistanceUnitsCombo->setCurrentIndex( idx );
     }
     idx = mAreaUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit );
     if ( idx >= 0 )
     {
-      mAreaUnitsCombo->setItemText( idx, tr( "Unknown units" ) );
+      mAreaUnitsCombo->setItemText( idx, tr( "Unknown Units" ) );
       mAreaUnitsCombo->setCurrentIndex( idx );
     }
     idx = mCoordinateDisplayComboBox->findData( MapUnits );
     if ( idx >= 0 )
     {
-      mCoordinateDisplayComboBox->setItemText( idx, tr( "Unknown units" ) );
+      mCoordinateDisplayComboBox->setItemText( idx, tr( "Unknown Units" ) );
       mCoordinateDisplayComboBox->setCurrentIndex( idx );
     }
     mDistanceUnitsCombo->setEnabled( false );
@@ -1841,20 +1832,20 @@ void QgsProjectProperties::updateGuiForMapUnits()
 
     //make sure map units option is shown in coordinate display combo
     int idx = mCoordinateDisplayComboBox->findData( MapUnits );
-    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
+    QString mapUnitString = tr( "Map Units (%1)" ).arg( QgsUnitTypes::toString( units ) );
     mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
 
     //also update unit combo boxes
     idx = mDistanceUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit );
     if ( idx >= 0 )
     {
-      QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
+      QString mapUnitString = tr( "Map Units (%1)" ).arg( QgsUnitTypes::toString( units ) );
       mDistanceUnitsCombo->setItemText( idx, mapUnitString );
     }
     idx = mAreaUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit );
     if ( idx >= 0 )
     {
-      QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( QgsUnitTypes::distanceToAreaUnit( units ) ) );
+      QString mapUnitString = tr( "Map Units (%1)" ).arg( QgsUnitTypes::toString( QgsUnitTypes::distanceToAreaUnit( units ) ) );
       mAreaUnitsCombo->setItemText( idx, mapUnitString );
     }
   }
@@ -2737,5 +2728,15 @@ void QgsProjectProperties::customizeBearingFormat()
   if ( dlg.exec() )
   {
     mBearingFormat.reset( dlg.format() );
+  }
+}
+
+void QgsProjectProperties::customizeGeographicCoordinateFormat()
+{
+  QgsGeographicCoordinateNumericFormatDialog dlg( mGeographicCoordinateFormat.get(), true, this );
+  dlg.setWindowTitle( tr( "Coordinate Format" ) );
+  if ( dlg.exec() )
+  {
+    mGeographicCoordinateFormat.reset( dlg.format() );
   }
 }

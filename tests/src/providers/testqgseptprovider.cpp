@@ -221,7 +221,7 @@ void TestQgsEptProvider::testLazInfo()
     QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
     QVERIFY( lazInfo.isValid() );
     QCOMPARE( lazInfo.pointCount(), 41998 );
-    QCOMPARE( lazInfo.scale().toVector3D(), QVector3D( 0.00025, 0.00025, 0.00025 ) );
+    QCOMPARE( lazInfo.scale().toVector3D(), QVector3D( 0.00025f, 0.00025f, 0.00025f ) );
     QCOMPARE( lazInfo.offset().toVector3D(), QVector3D( 515385, 4918360, 2331 ) );
     QPair<uint16_t, uint16_t> creationYearDay = lazInfo.creationYearDay();
     QCOMPARE( creationYearDay.first, 2019 );
@@ -232,8 +232,8 @@ void TestQgsEptProvider::testLazInfo()
     QCOMPARE( lazInfo.pointFormat(), 1 );
     QCOMPARE( lazInfo.systemId(), "PDAL" );
     QCOMPARE( lazInfo.softwareId(), QStringLiteral( "Entwine" ) );
-    QCOMPARE( lazInfo.minCoords().toVector3D(), QVector3D( 515368.63225000002421439, 4918340.36400000005960464, 2322.90050000000019281 ) );
-    QCOMPARE( lazInfo.maxCoords().toVector3D(), QVector3D( 515401.03749999997671694, 4918381.10350000020116568, 2338.56550000000015643 ) );
+    QCOMPARE( lazInfo.minCoords().toVector3D(), QVector3D( 515368.63225000002421439f, 4918340.36400000005960464f, 2322.90050000000019281f ) );
+    QCOMPARE( lazInfo.maxCoords().toVector3D(), QVector3D( 515401.03749999997671694f, 4918381.10350000020116568f, 2338.56550000000015643f ) );
     QCOMPARE( lazInfo.firstPointRecordOffset(), 865 );
     QCOMPARE( lazInfo.firstVariableLengthRecord(), 227 );
     QCOMPARE( lazInfo.pointRecordLength(), 32 );

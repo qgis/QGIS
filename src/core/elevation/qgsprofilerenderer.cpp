@@ -46,6 +46,17 @@ QgsProfilePlotRenderer::~QgsProfilePlotRenderer()
   }
 }
 
+QStringList QgsProfilePlotRenderer::sourceIds() const
+{
+  QStringList res;
+  res.reserve( mGenerators.size() );
+  for ( const auto &it : mGenerators )
+  {
+    res.append( it->sourceId() );
+  }
+  return res;
+}
+
 void QgsProfilePlotRenderer::startGeneration()
 {
   if ( isActive() )
@@ -58,8 +69,9 @@ void QgsProfilePlotRenderer::startGeneration()
   mJobs.reserve( mGenerators.size() );
   for ( const auto &it : mGenerators )
   {
-    ProfileJob job;
-    job.generator = it.get();
+    std::unique_ptr< ProfileJob > job = std::make_unique< ProfileJob >();
+    job->generator = it.get();
+    job->context = mContext;
     mJobs.emplace_back( std::move( job ) );
   }
 
@@ -76,11 +88,11 @@ void QgsProfilePlotRenderer::cancelGeneration()
 
   disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsProfilePlotRenderer::onGeneratingFinished );
 
-  for ( const ProfileJob &job : mJobs )
+  for ( const auto &job : mJobs )
   {
-    if ( job.generator )
+    if ( job->generator )
     {
-      if ( QgsFeedback *feedback = job.generator->feedback() )
+      if ( QgsFeedback *feedback = job->generator->feedback() )
       {
         feedback->cancel();
       }
@@ -97,11 +109,11 @@ void QgsProfilePlotRenderer::cancelGenerationWithoutBlocking()
   if ( !isActive() )
     return;
 
-  for ( const ProfileJob &job : mJobs )
+  for ( const auto &job : mJobs )
   {
-    if ( job.generator )
+    if ( job->generator )
     {
-      if ( QgsFeedback *feedback = job.generator->feedback() )
+      if ( QgsFeedback *feedback = job->generator->feedback() )
       {
         feedback->cancel();
       }
@@ -125,15 +137,130 @@ bool QgsProfilePlotRenderer::isActive() const
   return mStatus != Idle;
 }
 
+void QgsProfilePlotRenderer::setContext( const QgsProfileGenerationContext &context )
+{
+  if ( mContext == context )
+    return;
+
+  const double maxErrorChanged = !qgsDoubleNear( context.maximumErrorMapUnits(), mContext.maximumErrorMapUnits() );
+  const double distanceRangeChanged = context.distanceRange() != mContext.distanceRange();
+  const double elevationRangeChanged = context.elevationRange() != mContext.elevationRange();
+  mContext = context;
+
+  for ( auto &job : mJobs )
+  {
+    // regenerate only those results which are refinable
+    const bool jobNeedsRegeneration = ( maxErrorChanged && ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit ) )
+                                      || ( distanceRangeChanged && ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsDistanceRange ) )
+                                      || ( elevationRangeChanged && ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsElevationRange ) );
+    if ( !jobNeedsRegeneration )
+      continue;
+
+    job->mutex.lock();
+    job->context = mContext;
+    if ( job->results && job->complete )
+      job->invalidatedResults = std::move( job->results );
+    job->results.reset();
+    job->complete = false;
+    job->mutex.unlock();
+  }
+}
+
+void QgsProfilePlotRenderer::invalidateAllRefinableSources()
+{
+  for ( auto &job : mJobs )
+  {
+    // regenerate only those results which are refinable
+    const bool jobNeedsRegeneration = ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit )
+                                      || ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsDistanceRange )
+                                      || ( job->generator->flags() & Qgis::ProfileGeneratorFlag::RespectsElevationRange );
+    if ( !jobNeedsRegeneration )
+      continue;
+
+    job->mutex.lock();
+    job->context = mContext;
+    if ( job->results && job->complete )
+      job->invalidatedResults = std::move( job->results );
+    job->results.reset();
+    job->complete = false;
+    job->mutex.unlock();
+  }
+}
+
+void QgsProfilePlotRenderer::replaceSource( QgsAbstractProfileSource *source )
+{
+  replaceSourceInternal( source, false );
+}
+
+bool QgsProfilePlotRenderer::invalidateResults( QgsAbstractProfileSource *source )
+{
+  return replaceSourceInternal( source, true );
+}
+
+bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *source, bool clearPreviousResults )
+{
+  if ( !source )
+    return false;
+
+  std::unique_ptr< QgsAbstractProfileGenerator > generator{ source->createProfileGenerator( mRequest ) };
+  if ( !generator )
+    return false;
+
+  QString sourceId = generator->sourceId();
+  bool res = false;
+  for ( auto &job : mJobs )
+  {
+    if ( job->generator && job->generator->sourceId() == sourceId )
+    {
+      job->mutex.lock();
+      res = true;
+      if ( clearPreviousResults )
+      {
+        job->results.reset();
+        job->complete = false;
+      }
+      else if ( job->results )
+      {
+        job->results->copyPropertiesFromGenerator( generator.get() );
+      }
+      job->generator = generator.get();
+      job->mutex.unlock();
+
+      for ( auto it = mGenerators.begin(); it != mGenerators.end(); )
+      {
+        if ( ( *it )->sourceId() == sourceId )
+          it = mGenerators.erase( it );
+        else
+          it++;
+      }
+      mGenerators.emplace_back( std::move( generator ) );
+    }
+  }
+  return res;
+}
+
+void QgsProfilePlotRenderer::regenerateInvalidatedResults()
+{
+  if ( isActive() )
+    return;
+
+  mStatus = Generating;
+
+  connect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsProfilePlotRenderer::onGeneratingFinished );
+
+  mFuture = QtConcurrent::map( mJobs, generateProfileStatic );
+  mFutureWatcher.setFuture( mFuture );
+}
+
 QgsDoubleRange QgsProfilePlotRenderer::zRange() const
 {
   double min = std::numeric_limits< double >::max();
   double max = std::numeric_limits< double >::lowest();
-  for ( const ProfileJob &job : mJobs )
+  for ( const auto &job : mJobs )
   {
-    if ( job.complete && job.results )
+    if ( job->complete && job->results )
     {
-      const QgsDoubleRange jobRange = job.results->zRange();
+      const QgsDoubleRange jobRange = job->results->zRange();
       min = std::min( min, jobRange.lower() );
       max = std::max( max, jobRange.upper() );
     }
@@ -141,9 +268,11 @@ QgsDoubleRange QgsProfilePlotRenderer::zRange() const
   return QgsDoubleRange( min, max );
 }
 
-QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax )
+QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId )
 {
   QImage res( width, height, QImage::Format_ARGB32_Premultiplied );
+  res.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  res.setDotsPerMeterY( 96 / 25.4 * 1000 );
   res.fill( Qt::transparent );
 
   QPainter p( &res );
@@ -151,13 +280,13 @@ QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double dist
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context.setPainterFlagsUsingContext( &p );
-  render( context, width, height, distanceMin, distanceMax, zMin, zMax );
+  render( context, width, height, distanceMin, distanceMax, zMin, zMax, sourceId );
   p.end();
 
   return res;
 }
 
-void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax )
+void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId )
 {
   QPainter *painter = context.painter();
   if ( !painter )
@@ -174,10 +303,22 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
   profileRenderContext.setDistanceRange( QgsDoubleRange( distanceMin, distanceMax ) );
   profileRenderContext.setElevationRange( QgsDoubleRange( zMin, zMax ) );
 
-  for ( const ProfileJob &job : mJobs )
+  for ( auto &job : mJobs )
   {
-    if ( job.complete && job.results )
-      job.results->renderResults( profileRenderContext );
+    if ( ( sourceId.isEmpty() || job->generator->sourceId() == sourceId ) )
+    {
+      job->mutex.lock();
+      if ( job->complete && job->results )
+      {
+        job->results->renderResults( profileRenderContext );
+      }
+      else if ( !job->complete && job->invalidatedResults )
+      {
+        // draw the outdated results while we wait for refinement to complete
+        job->invalidatedResults->renderResults( profileRenderContext );
+      }
+      job->mutex.unlock();
+    }
   }
 }
 
@@ -189,15 +330,16 @@ QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &p
 
   double bestSnapDistance = std::numeric_limits< double >::max();
 
-  for ( const ProfileJob &job : mJobs )
+  for ( const auto &job : mJobs )
   {
-    if ( job.complete && job.results )
+    job->mutex.lock();
+    if ( job->complete && job->results )
     {
-      const QgsProfileSnapResult jobSnapResult = job.results->snapPoint( point, context );
+      const QgsProfileSnapResult jobSnapResult = job->results->snapPoint( point, context );
       if ( jobSnapResult.isValid() )
       {
         const double snapDistance = std::pow( point.distance() - jobSnapResult.snappedPoint.distance(), 2 )
-                                    + std::pow( ( point.elevation() - jobSnapResult.snappedPoint.elevation() ) * context.displayRatioElevationVsDistance, 2 );
+                                    + std::pow( ( point.elevation() - jobSnapResult.snappedPoint.elevation() ) / context.displayRatioElevationVsDistance, 2 );
 
         if ( snapDistance < bestSnapDistance )
         {
@@ -206,6 +348,7 @@ QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &p
         }
       }
     }
+    job->mutex.unlock();
   }
 
   return bestSnapResult;
@@ -217,10 +360,18 @@ void QgsProfilePlotRenderer::onGeneratingFinished()
   emit generationFinished();
 }
 
-void QgsProfilePlotRenderer::generateProfileStatic( ProfileJob &job )
+void QgsProfilePlotRenderer::generateProfileStatic( std::unique_ptr< ProfileJob > &job )
 {
-  Q_ASSERT( job.generator );
-  job.generator->generateProfile();
-  job.results.reset( job.generator->takeResults() );
-  job.complete = true;
+  if ( job->results )
+    return;
+
+  Q_ASSERT( job->generator );
+
+  job->generator->generateProfile( job->context );
+  job->mutex.lock();
+  job->results.reset( job->generator->takeResults() );
+  job->complete = true;
+  job->invalidatedResults.reset();
+  job->mutex.unlock();
 }
+

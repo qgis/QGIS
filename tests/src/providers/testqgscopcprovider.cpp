@@ -24,6 +24,8 @@
 #include <QDir>
 #include <fstream>
 #include <QVector>
+#include <QTest>
+#include <QStandardPaths>
 
 //qgis includes...
 #include "qgis.h"
@@ -42,6 +44,7 @@
 #include "qgspointcloudstatscalculator.h"
 #include "qgsstatisticalsummary.h"
 #include "qgsfeedback.h"
+#include "qgsrangerequestcache.h"
 
 /**
  * \ingroup UnitTests
@@ -76,6 +79,8 @@ class TestQgsCopcProvider : public QObject
     void testExtraBytesAttributesValues();
     void testPointCloudIndex();
     void testStatsCalculator();
+
+    void testQgsRangeRequestCache();
 
   private:
     QString mTestDataDir;
@@ -215,7 +220,7 @@ void TestQgsCopcProvider::testLazInfo()
 
   QVERIFY( lazInfo.isValid() );
   QCOMPARE( lazInfo.pointCount(), 518862 );
-  QCOMPARE( lazInfo.scale().toVector3D(), QVector3D( 0.0001, 0.0001, 0.0001 ) );
+  QCOMPARE( lazInfo.scale().toVector3D(), QVector3D( 0.0001f, 0.0001f, 0.0001f ) );
   QCOMPARE( lazInfo.offset().toVector3D(), QVector3D( 515385, 4918361, 2330.5 ) );
   QPair<uint16_t, uint16_t> creationYearDay = lazInfo.creationYearDay();
   QCOMPARE( creationYearDay.first, 1 );
@@ -226,8 +231,8 @@ void TestQgsCopcProvider::testLazInfo()
   QCOMPARE( lazInfo.pointFormat(), 6 );
   QCOMPARE( lazInfo.systemId(), QString() );
   QCOMPARE( lazInfo.softwareId(), QString() );
-  QCOMPARE( lazInfo.minCoords().toVector3D(), QVector3D( 515368.60224999999627471, 4918340.36400000005960464, 2322.89624999999978172 ) );
-  QCOMPARE( lazInfo.maxCoords().toVector3D(), QVector3D( 515401.04300000000512227, 4918381.12375000026077032, 2338.57549999999991996 ) );
+  QCOMPARE( lazInfo.minCoords().toVector3D(), QVector3D( 515368.60224999999627471f, 4918340.36400000005960464f, 2322.89624999999978172f ) );
+  QCOMPARE( lazInfo.maxCoords().toVector3D(), QVector3D( 515401.04300000000512227f, 4918381.12375000026077032f, 2338.57549999999991996f ) );
   QCOMPARE( lazInfo.firstPointRecordOffset(), 1628 );
   QCOMPARE( lazInfo.firstVariableLengthRecord(), 375 );
   QCOMPARE( lazInfo.pointRecordLength(), 34 );
@@ -622,7 +627,7 @@ void TestQgsCopcProvider::testPointCloudIndex()
   QCOMPARE( index->pointCount(), 518862 );
   QCOMPARE( index->zMin(), 2322.89625 );
   QCOMPARE( index->zMax(), 2338.5755 );
-  QCOMPARE( index->scale().toVector3D(), QVector3D( 0.0001, 0.0001, 0.0001 ) );
+  QCOMPARE( index->scale().toVector3D(), QVector3D( 0.0001f, 0.0001f, 0.0001f ) );
   QCOMPARE( index->offset().toVector3D(), QVector3D( 515385, 4918361, 2330.5 ) );
   QCOMPARE( index->span(), 128 );
 
@@ -795,6 +800,78 @@ void TestQgsCopcProvider::testStatsCalculator()
   }
 }
 
+void TestQgsCopcProvider::testQgsRangeRequestCache()
+{
+  // Note: the QTest::qSleep calls were added to prevent 2 files from being created at very close times
+
+  auto request = []( const QUrl & url, const QString & range )
+  {
+    QNetworkRequest req( url );
+    req.setRawHeader( "Range", range.toUtf8() );
+    return req;
+  };
+
+  QTemporaryDir cacheDir;
+  if ( !cacheDir.isValid() )
+  {
+    QVERIFY( false );
+    return;
+  }
+
+  QUrl url( QStringLiteral( "0.0.0.0/laz.copc.laz" ) );
+  QgsRangeRequestCache cache;
+  cache.setCacheDirectory( cacheDir.path() );
+  cache.clear();
+  cache.setCacheSize( 2 );
+
+  cache.registerEntry( request( url, QStringLiteral( "bytes=1-2" ) ), QByteArray( 1, '0' ) );
+  QTest::qSleep( 10 );
+
+  cache.registerEntry( request( url, QStringLiteral( "bytes=3-4" ) ), QByteArray( 1, '1' ) );
+  QTest::qSleep( 10 );
+
+  cache.registerEntry( request( url, QStringLiteral( "bytes=5-6" ) ), QByteArray( 1, '2' ) );
+  QTest::qSleep( 10 );
+
+  // (5, 6) -> (3, 4)
+  {
+    QFileInfoList files = cache.cacheEntries();
+    QCOMPARE( files.size(), 2 );
+    QVERIFY( files[0].baseName().endsWith( QStringLiteral( "bytes=5-6" ) ) );
+    QVERIFY( files[1].baseName().endsWith( QStringLiteral( "bytes=3-4" ) ) );
+  }
+
+  cache.entry( request( url, QStringLiteral( "bytes=3-4" ) ) );
+  QTest::qSleep( 10 );
+
+  // -> (3, 4) -> (5, 6)
+  {
+    QFileInfoList files = cache.cacheEntries();
+    QCOMPARE( files.size(), 2 );
+    QVERIFY( files[0].baseName().endsWith( QStringLiteral( "bytes=3-4" ) ) );
+    QVERIFY( files[1].baseName().endsWith( QStringLiteral( "bytes=5-6" ) ) );
+  }
+
+  cache.registerEntry( request( url, QStringLiteral( "bytes=7-8" ) ), QByteArray( 1, '3' ) );
+  QTest::qSleep( 10 );
+
+  // (7, 8) -> (3, 4)
+  {
+    QFileInfoList files = cache.cacheEntries();
+    QCOMPARE( files.size(), 2 );
+    QVERIFY( files[0].baseName().endsWith( QStringLiteral( "bytes=7-8" ) ) );
+    QVERIFY( files[1].baseName().endsWith( QStringLiteral( "bytes=3-4" ) ) );
+  }
+
+  cache.registerEntry( request( url, QStringLiteral( "bytes=9-10" ) ), QByteArray( 1, '4' ) );
+  // (9, 10) -> (7, 8)
+  {
+    QFileInfoList files = cache.cacheEntries();
+    QCOMPARE( files.size(), 2 );
+    QVERIFY( files[0].baseName().endsWith( QStringLiteral( "bytes=9-10" ) ) );
+    QVERIFY( files[1].baseName().endsWith( QStringLiteral( "bytes=7-8" ) ) );
+  }
+}
 
 QGSTEST_MAIN( TestQgsCopcProvider )
 #include "testqgscopcprovider.moc"

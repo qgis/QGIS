@@ -37,9 +37,13 @@ Constructor for QgsRasterLayerElevationProperties, with the specified ``parent``
 
     virtual QgsRasterLayerElevationProperties *clone() const /Factory/;
 
+    virtual QString htmlSummary() const;
+
     virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+
+    virtual bool showByDefaultInElevationProfilePlots() const;
 
 
     bool isEnabled() const;
@@ -84,6 +88,36 @@ Sets the line ``symbol`` used to render the raster profile in elevation profile 
 Ownership of ``symbol`` is transferred to the plot.
 
 .. seealso:: :py:func:`profileLineSymbol`
+%End
+
+    QgsFillSymbol *profileFillSymbol() const;
+%Docstring
+Returns the fill symbol used to render the raster profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileFillSymbol`
+%End
+
+    void setProfileFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render the raster profile in elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`profileFillSymbol`
+%End
+
+    Qgis::ProfileSurfaceSymbology profileSymbology() const;
+%Docstring
+Returns the symbology option used to render the raster profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileSymbology`
+%End
+
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+%Docstring
+Sets the ``symbology`` option used to render the raster profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileSymbology`
 %End
 
 };

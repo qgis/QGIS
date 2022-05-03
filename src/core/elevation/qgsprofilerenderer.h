@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsprofilerequest.h"
+#include "qgsabstractprofilegenerator.h"
 #include "qgsrange.h"
 
 #include <QObject>
@@ -71,6 +72,11 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     ~QgsProfilePlotRenderer() override;
 
     /**
+     * Returns the ordered list of source IDs for the sources used by the renderer.
+     */
+    QStringList sourceIds() const;
+
+    /**
      * Start the generation job and immediately return.
      * Does nothing if the generation is already in progress.
      */
@@ -96,19 +102,62 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     bool isActive() const;
 
     /**
+     * Sets the \a context in which the profile generation will occur.
+     *
+     * Depending on the sources present, this may trigger automatically a regeneration of results.
+     */
+    void setContext( const QgsProfileGenerationContext &context );
+
+    /**
+     * Invalidates previous results from all refinable sources.
+     */
+    void invalidateAllRefinableSources();
+
+    /**
+     * Replaces the existing source with matching ID.
+     *
+     * The matching stored source will be deleted and replaced with \a source.
+     */
+    void replaceSource( QgsAbstractProfileSource *source );
+
+    /**
+     * Invalidates the profile results from the source with matching ID.
+     *
+     * The matching stored source will be deleted and replaced with \a source.
+     *
+     * Returns TRUE if results were previously stored for the matching source and have been invalidated.
+     *
+     * \see regenerateInvalidatedResults()
+     */
+    bool invalidateResults( QgsAbstractProfileSource *source );
+
+    /**
+     * Starts a background regeneration of any invalidated results and immediately returns.
+     *
+     * Does nothing if the generation is already in progress.
+     *
+     * \see invalidateResults()
+     */
+    void regenerateInvalidatedResults();
+
+    /**
      * Returns the limits of the retrieved elevation values.
      */
     QgsDoubleRange zRange() const;
 
     /**
      * Renders a portion of the profile to an image with the given \a width and \a height.
+     *
+     * If \a sourceId is empty then all sources will be rendered, otherwise only the matching source will be rendered.
      */
-    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax );
+    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString() );
 
     /**
      * Renders a portion of the profile using the specified render \a context.
+     *
+     * If \a sourceId is empty then all sources will be rendered, otherwise only the matching source will be rendered.
      */
-    void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax );
+    void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString() );
 
     /**
      * Snap a \a point to the results.
@@ -129,22 +178,26 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     struct ProfileJob
     {
       QgsAbstractProfileGenerator *generator = nullptr;
+      QgsProfileGenerationContext context;
       std::unique_ptr< QgsAbstractProfileResults > results;
+      std::unique_ptr< QgsAbstractProfileResults > invalidatedResults;
       bool complete = false;
+      QMutex mutex;
     };
 
-    static void generateProfileStatic( ProfileJob &job );
+    static void generateProfileStatic( std::unique_ptr< ProfileJob > &job );
+    bool replaceSourceInternal( QgsAbstractProfileSource *source, bool clearPreviousResults );
 
     std::vector< std::unique_ptr< QgsAbstractProfileGenerator > > mGenerators;
     QgsProfileRequest mRequest;
+    QgsProfileGenerationContext mContext;
 
-    std::vector< ProfileJob > mJobs;
+    std::vector< std::unique_ptr< ProfileJob > > mJobs;
 
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
 
     enum { Idle, Generating } mStatus = Idle;
-
 
 };
 

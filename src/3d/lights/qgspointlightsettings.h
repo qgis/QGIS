@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 
 #include "qgsvector3d.h"
+#include "qgslightsource.h"
 #include <QColor>
 
 class QDomDocument;
@@ -35,11 +36,17 @@ class QDomElement;
  *
  * \since QGIS 3.6
  */
-class _3D_EXPORT QgsPointLightSettings
+class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
 {
   public:
     //! Construct a point light with default values
     QgsPointLightSettings() = default;
+
+    Qgis::LightSourceType type() const override;
+    QgsPointLightSettings *clone() const override SIP_FACTORY;
+    Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const override SIP_SKIP;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() ) override;
 
     //! Returns position of the light (in 3D world coordinates)
     QgsVector3D position() const { return mPosition; }
@@ -70,11 +77,6 @@ class _3D_EXPORT QgsPointLightSettings
     float quadraticAttenuation() const { return mQuadraticAttenuation; }
     //! Sets quadratic attenuation (A_2)
     void setQuadraticAttenuation( float value ) { mQuadraticAttenuation = value; }
-
-    //! Writes configuration to a new DOM element and returns it
-    QDomElement writeXml( QDomDocument &doc ) const;
-    //! Reads configuration from a DOM element previously written using writeXml()
-    void readXml( const QDomElement &elem );
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsPointLightSettings &other );

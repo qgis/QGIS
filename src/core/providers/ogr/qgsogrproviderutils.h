@@ -48,7 +48,7 @@ struct QgsOgrLayerReleaser
   /**
    * Releases a QgsOgrLayer \a layer.
    */
-  void operator()( QgsOgrLayer *layer );
+  void operator()( QgsOgrLayer *layer ) const;
 };
 
 /**
@@ -490,16 +490,16 @@ class QgsOgrLayer
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     //! Returns native GDALDatasetH object with the mutex to lock when using it
-    GDALDatasetH getDatasetHandleAndMutex( QMutex *&mutex );
+    GDALDatasetH getDatasetHandleAndMutex( QMutex *&mutex ) const;
 
     //! Returns native OGRLayerH object with the mutex to lock when using it
-    OGRLayerH getHandleAndMutex( QMutex *&mutex );
+    OGRLayerH getHandleAndMutex( QMutex *&mutex ) const;
 #else
     //! Returns native GDALDatasetH object with the mutex to lock when using it
-    GDALDatasetH getDatasetHandleAndMutex( QRecursiveMutex *&mutex );
+    GDALDatasetH getDatasetHandleAndMutex( QRecursiveMutex *&mutex ) const;
 
     //! Returns native OGRLayerH object with the mutex to lock when using it
-    OGRLayerH getHandleAndMutex( QRecursiveMutex *&mutex );
+    OGRLayerH getHandleAndMutex( QRecursiveMutex *&mutex ) const;
 #endif
 
 

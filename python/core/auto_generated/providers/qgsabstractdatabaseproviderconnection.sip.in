@@ -125,7 +125,7 @@ Returns the number of rows returned by a SELECT query or Qgis.FeatureCountState.
 
 
 
-        double queryExecutionTime( );
+        double queryExecutionTime( ) const;
 %Docstring
 Returns the query execution time in milliseconds.
 %End

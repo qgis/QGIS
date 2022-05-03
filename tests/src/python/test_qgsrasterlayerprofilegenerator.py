@@ -128,15 +128,17 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         res = r.snapPoint(QgsProfilePoint(-10, -10), context)
         self.assertFalse(res.isValid())
 
-        context.maximumDistanceDelta = 0
-        context.maximumElevationDelta = 3
+        context.maximumSurfaceDistanceDelta = 0
+        context.maximumSurfaceElevationDelta = 3
+        context.maximumPointDistanceDelta = 0
+        context.maximumPointElevationDelta = 0
         res = r.snapPoint(QgsProfilePoint(0, 70), context)
         self.assertTrue(res.isValid())
         self.assertEqual(res.snappedPoint.distance(), 0)
         self.assertEqual(res.snappedPoint.elevation(), 72)
 
-        context.maximumDistanceDelta = 0
-        context.maximumElevationDelta = 5
+        context.maximumSurfaceDistanceDelta = 0
+        context.maximumSurfaceElevationDelta = 5
         res = r.snapPoint(QgsProfilePoint(200, 79), context)
         self.assertTrue(res.isValid())
         self.assertEqual(res.snappedPoint.distance(), 200)

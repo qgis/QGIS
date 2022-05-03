@@ -137,6 +137,9 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
   private:
     void update( QgsChunkNode *node, const SceneState &state );
 
+    //! Removes chunks for loading queue that are currently not needed
+    void pruneLoaderQueue( const SceneState &state );
+
     //! make sure that the chunk will be loaded soon (if not loaded yet) and not unloaded anytime soon (if loaded already)
     void requestResidency( QgsChunkNode *node );
 

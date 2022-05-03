@@ -358,6 +358,7 @@ QgsWcsProvider::QgsWcsProvider( const QgsWcsProvider &other, const QgsDataProvid
   , mBaseUrl( other.mBaseUrl )
   , mIdentifier( other.mIdentifier )
   , mTime( other.mTime )
+  , mBBOX( other.mBBOX )
   , mFormat( other.mFormat )
   , mValid( other.mValid )
   , mCapabilities( other.mCapabilities )
@@ -442,6 +443,8 @@ bool QgsWcsProvider::parseUri( const QString &uriString )
   mIdentifier = uri.param( QStringLiteral( "identifier" ) );
 
   mTime = uri.param( QStringLiteral( "time" ) );
+
+  mBBOX = uri.param( QStringLiteral( "bbox" ) );
 
   setFormat( uri.param( QStringLiteral( "format" ) ) );
 
@@ -731,7 +734,9 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
       // raster (all values 0).
       setQueryItem( url, QStringLiteral( "TIME" ), mTime );
     }
-    setQueryItem( url, QStringLiteral( "BBOX" ), bbox );
+
+    setQueryItem( url, QStringLiteral( "BBOX" ), !mBBOX.isEmpty() ? mBBOX : bbox );
+
     setQueryItem( url, QStringLiteral( "CRS" ), crs ); // request BBOX CRS
     setQueryItem( url, QStringLiteral( "RESPONSE_CRS" ), crs ); // response CRS
     setQueryItem( url, QStringLiteral( "WIDTH" ), QString::number( pixelWidth ) );
@@ -750,7 +755,8 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
       setQueryItem( url, QStringLiteral( "TIMESEQUENCE" ), mTime );
     }
 
-    setQueryItem( url, QStringLiteral( "BOUNDINGBOX" ), bbox );
+    setQueryItem( url, QStringLiteral( "BOUNDINGBOX" ), !mBBOX.isEmpty() ? mBBOX : bbox );
+
 
     //  Example:
     //   GridBaseCRS=urn:ogc:def:crs:SG:6.6:32618
@@ -1985,6 +1991,52 @@ QList< QgsDataItemProvider * > QgsWcsProviderMetadata::dataItemProviders() const
 
 QgsWcsProviderMetadata::QgsWcsProviderMetadata():
   QgsProviderMetadata( QgsWcsProvider::WCS_KEY, QgsWcsProvider::WCS_DESCRIPTION ) {}
+
+QVariantMap QgsWcsProviderMetadata::decodeUri( const QString &uri ) const
+{
+  const QUrlQuery query { uri };
+  const auto constItems { query.queryItems() };
+  QVariantMap decoded;
+  for ( const auto &item : constItems )
+  {
+    if ( item.first == QLatin1String( "url" ) )
+    {
+      const QUrl url( item.second );
+      if ( url.isLocalFile() )
+      {
+        decoded[ QStringLiteral( "path" ) ] = url.toLocalFile();
+      }
+      else
+      {
+        decoded[ item.first ] = item.second;
+      }
+    }
+    else
+    {
+      decoded[ item.first ] = item.second;
+    }
+  }
+  return decoded;
+}
+
+QString QgsWcsProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  QUrlQuery query;
+  QList<QPair<QString, QString> > items;
+  for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
+  {
+    if ( it.key() == QLatin1String( "path" ) )
+    {
+      items.push_back( { QStringLiteral( "url" ), QUrl::fromLocalFile( it.value().toString() ).toString() } );
+    }
+    else
+    {
+      items.push_back( { it.key(), it.value().toString() } );
+    }
+  }
+  query.setQueryItems( items );
+  return query.toString();
+}
 
 
 #ifndef HAVE_STATIC_PROVIDERS

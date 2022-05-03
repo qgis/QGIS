@@ -34,6 +34,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsgeometryengine.h"
 #include "qgsconditionalstyle.h"
+#include "qgsfontutils.h"
 
 //
 // QgsLayoutItemAttributeTable
@@ -683,11 +684,23 @@ QgsTextFormat QgsLayoutItemAttributeTable::textFormatForCell( int row, int colum
       // warning -- there's a potential trap here! We can't just read QFont::styleName(), as that may be blank even when
       // the font has the bold or italic attributes set! Reading the style name via QFontInfo avoids this and always returns
       // a correct style name
-      newFont.setStyleName( QFontInfo( styleFont ).styleName() );
+      const QString styleName = QgsFontUtils::resolveFontStyleName( styleFont );
+      if ( !styleName.isEmpty() )
+        newFont.setStyleName( styleName );
 
       newFont.setStrikeOut( styleFont.strikeOut() );
       newFont.setUnderline( styleFont.underline() );
       format.setFont( newFont );
+      if ( styleName.isEmpty() )
+      {
+        // we couldn't find a direct match for the conditional font's bold/italic settings as a font style name.
+        // This means the conditional style is using Qt's "faux bold/italic" mode. Even though it causes reduced quality font
+        // rendering, we'll apply it here anyway just to ensure that the rendered font styling matches the conditional style.
+        if ( styleFont.bold() )
+          format.setForcedBold( true );
+        if ( styleFont.italic() )
+          format.setForcedItalic( true );
+      }
     }
   }
 

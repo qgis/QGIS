@@ -109,7 +109,7 @@ Scales the plot by a specified ``scale`` factor.
 The default implementation does nothing.
 %End
 
-    virtual void zoomToRect( const QRectF rect );
+    virtual void zoomToRect( const QRectF &rect );
 %Docstring
 Zooms the plot to the specified ``rect`` in canvas units.
 

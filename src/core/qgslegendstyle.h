@@ -127,7 +127,7 @@ class CORE_EXPORT QgsLegendStyle
     * \see indent()
     * \since QGIS 3.22
     */
-    double indent() { return mIndent; }
+    double indent() const { return mIndent; }
 
     /**
      * Sets the indent (in mm) of a group or subgroup.

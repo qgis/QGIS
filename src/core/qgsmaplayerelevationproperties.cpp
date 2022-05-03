@@ -31,6 +31,16 @@ bool QgsMapLayerElevationProperties::hasElevation() const
   return false;
 }
 
+void QgsMapLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer * )
+{
+
+}
+
+QString QgsMapLayerElevationProperties::htmlSummary() const
+{
+  return QString();
+}
+
 void QgsMapLayerElevationProperties::writeCommonProperties( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext & )
 {
   QDomElement elemDataDefinedProperties = doc.createElement( QStringLiteral( "data-defined-properties" ) );
@@ -66,6 +76,43 @@ bool QgsMapLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & )
 QgsDoubleRange QgsMapLayerElevationProperties::calculateZRange( QgsMapLayer * ) const
 {
   return QgsDoubleRange();
+}
+
+bool QgsMapLayerElevationProperties::showByDefaultInElevationProfilePlots() const
+{
+  return false;
+}
+
+void QgsMapLayerElevationProperties::setZOffset( double offset )
+{
+  if ( qgsDoubleNear( offset, mZOffset ) )
+    return;
+
+  mZOffset = offset;
+  emit changed();
+  emit zOffsetChanged();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsMapLayerElevationProperties::setZScale( double scale )
+{
+  if ( qgsDoubleNear( scale, mZScale ) )
+    return;
+
+  mZScale = scale;
+  emit changed();
+  emit zScaleChanged();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsMapLayerElevationProperties::setDataDefinedProperties( const QgsPropertyCollection &collection )
+{
+  if ( mDataDefinedProperties == collection )
+    return;
+
+  mDataDefinedProperties = collection;
+  emit changed();
+  emit profileGenerationPropertyChanged();
 }
 
 QgsPropertiesDefinition QgsMapLayerElevationProperties::propertyDefinitions()

@@ -22,8 +22,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgis.h"
 
 class QgsLineSymbol;
+class QgsFillSymbol;
 
 /**
  * \class QgsMeshLayerElevationProperties
@@ -48,9 +50,11 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     bool hasElevation() const override;
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
+    QString htmlSummary() const override;
     QgsMeshLayerElevationProperties *clone() const override SIP_FACTORY;
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+    bool showByDefaultInElevationProfilePlots() const override;
 
     /**
      * Returns the line symbol used to render the mesh profile in elevation profile plots.
@@ -68,12 +72,44 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
      */
     void setProfileLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns the fill symbol used to render the mesh profile in elevation profile plots.
+     *
+     * \see setProfileFillSymbol()
+     */
+    QgsFillSymbol *profileFillSymbol() const;
+
+    /**
+     * Sets the fill \a symbol used to render the mesh profile in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * \see profileFillSymbol()
+     */
+    void setProfileFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the symbology option used to render the mesh profile in elevation profile plots.
+     *
+     * \see setProfileSymbology()
+     */
+    Qgis::ProfileSurfaceSymbology profileSymbology() const { return mSymbology; }
+
+    /**
+     * Sets the \a symbology option used to render the mesh profile in elevation profile plots.
+     *
+     * \see setProfileSymbology()
+     */
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+
   private:
 
-    void setDefaultProfileLineSymbol();
+    void setDefaultProfileLineSymbol( const QColor &color );
+    void setDefaultProfileFillSymbol( const QColor &color );
 
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
-
+    std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
+    Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
 };
 
 #endif // QGSMESHLAYERELEVATIONPROPERTIES_H

@@ -116,6 +116,7 @@ class CORE_EXPORT QgsProfileRenderContext
 
 };
 
+class QgsAbstractProfileGenerator;
 
 /**
  * \brief Abstract base class for storage of elevation profiles.
@@ -164,6 +165,127 @@ class CORE_EXPORT QgsAbstractProfileResults
      * Snaps a \a point to the generated elevation profile.
      */
     virtual QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
+
+    /**
+     * Copies properties from specified \a generator to the results object.
+     *
+     * For instance, this method can be used to copy any properties relating to rendering
+     * the gathered results to reflect the \a generator's current properties.
+     *
+     * The base class method does nothing.
+     */
+    virtual void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator );
+};
+
+/**
+ * \brief Encapsulates the context in which an elevation profile is to be generated.
+ *
+ * \ingroup core
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsProfileGenerationContext
+{
+  public:
+
+    /**
+     * Returns the maximum allowed error in the generated result, in profile curve map units.
+     *
+     * By default this is NaN, which indicates that the profile should be generated in the highest precision possible.
+     * Larger values will result in a faster profile to generate.
+     *
+     * \see setMaximumErrorMapUnits()
+     */
+    double maximumErrorMapUnits() const { return mMaxErrorMapUnits; }
+
+    /**
+     * Sets the maximum allowed \a error in the generated result, in profile curve map units.
+     *
+     * By default this is NaN, which indicates that the profile should be generated in the highest precision possible.
+     * Larger values will result in a faster profile to generate.
+     *
+     * \see maximumErrorMapUnits()
+     */
+    void setMaximumErrorMapUnits( double error ) { mMaxErrorMapUnits = error; }
+
+    /**
+     * Returns the number of map units per pixel in the distance dimension.
+     *
+     * \see setMapUnitsPerDistancePixel()
+     */
+    double mapUnitsPerDistancePixel() const { return mMapUnitsPerDistancePixel; }
+
+    /**
+     * Sets the number of map \a units per pixel in the distance dimension.
+     *
+     * \see mapUnitsPerDistancePixel()
+     */
+    void setMapUnitsPerDistancePixel( double units ) { mMapUnitsPerDistancePixel = units; }
+
+    /**
+     * Returns the range of distances to include in the generation.
+     *
+     * Distances outside this range may be excluded from the generation (if it results in faster profile generation).
+     *
+     * \see setDistanceRange()
+     */
+    QgsDoubleRange distanceRange() const { return mDistanceRange; }
+
+    /**
+     * Sets the \a range of distances to include in the generation.
+     *
+     * Distances outside this range may be excluded from the generation (if it results in faster profile generation).
+     *
+     * \see distanceRange()
+     */
+    void setDistanceRange( const QgsDoubleRange &range ) { mDistanceRange = range; }
+
+    /**
+     * Returns the range of elevations to include in the generation.
+     *
+     * Elevations outside this range may be excluded from the generation (if it results in faster profile generation).
+     *
+     * \see setElevationRange()
+     */
+    QgsDoubleRange elevationRange() const { return mElevationRange; }
+
+    /**
+     * Sets the \a range of elevations to include in the generation.
+     *
+     * Elevations outside this range may be excluded from the generation (if it results in faster profile generation).
+     *
+     * \see elevationRange()
+     */
+    void setElevationRange( const QgsDoubleRange &range ) { mElevationRange = range; }
+
+    /**
+     * Sets the \a dpi (dots per inch) for the profie, to be used in size conversions.
+     *
+     * \see dpi()
+     */
+    void setDpi( double dpi ) { mDpi = dpi; }
+
+    /**
+     * Returns the DPI (dots per inch) for the profie, to be used in size conversions.
+     *
+     * \see setDpi()
+     */
+    double dpi() const { return mDpi; }
+
+    /**
+     * Converts a distance size from the specified units to pixels.
+     */
+    double convertDistanceToPixels( double size, QgsUnitTypes::RenderUnit unit ) const;
+
+    bool operator==( const QgsProfileGenerationContext &other ) const;
+    bool operator!=( const QgsProfileGenerationContext &other ) const;
+
+  private:
+
+    double mMaxErrorMapUnits = std::numeric_limits< double >::quiet_NaN();
+    double mMapUnitsPerDistancePixel = 1;
+    QgsDoubleRange mDistanceRange;
+    QgsDoubleRange mElevationRange;
+    double mDpi = 96;
 };
 
 /**
@@ -199,12 +321,25 @@ class CORE_EXPORT QgsAbstractProfileGenerator
     virtual ~QgsAbstractProfileGenerator();
 
     /**
+     * Returns a unique identifier representing the source of the profile.
+     *
+     * For generators associated with a map layer the source ID will match the layer's QgsMapLayer::id(). Other (non-map-layer) sources
+     * will have a different unique ID with its own custom interpretation.gen
+     */
+    virtual QString sourceId() const = 0;
+
+    /**
+     * Returns flags which reflect how the profile generator operates.
+     */
+    virtual Qgis::ProfileGeneratorFlags flags() const;
+
+    /**
      * Generate the profile (based on data stored in the class).
      *
      * Returns TRUE if the profile was generated successfully (i.e. the generation
      * was not canceled early).
      */
-    virtual bool generateProfile() = 0;
+    virtual bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) = 0;
 
     /**
      * Access to feedback object of the generator (may be NULLPTR)

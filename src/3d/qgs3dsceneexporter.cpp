@@ -251,6 +251,9 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
 void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const  QString &layerName )
 {
   const Qgs3DMapSettings &settings = terrain->map3D();
+  if ( !settings.terrainRenderingEnabled() )
+    return;
+
   QgsChunkNode *node = terrain->rootNode();
 
   QgsTerrainGenerator *generator = settings.terrainGenerator();

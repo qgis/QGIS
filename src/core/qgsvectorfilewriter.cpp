@@ -2337,12 +2337,12 @@ OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( QgsWkbTypes::Type ty
   return ogrType;
 }
 
-QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError()
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError() const
 {
   return mError;
 }
 
-QString QgsVectorFileWriter::errorMessage()
+QString QgsVectorFileWriter::errorMessage() const
 {
   return mErrorMessage;
 }

@@ -214,6 +214,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
       // selections
       mTemporalProperties->guessDefaultsFromFields( mFields );
     }
+
+    mElevationProperties->setDefaultsFromLayer( this );
   }
 
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { triggerRepaint(); } );
@@ -1898,6 +1900,11 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     // required so that source differs between memory layers
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
+  }
+  else if ( provider == QLatin1String( "hana" ) )
+  {
+    // update datasource from data provider computed one
+    mDataSource = mDataProvider->dataSourceUri( false );
   }
 
   connect( mDataProvider, &QgsVectorDataProvider::dataChanged, this, &QgsVectorLayer::emitDataChanged );

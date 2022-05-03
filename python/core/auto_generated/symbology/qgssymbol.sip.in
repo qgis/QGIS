@@ -311,7 +311,7 @@ Ends the rendering process. This should be called after rendering all desired fe
 .. seealso:: :py:func:`startRender`
 %End
 
-    void setColor( const QColor &color );
+    void setColor( const QColor &color ) const;
 %Docstring
 Sets the ``color`` for the symbol.
 
@@ -439,7 +439,7 @@ Returns ``True`` if the symbol has any components which use map unit based sizes
 .. versionadded:: 3.18
 %End
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) const;
 %Docstring
 Sets the units to use for sizes and widths within the symbol. Individual
 symbol definitions will interpret this in different ways, e.g., a marker symbol
@@ -462,7 +462,7 @@ a default constructed map unit scale is returned.
 .. seealso:: :py:func:`setMapUnitScale`
 %End
 
-    void setMapUnitScale( const QgsMapUnitScale &scale );
+    void setMapUnitScale( const QgsMapUnitScale &scale ) const;
 %Docstring
 Sets the map unit ``scale`` for the symbol.
 

@@ -1000,7 +1000,7 @@ CRSes to their new definitions.
 Set user hint for validation
 %End
 
-    QString validationHint();
+    QString validationHint() const;
 %Docstring
 Gets user hint for validation
 %End

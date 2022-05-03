@@ -49,7 +49,7 @@ Create a new 2.5D renderer from XML
 Gets the roof color
 %End
 
-    void setRoofColor( const QColor &roofColor );
+    void setRoofColor( const QColor &roofColor ) const;
 %Docstring
 Set the roof color
 %End
@@ -59,12 +59,12 @@ Set the roof color
 Gets the wall color
 %End
 
-    void setWallColor( const QColor &wallColor );
+    void setWallColor( const QColor &wallColor ) const;
 %Docstring
 Set the wall color
 %End
 
-    void setWallShadingEnabled( bool enabled );
+    void setWallShadingEnabled( bool enabled ) const;
 %Docstring
 Set wall shading enabled
 %End
@@ -79,7 +79,7 @@ Gets wall shading enabled
 Gets the shadow's color
 %End
 
-    void setShadowColor( const QColor &shadowColor );
+    void setShadowColor( const QColor &shadowColor ) const;
 %Docstring
 Set the shadow's color
 %End
@@ -89,7 +89,7 @@ Set the shadow's color
 Gets the shadow's spread distance in map units
 %End
 
-    void setShadowSpread( double shadowSpread );
+    void setShadowSpread( double shadowSpread ) const;
 %Docstring
 Set the shadow's spread distance in map units
 %End
@@ -106,7 +106,7 @@ we assume that the internals are not compatible and create a new default
 Is the shadow enabled
 %End
 
-    void setShadowEnabled( bool value );
+    void setShadowEnabled( bool value ) const;
 %Docstring
 Enable or disable the shadow
 %End

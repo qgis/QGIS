@@ -373,7 +373,7 @@ class CORE_EXPORT QgsLabelFeature
      *
      * \since QGIS 3.10
      */
-    const QgsSymbol *symbol() { return mSymbol; }
+    const QgsSymbol *symbol() const { return mSymbol; }
 
     /**
      * Sets the feature \a symbol associated with this label.

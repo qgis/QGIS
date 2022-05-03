@@ -929,7 +929,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Gets user hint for validation
      */
-    QString validationHint();
+    QString validationHint() const;
 
     /**
      * Update proj.4 parameters in our database from proj.4

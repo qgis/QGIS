@@ -63,17 +63,17 @@ namespace pal
       /**
        * \brief the number of object in problem
        */
-      int getNbObjects();
+      int getNbObjects() const;
 
       /**
        * \brief the number of objects which are labelled
        */
-      int getNbLabelledObjects();
+      int getNbLabelledObjects() const;
 
       /**
        *  \brief how many layersare labelled ?
        */
-      int getNbLayers();
+      int getNbLayers() const;
 
       /**
        * Returns the name of the labelled layer \a layerId.
@@ -83,12 +83,12 @@ namespace pal
       /**
        * Returns the number of object in layer \a layerId.
        */
-      int getLayerNbObjects( int layerId );
+      int getLayerNbObjects( int layerId ) const;
 
       /**
        * Returns the number of object in layer \a layerId which are labelled.
        */
-      int getLayerNbLabelledObjects( int layerId );
+      int getLayerNbLabelledObjects( int layerId ) const;
 
     private:
       int nbObjects;

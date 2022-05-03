@@ -261,7 +261,7 @@ std::vector< QgsLazDecoder::RequestedAttributeDetails > __prepareRequestedAttrib
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::ClassificationFlags, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "NIR" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( QLatin1String( "Infrared" ), Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::NIR, requestedAttribute.type(), requestedAttribute.size() ) );
     }
@@ -292,6 +292,7 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
   lazperf::las::point10 p10;
   lazperf::las::gpstime gps;
   lazperf::las::rgb rgb;
+  lazperf::las::nir14 nir;
   lazperf::las::point14 p14;
 
   bool isLas14 = ( lasPointFormat == 6 || lasPointFormat == 7 || lasPointFormat == 8 );
@@ -327,7 +328,7 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
     case 8: // base + rgb + nir
       p14.unpack( buf );
       rgb.unpack( buf + sizeof( lazperf::las::point14 ) );
-      // TODO: load NIR channel - need some testing data!
+      nir.unpack( buf + sizeof( lazperf::las::point14 ) + sizeof( lazperf::las::rgb ) );
       break;
 
     default:
@@ -398,7 +399,6 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
       {
         if ( lasPointFormat == 8 || lasPointFormat == 10 )
         {
-          lazperf::las::nir14 nir( buf + 36 );
           _lazStoreToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, nir.val );
         }
         else

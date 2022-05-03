@@ -92,7 +92,7 @@ Units are specified by :py:func:`~QgsSimpleFillSymbolLayer.offsetUnit`.
 .. seealso:: :py:func:`setOffsetUnit`
 %End
 
-    QPointF offset();
+    QPointF offset() const;
 %Docstring
 Returns the offset by which polygons will be translated during rendering.
 

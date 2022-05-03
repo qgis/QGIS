@@ -19,6 +19,7 @@
 #include "qgspostgresprovider.h"
 #include "qgspostgrestransaction.h"
 #include "qgslogger.h"
+#include "qgsdbquerylog.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgsexception.h"
@@ -292,12 +293,18 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
       QgsDebugMsgLevel( QStringLiteral( "fetching %1 features." ).arg( mFeatureQueueSize ), 4 );
 
       lock();
+
+      QgsDatabaseQueryLogWrapper logWrapper { fetch, mSource->mConnInfo, QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresFeatureIterator" ), QGS_QUERY_LOG_ORIGIN };
+
       if ( mConn->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
       {
-        QgsMessageLog::logMessage( QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName, mConn->PQerrorMessage() ), QObject::tr( "PostGIS" ) );
+        const QString error { QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName, mConn->PQerrorMessage() ) };
+        QgsMessageLog::logMessage( error, QObject::tr( "PostGIS" ) );
+        logWrapper.setError( error );
       }
 
       QgsPostgresResult queryResult;
+      long long fetchedRows { 0 };
       for ( ;; )
       {
         queryResult = mConn->PQgetResult();
@@ -313,6 +320,8 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
         int rows = queryResult.PQntuples();
         if ( rows == 0 )
           continue;
+        else
+          fetchedRows += rows;
 
         mLastFetch = rows < mFeatureQueueSize;
 
@@ -323,6 +332,11 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
         } // for each row in queue
       }
       unlock();
+
+      if ( fetchedRows > 0 )
+      {
+        logWrapper.setFetchedRows( fetchedRows );
+      }
 
 #if 0 //disabled dynamic queue size
       if ( timer.elapsed() > 500 && mFeatureQueueSize > 1 )
@@ -423,7 +437,7 @@ bool QgsPostgresFeatureIterator::rewind()
 
   // move cursor to first record
 
-  mConn->PQexecNR( QStringLiteral( "move absolute 0 in %1" ).arg( mCursorName ) );
+  mConn->LoggedPQexecNR( "QgsPostgresFeatureIterator", QStringLiteral( "move absolute 0 in %1" ).arg( mCursorName ) );
   mFeatureQueue.clear();
   mFetched = 0;
   mLastFetch = false;

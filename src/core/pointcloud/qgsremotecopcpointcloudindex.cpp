@@ -171,19 +171,24 @@ bool QgsRemoteCopcPointCloudIndex::isValid() const
 void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
 {
   QNetworkRequest nr( mUrl );
-  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
-  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   QByteArray queryRange = QStringLiteral( "bytes=%1-%2" ).arg( offset ).arg( offset + byteSize - 1 ).toLocal8Bit();
   nr.setRawHeader( "Range", queryRange );
-  QgsBlockingNetworkRequest req;
-  QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
-  if ( errCode != QgsBlockingNetworkRequest::NoError )
+
+  std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( nr ) );
+
+  QEventLoop loop;
+  connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  if ( reply->error() != QNetworkReply::NoError )
   {
     QgsDebugMsg( QStringLiteral( "Request failed: " ) + mUrl.toString() );
     return;
   }
-  const QgsNetworkReplyContent reply = req.reply();
-  QByteArray data = reply.content();
+
+  QByteArray data = reply->data();
 
   struct CopcVoxelKey
   {

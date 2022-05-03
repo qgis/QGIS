@@ -19,10 +19,12 @@
 
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsrangerequestcache.h"
 
 #include <QElapsedTimer>
 #include <QNetworkReply>
-
+#include <QStandardPaths>
+#include <QRegularExpression>
 
 /// @cond PRIVATE
 
@@ -133,6 +135,13 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
   QMap<QNetworkRequest::KnownHeaders, QVariant> headers;
   headers.insert( QNetworkRequest::ContentTypeHeader, reply->header( QNetworkRequest::ContentTypeHeader ) );
 
+  // Save loaded data to cache
+  int httpStatusCode = reply->attribute( QNetworkRequest::Attribute::HttpStatusCodeAttribute ).toInt();
+  if ( httpStatusCode == 206 && mManager->isRangeRequest( mRequest ) )
+  {
+    mManager->mRangesCache->registerEntry( mRequest, data );
+  }
+
   emit finished( data, reply->url(), attributes, headers, reply->rawHeaderPairs(), reply->error(), reply->errorString() );
 
   reply->deleteLater();
@@ -159,6 +168,21 @@ QgsTileDownloadManager::QgsTileDownloadManager()
   : mMutex( QMutex::Recursive )
 #endif
 {
+  mRangesCache.reset( new QgsRangeRequestCache );
+
+  const QgsSettings settings;
+  QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
+  if ( cacheDirectory.isEmpty() )
+    cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
+  if ( !cacheDirectory.endsWith( QDir::separator() ) )
+  {
+    cacheDirectory.push_back( QDir::separator() );
+  }
+  cacheDirectory += QStringLiteral( "http-ranges" );
+  const qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 256 * 1024 * 1024 ).toLongLong();
+
+  mRangesCache->setCacheDirectory( cacheDirectory );
+  mRangesCache->setCacheSize( cacheSize );
 }
 
 QgsTileDownloadManager::~QgsTileDownloadManager()
@@ -170,6 +194,13 @@ QgsTileDownloadManager::~QgsTileDownloadManager()
 QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest &request )
 {
   const QMutexLocker locker( &mMutex );
+
+  if ( isCachedRangeRequest( request ) )
+  {
+    QgsTileDownloadManagerReply *reply = new QgsTileDownloadManagerReply( this, request ); // lives in the same thread as the caller
+    QTimer::singleShot( 0, reply, &QgsTileDownloadManagerReply::cachedRangeRequestFinished );
+    return reply;
+  }
 
   if ( !mWorker )
   {
@@ -325,6 +356,21 @@ void QgsTileDownloadManager::signalQueueModified()
   QMetaObject::invokeMethod( mWorker, &QgsTileDownloadManagerWorker::queueUpdated, Qt::QueuedConnection );
 }
 
+bool QgsTileDownloadManager::isRangeRequest( const QNetworkRequest &request )
+{
+  if ( request.rawHeader( "Range" ).isEmpty() )
+    return false;
+  QRegularExpression regex( "^bytes=\\d+-\\d+$" );
+  QRegularExpressionMatch match = regex.match( QString::fromUtf8( request.rawHeader( "Range" ) ) );
+  return match.hasMatch();
+}
+
+bool QgsTileDownloadManager::isCachedRangeRequest( const QNetworkRequest &request )
+{
+  QNetworkRequest::CacheLoadControl loadControl = ( QNetworkRequest::CacheLoadControl ) request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt();
+  bool saveControl = request.attribute( QNetworkRequest::CacheSaveControlAttribute ).toBool();
+  return isRangeRequest( request ) && saveControl && loadControl != QNetworkRequest::AlwaysNetwork && mRangesCache->hasEntry( request );
+}
 
 ///
 
@@ -359,6 +405,15 @@ void QgsTileDownloadManagerReply::requestFinished( QByteArray data, QUrl url, co
   mRawHeaderPairs = rawHeaderPairs;
   mError = error;
   mErrorString = errorString;
+  emit finished();
+}
+
+void QgsTileDownloadManagerReply::cachedRangeRequestFinished()
+{
+  QgsDebugMsgLevel( QStringLiteral( "Tile download manager: internal range request reply loaded from cache: " ) + mRequest.url().toString(), 2 );
+  mHasFinished = true;
+  mData = mManager->mRangesCache->entry( mRequest );
+  mUrl = mRequest.url();
   emit finished();
 }
 

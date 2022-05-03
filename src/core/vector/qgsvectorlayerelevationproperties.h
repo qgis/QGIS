@@ -51,9 +51,12 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     bool hasElevation() const override;
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
+    void setDefaultsFromLayer( QgsMapLayer *layer ) override;
     QgsVectorLayerElevationProperties *clone() const override SIP_FACTORY;
+    QString htmlSummary() const override;
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+    bool showByDefaultInElevationProfilePlots() const override;
 
     /**
      * Returns the altitude clamping method, which dictates how feature heights are interpreted
@@ -69,7 +72,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \see clamping()
      */
-    void setClamping( Qgis::AltitudeClamping clamping ) { mClamping = clamping; }
+    void setClamping( Qgis::AltitudeClamping clamping );
 
     /**
      * Returns the altitude binding method, which determines how altitude is bound to individual vertices in features.
@@ -87,7 +90,21 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \see binding()
      */
-    void setBinding( Qgis::AltitudeBinding binding ) { mBinding = binding; }
+    void setBinding( Qgis::AltitudeBinding binding );
+
+    /**
+     * Returns the type of profile the layer represents.
+     *
+     * \see setType()
+     */
+    Qgis::VectorProfileType type() const { return mType; }
+
+    /**
+     * Sets the \a type of profile the layer represents.
+     *
+     * \see type()
+     */
+    void setType( Qgis::VectorProfileType type );
 
     /**
      * Returns TRUE if extrusion is enabled.
@@ -103,7 +120,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      * \see extrusionEnabled()
      * \see setExtrusionHeight()
      */
-    void setExtrusionEnabled( bool enabled ) { mEnableExtrusion = enabled; }
+    void setExtrusionEnabled( bool enabled );
 
     /**
      * Returns the feature extrusion height.
@@ -123,7 +140,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \see extrusionHeight()
      */
-    void setExtrusionHeight( double height ) { mExtrusionHeight = height; }
+    void setExtrusionHeight( double height );
 
     /**
      * Returns TRUE if layer symbology should be respected when rendering elevation profile plots.
@@ -143,7 +160,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      *
      * \see respectLayerSymbology()
      */
-    void setRespectLayerSymbology( bool enabled ) { mRespectLayerSymbology = enabled; }
+    void setRespectLayerSymbology( bool enabled );
 
     /**
      * Returns the symbol used to render lines for the layer in elevation profile plots.
@@ -223,6 +240,42 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
      */
     void setProfileMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns the symbology option used to render the vector profile in elevation profile plots.
+     *
+     * \note This setting is only used when type() is Qgis::VectorProfileType::ContinuousSurface.
+     *
+     * \see setProfileSymbology()
+     */
+    Qgis::ProfileSurfaceSymbology profileSymbology() const { return mSymbology; }
+
+    /**
+     * Sets the \a symbology option used to render the vector profile in elevation profile plots.
+     *
+     * \note This setting is only used when type() is Qgis::VectorProfileType::ContinuousSurface.
+     *
+     * \see setProfileSymbology()
+     */
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+
+    /**
+     * Returns TRUE if the marker symbol should also be shown in continuous surface plots.
+     *
+     * \note This setting is only used when type() is Qgis::VectorProfileType::ContinuousSurface.
+     *
+     * \see setShowMarkerSymbolInSurfacePlots()
+     */
+    bool showMarkerSymbolInSurfacePlots() const { return mShowMarkerSymbolInSurfacePlots; }
+
+    /**
+     * Sets whehter the marker symbol should also be shown in continuous surface plots.
+     *
+     * \note This setting is only used when type() is Qgis::VectorProfileType::ContinuousSurface.
+     *
+     * \see showMarkerSymbolInSurfacePlots()
+     */
+    void setShowMarkerSymbolInSurfacePlots( bool show );
+
   private:
 
     void setDefaultProfileLineSymbol( const QColor &color );
@@ -232,6 +285,8 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     Qgis::AltitudeClamping mClamping = Qgis::AltitudeClamping::Terrain;
     Qgis::AltitudeBinding mBinding = Qgis::AltitudeBinding::Centroid;
 
+    Qgis::VectorProfileType mType = Qgis::VectorProfileType::IndividualFeatures;
+
     bool mEnableExtrusion = false;
     double mExtrusionHeight = 0;
 
@@ -239,6 +294,8 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
     bool mRespectLayerSymbology = true;
+    Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
+    bool mShowMarkerSymbolInSurfacePlots = false;
 
 };
 

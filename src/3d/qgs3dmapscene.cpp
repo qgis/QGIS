@@ -21,8 +21,6 @@
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QPickingSettings>
 #include <Qt3DRender/QPickTriangleEvent>
-#include <Qt3DRender/QPointLight>
-#include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
@@ -130,8 +128,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::maxTerrainScreenErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
-  connect( &map, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapScene::updateLights );
-  connect( &map, &Qgs3DMapSettings::directionalLightsChanged, this, &Qgs3DMapScene::updateLights );
+  connect( &map, &Qgs3DMapSettings::lightSourcesChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
@@ -607,7 +604,7 @@ void Qgs3DMapScene::createTerrain()
 
 void Qgs3DMapScene::createTerrainDeferred()
 {
-  if ( mMap.terrainGenerator() )
+  if ( mMap.terrainRenderingEnabled() && mMap.terrainGenerator() )
   {
     double tile0width = mMap.terrainGenerator()->extent().width();
     int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
@@ -658,74 +655,11 @@ void Qgs3DMapScene::updateLights()
   for ( Qt3DCore::QEntity *entity : std::as_const( mLightEntities ) )
     entity->deleteLater();
   mLightEntities.clear();
-  for ( Qt3DCore::QEntity *entity : std::as_const( mLightOriginEntities ) )
-    entity->deleteLater();
-  mLightOriginEntities.clear();
 
-  auto createLightOriginEntity = [ = ]( QVector3D translation, const QColor & color )->Qt3DCore::QEntity *
+  const QList< QgsLightSource * > newLights = mMap.lightSources();
+  for ( const QgsLightSource *source : newLights )
   {
-    Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity;
-
-    Qt3DCore::QTransform *trLightOriginCenter = new Qt3DCore::QTransform;
-    trLightOriginCenter->setTranslation( translation );
-    originEntity->addComponent( trLightOriginCenter );
-
-    Qt3DExtras::QPhongMaterial *materialLightOriginCenter = new Qt3DExtras::QPhongMaterial;
-    materialLightOriginCenter->setAmbient( color );
-    originEntity->addComponent( materialLightOriginCenter );
-
-    Qt3DExtras::QSphereMesh *rendererLightOriginCenter = new Qt3DExtras::QSphereMesh;
-    rendererLightOriginCenter->setRadius( 20 );
-    originEntity->addComponent( rendererLightOriginCenter );
-
-    originEntity->setEnabled( true );
-    originEntity->setParent( this );
-
-    return originEntity;
-  };
-
-  const auto newPointLights = mMap.pointLights();
-  for ( const QgsPointLightSettings &pointLightSettings : newPointLights )
-  {
-    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
-    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
-    lightTransform->setTranslation( QVector3D( pointLightSettings.position().x(),
-                                    pointLightSettings.position().y(),
-                                    pointLightSettings.position().z() ) );
-
-    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
-    light->setColor( pointLightSettings.color() );
-    light->setIntensity( pointLightSettings.intensity() );
-
-    light->setConstantAttenuation( pointLightSettings.constantAttenuation() );
-    light->setLinearAttenuation( pointLightSettings.linearAttenuation() );
-    light->setQuadraticAttenuation( pointLightSettings.quadraticAttenuation() );
-
-    lightEntity->addComponent( light );
-    lightEntity->addComponent( lightTransform );
-    lightEntity->setParent( this );
-    mLightEntities << lightEntity;
-
-    if ( mMap.showLightSourceOrigins() )
-      mLightOriginEntities << createLightOriginEntity( lightTransform->translation(), pointLightSettings.color() );
-  }
-
-  const auto newDirectionalLights = mMap.directionalLights();
-  for ( const QgsDirectionalLightSettings &directionalLightSettings : newDirectionalLights )
-  {
-    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
-    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
-
-    Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
-    light->setColor( directionalLightSettings.color() );
-    light->setIntensity( directionalLightSettings.intensity() );
-    QgsVector3D direction = directionalLightSettings.direction();
-    light->setWorldDirection( QVector3D( direction.x(), direction.y(), direction.z() ) );
-
-    lightEntity->addComponent( light );
-    lightEntity->addComponent( lightTransform );
-    lightEntity->setParent( this );
-    mLightEntities << lightEntity;
+    mLightEntities.append( source->createEntity( mMap, this ) );
   }
 
   onShadowSettingsChanged();
@@ -1093,15 +1027,24 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 {
   QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
 
-  QList<QgsDirectionalLightSettings> directionalLights = mMap.directionalLights();
+  const QList< QgsLightSource * > lightSources = mMap.lightSources();
+  QList< QgsDirectionalLightSettings * > directionalLightSources;
+  for ( QgsLightSource *source : lightSources )
+  {
+    if ( source->type() == Qgis::LightSourceType::Directional )
+    {
+      directionalLightSources << qgis::down_cast< QgsDirectionalLightSettings * >( source );
+    }
+  }
+
   QgsShadowSettings shadowSettings = mMap.shadowSettings();
   int selectedLight = shadowSettings.selectedDirectionalLight();
-  if ( shadowSettings.renderShadows() && selectedLight >= 0 && selectedLight < directionalLights.count() )
+  if ( shadowSettings.renderShadows() && selectedLight >= 0 && selectedLight < directionalLightSources.count() )
   {
     shadowRenderingFrameGraph->setShadowRenderingEnabled( true );
     shadowRenderingFrameGraph->setShadowBias( shadowSettings.shadowBias() );
     shadowRenderingFrameGraph->setShadowMapResolution( shadowSettings.shadowMapResolution() );
-    QgsDirectionalLightSettings light = directionalLights[selectedLight];
+    QgsDirectionalLightSettings light = *directionalLightSources.at( selectedLight );
     shadowRenderingFrameGraph->setupDirectionalLight( light, shadowSettings.maximumShadowRenderingDistance() );
   }
   else
@@ -1213,13 +1156,16 @@ QgsRectangle Qgs3DMapScene::sceneExtent()
     extent.combineExtentWith( layerExtent );
   }
 
-  if ( QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator() )
+  if ( mMap.terrainRenderingEnabled() )
   {
-    QgsRectangle terrainExtent = terrainGenerator->extent();
-    QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
-    terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
-    terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
-    extent.combineExtentWith( terrainExtent );
+    if ( QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator() )
+    {
+      QgsRectangle terrainExtent = terrainGenerator->extent();
+      QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
+      terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
+      terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
+      extent.combineExtentWith( terrainExtent );
+    }
   }
 
   return extent;

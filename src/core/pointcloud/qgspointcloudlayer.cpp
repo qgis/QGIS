@@ -38,6 +38,7 @@
 #include "qgspointcloudstatscalculationtask.h"
 #include "qgsmessagelog.h"
 #include "qgstaskmanager.h"
+#include "qgspointcloudlayerprofilegenerator.h"
 
 #include <QUrl>
 
@@ -105,6 +106,11 @@ QgsRectangle QgsPointCloudLayer::extent() const
 QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
   return new QgsPointCloudLayerRenderer( this, rendererContext );
+}
+
+QgsAbstractProfileGenerator *QgsPointCloudLayer::createProfileGenerator( const QgsProfileRequest &request )
+{
+  return new QgsPointCloudLayerProfileGenerator( this, request );
 }
 
 QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider()

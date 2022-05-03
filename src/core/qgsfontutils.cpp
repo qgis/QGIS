@@ -66,6 +66,37 @@ bool QgsFontUtils::fontFamilyHasStyle( const QString &family, const QString &sty
   return false;
 }
 
+QString QgsFontUtils::resolveFontStyleName( const QFont &font )
+{
+  auto styleNameIsMatch = [&font]( const QString & candidate ) -> bool
+  {
+    // confirm that style name matches bold/italic flags
+    QFont testFont( font.family() );
+    testFont.setStyleName( candidate );
+    return testFont.italic() == font.italic() && testFont.weight() == font.weight();
+  };
+
+  // attempt 1
+  const QFontInfo fontInfo( font );
+  QString styleName = fontInfo.styleName();
+  if ( !styleName.isEmpty() )
+  {
+    if ( styleNameIsMatch( styleName ) )
+      return styleName;
+  }
+
+  // attempt 2
+  styleName = QFontDatabase().styleString( font );
+  if ( !styleName.isEmpty() )
+  {
+    if ( styleNameIsMatch( styleName ) )
+      return styleName;
+  }
+
+  // failed
+  return QString();
+}
+
 bool QgsFontUtils::fontFamilyMatchOnSystem( const QString &family, QString *chosen, bool *match )
 {
   const QFontDatabase fontDB;

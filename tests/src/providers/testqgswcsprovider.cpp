@@ -27,6 +27,7 @@
 #include <qgsrasterchecker.h>
 #include <qgsproviderregistry.h>
 #include <qgsapplication.h>
+#include "qgsprovidermetadata.h"
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
@@ -43,6 +44,7 @@ class TestQgsWcsProvider: public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
+    void providerUriUpdates();
     void read();
   private:
     bool read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report );
@@ -161,6 +163,34 @@ bool TestQgsWcsProvider::read( const QString &identifier, const QString &wcsUri,
   report += checker.report();
   return ok;
 }
+
+void TestQgsWcsProvider::providerUriUpdates()
+{
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( "wcs" );
+  QString uriString = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
+                                      "layers=testlayer&styles&"
+                                      "url=http://localhost:8380/mapserv&"
+                                      "testParam=true" );
+
+  QVariantMap parts = metadata->decodeUri( uriString );
+  QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) },  { QString( "dpiMode" ), QVariant( "7" ) },
+    { QString( "testParam" ), QVariant( "true" ) },  { QString( "layers" ), QVariant( "testlayer" ) },
+    { QString( "styles" ), QString() },  { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
+  QCOMPARE( parts, expectedParts );
+
+  parts["testParam"] = QVariant( "false" );
+
+  QCOMPARE( parts["testParam"], QVariant( "false" ) );
+
+  QString updatedUri = metadata->encodeUri( parts );
+  QString expectedUri = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
+                                        "layers=testlayer&styles&"
+                                        "testParam=false&"
+                                        "url=http://localhost:8380/mapserv" );
+  QCOMPARE( updatedUri, expectedUri );
+
+}
+
 
 QGSTEST_MAIN( TestQgsWcsProvider )
 #include "testqgswcsprovider.moc"

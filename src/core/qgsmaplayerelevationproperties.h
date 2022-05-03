@@ -120,6 +120,20 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 
     /**
+     * Sets default properties based on sensible choices for the given map \a layer.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void setDefaultsFromLayer( QgsMapLayer *layer );
+
+    /**
+     * Returns a HTML formatted summary of the properties.
+     *
+     * \since QGIS 3.26
+     */
+    virtual QString htmlSummary() const;
+
+    /**
      * Creates a clone of the properties.
      *
      * \since QGIS 3.26
@@ -145,6 +159,17 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
     /**
+     * Returns TRUE if the layer should be visible by default in newly created elevation
+     * profile plots.
+     *
+     * Subclasses should override this with logic which determines whether the layer is
+     * likely desirable to be initially checked in these plots.
+     *
+     * \since QGIS 3.26
+     */
+    virtual bool showByDefaultInElevationProfilePlots() const;
+
+    /**
      * Returns the z offset, which is a fixed offset amount which should be added to z values from
      * the layer.
      *
@@ -162,7 +187,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      *
      * \see zOffset()
      */
-    void setZOffset( double offset ) { mZOffset = offset; }
+    void setZOffset( double offset );
 
     /**
      * Returns the z scale, which is a scaling factor which should be applied to z values from
@@ -188,7 +213,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      *
      * \see zScale()
      */
-    void setZScale( double scale ) { mZScale = scale; }
+    void setZScale( double scale );
 
     /**
      * Returns a reference to the object's property collection, used for data defined overrides.
@@ -215,7 +240,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      * \see Property
      * \since QGIS 3.26
      */
-    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
 
     /**
      * Returns the definitions for data defined properties available for use in elevation properties.
@@ -227,9 +252,45 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
   signals:
 
     /**
-     * Emitted when the elevation properties have changed.
+     * Emitted when any of the elevation properties have changed.
+     *
+     * See renderingPropertyChanged() and profileGenerationPropertyChanged() for more fine-grained signals.
      */
     void changed();
+
+    /**
+     * Emitted when the z offset changes.
+     *
+     * \since QGIS 3.26
+     */
+    void zOffsetChanged();
+
+    /**
+     * Emitted when the z scale changes.
+     *
+     * \since QGIS 3.26
+     */
+    void zScaleChanged();
+
+    /**
+     * Emitted when any of the elevation properties which relate solely to presentation of elevation
+     * results have changed.
+     *
+     * \see changed()
+     * \see profileGenerationPropertyChanged()
+     * \since QGIS 3.26
+     */
+    void profileRenderingPropertyChanged();
+
+    /**
+     * Emitted when any of the elevation properties which relate solely to generation of elevation
+     * profiles have changed.
+     *
+     * \see changed()
+     * \see profileRenderingPropertyChanged()
+     * \since QGIS 3.26
+     */
+    void profileGenerationPropertyChanged();
 
   protected:
     //! Z scale

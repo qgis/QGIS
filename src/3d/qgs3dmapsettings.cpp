@@ -64,8 +64,6 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShowCameraRotationCenter( other.mShowCameraRotationCenter )
   , mShowLightSources( other.mShowLightSources )
   , mShowLabels( other.mShowLabels )
-  , mPointLights( other.mPointLights )
-  , mDirectionalLights( other.mDirectionalLights )
   , mFieldOfView( other.mFieldOfView )
   , mProjectionType( other.mProjectionType )
   , mCameraNavigationMode( other.mCameraNavigationMode )
@@ -99,6 +97,12 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
     mRenderers << renderer->clone();
   }
 
+  for ( QgsLightSource *source : std::as_const( other.mLightSources ) )
+  {
+    if ( source )
+      mLightSources << source->clone();
+  }
+
   connect( this, &Qgs3DMapSettings::settingsChanged, [&]()
   {
     QgsProject::instance()->setDirty();
@@ -109,6 +113,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
 Qgs3DMapSettings::~Qgs3DMapSettings()
 {
   qDeleteAll( mRenderers );
+  qDeleteAll( mLightSources );
 }
 
 void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -158,38 +163,53 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mTerrainMapTheme = elemTerrain.attribute( QStringLiteral( "map-theme" ) );
   mShowLabels = elemTerrain.attribute( QStringLiteral( "show-labels" ), QStringLiteral( "0" ) ).toInt();
 
-  mPointLights.clear();
-  QDomElement elemPointLights = elem.firstChildElement( QStringLiteral( "point-lights" ) );
-  if ( !elemPointLights.isNull() )
+  qDeleteAll( mLightSources );
+  mLightSources.clear();
+  const QDomElement lightsElem = elem.firstChildElement( QStringLiteral( "lights" ) );
+  if ( !lightsElem.isNull() )
   {
-    QDomElement elemPointLight = elemPointLights.firstChildElement( QStringLiteral( "point-light" ) );
-    while ( !elemPointLight.isNull() )
+    const QDomNodeList lightNodes = lightsElem.childNodes();
+    for ( int i = 0; i < lightNodes.size(); ++i )
     {
-      QgsPointLightSettings pointLight;
-      pointLight.readXml( elemPointLight );
-      mPointLights << pointLight;
-      elemPointLight = elemPointLight.nextSiblingElement( QStringLiteral( "point-light" ) );
+      const QDomElement lightElement = lightNodes.at( i ).toElement();
+      if ( QgsLightSource *light = QgsLightSource::createFromXml( lightElement, context ) )
+        mLightSources << light;
     }
   }
   else
   {
-    // QGIS <= 3.4 did not have light configuration
-    QgsPointLightSettings defaultLight;
-    defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-    mPointLights << defaultLight;
-  }
-
-  mDirectionalLights.clear();
-  QDomElement elemDirectionalLights = elem.firstChildElement( QStringLiteral( "directional-lights" ) );
-  if ( !elemDirectionalLights.isNull() )
-  {
-    QDomElement elemDirectionalLight = elemDirectionalLights.firstChildElement( QStringLiteral( "directional-light" ) );
-    while ( !elemDirectionalLight.isNull() )
+    // older project format
+    QDomElement elemPointLights = elem.firstChildElement( QStringLiteral( "point-lights" ) );
+    if ( !elemPointLights.isNull() )
     {
-      QgsDirectionalLightSettings directionalLight;
-      directionalLight.readXml( elemDirectionalLight );
-      mDirectionalLights << directionalLight;
-      elemDirectionalLight = elemDirectionalLight.nextSiblingElement( QStringLiteral( "directional-light" ) );
+      QDomElement elemPointLight = elemPointLights.firstChildElement( QStringLiteral( "point-light" ) );
+      while ( !elemPointLight.isNull() )
+      {
+        std::unique_ptr< QgsPointLightSettings > pointLight = std::make_unique< QgsPointLightSettings >();
+        pointLight->readXml( elemPointLight, context );
+        mLightSources << pointLight.release();
+        elemPointLight = elemPointLight.nextSiblingElement( QStringLiteral( "point-light" ) );
+      }
+    }
+    else
+    {
+      // QGIS <= 3.4 did not have light configuration
+      std::unique_ptr< QgsPointLightSettings > defaultLight = std::make_unique< QgsPointLightSettings >();
+      defaultLight->setPosition( QgsVector3D( 0, 1000, 0 ) );
+      mLightSources << defaultLight.release();
+    }
+
+    QDomElement elemDirectionalLights = elem.firstChildElement( QStringLiteral( "directional-lights" ) );
+    if ( !elemDirectionalLights.isNull() )
+    {
+      QDomElement elemDirectionalLight = elemDirectionalLights.firstChildElement( QStringLiteral( "directional-light" ) );
+      while ( !elemDirectionalLight.isNull() )
+      {
+        std::unique_ptr< QgsDirectionalLightSettings > directionalLight = std::make_unique< QgsDirectionalLightSettings >();
+        directionalLight->readXml( elemDirectionalLight, context );
+        mLightSources << directionalLight.release();
+        elemDirectionalLight = elemDirectionalLight.nextSiblingElement( QStringLiteral( "directional-light" ) );
+      }
     }
   }
 
@@ -349,21 +369,15 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.setAttribute( QStringLiteral( "map-theme" ), mTerrainMapTheme );
   elemTerrain.setAttribute( QStringLiteral( "show-labels" ), mShowLabels ? 1 : 0 );
 
-  QDomElement elemPointLights = doc.createElement( QStringLiteral( "point-lights" ) );
-  for ( const QgsPointLightSettings &pointLight : std::as_const( mPointLights ) )
   {
-    QDomElement elemPointLight = pointLight.writeXml( doc );
-    elemPointLights.appendChild( elemPointLight );
+    QDomElement elemLights = doc.createElement( QStringLiteral( "lights" ) );
+    for ( const QgsLightSource *light : mLightSources )
+    {
+      const QDomElement elemLight = light->writeXml( doc, context );
+      elemLights.appendChild( elemLight );
+    }
+    elem.appendChild( elemLights );
   }
-  elem.appendChild( elemPointLights );
-
-  QDomElement elemDirectionalLights = doc.createElement( QStringLiteral( "directional-lights" ) );
-  for ( const QgsDirectionalLightSettings &directionalLight : std::as_const( mDirectionalLights ) )
-  {
-    QDomElement elemDirectionalLight = directionalLight.writeXml( doc );
-    elemDirectionalLights.appendChild( elemDirectionalLight );
-  }
-  elem.appendChild( elemDirectionalLights );
 
   QDomElement elemMapLayers = doc.createElement( QStringLiteral( "layers" ) );
   for ( const QgsMapLayerRef &layerRef : mLayers )
@@ -774,22 +788,19 @@ void Qgs3DMapSettings::setEyeDomeLightingDistance( int distance )
   emit eyeDomeLightingDistanceChanged();
 }
 
-void Qgs3DMapSettings::setPointLights( const QList<QgsPointLightSettings> &pointLights )
+QList<QgsLightSource *> Qgs3DMapSettings::lightSources() const
 {
-  if ( mPointLights == pointLights )
-    return;
-
-  mPointLights = pointLights;
-  emit pointLightsChanged();
+  return mLightSources;
 }
 
-void Qgs3DMapSettings::setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights )
+void Qgs3DMapSettings::setLightSources( const QList<QgsLightSource *> &lights )
 {
-  if ( mDirectionalLights == directionalLights )
-    return;
+  qDeleteAll( mLightSources );
+  mLightSources = lights;
 
-  mDirectionalLights = directionalLights;
   emit directionalLightsChanged();
+  emit pointLightsChanged();
+  emit lightSourcesChanged();
 }
 
 void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
@@ -920,8 +931,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::directionalLightsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::lightSourcesChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapSettings::settingsChanged );

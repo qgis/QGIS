@@ -30,11 +30,6 @@ QgsProviderRegistry::WidgetMode QgsAbstractDataSourceWidget::widgetMode() const
   return mWidgetMode;
 }
 
-const QgsMapCanvas *QgsAbstractDataSourceWidget::mapCanvas() const
-{
-  return mMapCanvas;
-}
-
 QgsBrowserModel *QgsAbstractDataSourceWidget::browserModel()
 {
   return mBrowserModel;
@@ -56,11 +51,6 @@ void QgsAbstractDataSourceWidget::setupButtons( QDialogButtonBox *buttonBox )
   QPushButton *closeButton = buttonBox->button( QDialogButtonBox::Close );
   closeButton->setToolTip( tr( "Close this dialog without adding any layer" ) );
   connect( closeButton, &QPushButton::clicked, this, &QgsAbstractDataSourceWidget::reject );
-}
-
-void QgsAbstractDataSourceWidget::setMapCanvas( const QgsMapCanvas *mapCanvas )
-{
-  mMapCanvas = mapCanvas;
 }
 
 void QgsAbstractDataSourceWidget::setBrowserModel( QgsBrowserModel *model )

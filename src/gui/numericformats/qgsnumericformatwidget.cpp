@@ -20,6 +20,7 @@
 #include "qgsbearingnumericformat.h"
 #include "qgsscientificnumericformat.h"
 #include "qgsfractionnumericformat.h"
+#include "qgscoordinatenumericformat.h"
 #include "qgsgui.h"
 #include "qgis.h"
 #include <QDialogButtonBox>
@@ -215,6 +216,124 @@ QgsBearingNumericFormat *QgsBearingNumericFormatDialog::format()
 {
   return static_cast< QgsBearingNumericFormat * >( mWidget->format() );
 }
+
+
+
+
+
+//
+// QgsGeographicCoordinateNumericFormatWidget
+//
+
+QgsGeographicCoordinateNumericFormatWidget::QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, bool hidePrecisionControl, QWidget *parent )
+  : QgsNumericFormatWidget( parent )
+{
+  setupUi( this );
+
+  mDecimalsSpinBox->setClearValue( 6 );
+  mFormatComboBox->addItem( QObject::tr( "Decimal Degrees" ), static_cast< int >( QgsGeographicCoordinateNumericFormat::AngleFormat::DecimalDegrees ) );
+  mFormatComboBox->addItem( QObject::tr( "Degrees, Minutes" ), static_cast< int >( QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutes ) );
+  mFormatComboBox->addItem( QObject::tr( "Degrees, Minutes, Seconds" ), static_cast< int >( QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutesSeconds ) );
+
+  if ( hidePrecisionControl )
+  {
+    mLabelDecimalPlaces->hide();
+    mDecimalsSpinBox->hide();
+  }
+  setFormat( format->clone() );
+
+  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFormat->setShowTrailingZeros( checked );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mShowDirectionalSuffixCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFormat->setShowDirectionalSuffix( checked );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mShowLeadingZerosCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFormat->setShowLeadingZeros( checked );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mShowLeadingZerosForDegreesCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFormat->setShowDegreeLeadingZeros( checked );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [ = ]( int value )
+  {
+    mFormat->setNumberDecimalPlaces( value );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    mFormat->setAngleFormat( static_cast < QgsGeographicCoordinateNumericFormat::AngleFormat >( mFormatComboBox->currentData().toInt() ) );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+}
+
+QgsGeographicCoordinateNumericFormatWidget::~QgsGeographicCoordinateNumericFormatWidget() = default;
+
+void QgsGeographicCoordinateNumericFormatWidget::setFormat( QgsNumericFormat *format )
+{
+  mFormat.reset( static_cast< QgsGeographicCoordinateNumericFormat * >( format ) );
+
+  mBlockSignals = true;
+  mDecimalsSpinBox->setValue( mFormat->numberDecimalPlaces() );
+  mShowTrailingZerosCheckBox->setChecked( mFormat->showTrailingZeros() );
+  mShowDirectionalSuffixCheckBox->setChecked( mFormat->showDirectionalSuffix() );
+  mShowLeadingZerosCheckBox->setChecked( mFormat->showLeadingZeros() );
+  mShowLeadingZerosForDegreesCheckBox->setChecked( mFormat->showDegreeLeadingZeros() );
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mFormat->angleFormat() ) ) );
+  mBlockSignals = false;
+}
+
+QgsNumericFormat *QgsGeographicCoordinateNumericFormatWidget::format()
+{
+  return mFormat->clone();
+}
+
+//
+// QgsGeographicCoordinateNumericFormatDialog
+//
+
+QgsGeographicCoordinateNumericFormatDialog::QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, bool hidePrecisionControl, QWidget *parent )
+  : QDialog( parent )
+{
+  setLayout( new QVBoxLayout() );
+  mWidget = new QgsGeographicCoordinateNumericFormatWidget( format, hidePrecisionControl );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
+
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+
+  layout()->addWidget( mWidget );
+  layout()->addWidget( buttonBox );
+
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
+  setObjectName( QStringLiteral( "QgsGeographicCoordinateNumericFormatDialog" ) );
+  QgsGui::enableAutoGeometryRestore( this );
+}
+
+QgsGeographicCoordinateNumericFormat *QgsGeographicCoordinateNumericFormatDialog::format()
+{
+  return static_cast< QgsGeographicCoordinateNumericFormat * >( mWidget->format() );
+}
+
 
 
 

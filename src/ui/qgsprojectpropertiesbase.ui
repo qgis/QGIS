@@ -642,7 +642,52 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_18">
-                  <item row="1" column="1">
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="label_34">
+                    <property name="text">
+                     <string>Bearing format</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_26">
+                    <property name="text">
+                     <string>Coordinate precision</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="3,6">
+                    <item>
+                     <widget class="QPushButton" name="mCustomizeBearingFormatButton">
+                      <property name="text">
+                       <string>Customize…</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_8">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_25">
+                    <property name="text">
+                     <string>Display coordinates using</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
                    <widget class="QFrame" name="mFramePrecision">
                     <layout class="QHBoxLayout" name="horizontalLayout_12">
                      <item>
@@ -691,17 +736,37 @@
                     </layout>
                    </widget>
                   </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_31">
+                    <property name="text">
+                     <string>Coordinate order</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="3" column="1">
-                   <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="3,6">
+                   <widget class="QComboBox" name="mCoordinateOrderComboBox"/>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QComboBox" name="mCoordinateDisplayComboBox"/>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_38">
+                    <property name="text">
+                     <string>Coordinate format</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <layout class="QHBoxLayout" name="horizontalLayout_20" stretch="3,6">
                     <item>
-                     <widget class="QPushButton" name="mCustomizeBearingFormatButton">
+                     <widget class="QPushButton" name="mCustomizeCoordinateFormatButton">
                       <property name="text">
                        <string>Customize…</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <spacer name="horizontalSpacer_8">
+                     <spacer name="horizontalSpacer_9">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -714,40 +779,6 @@
                      </spacer>
                     </item>
                    </layout>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_26">
-                    <property name="text">
-                     <string>Coordinate precision</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QComboBox" name="mCoordinateDisplayComboBox"/>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_34">
-                    <property name="text">
-                     <string>Bearing format</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_25">
-                    <property name="text">
-                     <string>Display coordinates using</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_31">
-                    <property name="text">
-                     <string>Coordinate order</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QComboBox" name="mCoordinateOrderComboBox"/>
                   </item>
                  </layout>
                 </widget>
@@ -1490,8 +1521,8 @@
          </widget>
          <widget class="QWidget" name="mTab_DataSources">
           <layout class="QGridLayout" name="mTab_DataSourcesGridLayout">
-           <item row="1" column="0" colspan="2">
-            <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
+           <item row="1" column="0">
+            <widget class="QgsCollapsibleGroupBox" name="mLayerCapabilitiesGrpBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -1554,8 +1585,8 @@
              </layout>
             </widget>
            </item>
-           <item row="0" column="0" colspan="2">
-            <widget class="QGroupBox" name="groupBox_3">
+           <item row="0" column="0">
+            <widget class="QGroupBox" name="mEditingBehaviorGrpBox">
              <property name="title">
               <string>Editing Behavior</string>
              </property>
@@ -1570,7 +1601,20 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="2">
+              <item row="0" column="2">
+               <spacer name="horizontalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0" colspan="3">
                <widget class="QCheckBox" name="mEvaluateDefaultValues">
                 <property name="toolTip">
                  <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres, GPKG, spatialite and oracle.</string>
@@ -1580,7 +1624,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0" colspan="2">
+              <item row="2" column="0" colspan="3">
                <widget class="QCheckBox" name="mCheckRememberEditStatus">
                 <property name="text">
                  <string>Remember editable layer status between sessions</string>
@@ -1590,8 +1634,8 @@
              </layout>
             </widget>
            </item>
-           <item row="2" column="0" colspan="2">
-            <widget class="QGroupBox" name="groupBox_8">
+           <item row="2" column="0">
+            <widget class="QGroupBox" name="mDatasourcesAdvancedSettingsGrpBox">
              <property name="title">
               <string>Advanced Settings</string>
              </property>
@@ -3354,6 +3398,7 @@
   <tabstop>mDistanceUnitsCombo</tabstop>
   <tabstop>mAreaUnitsCombo</tabstop>
   <tabstop>mCoordinateDisplayComboBox</tabstop>
+  <tabstop>mCustomizeCoordinateFormatButton</tabstop>
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>
@@ -3472,7 +3517,6 @@
   <tabstop>mCalculateFromLayerButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

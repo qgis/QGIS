@@ -606,7 +606,7 @@ bool QgsServerSettings::getPrintDisabled() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT ).toBool();
 }
 
-bool QgsServerSettings::logProfile()
+bool QgsServerSettings::logProfile() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_LOG_PROFILE, false ).toBool();
 }

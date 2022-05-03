@@ -320,7 +320,7 @@ void TestQgs3DRendering::testTerrainShading()
   QgsPointLightSettings defaultLight;
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   defaultLight.setIntensity( 0.5 );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( {defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
@@ -383,7 +383,7 @@ void TestQgs3DRendering::testExtrudedPolygons()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( {defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -435,7 +435,7 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -488,7 +488,7 @@ void TestQgs3DRendering::testPolygonsEdges()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -646,7 +646,7 @@ void TestQgs3DRendering::testBufferedLineRendering()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -693,7 +693,7 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -762,7 +762,7 @@ void TestQgs3DRendering::testMesh()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -803,7 +803,7 @@ void TestQgs3DRendering::testMesh_datasetOnFaces()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -924,7 +924,7 @@ void TestQgs3DRendering::testRuleBasedRenderer()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );

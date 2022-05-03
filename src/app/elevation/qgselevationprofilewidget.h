@@ -22,6 +22,11 @@
 #include "qgis_app.h"
 #include "qgsgeometry.h"
 #include "qobjectuniqueptr.h"
+#include "qgssettingsentryimpl.h"
+
+#include <QWidgetAction>
+#include <QElapsedTimer>
+#include <QTimer>
 
 class QgsDockableWidgetHelper;
 class QgsMapCanvas;
@@ -35,11 +40,20 @@ class QgsRubberBand;
 class QgsPlotToolPan;
 class QgsPlotToolZoom;
 class QgsPlotToolXAxisZoom;
+class QgsDoubleSpinBox;
+class QgsElevationProfileWidgetSettingsAction;
+class QgsElevationProfileLayerTreeView;
+class QgsLayerTree;
+class QgsLayerTreeRegistryBridge;
 
 class QgsElevationProfileWidget : public QWidget
 {
     Q_OBJECT
   public:
+
+    static const inline QgsSettingsEntryDouble settingTolerance = QgsSettingsEntryDouble( QStringLiteral( "tolerance" ), QgsSettings::Prefix::ELEVATION_PROFILE, 0.1, QStringLiteral( "Tolerance distance for elevation profile plots" ), Qgis::SettingsOptions(), 0 );
+    static const inline QgsSettingsEntryBool settingShowLayerTree = QgsSettingsEntryBool( QStringLiteral( "show-layer-tree" ), QgsSettings::Prefix::ELEVATION_PROFILE, true, QStringLiteral( "Whether the layer tree should be shown for elevation profile plots" ) );
+
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();
 
@@ -59,26 +73,38 @@ class QgsElevationProfileWidget : public QWidget
     void toggleDockModeRequested( bool docked );
 
   private slots:
-    void onMainCanvasLayersChanged();
+    void populateInitialLayers();
+    void updateCanvasLayers();
     void onTotalPendingJobsCountChanged( int count );
-    void setProfileCurve( const QgsGeometry &curve );
+    void setProfileCurve( const QgsGeometry &curve, bool resetView );
     void onCanvasPointHovered( const QgsPointXY &point );
     void updatePlot();
     void scheduleUpdate();
     void clear();
     void exportAsPdf();
     void exportAsImage();
+    void nudgeLeft();
+    void nudgeRight();
+    void nudgeCurve( Qgis::BufferSide side );
 
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
 
     QString mCanvasName;
     QgsMapCanvas *mMainCanvas = nullptr;
+
     QProgressBar *mProgressPendingJobs = nullptr;
+    QElapsedTimer mLastJobTime;
+    double mLastJobTimeSeconds = 0;
+    QTimer mJobProgressBarTimer;
+    QMetaObject::Connection mJobProgressBarTimerConnection;
+
     QMenu *mOptionsMenu = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QAction *mCaptureCurveAction = nullptr;
     QAction *mCaptureCurveFromFeatureAction = nullptr;
+    QAction *mNudgeLeftAction = nullptr;
+    QAction *mNudgeRightAction = nullptr;
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;
@@ -87,14 +113,36 @@ class QgsElevationProfileWidget : public QWidget
 
     QObjectUniquePtr<QgsRubberBand> mMapPointRubberBand;
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
+    QObjectUniquePtr<QgsRubberBand> mToleranceRubberBand;
 
     QTimer *mSetCurveTimer = nullptr;
     bool mUpdateScheduled = false;
-    QgsRubberBand *createRubberBand();
+    void createOrUpdateRubberBands();
 
     QgsPlotToolPan *mPanTool = nullptr;
     QgsPlotToolXAxisZoom *mXAxisZoomTool = nullptr;
     QgsPlotToolZoom *mZoomTool = nullptr;
+
+    QgsElevationProfileWidgetSettingsAction *mSettingsAction = nullptr;
+
+    std::unique_ptr< QgsLayerTree > mLayerTree;
+    QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
+    QgsElevationProfileLayerTreeView *mLayerTreeView = nullptr;
+};
+
+
+class QgsElevationProfileWidgetSettingsAction: public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+
+    QgsElevationProfileWidgetSettingsAction( QWidget *parent = nullptr );
+
+    QgsDoubleSpinBox *toleranceSpinBox() { return mToleranceWidget; }
+
+  private:
+    QgsDoubleSpinBox *mToleranceWidget = nullptr;
 };
 
 #endif // QGSELEVATIONPROFILEWIDGET_H

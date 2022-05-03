@@ -47,6 +47,10 @@ Triggered when the provider's connections need to be refreshed
     virtual void reset();
 
 
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas );
+
+
+
   protected slots:
     void showError( const QString &title, const QString &format, const QString &error );
 %Docstring
@@ -177,6 +181,15 @@ Returns currently selected time
     QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
 %Docstring
 Returns currently selected cache load control
+%End
+
+    void prepareExtent();
+%Docstring
+Prepares the spatial extent box with the general settings
+including original crs, destination crs and the map
+canvas if it is available.
+
+.. versionadded:: 3.26
 %End
 
 

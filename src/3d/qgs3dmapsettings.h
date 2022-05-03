@@ -251,16 +251,31 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     float terrainElevationOffset() const { return mTerrainElevationOffset; }
 
     /**
-     * Sets terrain generator. It takes care of producing terrain tiles from the input data.
-     * Takes ownership of the generator
+     * Sets terrain generator.
+     *
+     * It takes care of producing terrain tiles from the input data.
+     * Takes ownership of the generator.
+     *
+     * \note Terrain generation will only occur if terrainRenderingEnabled() is TRUE.
+     *
+     * \see terrainGenerator()
+     * \see setTerrainRenderingEnabled()
      */
     void setTerrainGenerator( QgsTerrainGenerator *gen SIP_TRANSFER ) SIP_SKIP;
-    //! Returns terrain generator. It takes care of producing terrain tiles from the input data.
+
+    /**
+     * Returns the terrain generator.
+     *
+     * It takes care of producing terrain tiles from the input data.
+     *
+     * \note Terrain generation will only occur if terrainRenderingEnabled() is TRUE.
+     *
+     * \see setTerrainGenerator()
+     * \see terrainRenderingEnabled()
+     */
     QgsTerrainGenerator *terrainGenerator() const SIP_SKIP
     {
-      if ( mTerrainRenderingEnabled )
-        return mTerrainGenerator.get();
-      return nullptr;
+      return mTerrainGenerator.get();
     }
 
     /**
@@ -420,28 +435,21 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double debugDepthMapSize() const { return mDebugDepthMapSize; }
 
     /**
-     * Returns list of point lights defined in the scene
-     * \since QGIS 3.6
+     * Returns list of directional light sources defined in the scene.
+     * \see setLightSources()
+     * \since QGIS 3.26
      */
-    QList<QgsPointLightSettings> pointLights() const { return mPointLights; }
+    QList<QgsLightSource *> lightSources() const;
 
     /**
-     * Returns list of directional lights defined in the scene
-     * \since QGIS 3.16
+     * Sets the list of \a light sources defined in the scene.
+     *
+     * Ownership of the lights is transferred to the settings.
+     *
+     * \see lightSources()
+     * \since QGIS 3.26
      */
-    QList<QgsDirectionalLightSettings> directionalLights() const { return mDirectionalLights; }
-
-    /**
-     * Sets list of point lights defined in the scene
-     * \since QGIS 3.6
-     */
-    void setPointLights( const QList<QgsPointLightSettings> &pointLights );
-
-    /**
-     * Sets list of directional lights defined in the scene
-     * \since QGIS 3.16
-     */
-    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
+    void setLightSources( const QList<QgsLightSource *> &lights SIP_TRANSFER );
 
     /**
      * Returns the camera lens' field of view
@@ -566,7 +574,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \see setTerrainRenderingEnabled()
      * \since QGIS 3.22
      */
-    bool terrainRenderingEnabled() { return mTerrainRenderingEnabled; }
+    bool terrainRenderingEnabled() const { return mTerrainRenderingEnabled; }
 
     /**
      * Sets whether the 2D terrain surface will be rendered in.
@@ -739,6 +747,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void pointLightsChanged();
 
     /**
+     * Emitted when any of the light source settings in the map changes.
+     * \since QGIS 3.26
+     */
+    void lightSourcesChanged();
+
+    /**
      * Emitted when the list of directional lights changes
      * \since QGIS 3.16
      */
@@ -823,8 +837,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowCameraRotationCenter = false; //!< Whether to show camera rotation center as a sphere - useful for debugging
     bool mShowLightSources = false; //!< Whether to show the origin of light sources
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
-    QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
-    QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
+    QList< QgsLightSource * > mLightSources; //!< List of light sources in the scene (owned by the settings)
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type
     QgsCameraController::NavigationMode mCameraNavigationMode = QgsCameraController::NavigationMode::TerrainBasedNavigation;

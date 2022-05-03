@@ -14,13 +14,40 @@
  ***************************************************************************/
 
 #include "qgsdirectionallightsettings.h"
-
-#include <QDomDocument>
-
 #include "qgssymbollayerutils.h"
 
+#include <QDomDocument>
+#include <Qt3DRender/QDirectionalLight>
+#include <Qt3DCore/QEntity>
 
-QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc ) const
+Qgis::LightSourceType QgsDirectionalLightSettings::type() const
+{
+  return Qgis::LightSourceType::Directional;
+}
+
+QgsDirectionalLightSettings *QgsDirectionalLightSettings::clone() const
+{
+  return new QgsDirectionalLightSettings( *this );
+}
+
+Qt3DCore::QEntity *QgsDirectionalLightSettings::createEntity( const Qgs3DMapSettings &, Qt3DCore::QEntity *parent ) const
+{
+  Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity( parent );
+  Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
+
+  Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
+  light->setColor( color() );
+  light->setIntensity( intensity() );
+  QgsVector3D direction = QgsDirectionalLightSettings::direction();
+  light->setWorldDirection( QVector3D( direction.x(), direction.y(), direction.z() ) );
+
+  lightEntity->addComponent( light );
+  lightEntity->addComponent( lightTransform );
+
+  return lightEntity;
+}
+
+QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   QDomElement elemLight = doc.createElement( QStringLiteral( "directional-light" ) );
   elemLight.setAttribute( QStringLiteral( "x" ), mDirection.x() );
@@ -31,7 +58,7 @@ QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc ) const
   return elemLight;
 }
 
-void QgsDirectionalLightSettings::readXml( const QDomElement &elem )
+void QgsDirectionalLightSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
   mDirection.set( elem.attribute( QStringLiteral( "x" ) ).toFloat(),
                   elem.attribute( QStringLiteral( "y" ) ).toFloat(),

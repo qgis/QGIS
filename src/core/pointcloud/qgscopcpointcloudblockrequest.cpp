@@ -36,8 +36,8 @@ QgsCopcPointCloudBlockRequest::QgsCopcPointCloudBlockRequest( const IndexedPoint
     mBlockOffset( blockOffset ), mBlockSize( blockSize ), mPointCount( pointCount ), mLazInfo( lazInfo )
 {
   QNetworkRequest nr( mUri );
-  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
-  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
   QByteArray queryRange = QStringLiteral( "bytes=%1-%2" ).arg( mBlockOffset ).arg( ( int64_t ) mBlockOffset + mBlockSize - 1 ).toLocal8Bit();
   nr.setRawHeader( "Range", queryRange );

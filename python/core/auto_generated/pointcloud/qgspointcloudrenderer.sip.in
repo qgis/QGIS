@@ -162,6 +162,7 @@ Returns the feedback object used to cancel rendering
 };
 
 
+
 class QgsPointCloudRenderer
 {
 %Docstring(signature="appended")
@@ -190,19 +191,6 @@ Abstract base class for 2d point cloud renderers.
       sipType = 0;
 %End
   public:
-
-    enum PointSymbol
-    {
-      Square,
-      Circle,
-    };
-
-    enum class DrawOrder
-    {
-      Default,
-      BottomToTop,
-      TopToBottom,
-    };
 
     QgsPointCloudRenderer();
 %Docstring
@@ -263,6 +251,7 @@ not be requested from the provider at rendering time.
    the "X" and "Y" attributes will always be fetched and do not need to be explicitly
    returned here.
 %End
+
 
     virtual void startRender( QgsPointCloudRenderContext &context );
 %Docstring
@@ -373,7 +362,7 @@ Returns the map unit scale used for the point size.
 .. seealso:: :py:func:`pointSize`
 %End
 
-    DrawOrder drawOrder2d() const;
+    Qgis::PointCloudDrawOrder drawOrder2d() const;
 %Docstring
 Returns the drawing order used by the renderer for drawing points.
 
@@ -382,7 +371,7 @@ Returns the drawing order used by the renderer for drawing points.
 .. versionadded:: 3.24
 %End
 
-    void setDrawOrder2d( DrawOrder order );
+    void setDrawOrder2d( Qgis::PointCloudDrawOrder order );
 %Docstring
 Sets the drawing ``order`` used by the renderer for drawing points.
 
@@ -391,14 +380,14 @@ Sets the drawing ``order`` used by the renderer for drawing points.
 .. versionadded:: 3.24
 %End
 
-    PointSymbol pointSymbol() const;
+    Qgis::PointCloudSymbol pointSymbol() const;
 %Docstring
 Returns the symbol used by the renderer for drawing points.
 
 .. seealso:: :py:func:`setPointSymbol`
 %End
 
-    void setPointSymbol( PointSymbol symbol );
+    void setPointSymbol( Qgis::PointCloudSymbol symbol );
 %Docstring
 Sets the ``symbol`` used by the renderer for drawing points.
 

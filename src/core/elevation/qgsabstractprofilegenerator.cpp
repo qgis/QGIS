@@ -63,3 +63,72 @@ QgsProfileSnapResult QgsAbstractProfileResults::snapPoint( const QgsProfilePoint
 {
   return QgsProfileSnapResult();
 }
+
+void QgsAbstractProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator * )
+{
+
+}
+
+//
+// QgsProfileGenerationContext
+//
+
+#define POINTS_TO_MM 2.83464567
+#define INCH_TO_MM 25.4
+
+double QgsProfileGenerationContext::convertDistanceToPixels( double size, QgsUnitTypes::RenderUnit unit ) const
+{
+  double conversionFactor = 1.0;
+  const double pixelsPerMillimeter = mDpi / 25.4;
+  switch ( unit )
+  {
+    case QgsUnitTypes::RenderMillimeters:
+      conversionFactor = pixelsPerMillimeter;
+      break;
+
+    case QgsUnitTypes::RenderPoints:
+      conversionFactor = pixelsPerMillimeter / POINTS_TO_MM;
+      break;
+
+    case QgsUnitTypes::RenderInches:
+      conversionFactor = pixelsPerMillimeter * INCH_TO_MM;
+      break;
+
+    case QgsUnitTypes::RenderMapUnits:
+    {
+      conversionFactor = 1.0 / mMapUnitsPerDistancePixel;
+      break;
+    }
+    case QgsUnitTypes::RenderPixels:
+      conversionFactor = 1.0;
+      break;
+
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+    case QgsUnitTypes::RenderMetersInMapUnits:
+      //not supported
+      conversionFactor = 1.0;
+      break;
+  }
+
+  return size * conversionFactor;
+}
+
+bool QgsProfileGenerationContext::operator==( const QgsProfileGenerationContext &other ) const
+{
+  return qgsDoubleNear( mMaxErrorMapUnits, other.mMaxErrorMapUnits )
+         && qgsDoubleNear( mMapUnitsPerDistancePixel, other.mMapUnitsPerDistancePixel )
+         && qgsDoubleNear( mDpi, other.mDpi )
+         && mDistanceRange == other.mDistanceRange
+         && mElevationRange == other.mElevationRange;
+}
+
+bool QgsProfileGenerationContext::operator!=( const QgsProfileGenerationContext &other ) const
+{
+  return !( *this == other );
+}
+
+Qgis::ProfileGeneratorFlags QgsAbstractProfileGenerator::flags() const
+{
+  return Qgis::ProfileGeneratorFlags();
+}

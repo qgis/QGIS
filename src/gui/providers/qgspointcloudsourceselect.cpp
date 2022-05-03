@@ -94,11 +94,11 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       return;
     }
 
-    if ( !mPath.endsWith( QLatin1String( "/ept.json" ), Qt::CaseInsensitive ) && !mPath.endsWith( QLatin1String( ".copc.laz" ), Qt::CaseInsensitive ) )
+    if ( !mPath.endsWith( QLatin1String( "/ept.json" ) ) )
     {
       QMessageBox::information( this,
                                 tr( "Add Point Cloud Layers" ),
-                                tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json or .copc.laz" ).arg( mPath ) );
+                                tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json" ).arg( mPath ) );
       return;
     }
 
@@ -108,16 +108,9 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     if ( !preferredProviders.empty() )
     {
       QString baseName = QStringLiteral( "remote ept layer" );
-      if ( mPath.endsWith( QLatin1String( "/ept.json" ), Qt::CaseInsensitive ) )
-      {
-        QStringList separatedPath = mPath.split( '/' );
-        if ( separatedPath.size() >= 2 )
-          baseName = separatedPath[ separatedPath.size() - 2 ];
-      }
-      if ( mPath.endsWith( QLatin1String( ".copc.laz" ), Qt::CaseInsensitive ) )
-      {
-        baseName = QFileInfo( mPath ).baseName();
-      }
+      QStringList separatedPath = mPath.split( '/' );
+      if ( separatedPath.size() >= 2 )
+        baseName = separatedPath[ separatedPath.size() - 2 ];
       emit addPointCloudLayer( mPath, baseName, preferredProviders.at( 0 ).metadata()->key() ) ;
     }
   }

@@ -23,6 +23,35 @@
 #include "qgis_sip.h"
 #include "qgscolorrampshader.h"
 
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * \brief Prepared data container for QgsPointCloudAttributeByRampRenderer.
+ *
+ * \note Not available in Python bindings.
+ *
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsPointCloudAttributeByRampRendererPreparedData: public QgsPreparedPointCloudRendererData
+{
+  public:
+
+    QSet< QString > usedAttributes() const override;
+    bool prepareBlock( const QgsPointCloudBlock *block ) override;
+    QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override SIP_SKIP;
+
+    QString attributeName;
+    QgsColorRampShader colorRampShader;
+    int attributeOffset = 0;
+    bool attributeIsX = false;
+    bool attributeIsY = false;
+    bool attributeIsZ = false;
+    QgsPointCloudAttribute::DataType attributeType;
+};
+#endif
+
+
 /**
  * \ingroup core
  * \brief An RGB renderer for 2d visualisation of point clouds using embedded red, green and blue attributes.
@@ -44,6 +73,7 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override SIP_FACTORY;
+    std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() override SIP_SKIP;
 
     /**
      * Creates an RGB renderer from an XML \a element.

@@ -65,7 +65,7 @@ class CORE_EXPORT QgsRenderChecker
     /**
      * Returns the HTML report describing the results of the test run.
      */
-    QString report() { return mReport; }
+    QString report() const { return mReport; }
 
     /**
      * Returns the percent of pixels which matched the control image.
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsRenderChecker
      *
      * \note this only records time for actual render part.
      */
-    int elapsedTime() { return mElapsedTime; }
+    int elapsedTime() const { return mElapsedTime; }
     void setElapsedTimeTarget( int target ) { mElapsedTimeTarget = target; }
 
     /**
@@ -234,6 +234,7 @@ class CORE_EXPORT QgsRenderChecker
   private:
     void emitDashMessage( const QgsDartMeasurement &dashMessage );
     void emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value );
+    void dumpRenderedImageAsBase64();
 
     QString mBasePath;
 

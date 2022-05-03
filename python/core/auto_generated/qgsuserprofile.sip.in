@@ -61,7 +61,7 @@ Returns the alias for the user profile.
 :return: If no alias is set :py:func:`~QgsUserProfile.name` is returned.
 %End
 
-    QgsError setAlias( const QString &alias );
+    QgsError setAlias( const QString &alias ) const;
 %Docstring
 Set the alias of the profile. The alias is a user friendly name.
 

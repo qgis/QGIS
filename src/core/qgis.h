@@ -1386,6 +1386,20 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( DashPatternSizeAdjustment )
 
+    /**
+     * DpiMode enum
+     * \since QGIS 3.26
+     */
+    enum class DpiMode
+    {
+      All = 7, //!< All
+      Off = 0, //!< Off
+      QGIS = 1, //!< QGIS
+      UMN = 2, //!< UMN
+      GeoServer = 4, //!< GeoServer
+    };
+    Q_ENUM( DpiMode )
+
 
     // NOTE -- the hardcoded numbers here must match QFont::Capitalization!
 
@@ -1637,6 +1651,82 @@ class CORE_EXPORT Qgis
     Q_FLAG( PlotToolFlags )
 
     /**
+     * Light source types for 3D scenes.
+     *
+     * \since QGIS 3.26
+     */
+    enum class LightSourceType : int
+    {
+      Point, //!< Point light source
+      Directional, //!< Directional light source
+    };
+    Q_ENUM( LightSourceType )
+
+    /**
+     * Surface symbology type for elevation profile plots.
+     *
+     * \since QGIS 3.26
+     */
+    enum class ProfileSurfaceSymbology : int
+    {
+      Line, //!< The elevation surface will be rendered using a line symbol
+      FillBelow, //!< The elevation surface will be rendered using a fill symbol below the surface level
+    };
+    Q_ENUM( ProfileSurfaceSymbology );
+
+    /**
+     * Types of elevation profiles to generate for vector sources.
+     *
+     * \since QGIS 3.26
+     */
+    enum class VectorProfileType : int
+    {
+      IndividualFeatures, //!< Treat each feature as an individual object (eg buildings)
+      ContinuousSurface, //!< The features should be treated as representing values on a continuous surface (eg contour lines)
+    };
+    Q_ENUM( VectorProfileType );
+
+    /**
+     * Flags that control the way the QgsAbstractProfileGenerator operate.
+     *
+     * \since QGIS 3.26
+     */
+    enum class ProfileGeneratorFlag : int
+    {
+      RespectsMaximumErrorMapUnit = 1 << 0, //!< Generated profile respects the QgsProfileGenerationContext::maximumErrorMapUnits() property.
+      RespectsDistanceRange = 1 << 1, //!< Generated profile respects the QgsProfileGenerationContext::distanceRange() property.
+      RespectsElevationRange = 1 << 2, //!< Generated profile respects the QgsProfileGenerationContext::elevationRange() property.
+    };
+    Q_ENUM( ProfileGeneratorFlag )
+    Q_DECLARE_FLAGS( ProfileGeneratorFlags, ProfileGeneratorFlag )
+    Q_FLAG( ProfileGeneratorFlags )
+
+    /**
+     * Rendering symbols for point cloud points.
+     *
+     * \since QGIS 3.26
+     */
+    enum class PointCloudSymbol SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, PointSymbol ) : int
+      {
+      Square, //!< Renders points as squares
+      Circle, //!< Renders points as circles
+    };
+    Q_ENUM( PointCloudSymbol )
+
+    /**
+     * Pointcloud rendering order for 2d views
+     *
+     * /since QGIS 3.26
+     */
+    enum class PointCloudDrawOrder SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, DrawOrder ) : int
+      {
+      Default, //!< Draw points in the order they are stored
+      BottomToTop, //!< Draw points with larger Z values last
+      TopToBottom, //!< Draw points with larger Z values first
+    };
+    Q_ENUM( PointCloudDrawOrder )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -1775,6 +1865,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerProperties )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
 
 
 // hack to workaround warnings when casting void pointers

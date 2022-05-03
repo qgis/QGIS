@@ -30,6 +30,7 @@
 #include "qgis_core.h"
 
 class QgsTileDownloadManager;
+class QgsRangeRequestCache;
 
 /**
  * \ingroup core
@@ -74,6 +75,7 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
 
   private slots:
     void requestFinished( QByteArray data, QUrl url, const QMap<QNetworkRequest::Attribute, QVariant> &attributes, const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers, const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs, QNetworkReply::NetworkError error, const QString &errorString );
+    void cachedRangeRequestFinished();
 
   private:
     QgsTileDownloadManagerReply( QgsTileDownloadManager *manager, const QNetworkRequest &request );
@@ -190,6 +192,10 @@ class QgsTileDownloadManagerWorker : public QObject
  *   it is waiting for map rendering to finish.
  * - There is a shared download queue (protected by a mutex) with a list of active requests
  *   and requests waiting to be processed.
+ * - Added in QGIS 3.26: If the request is an HTTP range request, the data may be cached
+ *   into a local directory using QgsRangeRequestCache to avoid requesting the same data
+ *   excessively. Caching will be disabled for requests with CacheLoadControlAttribute set
+ *   to AlwaysNetwork or CacheSaveControlAttribute set to false
  *
  * \since QGIS 3.18
  */
@@ -269,7 +275,7 @@ class CORE_EXPORT QgsTileDownloadManager
     void setIdleThreadTimeout( int timeoutMs ) { mIdleThreadTimeoutMs = timeoutMs; }
 
     //! Returns basic statistics of the queries handled by this class
-    Stats statistics() { return mStats; }
+    Stats statistics() const { return mStats; }
 
     //! Resets statistics of numbers of queries handled by this class
     void resetStatistics();
@@ -288,6 +294,9 @@ class CORE_EXPORT QgsTileDownloadManager
 
     void signalQueueModified();
 
+    bool isRangeRequest( const QNetworkRequest &request );
+    bool isCachedRangeRequest( const QNetworkRequest &request );
+
   private:
 
     QList<QueueEntry> mQueue;
@@ -302,6 +311,8 @@ class CORE_EXPORT QgsTileDownloadManager
     Stats mStats;
 
     int mIdleThreadTimeoutMs = 10000;
+
+    std::unique_ptr<QgsRangeRequestCache> mRangesCache;
 };
 
 #endif // QGSTILEDOWNLOADMANAGER_H

@@ -115,6 +115,30 @@ class CORE_EXPORT QgsPointCloudCategory
 
 typedef QList<QgsPointCloudCategory> QgsPointCloudCategoryList;
 
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * \brief Prepared data container for QgsPointCloudClassifiedRenderer.
+ *
+ * \note Not available in Python bindings.
+ *
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsPointCloudClassifiedRendererPreparedData: public QgsPreparedPointCloudRendererData
+{
+  public:
+
+    QSet< QString > usedAttributes() const override;
+    bool prepareBlock( const QgsPointCloudBlock *block ) override;
+    QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override SIP_SKIP;
+
+    QgsPointCloudAttribute::DataType attributeType;
+    QHash< int, QColor > colors;
+    QString attributeName;
+    int attributeOffset = 0;
+};
+#endif
 
 /**
  * \ingroup core
@@ -141,6 +165,7 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
     QStringList legendRuleKeys() const override;
     bool legendItemChecked( const QString &key ) override;
     void checkLegendItem( const QString &key, bool state = true ) override;
+    std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() override SIP_SKIP;
 
     /**
      * Creates an RGB renderer from an XML \a element.

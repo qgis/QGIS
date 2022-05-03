@@ -36,6 +36,7 @@ class QButtonGroup;
 class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
+class QgsOWSSourceWidget;
 
 
 /**
@@ -67,6 +68,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     void refresh() override;
 
     void reset() override;
+
+    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+
 
   protected slots:
     //! show whatever error is exposed.
@@ -170,6 +174,15 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Returns currently selected cache load control
     QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
 
+    /**
+     * Prepares the spatial extent box with the general settings
+     * including original crs, destination crs and the map
+     * canvas if it is available.
+     *
+     * \since QGIS 3.26
+     */
+    void prepareExtent();
+
     QList<QTreeWidgetItem *> mCurrentSelection;
     QTableWidgetItem *mCurrentTileset = nullptr;
 
@@ -215,6 +228,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
 
   private:
+
     //! Selected CRS
     QString mSelectedCRS;
 
@@ -226,6 +240,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     //! Map mime type labels to supported formats
     QMap<QString, QString> mMimeLabelMap;
+
+    //! Layer specific settings widget
+    QgsOWSSourceWidget *mSourceWidget = nullptr;
 
   private slots:
     void mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );

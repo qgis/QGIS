@@ -67,10 +67,10 @@ Qgis.CFloat64.is_monkey_patched = True
 Qgis.CFloat64.__doc__ = "Complex Float64"
 Qgis.ARGB32 = Qgis.DataType.ARGB32
 Qgis.ARGB32.is_monkey_patched = True
-Qgis.ARGB32.__doc__ = "Color, alpha, red, green, blue, 4 bytes the same as QImage::Format_ARGB32"
+Qgis.ARGB32.__doc__ = "Color, alpha, red, green, blue, 4 bytes the same as QImage.Format_ARGB32"
 Qgis.ARGB32_Premultiplied = Qgis.DataType.ARGB32_Premultiplied
 Qgis.ARGB32_Premultiplied.is_monkey_patched = True
-Qgis.ARGB32_Premultiplied.__doc__ = "Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied"
+Qgis.ARGB32_Premultiplied.__doc__ = "Color, alpha, red, green, blue, 4 bytes  the same as QImage.Format_ARGB32_Premultiplied"
 Qgis.DataType.__doc__ = 'Raster data types.\nThis is modified and extended copy of GDALDataType.\n\n' + '* ``UnknownDataType``: ' + Qgis.DataType.UnknownDataType.__doc__ + '\n' + '* ``Byte``: ' + Qgis.DataType.Byte.__doc__ + '\n' + '* ``UInt16``: ' + Qgis.DataType.UInt16.__doc__ + '\n' + '* ``Int16``: ' + Qgis.DataType.Int16.__doc__ + '\n' + '* ``UInt32``: ' + Qgis.DataType.UInt32.__doc__ + '\n' + '* ``Int32``: ' + Qgis.DataType.Int32.__doc__ + '\n' + '* ``Float32``: ' + Qgis.DataType.Float32.__doc__ + '\n' + '* ``Float64``: ' + Qgis.DataType.Float64.__doc__ + '\n' + '* ``CInt16``: ' + Qgis.DataType.CInt16.__doc__ + '\n' + '* ``CInt32``: ' + Qgis.DataType.CInt32.__doc__ + '\n' + '* ``CFloat32``: ' + Qgis.DataType.CFloat32.__doc__ + '\n' + '* ``CFloat64``: ' + Qgis.DataType.CFloat64.__doc__ + '\n' + '* ``ARGB32``: ' + Qgis.DataType.ARGB32.__doc__ + '\n' + '* ``ARGB32_Premultiplied``: ' + Qgis.DataType.ARGB32_Premultiplied.__doc__
 # --
 Qgis.DataType.baseClass = Qgis
@@ -781,7 +781,7 @@ Qgis.MapLayerProperty.__doc__ = 'Generic map layer properties.\n\n.. versionadde
 # --
 Qgis.MapLayerProperty.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.DataProviderFlag.IsBasemapSource.__doc__ = "Associated source should be considered a 'basemap' layer. See Qgis::MapLayerProperty::IsBasemapLayer."
+Qgis.DataProviderFlag.IsBasemapSource.__doc__ = "Associated source should be considered a 'basemap' layer. See Qgis.MapLayerProperty.IsBasemapLayer."
 Qgis.DataProviderFlag.__doc__ = 'Generic data provider flags.\n\n.. versionadded:: 3.26\n\n' + '* ``IsBasemapSource``: ' + Qgis.DataProviderFlag.IsBasemapSource.__doc__
 # --
 Qgis.DataProviderFlag.baseClass = Qgis
@@ -1308,6 +1308,15 @@ Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__ = "Only gap lengths are adju
 Qgis.DashPatternSizeAdjustment.__doc__ = 'Dash pattern size adjustment options.\n\n.. versionadded:: 3.24\n\n' + '* ``ScaleBothDashAndGap``: ' + Qgis.DashPatternSizeAdjustment.ScaleBothDashAndGap.__doc__ + '\n' + '* ``ScaleDashOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleDashOnly.__doc__ + '\n' + '* ``ScaleGapOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__
 # --
 Qgis.DashPatternSizeAdjustment.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DpiMode.All.__doc__ = "All"
+Qgis.DpiMode.Off.__doc__ = "Off"
+Qgis.DpiMode.QGIS.__doc__ = "QGIS"
+Qgis.DpiMode.UMN.__doc__ = "UMN"
+Qgis.DpiMode.GeoServer.__doc__ = "GeoServer"
+Qgis.DpiMode.__doc__ = 'DpiMode enum\n\n.. versionadded:: 3.26\n\n' + '* ``All``: ' + Qgis.DpiMode.All.__doc__ + '\n' + '* ``Off``: ' + Qgis.DpiMode.Off.__doc__ + '\n' + '* ``QGIS``: ' + Qgis.DpiMode.QGIS.__doc__ + '\n' + '* ``UMN``: ' + Qgis.DpiMode.UMN.__doc__ + '\n' + '* ``GeoServer``: ' + Qgis.DpiMode.GeoServer.__doc__
+# --
+Qgis.DpiMode.baseClass = Qgis
 QgsStringUtils.Capitalization = Qgis.Capitalization
 # monkey patching scoped based enum
 QgsStringUtils.MixedCase = Qgis.Capitalization.MixedCase
@@ -1470,3 +1479,55 @@ Qgis.PlotToolFlag.__doc__ = 'Flags that control the way the :py:class:`QgsPlotTo
 Qgis.PlotToolFlag.baseClass = Qgis
 Qgis.PlotToolFlags.baseClass = Qgis
 PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.LightSourceType.Point.__doc__ = "Point light source"
+Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
+Qgis.LightSourceType.__doc__ = 'Light source types for 3D scenes.\n\n.. versionadded:: 3.26\n\n' + '* ``Point``: ' + Qgis.LightSourceType.Point.__doc__ + '\n' + '* ``Directional``: ' + Qgis.LightSourceType.Directional.__doc__
+# --
+Qgis.LightSourceType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProfileSurfaceSymbology.Line.__doc__ = "The elevation surface will be rendered using a line symbol"
+Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be rendered using a fill symbol below the surface level"
+Qgis.ProfileSurfaceSymbology.__doc__ = 'Surface symbology type for elevation profile plots.\n\n.. versionadded:: 3.26\n\n' + '* ``Line``: ' + Qgis.ProfileSurfaceSymbology.Line.__doc__ + '\n' + '* ``FillBelow``: ' + Qgis.ProfileSurfaceSymbology.FillBelow.__doc__
+# --
+Qgis.ProfileSurfaceSymbology.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.VectorProfileType.IndividualFeatures.__doc__ = "Treat each feature as an individual object (eg buildings)"
+Qgis.VectorProfileType.ContinuousSurface.__doc__ = "The features should be treated as representing values on a continuous surface (eg contour lines)"
+Qgis.VectorProfileType.__doc__ = 'Types of elevation profiles to generate for vector sources.\n\n.. versionadded:: 3.26\n\n' + '* ``IndividualFeatures``: ' + Qgis.VectorProfileType.IndividualFeatures.__doc__ + '\n' + '* ``ContinuousSurface``: ' + Qgis.VectorProfileType.ContinuousSurface.__doc__
+# --
+Qgis.VectorProfileType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProfileGeneratorFlag.RespectsMaximumErrorMapUnit.__doc__ = "Generated profile respects the QgsProfileGenerationContext.maximumErrorMapUnits() property."
+Qgis.ProfileGeneratorFlag.RespectsDistanceRange.__doc__ = "Generated profile respects the QgsProfileGenerationContext.distanceRange() property."
+Qgis.ProfileGeneratorFlag.RespectsElevationRange.__doc__ = "Generated profile respects the QgsProfileGenerationContext.elevationRange() property."
+Qgis.ProfileGeneratorFlag.__doc__ = 'Flags that control the way the :py:class:`QgsAbstractProfileGenerator` operate.\n\n.. versionadded:: 3.26\n\n' + '* ``RespectsMaximumErrorMapUnit``: ' + Qgis.ProfileGeneratorFlag.RespectsMaximumErrorMapUnit.__doc__ + '\n' + '* ``RespectsDistanceRange``: ' + Qgis.ProfileGeneratorFlag.RespectsDistanceRange.__doc__ + '\n' + '* ``RespectsElevationRange``: ' + Qgis.ProfileGeneratorFlag.RespectsElevationRange.__doc__
+# --
+Qgis.ProfileGeneratorFlag.baseClass = Qgis
+Qgis.ProfileGeneratorFlags.baseClass = Qgis
+ProfileGeneratorFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsPointCloudRenderer.PointSymbol = Qgis.PointCloudSymbol
+# monkey patching scoped based enum
+QgsPointCloudRenderer.Square = Qgis.PointCloudSymbol.Square
+QgsPointCloudRenderer.Square.is_monkey_patched = True
+QgsPointCloudRenderer.Square.__doc__ = "Renders points as squares"
+QgsPointCloudRenderer.Circle = Qgis.PointCloudSymbol.Circle
+QgsPointCloudRenderer.Circle.is_monkey_patched = True
+QgsPointCloudRenderer.Circle.__doc__ = "Renders points as circles"
+Qgis.PointCloudSymbol.__doc__ = 'Rendering symbols for point cloud points.\n\n.. versionadded:: 3.26\n\n' + '* ``Square``: ' + Qgis.PointCloudSymbol.Square.__doc__ + '\n' + '* ``Circle``: ' + Qgis.PointCloudSymbol.Circle.__doc__
+# --
+Qgis.PointCloudSymbol.baseClass = Qgis
+QgsPointCloudRenderer.DrawOrder = Qgis.PointCloudDrawOrder
+# monkey patching scoped based enum
+QgsPointCloudRenderer.Default = Qgis.PointCloudDrawOrder.Default
+QgsPointCloudRenderer.Default.is_monkey_patched = True
+QgsPointCloudRenderer.Default.__doc__ = "Draw points in the order they are stored"
+QgsPointCloudRenderer.BottomToTop = Qgis.PointCloudDrawOrder.BottomToTop
+QgsPointCloudRenderer.BottomToTop.is_monkey_patched = True
+QgsPointCloudRenderer.BottomToTop.__doc__ = "Draw points with larger Z values last"
+QgsPointCloudRenderer.TopToBottom = Qgis.PointCloudDrawOrder.TopToBottom
+QgsPointCloudRenderer.TopToBottom.is_monkey_patched = True
+QgsPointCloudRenderer.TopToBottom.__doc__ = "Draw points with larger Z values first"
+Qgis.PointCloudDrawOrder.__doc__ = 'Pointcloud rendering order for 2d views\n\n/since QGIS 3.26\n\n' + '* ``Default``: ' + Qgis.PointCloudDrawOrder.Default.__doc__ + '\n' + '* ``BottomToTop``: ' + Qgis.PointCloudDrawOrder.BottomToTop.__doc__ + '\n' + '* ``TopToBottom``: ' + Qgis.PointCloudDrawOrder.TopToBottom.__doc__
+# --
+Qgis.PointCloudDrawOrder.baseClass = Qgis

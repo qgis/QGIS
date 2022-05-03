@@ -210,6 +210,15 @@ class QgsChunkNode
     //! called when bounding box
     void setExactBbox( const QgsAABB &box );
 
+    /**
+     * Triggers a recursive update of the node's parent's bounding boxes to ensure
+     * that the parent bounding box represents the extent of all child bounding boxes.
+     *
+     * Will recursively walk up the list of all parent's to the root node and
+     * update each in turn.
+     */
+    void updateParentBoundingBoxesRecursively() const;
+
     //! Sets whether the node has any data to be displayed. Can be used to set to FALSE after load returned no data
     void setHasData( bool hasData ) { mHasData = hasData; }
     //! Returns whether the node has any data to be displayed. If not, it will be kept as a skeleton node and will not get loaded anymore

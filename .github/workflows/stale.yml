@@ -8,7 +8,7 @@ jobs:
     if: github.repository_owner == 'qgis'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/stale@v4
+    - uses: actions/stale@v5
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         stale-pr-message: >

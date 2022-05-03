@@ -22,6 +22,9 @@ A context for numeric formats
 #include "qgsnumericformat.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     QgsNumericFormatContext();
 %Docstring
@@ -129,6 +132,32 @@ Sets the exponential ``character``.
 .. seealso:: :py:func:`exponential`
 %End
 
+    enum class Interpretation
+    {
+      Generic,
+      Latitude,
+      Longitude,
+    };
+
+    Interpretation interpretation() const;
+%Docstring
+Returns the interpretation of the numbers being converted.
+
+.. seealso:: :py:func:`setInterpretation`
+
+.. versionadded:: 3.26
+%End
+
+    void setInterpretation( Interpretation interpretation );
+%Docstring
+Sets the ``interpretation`` of the numbers being converted.
+
+.. seealso:: :py:func:`interpretation`
+
+.. versionadded:: 3.26
+%End
+
+
 };
 
 %ModuleHeaderCode
@@ -138,6 +167,7 @@ Sets the exponential ``character``.
 #include <qgsfallbacknumericformat.h>
 #include <qgspercentagenumericformat.h>
 #include <qgsscientificnumericformat.h>
+#include <qgscoordinatenumericformat.h>
 %End
 
 class QgsNumericFormat
@@ -158,6 +188,8 @@ This is an abstract base class and will always need to be subclassed.
 %ConvertToSubClassCode
     if ( dynamic_cast< QgsBearingNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsBearingNumericFormat;
+    else if ( dynamic_cast< QgsGeographicCoordinateNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsGeographicCoordinateNumericFormat;
     else if ( dynamic_cast< QgsFallbackNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsFallbackNumericFormat;
     else if ( dynamic_cast< QgsPercentageNumericFormat * >( sipCpp ) )

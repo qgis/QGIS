@@ -8,6 +8,7 @@
 
 
 
+
 class QgsProviderSourceWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -38,6 +39,20 @@ Sets the source ``uri`` to show in the widget.
 Returns the source URI as currently defined by the widget.
 
 .. seealso:: :py:func:`setSourceUri`
+%End
+
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas );
+%Docstring
+Sets a map ``canvas`` associated with the widget.
+
+.. versionadded:: 3.26
+%End
+
+    virtual QgsMapCanvas *mapCanvas();
+%Docstring
+Returns the map canvas associated with the widget.
+
+.. versionadded:: 3.26
 %End
 
   signals:

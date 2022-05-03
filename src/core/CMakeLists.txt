@@ -45,6 +45,7 @@ set(QGIS_CORE_SRCS
   classification/qgsclassificationlogarithmic.cpp
 
   elevation/qgsabstractprofilegenerator.cpp
+  elevation/qgsabstractprofilesurfacegenerator.cpp
   elevation/qgsabstractprofilesource.cpp
   elevation/qgsprofilerenderer.cpp
   elevation/qgsprofilerequest.cpp
@@ -166,6 +167,7 @@ set(QGIS_CORE_SRCS
 
   numericformats/qgsbasicnumericformat.cpp
   numericformats/qgsbearingnumericformat.cpp
+  numericformats/qgscoordinatenumericformat.cpp
   numericformats/qgscurrencynumericformat.cpp
   numericformats/qgsfallbacknumericformat.cpp
   numericformats/qgsfractionnumericformat.cpp
@@ -222,6 +224,7 @@ set(QGIS_CORE_SRCS
   network/qgsnewsfeedmodel.cpp
   network/qgsnewsfeedparser.cpp
   network/qgshttpheaders.cpp
+  network/qgsrangerequestcache.cpp
 
   processing/qgsprocessing.cpp
   processing/qgsprocessingalgorithm.cpp
@@ -353,6 +356,7 @@ set(QGIS_CORE_SRCS
   qgsdataprovidertemporalcapabilities.cpp
   qgsdatetimestatisticalsummary.cpp
   qgsdbfilterproxymodel.cpp
+  qgsdbquerylog.cpp
   qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
@@ -737,6 +741,7 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudblockrequest.cpp
   pointcloud/qgspointcloudlayer.cpp
   pointcloud/qgspointcloudlayerelevationproperties.cpp
+  pointcloud/qgspointcloudlayerprofilegenerator.cpp
   pointcloud/qgspointcloudlayerrenderer.cpp
   pointcloud/qgspointcloudindex.cpp
   pointcloud/qgspointclouddataprovider.cpp
@@ -1005,6 +1010,7 @@ set(QGIS_CORE_HDRS
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
   qgsdbfilterproxymodel.h
+  qgsdbquerylog.h
   qgsdefaultvalue.h
   qgsdiagramrenderer.h
   qgsdistancearea.h
@@ -1277,6 +1283,7 @@ set(QGIS_CORE_HDRS
   editform/qgsattributeeditorqmlelement.h
 
   elevation/qgsabstractprofilegenerator.h
+  elevation/qgsabstractprofilesurfacegenerator.h
   elevation/qgsabstractprofilesource.h
   elevation/qgsprofilepoint.h
   elevation/qgsprofilerenderer.h
@@ -1533,6 +1540,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudblockrequest.h
   pointcloud/qgspointcloudlayer.h
   pointcloud/qgspointcloudlayerelevationproperties.h
+  pointcloud/qgspointcloudlayerprofilegenerator.h
   pointcloud/qgspointcloudlayerrenderer.h
   pointcloud/qgspointcloudindex.h
   pointcloud/qgspointclouddataprovider.h
@@ -1579,9 +1587,11 @@ set(QGIS_CORE_HDRS
   network/qgsnewsfeedmodel.h
   network/qgsnewsfeedparser.h
   network/qgshttpheaders.h
+  network/qgsrangerequestcache.h
 
   numericformats/qgsbasicnumericformat.h
   numericformats/qgsbearingnumericformat.h
+  numericformats/qgscoordinatenumericformat.h
   numericformats/qgscurrencynumericformat.h
   numericformats/qgsfallbacknumericformat.h
   numericformats/qgsfractionnumericformat.h

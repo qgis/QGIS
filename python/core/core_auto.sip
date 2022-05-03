@@ -38,6 +38,7 @@
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
 %Include auto_generated/qgsdbfilterproxymodel.sip
+%Include auto_generated/qgsdbquerylog.sip
 %Include auto_generated/qgsdefaultvalue.sip
 %Include auto_generated/qgsdiagramrenderer.sip
 %Include auto_generated/qgsdistancearea.sip
@@ -499,6 +500,7 @@
 %Include auto_generated/network/qgshttpheaders.sip
 %Include auto_generated/numericformats/qgsbasicnumericformat.sip
 %Include auto_generated/numericformats/qgsbearingnumericformat.sip
+%Include auto_generated/numericformats/qgscoordinatenumericformat.sip
 %Include auto_generated/numericformats/qgscurrencynumericformat.sip
 %Include auto_generated/numericformats/qgsfallbacknumericformat.sip
 %Include auto_generated/numericformats/qgsfractionnumericformat.sip

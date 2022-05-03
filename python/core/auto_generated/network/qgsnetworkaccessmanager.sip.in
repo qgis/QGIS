@@ -362,7 +362,7 @@ The ``processor`` function takes the QNetworkRequest as its argument, and can mu
 
     static void removeRequestPreprocessor( const QString &id );
 %Docstring
-Removes the custom pre-processor function with matching ``id``.
+Removes the custom request pre-processor function with matching ``id``.
 
 The ``id`` must correspond to a pre-processor previously added via a call to :py:func:`~QgsNetworkAccessManager.setRequestPreprocessor`.
 
@@ -374,6 +374,55 @@ Returns ``True`` if processor existed and was removed.
 %End
 %MethodCode
     if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+%End
+
+    static QString setReplyPreprocessor( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+Sets a reply pre-processor function, which allows manipulation of QNetworkReply objects after they are created (but before they are fetched).
+
+The ``processor`` function takes a QNetworkRequest request and a QNetworkReply as arguments, and can connect to QNetworkReply signals directly as desired.
+
+:return: An auto-generated string uniquely identifying the preprocessor, which can later be
+         used to remove the preprocessor (via a call to :py:func:`~QgsNetworkAccessManager.removeReplyPreprocessor`).
+
+.. seealso:: :py:func:`removeReplyPreprocessor`
+
+.. versionadded:: 3.26
+%End
+%MethodCode
+    PyObject *s = 0;
+    Py_BEGIN_ALLOW_THREADS
+    Py_XINCREF( a0 );
+    QString id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    return s;
+%End
+
+    static void removeReplyPreprocessor( const QString &id );
+%Docstring
+Removes the custom reply pre-processor function with matching ``id``.
+
+The ``id`` must correspond to a pre-processor previously added via a call to :py:func:`~QgsNetworkAccessManager.setReplyPreprocessor`.
+
+Returns ``True`` if processor existed and was removed.
+
+.. seealso:: :py:func:`setReplyPreprocessor`
+
+.. versionadded:: 3.26
+%End
+%MethodCode
+    if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;

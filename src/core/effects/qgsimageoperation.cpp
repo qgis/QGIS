@@ -204,7 +204,7 @@ void QgsImageOperation::convertToGrayscale( QImage &image, const GrayscaleMode m
   runPixelOperation( image, operation, feedback );
 }
 
-void QgsImageOperation::GrayscalePixelOperation::operator()( QRgb &rgb, const int x, const int y )
+void QgsImageOperation::GrayscalePixelOperation::operator()( QRgb &rgb, const int x, const int y ) const
 {
   Q_UNUSED( x )
   Q_UNUSED( y )
@@ -759,7 +759,7 @@ void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::Im
   }
 }
 
-inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurVertical( const int posy, unsigned char *sourceFirstLine, const int sourceBpl, const int height )
+inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurVertical( const int posy, unsigned char *sourceFirstLine, const int sourceBpl, const int height ) const
 {
   double r = 0;
   double b = 0;
@@ -783,7 +783,7 @@ inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurVertical( cons
   return qRgba( r, g, b, a );
 }
 
-inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurHorizontal( const int posx, unsigned char *sourceFirstLine, const int width )
+inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurHorizontal( const int posx, unsigned char *sourceFirstLine, const int width ) const
 {
   double r = 0;
   double b = 0;
@@ -957,7 +957,7 @@ QImage QgsImageOperation::cropTransparent( const QImage &image, QSize minSize, b
   return image.copy( QgsImageOperation::nonTransparentImageRect( image, minSize, center ) );
 }
 
-void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine )
+void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine ) const
 {
   int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
 
@@ -986,7 +986,3 @@ void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int
 
   delete[] tempLine;
 }
-
-
-
-
