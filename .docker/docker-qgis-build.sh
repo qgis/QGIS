@@ -99,8 +99,6 @@ echo "::endgroup::"
 # Workaround https://github.com/actions/checkout/issues/760
 git config --global --add safe.directory /root/QGIS
 
-ninja
-
 #######
 # Build
 #######
