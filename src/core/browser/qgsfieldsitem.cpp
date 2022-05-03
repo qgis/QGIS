@@ -174,7 +174,7 @@ QIcon QgsFieldItem::icon()
   QgsFieldsItem *parentFields { static_cast<QgsFieldsItem *>( parent() ) };
   if ( parentFields && parentFields->tableProperty() &&
        parentFields->tableProperty()->geometryColumn() == mName &&
-       parentFields->tableProperty()->geometryColumnTypes().count() )
+       !parentFields->tableProperty()->geometryColumnTypes().isEmpty() )
   {
     if ( mField.typeName() == QLatin1String( "raster" ) )
     {
