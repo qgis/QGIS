@@ -158,10 +158,18 @@ class InterpolationDataWidget(BASE, WIDGET):
         rows = value.split(';')
         for i, r in enumerate(rows):
             v = r.split('::~::')
-            self.addLayerData(v[0], v[1])
+            layer = QgsProcessingUtils.mapLayerFromString(v[0], dataobjects.createContext())
+            field_index = int(v[2])
+            
+            if field_index == -1:
+                field_name = 'Z_COORD'
+            else:
+                field_name = layer.fields().at(field_index).name()
+                
+            self._addLayerData(v[0], field_name)
 
             comboBox = self.layersTree.itemWidget(self.layersTree.topLevelItem(i), 2)
-            comboBox.setCurrentIndex(comboBox.findText(v[3]))
+            comboBox.setCurrentIndex(comboBox.findText((int(v[3])))
         self.hasChanged.emit()
 
     def value(self):
