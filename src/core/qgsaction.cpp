@@ -237,6 +237,11 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
 
 }
 
+void QgsAction::setCommand( const QString &newCommand )
+{
+  mCommand = newCommand;
+}
+
 void QgsAction::run( const QgsExpressionContext &expressionContext ) const
 {
   if ( !isValid() )

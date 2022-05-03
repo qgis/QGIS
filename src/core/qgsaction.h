@@ -256,6 +256,8 @@ class CORE_EXPORT QgsAction
      */
     QString html( ) const;
 
+    void setCommand( const QString &newCommand );
+
   private:
 
     void handleFormSubmitAction( const QString &expandedAction ) const;
