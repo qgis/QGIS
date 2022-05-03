@@ -1289,7 +1289,7 @@ Deletes a vertex from a feature.
 .. versionadded:: 2.14
 %End
 
-    bool deleteSelectedFeatures( int *deletedCount = 0, DeleteContext *context = 0 );
+    bool deleteSelectedFeatures( int *deletedCount = 0, QgsVectorLayer::DeleteContext *context = 0 );
 %Docstring
 Deletes the selected features
 
@@ -2742,7 +2742,7 @@ Sets the coordinate transform context to ``transformContext``
 .. versionadded:: 3.8
 %End
 
-    virtual SpatialIndexPresence hasSpatialIndex() const;
+    virtual QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const;
 
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
