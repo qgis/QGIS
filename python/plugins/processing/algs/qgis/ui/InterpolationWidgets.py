@@ -155,7 +155,7 @@ class InterpolationDataWidget(BASE, WIDGET):
 
     def setValue(self, value):
         self.layersTree.clear()
-        rows = value.split(';')
+        rows = value.split('::|::')
         for i, r in enumerate(rows):
             v = r.split('::~::')
             layer = QgsProcessingUtils.mapLayerFromString(v[0], dataobjects.createContext())
