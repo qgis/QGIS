@@ -452,7 +452,7 @@ void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
   QgsQueryBuilder *gb = new QgsQueryBuilder( vlayer, this );
   if ( gb->exec() )
   {
-    mTableModel->setSql( proxyModel()->mapToSource( index ), gb->sql() );
+    mTableModel->setSql( index, gb->sql() );
   }
 
   delete gb;

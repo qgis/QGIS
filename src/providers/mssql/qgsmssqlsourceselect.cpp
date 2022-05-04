@@ -546,7 +546,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   QgsQueryBuilder gb( vlayer.get(), this );
   if ( gb.exec() )
   {
-    mTableModel->setSql( proxyModel()->mapToSource( index ), gb.sql() );
+    mTableModel->setSql( index, gb.sql() );
   }
 }
 
