@@ -91,7 +91,7 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.8
      */
     static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings,
-                                 const Qgs3DMapSettings &mapSettings,
+                                 Qgs3DMapSettings &mapSettings,
                                  int framesPerSecond,
                                  const QString &outputDirectory,
                                  const QString &fileNameTemplate,

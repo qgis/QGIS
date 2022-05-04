@@ -85,7 +85,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 
-Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
+Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
   , mEngine( engine )
 {
@@ -1240,7 +1240,7 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
       m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( eng->window() ),
                                eng->root(),
                                mCameraController,
-                               &mMap );
+                               mMap );
   }
 }
 
