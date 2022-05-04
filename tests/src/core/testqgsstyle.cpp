@@ -1618,7 +1618,6 @@ void TestStyle::testVisitor()
   l->addLayoutItem( legend );
   const QgsLegendPatchShape shape( Qgis::SymbolType::Marker, QgsGeometry::fromWkt( QStringLiteral( "Point( 3 4)" ) ) );
   qobject_cast< QgsLayerTreeLayer * >( legend->model()->index2node( legend->model()->index( 0, 0 ) ) )->setPatchShape( shape );
-  const QList<QgsLayerTreeModelLegendNode *> layerLegendNodes = legend->model()->layerLegendNodes( qobject_cast< QgsLayerTreeLayer * >( legend->model()->index2node( legend->model()->index( 1, 0 ) ) ), false );
   const QgsLegendPatchShape shape2( Qgis::SymbolType::Marker, QgsGeometry::fromWkt( QStringLiteral( "Point( 13 14)" ) ) );
   QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( legend->model()->index2node( legend->model()->index( 1, 0 ) ) )->layer()->name(), QStringLiteral( "vl2" ) );
   QgsMapLayerLegendUtils::setLegendNodePatchShape( qobject_cast< QgsLayerTreeLayer * >( legend->model()->index2node( legend->model()->index( 1, 0 ) ) ), 1, shape2 );

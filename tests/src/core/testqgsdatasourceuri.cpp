@@ -186,7 +186,6 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QgsDataSourceUri::SslMode, sslmode );
   QFETCH( QString, sql );
   QFETCH( QString, myparam );
-  QFETCH( QString, schema );
 
   const QgsDataSourceUri ds( uri );
   QCOMPARE( ds.table(), table );

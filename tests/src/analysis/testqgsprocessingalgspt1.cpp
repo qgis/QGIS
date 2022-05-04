@@ -5596,8 +5596,6 @@ void TestQgsProcessingAlgsPt1::randomRaster()
   QgsProject p;
   std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createrandomuniformrasterlayer" ) ) );
 
-  const QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
-
   //set project crs and ellipsoid from input layer
   p.setCrs( QgsCoordinateReferenceSystem( crs ), true );
 

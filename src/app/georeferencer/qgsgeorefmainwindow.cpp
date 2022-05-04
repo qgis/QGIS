@@ -224,8 +224,6 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
       dir = QDir::homePath();
 
     QString otherFiles = tr( "All other files (*)" );
-    QString lastUsedFilter;
-
     switch ( layerType )
     {
 

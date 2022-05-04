@@ -637,7 +637,6 @@ void TestQgsProcessingAlgsPt2::exportMeshVertices()
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PointGeometry );
   QCOMPARE( resultLayer->featureCount(), 5l );
-  const QgsAttributeList attributeList = resultLayer->attributeList();
   QCOMPARE( resultLayer->fields().count(), 5 );
   QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "VertexScalarDataset" ) );
   QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "VertexVectorDataset_x" ) );
@@ -720,7 +719,6 @@ void TestQgsProcessingAlgsPt2::exportMeshFaces()
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
   QCOMPARE( resultLayer->featureCount(), 2l );
-  const QgsAttributeList attributeList = resultLayer->attributeList();
   QCOMPARE( resultLayer->fields().count(), 5 );
   QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "FaceScalarDataset" ) );
   QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "FaceVectorDataset_x" ) );
@@ -782,7 +780,6 @@ void TestQgsProcessingAlgsPt2::exportMeshEdges()
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == QgsWkbTypes::LineGeometry );
   QCOMPARE( resultLayer->featureCount(), 3l );
-  const QgsAttributeList attributeList = resultLayer->attributeList();
   QCOMPARE( resultLayer->fields().count(), 5 );
   QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "EdgeScalarDataset" ) );
   QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "EdgeVectorDataset_x" ) );
@@ -858,7 +855,6 @@ void TestQgsProcessingAlgsPt2::exportMeshOnGrid()
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PointGeometry );
   QCOMPARE( resultLayer->featureCount(), 205l );
-  const QgsAttributeList attributeList = resultLayer->attributeList();
   QCOMPARE( resultLayer->fields().count(), 21 );
   QStringList fieldsName;
   fieldsName << QStringLiteral( "Bed Elevation" ) << QStringLiteral( "temperature" ) << QStringLiteral( "temperature/Maximums" )

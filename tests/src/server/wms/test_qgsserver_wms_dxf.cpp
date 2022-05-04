@@ -88,7 +88,6 @@ void TestQgsServerWmsDxf::use_title_as_layername_true()
   QgsWms::QgsRenderer renderer( context );
   std::unique_ptr<QgsDxfExport> exporter = renderer.getDxf();
 
-  const QString name = exporter->layerName( vl );
   QCOMPARE( exporter->layerName( vl ), QString( "testlayer \u00E8\u00E9" ) );
 
   const QgsFeature ft = vl->getFeature( 1 );
@@ -137,7 +136,6 @@ void TestQgsServerWmsDxf::use_title_as_layername_false()
   QgsWms::QgsRenderer renderer( context );
   std::unique_ptr<QgsDxfExport> exporter = renderer.getDxf();
 
-  const QString name = exporter->layerName( vl );
   QCOMPARE( exporter->layerName( vl ), QString( "A test vector layer" ) );
 
   const QgsFeature ft = vl->getFeature( 1 );
