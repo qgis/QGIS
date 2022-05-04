@@ -29,6 +29,7 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapcanvas.h"
+#include "qgsprojectviewsettings.h"
 
 void initCanvas3D( Qgs3DMapCanvas *canvas )
 {
@@ -38,14 +39,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   QgsMapSettings ms;
   ms.setDestinationCrs( QgsProject::instance()->crs() );
   ms.setLayers( visibleLayers );
-  QgsRectangle fullExtent;
-  if ( visibleLayers.isEmpty() )
-    fullExtent = ms.fullExtent();
-  else
-    fullExtent = visibleLayers.at( 0 )->extent(); // focus on 1st layer
-
-  QgsRectangle extent = fullExtent;
-  extent.scale( 1.3 );
+  QgsRectangle fullExtent = QgsProject::instance()->viewSettings()->fullExtent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( QgsProject::instance()->crs() );
@@ -73,6 +67,8 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
 
   canvas->setMap( map );
 
+  QgsRectangle extent = fullExtent;
+  extent.scale( 1.3 );
   const float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
   canvas->setViewFromTop( extent.center(), dist * 2, 0 );
 
