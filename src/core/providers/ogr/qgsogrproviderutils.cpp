@@ -2827,7 +2827,7 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
   if ( driverName == QLatin1String( "GPKG" ) )
   {
     // use feature count from meta data
-    GIntBig totalFeatureCount = getTotalFeatureCountfromMetaData();
+    GIntBig totalFeatureCount = GetTotalFeatureCountFromMetaData();
 
     // Get features up to a limit of 100.000 for enumeration or when meta data couldn't be obtained (return value == -1)
     if ( totalFeatureCount < 100000 )
@@ -2931,7 +2931,7 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
  * Returns the total (unfiltered) feature count according to OGRGeoPackageTableLayer::GetFeatureCount used by GDAL's ogrinfo.
  */
 
-GIntBig QgsOgrLayer::getTotalFeatureCountfromMetaData() const
+GIntBig QgsOgrLayer::GetTotalFeatureCountFromMetaData() const
 {
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray layerName = OGR_L_GetName( hLayer );
@@ -2941,7 +2941,6 @@ GIntBig QgsOgrLayer::getTotalFeatureCountfromMetaData() const
   {
     QByteArray sql( "SELECT feature_count FROM gpkg_ogr_contents WHERE " );
     sql += "lower(table_name) = lower(" + QgsOgrProviderUtils::quotedIdentifier( layerName, driverName ) + ") LIMIT 2";
-    //sql += ")";
 
     CPLPushErrorHandler( CPLQuietErrorHandler );
     OGRLayerH hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
