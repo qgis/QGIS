@@ -37,13 +37,13 @@ class SERVER_EXPORT QgsDimensionFilter : public QgsFeatureFilterProvider
      * Creates a new dimension filter object with a list of filters to be applied to
      * vector layers.
      */
-    QgsDimensionFilter( const QMap<const QgsVectorLayer *, QStringList> dimensionFilter );
+    QgsDimensionFilter( const QHash<const QgsVectorLayer *, QStringList> dimensionFilter );
 
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
     QgsDimensionFilter *clone() const override;
   private:
-    QMap<const QgsVectorLayer *, QStringList> mDimensionFilter;
+    QHash<const QgsVectorLayer *, QStringList> mDimensionFilter;
 };
 
 #endif // QGSDIMENSIONFILTER_H
