@@ -465,7 +465,7 @@ namespace QgsWms
     filters.addProvider( mContext.accessControl() );
 #endif
 
-    QMap<const QgsVectorLayer *, QStringList> fltrs;
+    QHash<const QgsVectorLayer *, QStringList> fltrs;
     for ( QgsMapLayer *l : lyrs )
     {
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l ) )
