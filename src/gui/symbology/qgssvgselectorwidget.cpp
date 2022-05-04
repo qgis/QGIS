@@ -615,7 +615,7 @@ QMap<QString, QgsProperty> QgsSvgParametersModel::parameters() const
 
 void QgsSvgParametersModel::removeParameters( const QModelIndexList &indexList )
 {
-  if ( !indexList.count() )
+  if ( indexList.isEmpty() )
     return;
 
   auto mm = std::minmax_element( indexList.constBegin(), indexList.constEnd(), []( const QModelIndex & i1, const QModelIndex & i2 ) {return i1.row() < i2.row();} );
