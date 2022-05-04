@@ -7048,7 +7048,7 @@ bool QgisApp::addProject( const QString &projectFile )
     {
       // we have to delay the thumbnail creation until after the canvas has refreshed for the first time
       QMetaObject::Connection *connection = new QMetaObject::Connection();
-      *connection = connect( mMapCanvas, &QgsMapCanvas::mapCanvasRefreshed, [ = ]()
+      *connection = connect( mMapCanvas, &QgsMapCanvas::mapCanvasRefreshed, this, [ = ]()
       {
         QObject::disconnect( *connection );
         delete connection;
@@ -10712,7 +10712,7 @@ void QgisApp::selectByForm()
   dlg->setMessageBar( messageBar() );
   dlg->setMapCanvas( mapCanvas() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
-  connect( dlg, &QgsSelectByFormDialog::showFilteredFeaturesAttributeTable, [ = ]( const QString & filter )
+  connect( dlg, &QgsSelectByFormDialog::showFilteredFeaturesAttributeTable, dlg, [ = ]( const QString & filter )
   {
     if ( !vlayer->dataProvider() )
     {
@@ -15008,7 +15008,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
       // be in place in order to update the GUI
       connect( vlayer, &QgsVectorLayer::readOnlyChanged, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::raiseError, this, &QgisApp::onLayerError );
-      connect( vlayer, &QgsVectorLayer::styleLoaded, [this, vlayer]( QgsMapLayer::StyleCategories categories ) { vectorLayerStyleLoaded( vlayer, categories ); } );
+      connect( vlayer, &QgsVectorLayer::styleLoaded, this, [this, vlayer]( QgsMapLayer::StyleCategories categories ) { vectorLayerStyleLoaded( vlayer, categories ); } );
     }
 
     if ( QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer ) )

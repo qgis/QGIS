@@ -271,7 +271,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   const bool isDocked = initiallyDocked ? *initiallyDocked : settings.value( QStringLiteral( "qgis/dockAttributeTable" ), false ).toBool();
   mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, windowTitle(), this, QgisApp::instance(),
       Qt::BottomDockWidgetArea,  QStringList(), !initiallyDocked, QStringLiteral( "Windows/BetterAttributeTable/geometry" ) );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, [ = ]()
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [ = ]()
   {
     close();
   } );

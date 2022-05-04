@@ -39,7 +39,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   {
     QMessageBox::critical( nullptr, tr( "Cannot Create New Tables" ), tr( "Error retrieving native types from the data provider: creation of new tables is not possible.\n"
                            "Error message: %1" ).arg( ex.what() ) );
-    QTimer::singleShot( 0, [ = ] { reject(); } );
+    QTimer::singleShot( 0, this, [ = ] { reject(); } );
     return;
   }
 

@@ -228,7 +228,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     mDock->setProperty( "dock_uuid", mUuid );
     setupDockWidget();
 
-    connect( mDock, &QgsDockWidget::closed, [ = ]()
+    connect( mDock, &QgsDockWidget::closed, this, [ = ]()
     {
       mDockGeometry = mDock->geometry();
       mIsDockFloating = mDock->isFloating();
@@ -262,7 +262,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     mDialog->raise();
     mDialog->show();
 
-    connect( mDialog, &QDialog::finished, [ = ]()
+    connect( mDialog, &QDialog::finished, this, [ = ]()
     {
       mDialogGeometry = mDialog->geometry();
       emit closed();
