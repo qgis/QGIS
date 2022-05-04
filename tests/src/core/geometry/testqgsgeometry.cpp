@@ -2029,7 +2029,7 @@ void TestQgsGeometry::makeValid_data()
   QTest::addColumn<QString>( "input" );
   QTest::addColumn<QString>( "expected" );
 
-  QTest::newRow( "dimension collapse" ) << QStringLiteral( "LINESTRING(0 0)" ) << QStringLiteral( "" );
+  QTest::newRow( "dimension collapse" ) << QStringLiteral( "LINESTRING(0 0)" ) << QStringLiteral( "" ); // clazy:exclude=empty-qstringliteral
   QTest::newRow( "unclosed ring" ) << QStringLiteral( "POLYGON((10 22,10 32,20 32,20 22))" ) << QStringLiteral( "Polygon ((10 22, 10 32, 20 32, 20 22, 10 22))" );
   QTest::newRow( "butterfly polygon (self-intersecting ring)" ) << QStringLiteral( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ) << QStringLiteral( "MultiPolygon (((5 5, 10 10, 10 0, 5 5)),((0 0, 0 10, 5 5, 0 0)))" );
   QTest::newRow( "polygon with extra tail (a part of the ring does not form any area)" ) << QStringLiteral( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ) << QStringLiteral( "GeometryCollection (Polygon ((0 0, 0 1, 1 1, 1 0, 0 0)),LineString (0 0, -1 0))" );

@@ -215,7 +215,7 @@ void QgsTextEditWrapper::showIndeterminateState()
   }
 
   //note - this is deliberately a zero length string, not a null string!
-  setWidgetValue( QStringLiteral( "" ) );  // skip-keyword-check
+  setWidgetValue( QLatin1String( "" ) );  // skip-keyword-check
 
   if ( mTextEdit )
     mTextEdit->blockSignals( false );

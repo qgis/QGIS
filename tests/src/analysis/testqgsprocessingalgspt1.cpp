@@ -513,7 +513,7 @@ void TestQgsProcessingAlgsPt1::rasterLayerProperties()
   QCOMPARE( results.value( QStringLiteral( "EXTENT" ) ).toString(), QStringLiteral( "0.0000000000000000,0.0000000000000000 : 4.0000000000000000,4.0000000000000000" ) );
   QCOMPARE( results.value( QStringLiteral( "PIXEL_WIDTH" ) ).toDouble(), 1.0 );
   QCOMPARE( results.value( QStringLiteral( "PIXEL_HEIGHT" ) ).toDouble(), 1.0 );
-  QCOMPARE( results.value( QStringLiteral( "CRS_AUTHID" ) ).toString(), QStringLiteral( "" ) );
+  QCOMPARE( results.value( QStringLiteral( "CRS_AUTHID" ) ).toString(), QStringLiteral( "" ) ); // clazy:exclude=empty-qstringliteral
   QCOMPARE( results.value( QStringLiteral( "WIDTH_IN_PIXELS" ) ).toInt(), 4 );
   QCOMPARE( results.value( QStringLiteral( "HEIGHT_IN_PIXELS" ) ).toInt(), 4 );
   QCOMPARE( results.value( QStringLiteral( "BAND_COUNT" ) ).toInt(), 1 );
@@ -1498,7 +1498,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 2" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QStringLiteral( "" ) // clazy:exclude=empty-qstringliteral
       << Qgis::DataType::Byte
       << "EPSG:4326"
       << 1.0
@@ -1518,7 +1518,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 3" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QStringLiteral( "" ) // clazy:exclude=empty-qstringliteral
       << Qgis::DataType::Byte
       << "EPSG:4326"
       << 1.0
@@ -1556,7 +1556,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 5" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QStringLiteral( "" ) // clazy:exclude=empty-qstringliteral
       << Qgis::DataType::Int16
       << "EPSG:4326"
       << 1.0
@@ -1575,7 +1575,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 6" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QStringLiteral( "" ) // clazy:exclude=empty-qstringliteral
       << Qgis::DataType::Int16
       << "EPSG:4326"
       << 1.0
@@ -1613,7 +1613,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 8" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QStringLiteral( "" ) // clazy:exclude=empty-qstringliteral
       << Qgis::DataType::UInt16
       << "EPSG:4326"
       << 1.0
@@ -1632,7 +1632,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 9" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QStringLiteral( "" ) // clazy:exclude=empty-qstringliteral
       << Qgis::DataType::UInt16
       << "EPSG:4326"
       << 1.0
@@ -1689,7 +1689,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 11" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QStringLiteral( "" ) // clazy:exclude=empty-qstringliteral
       << Qgis::DataType::Int32
       << "EPSG:4326"
       << 1.0
@@ -1708,7 +1708,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 12" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QStringLiteral( "" ) // clazy:exclude=empty-qstringliteral
       << Qgis::DataType::Int32
       << "EPSG:4326"
       << 1.0
@@ -1746,7 +1746,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 14" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QStringLiteral( "" ) // clazy:exclude=empty-qstringliteral
       << Qgis::DataType::UInt32
       << "EPSG:4326"
       << 1.0
@@ -1765,7 +1765,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 14" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QStringLiteral( "" ) // clazy:exclude=empty-qstringliteral
       << Qgis::DataType::UInt32
       << "EPSG:4326"
       << 1.0
@@ -2153,7 +2153,7 @@ void TestQgsProcessingAlgsPt1::lineDensity_data()
       << QStringLiteral( "/linedensity_testcase2.tif" )
       << 3.0
       << 2.0
-      << QStringLiteral( "" );
+      << QStringLiteral( "" ); // clazy:exclude=empty-qstringliteral
 
 }
 

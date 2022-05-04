@@ -442,7 +442,7 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QVERIFY( editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
-  QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "" ) );
+  QCOMPARE( editor3->mLineEdit->text(), QLatin1String( "" ) );
 
   editor1->mLineEdit->setFocus();
   editor1->mLineEdit->setText( QString( "151.000000000" ) );
