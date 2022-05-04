@@ -321,7 +321,7 @@ void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
 
   if ( gb->exec() )
   {
-    mTableModel->setSql( proxyModel()->mapToSource( index ), gb->sql() );
+    mTableModel->setSql( index, gb->sql() );
   }
 }
 
