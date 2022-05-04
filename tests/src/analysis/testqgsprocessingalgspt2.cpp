@@ -1789,7 +1789,7 @@ void TestQgsProcessingAlgsPt2::splitVectorLayer()
   f.setAttributes( QgsAttributes() << 1 << QVariant() );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 0)" ) ) );
   layer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 2 << QStringLiteral( "" ) );
+  f.setAttributes( QgsAttributes() << 2 << QLatin1String( "" ) );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 1)" ) ) );
   layer->dataProvider()->addFeature( f );
   f.setAttributes( QgsAttributes() << 3 << QStringLiteral( "value" ) );
