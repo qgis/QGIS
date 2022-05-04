@@ -139,7 +139,7 @@ QImage Qgs3DUtils::captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMa
 }
 
 bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSettings,
-                                  const Qgs3DMapSettings &mapSettings,
+                                  Qgs3DMapSettings &mapSettings,
                                   int framesPerSecond,
                                   const QString &outputDirectory,
                                   const QString &fileNameTemplate,

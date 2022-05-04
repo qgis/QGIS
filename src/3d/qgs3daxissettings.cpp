@@ -36,6 +36,20 @@ Qgs3DAxisSettings &Qgs3DAxisSettings::operator=( Qgs3DAxisSettings const &rhs )
   return *this;
 }
 
+bool Qgs3DAxisSettings::operator==( Qgs3DAxisSettings const &rhs )
+{
+  bool out = true;
+  out &= this->mMode == rhs.mMode;
+  out &= this->mHorizontalPosition == rhs.mHorizontalPosition;
+  out &= this->mVerticalPosition == rhs.mVerticalPosition;
+  return out;
+}
+
+bool Qgs3DAxisSettings::operator!=( Qgs3DAxisSettings const &rhs )
+{
+  return ! this->operator==( rhs );
+}
+
 void Qgs3DAxisSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
   const QString modeStr = element.attribute( QStringLiteral( "mode" ) );
