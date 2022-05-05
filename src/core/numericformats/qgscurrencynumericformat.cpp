@@ -37,7 +37,7 @@ QString QgsCurrencyNumericFormat::visibleName() const
 
 int QgsCurrencyNumericFormat::sortKey()
 {
-  return QgsNumericFormat::sortKey();
+  return QgsNumericFormat::sortKey(); // clazy:exclude=skipped-base-method
 }
 
 double QgsCurrencyNumericFormat::suggestSampleValue() const

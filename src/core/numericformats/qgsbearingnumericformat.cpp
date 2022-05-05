@@ -34,7 +34,7 @@ QString QgsBearingNumericFormat::visibleName() const
 
 int QgsBearingNumericFormat::sortKey()
 {
-  return QgsNumericFormat::sortKey();
+  return QgsNumericFormat::sortKey(); // clazy:exclude=skipped-base-method
 }
 
 double QgsBearingNumericFormat::suggestSampleValue() const
