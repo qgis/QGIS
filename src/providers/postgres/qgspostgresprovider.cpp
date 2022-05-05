@@ -3749,13 +3749,10 @@ long long QgsPostgresProvider::featureCount() const
   // get total number of features
   QString sql;
 
-  // use estimated metadata even when there is a where clause,
-  // although we get an incorrect feature count for the subset
-  // - but make huge dataset usable.
   long long num = -1;
   if ( !mIsQuery && mUseEstimatedMetadata )
   {
-    if ( relkind() == Relkind::View && connectionRO()->pgVersion() >= 90000 )
+    if ( ( relkind() == Relkind::View || !mSqlWhereClause.isEmpty() ) && connectionRO()->pgVersion() >= 90000 )
     {
       // parse explain output to estimate feature count
       // we don't use pg_class reltuples because it returns 0 for view
