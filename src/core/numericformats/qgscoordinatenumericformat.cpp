@@ -55,7 +55,7 @@ QString QgsGeographicCoordinateNumericFormat::visibleName() const
 
 int QgsGeographicCoordinateNumericFormat::sortKey()
 {
-  return QgsNumericFormat::sortKey();
+  return QgsNumericFormat::sortKey(); // clazy:exclude=skipped-base-method
 }
 
 double QgsGeographicCoordinateNumericFormat::suggestSampleValue() const
