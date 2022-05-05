@@ -116,7 +116,7 @@ git config --global --add safe.directory /root/QGIS
 #######
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
-ctest -V -S /root/QGIS/.ci/config_build.ctest
+ctest -VV -S /root/QGIS/.ci/config_build.ctest
 echo "::endgroup::"
 
 ########################
