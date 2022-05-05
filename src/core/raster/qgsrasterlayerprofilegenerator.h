@@ -48,6 +48,13 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileSurfac
   public:
 
     QString type() const override;
+    QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
+
+  private:
+
+    QPointer< QgsRasterLayer > mLayer;
+
+    friend class QgsRasterLayerProfileGenerator;
 };
 
 /**
@@ -88,6 +95,7 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurf
     double mOffset = 0;
     double mScale = 1;
 
+    QPointer< QgsRasterLayer > mLayer;
     std::unique_ptr< QgsRasterDataProvider > mRasterProvider;
 
     std::unique_ptr< QgsRasterLayerProfileResults > mResults;
