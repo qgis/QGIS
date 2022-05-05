@@ -866,13 +866,21 @@ if (WITH_CORE)
   set(CMAKE_CXX_VISIBILITY_PRESET hidden)
   include(GenerateExportHeader)
 
-  set (ADD_CLAZY_CHECKS ${DEFAULT_MANUAL_SUBDIR} CACHE STRING "Add default set of clazy checks which should not raise any warnings")
-  mark_as_advanced (ADD_CLAZY_CHECKS)
-  if (ADD_CLAZY_CHECKS)
+  set (WITH_CLAZY FALSE CACHE BOOL "Determines whether Clazy checks should be enabled")
+  mark_as_advanced (WITH_CLAZY)
+  if (WITH_CLAZY)
     set(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
     #  qcolor-from-literal crashes clang with clazy 1.11
-  set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lowercase-qml-type-name,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,isempty-vs-count")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
+    set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lowercase-qml-type-name,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,isempty-vs-count,non-pod-global-static")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
+
+    if (WERROR AND NOT ${QGISDEBUG})
+      message(FATAL_ERROR "Don't activate both WERROR and ADD_CLAZY_CHECKS in Release mode, you will get many false positive errors")
+    endif()
+
+    if (WERROR AND ("$ENV{CLAZY_IGNORE_DIRS}" STREQUAL ""))
+      message(WARNING "WERROR and ADD_CLAZY_CHECKS are activated. To avoid unwanted Clazy error, please set the CLAZY_IGNORE_DIRS environment variable like this : \nexport CLAZY_IGNORE_DIRS=\"(.*/external/.*)|(.*sip_.*part.*)\"")
+    endif()
   endif()
 endif()
 

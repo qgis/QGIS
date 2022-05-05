@@ -2234,10 +2234,6 @@ if (APPLE AND NOT IOS)
   target_link_libraries(qgis_core qgis_native)
 endif()
 
-if (ADD_CLAZY_CHECKS)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS},non-pod-global-static")
-endif()
-
 target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Core
   ${QT_VERSION_BASE}::Gui
