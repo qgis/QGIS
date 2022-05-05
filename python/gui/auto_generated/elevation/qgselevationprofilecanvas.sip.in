@@ -170,6 +170,11 @@ Identify results visible at the specified plot point.
 Identify results visible within the specified plot rect.
 %End
 
+    QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
+%Docstring
+Converts a canvas point to the equivalent plot point.
+%End
+
   signals:
 
     void activeJobCountChanged( int count );
