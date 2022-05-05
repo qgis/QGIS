@@ -164,6 +164,16 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
      */
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 
+    /**
+     * Identify results visible at the specified profile \a point.
+     */
+    QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context );
+
+    /**
+     * Identify results visible within the specified ranges.
+     */
+    QVector<QgsProfileIdentifyResults> identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext &context );
+
   signals:
 
     //! Emitted when the profile generation is finished (or canceled).

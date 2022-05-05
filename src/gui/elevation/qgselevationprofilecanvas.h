@@ -33,6 +33,8 @@ class QgsProfilePlotRenderer;
 class QgsCurve;
 class Qgs2DPlot;
 class QgsProfileSnapContext;
+class QgsProfileIdentifyContext;
+class QgsProfileIdentifyResults;
 
 /**
  * \ingroup gui
@@ -178,6 +180,16 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
 
+    /**
+     * Identify results visible at the specified plot point.
+     */
+    QVector<QgsProfileIdentifyResults> identify( QPointF point );
+
+    /**
+     * Identify results visible within the specified plot rect.
+     */
+    QVector<QgsProfileIdentifyResults> identify( const QRectF &rect );
+
   signals:
 
     /**
@@ -232,6 +244,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
 
     QgsProfileSnapContext snapContext() const;
+    QgsProfileIdentifyContext identifyContext() const;
 
     void setupLayerConnections( QgsMapLayer *layer, bool isDisconnect );
 
