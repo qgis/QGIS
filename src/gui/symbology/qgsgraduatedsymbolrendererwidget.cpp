@@ -724,10 +724,11 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 
   // Only update class count if different - otherwise typing value gets very messy
   int nclasses = ranges.count();
-  if ( nclasses && updateCount )
+  if ( nclasses && ( updateCount || ( method->flags() & QgsClassificationMethod::MethodProperty::IgnoresClassCount ) ) )
   {
     spinGraduatedClasses->setValue( ranges.count() );
   }
+  spinGraduatedClasses->setEnabled( !( method->flags() & QgsClassificationMethod::MethodProperty::IgnoresClassCount ) );
 
   // set column
   QString attrName = mRenderer->classAttribute();
@@ -857,6 +858,8 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
 
     mParameterWidgetWrappers.push_back( std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>( ppww ) );
   }
+
+  spinGraduatedClasses->setEnabled( !( method->flags() & QgsClassificationMethod::MethodProperty::IgnoresClassCount ) );
 }
 
 void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( MethodMode mode )

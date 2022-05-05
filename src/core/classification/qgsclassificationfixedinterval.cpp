@@ -22,7 +22,7 @@
 
 
 QgsClassificationFixedInterval::QgsClassificationFixedInterval()
-  : QgsClassificationMethod( NoFlag, 0 )
+  : QgsClassificationMethod( IgnoresClassCount, 0 )
 {
   std::unique_ptr< QgsProcessingParameterNumber > param = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "INTERVAL" ), QObject::tr( "Interval size" ), QgsProcessingParameterNumber::Double, 1, false, 0.000000000001 );
   addParameter( param.release() );

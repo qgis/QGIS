@@ -115,6 +115,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
       NoFlag                 = 0,       //!< No flag
       ValuesNotRequired      = 1 << 1,  //!< Deprecated since QGIS 3.12
       SymmetricModeAvailable = 1 << 2,  //!< This allows using symmetric classification
+      IgnoresClassCount      = 1 << 3,  //!< The classification method does not compute classes based on a class count (since QGIS 3.26)
     };
     Q_DECLARE_FLAGS( MethodProperties, MethodProperty )
 
@@ -150,6 +151,13 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
 
     //! The icon of the method
     virtual QIcon icon() const {return QIcon();}
+
+    /**
+     * Returns the classification flags.
+     *
+     * \since QGIS 3.26
+     */
+    QgsClassificationMethod::MethodProperties flags() const { return mFlags; }
 
     /**
      * Returns the label for a range
