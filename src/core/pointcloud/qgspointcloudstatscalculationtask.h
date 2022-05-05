@@ -43,13 +43,15 @@ class QgsPointCloudStatsCalculationTask : public QgsTask
     Q_OBJECT
 
   public:
-    QgsPointCloudStatsCalculationTask( QgsPointCloudStatsCalculator *calculator, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointLimit );
+    QgsPointCloudStatsCalculationTask( QgsPointCloudIndex *index, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointLimit );
 
     bool run() override;
 
     void cancel() override;
+
+    QgsPointCloudStatistics calculationResults() const;
   private:
-    QgsPointCloudStatsCalculator *mCalculator = nullptr;
+    QgsPointCloudStatsCalculator mCalculator;
     QVector<QgsPointCloudAttribute> mAttributes;
     qint64 mPointLimit;
     QgsFeedback *mFeedback = nullptr;

@@ -200,6 +200,29 @@ Returns the statistic ``statistic`` of ``attribute``
 .. versionadded:: 3.26
 %End
 
+    QVariantList classesOf( const QString &attribute ) const;
+%Docstring
+Returns a list of existing classes which are present for the specified ``attribute``.
+
+.. versionadded:: 3.26
+%End
+
+    QVariant classStatisticOf( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+%Docstring
+Returns a statistic for one class ``value`` from the specified ``attribute``.
+
+If no matching precalculated statistic is available then an invalid variant will be returned.
+
+.. versionadded:: 3
+%End
+
+    QgsPointCloudStatistics calculatedStatistics() const;
+%Docstring
+Returns the object containing all the calculated statistics
+
+.. versionadded:: 3.26
+%End
+
     PointCloudStatisticsCalculationState statisticsCalculationState() const;
 %Docstring
 Returns the status of point cloud statistics calculation

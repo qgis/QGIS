@@ -39,6 +39,7 @@
 #include "qgslazdecoder.h"
 #include "qgslazinfo.h"
 #include "qgspointcloudstatscalculator.h"
+#include "qgspointcloudstatistics.h"
 #include "qgsstatisticalsummary.h"
 #include "qgsfeedback.h"
 
@@ -677,106 +678,115 @@ void TestQgsEptProvider::testStatsCalculator()
 
   calculator.calculateStats( &feedback, attributes );
 
-  QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics> stats = calculator.statistics();
+  QgsPointCloudStatistics stats = calculator.statistics();
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "Amplitude" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Amplitude" ) );
     QCOMPARE( ( float )s.minimum, 1.1599999666214 );
     QCOMPARE( ( float )s.maximum, 19.6000003814697 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "Blue" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Blue" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "ClassFlags" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "ClassFlags" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "Classification" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Classification" ) );
     QCOMPARE( ( float )s.minimum, 2 );
     QCOMPARE( ( float )s.maximum, 18 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 7 );
+    QCOMPARE( classCount[ 2 ],  103782 );
+    QCOMPARE( classCount[ 3 ],  484 );
+    QCOMPARE( classCount[ 4 ],  79 );
+    QCOMPARE( classCount[ 5 ],  966 );
+    QCOMPARE( classCount[ 7 ],  12 );
+    QCOMPARE( classCount[ 8 ],  648 );
+    QCOMPARE( classCount[ 18 ],  1 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "Deviation" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Deviation" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 120 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "EdgeOfFlightLine" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "EdgeOfFlightLine" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "GpsTime" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "GpsTime" ) );
     QCOMPARE( ( float )s.minimum, ( float )302522581.972046196460723876953 );
     QCOMPARE( ( float )s.maximum, ( float )302522583.437068104743957519531 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "Green" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Green" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "Intensity" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Intensity" ) );
     QCOMPARE( ( float )s.minimum, 116 );
     QCOMPARE( ( float )s.maximum, 1960 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "NumberOfReturns" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "NumberOfReturns" ) );
     QCOMPARE( ( float )s.minimum, 1 );
     QCOMPARE( ( float )s.maximum, 5 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "PointSourceId" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "PointSourceId" ) );
     QCOMPARE( ( float )s.minimum, 15017 );
     QCOMPARE( ( float )s.maximum, 15017 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "Red" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Red" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "Reflectance" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Reflectance" ) );
     QCOMPARE( ( float )s.minimum, -21.1100006103515625 );
     QCOMPARE( ( float )s.maximum, -2.6099998950958251953125 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "ReturnNumber" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "ReturnNumber" ) );
     QCOMPARE( ( float )s.minimum, 1 );
     QCOMPARE( ( float )s.maximum, 5 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "ScanAngleRank" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanAngleRank" ) );
     QCOMPARE( ( float )s.minimum, -11 );
     QCOMPARE( ( float )s.maximum, -4 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "ScanDirectionFlag" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanDirectionFlag" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatsCalculator::AttributeStatistics s = stats[ QStringLiteral( "UserData" ) ];
+    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "UserData" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }

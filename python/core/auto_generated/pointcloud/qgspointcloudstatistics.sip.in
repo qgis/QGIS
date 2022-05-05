@@ -1,0 +1,97 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudstatistics.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPointCloudStatistics
+{
+%Docstring(signature="appended")
+
+Class used to store statistics of a point cloud dataset.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudstatistics.h"
+%End
+  public:
+    struct AttributeStatistics
+    {
+      double minimum;
+      double maximum;
+      int count;
+      QMap<int, int> classCount;
+
+      void cumulateStatistics( const AttributeStatistics &stats );
+    };
+
+    QgsPointCloudStatistics();
+%Docstring
+Construvtor
+%End
+
+    QgsPointCloudStatistics( int sampledPointsCount, const QMap<QString, AttributeStatistics> &stats );
+%Docstring
+Constructor from statistics map
+%End
+
+    int sampledPointsCount() const;
+%Docstring
+Returns the number of points used to calculate the statistics
+%End
+
+    void clear();
+%Docstring
+Clears the statistics of all attributes
+%End
+
+    void clear( const QVector<QgsPointCloudAttribute> &attributes );
+%Docstring
+Clears the statistics of given attributes ``attributes``
+%End
+
+    AttributeStatistics statisticsOf( const QString &attribute ) const;
+%Docstring
+Returns the calculated statistics of attribute ``attribute``
+%End
+
+    QVariant statisticsOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+%Docstring
+Returns the statistic ``statistic`` of ``attribute``
+%End
+
+    QVariantList classesOf( const QString &attribute ) const;
+%Docstring
+Returns a list of existing classes which are present for the specified ``attribute``
+%End
+
+    QVariant classStatisticOf( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+%Docstring
+Returns a statistic for one class ``value`` from the specified ``attribute``.
+
+If no matching precalculated statistic is available then an invalid variant will be returned.
+%End
+
+    void combineWith( const QgsPointCloudStatistics &stats );
+%Docstring
+Merges the current statistics with the statistics from ``stats``
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudstatistics.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

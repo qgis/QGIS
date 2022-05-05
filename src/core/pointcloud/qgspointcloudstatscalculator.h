@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudstatscalculator.h
+                         qgspointcloudstatscalculator.cpp
                          --------------------
     begin                : April 2022
     copyright            : (C) 2022 by Belgacem Nedjima
@@ -27,6 +27,7 @@
 
 #include "qgspointcloudrequest.h"
 #include "qgsstatisticalsummary.h"
+#include "qgspointcloudstatistics.h"
 
 #define SIP_NO_FILE
 
@@ -48,29 +49,8 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
 {
     Q_OBJECT
   public:
-    struct AttributeStatistics
-    {
-      double minimum = std::numeric_limits<double>::max();
-      double maximum = std::numeric_limits<double>::lowest();
-      int count = 0;
-      QMap<int, int> classCount;
-
-      void cumulateStatistics( const AttributeStatistics &stats )
-      {
-        minimum = std::min( minimum, stats.minimum );
-        maximum = std::min( maximum, stats.maximum );
-        count += stats.count;
-      }
-    };
-
     //! Constructor
     QgsPointCloudStatsCalculator( QgsPointCloudIndex *index );
-
-    //! Clears the statistics of all attributes
-    void clear();
-
-    //! Clears the statistics of given attributes \a attributes
-    void clear( const QVector<QgsPointCloudAttribute> &attributes );
 
     /**
      * Calculates the statistics of given attributes \a attributes up to new \a pointsLimit points
@@ -78,25 +58,19 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
      */
     bool calculateStats( QgsFeedback *feedback, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit = -1 );
 
-    //! Returns the calculated statistics of each attribute processed
-    QMap<QString, AttributeStatistics> statistics() const { return mStatisticsMap; }
-
-    //! Returns the calculated statistics of attribute \a attribute
-    AttributeStatistics statisticsOf( const QString &attribute );
-
-    //! Returns the statistic \a statistic of \a attribute
-    QVariant statisticsOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic );
+    //! Returns the object containing the calculated statistics
+    QgsPointCloudStatistics statistics() const { return mStats; }
   private:
     QgsPointCloudIndex *mIndex = nullptr;
 
-    QMap<QString, AttributeStatistics> mStatisticsMap;
+    QgsPointCloudStatistics mStats;
     QSet<IndexedPointCloudNode> mProcessedNodes;
 
     long mStatsCalculationTaskId = 0;
     QgsPointCloudRequest mRequest;
 
-    QFuture<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>> mFuture;
-    QFutureWatcher<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>> mFutureWatcher;
+    QFuture<QgsPointCloudStatistics> mFuture;
+    QFutureWatcher<QgsPointCloudStatistics> mFutureWatcher;
 };
 
 

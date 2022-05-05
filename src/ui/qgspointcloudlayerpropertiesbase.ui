@@ -391,17 +391,6 @@
                 </property>
                </widget>
               </item>
-              <item>
-               <layout class="QGridLayout" name="gridLayout_4">
-                <item row="1" column="0">
-                 <widget class="QLabel" name="mStatisticsCalculationWarningLabel">
-                  <property name="text">
-                   <string>Note: The displayed statistics are estimated based on sampling data from the dataset and it is not guaranteed to be accurate!</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
              </layout>
             </widget>
            </item>
@@ -419,6 +408,13 @@
                </widget>
               </item>
              </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="mStatisticsCalculationWarningLabel">
+             <property name="text">
+              <string>Note: The displayed statistics are estimated based on sampling data from the dataset and it is not guaranteed to be accurate!</string>
+             </property>
             </widget>
            </item>
           </layout>

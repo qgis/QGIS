@@ -153,7 +153,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   if ( attributes.indexOf( QLatin1String( "Classification" ) ) >= 0 )
   {
     // are any classifications present?
-    QVariantList classes = provider->metadataClasses( QStringLiteral( "Classification" ) );
+    QVariantList classes = layer->classesOf( QStringLiteral( "Classification" ) );
     // ignore "not classified" classes, and see if any are left...
     classes.removeAll( 0 );
     classes.removeAll( 1 );

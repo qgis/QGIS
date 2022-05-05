@@ -774,18 +774,31 @@ void QgsPointCloudLayer::setSync3DRendererTo2DRenderer( bool sync )
     convertRenderer3DFromRenderer2D();
 }
 
-
 QVariant QgsPointCloudLayer::statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
   if ( attribute == QStringLiteral( "X" ) || attribute == QStringLiteral( "Y" ) || attribute == QStringLiteral( "Z" ) || dataProvider()->hasStatisticsMetadata() )
   {
     return dataProvider()->metadataStatistic( attribute, statistic );
   }
-  if ( mStatsCalculator.get() )
+  return mCalculatedStatistics.statisticsOf( attribute, statistic );
+}
+
+QVariantList QgsPointCloudLayer::classesOf( const QString &attribute ) const
+{
+  if ( dataProvider()->hasStatisticsMetadata() )
   {
-    return mStatsCalculator->statisticsOf( attribute, statistic );
+    return dataProvider()->metadataClasses( attribute );
   }
-  return QVariant();
+  return mCalculatedStatistics.classesOf( attribute );
+}
+
+QVariant QgsPointCloudLayer::classStatisticOf( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+{
+  if ( dataProvider()->hasStatisticsMetadata() )
+  {
+    return dataProvider()->metadataClassStatistic( attribute, value, statistic );
+  }
+  return mCalculatedStatistics.classStatisticOf( attribute, value, statistic );
 }
 
 void QgsPointCloudLayer::calculateStatistics()
@@ -800,10 +813,6 @@ void QgsPointCloudLayer::calculateStatistics()
     QgsMessageLog::logMessage( QObject::tr( "A statistics calculation task for the point cloud %1 is already in progress" ).arg( this->name() ) );
     return;
   }
-  if ( !mStatsCalculator.get() )
-  {
-    mStatsCalculator.reset( new QgsPointCloudStatsCalculator( mDataProvider->index() ) );
-  }
   QVector<QgsPointCloudAttribute> attributes = mDataProvider->attributes().attributes();
   // Do not calculate stats for X, Y & Z since the point cloud index contains that
   for ( int i = 0; i < attributes.size(); ++i )
@@ -815,14 +824,16 @@ void QgsPointCloudLayer::calculateStatistics()
     }
   }
 
-  QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mStatsCalculator.get(), attributes, 1000000 );
-  connect( task, &QgsTask::taskCompleted, this, [this]()
+  QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mDataProvider->index(), attributes, 1000000 );
+  connect( task, &QgsTask::taskCompleted, this, [this, task]()
   {
+    mCalculatedStatistics = task->calculationResults();
     mStatisticsCalculationState = QgsPointCloudLayer::Calculated;
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
     resetRenderer();
     mStatsCalculationTask = 0;
   } );
+
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
   connect( task, &QgsTask::taskTerminated, this, [this]()
   {
