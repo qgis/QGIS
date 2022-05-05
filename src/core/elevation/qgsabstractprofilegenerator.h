@@ -162,7 +162,7 @@ class CORE_EXPORT QgsProfileIdentifyResults
     /**
      * Constructor for QgsProfileIdentifyResult, with the associated map \a layer.
      */
-    QgsProfileIdentifyResults( QgsMapLayer *layer, const QVector< QVariantMap> &results );
+    QgsProfileIdentifyResults( QgsMapLayer *layer = nullptr, const QVector< QVariantMap> &results = QVector< QVariantMap>() );
 
     /**
      * Returns the associated map layer.
