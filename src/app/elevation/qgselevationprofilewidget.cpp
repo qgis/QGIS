@@ -47,6 +47,7 @@
 #include "qgsgui.h"
 #include "qgsshortcutsmanager.h"
 #include "qgselevationprofiletoolidentify.h"
+#include "qgselevationprofiletoolmeasure.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -201,6 +202,18 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( enabledSnappingAction, &QAction::toggled, mCanvas, &QgsElevationProfileCanvas::setSnappingEnabled );
   toolBar->addAction( enabledSnappingAction );
 
+  mMeasureTool = std::make_unique< QgsElevationProfileToolMeasure> ( mCanvas );
+
+  QAction *measureToolAction = new QAction( tr( "Measure Distances" ), this );
+  measureToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasure.svg" ) ) );
+  measureToolAction->setCheckable( true );
+  mMeasureTool->setAction( measureToolAction );
+  connect( measureToolAction, &QAction::triggered, this, [ = ]
+  {
+    mCanvas->setTool( mMeasureTool.get() );
+  } );
+  toolBar->addAction( measureToolAction );
+
   toolBar->addSeparator();
 
   QAction *exportAsPdfAction = new QAction( tr( "Export as PDF" ), this );
@@ -248,6 +261,22 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   topLayout->setSpacing( style()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing ) );
   topLayout->addWidget( toolBar );
   topLayout->addStretch( 1 );
+
+  mInfoLabel = new QLabel();
+  topLayout->addWidget( mInfoLabel );
+  mInfoLabel->hide();
+
+  connect( mMeasureTool.get(), &QgsElevationProfileToolMeasure::distanceChanged, this, [ = ]( double distance )
+  {
+    mInfoLabel->setText( QString::number( distance ) );
+    mInfoLabel->show();
+  } );
+  connect( mMeasureTool.get(), &QgsElevationProfileToolMeasure::cleared, this, [ = ]
+  {
+    mInfoLabel->hide();
+    mInfoLabel->clear();
+  } );
+
   topLayout->addWidget( mProgressPendingJobs );
 
   QVBoxLayout *layout = new QVBoxLayout;

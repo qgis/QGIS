@@ -190,6 +190,11 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     QVector<QgsProfileIdentifyResults> identify( const QRectF &rect );
 
+    /**
+     * Converts a canvas point to the equivalent plot point.
+     */
+    QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
+
   signals:
 
     /**
@@ -232,11 +237,6 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void refineResults();
 
   private:
-
-    /**
-     * Converts a canvas point to the equivalent plot point.
-     */
-    QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
 
     /**
      * Converts a plot point to the equivalent canvas point.
