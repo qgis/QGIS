@@ -38,6 +38,7 @@ set(QGIS_CORE_SRCS
   classification/qgsclassificationmethod.cpp
   classification/qgsclassificationcustom.cpp
   classification/qgsclassificationequalinterval.cpp
+  classification/qgsclassificationfixedinterval.cpp
   classification/qgsclassificationprettybreaks.cpp
   classification/qgsclassificationquantile.cpp
   classification/qgsclassificationjenks.cpp
@@ -1254,6 +1255,7 @@ set(QGIS_CORE_HDRS
 
   classification/qgsclassificationcustom.h
   classification/qgsclassificationequalinterval.h
+  classification/qgsclassificationfixedinterval.h
   classification/qgsclassificationjenks.h
   classification/qgsclassificationlogarithmic.h
   classification/qgsclassificationmethod.h
