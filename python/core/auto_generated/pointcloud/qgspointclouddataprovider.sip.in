@@ -64,8 +64,6 @@ defined by ``maxError`` (in layer coordinates), an extent ``geometry`` in the 2D
 and a range ``extentZRange`` for z values. The function will try to limit
 the number of points returned to ``pointsLimit`` points
 
-``maxErrorPixels`` : maximum accepted error factor in pixels
-
 .. note::
 
    this function does not handle elevation properties and you need to

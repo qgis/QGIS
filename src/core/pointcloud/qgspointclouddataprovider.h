@@ -85,8 +85,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * and a range \a extentZRange for z values. The function will try to limit
      * the number of points returned to \a pointsLimit points
      *
-     * \a maxErrorPixels : maximum accepted error factor in pixels
-     *
      * \note this function does not handle elevation properties and you need to
      * change elevation coordinates yourself after returning from the function
      */
@@ -98,8 +96,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * defined by \a maxError (in layer coordinates), an extent \a geometry in the 2D plane
      * and a range \a extentZRange for z values. The function will try to limit
      * the number of points returned to \a pointsLimit points
-     *
-     * \a maxErrorPixels : maximum accepted error factor in pixels
      *
      * \note this function does not handle elevation properties and you need to
      * change elevation coordinates yourself after returning from the function
