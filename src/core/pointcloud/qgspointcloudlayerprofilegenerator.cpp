@@ -237,6 +237,44 @@ QgsProfileSnapResult QgsPointCloudLayerProfileResults::snapPoint( const QgsProfi
   return result;
 }
 
+QVector<QgsProfileIdentifyResults> QgsPointCloudLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
+{
+  return identify( QgsDoubleRange( point.distance() - context.maximumPointDistanceDelta, point.distance() + context.maximumPointDistanceDelta ),
+                   QgsDoubleRange( point.elevation() - context.maximumPointElevationDelta, point.elevation() + context.maximumPointElevationDelta ), context );
+}
+
+QVector<QgsProfileIdentifyResults> QgsPointCloudLayerProfileResults::identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext &context )
+{
+  if ( !mLayer )
+    return {};
+
+  std::unique_ptr< QgsCurve > substring( mProfileCurve->curveSubstring( distanceRange.lower(), distanceRange.upper() ) );
+  QgsGeos substringGeos( substring.get() );
+  std::unique_ptr< QgsAbstractGeometry > searchGeometry( substringGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  if ( !searchGeometry )
+    return {};
+
+  const QgsCoordinateTransform curveToLayerTransform = QgsCoordinateTransform( mCurveCrs, mLayer->crs(), context.project ? context.project->transformContext() : QgsCoordinateTransformContext() );
+  try
+  {
+    searchGeometry->transform( curveToLayerTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    return {};
+  }
+
+  // we have to adjust the elevation range to "undo" the z offset/z scale before we can hand to the provider
+  const QgsDoubleRange providerElevationRange( ( elevationRange.lower() - mZOffset ) / mZScale, ( elevationRange.upper() - mZOffset ) / mZScale );
+
+  const QgsGeometry pointCloudSearchGeometry( std::move( searchGeometry ) );
+  const QVector<QVariantMap> pointAttributes = mLayer->dataProvider()->identify( mMaxErrorInLayerCoordinates, pointCloudSearchGeometry, providerElevationRange );
+  if ( pointAttributes.empty() )
+    return {};
+
+  return { QgsProfileIdentifyResults( mLayer, pointAttributes )};
+}
+
 void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
   const QgsPointCloudLayerProfileGenerator *pcGenerator = qgis::down_cast< const QgsPointCloudLayerProfileGenerator *>( generator );
@@ -247,6 +285,14 @@ void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbs
   pointColor = pcGenerator->mPointColor;
   respectLayerColors = static_cast< bool >( pcGenerator->mRenderer );
   opacityByDistanceEffect = pcGenerator->mOpacityByDistanceEffect;
+
+  mLayer = pcGenerator->mLayer;
+  mCurveCrs = pcGenerator->mTargetCrs;
+  mProfileCurve.reset( pcGenerator->mProfileCurve->clone() );
+  mTolerance = pcGenerator->mTolerance;
+
+  mZOffset = pcGenerator->mZOffset;
+  mZScale = pcGenerator->mZScale;
 }
 
 //
@@ -376,8 +422,12 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
   const QVector<IndexedPointCloudNode> nodes = traverseTree( pc, pc->root(), maximumErrorPixels, rootErrorPixels, context.elevationRange() );
 
+  const double rootErrorInLayerCoordinates = rootNodeExtentLayerCoords.width() / pc->span();
+  const double maxErrorInMapCoordinates = maximumErrorPixels * mapUnitsPerPixel;
+
   mResults = std::make_unique< QgsPointCloudLayerProfileResults >();
   mResults->copyPropertiesFromGenerator( this );
+  mResults->mMaxErrorInLayerCoordinates = maxErrorInMapCoordinates * rootErrorInLayerCoordinates / rootErrorInMapCoordinates;
 
   QgsPointCloudRequest request;
   QgsPointCloudAttributeCollection attributes;
