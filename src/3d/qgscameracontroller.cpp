@@ -58,7 +58,7 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   connect( this, &Qt3DCore::QEntity::enabledChanged,
            mMouseHandler, &Qt3DInput::QMouseHandler::setEnabled );
   connect( this, &Qt3DCore::QEntity::enabledChanged,
-           mKeyboardHandler, &Qt3DInput::QMouseHandler::setEnabled );
+           mKeyboardHandler, &Qt3DInput::QKeyboardHandler::setEnabled );
 
   mFpsNavTimer = new QTimer( this );
   mFpsNavTimer->setInterval( 10 );
