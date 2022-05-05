@@ -45,6 +45,8 @@ class QgsElevationProfileWidgetSettingsAction;
 class QgsElevationProfileLayerTreeView;
 class QgsLayerTree;
 class QgsLayerTreeRegistryBridge;
+class QgsElevationProfileToolIdentify;
+
 
 class QgsElevationProfileWidget : public QWidget
 {
@@ -122,6 +124,7 @@ class QgsElevationProfileWidget : public QWidget
     QgsPlotToolPan *mPanTool = nullptr;
     QgsPlotToolXAxisZoom *mXAxisZoomTool = nullptr;
     QgsPlotToolZoom *mZoomTool = nullptr;
+    QgsElevationProfileToolIdentify *mIdentifyTool = nullptr;
 
     QgsElevationProfileWidgetSettingsAction *mSettingsAction = nullptr;
 
