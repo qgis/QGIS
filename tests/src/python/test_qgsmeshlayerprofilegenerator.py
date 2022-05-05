@@ -25,7 +25,8 @@ from qgis.core import (
     QgsFlatTerrainProvider,
     QgsMeshTerrainProvider,
     QgsProfilePoint,
-    QgsProfileSnapContext
+    QgsProfileSnapContext,
+    QgsProfileIdentifyContext
 )
 
 from qgis.PyQt.QtXml import QDomDocument
@@ -130,6 +131,44 @@ class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
 
         res = r.snapPoint(QgsProfilePoint(200, 85), context)
         self.assertFalse(res.isValid())
+
+    def testIdentify(self):
+        ml = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')
+        self.assertTrue(ml.isValid())
+        ml.setCrs(QgsCoordinateReferenceSystem('EPSG:27700'))
+
+        curve = QgsLineString()
+        curve.fromWkt('LineString (321621.3770066662109457 129734.87810317709227093, 321894.21278918092139065 129858.49142702402605209)')
+        req = QgsProfileRequest(curve)
+
+        generator = ml.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        r = generator.takeResults()
+
+        # try identifying
+        context = QgsProfileIdentifyContext()
+        res = r.identify(QgsProfilePoint(-10, -10), context)
+        self.assertFalse(res)
+
+        context.maximumSurfaceDistanceDelta = 0
+        context.maximumSurfaceElevationDelta = 3
+        context.maximumPointDistanceDelta = 0
+        context.maximumPointElevationDelta = 0
+        res = r.identify(QgsProfilePoint(0, 70), context)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layer(), ml)
+        self.assertEqual(res[0].results(), [{'distance': 0.0, 'elevation': 71.8236528075051}])
+
+        context.maximumSurfaceDistanceDelta = 0
+        context.maximumSurfaceElevationDelta = 5
+        res = r.identify(QgsProfilePoint(200, 79), context)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layer(), ml)
+        self.assertEqual(res[0].results(), [{'distance': 200.0, 'elevation': 75.84131736154015}])
+
+        res = r.identify(QgsProfilePoint(200, 85), context)
+        self.assertFalse(res)
 
 
 if __name__ == '__main__':

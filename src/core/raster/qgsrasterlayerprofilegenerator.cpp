@@ -38,6 +38,20 @@ QString QgsRasterLayerProfileResults::type() const
   return QStringLiteral( "raster" );
 }
 
+QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
+{
+  const QVector<QgsProfileIdentifyResults> noLayerResults = QgsAbstractProfileSurfaceResults::identify( point, context );
+
+  // we have to make a new list, with the correct layer reference set
+  QVector<QgsProfileIdentifyResults> res;
+  res.reserve( noLayerResults.size() );
+  for ( const QgsProfileIdentifyResults &result : noLayerResults )
+  {
+    res.append( QgsProfileIdentifyResults( mLayer, result.results() ) );
+  }
+  return res;
+}
+
 
 
 //
@@ -53,6 +67,7 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
   , mTransformContext( request.transformContext() )
   , mOffset( layer->elevationProperties()->zOffset() )
   , mScale( layer->elevationProperties()->zScale() )
+  , mLayer( layer )
   , mBand( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->bandNumber() )
   , mRasterUnitsPerPixelX( layer->rasterUnitsPerPixelX() )
   , mRasterUnitsPerPixelY( layer->rasterUnitsPerPixelY() )
@@ -121,6 +136,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
     return false;
 
   mResults = std::make_unique< QgsRasterLayerProfileResults >();
+  mResults->mLayer = mLayer;
   mResults->copyPropertiesFromGenerator( this );
 
   std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );

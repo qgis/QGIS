@@ -49,6 +49,13 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileSurfaceR
   public:
 
     QString type() const override;
+    QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
+
+  private:
+
+    QPointer< QgsMeshLayer > mLayer;
+
+    friend class QgsMeshLayerProfileGenerator;
 };
 
 
@@ -91,6 +98,7 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
 
     double mOffset = 0;
     double mScale = 1;
+    QPointer< QgsMeshLayer > mLayer;
 
     double mStepDistance = std::numeric_limits<double>::quiet_NaN();
 

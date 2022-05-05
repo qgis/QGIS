@@ -20,6 +20,7 @@
 #include "qgslinesymbol.h"
 
 #include <QPainterPath>
+#include <optional>
 
 //
 // QgsAbstractProfileSurfaceResults
@@ -79,6 +80,45 @@ QgsProfileSnapResult QgsAbstractProfileSurfaceResults::snapPoint( const QgsProfi
     prevElevation = it.value();
   }
   return result;
+}
+
+QVector<QgsProfileIdentifyResults> QgsAbstractProfileSurfaceResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
+{
+  // TODO -- consider an index if performance is an issue
+  std::optional< QgsProfileIdentifyResults > result;
+
+  double prevDistance = std::numeric_limits< double >::max();
+  double prevElevation = 0;
+  for ( auto it = mDistanceToHeightMap.constBegin(); it != mDistanceToHeightMap.constEnd(); ++it )
+  {
+    // find segment which corresponds to the given distance along curve
+    if ( it != mDistanceToHeightMap.constBegin() && prevDistance <= point.distance() && it.key() >= point.distance() )
+    {
+      const double dx = it.key() - prevDistance;
+      const double dy = it.value() - prevElevation;
+      const double snappedZ = ( dy / dx ) * ( point.distance() - prevDistance ) + prevElevation;
+
+      if ( std::fabs( point.elevation() - snappedZ ) > context.maximumSurfaceElevationDelta )
+        return {};
+
+      result = QgsProfileIdentifyResults( nullptr,
+      {
+        QVariantMap(
+        {
+          {QStringLiteral( "distance" ),  point.distance() },
+          {QStringLiteral( "elevation" ), snappedZ }
+        } )
+      } );
+      break;
+    }
+
+    prevDistance = it.key();
+    prevElevation = it.value();
+  }
+  if ( result.has_value() )
+    return {result.value()};
+  else
+    return {};
 }
 
 void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &context )

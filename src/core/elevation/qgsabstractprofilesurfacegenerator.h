@@ -54,6 +54,7 @@ class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileRe
     QgsDoubleRange zRange() const override;
     QVector< QgsGeometry > asGeometries() const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
+    QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
     void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 };
