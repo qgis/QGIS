@@ -249,6 +249,7 @@
 %Include auto_generated/callouts/qgscalloutsregistry.sip
 %Include auto_generated/classification/qgsclassificationcustom.sip
 %Include auto_generated/classification/qgsclassificationequalinterval.sip
+%Include auto_generated/classification/qgsclassificationfixedinterval.sip
 %Include auto_generated/classification/qgsclassificationjenks.sip
 %Include auto_generated/classification/qgsclassificationlogarithmic.sip
 %Include auto_generated/classification/qgsclassificationmethod.sip

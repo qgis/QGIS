@@ -35,6 +35,7 @@ class QgsRendererRange;
 #include "qgsclassificationprettybreaks.h"
 #include "qgsclassificationquantile.h"
 #include "qgsclassificationstandarddeviation.h"
+#include "qgsclassificationfixedinterval.h"
 % End
 #endif
 
@@ -99,6 +100,8 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
       sipType = sipType_QgsClassificationQuantile;
     else if ( dynamic_cast<QgsClassificationStandardDeviation *>( sipCpp ) )
       sipType = sipType_QgsClassificationStandardDeviation;
+    else if ( dynamic_cast<QgsClassificationFixedInterval *>( sipCpp ) )
+      sipType = sipType_QgsClassificationFixedInterval;
     else
       sipType = 0;
     SIP_END

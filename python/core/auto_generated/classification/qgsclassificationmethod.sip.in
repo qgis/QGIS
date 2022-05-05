@@ -19,6 +19,7 @@
 #include "qgsclassificationprettybreaks.h"
 #include "qgsclassificationquantile.h"
 #include "qgsclassificationstandarddeviation.h"
+#include "qgsclassificationfixedinterval.h"
 %End
 
 
@@ -87,6 +88,8 @@ class QgsClassificationMethod /Abstract/
       sipType = sipType_QgsClassificationQuantile;
     else if ( dynamic_cast<QgsClassificationStandardDeviation *>( sipCpp ) )
       sipType = sipType_QgsClassificationStandardDeviation;
+    else if ( dynamic_cast<QgsClassificationFixedInterval *>( sipCpp ) )
+      sipType = sipType_QgsClassificationFixedInterval;
     else
       sipType = 0;
 %End
