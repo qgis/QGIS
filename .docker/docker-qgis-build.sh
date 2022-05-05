@@ -38,6 +38,17 @@ else
   export CXX=/usr/lib/ccache/clang++
 fi
 
+BUILD_TYPE=Release
+
+if [[ "${WITH_CLAZY}" = "ON" ]]; then
+  # In release mode, all variables in QgsDebugMsg would be considered unused
+  BUILD_TYPE=Debug
+  export CXX=clazy
+
+  # ignore sip and external libraries
+  export CLAZY_IGNORE_DIRS="(.*/external/.*)|(.*sip_.*part.*)"
+fi
+
 if [[ ${WITH_QT6} = "ON" ]]; then
   CLANG_WARNINGS="-Wrange-loop-construct"
 fi
@@ -54,6 +65,7 @@ fi
 
 cmake \
  -GNinja \
+ -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
  -DUSE_CCACHE=OFF \
  -DWITH_QT6=${WITH_QT6} \
  -DWITH_DESKTOP=${WITH_QT5} \
@@ -92,7 +104,7 @@ cmake \
  -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s" \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
- -DADD_CLAZY_CHECKS=ON \
+ -DWITH_CLAZY=${WITH_CLAZY} \
  ${CMAKE_EXTRA_ARGS[*]} ..
 echo "::endgroup::"
 
