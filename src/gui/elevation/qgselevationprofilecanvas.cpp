@@ -413,6 +413,25 @@ QgsProfileSnapContext QgsElevationProfileCanvas::snapContext() const
   return context;
 }
 
+QgsProfileIdentifyContext QgsElevationProfileCanvas::identifyContext() const
+{
+  const double toleranceInPixels = QFontMetrics( font() ).horizontalAdvance( ' ' );
+  const double xToleranceInPlotUnits = ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) * toleranceInPixels;
+  const double yToleranceInPlotUnits = ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) * toleranceInPixels;
+
+  QgsProfileIdentifyContext context;
+  context.maximumSurfaceDistanceDelta = 2 * xToleranceInPlotUnits;
+  context.maximumSurfaceElevationDelta = 10 * yToleranceInPlotUnits;
+  context.maximumPointDistanceDelta = 4 * xToleranceInPlotUnits;
+  context.maximumPointElevationDelta = 4 * yToleranceInPlotUnits;
+  context.displayRatioElevationVsDistance = ( ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) )
+      / ( ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) / ( mPlotItem->plotArea().width() ) );
+
+  context.project = mProject;
+
+  return context;
+}
+
 void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool isDisconnect )
 {
   if ( isDisconnect )
@@ -1041,6 +1060,37 @@ void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width,
 
   profilePlot.setSize( QSizeF( width, height ) );
   profilePlot.render( context );
+}
+
+QVector<QgsProfileIdentifyResults> QgsElevationProfileCanvas::identify( QPointF point )
+{
+  if ( !mCurrentJob )
+    return {};
+
+  const QgsProfilePoint plotPoint = canvasPointToPlotPoint( point );
+
+  return mCurrentJob->identify( plotPoint, identifyContext() );
+}
+
+QVector<QgsProfileIdentifyResults> QgsElevationProfileCanvas::identify( const QRectF &rect )
+{
+  if ( !mCurrentJob )
+    return {};
+
+  const QgsProfilePoint topLeftPlotPoint = canvasPointToPlotPoint( rect.topLeft() );
+  const QgsProfilePoint bottomRightPlotPoint = canvasPointToPlotPoint( rect.bottomRight() );
+
+  double distance1 = topLeftPlotPoint.distance();
+  double distance2 = bottomRightPlotPoint.distance();
+  if ( distance2 < distance1 )
+    std::swap( distance1, distance2 );
+
+  double elevation1 = topLeftPlotPoint.elevation();
+  double elevation2 = bottomRightPlotPoint.elevation();
+  if ( elevation2 < elevation1 )
+    std::swap( elevation1, elevation2 );
+
+  return mCurrentJob->identify( QgsDoubleRange( distance1, distance2 ), QgsDoubleRange( elevation1, elevation2 ), identifyContext() );
 }
 
 void QgsElevationProfileCanvas::clear()

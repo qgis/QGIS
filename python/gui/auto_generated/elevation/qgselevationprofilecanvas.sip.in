@@ -160,6 +160,16 @@ Sets the visible area of the plot.
 Renders a portion of the profile using the specified render ``context``.
 %End
 
+    QVector<QgsProfileIdentifyResults> identify( QPointF point );
+%Docstring
+Identify results visible at the specified plot point.
+%End
+
+    QVector<QgsProfileIdentifyResults> identify( const QRectF &rect );
+%Docstring
+Identify results visible within the specified plot rect.
+%End
+
   signals:
 
     void activeJobCountChanged( int count );
