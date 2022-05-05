@@ -368,6 +368,7 @@ void QgsElevationProfileCanvas::panContentsBy( double dx, double dy )
   refineResults();
 
   mPlotItem->updatePlot();
+  emit plotAreaChanged();
 }
 
 void QgsElevationProfileCanvas::centerPlotOn( double x, double y )
@@ -389,11 +390,13 @@ void QgsElevationProfileCanvas::centerPlotOn( double x, double y )
   refineResults();
 
   mPlotItem->updatePlot();
+  emit plotAreaChanged();
 }
 
 void QgsElevationProfileCanvas::scalePlot( double factor )
 {
   scalePlot( factor, factor );
+  emit plotAreaChanged();
 }
 
 QgsProfileSnapContext QgsElevationProfileCanvas::snapContext() const
@@ -511,6 +514,7 @@ void QgsElevationProfileCanvas::scalePlot( double xFactor, double yFactor )
 
   refineResults();
   mPlotItem->updatePlot();
+  emit plotAreaChanged();
 }
 
 void QgsElevationProfileCanvas::zoomToRect( const QRectF &rect )
@@ -529,6 +533,7 @@ void QgsElevationProfileCanvas::zoomToRect( const QRectF &rect )
 
   refineResults();
   mPlotItem->updatePlot();
+  emit plotAreaChanged();
 }
 
 void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
@@ -581,6 +586,7 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
   {
     scalePlot( 1 / zoomFactor );
   }
+  emit plotAreaChanged();
 }
 
 void QgsElevationProfileCanvas::mouseMoveEvent( QMouseEvent *e )
@@ -1001,6 +1007,7 @@ void QgsElevationProfileCanvas::zoomFull()
 
   refineResults();
   mPlotItem->updatePlot();
+  emit plotAreaChanged();
 }
 
 void QgsElevationProfileCanvas::setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation )
@@ -1011,6 +1018,7 @@ void QgsElevationProfileCanvas::setVisiblePlotRange( double minimumDistance, dou
   mPlotItem->setXMaximum( maximumDistance );
   refineResults();
   mPlotItem->updatePlot();
+  emit plotAreaChanged();
 }
 
 const Qgs2DPlot &QgsElevationProfileCanvas::plot() const
