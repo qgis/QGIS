@@ -78,6 +78,15 @@ class QgsOracleProvider final: public QgsVectorDataProvider
       const QMap<QString, QVariant> *options = nullptr
     );
 
+    enum Relkind
+    {
+      NotSet,
+      Unknown,
+      Table,
+      View,
+    };
+    Q_ENUM( Relkind )
+
     /**
      * Constructor for the provider. The uri must be in the following format:
      * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
@@ -195,6 +204,12 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
 
   private:
+
+    /**
+     * \returns relation kind
+     */
+    Relkind relkind() const;
+
     QString whereClause( QgsFeatureId featureId, QVariantList &args ) const;
     QString pkParamWhereClause() const;
 
@@ -267,6 +282,11 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      * SQL statement used to limit the features retrieved
      */
     QString mSqlWhereClause;
+
+    /**
+     * Kind of relation
+     */
+    mutable Relkind mKind = Relkind::NotSet;
 
     /**
      * Data type for the primary key
