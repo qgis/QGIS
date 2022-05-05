@@ -2533,6 +2533,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             'test', 'postgres')
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.featureCount() > 0)
+        vl.setSubsetString('"pk" = 3')
+        self.assertGreaterEqual(vl.featureCount(), 0)
 
     def testFeatureCountEstimatedOnView(self):
         """
@@ -2547,6 +2549,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             'test', 'postgres')
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.featureCount() > 0)
+        vl.setSubsetString('"pk" = 3')
+        self.assertGreaterEqual(vl.featureCount(), 0)
 
     def testIdentityPk(self):
         """Test a table with identity pk, see GH #29560"""
