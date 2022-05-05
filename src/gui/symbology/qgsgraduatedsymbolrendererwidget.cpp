@@ -685,6 +685,7 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 {
   disconnectUpdateHandlers();
+  mBlockUpdates++;
 
   const QgsClassificationMethod *method = mRenderer->classificationMethod();
 
@@ -789,6 +790,8 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   mHistogramWidget->refresh();
 
   connectUpdateHandlers();
+  mBlockUpdates--;
+
   emit widgetChanged();
 }
 
@@ -1008,6 +1011,8 @@ void QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished( )
 
 void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 {
+  if ( mBlockUpdates )
+    return;
 
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
   QString attrName = mExpressionWidget->currentField();
