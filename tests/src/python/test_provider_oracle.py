@@ -683,6 +683,38 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.check_geom(multi_surface_z, fid, 'MultiSurfaceZ (CurvePolygonZ(CompoundCurveZ (CircularStringZ (-1 -5 1, 5 -7 2, 17 -6 3), (17 -6 3, -1 -5 1))), CurvePolygonZ (CircularStringZ (1 3 1, 7 3 2, 4 7 3, 3 5 4, 1 3 1)))', check_valid=False)
         fid += 1
 
+    def testFeatureCount(self):
+        self.execSQLCommand('CREATE OR REPLACE VIEW QGIS.VIEW_POLY_DATA AS SELECT * FROM QGIS.POLY_DATA')
+        self.execSQLCommand("BEGIN DBMS_STATS.GATHER_TABLE_STATS('QGIS', 'SOME_DATA'); END;")
+
+        view_layer = QgsVectorLayer(self.dbconn + ' sslmode=disable table="QGIS"."VIEW_POLY_DATA" key=\'pk\'',
+                                    'test', 'oracle')
+        self.assertTrue(view_layer.isValid())
+        self.assertGreater(view_layer.featureCount(), 0)
+        self.assertTrue(view_layer.setSubsetString('"pk" = 5'))
+        self.assertGreaterEqual(view_layer.featureCount(), 0)
+
+        view_layer_estimated = QgsVectorLayer(self.dbconn + ' sslmode=disable estimatedmetadata=true table="QGIS"."VIEW_POLY_DATA" key=\'pk\'',
+                                              'test', 'oracle')
+        self.assertTrue(view_layer_estimated.isValid())
+        self.assertGreater(view_layer_estimated.featureCount(), 0)
+        self.assertTrue(view_layer_estimated.setSubsetString('"pk" = 5'))
+        self.assertGreaterEqual(view_layer_estimated.featureCount(), 0)
+
+        self.assertGreater(self.vl.featureCount(), 0)
+        self.assertTrue(self.vl.setSubsetString('"pk" = 3'))
+        self.assertGreaterEqual(self.vl.featureCount(), 1)
+        self.assertTrue(self.vl.setSubsetString(''))
+
+        vl_estimated = QgsVectorLayer(self.dbconn + ' sslmode=disable estimatedmetadata=true table="QGIS"."SOME_DATA"',
+                                      'test', 'oracle')
+        self.assertTrue(vl_estimated.isValid())
+        self.assertGreater(vl_estimated.featureCount(), 0)
+        self.assertTrue(vl_estimated.setSubsetString('"pk" = 3'))
+        self.assertGreaterEqual(vl_estimated.featureCount(), 1)
+
+        self.execSQLCommand('DROP VIEW QGIS.VIEW_POLY_DATA')
+
     def testNestedInsert(self):
         tg = QgsTransactionGroup()
         tg.addLayer(self.vl)
