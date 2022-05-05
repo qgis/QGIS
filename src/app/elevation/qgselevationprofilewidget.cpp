@@ -46,6 +46,7 @@
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsgui.h"
 #include "qgsshortcutsmanager.h"
+#include "qgselevationprofiletoolidentify.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -77,7 +78,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( mCanvas, &QgsElevationProfileCanvas::canvasPointHovered, this, &QgsElevationProfileWidget::onCanvasPointHovered );
 
   mPanTool = new QgsPlotToolPan( mCanvas );
-  mCanvas->setTool( mPanTool );
 
   mLayerTreeView = new QgsElevationProfileLayerTreeView( mLayerTree.get() );
 
@@ -91,6 +91,9 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mZoomTool = new QgsPlotToolZoom( mCanvas );
   mXAxisZoomTool = new QgsPlotToolXAxisZoom( mCanvas );
+  mIdentifyTool = new QgsElevationProfileToolIdentify( mCanvas );
+
+  mCanvas->setTool( mIdentifyTool );
 
   QAction *showLayerTree = new QAction( tr( "Show Layer Tree" ), this );
   showLayerTree->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconLayerTree.svg" ) ) );
@@ -156,10 +159,18 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   toolBar->addSeparator();
 
+  QAction *identifyToolAction = new QAction( tr( "Identify Features" ), this );
+  identifyToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ) );
+  identifyToolAction->setCheckable( true );
+  identifyToolAction->setChecked( true );
+  mIdentifyTool->setAction( identifyToolAction );
+  connect( identifyToolAction, &QAction::triggered, mPanTool, [ = ] { mCanvas->setTool( mIdentifyTool ); } );
+  toolBar->addAction( identifyToolAction );
+
   QAction *panToolAction = new QAction( tr( "Pan" ), this );
   panToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
   panToolAction->setCheckable( true );
-  panToolAction->setChecked( true );
+  panToolAction->setChecked( false );
   mPanTool->setAction( panToolAction );
   connect( panToolAction, &QAction::triggered, mPanTool, [ = ] { mCanvas->setTool( mPanTool ); } );
   toolBar->addAction( panToolAction );
