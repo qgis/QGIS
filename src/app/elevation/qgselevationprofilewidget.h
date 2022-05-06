@@ -97,7 +97,6 @@ class QgsElevationProfileWidget : public QWidget
     QgsMapCanvas *mMainCanvas = nullptr;
 
     QProgressBar *mProgressPendingJobs = nullptr;
-    QLabel *mInfoLabel = nullptr;
     QElapsedTimer mLastJobTime;
     double mLastJobTimeSeconds = 0;
     QTimer mJobProgressBarTimer;

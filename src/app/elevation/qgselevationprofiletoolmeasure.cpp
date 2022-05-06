@@ -20,7 +20,57 @@
 #include "qgsplotmouseevent.h"
 #include "qgsguiutils.h"
 #include "qgsclipper.h"
+#include "qgsgui.h"
 #include <QGraphicsLineItem>
+#include <QGridLayout>
+#include <QLabel>
+
+//
+// QgsProfileMeasureResultsDialog
+//
+
+QgsProfileMeasureResultsDialog::QgsProfileMeasureResultsDialog()
+  : QDialog( nullptr, Qt::Tool )
+{
+  setWindowTitle( tr( "Profile Distance" ) );
+  setObjectName( QStringLiteral( "QgsProfileMeasureResultsDialog" ) );
+
+  QGridLayout *grid = new QGridLayout();
+  grid->addWidget( new QLabel( tr( "Total Length" ) ), 0, 0 );
+  mTotalLabel = new QLabel();
+  mTotalLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  grid->addWidget( mTotalLabel, 0, 1 );
+  grid->addWidget( new QLabel( tr( "Δ Distance" ) ), 1, 0 );
+  mDistanceLabel = new QLabel();
+  mDistanceLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  grid->addWidget( mDistanceLabel, 1, 1 );
+  grid->addWidget( new QLabel( tr( "Δ Elevation" ) ), 2, 0 );
+  mElevationLabel = new QLabel();
+  mElevationLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  grid->addWidget( mElevationLabel, 2, 1 );
+
+  setLayout( grid );
+
+  QgsGui::enableAutoGeometryRestore( this );
+}
+
+void QgsProfileMeasureResultsDialog::setMeasures( double total, double distance, double elevation )
+{
+  mTotalLabel->setText( QString::number( total ) );
+  mDistanceLabel->setText( QString::number( distance ) );
+  mElevationLabel->setText( QString::number( elevation ) );
+}
+
+void QgsProfileMeasureResultsDialog::clear()
+{
+  mTotalLabel->clear();
+  mDistanceLabel->clear();
+  mElevationLabel->clear();
+}
+
+//
+// QgsElevationProfileToolMeasure
+//
 
 QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProfileCanvas *canvas )
   : QgsPlotTool( canvas, QObject::tr( "Measure Tool" ) )
@@ -45,9 +95,22 @@ QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProf
   mElevationCanvas->scene()->addItem( mRubberBand );
 
   connect( mElevationCanvas, &QgsElevationProfileCanvas::plotAreaChanged, this, &QgsElevationProfileToolMeasure::plotAreaChanged );
+
+  mDialog = new QgsProfileMeasureResultsDialog();
+
+  connect( this, &QgsElevationProfileToolMeasure::cleared, mDialog, &QDialog::hide );
+  connect( this, &QgsElevationProfileToolMeasure::measureChanged, mDialog, [ = ]( double totalDistance, double deltaCurve, double deltaElevation )
+  {
+    mDialog->setMeasures( totalDistance, deltaCurve, deltaElevation );
+    mDialog->show();
+  } );
 }
 
-QgsElevationProfileToolMeasure::~QgsElevationProfileToolMeasure() = default;
+QgsElevationProfileToolMeasure::~QgsElevationProfileToolMeasure()
+{
+  mDialog->deleteLater();
+  mDialog = nullptr;
+}
 
 void QgsElevationProfileToolMeasure::plotAreaChanged()
 {
@@ -76,8 +139,10 @@ void QgsElevationProfileToolMeasure::plotMoveEvent( QgsPlotMouseEvent *event )
 
   updateRubberBand();
 
-  const double distance = std::sqrt( std::pow( mStartPoint.distance() - mEndPoint.distance(), 2 ) + std::pow( mStartPoint.elevation() - mEndPoint.elevation(), 2 ) );
-  emit distanceChanged( distance );
+  const double deltaCurveDistance = mEndPoint.distance() - mStartPoint.distance();
+  const double deltaElevation = mEndPoint.elevation() - mStartPoint.elevation();
+  const double totalDistance = std::sqrt( std::pow( deltaCurveDistance, 2 ) + std::pow( deltaElevation, 2 ) );
+  emit measureChanged( totalDistance, deltaCurveDistance, deltaElevation );
 }
 
 void QgsElevationProfileToolMeasure::plotPressEvent( QgsPlotMouseEvent *event )
@@ -113,7 +178,7 @@ void QgsElevationProfileToolMeasure::plotPressEvent( QgsPlotMouseEvent *event )
     mRubberBand->show();
 
     mMeasureInProgress = true;
-    emit distanceChanged( 0 );
+    emit measureChanged( 0, 0, 0 );
   }
 }
 
