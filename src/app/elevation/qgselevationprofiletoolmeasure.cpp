@@ -113,6 +113,7 @@ void QgsElevationProfileToolMeasure::plotPressEvent( QgsPlotMouseEvent *event )
     mRubberBand->show();
 
     mMeasureInProgress = true;
+    emit distanceChanged( 0 );
   }
 }
 
