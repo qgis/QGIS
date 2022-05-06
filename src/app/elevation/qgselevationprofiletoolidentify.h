@@ -40,8 +40,6 @@ class QgsElevationProfileToolIdentify : public QgsPlotTool
     void plotMoveEvent( QgsPlotMouseEvent *event ) override;
   private:
 
-    static QPointF constrainPointToRect( QPointF point, const QRectF &rect );
-
     //! Start position for mouse press
     QPointF mMousePressStartPos;
     QgsPointXY mSnappedMousePressStartPos;
