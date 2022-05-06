@@ -262,21 +262,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   topLayout->addWidget( toolBar );
   topLayout->addStretch( 1 );
 
-  mInfoLabel = new QLabel();
-  topLayout->addWidget( mInfoLabel );
-  mInfoLabel->hide();
-
-  connect( mMeasureTool.get(), &QgsElevationProfileToolMeasure::distanceChanged, this, [ = ]( double distance )
-  {
-    mInfoLabel->setText( QString::number( distance ) );
-    mInfoLabel->show();
-  } );
-  connect( mMeasureTool.get(), &QgsElevationProfileToolMeasure::cleared, this, [ = ]
-  {
-    mInfoLabel->hide();
-    mInfoLabel->clear();
-  } );
-
   topLayout->addWidget( mProgressPendingJobs );
 
   QVBoxLayout *layout = new QVBoxLayout;

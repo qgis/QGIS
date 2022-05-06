@@ -21,9 +21,32 @@
 #include "qgsprofilepoint.h"
 
 #include <QPointer>
+#include <QDialog>
 
 class QgsElevationProfileCanvas;
 class QGraphicsLineItem;
+class QLabel;
+
+class QgsProfileMeasureResultsDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProfileMeasureResultsDialog();
+
+  public slots:
+
+    void setMeasures( double total, double distance, double elevation );
+    void clear();
+
+  private:
+
+    QLabel *mTotalLabel = nullptr;
+    QLabel *mDistanceLabel = nullptr;
+    QLabel *mElevationLabel = nullptr;
+
+};
 
 class QgsElevationProfileToolMeasure : public QgsPlotTool
 {
@@ -41,7 +64,7 @@ class QgsElevationProfileToolMeasure : public QgsPlotTool
 
   signals:
 
-    void distanceChanged( double distance );
+    void measureChanged( double totalDistance, double deltaCurveDistance, double deltaElevation );
     void cleared();
 
   private slots:
@@ -52,6 +75,8 @@ class QgsElevationProfileToolMeasure : public QgsPlotTool
     void updateRubberBand();
 
     QgsElevationProfileCanvas *mElevationCanvas = nullptr;
+
+    QgsProfileMeasureResultsDialog *mDialog = nullptr;
 
     QGraphicsLineItem *mRubberBand = nullptr;
 
