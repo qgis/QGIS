@@ -506,6 +506,7 @@ set(QGIS_GUI_SRCS
   qgsfloatingwidget.cpp
   qgsfocuskeeper.cpp
   qgsfocuswatcher.cpp
+  qgsformlabelformatwidget.cpp
   qgsfontbutton.cpp
   qgsformannotation.cpp
   qgsgeocoderlocatorfilter.cpp
@@ -644,6 +645,7 @@ set(QGIS_GUI_SRCS
   qgsstatusbar.cpp
   qgssymbolbutton.cpp
   qgssymbollayerselectionwidget.cpp
+  qgstabbarproxystyle.cpp
   qgstableview.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
@@ -766,6 +768,7 @@ set(QGIS_GUI_HDRS
   qgsfocuswatcher.h
   qgsfontbutton.h
   qgsformannotation.h
+  qgsformlabelformatwidget.h
   qgsgeocoderlocatorfilter.h
   qgsgeometryrubberband.h
   qgsgradientcolorrampdialog.h
@@ -907,6 +910,7 @@ set(QGIS_GUI_HDRS
   qgssubstitutionlistwidget.h
   qgssymbolbutton.h
   qgssymbollayerselectionwidget.h
+  qgstabbarproxystyle.h
   qgstableview.h
   qgstablewidgetbase.h
   qgstablewidgetitem.h

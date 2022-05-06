@@ -22,6 +22,7 @@ set(TESTS
  testqgsannotationitemregistry.cpp
  testqgsapplication.cpp
  testqgsarcgisrestutils.cpp
+ testqgsattributeeditorelement.cpp
  testqgsauthcertutils.cpp
  testqgsauthconfig.cpp
  testqgsauthcrypto.cpp

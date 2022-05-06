@@ -44,6 +44,23 @@ layer.
     }
 %End
   public:
+
+    struct LabelStyle
+    {
+
+      QColor color;
+
+      QFont font;
+
+      bool overrideColor;
+
+      bool overrideFont;
+
+
+
+    };
+
+
     enum AttributeEditorType
     {
       AeTypeContainer,
@@ -123,6 +140,25 @@ Controls if this element should be labeled with a title (field, relation or grou
 
 .. versionadded:: 2.18
 %End
+
+    LabelStyle labelStyle() const;
+%Docstring
+Returns the label style.
+
+.. seealso:: :py:func:`setLabelStyle`
+
+.. versionadded:: 3.26
+%End
+
+    void setLabelStyle( const LabelStyle &labelStyle );
+%Docstring
+Sets the ``labelStyle``.
+
+.. seealso:: :py:func:`labelStyle`
+
+.. versionadded:: 3.26
+%End
+
 
   protected:
 

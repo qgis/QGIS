@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>401</width>
-    <height>320</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,6 +44,16 @@
       </item>
       <item row="1" column="1">
        <widget class="QgsColorButton" name="mBackgroundColorButton"/>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QgsFormLabelFormatWidget" name="mFormLabelFormatWidget" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -128,9 +138,10 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
@@ -139,15 +150,20 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFieldExpressionWidget</class>
+   <class>QgsFormLabelFormatWidget</class>
    <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
+   <header>qgsformlabelformatwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
