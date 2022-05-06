@@ -111,12 +111,8 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
         {
           const QString formCode = QStringLiteral( "locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n" )
           .arg( ( quint64 ) form );
-
-          const QString delFormCode = QStringLiteral( R"py(
-from contextlib import suppress
-with suppress(Exception): del locals()["form"])py" );
           QgsAction action { mAction };
-          action.setCommand( formCode + mAction.command() + delFormCode );
+          action.setCommand( formCode + mAction.command() );
           action.run( layer(), mFeature, expressionContext );
         }
       }
