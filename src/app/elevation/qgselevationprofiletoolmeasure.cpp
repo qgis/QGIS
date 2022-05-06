@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsplotmouseevent.h"
 #include "qgsguiutils.h"
+#include "qgsclipper.h"
 #include <QGraphicsLineItem>
 
 QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProfileCanvas *canvas )
@@ -42,11 +43,23 @@ QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProf
 
   mRubberBand->hide();
   mElevationCanvas->scene()->addItem( mRubberBand );
+
+  connect( mElevationCanvas, &QgsElevationProfileCanvas::plotAreaChanged, this, &QgsElevationProfileToolMeasure::plotAreaChanged );
+}
+
+QgsElevationProfileToolMeasure::~QgsElevationProfileToolMeasure() = default;
+
+void QgsElevationProfileToolMeasure::plotAreaChanged()
+{
+  if ( mRubberBand->isVisible() )
+  {
+    updateRubberBand();
+  }
 }
 
 void QgsElevationProfileToolMeasure::deactivate()
 {
-  mRubberBand->hide();
+  //mRubberBand->hide();
   emit cleared();
   QgsPlotTool::deactivate();
 }
@@ -59,11 +72,11 @@ void QgsElevationProfileToolMeasure::plotMoveEvent( QgsPlotMouseEvent *event )
 
   const QRectF plotArea = mElevationCanvas->plotArea();
   const QPointF snappedPoint = event->snappedPoint().toQPointF();
-  const QgsProfilePoint endPoint = mElevationCanvas->canvasPointToPlotPoint( constrainPointToRect( snappedPoint, plotArea ) );
+  mEndPoint = mElevationCanvas->canvasPointToPlotPoint( constrainPointToRect( snappedPoint, plotArea ) );
 
-  mRubberBand->setLine( QLineF( mRubberBand->line().p1(), mElevationCanvas->mapToScene( snappedPoint.toPoint() ) ) );
+  updateRubberBand();
 
-  const double distance = std::sqrt( std::pow( mStartPoint.distance() - endPoint.distance(), 2 ) + std::pow( mStartPoint.elevation() - endPoint.elevation(), 2 ) );
+  const double distance = std::sqrt( std::pow( mStartPoint.distance() - mEndPoint.distance(), 2 ) + std::pow( mStartPoint.elevation() - mEndPoint.elevation(), 2 ) );
   emit distanceChanged( distance );
 }
 
@@ -78,6 +91,10 @@ void QgsElevationProfileToolMeasure::plotPressEvent( QgsPlotMouseEvent *event )
   if ( mMeasureInProgress )
   {
     mMeasureInProgress = false;
+    const QPointF snappedPoint = event->snappedPoint().toQPointF();
+    const QRectF plotArea = mElevationCanvas->plotArea();
+    mEndPoint = mElevationCanvas->canvasPointToPlotPoint( constrainPointToRect( snappedPoint, plotArea ) );
+    updateRubberBand();
   }
   else
   {
@@ -90,10 +107,11 @@ void QgsElevationProfileToolMeasure::plotPressEvent( QgsPlotMouseEvent *event )
 
     const QPointF snappedPoint = event->snappedPoint().toQPointF();
 
-    mRubberBand->setLine( QLineF( mElevationCanvas->mapToScene( snappedPoint.toPoint() ), mElevationCanvas->mapToScene( snappedPoint.toPoint() ) ) );
+    mStartPoint = mElevationCanvas->canvasPointToPlotPoint( snappedPoint );
+    mEndPoint = mStartPoint;
+    updateRubberBand();
     mRubberBand->show();
 
-    mStartPoint = mElevationCanvas->canvasPointToPlotPoint( snappedPoint );
     mMeasureInProgress = true;
   }
 }
@@ -107,5 +125,20 @@ void QgsElevationProfileToolMeasure::plotReleaseEvent( QgsPlotMouseEvent *event 
   }
 }
 
+void QgsElevationProfileToolMeasure::updateRubberBand()
+{
+  const QgsDoubleRange distanceRange = mElevationCanvas->visibleDistanceRange();
+  const QgsDoubleRange elevationRange = mElevationCanvas->visibleElevationRange();
 
-QgsElevationProfileToolMeasure::~QgsElevationProfileToolMeasure() = default;
+  double distance1 = mStartPoint.distance();
+  double elevation1 = mStartPoint.elevation();
+  double distance2 = mEndPoint.distance();
+  double elevation2 = mEndPoint.elevation();
+  QgsClipper::clipLineSegment( distanceRange.lower(), distanceRange.upper(), elevationRange.lower(), elevationRange.upper(),
+                               distance1, elevation1, distance2, elevation2 );
+
+  const QgsPointXY p1 = mElevationCanvas->plotPointToCanvasPoint( QgsProfilePoint( distance1, elevation1 ) );
+  const QgsPointXY p2 = mElevationCanvas->plotPointToCanvasPoint( QgsProfilePoint( distance2, elevation2 ) );
+
+  mRubberBand->setLine( QLineF( p1.x(), p1.y(), p2.x(), p2.y() ) );
+}

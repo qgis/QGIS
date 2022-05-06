@@ -1027,6 +1027,16 @@ void QgsElevationProfileCanvas::setVisiblePlotRange( double minimumDistance, dou
   emit plotAreaChanged();
 }
 
+QgsDoubleRange QgsElevationProfileCanvas::visibleDistanceRange() const
+{
+  return QgsDoubleRange( mPlotItem->xMinimum(), mPlotItem->xMaximum() );
+}
+
+QgsDoubleRange QgsElevationProfileCanvas::visibleElevationRange() const
+{
+  return QgsDoubleRange( mPlotItem->yMinimum(), mPlotItem->yMaximum() );
+}
+
 const Qgs2DPlot &QgsElevationProfileCanvas::plot() const
 {
   return *mPlotItem;

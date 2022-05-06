@@ -165,8 +165,27 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     /**
      * Sets the visible area of the plot.
+     *
+     * \see visibleDistanceRange()
+     * \see visibleElevationRange()
      */
     void setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation );
+
+    /**
+     * Returns the distance range currently visible in the plot.
+     *
+     * \see visibleElevationRange()
+     * \see setVisiblePlotRange()
+     */
+    QgsDoubleRange visibleDistanceRange() const;
+
+    /**
+     * Returns the elevation range currently visible in the plot.
+     *
+     * \see visibleDistanceRange()
+     * \see setVisiblePlotRange()
+     */
+    QgsDoubleRange visibleElevationRange() const;
 
     /**
      * Returns a reference to the 2D plot used by the widget.

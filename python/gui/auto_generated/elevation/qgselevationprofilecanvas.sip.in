@@ -152,6 +152,28 @@ actual profile curve a point can reside within to be included in the results.
     void setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation );
 %Docstring
 Sets the visible area of the plot.
+
+.. seealso:: :py:func:`visibleDistanceRange`
+
+.. seealso:: :py:func:`visibleElevationRange`
+%End
+
+    QgsDoubleRange visibleDistanceRange() const;
+%Docstring
+Returns the distance range currently visible in the plot.
+
+.. seealso:: :py:func:`visibleElevationRange`
+
+.. seealso:: :py:func:`setVisiblePlotRange`
+%End
+
+    QgsDoubleRange visibleElevationRange() const;
+%Docstring
+Returns the elevation range currently visible in the plot.
+
+.. seealso:: :py:func:`visibleDistanceRange`
+
+.. seealso:: :py:func:`setVisiblePlotRange`
 %End
 
 
