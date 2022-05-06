@@ -45,7 +45,6 @@ class QgsElevationProfileToolMeasure : public QgsPlotTool
     void cleared();
 
   private:
-    static QPointF constrainPointToRect( QPointF point, const QRectF &rect );
 
     QgsElevationProfileCanvas *mElevationCanvas = nullptr;
 

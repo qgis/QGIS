@@ -236,6 +236,11 @@ a "click and drag". If ``False`` is returned, the operation should be
 instead treated as just a click on ``startViewPoint``.
 %End
 
+    static QPointF constrainPointToRect( QPointF point, const QRectF &rect );
+%Docstring
+Constrains a point to force it to fall within the specified rectangle.
+%End
+
 
 
 
