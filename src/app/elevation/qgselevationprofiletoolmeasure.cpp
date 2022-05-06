@@ -21,6 +21,8 @@
 #include "qgsguiutils.h"
 #include "qgsclipper.h"
 #include "qgsgui.h"
+#include "qgsproject.h"
+
 #include <QGraphicsLineItem>
 #include <QGridLayout>
 #include <QLabel>
@@ -52,13 +54,58 @@ QgsProfileMeasureResultsDialog::QgsProfileMeasureResultsDialog()
   setLayout( grid );
 
   QgsGui::enableAutoGeometryRestore( this );
+  installEventFilter( this );
+}
+
+void QgsProfileMeasureResultsDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrs = crs;
+}
+
+bool QgsProfileMeasureResultsDialog::eventFilter( QObject *object, QEvent *event )
+{
+  if ( object == this && ( event->type() == QEvent::Close ||
+                           event->type() == QEvent::Destroy ||
+                           event->type() == QEvent::Hide ) )
+  {
+    emit closed();
+  }
+  return QDialog::eventFilter( object, event );
 }
 
 void QgsProfileMeasureResultsDialog::setMeasures( double total, double distance, double elevation )
 {
+  // these values are inherently dimensionless for now. We need proper support for vertical CRS
+  // before we can determine what units the elevation are in!
   mTotalLabel->setText( QString::number( total ) );
-  mDistanceLabel->setText( QString::number( distance ) );
   mElevationLabel->setText( QString::number( elevation ) );
+
+  // the distance delta HAS units!
+  const QgsSettings settings;
+  const bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
+
+  QgsUnitTypes::DistanceUnit distanceUnit = mCrs.mapUnits();
+  const QgsUnitTypes::DistanceUnit projectUnit = QgsProject::instance()->distanceUnits();
+
+  if ( projectUnit != distanceUnit
+       && QgsUnitTypes::unitType( distanceUnit ) == QgsUnitTypes::DistanceUnitType::Standard
+       && QgsUnitTypes::unitType( projectUnit ) == QgsUnitTypes::DistanceUnitType::Standard )
+  {
+    // convert distance to desired project units. We can only do this if neither the crs units nor the project units are geographic!
+    distance *= QgsUnitTypes::fromUnitToUnitFactor( distanceUnit, projectUnit );
+    distanceUnit = projectUnit;
+  }
+
+  int decimals = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
+  if ( distanceUnit == QgsUnitTypes::DistanceDegrees && distance < 1 )
+  {
+    // special handling for degrees - because we can't use smaller units (eg m->mm), we need to make sure there's
+    // enough decimal places to show a usable measurement value
+    const int minPlaces = std::round( std::log10( 1.0 / distance ) ) + 1;
+    decimals = std::max( decimals, minPlaces );
+  }
+
+  mDistanceLabel->setText( QgsUnitTypes::formatDistance( distance, decimals, distanceUnit, baseUnit ) );
 }
 
 void QgsProfileMeasureResultsDialog::clear()
@@ -101,8 +148,15 @@ QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProf
   connect( this, &QgsElevationProfileToolMeasure::cleared, mDialog, &QDialog::hide );
   connect( this, &QgsElevationProfileToolMeasure::measureChanged, mDialog, [ = ]( double totalDistance, double deltaCurve, double deltaElevation )
   {
+    mDialog->setCrs( mElevationCanvas->crs() );
     mDialog->setMeasures( totalDistance, deltaCurve, deltaElevation );
     mDialog->show();
+  } );
+  connect( mDialog, &QgsProfileMeasureResultsDialog::closed, this, [ = ]
+  {
+    mMeasureInProgress = false;
+    mRubberBand->hide();
+    emit cleared();
   } );
 }
 
@@ -118,13 +172,6 @@ void QgsElevationProfileToolMeasure::plotAreaChanged()
   {
     updateRubberBand();
   }
-}
-
-void QgsElevationProfileToolMeasure::deactivate()
-{
-  //mRubberBand->hide();
-  emit cleared();
-  QgsPlotTool::deactivate();
 }
 
 void QgsElevationProfileToolMeasure::plotMoveEvent( QgsPlotMouseEvent *event )
