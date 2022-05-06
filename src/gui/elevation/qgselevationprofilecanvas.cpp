@@ -102,6 +102,9 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
 
       // force immediate recalculation of plot area
       QgsRenderContext context;
+      if ( !scene()->views().isEmpty() )
+        context.setScaleFactor( scene()->views().at( 0 )->logicalDpiX() / 25.4 );
+
       calculateOptimisedIntervals( context );
       mPlotArea = interiorPlotArea( context );
       return mPlotArea;
@@ -109,11 +112,12 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
 
     QgsProfilePoint canvasPointToPlotPoint( QPointF point )
     {
-      if ( !mPlotArea.contains( point.x(), point.y() ) )
+      const QRectF area = plotArea();
+      if ( !area.contains( point.x(), point.y() ) )
         return QgsProfilePoint();
 
-      const double distance = ( point.x() - mPlotArea.left() ) / mPlotArea.width() * ( xMaximum() - xMinimum() ) + xMinimum();
-      const double elevation = ( mPlotArea.bottom() - point.y() ) / mPlotArea.height() * ( yMaximum() - yMinimum() ) + yMinimum();
+      const double distance = ( point.x() - area.left() ) / area.width() * ( xMaximum() - xMinimum() ) + xMinimum();
+      const double elevation = ( area.bottom() - point.y() ) / area.height() * ( yMaximum() - yMinimum() ) + yMinimum();
       return QgsProfilePoint( distance, elevation );
     }
 
@@ -122,8 +126,10 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       if ( point.distance() < xMinimum() || point.distance() > xMaximum() || point.elevation() < yMinimum() || point.elevation() > yMaximum() )
         return QgsPointXY();
 
-      const double x = ( point.distance() - xMinimum() ) / ( xMaximum() - xMinimum() ) * ( mPlotArea.width() ) + mPlotArea.left();
-      const double y = mPlotArea.bottom() - ( point.elevation() - yMinimum() ) / ( yMaximum() - yMinimum() ) * ( mPlotArea.height() );
+      const QRectF area = plotArea();
+
+      const double x = ( point.distance() - xMinimum() ) / ( xMaximum() - xMinimum() ) * ( area.width() ) + area.left();
+      const double y = area.bottom() - ( point.elevation() - yMinimum() ) / ( yMaximum() - yMinimum() ) * ( area.height() );
       return QgsPointXY( x, y );
     }
 
