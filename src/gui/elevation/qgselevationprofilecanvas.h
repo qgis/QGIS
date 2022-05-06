@@ -192,8 +192,17 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     /**
      * Converts a canvas point to the equivalent plot point.
+     *
+     * \see plotPointToCanvasPoint()
      */
     QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
+
+    /**
+     * Converts a plot point to the equivalent canvas point.
+     *
+     * \see canvasPointToPlotPoint()
+     */
+    QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
 
   signals:
 
@@ -237,11 +246,6 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void refineResults();
 
   private:
-
-    /**
-     * Converts a plot point to the equivalent canvas point.
-     */
-    QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
 
     QgsProfileSnapContext snapContext() const;
     QgsProfileIdentifyContext identifyContext() const;

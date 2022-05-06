@@ -173,6 +173,15 @@ Identify results visible within the specified plot rect.
     QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
 %Docstring
 Converts a canvas point to the equivalent plot point.
+
+.. seealso:: :py:func:`plotPointToCanvasPoint`
+%End
+
+    QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
+%Docstring
+Converts a plot point to the equivalent canvas point.
+
+.. seealso:: :py:func:`canvasPointToPlotPoint`
 %End
 
   signals:
