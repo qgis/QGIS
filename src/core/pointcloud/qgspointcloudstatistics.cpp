@@ -52,7 +52,7 @@ QgsPointCloudStatistics::AttributeStatistics QgsPointCloudStatistics::statistics
   return mStatisticsMap.value( attribute, defaultVal );
 }
 
-QVariant QgsPointCloudStatistics::statisticsOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+QVariant QgsPointCloudStatistics::statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
     return QVariant();

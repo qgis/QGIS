@@ -212,7 +212,8 @@ void QgsPointCloudRgbRendererWidget::redAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->statisticOf( mRedAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    const QgsPointCloudStatistics stats = mLayer->statistics();
+    const QVariant max = stats.statisticOf( mRedAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
     if ( max.isValid() )
     {
       const int maxValue = max.toInt();
@@ -232,7 +233,8 @@ void QgsPointCloudRgbRendererWidget::greenAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->statisticOf( mGreenAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    const QgsPointCloudStatistics stats = mLayer->statistics();
+    const QVariant max = stats.statisticOf( mGreenAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
     if ( max.isValid() )
     {
       const int maxValue = max.toInt();
@@ -252,7 +254,8 @@ void QgsPointCloudRgbRendererWidget::blueAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->statisticOf( mBlueAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    const QgsPointCloudStatistics stats = mLayer->statistics();
+    const QVariant max = stats.statisticOf( mBlueAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
     if ( max.isValid() )
     {
       const int maxValue = max.toInt();

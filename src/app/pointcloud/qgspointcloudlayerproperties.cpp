@@ -111,7 +111,9 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
 
   mBackupCrs = mLayer->crs();
 
-  if ( !mLayer->classesOf( QStringLiteral( "Classification" ) ).isEmpty() )
+  const QgsPointCloudStatistics stats = mLayer->statistics();
+
+  if ( !stats.classesOf( QStringLiteral( "Classification" ) ).isEmpty() )
   {
     mClassificationStatisticsTableView->setModel( new QgsPointCloudClassificationStatisticsModel( mLayer, QStringLiteral( "Classification" ), mStatisticsTableView ) );
     mClassificationStatisticsTableView->verticalHeader()->hide();
@@ -492,6 +494,7 @@ QVariant QgsPointCloudAttributeStatisticsModel::data( const QModelIndex &index, 
     return QVariant();
 
   const QgsPointCloudAttribute &attr = mAttributes.at( index.row() );
+  const QgsPointCloudStatistics stats = mLayer->statistics();
 
   switch ( role )
   {
@@ -504,13 +507,13 @@ QVariant QgsPointCloudAttributeStatisticsModel::data( const QModelIndex &index, 
           return attr.name();
 
         case Min:
-          return mLayer->statisticOf( attr.name(), QgsStatisticalSummary::Statistic::Min );
+          return stats.statisticOf( attr.name(), QgsStatisticalSummary::Statistic::Min );
         case Max:
-          return mLayer->statisticOf( attr.name(), QgsStatisticalSummary::Statistic::Max );
+          return stats.statisticOf( attr.name(), QgsStatisticalSummary::Statistic::Max );
         case Mean:
-          return mLayer->statisticOf( attr.name(), QgsStatisticalSummary::Statistic::Mean );
+          return stats.statisticOf( attr.name(), QgsStatisticalSummary::Statistic::Mean );
         case StDev:
-          return mLayer->statisticOf( attr.name(), QgsStatisticalSummary::Statistic::StDev );
+          return stats.statisticOf( attr.name(), QgsStatisticalSummary::Statistic::StDev );
 
       }
       return QVariant();
@@ -586,7 +589,7 @@ QgsPointCloudClassificationStatisticsModel::QgsPointCloudClassificationStatistic
   , mLayer( layer )
   , mAttribute( attribute )
 {
-  mClassifications = layer->classesOf( attribute );
+  mClassifications = layer->statistics().classesOf( attribute );
   std::sort( mClassifications.begin(), mClassifications.end(), []( QVariant a, QVariant b ) -> bool { return ( qgsVariantLessThan( a, b ) ); } );
 }
 
@@ -606,6 +609,7 @@ QVariant QgsPointCloudClassificationStatisticsModel::data( const QModelIndex &in
     return QVariant();
 
   const QVariant classValue = mClassifications.at( index.row() );
+  const QgsPointCloudStatistics stats = mLayer->statistics();
 
   switch ( role )
   {
@@ -621,12 +625,12 @@ QVariant QgsPointCloudClassificationStatisticsModel::data( const QModelIndex &in
           return QgsPointCloudDataProvider::translatedLasClassificationCodes().value( classValue.toInt() );
 
         case Count:
-          return mLayer->classStatisticOf( mAttribute, classValue, QgsStatisticalSummary::Count );
+          return stats.classStatisticOf( mAttribute, classValue, QgsStatisticalSummary::Count );
 
         case Percent:
         {
-          qint64 pointCount = mLayer->statisticsCalculationState() == QgsPointCloudLayer::Calculated ? mLayer->calculatedStatistics().sampledPointsCount() : mLayer->pointCount();
-          return mLayer->classStatisticOf( mAttribute, classValue, QgsStatisticalSummary::Count ).toDouble() / pointCount * 100;
+          qint64 pointCount = stats.sampledPointsCount();
+          return stats.classStatisticOf( mAttribute, classValue, QgsStatisticalSummary::Count ).toDouble() / pointCount * 100;
         }
 
       }

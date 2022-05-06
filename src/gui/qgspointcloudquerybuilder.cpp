@@ -137,25 +137,26 @@ void QgsPointCloudQueryBuilder::lstAttributes_currentChanged( const QModelIndex 
   }
   else
   {
-    QVariant value = mLayer->statisticOf( attribute, QgsStatisticalSummary::Min );
+    const QgsPointCloudStatistics stats = mLayer->statistics();
+    QVariant value = stats.statisticOf( attribute, QgsStatisticalSummary::Min );
     QString valueString = value.isNull() ? tr( "n/a" ) : value.toString();
     QStandardItem *item = new QStandardItem( tr( "Minimum: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );
 
-    value = mLayer->statisticOf( attribute, QgsStatisticalSummary::Max );
+    value = stats.statisticOf( attribute, QgsStatisticalSummary::Max );
     valueString = value.isNull() ? tr( "n/a" ) : value.toString();
     item = new QStandardItem( tr( "Maximum: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );
 
-    value = mLayer->statisticOf( attribute, QgsStatisticalSummary::Mean );
+    value = stats.statisticOf( attribute, QgsStatisticalSummary::Mean );
     valueString = value.isNull() ? tr( "n/a" ) : value.toString();
     item = new QStandardItem( tr( "Mean: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );
 
-    value = mLayer->statisticOf( attribute, QgsStatisticalSummary::StDev );
+    value = stats.statisticOf( attribute, QgsStatisticalSummary::StDev );
     valueString = value.isNull() ? tr( "n/a" ) : value.toString();
     item = new QStandardItem( tr( "StdDev: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );

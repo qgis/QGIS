@@ -31,7 +31,7 @@ class IndexedPointCloudNode;
 class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
 class QgsGeometry;
-class QgsPointCloudStatsCalculator;
+class QgsPointCloudStatistics;
 
 /**
  * \ingroup core
@@ -316,6 +316,12 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     }
     % End
 #endif
+
+    /**
+     * Returns the object containings the statistics metadata extracted from the dataset
+     * \since QGIS 3.26
+     */
+    QgsPointCloudStatistics metadataStatistics();
 
     bool supportsSubsetString() const override { return true; }
     QString subsetString() const override;

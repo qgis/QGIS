@@ -409,6 +409,11 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     }
   }
 
+  if ( mDataProvider && mDataProvider->isValid() && mStatistics.sampledPointsCount() == 0 )
+  {
+    mStatistics = mDataProvider->metadataStatistics();
+  }
+
   if ( !mRenderer || loadDefaultStyleFlag )
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
@@ -774,33 +779,6 @@ void QgsPointCloudLayer::setSync3DRendererTo2DRenderer( bool sync )
     convertRenderer3DFromRenderer2D();
 }
 
-QVariant QgsPointCloudLayer::statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
-{
-  if ( attribute == QStringLiteral( "X" ) || attribute == QStringLiteral( "Y" ) || attribute == QStringLiteral( "Z" ) || dataProvider()->hasStatisticsMetadata() )
-  {
-    return dataProvider()->metadataStatistic( attribute, statistic );
-  }
-  return mCalculatedStatistics.statisticsOf( attribute, statistic );
-}
-
-QVariantList QgsPointCloudLayer::classesOf( const QString &attribute ) const
-{
-  if ( dataProvider()->hasStatisticsMetadata() )
-  {
-    return dataProvider()->metadataClasses( attribute );
-  }
-  return mCalculatedStatistics.classesOf( attribute );
-}
-
-QVariant QgsPointCloudLayer::classStatisticOf( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
-{
-  if ( dataProvider()->hasStatisticsMetadata() )
-  {
-    return dataProvider()->metadataClassStatistic( attribute, value, statistic );
-  }
-  return mCalculatedStatistics.classStatisticOf( attribute, value, statistic );
-}
-
 void QgsPointCloudLayer::calculateStatistics()
 {
   if ( !mDataProvider.get() || !mDataProvider->hasValidIndex() )
@@ -827,7 +805,7 @@ void QgsPointCloudLayer::calculateStatistics()
   QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mDataProvider->index(), attributes, 1000000 );
   connect( task, &QgsTask::taskCompleted, this, [this, task]()
   {
-    mCalculatedStatistics = task->calculationResults();
+    mStatistics = task->calculationResults();
     mStatisticsCalculationState = QgsPointCloudLayer::Calculated;
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
     resetRenderer();

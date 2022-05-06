@@ -242,6 +242,13 @@ in the metadata, and even for sources with statistical metadata only some ``stat
     }
 %End
 
+    QgsPointCloudStatistics metadataStatistics();
+%Docstring
+Returns the object containings the statistics metadata extracted from the dataset
+
+.. versionadded:: 3.26
+%End
+
     virtual bool supportsSubsetString() const;
     virtual QString subsetString() const;
 

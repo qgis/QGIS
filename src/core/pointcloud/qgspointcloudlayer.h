@@ -232,34 +232,11 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      */
     bool convertRenderer3DFromRenderer2D();
 
-
     /**
-     * Returns the statistic \a statistic of \a attribute
-     *
+     * Returns the object containing statistics
      * \since QGIS 3.26
      */
-    QVariant statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
-
-    /**
-     * Returns a list of existing classes which are present for the specified \a attribute.
-     *
-     * \since QGIS 3.26
-     */
-    QVariantList classesOf( const QString &attribute ) const;
-
-    /**
-     * Returns a statistic for one class \a value from the specified \a attribute.
-     *
-     * If no matching precalculated statistic is available then an invalid variant will be returned.
-     * \since QGIS 3,26
-     */
-    QVariant classStatisticOf( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
-
-    /**
-     * Returns the object containing all the calculated statistics
-     * \since QGIS 3.26
-     */
-    QgsPointCloudStatistics calculatedStatistics() const { return mCalculatedStatistics; }
+    const QgsPointCloudStatistics statistics() const { return mStatistics; }
 
     /**
      * Returns the status of point cloud statistics calculation
@@ -315,7 +292,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     LayerOptions mLayerOptions;
 
     bool mSync3DRendererTo2DRenderer = false;
-    QgsPointCloudStatistics mCalculatedStatistics;
+    QgsPointCloudStatistics mStatistics;
     PointCloudStatisticsCalculationState mStatisticsCalculationState = PointCloudStatisticsCalculationState::NotStarted;
     long mStatsCalculationTask = 0;
 };

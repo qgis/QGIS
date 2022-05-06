@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudstatscalculator.cpp
+                         qgspointcloudstatscalculator.h
                          --------------------
     begin                : April 2022
     copyright            : (C) 2022 by Belgacem Nedjima

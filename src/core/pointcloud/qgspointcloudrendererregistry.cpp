@@ -88,6 +88,8 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   if ( !provider )
     return new QgsPointCloudAttributeByRampRenderer();
 
+  const QgsPointCloudStatistics stats = layer->statistics();
+
   if ( ( provider->name() == QLatin1String( "pdal" ) ) && ( !provider->hasValidIndex() ) )
   {
     // for now, default to extent renderer only for las/laz files
@@ -102,9 +104,9 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     std::unique_ptr< QgsPointCloudRgbRenderer > renderer = std::make_unique< QgsPointCloudRgbRenderer >();
 
     // set initial guess for rgb ranges
-    const QVariant redMax = layer->statisticOf( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
-    const QVariant greenMax = layer->statisticOf( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
-    const QVariant blueMax = layer->statisticOf( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
+    const QVariant redMax = stats.statisticOf( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
+    const QVariant greenMax = stats.statisticOf( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
+    const QVariant blueMax = stats.statisticOf( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
     if ( redMax.isValid() && greenMax.isValid() && blueMax.isValid() )
     {
       const int maxValue = std::max( blueMax.toInt(), std::max( redMax.toInt(), greenMax.toInt() ) );
@@ -153,7 +155,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   if ( attributes.indexOf( QLatin1String( "Classification" ) ) >= 0 )
   {
     // are any classifications present?
-    QVariantList classes = layer->classesOf( QStringLiteral( "Classification" ) );
+    QVariantList classes = stats.classesOf( QStringLiteral( "Classification" ) );
     // ignore "not classified" classes, and see if any are left...
     classes.removeAll( 0 );
     classes.removeAll( 1 );
@@ -170,8 +172,8 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   renderer->setAttribute( QStringLiteral( "Z" ) );
 
   // set initial range for z values if possible
-  const QVariant zMin = layer->statisticOf( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
-  const QVariant zMax = layer->statisticOf( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
+  const QVariant zMin = stats.statisticOf( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
+  const QVariant zMax = stats.statisticOf( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
   if ( zMin.isValid() && zMax.isValid() )
   {
     renderer->setMinimum( zMin.toDouble() );

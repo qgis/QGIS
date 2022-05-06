@@ -189,17 +189,31 @@ QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute,
 QVariantList QgsPointCloudDataProvider::metadataClasses( const QString &attribute ) const
 {
   QgsPointCloudIndex *pcIndex = index();
-  if ( !pcIndex )
-    return QVariantList();
-  return pcIndex->metadataClasses( attribute );
+  if ( pcIndex )
+  {
+    return pcIndex->metadataClasses( attribute );
+  }
+  return QVariantList();
 }
 
 QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
 {
   QgsPointCloudIndex *pcIndex = index();
-  if ( !pcIndex )
-    return QVariant();
-  return pcIndex->metadataClassStatistic( attribute, value, statistic );
+  if ( pcIndex )
+  {
+    return pcIndex->metadataClassStatistic( attribute, value, statistic );
+  }
+  return QVariant();
+}
+
+QgsPointCloudStatistics QgsPointCloudDataProvider::metadataStatistics()
+{
+  QgsPointCloudIndex *pcIndex = index();
+  if ( pcIndex )
+  {
+    return pcIndex->metadataStatistics();
+  }
+  return QgsPointCloudStatistics();
 }
 
 struct MapIndexedPointCloudNode

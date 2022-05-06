@@ -26,6 +26,7 @@
 #include <QtDebug>
 
 #include "qgstiledownloadmanager.h"
+#include "qgspointcloudstatistics.h"
 
 IndexedPointCloudNode::IndexedPointCloudNode():
   mD( -1 ),
@@ -317,4 +318,28 @@ QVariant QgsPointCloudIndex::metadataClassStatistic( const QString &attribute, c
   Q_UNUSED( value );
   Q_UNUSED( statistic );
   return QVariant();
+}
+
+QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
+{
+  QMap<QString, QgsPointCloudStatistics::AttributeStatistics> statsMap;
+  for ( QgsPointCloudAttribute attribute : attributes().attributes() )
+  {
+    QString name = attribute.name();
+    QgsPointCloudStatistics::AttributeStatistics s;
+    QVariant min = metadataStatistic( name, QgsStatisticalSummary::Min );
+    QVariant max = metadataStatistic( name, QgsStatisticalSummary::Max );
+    if ( !min.isValid() )
+      continue;
+    s.minimum = min.toDouble();
+    s.maximum = max.toDouble();
+    s.count = metadataStatistic( name, QgsStatisticalSummary::Count ).toInt();
+    QVariantList classes = metadataClasses( name );
+    for ( QVariant c : classes )
+    {
+      s.classCount[ c.toInt() ] = metadataClassStatistic( name, c, QgsStatisticalSummary::Count ).toInt();
+    }
+    statsMap[ name ] = s;
+  }
+  return QgsPointCloudStatistics( pointCount(), statsMap );
 }

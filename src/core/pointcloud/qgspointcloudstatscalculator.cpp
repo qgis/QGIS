@@ -199,5 +199,32 @@ bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const 
     mStats.combineWith( s );
   }
 
+  // fetch X, Y & Z stats directly from the index
+  QVector<QString> coordinateAttributes;
+  coordinateAttributes.push_back( QStringLiteral( "X" ) );
+  coordinateAttributes.push_back( QStringLiteral( "Y" ) );
+  coordinateAttributes.push_back( QStringLiteral( "Z" ) );
+
+  QMap<QString, QgsPointCloudStatistics::AttributeStatistics> statsMap = mStats.statisticsMap();
+  for ( QString attribute : coordinateAttributes )
+  {
+    QgsPointCloudStatistics::AttributeStatistics s;
+    QVariant min = mIndex->metadataStatistic( attribute, QgsStatisticalSummary::Min );
+    QVariant max = mIndex->metadataStatistic( attribute, QgsStatisticalSummary::Max );
+    if ( !min.isValid() )
+      continue;
+    s.minimum = min.toDouble();
+    s.maximum = max.toDouble();
+    s.count = mIndex->metadataStatistic( attribute, QgsStatisticalSummary::Count ).toInt();
+    QVariantList classes = mIndex->metadataClasses( attribute );
+    for ( QVariant c : classes )
+    {
+      s.classCount[ c.toInt() ] = mIndex->metadataClassStatistic( attribute, c, QgsStatisticalSummary::Count ).toInt();
+    }
+    statsMap[ attribute ] = s;
+  }
+
+  mStats = QgsPointCloudStatistics( pointCount, statsMap );
+
   return true;
 }

@@ -456,7 +456,9 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
   if ( !mLayer || !mLayer->dataProvider() )
     return;
 
-  const QVariantList providerCategories = mLayer->classesOf( mAttributeComboBox->currentAttribute() );
+  const QgsPointCloudStatistics stats = mLayer->statistics();
+
+  const QVariantList providerCategories = stats.classesOf( mAttributeComboBox->currentAttribute() );
   const QgsPointCloudCategoryList currentCategories = mModel->categories();
 
   for ( const QVariant &providerCategory : providerCategories )

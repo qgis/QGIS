@@ -24,25 +24,12 @@ Class used to store statistics of a point cloud dataset.
 #include "qgspointcloudstatistics.h"
 %End
   public:
-    struct AttributeStatistics
-    {
-      double minimum;
-      double maximum;
-      int count;
-      QMap<int, int> classCount;
-
-      void cumulateStatistics( const AttributeStatistics &stats );
-    };
 
     QgsPointCloudStatistics();
 %Docstring
 Construvtor
 %End
 
-    QgsPointCloudStatistics( int sampledPointsCount, const QMap<QString, AttributeStatistics> &stats );
-%Docstring
-Constructor from statistics map
-%End
 
     int sampledPointsCount() const;
 %Docstring
@@ -59,12 +46,8 @@ Clears the statistics of all attributes
 Clears the statistics of given attributes ``attributes``
 %End
 
-    AttributeStatistics statisticsOf( const QString &attribute ) const;
-%Docstring
-Returns the calculated statistics of attribute ``attribute``
-%End
 
-    QVariant statisticsOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    QVariant statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 %Docstring
 Returns the statistic ``statistic`` of ``attribute``
 %End

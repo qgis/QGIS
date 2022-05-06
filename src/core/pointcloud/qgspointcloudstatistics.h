@@ -39,6 +39,7 @@ class IndexedPointCloudNode;
 class CORE_EXPORT QgsPointCloudStatistics
 {
   public:
+#ifndef SIP_RUN
     struct AttributeStatistics
     {
       double minimum = std::numeric_limits<double>::max();
@@ -60,12 +61,15 @@ class CORE_EXPORT QgsPointCloudStatistics
         }
       }
     };
+#endif
 
     //! Construvtor
     QgsPointCloudStatistics();
 
+#ifndef SIP_RUN
     //! Constructor from statistics map
     QgsPointCloudStatistics( int sampledPointsCount, const QMap<QString, AttributeStatistics> &stats );
+#endif
 
     //! Returns the number of points used to calculate the statistics
     int sampledPointsCount() const { return mSampledPointsCount; }
@@ -76,11 +80,13 @@ class CORE_EXPORT QgsPointCloudStatistics
     //! Clears the statistics of given attributes \a attributes
     void clear( const QVector<QgsPointCloudAttribute> &attributes );
 
+#ifndef SIP_RUN
     //! Returns the calculated statistics of attribute \a attribute
     AttributeStatistics statisticsOf( const QString &attribute ) const;
+#endif
 
     //! Returns the statistic \a statistic of \a attribute
-    QVariant statisticsOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    QVariant statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 
     //! Returns a list of existing classes which are present for the specified \a attribute
     QVariantList classesOf( const QString &attribute ) const;
@@ -95,6 +101,10 @@ class CORE_EXPORT QgsPointCloudStatistics
     //! Merges the current statistics with the statistics from \a stats
     void combineWith( const QgsPointCloudStatistics &stats );
 
+#ifndef SIP_RUN
+    //! Returns a map object containing all the statistics
+    QMap<QString, AttributeStatistics> statisticsMap() const { return mStatisticsMap; };
+#endif
   private:
     int mSampledPointsCount = 0;
     QMap<QString, AttributeStatistics> mStatisticsMap;

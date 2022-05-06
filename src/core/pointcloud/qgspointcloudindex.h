@@ -42,7 +42,7 @@ class QgsPointCloudRequest;
 class QgsPointCloudAttributeCollection;
 class QgsCoordinateReferenceSystem;
 class QgsPointCloudBlockRequest;
-class QgsPointCloudStatsCalculator;
+class QgsPointCloudStatistics;
 
 /**
  * \ingroup core
@@ -202,6 +202,12 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
     //! Returns the original metadata map
     virtual QVariantMap originalMetadata() const = 0;
+
+    /**
+     * Returns the object containings the statistics metadata extracted from the dataset
+     * \since QGIS 3.26
+     */
+    virtual QgsPointCloudStatistics metadataStatistics() const;
 
     //! Returns root node of the index
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
