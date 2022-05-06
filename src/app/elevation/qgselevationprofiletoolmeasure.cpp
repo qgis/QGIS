@@ -77,8 +77,8 @@ void QgsProfileMeasureResultsDialog::setMeasures( double total, double distance,
 {
   // these values are inherently dimensionless for now. We need proper support for vertical CRS
   // before we can determine what units the elevation are in!
-  mTotalLabel->setText( QString::number( total ) );
-  mElevationLabel->setText( QString::number( elevation ) );
+  mTotalLabel->setText( QLocale().toString( total ) );
+  mElevationLabel->setText( QLocale().toString( elevation ) );
 
   // the distance delta HAS units!
   const QgsSettings settings;
