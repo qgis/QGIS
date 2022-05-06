@@ -119,10 +119,16 @@ void QgsElevationProfileToolMeasure::plotPressEvent( QgsPlotMouseEvent *event )
 
 void QgsElevationProfileToolMeasure::plotReleaseEvent( QgsPlotMouseEvent *event )
 {
-  if ( event->button() != Qt::LeftButton )
+  if ( event->button() == Qt::RightButton && mRubberBand->isVisible() )
   {
     event->ignore();
-    return;
+    mMeasureInProgress = false;
+    mRubberBand->hide();
+    emit cleared();
+  }
+  else if ( event->button() != Qt::LeftButton )
+  {
+    event->ignore();
   }
 }
 
