@@ -44,13 +44,19 @@ class QgsElevationProfileToolMeasure : public QgsPlotTool
     void distanceChanged( double distance );
     void cleared();
 
+  private slots:
+
+    void plotAreaChanged();
+
   private:
+    void updateRubberBand();
 
     QgsElevationProfileCanvas *mElevationCanvas = nullptr;
 
     QGraphicsLineItem *mRubberBand = nullptr;
 
     QgsProfilePoint mStartPoint;
+    QgsProfilePoint mEndPoint;
     bool mMeasureInProgress = false;
 
 };
