@@ -858,14 +858,14 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             with OverrideCursor(Qt.WaitCursor):
                 if auth is not None:
                     cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
-                                              username=self.catalog_username,
-                                              password=self.catalog_password,
+                                              username=self.catalog_username or None,
+                                              password=self.catalog_password or None,
                                               auth=auth)
                 else:
                     # older owslib version without the auth keyword
                     cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
-                                              username=self.catalog_username,
-                                              password=self.catalog_password)
+                                              username=self.catalog_username or None,
+                                              password=self.catalog_password or None)
 
                 cat.getrecordbyid(
                     [self.catalog.records[identifier].identifier])
@@ -956,15 +956,15 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 if auth is not None:
                     self.catalog = CatalogueServiceWeb(self.catalog_url,  # spellok
                                                        timeout=self.timeout,
-                                                       username=self.catalog_username,
-                                                       password=self.catalog_password,
+                                                       username=self.catalog_username or None,
+                                                       password=self.catalog_password or None,
                                                        auth=auth)
                 else:
                     # older owslib version without the auth keyword
                     self.catalog = CatalogueServiceWeb(self.catalog_url,  # spellok
                                                        timeout=self.timeout,
-                                                       username=self.catalog_username,
-                                                       password=self.catalog_password)
+                                                       username=self.catalog_username or None,
+                                                       password=self.catalog_password or None)
                 return True
             except ExceptionReport as err:
                 msg = self.tr('Error connecting to service: {0}').format(err)
