@@ -19,6 +19,7 @@
 
 #include "qgsplottool.h"
 #include "qgsprofilepoint.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QPointer>
 #include <QDialog>
@@ -35,6 +36,13 @@ class QgsProfileMeasureResultsDialog : public QDialog
 
     QgsProfileMeasureResultsDialog();
 
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+    bool eventFilter( QObject *object, QEvent *event ) override;
+
+  signals:
+
+    void closed();
+
   public slots:
 
     void setMeasures( double total, double distance, double elevation );
@@ -45,6 +53,8 @@ class QgsProfileMeasureResultsDialog : public QDialog
     QLabel *mTotalLabel = nullptr;
     QLabel *mDistanceLabel = nullptr;
     QLabel *mElevationLabel = nullptr;
+
+    QgsCoordinateReferenceSystem mCrs;
 
 };
 
@@ -57,7 +67,6 @@ class QgsElevationProfileToolMeasure : public QgsPlotTool
 
     ~QgsElevationProfileToolMeasure() override;
 
-    void deactivate() override;
     void plotMoveEvent( QgsPlotMouseEvent *event ) override;
     void plotPressEvent( QgsPlotMouseEvent *event ) override;
     void plotReleaseEvent( QgsPlotMouseEvent *event ) override;
