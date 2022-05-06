@@ -65,7 +65,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * The TabStyle struct defines color and font overrides for form fields, tabs and groups labels.
      * \since QGIS 3.26
      */
-    struct LabelStyle
+    struct CORE_EXPORT LabelStyle
     {
 
       //! Label font
