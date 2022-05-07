@@ -1860,6 +1860,66 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     }
   }
 
+  // Convert pre 3.26 default styles
+  if ( QgsProjectVersion( 3, 26, 0 ) > mSaveVersion )
+  {
+    QgsReadWriteContext rwContext;
+    rwContext.setPathResolver( pathResolver() );
+
+    QString styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
+    if ( !styleName.isEmpty() )
+    {
+      QgsSymbol *symbol = QgsStyle::defaultStyle()->symbol( styleName );
+      if ( symbol )
+      {
+        QDomDocument doc;
+        QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), symbol, doc, rwContext );
+        doc.appendChild( elem );
+        QString styleXml = doc.toString();
+        writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/MarkerSymbol" ), styleXml );
+      }
+    }
+    styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
+    if ( !styleName.isEmpty() )
+    {
+      QgsSymbol *symbol = QgsStyle::defaultStyle()->symbol( styleName );
+      if ( symbol )
+      {
+        QDomDocument doc;
+        QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "line symbol" ), symbol, doc, rwContext );
+        doc.appendChild( elem );
+        QString styleXml = doc.toString();
+        writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/LineSymbol" ), styleXml );
+      }
+    }
+    styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
+    if ( !styleName.isEmpty() )
+    {
+      QgsSymbol *symbol = QgsStyle::defaultStyle()->symbol( styleName );
+      if ( symbol )
+      {
+        QDomDocument doc;
+        QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fill symbol" ), symbol, doc, rwContext );
+        doc.appendChild( elem );
+        QString styleXml = doc.toString();
+        writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/FillSymbol" ), styleXml );
+      }
+    }
+    styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ) );
+    if ( !styleName.isEmpty() )
+    {
+      QgsColorRamp *colorRamp = QgsStyle::defaultStyle()->colorRamp( styleName );
+      if ( colorRamp )
+      {
+        QDomDocument doc;
+        QDomElement elem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "color ramp" ), colorRamp, doc );
+        doc.appendChild( elem );
+        QString styleXml = doc.toString();
+        writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ), styleXml );
+      }
+    }
+  }
+
   // After bad layer handling we might still have invalid layers,
   // store them in case the user wanted to handle them later
   // or wanted to pass them through when saving
