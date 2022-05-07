@@ -941,6 +941,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mStyleMarkerSymbol->setSymbolType( Qgis::SymbolType::Marker );
   mStyleLineSymbol->setSymbolType( Qgis::SymbolType::Line );
   mStyleFillSymbol->setSymbolType( Qgis::SymbolType::Fill );
+  mStyleTextFormat->setShowNullFormat( true );
+  mStyleTextFormat->setNoFormatString( tr( "Cleat Default Text Format" ) );
 
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
@@ -994,6 +996,20 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   else
   {
     mStyleColorRampSymbol->setColorRamp( nullptr );
+  }
+
+  styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/TextFormat" ) );
+  if ( !styleXml.isEmpty() )
+  {
+    doc.setContent( styleXml );
+    elem = doc.documentElement();
+    QgsTextFormat textFormat;
+    textFormat.readXml( elem, rwContext );
+    mStyleTextFormat->setTextFormat( textFormat );
+  }
+  else
+  {
+    mStyleTextFormat->setToNullFormat();
   }
 
   // Random colors
@@ -1738,6 +1754,16 @@ void QgsProjectProperties::apply()
     styleXml = doc.toString();
   }
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ), styleXml );
+
+  styleXml.clear();
+  if ( mStyleTextFormat->textFormat().isValid() )
+  {
+    QDomDocument doc;
+    QDomElement elem = mStyleTextFormat->textFormat().writeXml( doc, rwContext );
+    doc.appendChild( elem );
+    styleXml = doc.toString();
+  }
+  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/TextFormat" ), styleXml );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), mDefaultOpacityWidget->opacity() );
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), cbxStyleRandomColors->isChecked() );
