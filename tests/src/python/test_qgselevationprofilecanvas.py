@@ -131,7 +131,7 @@ class TestQgsElevationProfileCanvas(unittest.TestCase):
         res = canvas.toMapCoordinates(QgsPointXY(75, 300))
         self.assertAlmostEqual(res.x(), 0.1190, delta=1)
         self.assertAlmostEqual(res.y(), 2, 4)
-        self.assertAlmostEqual(res.z(), 2.95, delta=12)
+        self.assertAlmostEqual(res.z(), 2.95, delta=20)
 
         res = canvas.toCanvasCoordinates(QgsPoint(0, 2, 0))
         self.assertAlmostEqual(res.x(), 9.156, delta=60)
@@ -144,7 +144,7 @@ class TestQgsElevationProfileCanvas(unittest.TestCase):
         res = canvas.toMapCoordinates(QgsPointXY(540, 50))
         self.assertAlmostEqual(res.x(), 10, 1)
         self.assertAlmostEqual(res.y(), 3.83, delta=1)
-        self.assertAlmostEqual(res.z(), 97.946, delta=10)
+        self.assertAlmostEqual(res.z(), 97.946, delta=20)
 
     def test_tool(self):
         """
