@@ -129,7 +129,7 @@ class TestQgsElevationProfileCanvas(unittest.TestCase):
 
         # just inside top left of plot area
         res = canvas.toMapCoordinates(QgsPointXY(75, 300))
-        self.assertAlmostEqual(res.x(), 0.1190, delta=0.1)
+        self.assertAlmostEqual(res.x(), 0.1190, delta=1)
         self.assertAlmostEqual(res.y(), 2, 4)
         self.assertAlmostEqual(res.z(), 2.95, delta=12)
 
