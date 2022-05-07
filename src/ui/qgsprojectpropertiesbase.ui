@@ -1188,7 +1188,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Change…</string>
+                     <string>Configure symbol…</string>
                     </property>
                    </widget>
                   </item>
@@ -1211,7 +1211,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Change…</string>
+                     <string>Configure symbol…</string>
                     </property>
                    </widget>
                   </item>
@@ -1260,7 +1260,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Change…</string>
+                     <string>Configure symbol…</string>
                     </property>
                    </widget>
                   </item>
@@ -1271,6 +1271,9 @@
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Configure color ramp…</string>
                     </property>
                     <property name="minimumSize">
                      <size>

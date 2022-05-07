@@ -954,6 +954,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     elem = doc.documentElement();
     mStyleMarkerSymbol->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elem, rwContext ) );
   }
+  else
+  {
+    mStyleMarkerSymbol->setSymbol( nullptr );
+  }
 
   styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/LineSymbol" ) );
   if ( !styleXml.isEmpty() )
@@ -961,6 +965,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     doc.setContent( styleXml );
     elem = doc.documentElement();
     mStyleLineSymbol->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, rwContext ) );
+  }
+  else
+  {
+    mStyleLineSymbol->setSymbol( nullptr );
   }
 
   styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/FillSymbol" ) );
@@ -970,6 +978,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     elem = doc.documentElement();
     mStyleFillSymbol->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elem, rwContext ) );
   }
+  else
+  {
+    mStyleFillSymbol->setSymbol( nullptr );
+  }
 
   styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ) );
   if ( !styleXml.isEmpty() )
@@ -978,6 +990,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     elem = doc.documentElement();
     std::unique_ptr< QgsColorRamp > colorRamp( QgsSymbolLayerUtils::loadColorRamp( elem ) );
     mStyleColorRampSymbol->setColorRamp( colorRamp.get() );
+  }
+  else
+  {
+    mStyleColorRampSymbol->setColorRamp( nullptr );
   }
 
   // Random colors
