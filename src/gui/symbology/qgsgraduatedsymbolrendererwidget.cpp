@@ -500,10 +500,14 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   btnColorRamp->setShowRandomColorRamp( true );
 
   // set project default color ramp
-  QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
+  const QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ), QString() );
   if ( !defaultColorRamp.isEmpty() )
   {
-    btnColorRamp->setColorRampFromName( defaultColorRamp );
+    QDomDocument doc;
+    doc.setContent( defaultColorRamp );
+    QDomElement elem = doc.documentElement();
+    std::unique_ptr< QgsColorRamp > colorRamp( QgsSymbolLayerUtils::loadColorRamp( elem ) );
+    btnColorRamp->setColorRamp( colorRamp.get() );
   }
   else
   {

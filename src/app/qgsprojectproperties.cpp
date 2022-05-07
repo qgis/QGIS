@@ -40,7 +40,9 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
-#include "qgsstylemanagerdialog.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 #include "qgscolorramp.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsrelationmanagerdialog.h"
@@ -125,11 +127,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( pbnWCSLayersSelectAll, &QPushButton::clicked, this, &QgsProjectProperties::pbnWCSLayersSelectAll_clicked );
   connect( pbnWCSLayersDeselectAll, &QPushButton::clicked, this, &QgsProjectProperties::pbnWCSLayersDeselectAll_clicked );
   connect( pbnLaunchOWSChecker, &QPushButton::clicked, this, &QgsProjectProperties::pbnLaunchOWSChecker_clicked );
-  connect( pbtnStyleManager, &QPushButton::clicked, this, &QgsProjectProperties::pbtnStyleManager_clicked );
-  connect( pbtnStyleMarker, &QToolButton::clicked, this, &QgsProjectProperties::pbtnStyleMarker_clicked );
-  connect( pbtnStyleLine, &QToolButton::clicked, this, &QgsProjectProperties::pbtnStyleLine_clicked );
-  connect( pbtnStyleFill, &QToolButton::clicked, this, &QgsProjectProperties::pbtnStyleFill_clicked );
-  connect( pbtnStyleColorRamp, &QToolButton::clicked, this, &QgsProjectProperties::pbtnStyleColorRamp_clicked );
   connect( mButtonAddColor, &QToolButton::clicked, this, &QgsProjectProperties::mButtonAddColor_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectProperties::showHelp );
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeBearingFormat );
@@ -940,9 +937,63 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   twWCSLayers->setRowCount( j );
   twWCSLayers->verticalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
-  // Default Styles
-  mStyle = QgsStyle::defaultStyle();
-  populateStyles();
+  // Default styles
+  mStyleMarkerSymbol->setSymbolType( Qgis::SymbolType::Marker );
+  mStyleLineSymbol->setSymbolType( Qgis::SymbolType::Line );
+  mStyleFillSymbol->setSymbolType( Qgis::SymbolType::Fill );
+
+  QgsReadWriteContext rwContext;
+  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  QDomDocument doc;
+  QDomElement elem;
+
+  QString styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/MarkerSymbol" ) );
+  if ( !styleXml.isEmpty() )
+  {
+    doc.setContent( styleXml );
+    elem = doc.documentElement();
+    mStyleMarkerSymbol->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elem, rwContext ) );
+  }
+
+  styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/LineSymbol" ) );
+  if ( !styleXml.isEmpty() )
+  {
+    doc.setContent( styleXml );
+    elem = doc.documentElement();
+    mStyleLineSymbol->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, rwContext ) );
+  }
+
+  styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/FillSymbol" ) );
+  if ( !styleXml.isEmpty() )
+  {
+    doc.setContent( styleXml );
+    elem = doc.documentElement();
+    mStyleFillSymbol->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elem, rwContext ) );
+  }
+
+  styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ) );
+  if ( !styleXml.isEmpty() )
+  {
+    doc.setContent( styleXml );
+    elem = doc.documentElement();
+    std::unique_ptr< QgsColorRamp > colorRamp( QgsSymbolLayerUtils::loadColorRamp( elem ) );
+    mStyleColorRampSymbol->setColorRamp( colorRamp.get() );
+  }
+
+  // Random colors
+  cbxStyleRandomColors->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) );
+
+  // Default alpha transparency
+  double opacity = 1.0;
+  double alpha = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
+  if ( ok )
+    opacity = 1.0 - alpha / 255.0;
+  double newOpacity = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
+  if ( ok )
+    opacity = newOpacity;
+
+  mDefaultOpacityWidget->setOpacity( opacity );
+
 
   // Color palette
   connect( mButtonCopyColors, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::copyColors );
@@ -1629,10 +1680,49 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ), wcsLayerList );
 
   // Default Styles
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ), cboStyleMarker->currentText() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ), cboStyleLine->currentText() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ), cboStyleFill->currentText() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), cboStyleColorRamp->currentText() );
+  QgsReadWriteContext rwContext;
+  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+
+  QString styleXml;
+  if ( mStyleMarkerSymbol->symbol() )
+  {
+    QDomDocument doc;
+    QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mStyleMarkerSymbol->symbol(), doc, rwContext );
+    doc.appendChild( elem );
+    styleXml = doc.toString();
+  }
+  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/MarkerSymbol" ), styleXml );
+
+  styleXml.clear();
+  if ( mStyleLineSymbol->symbol() )
+  {
+    QDomDocument doc;
+    QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "line symbol" ), mStyleLineSymbol->symbol(), doc, rwContext );
+    doc.appendChild( elem );
+    styleXml = doc.toString();
+  }
+  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/LineSymbol" ), styleXml );
+
+  styleXml.clear();
+  if ( mStyleFillSymbol->symbol() )
+  {
+    QDomDocument doc;
+    QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fill symbol" ), mStyleFillSymbol->symbol(), doc, rwContext );
+    doc.appendChild( elem );
+    styleXml = doc.toString();
+  }
+  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/FillSymbol" ), styleXml );
+
+  styleXml.clear();
+  if ( mStyleColorRampSymbol->colorRamp() )
+  {
+    QDomDocument doc;
+    QDomElement elem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "color ramp" ), mStyleColorRampSymbol->colorRamp(), doc );
+    doc.appendChild( elem );
+    styleXml = doc.toString();
+  }
+  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ), styleXml );
+
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), mDefaultOpacityWidget->opacity() );
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), cbxStyleRandomColors->isChecked() );
   if ( mTreeProjectColors->isDirty() )
@@ -2161,153 +2251,6 @@ void QgsProjectProperties::pbnExportScales_clicked()
   {
     QgsDebugMsg( msg );
   }
-}
-
-void QgsProjectProperties::populateStyles()
-{
-  // Styles - taken from qgsstylemanagerdialog
-
-  // use QComboBox and QString lists for shorter code
-  QStringList prefList;
-  QList<QComboBox *> cboList;
-  cboList << cboStyleMarker;
-  prefList << QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ), QString() );
-  cboList << cboStyleLine;
-  prefList << QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ), QString() );
-  cboList << cboStyleFill;
-  prefList << QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ), QString() );
-  cboList << cboStyleColorRamp;
-  prefList << QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
-  for ( int i = 0; i < cboList.count(); i++ )
-  {
-    cboList[i]->clear();
-    cboList[i]->addItem( QString() );
-  }
-
-  // populate symbols
-  QStringList symbolNames = mStyle->symbolNames();
-  for ( int i = 0; i < symbolNames.count(); ++i )
-  {
-    QString name = symbolNames[i];
-    std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
-    if ( !symbol )
-      continue;
-
-    QComboBox *cbo = nullptr;
-    switch ( symbol->type() )
-    {
-      case Qgis::SymbolType::Marker :
-        cbo = cboStyleMarker;
-        break;
-      case Qgis::SymbolType::Line :
-        cbo = cboStyleLine;
-        break;
-      case Qgis::SymbolType::Fill :
-        cbo = cboStyleFill;
-        break;
-      case Qgis::SymbolType::Hybrid:
-        // Shouldn't get here
-        break;
-    }
-    if ( cbo )
-    {
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), cbo->iconSize() );
-      cbo->addItem( icon, name );
-    }
-  }
-
-  // populate color ramps
-  QStringList colorRamps = mStyle->colorRampNames();
-  for ( int i = 0; i < colorRamps.count(); ++i )
-  {
-    QString name = colorRamps[i];
-    std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), cboStyleColorRamp->iconSize() );
-    cboStyleColorRamp->addItem( icon, name );
-  }
-
-  // set current index if found
-  for ( int i = 0; i < cboList.count(); i++ )
-  {
-    int index = cboList[i]->findText( prefList[i], Qt::MatchCaseSensitive );
-    if ( index >= 0 )
-      cboList[i]->setCurrentIndex( index );
-  }
-
-  // random colors
-  cbxStyleRandomColors->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) );
-
-  // alpha transparency
-  double opacity = 1.0;
-  bool ok = false;
-  double alpha = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
-  if ( ok )
-    opacity = 1.0 - alpha / 255.0;
-  double newOpacity = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
-  if ( ok )
-    opacity = newOpacity;
-
-  mDefaultOpacityWidget->setOpacity( opacity );
-}
-
-void QgsProjectProperties::pbtnStyleManager_clicked()
-{
-  QgsStyleManagerDialog dlg( mStyle, this );
-  dlg.exec();
-  populateStyles();
-}
-
-void QgsProjectProperties::pbtnStyleMarker_clicked()
-{
-  editSymbol( cboStyleMarker );
-}
-
-void QgsProjectProperties::pbtnStyleLine_clicked()
-{
-  editSymbol( cboStyleLine );
-}
-
-void QgsProjectProperties::pbtnStyleFill_clicked()
-{
-  editSymbol( cboStyleFill );
-}
-
-void QgsProjectProperties::pbtnStyleColorRamp_clicked()
-{
-  // TODO for now just open style manager
-  // code in QgsStyleManagerDialog::editColorRamp()
-  pbtnStyleManager_clicked();
-}
-
-void QgsProjectProperties::editSymbol( QComboBox *cbo )
-{
-  QString symbolName = cbo->currentText();
-  if ( symbolName.isEmpty() )
-  {
-    QMessageBox::information( this, QString(), tr( "Select a valid symbol" ) );
-    return;
-  }
-  std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( symbolName ) );
-  if ( ! symbol )
-  {
-    QMessageBox::warning( this, QString(), tr( "Invalid symbol : " ) + symbolName );
-    return;
-  }
-
-  // let the user edit the symbol and update list when done
-  QgsSymbolSelectorDialog dlg( symbol.get(), mStyle, nullptr, this );
-  if ( dlg.exec() == 0 )
-  {
-    return;
-  }
-
-  // update icon
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), cbo->iconSize() );
-  cbo->setItemIcon( cbo->currentIndex(), icon );
-
-  // by adding symbol to style with the same name the old effectively gets overwritten
-  mStyle->addSymbol( symbolName, symbol.release() );
-
 }
 
 void QgsProjectProperties::resetPythonMacros()

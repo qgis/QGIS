@@ -375,20 +375,41 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   QString defaultSymbol;
   switch ( geomType )
   {
-    case QgsWkbTypes::PointGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
+    case QgsWkbTypes::PointGeometry:
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/MarkerSymbol" ) );
       break;
-    case QgsWkbTypes::LineGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
+    case QgsWkbTypes::LineGeometry:
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/LineSymbol" ) );
       break;
-    case QgsWkbTypes::PolygonGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
+    case QgsWkbTypes::PolygonGeometry:
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/FillSymbol" ) );
       break;
     default:
       break;
   }
+
   if ( !defaultSymbol.isEmpty() )
-    s.reset( QgsStyle::defaultStyle()->symbol( defaultSymbol ) );
+  {
+    QgsReadWriteContext rwContext;
+    rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+    QDomDocument doc;
+    doc.setContent( defaultSymbol );
+    QDomElement elem = doc.documentElement();
+    switch ( geomType )
+    {
+      case QgsWkbTypes::PointGeometry:
+        s.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elem, rwContext ) );
+        break;
+      case QgsWkbTypes::LineGeometry:
+        s.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, rwContext ) );
+        break;
+      case QgsWkbTypes::PolygonGeometry:
+        s.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elem, rwContext ) );
+        break;
+      default:
+        break;
+    }
+  }
 
   // if no default found for this type, get global default (as previously)
   if ( !s )
