@@ -478,10 +478,21 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   if ( !mColorRampButton->colorRamp() )
   {
     // set a default ramp
-    const QString defaultRampName = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
-    const std::unique_ptr< QgsColorRamp > defaultRamp( QgsStyle::defaultStyle()->colorRamp( !defaultRampName.isEmpty() ? defaultRampName : QStringLiteral( "Blues" ) ) );
-    if ( defaultRamp )
-      mColorRampButton->setColorRamp( defaultRamp.get() );
+    std::unique_ptr< QgsColorRamp > colorRamp;
+    const QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ), QString() );
+    if ( !defaultColorRamp.isEmpty() )
+    {
+      QDomDocument doc;
+      doc.setContent( defaultColorRamp );
+      QDomElement elem = doc.documentElement();
+      colorRamp.reset( QgsSymbolLayerUtils::loadColorRamp( elem ) );
+    }
+    else
+    {
+      colorRamp.reset( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Blues" ) ) );
+    }
+    if ( colorRamp )
+      mColorRampButton->setColorRamp( colorRamp.get() );
   }
 }
 

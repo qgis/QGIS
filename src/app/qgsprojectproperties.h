@@ -150,15 +150,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void pbnLaunchOWSChecker_clicked();
 
     /**
-     * Slots for Styles
-     */
-    void pbtnStyleManager_clicked();
-    void pbtnStyleMarker_clicked();
-    void pbtnStyleLine_clicked();
-    void pbtnStyleFill_clicked();
-    void pbtnStyleColorRamp_clicked();
-
-    /**
      * Slot to link WMTS checkboxes in tree widget
      */
     void twWmtsItemChanged( QTreeWidgetItem *item, int column );
@@ -230,9 +221,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsCoordinateReferenceSystem mCrs;
 
     void checkPageWidgetNameMap();
-
-    void populateStyles();
-    void editSymbol( QComboBox *cbo );
 
     /**
      * Reset the Python macros
