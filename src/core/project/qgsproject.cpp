@@ -1866,6 +1866,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // Convert pre 3.26 default styles
   if ( QgsProjectVersion( 3, 26, 0 ) > mSaveVersion )
   {
+    // Convert default symbols
     QString styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
     if ( !styleName.isEmpty() )
     {
@@ -1890,6 +1891,30 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
       std::unique_ptr<QgsColorRamp> colorRamp( QgsStyle::defaultStyle()->colorRamp( styleName ) );
       styleSettings()->setDefaultColorRamp( colorRamp.get() );
     }
+
+    // Convert randomize default symbol fill color
+    styleSettings()->setRandomizeDefaultSymbolColor( readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) );
+
+    // Convert default symbol opacity
+    double opacity = 1.0;
+    bool ok = false;
+    // upgrade old setting
+    double alpha = readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
+    if ( ok )
+      opacity = alpha / 255.0;
+    double newOpacity = readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
+    if ( ok )
+      opacity = newOpacity;
+    styleSettings()->setDefaultSymbolOpacity( opacity );
+
+    // Cleanup
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ) );
   }
 
   // After bad layer handling we might still have invalid layers,
