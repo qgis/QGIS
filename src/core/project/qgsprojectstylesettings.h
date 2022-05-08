@@ -50,31 +50,31 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
 
     /**
      * Returns the project default symbol for a given geometry type.
-     * \note the symbol ownership is transferred to the caller
      * \param geomType the geometry type
      * \returns a symbol pointer or NULL if there is no default set
+     * \note the symbol ownership is transferred to the caller
      */
     QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) const;
 
     /**
      * Sets the project default symbol for a given geometry type.
-     * \note the symbol ownership is not transferred
      * \param geomType the geometry type
      * \param symbol the symbol pointer, set to NULL to clear default
+     * \note the symbol ownership is not transferred
      */
     void setDefaultSymbol( QgsWkbTypes::GeometryType geomType, QgsSymbol *symbol );
 
     /**
      * Returns the project default color ramp.
-     * \note the color ramp ownership is transferred to the caller
      * \returns a color ramp pointer or NULL if there is no default set
+     * \note the color ramp ownership is transferred to the caller
      */
     QgsColorRamp *defaultColorRamp() const;
 
     /**
      * Sets the project default color ramp.
-     * \note the color ramp ownership is not transferred
      * \param colorRamp the color ramp, set to NULL to clear default
+     * \note the color ramp ownership is not transferred
      */
     void setDefaultColorRamp( QgsColorRamp *colorRamp );
 
