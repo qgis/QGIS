@@ -806,6 +806,16 @@ relating to how a QgsProject should be viewed and behave inside a map canvas
 %End
 
 
+    QgsProjectStyleSettings *styleSettings();
+%Docstring
+Returns the project's style settings, which contains settings and properties
+relating to how a QgsProject should handle styling.
+(e.g. styling of a newly added vector layer)
+
+.. versionadded:: 3.26
+%End
+
+
     QgsProjectTimeSettings *timeSettings();
 %Docstring
 Returns the project's time settings, which contains the project's temporal range and other

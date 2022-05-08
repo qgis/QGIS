@@ -59,6 +59,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsvectortilelayer.h"
@@ -375,6 +376,7 @@ QgsProject::QgsProject( QObject *parent )
   , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
+  , mStyleSettings( new QgsProjectStyleSettings( this ) )
   , mTimeSettings( new QgsProjectTimeSettings( this ) )
   , mElevationProperties( new QgsProjectElevationProperties( this ) )
   , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
@@ -956,6 +958,7 @@ void QgsProject::clear()
   m3DViewsManager->clear();
   mBookmarkManager->clear();
   mViewSettings->reset();
+  mStyleSettings->reset();
   mTimeSettings->reset();
   mElevationProperties->reset();
   mDisplaySettings->reset();
@@ -1863,60 +1866,29 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // Convert pre 3.26 default styles
   if ( QgsProjectVersion( 3, 26, 0 ) > mSaveVersion )
   {
-    QgsReadWriteContext rwContext;
-    rwContext.setPathResolver( pathResolver() );
-
     QString styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
     if ( !styleName.isEmpty() )
     {
-      QgsSymbol *symbol = QgsStyle::defaultStyle()->symbol( styleName );
-      if ( symbol )
-      {
-        QDomDocument doc;
-        QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), symbol, doc, rwContext );
-        doc.appendChild( elem );
-        QString styleXml = doc.toString();
-        writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/MarkerSymbol" ), styleXml );
-      }
+      std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
+      styleSettings()->setDefaultSymbol( QgsWkbTypes::PointGeometry, symbol.get() );
     }
     styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
     if ( !styleName.isEmpty() )
     {
-      QgsSymbol *symbol = QgsStyle::defaultStyle()->symbol( styleName );
-      if ( symbol )
-      {
-        QDomDocument doc;
-        QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "line symbol" ), symbol, doc, rwContext );
-        doc.appendChild( elem );
-        QString styleXml = doc.toString();
-        writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/LineSymbol" ), styleXml );
-      }
+      std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
+      styleSettings()->setDefaultSymbol( QgsWkbTypes::LineGeometry, symbol.get() );
     }
     styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
     if ( !styleName.isEmpty() )
     {
-      QgsSymbol *symbol = QgsStyle::defaultStyle()->symbol( styleName );
-      if ( symbol )
-      {
-        QDomDocument doc;
-        QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fill symbol" ), symbol, doc, rwContext );
-        doc.appendChild( elem );
-        QString styleXml = doc.toString();
-        writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/FillSymbol" ), styleXml );
-      }
+      std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
+      styleSettings()->setDefaultSymbol( QgsWkbTypes::PolygonGeometry, symbol.get() );
     }
     styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ) );
     if ( !styleName.isEmpty() )
     {
-      QgsColorRamp *colorRamp = QgsStyle::defaultStyle()->colorRamp( styleName );
-      if ( colorRamp )
-      {
-        QDomDocument doc;
-        QDomElement elem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "color ramp" ), colorRamp, doc );
-        doc.appendChild( elem );
-        QString styleXml = doc.toString();
-        writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ), styleXml );
-      }
+      std::unique_ptr<QgsColorRamp> colorRamp( QgsStyle::defaultStyle()->colorRamp( styleName ) );
+      styleSettings()->setDefaultColorRamp( colorRamp.get() );
     }
   }
 
@@ -1990,6 +1962,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   const QDomElement viewSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectViewSettings" ) );
   if ( !viewSettingsElement.isNull() )
     mViewSettings->readXml( viewSettingsElement, context );
+
+  // restore style settings
+  const QDomElement styleSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectStyleSettings" ) );
+  if ( !styleSettingsElement.isNull() )
+    mStyleSettings->readXml( styleSettingsElement, context );
 
   // restore time settings
   profile.switchTask( tr( "Loading temporal settings" ) );
@@ -2750,6 +2727,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
   const QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
   qgisNode.appendChild( viewSettingsElem );
 
+  const QDomElement styleSettingsElem = mStyleSettings->writeXml( *doc, context );
+  qgisNode.appendChild( styleSettingsElem );
+
   const QDomElement timeSettingsElement = mTimeSettings->writeXml( *doc, context );
   qgisNode.appendChild( timeSettingsElement );
 
@@ -3477,6 +3457,16 @@ const QgsProjectViewSettings *QgsProject::viewSettings() const
 QgsProjectViewSettings *QgsProject::viewSettings()
 {
   return mViewSettings;
+}
+
+const QgsProjectStyleSettings *QgsProject::styleSettings() const
+{
+  return mStyleSettings;
+}
+
+QgsProjectStyleSettings *QgsProject::styleSettings()
+{
+  return mStyleSettings;
 }
 
 const QgsProjectTimeSettings *QgsProject::timeSettings() const

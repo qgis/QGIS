@@ -40,6 +40,7 @@
 #include "qgslogger.h"
 #include "qgsludialog.h"
 #include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsmapcanvas.h"
 #include "qgsclassificationmethod.h"
 #include "qgsapplication.h"
@@ -500,13 +501,9 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   btnColorRamp->setShowRandomColorRamp( true );
 
   // set project default color ramp
-  const QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ), QString() );
-  if ( !defaultColorRamp.isEmpty() )
+  std::unique_ptr< QgsColorRamp > colorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
+  if ( colorRamp )
   {
-    QDomDocument doc;
-    doc.setContent( defaultColorRamp );
-    QDomElement elem = doc.documentElement();
-    std::unique_ptr< QgsColorRamp > colorRamp( QgsSymbolLayerUtils::loadColorRamp( elem ) );
     btnColorRamp->setColorRamp( colorRamp.get() );
   }
   else

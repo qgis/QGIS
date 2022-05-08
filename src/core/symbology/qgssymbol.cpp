@@ -34,6 +34,7 @@
 #include "qgslogger.h"
 #include "qgsrendercontext.h" // for bigSymbolPreview
 #include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsstyle.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
@@ -372,44 +373,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   std::unique_ptr< QgsSymbol > s;
 
   // override global default if project has a default for this type
-  QString defaultSymbol;
-  switch ( geomType )
-  {
-    case QgsWkbTypes::PointGeometry:
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/MarkerSymbol" ) );
-      break;
-    case QgsWkbTypes::LineGeometry:
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/LineSymbol" ) );
-      break;
-    case QgsWkbTypes::PolygonGeometry:
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/FillSymbol" ) );
-      break;
-    default:
-      break;
-  }
-
-  if ( !defaultSymbol.isEmpty() )
-  {
-    QgsReadWriteContext rwContext;
-    rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
-    QDomDocument doc;
-    doc.setContent( defaultSymbol );
-    QDomElement elem = doc.documentElement();
-    switch ( geomType )
-    {
-      case QgsWkbTypes::PointGeometry:
-        s.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elem, rwContext ) );
-        break;
-      case QgsWkbTypes::LineGeometry:
-        s.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, rwContext ) );
-        break;
-      case QgsWkbTypes::PolygonGeometry:
-        s.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elem, rwContext ) );
-        break;
-      default:
-        break;
-    }
-  }
+  s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( geomType ) );
 
   // if no default found for this type, get global default (as previously)
   if ( !s )
@@ -444,8 +408,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   s->setOpacity( opacity );
 
   // set random color, it project prefs allow
-  if ( defaultSymbol.isEmpty() ||
-       QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
+  if ( QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
   {
     s->setColor( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   }
