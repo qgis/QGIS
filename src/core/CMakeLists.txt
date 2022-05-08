@@ -650,6 +650,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectservervalidator.cpp
   project/qgsprojectstorage.cpp
   project/qgsprojectstorageregistry.cpp
+  project/qgsprojectstylesettings.cpp
   project/qgsprojecttimesettings.cpp
   project/qgsprojectutils.cpp
   project/qgsprojectversion.cpp
@@ -1634,6 +1635,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectservervalidator.h
   project/qgsprojectstorage.h
   project/qgsprojectstorageregistry.h
+  project/qgsprojectstylesettings.h
   project/qgsprojecttimesettings.h
   project/qgsprojecttranslator.h
   project/qgsprojectutils.h

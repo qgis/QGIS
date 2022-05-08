@@ -1,0 +1,123 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectstylesettings.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProjectStyleSettings : QObject
+{
+%Docstring(signature="appended")
+Contains settings and properties relating to how a :py:class:`QgsProject` should handle
+styling.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstylesettings.h"
+%End
+  public:
+
+    QgsProjectStyleSettings( QgsProject *project = 0 );
+%Docstring
+Constructor for QgsProjectStyleSettings for the specified ``project``.
+
+Ownership is transferred to the ``project``.
+%End
+
+    QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) const;
+%Docstring
+Returns the project default symbol for a given geometry type.
+
+.. note::
+
+   the symbol ownership is transferred to the caller
+
+:param geomType: the geometry type
+
+:return: a symbol pointer or NULL if there is no default set
+%End
+
+    void setDefaultSymbol( QgsWkbTypes::GeometryType geomType, QgsSymbol *symbol );
+%Docstring
+Sets the project default symbol for a given geometry type.
+
+.. note::
+
+   the symbol ownership is not transferred
+
+:param geomType: the geometry type
+:param symbol: the symbol pointer, set to NULL to clear default
+%End
+
+    QgsColorRamp *defaultColorRamp() const;
+%Docstring
+Returns the project default color ramp.
+
+.. note::
+
+   the color ramp ownership is transferred to the caller
+
+:return: a color ramp pointer or NULL if there is no default set
+%End
+
+    void setDefaultColorRamp( QgsColorRamp *colorRamp );
+%Docstring
+Sets the project default color ramp.
+
+.. note::
+
+   the color ramp ownership is not transferred
+
+:param colorRamp: the color ramp, set to NULL to clear default
+%End
+
+    QgsTextFormat defaultTextFormat() const;
+%Docstring
+Returns the project default text format.
+
+.. note::
+
+   if no default is defined, the returned format will be invalid
+%End
+
+    void setDefaultTextFormat( QgsTextFormat textFormat );
+%Docstring
+Sets the project default text format.
+
+:param textFormat: the text format, an invalid format is interpreted as no default
+%End
+
+    void reset();
+%Docstring
+Resets the settings to a default state.
+%End
+
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads the settings's state from a DOM element.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Returns a DOM element representing the settings.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectstylesettings.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

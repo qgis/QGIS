@@ -36,6 +36,7 @@
 #include "qgsfeatureiterator.h"
 
 #include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsexpression.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
@@ -655,13 +656,9 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   btnColorRamp->setShowRandomColorRamp( true );
 
   // set project default color ramp
-  const QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ), QString() );
-  if ( !defaultColorRamp.isEmpty() )
+  std::unique_ptr< QgsColorRamp > colorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
+  if ( colorRamp )
   {
-    QDomDocument doc;
-    doc.setContent( defaultColorRamp );
-    QDomElement elem = doc.documentElement();
-    std::unique_ptr< QgsColorRamp > colorRamp( QgsSymbolLayerUtils::loadColorRamp( elem ) );
     btnColorRamp->setColorRamp( colorRamp.get() );
   }
   else

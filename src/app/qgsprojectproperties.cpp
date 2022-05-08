@@ -31,6 +31,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsnative.h"
 #include "qgsprojectlayergroupdialog.h"
 #include "qgsrasterlayer.h"
@@ -939,72 +940,21 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   // Default styles
   mStyleMarkerSymbol->setSymbolType( Qgis::SymbolType::Marker );
+  mStyleMarkerSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( QgsWkbTypes::PointGeometry ) );
+
   mStyleLineSymbol->setSymbolType( Qgis::SymbolType::Line );
+  mStyleLineSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( QgsWkbTypes::LineGeometry ) );
+
   mStyleFillSymbol->setSymbolType( Qgis::SymbolType::Fill );
+  mStyleFillSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+
+  mStyleColorRampSymbol->setColorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
+
   mStyleTextFormat->setShowNullFormat( true );
   mStyleTextFormat->setNoFormatString( tr( "Cleat Default Text Format" ) );
-
-  QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
-  QDomDocument doc;
-  QDomElement elem;
-
-  QString styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/MarkerSymbol" ) );
-  if ( !styleXml.isEmpty() )
+  QgsTextFormat textFormat = QgsProject::instance()->styleSettings()->defaultTextFormat();
+  if ( textFormat.isValid() )
   {
-    doc.setContent( styleXml );
-    elem = doc.documentElement();
-    mStyleMarkerSymbol->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elem, rwContext ) );
-  }
-  else
-  {
-    mStyleMarkerSymbol->setSymbol( nullptr );
-  }
-
-  styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/LineSymbol" ) );
-  if ( !styleXml.isEmpty() )
-  {
-    doc.setContent( styleXml );
-    elem = doc.documentElement();
-    mStyleLineSymbol->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, rwContext ) );
-  }
-  else
-  {
-    mStyleLineSymbol->setSymbol( nullptr );
-  }
-
-  styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/FillSymbol" ) );
-  if ( !styleXml.isEmpty() )
-  {
-    doc.setContent( styleXml );
-    elem = doc.documentElement();
-    mStyleFillSymbol->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elem, rwContext ) );
-  }
-  else
-  {
-    mStyleFillSymbol->setSymbol( nullptr );
-  }
-
-  styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ) );
-  if ( !styleXml.isEmpty() )
-  {
-    doc.setContent( styleXml );
-    elem = doc.documentElement();
-    std::unique_ptr< QgsColorRamp > colorRamp( QgsSymbolLayerUtils::loadColorRamp( elem ) );
-    mStyleColorRampSymbol->setColorRamp( colorRamp.get() );
-  }
-  else
-  {
-    mStyleColorRampSymbol->setColorRamp( nullptr );
-  }
-
-  styleXml = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/TextFormat" ) );
-  if ( !styleXml.isEmpty() )
-  {
-    doc.setContent( styleXml );
-    elem = doc.documentElement();
-    QgsTextFormat textFormat;
-    textFormat.readXml( elem, rwContext );
     mStyleTextFormat->setTextFormat( textFormat );
   }
   else
@@ -1712,58 +1662,11 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ), wcsLayerList );
 
   // Default Styles
-  QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
-
-  QString styleXml;
-  if ( mStyleMarkerSymbol->symbol() )
-  {
-    QDomDocument doc;
-    QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mStyleMarkerSymbol->symbol(), doc, rwContext );
-    doc.appendChild( elem );
-    styleXml = doc.toString();
-  }
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/MarkerSymbol" ), styleXml );
-
-  styleXml.clear();
-  if ( mStyleLineSymbol->symbol() )
-  {
-    QDomDocument doc;
-    QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "line symbol" ), mStyleLineSymbol->symbol(), doc, rwContext );
-    doc.appendChild( elem );
-    styleXml = doc.toString();
-  }
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/LineSymbol" ), styleXml );
-
-  styleXml.clear();
-  if ( mStyleFillSymbol->symbol() )
-  {
-    QDomDocument doc;
-    QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fill symbol" ), mStyleFillSymbol->symbol(), doc, rwContext );
-    doc.appendChild( elem );
-    styleXml = doc.toString();
-  }
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/FillSymbol" ), styleXml );
-
-  styleXml.clear();
-  if ( mStyleColorRampSymbol->colorRamp() )
-  {
-    QDomDocument doc;
-    QDomElement elem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "color ramp" ), mStyleColorRampSymbol->colorRamp(), doc );
-    doc.appendChild( elem );
-    styleXml = doc.toString();
-  }
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRampSymbol" ), styleXml );
-
-  styleXml.clear();
-  if ( mStyleTextFormat->textFormat().isValid() )
-  {
-    QDomDocument doc;
-    QDomElement elem = mStyleTextFormat->textFormat().writeXml( doc, rwContext );
-    doc.appendChild( elem );
-    styleXml = doc.toString();
-  }
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/TextFormat" ), styleXml );
+  QgsProject::instance()->styleSettings()->setDefaultSymbol( QgsWkbTypes::PointGeometry, mStyleMarkerSymbol->symbol() );
+  QgsProject::instance()->styleSettings()->setDefaultSymbol( QgsWkbTypes::LineGeometry, mStyleLineSymbol->symbol() );
+  QgsProject::instance()->styleSettings()->setDefaultSymbol( QgsWkbTypes::PolygonGeometry, mStyleFillSymbol->symbol() );
+  QgsProject::instance()->styleSettings()->setDefaultColorRamp( mStyleColorRampSymbol->colorRamp() );
+  QgsProject::instance()->styleSettings()->setDefaultTextFormat( mStyleTextFormat->textFormat() );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), mDefaultOpacityWidget->opacity() );
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), cbxStyleRandomColors->isChecked() );

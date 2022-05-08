@@ -26,6 +26,7 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
@@ -1231,17 +1232,10 @@ QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( Qgis::SymbolType typ
 
 QgsTextFormat QgsStyle::defaultTextFormat( QgsStyle::TextFormatContext ) const
 {
-  const QString defaultStyle = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/TextFormat" ) );
-  if ( !defaultStyle.isEmpty() )
+  QgsTextFormat defaultTextFormat = QgsProject::instance()->styleSettings()->defaultTextFormat();
+  if ( defaultTextFormat.isValid() )
   {
-    QgsReadWriteContext rwContext;
-    rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
-    QDomDocument doc;
-    doc.setContent( defaultStyle );
-    QDomElement elem = doc.documentElement();
-    QgsTextFormat textFormat;
-    textFormat.readXml( elem, rwContext );
-    return textFormat;
+    return defaultTextFormat;
   }
 
   return textFormat( QStringLiteral( "Default" ) );
