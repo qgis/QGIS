@@ -93,6 +93,26 @@ Sets the project default text format.
 :param textFormat: the text format, an invalid format is interpreted as no default
 %End
 
+    bool randomizeDefaultSymbolColor() const;
+%Docstring
+Returns whether the default symbol fill color is randomized.
+%End
+
+    void setRandomizeDefaultSymbolColor( bool randomized );
+%Docstring
+Sets whether the default symbol fill color is randomized.
+%End
+
+    double defaultSymbolOpacity() const;
+%Docstring
+Returns the default symbol opacity.
+%End
+
+    void setDefaultSymbolOpacity( double opacity );
+%Docstring
+Sets the default symbol opacity.
+%End
+
     void reset();
 %Docstring
 Resets the settings to a default state.

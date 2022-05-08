@@ -91,6 +91,26 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     void setDefaultTextFormat( QgsTextFormat textFormat );
 
     /**
+     * Returns whether the default symbol fill color is randomized.
+     */
+    bool randomizeDefaultSymbolColor() const { return mRandomizeDefaultSymbolColor; }
+
+    /**
+     * Sets whether the default symbol fill color is randomized.
+     */
+    void setRandomizeDefaultSymbolColor( bool randomized ) { mRandomizeDefaultSymbolColor = randomized; }
+
+    /**
+     * Returns the default symbol opacity.
+     */
+    double defaultSymbolOpacity() const { return mDefaultSymbolOpacity; }
+
+    /**
+     * Sets the default symbol opacity.
+     */
+    void setDefaultSymbolOpacity( double opacity ) { mDefaultSymbolOpacity = opacity; }
+
+    /**
      * Resets the settings to a default state.
      */
     void reset();
@@ -115,8 +135,10 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     std::unique_ptr< QgsSymbol > mDefaultLineSymbol;
     std::unique_ptr< QgsSymbol > mDefaultFillSymbol;
     std::unique_ptr< QgsColorRamp > mDefaultColorRamp;
-
     QgsTextFormat mDefaultTextFormat;
+
+    bool mRandomizeDefaultSymbolColor = true;
+    double mDefaultSymbolOpacity = 1.0;
 
 };
 

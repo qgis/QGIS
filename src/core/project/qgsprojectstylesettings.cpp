@@ -101,12 +101,17 @@ void QgsProjectStyleSettings::reset()
   mDefaultFillSymbol.reset();
   mDefaultColorRamp.reset();
   mDefaultTextFormat = QgsTextFormat();
+  mRandomizeDefaultSymbolColor = true;
+  mDefaultSymbolOpacity = 1.0;
 }
 
 bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( mProject->pathResolver() );
+
+  mRandomizeDefaultSymbolColor = element.attribute( QStringLiteral( "RandomizeDefaultSymbolColor" ), QStringLiteral( "0" ) ).toInt();
+  mDefaultSymbolOpacity = element.attribute( QStringLiteral( "DefaultSymbolOpacity" ), QStringLiteral( "1.0" ) ).toDouble();
 
   QDomElement elem = element.firstChildElement( QStringLiteral( "markerSymbol" ) );
   if ( !elem.isNull() )
@@ -158,6 +163,9 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
   QDomElement element = doc.createElement( QStringLiteral( "ProjectStyleSettings" ) );
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( mProject->pathResolver() );
+
+  element.setAttribute( QStringLiteral( "RandomizeDefaultSymbolColor" ), mRandomizeDefaultSymbolColor ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( QStringLiteral( "DefaultSymbolOpacity" ), QString::number( mDefaultSymbolOpacity ) );
 
   if ( mDefaultMarkerSymbol )
   {

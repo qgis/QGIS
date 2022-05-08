@@ -396,19 +396,10 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   }
 
   // set opacity
-  double opacity = 1.0;
-  bool ok = false;
-  // upgrade old setting
-  double alpha = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
-  if ( ok )
-    opacity = alpha / 255.0;
-  double newOpacity = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
-  if ( ok )
-    opacity = newOpacity;
-  s->setOpacity( opacity );
+  s->setOpacity( QgsProject::instance()->styleSettings()->defaultSymbolOpacity() );
 
   // set random color, it project prefs allow
-  if ( QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
+  if ( QgsProject::instance()->styleSettings()->randomizeDefaultSymbolColor() )
   {
     s->setColor( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   }
