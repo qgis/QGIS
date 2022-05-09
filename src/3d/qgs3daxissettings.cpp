@@ -36,7 +36,7 @@ Qgs3DAxisSettings &Qgs3DAxisSettings::operator=( Qgs3DAxisSettings const &rhs )
   return *this;
 }
 
-bool Qgs3DAxisSettings::operator==( Qgs3DAxisSettings const &rhs )
+bool Qgs3DAxisSettings::operator==( Qgs3DAxisSettings const &rhs ) const
 {
   bool out = true;
   out &= this->mMode == rhs.mMode;
@@ -45,7 +45,7 @@ bool Qgs3DAxisSettings::operator==( Qgs3DAxisSettings const &rhs )
   return out;
 }
 
-bool Qgs3DAxisSettings::operator!=( Qgs3DAxisSettings const &rhs )
+bool Qgs3DAxisSettings::operator!=( Qgs3DAxisSettings const &rhs ) const
 {
   return ! this->operator==( rhs );
 }

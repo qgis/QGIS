@@ -24,10 +24,15 @@
 #include <Qt3DExtras/QText2DEntity>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QViewport>
+#include <Qt3DRender/QPickEvent>
+#include <Qt3DRender/QScreenRayCaster>
 #include <QVector3D>
+#include <QVector2D>
 
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometryRenderer>
+
+#include <QtWidgets/QMenu>
 
 #define SIP_NO_FILE
 
@@ -58,7 +63,8 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      * @param camera camera controller used to track camera movements
      * @param map 3D map settings
      */
-    Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,  Qt3DCore::QEntity *parent3DScene, QgsCameraController *camera, const Qgs3DMapSettings *map );
+    Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,  Qt3DCore::QEntity *parent3DScene, QgsCameraController *camera,
+               Qgs3DMapSettings &map );
 
     /**
      * \brief The Axis enum
@@ -149,10 +155,18 @@ class _3D_EXPORT Qgs3DAxis : public QObject
                                        const QSize &destSize );
 
   private slots:
+    // ========= private slots
     void onCameraUpdate( );
     void onAxisViewportSizeUpdate( int val = 0 );
 
+    // axis picking and menu
+    void onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits );
+    void onAxisModeChanged( Qgs3DAxis::Mode mode );
+    void onAxisHorizPositionChanged( AxisViewportPosition pos );
+    void onAxisVertPositionChanged( AxisViewportPosition pos );
+
   private:
+    // ========= private functions
     void createAxisScene();
     void createAxis( const Axis &axis );
     void createCube( );
@@ -165,8 +179,18 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 
     Qt3DExtras::QText2DEntity *addCubeText( const QString &text, float textHeight, float textWidth, const QFont &f, const QMatrix4x4 &rotation, const QVector3D &translation );
 
+    // axis picking and menu
+    void init3DObjectPicking( );
+    virtual bool eventFilter( QObject *watched, QEvent *event );
+    void createMenu();
+    void hideMenu();
+    void displayMenuAt( const QPoint &position );
+
+    // ========= private attributes
+    Qgs3DMapSettings &mMapSettings;
     Qt3DExtras::Qt3DWindow *mParentWindow;
-    Qt3DRender::QCamera *mParentCamera;
+    QgsCameraController *mCameraController;
+
     float mCylinderLength = 40.0f;
     int mAxisViewportSize = 4.0 * mCylinderLength;
     AxisViewportPosition mAxisViewportVertPos = AxisViewportPosition::Begin;
@@ -191,6 +215,14 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     Qt3DRender::QCamera *mTwoDLabelCamera;
     Qt3DCore::QEntity *mTwoDLabelSceneEntity;
     Qt3DRender::QViewport *mTwoDLabelViewport;
+
+    // axis picking and menu
+    Qt3DRender::QScreenRayCaster *mScreenRayCaster;
+    QPoint mLastClickedPos;
+    Qt::MouseButton mLastClickedButton;
+    QCursor mPreviousCursor;
+    QMenu *mMenu;
+
 };
 
 /**
