@@ -943,11 +943,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mStyleMarkerSymbol->setSymbolType( Qgis::SymbolType::Marker );
   mStyleMarkerSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) );
 
-  mStyleMarkerSymbol->setShowNull( true );
+  mStyleLineSymbol->setShowNull( true );
   mStyleLineSymbol->setSymbolType( Qgis::SymbolType::Line );
   mStyleLineSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) );
 
-  mStyleMarkerSymbol->setShowNull( true );
+  mStyleFillSymbol->setShowNull( true );
   mStyleFillSymbol->setSymbolType( Qgis::SymbolType::Fill );
   mStyleFillSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) );
 
@@ -955,7 +955,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mStyleColorRampSymbol->setColorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
 
   mStyleTextFormat->setShowNullFormat( true );
-  mStyleTextFormat->setNoFormatString( tr( "Clear Default Text Format" ) );
+  mStyleTextFormat->setNoFormatString( tr( "Clear Current Text Format" ) );
   QgsTextFormat textFormat = QgsProject::instance()->styleSettings()->defaultTextFormat();
   if ( textFormat.isValid() )
   {
