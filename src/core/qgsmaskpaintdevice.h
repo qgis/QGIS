@@ -38,20 +38,9 @@ class QgsMaskPaintEngine: public QPaintEngine
     QPaintEngine::Type type() const override { return QPaintEngine::User; };
     void updateState( const QPaintEngineState & ) override { return; };
 
-    void drawRects( const QRect *, int ) override { return; };
-    void drawRects( const QRectF *, int ) override { return; };
-    void drawLines( const QLine *, int ) override { return; };
-    void drawLines( const QLineF *, int ) override { return; };
-    void drawEllipse( const QRectF & ) override { return; };
-    void drawEllipse( const QRect & ) override { return; };
     void drawPath( const QPainterPath & ) override;
-    void drawPoints( const QPointF *, int ) override { return; };
-    void drawPoints( const QPoint *, int ) override { return; };
     void drawPolygon( const QPointF *, int, PolygonDrawMode ) override;
     void drawPixmap( const QRectF &, const QPixmap &, const QRectF & ) override { return; };
-    void drawTextItem( const QPointF &, const QTextItem & ) override { return; };
-    void drawTiledPixmap( const QRectF &, const QPixmap &, const QPointF & ) override { return; };
-    void drawImage( const QRectF &, const QImage &, const QRectF &, Qt::ImageConversionFlags ) override { return; };
 
     QPainterPath maskPainterPath() const;
 
