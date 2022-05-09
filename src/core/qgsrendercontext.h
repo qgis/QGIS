@@ -893,7 +893,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 #ifndef SIP_RUN
 
     /**
-     * add a clip \a path to be applied to the \a symbolLayer before rendering
+     * Add a clip \a path to be applied to the \a symbolLayer before rendering
      * \since QGIS 3.26
      */
     void addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, const QPainterPath *path );
