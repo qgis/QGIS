@@ -60,7 +60,7 @@ class CORE_EXPORT QgsPointCloudStatistics
         double delta2 = newMean - stats.mean;
         double variance2 = stats.stDev * stats.stDev + delta2 * delta2 - 2 * stats.count * delta2 * stats.mean;
         stDev = ( variance1 * count + variance2 * stats.count ) / ( count + stats.count );
-        stDev = qSqrt( stDev );
+        stDev = std::sqrt( stDev );
 
         mean = newMean;
         count += stats.count;

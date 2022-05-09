@@ -584,7 +584,7 @@ void QgsPointCloud3DSymbolWidget::redAttributeChanged()
   {
     QgsPointCloudStatistics stats = mLayer->statistics();
     const double max = stats.maximum( mRedAttributeComboBox->currentAttribute() );
-    if ( !qIsNaN( max ) )
+    if ( !std::isnan( max ) )
     {
       mDisableMinMaxWidgetRefresh++;
       mRedMinLineEdit->setText( QLocale().toString( 0 ) );
@@ -604,7 +604,7 @@ void QgsPointCloud3DSymbolWidget::greenAttributeChanged()
   {
     QgsPointCloudStatistics stats = mLayer->statistics();
     const double max = stats.maximum( mGreenAttributeComboBox->currentAttribute() );
-    if ( !qIsNaN( max ) )
+    if ( !std::isnan( max ) )
     {
       mDisableMinMaxWidgetRefresh++;
       mGreenMinLineEdit->setText( QLocale().toString( 0 ) );
@@ -624,7 +624,7 @@ void QgsPointCloud3DSymbolWidget::blueAttributeChanged()
   {
     QgsPointCloudStatistics stats = mLayer->statistics();
     const double max = stats.maximum( mBlueAttributeComboBox->currentAttribute() );
-    if ( !qIsNaN( max ) )
+    if ( !std::isnan( max ) )
     {
       mDisableMinMaxWidgetRefresh++;
       mBlueMinLineEdit->setText( QLocale().toString( 0 ) );
