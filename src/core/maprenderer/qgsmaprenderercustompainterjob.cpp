@@ -429,7 +429,7 @@ void QgsMapRendererCustomPainterJob::doRender()
     bool forceVector = mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
     composeSecondPass( mSecondPassLayerJobs, mLabelJob, forceVector );
 
-    if ( forceVector == false )
+    if ( !forceVector )
     {
       const QImage finalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
 
