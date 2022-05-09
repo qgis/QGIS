@@ -49,16 +49,16 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     QgsProjectStyleSettings( QgsProject *project = nullptr );
 
     /**
-     * Returns the project default symbol for a given geometry type.
-     * \param geomType the geometry type
+     * Returns the project default symbol for a given type.
+     * \param symbolType the symbol type
      * \returns a symbol pointer or NULL if there is no default set
      * \note the symbol ownership is transferred to the caller
      */
     QgsSymbol *defaultSymbol( Qgis::SymbolType symbolType ) const SIP_FACTORY;
 
     /**
-     * Sets the project default symbol for a given geometry type.
-     * \param geomType the geometry type
+     * Sets the project default symbol for a given type.
+     * \param symbolType the symbol type
      * \param symbol the symbol pointer, set to NULL to clear default
      * \note the symbol ownership is not transferred
      */
