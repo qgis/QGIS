@@ -647,13 +647,8 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
          && role != Qt::EditRole
          && role != FeatureIdRole
          && role != FieldIndexRole
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-         && role != Qt::BackgroundColorRole
-         && role != Qt::TextColorRole
-#else
          && role != Qt::BackgroundRole
          && role != Qt::ForegroundRole
-#endif
          && role != Qt::DecorationRole
          && role != Qt::FontRole
          && role < SortRole
@@ -726,11 +721,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       return val;
 
     case Qt::BackgroundRole:
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-    case Qt::TextColorRole:
-#else
     case Qt::ForegroundRole:
-#endif
     case Qt::DecorationRole:
     case Qt::FontRole:
     {
@@ -756,11 +747,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       {
         if ( role == Qt::BackgroundRole && style.validBackgroundColor() )
           return style.backgroundColor();
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-        if ( role == Qt::TextColorRole && style.validTextColor() )
-#else
         if ( role == Qt::ForegroundRole )
-#endif
           return style.textColor();
         if ( role == Qt::DecorationRole )
           return style.icon();

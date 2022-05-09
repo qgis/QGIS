@@ -45,13 +45,8 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
     addItem( name, QVariant( static_cast<int>( polcy ) ) );
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  setItemData( 1, QgsAuthGuiUtils::greenColor(), Qt::TextColorRole );
-  setItemData( 2, QgsAuthGuiUtils::redColor(), Qt::TextColorRole );
-#else
   setItemData( 1, QgsAuthGuiUtils::greenColor(), Qt::ForegroundRole );
   setItemData( 2, QgsAuthGuiUtils::redColor(), Qt::ForegroundRole );
-#endif
 
   // for styling closed state of combobox
 //  setEditable( true );
