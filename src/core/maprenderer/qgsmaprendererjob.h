@@ -165,7 +165,7 @@ class LayerRenderJob
     LayerRenderJob *firstPassJob = nullptr;
 
     /**
-     * Used for vector rendering
+     * QPicture representation of rendered layer. Used only for vector layer content when required for layer masking.
      */
     std::unique_ptr<QPicture> imgPic;
 
