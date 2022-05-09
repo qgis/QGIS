@@ -126,7 +126,7 @@ void QgsSymbolButton::showSettingsDialog()
       case Qgis::SymbolType::Fill:
         newSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry );
         break;
-      default:
+      case Qgis::SymbolType::Hybrid:
         break;
     }
   }
@@ -581,7 +581,7 @@ void QgsSymbolButton::updatePreview( const QColor &color, QgsSymbol *tempSymbol 
   {
     setIconSize( currentIconSize );
     setIcon( QIcon() );
-    setToolTip( QString( "" ) );
+    setToolTip( QString( ) );
     return;
   }
 

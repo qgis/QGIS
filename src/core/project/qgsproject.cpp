@@ -1871,19 +1871,19 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     if ( !styleName.isEmpty() )
     {
       std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
-      styleSettings()->setDefaultSymbol( QgsWkbTypes::PointGeometry, symbol.get() );
+      styleSettings()->setDefaultSymbol( Qgis::SymbolType::Marker, symbol.get() );
     }
     styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
     if ( !styleName.isEmpty() )
     {
       std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
-      styleSettings()->setDefaultSymbol( QgsWkbTypes::LineGeometry, symbol.get() );
+      styleSettings()->setDefaultSymbol( Qgis::SymbolType::Line, symbol.get() );
     }
     styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
     if ( !styleName.isEmpty() )
     {
       std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
-      styleSettings()->setDefaultSymbol( QgsWkbTypes::PolygonGeometry, symbol.get() );
+      styleSettings()->setDefaultSymbol( Qgis::SymbolType::Fill, symbol.get() );
     }
     styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ) );
     if ( !styleName.isEmpty() )

@@ -33,43 +33,43 @@ QgsProjectStyleSettings::QgsProjectStyleSettings( QgsProject *project )
 
 }
 
-QgsSymbol *QgsProjectStyleSettings::defaultSymbol( QgsWkbTypes::GeometryType geomType ) const
+QgsSymbol *QgsProjectStyleSettings::defaultSymbol( Qgis::SymbolType symbolType ) const
 {
-  switch ( geomType )
+  switch ( symbolType )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::SymbolType::Marker:
       return mDefaultMarkerSymbol ? mDefaultMarkerSymbol->clone() : nullptr;
 
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::SymbolType::Line:
       return mDefaultLineSymbol ? mDefaultLineSymbol->clone() : nullptr;
 
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::SymbolType::Fill:
       return mDefaultFillSymbol ? mDefaultFillSymbol->clone() : nullptr;
 
-    default:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 
   return nullptr;
 }
 
-void QgsProjectStyleSettings::setDefaultSymbol( QgsWkbTypes::GeometryType geomType, QgsSymbol *symbol )
+void QgsProjectStyleSettings::setDefaultSymbol( Qgis::SymbolType symbolType, QgsSymbol *symbol )
 {
-  switch ( geomType )
+  switch ( symbolType )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::SymbolType::Marker:
       mDefaultMarkerSymbol.reset( symbol ? symbol->clone() : nullptr );
       break;
 
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::SymbolType::Line:
       mDefaultLineSymbol.reset( symbol ? symbol->clone() : nullptr );
       break;
 
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::SymbolType::Fill:
       mDefaultFillSymbol.reset( symbol ? symbol->clone() : nullptr );
       break;
 
-    default:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 }
@@ -117,42 +117,46 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   if ( !elem.isNull() )
   {
     QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
-    if ( !symbolElem.isNull() )
-    {
-      mDefaultMarkerSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, rwContext ) );
-    }
+    mDefaultMarkerSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, rwContext ) : nullptr );
+  }
+  else
+  {
+    mDefaultMarkerSymbol.reset();
   }
 
   elem = element.firstChildElement( QStringLiteral( "lineSymbol" ) );
   if ( !elem.isNull() )
   {
     QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
-    if ( !symbolElem.isNull() )
-    {
-      mDefaultLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, rwContext ) );
-    }
+    mDefaultLineSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, rwContext ) : nullptr );
+  }
+  else
+  {
+    mDefaultLineSymbol.reset();
   }
 
   elem = element.firstChildElement( QStringLiteral( "fillSymbol" ) );
   if ( !elem.isNull() )
   {
     QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
-    if ( !symbolElem.isNull() )
-    {
-      mDefaultFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, rwContext ) );
-    }
+    mDefaultFillSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, rwContext ) : nullptr );
+  }
+  else
+  {
+    mDefaultFillSymbol.reset();
   }
 
   elem = element.firstChildElement( QStringLiteral( "colorramp" ) );
-  if ( !elem.isNull() )
-  {
-    mDefaultColorRamp.reset( QgsSymbolLayerUtils::loadColorRamp( elem ) );
-  }
+  mDefaultColorRamp.reset( !elem.isNull() ? QgsSymbolLayerUtils::loadColorRamp( elem ) : nullptr );
 
   elem = element.firstChildElement( QStringLiteral( "text-style" ) );
   if ( !elem.isNull() )
   {
     mDefaultTextFormat.readXml( elem, rwContext );
+  }
+  else
+  {
+    mDefaultTextFormat = QgsTextFormat();
   }
 
   return true;

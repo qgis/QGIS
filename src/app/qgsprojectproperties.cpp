@@ -940,18 +940,18 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   // Default styles
   mStyleMarkerSymbol->setSymbolType( Qgis::SymbolType::Marker );
-  mStyleMarkerSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  mStyleMarkerSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) );
 
   mStyleLineSymbol->setSymbolType( Qgis::SymbolType::Line );
-  mStyleLineSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( QgsWkbTypes::LineGeometry ) );
+  mStyleLineSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) );
 
   mStyleFillSymbol->setSymbolType( Qgis::SymbolType::Fill );
-  mStyleFillSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  mStyleFillSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) );
 
   mStyleColorRampSymbol->setColorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
 
   mStyleTextFormat->setShowNullFormat( true );
-  mStyleTextFormat->setNoFormatString( tr( "Cleat Default Text Format" ) );
+  mStyleTextFormat->setNoFormatString( tr( "Clear Default Text Format" ) );
   QgsTextFormat textFormat = QgsProject::instance()->styleSettings()->defaultTextFormat();
   if ( textFormat.isValid() )
   {
@@ -1653,9 +1653,9 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ), wcsLayerList );
 
   // Default Styles
-  QgsProject::instance()->styleSettings()->setDefaultSymbol( QgsWkbTypes::PointGeometry, mStyleMarkerSymbol->symbol() );
-  QgsProject::instance()->styleSettings()->setDefaultSymbol( QgsWkbTypes::LineGeometry, mStyleLineSymbol->symbol() );
-  QgsProject::instance()->styleSettings()->setDefaultSymbol( QgsWkbTypes::PolygonGeometry, mStyleFillSymbol->symbol() );
+  QgsProject::instance()->styleSettings()->setDefaultSymbol( Qgis::SymbolType::Marker, mStyleMarkerSymbol->symbol() );
+  QgsProject::instance()->styleSettings()->setDefaultSymbol( Qgis::SymbolType::Line, mStyleLineSymbol->symbol() );
+  QgsProject::instance()->styleSettings()->setDefaultSymbol( Qgis::SymbolType::Fill, mStyleFillSymbol->symbol() );
   QgsProject::instance()->styleSettings()->setDefaultColorRamp( mStyleColorRampSymbol->colorRamp() );
   QgsProject::instance()->styleSettings()->setDefaultTextFormat( mStyleTextFormat->textFormat() );
   QgsProject::instance()->styleSettings()->setRandomizeDefaultSymbolColor( cbxStyleRandomColors->isChecked() );
