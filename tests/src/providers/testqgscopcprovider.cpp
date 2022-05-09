@@ -550,7 +550,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
     polygon.push_back( QPointF( 527919.2459517354,   6210983.4383113598 ) );
     polygon.push_back( QPointF( 527919.2459517354,   6210983.5918774214 ) );
 
-    const QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
+    QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
 
     QVector<QMap<QString, QVariant>> expectedPoints;
     {
@@ -600,12 +600,20 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
       expectedPoints.push_back( point );
     }
 
+    auto cmp = []( const QMap<QString, QVariant> &p1, const QMap<QString, QVariant> &p2 )
+    {
+      return qgsVariantLessThan( p1.value( QStringLiteral( "X" ), 0 ), p2.value( QStringLiteral( "X" ), 0 ) );
+    };
+    std::sort( expectedPoints.begin(), expectedPoints.end(), cmp );
+    std::sort( identifiedPoints.begin(), identifiedPoints.end(), cmp );
+
     QVERIFY( identifiedPoints.size() == expectedPoints.size() );
     const QStringList keys = expectedPoints[0].keys();
     for ( int i = 0; i < identifiedPoints.size(); ++i )
     {
       for ( const QString &k : keys )
       {
+        qDebug() << i << k << identifiedPoints[i][k].toDouble() << " " << expectedPoints[i][k].toDouble();
         QCOMPARE( identifiedPoints[i][k].toDouble(), expectedPoints[i][k].toDouble() );
       }
     }
