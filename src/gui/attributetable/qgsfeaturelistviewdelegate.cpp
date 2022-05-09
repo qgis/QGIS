@@ -126,11 +126,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
   {
     textOption.font = font.value< QFont >();
   }
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  const QVariant textColor = index.model()->data( index, Qt::TextColorRole );
-#else
   const QVariant textColor = index.model()->data( index, Qt::ForegroundRole );
-#endif
   if ( textColor.isValid() )
   {
     textOption.palette.setColor( QPalette::Text, textColor.value< QColor >() );
