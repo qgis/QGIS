@@ -757,8 +757,8 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     auto it = maskedSymbolLayers.find( job.layerId );
     if ( it != maskedSymbolLayers.end() )
     {
-      QList<MaskSource> &sourceList = it->second;
-      for ( MaskSource &source : sourceList )
+      const QList<MaskSource> &sourceList = it->second;
+      for ( const MaskSource &source : sourceList )
       {
         job.needRasterization |= source.hasEffects;
       }
