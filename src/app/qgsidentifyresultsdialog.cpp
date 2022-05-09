@@ -1431,8 +1431,7 @@ void QgsIdentifyResultsDialog::show()
   }
   else
   {
-    mDock->show();
-    mDock->raise();
+    mDock->setUserVisible( true );
   }
 }
 

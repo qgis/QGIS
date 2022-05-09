@@ -59,6 +59,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsvectortilelayer.h"
@@ -375,6 +376,7 @@ QgsProject::QgsProject( QObject *parent )
   , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
+  , mStyleSettings( new QgsProjectStyleSettings( this ) )
   , mTimeSettings( new QgsProjectTimeSettings( this ) )
   , mElevationProperties( new QgsProjectElevationProperties( this ) )
   , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
@@ -956,6 +958,7 @@ void QgsProject::clear()
   m3DViewsManager->clear();
   mBookmarkManager->clear();
   mViewSettings->reset();
+  mStyleSettings->reset();
   mTimeSettings->reset();
   mElevationProperties->reset();
   mDisplaySettings->reset();
@@ -1860,6 +1863,60 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     }
   }
 
+  // Convert pre 3.26 default styles
+  if ( QgsProjectVersion( 3, 26, 0 ) > mSaveVersion )
+  {
+    // Convert default symbols
+    QString styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
+    if ( !styleName.isEmpty() )
+    {
+      std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
+      styleSettings()->setDefaultSymbol( Qgis::SymbolType::Marker, symbol.get() );
+    }
+    styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
+    if ( !styleName.isEmpty() )
+    {
+      std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
+      styleSettings()->setDefaultSymbol( Qgis::SymbolType::Line, symbol.get() );
+    }
+    styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
+    if ( !styleName.isEmpty() )
+    {
+      std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
+      styleSettings()->setDefaultSymbol( Qgis::SymbolType::Fill, symbol.get() );
+    }
+    styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ) );
+    if ( !styleName.isEmpty() )
+    {
+      std::unique_ptr<QgsColorRamp> colorRamp( QgsStyle::defaultStyle()->colorRamp( styleName ) );
+      styleSettings()->setDefaultColorRamp( colorRamp.get() );
+    }
+
+    // Convert randomize default symbol fill color
+    styleSettings()->setRandomizeDefaultSymbolColor( readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) );
+
+    // Convert default symbol opacity
+    double opacity = 1.0;
+    bool ok = false;
+    // upgrade old setting
+    double alpha = readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
+    if ( ok )
+      opacity = alpha / 255.0;
+    double newOpacity = readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
+    if ( ok )
+      opacity = newOpacity;
+    styleSettings()->setDefaultSymbolOpacity( opacity );
+
+    // Cleanup
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ) );
+  }
+
   // After bad layer handling we might still have invalid layers,
   // store them in case the user wanted to handle them later
   // or wanted to pass them through when saving
@@ -1930,6 +1987,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   const QDomElement viewSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectViewSettings" ) );
   if ( !viewSettingsElement.isNull() )
     mViewSettings->readXml( viewSettingsElement, context );
+
+  // restore style settings
+  const QDomElement styleSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectStyleSettings" ) );
+  if ( !styleSettingsElement.isNull() )
+    mStyleSettings->readXml( styleSettingsElement, context );
 
   // restore time settings
   profile.switchTask( tr( "Loading temporal settings" ) );
@@ -2690,6 +2752,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
   const QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
   qgisNode.appendChild( viewSettingsElem );
 
+  const QDomElement styleSettingsElem = mStyleSettings->writeXml( *doc, context );
+  qgisNode.appendChild( styleSettingsElem );
+
   const QDomElement timeSettingsElement = mTimeSettings->writeXml( *doc, context );
   qgisNode.appendChild( timeSettingsElement );
 
@@ -3417,6 +3482,16 @@ const QgsProjectViewSettings *QgsProject::viewSettings() const
 QgsProjectViewSettings *QgsProject::viewSettings()
 {
   return mViewSettings;
+}
+
+const QgsProjectStyleSettings *QgsProject::styleSettings() const
+{
+  return mStyleSettings;
+}
+
+QgsProjectStyleSettings *QgsProject::styleSettings()
+{
+  return mStyleSettings;
 }
 
 const QgsProjectTimeSettings *QgsProject::timeSettings() const

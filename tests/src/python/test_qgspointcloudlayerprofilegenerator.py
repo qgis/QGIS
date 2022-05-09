@@ -32,6 +32,7 @@ from qgis.core import (
     QgsCategorizedSymbolRenderer,
     QgsProfilePoint,
     QgsProfileSnapContext,
+    QgsProfileIdentifyContext,
     QgsDoubleRange,
     QgsProfileGenerationContext,
     QgsUnitTypes,
@@ -167,6 +168,51 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
         self.assertTrue(res.isValid())
         self.assertAlmostEqual(res.snappedPoint.distance(), 0.2783, 2)
         self.assertAlmostEqual(res.snappedPoint.elevation(), 2335.04575, 2)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testIdentify(self):
+        pcl = QgsPointCloudLayer(
+            os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
+        self.assertTrue(pcl.isValid())
+        pcl.elevationProperties().setMaximumScreenError(30)
+        pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (515387.94696552358800545 4918366.65919817332178354, 515389.15378401038469747 4918366.63842081092298031)')
+        req = QgsProfileRequest(curve)
+        req.setCrs(pcl.crs())
+        req.setTolerance(0.05)
+
+        context = QgsProfileGenerationContext()
+        context.setMapUnitsPerDistancePixel(0.50)
+
+        generator = pcl.createProfileGenerator(req)
+        generator.generateProfile(context)
+        r = generator.takeResults()
+
+        # try identifying some points
+        context = QgsProfileIdentifyContext()
+        context.maximumPointDistanceDelta = 0
+        context.maximumPointElevationDelta = 0
+        res = r.identify(QgsProfilePoint(0.27, 2335), context)
+        self.assertFalse(res)
+
+        context.maximumPointDistanceDelta = 1
+        context.maximumPointElevationDelta = 1
+
+        res = r.identify(QgsProfilePoint(0.27, 2335), context)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layer(), pcl)
+        self.assertEqual(res[0].results(), [{'Classification': 0, 'EdgeOfFlightLine': 0, 'GpsTime': 0.0, 'Intensity': 1612, 'NumberOfReturns': 1, 'OriginId': 3, 'PointSourceId': 0, 'ReturnNumber': 1, 'ScanAngleRank': 0.0, 'ScanDirectionFlag': 1, 'UserData': 0, 'X': 515388.2245, 'Y': 4918366.61, 'Z': 2335.04575}, {'Classification': 0, 'EdgeOfFlightLine': 0, 'GpsTime': 0.0, 'Intensity': 199, 'NumberOfReturns': 1, 'OriginId': 3, 'PointSourceId': 0, 'ReturnNumber': 1, 'ScanAngleRank': 0.0, 'ScanDirectionFlag': 1, 'UserData': 0, 'X': 515388.60825, 'Y': 4918366.628, 'Z': 2334.60175}])
+
+        context.maximumPointDistanceDelta = 0
+        context.maximumPointElevationDelta = 0
+
+        res = r.identify(QgsDoubleRange(0.2, 0.3), QgsDoubleRange(2330, 2360), context)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layer(), pcl)
+        self.assertCountEqual(res[0].results(), [{'Classification': 0, 'EdgeOfFlightLine': 0, 'GpsTime': 0.0, 'Intensity': 565, 'NumberOfReturns': 1, 'OriginId': 3, 'PointSourceId': 0, 'ReturnNumber': 1, 'ScanAngleRank': 0.0, 'ScanDirectionFlag': 1, 'UserData': 0, 'X': 515388.21275, 'Y': 4918366.65675, 'Z': 2332.19075}, {'Classification': 0, 'EdgeOfFlightLine': 0, 'GpsTime': 0.0, 'Intensity': 1357, 'NumberOfReturns': 1, 'OriginId': 3, 'PointSourceId': 0, 'ReturnNumber': 1, 'ScanAngleRank': 0.0, 'ScanDirectionFlag': 1, 'UserData': 0, 'X': 515388.17375, 'Y': 4918366.679, 'Z': 2332.56025}, {'Classification': 0, 'EdgeOfFlightLine': 0, 'GpsTime': 0.0, 'Intensity': 1612, 'NumberOfReturns': 1, 'OriginId': 3, 'PointSourceId': 0, 'ReturnNumber': 1, 'ScanAngleRank': 0.0, 'ScanDirectionFlag': 1, 'UserData': 0, 'X': 515388.2245, 'Y': 4918366.61, 'Z': 2335.04575}])
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testProfileRenderFixedColor(self):

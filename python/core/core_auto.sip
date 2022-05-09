@@ -249,6 +249,7 @@
 %Include auto_generated/callouts/qgscalloutsregistry.sip
 %Include auto_generated/classification/qgsclassificationcustom.sip
 %Include auto_generated/classification/qgsclassificationequalinterval.sip
+%Include auto_generated/classification/qgsclassificationfixedinterval.sip
 %Include auto_generated/classification/qgsclassificationjenks.sip
 %Include auto_generated/classification/qgsclassificationlogarithmic.sip
 %Include auto_generated/classification/qgsclassificationmethod.sip
@@ -545,6 +546,7 @@
 %Include auto_generated/project/qgsprojectservervalidator.sip
 %Include auto_generated/project/qgsprojectstorage.sip
 %Include auto_generated/project/qgsprojectstorageregistry.sip
+%Include auto_generated/project/qgsprojectstylesettings.sip
 %Include auto_generated/project/qgsprojecttimesettings.sip
 %Include auto_generated/project/qgsprojecttranslator.sip
 %Include auto_generated/project/qgsprojectutils.sip

@@ -25,6 +25,7 @@
 #include "qgsclassificationstandarddeviation.h"
 #include "qgsclassificationprettybreaks.h"
 #include "qgsclassificationlogarithmic.h"
+#include "qgsclassificationfixedinterval.h"
 
 QgsClassificationMethodRegistry::QgsClassificationMethodRegistry()
 {
@@ -34,6 +35,7 @@ QgsClassificationMethodRegistry::QgsClassificationMethodRegistry()
   addMethod( new QgsClassificationStandardDeviation() );
   addMethod( new QgsClassificationPrettyBreaks() );
   addMethod( new QgsClassificationLogarithmic() );
+  addMethod( new QgsClassificationFixedInterval() );
 }
 
 QgsClassificationMethodRegistry::~QgsClassificationMethodRegistry()

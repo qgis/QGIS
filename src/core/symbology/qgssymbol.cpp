@@ -34,6 +34,7 @@
 #include "qgslogger.h"
 #include "qgsrendercontext.h" // for bigSymbolPreview
 #include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsstyle.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
@@ -372,23 +373,20 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   std::unique_ptr< QgsSymbol > s;
 
   // override global default if project has a default for this type
-  QString defaultSymbol;
   switch ( geomType )
   {
-    case QgsWkbTypes::PointGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
+    case QgsWkbTypes::PointGeometry:
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) );
       break;
-    case QgsWkbTypes::LineGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
+    case QgsWkbTypes::LineGeometry:
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) );
       break;
-    case QgsWkbTypes::PolygonGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
+    case QgsWkbTypes::PolygonGeometry:
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) );
       break;
     default:
       break;
   }
-  if ( !defaultSymbol.isEmpty() )
-    s.reset( QgsStyle::defaultStyle()->symbol( defaultSymbol ) );
 
   // if no default found for this type, get global default (as previously)
   if ( !s )
@@ -411,20 +409,10 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   }
 
   // set opacity
-  double opacity = 1.0;
-  bool ok = false;
-  // upgrade old setting
-  double alpha = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
-  if ( ok )
-    opacity = alpha / 255.0;
-  double newOpacity = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
-  if ( ok )
-    opacity = newOpacity;
-  s->setOpacity( opacity );
+  s->setOpacity( QgsProject::instance()->styleSettings()->defaultSymbolOpacity() );
 
   // set random color, it project prefs allow
-  if ( defaultSymbol.isEmpty() ||
-       QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
+  if ( QgsProject::instance()->styleSettings()->randomizeDefaultSymbolColor() )
   {
     s->setColor( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   }

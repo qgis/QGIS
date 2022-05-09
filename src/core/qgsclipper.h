@@ -116,6 +116,25 @@ class CORE_EXPORT QgsClipper
      */
     static QPolygonF clippedLine( const QPolygonF &curve, const QgsRectangle &clipExtent );
 
+    /**
+     * Clips a line segment to a rectangle.
+     *
+     * An implementation of the 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467).
+     *
+     * \param left x-coordinate of left side of rectangle
+     * \param right x-coordinate of right side of rectangle
+     * \param bottom y-coordinate of bottom side of rectangle
+     * \param top y-coordinate of top side of rectangle
+     * \param x0 x-coordinate of start of line
+     * \param y0 y-coordinate of start of line
+     * \param x1 x-coordinate of end of line
+     * \param y1 y-coordinate of end of line
+     * \returns TRUE if line was clipped.
+     *
+     * \since QGIS 3.26
+     */
+    static bool clipLineSegment( double left, double right, double bottom, double top, double &x0 SIP_INOUT, double &y0 SIP_INOUT, double &x1 SIP_INOUT, double &y1 SIP_INOUT );
+
   private:
 
     // Used when testing for equivalence to 0.0
@@ -146,9 +165,6 @@ class CORE_EXPORT QgsClipper
     static inline QPointF intersectRect( QPointF pt1,
                                          QPointF pt2,
                                          Boundary b, const QgsRectangle &rect );
-
-    //Implementation of 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467)
-    static bool clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double &x0, double &y0, double &x1, double &y1 );
 
     /**
      * Connects two lines split by the clip (by inserting points on the clip border)

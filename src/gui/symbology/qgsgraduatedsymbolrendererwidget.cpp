@@ -40,6 +40,7 @@
 #include "qgslogger.h"
 #include "qgsludialog.h"
 #include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsmapcanvas.h"
 #include "qgsclassificationmethod.h"
 #include "qgsapplication.h"
@@ -500,10 +501,10 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   btnColorRamp->setShowRandomColorRamp( true );
 
   // set project default color ramp
-  QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
-  if ( !defaultColorRamp.isEmpty() )
+  std::unique_ptr< QgsColorRamp > colorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
+  if ( colorRamp )
   {
-    btnColorRamp->setColorRampFromName( defaultColorRamp );
+    btnColorRamp->setColorRamp( colorRamp.get() );
   }
   else
   {
@@ -685,6 +686,7 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 {
   disconnectUpdateHandlers();
+  mBlockUpdates++;
 
   const QgsClassificationMethod *method = mRenderer->classificationMethod();
 
@@ -724,9 +726,17 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 
   // Only update class count if different - otherwise typing value gets very messy
   int nclasses = ranges.count();
-  if ( nclasses && updateCount )
+  if ( nclasses && ( updateCount || ( method && ( method->flags() & QgsClassificationMethod::MethodProperty::IgnoresClassCount ) ) ) )
   {
     spinGraduatedClasses->setValue( ranges.count() );
+  }
+  if ( method )
+  {
+    spinGraduatedClasses->setEnabled( !( method->flags() & QgsClassificationMethod::MethodProperty::IgnoresClassCount ) );
+  }
+  else
+  {
+    spinGraduatedClasses->setEnabled( true );
   }
 
   // set column
@@ -788,6 +798,8 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   mHistogramWidget->refresh();
 
   connectUpdateHandlers();
+  mBlockUpdates--;
+
   emit widgetChanged();
 }
 
@@ -857,6 +869,8 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
 
     mParameterWidgetWrappers.push_back( std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>( ppww ) );
   }
+
+  spinGraduatedClasses->setEnabled( !( method->flags() & QgsClassificationMethod::MethodProperty::IgnoresClassCount ) );
 }
 
 void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( MethodMode mode )
@@ -1005,6 +1019,8 @@ void QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished( )
 
 void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 {
+  if ( mBlockUpdates )
+    return;
 
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
   QString attrName = mExpressionWidget->currentField();

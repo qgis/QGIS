@@ -78,6 +78,7 @@ class QgsAuxiliaryStorage;
 class QgsMapLayer;
 class QgsBookmarkManager;
 class QgsProjectViewSettings;
+class QgsProjectStyleSettings;
 class QgsProjectDisplaySettings;
 class QgsProjectTimeSettings;
 class QgsAnnotationLayer;
@@ -834,6 +835,23 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10.1
      */
     QgsProjectViewSettings *viewSettings();
+
+    /**
+     * Returns the project's style settings, which contains settings and properties
+     * relating to how a QgsProject should handle styling.
+     * (e.g. styling of a newly added vector layer)
+     * \note not available in Python bindings
+     * \since QGIS 3.26
+     */
+    const QgsProjectStyleSettings *styleSettings() const SIP_SKIP;
+
+    /**
+     * Returns the project's style settings, which contains settings and properties
+     * relating to how a QgsProject should handle styling.
+     * (e.g. styling of a newly added vector layer)
+     * \since QGIS 3.26
+     */
+    QgsProjectStyleSettings *styleSettings();
 
     /**
      * Returns the project's time settings, which contains the project's temporal range and other
@@ -2207,6 +2225,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsBookmarkManager *mBookmarkManager = nullptr;
 
     QgsProjectViewSettings *mViewSettings = nullptr;
+
+    QgsProjectStyleSettings *mStyleSettings = nullptr;
 
     QgsProjectTimeSettings *mTimeSettings = nullptr;
 

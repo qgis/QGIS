@@ -64,6 +64,16 @@ QgsProfileSnapResult QgsAbstractProfileResults::snapPoint( const QgsProfilePoint
   return QgsProfileSnapResult();
 }
 
+QVector<QgsProfileIdentifyResults> QgsAbstractProfileResults::identify( const QgsProfilePoint &, const QgsProfileIdentifyContext & )
+{
+  return {};
+}
+
+QVector<QgsProfileIdentifyResults> QgsAbstractProfileResults::identify( const QgsDoubleRange &, const QgsDoubleRange &, const QgsProfileIdentifyContext & )
+{
+  return {};
+}
+
 void QgsAbstractProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator * )
 {
 
@@ -131,4 +141,11 @@ bool QgsProfileGenerationContext::operator!=( const QgsProfileGenerationContext 
 Qgis::ProfileGeneratorFlags QgsAbstractProfileGenerator::flags() const
 {
   return Qgis::ProfileGeneratorFlags();
+}
+
+QgsProfileIdentifyResults::QgsProfileIdentifyResults( QgsMapLayer *layer, const QVector<QVariantMap> &results )
+  : mLayer( layer )
+  , mResults( results )
+{
+
 }

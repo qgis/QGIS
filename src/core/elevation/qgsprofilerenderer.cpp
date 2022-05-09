@@ -354,6 +354,44 @@ QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &p
   return bestSnapResult;
 }
 
+QVector<QgsProfileIdentifyResults> QgsProfilePlotRenderer::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
+{
+  QVector<QgsProfileIdentifyResults> res;
+  if ( !mRequest.profileCurve() )
+    return res;
+
+  for ( const auto &job : mJobs )
+  {
+    job->mutex.lock();
+    if ( job->complete && job->results )
+    {
+      res.append( job->results->identify( point, context ) );
+    }
+    job->mutex.unlock();
+  }
+
+  return res;
+}
+
+QVector<QgsProfileIdentifyResults> QgsProfilePlotRenderer::identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext &context )
+{
+  QVector<QgsProfileIdentifyResults> res;
+  if ( !mRequest.profileCurve() )
+    return res;
+
+  for ( const auto &job : mJobs )
+  {
+    job->mutex.lock();
+    if ( job->complete && job->results )
+    {
+      res.append( job->results->identify( distanceRange, elevationRange, context ) );
+    }
+    job->mutex.unlock();
+  }
+
+  return res;
+}
+
 void QgsProfilePlotRenderer::onGeneratingFinished()
 {
   mStatus = Idle;

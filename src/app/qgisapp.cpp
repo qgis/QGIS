@@ -12160,7 +12160,8 @@ void QgisApp::saveLastMousePosition( const QgsPointXY &p )
     if ( mMapCanvas->underMouse() )
     {
       // Clear the maptip (this is done conditionally)
-      mpMaptip->clear( mMapCanvas );
+      int interval = std::min( 300, mpMapTipsTimer->interval() );
+      mpMaptip->clear( mMapCanvas, interval );
       // don't start the timer if the mouse is not over the map canvas
       mpMapTipsTimer->start();
     }
@@ -13077,8 +13078,8 @@ QMap<QString, QString> QgisApp::optionsPagesMap()
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "mOptionsPageRendering" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), QStringLiteral( "mOptionsPageMapCanvas" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QStringLiteral( "mOptionsPageMapTools" ) );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Colors" ), QStringLiteral( "mOptionsPageColors" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QStringLiteral( "mOptionsPageDigitizing" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Colors" ), QStringLiteral( "mOptionsPageColors" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Layouts" ), QStringLiteral( "mOptionsPageComposer" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Variables" ), QStringLiteral( "mOptionsPageVariables" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), QStringLiteral( "mOptionsPageAuth" ) );

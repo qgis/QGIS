@@ -71,11 +71,100 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPoint( const QgsProfilePo
   BUILTIN_UNREACHABLE
 }
 
+
+QVector<QgsProfileIdentifyResults> QgsVectorLayerProfileResults::identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext & )
+{
+  QgsFeatureIds ids;
+  auto visitFeature = [&ids]( QgsFeatureId featureId )
+  {
+    ids << featureId;
+  };
+
+  visitFeaturesInRange( distanceRange, elevationRange, visitFeature );
+  if ( ids.empty() )
+    return {};
+
+  QVector< QVariantMap> idsList;
+  for ( auto it = ids.constBegin(); it != ids.constEnd(); ++it )
+    idsList.append( QVariantMap( {{QStringLiteral( "id" ), *it}} ) );
+
+  return { QgsProfileIdentifyResults( mLayer, idsList ) };
+}
+
+QVector<QgsProfileIdentifyResults> QgsVectorLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
+{
+  QHash< QgsFeatureId, QVariantMap > features;
+  auto visitFeature = [&features]( QgsFeatureId featureId, double delta, double distance, double elevation )
+  {
+    auto it = features.find( featureId );
+    if ( it == features.end() )
+    {
+      features[ featureId ] = QVariantMap( {{QStringLiteral( "id" ), featureId },
+        {QStringLiteral( "delta" ), delta },
+        {QStringLiteral( "distance" ), distance },
+        {QStringLiteral( "elevation" ), elevation }
+      } );
+    }
+    else
+    {
+      const double currentDelta = it.value().value( QStringLiteral( "delta" ) ).toDouble();
+      if ( delta < currentDelta )
+      {
+        *it = QVariantMap( {{QStringLiteral( "id" ), featureId },
+          {QStringLiteral( "delta" ), delta },
+          {QStringLiteral( "distance" ), distance },
+          {QStringLiteral( "elevation" ), elevation }
+        } );
+      }
+    }
+  };
+
+  visitFeaturesAtPoint( point, context.maximumPointDistanceDelta, context.maximumPointElevationDelta, context.maximumSurfaceElevationDelta, visitFeature, true );
+
+  QVector< QVariantMap> attributes;
+  for ( auto it = features.constBegin(); it != features.constEnd(); ++it )
+    attributes.append( *it );
+
+  QVector<QgsProfileIdentifyResults> res;
+
+  if ( !attributes.empty() )
+    res.append( QgsProfileIdentifyResults( mLayer, attributes ) );
+
+  if ( res.empty() && profileType == Qgis::VectorProfileType::ContinuousSurface )
+  {
+    const QVector<QgsProfileIdentifyResults> surfaceResults = QgsAbstractProfileSurfaceResults::identify( point, context );
+    res.reserve( surfaceResults.size() );
+    for ( const QgsProfileIdentifyResults &surfaceResult : surfaceResults )
+    {
+      res.append( QgsProfileIdentifyResults( mLayer, surfaceResult.results() ) );
+    }
+  }
+
+  return res;
+}
+
 QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
 {
-  // TODO -- add spatial index if performance is an issue
   QgsProfileSnapResult res;
   double bestSnapDistance = std::numeric_limits< double >::max();
+
+  auto visitFeature = [&bestSnapDistance, &res]( QgsFeatureId, double delta, double distance, double elevation )
+  {
+    if ( distance < bestSnapDistance )
+    {
+      bestSnapDistance = delta;
+      res.snappedPoint = QgsProfilePoint( distance, elevation );
+    }
+  };
+
+  visitFeaturesAtPoint( point, context.maximumPointDistanceDelta, context.maximumPointElevationDelta, context.maximumSurfaceElevationDelta, visitFeature, false );
+
+  return res;
+}
+
+void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &point, double maximumPointDistanceDelta, double maximumPointElevationDelta, double maximumSurfaceElevationDelta,  const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor, bool visitWithin )
+{
+  // TODO -- add spatial index if performance is an issue
 
   const QgsPoint targetPoint( point.distance(), point.elevation() );
 
@@ -84,7 +173,7 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures
     for ( const Feature &feature : it.value() )
     {
       const QgsRectangle featureBounds = feature.crossSectionGeometry.boundingBox();
-      if ( ( featureBounds.xMinimum() - context.maximumPointDistanceDelta <= point.distance() ) && ( featureBounds.xMaximum() + context.maximumPointDistanceDelta >= point.distance() ) )
+      if ( ( featureBounds.xMinimum() - maximumPointDistanceDelta <= point.distance() ) && ( featureBounds.xMaximum() + maximumPointDistanceDelta >= point.distance() ) )
       {
         switch ( feature.crossSectionGeometry.type() )
         {
@@ -95,19 +184,15 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures
               if ( const QgsPoint *candidatePoint = qgsgeometry_cast< const QgsPoint * >( *partIt ) )
               {
                 const double snapDistanceDelta = std::fabs( point.distance() - candidatePoint->x() );
-                if ( snapDistanceDelta > context.maximumPointDistanceDelta )
+                if ( snapDistanceDelta > maximumPointDistanceDelta )
                   continue;
 
                 const double snapHeightDelta = std::fabs( point.elevation() - candidatePoint->y() );
-                if ( snapHeightDelta > context.maximumPointElevationDelta )
+                if ( snapHeightDelta > maximumPointElevationDelta )
                   continue;
 
                 const double snapDistance = candidatePoint->distance( targetPoint );
-                if ( snapDistance < bestSnapDistance )
-                {
-                  bestSnapDistance = snapDistance;
-                  res.snappedPoint = QgsProfilePoint( candidatePoint->x(), candidatePoint->y() );
-                }
+                visitor( feature.featureId, snapDistance, candidatePoint->x(), candidatePoint->y() );
               }
             }
             break;
@@ -125,28 +210,34 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures
                   if ( lineString->numPoints() == 2 && qgsDoubleNear( lineString->pointN( 0 ).x(), lineString->pointN( 1 ).x() ) )
                   {
                     const double snapDistanceDelta = std::fabs( point.distance() - lineString->pointN( 0 ).x() );
-                    if ( snapDistanceDelta > context.maximumPointDistanceDelta )
+                    if ( snapDistanceDelta > maximumPointDistanceDelta )
                       continue;
 
                     const double snapHeightDelta = std::fabs( point.elevation() - lineString->pointN( 0 ).y() );
-                    if ( snapHeightDelta <= context.maximumPointElevationDelta )
+                    if ( snapHeightDelta <= maximumPointElevationDelta )
                     {
                       const double snapDistanceP1 = lineString->pointN( 0 ).distance( targetPoint );
-                      if ( snapDistanceP1 < bestSnapDistance )
-                      {
-                        bestSnapDistance = snapDistanceP1;
-                        res.snappedPoint = QgsProfilePoint( lineString->pointN( 0 ).x(), lineString->pointN( 0 ).y() );
-                      }
+                      visitor( feature.featureId, snapDistanceP1, lineString->pointN( 0 ).x(), lineString->pointN( 0 ).y() );
                     }
 
                     const double snapHeightDelta2 = std::fabs( point.elevation() - lineString->pointN( 1 ).y() );
-                    if ( snapHeightDelta2 <= context.maximumPointElevationDelta )
+                    if ( snapHeightDelta2 <= maximumPointElevationDelta )
                     {
                       const double snapDistanceP2 = lineString->pointN( 1 ).distance( targetPoint );
-                      if ( snapDistanceP2 < bestSnapDistance )
+                      visitor( feature.featureId, snapDistanceP2, lineString->pointN( 1 ).x(), lineString->pointN( 1 ).y() );
+                    }
+
+                    if ( visitWithin )
+                    {
+                      double elevation1 = lineString->pointN( 0 ).y();
+                      double elevation2 = lineString->pointN( 1 ).y();
+                      if ( elevation1 > elevation2 )
+                        std::swap( elevation1, elevation2 );
+
+                      if ( point.elevation() > elevation1 && point.elevation() < elevation2 )
                       {
-                        bestSnapDistance = snapDistanceP2;
-                        res.snappedPoint = QgsProfilePoint( lineString->pointN( 1 ).x(), lineString->pointN( 1 ).y() );
+                        const double snapDistance = std::fabs( lineString->pointN( 0 ).x() - point.distance() );
+                        visitor( feature.featureId, snapDistance, lineString->pointN( 0 ).x(), point.elevation() );
                       }
                     }
                     continue;
@@ -154,7 +245,7 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures
                 }
 
                 const QgsRectangle partBounds = ( *partIt )->boundingBox();
-                if ( point.distance() < partBounds.xMinimum() - context.maximumPointDistanceDelta || point.distance() > partBounds.xMaximum() + context.maximumPointDistanceDelta )
+                if ( point.distance() < partBounds.xMinimum() - maximumPointDistanceDelta || point.distance() > partBounds.xMaximum() + maximumPointDistanceDelta )
                   continue;
 
                 const double snappedDistance = point.distance() < partBounds.xMinimum() ? partBounds.xMinimum()
@@ -168,15 +259,11 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures
                 for ( auto vertexIt = points.vertices_begin(); vertexIt != points.vertices_end(); ++vertexIt )
                 {
                   const double snapHeightDelta = std::fabs( point.elevation() - ( *vertexIt ).y() );
-                  if ( snapHeightDelta > context.maximumSurfaceElevationDelta )
+                  if ( snapHeightDelta > maximumSurfaceElevationDelta )
                     continue;
 
                   const double snapDistance = ( *vertexIt ).distance( targetPoint );
-                  if ( snapDistance < bestSnapDistance )
-                  {
-                    bestSnapDistance = snapDistance;
-                    res.snappedPoint = QgsProfilePoint( ( *vertexIt ).x(), ( *vertexIt ).y() );
-                  }
+                  visitor( feature.featureId, snapDistance, ( *vertexIt ).x(), ( *vertexIt ).y() );
                 }
               }
             }
@@ -185,12 +272,20 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures
 
           case QgsWkbTypes::PolygonGeometry:
           {
+            if ( visitWithin )
+            {
+              if ( feature.crossSectionGeometry.intersects( QgsGeometry::fromPointXY( QgsPointXY( point.distance(), point.elevation() ) ) ) )
+              {
+                visitor( feature.featureId, 0, point.distance(), point.elevation() );
+                break;
+              }
+            }
             for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
             {
               if ( const QgsCurve *exterior = qgsgeometry_cast< const QgsPolygon * >( *partIt )->exteriorRing() )
               {
                 const QgsRectangle partBounds = ( *partIt )->boundingBox();
-                if ( point.distance() < partBounds.xMinimum() - context.maximumPointDistanceDelta || point.distance() > partBounds.xMaximum() + context.maximumPointDistanceDelta )
+                if ( point.distance() < partBounds.xMinimum() - maximumPointDistanceDelta || point.distance() > partBounds.xMaximum() + maximumPointDistanceDelta )
                   continue;
 
                 const double snappedDistance = point.distance() < partBounds.xMinimum() ? partBounds.xMinimum()
@@ -203,15 +298,11 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures
                 for ( auto vertexIt = points.vertices_begin(); vertexIt != points.vertices_end(); ++vertexIt )
                 {
                   const double snapHeightDelta = std::fabs( point.elevation() - ( *vertexIt ).y() );
-                  if ( snapHeightDelta > context.maximumSurfaceElevationDelta )
+                  if ( snapHeightDelta > maximumSurfaceElevationDelta )
                     continue;
 
                   const double snapDistance = ( *vertexIt ).distance( targetPoint );
-                  if ( snapDistance < bestSnapDistance )
-                  {
-                    bestSnapDistance = snapDistance;
-                    res.snappedPoint = QgsProfilePoint( ( *vertexIt ).x(), ( *vertexIt ).y() );
-                  }
+                  visitor( feature.featureId, snapDistance, ( *vertexIt ).x(), ( *vertexIt ).y() );
                 }
               }
             }
@@ -224,8 +315,56 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures
       }
     }
   }
+}
 
-  return res;
+void QgsVectorLayerProfileResults::visitFeaturesInRange( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const std::function<void ( QgsFeatureId )> &visitor )
+{
+  // TODO -- add spatial index if performance is an issue
+  const QgsRectangle profileRange( distanceRange.lower(), elevationRange.lower(), distanceRange.upper(), elevationRange.upper() );
+  const QgsGeometry profileRangeGeometry = QgsGeometry::fromRect( profileRange );
+  QgsGeos profileRangeGeos( profileRangeGeometry.constGet() );
+  profileRangeGeos.prepareGeometry();
+
+  for ( auto it = features.constBegin(); it != features.constEnd(); ++it )
+  {
+    for ( const Feature &feature : it.value() )
+    {
+      if ( feature.crossSectionGeometry.boundingBoxIntersects( profileRange ) )
+      {
+        switch ( feature.crossSectionGeometry.type() )
+        {
+          case QgsWkbTypes::PointGeometry:
+          {
+            for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
+            {
+              if ( const QgsPoint *candidatePoint = qgsgeometry_cast< const QgsPoint * >( *partIt ) )
+              {
+                if ( profileRange.contains( candidatePoint->x(), candidatePoint->y() ) )
+                {
+                  visitor( feature.featureId );
+                }
+              }
+            }
+            break;
+          }
+
+          case QgsWkbTypes::LineGeometry:
+          case QgsWkbTypes::PolygonGeometry:
+          {
+            if ( profileRangeGeos.intersects( feature.crossSectionGeometry.constGet() ) )
+            {
+              visitor( feature.featureId );
+            }
+            break;
+          }
+
+          case QgsWkbTypes::UnknownGeometry:
+          case QgsWkbTypes::NullGeometry:
+            break;
+        }
+      }
+    }
+  }
 }
 
 void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &context )

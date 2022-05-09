@@ -45,6 +45,9 @@ class QgsElevationProfileWidgetSettingsAction;
 class QgsElevationProfileLayerTreeView;
 class QgsLayerTree;
 class QgsLayerTreeRegistryBridge;
+class QgsElevationProfileToolIdentify;
+class QgsElevationProfileToolMeasure;
+class QLabel;
 
 class QgsElevationProfileWidget : public QWidget
 {
@@ -109,6 +112,7 @@ class QgsElevationProfileWidget : public QWidget
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;
     std::unique_ptr< QgsMapToolProfileCurveFromFeature > mCaptureCurveFromFeatureMapTool;
+    std::unique_ptr< QgsElevationProfileToolMeasure > mMeasureTool;
     QgsGeometry mProfileCurve;
 
     QObjectUniquePtr<QgsRubberBand> mMapPointRubberBand;
@@ -122,6 +126,7 @@ class QgsElevationProfileWidget : public QWidget
     QgsPlotToolPan *mPanTool = nullptr;
     QgsPlotToolXAxisZoom *mXAxisZoomTool = nullptr;
     QgsPlotToolZoom *mZoomTool = nullptr;
+    QgsElevationProfileToolIdentify *mIdentifyTool = nullptr;
 
     QgsElevationProfileWidgetSettingsAction *mSettingsAction = nullptr;
 
