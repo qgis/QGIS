@@ -685,7 +685,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
 
     QgsExpressionContext subContext( *context );
     QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
-    subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
+    subScope->setVariable( QStringLiteral( "parent" ), context->feature(), true );
     subContext.appendScope( subScope );
     result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback(), &aggregateError );
 
@@ -944,7 +944,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
 
   QgsExpressionContext subContext( *context );
   QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
-  subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
+  subScope->setVariable( QStringLiteral( "parent" ), context->feature(), true );
   subContext.appendScope( subScope );
   QString error;
   result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback(), &error );
