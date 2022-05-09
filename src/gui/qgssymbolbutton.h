@@ -267,6 +267,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     // Reimplemented to accept dropped colors
     void dropEvent( QDropEvent *e ) override;
 
+    void wheelEvent( QWheelEvent *event ) override;
+
   private slots:
 
     void showSettingsDialog();

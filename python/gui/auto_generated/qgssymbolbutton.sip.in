@@ -264,6 +264,9 @@ Emitted when the symbol's settings are changed.
     virtual void dropEvent( QDropEvent *e );
 
 
+    virtual void wheelEvent( QWheelEvent *event );
+
+
 };
 
 /************************************************************************
