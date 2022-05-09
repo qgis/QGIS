@@ -30,7 +30,7 @@ Constructor for QgsProjectStyleSettings for the specified ``project``.
 Ownership is transferred to the ``project``.
 %End
 
-    QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) const;
+    QgsSymbol *defaultSymbol( Qgis::SymbolType symbolType ) const /Factory/;
 %Docstring
 Returns the project default symbol for a given geometry type.
 
@@ -43,7 +43,7 @@ Returns the project default symbol for a given geometry type.
    the symbol ownership is transferred to the caller
 %End
 
-    void setDefaultSymbol( QgsWkbTypes::GeometryType geomType, QgsSymbol *symbol );
+    void setDefaultSymbol( Qgis::SymbolType symbolType, QgsSymbol *symbol );
 %Docstring
 Sets the project default symbol for a given geometry type.
 
@@ -55,7 +55,7 @@ Sets the project default symbol for a given geometry type.
    the symbol ownership is not transferred
 %End
 
-    QgsColorRamp *defaultColorRamp() const;
+    QgsColorRamp *defaultColorRamp() const /Factory/;
 %Docstring
 Returns the project default color ramp.
 

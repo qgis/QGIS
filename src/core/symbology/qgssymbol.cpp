@@ -373,7 +373,20 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   std::unique_ptr< QgsSymbol > s;
 
   // override global default if project has a default for this type
-  s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( geomType ) );
+  switch ( geomType )
+  {
+    case QgsWkbTypes::PointGeometry:
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) );
+      break;
+    case QgsWkbTypes::LineGeometry:
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) );
+      break;
+    case QgsWkbTypes::PolygonGeometry:
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) );
+      break;
+    default:
+      break;
+  }
 
   // if no default found for this type, get global default (as previously)
   if ( !s )
