@@ -52,15 +52,15 @@ QgsPointCloudStatistics::AttributeStatistics QgsPointCloudStatistics::statistics
   return mStatisticsMap.value( attribute, defaultVal );
 }
 
-QVariant QgsPointCloudStatistics::statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+double QgsPointCloudStatistics::statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
-    return QVariant();
+    return qQNaN();
   const AttributeStatistics &stats = mStatisticsMap[ attribute ];
   switch ( statistic )
   {
     case QgsStatisticalSummary::Count:
-      return stats.count >= 0 ? QVariant( stats.count ) : QVariant();
+      return stats.count >= 0 ? stats.count : qQNaN();
 
     case QgsStatisticalSummary::Min:
       return stats.minimum;
@@ -69,7 +69,7 @@ QVariant QgsPointCloudStatistics::statisticOf( const QString &attribute, QgsStat
       return stats.maximum;
 
     case QgsStatisticalSummary::Range:
-      return QVariant( stats.maximum - stats.minimum );
+      return stats.maximum - stats.minimum;
 
     case QgsStatisticalSummary::Mean:
     case QgsStatisticalSummary::StDev:
@@ -86,31 +86,38 @@ QVariant QgsPointCloudStatistics::statisticOf( const QString &attribute, QgsStat
     case QgsStatisticalSummary::First:
     case QgsStatisticalSummary::Last:
     case QgsStatisticalSummary::All:
-      return QVariant();
+      return qQNaN();
   }
-  return QVariant();
+  return qQNaN();
 }
 
-QVariantList QgsPointCloudStatistics::classesOf( const QString &attribute ) const
+QList<int> QgsPointCloudStatistics::classesOf( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
-    return QVariantList();
+    return QList<int>();
   AttributeStatistics s = mStatisticsMap[ attribute ];
-  QVariantList classes;
-  for ( int c : s.classCount.keys() )
-  {
-    classes.push_back( c );
-  }
-  return classes;
+  return s.classCount.keys();
 }
 
-QVariant QgsPointCloudStatistics::classStatisticOf( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+QMap<int, int> QgsPointCloudStatistics::availableClasses( const QString &attribute ) const
 {
-  // For now we only calculate the count of a class
-  if ( statistic != QgsStatisticalSummary::Statistic::Count || !mStatisticsMap.contains( attribute ) )
-    return QVariant();
-  AttributeStatistics s = mStatisticsMap[ attribute ];
-  return s.classCount.value( value.toInt(), 0 );
+  if ( !mStatisticsMap.contains( attribute ) )
+    return QMap<int, int>();
+  return mStatisticsMap[ attribute ].classCount;
+}
+
+double QgsPointCloudStatistics::minimum( const QString &attribute ) const
+{
+  if ( !mStatisticsMap.contains( attribute ) )
+    return qQNaN();
+  return mStatisticsMap[ attribute ].minimum;
+}
+
+double QgsPointCloudStatistics::maximum( const QString &attribute ) const
+{
+  if ( !mStatisticsMap.contains( attribute ) )
+    return qQNaN();
+  return mStatisticsMap[ attribute ].maximum;
 }
 
 void QgsPointCloudStatistics::combineWith( const QgsPointCloudStatistics &stats )

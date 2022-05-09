@@ -590,7 +590,7 @@ QgsPointCloudClassificationStatisticsModel::QgsPointCloudClassificationStatistic
   , mAttribute( attribute )
 {
   mClassifications = layer->statistics().classesOf( attribute );
-  std::sort( mClassifications.begin(), mClassifications.end(), []( QVariant a, QVariant b ) -> bool { return ( qgsVariantLessThan( a, b ) ); } );
+  std::sort( mClassifications.begin(), mClassifications.end(), []( int a, int b ) -> bool { return a < b; } );
 }
 
 int QgsPointCloudClassificationStatisticsModel::columnCount( const QModelIndex & ) const
@@ -625,12 +625,12 @@ QVariant QgsPointCloudClassificationStatisticsModel::data( const QModelIndex &in
           return QgsPointCloudDataProvider::translatedLasClassificationCodes().value( classValue.toInt() );
 
         case Count:
-          return stats.classStatisticOf( mAttribute, classValue, QgsStatisticalSummary::Count );
+          return stats.availableClasses( mAttribute ).value( classValue.toInt(), 0 );
 
         case Percent:
         {
           qint64 pointCount = stats.sampledPointsCount();
-          return stats.classStatisticOf( mAttribute, classValue, QgsStatisticalSummary::Count ).toDouble() / pointCount * 100;
+          return ( ( double )stats.availableClasses( mAttribute ).value( classValue.toInt(), 0 ) ) / pointCount * 100;
         }
 
       }

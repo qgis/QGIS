@@ -63,7 +63,7 @@ class CORE_EXPORT QgsPointCloudStatistics
     };
 #endif
 
-    //! Construvtor
+    //! Constructor
     QgsPointCloudStatistics();
 
 #ifndef SIP_RUN
@@ -85,18 +85,32 @@ class CORE_EXPORT QgsPointCloudStatistics
     AttributeStatistics statisticsOf( const QString &attribute ) const;
 #endif
 
-    //! Returns the statistic \a statistic of \a attribute
-    QVariant statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    //! Returns the statistic \a statistic of \a attribute and NaN in case the attribute doesn't exist
+    double statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 
     //! Returns a list of existing classes which are present for the specified \a attribute
-    QVariantList classesOf( const QString &attribute ) const;
+    QList<int> classesOf( const QString &attribute ) const;
+
+#ifndef SIP_RUN
 
     /**
-     * Returns a statistic for one class \a value from the specified \a attribute.
-     *
-     * If no matching precalculated statistic is available then an invalid variant will be returned.
+     * Returns a map containing the count of each class of the attribute \a attribute
+     * If no matching statistic is available then an empty map will be returned.
      */
-    QVariant classStatisticOf( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+    QMap<int, int> availableClasses( const QString &attribute ) const;
+#endif
+
+    /**
+     * Returns the minimum value for the attribute \a attribute
+     * If no matching statistic is available then NaN will be returned.
+     */
+    double minimum( const QString &attribute ) const;
+
+    /**
+     * Returns the maximum value for the attribute \a attribute
+     * If no matching statistic is available then NaN will be returned.
+     */
+    double maximum( const QString &attribute ) const;
 
     //! Merges the current statistics with the statistics from \a stats
     void combineWith( const QgsPointCloudStatistics &stats );

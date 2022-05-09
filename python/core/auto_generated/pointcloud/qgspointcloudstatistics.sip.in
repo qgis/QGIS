@@ -27,7 +27,7 @@ Class used to store statistics of a point cloud dataset.
 
     QgsPointCloudStatistics();
 %Docstring
-Construvtor
+Constructor
 %End
 
 
@@ -47,21 +47,27 @@ Clears the statistics of given attributes ``attributes``
 %End
 
 
-    QVariant statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    double statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 %Docstring
-Returns the statistic ``statistic`` of ``attribute``
+Returns the statistic ``statistic`` of ``attribute`` and NaN in case the attribute doesn't exist
 %End
 
-    QVariantList classesOf( const QString &attribute ) const;
+    QList<int> classesOf( const QString &attribute ) const;
 %Docstring
 Returns a list of existing classes which are present for the specified ``attribute``
 %End
 
-    QVariant classStatisticOf( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
-%Docstring
-Returns a statistic for one class ``value`` from the specified ``attribute``.
 
-If no matching precalculated statistic is available then an invalid variant will be returned.
+    double minimum( const QString &attribute ) const;
+%Docstring
+Returns the minimum value for the attribute ``attribute``
+If no matching statistic is available then NaN will be returned.
+%End
+
+    double maximum( const QString &attribute ) const;
+%Docstring
+Returns the maximum value for the attribute ``attribute``
+If no matching statistic is available then NaN will be returned.
 %End
 
     void combineWith( const QgsPointCloudStatistics &stats );

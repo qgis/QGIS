@@ -458,17 +458,16 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
 
   const QgsPointCloudStatistics stats = mLayer->statistics();
 
-  const QVariantList providerCategories = stats.classesOf( mAttributeComboBox->currentAttribute() );
+  const QList<int> providerCategories = stats.classesOf( mAttributeComboBox->currentAttribute() );
   const QgsPointCloudCategoryList currentCategories = mModel->categories();
 
-  for ( const QVariant &providerCategory : providerCategories )
+  for ( const int &providerCategory : providerCategories )
   {
-    const int newValue = providerCategory.toInt();
     // does this category already exist?
     bool found = false;
     for ( const QgsPointCloudCategory &c : currentCategories )
     {
-      if ( c.value() == newValue )
+      if ( c.value() == providerCategory )
       {
         found = true;
         break;
@@ -478,7 +477,7 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
     if ( found )
       continue;
 
-    mModel->addCategory( QgsPointCloudCategory( newValue, QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( newValue, QString::number( newValue ) ) ) );
+    mModel->addCategory( QgsPointCloudCategory( providerCategory, QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( providerCategory, QString::number( providerCategory ) ) ) );
   }
 }
 
