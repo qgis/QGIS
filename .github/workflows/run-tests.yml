@@ -37,7 +37,7 @@ jobs:
       matrix:
         # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14) and 21.04 (Qt 5.15)
         include:
-          - distro-version: '20.04'
+          - distro-version: '22.04'
             qt-version: 5
             run-tests: true
             docker-tag-suffix: ''
@@ -46,17 +46,6 @@ jobs:
             with-3d: ON
             with-quick: ON
             patch-qt-3d: true
-            LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
-
-          - distro-version: '21.10'
-            qt-version: 5
-            run-tests: false
-            docker-tag-suffix: _21.10
-            with-qt6: OFF
-            with-qt5: ON
-            with-3d: OFF
-            with-quick: ON
-            patch-qt-3d: false
             LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
 
           - distro-version: '34'
@@ -290,13 +279,13 @@ jobs:
 
     strategy:
       matrix:
-        distro-version: [20.04]
+        distro-version: [22.04]
         qt-version: [5]
         test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA]
         docker-target: [binary-only]
 
         include:
-          - distro-version: 20.04
+          - distro-version: 22.04
             qt-version: 5
             test-batch: ORACLE
             docker-target: binary-for-oracle
