@@ -420,6 +420,21 @@ void QgsColorButton::dropEvent( QDropEvent *e )
   }
 }
 
+void QgsColorButton::wheelEvent( QWheelEvent *event )
+{
+  if ( mAllowOpacity && isEnabled() && !isNull() )
+  {
+    const int increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 80 : 25 ) *
+                          ( event->angleDelta().y() > 0 ? 1 : -1 );
+    const int alpha = std::min( std::max( 0, mColor.alpha() + increment ), 255 );
+    mColor.setAlpha( alpha );
+
+    setButtonBackground();
+    emit colorChanged( mColor );
+    event->accept();
+  }
+}
+
 void QgsColorButton::setValidColor( const QColor &newColor )
 {
   if ( newColor.isValid() )

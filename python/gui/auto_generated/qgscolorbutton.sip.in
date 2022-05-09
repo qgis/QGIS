@@ -532,6 +532,9 @@ Reimplemented to reset button appearance after drag leave
 Reimplemented to accept dropped colors
 %End
 
+    virtual void wheelEvent( QWheelEvent *event );
+
+
 };
 
 /************************************************************************
