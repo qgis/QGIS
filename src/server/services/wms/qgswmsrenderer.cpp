@@ -1310,6 +1310,18 @@ namespace QgsWms
 
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
+
+    // Set WMST
+    if ( mContext.exposeTemporalProperties( ) )
+    {
+      const QDateTime dt = QDateTime::fromString( mWmsParameters.dimensionValues().value( QStringLiteral( "TIME" ), QString() ), Qt::DateFormat::ISODate );
+      if ( dt.isValid() )
+      {
+        mapSettings.setIsTemporal( true );
+        mapSettings.setTemporalRange( QgsDateTimeRange( dt, dt ) );
+      }
+    }
+
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,

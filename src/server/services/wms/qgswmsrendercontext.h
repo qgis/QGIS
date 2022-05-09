@@ -169,6 +169,13 @@ namespace QgsWms
       bool renderMapTiles() const;
 
       /**
+       * Returns TRUE if temporal capabilities are exposed to WMS.
+       *
+       * \since QGIS 3.26
+       */
+      bool exposeTemporalProperties() const;
+
+      /**
        * Returns the precision to use according to the current configuration.
        */
       int precision() const;

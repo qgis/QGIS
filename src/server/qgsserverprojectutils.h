@@ -224,6 +224,14 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT bool wmsFeatureInfoAddWktGeometry( const QgsProject &project );
 
   /**
+   * Returns if the temporal properties are exposed to WMS.
+   * \param project the QGIS project
+   * \returns if the temporal properties are exposed.
+   * \since QGIS 3.26
+   */
+  SERVER_EXPORT bool wmsExposeTemporalProperties( const QgsProject &project );
+
+  /**
     * Returns if feature form settings should be considered for the format of the feature info response
     * \param project the QGIS project
     * \returns true if the feature form settings shall be considered for the feature info response
