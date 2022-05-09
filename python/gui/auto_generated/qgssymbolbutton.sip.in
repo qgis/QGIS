@@ -207,7 +207,7 @@ Returns whether the set to null (clear) option is shown in the button's drop-dow
 
     bool isNull() const;
 %Docstring
-Returns ``True`` if the current color is null.
+Returns ``True`` if the current symbol is null.
 
 .. seealso:: :py:func:`setShowNull`
 

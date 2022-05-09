@@ -222,7 +222,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     bool showNull() const;
 
     /**
-     * Returns TRUE if the current color is null.
+     * Returns TRUE if the current symbol is null.
      * \see setShowNull()
      * \see showNull()
      * \since QGIS 3.26
