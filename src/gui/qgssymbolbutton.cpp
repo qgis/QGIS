@@ -421,6 +421,14 @@ void QgsSymbolButton::prepareMenu()
     mMenu->addAction( pasteSymbolAction );
     connect( pasteSymbolAction, &QAction::triggered, this, &QgsSymbolButton::pasteSymbol );
 
+    if ( mShowNull )
+    {
+      QAction *nullAction = new QAction( tr( "Clear Current Symbol" ), this );
+      nullAction->setEnabled( !isNull() );
+      mMenu->addAction( nullAction );
+      connect( nullAction, &QAction::triggered, this, &QgsSymbolButton::setToNull );
+    }
+
     mMenu->addSeparator();
 
     QgsColorWheel *colorWheel = new QgsColorWheel( mMenu );
@@ -716,4 +724,24 @@ QString QgsSymbolButton::dialogTitle() const
 QgsSymbol *QgsSymbolButton::symbol()
 {
   return mSymbol.get();
+}
+
+void QgsSymbolButton::setShowNull( bool showNull )
+{
+  mShowNull = showNull;
+}
+
+bool QgsSymbolButton::showNull() const
+{
+  return mShowNull;
+}
+
+bool QgsSymbolButton::isNull() const
+{
+  return !mSymbol;
+}
+
+void QgsSymbolButton::setToNull()
+{
+  setSymbol( nullptr );
 }
