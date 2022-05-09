@@ -628,6 +628,9 @@
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
 %Include auto_generated/symbology/qgscategorizedsymbolrenderer.sip
 %Include auto_generated/symbology/qgscolorbrewerpalette.sip
+%If ( CONCATENATED_TABLES_MODEL )
+%Include auto_generated/symbology/qgscombinedstylemodel.sip
+%End
 %Include auto_generated/symbology/qgscptcityarchive.sip
 %Include auto_generated/symbology/qgsellipsesymbollayer.sip
 %Include auto_generated/symbology/qgsembeddedsymbolrenderer.sip
