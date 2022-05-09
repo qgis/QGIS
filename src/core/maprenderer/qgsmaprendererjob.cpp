@@ -740,7 +740,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // pass job imgPic
 
   // Allocate an image for labels
-  if ( labelJob.img == nullptr && !forceVector )
+  if ( !labelJob.img && !forceVector )
   {
     labelJob.img = allocateImage( QStringLiteral( "labels" ) );
   }
