@@ -32,9 +32,9 @@ Ownership is transferred to the ``project``.
 
     QgsSymbol *defaultSymbol( Qgis::SymbolType symbolType ) const /Factory/;
 %Docstring
-Returns the project default symbol for a given geometry type.
+Returns the project default symbol for a given type.
 
-:param geomType: the geometry type
+:param symbolType: the symbol type
 
 :return: a symbol pointer or NULL if there is no default set
 
@@ -45,9 +45,9 @@ Returns the project default symbol for a given geometry type.
 
     void setDefaultSymbol( Qgis::SymbolType symbolType, QgsSymbol *symbol );
 %Docstring
-Sets the project default symbol for a given geometry type.
+Sets the project default symbol for a given type.
 
-:param geomType: the geometry type
+:param symbolType: the symbol type
 :param symbol: the symbol pointer, set to NULL to clear default
 
 .. note::
