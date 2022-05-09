@@ -52,45 +52,6 @@ QgsPointCloudStatistics::AttributeStatistics QgsPointCloudStatistics::statistics
   return mStatisticsMap.value( attribute, defaultVal );
 }
 
-double QgsPointCloudStatistics::statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
-{
-  if ( !mStatisticsMap.contains( attribute ) )
-    return qQNaN();
-  const AttributeStatistics &stats = mStatisticsMap[ attribute ];
-  switch ( statistic )
-  {
-    case QgsStatisticalSummary::Count:
-      return stats.count >= 0 ? stats.count : qQNaN();
-
-    case QgsStatisticalSummary::Min:
-      return stats.minimum;
-
-    case QgsStatisticalSummary::Max:
-      return stats.maximum;
-
-    case QgsStatisticalSummary::Range:
-      return stats.maximum - stats.minimum;
-
-    case QgsStatisticalSummary::Mean:
-    case QgsStatisticalSummary::StDev:
-    case QgsStatisticalSummary::CountMissing:
-    case QgsStatisticalSummary::Sum:
-    case QgsStatisticalSummary::Median:
-    case QgsStatisticalSummary::StDevSample:
-    case QgsStatisticalSummary::Minority:
-    case QgsStatisticalSummary::Majority:
-    case QgsStatisticalSummary::Variety:
-    case QgsStatisticalSummary::FirstQuartile:
-    case QgsStatisticalSummary::ThirdQuartile:
-    case QgsStatisticalSummary::InterQuartileRange:
-    case QgsStatisticalSummary::First:
-    case QgsStatisticalSummary::Last:
-    case QgsStatisticalSummary::All:
-      return qQNaN();
-  }
-  return qQNaN();
-}
-
 QList<int> QgsPointCloudStatistics::classesOf( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
@@ -119,6 +80,21 @@ double QgsPointCloudStatistics::maximum( const QString &attribute ) const
     return qQNaN();
   return mStatisticsMap[ attribute ].maximum;
 }
+
+double QgsPointCloudStatistics::mean( const QString &attribute ) const
+{
+  if ( !mStatisticsMap.contains( attribute ) )
+    return qQNaN();
+  return mStatisticsMap[ attribute ].mean;
+}
+
+double QgsPointCloudStatistics::stDev( const QString &attribute ) const
+{
+  if ( !mStatisticsMap.contains( attribute ) )
+    return qQNaN();
+  return mStatisticsMap[ attribute ].stDev;
+}
+
 
 void QgsPointCloudStatistics::combineWith( const QgsPointCloudStatistics &stats )
 {

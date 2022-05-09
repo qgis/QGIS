@@ -85,6 +85,8 @@ struct StatsProcessor
         summary.minimum = std::numeric_limits<double>::max();
         summary.maximum = std::numeric_limits<double>::lowest();
         summary.count = 0;
+        summary.mean = 0;
+        summary.stDev = std::numeric_limits<double>::quiet_NaN();
         summary.classCount.clear();
         statsMap[ attribute.name() ] = summary;
       }
@@ -120,6 +122,8 @@ struct StatsProcessor
           QgsPointCloudRenderContext::getAttribute( ptr, i * recordSize + attributeOffset, attributeType, attributeValue );
           stats.minimum = std::min( stats.minimum, attributeValue );
           stats.maximum = std::max( stats.maximum, attributeValue );
+          stats.mean += attributeValue / count;
+          // TODO: add stDev calculation
           stats.count++;
           if ( classifiableAttributesOffsetSet.contains( attributeOffset ) )
           {
@@ -216,6 +220,8 @@ bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const 
     s.minimum = min.toDouble();
     s.maximum = max.toDouble();
     s.count = mIndex->metadataStatistic( attribute, QgsStatisticalSummary::Count ).toInt();
+    s.mean = mIndex->metadataStatistic( attribute, QgsStatisticalSummary::Mean ).toInt();
+    s.stDev = mIndex->metadataStatistic( attribute, QgsStatisticalSummary::StDev ).toInt();
     QVariantList classes = mIndex->metadataClasses( attribute );
     for ( QVariant c : classes )
     {

@@ -507,13 +507,13 @@ QVariant QgsPointCloudAttributeStatisticsModel::data( const QModelIndex &index, 
           return attr.name();
 
         case Min:
-          return stats.statisticOf( attr.name(), QgsStatisticalSummary::Statistic::Min );
+          return stats.minimum( attr.name() );
         case Max:
-          return stats.statisticOf( attr.name(), QgsStatisticalSummary::Statistic::Max );
+          return stats.maximum( attr.name() );
         case Mean:
-          return stats.statisticOf( attr.name(), QgsStatisticalSummary::Statistic::Mean );
+          return stats.mean( attr.name() );
         case StDev:
-          return stats.statisticOf( attr.name(), QgsStatisticalSummary::Statistic::StDev );
+          return stats.stDev( attr.name() );
 
       }
       return QVariant();

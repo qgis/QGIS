@@ -24,6 +24,15 @@ Class used to store statistics of a point cloud dataset.
 #include "qgspointcloudstatistics.h"
 %End
   public:
+    struct AttributeStatistics
+    {
+      double minimum;
+      double maximum;
+      double mean;
+      double stDev;
+      int count;
+      void cumulateStatistics( const AttributeStatistics &stats );
+    };
 
     QgsPointCloudStatistics();
 %Docstring
@@ -46,10 +55,9 @@ Clears the statistics of all attributes
 Clears the statistics of given attributes ``attributes``
 %End
 
-
-    double statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    AttributeStatistics statisticsOf( const QString &attribute ) const;
 %Docstring
-Returns the statistic ``statistic`` of ``attribute`` and NaN in case the attribute doesn't exist
+Returns the calculated statistics of attribute ``attribute``
 %End
 
     QList<int> classesOf( const QString &attribute ) const;
@@ -67,6 +75,18 @@ If no matching statistic is available then NaN will be returned.
     double maximum( const QString &attribute ) const;
 %Docstring
 Returns the maximum value for the attribute ``attribute``
+If no matching statistic is available then NaN will be returned.
+%End
+
+    double mean( const QString &attribute ) const;
+%Docstring
+Returns the mean value for the attribute ``attribute``
+If no matching statistic is available then NaN will be returned.
+%End
+
+    double stDev( const QString &attribute ) const;
+%Docstring
+Returns the standard deviation value for the attribute ``attribute``
 If no matching statistic is available then NaN will be returned.
 %End
 

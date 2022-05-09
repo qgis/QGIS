@@ -329,10 +329,15 @@ QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
     QgsPointCloudStatistics::AttributeStatistics s;
     QVariant min = metadataStatistic( name, QgsStatisticalSummary::Min );
     QVariant max = metadataStatistic( name, QgsStatisticalSummary::Max );
+    QVariant mean = metadataStatistic( name, QgsStatisticalSummary::Mean );
+    QVariant stDev = metadataStatistic( name, QgsStatisticalSummary::StDev );
     if ( !min.isValid() )
       continue;
+
     s.minimum = min.toDouble();
     s.maximum = max.toDouble();
+    s.mean = mean.toDouble();
+    s.stDev = stDev.toDouble();
     s.count = metadataStatistic( name, QgsStatisticalSummary::Count ).toInt();
     QVariantList classes = metadataClasses( name );
     for ( QVariant c : classes )

@@ -19,11 +19,11 @@
 #define QGSPOINTCLOUDSTATISTICS_H
 
 #include "qgis_core.h"
-#include "qgsstatisticalsummary.h"
 
 #include <QVector>
 #include <QSet>
 #include <QVariant>
+#include <QtMath>
 
 class QgsPointCloudAttribute;
 class IndexedPointCloudNode;
@@ -39,18 +39,30 @@ class IndexedPointCloudNode;
 class CORE_EXPORT QgsPointCloudStatistics
 {
   public:
-#ifndef SIP_RUN
     struct AttributeStatistics
     {
       double minimum = std::numeric_limits<double>::max();
       double maximum = std::numeric_limits<double>::lowest();
+      double mean = 0;
+      double stDev = 0;
       int count = 0;
+#ifndef SIP_RUN
       QMap<int, int> classCount;
-
+#endif
       void cumulateStatistics( const AttributeStatistics &stats )
       {
         minimum = std::min( minimum, stats.minimum );
         maximum = std::max( maximum, stats.maximum );
+
+        double newMean = ( mean * count + stats.mean * stats.count ) / ( count + stats.count );
+        double delta1 = newMean - mean;
+        double variance1 = stDev * stDev + delta1 * delta1 - 2 * count * delta1 * mean;
+        double delta2 = newMean - stats.mean;
+        double variance2 = stats.stDev * stats.stDev + delta2 * delta2 - 2 * stats.count * delta2 * stats.mean;
+        stDev = ( variance1 * count + variance2 * stats.count ) / ( count + stats.count );
+        stDev = qSqrt( stDev );
+
+        mean = newMean;
         count += stats.count;
 
         for ( int key : stats.classCount.keys() )
@@ -61,7 +73,6 @@ class CORE_EXPORT QgsPointCloudStatistics
         }
       }
     };
-#endif
 
     //! Constructor
     QgsPointCloudStatistics();
@@ -80,13 +91,8 @@ class CORE_EXPORT QgsPointCloudStatistics
     //! Clears the statistics of given attributes \a attributes
     void clear( const QVector<QgsPointCloudAttribute> &attributes );
 
-#ifndef SIP_RUN
     //! Returns the calculated statistics of attribute \a attribute
     AttributeStatistics statisticsOf( const QString &attribute ) const;
-#endif
-
-    //! Returns the statistic \a statistic of \a attribute and NaN in case the attribute doesn't exist
-    double statisticOf( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 
     //! Returns a list of existing classes which are present for the specified \a attribute
     QList<int> classesOf( const QString &attribute ) const;
@@ -111,6 +117,18 @@ class CORE_EXPORT QgsPointCloudStatistics
      * If no matching statistic is available then NaN will be returned.
      */
     double maximum( const QString &attribute ) const;
+
+    /**
+     * Returns the mean value for the attribute \a attribute
+     * If no matching statistic is available then NaN will be returned.
+     */
+    double mean( const QString &attribute ) const;
+
+    /**
+     * Returns the standard deviation value for the attribute \a attribute
+     * If no matching statistic is available then NaN will be returned.
+     */
+    double stDev( const QString &attribute ) const;
 
     //! Merges the current statistics with the statistics from \a stats
     void combineWith( const QgsPointCloudStatistics &stats );

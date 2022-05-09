@@ -94,8 +94,8 @@ void QgsPointCloudAttributeByRampRendererWidget::attributeChanged()
   if ( mLayer && mLayer->dataProvider() )
   {
     const QgsPointCloudStatistics stats = mLayer->statistics();
-    const QVariant min = stats.statisticOf( mAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Min );
-    const QVariant max = stats.statisticOf( mAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    const QVariant min = stats.minimum( mAttributeComboBox->currentAttribute() );
+    const QVariant max = stats.maximum( mAttributeComboBox->currentAttribute() );
     if ( min.isValid() && max.isValid() )
     {
       mProviderMin = min.toDouble();

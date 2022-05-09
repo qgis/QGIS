@@ -120,8 +120,8 @@ QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLay
       const QgsPointCloudStatistics stats = pcLayer->statistics();
 
       // try to fetch z range from provider metadata
-      const QVariant zMin = stats.statisticOf( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
-      const QVariant zMax = stats.statisticOf( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
+      const QVariant zMin = stats.minimum( QStringLiteral( "Z" ) );
+      const QVariant zMax = stats.maximum( QStringLiteral( "Z" ) );
       if ( zMin.isValid() && zMax.isValid() )
       {
         return QgsDoubleRange( zMin.toDouble() * mZScale + mZOffset, zMax.toDouble() * mZScale + mZOffset );
