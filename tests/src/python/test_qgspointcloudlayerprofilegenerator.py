@@ -65,6 +65,7 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
     def testProfileGeneration(self):
         pcl = QgsPointCloudLayer(
             os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
+        pcl.waitForStatisticsCalculationToFinish()
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
         pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
@@ -129,6 +130,7 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
     def testSnapping(self):
         pcl = QgsPointCloudLayer(
             os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
+        pcl.waitForStatisticsCalculationToFinish()
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
         pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
@@ -173,6 +175,7 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
     def testIdentify(self):
         pcl = QgsPointCloudLayer(
             os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
+        pcl.waitForStatisticsCalculationToFinish()
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
         pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
@@ -218,6 +221,7 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
     def testProfileRenderFixedColor(self):
         pcl = QgsPointCloudLayer(
             os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
+        pcl.waitForStatisticsCalculationToFinish()
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
         pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)

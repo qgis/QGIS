@@ -244,6 +244,12 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * \since QGIS 3.26
      */
     PointCloudStatisticsCalculationState statisticsCalculationState() const { return mStatisticsCalculationState; }
+
+    /**
+     * If a statistics calculation task is running wait for it to finish
+     * \since QGIS 3.26
+     */
+    void waitForStatisticsCalculationToFinish();
   signals:
 
     /**
