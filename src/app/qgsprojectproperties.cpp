@@ -948,6 +948,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mStyleFillSymbol->setSymbolType( Qgis::SymbolType::Fill );
   mStyleFillSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) );
 
+  mStyleColorRampSymbol->setShowNull( true );
   mStyleColorRampSymbol->setColorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
 
   mStyleTextFormat->setShowNullFormat( true );
