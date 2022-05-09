@@ -105,11 +105,8 @@ void QgsProjectStyleSettings::reset()
   mDefaultSymbolOpacity = 1.0;
 }
 
-bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
+bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( mProject->pathResolver() );
-
   mRandomizeDefaultSymbolColor = element.attribute( QStringLiteral( "RandomizeDefaultSymbolColor" ), QStringLiteral( "0" ) ).toInt();
   mDefaultSymbolOpacity = element.attribute( QStringLiteral( "DefaultSymbolOpacity" ), QStringLiteral( "1.0" ) ).toDouble();
 
@@ -117,7 +114,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   if ( !elem.isNull() )
   {
     QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
-    mDefaultMarkerSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, rwContext ) : nullptr );
+    mDefaultMarkerSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context ) : nullptr );
   }
   else
   {
@@ -128,7 +125,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   if ( !elem.isNull() )
   {
     QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
-    mDefaultLineSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, rwContext ) : nullptr );
+    mDefaultLineSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) : nullptr );
   }
   else
   {
@@ -139,7 +136,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   if ( !elem.isNull() )
   {
     QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
-    mDefaultFillSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, rwContext ) : nullptr );
+    mDefaultFillSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) : nullptr );
   }
   else
   {
@@ -152,7 +149,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   elem = element.firstChildElement( QStringLiteral( "text-style" ) );
   if ( !elem.isNull() )
   {
-    mDefaultTextFormat.readXml( elem, rwContext );
+    mDefaultTextFormat.readXml( elem, context );
   }
   else
   {
@@ -162,11 +159,9 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   return true;
 }
 
-QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
+QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement element = doc.createElement( QStringLiteral( "ProjectStyleSettings" ) );
-  QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( mProject->pathResolver() );
 
   element.setAttribute( QStringLiteral( "RandomizeDefaultSymbolColor" ), mRandomizeDefaultSymbolColor ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "DefaultSymbolOpacity" ), QString::number( mDefaultSymbolOpacity ) );
@@ -174,21 +169,21 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
   if ( mDefaultMarkerSymbol )
   {
     QDomElement markerSymbolElem = doc.createElement( QStringLiteral( "markerSymbol" ) );
-    markerSymbolElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mDefaultMarkerSymbol.get(), doc, rwContext ) );
+    markerSymbolElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mDefaultMarkerSymbol.get(), doc, context ) );
     element.appendChild( markerSymbolElem );
   }
 
   if ( mDefaultLineSymbol )
   {
     QDomElement lineSymbolElem = doc.createElement( QStringLiteral( "lineSymbol" ) );
-    lineSymbolElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mDefaultLineSymbol.get(), doc, rwContext ) );
+    lineSymbolElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mDefaultLineSymbol.get(), doc, context ) );
     element.appendChild( lineSymbolElem );
   }
 
   if ( mDefaultFillSymbol )
   {
     QDomElement fillSymbolElem = doc.createElement( QStringLiteral( "fillSymbol" ) );
-    fillSymbolElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mDefaultFillSymbol.get(), doc, rwContext ) );
+    fillSymbolElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mDefaultFillSymbol.get(), doc, context ) );
     element.appendChild( fillSymbolElem );
   }
 
@@ -200,7 +195,7 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
 
   if ( mDefaultTextFormat.isValid() )
   {
-    QDomElement textFormatElem = mDefaultTextFormat.writeXml( doc, rwContext );
+    QDomElement textFormatElem = mDefaultTextFormat.writeXml( doc, context );
     element.appendChild( textFormatElem );
   }
 
