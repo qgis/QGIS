@@ -75,6 +75,7 @@ set(QGIS_CORE_SRCS
   symbology/qgsarrowsymbollayer.cpp
   symbology/qgscategorizedsymbolrenderer.cpp
   symbology/qgscolorbrewerpalette.cpp
+  symbology/qgscombinedstylemodel.cpp
   symbology/qgscptcityarchive.cpp
   symbology/qgsellipsesymbollayer.cpp
   symbology/qgsembeddedsymbolrenderer.cpp
@@ -1748,6 +1749,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsarrowsymbollayer.h
   symbology/qgscategorizedsymbolrenderer.h
   symbology/qgscolorbrewerpalette.h
+  symbology/qgscombinedstylemodel.h
   symbology/qgscptcityarchive.h
   symbology/qgsellipsesymbollayer.h
   symbology/qgsembeddedsymbolrenderer.h
