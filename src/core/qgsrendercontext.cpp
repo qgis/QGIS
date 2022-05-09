@@ -702,12 +702,12 @@ void QgsRenderContext::setCurrentFrame( long long frame )
   mCurrentFrame = frame;
 }
 
-void QgsRenderContext::addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, const QPainterPath *path )
+void QgsRenderContext::addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, QPainterPath path )
 {
   mSymbolLayerClipPaths[ symbolLayer ].append( path );
 }
 
-QList<const QPainterPath *> QgsRenderContext::symbolLayerClipPaths( const QgsSymbolLayer *symbolLayer ) const
+QList<QPainterPath> QgsRenderContext::symbolLayerClipPaths( const QgsSymbolLayer *symbolLayer ) const
 {
   return mSymbolLayerClipPaths[ symbolLayer ];
 }

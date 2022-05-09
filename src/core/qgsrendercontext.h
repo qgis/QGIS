@@ -896,13 +896,13 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Add a clip \a path to be applied to the \a symbolLayer before rendering
      * \since QGIS 3.26
      */
-    void addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, const QPainterPath *path );
+    void addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, QPainterPath path );
 
     /**
      * Returns clip paths to be applied to the \a symbolLayer before rendering
      * \since QGIS 3.26
      */
-    QList<const QPainterPath *> symbolLayerClipPaths( const QgsSymbolLayer *symbolLayer ) const;
+    QList<QPainterPath> symbolLayerClipPaths( const QgsSymbolLayer *symbolLayer ) const;
 
 #endif
 
@@ -1169,7 +1169,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     long long mCurrentFrame = -1;
 
     //! clip paths to be applied to the symbol layer before rendering
-    QMap< const QgsSymbolLayer *, QList<const QPainterPath *> > mSymbolLayerClipPaths;
+    QMap< const QgsSymbolLayer *, QList<QPainterPath> > mSymbolLayerClipPaths;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

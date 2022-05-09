@@ -399,6 +399,8 @@ void QgsMapRendererCustomPainterJob::doRender()
   }
   else
   {
+    initSecondPassJobs( mSecondPassLayerJobs, mLabelJob );
+
     for ( LayerRenderJob &job : mSecondPassLayerJobs )
     {
       if ( job.context()->renderingStopped() )

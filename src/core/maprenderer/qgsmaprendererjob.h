@@ -546,6 +546,12 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      */
     std::vector< LayerRenderJob > prepareSecondPassJobs( std::vector< LayerRenderJob > &firstPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
 
+    /**
+     * Initialize \a secondPassJobs according to what have been rendered (mask clipping path e.g.) in first pass jobs and \a labelJob.
+     * \since QGIS 3.26
+     */
+    void initSecondPassJobs( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob ) const SIP_SKIP;
+
     //! \note not available in Python bindings
     static QImage composeImage( const QgsMapSettings &settings,
                                 const std::vector< LayerRenderJob > &jobs,
