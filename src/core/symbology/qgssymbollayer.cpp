@@ -915,14 +915,14 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
 #endif
 
   const QgsRenderContext &renderContext = context.renderContext();
-  const QList<const QPainterPath *> clipPaths = renderContext.symbolLayerClipPaths( this );
+  const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( this );
   if ( !clipPaths.isEmpty() )
   {
     QPainterPath mergedPaths;
     mergedPaths.setFillRule( Qt::WindingFill );
-    for ( const QPainterPath *path : clipPaths )
+    for ( QPainterPath path : clipPaths )
     {
-      mergedPaths.addPath( *path );
+      mergedPaths.addPath( path );
     }
 
     if ( !mergedPaths.isEmpty() )

@@ -291,6 +291,8 @@ void QgsMapRendererParallelJob::renderingFinished()
 #endif
   if ( ! mSecondPassLayerJobs.empty() )
   {
+    initSecondPassJobs( mSecondPassLayerJobs, mLabelJob );
+
     mStatus = RenderingSecondPass;
     // We have a second pass to do.
     connect( &mSecondPassFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersSecondPassFinished );

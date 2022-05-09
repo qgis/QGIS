@@ -858,32 +858,39 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       job2.context()->setFeedback( job2.renderer->feedback() );
     }
 
-    if ( !forceVector || job2.needRasterization )
-    {
-      // Render only the non masked symbol layer and we will compose 2nd pass with mask and first pass
-      // rendering in composeSecondPass
-      // The map renderer stores a reference to the context, so we can modify it even after the map renderer creation (what we need here)
-      job2.context()->setDisabledSymbolLayers( QgsSymbolLayerUtils::toSymbolLayerPointers( mapRenderer->featureRenderer(), symbolList ) );
-    }
-    else
-    {
-      const QSet<const QgsSymbolLayer *> &symbolLayers = QgsSymbolLayerUtils::toSymbolLayerPointers( mapRenderer->featureRenderer(), symbolList );
-
-      // we set clip path on masked symbol layer and resulting 2nd pass job picture will be the final
-      // rendering
-      for ( QPair<LayerRenderJob *, int> p : job2.maskJobs )
-      {
-        QPainter *maskPainter = p.first ? p.first->context()->maskPainter() : labelJob.context.maskPainter();
-        const QPainterPath &path = static_cast<QgsMaskPaintDevice *>( maskPainter->device() )->maskPainterPath();
-        for ( const QgsSymbolLayer *symbolLayer : symbolLayers )
-        {
-          job2.context()->addSymbolLayerClipPath( symbolLayer, &path );
-        }
-      }
-    }
+    // Render only the non masked symbol layer and we will compose 2nd pass with mask and first pass rendering in composeSecondPass
+    // If vector output is enabled, disabled symbol layers would be actually rendered and masked with clipping path set in QgsMapRendererJob::initSecondPassJobs
+    job2.context()->setDisabledSymbolLayers( QgsSymbolLayerUtils::toSymbolLayerPointers( mapRenderer->featureRenderer(), symbolList ) );
   }
 
   return secondPassJobs;
+}
+
+void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob ) const
+{
+  if ( !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) )
+    return;
+
+  for ( LayerRenderJob &job : secondPassJobs )
+  {
+    if ( job.needRasterization )
+      continue;
+
+    // we draw disabled symbol layer but me mask them with clipping path produced during first pass job
+    // Resulting 2nd pass job picture will be the final rendering
+
+    for ( QPair<LayerRenderJob *, int> p : job.maskJobs )
+    {
+      QPainter *maskPainter = p.first ? p.first->context()->maskPainter() : labelJob.context.maskPainter();
+      QPainterPath path = static_cast<QgsMaskPaintDevice *>( maskPainter->device() )->maskPainterPath();
+      for ( const QgsSymbolLayer *symbolLayer : job.context()->disabledSymbolLayers() )
+      {
+        job.context()->addSymbolLayerClipPath( symbolLayer, path );
+      }
+    }
+
+    job.context()->setDisabledSymbolLayers( QSet<const QgsSymbolLayer *>() );
+  }
 }
 
 LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool canUseLabelCache )
