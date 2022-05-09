@@ -27,7 +27,7 @@ QgsMaskPaintEngine::QgsMaskPaintEngine( bool usePathStroker )
 {
 }
 
-const QPainterPath &QgsMaskPaintEngine::maskPainterPath() const
+QPainterPath QgsMaskPaintEngine::maskPainterPath() const
 {
   return mMaskPainterPath;
 }
@@ -117,7 +117,7 @@ int QgsMaskPaintDevice::metric( PaintDeviceMetric m ) const
   return val;
 }
 
-const QPainterPath &QgsMaskPaintDevice::maskPainterPath() const
+QPainterPath QgsMaskPaintDevice::maskPainterPath() const
 {
   return mPaintEngine->maskPainterPath();
 }

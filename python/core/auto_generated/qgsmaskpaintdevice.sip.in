@@ -39,7 +39,7 @@ pen configuration
     virtual int metric( PaintDeviceMetric metric ) const;
 
 
-    const QPainterPath &maskPainterPath() const;
+    QPainterPath maskPainterPath() const;
 %Docstring
 Returns the mask painter path painted on this paint device
 %End
