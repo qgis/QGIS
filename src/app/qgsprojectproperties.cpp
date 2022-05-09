@@ -939,12 +939,15 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   twWCSLayers->verticalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
   // Default styles
+  mStyleMarkerSymbol->setShowNull( true );
   mStyleMarkerSymbol->setSymbolType( Qgis::SymbolType::Marker );
   mStyleMarkerSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) );
 
+  mStyleMarkerSymbol->setShowNull( true );
   mStyleLineSymbol->setSymbolType( Qgis::SymbolType::Line );
   mStyleLineSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) );
 
+  mStyleMarkerSymbol->setShowNull( true );
   mStyleFillSymbol->setSymbolType( Qgis::SymbolType::Fill );
   mStyleFillSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) );
 
