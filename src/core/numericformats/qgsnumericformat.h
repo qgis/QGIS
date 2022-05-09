@@ -222,7 +222,6 @@ class CORE_EXPORT QgsNumericFormatContext
       mInterpretation = interpretation;
     }
 
-
   private:
     QChar mThousandsSep;
     QChar mDecimalSep;
@@ -350,6 +349,9 @@ class CORE_EXPORT QgsNumericFormat
     bool operator==( const QgsNumericFormat &other ) const;
     bool operator!=( const QgsNumericFormat &other ) const;
 
+  protected:
+
+    static constexpr int DEFAULT_SORT_KEY = 100;
 };
 
 #endif // QGSNUMERICFORMAT_H

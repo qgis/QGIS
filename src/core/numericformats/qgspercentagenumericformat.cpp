@@ -34,7 +34,7 @@ QString QgsPercentageNumericFormat::visibleName() const
 
 int QgsPercentageNumericFormat::sortKey()
 {
-  return QgsNumericFormat::sortKey(); // clazy:exclude=skipped-base-method
+  return DEFAULT_SORT_KEY;
 }
 
 double QgsPercentageNumericFormat::suggestSampleValue() const
