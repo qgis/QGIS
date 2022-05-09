@@ -53,7 +53,7 @@ class QgsMaskPaintEngine: public QPaintEngine
     void drawTiledPixmap( const QRectF &, const QPixmap &, const QPointF & ) override { return; };
     void drawImage( const QRectF &, const QImage &, const QRectF &, Qt::ImageConversionFlags ) override { return; };
 
-    const QPainterPath &maskPainterPath() const;
+    QPainterPath maskPainterPath() const;
 
   private:
 
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsMaskPaintDevice: public QPaintDevice
     /**
      * Returns the mask painter path painted on this paint device
      */
-    const QPainterPath &maskPainterPath() const;
+    QPainterPath maskPainterPath() const;
 
   private:
 
