@@ -879,7 +879,7 @@ void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secon
     // we draw disabled symbol layer but me mask them with clipping path produced during first pass job
     // Resulting 2nd pass job picture will be the final rendering
 
-    for ( QPair<LayerRenderJob *, int> p : job.maskJobs )
+    for ( const QPair<LayerRenderJob *, int> &p : std::as_const( job.maskJobs ) )
     {
       QPainter *maskPainter = p.first ? p.first->context()->maskPainter() : labelJob.context.maskPainter();
       QPainterPath path = static_cast<QgsMaskPaintDevice *>( maskPainter->device() )->maskPainterPath();
