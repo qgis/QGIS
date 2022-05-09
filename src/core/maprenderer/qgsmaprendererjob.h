@@ -149,7 +149,7 @@ class LayerRenderJob
      *   pass by another job. We then need to know which first pass image and which masks correspond.
      */
 
-    //! Mask image, needed during the first pass if a mask is defined and we need rasterization
+    //! Mask image, needed during the first pass if a mask is defined and the mask must be rasterized.
     QImage *maskImage = nullptr;
 
     /**
