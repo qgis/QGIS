@@ -152,10 +152,10 @@ RUN curl -v -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/develop
 ENV PATH="/usr/sap/hdbclient:${PATH}"
 
 # MSSQL: client side
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/19.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
-RUN apt-get update
-RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql17 mssql-tools
+# RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+# RUN curl https://packages.microsoft.com/config/ubuntu/19.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
+# RUN apt-get update
+# RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql17 mssql-tools
 
 # OTB: download and install otb packages for QGIS tests
 RUN curl -k https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-7.1.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
