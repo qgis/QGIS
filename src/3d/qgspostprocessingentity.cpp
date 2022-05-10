@@ -57,9 +57,9 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   addComponent( renderer );
 
   mMaterial = new Qt3DRender::QMaterial( this );
-  mColorTextureParameter = new Qt3DRender::QParameter( "colorTexture", frameGraph->forwardRenderColorTexture() );
-  mDepthTextureParameter = new Qt3DRender::QParameter( "depthTexture", frameGraph->forwardRenderDepthTexture() );
-  mShadowMapParameter = new Qt3DRender::QParameter( "shadowTexture", frameGraph->shadowMapTexture() );
+  mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), frameGraph->forwardRenderColorTexture() );
+  mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), frameGraph->forwardRenderDepthTexture() );
+  mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), frameGraph->shadowMapTexture() );
   mMaterial->addParameter( mColorTextureParameter );
   mMaterial->addParameter( mDepthTextureParameter );
   mMaterial->addParameter( mShadowMapParameter );
@@ -67,69 +67,69 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   mMainCamera = frameGraph->mainCamera();
   mLightCamera = frameGraph->lightCamera();
 
-  mFarPlaneParameter = new Qt3DRender::QParameter( "farPlane", mMainCamera->farPlane() );
+  mFarPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "farPlane" ), mMainCamera->farPlane() );
   mMaterial->addParameter( mFarPlaneParameter );
-  connect( mMainCamera, &Qt3DRender::QCamera::farPlaneChanged, [&]( float farPlane )
+  connect( mMainCamera, &Qt3DRender::QCamera::farPlaneChanged, mFarPlaneParameter, [&]( float farPlane )
   {
     mFarPlaneParameter->setValue( farPlane );
   } );
-  mNearPlaneParameter = new Qt3DRender::QParameter( "nearPlane", mMainCamera->nearPlane() );
+  mNearPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "nearPlane" ), mMainCamera->nearPlane() );
   mMaterial->addParameter( mNearPlaneParameter );
-  connect( mMainCamera, &Qt3DRender::QCamera::nearPlaneChanged, [&]( float nearPlane )
+  connect( mMainCamera, &Qt3DRender::QCamera::nearPlaneChanged, mNearPlaneParameter, [&]( float nearPlane )
   {
     mNearPlaneParameter->setValue( nearPlane );
   } );
 
-  mLightFarPlaneParameter = new Qt3DRender::QParameter( "lightFarPlane", mLightCamera->farPlane() );
+  mLightFarPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "lightFarPlane" ), mLightCamera->farPlane() );
   mMaterial->addParameter( mLightFarPlaneParameter );
-  connect( mLightCamera, &Qt3DRender::QCamera::farPlaneChanged, [&]( float farPlane )
+  connect( mLightCamera, &Qt3DRender::QCamera::farPlaneChanged, mLightFarPlaneParameter, [&]( float farPlane )
   {
     mLightFarPlaneParameter->setValue( farPlane );
   } );
-  mLightNearPlaneParameter = new Qt3DRender::QParameter( "lightNearPlane", mLightCamera->nearPlane() );
+  mLightNearPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "lightNearPlane" ), mLightCamera->nearPlane() );
   mMaterial->addParameter( mLightNearPlaneParameter );
-  connect( mLightCamera, &Qt3DRender::QCamera::nearPlaneChanged, [&]( float nearPlane )
+  connect( mLightCamera, &Qt3DRender::QCamera::nearPlaneChanged, mLightNearPlaneParameter, [&]( float nearPlane )
   {
     mLightNearPlaneParameter->setValue( nearPlane );
   } );
 
-  mMainCameraInvViewMatrixParameter = new Qt3DRender::QParameter( "invertedCameraView", mMainCamera->viewMatrix().inverted() );
+  mMainCameraInvViewMatrixParameter = new Qt3DRender::QParameter( QStringLiteral( "invertedCameraView" ), mMainCamera->viewMatrix().inverted() );
   mMaterial->addParameter( mMainCameraInvViewMatrixParameter );
-  mMainCameraInvProjMatrixParameter = new Qt3DRender::QParameter( "invertedCameraProj", mMainCamera->projectionMatrix().inverted() );
+  mMainCameraInvProjMatrixParameter = new Qt3DRender::QParameter( QStringLiteral( "invertedCameraProj" ), mMainCamera->projectionMatrix().inverted() );
   mMaterial->addParameter( mMainCameraInvProjMatrixParameter );
-  connect( mMainCamera, &Qt3DRender::QCamera::projectionMatrixChanged, [&]( const QMatrix4x4 & projectionMatrix )
+  connect( mMainCamera, &Qt3DRender::QCamera::projectionMatrixChanged, mMainCameraInvProjMatrixParameter, [&]( const QMatrix4x4 & projectionMatrix )
   {
     mMainCameraInvProjMatrixParameter->setValue( projectionMatrix.inverted() );
   } );
-  connect( mMainCamera, &Qt3DRender::QCamera::viewMatrixChanged, [&]()
+  connect( mMainCamera, &Qt3DRender::QCamera::viewMatrixChanged, mMainCameraInvViewMatrixParameter, [&]()
   {
     mMainCameraInvViewMatrixParameter->setValue( mMainCamera->viewMatrix().inverted() );
   } );
 
-  mShadowMinX = new Qt3DRender::QParameter( "shadowMinX", QVariant::fromValue( 0.0f ) );
-  mShadowMaxX = new Qt3DRender::QParameter( "shadowMaxX", QVariant::fromValue( 0.0f ) );
-  mShadowMinZ = new Qt3DRender::QParameter( "shadowMinZ", QVariant::fromValue( 0.0f ) );
-  mShadowMaxZ = new Qt3DRender::QParameter( "shadowMaxZ", QVariant::fromValue( 0.0f ) );
+  mShadowMinX = new Qt3DRender::QParameter( QStringLiteral( "shadowMinX" ), QVariant::fromValue( 0.0f ) );
+  mShadowMaxX = new Qt3DRender::QParameter( QStringLiteral( "shadowMaxX" ), QVariant::fromValue( 0.0f ) );
+  mShadowMinZ = new Qt3DRender::QParameter( QStringLiteral( "shadowMinZ" ), QVariant::fromValue( 0.0f ) );
+  mShadowMaxZ = new Qt3DRender::QParameter( QStringLiteral( "shadowMaxZ" ), QVariant::fromValue( 0.0f ) );
   mMaterial->addParameter( mShadowMinX );
   mMaterial->addParameter( mShadowMaxX );
   mMaterial->addParameter( mShadowMinZ );
   mMaterial->addParameter( mShadowMaxZ );
 
-  mRenderShadowsParameter = new Qt3DRender::QParameter( "renderShadows", QVariant::fromValue( 0 ) );
+  mRenderShadowsParameter = new Qt3DRender::QParameter( QStringLiteral( "renderShadows" ), QVariant::fromValue( 0 ) );
   mMaterial->addParameter( mRenderShadowsParameter );
 
-  mShadowBiasParameter = new Qt3DRender::QParameter( "shadowBias", QVariant::fromValue( 0.00001f ) );
+  mShadowBiasParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowBias" ), QVariant::fromValue( 0.00001f ) );
   mMaterial->addParameter( mShadowBiasParameter );
 
-  mEyeDomeLightingEnabledParameter = new Qt3DRender::QParameter( "edlEnabled", QVariant::fromValue( 0 ) );
-  mEyeDomeLightingStrengthParameter = new Qt3DRender::QParameter( "edlStrength", QVariant::fromValue( 1000.0f ) );
-  mEyeDomeLightingDistanceParameter = new Qt3DRender::QParameter( "edlDistance", QVariant::fromValue( 2.0f ) );
+  mEyeDomeLightingEnabledParameter = new Qt3DRender::QParameter( QStringLiteral( "edlEnabled" ), QVariant::fromValue( 0 ) );
+  mEyeDomeLightingStrengthParameter = new Qt3DRender::QParameter( QStringLiteral( "edlStrength" ), QVariant::fromValue( 1000.0f ) );
+  mEyeDomeLightingDistanceParameter = new Qt3DRender::QParameter( QStringLiteral( "edlDistance" ), QVariant::fromValue( 2.0f ) );
   mMaterial->addParameter( mEyeDomeLightingEnabledParameter );
   mMaterial->addParameter( mEyeDomeLightingStrengthParameter );
   mMaterial->addParameter( mEyeDomeLightingDistanceParameter );
 
-  mLightPosition = new Qt3DRender::QParameter( "lightPosition", QVariant::fromValue( QVector3D() ) );
-  mLightDirection = new Qt3DRender::QParameter( "lightDirection", QVariant::fromValue( QVector3D() ) );
+  mLightPosition = new Qt3DRender::QParameter( QStringLiteral( "lightPosition" ), QVariant::fromValue( QVector3D() ) );
+  mLightDirection = new Qt3DRender::QParameter( QStringLiteral( "lightDirection" ), QVariant::fromValue( QVector3D() ) );
   mMaterial->addParameter( mLightPosition );
   mMaterial->addParameter( mLightDirection );
 
