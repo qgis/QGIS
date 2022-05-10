@@ -74,8 +74,7 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
   errors = other.errors;
   layerId = other.layerId;
 
-  maskImage = other.maskImage;
-  other.maskImage = nullptr;
+  maskPaintDevice = std::move( other.maskPaintDevice );
 
   firstPassJob = other.firstPassJob;
   other.firstPassJob = nullptr;
@@ -111,8 +110,7 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
   renderer = other.renderer;
   other.renderer = nullptr;
 
-  maskImage = other.maskImage;
-  other.maskImage = nullptr;
+  maskPaintDevice = std::move( other.maskPaintDevice );
 
   firstPassJob = other.firstPassJob;
   other.firstPassJob = nullptr;
@@ -714,20 +712,26 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // Prepare label mask images
   for ( int maskId = 0; maskId < labelJob.maskIdProvider.size(); maskId++ )
   {
+    QPaintDevice *maskPaintDevice = nullptr;
+    QPainter *maskPainter = nullptr;
     if ( forceVector && !labelHasEffects[ maskId ] )
     {
       // set a painter to get all masking instruction in order to later clip masked symbol layer
-      QPainter *painter = new QPainter( new QgsMaskPaintDevice( true ) );
-      labelJob.context.setMaskPainter( painter, maskId );
+      maskPaintDevice = new QgsMaskPaintDevice( true );
+      maskPainter = new QPainter( maskPaintDevice );
     }
     else
     {
       // Note: we only need an alpha channel here, rather than a full RGBA image
-      QImage *maskImage;
-      labelJob.context.setMaskPainter( allocateImageAndPainter( QStringLiteral( "label mask" ), maskImage ), maskId );
+      QImage *maskImage = nullptr;
+      maskPainter = allocateImageAndPainter( QStringLiteral( "label mask" ), maskImage );
       maskImage->fill( 0 );
-      labelJob.maskImages.push_back( maskImage );
+      maskPaintDevice = maskImage;
     }
+
+    labelJob.context.setMaskPainter( maskPainter, maskId );
+    labelJob.maskPainters.push_back( std::unique_ptr<QPainter>( maskPainter ) );
+    labelJob.maskPaintDevices.push_back( std::unique_ptr<QPaintDevice>( maskPaintDevice ) );
   }
   labelJob.context.setMaskIdProvider( &labelJob.maskIdProvider );
 
@@ -783,18 +787,26 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     // for layer that mask, generate mask in first pass job
     if ( maskLayerHasEffects.contains( job.layerId ) )
     {
+      QPaintDevice *maskPaintDevice = nullptr;
+      QPainter *maskPainter = nullptr;
       if ( forceVector && !maskLayerHasEffects[ job.layerId ] )
       {
         // set a painter to get all masking instruction in order to later clip masked symbol layer
-        QPainter *painter = new QPainter( new QgsMaskPaintDevice() );
-        job.context()->setMaskPainter( painter );
+        maskPaintDevice = new QgsMaskPaintDevice();
+        maskPainter = new QPainter( maskPaintDevice );
       }
       else
       {
         // Note: we only need an alpha channel here, rather than a full RGBA image
-        job.context()->setMaskPainter( allocateImageAndPainter( job.layerId, job.maskImage ) );
-        job.maskImage->fill( 0 );
+        QImage *maskImage = nullptr;
+        maskPainter = allocateImageAndPainter( job.layerId, maskImage );
+        maskImage->fill( 0 );
+        maskPaintDevice = maskImage;
       }
+
+      job.context()->setMaskPainter( maskPainter );
+      job.maskPainter.reset( maskPainter );
+      job.maskPaintDevice.reset( maskPaintDevice );
     }
   }
 
@@ -881,7 +893,7 @@ void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secon
 
     for ( const QPair<LayerRenderJob *, int> &p : std::as_const( job.maskJobs ) )
     {
-      QPainter *maskPainter = p.first ? p.first->context()->maskPainter() : labelJob.context.maskPainter();
+      QPainter *maskPainter = p.first ? p.first->maskPainter.get() : labelJob.maskPainters[p.second].get();
       QPainterPath path = static_cast<QgsMaskPaintDevice *>( maskPainter->device() )->maskPainterPath();
       for ( const QgsSymbolLayer *symbolLayer : job.context()->disabledSymbolLayers() )
       {
@@ -963,17 +975,6 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
       job.picture.reset( nullptr );
     }
 
-    // delete the mask image and painter
-    if ( job.context()->maskPainter() )
-    {
-      // delete painter device because it's different from maskImage when force vector output is on
-      QPaintDevice *device = job.context()->maskPainter()->device();
-      delete job.context()->maskPainter();
-      delete device;
-      job.context()->setMaskPainter( nullptr );
-      job.maskImage = nullptr;
-    }
-
     if ( job.renderer )
     {
       const QStringList errors = job.renderer->errors();
@@ -988,6 +989,9 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
 
     if ( job.layer )
       mPerLayerRenderingTime.insert( job.layer, job.renderingTime );
+
+    job.maskPainter.reset( nullptr );
+    job.maskPaintDevice.reset( nullptr );
   }
 
   jobs.clear();
@@ -1041,16 +1045,8 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
   }
 
   job.picture.reset( nullptr );
-
-  for ( int maskId = 0; maskId < job.maskIdProvider.size(); maskId++ )
-  {
-    // delete painter device because it's different from maskImage when force vector output is on
-    QPaintDevice *device = job.context.maskPainter( maskId )->device();
-    delete job.context.maskPainter( maskId );
-    delete device;
-    job.context.setMaskPainter( nullptr, maskId );
-  }
-  job.maskImages.clear();
+  job.maskPainters.clear();
+  job.maskPaintDevices.clear();
 }
 
 
@@ -1171,10 +1167,10 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
       QPainter *maskPainter = nullptr;
       for ( QPair<LayerRenderJob *, int> p : job.maskJobs )
       {
-        QImage *maskImage = p.first ? p.first->maskImage : labelJob.maskImages[p.second];
-        if ( ! maskPainter )
+        QImage *maskImage = static_cast<QImage *>( p.first ? p.first->maskPaintDevice.get() : labelJob.maskPaintDevices[p.second].get() );
+        if ( !maskPainter )
         {
-          maskPainter = p.first ? p.first->context()->maskPainter() : labelJob.context.maskPainter( p.second );
+          maskPainter = p.first ? p.first->maskPainter.get() : labelJob.maskPainters[ p.second ].get();
         }
         else
         {
@@ -1189,7 +1185,7 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
       QPair<LayerRenderJob *, int> p = *job.maskJobs.begin();
       if ( isRasterRendering )
       {
-        QImage *maskImage = p.first ? p.first->maskImage : labelJob.maskImages[p.second];
+        QImage *maskImage = static_cast<QImage *>( p.first ? p.first->maskPaintDevice.get() : labelJob.maskPaintDevices[p.second].get() );
 
         // Only retain parts of the second rendering that are "inside" the mask image
         QPainter *painter = job.context()->painter();
