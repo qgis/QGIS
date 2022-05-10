@@ -213,7 +213,6 @@ class TestSelectiveMasking(unittest.TestCase):
             settings.dpi = dpiTarget
 
         exporter = QgsLayoutExporter(layout)
-        # TODO uncomment this
         result_filename = getTempfilePath('pdf')
         exporter.exportToPdf(result_filename, settings)
         self.assertTrue(os.path.exists(result_filename))
@@ -1069,6 +1068,39 @@ class TestSelectiveMasking(unittest.TestCase):
         res = self.checker.compareImages(control_name)
         self.report += self.checker.report()
         self.assertTrue(res)
+
+    def test_layout_export_2_sources_masking(self):
+        """Test masking with 2 different sources"""
+
+        # mask with points layer circles...
+        p = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'size': "3"})
+        self.points_layer.setRenderer(QgsSingleSymbolRenderer(p))
+
+        circle_symbol = QgsMarkerSymbol.createSimple({'size': '6'})
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setSubSymbol(circle_symbol)
+        mask_layer.setMasks([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+        ])
+        self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
+
+        # ...and with text
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+
+        fmt.font().setPointSize(4)
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(1.0)
+        # and mask other symbol layers underneath
+        fmt.mask().setMaskedSymbolLayers([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0))])
+
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        self.check_layout_export("layout_export_2_sources_masking", 0)
 
 
 if __name__ == '__main__':
