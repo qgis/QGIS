@@ -623,7 +623,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     QImage *allocateImage( QString layerId );
 
     //! Convenient method to allocate a new image and a new QPainter on this image
-    QPainter *allocateImageAndPainter( QString layerId, QImage *&image );
+    QPainter *allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context );
 
     /**
      *  This pure virtual method has to be implemented in derived class for starting the rendering.
@@ -638,7 +638,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     typedef std::pair<std::unique_ptr<QPicture>, QPainter * > PictureAndPainter;
 
     //! Convenient method to allocate a new qpicture and associated qpainter
-    PictureAndPainter allocatePictureAndPainter();
+    PictureAndPainter allocatePictureAndPainter( const QgsRenderContext *context );
 };
 
 

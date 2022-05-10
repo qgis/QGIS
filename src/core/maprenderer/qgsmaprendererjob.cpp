@@ -399,31 +399,23 @@ QImage *QgsMapRendererJob::allocateImage( QString layerId )
   return image;
 }
 
-QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&image )
+QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context )
 {
   QPainter *painter = nullptr;
   image = allocateImage( layerId );
   if ( image )
   {
     painter = new QPainter( image );
-    painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( Qgis::MapSettingsFlag::Antialiasing ) );
-    painter->setRenderHint( QPainter::SmoothPixmapTransform, mSettings.testFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms ) );
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-    painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( Qgis::MapSettingsFlag::LosslessImageRendering ) );
-#endif
+    context->setPainterFlagsUsingContext( painter );
   }
   return painter;
 }
 
-QgsMapRendererJob::PictureAndPainter QgsMapRendererJob::allocatePictureAndPainter()
+QgsMapRendererJob::PictureAndPainter QgsMapRendererJob::allocatePictureAndPainter( const QgsRenderContext *context )
 {
   std::unique_ptr<QPicture> picture = std::make_unique<QPicture>();
   QPainter *painter = new QPainter( picture.get() );
-  painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( Qgis::MapSettingsFlag::Antialiasing ) );
-  painter->setRenderHint( QPainter::SmoothPixmapTransform, mSettings.testFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms ) );
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-  painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( Qgis::MapSettingsFlag::LosslessImageRendering ) );
-#endif
+  context->setPainterFlagsUsingContext( painter );
   return { std::move( picture ), painter };
 }
 
@@ -569,7 +561,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     if ( mCache || ( !painter && !deferredPainterSet ) || ( job.renderer && job.renderer->forceRasterRender() ) )
     {
       // Flattened image for drawing when a blending mode is set
-      job.context()->setPainter( allocateImageAndPainter( ml->id(), job.img ) );
+      job.context()->setPainter( allocateImageAndPainter( ml->id(), job.img, job.context() ) );
       if ( ! job.img )
       {
         delete job.renderer;
@@ -724,7 +716,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     {
       // Note: we only need an alpha channel here, rather than a full RGBA image
       QImage *maskImage = nullptr;
-      maskPainter = allocateImageAndPainter( QStringLiteral( "label mask" ), maskImage );
+      maskPainter = allocateImageAndPainter( QStringLiteral( "label mask" ), maskImage, &labelJob.context );
       maskImage->fill( 0 );
       maskPaintDevice = maskImage;
     }
@@ -772,11 +764,11 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     const bool isRasterRendering = !forceVector || job.needRasterization || ( job.renderer && job.renderer->forceRasterRender() );
     if ( isRasterRendering && !job.img )
     {
-      job.context()->setPainter( allocateImageAndPainter( job.layerId, job.img ) );
+      job.context()->setPainter( allocateImageAndPainter( job.layerId, job.img, job.context() ) );
     }
     else if ( !isRasterRendering && !job.picture )
     {
-      PictureAndPainter pictureAndPainter = allocatePictureAndPainter();
+      PictureAndPainter pictureAndPainter = allocatePictureAndPainter( job.context() );
       job.picture = std::move( pictureAndPainter.first );
       job.context()->setPainter( pictureAndPainter.second );
       // force recreation of layer renderer so it initialize correctly the renderer
@@ -799,7 +791,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       {
         // Note: we only need an alpha channel here, rather than a full RGBA image
         QImage *maskImage = nullptr;
-        maskPainter = allocateImageAndPainter( job.layerId, maskImage );
+        maskPainter = allocateImageAndPainter( job.layerId, maskImage, job.context() );
         maskImage->fill( 0 );
         maskPaintDevice = maskImage;
       }
@@ -846,11 +838,11 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
     if ( !forceVector || job2.needRasterization )
     {
-      job2.context()->setPainter( allocateImageAndPainter( job.layerId, job2.img ) );
+      job2.context()->setPainter( allocateImageAndPainter( job.layerId, job2.img, job2.context() ) );
     }
     else
     {
-      PictureAndPainter pictureAndPainter = allocatePictureAndPainter();
+      PictureAndPainter pictureAndPainter = allocatePictureAndPainter( job2.context() );
       job2.picture = std::move( pictureAndPainter.first );
       job2.context()->setPainter( pictureAndPainter.second );
     }
