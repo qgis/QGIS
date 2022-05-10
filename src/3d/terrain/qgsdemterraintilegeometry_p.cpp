@@ -21,6 +21,7 @@
 #include <limits>
 #include <cmath>
 #include "qgsraycastingutils_p.h"
+#include "qgis.h"
 
 ///@cond PRIVATE
 
@@ -235,7 +236,9 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
       return false;
     }
 
+    Q_NOWARN_DEPRECATED_PUSH
     QT3D_FUNCTOR( PlaneVertexBufferFunctor )
+    Q_NOWARN_DEPRECATED_POP
 
   private:
     int mResolution;
@@ -268,7 +271,9 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
       return false;
     }
 
+    Q_NOWARN_DEPRECATED_PUSH
     QT3D_FUNCTOR( PlaneIndexBufferFunctor )
+    Q_NOWARN_DEPRECATED_POP
 
   private:
     int mResolution;

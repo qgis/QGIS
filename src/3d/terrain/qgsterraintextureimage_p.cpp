@@ -53,7 +53,9 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
              mExtent == otherFunctor->mExtent;
     }
 
+    Q_NOWARN_DEPRECATED_PUSH
     QT3D_FUNCTOR( TerrainTextureImageDataGenerator )
+    Q_NOWARN_DEPRECATED_POP
 
   private:
     QgsRectangle mExtent;

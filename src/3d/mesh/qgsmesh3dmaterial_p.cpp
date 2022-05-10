@@ -95,7 +95,10 @@ class ArrowsTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
     const bool mFixedSize;
     const double mMaxVectorLength;
 
+    // sorry!
+    Q_NOWARN_DEPRECATED_PUSH
     QT3D_FUNCTOR( ArrowsTextureGenerator )
+    Q_NOWARN_DEPRECATED_POP
 };
 
 
