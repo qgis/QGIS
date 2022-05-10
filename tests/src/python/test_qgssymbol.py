@@ -55,6 +55,7 @@ from qgis.core import (QgsGeometry,
                        QgsSymbolLayerUtils,
                        QgsMarkerLineSymbolLayer,
                        QgsArrowSymbolLayer,
+                       QgsGeometryGeneratorSymbolLayer,
                        QgsSymbol,
                        Qgis,
                        QgsSymbolLayer,
@@ -810,6 +811,34 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         markerSymbol.symbolLayer(1).setSize(45)
         self.assertAlmostEqual(markerSymbol.size(context), 45, 3)
         self.assertAlmostEqual(markerSymbol.size(context2), 45, 3)
+
+    def testGeometryGeneratorSize(self):
+        # test marker symbol size propagation to geometry generated sub marker symbols
+        geomGeneratorSymbolLayer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': '$geometry'})
+        geomGeneratorSymbolLayer.setSymbolType(QgsSymbol.Marker)
+        geomGeneratorSymbolLayer.subSymbol().setSize(2.5)
+
+        markerSymbol = QgsMarkerSymbol()
+        markerSymbol.deleteSymbolLayer(0)
+        markerSymbol.appendSymbolLayer(geomGeneratorSymbolLayer)
+        self.assertEqual(markerSymbol.size(), 2.5)
+
+        markerSymbol.setSize(10.5)
+        self.assertEqual(markerSymbol.size(), 10.5)
+
+    def testGeometryGeneratorWidth(self):
+        # test line symbol width propagation to geometry generated sub line symbols
+        geomGeneratorSymbolLayer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': '$geometry'})
+        geomGeneratorSymbolLayer.setSymbolType(QgsSymbol.Line)
+        geomGeneratorSymbolLayer.subSymbol().setWidth(2.5)
+
+        lineSymbol = QgsLineSymbol()
+        lineSymbol.deleteSymbolLayer(0)
+        lineSymbol.appendSymbolLayer(geomGeneratorSymbolLayer)
+        self.assertEqual(lineSymbol.width(), 2.5)
+
+        lineSymbol.setWidth(10.5)
+        self.assertEqual(lineSymbol.width(), 10.5)
 
     def testAngle(self):
         # test angle and setAngle
