@@ -331,7 +331,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
       job.completed = job.renderer->render();
 
-      if ( job.imgPic )
+      if ( job.picture )
       {
         job.renderer->renderContext()->painter()->end();
       }
@@ -369,10 +369,10 @@ void QgsMapRendererCustomPainterJob::doRender()
         drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), &painter );
         painter.end();
       }
-      else if ( mLabelJob.imgPic )
+      else if ( mLabelJob.picture )
       {
         QPainter painter;
-        painter.begin( mLabelJob.imgPic.get() );
+        painter.begin( mLabelJob.picture.get() );
         mLabelJob.context.setPainter( &painter );
         drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), &painter );
         painter.end();
@@ -419,7 +419,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
         job.completed = job.renderer->render();
 
-        if ( job.imgPic )
+        if ( job.picture )
         {
           job.renderer->renderContext()->painter()->end();
         }
@@ -445,22 +445,22 @@ void QgsMapRendererCustomPainterJob::doRender()
       for ( LayerRenderJob &job : mLayerJobs )
       {
         // if there is vector rendering we use it, else we use the raster rendering
-        if ( job.imgPic )
+        if ( job.picture )
         {
           mPainter->save();
           _fixQPictureDPI( mPainter );
-          mPainter->drawPicture( 0, 0, *job.imgPic );
+          mPainter->drawPicture( 0, 0, *job.picture );
           mPainter->restore();
         }
         else
           mPainter->drawImage( 0, 0, *job.img );
       }
 
-      if ( mLabelJob.imgPic )
+      if ( mLabelJob.picture )
       {
         mPainter->save();
         _fixQPictureDPI( mPainter );
-        mPainter->drawPicture( 0, 0, *mLabelJob.imgPic );
+        mPainter->drawPicture( 0, 0, *mLabelJob.picture );
         mPainter->restore();
       }
     }
