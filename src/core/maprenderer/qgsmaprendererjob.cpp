@@ -417,14 +417,14 @@ QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&
 
 QgsMapRendererJob::PictureAndPainter QgsMapRendererJob::allocatePictureAndPainter()
 {
-  QPicture *picture = new QPicture();
-  QPainter *painter = new QPainter( picture );
+  std::unique_ptr<QPicture> picture = std::make_unique<QPicture>();
+  QPainter *painter = new QPainter( picture.get() );
   painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( Qgis::MapSettingsFlag::Antialiasing ) );
   painter->setRenderHint( QPainter::SmoothPixmapTransform, mSettings.testFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms ) );
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( Qgis::MapSettingsFlag::LosslessImageRendering ) );
 #endif
-  return PictureAndPainter( picture, painter );
+  return { std::move( picture ), painter };
 }
 
 std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool deferredPainterSet )
@@ -777,7 +777,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     else if ( !isRasterRendering && !job.picture )
     {
       PictureAndPainter pictureAndPainter = allocatePictureAndPainter();
-      job.picture.reset( pictureAndPainter.first );
+      job.picture = std::move( pictureAndPainter.first );
       job.context()->setPainter( pictureAndPainter.second );
       // force recreation of layer renderer so it initialize correctly the renderer
       // especially the RasterLayerRender that need logicalDpiX from painting device
@@ -851,7 +851,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     else
     {
       PictureAndPainter pictureAndPainter = allocatePictureAndPainter();
-      job2.picture.reset( pictureAndPainter.first );
+      job2.picture = std::move( pictureAndPainter.first );
       job2.context()->setPainter( pictureAndPainter.second );
     }
 

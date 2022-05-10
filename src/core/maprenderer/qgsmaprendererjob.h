@@ -635,7 +635,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     QgsLabelSink *mLabelSink = nullptr;
     QgsLabelingEngineFeedback *mLabelingEngineFeedback = nullptr;
 
-    typedef std::pair<QPicture *, QPainter *> PictureAndPainter;
+    typedef std::pair<std::unique_ptr<QPicture>, QPainter * > PictureAndPainter;
 
     //! Convenient method to allocate a new qpicture and associated qpainter
     PictureAndPainter allocatePictureAndPainter();
