@@ -1337,6 +1337,7 @@ namespace QgsWms
                                           ex.what() );
           }
         }
+
         mapSettings.setIsTemporal( true );
         mapSettings.setTemporalRange( range );
 
