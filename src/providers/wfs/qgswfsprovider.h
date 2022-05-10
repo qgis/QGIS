@@ -137,7 +137,7 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
   private:
     //! Mutable data shared between provider and feature sources
-    std::shared_ptr<QgsWFSSharedData> mShared;
+    QExplicitlySharedDataPointer<QgsWFSSharedData> mShared;
 
     /**
      * Invalidates cache of shared object
