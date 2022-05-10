@@ -776,6 +776,9 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   if ( theSQL == mSubsetString )
     return true;
 
+  // Subset string is in shared data
+  mShared.detach();
+
   // Invalid and cancel current download before altering fields, etc...
   // (crashes might happen if not done at the beginning)
   mShared->invalidateCache();
