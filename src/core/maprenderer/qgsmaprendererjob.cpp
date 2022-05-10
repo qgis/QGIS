@@ -80,7 +80,7 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
   firstPassJob = other.firstPassJob;
   other.firstPassJob = nullptr;
 
-  imgPic = std::move( other.imgPic );
+  picture = std::move( other.picture );
 
   maskJobs = other.maskJobs;
 
@@ -117,7 +117,7 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
   firstPassJob = other.firstPassJob;
   other.firstPassJob = nullptr;
 
-  imgPic = std::move( other.imgPic );
+  picture = std::move( other.picture );
 }
 
 bool LayerRenderJob::imageCanBeComposed() const
@@ -737,16 +737,16 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // - For vector rendering if no effects are involved
   // 1st pass is rendered in QImage, clip paths are generated according to mask and used during
   // masked symbol layer rendering during second pass, which is rendered in QPicture, second
-  // pass job imgPic
+  // pass job picture
 
   // Allocate an image for labels
   if ( !labelJob.img && !forceVector )
   {
     labelJob.img = allocateImage( QStringLiteral( "labels" ) );
   }
-  else if ( !labelJob.imgPic && forceVector )
+  else if ( !labelJob.picture && forceVector )
   {
-    labelJob.imgPic.reset( new QPicture() );
+    labelJob.picture.reset( new QPicture() );
   }
 
   // first we initialize painter and mask painter for all jobs
@@ -770,10 +770,10 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     {
       job.context()->setPainter( allocateImageAndPainter( job.layerId, job.img ) );
     }
-    else if ( !isRasterRendering && !job.imgPic )
+    else if ( !isRasterRendering && !job.picture )
     {
       PictureAndPainter pictureAndPainter = allocatePictureAndPainter();
-      job.imgPic.reset( pictureAndPainter.first );
+      job.picture.reset( pictureAndPainter.first );
       job.context()->setPainter( pictureAndPainter.second );
       // force recreation of layer renderer so it initialize correctly the renderer
       // especially the RasterLayerRender that need logicalDpiX from painting device
@@ -839,11 +839,11 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     else
     {
       PictureAndPainter pictureAndPainter = allocatePictureAndPainter();
-      job2.imgPic.reset( pictureAndPainter.first );
+      job2.picture.reset( pictureAndPainter.first );
       job2.context()->setPainter( pictureAndPainter.second );
     }
 
-    if ( ! job2.img && ! job2.imgPic )
+    if ( ! job2.img && ! job2.picture )
     {
       secondPassJobs.pop_back();
       continue;
@@ -956,11 +956,11 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
       job.img = nullptr;
     }
 
-    if ( job.imgPic )
+    if ( job.picture )
     {
       delete job.context()->painter();
       job.context()->setPainter( nullptr );
-      job.imgPic.reset( nullptr );
+      job.picture.reset( nullptr );
     }
 
     // delete the mask image and painter
@@ -1006,7 +1006,7 @@ void QgsMapRendererJob::cleanupSecondPassJobs( std::vector< LayerRenderJob > &jo
       job.img = nullptr;
     }
 
-    if ( job.imgPic )
+    if ( job.picture )
     {
       delete job.context()->painter();
       job.context()->setPainter( nullptr );
@@ -1040,7 +1040,7 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
     job.img = nullptr;
   }
 
-  job.imgPic.reset( nullptr );
+  job.picture.reset( nullptr );
 
   for ( int maskId = 0; maskId < job.maskIdProvider.size(); maskId++ )
   {
@@ -1229,8 +1229,8 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
       }
       else
       {
-        job.firstPassJob->imgPic = std::move( job.imgPic );
-        job.imgPic = nullptr;
+        job.firstPassJob->picture = std::move( job.picture );
+        job.picture = nullptr;
       }
     }
   }

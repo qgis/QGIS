@@ -167,7 +167,7 @@ class LayerRenderJob
     /**
      * QPicture representation of rendered layer. Used only for vector layer content when required for layer masking.
      */
-    std::unique_ptr<QPicture> imgPic;
+    std::unique_ptr<QPicture> picture;
 
     /**
      * Pointer to first pass jobs that carry a mask image, needed during the second pass.
@@ -196,8 +196,8 @@ struct LabelRenderJob
    */
   QImage *img = nullptr;
 
-  //! Used for vector rendering
-  std::unique_ptr<QPicture> imgPic;
+  //! QPicture representation of rendered labels. Used only for vector layer content when required for layer masking.
+  std::unique_ptr<QPicture> picture;
 
   /**
    * Mask images
