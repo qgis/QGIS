@@ -77,6 +77,7 @@ void Byte14Compressor::writeData()
         }
     }
     LAZDEBUG(std::cerr << "BYTE      : " << total << "\n");
+    (void)total;
 }
 
 const char *Byte14Compressor::compress(const char *buf, int& sc)
