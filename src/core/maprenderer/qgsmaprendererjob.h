@@ -207,7 +207,7 @@ struct LabelRenderJob
   std::vector< std::unique_ptr<QPainter> > maskPainters;
 
   /**
-   * Contains either mask images or QgsMaskPaintDevice is full vector renderering is enabled and possible (no effects e.g.)
+   * Contains either mask images or QgsMaskPaintDevice is full vector rendering is enabled and possible (no effects e.g.)
    *
    * There is only one label job, with labels coming from different layers or rules (for rule-based labeling).
    * So we may have different labels with different label masks. We then need one different mask paint device for each configuration of label masks.
