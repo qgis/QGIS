@@ -90,7 +90,7 @@ class QT3DEXTRASSHARED_EXPORT Qt3DWindow : public QWindow
 {
     Q_OBJECT
 public:
-    Qt3DWindow(QScreen *screen = nullptr);
+    Qt3DWindow(QScreen *screen = nullptr, Qt3DRender::API = Qt3DRender::API::OpenGL);
     ~Qt3DWindow();
 
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
@@ -112,6 +112,7 @@ Q_SIGNALS:
 protected:
     void showEvent(QShowEvent *e) override;
     void resizeEvent(QResizeEvent *) override;
+    bool event(QEvent *e) override;
 
 private:
     Q_DECLARE_PRIVATE(Qt3DWindow)
