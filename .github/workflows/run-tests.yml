@@ -46,7 +46,7 @@ jobs:
             with-3d: ON
             with-quick: ON
             patch-qt-3d: true
-            LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
+            # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
 
           - distro-version: '34'
             qt-version: 6
