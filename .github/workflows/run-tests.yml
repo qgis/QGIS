@@ -48,7 +48,7 @@ jobs:
             patch-qt-3d: true
             with-grass7: OFF
             with-grass8: OFF
-            LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
+            # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
 
           - distro-version: '36'
