@@ -220,7 +220,7 @@ QString QgsVectorLayerElevationProperties::htmlSummary() const
 
   properties << tr( "Scale: %1" ).arg( mZScale );
 
-  return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QStringLiteral( "</li><li>" ) ) );
+  return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QLatin1String( "</li><li>" ) ) );
 }
 
 bool QgsVectorLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const

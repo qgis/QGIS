@@ -102,7 +102,7 @@ QString QgsPointCloudLayerElevationProperties::htmlSummary() const
   QStringList properties;
   properties << tr( "Scale: %1" ).arg( mZScale );
   properties << tr( "Offset: %1" ).arg( mZOffset );
-  return QStringLiteral( "<ul><li>%1</li></ul>" ).arg( properties.join( QStringLiteral( "</li><li>" ) ) );
+  return QStringLiteral( "<ul><li>%1</li></ul>" ).arg( properties.join( QLatin1String( "</li><li>" ) ) );
 }
 
 bool QgsPointCloudLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const

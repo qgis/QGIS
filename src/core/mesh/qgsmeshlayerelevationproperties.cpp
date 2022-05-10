@@ -85,7 +85,7 @@ QString QgsMeshLayerElevationProperties::htmlSummary() const
   QStringList properties;
   properties << tr( "Scale: %1" ).arg( mZScale );
   properties << tr( "Offset: %1" ).arg( mZOffset );
-  return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QStringLiteral( "</li><li>" ) ) );
+  return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QLatin1String( "</li><li>" ) ) );
 }
 
 QgsMeshLayerElevationProperties *QgsMeshLayerElevationProperties::clone() const
