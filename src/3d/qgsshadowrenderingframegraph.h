@@ -78,6 +78,12 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     //! Returns a layer object used to indicate that an entity will be rendered during the forward rendering pass
     Qt3DRender::QLayer *forwardRenderLayer() { return mForwardRenderLayer; }
 
+    /**
+     * Returns a layer object used to indicate that the object is transparent
+     * \since QGIS 3.26
+     */
+    Qt3DRender::QLayer *transparentObjectLayer() { return mTransparentObjectsPassLayer; }
+
     //! Returns the main camera
     Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
     //! Returns the light camera
@@ -220,6 +226,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QLayer *mForwardRenderLayer = nullptr;
     Qt3DRender::QLayer *mCastShadowsLayer = nullptr;
     Qt3DRender::QLayer *mDepthRenderPassLayer = nullptr;
+    Qt3DRender::QLayer *mTransparentObjectsPassLayer = nullptr;
 
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
 
