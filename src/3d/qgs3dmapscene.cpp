@@ -25,6 +25,7 @@
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QPhongAlphaMaterial>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DRender/QEffect>
@@ -910,6 +911,19 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
     } );
 
     bm->setViewportSize( mCameraController->viewport().size() );
+  }
+
+  // Finalize adding the 3D transparent objects by adding the layer components to the entities
+  for ( Qt3DExtras::QPhongAlphaMaterial *ph : newEntity->findChildren<Qt3DExtras::QPhongAlphaMaterial *>() )
+  {
+    Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( ph->parent() );
+    if ( !entity )
+      continue;
+    QgsShadowRenderingFrameGraph *frameGraph = mEngine->frameGraph();
+    Qt3DRender::QLayer *layer = frameGraph->transparentObjectLayer();
+    if ( entity->components().contains( layer ) )
+      continue;
+    entity->addComponent( layer );
   }
 }
 
