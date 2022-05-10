@@ -55,6 +55,8 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsPointCloudLayerProfileGenerator Tests</h1>\n"
+        self.pcOptions = QgsPointCloudLayer.LayerOptions()
+        self.pcOptions.skipStatisticsCalculation = True
 
     def tearDown(self):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
@@ -64,8 +66,7 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testProfileGeneration(self):
         pcl = QgsPointCloudLayer(
-            os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
-        pcl.waitForStatisticsCalculationToFinish()
+            os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept', self.pcOptions)
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
         pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
@@ -129,8 +130,7 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testSnapping(self):
         pcl = QgsPointCloudLayer(
-            os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
-        pcl.waitForStatisticsCalculationToFinish()
+            os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept', self.pcOptions)
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
         pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
@@ -174,8 +174,7 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testIdentify(self):
         pcl = QgsPointCloudLayer(
-            os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
-        pcl.waitForStatisticsCalculationToFinish()
+            os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept', self.pcOptions)
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
         pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
@@ -220,8 +219,7 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testProfileRenderFixedColor(self):
         pcl = QgsPointCloudLayer(
-            os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
-        pcl.waitForStatisticsCalculationToFinish()
+            os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept', self.pcOptions)
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
         pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
