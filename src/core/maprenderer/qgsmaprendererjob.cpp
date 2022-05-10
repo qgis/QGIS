@@ -806,7 +806,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   {
     QgsMapLayer *ml = job.layer;
 
-    auto it = maskedSymbolLayers.find( ml->id() );
+    auto it = maskedSymbolLayers.find( job.layerId );
     if ( it == maskedSymbolLayers.end() )
       continue;
 
