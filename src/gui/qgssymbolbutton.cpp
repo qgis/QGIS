@@ -395,11 +395,11 @@ void QgsSymbolButton::wheelEvent( QWheelEvent *event )
     bool symbolChanged = false;
     const double increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 0.1 : 1 ) *
                              event->angleDelta().y() > 0 ? 1 : -1;
-    switch ( mType )
+    switch ( mSymbol->type() )
     {
       case Qgis::SymbolType::Marker:
       {
-        QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( mSymbol.get() );
+        QgsMarkerSymbol *marker = qgis::down_cast<QgsMarkerSymbol *>( mSymbol.get() );
         if ( marker )
         {
           const double size = std::max( 0.0, marker->size() + increment );
@@ -411,7 +411,7 @@ void QgsSymbolButton::wheelEvent( QWheelEvent *event )
 
       case Qgis::SymbolType::Line:
       {
-        QgsLineSymbol *line = dynamic_cast<QgsLineSymbol *>( mSymbol.get() );
+        QgsLineSymbol *line = qgis::down_cast<QgsLineSymbol *>( mSymbol.get() );
         if ( line )
         {
           const double width = std::max( 0.0, line->width() + increment );
@@ -433,6 +433,10 @@ void QgsSymbolButton::wheelEvent( QWheelEvent *event )
     }
 
     event->accept();
+  }
+  else
+  {
+    QToolButton::wheelEvent( event );
   }
 }
 
