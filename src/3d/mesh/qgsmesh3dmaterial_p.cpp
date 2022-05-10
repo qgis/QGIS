@@ -95,7 +95,10 @@ class ArrowsTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
     const bool mFixedSize;
     const double mMaxVectorLength;
 
+    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
+    Q_NOWARN_DEPRECATED_PUSH
     QT3D_FUNCTOR( ArrowsTextureGenerator )
+    Q_NOWARN_DEPRECATED_POP
 };
 
 

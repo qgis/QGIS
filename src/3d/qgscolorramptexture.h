@@ -49,7 +49,10 @@ class QgsColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerato
 
     bool operator ==( const Qt3DRender::QTextureImageDataGenerator &other ) const override;
 
+    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
+    Q_NOWARN_DEPRECATED_PUSH
     QT3D_FUNCTOR( QgsColorRampTextureGenerator )
+    Q_NOWARN_DEPRECATED_POP
 
   private:
     QgsColorRampShader mColorRampShader;
