@@ -29,6 +29,7 @@ from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterString,
+                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -53,6 +54,7 @@ class gdalcalc(GdalAlgorithm):
     EXTENT = 'PROJWIN'
     OUTPUT = 'OUTPUT'
     NO_DATA = 'NO_DATA'
+    HIDE_NO_DATA = 'HIDE_NO_DATA'
     OPTIONS = 'OPTIONS'
     EXTRA = 'EXTRA'
     RTYPE = 'RTYPE'
@@ -142,6 +144,13 @@ class gdalcalc(GdalAlgorithm):
                 optional=True))
 
         if GdalUtils.version() >= 3030000:
+            self.addParameter(
+                QgsProcessingParameterBoolean(
+                    self.HIDE_NO_DATA,
+                    self.tr('Ignore the input bands NoDataValue'),
+                    defaultValue=False
+                )
+            )
             extent_param = QgsProcessingParameterExtent(self.EXTENT,
                                                         self.tr('Output extent'),
                                                         optional=True)
@@ -219,6 +228,8 @@ class gdalcalc(GdalAlgorithm):
         if noData is not None:
             arguments.append('--NoDataValue')
             arguments.append(noData)
+        if self.parameterAsBool(parameters, self.HIDE_NO_DATA, context):
+            arguments.append('--hideNoData')
         layer = self.parameterAsRasterLayer(parameters, self.INPUT_A, context)
         if layer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_A))
