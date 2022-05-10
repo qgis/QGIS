@@ -117,7 +117,7 @@ void Point14Compressor::writeSizes()
 
 void Point14Compressor::writeData()
 {
-#ifndef NDEBUG
+#ifdef PRINT_DEBUG
     std::cerr << "XY        : " <<
         utils::sum(xy_enc_.encoded_bytes(), xy_enc_.num_encoded()) << "\n";
     std::cerr << "Z         : " <<
