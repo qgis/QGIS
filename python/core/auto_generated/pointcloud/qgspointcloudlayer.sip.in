@@ -228,7 +228,7 @@ Signals an error related to this point cloud layer.
 .. versionadded:: 3.26
 %End
 
-    void statisticsCalculationStateChanged( PointCloudStatisticsCalculationState state );
+    void statisticsCalculationStateChanged( QgsPointCloudLayer::PointCloudStatisticsCalculationState state );
 %Docstring
 Emitted when statistics calculation state has changed
 

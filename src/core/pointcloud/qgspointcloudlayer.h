@@ -271,7 +271,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 3.26
      */
-    void statisticsCalculationStateChanged( PointCloudStatisticsCalculationState state );
+    void statisticsCalculationStateChanged( QgsPointCloudLayer::PointCloudStatisticsCalculationState state );
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
