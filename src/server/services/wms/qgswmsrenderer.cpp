@@ -63,6 +63,7 @@
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 #include "qgsserverexception.h"
+#include "qgsserverapiutils.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturestore.h"
 #include "qgsattributeeditorcontainer.h"
@@ -1311,17 +1312,36 @@ namespace QgsWms
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
 
-    // Set WMST
+    // Set WMS temporal properties
     if ( mContext.exposeTemporalProperties( ) )
     {
-      const QDateTime dt = QDateTime::fromString( mWmsParameters.dimensionValues().value( QStringLiteral( "TIME" ), QString() ), Qt::DateFormat::ISODate );
-      if ( dt.isValid() )
+      const QString timeString { mWmsParameters.dimensionValues().value( QStringLiteral( "TIME" ), QString() ) };
+      if ( ! timeString.isEmpty() )
       {
+        QgsDateTimeRange range;
+        // First try with a simple date/datetime instant
+        const QDateTime dt { QDateTime::fromString( timeString, Qt::DateFormat::ISODateWithMs ) };
+        if ( dt.isValid() )
+        {
+          range = QgsDateTimeRange( dt, dt );
+        }
+        else  // parse as an interval
+        {
+          try
+          {
+            range = QgsServerApiUtils::parseTemporalDateTimeInterval( timeString );
+          }
+          catch ( const QgsServerApiBadRequestException &ex )
+          {
+            throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                          ex.what() );
+          }
+        }
         mapSettings.setIsTemporal( true );
-        mapSettings.setTemporalRange( QgsDateTimeRange( dt, dt ) );
+        mapSettings.setTemporalRange( range );
+
       }
     }
-
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
