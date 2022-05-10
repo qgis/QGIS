@@ -149,8 +149,12 @@ class LayerRenderJob
      *   pass by another job. We then need to know which first pass image and which masks correspond.
      */
 
-    //! Mask image, needed during the first pass if a mask is defined and the mask must be rasterized.
-    QImage *maskImage = nullptr;
+    //! painter used to draw mask
+    std::unique_ptr<QPainter> maskPainter;
+
+
+    //! Mask paint device, needed during the first pass to render the mask
+    std::unique_ptr<QPaintDevice> maskPaintDevice;
 
     /**
      * If effects are involved in masking we need to rasterize the layer rendering even if
@@ -199,17 +203,20 @@ struct LabelRenderJob
   //! QPicture representation of rendered labels. Used only for vector layer content when required for layer masking.
   std::unique_ptr<QPicture> picture;
 
+  //! painters used to draw mask
+  std::vector< std::unique_ptr<QPainter> > maskPainters;
+
   /**
-   * Mask images
+   * Contains either mask images or QgsMaskPaintDevice is full vector renderering is enabled and possible (no effects e.g.)
    *
    * There is only one label job, with labels coming from different layers or rules (for rule-based labeling).
-   * So we may have different labels with different label masks. We then need one different mask image for each configuration of label masks.
-   * Labels that share the same kind of label masks, i.e. having the same set of symbol layers that are to be masked, should share the same mask image.
-   * Labels that have different label masks, i.e. having different set of symbol layers that are to be masked, should have different mask images.
+   * So we may have different labels with different label masks. We then need one different mask paint device for each configuration of label masks.
+   * Labels that share the same kind of label masks, i.e. having the same set of symbol layers that are to be masked, should share the same mask paint device.
+   * Labels that have different label masks, i.e. having different set of symbol layers that are to be masked, should have different mask paint device.
    * The index in the vector corresponds to the mask identifier.
    * \see maskIdProvider
    */
-  QVector<QImage *> maskImages;
+  std::vector< std::unique_ptr<QPaintDevice> > maskPaintDevices;
 
   /**
    * A mask id provider that is used to compute a mask image identifier for each label layer.
