@@ -178,7 +178,7 @@ QgsTileDownloadManager::QgsTileDownloadManager()
   {
     cacheDirectory.push_back( QDir::separator() );
   }
-  cacheDirectory += QStringLiteral( "http-ranges" );
+  cacheDirectory += QLatin1String( "http-ranges" );
   const qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 256 * 1024 * 1024 ).toLongLong();
 
   mRangesCache->setCacheDirectory( cacheDirectory );

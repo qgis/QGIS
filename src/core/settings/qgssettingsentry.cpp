@@ -27,7 +27,7 @@ QgsSettingsEntryGroup::QgsSettingsEntryGroup( const QList<const QgsSettingsEntry
   for ( const auto *setting : std::as_const( mSettings ) )
   {
     QString otherBaseKey = setting->definitionKey();
-    otherBaseKey = otherBaseKey.left( otherBaseKey.lastIndexOf( QStringLiteral( "/" ) ) );
+    otherBaseKey = otherBaseKey.left( otherBaseKey.lastIndexOf( QLatin1Char( '/' ) ) );
     if ( mDefinitionBaseKey.isEmpty() )
     {
       mDefinitionBaseKey = otherBaseKey;

@@ -1732,7 +1732,7 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Field type" ) + QStringLiteral( "</td><td>" );
   metadata += QgsVariantUtils::typeToDisplayString( domain->fieldType() );
-  metadata += QStringLiteral( "</td></tr>\n" );
+  metadata += QLatin1String( "</td></tr>\n" );
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Split policy" ) + QStringLiteral( "</td><td>" );
   switch ( domain->splitPolicy() )
@@ -1747,7 +1747,7 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
       metadata +=  tr( "Use geometry ratio" );
       break;
   }
-  metadata += QStringLiteral( "</td></tr>\n" );
+  metadata += QLatin1String( "</td></tr>\n" );
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Merge policy" ) + QStringLiteral( "</td><td>" );
   switch ( domain->mergePolicy() )

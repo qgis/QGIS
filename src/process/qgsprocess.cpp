@@ -872,7 +872,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
     {
       QString line = QStringLiteral( "%1: %2" ).arg( p->name(), p->description() );
       if ( p->flags() & QgsProcessingParameterDefinition::FlagOptional )
-        line += QStringLiteral( " (optional)" );
+        line += QLatin1String( " (optional)" );
       std::cout << QStringLiteral( "%1\n" ).arg( line ).toLocal8Bit().constData();
 
       if ( p->defaultValue().isValid() )

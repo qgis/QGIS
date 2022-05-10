@@ -28,14 +28,14 @@ QgsConfigCache *QgsConfigCache::sInstance = nullptr;
 QgsAbstractCacheStrategy *getStrategyFromSettings( QgsServerSettings *settings )
 {
   QgsAbstractCacheStrategy *strategy;
-  if ( settings && settings->projectCacheStrategy() == QStringLiteral( "periodic" ) )
+  if ( settings && settings->projectCacheStrategy() == QLatin1String( "periodic" ) )
   {
     strategy = new QgsPeriodicCacheStrategy( settings->projectCacheCheckInterval() );
     QgsMessageLog::logMessage(
       QStringLiteral( "Initializing 'periodic' cache strategy" ),
       QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
-  else if ( settings && settings->projectCacheStrategy() == QStringLiteral( "off" ) )
+  else if ( settings && settings->projectCacheStrategy() == QLatin1String( "off" ) )
   {
     strategy = new QgsNullCacheStrategy();
     QgsMessageLog::logMessage(
