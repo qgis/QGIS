@@ -38,7 +38,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   setupUi( this );
 
   // compatibility fix with former API (pre 3.26) when serviceName was a setting key instead
-  if ( mServiceName.startsWith( QStringLiteral( "qgis/" ) ) )
+  if ( mServiceName.startsWith( QLatin1String( "qgis/" ) ) )
   {
     // It would be obviously much better to use mBaseKey also for credentials,
     // but for some strange reason a different hardcoded key was used instead.

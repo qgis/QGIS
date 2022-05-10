@@ -281,19 +281,19 @@ QString QgsPointCloudIndex::subsetString() const
 
 QVariant QgsPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
-  if ( attribute == QStringLiteral( "X" ) && statistic == QgsStatisticalSummary::Min )
+  if ( attribute == QLatin1String( "X" ) && statistic == QgsStatisticalSummary::Min )
     return mExtent.xMinimum();
-  if ( attribute == QStringLiteral( "X" ) && statistic == QgsStatisticalSummary::Max )
+  if ( attribute == QLatin1String( "X" ) && statistic == QgsStatisticalSummary::Max )
     return mExtent.xMaximum();
 
-  if ( attribute == QStringLiteral( "Y" ) && statistic == QgsStatisticalSummary::Min )
+  if ( attribute == QLatin1String( "Y" ) && statistic == QgsStatisticalSummary::Min )
     return mExtent.yMinimum();
-  if ( attribute == QStringLiteral( "Y" ) && statistic == QgsStatisticalSummary::Max )
+  if ( attribute == QLatin1String( "Y" ) && statistic == QgsStatisticalSummary::Max )
     return mExtent.yMaximum();
 
-  if ( attribute == QStringLiteral( "Z" ) && statistic == QgsStatisticalSummary::Min )
+  if ( attribute == QLatin1String( "Z" ) && statistic == QgsStatisticalSummary::Min )
     return mZMin;
-  if ( attribute == QStringLiteral( "Z" ) && statistic == QgsStatisticalSummary::Max )
+  if ( attribute == QLatin1String( "Z" ) && statistic == QgsStatisticalSummary::Max )
     return mZMax;
 
   return QVariant();

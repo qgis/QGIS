@@ -97,9 +97,9 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
       {
         // only include the "wkt_geom" field IF we have other fields -- otherwise it's redundant and we should just set the clipboard to WKT text directly
         if ( !mFeatureFields.isEmpty() )
-          textFields += QStringLiteral( "wkt_geom" );
+          textFields += QLatin1String( "wkt_geom" );
 
-        htmlFields += QStringLiteral( "<td>wkt_geom</td>" );
+        htmlFields += QLatin1String( "<td>wkt_geom</td>" );
       }
 
       textFields.reserve( mFeatureFields.size() );

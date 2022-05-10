@@ -110,7 +110,7 @@ void QgsLazInfo::parseCrs()
   // TODO: handle other kind of CRS in the laz spec
   for ( LazVlr &vlr : mVlrVector )
   {
-    if ( vlr.userId.trimmed() == QStringLiteral( "LASF_Projection" ) && vlr.recordId == 2112 )
+    if ( vlr.userId.trimmed() == QLatin1String( "LASF_Projection" ) && vlr.recordId == 2112 )
     {
       mCrs = QgsCoordinateReferenceSystem::fromWkt( QString::fromStdString( vlr.data.toStdString() ) );
       break;
