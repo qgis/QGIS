@@ -17,6 +17,8 @@
 
 #include "qgspointcloudstatistics.h"
 
+#include <limits>
+
 #include "qgspointcloudattribute.h"
 
 QgsPointCloudStatistics::QgsPointCloudStatistics()
@@ -70,28 +72,28 @@ QMap<int, int> QgsPointCloudStatistics::availableClasses( const QString &attribu
 double QgsPointCloudStatistics::minimum( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
-    return qQNaN();
+    return std::numeric_limits<double>::quiet_NaN();
   return mStatisticsMap[ attribute ].minimum;
 }
 
 double QgsPointCloudStatistics::maximum( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
-    return qQNaN();
+    return std::numeric_limits<double>::quiet_NaN();
   return mStatisticsMap[ attribute ].maximum;
 }
 
 double QgsPointCloudStatistics::mean( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
-    return qQNaN();
+    return std::numeric_limits<double>::quiet_NaN();
   return mStatisticsMap[ attribute ].mean;
 }
 
 double QgsPointCloudStatistics::stDev( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
-    return qQNaN();
+    return std::numeric_limits<double>::quiet_NaN();
   return mStatisticsMap[ attribute ].stDev;
 }
 
