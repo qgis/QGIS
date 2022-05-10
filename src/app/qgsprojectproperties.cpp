@@ -939,19 +939,23 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   twWCSLayers->verticalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
   // Default styles
+  mStyleMarkerSymbol->setShowNull( true );
   mStyleMarkerSymbol->setSymbolType( Qgis::SymbolType::Marker );
   mStyleMarkerSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) );
 
+  mStyleLineSymbol->setShowNull( true );
   mStyleLineSymbol->setSymbolType( Qgis::SymbolType::Line );
   mStyleLineSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) );
 
+  mStyleFillSymbol->setShowNull( true );
   mStyleFillSymbol->setSymbolType( Qgis::SymbolType::Fill );
   mStyleFillSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) );
 
+  mStyleColorRampSymbol->setShowNull( true );
   mStyleColorRampSymbol->setColorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
 
   mStyleTextFormat->setShowNullFormat( true );
-  mStyleTextFormat->setNoFormatString( tr( "Clear Default Text Format" ) );
+  mStyleTextFormat->setNoFormatString( tr( "Clear Current Text Format" ) );
   QgsTextFormat textFormat = QgsProject::instance()->styleSettings()->defaultTextFormat();
   if ( textFormat.isValid() )
   {

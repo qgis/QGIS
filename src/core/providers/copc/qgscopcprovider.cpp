@@ -146,7 +146,6 @@ QList<QgsProviderSublayerDetails> QgsCopcProviderMetadata::querySublayers( const
 int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
   if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
     return 100;
 
@@ -156,7 +155,6 @@ int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
 QList<QgsMapLayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
   if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
     return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
 

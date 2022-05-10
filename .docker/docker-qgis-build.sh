@@ -38,6 +38,17 @@ else
   export CXX=/usr/lib/ccache/clang++
 fi
 
+BUILD_TYPE=Release
+
+if [[ "${WITH_CLAZY}" = "ON" ]]; then
+  # In release mode, all variables in QgsDebugMsg would be considered unused
+  BUILD_TYPE=Debug
+  export CXX=clazy
+
+  # ignore sip and external libraries
+  export CLAZY_IGNORE_DIRS="(.*/external/.*)|(.*sip_.*part.*)"
+fi
+
 if [[ ${WITH_QT6} = "ON" ]]; then
   CLANG_WARNINGS="-Wrange-loop-construct"
 fi
@@ -52,8 +63,15 @@ if [[ ${PATCH_QT_3D} == "true" ]]; then
   )
 fi
 
+if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
+  CMAKE_EXTRA_ARGS+=(
+    "-DGRASS_PREFIX$( grass --config version | cut -b 1 )=$( grass --config path )"
+  )
+fi
+
 cmake \
  -GNinja \
+ -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
  -DUSE_CCACHE=OFF \
  -DWITH_QT6=${WITH_QT6} \
  -DWITH_DESKTOP=${WITH_QT5} \
@@ -62,7 +80,8 @@ cmake \
  -DWITH_QUICK=${WITH_QUICK} \
  -DWITH_3D=${WITH_3D} \
  -DWITH_STAGED_PLUGINS=ON \
- -DWITH_GRASS=OFF \
+ -DWITH_GRASS7=${WITH_GRASS7} \
+ -DWITH_GRASS8=${WITH_GRASS8} \
  -DSUPPRESS_QT_WARNINGS=ON \
  -DENABLE_TESTS=ON \
  -DENABLE_MODELTEST=${WITH_QT5} \
@@ -82,7 +101,7 @@ cmake \
  -DWITH_SERVER=${WITH_QT5} \
  -DWITH_SERVER_LANDINGPAGE_WEBAPP=${WITH_QT5} \
  -DWITH_ORACLE=${WITH_QT5} \
- -DWITH_PDAL=${WITH_QT5} \
+ -DWITH_PDAL=ON \
  -DWITH_QT5SERIALPORT=${WITH_QT5} \
  -DWITH_QTWEBKIT=${WITH_QT5} \
  -DWITH_OAUTH2_PLUGIN=${WITH_QT5} \
@@ -92,7 +111,7 @@ cmake \
  -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s" \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
- -DADD_CLAZY_CHECKS=ON \
+ -DWITH_CLAZY=${WITH_CLAZY} \
  ${CMAKE_EXTRA_ARGS[*]} ..
 echo "::endgroup::"
 
@@ -104,7 +123,7 @@ git config --global --add safe.directory /root/QGIS
 #######
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
-ctest -V -S /root/QGIS/.ci/config_build.ctest
+ctest -VV -S /root/QGIS/.ci/config_build.ctest
 echo "::endgroup::"
 
 ########################

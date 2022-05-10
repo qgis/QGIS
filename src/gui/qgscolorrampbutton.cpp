@@ -234,6 +234,7 @@ void QgsColorRampButton::prepareMenu()
   if ( mShowNull )
   {
     QAction *nullAction = new QAction( tr( "Clear Current Ramp" ), this );
+    nullAction->setEnabled( !isNull() );
     mMenu->addAction( nullAction );
     connect( nullAction, &QAction::triggered, this, &QgsColorRampButton::setToNull );
   }
