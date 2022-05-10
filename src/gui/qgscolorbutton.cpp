@@ -424,14 +424,18 @@ void QgsColorButton::wheelEvent( QWheelEvent *event )
 {
   if ( mAllowOpacity && isEnabled() && !isNull() )
   {
-    const int increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 80 : 25 ) *
-                          ( event->angleDelta().y() > 0 ? 1 : -1 );
-    const int alpha = std::min( std::max( 0, mColor.alpha() + increment ), 255 );
-    mColor.setAlpha( alpha );
+    const double increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 0.25 : 0.1 ) *
+                             ( event->angleDelta().y() > 0 ? 1 : -1 );
+    const double alpha = std::min( std::max( 0.0, mColor.alphaF() + increment ), 1.0 );
+    mColor.setAlphaF( alpha );
 
     setButtonBackground();
     emit colorChanged( mColor );
     event->accept();
+  }
+  else
+  {
+    QToolButton::wheelEvent( event );
   }
 }
 
