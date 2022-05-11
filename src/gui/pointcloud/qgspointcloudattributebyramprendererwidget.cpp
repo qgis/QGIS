@@ -94,12 +94,12 @@ void QgsPointCloudAttributeByRampRendererWidget::attributeChanged()
   if ( mLayer && mLayer->dataProvider() )
   {
     const QgsPointCloudStatistics stats = mLayer->statistics();
-    const QVariant min = stats.minimum( mAttributeComboBox->currentAttribute() );
-    const QVariant max = stats.maximum( mAttributeComboBox->currentAttribute() );
-    if ( min.isValid() && max.isValid() )
+    const double min = stats.minimum( mAttributeComboBox->currentAttribute() );
+    const double max = stats.maximum( mAttributeComboBox->currentAttribute() );
+    if ( !std::isnan( min ) && !std::isnan( max ) )
     {
-      mProviderMin = min.toDouble();
-      mProviderMax = max.toDouble();
+      mProviderMin = min;
+      mProviderMax = max;
     }
     else
     {
