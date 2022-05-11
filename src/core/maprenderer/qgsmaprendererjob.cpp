@@ -83,7 +83,7 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
 
   maskJobs = other.maskJobs;
 
-  needRasterization = other.needRasterization;
+  maskRequiresLayerRasterization = other.maskRequiresLayerRasterization;
 
   return *this;
 }
@@ -99,7 +99,7 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
   , estimatedRenderingTime( other.estimatedRenderingTime )
   , errors( other.errors )
   , layerId( other.layerId )
-  , needRasterization( other.needRasterization )
+  , maskRequiresLayerRasterization( other.maskRequiresLayerRasterization )
   , maskJobs( other.maskJobs )
 {
   mContext = std::move( other.mContext );
@@ -748,7 +748,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // first we initialize painter and mask painter for all jobs
   for ( LayerRenderJob &job : firstPassJobs )
   {
-    job.needRasterization = false;
+    job.maskRequiresLayerRasterization = false;
 
     auto it = maskedSymbolLayers.find( job.layerId );
     if ( it != maskedSymbolLayers.end() )
@@ -756,12 +756,12 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       const QList<MaskSource> &sourceList = it->second;
       for ( const MaskSource &source : sourceList )
       {
-        job.needRasterization |= source.hasEffects;
+        job.maskRequiresLayerRasterization |= source.hasEffects;
       }
     }
 
     // update first pass job painter and device if needed
-    const bool isRasterRendering = !forceVector || job.needRasterization || ( job.renderer && job.renderer->forceRasterRender() );
+    const bool isRasterRendering = !forceVector || job.maskRequiresLayerRasterization || ( job.renderer && job.renderer->forceRasterRender() );
     if ( isRasterRendering && !job.img )
     {
       job.context()->setPainter( allocateImageAndPainter( job.layerId, job.img, job.context() ) );
@@ -816,7 +816,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     secondPassJobs.emplace_back( LayerRenderJob() );
     LayerRenderJob &job2 = secondPassJobs.back();
 
-    job2.needRasterization = job.needRasterization;
+    job2.maskRequiresLayerRasterization = job.maskRequiresLayerRasterization;
 
     // Points to the masking jobs. This will be needed during the second pass composition.
     for ( MaskSource &source : sourceList )
@@ -836,7 +836,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     // associate first pass job with second pass job
     job2.firstPassJob = &job;
 
-    if ( !forceVector || job2.needRasterization )
+    if ( !forceVector || job2.maskRequiresLayerRasterization )
     {
       job2.context()->setPainter( allocateImageAndPainter( job.layerId, job2.img, job2.context() ) );
     }
@@ -877,7 +877,7 @@ void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secon
 
   for ( LayerRenderJob &job : secondPassJobs )
   {
-    if ( job.needRasterization )
+    if ( job.maskRequiresLayerRasterization )
       continue;
 
     // we draw disabled symbol layer but me mask them with clipping path produced during first pass job
@@ -1151,7 +1151,7 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
   // compose the second pass with the mask
   for ( LayerRenderJob &job : secondPassJobs )
   {
-    const bool isRasterRendering = !forceVector || job.needRasterization;
+    const bool isRasterRendering = !forceVector || job.maskRequiresLayerRasterization;
 
     // Merge all mask images into the first one if we have more than one mask image
     if ( isRasterRendering && job.maskJobs.size() > 1 )
