@@ -27,7 +27,7 @@ RUN  apt-get update \
     libaio1 \
     libexiv2-27 \
     libfcgi0ldbl \
-    'libgsl23|libgsl23' \
+    libgsl27 \
     'libprotobuf-lite17|libprotobuf-lite23' \
     libqca-qt5-2-plugins \
     libqt53dextras5 \
