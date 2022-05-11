@@ -294,6 +294,21 @@ class TestQgsGeometryValidator(unittest.TestCase):
         self.assertEqual(spy[0][0].where(), QgsPointXY())
         self.assertEqual(spy[0][0].what(), 'Polygon 1 lies inside polygon 0')
 
+    def test_multi_part_curve(self):
+        # A circle inside another one
+        g = QgsGeometry.fromWkt("MultiSurface (CurvePolygon (CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)),CurvePolygon (CircularString (100 1, 100 0, 100 -1, 99 0, 100 1)))")
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
+
+        # converted as a straight polygon
+        g.convertToStraightSegment()
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
