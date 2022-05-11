@@ -15,6 +15,7 @@
 
 #include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgspainteffect.h"
 
@@ -44,7 +45,6 @@ void QgsLineSymbol::setWidth( double w ) const
   for ( QgsSymbolLayer *layer : constMLayers )
   {
     QgsLineSymbolLayer *lineLayer = dynamic_cast<QgsLineSymbolLayer *>( layer );
-
     if ( lineLayer )
     {
       if ( qgsDoubleNear( lineLayer->width(), origWidth ) )
@@ -59,6 +59,23 @@ void QgsLineSymbol::setWidth( double w ) const
       // also scale offset to maintain relative position
       if ( !qgsDoubleNear( origWidth, 0.0 ) && !qgsDoubleNear( lineLayer->offset(), 0.0 ) )
         lineLayer->setOffset( lineLayer->offset() * w / origWidth );
+    }
+    else
+    {
+      QgsGeometryGeneratorSymbolLayer *geomGeneratorLayer = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( layer );
+      if ( geomGeneratorLayer && geomGeneratorLayer->symbolType() == Qgis::SymbolType::Line )
+      {
+        QgsLineSymbol *lineSymbol = qgis::down_cast<QgsLineSymbol *>( geomGeneratorLayer->subSymbol() );
+        if ( qgsDoubleNear( lineSymbol->width(), origWidth ) )
+        {
+          lineSymbol->setWidth( w );
+        }
+        else if ( !qgsDoubleNear( origWidth, 0.0 ) )
+        {
+          // proportionally scale the width
+          lineSymbol->setWidth( lineSymbol->width() * w / origWidth );
+        }
+      }
     }
   }
 }
@@ -91,6 +108,17 @@ double QgsLineSymbol::width() const
       const double width = lineLayer->width();
       if ( width > maxWidth )
         maxWidth = width;
+    }
+    else
+    {
+      QgsGeometryGeneratorSymbolLayer *geomGeneratorLayer = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( symbolLayer );
+      if ( geomGeneratorLayer && geomGeneratorLayer->symbolType() == Qgis::SymbolType::Line )
+      {
+        QgsLineSymbol *lineSymbol = qgis::down_cast<QgsLineSymbol *>( geomGeneratorLayer->subSymbol() );
+        const double width = lineSymbol->width();
+        if ( width > maxWidth )
+          maxWidth = width;
+      }
     }
   }
   return maxWidth;

@@ -388,6 +388,58 @@ void QgsSymbolButton::dropEvent( QDropEvent *e )
   updatePreview();
 }
 
+void QgsSymbolButton::wheelEvent( QWheelEvent *event )
+{
+  if ( isEnabled() && mSymbol )
+  {
+    bool symbolChanged = false;
+    const double increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 0.1 : 1 ) *
+                             event->angleDelta().y() > 0 ? 1 : -1;
+    switch ( mSymbol->type() )
+    {
+      case Qgis::SymbolType::Marker:
+      {
+        QgsMarkerSymbol *marker = qgis::down_cast<QgsMarkerSymbol *>( mSymbol.get() );
+        if ( marker )
+        {
+          const double size = std::max( 0.0, marker->size() + increment );
+          marker->setSize( size );
+          symbolChanged = true;
+        }
+        break;
+      }
+
+      case Qgis::SymbolType::Line:
+      {
+        QgsLineSymbol *line = qgis::down_cast<QgsLineSymbol *>( mSymbol.get() );
+        if ( line )
+        {
+          const double width = std::max( 0.0, line->width() + increment );
+          line->setWidth( width );
+          symbolChanged = true;
+        }
+        break;
+      }
+
+      case Qgis::SymbolType::Fill:
+      case Qgis::SymbolType::Hybrid:
+        break;
+    }
+
+    if ( symbolChanged )
+    {
+      updatePreview();
+      emit changed();
+    }
+
+    event->accept();
+  }
+  else
+  {
+    QToolButton::wheelEvent( event );
+  }
+}
+
 void QgsSymbolButton::prepareMenu()
 {
   //we need to tear down and rebuild this menu every time it is shown. Otherwise the space allocated to any
