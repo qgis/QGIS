@@ -72,7 +72,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   const float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
   canvas->setViewFromTop( extent.center(), dist * 2, 0 );
 
-  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, [canvas]
+  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas]
   {
     qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
   } );
