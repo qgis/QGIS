@@ -292,143 +292,112 @@ void QgsLayoutItemScaleBar::disconnectCurrentMap()
 
 void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *context )
 {
-  const QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
-
-  mDataDefinedProperties.prepare( *evalContext );
-
-  double unitsPerSegment = mSettings.unitsPerSegment();
-
-  mHasExpressionError = false;
-
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarSegmentWidth ) )
   {
+    mDataDefinedProperties.prepare( *context );
+
+    double unitsPerSegment = mSettings.unitsPerSegment();
+
+    mHasExpressionError = false;
+
     bool ok = false;
-    unitsPerSegment = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarSegmentWidth, *evalContext, unitsPerSegment, &ok );
+    unitsPerSegment = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarSegmentWidth, *context, unitsPerSegment, &ok );
 
     if ( !ok )
     {
       mHasExpressionError = true;
-      // TODO: find out how to get actual default value
-      unitsPerSegment = 100.0;
       QgsMessageLog::logMessage( tr( "Scalebar units per segment expression eval error" ) );
     }
+    setUnitsPerSegment( unitsPerSegment );
   }
-
-  setUnitsPerSegment( unitsPerSegment );
 }
 
 void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *context )
 {
-  const QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
-
-  mDataDefinedProperties.prepare( *evalContext );
-
-  //mSettings.setMinimumBarWidth( minWidth );
-  double minimumBarWidth = mSettings.minimumBarWidth();
-
-  mHasExpressionError = false;
-
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMinWidth ) )
   {
+    mDataDefinedProperties.prepare( *context );
+
+    double minimumBarWidth = mSettings.minimumBarWidth();
+
+    mHasExpressionError = false;
+
     bool ok = false;
-    minimumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMinWidth, *evalContext, minimumBarWidth, &ok );
+    minimumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMinWidth, *context, minimumBarWidth, &ok );
 
     if ( !ok )
     {
       mHasExpressionError = true;
-      // TODO: find out how to get actual default value
-      minimumBarWidth = 50.0;
       QgsMessageLog::logMessage( tr( "Scalebar minimum segment width expression eval error" ) );
     }
+    setMinimumBarWidth( minimumBarWidth );
   }
-
-  setMinimumBarWidth( minimumBarWidth );
 }
 
 void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *context )
 {
-  const QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
-
-  mDataDefinedProperties.prepare( *evalContext );
-
-  //mSettings.setMinimumBarWidth( minWidth );
-  double maximumBarWidth = mSettings.maximumBarWidth();
-
-  mHasExpressionError = false;
-
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMaxWidth ) )
   {
+    mDataDefinedProperties.prepare( *context );
+
+    double maximumBarWidth = mSettings.maximumBarWidth();
+
+    mHasExpressionError = false;
+
     bool ok = false;
-    maximumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMaxWidth, *evalContext, maximumBarWidth, &ok );
+    maximumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMaxWidth, *context, maximumBarWidth, &ok );
 
     if ( !ok )
     {
       mHasExpressionError = true;
-      // TODO: find out how to get actual default value
-      maximumBarWidth = 150.0;
       QgsMessageLog::logMessage( tr( "Scalebar maximum segment width expression eval error" ) );
     }
+    setMaximumBarWidth( maximumBarWidth );
   }
-  setMaximumBarWidth( maximumBarWidth );
 }
 
 void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft( const QgsExpressionContext *context )
 {
-  const QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
-
-  mDataDefinedProperties.prepare( *evalContext );
-
-  int leftSegments = mSettings.numberOfSegmentsLeft();
-
-  mHasExpressionError = false;
-
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarLeftSegments ) )
   {
+    mDataDefinedProperties.prepare( *context );
+
+    int leftSegments = mSettings.numberOfSegmentsLeft();
+
+    mHasExpressionError = false;
+
     bool ok = false;
-    leftSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarLeftSegments, *evalContext, leftSegments, &ok );
+    leftSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarLeftSegments, *context, leftSegments, &ok );
 
     if ( !ok )
     {
       mHasExpressionError = true;
-      // TODO: find out how to get actual default value
-      leftSegments = 0;
       QgsMessageLog::logMessage( tr( "Scalebar left segment count expression eval error" ) );
     }
+    setNumberOfSegmentsLeft( leftSegments );
   }
-
-  setNumberOfSegmentsLeft( leftSegments );
 }
 
 void QgsLayoutItemScaleBar::refreshNumberOfSegmentsRight( const QgsExpressionContext *context )
 {
-  const QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
-
-  mDataDefinedProperties.prepare( *evalContext );
-
-  int rightSegments = mSettings.numberOfSegments();
-
-  mHasExpressionError = false;
-
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarRightSegments ) )
   {
+    mDataDefinedProperties.prepare( *context );
+
+    int rightSegments = mSettings.numberOfSegments();
+
+    mHasExpressionError = false;
+
     bool ok = false;
-    rightSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarRightSegments, *evalContext, rightSegments, &ok );
+    rightSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarRightSegments, *context, rightSegments, &ok );
 
     if ( !ok )
     {
       mHasExpressionError = true;
-      // TODO: find out how to get actual default value
-      rightSegments = 2;
       QgsMessageLog::logMessage( tr( "Scalebar left segment count expression eval error" ) );
     }
+    setNumberOfSegments( rightSegments );
   }
-
-  setNumberOfSegments( rightSegments );
 }
 
 void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
@@ -491,7 +460,8 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
   {
     refreshItemSize();
     update();
-    emit changed();
+    //FIXME: @nyall said this is not necessary
+    //emit changed();
   }
 
   QgsLayoutItem::refreshDataDefinedProperty( property );
