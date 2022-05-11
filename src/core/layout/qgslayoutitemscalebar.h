@@ -131,36 +131,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void setUnitsPerSegment( double units );
 
     /**
-     * Recalculates the number of scalebar units per segment
-     * \param context for evaluating data defined units per segment
-     */
-    void refreshUnitsPerSegment( const QgsExpressionContext *context = nullptr );
-
-    /**
-     * Recalculates the number of segments to the left of 0.
-     * \param context for evaluating data defined number of segments to the left.
-     */
-    void refreshNumberOfSegmentsLeft( const QgsExpressionContext *context = nullptr );
-
-    /**
-     * Recalculates the number of segments to the right of 0.
-     * \param context for evaluating data defined number of segments to the left.
-     */
-    void refreshNumberOfSegmentsRight( const QgsExpressionContext *context = nullptr );
-
-    /**
-     * Recalculates the minimum size of a bar segment in mm.
-     * \param context for evaluating data defined minimum width of a segment.
-     */
-    void refreshMinimumBarWidth( const QgsExpressionContext *context = nullptr );
-
-    /**
-     * Recalculates the maximum size of a bar segment in mm.
-     * \param context for evaluating data defined maximum width of a segment.
-     */
-    void refreshMaximumBarWidth( const QgsExpressionContext *context = nullptr );
-
-    /**
      * Returns the size mode for the scale bar segments.
      * \see setSegmentSizeMode()
      * \see minimumBarWidth()
@@ -724,6 +694,36 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     QgsScaleBarRenderer::ScaleBarContext createScaleContext() const;
 
     friend class QgsCompositionConverter;
+
+    /**
+     * Recalculates the number of scalebar units per segment
+     * \param context for evaluating data defined units per segment
+     */
+    void refreshUnitsPerSegment( const QgsExpressionContext *context = nullptr );
+
+    /**
+     * Recalculates the number of segments to the left of 0.
+     * \param context for evaluating data defined number of segments to the left.
+     */
+    void refreshNumberOfSegmentsLeft( const QgsExpressionContext *context = nullptr );
+
+    /**
+     * Recalculates the number of segments to the right of 0.
+     * \param context for evaluating data defined number of segments to the left.
+     */
+    void refreshNumberOfSegmentsRight( const QgsExpressionContext *context = nullptr );
+
+    /**
+     * Recalculates the minimum size of a bar segment in mm.
+     * \param context for evaluating data defined minimum width of a segment.
+     */
+    void refreshMinimumBarWidth( const QgsExpressionContext *context = nullptr );
+
+    /**
+     * Recalculates the maximum size of a bar segment in mm.
+     * \param context for evaluating data defined maximum width of a segment.
+     */
+    void refreshMaximumBarWidth( const QgsExpressionContext *context = nullptr );
 };
 
 #endif //QGSLAYOUTITEMSCALEBAR_H
