@@ -117,7 +117,7 @@ void QgsAmsLegendFetcher::handleFinished()
   QJsonDocument doc = QJsonDocument::fromJson( mQueryReply, &err );
   if ( doc.isNull() )
   {
-    emit error( QStringLiteral( "Parsing error:" ).arg( err.errorString() ) );
+    emit error( QStringLiteral( "Parsing error: %1" ).arg( err.errorString() ) );
   }
   QVariantMap queryResults = doc.object().toVariantMap();
   QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
