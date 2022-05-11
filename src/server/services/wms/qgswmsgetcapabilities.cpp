@@ -1298,35 +1298,79 @@ namespace QgsWms
                && l->temporalProperties()
                && l->temporalProperties()->isActive() )
           {
+
             QDomElement dimElem = doc.createElement( QStringLiteral( "Dimension" ) );
             dimElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "TIME" ) );
             dimElem.setAttribute( QStringLiteral( "units" ), QStringLiteral( "ISO8601" ) );
+
             // TODO: set "default" (reference value)
 
             // Add all values
             const QList<QgsDateTimeRange> allRanges { l->temporalProperties()->allTemporalRanges( l ) };
 
-            // TODO: we need a way to determine if it is a date or a date time range
+            // Apparently, for vectors allTemporalRanges is always empty :/
+            // there is no way to know the type of range or the individual instants
+
+            bool isDateList { true };
+            bool isInstantList { true };
+
             QList<QDateTime> values;
             for ( const auto &r : std::as_const( allRanges ) )
             {
-              // TODO: what do we do with ranges and not included endings ?
               if ( r.isInstant() )
               {
+                if ( r.begin().time() != QTime( 0, 0, 0, 0 ) )
+                {
+                  isDateList = false;
+                }
                 values.append( r.begin() );
+              }
+              else
+              {
+                isInstantList = false;
+                break;
               }
             }
 
-            // values list
-            QStringList strValues;
-            for ( const auto &v : values )
+            // Only list individual values for list of instants,
+            // otherwise only the extent will be shown
+            if ( isInstantList )
             {
-              strValues << v.toString( Qt::DateFormat::ISODateWithMs );
+              // values list
+              QStringList strValues;
+              for ( const auto &v : values )
+              {
+                if ( isDateList )
+                {
+                  strValues << v.date().toString( Qt::DateFormat::ISODate );
+                }
+                else
+                {
+                  strValues << v.toString( Qt::DateFormat::ISODate );
+                }
+              }
+              QDomText dimValuesText = doc.createTextNode( strValues.join( QChar( ',' ) ) );
+              dimElem.appendChild( dimValuesText );
             }
 
-            QDomText dimValuesText = doc.createTextNode( strValues.join( QChar( ',' ) ) );
-            dimElem.appendChild( dimValuesText );
             layerElem.appendChild( dimElem );
+
+            QDomElement timeExtentElem = doc.createElement( QStringLiteral( "Extent" ) );
+            timeExtentElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "TIME" ) );
+
+            const QgsDateTimeRange timeExtent { l->temporalProperties()->calculateTemporalExtent( l ) };
+            QString extent;
+            if ( isDateList )
+            {
+              extent = QStringLiteral( "%1/%2" ).arg( timeExtent.begin().date().toString( Qt::DateFormat::ISODate ), timeExtent.end().date().toString( Qt::DateFormat::ISODate ) );
+            }
+            else
+            {
+              extent = QStringLiteral( "%1/%2" ).arg( timeExtent.begin().toString( Qt::DateFormat::ISODate ), timeExtent.end().toString( Qt::DateFormat::ISODate ) );
+            }
+            QDomText extentValueText = doc.createTextNode( extent );
+            timeExtentElem.appendChild( extentValueText );
+            layerElem.appendChild( timeExtentElem );
 
           }
 

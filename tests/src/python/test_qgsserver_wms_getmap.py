@@ -24,6 +24,8 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
+from lxml import etree as et
+
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize, QDate, QDateTime, QTime
 from qgis.PyQt.QtGui import QImage, QColor
@@ -2076,6 +2078,33 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request_project(qs, project))
         self._img_diff_error(r, h, "WMS_GetMap_TemporalProperties_datetime_filter")
+
+        # Test get capabilities
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetCapabilities",
+        }.items())])
+
+        r, h = self._result(self._execute_request_project(qs, project))
+        t = et.fromstring(r)
+        ns = t.nsmap
+        del(ns[None])
+        ns['wms'] = 'http://www.opengis.net/wms'
+
+        date_dimension = t.xpath("//wms:Layer/wms:Name[text()='test_date']/../wms:Dimension", namespaces=ns)[0]
+        self.assertEqual(date_dimension.attrib, {'units': 'ISO8601', 'name': 'TIME'})
+
+        date_extent = t.xpath("//wms:Layer/wms:Name[text()='test_date']/../wms:Extent", namespaces=ns)[0]
+        self.assertEqual(date_extent.attrib, {'name': 'TIME'})
+        self.assertEqual(date_extent.text, '2001-01-01/2002-02-02')
+
+        range_dimension = t.xpath("//wms:Layer/wms:Name[text()='test_range']/../wms:Dimension", namespaces=ns)[0]
+        self.assertEqual(range_dimension.attrib, {'units': 'ISO8601', 'name': 'TIME'})
+
+        range_extent = t.xpath("//wms:Layer/wms:Name[text()='test_range']/../wms:Extent", namespaces=ns)[0]
+        self.assertEqual(range_extent.attrib, {'name': 'TIME'})
+        self.assertEqual(range_extent.text, '2003-03-03/2004-04-04')
 
 
 if __name__ == '__main__':
