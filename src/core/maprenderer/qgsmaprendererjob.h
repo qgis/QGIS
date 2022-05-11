@@ -160,7 +160,7 @@ class LayerRenderJob
      * If effects are involved in masking we need to rasterize the layer rendering even if
      * vector output has been requested
      */
-    bool needRasterization = false;
+    bool maskRequiresLayerRasterization = false;
 
     /**
      * Pointer to the first pass job, needed during the second pass
