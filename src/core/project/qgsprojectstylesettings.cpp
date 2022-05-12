@@ -89,7 +89,7 @@ QgsTextFormat QgsProjectStyleSettings::defaultTextFormat() const
   return mDefaultTextFormat;
 }
 
-void QgsProjectStyleSettings::setDefaultTextFormat( QgsTextFormat textFormat )
+void QgsProjectStyleSettings::setDefaultTextFormat( const QgsTextFormat &textFormat )
 {
   mDefaultTextFormat = textFormat;
 }
@@ -103,6 +103,8 @@ void QgsProjectStyleSettings::reset()
   mDefaultTextFormat = QgsTextFormat();
   mRandomizeDefaultSymbolColor = true;
   mDefaultSymbolOpacity = 1.0;
+  mStyleDatabases.clear();
+  emit styleDatabasesChanged();
 }
 
 bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
@@ -156,6 +158,22 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
     mDefaultTextFormat = QgsTextFormat();
   }
 
+  {
+    mStyleDatabases.clear();
+    const QDomElement styleDatabases = element.firstChildElement( QStringLiteral( "databases" ) );
+    if ( !styleDatabases.isNull() )
+    {
+      const QDomNodeList styleEntries = styleDatabases.childNodes();
+      for ( int i = 0; i < styleEntries.count(); ++i )
+      {
+        const QDomElement styleElement = styleEntries.at( i ).toElement();
+        const QString path = styleElement.attribute( QStringLiteral( "path" ) );
+        mStyleDatabases.append( context.pathResolver().readPath( path ) );
+      }
+    }
+  }
+  emit styleDatabasesChanged();
+
   return true;
 }
 
@@ -199,5 +217,34 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
     element.appendChild( textFormatElem );
   }
 
+  {
+    QDomElement styleDatabases = doc.createElement( QStringLiteral( "databases" ) );
+    for ( const QString &db : mStyleDatabases )
+    {
+      QDomElement dbElement = doc.createElement( QStringLiteral( "db" ) );
+      dbElement.setAttribute( QStringLiteral( "path" ), context.pathResolver().writePath( db ) );
+      styleDatabases.appendChild( dbElement );
+    }
+    element.appendChild( styleDatabases );
+  }
+
   return element;
+}
+
+void QgsProjectStyleSettings::addStyleDatabasePath( const QString &path )
+{
+  if ( mStyleDatabases.contains( path ) )
+    return;
+
+  mStyleDatabases.append( path );
+  emit styleDatabasesChanged();
+}
+
+void QgsProjectStyleSettings::setStyleDatabasePaths( const QStringList &paths )
+{
+  if ( paths == mStyleDatabases )
+    return;
+
+  mStyleDatabases = paths;
+  emit styleDatabasesChanged();
 }

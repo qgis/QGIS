@@ -86,7 +86,7 @@ Returns the project default text format.
    if no default is defined, the returned format will be invalid
 %End
 
-    void setDefaultTextFormat( QgsTextFormat textFormat );
+    void setDefaultTextFormat( const QgsTextFormat &textFormat );
 %Docstring
 Sets the project default text format.
 
@@ -130,6 +130,53 @@ Reads the settings's state from a DOM element.
 Returns a DOM element representing the settings.
 
 .. seealso:: :py:func:`readXml`
+%End
+
+    QStringList styleDatabasePaths() const;
+%Docstring
+Returns a list of all style databases (file paths) associated with the project.
+
+The file paths returned by this method will always be absolute paths. Depending on the
+project settings, they may be converted to relative paths when the project is saved.
+
+.. seealso:: :py:func:`addStyleDatabasePath`
+
+.. seealso:: :py:func:`setStyleDatabasePaths`
+%End
+
+    void addStyleDatabasePath( const QString &path );
+%Docstring
+Adds a style database ``path`` to the project.
+
+The file path added by this method must always be absolute paths. Depending on the
+project settings, they may be converted to relative paths when the project is saved.
+
+.. seealso:: :py:func:`styleDatabasePaths`
+
+.. seealso:: :py:func:`setStyleDatabasePaths`
+
+.. seealso:: :py:func:`styleDatabasesChanged`
+%End
+
+    void setStyleDatabasePaths( const QStringList &paths );
+%Docstring
+Sets the ``paths`` to all style databases associated with the project.
+
+The file paths set by this method must always be absolute paths. Depending on the
+project settings, they may be converted to relative paths when the project is saved.
+
+.. seealso:: :py:func:`addStyleDatabasePath`
+
+.. seealso:: :py:func:`styleDatabasePaths`
+
+.. seealso:: :py:func:`styleDatabasesChanged`
+%End
+
+  signals:
+
+    void styleDatabasesChanged();
+%Docstring
+Emitted whenever the set of style databases associated with the project is changed.
 %End
 
 };
