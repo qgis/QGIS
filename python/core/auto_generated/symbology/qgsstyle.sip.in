@@ -99,6 +99,24 @@ Constructor for QgsStyle.
       Symbol3DEntity,
     };
 
+    QString name() const;
+%Docstring
+Returns the name of the style.
+
+.. seealso:: :py:func:`setName`
+
+.. versionadded:: 3.26
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the ``name`` of the style.
+
+.. seealso:: :py:func:`name`
+
+.. versionadded:: 3.26
+%End
+
     bool addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update = false );
 %Docstring
 Adds an ``entity`` to the style, with the specified ``name``. Ownership is not transferred.
