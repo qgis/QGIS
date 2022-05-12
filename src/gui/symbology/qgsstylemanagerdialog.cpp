@@ -525,11 +525,6 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
 void QgsStyleManagerDialog::onFinished()
 {
-  if ( mModified && !mReadOnly )
-  {
-    mStyle->save();
-  }
-
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/StyleV2Manager/splitter" ), mSplitter->saveState() );
 }

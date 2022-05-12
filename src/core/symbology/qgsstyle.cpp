@@ -849,49 +849,13 @@ bool QgsStyle::load( const QString &filename )
 
 
 
-bool QgsStyle::save( QString filename )
+bool QgsStyle::save( const QString &filename )
 {
   mErrorString.clear();
 
-  if ( filename.isEmpty() )
-    filename = mFileName;
+  if ( !filename.isEmpty() )
+    mFileName = filename;
 
-  // TODO evaluate the requirement of this function and change implementation accordingly
-  // TODO remove QEXPECT_FAIL from TestStyle::testSaveLoad() when done
-#if 0
-  QDomDocument doc( "qgis_style" );
-  QDomElement root = doc.createElement( "qgis_style" );
-  root.setAttribute( "version", STYLE_CURRENT_VERSION );
-  doc.appendChild( root );
-
-  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, "symbols", doc );
-
-  QDomElement rampsElem = doc.createElement( "colorramps" );
-
-  // save color ramps
-  for ( QMap<QString, QgsColorRamp *>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr )
-  {
-    QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( itr.key(), itr.value(), doc );
-    rampsElem.appendChild( rampEl );
-  }
-
-  root.appendChild( symbolsElem );
-  root.appendChild( rampsElem );
-
-  // save
-  QFile f( filename );
-  if ( !f.open( QFile::WriteOnly ) )
-  {
-    mErrorString = "Couldn't open file for writing: " + filename;
-    return false;
-  }
-  QTextStream ts( &f );
-  ts.setCodec( "UTF-8" );
-  doc.save( ts, 2 );
-  f.close();
-#endif
-
-  mFileName = filename;
   return true;
 }
 
