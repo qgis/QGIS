@@ -1989,6 +1989,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     mViewSettings->readXml( viewSettingsElement, context );
 
   // restore style settings
+  profile.switchTask( tr( "Loading style properties" ) );
   const QDomElement styleSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectStyleSettings" ) );
   if ( !styleSettingsElement.isNull() )
     mStyleSettings->readXml( styleSettingsElement, context );
