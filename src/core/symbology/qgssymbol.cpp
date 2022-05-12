@@ -254,7 +254,7 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
   if ( correctRingOrientation )
   {
     // ensure consistent polygon ring orientation
-    if ( (isExteriorRing && curve.orientation() != Qgis::AngularDirection::Clockwise) || ( !isExteriorRing && curve.orientation() != Qgis::AngularDirection::CounterClockwise ) )
+    if ( ( isExteriorRing && curve.orientation() != Qgis::AngularDirection::Clockwise ) || ( !isExteriorRing && curve.orientation() != Qgis::AngularDirection::CounterClockwise ) )
     {
       poly.reversed()->points( seq );
       poly.setPoints( seq );
@@ -335,9 +335,9 @@ QPolygonF QgsSymbol::_getPolygonRing2d( QgsRenderContext &context, const QgsCurv
   if ( correctRingOrientation )
   {
     // ensure consistent polygon ring orientation
-    if ( isExteriorRing && curve.orientation() != QgsCurve::Clockwise )
+    if ( isExteriorRing && curve.orientation() != Qgis::AngularDirection::Clockwise )
       std::reverse( poly.begin(), poly.end() );
-    else if ( !isExteriorRing && curve.orientation() != QgsCurve::CounterClockwise )
+    else if ( !isExteriorRing && curve.orientation() != Qgis::AngularDirection::CounterClockwise )
       std::reverse( poly.begin(), poly.end() );
   }
 

@@ -729,7 +729,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     * \param z array of z data, can be null
     * \param m array of m data, can be null
     */
-    void setPoints( qint64 size, const double *x, const double *y, const double *z = nullptr, const double *m = nullptr );
+    void setPoints( size_t size, const double *x, const double *y, const double *z = nullptr, const double *m = nullptr );
 
     /**
     * Resets the line string to match the specified list of points. The line string will

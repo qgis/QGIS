@@ -642,7 +642,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
   // When not single click identify, pass an empty point so some derived attributes may still be computed
   if ( !isSingleClick )
-    point = QgsPointXY();
+    point = QgsPoint();
 
   const int featureCount = identifyVectorLayer( results, layer, featureList, filter ? renderer.get() : nullptr, commonDerivedAttributes,
                            [point, layer, this]( const QgsFeature & feature )->QMap< QString, QString >
