@@ -18,9 +18,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgsimagecache.h"
-#include <Qt3DExtras/QDiffuseMapMaterial>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QPhongAlphaMaterial>
+#include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -101,29 +99,16 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettings
       if ( dataDefinedProperties().hasActiveProperties() )
         return dataDefinedMaterial();
 
+      int opacity = mOpacity * 255;
+      Qt3DExtras::QDiffuseSpecularMaterial *material  = new Qt3DExtras::QDiffuseSpecularMaterial;
+      material->setDiffuse( QColor( mDiffuse.red(), mDiffuse.green(), mDiffuse.blue(), opacity ) );
+      material->setAmbient( QColor( mAmbient.red(), mAmbient.green(), mAmbient.blue(), opacity ) );
+      material->setSpecular( QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) );
+      material->setShininess( mShininess );
       if ( mOpacity != 1 )
       {
-        Qt3DExtras::QPhongAlphaMaterial *material  = new Qt3DExtras::QPhongAlphaMaterial;
-        material->setDiffuse( mDiffuse );
-        material->setAmbient( mAmbient );
-        material->setSpecular( mSpecular );
-        material->setShininess( mShininess );
-        material->setAlpha( mOpacity );
-
-        if ( context.isSelected() )
-        {
-          // update the material with selection colors
-          material->setDiffuse( context.selectionColor() );
-          material->setAmbient( context.selectionColor().darker() );
-        }
-        return material;
+        material->setAlphaBlendingEnabled( true );
       }
-
-      Qt3DExtras::QPhongMaterial *material  = new Qt3DExtras::QPhongMaterial;
-      material->setDiffuse( mDiffuse );
-      material->setAmbient( mAmbient );
-      material->setSpecular( mSpecular );
-      material->setShininess( mShininess );
 
       if ( context.isSelected() )
       {

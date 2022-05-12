@@ -63,13 +63,6 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QgsDoubleSpinBox" name="spinShininess">
-     <property name="maximum">
-      <double>1000.000000000000000</double>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="2">
     <widget class="QgsPropertyOverrideButton" name="mDiffuseDataDefinedButton">
      <property name="text">
@@ -130,19 +123,6 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QSlider" name="mOpacitySlider">
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>100</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="0">
     <widget class="QLabel" name="lblOpacity">
      <property name="text">
@@ -150,10 +130,13 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
-    <widget class="QLabel" name="mOpacityPercentageLabel">
-     <property name="text">
-      <string>100%</string>
+   <item row="4" column="1" colspan="2">
+    <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true"/>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QgsDoubleSpinBox" name="spinShininess">
+     <property name="maximum">
+      <double>1000.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -174,6 +157,12 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
