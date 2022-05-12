@@ -81,9 +81,9 @@ class QgsStyle : QObject
 %End
   public:
 
-    QgsStyle();
+    QgsStyle( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsStyle.
+Constructor for QgsStyle, with the specified ``parent`` object.
 %End
     ~QgsStyle();
 

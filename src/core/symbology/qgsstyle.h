@@ -163,9 +163,9 @@ class CORE_EXPORT QgsStyle : public QObject
   public:
 
     /**
-     * Constructor for QgsStyle.
+     * Constructor for QgsStyle, with the specified \a parent object.
      */
-    QgsStyle();
+    QgsStyle( QObject *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsStyle() override;
 
     /**
