@@ -817,7 +817,10 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  This function will load an on-disk database and populate styles.
      *  \param filename location of the database to load styles from
-     *  \returns returns the success state of the database being loaded
+     *  \returns TRUE if the database was successfully loaded. If FALSE is
+     *  returned then a detailed error message can be retrieved via errorString().
+     *
+     *  \see errorString()
      */
     bool load( const QString &filename );
 
@@ -835,13 +838,19 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \deprecated This function has no effect.
      */
-    Q_DECL_DEPRECATED bool save( QString filename = QString() ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED bool save( const QString &filename = QString() ) SIP_DEPRECATED;
 
-    //! Returns last error from load/save operation
-    QString errorString() { return mErrorString; }
+    /**
+     * Returns the last error from a load() operation.
+     *
+     * \see load()
+     */
+    QString errorString() const { return mErrorString; }
 
-    //! Returns current file name of the style
-    QString fileName() { return mFileName; }
+    /**
+     * Returns current file name of the style database.
+     */
+    QString fileName() const { return mFileName; }
 
     /**
      * Returns the names of the symbols which have a matching 'substring' in its definition
