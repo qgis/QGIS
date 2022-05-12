@@ -97,16 +97,6 @@ qint64 QgsCopcProvider::pointCount() const
   return mIndex->pointCount();
 }
 
-QVariantList QgsCopcProvider::metadataClasses( const QString &attribute ) const
-{
-  return mIndex->metadataClasses( attribute );
-}
-
-QVariant QgsCopcProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
-{
-  return mIndex->metadataClassStatistic( attribute, value, statistic );
-}
-
 void QgsCopcProvider::loadIndex( )
 {
   // Index already loaded -> no need to load
@@ -123,11 +113,6 @@ QVariantMap QgsCopcProvider::originalMetadata() const
 void QgsCopcProvider::generateIndex()
 {
   //no-op, index is always generated
-}
-
-QVariant QgsCopcProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
-{
-  return mIndex->metadataStatistic( attribute, statistic );
 }
 
 QgsCopcProviderMetadata::QgsCopcProviderMetadata():

@@ -509,18 +509,9 @@ void QgsPointCloud3DSymbolWidget::rampAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant min = mLayer->dataProvider()->metadataStatistic( mRenderingParameterComboBox->currentAttribute(), QgsStatisticalSummary::Min );
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mRenderingParameterComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( min.isValid() && max.isValid() )
-    {
-      mProviderMin = min.toDouble();
-      mProviderMax = max.toDouble();
-    }
-    else
-    {
-      mProviderMin = std::numeric_limits< double >::quiet_NaN();
-      mProviderMax = std::numeric_limits< double >::quiet_NaN();
-    }
+    QgsPointCloudStatistics stats = mLayer->statistics();
+    mProviderMin = stats.minimum( mRenderingParameterComboBox->currentAttribute() );
+    mProviderMax = stats.maximum( mRenderingParameterComboBox->currentAttribute() );
 
     if ( mRenderingParameterComboBox->currentAttribute() == QLatin1String( "Z" ) )
     {
@@ -591,16 +582,16 @@ void QgsPointCloud3DSymbolWidget::redAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mRedAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( max.isValid() )
+    QgsPointCloudStatistics stats = mLayer->statistics();
+    const double max = stats.maximum( mRedAttributeComboBox->currentAttribute() );
+    if ( !std::isnan( max ) )
     {
-      const int maxValue = max.toInt();
       mDisableMinMaxWidgetRefresh++;
       mRedMinLineEdit->setText( QLocale().toString( 0 ) );
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mRedMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mRedMaxLineEdit->setText( QLocale().toString( max > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitChangedSignal();
     }
@@ -611,16 +602,16 @@ void QgsPointCloud3DSymbolWidget::greenAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mGreenAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( max.isValid() )
+    QgsPointCloudStatistics stats = mLayer->statistics();
+    const double max = stats.maximum( mGreenAttributeComboBox->currentAttribute() );
+    if ( !std::isnan( max ) )
     {
-      const int maxValue = max.toInt();
       mDisableMinMaxWidgetRefresh++;
       mGreenMinLineEdit->setText( QLocale().toString( 0 ) );
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mGreenMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mGreenMaxLineEdit->setText( QLocale().toString( max > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitChangedSignal();
     }
@@ -631,16 +622,16 @@ void QgsPointCloud3DSymbolWidget::blueAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mBlueAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( max.isValid() )
+    QgsPointCloudStatistics stats = mLayer->statistics();
+    const double max = stats.maximum( mBlueAttributeComboBox->currentAttribute() );
+    if ( !std::isnan( max ) )
     {
-      const int maxValue = max.toInt();
       mDisableMinMaxWidgetRefresh++;
       mBlueMinLineEdit->setText( QLocale().toString( 0 ) );
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mBlueMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mBlueMaxLineEdit->setText( QLocale().toString( max > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitChangedSignal();
     }

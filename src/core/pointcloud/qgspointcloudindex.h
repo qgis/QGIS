@@ -42,6 +42,7 @@ class QgsPointCloudRequest;
 class QgsPointCloudAttributeCollection;
 class QgsCoordinateReferenceSystem;
 class QgsPointCloudBlockRequest;
+class QgsPointCloudStatistics;
 
 /**
  * \ingroup core
@@ -191,6 +192,8 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     virtual QgsCoordinateReferenceSystem crs() const = 0;
     //! Returns the number of points in the point cloud
     virtual qint64 pointCount() const = 0;
+    //! Returns whether the dataset contains metadata of statistics
+    virtual bool hasStatisticsMetadata() const = 0;
     //! Returns the statistic \a statistic of \a attribute
     virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
     //! Returns the classes of \a attribute
@@ -200,11 +203,20 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns the original metadata map
     virtual QVariantMap originalMetadata() const = 0;
 
+    /**
+     * Returns the object containings the statistics metadata extracted from the dataset
+     * \since QGIS 3.26
+     */
+    virtual QgsPointCloudStatistics metadataStatistics() const;
+
     //! Returns root node of the index
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
 
     //! Returns whether the octree contain given node
     virtual bool hasNode( const IndexedPointCloudNode &n ) const;
+
+    //! Returns the number of points of a given node \a n
+    virtual qint64 nodePointCount( const IndexedPointCloudNode &n ) const;
 
     //! Returns all children of node
     virtual QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const;

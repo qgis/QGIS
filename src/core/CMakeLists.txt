@@ -758,6 +758,10 @@ set(QGIS_CORE_SRCS
   pointcloud/expression/qgspointcloudexpressionnode.cpp
   pointcloud/expression/qgspointcloudexpressionnodeimpl.cpp
 
+  pointcloud/qgspointcloudstatscalculator.cpp
+  pointcloud/qgspointcloudstatscalculationtask.cpp
+  pointcloud/qgspointcloudstatistics.cpp
+
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
   labeling/qgslabelingenginesettings.cpp
@@ -1556,6 +1560,10 @@ set(QGIS_CORE_HDRS
   pointcloud/expression/qgspointcloudexpression.h
   pointcloud/expression/qgspointcloudexpressionnode.h
   pointcloud/expression/qgspointcloudexpressionnodeimpl.h
+
+  pointcloud/qgspointcloudstatscalculator.h
+  pointcloud/qgspointcloudstatscalculationtask.h
+  pointcloud/qgspointcloudstatistics.h
 
   proj/qgscelestialbody.h
   proj/qgscoordinatereferencesystem.h

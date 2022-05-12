@@ -82,10 +82,13 @@ QStringList QgsPointCloudRendererRegistry::renderersList() const
   return renderers;
 }
 
-QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const QgsPointCloudDataProvider *provider )
+QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const QgsPointCloudLayer *layer )
 {
+  const QgsPointCloudDataProvider *provider = layer->dataProvider();
   if ( !provider )
     return new QgsPointCloudAttributeByRampRenderer();
+
+  const QgsPointCloudStatistics stats = layer->statistics();
 
   if ( ( provider->name() == QLatin1String( "pdal" ) ) && ( !provider->hasValidIndex() ) )
   {
@@ -101,12 +104,12 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     std::unique_ptr< QgsPointCloudRgbRenderer > renderer = std::make_unique< QgsPointCloudRgbRenderer >();
 
     // set initial guess for rgb ranges
-    const QVariant redMax = provider->metadataStatistic( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
-    const QVariant greenMax = provider->metadataStatistic( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
-    const QVariant blueMax = provider->metadataStatistic( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
-    if ( redMax.isValid() && greenMax.isValid() && blueMax.isValid() )
+    const double redMax = stats.maximum( QStringLiteral( "Red" ) );
+    const double greenMax = stats.maximum( QStringLiteral( "Red" ) );
+    const double blueMax = stats.maximum( QStringLiteral( "Red" ) );
+    if ( !std::isnan( redMax ) && !std::isnan( greenMax ) && !std::isnan( blueMax ) )
     {
-      const int maxValue = std::max( blueMax.toInt(), std::max( redMax.toInt(), greenMax.toInt() ) );
+      const int maxValue = std::max( blueMax, std::max( redMax, greenMax ) );
 
       if ( maxValue == 0 )
       {
@@ -152,7 +155,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   if ( attributes.indexOf( QLatin1String( "Classification" ) ) >= 0 )
   {
     // are any classifications present?
-    QVariantList classes = provider->metadataClasses( QStringLiteral( "Classification" ) );
+    QList<int> classes = stats.classesOf( QStringLiteral( "Classification" ) );
     // ignore "not classified" classes, and see if any are left...
     classes.removeAll( 0 );
     classes.removeAll( 1 );
@@ -169,16 +172,16 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   renderer->setAttribute( QStringLiteral( "Z" ) );
 
   // set initial range for z values if possible
-  const QVariant zMin = provider->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
-  const QVariant zMax = provider->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
-  if ( zMin.isValid() && zMax.isValid() )
+  const double zMin = stats.minimum( QStringLiteral( "Z" ) );
+  const double zMax = stats.maximum( QStringLiteral( "Z" ) );
+  if ( !std::isnan( zMin ) && !std::isnan( zMax ) )
   {
-    renderer->setMinimum( zMin.toDouble() );
-    renderer->setMaximum( zMax.toDouble() );
+    renderer->setMinimum( zMin );
+    renderer->setMaximum( zMax );
 
     QgsColorRampShader shader = renderer->colorRampShader();
-    shader.setMinimumValue( zMin.toDouble() );
-    shader.setMaximumValue( zMax.toDouble() );
+    shader.setMinimumValue( zMin );
+    shader.setMaximumValue( zMax );
     shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
     renderer->setColorRampShader( shader );
   }

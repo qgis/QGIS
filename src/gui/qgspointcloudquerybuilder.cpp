@@ -137,26 +137,27 @@ void QgsPointCloudQueryBuilder::lstAttributes_currentChanged( const QModelIndex 
   }
   else
   {
-    QVariant value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Min );
-    QString valueString = value.isNull() ? tr( "n/a" ) : value.toString();
+    const QgsPointCloudStatistics stats = mLayer->statistics();
+    double value = stats.minimum( attribute );
+    QString valueString = std::isnan( value ) ? tr( "n/a" ) : QString::number( value );
     QStandardItem *item = new QStandardItem( tr( "Minimum: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );
 
-    value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Max );
-    valueString = value.isNull() ? tr( "n/a" ) : value.toString();
+    value = stats.maximum( attribute );
+    valueString = std::isnan( value ) ? tr( "n/a" ) : QString::number( value );
     item = new QStandardItem( tr( "Maximum: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );
 
-    value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::Mean );
-    valueString = value.isNull() ? tr( "n/a" ) : value.toString();
+    value = stats.mean( attribute );
+    valueString = std::isnan( value ) ? tr( "n/a" ) : QString::number( value );
     item = new QStandardItem( tr( "Mean: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );
 
-    value = mLayer->dataProvider()->metadataStatistic( attribute, QgsStatisticalSummary::StDev );
-    valueString = value.isNull() ? tr( "n/a" ) : value.toString();
+    value = stats.stDev( attribute );
+    valueString = std::isnan( value ) ? tr( "n/a" ) : QString::number( value );
     item = new QStandardItem( tr( "StdDev: %1" ).arg( valueString ) );
     item->setData( value, Qt::UserRole );
     mModelValues->insertRow( mModelValues->rowCount(), item );

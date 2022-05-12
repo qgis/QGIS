@@ -73,16 +73,6 @@ QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
   return mIndex->attributes();
 }
 
-QVariantList QgsPdalProvider::metadataClasses( const QString &attribute ) const
-{
-  return mIndex->metadataClasses( attribute );
-}
-
-QVariant QgsPdalProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
-{
-  return mIndex->metadataClassStatistic( attribute, value, statistic );
-}
-
 static QString _outdir( const QString &filename )
 {
   const QFileInfo fi( filename );
@@ -186,14 +176,6 @@ bool QgsPdalProvider::anyIndexingTaskExists()
     }
   }
   return false;
-}
-
-QVariant QgsPdalProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
-{
-  if ( mIndex )
-    return mIndex->metadataStatistic( attribute, statistic );
-  else
-    return QVariant();
 }
 
 qint64 QgsPdalProvider::pointCount() const
