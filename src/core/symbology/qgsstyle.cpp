@@ -76,7 +76,8 @@ enum Symbol3DTable
 
 QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 
-QgsStyle::QgsStyle()
+QgsStyle::QgsStyle( QObject *parent )
+  : QObject( parent )
 {
   std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::Circle,
       1.6, 0, Qgis::ScaleMethod::ScaleArea, QColor( 84, 176, 74 ), QColor( 61, 128, 53 ) );
