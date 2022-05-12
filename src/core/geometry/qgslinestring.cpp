@@ -1108,7 +1108,7 @@ void QgsLineString::points( QgsPointSequence &pts ) const
   }
 }
 
-void QgsLineString::setPoints( qint64 size, const double *x, const double *y, const double *z, const double *m )
+void QgsLineString::setPoints( size_t size, const double *x, const double *y, const double *z, const double *m )
 {
   clearCache(); //set bounding box invalid
 
@@ -1123,6 +1123,7 @@ void QgsLineString::setPoints( qint64 size, const double *x, const double *y, co
   bool hasM = m != NULL;
 
   if ( hasZ )
+  {
     if ( hasM )
     {
       const QgsPoint firstPt( *x, *y, *z, *m );
@@ -1133,6 +1134,7 @@ void QgsLineString::setPoints( qint64 size, const double *x, const double *y, co
       const QgsPoint firstPt( *x, *y, *z );
       setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::LineString );
     }
+  }
   else if ( hasM )
   {
     const QgsPoint firstPt( *x, *y, std::numeric_limits<double>::quiet_NaN(), *m );
@@ -1164,7 +1166,7 @@ void QgsLineString::setPoints( qint64 size, const double *x, const double *y, co
     mM.clear();
   }
 
-  for ( qint64 i = 0; i < size; ++i )
+  for ( size_t i = 0; i < size; ++i )
   {
     mX[i] = *x;
     mY[i] = *y;

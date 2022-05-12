@@ -206,9 +206,6 @@ class CORE_EXPORT QgsClipper
                                           QgsPoint pt2,
                                           Boundary b, const QgsBox3d &rect );
 
-    //Implementation of 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467)
-    static bool clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double &x0, double &y0, double &x1, double &y1 );
-
     static bool clipLineSegment( const QgsBox3d &extent, double &x0, double &y0, double &z0, double &x1, double &y1, double &z1 );
 
     /**
