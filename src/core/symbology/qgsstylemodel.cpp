@@ -450,6 +450,12 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
+    case StyleName:
+      return mStyle->name();
+
+    case StyleFileName:
+      return mStyle->fileName();
+
     default:
       return QVariant();
   }

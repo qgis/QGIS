@@ -45,6 +45,8 @@ instead.
       IsFavoriteRole,
       LayerTypeRole,
       CompatibleGeometryTypesRole,
+      StyleName,
+      StyleFileName,
     };
 
     explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );

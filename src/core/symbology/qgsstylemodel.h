@@ -125,6 +125,8 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
       IsFavoriteRole, //!< Whether entity is flagged as a favorite
       LayerTypeRole, //!< Layer type (for label settings entities)
       CompatibleGeometryTypesRole, //!< Compatible layer geometry types (for 3D symbols)
+      StyleName, //!< Name of associated QgsStyle (QgsStyle::name()) (since QGIS 3.26)
+      StyleFileName, //!< File name of associated QgsStyle (QgsStyle::fileName()) (since QGIS 3.26)
     };
 
     /**
