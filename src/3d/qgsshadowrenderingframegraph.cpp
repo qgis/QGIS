@@ -49,9 +49,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPrev
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRenderPass()
 {
-  // cppcheck wrongly believes transparentObjectsRenderStateSet will leak
-  // cppcheck-suppress memleak
-
   // The branch structure:
   // mMainCameraSelector
   // mForwardRenderLayerFilter
@@ -154,6 +151,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
     transparentObjectsRenderStateSet->addRenderState( blenEquationArgs );
   }
 
+  // cppcheck wrongly believes transparentObjectsRenderStateSet will leak
+  // cppcheck-suppress memleak
   return mMainCameraSelector;
 }
 
