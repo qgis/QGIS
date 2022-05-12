@@ -88,6 +88,8 @@ class TestQgsStyleModel(unittest.TestCase):
 
         style = QgsStyle()
         style.createMemoryDatabase()
+        style.setName('style name')
+        style.setFileName('/home/me/my.db')
 
         # style with only symbols
 
@@ -128,6 +130,9 @@ class TestQgsStyleModel(unittest.TestCase):
 
         self.assertFalse(model.flags(model.index(0, 1)) & Qt.ItemIsEditable)
         self.assertTrue(model.flags(model.index(0, 0)) & Qt.ItemIsEditable)
+
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.StyleName), 'style name')
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.StyleFileName), '/home/me/my.db')
 
         for role in (Qt.DisplayRole, Qt.EditRole):
             self.assertIsNone(model.data(model.index(-1, 0), role))

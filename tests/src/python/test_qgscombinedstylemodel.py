@@ -19,14 +19,10 @@ from qgis.PyQt.QtCore import QCoreApplication, QEvent
 from qgis.core import (
     QgsStyle,
     QgsTextFormat,
-    QgsProfileRequest,
-    QgsCoordinateReferenceSystem,
+    QgsStyleModel
 )
 
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 start_app()
 
@@ -47,6 +43,7 @@ class TestQgsCombinedStyleModel(unittest.TestCase):
         style1 = QgsStyle()
         style1.createMemoryDatabase()
         style1.setName('first style')
+        style1.setFileName('/home/my style1.db')
 
         model.addStyle(style1)
         self.assertEqual(model.styles(), [style1])
@@ -54,6 +51,8 @@ class TestQgsCombinedStyleModel(unittest.TestCase):
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), 'first style')
         self.assertTrue(model.data(model.index(0, 0), QgsCombinedStyleModel.IsTitleRole))
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.StyleName), 'first style')
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.StyleFileName), '/home/my style1.db')
 
         style1.addTextFormat('format 1', QgsTextFormat(), True)
         self.assertEqual(model.rowCount(), 2)
@@ -61,10 +60,13 @@ class TestQgsCombinedStyleModel(unittest.TestCase):
         self.assertTrue(model.data(model.index(0, 0), QgsCombinedStyleModel.IsTitleRole))
         self.assertEqual(model.data(model.index(1, 0)), 'format 1')
         self.assertFalse(model.data(model.index(1, 0), QgsCombinedStyleModel.IsTitleRole))
+        self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.StyleName), 'first style')
+        self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.StyleFileName), '/home/my style1.db')
 
         style2 = QgsStyle()
         style2.createMemoryDatabase()
         style2.setName('second style')
+        style2.setFileName('/home/my style2.db')
         style2.addTextFormat('format 2', QgsTextFormat(), True)
         style2.addTextFormat('format 3', QgsTextFormat(), True)
 
@@ -74,14 +76,24 @@ class TestQgsCombinedStyleModel(unittest.TestCase):
         self.assertEqual(model.rowCount(), 5)
         self.assertEqual(model.data(model.index(0, 0)), 'first style')
         self.assertTrue(model.data(model.index(0, 0), QgsCombinedStyleModel.IsTitleRole))
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.StyleName), 'first style')
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.StyleFileName), '/home/my style1.db')
         self.assertEqual(model.data(model.index(1, 0)), 'format 1')
         self.assertFalse(model.data(model.index(1, 0), QgsCombinedStyleModel.IsTitleRole))
+        self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.StyleName), 'first style')
+        self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.StyleFileName), '/home/my style1.db')
         self.assertEqual(model.data(model.index(2, 0)), 'second style')
         self.assertTrue(model.data(model.index(2, 0), QgsCombinedStyleModel.IsTitleRole))
+        self.assertEqual(model.data(model.index(2, 0), QgsStyleModel.StyleName), 'second style')
+        self.assertEqual(model.data(model.index(2, 0), QgsStyleModel.StyleFileName), '/home/my style2.db')
         self.assertEqual(model.data(model.index(3, 0)), 'format 2')
         self.assertFalse(model.data(model.index(3, 0), QgsCombinedStyleModel.IsTitleRole))
+        self.assertEqual(model.data(model.index(3, 0), QgsStyleModel.StyleName), 'second style')
+        self.assertEqual(model.data(model.index(3, 0), QgsStyleModel.StyleFileName), '/home/my style2.db')
         self.assertEqual(model.data(model.index(4, 0)), 'format 3')
         self.assertFalse(model.data(model.index(4, 0), QgsCombinedStyleModel.IsTitleRole))
+        self.assertEqual(model.data(model.index(4, 0), QgsStyleModel.StyleName), 'second style')
+        self.assertEqual(model.data(model.index(4, 0), QgsStyleModel.StyleFileName), '/home/my style2.db')
 
         style1.deleteLater()
         style1 = None
