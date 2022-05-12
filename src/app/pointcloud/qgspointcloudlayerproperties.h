@@ -85,7 +85,7 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
 
     QgsPointCloudLayer *mLayer = nullptr;
     QString mAttribute;
-    QVariantList mClassifications;
+    QList<int> mClassifications;
 };
 
 class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::QgsPointCloudLayerPropertiesBase

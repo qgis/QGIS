@@ -1,0 +1,103 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudstatscalculator.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+class QgsPointCloudStatsCalculator : QObject
+{
+%Docstring(signature="appended")
+*************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudstatscalculator.h"
+%End
+  public:
+    struct AttributeStatistics
+    {
+      double minimum;
+      double maximum;
+      int count;
+      QMap<int, int> classCount;
+
+      void cumulateStatistics( const AttributeStatistics &stats );
+    };
+
+    QgsPointCloudStatsCalculator( QgsPointCloudIndex *index );
+%Docstring
+Constructor
+%End
+
+    void clear();
+%Docstring
+Clears the statistics of all attributes
+%End
+
+    void clear( const QVector<QgsPointCloudAttribute> &attributes );
+%Docstring
+Clears the statistics of given attributes ``attributes``
+%End
+
+    void calculateStats( const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit = -1 );
+%Docstring
+Calculates the statistics of given attributes ``attributes`` up to new ``pointsLimit`` points
+Note: the already calculated statistics are kept and another set of ``pointsLimit`` are processed
+%End
+
+    QMap<QString, AttributeStatistics> statistics() const;
+%Docstring
+Returns the calculated statistics of each attribute processed
+%End
+
+    AttributeStatistics statisticsOf( const QString &attribute );
+%Docstring
+Returns the calculated statistics of attribute ``attribute``
+%End
+  signals:
+    void statisticsCalculated();
+};
+
+class QgsPointCloudStatsCalculationTask : QgsTask
+{
+
+%TypeHeaderCode
+#include "qgspointcloudstatscalculator.h"
+%End
+  public:
+    QgsPointCloudStatsCalculationTask( QgsPointCloudIndex *index, const QVector<QgsPointCloudAttribute> &attributes, const QVector<IndexedPointCloudNode> &nodes );
+
+    virtual bool run();
+
+
+    QgsPointCloudIndex *mIndex;
+    QVector<IndexedPointCloudNode> mNodes;
+    QgsPointCloudRequest mAttributesRequest;
+    QFuture<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>> mFuture;
+    QFutureWatcher<QMap<QString, QgsPointCloudStatsCalculator::AttributeStatistics>> mFutureWatcher;
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudstatscalculator.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

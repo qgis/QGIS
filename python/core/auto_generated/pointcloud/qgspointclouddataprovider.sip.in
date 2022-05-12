@@ -167,6 +167,14 @@ Only providers which report the CreateRenderer capability will return a 2D rende
 providers will return ``None``.
 %End
 
+    virtual bool hasStatisticsMetadata() const;
+%Docstring
+Returns whether the dataset contains statistics metadata
+
+.. versionadded:: 3.26
+%End
+
+
     SIP_PYOBJECT metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 %Docstring
 Returns a statistic for the specified ``attribute``, taken only from the metadata of the point cloud
@@ -230,6 +238,13 @@ in the metadata, and even for sources with statistical metadata only some ``stat
         sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
       }
     }
+%End
+
+    QgsPointCloudStatistics metadataStatistics();
+%Docstring
+Returns the object containings the statistics metadata extracted from the dataset
+
+.. versionadded:: 3.26
 %End
 
     virtual bool supportsSubsetString() const;

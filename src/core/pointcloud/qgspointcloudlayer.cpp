@@ -34,6 +34,10 @@
 #include "qgsmaplayerfactory.h"
 #include "qgsmaplayerutils.h"
 #include "qgsabstractpointcloud3drenderer.h"
+#include "qgspointcloudstatscalculator.h"
+#include "qgspointcloudstatscalculationtask.h"
+#include "qgsmessagelog.h"
+#include "qgstaskmanager.h"
 #include "qgspointcloudlayerprofilegenerator.h"
 
 #include <QUrl>
@@ -44,6 +48,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, uri )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
+  , mLayerOptions( options )
 {
   if ( !uri.isEmpty() && !providerLib.isEmpty() )
   {
@@ -54,25 +59,20 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
       providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
     }
     setDataSource( uri, baseName, providerLib, providerOptions, providerFlags );
-
-    if ( !options.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
-      mDataProvider.get()->generateIndex();
   }
 
   setLegend( QgsMapLayerLegend::defaultPointCloudLegend( this ) );
   connect( this, &QgsPointCloudLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
 }
 
-QgsPointCloudLayer::~QgsPointCloudLayer() = default;
+QgsPointCloudLayer::~QgsPointCloudLayer()
+{
+  waitForStatisticsCalculationToFinish();
+}
 
 QgsPointCloudLayer *QgsPointCloudLayer::clone() const
 {
-  LayerOptions options;
-  options.loadDefaultStyle = false;
-  options.transformContext = transformContext();
-  options.skipCrsValidation = true;
-
-  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
+  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, mLayerOptions );
   QgsMapLayer::clone( layer );
 
   layer->mElevationProperties = mElevationProperties->clone();
@@ -232,7 +232,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     // make sure layer has a renderer - if none exists, fallback to a default renderer
     if ( !mRenderer )
     {
-      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
+      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
     }
   }
 
@@ -389,6 +389,20 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     loadDefaultStyleFlag = true;
   }
 
+  if ( !mLayerOptions.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
+  {
+    mDataProvider->generateIndex();
+    if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed )
+    {
+      calculateStatistics();
+    }
+  }
+
+  if ( mDataProvider && mDataProvider->isValid() && mStatistics.sampledPointsCount() == 0 )
+  {
+    mStatistics = mDataProvider->metadataStatistics();
+  }
+
   if ( !mRenderer || loadDefaultStyleFlag )
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
@@ -416,7 +430,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     if ( !defaultLoadedFlag )
     {
       // all else failed, create default renderer
-      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
+      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
     }
   }
 }
@@ -455,14 +469,7 @@ void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudD
   {
     case QgsPointCloudDataProvider::Indexed:
     {
-      mDataProvider.get()->loadIndex();
-      if ( mRenderer->type() == QLatin1String( "extent" ) )
-      {
-        setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
-      }
-      triggerRepaint();
-
-      emit rendererChanged();
+      resetRenderer();
       break;
     }
     case QgsPointCloudDataProvider::NotIndexed:
@@ -479,6 +486,7 @@ void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudD
       break;
   }
 }
+
 
 QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 {
@@ -758,4 +766,82 @@ void QgsPointCloudLayer::setSync3DRendererTo2DRenderer( bool sync )
   mSync3DRendererTo2DRenderer = sync;
   if ( sync )
     convertRenderer3DFromRenderer2D();
+}
+
+void QgsPointCloudLayer::calculateStatistics()
+{
+  if ( !mDataProvider.get() || !mDataProvider->hasValidIndex() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
+    return;
+  }
+  if ( mStatsCalculationTask )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "A statistics calculation task for the point cloud %1 is already in progress" ).arg( this->name() ) );
+    return;
+  }
+  QVector<QgsPointCloudAttribute> attributes = mDataProvider->attributes().attributes();
+  // Do not calculate stats for X, Y & Z since the point cloud index contains that
+  for ( int i = 0; i < attributes.size(); ++i )
+  {
+    if ( attributes[i].name() == QStringLiteral( "X" ) || attributes[i].name() == QStringLiteral( "Y" ) || attributes[i].name() == QStringLiteral( "Z" ) )
+    {
+      attributes.remove( i );
+      --i;
+    }
+  }
+
+  QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mDataProvider->index(), attributes, 1000000 );
+  connect( task, &QgsTask::taskCompleted, this, [this, task]()
+  {
+    mStatistics = task->calculationResults();
+    mStatisticsCalculationState = QgsPointCloudLayer::Calculated;
+    emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+    resetRenderer();
+    mStatsCalculationTask = 0;
+  } );
+
+  // In case the statistics calculation fails, QgsTask::taskTerminated will be called
+  connect( task, &QgsTask::taskTerminated, this, [this]()
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
+    mStatsCalculationTask = 0;
+  } );
+
+  mStatsCalculationTask = QgsApplication::taskManager()->addTask( task );
+
+  mStatisticsCalculationState = QgsPointCloudLayer::Calculating;
+  emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+}
+
+void QgsPointCloudLayer::waitForStatisticsCalculationToFinish()
+{
+  // If the statistics calculation task is still running we need to cancel it and wait for the task to get actually terminated or completed properly
+  if ( QgsTask *task = QgsApplication::taskManager()->task( mStatsCalculationTask ) )
+  {
+    if ( task->isActive() )
+    {
+      QEventLoop loop;
+      connect( task, &QgsTask::taskCompleted, &loop, &QEventLoop::quit );
+      connect( task, &QgsTask::taskTerminated, &loop, &QEventLoop::quit );
+      task->cancel();
+      loop.exec();
+    }
+  }
+}
+
+void QgsPointCloudLayer::resetRenderer()
+{
+  mDataProvider->loadIndex();
+  if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && statisticsCalculationState() == QgsPointCloudLayer::NotStarted )
+  {
+    calculateStatistics();
+  }
+  if ( mRenderer->type() == QLatin1String( "extent" ) )
+  {
+    setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
+  }
+  triggerRepaint();
+
+  emit rendererChanged();
 }

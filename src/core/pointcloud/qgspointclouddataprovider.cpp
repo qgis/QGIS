@@ -21,6 +21,8 @@
 #include "qgsgeometry.h"
 #include "qgspointcloudrequest.h"
 #include "qgsgeometryengine.h"
+#include "qgspointcloudstatscalculator.h"
+
 #include <mutex>
 #include <QDebug>
 #include <QtMath>
@@ -169,19 +171,49 @@ QMap<int, QString> QgsPointCloudDataProvider::translatedDataFormatIds()
   return sCodes;
 }
 
-QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &, QgsStatisticalSummary::Statistic ) const
+bool QgsPointCloudDataProvider::hasStatisticsMetadata() const
 {
+  return index() && index()->hasStatisticsMetadata();
+}
+
+QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+{
+  QgsPointCloudIndex *pcIndex = index();
+  if ( pcIndex )
+  {
+    return pcIndex->metadataStatistic( attribute, statistic );
+  }
   return QVariant();
 }
 
-QVariantList QgsPointCloudDataProvider::metadataClasses( const QString & ) const
+QVariantList QgsPointCloudDataProvider::metadataClasses( const QString &attribute ) const
 {
+  QgsPointCloudIndex *pcIndex = index();
+  if ( pcIndex )
+  {
+    return pcIndex->metadataClasses( attribute );
+  }
   return QVariantList();
 }
 
-QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &, const QVariant &, QgsStatisticalSummary::Statistic ) const
+QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
 {
+  QgsPointCloudIndex *pcIndex = index();
+  if ( pcIndex )
+  {
+    return pcIndex->metadataClassStatistic( attribute, value, statistic );
+  }
   return QVariant();
+}
+
+QgsPointCloudStatistics QgsPointCloudDataProvider::metadataStatistics()
+{
+  QgsPointCloudIndex *pcIndex = index();
+  if ( pcIndex )
+  {
+    return pcIndex->metadataStatistics();
+  }
+  return QgsPointCloudStatistics();
 }
 
 struct MapIndexedPointCloudNode
@@ -317,3 +349,4 @@ QString QgsPointCloudDataProvider::subsetString() const
 {
   return mSubsetString;
 }
+

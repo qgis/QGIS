@@ -26,6 +26,7 @@
 #include <QtDebug>
 
 #include "qgstiledownloadmanager.h"
+#include "qgspointcloudstatistics.h"
 
 IndexedPointCloudNode::IndexedPointCloudNode():
   mD( -1 ),
@@ -160,6 +161,12 @@ bool QgsPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
 {
   QMutexLocker locker( &mHierarchyMutex );
   return mHierarchy.contains( n );
+}
+
+qint64 QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n ) const
+{
+  QMutexLocker locker( &mHierarchyMutex );
+  return mHierarchy.value( n, -1 );
 }
 
 QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
@@ -311,4 +318,33 @@ QVariant QgsPointCloudIndex::metadataClassStatistic( const QString &attribute, c
   Q_UNUSED( value );
   Q_UNUSED( statistic );
   return QVariant();
+}
+
+QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
+{
+  QMap<QString, QgsPointCloudStatistics::AttributeStatistics> statsMap;
+  for ( QgsPointCloudAttribute attribute : attributes().attributes() )
+  {
+    QString name = attribute.name();
+    QgsPointCloudStatistics::AttributeStatistics s;
+    QVariant min = metadataStatistic( name, QgsStatisticalSummary::Min );
+    QVariant max = metadataStatistic( name, QgsStatisticalSummary::Max );
+    QVariant mean = metadataStatistic( name, QgsStatisticalSummary::Mean );
+    QVariant stDev = metadataStatistic( name, QgsStatisticalSummary::StDev );
+    if ( !min.isValid() )
+      continue;
+
+    s.minimum = min.toDouble();
+    s.maximum = max.toDouble();
+    s.mean = mean.toDouble();
+    s.stDev = stDev.toDouble();
+    s.count = metadataStatistic( name, QgsStatisticalSummary::Count ).toInt();
+    QVariantList classes = metadataClasses( name );
+    for ( QVariant c : classes )
+    {
+      s.classCount[ c.toInt() ] = metadataClassStatistic( name, c, QgsStatisticalSummary::Count ).toInt();
+    }
+    statsMap[ name ] = s;
+  }
+  return QgsPointCloudStatistics( pointCount(), statsMap );
 }

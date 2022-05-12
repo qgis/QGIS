@@ -31,6 +31,7 @@ class IndexedPointCloudNode;
 class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
 class QgsGeometry;
+class QgsPointCloudStatistics;
 
 /**
  * \ingroup core
@@ -207,6 +208,14 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * providers will return NULLPTR.
      */
     virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
+
+    /**
+     * Returns whether the dataset contains statistics metadata
+     *
+     * \since QGIS 3.26
+     */
+    virtual bool hasStatisticsMetadata() const;
+
 #ifndef SIP_RUN
 
     /**
@@ -303,6 +312,12 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     }
     % End
 #endif
+
+    /**
+     * Returns the object containings the statistics metadata extracted from the dataset
+     * \since QGIS 3.26
+     */
+    QgsPointCloudStatistics metadataStatistics();
 
     bool supportsSubsetString() const override { return true; }
     QString subsetString() const override;
