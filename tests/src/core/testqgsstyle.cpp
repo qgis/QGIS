@@ -201,6 +201,9 @@ void TestStyle::testProperties()
   QgsStyle s;
   s.setName( QStringLiteral( "my name" ) );
   QCOMPARE( s.name(), QStringLiteral( "my name" ) );
+
+  s.setFileName( QStringLiteral( "file name" ) );
+  QCOMPARE( s.fileName(), QStringLiteral( "file name" ) );
 }
 
 void TestStyle::testCreateSymbols()

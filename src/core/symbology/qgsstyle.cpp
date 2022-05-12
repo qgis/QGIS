@@ -859,6 +859,11 @@ bool QgsStyle::save( const QString &filename )
   return true;
 }
 
+void QgsStyle::setFileName( const QString &filename )
+{
+  mFileName = filename;
+}
+
 bool QgsStyle::renameSymbol( const QString &oldName, const QString &newName )
 {
   if ( mSymbols.contains( newName ) )

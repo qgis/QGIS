@@ -848,9 +848,28 @@ class CORE_EXPORT QgsStyle : public QObject
     QString errorString() const { return mErrorString; }
 
     /**
-     * Returns current file name of the style database.
+     * Returns the current file name of the style database.
+     *
+     * The filename will always represent the actual source of the style - e.g. the .db file
+     * for styles associated with a database, or the original source .xml file for styles
+     * directly loaded from a .xml export.
+     *
+     * \see setFileName()
      */
     QString fileName() const { return mFileName; }
+
+    /**
+     * Sets the current file name of the style database.
+     *
+     * The filename should always represent the actual source of the style - e.g. the .db file
+     * for styles associated with a database, or the original source .xml file for styles
+     * directly loaded from a .xml export.
+     *
+     * Calling load() automatically sets the filename to the .db file path.
+     *
+     * \since QGIS 3.26
+     */
+    void setFileName( const QString &filename );
 
     /**
      * Returns the names of the symbols which have a matching 'substring' in its definition
