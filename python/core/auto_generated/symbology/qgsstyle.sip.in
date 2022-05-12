@@ -810,10 +810,13 @@ This function will load an on-disk database and populate styles.
 
 :param filename: location of the database to load styles from
 
-:return: returns the success state of the database being loaded
+:return: ``True`` if the database was successfully loaded. If ``False`` is
+         returned then a detailed error message can be retrieved via :py:func:`~QgsStyle.errorString`.
+
+.. seealso:: :py:func:`errorString`
 %End
 
- bool save( QString filename = QString() ) /Deprecated/;
+ bool save( const QString &filename = QString() ) /Deprecated/;
 %Docstring
 Saves style into a file.
 
@@ -833,14 +836,16 @@ The current :py:func:`~QgsStyle.fileName` will be used if no explicit ``filename
    This function has no effect.
 %End
 
-    QString errorString();
+    QString errorString() const;
 %Docstring
-Returns last error from load/save operation
+Returns the last error from a :py:func:`~QgsStyle.load` operation.
+
+.. seealso:: :py:func:`load`
 %End
 
-    QString fileName();
+    QString fileName() const;
 %Docstring
-Returns current file name of the style
+Returns current file name of the style database.
 %End
 
     QStringList findSymbols( StyleEntity type, const QString &qword );
