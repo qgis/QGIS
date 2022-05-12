@@ -38,10 +38,10 @@
 #include <cstdlib>
 #include <limits>
 
-#ifdef NDEBUG
-#define LAZDEBUG(e) ((void)0)
-#else
+#ifdef PRINT_DEBUG
 #define LAZDEBUG(e) (void)(e)
+#else
+#define LAZDEBUG(e) ((void)0)
 #endif
 
 namespace lazperf

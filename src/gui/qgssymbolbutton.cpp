@@ -388,6 +388,58 @@ void QgsSymbolButton::dropEvent( QDropEvent *e )
   updatePreview();
 }
 
+void QgsSymbolButton::wheelEvent( QWheelEvent *event )
+{
+  if ( isEnabled() && mSymbol )
+  {
+    bool symbolChanged = false;
+    const double increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 0.1 : 1 ) *
+                             event->angleDelta().y() > 0 ? 1 : -1;
+    switch ( mSymbol->type() )
+    {
+      case Qgis::SymbolType::Marker:
+      {
+        QgsMarkerSymbol *marker = qgis::down_cast<QgsMarkerSymbol *>( mSymbol.get() );
+        if ( marker )
+        {
+          const double size = std::max( 0.0, marker->size() + increment );
+          marker->setSize( size );
+          symbolChanged = true;
+        }
+        break;
+      }
+
+      case Qgis::SymbolType::Line:
+      {
+        QgsLineSymbol *line = qgis::down_cast<QgsLineSymbol *>( mSymbol.get() );
+        if ( line )
+        {
+          const double width = std::max( 0.0, line->width() + increment );
+          line->setWidth( width );
+          symbolChanged = true;
+        }
+        break;
+      }
+
+      case Qgis::SymbolType::Fill:
+      case Qgis::SymbolType::Hybrid:
+        break;
+    }
+
+    if ( symbolChanged )
+    {
+      updatePreview();
+      emit changed();
+    }
+
+    event->accept();
+  }
+  else
+  {
+    QToolButton::wheelEvent( event );
+  }
+}
+
 void QgsSymbolButton::prepareMenu()
 {
   //we need to tear down and rebuild this menu every time it is shown. Otherwise the space allocated to any
@@ -400,27 +452,37 @@ void QgsSymbolButton::prepareMenu()
   mMenu->addAction( configureAction );
   connect( configureAction, &QAction::triggered, this, &QgsSymbolButton::showSettingsDialog );
 
+  QAction *copySymbolAction = new QAction( tr( "Copy Symbol" ), this );
+  copySymbolAction->setEnabled( !isNull() );
+  mMenu->addAction( copySymbolAction );
+  connect( copySymbolAction, &QAction::triggered, this, &QgsSymbolButton::copySymbol );
+
+  QAction *pasteSymbolAction = new QAction( tr( "Paste Symbol" ), this );
+  //enable or disable paste action based on current clipboard contents. We always show the paste
+  //action, even if it's disabled, to give hint to the user that pasting symbols is possible
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( tempSymbol && tempSymbol->type() == mType )
+  {
+    const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+    pasteSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( tempSymbol.get(), QSize( iconSize, iconSize ), 1 ) );
+  }
+  else
+  {
+    pasteSymbolAction->setEnabled( false );
+  }
+  mMenu->addAction( pasteSymbolAction );
+  connect( pasteSymbolAction, &QAction::triggered, this, &QgsSymbolButton::pasteSymbol );
+
+  if ( mShowNull )
+  {
+    QAction *nullAction = new QAction( tr( "Clear Current Symbol" ), this );
+    nullAction->setEnabled( !isNull() );
+    mMenu->addAction( nullAction );
+    connect( nullAction, &QAction::triggered, this, &QgsSymbolButton::setToNull );
+  }
+
   if ( mSymbol )
   {
-    QAction *copySymbolAction = new QAction( tr( "Copy Symbol" ), this );
-    mMenu->addAction( copySymbolAction );
-    connect( copySymbolAction, &QAction::triggered, this, &QgsSymbolButton::copySymbol );
-    QAction *pasteSymbolAction = new QAction( tr( "Paste Symbol" ), this );
-    //enable or disable paste action based on current clipboard contents. We always show the paste
-    //action, even if it's disabled, to give hint to the user that pasting symbols is possible
-    std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
-    if ( tempSymbol && tempSymbol->type() == mType )
-    {
-      const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-      pasteSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( tempSymbol.get(), QSize( iconSize, iconSize ), 1 ) );
-    }
-    else
-    {
-      pasteSymbolAction->setEnabled( false );
-    }
-    mMenu->addAction( pasteSymbolAction );
-    connect( pasteSymbolAction, &QAction::triggered, this, &QgsSymbolButton::pasteSymbol );
-
     mMenu->addSeparator();
 
     QgsColorWheel *colorWheel = new QgsColorWheel( mMenu );
@@ -716,4 +778,24 @@ QString QgsSymbolButton::dialogTitle() const
 QgsSymbol *QgsSymbolButton::symbol()
 {
   return mSymbol.get();
+}
+
+void QgsSymbolButton::setShowNull( bool showNull )
+{
+  mShowNull = showNull;
+}
+
+bool QgsSymbolButton::showNull() const
+{
+  return mShowNull;
+}
+
+bool QgsSymbolButton::isNull() const
+{
+  return !mSymbol;
+}
+
+void QgsSymbolButton::setToNull()
+{
+  setSymbol( nullptr );
 }

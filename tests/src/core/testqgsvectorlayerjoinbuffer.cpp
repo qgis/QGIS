@@ -864,7 +864,7 @@ void TestVectorLayerJoinBuffer::testCollidingNameColumn()
   joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
   joinInfo.setJoinLayer( vlB );
   joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
-  joinInfo.setPrefix( QStringLiteral( "" ) );
+  joinInfo.setPrefix( QLatin1String( "" ) );
   joinInfo.setEditable( true );
   joinInfo.setUpsertOnEdit( true );
   vlA->addJoin( joinInfo );
@@ -1007,7 +1007,7 @@ void TestVectorLayerJoinBuffer::testCollidingNameColumnCached()
   joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
   joinInfo.setJoinLayer( vlB );
   joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
-  joinInfo.setPrefix( QStringLiteral( "" ) );
+  joinInfo.setPrefix( QLatin1String( "" ) );
   joinInfo.setEditable( true );
   joinInfo.setUpsertOnEdit( false );
   joinInfo.setUsingMemoryCache( true );

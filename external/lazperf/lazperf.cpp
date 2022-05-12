@@ -407,7 +407,7 @@ point_decompressor_6::point_decompressor_6(InputCb cb, size_t ebCount) :
 
 point_decompressor_6::~point_decompressor_6()
 {
-#ifndef NDEBUG
+#ifdef PRINT_DEBUG
     p_->point_.dumpSums();
     if (p_->byte_.count())
         p_->byte_.dumpSums();
@@ -447,7 +447,7 @@ point_decompressor_7::point_decompressor_7(InputCb cb, size_t ebCount) :
 
 point_decompressor_7::~point_decompressor_7()
 {
-#ifndef NDEBUG
+#ifdef PRINT_DEBUG
     p_->point_.dumpSums();
     p_->rgb_.dumpSums();
     if (p_->byte_.count())
@@ -491,7 +491,7 @@ point_decompressor_8::point_decompressor_8(InputCb cb, size_t ebCount) :
 
 point_decompressor_8::~point_decompressor_8()
 {
-#ifndef NDEBUG
+#ifdef PRINT_DEBUG
     p_->point_.dumpSums();
     p_->rgb_.dumpSums();
     p_->nir_.dumpSums();

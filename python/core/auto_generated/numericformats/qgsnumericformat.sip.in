@@ -157,7 +157,6 @@ Sets the ``interpretation`` of the numbers being converted.
 .. versionadded:: 3.26
 %End
 
-
 };
 
 %ModuleHeaderCode
@@ -272,6 +271,8 @@ Writes the format to an XML ``element``.
 
     bool operator==( const QgsNumericFormat &other ) const;
     bool operator!=( const QgsNumericFormat &other ) const;
+
+  protected:
 
 };
 
