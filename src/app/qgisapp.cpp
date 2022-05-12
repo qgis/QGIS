@@ -13002,7 +13002,7 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "View Settings" ), QStringLiteral( "mViewSettingsPage" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "CRS" ), QStringLiteral( "mProjOptsCRS" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Transformations" ), QStringLiteral( "mProjTransformations" ) );
-    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Default Styles" ), QStringLiteral( "mProjOptsSymbols" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Styles" ), QStringLiteral( "mProjOptsSymbols" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Data Sources" ), QStringLiteral( "mTab_DataSources" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Relations" ), QStringLiteral( "mTabRelations" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Variables" ), QStringLiteral( "mTab_Variables" ) );
