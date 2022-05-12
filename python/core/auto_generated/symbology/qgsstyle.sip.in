@@ -845,7 +845,26 @@ Returns the last error from a :py:func:`~QgsStyle.load` operation.
 
     QString fileName() const;
 %Docstring
-Returns current file name of the style database.
+Returns the current file name of the style database.
+
+The filename will always represent the actual source of the style - e.g. the .db file
+for styles associated with a database, or the original source .xml file for styles
+directly loaded from a .xml export.
+
+.. seealso:: :py:func:`setFileName`
+%End
+
+    void setFileName( const QString &filename );
+%Docstring
+Sets the current file name of the style database.
+
+The filename should always represent the actual source of the style - e.g. the .db file
+for styles associated with a database, or the original source .xml file for styles
+directly loaded from a .xml export.
+
+Calling :py:func:`~QgsStyle.load` automatically sets the filename to the .db file path.
+
+.. versionadded:: 3.26
 %End
 
     QStringList findSymbols( StyleEntity type, const QString &qword );

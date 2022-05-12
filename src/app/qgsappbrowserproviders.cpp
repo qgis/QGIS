@@ -410,6 +410,9 @@ void QgsStyleXmlDataItem::browseStyle( const QString &xmlPath )
   auto cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
   if ( s.importXml( xmlPath ) )
   {
+    s.setFileName( xmlPath );
+    s.setName( QFileInfo( xmlPath ).completeBaseName() );
+
     cursorOverride.reset();
     const QFileInfo fi( xmlPath );
     QgsStyleManagerDialog dlg( &s, QgisApp::instance(), Qt::WindowFlags(), true );
