@@ -529,7 +529,7 @@ corresponds to the last point in the line.
     }
 %End
 
-    void setPoints( qint64 size, const double *x, const double *y, const double *z = 0, const double *m = 0 );
+    void setPoints( size_t size, const double *x, const double *y, const double *z = 0, const double *m = 0 );
 %Docstring
 Resets the line string to match the specified point data. The line string will
 inherit the dimensionality of the first point in the list.
