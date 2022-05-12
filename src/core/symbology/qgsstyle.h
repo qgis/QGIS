@@ -821,8 +821,21 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     bool load( const QString &filename );
 
-    //! Saves style into a file (will use current filename if empty string is passed)
-    bool save( QString filename = QString() );
+    /**
+     * Saves style into a file.
+     *
+     * The current fileName() will be used if no explicit \a filename is specified.
+     *
+     *  \returns TRUE if the style was successfully saved. If FALSE is
+     *  returned then a detailed error message can be retrieved via errorString().
+     *
+     * \see fileName()
+     * \see load()
+     * \see errorString()
+     *
+     * \deprecated This function has no effect.
+     */
+    Q_DECL_DEPRECATED bool save( QString filename = QString() ) SIP_DEPRECATED;
 
     //! Returns last error from load/save operation
     QString errorString() { return mErrorString; }
