@@ -28,6 +28,8 @@
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QNoDepthMask>
+#include <Qt3DRender/QBlendEquationArguments>
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPreviewPass()
 {
@@ -122,9 +124,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   Qt3DRender::QSortPolicy *sortPolicy = new Qt3DRender::QSortPolicy( transparentObjectsLayerFilter );
   QVector<Qt3DRender::QSortPolicy::SortType> sortTypes;
   sortTypes.push_back( Qt3DRender::QSortPolicy::BackToFront );
-  sortTypes.push_back( Qt3DRender::QSortPolicy::Material );
-  sortTypes.push_back( Qt3DRender::QSortPolicy::StateChangeCost );
-  sortTypes.push_back( Qt3DRender::QSortPolicy::FrontToBack );
   sortPolicy->setSortTypes( sortTypes );
 
   Qt3DRender::QRenderStateSet *transparentObjectsRenderStateSet = new Qt3DRender::QRenderStateSet( sortPolicy );
@@ -133,13 +132,23 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
     depthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
     transparentObjectsRenderStateSet->addRenderState( depthTest );
 
+    Qt3DRender::QNoDepthMask *noDepthMask = new Qt3DRender::QNoDepthMask;
+    transparentObjectsRenderStateSet->addRenderState( noDepthMask );
+
     Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
     cullFace->setMode( Qt3DRender::QCullFace::CullingMode::NoCulling );
     transparentObjectsRenderStateSet->addRenderState( cullFace );
 
     Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
-    blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Subtract );
+    blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
     transparentObjectsRenderStateSet->addRenderState( blendEquation );
+
+    Qt3DRender::QBlendEquationArguments *blenEquationArgs = new Qt3DRender::QBlendEquationArguments;
+    blenEquationArgs->setSourceRgb( Qt3DRender::QBlendEquationArguments::Blending::One );
+    blenEquationArgs->setDestinationRgb( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSource1Alpha );
+    blenEquationArgs->setSourceAlpha( Qt3DRender::QBlendEquationArguments::Blending::One );
+    blenEquationArgs->setDestinationAlpha( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSource1Alpha );
+    transparentObjectsRenderStateSet->addRenderState( blenEquationArgs );
   }
 
   return mMainCameraSelector;
