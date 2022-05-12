@@ -232,7 +232,7 @@ void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode 
   mXLineEdit->setText( value );
   if ( mode == WidgetSetMode::ReturnPressed )
   {
-    mXLineEdit->returnPressed();
+    emit mXLineEdit->returnPressed();
   }
   else if ( mode == WidgetSetMode::FocusOut )
   {
@@ -241,7 +241,7 @@ void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode 
   }
   else if ( mode == WidgetSetMode::TextEdited )
   {
-    mXLineEdit->textEdited( value );
+    emit mXLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setY( const QString &value, WidgetSetMode mode )
@@ -249,7 +249,7 @@ void QgsAdvancedDigitizingDockWidget::setY( const QString &value, WidgetSetMode 
   mYLineEdit->setText( value );
   if ( mode == WidgetSetMode::ReturnPressed )
   {
-    mYLineEdit->returnPressed();
+   emit  mYLineEdit->returnPressed();
   }
   else if ( mode == WidgetSetMode::FocusOut )
   {
@@ -258,7 +258,7 @@ void QgsAdvancedDigitizingDockWidget::setY( const QString &value, WidgetSetMode 
   }
   else if ( mode == WidgetSetMode::TextEdited )
   {
-    mYLineEdit->textEdited( value );
+    emit mYLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setZ( const QString &value, WidgetSetMode mode )
@@ -266,7 +266,7 @@ void QgsAdvancedDigitizingDockWidget::setZ( const QString &value, WidgetSetMode 
   mZLineEdit->setText( value );
   if ( mode == WidgetSetMode::ReturnPressed )
   {
-    mZLineEdit->returnPressed();
+    emit mZLineEdit->returnPressed();
   }
   else if ( mode == WidgetSetMode::FocusOut )
   {
@@ -275,7 +275,7 @@ void QgsAdvancedDigitizingDockWidget::setZ( const QString &value, WidgetSetMode 
   }
   else if ( mode == WidgetSetMode::TextEdited )
   {
-    mZLineEdit->textEdited( value );
+    emit mZLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setM( const QString &value, WidgetSetMode mode )
@@ -283,7 +283,7 @@ void QgsAdvancedDigitizingDockWidget::setM( const QString &value, WidgetSetMode 
   mMLineEdit->setText( value );
   if ( mode == WidgetSetMode::ReturnPressed )
   {
-    mMLineEdit->returnPressed();
+    emit mMLineEdit->returnPressed();
   }
   else if ( mode == WidgetSetMode::FocusOut )
   {
@@ -292,7 +292,7 @@ void QgsAdvancedDigitizingDockWidget::setM( const QString &value, WidgetSetMode 
   }
   else if ( mode == WidgetSetMode::TextEdited )
   {
-    mMLineEdit->textEdited( value );
+    emit mMLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setAngle( const QString &value, WidgetSetMode mode )
@@ -300,11 +300,11 @@ void QgsAdvancedDigitizingDockWidget::setAngle( const QString &value, WidgetSetM
   mAngleLineEdit->setText( value );
   if ( mode == WidgetSetMode::ReturnPressed )
   {
-    mAngleLineEdit->returnPressed();
+    emit mAngleLineEdit->returnPressed();
   }
   else if ( mode == WidgetSetMode::FocusOut )
   {
-    mAngleLineEdit->textEdited( value );
+    emit mAngleLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setDistance( const QString &value, WidgetSetMode mode )
@@ -312,7 +312,7 @@ void QgsAdvancedDigitizingDockWidget::setDistance( const QString &value, WidgetS
   mDistanceLineEdit->setText( value );
   if ( mode == WidgetSetMode::ReturnPressed )
   {
-    mDistanceLineEdit->returnPressed();
+    emit mDistanceLineEdit->returnPressed();
   }
   else if ( mode == WidgetSetMode::FocusOut )
   {
@@ -321,7 +321,7 @@ void QgsAdvancedDigitizingDockWidget::setDistance( const QString &value, WidgetS
   }
   else if ( mode == WidgetSetMode::TextEdited )
   {
-    mDistanceLineEdit->textEdited( value );
+    emit mDistanceLineEdit->textEdited( value );
   }
 }
 
