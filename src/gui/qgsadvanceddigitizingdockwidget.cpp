@@ -249,7 +249,7 @@ void QgsAdvancedDigitizingDockWidget::setY( const QString &value, WidgetSetMode 
   mYLineEdit->setText( value );
   if ( mode == WidgetSetMode::ReturnPressed )
   {
-   emit  mYLineEdit->returnPressed();
+    emit mYLineEdit->returnPressed();
   }
   else if ( mode == WidgetSetMode::FocusOut )
   {
