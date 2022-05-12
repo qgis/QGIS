@@ -2679,7 +2679,6 @@ bool QgsStyle::exportXml( const QString &filename )
   doc.save( ts, 2 );
   f.close();
 
-  mFileName = filename;
   return true;
 }
 
@@ -3017,7 +3016,6 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
   query = qgs_sqlite3_mprintf( "COMMIT TRANSACTION;" );
   runEmptyQuery( query );
 
-  mFileName = filename;
   return true;
 }
 
