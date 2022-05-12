@@ -84,6 +84,36 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         p.setDefaultSymbolOpacity(0.25)
         self.assertEqual(p.defaultSymbolOpacity(), 0.25)
 
+    def testStylePaths(self):
+        p = QgsProjectStyleSettings()
+        spy = QSignalSpy(p.styleDatabasesChanged)
+
+        self.assertFalse(p.styleDatabasePaths())
+
+        p.addStyleDatabasePath(unitTestDataPath() + '/style1.db')
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style1.db'])
+
+        # try re-adding path which is already present
+        p.addStyleDatabasePath(unitTestDataPath() + '/style1.db')
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style1.db'])
+
+        p.addStyleDatabasePath(unitTestDataPath() + '/style2.db')
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style1.db', unitTestDataPath() + '/style2.db'])
+
+        p.setStyleDatabasePaths([unitTestDataPath() + '/style3.db'])
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style3.db'])
+
+        p.setStyleDatabasePaths([unitTestDataPath() + '/style3.db'])
+        self.assertEqual(len(spy), 3)
+
+        p.setStyleDatabasePaths([])
+        self.assertEqual(len(spy), 4)
+        self.assertFalse(p.styleDatabasePaths())
+
     def testReadWrite(self):
         p = QgsProjectStyleSettings()
 
@@ -99,6 +129,8 @@ class TestQgsProjectViewSettings(unittest.TestCase):
 
         p.setRandomizeDefaultSymbolColor(False)
         p.setDefaultSymbolOpacity(0.25)
+
+        p.setStyleDatabasePaths([unitTestDataPath() + '/style1.db', unitTestDataPath() + '/style2.db'])
 
         doc = QDomDocument("testdoc")
         elem = p.writeXml(doc, QgsReadWriteContext())

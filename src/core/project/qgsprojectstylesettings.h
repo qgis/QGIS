@@ -88,7 +88,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * Sets the project default text format.
      * \param textFormat the text format, an invalid format is interpreted as no default
      */
-    void setDefaultTextFormat( QgsTextFormat textFormat );
+    void setDefaultTextFormat( const QgsTextFormat &textFormat );
 
     /**
      * Returns whether the default symbol fill color is randomized.
@@ -127,6 +127,48 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      */
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+    /**
+     * Returns a list of all style databases (file paths) associated with the project.
+     *
+     * The file paths returned by this method will always be absolute paths. Depending on the
+     * project settings, they may be converted to relative paths when the project is saved.
+     *
+     * \see addStyleDatabasePath()
+     * \see setStyleDatabasePaths()
+     */
+    QStringList styleDatabasePaths() const { return mStyleDatabases; }
+
+    /**
+     * Adds a style database \a path to the project.
+     *
+     * The file path added by this method must always be absolute paths. Depending on the
+     * project settings, they may be converted to relative paths when the project is saved.
+     *
+     * \see styleDatabasePaths()
+     * \see setStyleDatabasePaths()
+     * \see styleDatabasesChanged()
+     */
+    void addStyleDatabasePath( const QString &path );
+
+    /**
+     * Sets the \a paths to all style databases associated with the project.
+     *
+     * The file paths set by this method must always be absolute paths. Depending on the
+     * project settings, they may be converted to relative paths when the project is saved.
+     *
+     * \see addStyleDatabasePath()
+     * \see styleDatabasePaths()
+     * \see styleDatabasesChanged()
+     */
+    void setStyleDatabasePaths( const QStringList &paths );
+
+  signals:
+
+    /**
+     * Emitted whenever the set of style databases associated with the project is changed.
+     */
+    void styleDatabasesChanged();
+
   private:
 
     QgsProject *mProject = nullptr;
@@ -139,6 +181,8 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
 
     bool mRandomizeDefaultSymbolColor = true;
     double mDefaultSymbolOpacity = 1.0;
+
+    QStringList mStyleDatabases;
 
 };
 
